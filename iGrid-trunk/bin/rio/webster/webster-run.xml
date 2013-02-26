@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<project name="" default="webster" basedir=".">
+	<property environment="env" />
+	<property name="java.home" value="${env.JAVA_HOME}" />
+	<property name="iGrid.home" value="${env.IGRID_HOME}" />
+	<property name="lib" value="${iGrid.home}/lib" />
+	<property name="common.lib" value="${iGrid.home}/common" />
+	<property name="classes" value="${iGrid.home}/classes" />
+	<property name="iGrid.policy" value="${iGrid.home}/policy" />
+	<property name="iGrid.config" value="${iGrid.home}/configs" />
+	<property name="webster.port" value="${env.RIO_WEBSTER_PORT}" />
+	<property name="webster" value="${env.RIO_WEBSTER}" />
+	
+	<loadproperties srcfile="${iGrid.home}/configs/sorcer.env">
+	</loadproperties>
+
+	<target name="webster">
+		<java jar="${common.lib}/rio3_2/webster.jar" fork="yes">
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="org.jini.rio.tools.webster.debug" value="true" />
+			<sysproperty key="java.security.policy" value="${iGrid.policy}/policy.all" />
+			<sysproperty key="org.jini.rio.tools.webster.root" value="${common.lib}/rio3_2;${lib};${common.lib}" />
+			<sysproperty key="org.jini.rio.tools.webster.port" value="${webster.port}" />
+		</java>
+	</target>
+
+</project>
