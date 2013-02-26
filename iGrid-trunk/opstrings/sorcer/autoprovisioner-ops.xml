@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://com/sun/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9080" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+]>
+
+<opstring>
+    <OperationalString Name="Autonomic Provisioner">
+        <ServiceBean Name="Autonomic Provisioner">
+            <Codebase>&CodeServerURL;</Codebase>
+
+            <Interfaces>
+                <Interface>sorcer.core.provider.autonomicprovisioner.AutonomicProvisioner</Interface>
+                <Resources>
+                    <JAR>autonomicprovisioner-dl.jar</JAR>
+                    <JAR>rio-space-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+
+            <ImplementationClass>sorcer.core.provider.autonomicprovisioner.AutonomicProvisionerImpl
+                <Resources>
+                    <JAR>autonomicprovisioner.jar</JAR>
+                    <JAR>rio-space.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <ServiceLevelAgreements>
+                <SystemRequirements>
+                    <Utilization ID="System" High=".95" />
+                    <Utilization ID="CPU" High=".95" />
+                    <Utilization ID="Memory" High=".8" />
+                </SystemRequirements>
+            </ServiceLevelAgreements>
+
+            <Groups>
+                <Group>sorcer.DEV</Group>
+            </Groups>
+
+            <Maintain>1</Maintain>
+
+            <Comment>Autonomic Provisioner</Comment>
+           
+            <FaultDetectionHandler Class="com.sun.rio.resources.client.StandardFaultDetectionHandler">
+                <Properties>
+                    <Property Name="LeaseTime" Value="10000"/>
+                    <Property Name="RetryCount" Value="3"/>
+                    <Property Name="RetryTimeout" Value="500"/>
+                </Properties>
+            </FaultDetectionHandler>
+
+        </ServiceBean>
+
+    </OperationalString>
+</opstring>

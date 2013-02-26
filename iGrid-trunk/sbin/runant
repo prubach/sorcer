@@ -1,0 +1,43 @@
+#!/bin/bash
+#echo "runant: IGRID_HOME=$IGRID_HOME"
+
+# args
+#
+CALLING_SCRIPT_NAME=$1
+ANT_FILE=$2
+WINDOW_OPTION=$3
+
+
+# vars
+#
+ANT_FILENAME=`basename $ANT_FILE`
+ANT_FILE_DIR=`dirname $ANT_FILE`
+ANT_CMD="ant -f $ANT_FILENAME"
+#SBIN_HOME=`dirname \`readlink -f $0\``
+#SBIN_HOME=`dirname $0`
+SBIN_HOME=$IGRID_HOME/sbin
+
+
+# check ant file
+#
+if [ ! -r $ANT_FILE ]; then
+    echo "***error: $ANT_FILE not readable."
+    exit 1;
+fi
+
+
+# run ant file
+#
+THIS_DIR=${PWD}
+PID_FILE=$CALLING_SCRIPT_NAME
+PID_DIR=$SBIN_HOME
+PID_FILE="$PID_DIR/.$PID_FILE.pid"
+
+cd $ANT_FILE_DIR
+if [ "$WINDOW_OPTION" == "-w" ]; then
+    $SBIN_HOME/rantback "$PID_FILE" "$ANT_CMD" "$ANT_FILENAME"
+else
+    echo $$ > $PID_FILE
+    $ANT_CMD
+fi
+cd $THIS_DIR

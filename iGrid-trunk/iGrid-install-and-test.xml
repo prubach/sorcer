@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>
+
+<project name="iGrid" default="all" basedir=".">
+	<target name="all">
+		<ant dir="." antfile="iGrid-install.xml" target="all-test" inheritAll="false" />
+	</target>
+</project>
