@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>
+<!-- 
+* Jini introduction examples
+* SORCER Lab, Texas Tech University
+-->
+
+<project name="jini-intro" default="compile" basedir=".">
+	<property name="module.name" value="jini" />
+	<property name="package.dir" value="./" />
+	<property environment="env" />
+	<property name="iGrid.home" value="${env.IGRID_HOME}" />
+	<property name="common.lib" value="${iGrid.home}/common" />
+	<property name="sorcer.home" value="${env.SORCER_HOME}" />
+	<property name="classes" value="./classes" />
+	<property name="src" value="./src" />
+	<property name="java.home" value="${env.JAVA_HOME}" />
+	<property name="lib" value="${iGrid.home}/lib" />
+	<property name="docs" value="./docs" />
+
+	<patternset id="ant.java">
+		<include name="**/*.java" />
+		<exclude name="**/SAVE/*.java" />
+		<exclude name="**/BAK/*.java" />
+	</patternset>
+
+	<patternset id="ant.classes">
+		<include name="${package.dir}/classes/**/*.class" />
+		<exclude name="${package.dir}/**/SAVE/*.class" />
+		<exclude name="${package.dir}/**/BAK/*.class" />
+	</patternset>
+
+	<path id="jini.path">
+		<pathelement location="${common.lib}/jini-core.jar" />
+		<pathelement location="${common.lib}/jini-ext.jar" />
+		<pathelement location="${common.lib}/sun-util.jar" />
+		<pathelement location="${common.lib}/serviceui-1.1.jar" />
+		<pathelement location="${common.lib}/tools.jar" />
+		<pathelement location="${common.lib}/buildsupport/classdepandjar.jar" />
+		<pathelement location="${common.lib}/start.jar" />
+		<pathelement location="${common.lib}/.jar" />
+	</path>
+
+	<path id="jaxp.path">
+		<pathelement location="${common.lib}/jaxp.jar" />
+		<pathelement location="${common.lib}/crimson.jar" />
+		<pathelement location="${common.lib}/xalan.jar" />
+		<pathelement location="${ant.home}/lib/xml-apis.jar" />
+		<pathelement location="${common.lib}/jsr173_07_api.jar" />
+		<pathelement location="${common.lib}/jsr173_07_ri.jar" />
+		<pathelement location="${common.lib}/stax-utils-20040422.zip" />
+		<pathelement location="${common.lib}/jaxrpc.jar" />
+	</path>
+
+	<path id="package.classpath">
+		<pathelement location="./" />
+		<pathelement location="${classes}" />
+		<path refid="jaxp.path" />
+		<path refid="jini.path" />
+	</path>
+
+	<target name="install" depends="clean, compile" />
+
+	<target name="clean" depends="clean-classes, clean-docs" />
+
+	<target name="clean-classes">
+		<delete verbose="true">
+			<fileset dir="${classes}">
+				<patternset refid="ant.classes" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="clean-docs" description="Removes all generated Java API docs.">
+		<delete dir="${docs}" />
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="classes" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src}" destdir="${classes}" deprecation="no">
+			<classpath refid="package.classpath" />
+			<patternset refid="ant.java" />
+		</javac>
+	</target>
+
+
+	<target name="docs" depends="compile">
+		<javadoc packagenames="sorcer.base.*" maxmemory="100M" destdir="${docs}/api" Author="true" Version="true" Use="true" windowtitle="SORCER Framework" doctitle="&lt;h1&gt;SORCER Framework;/h1&gt;" bottom="&lt;i&gt;Copyright (c) 2004 Texas Tech University, All Rights Reserved.&lt;/i&gt;">
+			<fileset dir="${src}">
+				<patternset refid="ant.java" />
+			</fileset>
+			<group title="SORCER" packages="sorcer.base.*" />
+			<classpath refid="package.classpath" />
+		</javadoc>
+	</target>
+
+</project>
