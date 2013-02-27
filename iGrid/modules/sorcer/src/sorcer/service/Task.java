@@ -103,8 +103,6 @@ public class Task extends ServiceExertion {
 		Class<? extends Task> taskClass = null;
 		if (signature.getClass() == ObjectSignature.class) {
 			taskClass = ObjectTask.class;
-		} else if (signature.getClass() == ObjectSignature.class) {
-			taskClass = ObjectTask.class;
 		} else if (signature.getClass() == NetSignature.class) {
 			taskClass = NetTask.class;
 		} else if (signature.getClass() == EvaluationSignature.class) {
