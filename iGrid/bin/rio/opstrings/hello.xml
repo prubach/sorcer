@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://org/jini/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9000" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+    <!ENTITY group SYSTEM "java://java.lang.System.getProperty(user.name)">    
+]>
+
+<opstring>
+    <OperationalString Name="Hello World">
+        <!-- Declares the codebase to download JARs from for all services 
+             in this OperationalString -->
+        <Codebase>&CodeServerURL;</Codebase>
+        
+        <Groups>
+            <!-- Uncomment out the following line if you would like to use a 
+                 group name that is your user name. The value is obtained from
+                 the ENTITY group declaration above -->
+            <!--<Group>&group;</Group>-->
+	      <Group>sorcer.DEV</Group>
+        </Groups>
+
+        <ServiceBean Name="Hello World" 
+                     MatchOnName="yes">
+            <Interfaces>
+                <Interface>org.jini.rio.demos.hello.Hello</Interface>
+                <Resources>
+                    <JAR>hello-dl.jar</JAR>
+                    <JAR>rio-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+
+            <ImplementationClass>org.jini.rio.demos.hello.HelloImpl
+                <Resources ComputeHttpmd="yes">
+                    <JAR>hello.jar</JAR>
+                </Resources>
+            </ImplementationClass>                       
+            
+            <Configuration>
+                <Component Name="org.jini.rio">
+                    <Parameter 
+                        Name="defaultExporter"
+                        Value="$org_jini_rio_defaultExporter"/>                    
+                </Component>
+                <Component Name="org.jini.rio.demos.hello">
+		    <Parameter Name="serviceUIs">
+			<![CDATA[
+                        new net.jini.core.entry.Entry[]{
+                            org.jini.rio.entry.UIDescriptorFactory.getUIDescriptor(
+                                net.jini.lookup.ui.MainUI.ROLE,
+                                net.jini.lookup.ui.factory.JComponentFactory.TYPE_NAME,
+                                (String)$data,
+                                "hello-ui.jar",
+                                "org.jini.rio.demos.hello.HelloUI",
+                                true,
+                                "sha")
+                        }
+			]]>
+	            </Parameter>
+                </Component>
+            </Configuration>
+            
+            <ServiceLevelAgreements>                
+                <SystemRequirements>
+                    <Utilization ID="System" High=".8" />
+                    <Utilization ID="CPU" High=".8" />
+                    <Utilization ID="Memory" High=".8" />
+                </SystemRequirements>
+            </ServiceLevelAgreements>
+
+            <Logging>
+                <Logger Name="org.jini.rio.demos.hello" Level="FINE">
+                    <Handler ClassName="java.util.logging.ConsoleHandler" 
+                             Level="FINE"/>
+                </Logger>
+            </Logging>
+
+            <Associations>
+                <Association Type="uses" 
+                             Name="Hello Event Consumer"
+                             Property="eventConsumer"/>                             
+            </Associations>
+
+            <Maintain>1</Maintain>
+            
+            <FaultDetectionHandler
+                ClassName="org.jini.rio.resources.client.HeartbeatFaultDetectionHandler">
+                <Configuration>                    
+                    <Component Name="org.jini.rio.resources.client.HeartbeatFaultDetectionHandler">
+                        <Parameter Name="heartbeatPeriod" Value="5000"/>
+                        <Parameter Name="retryCount" Value="1"/>
+                    </Component>
+                </Configuration>
+            </FaultDetectionHandler>
+
+            <Comment>Hello World basic example</Comment>
+        </ServiceBean>        
+
+        <ServiceBean Name="Hello Event Consumer" 
+                     MatchOnName="yes" 
+                     ProvisionType="fixed">
+
+            <Interfaces>
+                <Interface>org.jini.rio.resources.servicecore.Service</Interface>
+                <Resources>
+                    <JAR>rio-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+
+            <ImplementationClass>org.jini.rio.demos.hello.HelloEventConsumer
+                <Resources>
+                    <JAR>hello.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <Maintain>1</Maintain>
+
+            <Comment>Hello World basic example</Comment>
+
+        </ServiceBean>
+
+    </OperationalString>
+</opstring>

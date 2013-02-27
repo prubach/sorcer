@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://org/jini/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9000" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+]>
+<!-- An Appropriate Name Service that support corbaloc
+     needs to be running on a wellknown port, for example prot 3089
+
+     FOR JDK1.4 start the naming service using port 3089
+             tnameserv -ORBInitialPort 3089 
+
+     FOR JacORB:
+            ns $JACORB_HOME/NS_Ref
+  -->
+
+<opstring>
+    <OperationalString Name="Corba Demo">
+
+        <ServiceBean Name="Corba Client">
+            <Codebase>&CodeServerURL;</Codebase>
+            
+            <Interfaces>
+                <Interface>org.jini.rio.examples.corba.JSBasCorbaClient</Interface>
+                <Resources>
+                    <JAR>corbademo-dl.jar</JAR>
+                    <JAR>rio-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+            
+            <ImplementationClass>org.jini.rio.examples.corba.JSBasCorbaClientImpl
+                <Resources>
+                    <JAR>corbademo.jar</JAR>
+                    <JAR>rio-corba.jar</JAR>
+                    <JAR>rio.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <Groups>
+                <Group>rio</Group>
+            </Groups>            
+
+            <Maintain>1</Maintain>           
+
+            <Parameters>
+                <!-- CorbaLoc standard -->
+                <Parameter Name="-ORBInitRef"
+                     Value="NameService=corbaloc:iiop:192.168.0.4:3089/NameService" />
+                <!-- JacORB convention -->
+                <!--<Parameter Name="-ORBInitRef"
+                Value="NameService=file:/c:/JacORB_2_2_1/NS_Ref" /> -->
+            </Parameters>
+
+            <Comment>Corba Substrate basic example</Comment>
+
+        </ServiceBean>
+
+        <ServiceBean Name="Corba IDL Service">
+            <Codebase>&CodeServerURL;</Codebase>
+            <Interfaces>
+                <Interface>org.jini.rio.examples.corba.CounterJSB</Interface>
+                <Resources>
+                    <JAR>corbademo-dl.jar</JAR>
+                    <JAR>rio-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+            
+            <ImplementationClass>org.jini.rio.examples.corba.CounterJSBImpl
+                <Resources>
+                    <JAR>corbademo.jar</JAR>
+                    <JAR>rio-corba.jar</JAR>
+                    <JAR>rio.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+            
+            <Groups>
+                <Group>rio</Group>
+            </Groups>
+
+            <Maintain>1</Maintain>
+
+            <Parameters>
+                <!-- CorbaLoc standard -->
+                <Parameter Name="-ORBInitRef"
+                     Value="NameService=corbaloc:iiop:192.168.0.4:3089/NameService" /> 
+                <!-- JacORB convention -->
+                <!-- <Parameter Name="-ORBInitRef"
+                Value="NameService=file:/c:/JacORB_2_2_1/NS_Ref" /> -->
+            </Parameters>
+            
+            <Comment>Corba Substrate basic example</Comment>
+        
+            </ServiceBean>
+
+    </OperationalString>
+</opstring>

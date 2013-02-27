@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<project name="SSB" default="SORCER Service Browser" basedir=".">
+	<!-- load system environment variables -->
+	<property environment="env" />
+	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+
+	<!-- SORCER codeabase jars -->
+	<property name="j1" value="sorcer-prv-dl.jar" />
+	<property name="j2" value="sorcer-lib.jar" />
+	<!--property name="j3" value="ssb.jar" /-->
+	
+	<!-- domain specific exported libraries -->
+	<property name="j3" value="arithmetic-dl.jar" />
+	<property name="j4" value="conminoptimization-dl.jar" />
+		
+	<target name="SORCER Service Browser">
+		<java classname="sorcer.ssb.SorcerServiceBrowser" fork="yes" maxmemory="1g">
+			<arg value="../configs/ssb.config" />
+			<classpath>
+				<pathelement location="${sorcer-ext.lib}/ssb.jar" />
+				<pathelement location="${lib}/common/groovy/groovy-all-1.7.4.jar" />
+				<pathelement location="${jini.lib}/jsk-lib.jar" />
+				<pathelement location="${jini.lib}/jsk-platform.jar" />
+				<pathelement location="${jini.lib}/tools.jar" />
+				<pathelement location="${jini.lib}/serviceui.jar" />
+				<pathelement location="${sorcer.lib}/sorcer-lib.jar" />
+				<pathelement location="${sorcer.lib}/ssb-support.jar" />
+				<pathelement location="${sorcer.lib}/sorcer-modeling-lib.jar" />
+				<pathelement location="${rio.lib}/rio.jar" />
+
+				<!-- domain specific libraries -->
+				<pathelement location="${sorcer.lib}/arithmetic-beans.jar" />
+				<pathelement location="${eng.lib}/conminoptimization.jar" />
+				<pathelement location="${sorcer.lib}/rs-explorer.jar" />
+			</classpath>
+			
+			<!-- internal webster -->
+			<sysproperty key="sorcer.webster.internal" value="true" />
+			<sysproperty key="sorcer.webster.debug" value="true" />
+			<sysproperty key="sorcer.codbase.jars" value="${j1} ${j2} ${j3} ${j4}" />
+
+			<sysproperty key="iGrid.home" value="${iGrid.home}" />
+			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="java.security.policy" value="../policy/ssb.policy" />
+			<sysproperty key="ssb.logFile" value="${iGrid.home}/bin/browser/logs/browser.log" />
+			<sysproperty key="ssb.logLen" value="300" />
+
+			<sysproperty key="exertlet.ui.debug" value="true" />
+
+			<!-- Configuration for remote requestor/provider data access -->
+			<sysproperty key="conmin.strategy.file" value="${iGrid.home}/modules/engineering/optimization/conmin/data/conminrosenSuzukiMin.dat" />
+			<sysproperty key="data.server" value="10.131.5.90" />
+			<sysproperty key="data.server.port" value="9000" />
+			<sysproperty key="data.root.dir" value="${iGrid.home}/data" />
+			<sysproperty key="requestor.data.dir" value="optimization/input" />
+		</java>
+	</target>
+
+</project>

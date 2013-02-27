@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<project name="rio" default="opmon" basedir=".">
+
+	<property environment="env" />
+	<property name="java.home" value="${env.JAVA_HOME}" />
+	<property name="iGrid.home" value="${env.IGRID_HOME}" />
+	<property name="common.lib" value="${iGrid.home}/common" />
+	<property name="rio.lib" value="${iGrid.home}/common/rio3_2" />
+
+	<target name="opmon">
+		<java classname="org.jini.rio.utilities.opmon.OpMonitor" inputstring="..\configs\utils.config" fork="yes">
+			<classpath>
+				<pathelement location="${rio.lib}/opmon.jar" />
+				<pathelement location="${rio.lib}/rio.jar" />
+				<pathelement location="${common.lib}/jsk-platform.jar" />
+				<pathelement location="${common.lib}/jsk-lib.jar" />
+			</classpath>
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+		</java>
+	</target>
+
+</project>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://org/jini/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9000" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+    <!ENTITY group SYSTEM "java://java.lang.System.getProperty(user.name)">
+]>
+
+<opstring>
+    <OperationalString Name="Outrigger">
+
+        <Codebase>&CodeServerURL;</Codebase>
+        
+        <Groups>
+            <!--<Group>&group;</Group>-->
+	        <Group>sorcer.DEV</Group>
+        </Groups>            
+
+        <ServiceBean Name="JavaSpace" MatchOnName="yes">
+            <Interfaces>
+                <Interface>net.jini.space.JavaSpace</Interface>
+                <Resources>
+                    <JAR>outrigger-dl.jar</JAR>
+                    <JAR>jsk-dl.jar</JAR>
+                    <JAR>rio-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+
+            <ImplementationClass>com.sun.jini.outrigger.TransientOutriggerImpl
+                <Resources>
+                    <JAR>outrigger.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <ServiceLevelAgreements>
+                <SystemRequirements>
+                    <Utilization ID="System" High=".9" />
+                    <Utilization ID="CPU" High=".9" />
+                </SystemRequirements>
+                <SLA ID="CPU" Low=".2" High=".8" >
+		            <Configuration>
+	                    <Component Name="org.jini.rio.qos.SLAPolicyHandler">
+                            <Parameter Name="slaPolicyHandler" 
+                                       Value="new org.jini.rio.qos.ScalingPolicyHandler(
+			                                       (org.jini.rio.core.SLA)$data)" />
+                        </Component>
+                        <Component Name="org.jini.rio.qos.ScalingPolicyHandler">
+                            <Parameter Name="MaxServices" Value="2" />
+                            <Parameter Name="LowerThresholdDampeningFactor" Value="10000" />
+                            <Parameter Name="UpperThresholdDampeningFactor" Value="5000" />                            
+                        </Component>
+                    </Configuration>
+                </SLA>
+            </ServiceLevelAgreements>
+
+            <Logging>
+                <Logger Name="org.jini.rio.qos.ScalingPolicyHandler" Level="ALL">
+                    <Handler ClassName="java.util.logging.ConsoleHandler" 
+                             Level="ALL"/>
+                </Logger>
+            </Logging>
+	    
+	    <Maintain>1</Maintain>
+
+	    <MaxPerMachine>1</MaxPerMachine>
+
+        <Comment>Jini Outrigger JavaSpace</Comment>
+
+        </ServiceBean>
+
+    </OperationalString>
+</opstring>
