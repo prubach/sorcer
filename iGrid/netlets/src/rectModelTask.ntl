@@ -1,0 +1,11 @@
+#!/usr/bin/env nsh -f
+
+import sorcer.model.geometry.RectModelBuilder;
+
+Signature sig = sig("getParametricModel", RectModelBuilder.class);
+
+ModelTask task = parametricTask(
+	outerSig("evaluateResponseTable", sig), 
+	context(result("table/out")));
+
+value(task);

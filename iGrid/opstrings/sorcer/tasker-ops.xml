@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://org/jini/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9000" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+    <!ENTITY group SYSTEM "java://java.lang.System.getProperty(user.name)">
+]>
+
+<opstring>
+    <OperationalString Name="Sorcer Tasker">
+
+        <ServiceBean Name="Sorcer Tasker" MatchOnName="yes">
+            <Codebase>&CodeServerURL;</Codebase>
+            <Interfaces>
+                <Interface>sorcer.core.TaskerBean</Interface>
+                <Resources>
+                    <JAR>taskerbean-dl.jar</JAR>
+                    <JAR>rio-space-dl.jar</JAR>
+		    <JAR>sdm-dl.jar</JAR>
+                </Resources> 
+           </Interfaces>
+
+            <ImplementationClass>sorcer.core.provider.tasker.TaskerBeanImpl
+                <Resources>
+                    <JAR>taskerbean.jar</JAR>
+                    <JAR>rio-space.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <ServiceLevelAgreements>                
+                <SystemRequirements>
+                    <Utilization ID="System" High=".95" />
+                    <Utilization ID="CPU" High=".95" />
+                    <Utilization ID="Memory" High=".8" />					
+                </SystemRequirements>
+            </ServiceLevelAgreements>
+
+            <Groups>
+                <Group>sorcer.DEV</Group>
+            </Groups>
+
+            <Maintain>1</Maintain>
+	    <MaxPerMachine>1</MaxPerMachine>
+            
+	<Comment>Generic Provider which executes downloaded method</Comment>
+        </ServiceBean>
+    </OperationalString>
+</opstring>

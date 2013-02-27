@@ -1,0 +1,14 @@
+#!/bin/bash
+OLD_CLASPATH=$CLASSPATH
+. $IGRID_HOME/configs/minClasspath
+
+CMD=""
+for ARG in "$@"; do
+    CMD="$CMD \"$ARG\""
+done
+
+#echo "java sorcer.client.ModelClient -sbin smc $CMD"
+bash -c "java sorcer.client.ModelClient -sbin smc $CMD"
+
+export CLASSPATH=$OLD_CLASSPATH
+

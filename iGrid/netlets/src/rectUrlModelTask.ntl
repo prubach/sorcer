@@ -1,0 +1,17 @@
+#!/usr/bin/env nsh -f
+
+import sorcer.model.geometry.RectModelBuilder;
+
+String dataURL = nshUrl + "/geometry/parametric_datafile_long.txt";
+String outputURL = nshUrl + "/geometry/response_data.txt";
+
+Signature sig = sig("getParametricModel", RectModelBuilder.class);
+
+ModelTask task = parametricTask(
+	outerSig("evaluateResponseTable", sig), 
+		context(parametricTable(dataURL, ", "), 
+				responseTable(outputURL, ", "), 
+				result("table/out")));
+	
+value(task);
+

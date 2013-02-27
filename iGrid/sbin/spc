@@ -1,0 +1,11 @@
+#!/bin/bash
+OLD_CLASPATH=$CLASSPATH
+. $IGRID_HOME/configs/minClasspath
+
+java sorcer.client.ProviderClient -sbin spc $*
+
+export CLASSPATH=$OLD_CLASSPATH
+
+
+ 
+

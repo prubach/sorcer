@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!DOCTYPE opstring SYSTEM "java://com/sun/rio/dtd/rio_opstring.dtd" [
+    <!ENTITY Local.IP SYSTEM "java://java.net.InetAddress.getLocalHost().getHostAddress()" >
+    <!ENTITY Local.Port "9080" >
+    <!ENTITY CodeServerURL "http://&Local.IP;:&Local.Port;/" >
+]>
+
+<opstring>
+    <OperationalString Name="RayTracer">
+        <ServiceBean Name="RayTracer">
+            <Codebase>&CodeServerURL;</Codebase>
+
+            <Interfaces>
+                <Interface>sorcer.provider.raytrace.RayTraceControl</Interface>
+                <Resources>
+                    <JAR>raytrace-dl.jar</JAR>
+                    <JAR>rio-space-dl.jar</JAR>
+                </Resources>
+            </Interfaces>
+
+            <ImplementationClass>sorcer.provider.raytrace.RayTraceControlImpl
+                <Resources>
+                    <JAR>raytrace1.jar</JAR>
+                    <JAR>rio-space.jar</JAR>
+                </Resources>
+            </ImplementationClass>
+
+            <ServiceLevelAgreements>
+                <SystemRequirements>
+                    <Utilization ID="System" High=".95" />
+                    <Utilization ID="CPU" High="1.0" />
+                    <Utilization ID="Memory" High=".8" />
+                </SystemRequirements>
+
+                <SLA ID="Space Write" High="6000">
+                    <SLAPolicyHandler Class="com.sun.rio.qos.SLAPolicyHandler"/>
+                </SLA>
+
+            </ServiceLevelAgreements>
+
+            <Groups>
+                <Group>sorcer.DEV</Group>
+            </Groups>
+
+            <Maintain>1</Maintain>
+
+            <Comment>Ray Trace Engine for submitting and getting raytraced images</Comment>
+           
+        </ServiceBean>
+
+	
+      <Include>sorcer-infrastructure.xml</Include>
+      <Include>rio-infrastructure.xml</Include>
+      <Include>jini-infrastructure.xml</Include>
+
+    </OperationalString>
+</opstring>
