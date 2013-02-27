@@ -129,7 +129,7 @@
 	<target name="all-test" depends="clean-logs, compile-sorcer, junit-prepare, run-test-reports, jars" />
 	<target name="compile-sorcer" depends="compileSources, provider-junit-fixture, junit-compile" />
 	<target name="compile" depends="top-prepare, prepare, compile-sorcer, copy-config-files, copy-meta-inf-files" />
-	<target name="jars" depends="sorcer-lib.jar, sorcer-prv.jar, sorcer-prv-dl.jar, sorcer-vfe-lib.jar, sorcer-modeling-lib.jar, sorcer-modeling-dl.jar, ssb-support.jar, provider-ui.jar, exertlet-ui.jar, provider-jars" />
+	<target name="jars" depends="sorcer-lib.jar, sorcer-prv.jar, sorcer-prv-dl.jar, sorcer-vfe-lib.jar, sorcer-modeling-dl.jar, ssb-support.jar, provider-ui.jar, exertlet-ui.jar, provider-jars" />
 
 
 	<!-- Compile the core service provider sources -->
@@ -171,7 +171,6 @@
 		<ant antfile="grider-prv-build.xml" dir="${sorcer.grider}" target="jars" inheritAll="false" />
 		<ant antfile="methoder-prv-build.xml" dir="${sorcer.methoder}" target="jars" inheritAll="false" />
 		<ant antfile="logger-prv-build.xml" dir="${sorcer.logger}" target="jars" inheritAll="false" />
-		<ant antfile="evaluation-prv-build.xml" dir="${sorcer.eval}" target="jars" inheritAll="false" />
 		<ant antfile="dbp-prv-build.xml" dir="${sorcer.dbp}" target="jars" inheritAll="false" />
 		<ant antfile="dsp-prv-build.xml" dir="${sorcer.dsp}" target="jars" inheritAll="false" />
 		<!--ant antfile="policer-prv-build.xml" dir="${sorcer.policer}" target="jars" inheritAll="false" /-->
@@ -203,13 +202,11 @@
 			<topclass name="sorcer.util.bdb.sdb.Handler" />
 			<topclass name="sorcer.co.operator" />
 			<topclass name="sorcer.eo.operator" />
-			<topclass name="sorcer.vo.operator" />
 			<topclass name="sorcer.co.tuple.Entry" />
 			<topclass name="sorcer.co.tuple.Parameter" />
 			<topclass name="net.jini.admin.Administrable" />
 			<topclass name="sorcer.util.Stopwatch" />
 			<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
-			<topclass name="sorcer.client.ModelClient" />
 			<fileset dir="${iGrid.home}/classes">
 				<include name="sorcer/util/sorcer.env" />
 				<include name="sorcer/util/data.formats" />
@@ -314,45 +311,6 @@
 		</classdepandjar>
 	</target>
 
-	<target name="sorcer-modeling-lib.jar">
-		<classdepandjar jarfile="${sorcer.lib}/sorcer-modeling-lib.jar" files="true" debug="true">
-			<classpath refid="project.classpath" />
-			<in name="sorcer.core.context.model" />
-			<in name="sorcer.core.exertion" />
-			<in name="sorcer.vfe" />
-			<in name="sorcer.client" />
-			<in name="sorcer.co" />
-			<in name="sorcer.eo" />
-			<in name="sorcer.vo" />
-			<out name="java" />
-			<out name="javax" />
-			<out name="sorcer.service" />
-			<out name="sorcer.jini" />
-			<out name="sorcer.util" />
-			<topclass name="sorcer.vfe.util.ModelBuilder" />
-			<topclass name="sorcer.core.context.model.explore.Explorer" />
-			<topclass name="sorcer.core.context.model.opti.OptimizationModel" />
-			<topclass name="sorcer.core.context.model.opti.Optimizer" />
-			<topclass name="sorcer.core.context.model.explore.ParametricContext" />
-			<topclass name="sorcer.vfe.util.RegularGridTable" />
-			<topclass name="sorcer.client.ModelClient" />
-			<topclass name="sorcer.core.exertion.OptiTask" />
-			<!-- needed by Sorcer Browser for QoS exertlets -->
-			<topclass name="sorcer.core.context.qos.ServiceCostImpl" />
-			<!-- -->
-			<topclass name="sorcer.co.operator" />
-			<topclass name="sorcer.eo.operator" />
-			<topclass name="sorcer.vo.operator" />
-			<topclass name="sorcer.client.ModelClient" />
-			<skip name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
-			<!--fileset dir="${iGrid.home}/classes">
-				<include name="sorcer/util/sorcer.env" />
-				<include name="sorcer/util/data.formats" />
-			</fileset-->
-			<fileset refid="icons" />
-		</classdepandjar>
-	</target>
-
 	<target name="sorcer-modeling-dl.jar">
 		<jar destfile="${sorcer-dl.lib}/sorcer-modeling-dl.jar" basedir="${classes}" includes="sorcer/vfe/Modeling.class,sorcer/vfe/ResponseModeling.class,sorcer/vfe/ParametricModeling.class,
 			sorcer/vfe/OptimizationModeling.class,sorcer/core/context/model/explore/Exploration.class" />
@@ -392,13 +350,11 @@
 			<in name="sorcer.service" />
 			<in name="sorcer.co" />
 			<in name="sorcer.eo" />
-			<in name="sorcer.vo" />
 			<in name="sorcer.util" />
 			<in name="sorcer.security" />
 			<skip name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
 			<topclass name="sorcer.co.operator" />
 			<topclass name="sorcer.eo.operator" />
-			<topclass name="sorcer.vo.operator" />
 			<topclass name="sorcer.core.context.ServiceContext" />
 			<topclass name="sorcer.core.context.PositionalContext" />
 			<topclass name="sorcer.core.context.ArrayContext" />
