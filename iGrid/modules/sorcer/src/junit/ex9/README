@@ -1,0 +1,6 @@
+The optimizer used for this example is at:
+engineering.optimization.conmin.provider.ConminOptimizerJNA
+
+It is specified in configs/crs-opti-prv.config as follows
+
+beanClasses = new Class[] { engineering.optimization.conmin.provider.ConminOptimizerJNA.class }; 
