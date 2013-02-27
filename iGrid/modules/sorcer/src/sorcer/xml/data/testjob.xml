@@ -1,0 +1,27 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE FiperJob SYSTEM "fiperjob.dtd">
+
+<FiperJob name="test job">
+  
+  <FiperContext name="DAS">
+    <DataNode path="GEOM/SHANK/SHANK_PRT" fiperType="FIPER_AUTOSHANK_SEED" ioType="IN_TYPE" data="http://hippolta.cs.ttu.edu/fiper/data/AS_Shank_Prt.prt">SEEDPART</DataNode>
+    <DataNode path="GEOM/SHANK/SHANK_INP" fiperType="FIPER_AUTOSHANK_PARAMETERS" ioType="IN_TYPE" data="http://hippolta.cs.ttu.edu/fiper/data/AS_Inp.prt">PARAMETER</DataNode>
+    <TextNode path="GEOM/SHANK/OUT_PATH"> SHANK </TextNode>
+  </FiperContext>
+  
+  <FiperContext name="System Context">
+    <TextNode path="is master"> true </TextNode>
+    <TextNode path="job/strategy"> sequential </TextNode>
+    <TextNode path="job/strategy/access"> catalog </TextNode>
+    <TextNode path="notify/execution/to:/Kao"> kao@cs.ttu.edu </TextNode>
+    <!-- <TextNode path="no wait"> true </TextNode> -->
+    <TextNode path="out/task/id"> id </TextNode>
+  </FiperContext>
+
+  <FiperTask name="Autoshank task" description = "performing autoshank operation" method="autoshank" provider="AUTOSHANK">
+    <TaskContext root="DAS"> GEOM/SHANK </TaskContext>
+    <TaskContext root="System Context"> </TaskContext>
+  </FiperTask>
+
+</FiperJob>
