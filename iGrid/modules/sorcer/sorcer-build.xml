@@ -241,6 +241,7 @@
 			<out name="sorcer.security.util" />
 			<topclass name="sorcer.core.context.RemoteContextManagement" />
 			<topclass name="sorcer.core.Provider" />
+			<topclass name="sorcer.service.Tasker" />
 			<topclass name="sorcer.core.AdministratableProvider" />
 			<topclass name="sorcer.core.provider.exertmonitor.MonitoringManagement" />
 			<topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
@@ -330,6 +331,10 @@
 			<in name="sorcer" />
 			<in name="com.artima" />
 			<out name="sorcer.security.util" />
+			<out name="sorcer.util.bdb" />
+			<out name="sorcer.core.loki" />
+			<out name="sorcer.core.dispatch" />
+			<out name="sorcer.core.monitor" />
 			<topclass name="sorcer.ui.exertlet.NetletEditor" />
 			<topclass name="sorcer.ui.exertlet.NetletUI" />
 			<topclass name="sorcer.ui.serviceui.UIComponentFactory" />

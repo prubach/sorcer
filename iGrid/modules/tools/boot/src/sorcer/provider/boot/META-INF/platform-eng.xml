@@ -9,7 +9,7 @@
     <capability name="SORCER" common="yes">
         <version>5.0</version>
         <manufacturer>SORCERsoft.org</manufacturer>
-        <classpath>${iGrid.home}/lib/sorcer/lib/sorcer-prv.jar</classpath>
+        <classpath>${iGrid.home}/lib/sorcer/lib/sorcer-prv.jar ${iGrid.home}/lib/sorcer/lib/sorcer-vfe-lib.jar ${iGrid.home}/lib/sorcer/lib/sorcer-modeling-lib.jar</classpath>
     </capability>
     
     <!--
@@ -38,6 +38,16 @@
                 common="yes">
         <version>4.0 M3</version>
         <classpath>${iGrid.home}/lib/rio/lib/rio-platform.jar ${iGrid.home}/lib/rio/lib-dl/rio-api.jar</classpath>
+    </capability>
+    
+     <!--
+    Engineering jars to load into the common classloader.
+    -->
+    <capability name="Engineering"
+                common="yes">
+        <version>5.0</version>
+        <manufacturer>SORCERsoft.org</manufacturer>
+        <classpath>${iGrid.home}/lib/eng/lib/engineering-core.jar ${iGrid.home}/lib/common/jna.jar ${iGrid.home}/lib/common/jep-2.4.1a.jar ${iGrid.home}/lib/common/jfreechart/jcommon-1.0.17.jar ${iGrid.home}/lib/common/jfreechart/jfreechart-1.0.14.jar</classpath>
     </capability>
     
 </platform>
