@@ -1,0 +1,76 @@
+TO DO/PROBLEMS
+	1. EMX with individual DB (with the EMX persistent ID)
+	2. Fixed webster's port for fixed codebase or put all classes at the EMX codebase
+	3. Attach a Berkeley DB
+	4. Fix class loading for nsh custom classes
+	5. Save data in files (dialogs or just CLI)
+	6. DB pruning for old exertions
+	
+
+lup:	lup (-p | -s) [-i <service interface name>] [-n <name attribute value>] [<LUS index>] | lup <provider index>
+
+  no option		list fetched SORCER providers	
+  -p 	list SORCER providers (implementing sorcer.core.Provider interface)
+  -s	list services 
+  -r 	rendezvous provider 
+  -v	show selected service provider
+  -x	clear a selected provider
+  lup <provider index>	describe a given provider and make it selected
+  lup --d <provider index>	destroy the <provider index> provider
+  lup --d[a]	destroy all fetched providers
+ 
+Discovery
+disco  [<registrar index>]	display all LUSs,  or select the <registrar index> LUS
+disco -v 	show selected registrar
+disco -x	clear a selected registrar
+
+Exert Monitor
+
+mxe [-a | -d | -f | -r | -y] | [-e <exertion index> | <exertion name>] [-c | -cc | -ccc] [-p <provider name>] [-s <output filename>] 
+
+  no option	fetched exertion
+  -m [<monitor index> | <provider name>]	show fetched EMXs; select an EMCX monitor with <monitor index> or <provider name>
+  -m 	show selected monitor
+  -x 	clear selected EMX (e.g/, to use all EMXs)
+  -d 	show monitored done exertions
+  -a 	show all monitored exertions
+  -f 	show monitored failed exertions
+  -r 	show monitored running exertions
+  -y 	show monitored asynchronous exertions
+  <exertion index> | <exertion name>		select a monitored exertion with <exertion index> or <exertion name>
+  -v	show selected exertion
+  -c [<exertion index>]			print the data context of the selected exertion
+  -cc [<exertion index>]		print the control context of a selected exertion
+  -ccc [<exertion index>]		print the data context and control context of a selected exertion
+  -s <output filename>			save info in a file
+
+
+Model Inspector
+
+mins [-t] [-i] [-o] [-l] [-v <model name> | <list row number>]  [-e <var name> <table row>] [-prv <model name>] [-s <output filename>] -x (<key value pair>)+ -y (<key value pair>)+
+
+no options	list model services
+-t	show a parametric table
+-i 	show input table
+-o 	show output table
+-l 	long format
+-v 	show var/vars of the selected model  <model name> |  <list row number> 
+-e 	<var name> <table row> show evaluator info in the table
+-p	<model name> select a model service
+-s 	<output filename>  save info in a file
+-x 	(<key value pair>)+ set var values
+-y 	(<key value pair>)+ get var values
+
+lus 
+
+
+clear
+
+-a 	all shell's cached items
+-p	service providers
+-m	cached emx monitors
+-e	cached exertion
+
+edit  (ed) <file name>
+
+

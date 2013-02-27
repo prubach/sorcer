@@ -1,0 +1,48 @@
+nsh
+nsh groups=sorcer.TEST10 
+chgrp sorcer.TEST10,sorcer.TEST11
+chgrp  all		set all groups
+groups		show groups
+
+Discovery
+	disco
+	disco 0
+	disco -v
+
+Lookup
+	lup -p
+	lup -s
+	
+Executing exertions
+	exert	filename or xrt filename
+	nsh	-f filename
+	filename (if executable script)
+
+MEX (EMX monitors and monitored exertions)
+	chgrp sorcer.TEST10mxe
+	mxe -m		fetch monitors
+	mxe -m	1	select the second monitor
+	mxe -v		print the selected monitor
+	
+	chgrp sorcer.TEST10
+	mxe	print the fetched exertions	
+	mxe -a	fetch all exertion
+	mxe -d	fetch done exertion
+	mxe -r	fetch running exertion
+      	mxe -f	fetch failed exertion
+	mxe -y	fetch asynchronous exertion
+	mxe index	print the selected exertion at 'index'
+	mxe -c		print the data context of the selected exertion
+	mxe -cc		print the control context of the selected exertion
+	mxe -ccc	print the both contexts of the selected exertion	
+	mxe -c 0	print the data context of the first exertion
+	mxe -cc	1	print the control context of the second exertion
+	mxe -ccc 0	print the both contexts of the first exertion
+		
+	
+Services
+	nsh --<service name>
+	start <service name>
+	--d <service index>
+	
+	
