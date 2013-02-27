@@ -1,0 +1,8 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+
+<ServiceTask name="ARITHMETIC Example-1" description="null" method="average" serviceType="sorcer.service.dcom.DCOMBackendProtocol" provider="ARITHMETIC-DCOM-EXCEL-KAO-LAPTOP2" taskID="arithmetic-task-1">
+   <ServiceContext name="IMM Context">
+     <TextNode path="Root/IN-1"> 3 </TextNode>
+     <TextNode path="Root/IN-2"> 5 </TextNode>
+  </ServiceContext>
+</ServiceTask>

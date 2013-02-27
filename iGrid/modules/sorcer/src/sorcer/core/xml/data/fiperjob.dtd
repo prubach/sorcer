@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='us-ascii'?>
+
+<!ELEMENT FiperJob (FiperContext+, FiperTask+)> 
+<!ATTLIST FiperJob 
+	name CDATA #REQUIRED
+>
+<!ELEMENT FiperContext (DataNode | TextNode)*>
+<!ATTLIST FiperContext
+	name CDATA #REQUIRED
+>
+<!ELEMENT DataNode (#PCDATA)>
+<!ATTLIST DataNode
+	path CDATA #REQUIRED
+	fiperType CDATA #REQUIRED
+	ioType CDATA "IN_TYPE"
+	isTransient CDATA "true"
+	data CDATA #REQUIRED
+>
+<!ELEMENT DataNode (#PCDATA)>
+<!ATTLIST DataNode
+	path CDATA #REQUIRED
+	fiperType CDATA #REQUIRED
+	ioType CDATA "IN_TYPE"
+	isTransient CDATA "true"
+	data CDATA #REQUIRED
+>
+<!ELEMENT TextNode (#PCDATA)>
+<!ATTLIST TextNode
+	path CDATA #REQUIRED
+>
+<!ATTLIST FiperTask
+	name CDATA #REQUIRED
+	description CDATA ""
+	method CDATA #REQUIRED
+	provider CDATA #REQUIRED
+	
+>
+<!ELEMENT TaskContext (#PCDATA)>
+<!ATTLIST TaskContext
+	root CDATA #REQUIRED
+>

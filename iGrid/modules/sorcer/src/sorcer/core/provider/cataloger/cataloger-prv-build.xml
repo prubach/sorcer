@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>
+<!-- 
+ * Copyight (C) 2004 SORCER Lab, Texas Tech University. All rights reserved.
+ * Service-Oriented Computing Environmet: SORCER Cataloger build configuration
+ * Make sure the following variables are changed to reflect your environment:
+ *    IGRID_HOME        	iGrid location
+ *    JAVA_HOME         	JDK Location
+ *	  IGRID_WEBSTER_PORT 	The class server (webster) port
+ *    ANT_HOME          	Jakarta Ant location
+ Please see also the ../common-build.xml for classpaths, definitions and targets
+-->
+
+<project name="SORCER Cataloger" default="all" basedir=".">
+	<property name="module.name" value="cataloger" />
+	<!-- set global properties -->
+	<import file="../../../../../../common-build.xml" />
+	<property name="src" value="../../../../" />
+	<property name="resources" value="${iGrid.home}/modules/sorcer/resources" />
+
+	<!-- The sources to compile -->
+	<patternset id="ant.java">
+		<include name="sorcer/core/provider/cataloger/**/*.java" />
+	</patternset>
+
+	<path id="project.classpath">
+		<pathelement location="${classes}/" />
+		<path refid="jini.path" />
+		<path refid="rio.path" />
+	</path>
+
+	<patternset id="ant.classes">
+		<include name="sorcer/core/provider/cataloger/**/*.class" />
+	</patternset>
+
+	<fileset dir="${resources}" id="icons">
+		<include name="sorcer-ico.png" />
+	</fileset>
+
+	<target name="compile" depends="compileSources, copy-config-files" />
+	<target name="jars" depends="cataloger.jars, copy-run-prv-files" />
+	<target name="cataloger.jars" depends="cataloger.jar, cataloger-dl.jar, cataloger-ui.jar" />
+	<target name="all" depends="prepare, compile, jars, copy-run-prv-files" />
+
+	<target name="cataloger.jar" depends="compileSources">
+		<classdepandjar jarfile="${sorcer.lib}/cataloger.jar" files="true">
+			<classpath refid="project.classpath" />
+			<in name="sorcer.core.provider.cataloger" />
+			<in name="sorcer.service" />
+			<topclass name="sorcer.core.provider.cataloger.ServiceCataloger" />
+		</classdepandjar>
+	</target>
+
+	<target name="cataloger-dl.jar" depends="compileSources">
+		<classdepandjar jarfile="${sorcer-dl.lib}/cataloger-dl.jar" files="true">
+			<classpath refid="project.classpath" />
+			<in name="sorcer" />
+			<in name="tea.set" />
+			<topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
+			<topclass name="sorcer.ui.serviceui.UIComponentFactory" />
+			<fileset refid="icons" />
+		</classdepandjar>
+	</target>
+
+	<target name="cataloger-ui.jar" depends="compileSources">
+		<classdepandjar jarfile="${sorcer.lib}/cataloger-ui.jar" files="true">
+			<classpath refid="project.classpath" />
+			<in name="sorcer" />
+			<out name="javax" />
+			<out name="java" />
+			<out name="sorcer.util.bdb" />
+			<out name="sorcer.security.util" />
+			<topclass name="sorcer.core.provider.cataloger.ui.CatalogerUI" />
+			<topclass name="sorcer.ui.exertlet.EditorView" />
+			<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
+			<fileset dir="${iGrid.home}/classes">
+				<include name="sorcer/ui/exertlet/netlets.html" />
+				<include name="sorcer/ui/exertlet/icon-info16.png" />
+				<include name="sorcer/ui/exertlet/static-imports.txt" />
+			</fileset>
+			<fileset dir="./" includes="html/" />
+			<fileset refid="icons" />
+		</classdepandjar>
+	</target>
+
+	<fileset dir="${classes}">
+		<patternset id="rmic.classes">
+			<include name="sorcer/core/provider/cataloger/ServiceCataloger.class" />
+		</patternset>
+	</fileset>
+
+	<target name="copy-run-prv-files">
+		<mkdir dir="${iGrid.home}/bin/sorcer/${module.name}/configs" />
+		<mkdir dir="${iGrid.home}/bin/sorcer/${module.name}/bin" />
+		<mkdir dir="${iGrid.home}/bin/sorcer/${module.name}/policy" />
+		<mkdir dir="${iGrid.home}/bin/sorcer/${module.name}/logs" />
+
+		<copy todir="${iGrid.home}/bin/sorcer/${module.name}/configs">
+			<fileset dir="configs">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${iGrid.home}/bin/sorcer/${module.name}/bin">
+			<fileset dir="bin">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${iGrid.home}/bin/sorcer/${module.name}/policy">
+			<fileset dir="policy">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<chmod dir="${iGrid.home}/bin/sorcer/${module.name}/bin" perm="755" includes="*.sh" />
+	</target>
+
+</project>
