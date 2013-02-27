@@ -22,19 +22,20 @@ import java.rmi.RemoteException;
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.ObjectSignature;
+import sorcer.core.signature.ServiceSignature;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
+import sorcer.util.obj.ObjectInvoker;
 
 /**
  * The SORCER object task extending the basic task implementation {@link Task}.
  * 
  * @author Mike Sobolewski
  */
-@SuppressWarnings("rawtypes")
 public class ObjectTask extends Task {
 
 	static final long serialVersionUID = 1793342047789581449L;
@@ -58,6 +59,13 @@ public class ObjectTask extends Task {
 		else 
 			throw new SignatureException("Object task requires ObjectSignature: "
 					+ signature);
+		if (((ObjectSignature)signature).getInvoker() == null)
+			try {
+				((ObjectSignature)signature).createInvoker();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new SignatureException(e);
+			}
 		this.description = description;
 	}
 	
@@ -68,14 +76,27 @@ public class ObjectTask extends Task {
 	}
 	
 	public Task doTask(Transaction txn) throws ExertionException, SignatureException, RemoteException {
-		ObjectSignature os = (ObjectSignature) getProcessSignature();
-
+			ObjectSignature os = (ObjectSignature) getProcessSignature();
+		((ServiceContext)context).setCurrentSelector(getProcessSignature().getSelector());
+		((ServiceContext)context).setCurrentPrefix(((ServiceSignature)getProcessSignature()).getPrefix());
+		ObjectInvoker invoker = ((ObjectSignature) getProcessSignature())
+				.getInvoker();
+		if (invoker == null) {
+			invoker = new ObjectInvoker(os.newInstance(), os.getSelector());
+		}
 		try {
 			if (getProcessSignature().getReturnPath() != null)
 				context.setReturnPath(getProcessSignature().getReturnPath());
 			
-			//evaluator.setParameters(context);
-			Object result = null;;
+			if (getArgs() == null && os.getTypes() == null) {
+				// assume this task context is used by the signature's provider
+				invoker.setParameterTypes(new Class[] { Context.class });
+				invoker.setContext(context);
+			} else if (getArgs().getClass().isArray() && os.getTypes().getClass().isArray()) {
+				invoker.setArgs(os.getTypes(), (Object[]) getArgs());
+			}
+			//invoker.setParameters(context);
+			Object result = invoker.invoke();
 			if (result instanceof Context) {
 				if (context.getReturnPath() != null)
 					context.setReturnValue(((Context) result).getValue(context
@@ -87,6 +108,7 @@ public class ObjectTask extends Task {
 			e.printStackTrace();
 			context.reportException(e);
 		}
+		context.appendTrace(invoker.toString());
 		return this;
 	}
 	

@@ -95,8 +95,8 @@ public class TaskTest {
 				context(in("arg/x1"), in("arg/x2"),
 						result("result/y")));
 		
-		//logger.info("get task: " + task);
-		//logger.info("get context: " + context(task));
+		logger.info("get task: " + task);
+		logger.info("get context: " + context(task));
 		
 		Object val = value(task, in("arg/x1", 20.0), in("arg/x2", 80.0),
 				strategy(sig("add", AdderImpl.class), Access.PUSH, Wait.YES));
@@ -116,19 +116,19 @@ public class TaskTest {
 						result("result/y")));
 		
 		task = exert(task);
-		logger.info("exerted: " + task);
+//		logger.info("exerted: " + task);
 //		print(exceptions(task));
 //		print(trace(task));
 		double val = (Double)value(task);
 
 		
-		//logger.info("get value: " + val);
+//		logger.info("get value: " + val);
 		assertTrue("Wrong value for 100.0", val == 100.0);
 		//logger.info("exec trace: " + trace(task));
 		//logger.info("trace  size: " + trace(task).size());
 		//assertTrue(trace(task).size() == 1);
 		ServiceExertion.debug = true;
-		logger.info("exceptions: " + exceptions(task));
+//		logger.info("exceptions: " + exceptions(task));
 		assertTrue(exceptions(task).size() == 0);
 
 		val = (Double)get(task, "result/y");

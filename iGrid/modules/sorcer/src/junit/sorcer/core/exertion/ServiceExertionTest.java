@@ -20,12 +20,7 @@ import static sorcer.eo.operator.path;
 import static sorcer.eo.operator.pipe;
 import static sorcer.eo.operator.sig;
 import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.value;
 import static sorcer.eo.operator.xrt;
-//import static sorcer.vo.operator.evaluator;
-//import static sorcer.vo.operator.exertionFilter;
-//import static sorcer.vo.operator.setFilter;
-//import static sorcer.vo.operator.var;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -47,6 +42,10 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
+//import static sorcer.vo.operator.evaluator;
+//import static sorcer.vo.operator.exertionFilter;
+//import static sorcer.vo.operator.setFilter;
+//import static sorcer.vo.operator.var;
 //import sorcer.vfe.Var;
 
 /**
@@ -90,17 +89,17 @@ public class ServiceExertionTest {
 		assertTrue("Wrong eTask value for 80.0", get(eTask, "arg/x2").equals(80.0));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void exertJobTest() throws ExertionException, ContextException {
 		// just get value from job's context
-		//logger.info("eJob value @  t3/arg/x2 = " + get(eJob, "j1/t3/arg/x2"));
+		logger.info("eJob value @  t3/arg/x2 = " + get(eJob, "j1/t3/arg/x2"));
 		assertTrue("Wrong eJob value for " + Context.Value.NULL, 
 				get(eJob, "/j1/t3/arg/x2").equals(Context.Value.NULL));
 		
 		// exert and then get the value from job's context
 		eJob = exert(eJob);
-		
+		logger.info("eJob: " + eJob);
+
 		logger.info("eJob jobContext: " + jobContext(eJob));
 		//logger.info("eJob value @  j2/t5/arg/x1 = " + get(eJob, "j2/t5/arg/x1"));
 		assertTrue("Wrong eJob value for 20.0", get(eJob, "/j1/j2/t5/arg/x1").equals(20.0));
