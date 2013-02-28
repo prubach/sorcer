@@ -129,7 +129,7 @@
 	<target name="all-test" depends="clean-logs, compile-sorcer, junit-prepare, run-test-reports, jars" />
 	<target name="compile-sorcer" depends="compileSources, provider-junit-fixture, junit-compile" />
 	<target name="compile" depends="top-prepare, prepare, compile-sorcer, copy-config-files, copy-meta-inf-files" />
-	<target name="jars" depends="sorcer-lib.jar, sorcer-prv.jar, sorcer-prv-dl.jar, sorcer-vfe-lib.jar, sorcer-modeling-dl.jar, ssb-support.jar, provider-ui.jar, exertlet-ui.jar, provider-jars" />
+	<target name="jars" depends="sorcer-lib.jar, sorcer-prv.jar, sorcer-prv-dl.jar, ssb-support.jar, provider-ui.jar, exertlet-ui.jar, provider-jars" />
 
 
 	<!-- Compile the core service provider sources -->
@@ -310,19 +310,6 @@
 			<topclass name="sorcer.ui.serviceui.UIComponentFactory" />
 			<topclass name="com.artima.lookup.util.ConsistentSet" />
 		</classdepandjar>
-	</target>
-
-	<target name="sorcer-modeling-dl.jar">
-		<jar destfile="${sorcer-dl.lib}/sorcer-modeling-dl.jar" basedir="${classes}" includes="sorcer/vfe/Modeling.class,sorcer/vfe/ResponseModeling.class,sorcer/vfe/ParametricModeling.class,
-			sorcer/vfe/OptimizationModeling.class,sorcer/core/context/model/explore/Exploration.class" />
-	</target>
-
-	<target name="sorcer-vfe-lib.jar">
-		<jar jarfile="${sorcer.lib}/sorcer-vfe-lib.jar">
-			<fileset dir="${classes}">
-				<include name="sorcer/vfe/**/*" />
-			</fileset>
-		</jar>
 	</target>
 
 	<target name="exertlet-ui.jar">
