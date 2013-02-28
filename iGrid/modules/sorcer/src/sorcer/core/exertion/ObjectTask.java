@@ -92,7 +92,7 @@ public class ObjectTask extends Task {
 				// assume this task context is used by the signature's provider
 				invoker.setParameterTypes(new Class[] { Context.class });
 				invoker.setContext(context);
-			} else if (getArgs().getClass().isArray() && os.getTypes().getClass().isArray()) {
+			} else if (context.getArgsPath() != null) {
 				invoker.setArgs(os.getTypes(), (Object[]) getArgs());
 			}
 			//invoker.setParameters(context);

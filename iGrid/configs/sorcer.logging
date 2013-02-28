@@ -73,12 +73,12 @@ private.level=ALL
 local.level=ALL
 
 #Variable oriented loggers
-sorcer.vfe.level=OFF
-sorcer.vfe.Var.level=ALL
-sorcer.vfe.filter.Filter.level=ALL
-sorcer.vfe.filter.BasicFileFilter.level=ALL
-sorcer.vfe.evaluator.level=OFF
-sorcer.core.context.model.level=OFF
+#sorcer.vfe.level=OFF
+#sorcer.vfe.Var.level=ALL
+#sorcer.vfe.filter.Filter.level=ALL
+#sorcer.vfe.filter.BasicFileFilter.level=ALL
+#sorcer.vfe.evaluator.level=OFF
+#sorcer.core.context.model.level=OFF
 #sorcer.core.context.model.explore.level=ALL
 #sorcer.core.context.model.opti.level=ALL
 #sorcer.core.context.model.explore.Explorer.level=ALL

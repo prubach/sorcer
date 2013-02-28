@@ -20,7 +20,6 @@ package sorcer.core.exertion;
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.jobber.ExertionJobber;
 import sorcer.core.signature.ObjectSignature;
@@ -30,7 +29,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-//import sorcer.vfe.evaluator.MethodEvaluator;
+import sorcer.util.obj.ObjectInvoker;
 
 /**
  * The SORCER object job extending the basic job implementation {@link Job}.
@@ -69,16 +68,16 @@ public class ObjectJob extends Job {
 		Job result = null;
 		try {
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
-//			MethodEvaluator evaluator = ((ObjectSignature) getProcessSignature())
-//					.getEvaluator();
-//			if (evaluator == null) {
-//				evaluator = new MethodEvaluator(os.newInstance(),
-//						os.getSelector());
-//			}
-//			evaluator.setParameterTypes(new Class[] { Exertion.class });
-//			evaluator.setParameters(new Exertion[] { this });
-//			result = (Job)evaluator.evaluate();
-//			getControlContext().appendTrace("" + evaluator);
+			ObjectInvoker invoker = ((ObjectSignature) getProcessSignature())
+					.getInvoker();
+			if (invoker == null) {
+				invoker = new ObjectInvoker(os.newInstance(),
+						os.getSelector());
+			}
+			invoker.setParameterTypes(new Class[] { Exertion.class });
+			invoker.setParameters(new Exertion[] { this });
+			result = (Job)invoker.invoke();
+			getControlContext().appendTrace("" + invoker);
 		} catch (Exception e) {
 			e.printStackTrace();
 			context.reportException(e);
