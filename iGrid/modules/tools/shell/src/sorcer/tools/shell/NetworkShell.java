@@ -84,7 +84,7 @@ import sorcer.tools.shell.cmds.GroupsCmd;
 import sorcer.tools.shell.cmds.LookupCmd;
 import sorcer.tools.shell.cmds.SetPortCmd;
 import sorcer.tools.shell.cmds.StartStopCmd;
-import sorcer.tools.shell.cmds.VarModelCmd;
+//import sorcer.tools.shell.cmds.VarModelCmd;
 import sorcer.tools.shell.cmds.iGridCmd;
 import sorcer.tools.webster.Webster;
 import sorcer.util.TimeUtil;
@@ -805,7 +805,7 @@ public class NetworkShell implements DiscoveryListener {
 			
 			DiscoCmd.printCurrentLus();
 			EmxCmd.printCurrentMonitor();
-			VarModelCmd.printCurrentModel();
+//			VarModelCmd.printCurrentModel();
 			DataStorageCmd.printCurrentStorer();
 			LookupCmd.printCurrentService();
 
@@ -1464,14 +1464,15 @@ public class NetworkShell implements DiscoveryListener {
 
 	static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
 			"groups", "lup", "chgrp", "chport", "help", "exert", "http", "emx",
-			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
-
+//			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
+			"gvy", "edit", "clear", "exec", "about", "ig", "ds" };
+	
 	static final Class[] shellCmdClasses = { StartStopCmd.class, DiscoCmd.class,
 			DirCmd.class, ChgrpCmd.class, GroupsCmd.class, LookupCmd.class,
 			ChgrpCmd.class, SetPortCmd.class, HelpCmd.class, ExertCmd.class,
 			HttpCmd.class, EmxCmd.class, GroovyCmd.class, EditCmd.class,
-			ClearCmd.class, ExecCmd.class, InfoCmd.class, iGridCmd.class, DataStorageCmd.class, VarModelCmd.class };
-
+//			ClearCmd.class, ExecCmd.class, InfoCmd.class, iGridCmd.class, DataStorageCmd.class, VarModelCmd.class };
+			ClearCmd.class, ExecCmd.class, InfoCmd.class, iGridCmd.class, DataStorageCmd.class };
 	// a map of application name/ filename
 	static private Map<String, String> appMap = new TreeMap<String, String>();
 	// non interactive shell apps - used with nsh --<app name>
