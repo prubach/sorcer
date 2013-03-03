@@ -159,6 +159,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 			if (!(object instanceof Identifiable)) {
 				throw new InvalidObjectException("Identifiable object is required: " + object);
 			}
+			uuid = (Uuid)((Identifiable)object).getId();
 		}
 
 		public UpdateThread(URL url, Object object) throws InvalidObjectException {
@@ -169,7 +170,6 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 			}
 		}
 		
-		@SuppressWarnings("unchecked")
 		public void run() {
 			StoredMap storedMap = null;
 			if (object instanceof Context) {
@@ -324,7 +324,10 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		} else {
 			throw new ContextException("Wrong update object Uuid: " + id);
 		}
-		uuid = update(object);
+		if (object instanceof Identifiable) 
+			uuid = update(object);
+		else 
+			uuid = update(new UuidObject(object, uuid));
 		Store type = getStoreType(object);
 		URL sdbUrl = getDatabaseURL(type, uuid);
 		if (context.getReturnPath() != null)

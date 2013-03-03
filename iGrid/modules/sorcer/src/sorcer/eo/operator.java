@@ -30,11 +30,10 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
 import sorcer.co.tuple.Entry;
+import sorcer.co.tuple.IndexedTriplet;
 import sorcer.co.tuple.Parameter;
 import sorcer.co.tuple.Path;
 import sorcer.co.tuple.Tuple2;
-import sorcer.co.tuple.Tuple3;
-import sorcer.co.tuple.IndexedTriplet;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ArrayContext;
@@ -83,6 +82,7 @@ import sorcer.service.Task;
 import sorcer.util.ExertionShell;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
+import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
 import sorcer.util.bdb.sdb.SdbUtil;
 
@@ -112,7 +112,7 @@ public class operator {
 			Parameter... entries) throws ContextException {
 		Object obj = value(evaluation, path, entries);
 		if (obj instanceof Evaluation) {
-			obj = value((Evaluation)obj, entries);
+			obj = value((Evaluation) obj, entries);
 		}
 		return obj;
 	}
@@ -152,11 +152,10 @@ public class operator {
 		return new Complement<String, Object>(path, value);
 	}
 
-
-	public static <T extends Context> T put(T context,
-			Tuple2... entries) throws ContextException {
+	public static <T extends Context> T put(T context, Tuple2... entries)
+			throws ContextException {
 		for (int i = 0; i < entries.length; i++) {
-			 if (context instanceof Context) {
+			if (context instanceof Context) {
 				context.putValue(((Tuple2<String, ?>) entries[i])._1,
 						((Tuple2<String, ?>) entries[i])._2);
 			}
@@ -194,23 +193,24 @@ public class operator {
 	}
 
 	public static Context jobContext(Exertion job) throws ContextException {
-		return ((Job)job).getJobContext();
+		return ((Job) job).getJobContext();
 	}
 
 	public static DataEntry data(Object data) {
 		return new DataEntry(Context.DSD_PATH, data);
 	}
-	
+
 	public static <T extends Object> Context context(T... entries)
 			throws ContextException {
 		if (entries[0] instanceof Exertion) {
 			Exertion xrt = (Exertion) entries[0];
 			if (entries.length >= 2 && entries[1] instanceof String)
-				xrt = ((Job)xrt).getComponentExertion((String) entries[1]);
+				xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
 			return xrt.getContext();
 		} else if (entries[0] instanceof String
 				&& entries[1] instanceof Exertion) {
-			return ((Job)entries[1]).getComponentExertion((String)entries[0]).getContext();
+			return ((Job) entries[1]).getComponentExertion((String) entries[0])
+					.getContext();
 		}
 		String name = getUnknown();
 		List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
@@ -242,7 +242,7 @@ public class operator {
 				types.add((Context.Type) o);
 			} else if (o instanceof String) {
 				name = (String) o;
-			} 
+			}
 		}
 		Context cxt = null;
 		if (types.contains(Context.Type.ARRAY)) {
@@ -267,7 +267,8 @@ public class operator {
 				cxt = new ServiceContext(name);
 		} else {
 			if (subject != null) {
-				cxt = new PositionalContext(name, subject.path(), subject.value());
+				cxt = new PositionalContext(name, subject.path(),
+						subject.value());
 			} else {
 				cxt = new PositionalContext(name);
 			}
@@ -280,21 +281,24 @@ public class operator {
 						pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
 								((InEntry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof OutEntry) {
-						pcxt.putOutValueAt(((OutEntry) entryList.get(i)).path(),
+						pcxt.putOutValueAt(
+								((OutEntry) entryList.get(i)).path(),
 								((OutEntry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof InoutEntry) {
-						pcxt.putInoutValueAt(((InoutEntry) entryList.get(i)).path(),
+						pcxt.putInoutValueAt(
+								((InoutEntry) entryList.get(i)).path(),
 								((InoutEntry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof Entry) {
 						pcxt.putValueAt(((Entry) entryList.get(i)).path(),
 								((Entry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof DataEntry) {
-							pcxt.putValueAt(Context.DSD_PATH,
-									((DataEntry) entryList.get(i)).value(), i + 1);
+						pcxt.putValueAt(Context.DSD_PATH,
+								((DataEntry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof Tuple2) {
-							pcxt.putValueAt(
+						pcxt.putValueAt(
 								(String) ((Tuple2<String, ?>) entryList.get(i))._1,
-								((Tuple2<String, ?>) entryList.get(i))._2, i + 1);
+								((Tuple2<String, ?>) entryList.get(i))._2,
+								i + 1);
 					}
 				}
 			}
@@ -317,7 +321,7 @@ public class operator {
 						cxt.putValue(Context.DSD_PATH,
 								((Entry) entryList.get(i)).value());
 					} else if (entryList.get(i) instanceof Tuple2) {
-							cxt.putValue(
+						cxt.putValue(
 								(String) ((Tuple2<String, ?>) entryList.get(i))._1,
 								((Tuple2<String, ?>) entryList.get(i))._2);
 					}
@@ -337,11 +341,14 @@ public class operator {
 		}
 		if (parameterTypes != null) {
 			if (parameterTypes.path() != null) {
-				((ServiceContext) cxt).setParameterTypesPath(parameterTypes.path());
+				((ServiceContext) cxt).setParameterTypesPath(parameterTypes
+						.path());
 			} else {
-				((ServiceContext) cxt).setParameterTypesPath(Context.PARAMETER_TYPES);
+				((ServiceContext) cxt)
+						.setParameterTypesPath(Context.PARAMETER_TYPES);
 			}
-			((ServiceContext) cxt).setParameterTypes(parameterTypes.parameterTypes);
+			((ServiceContext) cxt)
+					.setParameterTypes(parameterTypes.parameterTypes);
 		}
 		if (target != null) {
 			if (target.path() != null) {
@@ -351,7 +358,7 @@ public class operator {
 		}
 		return cxt;
 	}
-	
+
 	public static List<String> names(List<? extends Identifiable> list) {
 		List<String> names = new ArrayList<String>(list.size());
 		for (Identifiable i : list) {
@@ -388,17 +395,19 @@ public class operator {
 	}
 
 	/**
-	 * Makes this Revaluation revaluable, so its return value is to be again evaluated as well.
+	 * Makes this Revaluation revaluable, so its return value is to be again
+	 * evaluated as well.
 	 * 
 	 * @param var
 	 *            to be marked as revaluable
 	 * @return an uevaluable Evaluation
-	 * @throws EvaluationException 
+	 * @throws EvaluationException
 	 */
-	public static Revaluation revaluable(Revaluation evaluation, Parameter... entries) throws EvaluationException {
+	public static Revaluation revaluable(Revaluation evaluation,
+			Parameter... entries) throws EvaluationException {
 		if (entries != null && entries.length > 0) {
 			try {
-				((Evaluation)evaluation).substitute(entries);
+				((Evaluation) evaluation).substitute(entries);
 			} catch (RemoteException e) {
 				throw new EvaluationException(e);
 			}
@@ -406,12 +415,12 @@ public class operator {
 		evaluation.setRevaluable(true);
 		return evaluation;
 	}
-	
+
 	public static Revaluation unrevaluable(Revaluation evaluation) {
 		evaluation.setRevaluable(false);
 		return evaluation;
 	}
-	
+
 	/**
 	 * Returns the Evaluation with a realized substitution for its arguments.
 	 * 
@@ -419,18 +428,18 @@ public class operator {
 	 * @param entries
 	 * @return an evaluation with a realized substitution
 	 * @throws EvaluationException
-	 * @throws RemoteException 
+	 * @throws RemoteException
 	 */
-	public static Evaluation substitute(Evaluation evaluation, Parameter... entries)
-			throws EvaluationException, RemoteException {
+	public static Evaluation substitute(Evaluation evaluation,
+			Parameter... entries) throws EvaluationException, RemoteException {
 		return evaluation.substitute(entries);
 	}
-	
+
 	public static Signature sig(Class<?> serviceType, String providerName,
 			Object... parameters) throws SignatureException {
 		return sig(null, serviceType, providerName, parameters);
 	}
-	
+
 	public static Signature sig(String operation, Class<?> serviceType,
 			String providerName, Object... parameters)
 			throws SignatureException {
@@ -458,11 +467,12 @@ public class operator {
 	public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
 	}
-	
-	public static Signature sig(String name, String selector) throws SignatureException {
+
+	public static Signature sig(String name, String selector)
+			throws SignatureException {
 		return new ServiceSignature(name, selector);
 	}
-	
+
 	public static Signature sig(String operation, Class<?> serviceType,
 			Type type) throws SignatureException {
 		return sig(operation, serviceType, (String) null, type);
@@ -474,7 +484,8 @@ public class operator {
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
-			List<net.jini.core.entry.Entry> attributes) throws SignatureException {
+			List<net.jini.core.entry.Entry> attributes)
+			throws SignatureException {
 		NetSignature op = new NetSignature();
 		op.setAttributes(attributes);
 		op.setServiceType(serviceType);
@@ -531,7 +542,7 @@ public class operator {
 			Context context) throws ExertionException {
 		return new EvaluationTask(signature, context);
 	}
-	
+
 	public static ObjectSignature sig(String operation, Object object,
 			Class... types) throws SignatureException {
 		try {
@@ -656,7 +667,6 @@ public class operator {
 		return task;
 	}
 
-
 	public static <T extends Object, E extends Exertion> E srv(String name,
 			T... elems) throws ExertionException, ContextException,
 			SignatureException {
@@ -725,7 +735,7 @@ public class operator {
 		job.addSignature(signature);
 		if (data != null)
 			job.setContext(data);
-		
+
 		if (job instanceof NetJob && control != null) {
 			job.setControlContext(control);
 			if (control.getAccessType().equals(Access.PULL)) {
@@ -794,14 +804,35 @@ public class operator {
 		}
 	}
 
-	public static Object get(Exertion exertion, String component,
-			String path) throws ExertionException {
+	public static Object get(Exertion exertion, String component, String path)
+			throws ExertionException {
 		Exertion c = ((Exertion) exertion).getExertion(component);
 		return get((Exertion) c, path);
 	}
-	
+
 	public static Object value(URL url) throws IOException {
 		return url.getContent();
+	}
+
+	public static Object value(SosURL url) throws IOException {
+		return url.getTarget().getContent();
+	}
+
+	public static SosURL set(SosURL url, Object value)
+			throws EvaluationException {
+		URL target = url.getTarget();
+		if (target != null && value != null) {
+			try {
+				if (target.getRef() == null) {
+					url.setTarget(SdbUtil.store(value));
+				} else {
+					SdbUtil.update((URL) target, value);
+				}
+			} catch (Exception e) {
+				throw new EvaluationException(e);
+			}
+		}
+		return url;
 	}
 	
 	public static <T> T value(Evaluation<T> evaluation, Parameter... entries)
@@ -818,7 +849,7 @@ public class operator {
 			throw new EvaluationException(e);
 		}
 	}
-	
+
 	public static <T> T value(Evaluation<T> evaluation, String evalSelector,
 			Parameter... entries) throws EvaluationException {
 		synchronized (evaluation) {
@@ -828,10 +859,11 @@ public class operator {
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new EvaluationException(e);
-				} 
+				}
 			} else if (evaluation instanceof Context) {
 				try {
-					return (T) ((Context)evaluation).getValue(evalSelector, entries);
+					return (T) ((Context) evaluation).getValue(evalSelector,
+							entries);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new EvaluationException(e);
@@ -851,7 +883,7 @@ public class operator {
 	}
 
 	public static Exertion exertion(Exertion xrt, String componentExertionName) {
-		return ((Job)xrt).getComponentExertion(componentExertionName);
+		return ((Job) xrt).getComponentExertion(componentExertionName);
 	}
 
 	public static List<String> trace(Exertion xrt) {
@@ -876,13 +908,13 @@ public class operator {
 			throw new ExertionException("No return path in the context: "
 					+ context.getName());
 	}
-	
+
 	public static Object exec(Exertion exertion, Parameter... entries)
 			throws ExertionException, ContextException {
 		Exertion xrt;
 		try {
 			if (exertion.getClass() == Task.class) {
-				if (((Task) exertion).getInnerTask() != null) 
+				if (((Task) exertion).getInnerTask() != null)
 					xrt = exert(((Task) exertion).getInnerTask(), null, entries);
 				else
 					xrt = exertOpenTask(exertion, entries);
@@ -893,7 +925,7 @@ public class operator {
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ReturnPath returnPath = xrt.getContext().getReturnPath();		
+		ReturnPath returnPath = xrt.getContext().getReturnPath();
 		if (returnPath != null) {
 			if (xrt instanceof Task) {
 				return xrt.getContext().getValue(returnPath.path);
@@ -907,23 +939,26 @@ public class operator {
 				return ((Job) xrt).getJobContext();
 			}
 		}
-		throw new ExertionException("No return path in the exertion: " + xrt.getName());
+		throw new ExertionException("No return path in the exertion: "
+				+ xrt.getName());
 	}
 
-	public static Exertion exertOpenTask(Exertion exertion, Parameter... entries) throws ExertionException {
+	public static Exertion exertOpenTask(Exertion exertion,
+			Parameter... entries) throws ExertionException {
 		Exertion closedTask = null;
 		List<Parameter> params = Arrays.asList(entries);
 		List<Object> items = new ArrayList<Object>();
 		for (Parameter param : params) {
-			if (param instanceof ControlContext && ((ControlContext)param).getSignatures().size() > 0) {
-				List<Signature> sigs = ((ControlContext)param).getSignatures();
-				ControlContext cc = (ControlContext)param;
+			if (param instanceof ControlContext
+					&& ((ControlContext) param).getSignatures().size() > 0) {
+				List<Signature> sigs = ((ControlContext) param).getSignatures();
+				ControlContext cc = (ControlContext) param;
 				cc.setSignatures(null);
 				Context tc = exertion.getContext();
 				items.add(tc);
 				items.add(cc);
-				items.addAll(sigs);				
-				closedTask = task(exertion.getName(), items.toArray());				
+				items.addAll(sigs);
+				closedTask = task(exertion.getName(), items.toArray());
 			}
 		}
 		try {
@@ -934,8 +969,7 @@ public class operator {
 		}
 		return closedTask;
 	}
-	
-	
+
 	public static Object get(Exertion xrt, String path)
 			throws ExertionException {
 		try {
@@ -949,7 +983,8 @@ public class operator {
 		return exertion.getThrowables();
 	}
 
-	public static Task exert(Task input, Entry... entries) throws ExertionException {
+	public static Task exert(Task input, Entry... entries)
+			throws ExertionException {
 		try {
 			return (Task) ((Task) input).exert(null, entries);
 		} catch (Exception e) {
@@ -957,8 +992,8 @@ public class operator {
 		}
 	}
 
-	public static <T extends Exertion> T exert(Exertion input, Parameter... entries)
-			throws ExertionException {
+	public static <T extends Exertion> T exert(Exertion input,
+			Parameter... entries) throws ExertionException {
 		try {
 			return (T) exert(input, null, entries);
 		} catch (Exception e) {
@@ -992,16 +1027,17 @@ public class operator {
 	public static ReturnPath self() {
 		return new ReturnPath();
 	}
-	
-	public static ReturnPath result(String path, String...  paths) {
+
+	public static ReturnPath result(String path, String... paths) {
 		return new ReturnPath(path, paths);
 	}
 
-	public static ReturnPath result(String path, Direction direction, String...  paths) {
+	public static ReturnPath result(String path, Direction direction,
+			String... paths) {
 		return new ReturnPath(path, direction, paths);
 	}
 
-	public static ReturnPath result(String path, Class type, String...  paths) {
+	public static ReturnPath result(String path, Class type, String... paths) {
 		return new ReturnPath(path, Direction.OUT, type, paths);
 	}
 
@@ -1052,7 +1088,7 @@ public class operator {
 	public static OutEntry out(String path, Object value, boolean flag) {
 		return new OutEntry(path, value, flag);
 	}
-	
+
 	public static InEntry input(String path) {
 		return new InEntry(path, null, 0);
 	}
@@ -1068,7 +1104,7 @@ public class operator {
 	public static InEntry in(String path) {
 		return new InEntry(path, null, 0);
 	}
-	
+
 	public static Entry at(String path, Object value) {
 		return new Entry(path, value, 0);
 	}
@@ -1109,37 +1145,38 @@ public class operator {
 		return "unknown" + count++;
 	}
 
-	public static class OutEntry<T> extends IndexedTriplet  implements Parameter  {
+	public static class OutEntry<T> extends IndexedTriplet implements Parameter {
 		private static final long serialVersionUID = 1L;
 		public boolean flag;
 
 		OutEntry(String path, T value, boolean flag) {
 			T v = value;
 			if (v == null)
-				v = (T)Context.Value.NULL;
+				v = (T) Context.Value.NULL;
 
 			this._1 = path;
 			this._2 = v;
 			this.flag = flag;
 		}
-		
+
 		OutEntry(String path, T value, int index) {
 			T v = value;
 			if (v == null)
-				v = (T)Context.Value.NULL;
+				v = (T) Context.Value.NULL;
 
 			this._1 = path;
 			this._2 = v;
 			this.index = index;
 		}
-		
+
 		OutEntry(String path, Object fidelity) {
 			this._1 = path;
 			this._3 = fidelity;
 		}
 	}
-	
-	public static class Range extends Tuple2<Integer, Integer> implements Parameter  {
+
+	public static class Range extends Tuple2<Integer, Integer> implements
+			Parameter {
 		private static final long serialVersionUID = 1L;
 		public Integer[] range;
 
@@ -1147,31 +1184,31 @@ public class operator {
 			this._1 = from;
 			this._2 = to;
 		}
-		
+
 		public Range(Integer[] range) {
 			this.range = range;
 		}
-		
+
 		public Integer[] range() {
 			return range;
 		}
-		
+
 		public int from() {
 			return _1;
 		}
-		
+
 		public int to() {
 			return _2;
 		}
-		
+
 		public String toString() {
 			if (range != null)
 				return Arrays.toString(range);
 			else
-				return "[" + _1 + "-" + _2  + "]";
+				return "[" + _1 + "-" + _2 + "]";
 		}
 	}
-	
+
 	private static class Pipe {
 		String inPath;
 		String outPath;
@@ -1192,7 +1229,7 @@ public class operator {
 			this.inPath = inEndPoint.inPath;
 		}
 	}
-	
+
 	public static Pipe pipe(OutEndPoint outEndPoint, InEndPoint inEndPoint) {
 		return new Pipe(outEndPoint, inEndPoint);
 	}
@@ -1212,7 +1249,7 @@ public class operator {
 			} else if (o instanceof Wait) {
 				cc.isWait((Wait) o);
 			} else if (o instanceof Signature) {
-				sl.add((Signature)o);
+				sl.add((Signature) o);
 			}
 		}
 		cc.setSignatures(sl);
@@ -1222,27 +1259,32 @@ public class operator {
 	public static URL dbURL() throws MalformedURLException {
 		return new URL(Sorcer.getDatabaseStorerUrl());
 	}
-	
+
 	public static URL dsURL() throws MalformedURLException {
 		return new URL(Sorcer.getDataspaceStorerUrl());
 	}
-	
+
 	public static URL dbURL(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		return store(object);
 	}
-	
+
+	public static SosURL sosURL(Object object) throws ExertionException,
+			SignatureException, ContextException {
+		return SdbUtil.sosStore(object);
+	}
+
 	public static URL store(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.store(object);
 	}
-	
+
 	public static Object retrieve(URL url) throws IOException {
-			return url.getContent();
+		return url.getContent();
 	}
-	
-	public static URL update(Object object)
-			throws ExertionException, SignatureException, ContextException {
+
+	public static URL update(Object object) throws ExertionException,
+			SignatureException, ContextException {
 		return SdbUtil.update(object);
 	}
 
@@ -1250,27 +1292,27 @@ public class operator {
 			SignatureException, ContextException {
 		return SdbUtil.list(url);
 	}
-	
+
 	public static List<String> list(Store store) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.list(store);
 	}
-	
+
 	public static URL delete(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.delete(object);
 	}
-	
+
 	public static int clear(Store type) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.clear(type);
 	}
-	
+
 	public static int size(Store type) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.size(type);
 	}
-	
+
 	private static class InEndPoint {
 		String inPath;
 		Exertion in;
@@ -1332,7 +1374,7 @@ public class operator {
 			return "return path: " + _1;
 		}
 	}
-	
+
 	public static ParameterTypes parameterTypes(Class... parameterTypes) {
 		return new ParameterTypes(parameterTypes);
 	}
@@ -1355,19 +1397,18 @@ public class operator {
 			return "parameterTypes: " + Arrays.toString(parameterTypes);
 		}
 	}
-	
-	
+
 	public static Args parameterValues(Object... args) {
 		return new Args(args);
 	}
-	
+
 	public static Args args(Object... args) {
 		return new Args(args);
 	}
 
 	public static class Args extends Path {
 		private static final long serialVersionUID = 1L;
-		
+
 		Object[] args;
 
 		public Args(Object... args) {
@@ -1384,20 +1425,21 @@ public class operator {
 			return "args: " + Arrays.toString(args);
 		}
 	}
-	
-	public static class InoutEntry<T> extends IndexedTriplet implements Parameter {
+
+	public static class InoutEntry<T> extends IndexedTriplet implements
+			Parameter {
 		private static final long serialVersionUID = 1L;
 
 		InoutEntry(String path, T value, int index) {
 			T v = value;
 			if (v == null)
-				v = (T)Context.Value.NULL;
+				v = (T) Context.Value.NULL;
 
 			this._1 = path;
 			this._2 = v;
 			this.index = index;
 		}
-		
+
 		InoutEntry(String path, Object fidelity) {
 			this._1 = path;
 			this._3 = fidelity;
@@ -1410,33 +1452,34 @@ public class operator {
 		DataEntry(String path, T2 value) {
 			T2 v = value;
 			if (v == null)
-				v = (T2)Context.Value.NULL;
+				v = (T2) Context.Value.NULL;
 
 			this._1 = path;
 			this._2 = v;
 		}
 	}
-	
+
 	public static class InEntry<T> extends IndexedTriplet implements Parameter {
 		private static final long serialVersionUID = 1L;
 
 		InEntry(String path, T value, int index) {
 			T v = value;
 			if (v == null)
-				v = (T)Context.Value.NULL;
+				v = (T) Context.Value.NULL;
 
 			this._1 = path;
 			this._2 = v;
 			this.index = index;
 		}
-		
+
 		InEntry(String path, Object fidelity) {
 			this._1 = path;
 			this._3 = fidelity;
 		}
 	}
-	
-	public static class Complement<T1, T2> extends Entry<T1, T2> implements Parameter {
+
+	public static class Complement<T1, T2> extends Entry<T1, T2> implements
+			Parameter {
 		private static final long serialVersionUID = 1L;
 
 		Complement(T1 path, T2 value) {
@@ -1495,7 +1538,7 @@ public class operator {
 				}
 			} else if (signature instanceof EvaluationSignature) {
 				return ((EvaluationSignature) signature).getEvaluator();
-			} 
+			}
 		} catch (Exception e) {
 			throw new SignatureException("No signature provider avaialable", e);
 		}
@@ -1512,7 +1555,8 @@ public class operator {
 	 */
 	public static Object instance(ObjectSignature signature)
 			throws SignatureException {
-		if (signature.getSelector() == null || signature.getSelector().equals("new"))
+		if (signature.getSelector() == null
+				|| signature.getSelector().equals("new"))
 			return ((ObjectSignature) signature).newInstance();
 		else
 			return ((ObjectSignature) signature).initInstance();
@@ -1552,5 +1596,5 @@ public class operator {
 		} else
 			return null;
 	}
-	
+
 }

@@ -47,10 +47,15 @@ public class UuidObject implements SecureIdentifiable, Serializable {
 
 	private Date dateCreated;
 
+	public UuidObject(Object object, Uuid id) {
+		this.id = id;
+        this.object = object;
+	}
+	  
 	public UuidObject(Object object) {
 		this(object, "");
 	}
-	  
+	
     public UuidObject(Object object, String descrition) {
     	id = UuidFactory.generate();
         this.object = object;

@@ -42,6 +42,7 @@ import sorcer.service.Identifiable;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
+import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
 
@@ -256,6 +257,11 @@ public class SdbUtil {
 		return (URL) value(objectStoreTask);
 	}
 
+	public static SosURL sosStore(Object object) throws ExertionException,
+			SignatureException, ContextException {
+		return new SosURL(store(object));
+	}
+	
 	public static URL write(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		String storageName = Sorcer.getActualName(Sorcer.getSpacerName());
