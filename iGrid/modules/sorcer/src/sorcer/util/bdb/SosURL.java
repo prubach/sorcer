@@ -43,7 +43,7 @@ public class SosURL {
 		target = url;
 	}
 
-	public Object getVlaue() throws IOException {
+	public Object getContent() throws IOException {
 		return ((URL) target).getContent();
 	}
 
