@@ -75,7 +75,7 @@ public class SessionDatabaseTest implements SorcerConstants {
         runner.run();
         // get from the database three sessions transactionally persisted with three tasks
 		List<String> names = runner.returnExertionNames();
-		List<String> ln = list("t1", "t2", "t3");
+		List<String> ln = list("t1", "t2");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -97,7 +97,7 @@ public class SessionDatabaseTest implements SorcerConstants {
 			entry = mei.next();
 			names.add(entry.getValue().getInitialExertion().getName());
 		}
-		List<String> ln = list("t1", "t2", "t3");
+		List<String> ln = list("t1", "t2");
 		Collections.sort(names);
 		assertEquals(names, ln);
 	}

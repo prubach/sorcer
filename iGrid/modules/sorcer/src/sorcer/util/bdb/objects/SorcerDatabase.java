@@ -48,9 +48,9 @@ public class SorcerDatabase {
     private static final String RUNTIME_STORE = "runtime_store";
     private static final String EXERTION_STORE = "exertion_store";
     private static final String CONTEXT_STORE = "context_store";
-    private static final String TABLE_STORE = "table_store";
-    private static final String VAR_STORE = "var_store";
-    private static final String VAR_MODEL_STORE = "var_model_store";
+//    private static final String TABLE_STORE = "table_store";
+//    private static final String VAR_STORE = "var_store";
+//    private static final String VAR_MODEL_STORE = "var_model_store";
     private static final String OBJECT_STORE = "uuid_object_store";
 
     private static final String RUNTIME_PROVIDER_NAME_INDEX =
@@ -60,9 +60,9 @@ public class SorcerDatabase {
     private Database exertionDb;
     private Database runtimeDb;
     private Database contextDb;
-    private Database tableDb;
-    private Database varDb;
-    private Database varModelDb;
+//    private Database tableDb;
+//    private Database varDb;
+//    private Database varModelDb;
     private Database uuidObjectDb;
 
     private SecondaryDatabase runtimeByProviderNameDb;
@@ -100,11 +100,11 @@ public class SorcerDatabase {
 
         contextDb = env.openDatabase(null, CONTEXT_STORE, dbConfig);
                 
-        tableDb = env.openDatabase(null, TABLE_STORE, dbConfig);
-        
-        varDb = env.openDatabase(null, VAR_STORE, dbConfig);
-        
-        varModelDb = env.openDatabase(null, VAR_MODEL_STORE, dbConfig);
+//        tableDb = env.openDatabase(null, TABLE_STORE, dbConfig);
+//        
+//        varDb = env.openDatabase(null, VAR_STORE, dbConfig);
+//        
+//        varModelDb = env.openDatabase(null, VAR_MODEL_STORE, dbConfig);
         
         uuidObjectDb = env.openDatabase(null, OBJECT_STORE, dbConfig);
 
@@ -169,23 +169,23 @@ public class SorcerDatabase {
     /**
      * Return the {@link sorcer.vfe.util.Table} storage container.
      */
-    public final Database getTableDatabase() {
-        return tableDb;
-    }
-    
-    /**
-     * Return the {@link sorcer.vfe.Var} storage container.
-     */
-    public final Database getVarDatabase() {
-        return varDb;
-    }
-    
-    /**
-     * Return the {@link sorcer.core.context.model.VarModel} storage container.
-     */
-    public final Database getVarModelDatabase() {
-        return varModelDb;
-    }
+//    public final Database getTableDatabase() {
+//        return tableDb;
+//    }
+//    
+//    /**
+//     * Return the {@link sorcer.vfe.Var} storage container.
+//     */
+//    public final Database getVarDatabase() {
+//        return varDb;
+//    }
+//    
+//    /**
+//     * Return the {@link sorcer.core.context.model.VarModel} storage container.
+//     */
+//    public final Database getVarModelDatabase() {
+//        return varModelDb;
+//    }
     
     /**
      * Return the Uuid object storage container.
@@ -211,9 +211,9 @@ public class SorcerDatabase {
         runtimeDb.close();
         runtimeByProviderNameDb.close();
         contextDb.close();
-        tableDb.close();
-        varDb.close();
-        varModelDb.close();
+//        tableDb.close();
+//        varDb.close();
+//        varModelDb.close();
         uuidObjectDb.close();
         
         // close the catalog and the environment.

@@ -43,17 +43,17 @@ public class SignatureTest {
 		Sorcer.setCodeBase(new String[] { "arithmetic-beans.jar" });
 	}
 	
-//	@Test
-//	public void providerTest() throws ExertionException, ContextException, SignatureException {
-//		
-//		Signature s1 = sig("add", new AdderImpl());
-//		//logger.info("provider of s1: " + provider(s1));
-//		assertTrue(provider(s1) instanceof  AdderImpl);
-//		
-//		Signature s2 = sig("add", AdderImpl.class);
-//		//logger.info("provider of s2: " + provider(s2));
-//		assertTrue(provider(s2) instanceof  AdderImpl);
-//
+	@Test
+	public void providerTest() throws ExertionException, ContextException, SignatureException {
+		
+		Signature s1 = sig("add", new AdderImpl());
+		//logger.info("provider of s1: " + provider(s1));
+		assertTrue(provider(s1) instanceof  AdderImpl);
+		
+		Signature s2 = sig("add", AdderImpl.class);
+		//logger.info("provider of s2: " + provider(s2));
+		assertTrue(provider(s2) instanceof  AdderImpl);
+
 //		Signature s4 = sig(groovy("new Date()"));
 //		//logger.info("provider of s4: " + provider(s4));
 //		assertTrue(provider(s4) instanceof  ExpressionEvaluator);
@@ -65,8 +65,8 @@ public class SignatureTest {
 //		Signature s6 = sig(var("x3", expression("x3-e", "x1 - x2", vars("x1", "x2"))));
 //		logger.info("provider of s6: " + provider(s6));
 //		assertTrue(provider(s6) instanceof Var);
-//
-//	}
+
+	}
 	
 	@Ignore
 	@Test
