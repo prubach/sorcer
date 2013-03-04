@@ -1,9 +1,10 @@
 import static sorcer.eo.operator.*;
 import static sorcer.co.operator.*;
-import static sorcer.vo.operator.*;
+//import static sorcer.vo.operator.*;
+import static sorcer.tools.shell.NetworkShell.nshUrl;
 
 //common SORCER classes
-import sorcer.vfe.util.*;
+//import sorcer.vfe.util.*;
 import sorcer.service.*;
 import sorcer.service.Signature.*;
 import sorcer.service.Strategy.*;
@@ -11,6 +12,6 @@ import sorcer.core.exertion.*;
 
 import sorcer.service.*;
 import sorcer.core.context.model.*;
-import sorcer.vfe.util.*;
-import sorcer.vfe.*;
+//import sorcer.vfe.util.*;
+//import sorcer.vfe.*;
 import java.io.*;

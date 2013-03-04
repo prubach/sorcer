@@ -145,16 +145,41 @@ public class ArithmeticNetTest implements SorcerConstants {
 //	}
 	
 	@Test
-	public void arithmeticProviderTest() throws Exception {
+	public void arithmeticProviderExertTest() throws Exception {
 		
 		Task t5 = task(
 				"t5",
 				sig("add", Adder.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
+				context("add", in("arg/x1", 20.0),
+						in("arg/x2", 80.0)));
 		t5 = exert(t5);
-		//logger.info("t5 context: " + context(t5));
-		//logger.info("t5 value: " + get(t5));
+		logger.info("t5 context: " + context(t5));
+		assertEquals("Wrong value for 100.0", value(context(t5), "result/value"), 100.0);
+	}
+	
+	@Test
+	public void arithmeticProviderGetTest() throws Exception {
+		
+		Task t5 = task(
+				"t5",
+				sig("add", Adder.class),
+				context("add", in("arg/x1", 20.0),
+						in("arg/x2", 80.0), result("result/y")));
+		t5 = exert(t5);
+//		logger.info("t5 context: " + context(t5));
+//		logger.info("t5 value: " + get(t5));
+		assertEquals("Wrong value for 100.0", get(t5), 100.0);
+	}
+	
+	@Test
+	public void arithmeticProviderValueTest() throws Exception {
+		
+		Task t5 = task(
+				"t5",
+				sig("add", Adder.class),
+				context("add", in("arg/x1", 20.0),
+						in("arg/x2", 80.0), result("result/y")));
+
 		assertEquals("Wrong value for 100.0", value(t5), 100.0);
 	}
 	
@@ -165,12 +190,9 @@ public class ArithmeticNetTest implements SorcerConstants {
 		Task t5 = task(
 				"t5",
 				sig("add", Arithmetic.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
+				context("add", in("arg/x1", 20.0),
+						in("arg/x2", 80.0), result("result/y")));
 		
-		t5 = exert(t5);
-		//logger.info("t5 context: " + context(t5));
-		//logger.info("t5 value: " + get(t5));
 		assertEquals("Wrong value for 100.0", value(t5), 100.0);
 	}
 
