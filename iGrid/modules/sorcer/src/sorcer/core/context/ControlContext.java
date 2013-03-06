@@ -137,7 +137,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public final static String EXERTION_WAIT_FOR = "exertion/waitFor/result";
 	
-	public final static String EXERTION_WAIT_FROM = "exertion/waitFor/from";
+	public final static String EXERTION_WAIT_FROM = "exertion/submitted/at";
 
 	public final static String NOTIFICATION_MANAGER = "exertion/enable/notifications";
 

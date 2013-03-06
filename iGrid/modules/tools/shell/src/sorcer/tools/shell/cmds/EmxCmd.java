@@ -44,7 +44,7 @@ public class EmxCmd extends ShellCmd {
 
 		NOT_LOADED_MSG = "***command not loaded due to conflict";
 
-		COMMAND_USAGE = "emx [-xrt | - emx | <EMX/exertion index> | -v | -x]"
+		COMMAND_USAGE = "emx [-xrt | -emx | <EMX/exertion index> | -v | -x]"
 			+ "\n\t\t\t  | [ -a | -d | -f | -r | -y | <exertion index>] "
 			+ "\n\t\t\t  | (-e | -c | -cc | -ccc) [<exertion index>] [-s <filename>]";
 
@@ -95,10 +95,10 @@ public class EmxCmd extends ShellCmd {
 			if (next.equals("-xrt")) {
 				isEmxMode = false;
 				out.println("you are in 'xrt' mode");
-			} if (next.equals("-emx")) {
+			} else if (next.equals("-emx")) {
 				isEmxMode = true;
 				out.println("you are in 'emx' mode");
-			} if (next.equals("-mode")) {
+			} else if (next.equals("-mode")) {
 				if (isEmxMode)
 					out.println("you are in 'emx' mode");
 				else
@@ -113,6 +113,7 @@ public class EmxCmd extends ShellCmd {
 					|| next.equals("-a") || next.equals("-y")) {
 				xetType = getStatus(next);
 				printMonitoredExertions(xetType);
+				isEmxMode = false;
 			} else if (next.equals("-x")) {
 				// clear monitor selection
 				selectedMonitor = -1;
@@ -143,7 +144,6 @@ public class EmxCmd extends ShellCmd {
 			} else {
 				if (isEmxMode) {
 					try {
-						next = myTk.nextToken();
 						myIdx = Integer.parseInt(next);
 						selectedMonitor = myIdx;
 					} catch (NumberFormatException e) {

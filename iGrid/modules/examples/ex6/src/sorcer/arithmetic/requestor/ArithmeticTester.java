@@ -305,7 +305,7 @@ private Exertion f1SEQpull() throws Exception {
 				sig("add", RemoteAdder.class),
 				context("add", in("arg/x1", 20.0),
 						in("arg/x2", 80.0), out("result/y", null)),
-				strategy(Monitor.YES, Wait.YES));
+				strategy(Monitor.YES, Wait.NO));
 		
 		Exertion out = null;
 		long start = System.currentTimeMillis();
