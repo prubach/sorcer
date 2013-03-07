@@ -1,0 +1,179 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>modules</artifactId>
+	</parent>
+
+	<artifactId>sorcer-base</artifactId>
+	<packaging>classdepandjar</packaging>
+	<name>SORCER base</name>
+	<description>SORCER</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>locker</artifactId>
+			<version>11.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jini-ext</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jini-core</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-lib</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-servlet_3.0_spec</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxrpc-api</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.swing-layout</groupId>
+			<artifactId>swing-layout</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>jep</groupId>
+			<artifactId>jep</artifactId>
+			<version>2.4.1a</version>
+		</dependency>
+
+
+
+
+
+
+		<!-- Oracle maven repo -->
+		<dependency>
+			<groupId>com.sleepycat</groupId>
+			<artifactId>je</artifactId>
+			<version>4.1.21</version>
+		</dependency>
+
+
+		<!-- dependencies from the private maven repository -->
+		<dependency>
+			<groupId>com.sun.jini</groupId>
+			<artifactId>start</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jini</groupId>
+			<artifactId>madison-boot</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jini</groupId>
+			<artifactId>madison-impl</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openscdp.ocf</groupId>
+			<artifactId>base-core</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openscdp.ocf</groupId>
+			<artifactId>base-opt</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.hut.tcm</groupId>
+			<artifactId>spki</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.artima.jini</groupId>
+			<artifactId>serviceui</artifactId>
+			<version>1.1a</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<excludes>
+						<exclude>sorcer/xml/**.java</exclude>
+						<!-- uzycie nieistniejacych metod -->
+						<exclude>**/sorcer/core/grid/provider/dispatcher/**.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-rio-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<createJar>
+						<classifier>dl</classifier>
+						<manifest>
+							<!--attribute name="Class-Path" value="sorcer-lib.jar" / -->
+							<attribute name="Implementation-Title" value="${sorcer-title}" />
+							<attribute name="Implementation-Version" value="${sorcer-version}" />
+							<attribute name="SORCER-Version" value="${sorcer-version}" />
+							<attribute name="SORCER-Build" value="${DSTAMP}" />
+						</manifest>
+						<classpath refid="project.classpath" />
+						<in name="sorcer" />
+						<in name="sorcer.client" />
+						<topclass name="sorcer.core.provider.ServiceTasker" />
+						<topclass name="sorcer.core.AdministratableProvider" />
+						<topclass name="sorcer.core.provider.exertmonitor.MonitoringManagement" />
+						<topclass name="sorcer.core.provider.exertmonitor.MonitorSession" />
+						<topclass name="sorcer.service.ExertionInfo" />
+						<topclass name="sorcer.core.provider.ProviderDelegate" />
+						<topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
+						<topclass name="com.artima.lookup.util.ConsistentSet" />
+						<topclass name="sorcer.core.context.PositionalContext" />
+						<topclass name="sorcer.core.context.ContextManagementAdapter" />
+						<topclass name="sorcer.util.bdb.sdb.Handler" />
+						<topclass name="sorcer.co.operator" />
+						<topclass name="sorcer.eo.operator" />
+						<topclass name="sorcer.co.tuple.Entry" />
+						<topclass name="sorcer.co.tuple.Parameter" />
+						<topclass name="net.jini.admin.Administrable" />
+						<topclass name="sorcer.util.Stopwatch" />
+						<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
+						<fileset dir="${iGrid.home}/classes">
+							<include name="sorcer/util/sorcer.env" />
+							<include name="sorcer/util/data.formats" />
+						</fileset>
+						<fileset refid="icons" />
+					</createJar>
+
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

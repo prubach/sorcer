@@ -33,30 +33,30 @@
 	<!-- Set this to the name of your module. This has to be unique, 
 	and it is used to compile theses modules and create their documentation folder -->
 	<property name="module.name" value="sorcer" />
-	<property name="sorcer.auditor" value="./src/sorcer/core/provider/auditor" />
-	<property name="sorcer.cataloger" value="./src/sorcer/core/provider/cataloger" />
-	<property name="sorcer.jobber" value="./src/sorcer/core/provider/jobber" />
-	<property name="sorcer.exertmonitor" value="./src/sorcer/core/provider/exertmonitor" />
-	<property name="sorcer.logger" value="./src/sorcer/core/provider/logger" />
-	<property name="sorcer.caller" value="./src/sorcer/core/grid/provider/caller" />
-	<property name="sorcer.grider" value="./src/sorcer/core/grid/provider/grider" />
-	<property name="sorcer.methoder" value="./src/sorcer/core/grid/provider/methoder" />
-	<property name="sorcer.eval" value="./src/sorcer/core/provider/eval" />
-	<property name="sorcer.dbp" value="./src/sorcer/core/provider/dbp" />
-	<property name="sorcer.dsp" value="./src/sorcer/core/provider/dsp" />
-	<property name="sorcer.policer" value="./src/sorcer/core/provider/policer" />
-	<property name="sorcer.qoscataloger" value="./src/sorcer/core/provider/cataloger/qos" />
-	<property name="sorcer.slamonitor" value="./src/sorcer/core/provider/qos/sla/slamonitor" />
-	<property name="sorcer.ondemandprovisioner" value="./src/sorcer/core/provider/autonomic/provisioner/servme" />
-	<property name="ju-arithmeric" value="./src/junit/sorcer/core/provider" />
+	<property name="sorcer.auditor" value="./src/main/java/sorcer/core/provider/auditor" />
+	<property name="sorcer.cataloger" value="./src/main/java/sorcer/core/provider/cataloger" />
+	<property name="sorcer.jobber" value="./src/main/java/sorcer/core/provider/jobber" />
+	<property name="sorcer.exertmonitor" value="./src/main/java/sorcer/core/provider/exertmonitor" />
+	<property name="sorcer.logger" value="./src/main/java/sorcer/core/provider/logger" />
+	<property name="sorcer.caller" value="./src/main/java/sorcer/core/grid/provider/caller" />
+	<property name="sorcer.grider" value="./src/main/java/sorcer/core/grid/provider/grider" />
+	<property name="sorcer.methoder" value="./src/main/java/sorcer/core/grid/provider/methoder" />
+	<property name="sorcer.eval" value="./src/main/java/sorcer/core/provider/eval" />
+	<property name="sorcer.dbp" value="./src/main/java/sorcer/core/provider/dbp" />
+	<property name="sorcer.dsp" value="./src/main/java/sorcer/core/provider/dsp" />
+	<property name="sorcer.policer" value="./src/main/java/sorcer/core/provider/policer" />
+	<property name="sorcer.qoscataloger" value="./src/main/java/sorcer/core/provider/cataloger/qos" />
+	<property name="sorcer.slamonitor" value="./src/main/java/sorcer/core/provider/qos/sla/slamonitor" />
+	<property name="sorcer.ondemandprovisioner" value="./src/main/java/sorcer/core/provider/autonomic/provisioner/servme" />
+	<property name="ju-arithmeric" value="./src/test/java/junit/sorcer/core/provider" />
 	<property name="examples.ex6" value="${iGrid.home}/modules/examples/ex6" />
 	<property name="examples.ex10a" value="${iGrid.home}/modules/examples/ex10a" />
 	<property name="preferred_list" value="./configs/preferred.list" />
 
 	<!-- Directory paths where source code can be found relative to the current directory -->
-	<property name="src" value="./src" />
-	<property name="resources" value="./resources" />
-	<property name="junit.src" value="./src" />
+	<property name="src" value="./src/main/java" />
+	<property name="resources" value="./src/main/resources" />
+	<property name="junit.src" value="./src/test/java" />
 
 	<!-- The sources to compile, relative to your source directory. DO NOT CHANGE! -->
 	<patternset id="ant.java">
@@ -81,8 +81,8 @@
 
 	<!-- The classes that result from it, used for "clean-classes" target -->
 	<patternset id="ant.classes">
-		<include name="sorcer/**/*.class" />
-		<include name="junit/sorcer/**/*.class" />
+		<include name="src/main/java/sorcer/**/*.class" />
+		<include name="src/test/java/sorcer/**/*.class" />
 	</patternset>
 
 	<!-- SORCER icon-->
@@ -153,10 +153,10 @@
 
 	<!-- Compile the dependent JUnit sources -->
 	<target name="provider-junit-fixture">
-		<echo message="Compiling SORCER JUnit fixture classes ...." />
+		<!--<echo message="Compiling SORCER JUnit fixture classes ...." />-->
 		<!-- <ant antfile="build.xml" dir="${sorcer.auditor}" /> -->
-		<ant antfile="arithmetic-prv-build.xml" dir="${ju-arithmeric}" target="jars" inheritAll="false" />
-		<ant antfile="arithmetic-prv-build.xml" dir="${examples.ex6}" target="all" inheritAll="false" />
+		<!--<ant antfile="arithmetic-prv-build.xml" dir="${ju-arithmeric}" target="jars" inheritAll="false" />-->
+		<!--<ant antfile="arithmetic-prv-build.xml" dir="${examples.ex6}" target="all" inheritAll="false" />-->
 		<!--ant antfile="rs-all-build.xml" dir="${examples.ex10a}" target="all" inheritAll="false" /-->
 	</target>
 

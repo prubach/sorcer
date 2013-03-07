@@ -1,0 +1,53 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>tools</artifactId>
+	</parent>
+
+	<artifactId>locker</artifactId>
+	<packaging>jar</packaging>
+	<name>SORCER locker tool</name>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-platform</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-lib</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jgroups</groupId>
+			<artifactId>jgroups</artifactId>
+			<version>2.12.1.Final</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*Test.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

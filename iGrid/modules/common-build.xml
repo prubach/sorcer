@@ -384,7 +384,7 @@ A "src" property should be set and point to the directory containing the module'
 	</target>
 
 	<target name="precompile">
-		<groovyc destdir="${classes}">
+		<!--<groovyc destdir="${classes}">
 			<src>
 				<path location="${groovySrc}" />
 				<path location="${src}" />
@@ -398,11 +398,11 @@ A "src" property should be set and point to the directory containing the module'
 				<compilerarg value="-Xlint:unchecked" />
 			</javac>
 
-		</groovyc>
+		</groovyc>-->
 	</target>
 
 	<target name="test-precompile">
-		<groovyc destdir="${test-classes}">
+		<!--<groovyc destdir="${test-classes}">
 			<src>
 				<path location="${testSrc}" />
 				<path location="${groovyTestSrc}" />
@@ -415,7 +415,7 @@ A "src" property should be set and point to the directory containing the module'
 				<patternset refid="java.source" />
 				<compilerarg value="-Xlint:unchecked" />
 			</javac>
-		</groovyc>
+		</groovyc>-->
 	</target>
 
 	<!-- JUnit testing -->
@@ -423,28 +423,28 @@ A "src" property should be set and point to the directory containing the module'
 	the directory containing the module's junit sources.-->
 
 	<target name="doc-junit" depends="prepare">
-		<mkdir dir="${junit.src}" />
+		<!--<mkdir dir="${junit.src}" />
 		<javadoc destdir="${junit.src}" packagenames="sorcer.*" classpathref="project.classpath">
 			<doclet name="com.objectfab.tools.junitdoclet.JUnitDoclet" path="${support.lib}/junitdoclet.jar">
 			</doclet>
 			<fileset dir="${src}">
 				<patternset refid="ant.java" />
 			</fileset>
-		</javadoc>
+		</javadoc>-->
 	</target>
 
 	<target name="junit-compile">
-		<javac srcdir="${junit.src}" destdir="${classes}" debug="true"  includeantruntime="true">
+		<!--<javac srcdir="${junit.src}" destdir="${classes}" debug="true"  includeantruntime="true">
 			<classpath>
 				<path refid="project.classpath" />
 				<path location="${support.lib}/junit.jar" />
 			</classpath>
 			<patternset refid="junit-ant.java" />
-		</javac>
+		</javac>-->
 	</target>
 
 	<target name="junit-test" depends="junit-compile">
-		<junit printsummary="no" fork="yes" haltonfailure="no">
+		<!--<junit printsummary="no" fork="yes" haltonfailure="no">
 			<formatter type="plain" usefile="no" />
 			<sysproperty key="java.awt.headless" value="true" />
 			<batchtest>
@@ -456,14 +456,14 @@ A "src" property should be set and point to the directory containing the module'
 				<path refid="project.classpath" />
 				<path location="${support.lib}/junit.jar" />
 			</classpath>
-		</junit>
+		</junit>-->
 	</target>
 
 	<target name="run-test-reports" depends="junit-compile">
-		<property name="test.reports" value="./reports" />
-		<junit fork="no" printsummary="yes" haltonfailure="no">
+		<!--<property name="test.reports" value="./reports" />
+		<junit fork="no" printsummary="yes" haltonfailure="no">-->
 		<!--<junit fork="no" printsummary="yes" haltonfailure="no">-->
-			<batchtest fork="yes" todir="${test.reports}">
+			<!--<batchtest fork="yes" todir="${test.reports}">
 				<fileset dir="${junit.src}">
 					<include name="junit/**/*Test*.java" />
 				</fileset>
@@ -473,7 +473,7 @@ A "src" property should be set and point to the directory containing the module'
 				<path refid="project.classpath" />
 				<path location="${support.lib}/junit.jar" />
 			</classpath>
-		</junit>
+		</junit>-->
 		<!--
 		<junitreport todir="${test.reports}">
 			<fileset dir="${test.reports}">
