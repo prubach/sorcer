@@ -173,28 +173,66 @@
 			</plugin>
 
 			<plugin>
+				<groupId>com.keyboardsamurais.maven</groupId>
+				<artifactId>maven-timestamp-plugin</artifactId>
+				<version>1.0</version>
+				<configuration>
+					<propertyName>DTIME</propertyName>
+					<timestampPattern>yyyyMMddHHmm</timestampPattern>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-rio-plugin</artifactId>
-				<!--<extensions>true</extensions> <configuration> <createJar> <classifier>dl</classifier> 
-					<manifest> &lt;!&ndash;attribute name="Class-Path" value="sorcer-lib.jar" 
-					/ &ndash;&gt; <attribute name="Implementation-Title" value="${project.name}" 
-					/> <attribute name="Implementation-Version" value="${project.version}" /> 
-					<attribute name="SORCER-Version" value="${project.version}" /> <attribute 
-					name="SORCER-Build" value="${DSTAMP}" /> </manifest> <in name="sorcer" /> 
-					<in name="sorcer.client" /> <topclass name="sorcer.core.provider.ServiceTasker" 
-					/> <topclass name="sorcer.core.AdministratableProvider" /> <topclass name="sorcer.core.provider.exertmonitor.MonitoringManagement" 
-					/> <topclass name="sorcer.core.provider.exertmonitor.MonitorSession" /> <topclass 
-					name="sorcer.service.ExertionInfo" /> <topclass name="sorcer.core.provider.ProviderDelegate" 
-					/> <topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" /> <topclass 
-					name="com.artima.lookup.util.ConsistentSet" /> <topclass name="sorcer.core.context.PositionalContext" 
-					/> <topclass name="sorcer.core.context.ContextManagementAdapter" /> <topclass 
-					name="sorcer.util.bdb.sdb.Handler" /> <topclass name="sorcer.co.operator" 
-					/> <topclass name="sorcer.eo.operator" /> <topclass name="sorcer.co.tuple.Entry" 
-					/> <topclass name="sorcer.co.tuple.Parameter" /> <topclass name="net.jini.admin.Administrable" 
-					/> <topclass name="sorcer.util.Stopwatch" /> <topclass name="sorcer.ui.serviceui.UIFrameFactory" 
-					/> <fileset dir="${env.IGRID_HOME}/configs"> <include name="${env.IGRID_HOME}/configs/sorcer.env" 
-					/> <include name="${env.IGRID_HOME}/configs/data.formats" /> </fileset> <fileset 
-					refid="icons" /> </createJar> </configuration> -->
+				<version>5.0</version>
+				<!-- <extensions>true</extensions> -->
+				<configuration>
+					<createJar>
+						<classifier>dl</classifier>
+						<manifest>
+							<attribute name="Implementation-Title" value="${project.name}" />
+							<attribute name="Implementation-Version" value="${project.version}" />
+							<attribute name="SORCER-Version" value="${project.version}" />
+							<attribute name="SORCER-Build" value="${DSTAMP}" />
+						</manifest>
+						<ins>
+							<in name="sorcer" />
+							<in name="sorcer.client" />
+						</ins>
+						<topclasses>
+						<topclass name="sorcer.core.provider.ServiceTasker" />
+						<topclass name="sorcer.core.AdministratableProvider" />
+						<topclass name="sorcer.core.provider.exertmonitor.MonitoringManagement" />
+						<topclass name="sorcer.core.provider.exertmonitor.MonitorSession" />
+						<topclass name="sorcer.service.ExertionInfo" />
+						<topclass name="sorcer.core.provider.ProviderDelegate" />
+						<topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
+						<topclass name="com.artima.lookup.util.ConsistentSet" />
+						<topclass name="sorcer.core.context.PositionalContext" />
+						<topclass name="sorcer.core.context.ContextManagementAdapter" />
+						<topclass name="sorcer.util.bdb.sdb.Handler" />
+						<topclass name="sorcer.co.operator" />
+						<topclass name="sorcer.eo.operator" />
+						<topclass name="sorcer.co.tuple.Entry" />
+						<topclass name="sorcer.co.tuple.Parameter" />
+						<topclass name="net.jini.admin.Administrable" />
+						<topclass name="sorcer.util.Stopwatch" />
+						<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
+						</topclasses>
+					</createJar>
+					<includes>
+						<include name="${env.IGRID_HOME}/configs/sorcer.env" />
+						<include name="${env.IGRID_HOME}/configs/data.formats" />
+					</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
