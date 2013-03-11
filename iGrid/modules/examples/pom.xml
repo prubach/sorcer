@@ -1,14 +1,22 @@
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sorcersoft.sorcer</groupId>
+
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>modules</artifactId>
+	</parent>
+
 	<artifactId>examples</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER examples</name>
-	<version>11.1</version>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
-	
-<modules>
-</modules>
+
+	<modules>
+		<module>ex6</module>
+	</modules>
 </project>

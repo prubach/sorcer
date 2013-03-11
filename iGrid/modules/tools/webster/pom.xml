@@ -12,7 +12,15 @@
 
 	<artifactId>webster</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER locker tool</name>
+	<name>SORCER webster</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-lib</artifactId>
+			<version>${v.jini}</version>
+		</dependency>
+	</dependencies>
 </project>

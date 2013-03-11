@@ -2,7 +2,6 @@ package sorcer.arithmetic.provider;
 
 import java.rmi.RemoteException;
 
-import sorcer.core.context.ContextManagementAdapter;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 

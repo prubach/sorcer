@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.sorcersoft.sorcer</groupId>
-	<artifactId>sorcer</artifactId>
+	<artifactId>sorcer-root</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER Project</name>
 	<version>11.1</version>
@@ -12,6 +12,9 @@
 	<url>http://sorcersoft.org/</url>
 
 	<properties>
+		<v.jini>2.1</v.jini>
+		<!-- DTIME = timestamp -->
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -29,6 +32,23 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.keyboardsamurais.maven</groupId>
+				<artifactId>maven-timestamp-plugin</artifactId>
+				<version>1.0</version>
+				<configuration>
+					<propertyName>DTIME</propertyName>
+					<timestampPattern>yyyyMMddHHmm</timestampPattern>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -53,23 +73,7 @@
 	</repositories>
 
 	<pluginRepositories>
-<!-- 		<pluginRepository>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-			<id>rio</id>
-			<name>Rio project</name>
-			<url>http://www.rio-project.org/maven2/</url>
-			<layout>default</layout>
-		</pluginRepository>
- -->		<pluginRepository>
+		<pluginRepository>
 			<id>hashnot</id>
 			<url>http://mvn.hashnot.com/content/groups/public</url>
 			<releases>

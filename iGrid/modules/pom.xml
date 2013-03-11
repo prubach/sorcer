@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>sorcer</artifactId>
+		<artifactId>sorcer-root</artifactId>
 	</parent>
-	
+
 	<artifactId>modules</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER modules</name>
