@@ -20,6 +20,8 @@
 			<classpath>
 				<pathelement location="${sorcer-ext.lib}/ssb.jar" />
 				<pathelement location="${lib}/common/groovy/groovy-all-1.7.4.jar" />
+				<pathelement location="${jini.lib}/high-scale-lib.jar" />
+				<pathelement location="${jini.lib}/reference-collections-1.0.1.jar" />
 				<pathelement location="${jini.lib}/jsk-lib.jar" />
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
 				<pathelement location="${jini.lib}/tools.jar" />

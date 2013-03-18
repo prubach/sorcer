@@ -24,6 +24,8 @@
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
 				<pathelement location="${jini.lib}/tools.jar" />
 				<pathelement location="${jini.lib}/serviceui.jar" />
+				<pathelement location="${jini.lib}/high-scale-lib.jar" />
+				<pathelement location="${jini.lib}/reference-collections-1.0.1.jar" />
 				<pathelement location="${sorcer.lib}/sorcer-lib.jar" />
 				<pathelement location="${sorcer.lib}/ssb-support.jar" />
 				<pathelement location="${sorcer.lib}/sorcer-modeling-lib.jar" />

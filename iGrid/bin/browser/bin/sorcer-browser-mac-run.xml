@@ -22,6 +22,8 @@
 				<pathelement location="${lib}/common/groovy/groovy-all-1.7.4.jar" />
 				<pathelement location="${jini.lib}/jsk-lib.jar" />
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
+				<pathelement location="${jini.lib}/high-scale-lib.jar" />
+				<pathelement location="${jini.lib}/reference-collections-1.0.1.jar" />
 				<pathelement location="${jini.lib}/serviceui.jar" />
 				<pathelement location="${sorcer.lib}/sorcer-lib.jar" />
 				<pathelement location="${sorcer.lib}/sorcer-modeling-lib.jar" />
@@ -30,7 +32,7 @@
 
 				<!-- domain specific libraries -->
 				<pathelement location="${sorcer.lib}/arithmetic-beans.jar" />
-				<pathelement location="${eng.lib}/conminoptimization.jar" />
+<!--				<pathelement location="${eng.lib}/conminoptimization.jar" /> -->
 				<pathelement location="${sorcer.lib}/rs-explorer.jar" />
 				<pathelement location="${sorcer.lib}/arithmetic-beans.jar" />
 			</classpath>
