@@ -20,5 +20,6 @@
 		<module>locker</module>
 		<module>webster</module>
 		<module>boot</module>
+		<module>shell</module>
 	</modules>
 </project>
