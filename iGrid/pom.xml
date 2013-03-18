@@ -12,7 +12,7 @@
 	<url>http://sorcersoft.org/</url>
 
 	<properties>
-		<v.jini>2.1</v.jini>
+		<v.jini>2.2.1</v.jini>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -52,6 +52,11 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+        <repository>
+            <id>maven.boundary.com</id>
+            <name>maven.boundary.com-releases</name>
+            <url>http://maven.boundary.com/artifactory/external</url>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>

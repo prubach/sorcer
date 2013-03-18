@@ -33,12 +33,12 @@
     <!--
     Rio jars to load into the common classloader.
     -->
-    <capability name="Rio"
+    <!--<capability name="Rio"
                 class="org.rioproject.system.capability.software.RioSupport"
                 common="yes">
         <version>4.0 M3</version>
         <classpath>${iGrid.home}/lib/rio/lib/rio-platform.jar ${iGrid.home}/lib/rio/lib-dl/rio-api.jar</classpath>
-    </capability>
+    </capability>-->
     
 </platform>
 

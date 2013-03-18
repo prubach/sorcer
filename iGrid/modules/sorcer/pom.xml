@@ -29,16 +29,16 @@
 		</dependency>
 
 
-		<dependency>
+		<!--<dependency>
 			<groupId>net.jini</groupId>
 			<artifactId>jini-ext</artifactId>
 			<version>${v.jini}</version>
-		</dependency>
-		<dependency>
+		</dependency>-->
+		<!--<dependency>
 			<groupId>net.jini</groupId>
 			<artifactId>jini-core</artifactId>
 			<version>${v.jini}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>net.jini</groupId>
 			<artifactId>jsk-lib</artifactId>
@@ -93,6 +93,13 @@
 		</dependency>
 
 
+        <!--boundary.com -->
+        <dependency>
+            <groupId>com.boundary</groupId>
+            <artifactId>high-scale-lib</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+        </dependency>
+
 		<!-- dependencies from the private maven repository -->
 		<dependency>
 			<groupId>com.sun.jini</groupId>
@@ -134,31 +141,15 @@
 			<artifactId>ext</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+        <dependency>
+            <groupId>au.net.Zeus</groupId>
+            <artifactId>reference-collections</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 	</dependencies>
 
 	<build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <includeProjectDependencies>true</includeProjectDependencies>
-                    <includePluginDependencies>false</includePluginDependencies>
-                    <executableDependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>boot</artifactId>
-                    </executableDependency>
-                    <mainClass>com.sun.jini.start.ServiceStarter</mainClass>
-                    <systemProperties>
-                        <systemProperty>
-                            <key>iGrid.home</key>
-                            <value>${iGrid.home}</value>
-                        </systemProperty>
-                    </systemProperties>
-                </configuration>
-            </plugin>
-
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
