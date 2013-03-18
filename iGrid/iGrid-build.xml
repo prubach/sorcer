@@ -34,10 +34,11 @@
 			<param name="antfile" value="sorcer-build.xml" />
 		</antcall>
 
-		<antcall target="doOne">
+<!--		<antcall target="doOne">
 			<param name="dir" location="modules/engineering" />
 			<param name="antfile" value="engineering-build.xml" />
 		</antcall>
+		-->
 
 		<!-- Add your module here. Please use the same antcall syntax as
 		all the other modules-->
