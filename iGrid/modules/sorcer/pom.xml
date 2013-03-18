@@ -137,8 +137,29 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <configuration>
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>false</includePluginDependencies>
+                    <executableDependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>boot</artifactId>
+                    </executableDependency>
+                    <mainClass>com.sun.jini.start.ServiceStarter</mainClass>
+                    <systemProperties>
+                        <systemProperty>
+                            <key>iGrid.home</key>
+                            <value>${iGrid.home}</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
@@ -227,11 +248,11 @@
 						<topclass name="sorcer.util.Stopwatch" />
 						<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
 						</topclasses>
-					</createJar>
-					<includes>
-						<include name="${env.IGRID_HOME}/configs/sorcer.env" />
-						<include name="${env.IGRID_HOME}/configs/data.formats" />
-					</includes>
+                        <includes>
+                            <include name="${env.IGRID_HOME}/configs/sorcer.env" />
+                            <include name="${env.IGRID_HOME}/configs/data.formats" />
+                        </includes>
+                    </createJar>
 				</configuration>
 			</plugin>
 		</plugins>
