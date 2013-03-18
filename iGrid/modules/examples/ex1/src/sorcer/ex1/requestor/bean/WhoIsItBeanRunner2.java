@@ -12,6 +12,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;
 import sorcer.service.Task;
+import sorcer.util.Sorcer;
 
 public class WhoIsItBeanRunner2 extends ExertionRunner {
 
@@ -23,7 +24,7 @@ public class WhoIsItBeanRunner2 extends ExertionRunner {
 		NetSignature signature = null;
 		// define requestor data
 		if (args.length == 2)
-			providerName = args[1];
+			providerName = Sorcer.getSuffixedName(args[1]);
 		logger.info("providerName: " + providerName);
 		Task task = null;
 		try {

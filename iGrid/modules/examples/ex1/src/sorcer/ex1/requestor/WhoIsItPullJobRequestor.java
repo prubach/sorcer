@@ -12,7 +12,6 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
@@ -29,15 +28,15 @@ public class WhoIsItPullJobRequestor {
 		Sorcer.getEnvProperties();
 		ServiceExertion.debug = true;
 		// get the queried provider name
-		String providerName1 = args[0];
-		String providerName2 = args[1];
-		String jobberName = args[2];
+		String providerName1 = Sorcer.getSuffixedName(args[0]);
+		String providerName2 = Sorcer.getSuffixedName(args[1]);
+		String spacerName = Sorcer.getSuffixedName(args[2]);
 		
 		logger.info("Who is \"" + providerName1 + "\"?");
 		logger.info("Who is \"" + providerName2 + "\"?");
 		
 		NetJob ex = (NetJob)new WhoIsItPullJobRequestor().getExertion(providerName1, providerName2);
-		Exertion result = ex.exert(null, jobberName);
+		Exertion result = ex.exert(null, spacerName);
 		
 		ServiceExertion.debug = true;
 		logger.info("Job exceptions job: \n" + result.getThrowables());

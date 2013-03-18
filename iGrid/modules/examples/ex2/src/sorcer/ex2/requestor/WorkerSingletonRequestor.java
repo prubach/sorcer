@@ -28,12 +28,12 @@ public class WorkerSingletonRequestor {
 		// get the queried provider name from the command line
 		String pn = null;
 		if (args.length == 1)
-			pn = args[0];
+			pn = Sorcer.getSuffixedName(args[0]);
 
 		logger.info("Provider name: " + pn);
 
 		Exertion exertion = new WorkerSingletonRequestor().getExertion(pn);
-		Exertion result = exertion.exert(null);
+		Exertion result = exertion.exert();
 		logger.info("Output context: \n" + result.getContext());
 		logger.info("Output context: \n"
 				+ result.getExertion("work").getContext());

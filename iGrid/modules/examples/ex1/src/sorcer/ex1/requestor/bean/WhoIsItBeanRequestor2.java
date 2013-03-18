@@ -13,6 +13,7 @@ import sorcer.service.Exertion;
 import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
+import sorcer.util.Sorcer;
 
 public class WhoIsItBeanRequestor2 {
 
@@ -22,7 +23,7 @@ public class WhoIsItBeanRequestor2 {
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
 		if (args.length == 1)
-			providerName = args[0];
+			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 		
 		Exertion result = new WhoIsItBeanRequestor2()
