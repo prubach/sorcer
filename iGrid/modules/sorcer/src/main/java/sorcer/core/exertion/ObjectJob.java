@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.invoker.ObjectInvoker;
 import sorcer.core.provider.jobber.ExertionJobber;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
@@ -29,7 +30,6 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.util.obj.ObjectInvoker;
 
 /**
  * The SORCER object job extending the basic job implementation {@link Job}.

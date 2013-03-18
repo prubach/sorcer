@@ -2195,6 +2195,13 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return value;
 	}
 
+	public Object putErrValue(String path, Object value)
+			throws ContextException {
+		putValue(path, value);
+		Contexts.markOut(this, path);
+		return value;
+	}
+	
 	public Object getArgs() throws ContextException {
 		try {
 			return getValue(argsPath);

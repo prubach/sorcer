@@ -20,6 +20,9 @@
 		<delete includeemptydirs="true" quiet="true">
 			<fileset dir="../../lib/sorcer/lib-dl" includes="**/*" />
 		</delete>
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="../../databases" includes="**/*" />
+		</delete>
 	</target>
 
 	<target name="clean-logs">

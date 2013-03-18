@@ -1790,7 +1790,10 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 		joinManager.terminate();
 		logger.finer("destroy provider >>> shared provider tally: " + tally);
 		tally = tally - 1;
-		delegate.destroy();
+		// temp fix
+		//delegate.destroy();
+		// temp fix
+		System.exit(0);
 		unexport(true);
 		if (lifeCycle != null) {
 			lifeCycle.unregister(this);

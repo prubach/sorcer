@@ -20,11 +20,11 @@ package sorcer.core.signature;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import sorcer.core.invoker.ObjectInvoker;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
 import sorcer.util.ObjectCloner;
-import sorcer.util.obj.ObjectInvoker;
 
 public class ObjectSignature extends ServiceSignature {
 

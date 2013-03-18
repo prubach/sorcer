@@ -434,6 +434,15 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
+	 * Sets context type as err for a path
+	 */
+	public static Context markErr(Context cntxt, String path)
+			throws ContextException {
+		return cntxt.mark(path, Context.CONTEXT_PARAMETER
+				+ APS + Context.DA_ERR + APS + APS);
+	}
+
+	/**
 	 * Sets context type as inout for a path
 	 */
 	public static Context markInout(Context cntxt, String path)
@@ -807,6 +816,27 @@ public class Contexts implements SorcerConstants {
 		return list;
 	}
 
+
+	/**
+	 * Returns a list of all paths marked as errors.
+	 * 
+	 * @param context
+	 *            a service context
+	 * @return list of all paths marked as errors
+	 * @throws ContextException
+	 */
+	public static List getErrPaths(Context context) throws ContextException {
+		// get all the in and err paths
+		String errAssoc = Context.DIRECTION + APS + Context.DA_ERR;
+		String[] errPaths = Contexts.getMarkedPaths(context, errAssoc);
+		List list = new ArrayList();
+
+		if (errPaths != null)
+			for (int i = 0; i < errPaths.length; i++)
+				list.add(errPaths[i]);
+		return list;
+	}
+	
 	public static List getNamedOutPaths(Context cntxt) throws ContextException {
 		// get all the in and out paths
 		return getPrefixedOutPaths(cntxt, ((ServiceContext)cntxt).getCurrentSelector());

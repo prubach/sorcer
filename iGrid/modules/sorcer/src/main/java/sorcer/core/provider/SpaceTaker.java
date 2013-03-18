@@ -409,4 +409,8 @@ public class SpaceTaker extends Thread implements LeaseListener,
 		}
 	}
 
+	public void setKeepGoing(boolean keepGoing) {
+		this.keepGoing = keepGoing;
+	}
+
 }

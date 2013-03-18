@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package sorcer.util.obj;
+package sorcer.core.invoker;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.logging.Logger;
@@ -31,11 +32,12 @@ import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 import sorcer.util.SorcerUtil;
 
-public class ObjectInvoker {
+public class ObjectInvoker implements ServiceInvoker {
 
-	//static final long serialVersionUID = 6802147418392854533L;
+	// static final long serialVersionUID = 6802147418392854533L;
 
-	final protected static Logger logger = Logger.getLogger(ObjectInvoker.class.getName());
+	final protected static Logger logger = Logger.getLogger(ObjectInvoker.class
+			.getName());
 
 	protected String className;
 
@@ -58,14 +60,11 @@ public class ObjectInvoker {
 
 	protected Object target;
 
-	//the cached value
-	protected Object value;
-		
 	// name of this invoker
 	protected String name;
-		
+
 	protected static int count;
-	
+
 	public ObjectInvoker() {
 		name = "oi-" + count++;
 	}
@@ -135,8 +134,8 @@ public class ObjectInvoker {
 		selector = methodName;
 	}
 
-	public ObjectInvoker(URL[] exportURL, String className,
-			String methodName, Object initObject) {
+	public ObjectInvoker(URL[] exportURL, String className, String methodName,
+			Object initObject) {
 		this(exportURL, className, methodName);
 		this.initObject = initObject;
 	}
@@ -165,7 +164,28 @@ public class ObjectInvoker {
 		selector = methodName;
 	}
 
-	public Object invoke() throws EvaluationException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.core.invoker.ServiceInvoker#invoke(sorcer.service.Context[])
+	 */
+	@Override
+	public Context invoke(Context... contexts) throws RemoteException,
+			EvaluationException {
+		if (contexts != null)
+			setContext(contexts[0]);
+		ContextResult outCxt = null;;
+		try {
+			outCxt = new ContextResult(this);
+			outCxt.setOut(exec());
+		} catch (ContextException e) {
+			throw new EvaluationException(e);
+		}
+		return outCxt;
+	}
+	
+	public Object exec() throws RemoteException,
+			EvaluationException {
 		Object[] parameters = getParameters();
 		Object val = null;
 		Class<?> evalClass = null;
@@ -213,30 +233,28 @@ public class ObjectInvoker {
 								break;
 							}
 						}
-					}
-					else {
+					} else {
 						m = evalClass.getMethod(selector, paramTypes);
 					}
 				}
 			}
-			// ((ServiceContext)context).setCurrentSelector(selector);			
+			// ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);
 			System.out.println("class: " + evalClass);
 			System.out.println("method: " + m);
 			System.out.println("selector: " + selector);
-			System.out.println("paramTypes: " + (paramTypes == null 
-					? "null" : SorcerUtil.arrayToString(paramTypes)));
+			System.out.println("paramTypes: "
+					+ (paramTypes == null ? "null" : SorcerUtil
+							.arrayToString(paramTypes)));
 			e.printStackTrace();
 			throw new EvaluationException(e);
 		}
-		// valueChanged = false;
-		value = val;
-		return value;
+		return val;
 	}
 
-	private Class<?>[] getParameterTypes() {
+	Class<?>[] getParameterTypes() {
 		return paramTypes;
 	}
 
@@ -311,7 +329,7 @@ public class ObjectInvoker {
 		params = args;
 	}
 
-	private Object[] getParameters() throws EvaluationException {
+	Object[] getParameters() throws EvaluationException {
 		// logger.info("params: " + SorcerUtil.arrayToString(params));
 		// logger.info("paramTypes: " + SorcerUtil.arrayToString(paramTypes));
 		if (context != null) {
@@ -341,7 +359,7 @@ public class ObjectInvoker {
 	public String getSelector() {
 		return selector;
 	}
-	
+
 	public String describe() {
 		StringBuilder sb = new StringBuilder("\nObjectIvoker");
 		sb.append(", class name: " + className);
@@ -355,4 +373,5 @@ public class ObjectInvoker {
 	public void setContext(Context context) {
 		this.context = context;
 	}
+
 }

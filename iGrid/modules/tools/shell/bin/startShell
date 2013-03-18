@@ -130,7 +130,7 @@ if [ -e $startConfigFile ] ; then
 fi
 
 # the classpath to start nsh then application specific classpath is defined in nsh-start.config
-STARTER_CLASSPATH="$IGRID_HOME/lib/sorcer/lib-ext/shell.jar:$IGRID_HOME/lib/common/groovy/groovy-all-1.7.4.jar:$IGRID_HOME/lib/sorcer/lib/sorcer-prv.jar:$IGRID_HOME/lib/sorcer/lib-ext/webster.jar:$IGRID_HOME/lib/river/lib/jsk-lib.jar:$IGRID_HOME/lib/river/lib/jsk-platform.jar"
+STARTER_CLASSPATH="$IGRID_HOME/lib/sorcer/lib-ext/shell.jar:$IGRID_HOME/lib/common/groovy/groovy-all-1.7.4.jar:$IGRID_HOME/lib/sorcer/lib/sorcer-prv.jar:$IGRID_HOME/lib/sorcer/lib-ext/webster.jar:$IGRID_HOME/lib/river/lib/jsk-lib.jar:$IGRID_HOME/lib/river/lib/jsk-platform.jar:$IGRID_HOME/lib/river/lib/high-scale-lib.jar:$IGRID_HOME/lib/river/lib/reference-collections-1.0.1.jar"
 
 # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
 # global classpath. Network shell behaves then the same as the java interpreter

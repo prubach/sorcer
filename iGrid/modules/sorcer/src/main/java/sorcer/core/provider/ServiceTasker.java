@@ -72,4 +72,5 @@ public class ServiceTasker extends ServiceProvider implements Tasker, Executor, 
 	public boolean isAuthorized(Subject subject, Signature signature) {
 		return true;
 	}
+	
 }

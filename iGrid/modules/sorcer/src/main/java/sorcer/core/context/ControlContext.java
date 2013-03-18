@@ -50,6 +50,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 	// control context name
 	public final static String CONTROL_CONTEXT = "control/strategy";
 
+	public static boolean debug = true;
+
 	/**
 	 * A flow type indicates if this exertion can be executed sequentially, in
 	 * parallel, or concurrently with other component exertions within this
@@ -634,7 +636,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	}
 
 	public void appendTrace(String info) {
-		if (ServiceExertion.debug)
+		if (ControlContext.debug)
 			traceList.add(info);
 	}
 

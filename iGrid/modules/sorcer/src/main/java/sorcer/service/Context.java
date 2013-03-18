@@ -137,6 +137,9 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	final static String DA_OUT = "out";
 
 	/** directional attribute values */
+	final static String DA_ERR = "err";
+	
+	/** directional attribute values */
 	final static String DA_INOUT = "inout";
 
 	/** in and out synonyms - paths equivalents */

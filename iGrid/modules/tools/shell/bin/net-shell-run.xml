@@ -14,6 +14,8 @@
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
 				<pathelement location="${jini-dl.lib}/outrigger-dl.jar" />
 				<pathelement location="${jini.lib}/serviceui.jar" />
+				<pathelement location="${jini.lib}/high-scale-lib.jar" />
+				<pathelement location="${jini.lib}/reference-collections-1.0.1.jar" />
 			</classpath>
 			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />

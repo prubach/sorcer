@@ -63,7 +63,7 @@
 	<target name="boot.jar">
 		<classdepandjar jarfile="${lib}/boot.jar" files="true" debug="true">
 			<manifest>
-				<attribute name="Class-Path" value="river/lib/start.jar rio/lib/rio-start.jar common/groovy/groovy-all-1.7.4.jar" />
+				<attribute name="Class-Path" value="river/lib/start.jar river/lib/reference-collections-1.0.1.jar river/lib/high-scale-lib.jar common/groovy/groovy-all-1.7.4.jar" />
 				<attribute name="Main-Class" value="com.sun.jini.start.ServiceStarter" />
 				<attribute name="Premain-Class" value="sorcer.provider.boot.InstrumentationHook" />
 				<attribute name="Implementation-Title" value="${sorcer-title}" />
