@@ -428,14 +428,22 @@ public class JavaSpaceContentsView extends JPanel implements Runnable {
 
 			dlg.getContentPane().add(view, BorderLayout.CENTER);
 			dlg.setSize(400, 300);
-			OutriggerViewer.centreDialog(dlg, frame);
+			centreDialog(dlg, frame);
 			dlg.setVisible(true);
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(this, ex);
 		}
 	}
 
-	private class EntryPropsTable extends AbstractTableModel {
+    public static void centreDialog(java.awt.Dialog dlg, Frame f) {
+        java.awt.Dimension size = dlg.getSize();
+        java.awt.Rectangle loc = f.getBounds();
+        int xpos = loc.x + (loc.width / 2) - (size.width / 2);
+        int ypos = loc.y + (loc.height / 2) - (size.height / 2);
+        dlg.setLocation(xpos, ypos);
+    }
+
+    private class EntryPropsTable extends AbstractTableModel {
 
 		private ArrayList _data = new ArrayList();
 
