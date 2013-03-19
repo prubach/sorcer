@@ -11,12 +11,12 @@ import static sorcer.eo.operator.sig;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import junit.sorcer.core.provider.Adder;
 import junit.sorcer.core.provider.AdderImpl;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sorcer.arithmetic.provider.Adder;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;

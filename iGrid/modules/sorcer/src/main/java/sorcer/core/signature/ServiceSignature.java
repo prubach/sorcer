@@ -29,7 +29,6 @@ import net.jini.core.lookup.ServiceID;
 import sorcer.core.SorcerConstants;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.util.Log;
 
@@ -66,7 +65,7 @@ public class ServiceSignature implements Signature, SorcerConstants {
 
 	protected String group = "";
 
-	protected ServiceExertion exertion;
+	protected Exertion exertion;
 
 	/** preprocess, process, postprocess, append context */
 	protected Type execType = Type.SRV;
@@ -114,7 +113,7 @@ public class ServiceSignature implements Signature, SorcerConstants {
 	}
 
 	public void setExertion(Exertion exertion) throws ExertionException {
-		this.exertion = (ServiceExertion) exertion;
+		this.exertion = exertion;
 	}
 
 	public Exertion getExertion() {

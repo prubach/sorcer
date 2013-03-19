@@ -32,7 +32,7 @@ import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 import sorcer.co.tuple.Parameter;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ExertProcessor;
 import sorcer.core.signature.NetSignature;

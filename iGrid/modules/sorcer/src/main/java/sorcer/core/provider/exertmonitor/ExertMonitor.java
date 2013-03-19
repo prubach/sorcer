@@ -64,7 +64,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 	private SessionDatabase db;
 	
-	private StoredMap<UuidKey, MonitorSession> resources;
+	private StoredMap<UuidKey, IMonitorSession> resources;
 
 	public ExertMonitor(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
@@ -202,8 +202,8 @@ public class ExertMonitor extends ServiceProvider implements
 
 		// Ok it's not with landlord. So we retrieve it from the database
 		synchronized (resourcesWriteLock) {
-			Iterator<Map.Entry<UuidKey, MonitorSession>> si = resources.entrySet().iterator();
-			Map.Entry<UuidKey, MonitorSession> next;
+			Iterator<Map.Entry<UuidKey, IMonitorSession>> si = resources.entrySet().iterator();
+			Map.Entry<UuidKey, IMonitorSession> next;
 			while (si.hasNext()) {
 				next = si.next();
 				try {
@@ -390,7 +390,7 @@ public class ExertMonitor extends ServiceProvider implements
 			MonitorException {
 		Map<Uuid, ExertionInfo> table = new HashMap<Uuid, ExertionInfo>();
 		try {
-			Iterator<Map.Entry<UuidKey, MonitorSession>> si = resources.entrySet().iterator();
+			Iterator<Map.Entry<UuidKey, IMonitorSession>> si = resources.entrySet().iterator();
 //			Map.Entry<Uuid, MonitorSession> next;
 //			while (si.hasNext()) {
 //				next = si.next();
@@ -491,14 +491,14 @@ public class ExertMonitor extends ServiceProvider implements
 	 * @see sorcer.core.monitor.MonitorManagement#persist(sorcer.core.provider.exertmonitor.MonitorSession)
 	 */
 	@Override
-	public boolean persist(MonitorSession session) throws IOException {
+	public boolean persist(IMonitorSession session) throws IOException {
 		resources.put(new UuidKey(session.getCookie()), session);
 		return true;
 	}
 	
 	public MonitorSession getSession(UuidKey key) throws MonitorException {
 		try {
-			return resources.get(key);
+			return (MonitorSession) resources.get(key);
 		} catch (Exception e) {
 			throw new MonitorException(e);
 		}
@@ -506,7 +506,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 	public MonitorSession getSession(Uuid key) throws MonitorException {
 		try {
-			return resources.get(new UuidKey(key));
+			return (MonitorSession) resources.get(new UuidKey(key));
 		} catch (Exception e) {
 			throw new MonitorException(e);
 		}
@@ -514,9 +514,9 @@ public class ExertMonitor extends ServiceProvider implements
 	
 	private void printSessions() throws IOException, ClassNotFoundException {
 		// testing
-		Iterator<Map.Entry<UuidKey, MonitorSession>> mei = resources
+		Iterator<Map.Entry<UuidKey, IMonitorSession>> mei = resources
 				.entrySet().iterator();
-		Map.Entry<UuidKey, MonitorSession> entry = null;
+		Map.Entry<UuidKey, IMonitorSession> entry = null;
 		while (mei.hasNext()) {
 			entry = mei.next();
 			System.out.println("session cookie: " + entry.getKey().getId()

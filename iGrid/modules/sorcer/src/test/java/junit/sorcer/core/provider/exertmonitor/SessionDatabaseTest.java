@@ -13,20 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import net.jini.io.MarshalledInstance;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
-import sorcer.core.provider.exertmonitor.MonitorSession;
+import sorcer.core.provider.exertmonitor.IMonitorSession;
 import sorcer.util.SorcerUtil;
-import sorcer.util.bdb.objects.MarshalledData;
 import sorcer.util.bdb.objects.UuidKey;
 
 import com.sleepycat.collections.StoredMap;
-import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
 
 /**
@@ -84,14 +80,14 @@ public class SessionDatabaseTest implements SorcerConstants {
 	
 	@Test
 	public void storedMapTest() throws Exception {
-		StoredMap<UuidKey, MonitorSession> sm = runner.getViews()
+		StoredMap<UuidKey, IMonitorSession> sm = runner.getViews()
 				.getSessionMap();
 		
-		Iterator<Map.Entry<UuidKey, MonitorSession>> mei = sm
+		Iterator<Map.Entry<UuidKey, IMonitorSession>> mei = sm
 				.entrySet().iterator();
 				
 		List<String> names = new ArrayList<String>();
-		Map.Entry<UuidKey, MonitorSession> entry = null;
+		Map.Entry<UuidKey, IMonitorSession> entry = null;
 
 		while (mei.hasNext()) {
 			entry = mei.next();

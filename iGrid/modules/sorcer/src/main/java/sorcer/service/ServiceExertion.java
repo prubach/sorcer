@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.IControlContext;
+import sorcer.core.context.ThrowableTrace;
+
 import javax.security.auth.Subject;
 
 import net.jini.core.transaction.Transaction;
@@ -38,8 +42,7 @@ import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Parameter;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
@@ -51,7 +54,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.util.ExertionShell;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
+public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable, MonitoredExertion {
 
 	static final long serialVersionUID = -3907402419486719293L;
 
@@ -144,10 +147,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		domainId = "0";
 		subdomainId = "0";
 		index = new Integer(-1);
-		accessClass = PUBLIC;
+		accessClass = SorcerConstants.PUBLIC;
 		isExportControlled = Boolean.FALSE;
-		scopeCode = new Integer(PRIVATE_SCOPE);
-		status = new Integer(INITIAL);
+		scopeCode = new Integer(SorcerConstants.PRIVATE_SCOPE);
+		status = new Integer(ExecState.INITIAL);
 		context = new ServiceContext(name);
 		cc = new ControlContext(this);
 		principal = new SorcerPrincipal(System.getProperty("user.name"));
@@ -383,14 +386,14 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	}
 
 	public void setAccessClass(String s) {
-		if (SENSITIVE.equals(s) || CONFIDENTIAL.equals(s) || SECRET.equals(s))
+		if (SorcerConstants.SENSITIVE.equals(s) || SorcerConstants.CONFIDENTIAL.equals(s) || SorcerConstants.SECRET.equals(s))
 			accessClass = s;
 		else
-			accessClass = PUBLIC;
+			accessClass = SorcerConstants.PUBLIC;
 	}
 
 	public String getAccessClass() {
-		return (accessClass == null) ? PUBLIC : accessClass;
+		return (accessClass == null) ? SorcerConstants.PUBLIC : accessClass;
 	}
 
 	public void isExportControlled(boolean b) {
@@ -553,7 +556,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	}
 
 	public int getPriority() {
-		return (priority == null) ? MIN_PRIORITY : priority.intValue();
+		return (priority == null) ? SorcerConstants.MIN_PRIORITY : priority.intValue();
 	}
 
 	public Signature getProcessSignature() {
@@ -863,7 +866,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 							.isAssignableFrom(Spacer.class)) {
 				sig.setServiceType(Spacer.class);
 				((NetSignature)sig).setSelector("service");
-				sig.setProviderName(ANY);
+				sig.setProviderName(SorcerConstants.ANY);
 				sig.setType(Signature.Type.SRV);
 				getControlContext().setAccessType(access);
 			} else if ((Access.PUSH == access || Access.QOS_PUSH == access)
@@ -872,7 +875,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 				if (sig.getServiceType().isAssignableFrom(Spacer.class)) {
 					sig.setServiceType(Jobber.class);
 					((NetSignature)sig).setSelector("service");
-					sig.setProviderName(ANY);
+					sig.setProviderName(SorcerConstants.ANY);
 					sig.setType(Signature.Type.SRV);
 					getControlContext().setAccessType(access);
 				}

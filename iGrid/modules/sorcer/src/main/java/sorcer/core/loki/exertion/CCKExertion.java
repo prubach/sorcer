@@ -10,7 +10,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.co.tuple.Parameter;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;

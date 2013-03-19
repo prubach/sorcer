@@ -31,8 +31,9 @@ import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.co.tuple.Entry;
+import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.eo.operator;
@@ -63,7 +64,7 @@ public abstract class Job extends ServiceExertion {
 	 */
 	protected List<Exertion> exertions = new ArrayList<Exertion>();
 
-	public Integer state = new Integer(INITIAL);
+	public Integer state = new Integer(ExecState.INITIAL);
 
 	/**
 	 * Constructs a job and sets all default values to it.
@@ -453,7 +454,7 @@ public abstract class Job extends ServiceExertion {
 		for (int i = 0; i < size(); i++) {
 			ext = exertions.get(i);
 			try {
-				((ServiceExertion) ext).linkContext(context, path + CPS
+				((ServiceExertion) ext).linkContext(context, path + SorcerConstants.CPS
 						+ (ext instanceof Job ? "job[" : "task[")
 						+ ext.getName() + "]");
 			} catch (ContextException e) {
@@ -469,7 +470,7 @@ public abstract class Job extends ServiceExertion {
 		for (int i = 0; i < size(); i++) {
 			ext = exertions.get(i);
 			try {
-				((ServiceExertion) ext).linkControlContext(context, path + CPS
+				((ServiceExertion) ext).linkControlContext(context, path + SorcerConstants.CPS
 						+ (ext instanceof Job ? "job" : "task[")
 						+ ext.getName() + "]");
 			} catch (ContextException e) {

@@ -31,7 +31,7 @@ import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
+
 import sorcer.service.Servicer;
 import sorcer.service.SignatureException;
 
@@ -105,7 +105,7 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public void setExertion(Exertion exertion) throws ExertionException {
-		this.exertion = (ServiceExertion) exertion;
+		this.exertion = exertion;
 	}
 
 	public Exertion getExertion() {

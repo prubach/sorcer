@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ContextLink;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.EvaluationTask;
 import sorcer.core.exertion.NetTask;

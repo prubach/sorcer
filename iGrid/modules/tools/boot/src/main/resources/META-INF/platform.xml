@@ -9,7 +9,7 @@
     <capability name="SORCER" common="yes">
         <version>5.0</version>
         <manufacturer>SORCERsoft.org</manufacturer>
-        <classpath>${iGrid.home}/lib/sorcer/lib/sorcer-prv.jar</classpath>
+        <!--<classpath>${iGrid.home}/lib/sorcer/lib/sorcer-prv.jar</classpath>-->
     </capability>
     
     <!--
@@ -18,7 +18,7 @@
     <capability name="River" common="yes">
         <version>2.2</version>
         <manufacturer>Apache Software Foundation</manufacturer>
-        <classpath>${iGrid.home}/lib/river/lib/jsk-lib.jar ${iGrid.home}/lib/river/lib/serviceui.jar</classpath>
+        <!--<classpath>${iGrid.home}/lib/river/lib/jsk-lib.jar ${iGrid.home}/lib/river/lib/serviceui.jar</classpath>-->
     </capability>
     
     <!--
@@ -27,7 +27,7 @@
     <capability name="Berkeley DB JE" common="yes">
         <version>je-4.1.21</version>
         <manufacturer>Oracle</manufacturer>
-        <classpath>${iGrid.home}/lib/common/je-4.1.21.jar</classpath>
+        <!--<classpath>${iGrid.home}/lib/common/je-4.1.21.jar</classpath>-->
     </capability>  
     
     <!--

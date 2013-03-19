@@ -62,7 +62,6 @@ import sorcer.core.Provider;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.core.provider.cataloger.ui.CatalogerUI;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.service.Context;
@@ -448,7 +447,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			// URL exportUrl, String className, String name, String helpFilename
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
 					(JFrameFactory) new UIFrameFactory(new URL[] { uiUrl },
-							CatalogerUI.class.getName(), "Catalog Browser",
+							"sorcer.core.provider.cataloger.ui.CatalogerUI", "Catalog Browser",
 							helpUrl));
 		} catch (Exception ex) {
 			ex.printStackTrace();

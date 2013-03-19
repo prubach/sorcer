@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;

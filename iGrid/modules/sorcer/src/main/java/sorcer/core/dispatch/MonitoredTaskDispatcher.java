@@ -24,6 +24,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
+import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
@@ -67,21 +68,21 @@ public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
 					+ " dispatcher: " + getClass().getName());
 //			logger.finer("\n*** got result: ***\n" + result);
 
-			if (result.getStatus() <= FAILED) {
-				xrt.setStatus(FAILED);
-				state = FAILED;
+			if (result.getStatus() <= ExecState.FAILED) {
+				xrt.setStatus(ExecState.FAILED);
+				state = ExecState.FAILED;
 				xrt.getMonitorSession().changed(result.getContext(),
-						Category.FAILED);
+						ExecState.Category.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
 				result.reportException(fe);
 				throw fe;
 			} else {
 				notifyExertionExecution(xrt, result);
-				state = DONE;
-				xrt.setStatus(DONE);
+				state = ExecState.DONE;
+				xrt.setStatus(ExecState.DONE);
 				xrt.getMonitorSession().changed(result.getContext(),
-						Category.DONE);
+						ExecState.Category.DONE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

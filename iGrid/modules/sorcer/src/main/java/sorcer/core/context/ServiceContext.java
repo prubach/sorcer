@@ -54,6 +54,8 @@ import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.service.Link;
 import sorcer.service.MonitorException;
+import sorcer.service.MonitoredExertion;
+import sorcer.service.MonitoringSession;
 import sorcer.service.Revaluation;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
@@ -177,7 +179,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	protected Hashtable metacontext;
 
 	/** The exertion that uses this context */
-	protected ServiceExertion exertion;
+	protected Exertion exertion;
 
 	protected String currentSelector;
 
@@ -279,7 +281,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		domainName = cntxt.getDomainName();
 		subdomainName = cntxt.getSubdomainName();
 		version = cntxt.getVersion();
-		exertion = (ServiceExertion) cntxt.getExertion();
+		exertion = cntxt.getExertion();
 		pathIds = cntxt.getPathIds();
 		linkedPaths = ((ServiceContext) cntxt).getLinkedPaths();
 		delPathIds = cntxt.getDelPathIds();
@@ -432,7 +434,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	public void setExertion(Exertion exertion) {
 		if (exertion == null || exertion instanceof Exertion)
-			this.exertion = (ServiceExertion) exertion;
+			this.exertion = exertion;
 	}
 
 	public void setProject(String projectName) {
@@ -2028,8 +2030,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					} catch (ContextNodeException e2) {
 						e2.printStackTrace();
 					}
-				} else if (val instanceof Exertion) {
-					sb.append(((ServiceExertion) val).info());
+				/*} else if (val instanceof Exertion) {
+					sb.append(((ServiceExertion) val).info());*/
 				} else
 					sb.append(val.toString());
 			}
@@ -2840,14 +2842,17 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * @throws RemoteException
 	 * @throws MonitorException
 	 */
-	public void changed(Category aspect) throws RemoteException,
-			MonitorException {
-		ServiceExertion mxrt = (ServiceExertion) getExertion();
-		if (mxrt != null && mxrt.isMonitored()
-				&& mxrt.getMonitorSession() != null) {
-			mxrt.getMonitorSession().changed(this, aspect);
-		}
-	}
+    public void changed(Category aspect) throws RemoteException,
+            MonitorException {
+        Exertion exert = getExertion();
+        if (exert != null && exert.isMonitored()) {
+            MonitoredExertion mxrt = (MonitoredExertion) exert;
+            MonitoringSession monitorSession = mxrt.getMonitorSession();
+            if (monitorSession != null) {
+                monitorSession.changed(this, aspect);
+            }
+        }
+    }
 
 	public Object getAsis(String path) throws ContextException {
 		Object val;

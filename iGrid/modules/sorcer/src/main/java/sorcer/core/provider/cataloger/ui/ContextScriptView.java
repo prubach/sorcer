@@ -59,11 +59,8 @@ public class ContextScriptView extends JPanel {
 		if (System.getSecurityManager() == null)
 			System.setSecurityManager(new RMISecurityManager());
 
-		if (dispatcher instanceof SignatureDispatcherForProvider)
-			provider = ((SignatureDispatcherForProvider)dispatcher).getProvider();
-		else
-			provider = ((SignatureDispatcherForCataloger)dispatcher).getProvider();
-		
+        provider = dispatcher.getProvider();
+
 		tabbedPane = new JTabbedPane();
 
 		inViewer = new EditorView("", false);

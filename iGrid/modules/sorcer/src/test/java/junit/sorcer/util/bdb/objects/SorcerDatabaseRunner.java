@@ -19,10 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import junit.sorcer.core.provider.Multiplier;
 import junit.sorcer.core.provider.exertmonitor.SessionDatabaseRunner;
-import sorcer.arithmetic.provider.Adder;
-import sorcer.arithmetic.provider.Multiplier;
-import sorcer.arithmetic.provider.Subtractor;
 import sorcer.core.context.ServiceContext;
 //import sorcer.core.context.model.ParametricModel;
 //import sorcer.core.context.model.VarModel;
@@ -360,35 +358,13 @@ public class SorcerDatabaseRunner {
 //    }
 	
 	private Task getTask() throws ExertionException, SignatureException, ContextException {
-		Task f4 = task("f4", sig("multiply", Multiplier.class), 
+		Task f4 = task("f4", sig("multiply", Multiplier.class),
 				context("multiply", in(path("arg/x1"), 10.0), in(path("arg/x2"), 50.0),
 						out(path("result/y1"), null)));
 		
 		return f4;
 	}
 		
-	private Job getJob() throws ExertionException, SignatureException, ContextException {
-		Task f4 = task("f4", sig("multiply", Multiplier.class), 
-				context("multiply", in(path("arg/x1"), 10.0), in(path("arg/x2"), 50.0),
-						out(path("result/y1"), null)));
-
-		Task f5 = task("f5", sig("add", Adder.class), 
-				context("add", in(path("arg/x3"), 20.0), in(path("arg/x4"), 80.0),
-						out(path("result/y2"), null)));
-
-		Task f3 = task("f3", sig("subtract", Subtractor.class), 
-				context("subtract", in(path("arg/x5"), null), in(path("arg/x6"), null),
-						out(path("result/y3"), null)));
-
-		// Service Composition f1(f2(x1, x2), f3(x1, x2))
-		// Service Composition f2(f4(x1, x2), f5(x1, x2))
-		//Job f1= job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), f3,
-		Job f1= job("f1", job("f2", f4, f5), f3,
-				pipe(out(f4, path("result/y1")), in(f3, path("arg/x5"))),
-				pipe(out(f5, path("result/y2")), in(f3, path("arg/x6"))));
-		return f1;
-	}
-	
 	 /**
      * Populate the exertion entities in the database.  
 	 * @throws ContextException 
@@ -398,7 +374,6 @@ public class SorcerDatabaseRunner {
 	private void addExertions() throws ExertionException, SignatureException, ContextException {
 		StoredValueSet<Exertion> exertionSet = views.getExertionSet();
 		exertionSet.add(getTask());
-		exertionSet.add(getJob());
 	}
 
 	 /**

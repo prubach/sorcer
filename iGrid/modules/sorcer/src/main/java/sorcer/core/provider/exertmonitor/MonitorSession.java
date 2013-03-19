@@ -46,7 +46,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.util.ObjectCloner;
 
 public class MonitorSession extends ArrayList<MonitorSession> implements
-		MonitorLandlord.MonitorLeasedResource, Serializable {
+		MonitorLandlord.MonitorLeasedResource, Serializable, IMonitorSession {
 
 	static final long serialVersionUID = -4427096084987355507L;
 

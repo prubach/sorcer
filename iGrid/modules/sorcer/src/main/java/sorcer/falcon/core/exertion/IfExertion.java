@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.nfunk.jep.JEP;
 
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.service.Context;

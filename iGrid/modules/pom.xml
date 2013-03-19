@@ -21,5 +21,7 @@
 		<module>tools</module>
 		<module>examples</module>
 		<module>util</module>
-	</modules>
+        <module>providers</module>
+        <module>sorcer-api</module>
+    </modules>
 </project>

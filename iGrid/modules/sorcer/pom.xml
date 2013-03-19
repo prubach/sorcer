@@ -17,6 +17,23 @@
 	<description>SORCER</description>
 
 	<dependencies>
+<!--
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-dl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+-->
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>jobber-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>locker</artifactId>
@@ -102,9 +119,9 @@
 
 		<!-- dependencies from the private maven repository -->
 		<dependency>
-			<groupId>com.sun.jini</groupId>
+			<groupId>org.apache.river</groupId>
 			<artifactId>start</artifactId>
-			<version>1.0</version>
+			<version>${v.jini}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jini</groupId>
@@ -146,7 +163,14 @@
             <artifactId>reference-collections</artifactId>
             <version>1.0.1</version>
         </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+        </dependency>
+
+
+    </dependencies>
 
 	<build>
         <plugins>
@@ -201,11 +225,12 @@
 				</executions>
 			</plugin>
 
+<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-rio-plugin</artifactId>
 				<version>5.0</version>
-				<!-- <extensions>true</extensions> -->
+				&lt;!&ndash; <extensions>true</extensions> &ndash;&gt;
 				<configuration>
 					<createJar>
 						<classifier>dl</classifier>
@@ -246,6 +271,7 @@
                     </createJar>
 				</configuration>
 			</plugin>
+-->
 		</plugins>
 	</build>
 </project>

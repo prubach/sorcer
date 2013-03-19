@@ -38,7 +38,8 @@ import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.IControlContext;
 import sorcer.core.context.ListContext;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
@@ -173,12 +174,12 @@ public class operator {
 		return exertion;
 	}
 
-	public static ControlContext control(Exertion exertion)
+	public static IControlContext control(Exertion exertion)
 			throws ContextException {
 		return exertion.getControlContext();
 	}
 
-	public static ControlContext control(Exertion exertion, String childName)
+	public static IControlContext control(Exertion exertion, String childName)
 			throws ContextException {
 		return exertion.getExertion(childName).getControlContext();
 	}

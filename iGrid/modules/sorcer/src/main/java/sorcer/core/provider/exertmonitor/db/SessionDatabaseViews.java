@@ -2,6 +2,7 @@ package sorcer.core.provider.exertmonitor.db;
 
 import java.io.IOException;
 
+import sorcer.core.provider.exertmonitor.IMonitorSession;
 import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.util.bdb.objects.MarshalledData;
 import sorcer.util.bdb.objects.UuidKey;
@@ -22,7 +23,7 @@ import com.sleepycat.collections.StoredValueSet;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SessionDatabaseViews {
 	
-	private StoredMap<UuidKey, MonitorSession>  sessionMap;
+	private StoredMap<UuidKey, IMonitorSession>  sessionMap;
 
 	/**
 	 * Create the data bindings and collection views.
@@ -47,7 +48,7 @@ public class SessionDatabaseViews {
 	/**
 	 * Return a map view of the session storage container.
 	 */
-	public StoredMap<UuidKey, MonitorSession>  getSessionMap() {
+	public StoredMap<UuidKey, IMonitorSession>  getSessionMap() {
 		return sessionMap;
 	}
 	
