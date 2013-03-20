@@ -21,5 +21,6 @@
 		<module>webster</module>
 		<module>boot</module>
 		<module>shell</module>
+		<module>sorcer-provider</module>
 	</modules>
 </project>

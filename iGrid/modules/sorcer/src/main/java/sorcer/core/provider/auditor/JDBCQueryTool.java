@@ -85,8 +85,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
-import sorcer.service.ServiceExertion;
-
 import com.mckoi.jfccontrols.Query;
 import com.mckoi.jfccontrols.QueryAgent;
 import com.mckoi.jfccontrols.ResultSetTableModel;
@@ -474,7 +472,7 @@ public class JDBCQueryTool extends JComponent {
 							.readObject();
 
 					System.out.println("------------>"
-							+ (ServiceExertion) signedTask.getObject());
+							+ signedTask.getObject());
 
 					FileInputStream input = new FileInputStream(
 							"truststore.server");

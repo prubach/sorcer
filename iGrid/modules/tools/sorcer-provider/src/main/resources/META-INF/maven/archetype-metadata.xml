@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+        name="jobber"
+        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+    <modules>
+        <module id="${artifactId}-api" dir="__rootArtifactId__-api" name="${artifactId}-api">
+            <fileSets>
+                <fileSet>
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-service" dir="__rootArtifactId__-service" name="${artifactId}-service">
+            <fileSets>
+                <fileSet>
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-proxy" dir="__rootArtifactId__-proxy" name="${artifactId}-proxy">
+            <fileSets>
+                <fileSet>
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-ui" dir="__rootArtifactId__-ui" name="${artifactId}-ui">
+            <fileSets>
+                <fileSet>
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+    </modules>
+</archetype-descriptor>
