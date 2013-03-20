@@ -82,7 +82,7 @@ public class Webster implements Runnable {
     private int soTimeout = 0;
     private static Logger logger = Logger.getLogger("sorcer.tools.webster");
     private com.sun.jini.start.LifeCycle lifeCycle;
-    private boolean debug = false;
+    private boolean debug = true;
     private boolean isDaemon = false;
     private boolean useMaven = false;    
     private static String SERVER_DESCRIPTION=Webster.class.getName();
@@ -331,7 +331,7 @@ public class Webster implements Runnable {
 	private void initialize(String roots, String bindAddress, boolean useMaven) throws BindException {
 		String fs = System.getProperty("file.separator");
 		if (useMaven) {
-			setupRoots(System.getProperty("user.home") + fs + ".m2" + fs + "repository");
+			setupRoots(roots + ";" + System.getProperty("user.home") + fs + ".m2" + fs + "repository");
 		}
 		init(bindAddress);
 	}
