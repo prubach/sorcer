@@ -22,6 +22,9 @@ import org.jgroups.Channel;
 import org.jgroups.JChannel;
 import org.jgroups.blocks.LockNotGrantedException;
 import org.jgroups.blocks.LockNotReleasedException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Modified to test additional features such as leasing
@@ -64,6 +67,7 @@ public class DistributedLockManagerTest {
 
 	protected static boolean logConfigured;
 
+	@Before
 	public void setUp() throws Exception {
 		channel1 = new JChannel(SERVER_PROTOCOL_STACK);
 		channel1.setOpt(Channel.GET_STATE_EVENTS, Boolean.TRUE);
@@ -113,6 +117,7 @@ public class DistributedLockManagerTest {
 				+ channel2.getState(null, 0));
 	}
 
+	@After
 	public void tearDown() throws Exception {
 		channel2.close();
 
@@ -124,6 +129,7 @@ public class DistributedLockManagerTest {
 		channel1.close();
 	}
 
+	@Test
 	public void test() throws Exception {
 		System.out.println("Lock 1");
 		lockManager1.lock("obj1", "owner1", 10000, null);
