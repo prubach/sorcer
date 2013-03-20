@@ -1,20 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>modules</artifactId>
-        <groupId>org.sorcersoft.sorcer</groupId>
-        <version>11.1</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <artifactId>providers</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>jobber</module>
-        <module>cataloger</module>
-    </modules>
+	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>modules</artifactId>
+	</parent>
 
+	<artifactId>providers</artifactId>
+	<packaging>pom</packaging>
+	<name>SORCER providers</name>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+
+	<modules>
+		<module>jobber</module>
+		<module>cataloger</module>
+	</modules>
+	
 </project>

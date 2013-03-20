@@ -10,13 +10,13 @@
 		<artifactId>jobber</artifactId>
 	</parent>
 
-	<artifactId>jobber-api</artifactId>
+	<artifactId>jobber-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER jobber :: jobber-api</name>
+	<name>SORCER jobber :: jobber-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
-	<dependencies>
+	    <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
@@ -29,5 +29,4 @@
         </dependency>
     </dependencies>
 
-	
 </project>
