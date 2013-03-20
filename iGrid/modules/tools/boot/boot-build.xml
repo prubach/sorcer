@@ -6,7 +6,7 @@
 	<!-- set global properties -->
 	<import file="../../common-build.xml" />
 	<!-- Where your sources can be found relative to the current directory -->
-	<property name="src" value="./src" />
+	<property name="src" value="./src/main/java" />
 
 	<fileset dir="${src}">
 		<patternset id="java.source">
@@ -28,6 +28,7 @@
 		<pathelement location="${common.lib}/tools/jmx-lookup.jar" />
 		<pathelement location="${lib}/emory/emory-util-io.jar" />
 		<pathelement location="${lib}/emory/emory-util-security.jar" />
+		<pathelement location="${lib}/emory/emory-util-classloader-2.1.jar" />
 		<pathelement location="${lib}/emory/backport-util-concurrent.jar" />
 		<pathelement location="${common.lib}/cglib/cglib-nodep-2.1_3.jar" />
 		<pathelement location="${common.lib}/prefuse/prefuse.jar" />

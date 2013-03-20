@@ -106,6 +106,7 @@ public class SorcerDescriptorUtil {
 		return (getWebster(policy, port, roots, address, 0, 0, debug, true));
 	}
 	
+
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 * {@link sorcer.tools.webster.Webster}.
@@ -128,6 +129,36 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getWebster(String policy, int port,
 			String[] roots, String address, int startPort, int endPort,
 			boolean debug, boolean isDaemon) throws IOException {
+		return getWebster(policy, port, roots, address, startPort, endPort, debug, isDaemon, false);
+	}
+
+	
+	/**
+	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+	 * {@link sorcer.tools.webster.Webster}.
+	 * 
+	 * @param policy
+	 *            The security policy file to use
+	 * @param port
+	 *            The port webster should use
+	 * @param roots
+	 *            The roots webster should serve
+	 * @param debug
+	 *            If true, set the <tt>sorcer.tools.debug</tt> property
+	 *          
+	 * @param useMaven
+	 * 		   instead of serving roots use local maven repo
+	 *  
+	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
+	 *         webster using a specified port. The <tt>webster.jar</tt> file
+	 *         will be loaded from <tt>${iGrid.home}/common/sorcer</tt>
+	 * 
+	 * @throws IOException
+	 *             If there are problems getting the anonymous port
+	 */
+	public static ServiceDescriptor getWebster(String policy, int port,
+			String[] roots, String address, int startPort, int endPort,
+			boolean debug, boolean isDaemon, boolean useMaven) throws IOException {
 //		logger.finer("policy: " + policy + ", port: " + port + ", roots: "
 //				+ Arrays.toString(roots) + ", address: " + "startPort: "
 //				+ startPort + ", endPort:" + endPort);
@@ -167,7 +198,7 @@ public class SorcerDescriptorUtil {
 				websterClass,
 				new String[] { "-port", "" + websterPort, "-roots", websterRoots,
 						"-bindAddress", websterAddress, "-startPort",
-						"" + startPort, "-endPort", "" + endPort, "-isDaemon", "" + isDaemon }));
+						"" + startPort, "-endPort", "" + endPort, "-isDaemon", "" + isDaemon, "-useMaven", "" + useMaven }));
 	}
 
 	/**
