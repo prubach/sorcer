@@ -433,9 +433,9 @@ public class SorcerDescriptorUtil {
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
                 coords("org.sorcersoft.sorcer:jobber-api:11.1"),
-                coords("org.sorcersoft.sorver:sorcer-dl:11.1"),
+                coords("org.sorcersoft.sorver:sorcer-api:11.1"),
                 coords("net.jini.lookup:serviceui:2.2.1"),
-                coords("org.sorcersoft.sorver:exertlet-ui:11.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),
         }, hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
