@@ -81,7 +81,12 @@ public class SorcerDescriptorUtil {
 		return (getWebster(policy, port, roots, null, false));
 	}
 
-	public static ServiceDescriptor getWebster(String policy, int port,
+    public static ServiceDescriptor getWebster(String policy, int port,
+           String[] roots, boolean isMaven) throws IOException {
+        return (getWebster(policy, port, roots, null, 0, 0, false, false, isMaven));
+    }
+
+    public static ServiceDescriptor getWebster(String policy, int port,
 			String address, String[] roots) throws IOException {
 		return (getWebster(policy, port, roots, address, false));
 	}

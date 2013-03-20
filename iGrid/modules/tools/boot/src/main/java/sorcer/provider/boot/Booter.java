@@ -151,7 +151,7 @@ public class Booter implements SorcerConstants {
     public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {
         String[] jars = new String[artifacts.length];
         for (int i = 0; i < artifacts.length; i++) {
-            jars[i] = new File(artifacts[i].getRelativePath()).getAbsolutePath();
+            jars[i] = artifacts[i].getRelativePath();
         }
         return getCodebase(jars, address, port);
     }

@@ -39,7 +39,7 @@ public class ArtifactCoordinates {
 
     public String getRelativePath() {
         StringBuilder result = new StringBuilder(groupId.replace('.', '/'));
-        result.append('/').append(artifactId).append('/').append(version).append(artifactId).append('-').append(version).append(".jar");
+        result.append('/').append(artifactId).append('/').append(version).append('/').append(artifactId).append('-').append(version).append(".jar");
         return result.toString();
     }
 }
