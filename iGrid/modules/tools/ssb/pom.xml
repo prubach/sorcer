@@ -54,6 +54,9 @@
 
                 <configuration>
                     <mainClass>sorcer.ssb.SorcerServiceBrowser</mainClass>
+                	<arguments>
+                	 	<argument>${env.IGRID_HOME}/bin/browser/configs/ssb.config</argument>
+                	</arguments>
                     <systemProperties>
                         <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
                         <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>

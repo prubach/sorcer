@@ -172,7 +172,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 					this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
 				
 			} catch (UnknownHostException e) {
-				logger.severe("Cannot get hostanme for: " + codebase);
+				logger.severe("Cannot get hostname for: " + codebase);
 			}
 		}
 		else

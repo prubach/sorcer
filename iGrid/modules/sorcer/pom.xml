@@ -130,6 +130,20 @@
             <version>${v.jini}</version>
             <scope>runtime</scope>
         </dependency>
+		<!--  needed at runtime to run Jini Transaction Manager -->
+		<dependency>
+			<groupId>org.apache.river</groupId>
+			<artifactId>mahalo-dl</artifactId>
+			<version>${v.jini}</version>
+            <scope>runtime</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>mahalo</artifactId>
+            <version>${v.jini}</version>
+            <scope>runtime</scope>
+        </dependency>
+		<!-- ################# -->
 		<dependency>
 			<groupId>com.sun.jini</groupId>
 			<artifactId>madison-boot</artifactId>
