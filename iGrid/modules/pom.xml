@@ -23,5 +23,6 @@
 		<module>util</module>
         <module>providers</module>
         <module>sorcer-api</module>
+        <module>exertlet-ui</module>
     </modules>
 </project>

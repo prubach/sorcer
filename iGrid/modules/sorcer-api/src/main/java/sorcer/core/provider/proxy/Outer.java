@@ -21,7 +21,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import net.jini.admin.Administrable;
-import sorcer.core.provider.ProviderException;
 import sorcer.service.Servicer;
 
 /**

@@ -1,6 +1,6 @@
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <parent>
         <artifactId>jobber</artifactId>
@@ -21,5 +21,16 @@
             <artifactId>sorcer</artifactId>
             <version>${project.version}</version>
         </dependency>
-    </dependencies>	
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>exertlet-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jini.lookup</groupId>
+            <artifactId>serviceui</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
+
+    </dependencies>
 </project>

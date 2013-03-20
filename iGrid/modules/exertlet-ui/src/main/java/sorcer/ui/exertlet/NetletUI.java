@@ -17,15 +17,10 @@
 
 package sorcer.ui.exertlet;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-
-import sorcer.core.provider.cataloger.ui.ContextView;
 
 /**
  * The user agent UI for the exertlet editing and execution.

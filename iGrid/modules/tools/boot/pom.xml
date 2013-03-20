@@ -29,8 +29,8 @@
 
 
         <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
+            <groupId>org.apache.river</groupId>
+            <artifactId>start</artifactId>
             <version>${v.jini}</version>
         </dependency>
         <dependency>

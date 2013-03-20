@@ -48,7 +48,6 @@ import net.jini.lookup.ui.MainUI;
 import net.jini.lookup.ui.factory.JFrameFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.core.provider.cataloger.ui.CatalogerUI;
 import sorcer.core.provider.logger.ui.LoggerFrameUI;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;

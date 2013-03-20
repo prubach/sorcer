@@ -21,15 +21,10 @@ import java.awt.GridLayout;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.Provider;
-import sorcer.core.provider.cataloger.ui.BrowserModel;
-import sorcer.core.provider.cataloger.ui.BrowserWindow;
-import sorcer.core.provider.cataloger.ui.SignatureDispatcherForProvider;
-import sorcer.core.provider.cataloger.ui.SignatureDispatchment;
 import sorcer.core.provider.proxy.Outer;
 import sorcer.util.Log;
 
@@ -94,18 +89,5 @@ public class ProviderUI extends JPanel {
 	private JPanel createAttributePanel() {
 		return new PropertiesPanel(provider,
 				"Service Properties (service proxy, provider, SORCER, and JVM)");
-	}
-
-	private JScrollPane createTaskEditor() {
-		BrowserModel b = new BrowserModel();
-		SignatureDispatchment dispatcher = new SignatureDispatcherForProvider(
-				b, item.service);
-		BrowserWindow panel = new BrowserWindow(b, dispatcher, false);
-		dispatcher.fillModel();
-
-		JScrollPane scroller = new JScrollPane(panel);
-		// scroller.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
-
-		return scroller;
 	}
 }

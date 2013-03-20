@@ -22,11 +22,11 @@
 			<artifactId>jsk-platform</artifactId>
 			<version>${v.jini}</version>
 		</dependency>
-		<dependency>
-			<groupId>net.jini</groupId>
-			<artifactId>jsk-lib</artifactId>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>start</artifactId>
             <version>${v.jini}</version>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.jgroups</groupId>
 			<artifactId>jgroups</artifactId>

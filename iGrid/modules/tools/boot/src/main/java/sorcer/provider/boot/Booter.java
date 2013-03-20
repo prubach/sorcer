@@ -147,7 +147,15 @@ public class Booter implements SorcerConstants {
                 ":", port,
                 "/"+jar}));
     }
-    
+
+    public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {
+        String[] jars = new String[artifacts.length];
+        for (int i = 0; i < artifacts.length; i++) {
+            jars[i] = new File(artifacts[i].getRelativePath()).getAbsolutePath();
+        }
+        return getCodebase(jars, address, port);
+    }
+
     /**
      * Return the codebase for the provided JAR names, port and address
      * 

@@ -18,6 +18,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>exertlet-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer</artifactId>
             <version>${project.version}</version>
         </dependency>

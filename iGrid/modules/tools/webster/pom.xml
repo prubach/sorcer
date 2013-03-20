@@ -17,10 +17,10 @@
 	<url>http://sorcersoft.org/</url>
 
 	<dependencies>
-		<dependency>
-			<groupId>net.jini</groupId>
-			<artifactId>jsk-lib</artifactId>
-			<version>${v.jini}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>start</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
 	</dependencies>
 </project>

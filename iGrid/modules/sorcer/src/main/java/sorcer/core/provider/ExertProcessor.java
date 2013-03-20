@@ -133,7 +133,7 @@ public class ExertProcessor {
 	public ExertProcessor(Exertion exertion, ProviderDelegate delegate,
 			Jobber jobber) {
 		this(exertion, delegate);
-		this.jobber = (ExertionJobber)jobber;
+		this.jobber = jobber;
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class ExertProcessor {
 								+ jobberName);
 					}
 				}
-				Exertion job = (Job)((ExertionJobber)jobber).execute(xrt, null);
+				Exertion job = ((ExertionJobber)jobber).execute(xrt, null);
 				logger.info("********************************************* job exerted = " + job);
 
 				return job;

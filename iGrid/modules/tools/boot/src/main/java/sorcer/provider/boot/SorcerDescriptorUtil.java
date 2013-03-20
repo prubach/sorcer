@@ -23,6 +23,8 @@ import com.sun.jini.config.ConfigUtil;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
 
+import static sorcer.provider.boot.ArtifactCoordinates.coords;
+
 /**
  * Holds static attributes used during the startup of services and provides
  * utilities to obtain {@link com.sun.jini.start.ServiceDescriptor} instances
@@ -30,8 +32,10 @@ import com.sun.jini.start.ServiceDescriptor;
  */
 public class SorcerDescriptorUtil {
 	final static Logger logger = Logger.getLogger("sorcer.provider.boot");
-	
-	/**
+
+    private static File repositoryRoot = new File(System.getProperty("user.home"), ".m2/repository");
+
+    /**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 * {@link sorcer.tools.webster.Webster}.
 	 * 
@@ -419,14 +423,15 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"jobber.jar"
-		});
+		String jobberClasspath = new File(repositoryRoot, coords("org.sorcersoft.sorcer:jobber-service:11.1").getRelativePath()).getAbsolutePath();
 		
 		// service provider codebase
-		String jobberCodebase = Booter.getCodebase(new String[] {
-				"jobber-dl.jar", "sorcer-prv-dl.jar", "jsk-dl.jar", "serviceui.jar", "exertlet-ui.jar" },
-				hostAddress, Integer.toString(port));
+        String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+                coords("org.sorcersoft.sorcer:jobber-api:11.1"),
+                coords("org.sorcersoft.sorver:sorcer-dl:11.1"),
+                coords("net.jini.lookup:serviceui:2.2.1"),
+                coords("org.sorcersoft.sorver:exertlet-ui:11.1"),
+        }, hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
 				jobberClasspath, implClass, jobberConfig));
