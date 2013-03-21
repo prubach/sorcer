@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.sleepycat</groupId>
 			<artifactId>je</artifactId>
-			<version>4.1.21</version>
+			<version>${v.sleepycat}</version>
 		</dependency>
 
 
@@ -122,26 +122,26 @@
 			<groupId>org.apache.river</groupId>
 			<artifactId>reggie-dl</artifactId>
 			<version>${v.jini}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>reggie</artifactId>
             <version>${v.jini}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
 		<!--  needed at runtime to run Jini Transaction Manager -->
 		<dependency>
 			<groupId>org.apache.river</groupId>
 			<artifactId>mahalo-dl</artifactId>
 			<version>${v.jini}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>mahalo</artifactId>
             <version>${v.jini}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
 		<!-- ################# -->
 		<dependency>
@@ -170,9 +170,9 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.artima.jini</groupId>
+			<groupId>net.jini.lookup</groupId>
 			<artifactId>serviceui</artifactId>
-			<version>1.1a</version>
+			<version>${v.jini}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.singsurf.jep</groupId>

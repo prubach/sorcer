@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import sorcer.util.ArtifactCoordinates;
 import sorcer.core.SorcerConstants;
 import sorcer.util.Sorcer;
 

@@ -37,7 +37,6 @@ import net.jini.lookup.JoinManager;
 import net.jini.lookup.ServiceIDListener;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
-import net.jini.lookup.ui.factory.JFrameFactory;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
@@ -74,6 +73,7 @@ import sorcer.service.Task;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.ObjectLogger;
 import sorcer.util.Sorcer;
 import sorcer.util.SorcerUtil;
@@ -927,15 +927,15 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
 		UIDescriptor uiDesc2 = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/exertlet-ui.jar");
+			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/"+ ArtifactCoordinates.coords("org.sorcersoft.sorcer:exertlet-ui:11.1").getRelativePath());
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/exertlet/exertlet-ui.html");
 
 			// URL exportUrl, String className, String name, String helpFilename
 			uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					(JFrameFactory) new UIFrameFactory(new URL[] { uiUrl },
-							"sorcer.ui.exertlet.NetletUI", "Exertlet Editor",
-							helpUrl));
+                    new UIFrameFactory(new URL[] { uiUrl },
+                            "sorcer.ui.exertlet.NetletUI", "Exertlet Editor",
+                            helpUrl));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

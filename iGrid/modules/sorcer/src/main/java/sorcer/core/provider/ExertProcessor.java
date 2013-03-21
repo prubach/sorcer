@@ -32,7 +32,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.provider.jobber.ExertionJobber;
 import sorcer.core.provider.jobber.ExertionSpacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
@@ -42,6 +41,7 @@ import sorcer.falcon.core.exertion.WhileExertion;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;
+import sorcer.service.Executor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
@@ -293,7 +293,7 @@ public class ExertProcessor {
 								+ jobberName);
 					}
 				}
-				Exertion job = ((ExertionJobber)jobber).execute(xrt, null);
+				Exertion job = ((Executor)jobber).execute(xrt, null);
 				logger.info("********************************************* job exerted = " + job);
 
 				return job;
@@ -809,10 +809,6 @@ public class ExertProcessor {
 		return false;
 	}
 
-	public void setJobber(ExertionJobber jobber) {
-		this.jobber = jobber;
-	}
-	
 	public void setSpacer(ExertionSpacer spacer) {
 		this.spacer = spacer;
 	} 

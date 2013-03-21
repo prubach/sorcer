@@ -17,15 +17,9 @@
     <url>http://sorcersoft.org/</url>
 
     <dependencies>
-
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>webster</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

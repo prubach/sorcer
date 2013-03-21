@@ -1,4 +1,4 @@
-package sorcer.provider.boot;
+package sorcer.util;
 
 /**
  * @author Rafał Krupiński
@@ -16,6 +16,10 @@ public class ArtifactCoordinates {
         String groupId = coordSplit[0];
         String artifactId = coordSplit[1];
         String version = coordSplit.length == 3 ? coordSplit[2] : null;
+        return new ArtifactCoordinates(groupId, artifactId, version);
+    }
+
+    public static ArtifactCoordinates coords(String groupId, String artifactId, String version) {
         return new ArtifactCoordinates(groupId, artifactId, version);
     }
 
@@ -41,5 +45,10 @@ public class ArtifactCoordinates {
         StringBuilder result = new StringBuilder(groupId.replace('.', '/'));
         result.append('/').append(artifactId).append('/').append(version).append('/').append(artifactId).append('-').append(version).append(".jar");
         return result.toString();
+    }
+
+    @Override
+    public String toString() {
+        return getRelativePath();
     }
 }

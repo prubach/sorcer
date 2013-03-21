@@ -84,7 +84,6 @@ public class Webster implements Runnable {
     private com.sun.jini.start.LifeCycle lifeCycle;
     private boolean debug = true;
     private boolean isDaemon = false;
-    private boolean useMaven = false;    
     private static String SERVER_DESCRIPTION=Webster.class.getName();
     private String tempDir;
 
@@ -291,14 +290,11 @@ public class Webster implements Runnable {
             } else if(option.equals("-isDaemon")) {
                 i++;
                 isDaemon = Boolean.parseBoolean(options[i]);
-            } else if(option.equals("-useMaven")) {
-                i++;
-                useMaven = Boolean.parseBoolean(options[i]);
             } else {
                 throw new IllegalArgumentException(option);
             }
         }
-        initialize(roots, bindAddress, useMaven);
+        initialize(roots, bindAddress);
     }
 
     /*
@@ -325,14 +321,6 @@ public class Webster implements Runnable {
 
 	private void initialize(String roots, String bindAddress) throws BindException {
 		setupRoots(roots);
-		init(bindAddress);
-	}
-	
-	private void initialize(String roots, String bindAddress, boolean useMaven) throws BindException {
-		String fs = System.getProperty("file.separator");
-		if (useMaven) {
-			setupRoots(roots + ";" + System.getProperty("user.home") + fs + ".m2" + fs + "repository");
-		}
 		init(bindAddress);
 	}
 	
