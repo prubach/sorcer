@@ -17,6 +17,7 @@
 package sorcer.provider.boot;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
@@ -28,6 +29,7 @@ import java.security.Permission;
 import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -433,49 +435,92 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * manifest setting. If there is, append the settings to the classpath
 	 */
 	private String setClasspath(String cp) {
-		StringBuffer buff = new StringBuffer();
+
+        List<String>cpList=new LinkedList<String>();
 		for (String s : Booter.toArray(cp)) {
-			buff.append(s);
-			File f = new File(s);
-			try {
-				String jarPath = f.getParentFile().getCanonicalPath();
-				if (!jarPath.endsWith(File.separator)) {
-					jarPath = jarPath + File.separator;
-				}
-				if (logger.isLoggable(Level.FINE))
-					logger.fine("Creating jar file path from ["
-							+ f.getCanonicalPath() + "]");
-				JarFile jar = new JarFile(f);
-				Manifest man = jar.getManifest();
-				if (man == null) {
-					buff.append(File.pathSeparator);
-					continue;
-				}
-				Attributes attributes = man.getMainAttributes();
-				if (attributes == null) {
-					buff.append(File.pathSeparator);
-					continue;
-				}
-				String values = (String) attributes.get(new Attributes.Name(
-						"Class-Path"));
-				if (values != null) {
-					for (String v : Booter.toArray(values)) {
-						buff.append(File.pathSeparator);
-						String name = jarPath + v;
-						File add = new File(name);
-						buff.append(add.getCanonicalPath());
-					}
-				} else {
-					buff.append(File.pathSeparator);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return buff.toString();
+			cpList.add(s);
+            getClassPathFromJar(cpList, new File(s));
+        }
+		return Booter.getClasspath(cpList.toArray(new String[cpList.size()]));
 	}
 
-	public String toString() {
+    private void getClassPathFromJar(List<String> buff, File f) {
+        try {
+            if (logger.isLoggable(Level.FINE))
+                logger.fine("Creating jar file path from ["
+                        + f.getCanonicalPath() + "]");
+            JarFile jar = new JarFile(f);
+            Manifest man = jar.getManifest();
+            if (man == null) {
+                return;
+            }
+            Attributes attributes = man.getMainAttributes();
+            if (attributes == null) {
+                return;
+            }
+            String values = (String) attributes.get(new Attributes.Name(
+                    "Class-Path"));
+            if (values != null) {
+                for (String v : Booter.toArray(values)) {
+                    File add = findFile(v);
+                    if (add != null) {
+                        buff.add(add.getCanonicalPath());
+                    } else {
+                        logger.warning("Could not find " + v + " on the search path");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    final private static File[] jarRoots;
+
+    static {
+        File repo = new File(System.getProperty("user.home"), ".m2/repository/");
+        jarRoots = new File[]{
+                new File(repo, "org/apache/river"),
+                new File(repo, "net/jini"),
+                new File(repo, "org/sorcersoft"),
+                new File(System.getProperty("iGrid.home"), "lib")};
+    }
+
+    private static File findFile(String name) {
+        File file = new File(name);
+        if (file.exists()) {
+            return file;
+        }
+        return findFile(name, jarRoots);
+    }
+
+    private static File findFile(String name, File[] roots) {
+        for (File root : roots) {
+            File file = findJar(root, name);
+            if (file != null) {
+                return file;
+            }
+        }
+        return null;
+    }
+
+    private static File findJar(File root, String name) {
+        File result = new File(root, name);
+        if (result.exists()) {
+            return result;
+        }
+        File[] files = root.listFiles(new DirectoryFilter());
+        return findFile(name, files);
+    }
+
+    private static class DirectoryFilter implements FileFilter {
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.isDirectory();
+        }
+    }
+
+    public String toString() {
 		return "SorcerServiceDescriptor{"
 				+ "codebase='"
 				+ codebase
