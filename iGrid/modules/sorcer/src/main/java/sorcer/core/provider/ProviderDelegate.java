@@ -106,7 +106,6 @@ import sorcer.core.exertion.ObjectJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
-import sorcer.core.provider.jobber.ExertionJobber;
 import sorcer.core.provider.logger.RemoteHandler;
 import sorcer.core.provider.proxy.Partnership;
 import sorcer.core.provider.proxy.ProxyWrapper;
@@ -958,7 +957,7 @@ public class ProviderDelegate implements SorcerConstants {
 		Signature.Type st = signatures.get(0).getType();
 
 		ObjectJob job = new ObjectJob(signatures.get(0).getType() + "-"
-				+ task.getName(), sig("execute", ExertionJobber.class));
+				+ task.getName(), sig("execute", Jobber.class));
 		Task t = null;
 		Signature ss = null;
 		for (int i = 0; i < signatures.size(); i++) {

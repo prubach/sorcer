@@ -265,14 +265,14 @@ public class ServiceCmd implements Command, SorcerConstants {
 
 	private Jobber getJobberByName() {
 		// If task, return the serlvletJobber which is a Jobber but Peer.
-		if (((ServiceExertion) inputEx).isTask())
+		if (inputEx.isTask())
 			return servletJobber;
-		Jobber jobber = null;
-		String jobberName = ((Job) inputEx).getRendezvousName();
+		Jobber jobber;
+		String jobberName = inputEx.getRendezvousName();
 		if (jobberName != null && !jobberName.trim().equals("")) {
 			jobber = ProviderAccessor.getJobber(jobberName.trim());
-			((ServiceExertion) inputEx).reportException(new ExertionException(
-					"Jobber " + jobberName + "not available!"));
+			inputEx.reportException(new ExertionException(
+                    "Jobber " + jobberName + "not available!"));
 			try {
 				// inputEx.setStatus(FAILED);
 				updateDB(inputEx, UPDATE_EXERTION);
