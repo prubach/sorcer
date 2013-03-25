@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.security.AccessControlException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,11 +39,8 @@ import java.util.logging.Logger;
 
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.ConfigurationException;
 import sorcer.service.Context;
-import sorcer.service.DatabaseStorer;
-import sorcer.service.DataspaceStorer;
 
 /**
  * The Sorcer utility class provides the global environment configuration for
@@ -654,11 +650,13 @@ public class Sorcer implements SorcerConstants {
 	}
 
 	public static String getDatabaseStorerUrl() {
-		return "sos://" + DatabaseStorer.class.getName() + '/' + getActualDatabaseStorerName();
+		//return "sos://" + DatabaseStorer.class.getName() + '/' + getActualDatabaseStorerName();
+		return "sos://DatabaseStorer/" + getActualDatabaseStorerName();
 	}
 	
 	public static String getDataspaceStorerUrl() {
-		return "sos://" + DataspaceStorer.class.getName() + '/' + getActualSpacerName();
+		return "sos://DataspaceStorer/" + getActualDatabaseStorerName();
+		//return "sos://" + DataspaceStorer.class.getName() + '/' + getActualSpacerName();
 	}
 	
 	/**

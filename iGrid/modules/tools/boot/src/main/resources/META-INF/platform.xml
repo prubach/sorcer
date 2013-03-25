@@ -9,7 +9,7 @@
     <capability name="SORCER" common="yes">
         <version>5.0</version>
         <manufacturer>SORCERsoft.org</manufacturer>
-        <!--<classpath>${iGrid.home}/lib/sorcer/lib/sorcer-prv.jar</classpath>-->
+        <classpath>${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar</classpath>
     </capability>
     
     <!--
@@ -18,7 +18,7 @@
     <capability name="River" common="yes">
         <version>2.2</version>
         <manufacturer>Apache Software Foundation</manufacturer>
-        <!--<classpath>${iGrid.home}/lib/river/lib/jsk-lib.jar ${iGrid.home}/lib/river/lib/serviceui.jar</classpath>-->
+        <classpath>${user.home}/.m2/repository/net/jini/jsk-dl/2.2.1/jsk-dl-2.2.1.jar ${user.home}/.m2/repository/net/jini/lookup/serviceui/2.2.1/serviceui-2.2.1.jar</classpath>
     </capability>
     
     <!--
@@ -27,18 +27,19 @@
     <capability name="Berkeley DB JE" common="yes">
         <version>je-4.1.21</version>
         <manufacturer>Oracle</manufacturer>
-        <!--<classpath>${iGrid.home}/lib/common/je-4.1.21.jar</classpath>-->
+        <classpath>${user.home}/.m2/repository/com/sleepycat/je/4.1.21/je-4.1.21.jar</classpath>
     </capability>  
     
     <!--
     Rio jars to load into the common classloader.
     -->
-    <!--<capability name="Rio"
+    <capability name="Rio"
                 class="org.rioproject.system.capability.software.RioSupport"
                 common="yes">
-        <version>4.0 M3</version>
-        <classpath>${iGrid.home}/lib/rio/lib/rio-platform.jar ${iGrid.home}/lib/rio/lib-dl/rio-api.jar</classpath>
-    </capability>-->
+        <version>5.0-SNAPSHOT</version>
+        <classpath>${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar ${user.home}/.m2/repository/org/rioproject/rio-api/5.0-M2/rio-api-5.0-M2.jar</classpath> 
+        <!-- <classpath>${iGrid.home}/lib/rio/lib/rio-platform.jar ${iGrid.home}/lib/rio/lib-dl/rio-api.jar</classpath> -->
+    </capability>
     
 </platform>
 

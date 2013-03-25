@@ -39,15 +39,17 @@
             <version>${v.jini}</version>
         </dependency>
 
-        <dependency>
+<!--         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
+ -->        <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
             <version>5.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -108,8 +110,21 @@
                         <argument>-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb.sos</argument>
 
                         <argument>-Djava.security.policy=../../sorcer/policy/policy.all</argument>
-                        <argument>-classpath</argument>
-                        <classpath/>
+						<argument>-classpath</argument>
+						<argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar:${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/rioproject/resolver/resolver-api/5.0-SNAPSHOT/resolver-api-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:${user.home}/.m2/repository/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar:${user.home}/.m2/repository/com/artima/jini/serviceui/1.1a/serviceui-1.1a.jar</argument>
+<!-- 						<argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:${user.home}/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/org/rioproject/resolver/resolver-api/5.0-SNAPSHOT/resolver-api-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/net/jini/jsk-dl/2.2.1/jsk-dl-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar:${user.home}/.m2/repository/com/artima/jini/serviceui/1.1a/serviceui-1.1a.jar</argument> -->
+<!-- :${user.home}/.m2/repository/org/apache/river/reggie-dl/2.2.1/reggie-dl-2.2.1.jar -->
+ 												
+                        <!-- <classpath/> -->
+<!--                        
+                       river/lib/start.jar river/lib/reference-collections-1.0.1.
+ jar river/lib/high-scale-lib.jar common/groovy/groovy-all-1.7.4.jar
+                       
+                         <argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</argument>
+                         
+                         ${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</argument>
+-->
+                        
                         <argument>com.sun.jini.start.ServiceStarter</argument>
                         <argument>../../../configs/boot-iGrid-min-http.config</argument>
                     </arguments>

@@ -404,7 +404,8 @@ public class SorcerDescriptorUtil {
                 coords("org.sorcersoft.sorcer:jobber-api:11.1"),
                 coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
                 coords("net.jini.lookup:serviceui:2.2.1"),
-                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),
+                //coords("net.jini.lookup:jsk-lib:2.2.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                                
         }, hostAddress, Integer.toString(port));
         logger.info("getJobber got codebase: " + jobberCodebase);
 		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
@@ -870,14 +871,23 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = "";
+		String catalogClasspath = repositoryRoot + fs + coords("org.sorcersoft.sorcer:cataloger-api:11.1").getRelativePath();
 				
-		// service provider codebase
+		
+        String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+                coords("org.sorcersoft.sorcer:jobber-api:11.1"),
+                coords("net.jini.lookup:serviceui:2.2.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                                
+        }, hostAddress, Integer.toString(port));
+
+		
+		
+		// service provider codebase		
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                //coords("org.sorcersoft.sorcer:cataloger-api:11.1"),
                 coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
                 coords("net.jini.lookup:serviceui:2.2.1"),
                 coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),
+                coords("org.sorcersoft.sorcer:cataloger-api:11.1"),
                 coords("org.sorcersoft.sorcer:cataloger-ui:11.1"),
         }, hostAddress, Integer.toString(port));
 		

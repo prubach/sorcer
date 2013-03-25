@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.LogRecord;
 
 public interface RemoteLogger extends Remote {

@@ -30,9 +30,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import sorcer.util.ArtifactCoordinates;
 import sorcer.core.SorcerConstants;
-import sorcer.util.Sorcer;
+import sorcer.util.ArtifactCoordinates;
 
 
 /**
@@ -462,7 +461,8 @@ public class Booter implements SorcerConstants {
 			try {
 				// No file at home, give a try as resource
 				// sorcer/util/sorcer.env
-				InputStream stream = Sorcer.class.getResourceAsStream(envFile);
+				//
+				InputStream stream = SorcerConstants.class.getResourceAsStream(envFile);
 				if (stream != null)
 					props.load(stream);
 				else

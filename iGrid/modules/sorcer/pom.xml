@@ -36,11 +36,6 @@
 		</dependency>-->
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>locker</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>webster</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -61,13 +56,13 @@
 			<artifactId>geronimo-servlet_3.0_spec</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxrpc-api</artifactId>
 			<version>1.1</version>
-		</dependency>
+		</dependency> -->
 
-		<dependency>
+ 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>1.7.4</version>
@@ -77,11 +72,11 @@
 			<artifactId>swing-layout</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>jep</groupId>
 			<artifactId>jep</artifactId>
 			<version>2.4.1a</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.mckoi</groupId>
 			<artifactId>mckoisqldb</artifactId>
@@ -98,7 +93,7 @@
 
 
 		<!-- Oracle maven repo -->
-		<dependency>
+ 		<dependency>
 			<groupId>com.sleepycat</groupId>
 			<artifactId>je</artifactId>
 			<version>${v.sleepycat}</version>
@@ -230,7 +225,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+<!-- 			<plugin>
 				<groupId>com.keyboardsamurais.maven</groupId>
 				<artifactId>maven-timestamp-plugin</artifactId>
 				<version>1.0</version>
@@ -246,7 +241,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+ -->
 <!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
