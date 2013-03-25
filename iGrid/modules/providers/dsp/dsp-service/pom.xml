@@ -7,23 +7,21 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>modules</artifactId>
+		<artifactId>dsp</artifactId>
 	</parent>
 
-	<artifactId>providers</artifactId>
-	<packaging>pom</packaging>
-	<name>SORCER providers</name>
+	<artifactId>dsp-service</artifactId>
+	<packaging>jar</packaging>
+	<name>SORCER dsp :: dsp-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
-	<modules>
-		<module>jobber</module>
-		<module>cataloger</module>
-		<module>spacer</module>
-		<module>logger</module>
-		<module>exertmonitor</module>
-		<module>dbp</module>
-		<module>dsp</module>
-	</modules>
-	
+	<dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>   
+    </dependencies>
+
 </project>

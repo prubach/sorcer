@@ -34,7 +34,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>boot</artifactId>
             <version>${project.version}</version>
-            <scope>runtime</scope>
+          <!--   <scope>runtime</scope> -->
         </dependency>
     </dependencies>
 

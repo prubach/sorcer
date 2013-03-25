@@ -7,12 +7,12 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>exertmonitor</artifactId>
+		<artifactId>dbp</artifactId>
 	</parent>
 
-	<artifactId>exertmonitor-service</artifactId>
+	<artifactId>dbp-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER exertmonitor :: exertmonitor-service</name>
+	<name>SORCER dbp :: dbp-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
@@ -21,12 +21,12 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
-        </dependency>   
-		<dependency>
+        </dependency>
+        <dependency>
 		    <groupId>com.sleepycat</groupId>
 		    <artifactId>je</artifactId>
 		    <version>${v.sleepycat}</version>
 		</dependency>
-   </dependencies>
+    </dependencies>
 
 </project>
