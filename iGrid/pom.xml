@@ -1,79 +1,98 @@
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sorcersoft.sorcer</groupId>
-	<artifactId>sorcer-root</artifactId>
-	<packaging>pom</packaging>
-	<name>SORCER Project</name>
-	<version>11.1</version>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <artifactId>sorcer-root</artifactId>
+    <packaging>pom</packaging>
+    <name>SORCER Project</name>
+    <version>11.1</version>
+    <description>SORCER</description>
+    <url>http://sorcersoft.org/</url>
 
-	<properties>
-		<v.jini>2.2.1</v.jini>
+    <properties>
+        <v.jini>2.2.1</v.jini>
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- TODO fix and enable the tests -->
         <maven.test.skip>true</maven.test.skip>
-	</properties>
+    </properties>
 
-	<modules>
-		<module>modules</module>
-	</modules>
+    <modules>
+        <module>modules</module>
+    </modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<repositories>
-		<repository>
-			<id>hashnot</id>
-			<url>http://mvn.hashnot.com/content/groups/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>oracle</id>
-			<url>http://download.oracle.com/maven/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>1.7.4</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.2.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>hashnot</id>
+            <url>http://mvn.hashnot.com/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>oracle</id>
+            <url>http://download.oracle.com/maven/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
         <repository>
             <id>maven.boundary.com</id>
             <name>maven.boundary.com-releases</name>
             <url>http://maven.boundary.com/artifactory/external</url>
         </repository>
-	</repositories>
+    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>hashnot</id>
-			<url>http://mvn.hashnot.com/content/groups/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>hashnot</id>
+            <url>http://mvn.hashnot.com/content/groups/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
