@@ -19,6 +19,8 @@
 	<modules>
 		<module>jobber</module>
 		<module>cataloger</module>
+		<module>spacer</module>
+		<module>logger</module>
 	</modules>
 	
 </project>

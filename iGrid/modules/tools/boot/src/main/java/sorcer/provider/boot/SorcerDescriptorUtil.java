@@ -281,16 +281,16 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"spacer.jar"
-		});
+		String spacerClasspath = new File(repositoryRoot, coords("org.sorcersoft.sorcer:spacer-service:11.1").getRelativePath()).getAbsolutePath();
 		
 		// service provider codebase
-		String jobberCodebase = Booter.getCodebase(new String[] {
-				"spacer-dl.jar", "sorcer-prv-dl.jar", "jsk-dl.jar", "serviceui.jar" },
-				hostAddress, Integer.toString(port));
+        String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+                coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
+                coords("net.jini.lookup:serviceui:2.2.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                                
+        }, hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.jobber.ExertionSpacer";
-		return (new SorcerServiceDescriptor(jobberCodebase, policy,
+		return (new SorcerServiceDescriptor(spacerCodebase, policy,
 				spacerClasspath, implClass, spacerConfig));
 
 	}
@@ -401,13 +401,10 @@ public class SorcerDescriptorUtil {
 		
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                coords("org.sorcersoft.sorcer:jobber-api:11.1"),
                 coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
                 coords("net.jini.lookup:serviceui:2.2.1"),
-                //coords("net.jini.lookup:jsk-lib:2.2.1"),
                 coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                                
         }, hostAddress, Integer.toString(port));
-        logger.info("getJobber got codebase: " + jobberCodebase);
 		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
 				jobberClasspath, implClass, jobberConfig));
@@ -877,13 +874,8 @@ public class SorcerDescriptorUtil {
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
                 coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
                 coords("net.jini.lookup:serviceui:2.2.1"),
-                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),
-                coords("org.sorcersoft.sorcer:cataloger-ui:11.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                
         }, hostAddress, Integer.toString(port));
-		
-		//= Booter.getCodebase(new String[] {
-		//		"cataloger-dl.jar", "sorcer-prv-dl.jar", "jsk-dl.jar", "serviceui.jar", "exertlet-ui.jar" },
-		//		hostAddress, Integer.toString(port));
 		
 		String implClass = "sorcer.core.provider.cataloger.ServiceCataloger";
 		return (new SorcerServiceDescriptor(catalogCodebase, policy,
@@ -989,19 +981,22 @@ public class SorcerDescriptorUtil {
 			String hostAddress, int port, String... loggerConfig)
 			throws IOException {
 		String fs = File.separator;
+		String ps = File.pathSeparator;
 		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String loggerClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"logger.jar"
-				//,ps,iGridHome,fs,"lib",fs,"sorcer",fs,"lib-dl",fs,"logger-ui.jar"
-		});
-		// service provider codebase
-		String loggerCodebase = Booter.getCodebase(new String[] {
-				"logger-dl.jar", "sorcer-prv-dl.jar", "jsk-dl.jar", "serviceui.jar" },
-				hostAddress, Integer.toString(port));
+		String loggerClasspath = repositoryRoot + fs + coords("org.sorcersoft.sorcer:logger-service:11.1").getRelativePath()
+				+ ps + repositoryRoot + fs + coords("org.sorcersoft.sorcer:logger-ui:11.1").getRelativePath();
+
+		// service provider codebase		
+		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+                coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
+                coords("net.jini.lookup:serviceui:2.2.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                
+                coords("org.sorcersoft.sorcer:logger-ui:11.1"),
+        }, hostAddress, Integer.toString(port));
 		// Logger is a partner to ServiceTasker
 		String implClass = "sorcer.core.provider.logger.RemoteLoggerManager";
 		return (new SorcerServiceDescriptor(loggerCodebase, policy,

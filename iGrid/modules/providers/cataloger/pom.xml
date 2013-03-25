@@ -12,7 +12,6 @@
     <artifactId>cataloger</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>cataloger-ui</module>
         <module>cataloger-service</module>
     </modules>
 

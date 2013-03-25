@@ -9,9 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jobber</artifactId>
+    <artifactId>logger</artifactId>
     <packaging>pom</packaging>
     <modules>
-	<module>jobber-service</module>
+	<module>logger-service</module>
+	<module>logger-ui</module>
     </modules>
 </project>

@@ -17,9 +17,14 @@
     <url>http://sorcersoft.org/</url>
 
     <dependencies>
-        <dependency>
+         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer</artifactId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>webster</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -37,12 +42,12 @@
             <artifactId>AppleJavaExtensions</artifactId>
             <version>1.4</version>
         </dependency>
-	 <dependency>
+	 	<dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
             <version>5.0-SNAPSHOT</version>
         </dependency>
-	 <dependency>
+	 	<dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
             <version>${v.jini}</version>

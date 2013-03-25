@@ -20,7 +20,6 @@ package sorcer.ssb.tools.plugin.browser;
 import java.io.IOException;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import javax.security.auth.Subject;
@@ -28,10 +27,10 @@ import javax.security.auth.login.LoginContext;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
-import sorcer.core.SorcerConstants;
 import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Sorcer;
+import sorcer.core.SorcerConstants;
 
 public class StartSorcerBrowser {
 	public static boolean isWebsterInt = false;

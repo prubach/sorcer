@@ -7,21 +7,21 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>modules</artifactId>
+		<artifactId>logger</artifactId>
 	</parent>
 
-	<artifactId>tools</artifactId>
-	<packaging>pom</packaging>
-	<name>SORCER tools</name>
+	<artifactId>logger-ui</artifactId>
+	<packaging>jar</packaging>
+	<name>SORCER spacer :: logger-ui</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
-	<modules>
-		<module>locker</module>
-		<module>webster</module>
-		<module>boot</module>
-		<module>shell</module>
-		<module>ssb</module>
-		<module>sorcer-provider</module>
-	</modules>
+	<dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>       
+    </dependencies>
+
 </project>

@@ -32,7 +32,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.provider.jobber.ExertionSpacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.falcon.base.Conditional;
@@ -151,7 +150,7 @@ public class ExertProcessor {
 			Spacer spacer) {
 		this(exertion, delegate);
 		this.jobber = null;
-		this.spacer = (ExertionSpacer)spacer;
+		this.spacer = spacer;
 	}
 	/**
 	 * Process the Exertion accordingly if it is a job, task, or a Conditional
@@ -270,7 +269,7 @@ public class ExertProcessor {
 								+ spacerName);
 					}
 				}
-				Exertion job = ((ExertionSpacer)spacer).execute(xrt, null);
+				Exertion job = ((Executor)spacer).execute(xrt, null);
 				logger.info("********************************************* spacable exerted = " + job);
 				return job;
 			}
@@ -809,7 +808,7 @@ public class ExertProcessor {
 		return false;
 	}
 
-	public void setSpacer(ExertionSpacer spacer) {
+	public void setSpacer(Spacer spacer) {
 		this.spacer = spacer;
 	} 
 	
