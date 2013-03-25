@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>cataloger-ui</module>
-        <module>cataloger-api</module>
+        <module>cataloger-service</module>
     </modules>
 
 

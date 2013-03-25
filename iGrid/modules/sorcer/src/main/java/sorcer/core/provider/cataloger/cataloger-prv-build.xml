@@ -95,7 +95,7 @@
 		<mkdir dir="${iGrid.home}/bin/sorcer/${module.name}/logs" />
 
 		<copy todir="${iGrid.home}/bin/sorcer/${module.name}/configs">
-			<fileset dir="configs">
+			<fileset dir="../../../../../../../../providers/cataloger/cataloger-service/src/main/resources/configs">
 				<include name="*" />
 			</fileset>
 		</copy>
@@ -107,7 +107,7 @@
 		</copy>
 
 		<copy todir="${iGrid.home}/bin/sorcer/${module.name}/policy">
-			<fileset dir="policy">
+			<fileset dir="../../../../../../../../providers/cataloger/cataloger-service/src/main/resources/policy">
 				<include name="*" />
 			</fileset>
 		</copy>

@@ -37,7 +37,7 @@
                 class="org.rioproject.system.capability.software.RioSupport"
                 common="yes">
         <version>5.0-SNAPSHOT</version>
-        <classpath>${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar ${user.home}/.m2/repository/org/rioproject/rio-api/5.0-M2/rio-api-5.0-M2.jar</classpath> 
+        <classpath>${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar ${user.home}/.m2/repository/org/rioproject/rio-api/5.0-SNAPSHOT/rio-api-5.0-SNAPSHOT.jar</classpath>
         <!-- <classpath>${iGrid.home}/lib/rio/lib/rio-platform.jar ${iGrid.home}/lib/rio/lib-dl/rio-api.jar</classpath> -->
     </capability>
     
