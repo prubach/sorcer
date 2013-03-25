@@ -513,19 +513,26 @@ public class SorcerDescriptorUtil {
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
+		
 		// service provider classpath
-		String exertmonitor = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"exertmonitor.jar",
-				ps,iGridHome,fs,"lib",fs,"common",fs,"je-4.1.21.jar"
-		});
+		String exertmonitorClasspath = repositoryRoot + fs + coords("org.sorcersoft.sorcer:exertmonitor-service:11.1").getRelativePath()
+				+ ps + repositoryRoot + fs + coords("com.sleepycat.je:je:4.1.21").getRelativePath();
+		
+		// service provider codebase
+        String exertmonitorCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+                coords("org.sorcersoft.sorcer:sorcer-api:11.1"),
+                coords("net.jini.lookup:serviceui:2.2.1"),
+                coords("org.sorcersoft.sorcer:exertlet-ui:11.1"),                                
+        }, hostAddress, Integer.toString(port));
+		
 		
 		// service provider codebase
 		String jobberCodebase = Booter.getCodebase(new String[] {
 				"exertmonitor-dl.jar", "sorcer-prv-dl.jar", "jsk-dl.jar", "serviceui.jar", "exertlet-ui.jar" },
 				hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.exertmonitor.ExertMonitor";
-		return (new SorcerServiceDescriptor(jobberCodebase, policy,
-				exertmonitor, implClass, exertmonitorConfig));
+		return (new SorcerServiceDescriptor(exertmonitorCodebase, policy,
+				exertmonitorClasspath, implClass, exertmonitorConfig));
 
 	}
 	

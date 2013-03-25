@@ -21,6 +21,7 @@
 		<module>cataloger</module>
 		<module>spacer</module>
 		<module>logger</module>
+		<module>exertmonitor</module>
 	</modules>
 	
 </project>

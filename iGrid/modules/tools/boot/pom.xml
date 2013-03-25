@@ -38,21 +38,12 @@
             <artifactId>jsk-platform</artifactId>
             <version>${v.jini}</version>
         </dependency>
-
-<!--         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
- -->        <dependency>
+        <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
             <version>5.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
-
         <dependency>
             <groupId>org.dancres.blitz</groupId>
             <artifactId>blitz</artifactId>
@@ -102,7 +93,7 @@
 
                     <arguments>
                         <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
-                        <!--<argument>-Drio.home=${env.RIO_HOME}</argument>-->
+                        <argument>-Drio.home=${env.RIO_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
                         <argument>-Dwebster.tmp.dir=${env.IGRID_HOME}</argument>
 
@@ -124,7 +115,6 @@
                          
                          ${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</argument>
 -->
-                        
                         <argument>com.sun.jini.start.ServiceStarter</argument>
                         <argument>../../../configs/boot-iGrid-min-http.config</argument>
                     </arguments>
