@@ -17,6 +17,7 @@
 	<url>http://sorcersoft.org/</url>
 
 	<modules>
+		<module>ex1</module>
 		<module>ex6</module>
 	</modules>
 </project>

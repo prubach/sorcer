@@ -64,7 +64,7 @@ public class ServiceTasker extends ServiceProvider implements Tasker, Executor, 
 	/** {@inheritDoc} */
 	public ServiceExertion execute(Exertion task, Transaction transaction)
 			throws TransactionException, ExertionException {
-		return (Task) new ExertProcessor((Exertion) task, delegate)
+		return (Task) new ExertProcessor(task, delegate)
 				.process(threadManager);
 	}
 

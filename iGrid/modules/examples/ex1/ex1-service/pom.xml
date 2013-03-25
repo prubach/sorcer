@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>ex1</artifactId>
+        <version>11.1</version>
+    </parent>
+
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <artifactId>ex1-service</artifactId>
+    <name>SORCER ex1 :: service</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>client-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>boot</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+
+                <configuration>
+
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>false</includePluginDependencies>
+
+                    <mainClass>com.sun.jini.start.ServiceStarter</mainClass>
+                    <systemProperties>
+                        <systemProperty><key>iGrid.home</key><value>${env.IGRID_HOME}</value></systemProperty>
+                        <systemProperty><key>sorcer.env.file</key><value>${env.IGRID_HOME}/configs/sorcer.env</value></systemProperty>
+                        <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
+                        <systemProperty><key>java.security.policy</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
+
+                        <systemProperty><key>sorcer.provider.impl</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
+                        <systemProperty><key>sorcer.provider.config</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
+                        <systemProperty><key>sorcer.provider.codebase.jars"</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
+                        <systemProperty><key>sorcer.provider.classpath</key><value><classpath /></value></systemProperty>
+                    </systemProperties>
+                    <arguments>
+                        <argument>all.config</argument>
+                    </arguments>
+
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- 	<target name="run.provider">
+		<java jar="${lib}/boot.jar" fork="yes">
+			<arg value="${iGrid.home}/configs/startup-boot-prv.config" />
+			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
+			<sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean1.config" />
+			<sysproperty key="sorcer.provider.codebase.jars" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
+			<sysproperty key="java.security.policy" value="../policy/${provider.name}-bean.policy" />
+			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+		</java>
+	</target>
+ -->
+
+</project>

@@ -22,6 +22,11 @@
 			<artifactId>sorcer</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>client-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>

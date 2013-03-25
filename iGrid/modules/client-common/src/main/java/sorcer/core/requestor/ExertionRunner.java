@@ -35,7 +35,6 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Sorcer;
 
 abstract public class ExertionRunner implements Runner, SorcerConstants {
@@ -85,8 +84,9 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 		} else {
 			requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
 		}
+/*
 		boolean isWebsterInt = false;
-		String val = System.getProperty(SORCER_WEBSTER_INTERNAL);
+		String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
 		if (val != null && val.length() != 0) {
 			isWebsterInt = val.equals("true");
 		}
@@ -101,6 +101,7 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 				e.printStackTrace();
 			}
 		}
+*/
 	}
 
 	public void setExertion(Exertion exertion) {
