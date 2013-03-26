@@ -2231,27 +2231,34 @@ public class ProviderDelegate implements SorcerConstants {
 		 * @see #getProperty
 		 */
 		public void loadConfiguration(String filename) {
-			try {
-				// check the class resource
-				InputStream is = provider.getClass().getResourceAsStream(
-						filename);
-				// next check local resource
+            InputStream is = null;
+            try {
+                // check the class resource
+                is = provider.getClass().getResourceAsStream(
+                        filename);
+                // next check local resource
 				if (is == null) {
-					is = (InputStream) (new FileInputStream(new File(filename)));
+					is = new FileInputStream(new File(filename));
 				}
 
-				if (is != null) {
-					props = Sorcer.loadProperties(is);
+                props = Sorcer.loadProperties(is);
 
-					// copy loaded provider's properties to global Env
-					// properties
-					Sorcer.updateFromProperties(props);
-				}
-			} catch (Exception ex) {
-				logger.warning("Not able to load provider's file properties"
-						+ filename);
-			}
-		}
+                // copy loaded provider's properties to global Env
+                // properties
+                Sorcer.updateFromProperties(props);
+            } catch (Exception ex) {
+                logger.warning("Not able to load provider's file properties"
+                        + filename);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        //ignore
+                    }
+                }
+            }
+        }
 
 		public Properties getProviderProperties() {
 			return props;

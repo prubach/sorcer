@@ -27,8 +27,7 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        </dependency>
 		<!--<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>jobber-api</artifactId>
@@ -194,7 +193,6 @@
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
 				<configuration>
 					<excludes>
 						<exclude>sorcer/xml/**.java</exclude>

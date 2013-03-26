@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
@@ -473,15 +474,15 @@ public class Booter implements SorcerConstants {
 		}
 		
 		// use the local host address if requested
-		String pattern = "${" + "localhost" + "}";
-		String value = props.getProperty("provider.webster.interface");
-		if (value.indexOf(pattern) >= 0) {
+		String pattern = "${localhost}";
+        String value = props.getProperty("provider.webster.interface");
+        if (value.indexOf(pattern) >= 0) {
 			try {
 				String val = value.replace(pattern, getHostAddress());
 				props.put("provider.webster.interface", val);
 			} catch (UnknownHostException e1) {
-				e1.printStackTrace();
-			}
+                logger.log(Level.WARNING, "Could not resolve hostname", e1);
+            }
 		}
 	}
 	

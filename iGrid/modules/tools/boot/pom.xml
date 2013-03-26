@@ -17,18 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>edu.emory.mathcs.util</groupId>
-            <artifactId>emory-util-concurrent</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.emory.mathcs.util</groupId>
-            <artifactId>emory-util-classloader</artifactId>
-            <version>2.1</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
@@ -36,43 +24,43 @@
         <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
-            <version>${v.jini}</version>
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
-            <version>5.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.dancres.blitz</groupId>
-            <artifactId>blitz</artifactId>
-            <version>${v.blitz}</version>
-            <scope>provided</scope>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.dancres.blitz</groupId>
-            <artifactId>blitzui</artifactId>
-            <version>${v.blitz}</version>
-            <scope>provided</scope>
+            <groupId>au.net.Zeus</groupId>
+            <artifactId>reference-collections</artifactId>
+            <version>1.0.1</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.sleepycat</groupId>
-            <artifactId>je</artifactId>
-            <version>${v.sleepycat}</version>
-            <scope>provided</scope>
+            <groupId>com.boundary</groupId>
+            <artifactId>high-scale-lib</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-aether</artifactId>
+            <version>${v.rio}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.jini.lookup</groupId>
             <artifactId>serviceui</artifactId>
             <version>${v.jini}</version>
-            <!--<scope>provided</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>org.apache.river</groupId>
-            <artifactId>outrigger-dl</artifactId>
-            <version>${v.jini}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -81,7 +69,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1.1</version>
                 <configuration>
                     <includeProjectDependencies>true</includeProjectDependencies>
                     <includePluginDependencies>false</includePluginDependencies>
@@ -92,6 +79,10 @@
                     </executableDependency>
 
                     <arguments>
+<!--
+                        <argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
+-->
                         <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
                         <argument>-Drio.home=${env.RIO_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
@@ -102,31 +93,12 @@
 
                         <argument>-Djava.security.policy=../../sorcer/policy/policy.all</argument>
 						<argument>-classpath</argument>
-						<argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar:${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/rioproject/resolver/resolver-api/5.0-SNAPSHOT/resolver-api-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:${user.home}/.m2/repository/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar:${user.home}/.m2/repository/com/artima/jini/serviceui/1.1a/serviceui-1.1a.jar</argument>
-<!-- 						<argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:${user.home}/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-SNAPSHOT/rio-platform-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/org/rioproject/resolver/resolver-api/5.0-SNAPSHOT/resolver-api-5.0-SNAPSHOT.jar:${user.home}/.m2/repository/net/jini/jsk-dl/2.2.1/jsk-dl-2.2.1.jar:${user.home}/.m2/repository/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar:${user.home}/.m2/repository/com/artima/jini/serviceui/1.1a/serviceui-1.1a.jar</argument> -->
-<!-- :${user.home}/.m2/repository/org/apache/river/reggie-dl/2.2.1/reggie-dl-2.2.1.jar -->
- 												
-                        <!-- <classpath/> -->
-<!--                        
-                       river/lib/start.jar river/lib/reference-collections-1.0.1.
- jar river/lib/high-scale-lib.jar common/groovy/groovy-all-1.7.4.jar
-                       
-                         <argument>${user.home}/.m2/repository/org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${user.home}/.m2/repository/org/apache/river/start/2.2.1/start-2.2.1.jar:${user.home}/.m2/repository/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${user.home}/.m2/repository/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</argument>
-                         
-                         ${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:${user.home}/.m2/repository/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</argument>
--->
+                        <classpath/>
                         <argument>com.sun.jini.start.ServiceStarter</argument>
                         <argument>../../../configs/boot-iGrid-min-http.config</argument>
                     </arguments>
 
                     <workingDirectory>${project.root}</workingDirectory>
-
-                    <!--<systemProperties>
-                        <systemProperty>
-                            <key>iGrid.home</key>
-                            <value>${iGrid.home}</value>
-                        </systemProperty>
-                    </systemProperties>-->
                 </configuration>
             </plugin>
 

@@ -5,6 +5,6 @@
     -->
     <capability name="Groovy" common="yes">
         <version>1.7.4</version>
-        <classpath>${iGrid.home}/lib/common/groovy/groovy-all-1.7.4.jar</classpath>
+        <classpath>${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/1.7.4/groovy-all-1.7.4.jar</classpath>
     </capability>    
 </platform>

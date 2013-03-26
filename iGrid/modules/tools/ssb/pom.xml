@@ -20,8 +20,7 @@
          <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+         </dependency>
          <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>webster</artifactId>
@@ -45,12 +44,10 @@
 	 	<dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
-            <version>5.0-SNAPSHOT</version>
         </dependency>
 	 	<dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
-            <version>${v.jini}</version>
         </dependency>
     </dependencies>
 
@@ -64,7 +61,7 @@
                 <configuration>
                     <mainClass>sorcer.ssb.SorcerServiceBrowser</mainClass>
                 	<arguments>
-                	 	<argument>${env.IGRID_HOME}/bin/browser/configs/ssb.config</argument>
+                	 	<argument>${project.basedir}/configs/ssb.config</argument>
                 	</arguments>
                     <systemProperties>
                         <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
