@@ -30,23 +30,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>boot</artifactId>
-            <version>${project.version}</version>
-          <!--   <scope>runtime</scope> -->
-        </dependency>
-        <dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>2.0.6</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
@@ -54,18 +37,8 @@
         </dependency>
         <dependency>
             <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>au.net.Zeus</groupId>
-            <artifactId>reference-collections</artifactId>
-            <version>1.0.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
         </dependency>
     </dependencies>
 
@@ -76,28 +49,21 @@
                 <artifactId>exec-maven-plugin</artifactId>
 
                 <configuration>
-                    <includeProjectDependencies>true</includeProjectDependencies>
-                    <includePluginDependencies>false</includePluginDependencies>
-
-                    <mainClass>com.sun.jini.start.ServiceStarter</mainClass>
-                    <systemProperties>
-                        <systemProperty><key>iGrid.home</key><value>${env.IGRID_HOME}</value></systemProperty>
-                        <systemProperty><key>sorcer.env.file</key><value>${env.IGRID_HOME}/configs/sorcer.env</value></systemProperty>
-                        <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
-                        <systemProperty><key>java.security.policy</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
-
-                        <systemProperty>
-                        	<key>sorcer.provider.impl</key>
-                        	<value>${env.IGRID_HOME}/policy/policy.all</value>
-                        </systemProperty>
-                        <systemProperty><key>sorcer.provider.config</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
-                        <systemProperty><key>sorcer.provider.codebase.jars"</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
-                        <systemProperty><key>sorcer.provider.classpath</key><value>${maven.runtime.classpath}</value></systemProperty>
-                    </systemProperties>
+                    <executable>java</executable>
                     <arguments>
-                        <argument>src/main/resources/META-INF/sorcer/all.config</argument>
+                        <!--<argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>-->
+
+                        <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
+                        <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
+                        <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
+                        <argument>-Djava.security.policy=${env.IGRID_HOME}/policy/policy.all</argument>
+                        <argument>-classpath</argument><classpath/>
+                        <argument>com.sun.jini.start.ServiceStarter</argument>
+                        <argument>${project.basedir}/src/main/resources/META-INF/sorcer/all.config</argument>
                     </arguments>
 
+                    <workingDirectory>${project.root}</workingDirectory>
                 </configuration>
             </plugin>
 
