@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jobber</artifactId>
+    <name>SORCER providers :: jobber</name>
     <packaging>pom</packaging>
     <modules>
 	<module>jobber-service</module>

@@ -55,7 +55,6 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import sorcer.core.FileStorer;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.grid.provider.dispatcher.GridDispatcherAttribUI;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Context;
@@ -65,6 +64,7 @@ import sorcer.service.Servicer;
 import sorcer.util.DocumentDescriptor;
 import sorcer.util.SorcerUtil;
 import sorcer.util.rmi.OutputStreamProxy;
+import sorcer.core.grid.provider.dispatcher.GridDispatcherAttribUI;
 
 public class GridDispatcherUI extends JFrame implements ActionListener {
 	// public class GridDispatcherUI extends SecureSorcerUI{

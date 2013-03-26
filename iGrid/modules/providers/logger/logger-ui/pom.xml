@@ -12,7 +12,7 @@
 
 	<artifactId>logger-ui</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER spacer :: logger-ui</name>
+	<name>SORCER providers :: logger :: logger-ui</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

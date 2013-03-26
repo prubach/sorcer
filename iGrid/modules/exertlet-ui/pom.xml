@@ -9,6 +9,7 @@
         <groupId>org.sorcersoft.sorcer</groupId>
         <version>11.1</version>
     </parent>
+    <name>SORCER exertlet-ui</name>
 
     <artifactId>exertlet-ui</artifactId>
 

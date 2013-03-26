@@ -58,4 +58,7 @@
 		</dependency>
 		
     </dependencies>
+    <name>SORCER core</name>
+    <url>http://sorcersoft.org/</url>
+    <description>Service Oriented Computing EnviRonment</description>
 </project>

@@ -8,7 +8,7 @@
         <version>11.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>SORCER cataloger :: service</name>
+    <name>SORCER providers :: cataloger :: cataloger-service</name>
 
 
     <artifactId>cataloger-service</artifactId>

@@ -12,7 +12,7 @@
 
 	<artifactId>dsp-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER dsp :: dsp-service</name>
+	<name>SORCER providers :: dsp :: dsp-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

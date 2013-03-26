@@ -12,7 +12,7 @@
 
     <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex1-api</artifactId>
-    <name>SORCER ex1 :: API</name>
+    <name>SORCER examples :: ex1 :: API</name>
 
     <dependencies>
         <dependency>

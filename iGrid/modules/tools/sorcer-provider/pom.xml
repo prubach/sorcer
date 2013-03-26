@@ -8,13 +8,11 @@
         <artifactId>tools</artifactId>
         <version>11.1</version>
     </parent>
-
+    <name>SORCER tools :: provider-archetype</name>
     <artifactId>sorcer-provider</artifactId>
     <packaging>maven-archetype</packaging>
     <description>SORCER provider archetype</description>
     <url>http://sorcersoft.org/</url>
-
-    <name>provider-archetype</name>
 
     <build>
         <extensions>

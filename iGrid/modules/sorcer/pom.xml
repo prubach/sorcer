@@ -13,7 +13,7 @@
 	<artifactId>sorcer</artifactId>
 	<!--<packaging>classdepandjar</packaging> -->
 	<packaging>jar</packaging>
-	<name>SORCER core</name>
+	<name>SORCER extra</name>
 	<description>SORCER</description>
 
 	<dependencies>

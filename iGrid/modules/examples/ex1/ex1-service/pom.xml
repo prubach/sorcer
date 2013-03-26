@@ -12,8 +12,8 @@
 
     <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex1-service</artifactId>
-    <name>SORCER ex1 :: service</name>
-
+    <name>SORCER examples :: ex1 :: service</name>
+    
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -36,6 +36,36 @@
             <version>${project.version}</version>
           <!--   <scope>runtime</scope> -->
         </dependency>
+        <dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.0.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>5.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>start</artifactId>
+            <version>${v.jini}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-platform</artifactId>
+            <version>${v.jini}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>au.net.Zeus</groupId>
+            <artifactId>reference-collections</artifactId>
+            <version>1.0.1</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -45,7 +75,6 @@
                 <artifactId>exec-maven-plugin</artifactId>
 
                 <configuration>
-
                     <includeProjectDependencies>true</includeProjectDependencies>
                     <includePluginDependencies>false</includePluginDependencies>
 
@@ -56,13 +85,16 @@
                         <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
                         <systemProperty><key>java.security.policy</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
 
-                        <systemProperty><key>sorcer.provider.impl</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
+                        <systemProperty>
+                        	<key>sorcer.provider.impl</key>
+                        	<value>${env.IGRID_HOME}/policy/policy.all</value>
+                        </systemProperty>
                         <systemProperty><key>sorcer.provider.config</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
                         <systemProperty><key>sorcer.provider.codebase.jars"</key><value>${env.IGRID_HOME}/policy/policy.all</value></systemProperty>
-                        <systemProperty><key>sorcer.provider.classpath</key><value><classpath /></value></systemProperty>
+                        <systemProperty><key>sorcer.provider.classpath</key><value>${maven.runtime.classpath}</value></systemProperty>
                     </systemProperties>
                     <arguments>
-                        <argument>all.config</argument>
+                        <argument>src/main/resources/META-INF/sorcer/all.config</argument>
                     </arguments>
 
                 </configuration>
@@ -83,5 +115,4 @@
 		</java>
 	</target>
  -->
-
 </project>

@@ -12,7 +12,7 @@
 
 	<artifactId>jobber-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER jobber :: jobber-service</name>
+	<name>SORCER providers :: jobber :: jobber-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

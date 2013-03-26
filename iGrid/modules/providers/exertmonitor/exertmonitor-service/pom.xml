@@ -12,7 +12,7 @@
 
 	<artifactId>exertmonitor-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER exertmonitor :: exertmonitor-service</name>
+	<name>SORCER providers :: exertmonitor :: exm-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

@@ -12,7 +12,7 @@
 
     <artifactId>browser</artifactId>
     <packaging>jar</packaging>
-    <name>SORCER browser</name>
+    <name>SORCER tools :: browser</name>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
 

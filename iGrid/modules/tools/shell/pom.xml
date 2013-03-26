@@ -12,7 +12,7 @@
 
     <artifactId>shell</artifactId>
 
-    <name>SORCER shell</name>
+    <name>SORCER tools :: shell</name>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
 

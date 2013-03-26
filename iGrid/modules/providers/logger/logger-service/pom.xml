@@ -12,7 +12,7 @@
 
 	<artifactId>logger-service</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER logger :: logger-service</name>
+	<name>SORCER providers :: logger :: logger-service</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

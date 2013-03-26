@@ -12,7 +12,7 @@
 
 	<artifactId>ex1</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER example 1</name>
+	<name>SORCER examples :: ex1</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
