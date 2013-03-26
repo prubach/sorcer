@@ -23,4 +23,5 @@
         </dependency>
     </dependencies>
 
+    <name>SORCER client-common</name>
 </project>
