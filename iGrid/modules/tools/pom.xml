@@ -23,5 +23,6 @@
 		<module>shell</module>
 		<module>ssb</module>
 		<module>sorcer-provider</module>
+		<module>dependencies</module>
 	</modules>
 </project>

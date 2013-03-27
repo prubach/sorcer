@@ -16,6 +16,7 @@
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>
         <v.rio>5.0-M2</v.rio>
+        <v.groovy>2.0.6</v.groovy>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -32,7 +33,7 @@
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
-                <version>2.0.6</version>
+                <version>${v.groovy}</version>
             </dependency>
             <dependency>
                 <groupId>net.jini</groupId>
