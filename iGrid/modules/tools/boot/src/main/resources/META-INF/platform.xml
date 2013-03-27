@@ -9,7 +9,7 @@
     <capability name="SORCER" common="yes">
         <version>5.0</version>
         <manufacturer>SORCERsoft.org</manufacturer>
-        <classpath>${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar</classpath>
+        <classpath>${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar ${user.home}/.m2/repository/org/sorcersoft/sorcer/client-common/11.1/client-common-11.1.jar</classpath>
     </capability>
     
     <!--
