@@ -40,6 +40,10 @@
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
