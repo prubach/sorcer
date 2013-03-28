@@ -6,32 +6,19 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>examples</artifactId>
 		<version>11.1</version>
+		<artifactId>examples</artifactId>
 	</parent>
 
 	<artifactId>ex6</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>SORCER examples :: ex6</name>
-	<description>SORCER</description>
+	<description>SORCER Example - Arithmetic</description>
 	<url>http://sorcersoft.org/</url>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sorcer</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>client-common</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>dbp-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
-
+	<modules>
+		<module>ex6-api</module>
+		<module>ex6-service</module>
+		<module>ex6-client</module>
+	</modules>
 </project>
