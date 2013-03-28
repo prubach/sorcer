@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.invoker;
 
 import java.io.BufferedReader;
@@ -22,10 +23,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
+import sorcer.co.tuple.Parameter;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -33,8 +34,13 @@ import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 import sorcer.util.exec.NullInputStream;
 
-public class CmdInvoker implements ServiceInvoker, Serializable {
-	private static final long serialVersionUID = 2429537565611103300L;
+/**
+ * @author Mike Sobolewski
+ */
+
+@SuppressWarnings("rawtypes")
+public class CmdInvoker extends ServiceInvoker {
+
 	private String cmd;
 	private String[] cmdarray;
 	private File scriptFile;
@@ -126,18 +132,18 @@ public class CmdInvoker implements ServiceInvoker, Serializable {
 	 * @see sorcer.core.invoker.ServiceInvoker#invoke(sorcer.service.Context[])
 	 */
 	@Override
-	public Context invoke(Context... contexts) throws RemoteException,
+	public Context invoke(Context context, Parameter... parameters) throws RemoteException,
 			EvaluationException {
 		Context outCxt = null;
 		try {
-			outCxt = new ContextResult(exec());
+			outCxt = new ContextResult(getValue());
 		} catch (ContextException e) {
 			throw new EvaluationException(e);
 		}
 		return outCxt;
 	}
 
-	public CmdResult exec() throws RemoteException,
+	public CmdResult getValue() throws RemoteException,
 			EvaluationException {
 		CmdResult out = null;
 		if (scriptFile != null) {

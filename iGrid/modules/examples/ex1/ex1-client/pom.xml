@@ -22,6 +22,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-client-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
         </dependency>
         <dependency>
@@ -41,22 +46,20 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
-                        <!--<argument>-Xdebug</argument>
-                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>-->
-                        <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
+<!--                           <argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
+ -->                        
+ 						<argument>-DiGrid.home=${env.IGRID_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
                         <argument>-Djava.security.policy=${env.IGRID_HOME}/policy/policy.all</argument>
 						<argument>-Dsorcer.webster.internal=true</argument>
 						<argument>-Dsorcer.webster.debug=true</argument>
-						<argument>-Dsorcer.codebase.jars="${user.home}/.m2/repository/org/sorcersoft/sorcer/ex1-client/11.1/ex1-client-11.1.jar ${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar"</argument>
+						<argument>-Dsorcer.codebase.jars=/org/sorcersoft/sorcer/ex1-client-api/11.1/ex1-client-api-11.1.jar;/org/sorcersoft/sorcer/ex1-api/11.1/ex1-api-11.1.jar;/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar</argument>
                         <argument>-classpath</argument><classpath/>
-                        <argument>sorcer.ex1.requestor.WhoIsItTaskRequestor</argument>
                         <argument>sorcer.core.requestor.ExertionRunner</argument>
-
-  
-
- <!--                         <argument>WhoIsIt?</argument> -->
+                        <argument>sorcer.ex1.requestor.WhoIsItTaskRunner</argument>
+                        <argument>WhoIsIt?</argument>
                     </arguments>
 
                     <workingDirectory>${project.root}</workingDirectory>

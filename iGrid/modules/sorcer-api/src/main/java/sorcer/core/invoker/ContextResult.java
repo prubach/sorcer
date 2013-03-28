@@ -19,14 +19,22 @@ package sorcer.core.invoker;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.service.ContextException;
+import sorcer.service.Exertion;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
 /**
  * @author Mike Sobolewski
- *
  */
+
 public class ContextResult extends ServiceContext {
 
+	public ContextResult(Object result, Exertion exertion) throws ContextException {
+		putValue("exit/value", 0);
+		putOutValue("result/out", result);
+		putErrValue("result/err", exertion.getControlContext().getExceptions());
+		putValue("invoked/method", exertion.getProcessSignature());
+	}
+	
 	public ContextResult(CmdResult result) throws ContextException {
 		putValue("exit/value", result.getExitValue());
 		putOutValue("result/out", result.getOut());
@@ -49,8 +57,8 @@ public class ContextResult extends ServiceContext {
 		return (Integer)getValue("exit/value");
 	}
 
-	public String getOut() throws ContextException {
-		return (String)getValue("result/out");
+	public Object getOut() throws ContextException {
+		return getValue("result/out");
 	}
 
 	public String getErr() throws ContextException {

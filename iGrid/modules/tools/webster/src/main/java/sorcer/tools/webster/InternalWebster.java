@@ -60,18 +60,21 @@ public class InternalWebster {
 		InetAddress ip = InetAddress.getLocalHost();
 		String localIPAddress = ip.getHostAddress();
 		String iGridHome = System.getProperty("iGrid.home");
+		String userHome = System.getProperty("user.home");
 		roots = System.getProperty(WEBSTER_ROOTS);
 		if (roots == null) {
 			// defaults iGrid roots
 			String fs = File.separator;
 			StringBuffer sb = new StringBuffer();
-			sb.append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib-dl")
+			sb.append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
+			.append(';').append(userHome).append(fs).append(".m2").append(fs).append("repository");
+/*			sb.append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib-dl")
 					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib")
 					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib-dl")
 					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib")
 					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
 					.append(';').append(iGridHome).append(fs).append("deploy")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("local").append(fs).append("lib-dl");
+					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("local").append(fs).append("lib-dl");*/
 			roots = sb.toString();
 		}
 
@@ -116,7 +119,7 @@ public class InternalWebster {
 		if (exportJars != null)
 			jars = exportJars;
 		else {
-			jarsList = System.getProperty("sorcer.codbase.jars");
+			jarsList = System.getProperty("sorcer.codebase.jars");
 			if (jarsList == null || jarsList.length() == 0)
 				throw new RuntimeException(
 						"No jar files available for the webster codebase");

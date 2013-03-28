@@ -19,6 +19,7 @@
 	<modules>
 		<module>ex1-api</module>
 		<module>ex1-service</module>
+		<module>ex1-client-api</module>
 		<module>ex1-client</module>
 	</modules>
 </project>

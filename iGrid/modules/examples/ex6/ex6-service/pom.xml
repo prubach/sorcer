@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>ex6</artifactId>
+        <version>11.1</version>
+    </parent>
+
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <artifactId>ex6-service</artifactId>
+    <name>SORCER examples :: ex6 :: service</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>client-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>dbp-service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>start</artifactId>
+            <version>${v.jini}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <dir.repo>${user.home}/.m2/repository/</dir.repo>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.sorcersoft.sorcer</groupId>
+                        <artifactId>boot</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <includeProjectDependencies>false</includeProjectDependencies>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <executable>java</executable>
+                    <arguments>
+<!--                    <argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
+ -->
+                        <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
+                        <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
+                        <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
+                        <argument>-Djava.security.policy=${env.IGRID_HOME}/policy/policy.all</argument>
+                        <argument>-classpath</argument>
+                         <argument>${dir.repo}au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:${dir.repo}com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:${dir.repo}nekohtml/nekohtml/1.9.6.2/nekohtml-1.9.6.2.jar:${dir.repo}nekohtml/xercesMinimal/1.9.6.2/xercesMinimal-1.9.6.2.jar:${dir.repo}net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar:${dir.repo}net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:${dir.repo}net/jini/jsk-resources/2.2.1/jsk-resources-2.2.1.jar:${dir.repo}net/jini/lookup/serviceui/2.2.1/serviceui-2.2.1.jar:${dir.repo}org/apache/maven/maven-aether-provider/3.0.3/maven-aether-provider-3.0.3.jar:${dir.repo}org/apache/maven/maven-model/3.0.3/maven-model-3.0.3.jar:${dir.repo}org/apache/maven/maven-model-builder/3.0.3/maven-model-builder-3.0.3.jar:${dir.repo}org/apache/maven/maven-repository-metadata/3.0.3/maven-repository-metadata-3.0.3.jar:${dir.repo}org/apache/maven/maven-settings/3.0.3/maven-settings-3.0.3.jar:${dir.repo}org/apache/maven/maven-settings-builder/3.0.3/maven-settings-builder-3.0.3.jar:${dir.repo}org/apache/maven/wagon/wagon-file/2.2/wagon-file-2.2.jar:${dir.repo}org/apache/maven/wagon/wagon-http-lightweight/1.0-beta-7/wagon-http-lightweight-1.0-beta-7.jar:${dir.repo}org/apache/maven/wagon/wagon-http-shared/1.0-beta-7/wagon-http-shared-1.0-beta-7.jar:${dir.repo}org/apache/maven/wagon/wagon-provider-api/1.0-beta-6/wagon-provider-api-1.0-beta-6.jar:${dir.repo}org/apache/river/start/2.2.1/start-2.2.1.jar:${dir.repo}org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:${dir.repo}org/codehaus/plexus/plexus-classworlds/2.4/plexus-classworlds-2.4.jar:${dir.repo}org/codehaus/plexus/plexus-component-annotations/1.5.5/plexus-component-annotations-1.5.5.jar:${dir.repo}org/codehaus/plexus/plexus-interpolation/1.14/plexus-interpolation-1.14.jar:${dir.repo}org/codehaus/plexus/plexus-utils/2.0.7/plexus-utils-2.0.7.jar:${dir.repo}org/jgroups/jgroups/2.12.1.Final/jgroups-2.12.1.Final.jar:${dir.repo}org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:${dir.repo}org/rioproject/resolver/resolver-aether/5.0-M2/resolver-aether-5.0-M2.jar:${dir.repo}org/rioproject/resolver/resolver-api/5.0-M2/resolver-api-5.0-M2.jar:${dir.repo}org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:${dir.repo}org/sonatype/aether/aether-api/1.12/aether-api-1.12.jar:${dir.repo}org/sonatype/aether/aether-connector-wagon/1.12/aether-connector-wagon-1.12.jar:${dir.repo}org/sonatype/aether/aether-impl/1.12/aether-impl-1.12.jar:${dir.repo}org/sonatype/aether/aether-spi/1.12/aether-spi-1.12.jar:${dir.repo}org/sonatype/aether/aether-util/1.12/aether-util-1.12.jar:${dir.repo}org/sonatype/plexus/plexus-cipher/1.4/plexus-cipher-1.4.jar:${dir.repo}org/sonatype/plexus/plexus-sec-dispatcher/1.3/plexus-sec-dispatcher-1.3.jar:${dir.repo}org/sonatype/sisu/sisu-guice/3.0.2/sisu-guice-3.0.2-no_aop.jar:${dir.repo}org/sonatype/sisu/sisu-inject-bean/2.2.2/sisu-inject-bean-2.2.2.jar:${dir.repo}org/sonatype/sisu/sisu-inject-plexus/2.2.2/sisu-inject-plexus-2.2.2.jar:${dir.repo}org/sorcersoft/sorcer/boot/11.1/boot-11.1.jar:${dir.repo}org/sorcersoft/sorcer/locker/11.1/locker-11.1.jar:${dir.repo}org/apache/river/start/2.2.1/start-2.2.1.jar</argument>
+                        <argument>com.sun.jini.start.ServiceStarter</argument>
+                        <argument>${project.basedir}/src/main/resources/META-INF/sorcer/boot-all-arithmetic.config</argument>
+                    </arguments>
+                    <workingDirectory>${project.root}</workingDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

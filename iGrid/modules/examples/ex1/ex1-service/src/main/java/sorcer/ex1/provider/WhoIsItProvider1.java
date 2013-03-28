@@ -26,6 +26,7 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
 		String hostname;
+		logger.info("Got context to process: " + context);
 		try {
 			hostname = InetAddress.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);

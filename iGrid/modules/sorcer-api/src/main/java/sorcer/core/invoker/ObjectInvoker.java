@@ -26,13 +26,19 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.logging.Logger;
 
+import sorcer.co.tuple.Parameter;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 import sorcer.util.SorcerUtil;
 
-public class ObjectInvoker implements ServiceInvoker {
+/**
+ * @author Mike Sobolewski
+ */
+
+@SuppressWarnings("rawtypes")
+public class ObjectInvoker extends ServiceInvoker {
 
 	// static final long serialVersionUID = 6802147418392854533L;
 
@@ -170,22 +176,26 @@ public class ObjectInvoker implements ServiceInvoker {
 	 * @see sorcer.core.invoker.ServiceInvoker#invoke(sorcer.service.Context[])
 	 */
 	@Override
-	public Context invoke(Context... contexts) throws RemoteException,
+	public Context invoke(Context context, Parameter... parameters) throws RemoteException,
 			EvaluationException {
-		if (contexts != null)
-			setContext(contexts[0]);
+		setContext(context);
 		ContextResult outCxt = null;;
 		try {
+			getValue(parameters);
 			outCxt = new ContextResult(this);
-			outCxt.setOut(exec());
+			outCxt.setOut(getValue());
 		} catch (ContextException e) {
 			throw new EvaluationException(e);
 		}
 		return outCxt;
 	}
 	
-	public Object exec() throws RemoteException,
-			EvaluationException {
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 */
+	@Override
+	public Object getValue(Parameter... entries) throws EvaluationException,
+			RemoteException {
 		Object[] parameters = getParameters();
 		Object val = null;
 		Class<?> evalClass = null;
@@ -196,7 +206,7 @@ public class ObjectInvoker implements ServiceInvoker {
 					target = getInstance();
 				} else if (className != null) {
 					evalClass = Class.forName(className);
-				} else {
+
 					Constructor<?> constructor;
 					if (initObject != null) {
 						constructor = evalClass
@@ -205,7 +215,7 @@ public class ObjectInvoker implements ServiceInvoker {
 								.newInstance(new Object[] { initObject });
 					} else
 						target = evalClass.newInstance();
-				}
+				} 
 			} else {
 				evalClass = target.getClass();
 			}

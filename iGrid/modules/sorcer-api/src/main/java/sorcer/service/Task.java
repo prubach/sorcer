@@ -203,7 +203,7 @@ public class Task extends ServiceExertion {
 		String time = getControlContext().getExecTime();
 		if (time != null && time.length() > 0)
 			sb.append("\n\texec time=").append(time);
-		sb.append(cc).append("\n");
+		//sb.append(cc).append("\n");
 		sb.append(context);
 		sb.append("\n=== DONE PRINTING TASK ===\n");
 

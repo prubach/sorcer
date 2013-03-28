@@ -70,9 +70,9 @@
                     <includePluginDependencies>true</includePluginDependencies>
                     <executable>java</executable>
                     <arguments>
-                        <!--<argument>-Xdebug</argument>
-                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>-->
-
+<!--                         <argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
+ -->
                         <argument>-DiGrid.home=${env.IGRID_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>

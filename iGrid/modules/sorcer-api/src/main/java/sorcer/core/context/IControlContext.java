@@ -37,4 +37,6 @@ public interface IControlContext<T> extends Context<T>, AssociativeContext {
     boolean isWait();
 
     boolean isMonitored();
+    
+    List<ThrowableTrace> getExceptions();
 }
