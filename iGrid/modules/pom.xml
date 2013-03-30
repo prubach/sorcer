@@ -17,12 +17,12 @@
 	<url>http://sorcersoft.org/</url>
 
 	<modules>
-		<module>sorcer</module>
-		<module>tools</module>
-		<module>examples</module>
-		<module>util</module>
+	<module>tools</module>
+	<module>examples</module>
+	<module>util</module>
         <module>providers</module>
         <module>sorcer-api</module>
+	<module>sorcer-util</module>
         <module>exertlet-ui</module>
         <module>client-common</module>
     </modules>
