@@ -94,9 +94,8 @@
 
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
                         <argument>-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb.sos</argument>
-
-                        <argument>-Djava.security.policy=../../sorcer/policy/policy.all</argument>
-						<argument>-classpath</argument>
+                        <argument>-Djava.security.policy=policy/policy.all</argument>
+			<argument>-classpath</argument>
                         <classpath/>
                         <argument>com.sun.jini.start.ServiceStarter</argument>
                         <argument>${config}</argument>

@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes'?>
+<!-- 
+ * Copyight (C) 2004 SORCER Lab, Texas Tech University. All rights reserved.
+ * Service-Oriented Computing Environmet: SORCER Cataloger build configuration
+ * Make sure the following variables are changed to reflect your environment:
+ *    IGRID_HOME        	iGrid location
+ *    JAVA_HOME         	JDK Location
+ *	  IGRID_WEBSTER_PORT 	The class server (webster) port
+ *    ANT_HOME          	Jakarta Ant location
+ Please see also the ../common-build.xml for classpaths, definitions and targets
+-->
+
+<project name="FALCON" default="all" basedir=".">
+	<property name="module.name" value="sorcer/falcon" />
+	<!-- set global properties -->
+	<import file="../../../../common-build.xml" />
+	<property name="src" value="./" />
+	
+	<path id="project.classpath">
+		<pathelement location="${classes}" />
+		<path refid="jini.path" />
+		<path refid="jep.path" />
+	</path>
+
+	<!-- The sources to compile -->
+	<patternset id="ant.java">
+		<include name="sorcer/falcon/core/exertion/**/*.java" />
+		<include name="sorcer/falcon/base/**/*.java" />
+		<include name="sorcer/falcon/examples/**/*.java" />
+	</patternset>
+	
+	<patternset id="ant.classes">
+		<include name="sorcer/falcon/core/exertion/**/*.class" />
+		<include name="sorcer/falcon/base/**/*.class" />
+		<include name="sorcer/falcon/examples/**/*.class" />
+	</patternset>
+	
+	<patternset id="ant.jars">
+		<include name="falcon.jar" />
+	</patternset>
+
+	<target name="compile" depends="compileSources" />
+	<target name="jars" depends="falcon" />
+	<target name="falcon" depends="falcon.jar" />
+	<target name="all" depends="prepare, compile, jars, falcon-packages" />
+	
+	<target name="falcon.jar">
+		<classdepandjar jarfile="${lib}/falcon.jar" files="true">
+			<classpath refid="project.classpath"/>
+			<!-- Put the full package as much as possible for a smaller jar file -->
+			<in name="sorcer.falcon.core.exertion" />
+			<in name="sorcer.falcon.base" />
+			
+			<!-- Add all provider classes here -->
+			<topclass name="sorcer.falcon.base.Conditional" />
+			<topclass name="sorcer.falcon.core.exertion.WhileExertion" />
+			<topclass name="sorcer.falcon.core.exertion.IfExertion" />
+		</classdepandjar>
+	</target>	
+	
+	<target name="falcon-packages">
+		<echo message="building provider: Function-Evaluator" />
+		<ant antfile="fnEval-prv-build.xml" dir="./examples/provider/fnEval/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator Task " />
+		<ant antfile="fnEvalTask-req-build.xml" dir="./examples/requestor/fnEval/legacy/fnEvalTask/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator IfTask " />
+		<ant antfile="fnEvalIfTask-req-build.xml" dir="./examples/requestor/fnEval/legacy/fnEvalIfTask/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator WhileIfTask " />
+		<ant antfile="fnEvalWhileIfTask-req-build.xml" dir="./examples/requestor/fnEval/legacy/fnEvalWhileIfTask/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator WhileTask " />
+		<ant antfile="fnEvalWhileTask-req-build.xml" dir="./examples/requestor/fnEval/legacy/fnEvalWhileTask/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator WhileJob " />
+		<ant antfile="fnEvalWhileJob-req-build.xml" dir="./examples/requestor/fnEval/legacy/fnEvalWhileJob/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator IfTask " />
+		<ant antfile="fnEvalIfTask-req-build.xml" dir="./examples/requestor/fnEval/fnEvalIfTask/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator WhileTask " />
+		<ant antfile="fnEvalWhileTask-req-build.xml" dir="./examples/requestor/fnEval/fnEvalWhileTask/" target="all" inheritAll="false" />
+				
+		<echo message="building requestor: Function Evaluator WhileJob " />
+		<ant antfile="fnEvalWhileJob-req-build.xml" dir="./examples/requestor/fnEval/fnEvalWhileJob/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Function Evaluator ConditionalJob " />
+		<ant antfile="fnEvalConditionalJob-req-build.xml" dir="./examples/requestor/fnEval/fnEvalConditionJob/" target="all" inheritAll="false" />
+	
+		<echo message="building requestor: Validation ConditionalJob Requestor" />
+		<ant antfile="conditionalJob-req-build.xml" dir="./validation/conditionalJob/requestor/" target="all" inheritAll="false" />		
+		
+		<echo message="building requestor: Validation Differentiation-Evaluator Provider " />
+		<ant antfile="derivative-prv-build.xml" dir="./validation/differentiation/provider/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Validation Differentiation Requestor " />
+		<ant antfile="derivative-req-build.xml" dir="./validation/differentiation/requestor/" target="all" inheritAll="false" />
+			
+		<echo message="building requestor: Validation Function-Evaluator Provider " />
+		<ant antfile="functionEvaluator-prv-build.xml" dir="./validation/functionEvaluation/provider/" target="all" inheritAll="false" />
+			
+		<echo message="building requestor: Validation Initialize-Condition Provider " />
+		<ant antfile="initializeCondition-prv-build.xml" dir="./validation/initializeCondition/provider/" target="all" inheritAll="false" />
+			
+		<echo message="building requestor: Validation Integral-Evaluator Provider " />
+		<ant antfile="integral-prv-build.xml" dir="./validation/integration/provider/" target="all" inheritAll="false" />
+		
+		<echo message="building requestor: Validation Integral-Evaluator Requestor " />
+		<ant antfile="integral-req-build.xml" dir="./validation/integration/requestor/" target="all" inheritAll="false" />
+	</target>	
+	
+	<target name="prepare">
+		<!-- don't create those folders at this current directory -->
+	</target>
+	
+</project>

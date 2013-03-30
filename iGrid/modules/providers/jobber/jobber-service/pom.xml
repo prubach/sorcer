@@ -21,11 +21,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

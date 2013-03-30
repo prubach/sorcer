@@ -68,6 +68,7 @@ import net.jini.lookup.entry.UIDescriptor;
 
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
+import sorcer.core.SorcerConstants;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -345,7 +346,7 @@ public class NetworkShell implements DiscoveryListener {
 	static private void execNoninteractiveCommand(String args[])
 			throws Throwable {
 		// check for external commands
-		System.out.println("monintercative nsh: " + Arrays.toString(args));
+		System.out.println("nonintercative nsh: " + Arrays.toString(args));
 
 		if (args[0].indexOf("--") == 0) {
 			String path = nishAppMap.get(args[0].substring(2));
@@ -941,7 +942,7 @@ public class NetworkShell implements DiscoveryListener {
 		}
 
 		public static String debugGetDefaultRoots() {
-			String sorcerLibDir = System.getenv("IGRID_HOME") + File.separator
+			/*String sorcerLibDir = System.getenv("IGRID_HOME") + File.separator
 					+ "lib" + File.separator + "sorcer" + File.separator
 					+ "lib";
 			String sorcerLibDLDir = System.getenv("IGRID_HOME")
@@ -950,7 +951,8 @@ public class NetworkShell implements DiscoveryListener {
 			String sorcerExtDir = System.getenv("IGRID_HOME") + File.separator
 					+ "lib" + File.separator + "sorcer" + File.separator
 					+ "lib-ext";
-			return (sorcerLibDir + ";" + sorcerLibDLDir + ";" + sorcerExtDir);
+			return (sorcerLibDir + ";" + sorcerLibDLDir + ";" + sorcerExtDir);*/
+			return SorcerConstants.MVN_REPO;
 		}
 
 		/**
@@ -973,7 +975,7 @@ public class NetworkShell implements DiscoveryListener {
 				throw new NullPointerException(
 						"Must have an output PrintStream");
 			try {
-				String sorcerLibDir = System.getenv("IGRID_HOME")
+				/*String sorcerLibDir = System.getenv("IGRID_HOME")
 						+ File.separator + "lib" + File.separator + "sorcer"
 						+ File.separator + "lib";
 				String sorcerLibDLDir = System.getenv("IGRID_HOME")
@@ -982,8 +984,11 @@ public class NetworkShell implements DiscoveryListener {
 				String sorcerExtDir = System.getenv("IGRID_HOME")
 						+ File.separator + "lib" + File.separator + "sorcer"
 						+ File.separator + "lib-ext";
-
 				String[] systemRoots = { sorcerLibDir, sorcerLibDLDir, sorcerExtDir };
+				*/
+				
+				String[] systemRoots = { SorcerConstants.MVN_REPO };
+				
 				String[] realRoots = (roots == null ? systemRoots : roots);
 				
 				instance.webster = new Webster(port, realRoots,

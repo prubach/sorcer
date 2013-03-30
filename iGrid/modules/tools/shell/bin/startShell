@@ -129,8 +129,13 @@ if [ -e $startConfigFile ] ; then
     NSH_CONF="$HOME/.nsh/configs/nsh-start.config"
 fi
 
+MVN_REPO="$HOME/.m2/repository"
 # the classpath to start nsh then application specific classpath is defined in nsh-start.config
-STARTER_CLASSPATH="$IGRID_HOME/lib/sorcer/lib-ext/shell.jar:$IGRID_HOME/lib/common/groovy/groovy-all-1.7.4.jar:$IGRID_HOME/lib/sorcer/lib/sorcer-prv.jar:$IGRID_HOME/lib/sorcer/lib-ext/webster.jar:$IGRID_HOME/lib/river/lib/jsk-lib.jar:$IGRID_HOME/lib/river/lib/jsk-platform.jar:$IGRID_HOME/lib/river/lib/high-scale-lib.jar:$IGRID_HOME/lib/river/lib/reference-collections-1.0.1.jar"
+SORCER_VERSION="11.1"
+SORCER_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/shell/$SORCER_VERSION/shell-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/boot/$SORCER_VERSION/boot-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$SORCER_VERSION/sorcer-api-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/webster/$SORCER_VERSION/webster-$SORCER_VERSION.jar"
+
+STARTER_CLASSPATH="$SORCER_CLASSPATH:$MVN_REPO/org/rioproject/resolver/resolver-api/5.0-M2/resolver-api-5.0-M2.jar:$MVN_REPO/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:$MVN_REPO/org/slf4j/slf4j-simple/1.7.3/slf4j-simple-1.7.3.jar:$MVN_REPO/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:$MVN_REPO/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:$MVN_REPO/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:$MVN_REPO/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:$MVN_REPO/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:$MVN_REPO/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar"
+
 
 # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
 # global classpath. Network shell behaves then the same as the java interpreter

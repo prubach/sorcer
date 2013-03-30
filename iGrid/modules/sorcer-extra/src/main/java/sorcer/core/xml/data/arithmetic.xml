@@ -1,0 +1,32 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+
+<ServiceJob>
+
+<ServiceTask name="ARITHMETIC Example-1" description="null" method="average" serviceType="sorcer.service.dcom.DCOMBackendProtocol" provider="ARITHMETIC-DCOM-EXCEL-KAO-LAPTOP2" taskID="arithmetic-task-1" portalURL="https://ssorcer-crd.cs.ttu.edu/sorcer/servlet/server">
+   <ServiceContext name="IMM Context">
+     <TextNode path="Root/IN-1"> 3 </TextNode>
+     <TextNode path="Root/IN-2"> 5 </TextNode>
+  </ServiceContext>
+</ServiceTask>
+
+
+<ServiceTask name="ARITHMETIC Example-2" description="null" method="average" serviceType="sorcer.service.arithmetic.ArithmeticRemote" provider="ARITHMETIC_KAO2" taskID="arithmetic-task-2">
+   <ServiceContext name="IMM Context">
+     <TextNode path="Root/IN-1"> 4 </TextNode>
+     <TextNode path="Root/IN-2"> 10 </TextNode>
+  </ServiceContext>
+
+  <ServiceContext name="Sys Context">
+    <TextNode path="Sys/is master">true</TextNode>
+    <TextNode path="Sys/job/strategy"> sequential </TextNode>
+    <TextNode path="Sys/job/strategy/access"> catalog </TextNode>
+    <TextNode path="Sys/notify/execution/to:/Kao">kao@cs.ttu.edu</TextNode>
+    <TextNode path="Sys/no wait">false</TextNode>
+    <TextNode path="Sys/in/task/id1">arithmetic-task-1</TextNode>
+    <TextNode path="Sys/in/task/id2">arithmetic-task-2</TextNode>
+  </ServiceContext>
+
+</ServiceTask>
+
+</ServiceJob>
+

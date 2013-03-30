@@ -1,0 +1,27 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+
+<FiperJob name="Hello-test-job" description="hello test job" jobID="null" strategy="sequential" access="catalog" wait="true" notify="kao@cs.ttu.edu" domainSeqID="0" subDomainSeqID="0" status="-1">
+
+<FiperTask name="Hello Example-1" description="null" method="sayHello" serviceType="fiper.service.hello.HelloProtocol" provider="HELLO_KAO" taskID="hello-task-1" runtimeSessionID="1" portalURL="">
+   <FiperContext name="hello-context">
+     <TextNode path="Names/Last Name">Kao</TextNode>
+     <TextNode path="Names/First Name">Kevin</TextNode>
+     <TextNode path="Names/Middle Initial">J</TextNode>
+     <TextNode path="Title">Dr.</TextNode>
+  </FiperContext>
+</FiperTask>
+
+
+<FiperTask name="Hello Example-2" description="null" method="sayHello" serviceType="fiper.service.hello.HelloProtocol" provider="HELLO_KAO" taskID="hello-task-1"  runtimeSessionID="2">
+   <FiperContext name="hello-context">
+     <TextNode path="Names/Last Name" meta-attrs="ft|test1|xxx|yyy;da|test2|zzz|aaa">Mika</TextNode>
+     <TextNode path="Names/First Name">David</TextNode>
+     <TextNode path="Names/Middle Initial"></TextNode>
+     <TextNode path="Title">Dr.</TextNode>
+     <InNode path="Title" from="output/Messages" />
+  </FiperContext>
+</FiperTask>
+
+
+</FiperJob>
+

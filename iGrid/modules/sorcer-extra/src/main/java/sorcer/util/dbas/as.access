@@ -1,0 +1,18 @@
+#DB Access Default Properties for Application Server
+#Fri May 08 17:27:03 EDT 2003
+beach=supervisor:ac2QpYXo736DY
+sobol=root:acVFdu5DXhbR6
+budka=supervisor:acfcMZiGju8Gc
+rebello=supervisor:ac7utLNbAV0HI
+bernstein=supervisor:acdej405JPG1E
+ac=root:acvjPjyOyG6P6
+korngold=supervisor:acDAP4W1SM2mI
+larsond=supervisor:acBHj74dnQ2Ps
+role5=root:cewwws:*
+role4=admin:cewwws:*
+role3=reviewer:cewwws:*:select
+role2=logger:cewwws:*:select:update:insert
+erkes=supervisor:aciCEZfaT5KRA
+role1=supervisor:cewwws:*:select:update:insert:delete
+kinstrey=reviewer:acWMYDBJLOWjc
+clark=supervisor:acW9TipEWY8Oo
