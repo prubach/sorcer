@@ -1,3 +1,0 @@
-#!/bin/sh
-echo $CVSROOT
-cvs -f status -v $@
