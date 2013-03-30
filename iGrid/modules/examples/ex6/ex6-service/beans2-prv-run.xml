@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- 
+Replace "provider.name" with your provider name and specify property value for "provider.class."
+Also you might need to adjust the classpath (provider.classpath) for your provider 
+-->
+
+<project name="Running Smart Arithmeric" default="run.provider" basedir=".">
+	<property name="beans.id" value="2" />
+	<import file="beans-prv-run.xml" />
+</project>
+
