@@ -3,10 +3,12 @@
 
 	<import file="../modules/common-run.xml" />
 
+	<prepare-boot />
 	<target name="iGrid" depends="clean, services" />
 
 	<target name="services">
-		<java jar="${lib}/boot.jar" fork="yes" spawn="yes">
+		<java classname="com.sun.jini.start.ServiceStarter" fork="yes" spawn="yes">
+			<classpath refid="boot.classpath"/>
 			<arg value="../configs/boot-iGrid-min.config" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
@@ -14,7 +16,7 @@
 			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 		</java>
 	</target>
-
+	
 	<target name="clean" description="Deletes database files files">
 		<delete dir="${iGrid.home}/logs/dbfiles_blitz" failonerror="false" />
 		<delete dir="${iGrid.home}/logs/slamonitor.sla_db" failonerror="false" />

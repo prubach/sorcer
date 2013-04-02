@@ -2,11 +2,13 @@
 <project name="Jini basic services" default="iGrid" basedir=".">
 
 	<import file="../modules/common-run.xml" />
-
+	<prepare-boot />
+		
 	<target name="iGrid" depends="clean, services" />
 
 	<target name="services">
-		<java jar="${lib}/boot.jar" fork="yes">
+		<java classname="com.sun.jini.start.ServiceStarter" fork="yes">
+			<classpath refid="boot.classpath"/>
 			<arg value="../configs/boot-iGrid.config" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
