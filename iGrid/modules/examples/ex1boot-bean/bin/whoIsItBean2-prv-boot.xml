@@ -6,29 +6,34 @@ and  "java.util.logging.config.file" for your provider
 -->
 <project name="WhoIsIt" default="run.provider" basedir=".">
 
-	<!-- load system environment variables -->
 	<property environment="env" />
+	<property name="pom.file" value="${iGrid.home}/modules/examples/ex1/ex1-service/pom.xml" />
+	
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
-	<echo message="IGRID_HOME: ${iGrid.home}" />
 
 	<!-- set property values here -->
 	<property name="provider.name" value="whoIsIt" />
-	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />
-
-	<!-- define provider classpath -->
-	<path id="project.classpath">
-		<pathelement location="${sorcer.lib}/${provider.name}-bean2.jar" />
-	</path>
+	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
+	
+	
+	<prepare-boot-and-mvn />
 
 	<!-- define provider codebase, list jars only -->
-	<property name="j1" value="${provider.name}-bean-dl.jar" />
-	<property name="j2" value="sorcer-prv-dl.jar" />
-	<property name="j3" value="jsk-dl.jar" />
+	<property name="j1" value="/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
+	<property name="j2" value="/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
+	<property name="j3" value="/org/sorcersoft/sorcer/exertlet-ui/${v.sorcer}/exertlet-ui-${v.sorcer}.jar" />
 
 	<!-- start service provider -->
-	<!-- start provider -->
-	<target name="run.provider">
-		<java jar="${lib}/boot.jar" fork="yes">
+	<target name="run.provider" >
+
+	  <!-- define provider classpath -->
+	  <path id="project.classpath">
+	      <path refid="runtime.classpath"/>  
+	      <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-service/${v.sorcer}/ex1-service-${v.sorcer}.jar" />
+	      <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
+	  </path>
+	  <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
+			<classpath refid="boot.classpath"/>
 			<arg value="${iGrid.home}/configs/startup-boot-prv.config" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
 			<sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean2.config" />
@@ -40,5 +45,4 @@ and  "java.util.logging.config.file" for your provider
 			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 		</java>
 	</target>
-
 </project>
