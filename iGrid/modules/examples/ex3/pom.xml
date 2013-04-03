@@ -7,21 +7,16 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>modules</artifactId>
+		<artifactId>examples</artifactId>
 	</parent>
 
-	<artifactId>examples</artifactId>
+	<artifactId>ex3</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER examples</name>
+	<name>SORCER examples :: ex3</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
 	<modules>
-		<module>account</module>
-		<module>arithmetic</module>
-		<module>ex1</module>
-		<module>ex2</module>
-		<module>ex3</module>
-		<module>ex6</module>
+		<module>ex3-client</module>
 	</modules>
 </project>

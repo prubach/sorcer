@@ -28,16 +28,19 @@ public class SharedContextWorkerRunner extends ExertionRunner {
 		// define requestor data
 		Job job = null;
 		try {
+			System.out.println("reqName " + requestorName);
 			context.putValue("requestor/name", requestorName);
 			
 			context.putValue("requestor/operand/" + prefix1 + "1", 1);
 			context.putValue("requestor/operand/" + prefix1 + "2", 1);
 			context.writeValue("provider/result/" + prefix1 + "0", Context.Value.NULL);
 			
+			System.out.println("pre2 " + prefix2);
 			context.putValue("requestor/operand/" + prefix2 + "1", 1);
 			context.putValue("requestor/operand/" + prefix2 + "2", 1);
 			context.writeValue("provider/result/" + prefix2 + "0", Context.Value.NULL);
 			
+			System.out.println("pre1 " + prefix3);
 			context.aliasValue("requestor/operand/" + prefix3 + "1", "provider/result/" + prefix1 + "0");
 			context.aliasValue("requestor/operand/" + prefix3 + "2", "provider/result/" + prefix2 + "0");
 			context.putValue("provider/result/" + prefix3 + "0", 0);
