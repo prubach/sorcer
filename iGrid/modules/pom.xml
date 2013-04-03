@@ -23,6 +23,7 @@
         <module>providers</module>
         <module>sorcer-api</module>
 	<module>sorcer-util</module>
+	<module>sorcer-security-ui</module>
         <module>exertlet-ui</module>
         <module>client-common</module>
     </modules>

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sorcer-api</artifactId>
-    <name>SORCER core</name>
+    <name>SORCER API</name>
     <url>http://sorcersoft.org/</url>
     <description>Service ORiented Computing EnviRonment</description>
 

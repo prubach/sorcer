@@ -84,11 +84,6 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>fi.hut.tcm</groupId>
-			<artifactId>spki</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>net.jini.lookup</groupId>
 			<artifactId>serviceui</artifactId>
 			<version>${v.jini}</version>

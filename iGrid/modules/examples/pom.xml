@@ -20,6 +20,7 @@
 		<module>account</module>
 		<module>arithmetic</module>
 		<module>ex1</module>
+		<module>ex2</module>
 		<module>ex6</module>
 	</modules>
 </project>
