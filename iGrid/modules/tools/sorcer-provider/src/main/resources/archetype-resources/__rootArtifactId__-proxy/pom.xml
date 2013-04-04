@@ -3,28 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>${rootArtifactId}</artifactId>
-        <groupId>${groupId}</groupId>
-        <version>${version}</version>
-    </parent>
-
     <artifactId>${rootArtifactId}-proxy</artifactId>
     <name>SORCER ${rootArtifactId} :: proxy</name>
 
     <dependencies>
         <dependency>
-            <version>${v.sorcer}</version>
+            <groupId>${groupId}</groupId>
             <artifactId>${rootArtifactId}-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer</artifactId>
         </dependency>
     </dependencies>
 </project>

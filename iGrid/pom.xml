@@ -19,9 +19,6 @@
         <v.groovy>2.0.6</v.groovy>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- TODO fix and enable the tests -->
-        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <modules>

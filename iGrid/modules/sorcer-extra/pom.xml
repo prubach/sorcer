@@ -11,7 +11,6 @@
 	</parent>
 
 	<artifactId>sorcer-extra</artifactId>
-	<!--<packaging>classdepandjar</packaging> -->
 	<packaging>jar</packaging>
 	<name>SORCER extra</name>
 	<description>SORCER</description>
@@ -99,109 +98,5 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
-
-	<build>
-        <plugins>
-            <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>sorcer/xml/**.java</exclude>
-						<!-- uzycie nieistniejacych metod -->
-						<exclude>**/sorcer/core/grid/provider/dispatcher/**.java</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.13</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-
-<!-- 			<plugin>
-				<groupId>com.keyboardsamurais.maven</groupId>
-				<artifactId>maven-timestamp-plugin</artifactId>
-				<version>1.0</version>
-				<configuration>
-					<propertyName>DTIME</propertyName>
-					<timestampPattern>yyyyMMddHHmm</timestampPattern>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
- -->
-<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-rio-plugin</artifactId>
-				<version>5.0</version>
-				&lt;!&ndash; <extensions>true</extensions> &ndash;&gt;
-				<configuration>
-					<createJar>
-						<classifier>dl</classifier>
-						<manifest>
-							<attribute name="Implementation-Title" value="${project.name}" />
-							<attribute name="Implementation-Version" value="${project.version}" />
-							<attribute name="SORCER-Version" value="${project.version}" />
-							<attribute name="SORCER-Build" value="${DSTAMP}" />
-						</manifest>
-						<ins>
-							<in name="sorcer" />
-							<in name="sorcer.client" />
-						</ins>
-						<topclasses>
-						<topclass name="sorcer.core.provider.ServiceTasker" />
-						<topclass name="sorcer.core.AdministratableProvider" />
-						<topclass name="sorcer.core.provider.exertmonitor.MonitoringManagement" />
-						<topclass name="sorcer.core.provider.exertmonitor.MonitorSession" />
-						<topclass name="sorcer.service.ExertionInfo" />
-						<topclass name="sorcer.core.provider.ProviderDelegate" />
-						<topclass name="sorcer.jini.lookup.entry.SorcerServiceInfo" />
-						<topclass name="com.artima.lookup.util.ConsistentSet" />
-						<topclass name="sorcer.core.context.PositionalContext" />
-						<topclass name="sorcer.core.context.ContextManagementAdapter" />
-						<topclass name="sorcer.util.bdb.sdb.Handler" />
-						<topclass name="sorcer.co.operator" />
-						<topclass name="sorcer.eo.operator" />
-						<topclass name="sorcer.co.tuple.Entry" />
-						<topclass name="sorcer.co.tuple.Parameter" />
-						<topclass name="net.jini.admin.Administrable" />
-						<topclass name="sorcer.util.Stopwatch" />
-						<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
-						</topclasses>
-                        <includes>
-                            <include name="${env.IGRID_HOME}/configs/sorcer.env" />
-                            <include name="${env.IGRID_HOME}/configs/data.formats" />
-                        </includes>
-                    </createJar>
-				</configuration>
-			</plugin>
--->
-		</plugins>
-	</build>
 </project>

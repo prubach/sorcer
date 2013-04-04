@@ -7,11 +7,26 @@
         >
 
     <requiredProperties>
-        <requiredProperty key="provider-interface">
+        <requiredProperty key="version">
+            <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="providerInterface">
             <defaultValue>SampleService</defaultValue>
         </requiredProperty>
-        <requiredProperty key="provider-class">
-            <defaultValue>${provider-interface}impl</defaultValue>
+        <requiredProperty key="providerClass">
+            <defaultValue>${providerInterface}impl</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="projectDescription">
+            <defaultValue>Sample Service</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceName">
+            <defaultValue>${providerInterface}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceDescription">
+            <defaultValue>${projectDescription}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceGroup">
+            <defaultValue>sorcer.TEST</defaultValue>
         </requiredProperty>
     </requiredProperties>
 
@@ -21,13 +36,26 @@
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
                 </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
                     <directory>src/main/resources</directory>
+                    <excludes>
+                        <exclude>
+                            **/*.png
+                        </exclude>
+                    </excludes>
+                </fileSet>
+                <fileSet filtered="false" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>
+                            **/*.png
+                        </include>
+                    </includes>
                 </fileSet>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/test/java</directory>
                 </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
                     <directory>src/test/resources</directory>
                 </fileSet>
             </fileSets>
