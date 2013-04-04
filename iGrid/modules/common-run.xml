@@ -260,4 +260,26 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 	    
 	</sequential>
 	</macrodef>
+	
+	<target name="boot.provider">
+	  <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
+		<classpath refid="boot.classpath"/>
+		<arg value="src/main/resources/config/boot.config" />
+		<sysproperty key="iGrid.home" value="${iGrid.home}" />
+		<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+		<sysproperty key="java.security.policy" value="src/main/resources/policy/prv.policy" />
+		<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+	  </java>
+	</target>
+
+	<target name="run.requestor" depends="mvn-init">
+		<java classname="${requestor.class}" fork="yes">
+		 	<classpath refid="run.classpath"/>
+		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			<sysproperty key="java.security.policy" value="src/main/resources/policy/req.policy" />
+			<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
+			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+		</java>
+	</target>
+	
 </project>
