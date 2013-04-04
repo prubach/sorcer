@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<project default="run.requestor" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+
+    <!-- loads system environment variables -->
+    <property environment="env"/>
+    <import file="${env.IGRID_HOME}/modules/common-run.xml"/>
+    <echo message="webster: ${provider.webster.url}"/>
+
+    <!-- set property values here -->
+    <property name="requestor.name" value="${rootArtifactId}-client"/>
+    <property name="requestor.version" value="${version}"/>
+    <property name="requestor.class" value="${package}.${providerInterface}Tester"/>
+
+    <artifact:dependencies pathId="dependency.classpath">
+        <dependency groupId="${groupId}" artifactId="${rootArtifactId}-api" version="${version}"/>
+        <dependency groupId="org.sorcersoft.sorcer" artifactId="sorcer-api" version="${v.sorcer}"/>
+    </artifact:dependencies>
+
+    <artifact:dependencies pathId="requestor.classpath">
+        <dependency groupId="${groupId}" artifactId="${rootArtifactId}-client" version="${version}"/>
+    </artifact:dependencies>
+
+    <!-- provider codeabse jars -->
+    <property name="requestor.codebase">
+        <path refid="dependency.classpath"/>
+    </property>
+
+
+    <!-- define classpath using the requestor's jar file and maven runtime classpath -->
+    <path id="run.classpath">
+        <path refid="runtime.classpath"/>
+        <path refid="requestor.classpath"/>
+    </path>
+
+</project>
+

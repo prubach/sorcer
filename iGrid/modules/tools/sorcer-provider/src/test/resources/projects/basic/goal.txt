@@ -1,1 +1,2 @@
-verify
+install
+mvn -f pom.xml antrun:run

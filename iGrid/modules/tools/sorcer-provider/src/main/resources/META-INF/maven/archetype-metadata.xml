@@ -31,6 +31,29 @@
     </requiredProperties>
 
     <modules>
+        <module id="${artifactId}-client" dir="__rootArtifactId__-client" name="${artifactId}-client">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/scripts</directory>
+                    <includes>
+                        <include>run.ntl</include>
+                        <include>run.xml</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
         <module id="${artifactId}-api" dir="__rootArtifactId__-api" name="${artifactId}-api">
             <fileSets>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">

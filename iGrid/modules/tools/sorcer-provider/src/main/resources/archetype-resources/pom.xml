@@ -15,7 +15,8 @@
 
     <artifactId>${rootArtifactId}</artifactId>
     <version>${version}</version>
-    <description>${projectDesciption}</description>
+    <name>SORCER ${rootArtifactId}</name>
+    <description>${projectDescription}</description>
 
     <groupId>${groupId}</groupId>
     <packaging>pom</packaging>
@@ -25,6 +26,7 @@
         <module>${rootArtifactId}-service</module>
         <module>${rootArtifactId}-proxy</module>
         <module>${rootArtifactId}-ui</module>
+        <module>${rootArtifactId}-client</module>
     </modules>
 
     <dependencyManagement>
@@ -36,4 +38,20 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <configuration>
+                    <target>
+                        <ant antfile="${basedir}/${rootArtifactId}-client/src/main/scripts/run.xml"/>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
