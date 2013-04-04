@@ -14,19 +14,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
+            <version>${v.sorcer}</version>
             <artifactId>${rootArtifactId}-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
