@@ -1,4 +1,4 @@
-package junit.sorcer.ex2.provider;
+package sorcer.ex2.provider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

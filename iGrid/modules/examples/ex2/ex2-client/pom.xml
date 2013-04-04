@@ -10,7 +10,6 @@
         <version>11.1</version>
     </parent>
 
-    <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex2-client</artifactId>
     <name>SORCER examples :: ex2 :: client</name>
 
@@ -28,6 +27,14 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>client-common</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gsbase</groupId>
+            <artifactId>gsbase</artifactId>
         </dependency>
     </dependencies>
 </project>

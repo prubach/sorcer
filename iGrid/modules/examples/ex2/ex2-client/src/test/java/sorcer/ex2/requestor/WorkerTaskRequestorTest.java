@@ -1,4 +1,4 @@
-package junit.sorcer.ex2.requestor;
+package sorcer.ex2.requestor;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,7 +16,7 @@ import org.junit.Test;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.ex2.provider.WorkerProvider;
+import sorcer.ex2.provider.Worker;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -60,7 +60,7 @@ public class WorkerTaskRequestorTest {
 	public void providerResultTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
+		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
 
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
@@ -72,7 +72,7 @@ public class WorkerTaskRequestorTest {
 	public void providerMessageTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
+		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
 
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
@@ -84,7 +84,7 @@ public class WorkerTaskRequestorTest {
 	public void providerHostNameTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
+		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
 		//logger.info("result: " + task);

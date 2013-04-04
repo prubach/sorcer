@@ -262,9 +262,11 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 	</macrodef>
 	
 	<target name="boot.provider">
-	  <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
+	  <java classname="sorcer.boot.ServiceStarter" fork="yes">
 		<classpath refid="boot.classpath"/>
-		<arg value="src/main/resources/config/boot.config" />
+		<arg value="target/classes" />
+<!--        <jvmarg value="-Xdebug"/>
+        <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 		<sysproperty key="iGrid.home" value="${iGrid.home}" />
 		<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 		<sysproperty key="java.security.policy" value="src/main/resources/policy/prv.policy" />

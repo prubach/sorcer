@@ -45,6 +45,15 @@
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gsbase</groupId>
+            <artifactId>gsbase</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
