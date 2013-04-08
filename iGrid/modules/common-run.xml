@@ -129,7 +129,7 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		</and>
 	</condition>
 	
-	<condition property="requestor.policy" value="../resources/policy/req.policy" >
+	<condition property="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy" >
 	  <not>
 	    <isset property="requestor.policy" />
 	  </not>
@@ -284,12 +284,12 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 	<target name="boot.provider">
 	  <java classname="sorcer.boot.ServiceStarter" fork="yes">
 		<classpath refid="boot.classpath"/>
-		<arg value="target/classes" />
+		<arg value="${basedir}/target/classes" />
 <!--        <jvmarg value="-Xdebug"/>
         <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 		<sysproperty key="iGrid.home" value="${iGrid.home}" />
 		<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
-		<sysproperty key="java.security.policy" value="src/main/resources/policy/prv.policy" />
+		<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 		<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 	  </java>
 	</target>
@@ -301,7 +301,7 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		<java classname="${requestor.class}" fork="yes">
 		 	<classpath refid="run.classpath"/>
 		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../resources/policy/req.policy" />
+			<sysproperty key="java.security.policy" value="${requestor.policy}" />
 			<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 		</java>

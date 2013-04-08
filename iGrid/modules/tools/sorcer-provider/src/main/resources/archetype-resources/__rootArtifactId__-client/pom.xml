@@ -28,6 +28,7 @@
 
                 <configuration>
                     <target name="${rootArtifactId}">
+			<echo message="BaseDir: ${basedir}"/>
                         <ant antfile="${basedir}/src/main/scripts/run.xml" target="run.requestor"/>
                     </target>
                 </configuration>

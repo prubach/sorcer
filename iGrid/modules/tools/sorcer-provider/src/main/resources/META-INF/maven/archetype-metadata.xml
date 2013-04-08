@@ -94,14 +94,23 @@
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
                 </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
                     <directory>src/main/resources</directory>
+<!--		    <includes>
+			<include>**/*.policy</include>
+                    </includes>-->
                 </fileSet>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/test/java</directory>
                 </fileSet>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/test/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/scripts</directory>
+                    <includes>
+                        <include>boot.xml</include>
+                    </includes>
                 </fileSet>
             </fileSets>
         </module>
