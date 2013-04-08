@@ -1,4 +1,4 @@
-package com.example.sorcer;
+package ${package};
 
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.exert;

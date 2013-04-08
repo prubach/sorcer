@@ -1,4 +1,4 @@
-package com.example.sorcer;
+package ${package};
 
 import java.rmi.RemoteException; 
 import java.util.logging.Logger;
