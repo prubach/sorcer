@@ -28,6 +28,12 @@
         <requiredProperty key="serviceGroup">
             <defaultValue>sorcer.TEST</defaultValue>
         </requiredProperty>
+        <requiredProperty key="usesSpacer">
+            <defaultValue>false</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="usesMonitor">
+            <defaultValue>false</defaultValue>
+        </requiredProperty>
     </requiredProperties>
 
     <modules>
