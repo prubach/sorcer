@@ -17,14 +17,11 @@
 
 package sorcer.core.invoker;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
-import sorcer.co.tuple.Entry;
 import sorcer.co.tuple.Parameter;
-import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
-import sorcer.service.ContextException;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
 import sorcer.service.Identity;
@@ -62,67 +59,12 @@ import sorcer.service.Identity;
  * of the context.
  */
 @SuppressWarnings("rawtypes")
-public abstract class ServiceInvoker extends Identity implements Invoking<Object> {
+public interface Invoking<T> extends Evaluation<T>, Serializable {
 
-	protected ServiceContext invokeContext;
+	public T invoke(Parameter... entries) throws RemoteException,
+		EvaluationException;
 	
-	/** Logger for logging information about instances of this type */
-	static final Logger logger = Logger.getLogger(ServiceInvoker.class
-			.getName());
-
-	public Object invoke(Context context, Parameter... entries) throws RemoteException,
-			EvaluationException {
-		invokeContext = (ServiceContext)context;
-		return invoke(entries);
-		
-	}
-
-	public Object invoke(Parameter... entries) throws RemoteException,
-		EvaluationException {
-		if (entries != null && entries.length > 0)
-			substitute( entries);
-		return  getValue(entries);
-	}
+	public T invoke(Context context, Parameter... entries) throws RemoteException,
+			EvaluationException;
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sorcer.service.Evaluation#getAsis()
-	 */
-	@Override
-	public Object getAsis() throws EvaluationException, RemoteException {
-		return getValue();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sorcer.service.Evaluation#substitute(sorcer.co.tuple.Parameter[])
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Evaluation substitute(Parameter... entries)
-			throws EvaluationException, RemoteException {
-		for (Parameter e : entries) {
-			if (e instanceof Entry<?, ?>) {
-				try {
-					invokeContext.putValue(((Entry<String, Object>) e)._1,
-							((Entry<String, Object>) e)._2);
-				} catch (ContextException ex) {
-					throw new EvaluationException(ex);
-				}
-			}
-
-		}
-		return this;
-	}
-
-	public Context getInvokeContext() {
-		return invokeContext;
-	}
-
-	public void setInvokeContext(Context invokeContext) {
-		this.invokeContext = (ServiceContext)invokeContext;
-	}
-
 }

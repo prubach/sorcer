@@ -22,7 +22,8 @@ import groovy.lang.GroovyShell;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
 import sorcer.co.tuple.Parameter;
 import sorcer.service.Context;
@@ -36,9 +37,7 @@ import sorcer.service.EvaluationException;
 public class GroovyInvoker extends ServiceInvoker {
 		
 	private static String defaultName = "gvyIvoker-";
-		
-	private String name;
-	
+			
 	// counter for unnamed instances
 	protected static int count;
 
@@ -54,11 +53,9 @@ public class GroovyInvoker extends ServiceInvoker {
 		this.name = defaultName + count++;
 	}
 
-	public GroovyInvoker(String name) throws EvaluationException {
-		if (name == null)
-			this.name = defaultName + count++;
-		else
-			this.name = name;
+	public GroovyInvoker(String expression) throws EvaluationException {
+		this.name = defaultName + count++;
+		this.expression = expression;
 	}
 
 	public GroovyInvoker(String name, String expression)
@@ -76,7 +73,7 @@ public class GroovyInvoker extends ServiceInvoker {
 		this.scriptFile = scriptFile;
 		for (ServiceInvoker si : invokers) {
 			try {
-				variables.putValue(si.getName(), si);
+				invokeContext.putValue(si.getName(), si);
 			} catch (ContextException e) {
 				throw new EvaluationException(e);
 			}
@@ -89,7 +86,7 @@ public class GroovyInvoker extends ServiceInvoker {
 		this.expression = expression;
 		for (ServiceInvoker si : invokers) {
 			try {
-				variables.putValue(si.getName(), si);
+				invokeContext.putValue(si.getName(), si);
 			} catch (ContextException e) {
 				throw new EvaluationException(e);
 			}
@@ -101,7 +98,7 @@ public class GroovyInvoker extends ServiceInvoker {
 		this.expression = expression;
 		for (ServiceInvoker si : invokers) {
 			try {
-				variables.putValue(si.getName(), si);
+				invokeContext.putValue(si.getName(), si);
 			} catch (ContextException e) {
 				throw new EvaluationException(e);
 			}
@@ -115,14 +112,18 @@ public class GroovyInvoker extends ServiceInvoker {
 	public Object getValue(Parameter... entries) throws EvaluationException,
 			RemoteException {
 		Object result = null;
+		if (shell == null)
+			shell = new GroovyShell();
+		initBindings();
 		try {
 			synchronized (shell) {
-				if (scriptFile != null)
+				if (scriptFile != null) {
 					try {
 						result = shell.evaluate(scriptFile);
 					} catch (IOException e) {
 						throw new EvaluationException(e);
 					}
+				}
 				else {
 					result = shell.evaluate(expression);
 				}
@@ -136,18 +137,36 @@ public class GroovyInvoker extends ServiceInvoker {
 		return result;
 	}
 	
+	private void initBindings() throws RemoteException, EvaluationException {
+		if (invokeContext != null) {
+			Iterator i = invokeContext.entrySet().iterator();
+			while (i.hasNext()) {
+				Map.Entry entry = (Map.Entry) i.next();
+				Object val = entry.getValue();
+				if (val != null && val instanceof Invoking) {
+					if (!((Invoking)val).getName().equals(name)) {
+						val = ((Invoking) val).invoke(invokeContext);
+						shell.setVariable((String) entry.getKey(), val);
+					} else {
+						continue;
+					}
+				}
+				shell.setVariable((String) entry.getKey(), val);
+			}
+		}
+	}
+	
 	public void clean() {
 		shell = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.core.invoker.ServiceInvoker#invoke(sorcer.service.Context[])
-	 */
 	@Override
-	public Context invoke(Context context, Parameter... parameters) throws RemoteException,
-			EvaluationException {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return getClass().getName() + ":" + name + ":" + expression;
 	}
 
 }
+
+
+
+

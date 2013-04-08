@@ -236,4 +236,14 @@ public class CmdInvoker extends ServiceInvoker {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 */
+	@Override
+	public Object getValue(Parameter... entries) throws EvaluationException,
+			RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

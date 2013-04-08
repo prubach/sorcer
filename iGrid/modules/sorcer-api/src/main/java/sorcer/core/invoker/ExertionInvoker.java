@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 import net.jini.core.transaction.Transaction;
 import sorcer.co.tuple.Entry;
 import sorcer.co.tuple.Parameter;
+import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -98,7 +99,7 @@ public class ExertionInvoker extends ServiceInvoker {
 	@Override
 	public Context invoke(Context context, Parameter... parameters) throws RemoteException,
 			EvaluationException {
-		invokeContext = context;
+		invokeContext = (ServiceContext)context;
 		Object result = getValue(parameters);
 		if (result != null)
 			try {

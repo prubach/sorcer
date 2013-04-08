@@ -24,8 +24,8 @@ import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 import sorcer.co.tuple.Parameter;
-import sorcer.core.context.InvokeContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.invoke.ParModel;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -33,8 +33,8 @@ import sorcer.service.EvaluationException;
 @SuppressWarnings("rawtypes")
 public class ContextInvoker extends ServiceInvoker {
 
-	public ContextInvoker(InvokeContext variables) {
-		this.variables = variables;
+	public ContextInvoker(ParModel model) {
+		this.invokeContext = model;
 	}
 
 	/*
@@ -46,19 +46,29 @@ public class ContextInvoker extends ServiceInvoker {
 	public Context invoke(Context context, Parameter... parameters)
 			throws RemoteException, EvaluationException {
 		Context ouContext = new ServiceContext("context/invoker: " + name);
-		ouContext.setSubject("result/from/context", variables.getName());
+		ouContext.setSubject("result/from/context", invokeContext.getName());
 		Enumeration e;
 		try {
 			e = context.contextPaths();
 			String key;
 			while (e.hasMoreElements()) {
 				key = (String) e.nextElement();
-				ouContext.putValue(key, variables.getValue());
+				ouContext.putValue(key, invokeContext.getValue());
 			}
 		} catch (ContextException ex) {
 			throw new EvaluationException(ex);
 		}
 		return ouContext;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 */
+	@Override
+	public Object getValue(Parameter... entries) throws EvaluationException,
+			RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

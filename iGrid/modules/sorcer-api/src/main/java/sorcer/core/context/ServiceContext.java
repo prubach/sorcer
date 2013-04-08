@@ -1746,6 +1746,16 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return null;
 	}
 
+	public Context appendContext(Context cntxt) throws ContextException {
+		String key;
+		Enumeration e = cntxt.contextPaths();
+		while (e.hasMoreElements()) {
+			key = (String) e.nextElement();
+			putValue(key, cntxt.getValue(key));
+		}
+		return this;
+	}
+	
 	public Context appendSubcontext(Context cntxt) throws ContextException {
 		// get the whole context, with the context root name as the
 		// path prefix
