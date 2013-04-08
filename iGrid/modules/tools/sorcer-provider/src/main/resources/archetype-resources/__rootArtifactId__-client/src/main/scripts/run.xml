@@ -2,6 +2,7 @@
 
 <project default="run.requestor" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
+    <property name="pom.file" value="../../pom.xml" />
     <!-- loads system environment variables -->
     <property environment="env"/>
     <import file="${env.IGRID_HOME}/modules/common-run.xml"/>
@@ -9,24 +10,16 @@
 
     <!-- set property values here -->
     <property name="requestor.name" value="${rootArtifactId}-client"/>
+    <property name="requestor.api" value="${rootArtifactId}-api"/>
     <property name="requestor.version" value="${version}"/>
     <property name="requestor.class" value="${package}.${providerInterface}Tester"/>
-
+    <property name="requestor.groupId" value="${groupId}"/>
+ 
     <!-- provider codeabse jars -->
     <path id="requestor.codebase">
         <pathelement location="${${groupId}:${rootArtifactId}-api:jar}"/>
         <pathelement location="${'org.sorcersoft.sorcer:sorcer-api:jar'}"/>
     </path>
-
-    <path id="requestor.classpath">
-        <pathelement location="${baseDir}/target/classes"/>
-    </path>
-
-    <!-- define classpath using the requestor's jar file and maven runtime classpath -->
-    <path id="run.classpath">
-        <path refid="runtime.classpath"/>
-        <path refid="requestor.classpath"/>
-    </path>
-
+    
 </project>
 
