@@ -17,4 +17,22 @@
             <artifactId>sorcer-api</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+
+
+                <configuration>
+                    <target name="${rootArtifactId}">
+                        <ant antfile="${basedir}/src/main/scripts/run.xml" target="run.requestor"/>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

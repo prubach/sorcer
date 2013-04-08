@@ -1,2 +1,2 @@
 install
-mvn -f pom.xml antrun:run
+mvn -f basic-client/pom.xml antrun:run

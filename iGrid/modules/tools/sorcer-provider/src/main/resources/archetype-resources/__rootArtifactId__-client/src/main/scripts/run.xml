@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project default="run.requestor" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+<project default="run.requestor" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <!-- loads system environment variables -->
     <property environment="env"/>
@@ -12,20 +12,15 @@
     <property name="requestor.version" value="${version}"/>
     <property name="requestor.class" value="${package}.${providerInterface}Tester"/>
 
-    <artifact:dependencies pathId="dependency.classpath">
-        <dependency groupId="${groupId}" artifactId="${rootArtifactId}-api" version="${version}"/>
-        <dependency groupId="org.sorcersoft.sorcer" artifactId="sorcer-api" version="${v.sorcer}"/>
-    </artifact:dependencies>
-
-    <artifact:dependencies pathId="requestor.classpath">
-        <dependency groupId="${groupId}" artifactId="${rootArtifactId}-client" version="${version}"/>
-    </artifact:dependencies>
-
     <!-- provider codeabse jars -->
-    <property name="requestor.codebase">
-        <path refid="dependency.classpath"/>
-    </property>
+    <path id="requestor.codebase">
+        <pathelement location="${${groupId}:${rootArtifactId}-api:jar}"/>
+        <pathelement location="${'org.sorcersoft.sorcer:sorcer-api:jar'}"/>
+    </path>
 
+    <path id="requestor.classpath">
+        <pathelement location="${baseDir}/target/classes"/>
+    </path>
 
     <!-- define classpath using the requestor's jar file and maven runtime classpath -->
     <path id="run.classpath">
