@@ -57,5 +57,10 @@
 			<artifactId>maven-ant-tasks</artifactId>
 			<version>2.1.4-20130125.234401-8</version>
 		</dependency>
+		<dependency>
+			<groupId>ant-contrib</groupId>
+			<artifactId>ant-contrib</artifactId>
+			<version>1.0b3</version>
+		</dependency>
 	</dependencies>
 </project>

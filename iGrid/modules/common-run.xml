@@ -56,7 +56,7 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 
 -->
 
-<project name="" default="" basedir="." >
+<project name="" default="" basedir="." xmlns:ac="http://ant-contrib.sourceforge.net">
 
 	<property name="dospawn" value="false" />
 
@@ -72,20 +72,26 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 	<property name="v.jini" value="2.2.1" />
 	<property name="v.blitz" value="2.1.7" />
 	<property name="v.sleepycat" value="4.1.21" />
-        <property name="v.rio" value="5.0-M2" />
+	<property name="v.rio" value="5.0-M2" />
 	<property name="v.groovy" value="2.0.6" />
 
 	<property name="java.home" value="${env.JAVA_HOME}" />
 	<property name="rio.home" value="${env.RIO_HOME}" />
 	<property name="mvn.repo" value="${env.HOME}/.m2/repository/" />
-	
+
 	<property name="jini.lib" value="${lib}/river/lib" />
 	<property name="jini-dl.lib" value="${lib}/river/lib-dl" />
 	<property name="jini-ext.lib" value="${lib}/river/lib-ext" />
-	
+
 	<property name="docs" value="${iGrid.home}/docs/${module.name}" />
 	<property name="iGrid.policy" value="${iGrid.home}/policy" />
 	<property name="iGrid.config" value="${iGrid.home}/configs" />
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml" uri="http://ant-contrib.sourceforge.net">
+		<classpath>
+			<pathelement location="${mvn.repo}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
 
 	<!-- Properties are IMMUTABLE. Once set it cannot be changed. Here we specify that environment variables take precedence. -->
 
@@ -128,11 +134,11 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 			<isset property="env.DATA_SERVER_PORT" />
 		</and>
 	</condition>
-	
-	<condition property="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy" >
-	  <not>
-	    <isset property="requestor.policy" />
-	  </not>
+
+	<condition property="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy">
+		<not>
+			<isset property="requestor.policy" />
+		</not>
 	</condition>
 
 	<target name="groovyRun">
@@ -152,7 +158,7 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		</condition>
 		<echo message="host = ${hostname}" />
 	</target>
-	
+
 	<!-- jini start classpath -->
 	<path id="jini.classpath">
 		<pathelement location="${mvn.repo}/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.jar" />
@@ -161,149 +167,169 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		<pathelement location="${mvn.repo}/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar" />
 		<pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar" />
 		<pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar" />
-	</path>	
-	
+
+		<!-- <pathelement location="${net/jini/jsk-platform:jsk-platform:jar}" />
+		<pathelement location="${org/apache/river/start:start:jar}" />
+		<pathelement location="${au/net/Zeus/reference-collections:reference-collections:jar}" />
+		<pathelement location="${com/boundary/high-scale-lib:high-scale-lib:jar}" />
+		<pathelement location="${net/jini/jsk-lib:jsk-lib:jar}" />
+		<pathelement location="${net/jini/lookup/serviceui:serviceui:jar}" /> -->
+	</path>
+
 	<condition property="pom.file" value="pom.xml">
-	  <not>
-	    <isset property="pom.file" />
-	  </not>
+		<not>
+			<isset property="pom.file" />
+		</not>
 	</condition>
-	
-	<target name="mvn-init">   	  
-	    <mvn-init/>	  
+
+	<target name="mvn-init">
+		<mvn-init />
 	</target>
-	
+
 	<macrodef name="mvn-init" xmlns:artifact="urn:maven-artifact-ant">
-	<attribute name="run.pom.file" default="${pom.file}"/>
-	<sequential>
-	    <echo>run.pom.file=@{run.pom.file}</echo>
-	    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant"
-	      classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar"/>
-	    <condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
-		<isset property="maven.repo.local"/>
-	    </condition>          
-	    <echo>maven.repo.local=${maven.repo.local}</echo>
-	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
-	    <artifact:pom file="@{run.pom.file}" id="maven.project"/>
-	    <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile" versionsId="dependency.versions">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
+		<attribute name="run.pom.file" default="${pom.file}" />
+		<attribute name="requestor.api.jar" default="${requestor.groupId}:${requestor.api}:jar" />
+		<sequential>
+			<echo>run.pom.file=@{run.pom.file}</echo>
+			<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar" />
+			<condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
+				<isset property="maven.repo.local" />
+			</condition>
+			<echo>maven.repo.local=${maven.repo.local}</echo>
+			<artifact:localRepository id="local.repository" path="${maven.repo.local}" />
+			<artifact:pom file="@{run.pom.file}" id="maven.project" />
+			<artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile" versionsId="dependency.versions">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
 
-	    <artifact:dependencies pathId="codebase.classpath">
-	      <dependency groupId="${requestor.groupId}" artifactId="${requestor.api}" version="${requestor.version}"/>
-	      <dependency groupId="org.sorcersoft.sorcer" artifactId="sorcer-api" version="${v.sorcer}"/>
-	    </artifact:dependencies> 
-	    <artifact:dependencies pathId="requestor.classpath">
-	      <dependency groupId="${requestor.groupId}" artifactId="${requestor.name}" version="${requestor.version}"/>
-	    </artifact:dependencies>
-	    
-	    <path id="run.classpath">
-		    <path refid="runtime.classpath"/>
-		    <path refid="requestor.classpath"/>
-	    </path>
-	    
-	</sequential>
-	</macrodef>	
-	
+			<ac:if>
+				<isset property="requestor.groupId"/>
+				<ac:then>
+					<artifact:dependencies pathId="requestor.classpath">
+						<dependency groupId="${requestor.groupId}" artifactId="${requestor.name}" version="${requestor.version}" />
+					</artifact:dependencies>
+					<path id="run-req.classpath">
+						<path refid="runtime.classpath" />
+						<path refid="requestor.classpath" />
+					</path>
+				</ac:then>
+				<ac:else>
+				  	<path id="run-req.classpath">
+						<path refid="runtime.classpath" />
+					</path>
+				</ac:else>
+			</ac:if>	
+
+
+		</sequential>
+	</macrodef>
+
 	<macrodef name="prepare-boot" xmlns:artifact="urn:maven-artifact-ant">
-	<attribute name="boot.pom.file" default="${env.IGRID_HOME}/modules/tools/boot/pom.xml"/>	
-	<sequential>
-	    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant"
-	      classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar"/>
-	    <condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
-		<isset property="maven.repo.local"/>
-	    </condition>          
-	    <echo>maven.repo.local=${maven.repo.local}</echo>
-	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
-	    <artifact:pom file="@{boot.pom.file}" id="maven.boot.project"/>
-	    <artifact:dependencies pathId="boot.runtime.classpath" filesetId="boot.runtime.fileset" useScope="runtime">
-		<pom refid="maven.boot.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <path id="boot.classpath">
-		    <path refid="jini.classpath"/>
-		    <path refid="boot.runtime.classpath"/>
-		    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/boot/${v.sorcer}/boot-${v.sorcer}.jar" />		
-	    </path>
-	</sequential>
+		<attribute name="boot.pom.file" default="${env.IGRID_HOME}/modules/tools/boot/pom.xml" />
+		<sequential>
+			<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar" />
+			<condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
+				<isset property="maven.repo.local" />
+			</condition>
+			<echo>maven.repo.local=${maven.repo.local}</echo>
+			<artifact:localRepository id="local.repository" path="${maven.repo.local}" />
+			<artifact:pom file="@{boot.pom.file}" id="maven.boot.project" />
+			<artifact:dependencies pathId="boot.runtime.classpath" filesetId="boot.runtime.fileset" useScope="runtime">
+				<pom refid="maven.boot.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<path id="boot.classpath">
+				<path refid="jini.classpath" />
+				<path refid="boot.runtime.classpath" />
+				<pathelement location="${mvn.repo}/org/sorcersoft/sorcer/boot/${v.sorcer}/boot-${v.sorcer}.jar" />
+			</path>
+		</sequential>
 	</macrodef>
-	
-	
-	<macrodef name="prepare-boot-and-mvn" xmlns:artifact="urn:maven-artifact-ant">
-	<attribute name="boot.pom.file" default="${env.IGRID_HOME}/modules/tools/boot/pom.xml"/>	
-	<attribute name="run.pom.file" default="${pom.file}"/>
-	<sequential>
-	    <typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant"
-	      classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar"/>
-	    <condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
-		<isset property="maven.repo.local"/>
-	    </condition>          
-	    <echo>maven.repo.local=${maven.repo.local}</echo>
-	    <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
-	    <artifact:pom file="@{boot.pom.file}" id="maven.boot.project"/>
-	    <artifact:dependencies pathId="boot.runtime.classpath" filesetId="boot.runtime.fileset" useScope="runtime">
-		<pom refid="maven.boot.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <!-- define boot classpath -->		
-	    <path id="boot.classpath">
-		    <path refid="jini.classpath"/>
-		    <path refid="boot.runtime.classpath"/>
-		    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/boot/${v.sorcer}/boot-${v.sorcer}.jar" />		
-	    </path>
 
-	    <!-- <property name="myclasspath" refid="boot.classpath"/>
-	    <echo message="Boot Classpath = ${myclasspath}"/>-->
-		
-	    <artifact:pom file="@{run.pom.file}" id="maven.project"/>
-	    <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile" versionsId="dependency.versions">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>
-	    <artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
-		<pom refid="maven.project"/>
-		<localRepository refid="local.repository"/>
-	    </artifact:dependencies>	
-	    
-	</sequential>
+
+	<macrodef name="prepare-boot-and-mvn" xmlns:artifact="urn:maven-artifact-ant">
+		<attribute name="boot.pom.file" default="${env.IGRID_HOME}/modules/tools/boot/pom.xml" />
+		<attribute name="run.pom.file" default="${pom.file}" />
+		<sequential>
+			<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpath="${mvn.repo}/org/apache/maven/maven-ant-tasks/2.1.4-SNAPSHOT/maven-ant-tasks-2.1.4-SNAPSHOT.jar" />
+			<condition property="maven.repo.local" value="${maven.repo.local}" else="${user.home}/.m2/repository">
+				<isset property="maven.repo.local" />
+			</condition>
+			<echo>maven.repo.local=${maven.repo.local}</echo>
+			<artifact:localRepository id="local.repository" path="${maven.repo.local}" />
+			<artifact:pom file="@{boot.pom.file}" id="maven.boot.project" />
+			<artifact:dependencies pathId="boot.runtime.classpath" filesetId="boot.runtime.fileset" useScope="runtime">
+				<pom refid="maven.boot.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<!-- define boot classpath -->
+			<path id="boot.classpath">
+				<path refid="jini.classpath" />
+				<path refid="boot.runtime.classpath" />
+				<pathelement location="${mvn.repo}/org/sorcersoft/sorcer/boot/${v.sorcer}/boot-${v.sorcer}.jar" />
+			</path>
+
+			<artifact:pom file="@{run.pom.file}" id="maven.project" />
+			<artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile" versionsId="dependency.versions">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+			<artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+				<pom refid="maven.project" />
+				<localRepository refid="local.repository" />
+			</artifact:dependencies>
+		</sequential>
 	</macrodef>
-	
+
 	<target name="boot.provider">
-	  <java classname="sorcer.boot.ServiceStarter" fork="yes">
-		<classpath refid="boot.classpath"/>
-		<arg value="${basedir}/target/classes" />
-<!--        <jvmarg value="-Xdebug"/>
-        <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-		<sysproperty key="iGrid.home" value="${iGrid.home}" />
-		<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
-		<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-		<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
-	  </java>
+		<java classname="sorcer.boot.ServiceStarter" fork="yes">
+			<classpath refid="boot.classpath" />
+			<arg value="${basedir}/target/classes" />
+			<!--        <jvmarg value="-Xdebug"/>
+        		<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
+			<sysproperty key="iGrid.home" value="${iGrid.home}" />
+			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
+			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+		</java>
 	</target>
 
 	<target name="run.requestor" depends="mvn-init">
-	    <property name="myclasspath" refid="run.classpath"/>
-	    <echo message="Run Classpath = ${myclasspath}"/>
-	    <echo message="Run Codebase = ${requestor.codebase}"/>
-		<java classname="${requestor.class}" fork="yes">
-		 	<classpath refid="run.classpath"/>
-		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="${requestor.policy}" />
-			<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
-		</java>
+		<property name="myclasspath" refid="run-req.classpath" />
+		<echo message="Run Classpath = ${myclasspath}" />
+		<ac:if>
+			<isset property="requestor.codebase" />
+			<ac:then>
+			  	<echo message="Run Codebase = ${requestor.codebase}" />
+				<java classname="${requestor.class}" fork="yes">
+					<classpath refid="run-req.classpath" />
+					<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+					<sysproperty key="java.security.policy" value="${requestor.policy}" />
+					<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+					<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
+				</java>
+			</ac:then>
+			<ac:else>
+				<java classname="${requestor.class}" fork="yes">
+					<classpath refid="run-req.classpath" />
+					<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+					<sysproperty key="java.security.policy" value="${requestor.policy}" />
+					<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+				</java>
+			</ac:else>
+		</ac:if>
 	</target>
 </project>
