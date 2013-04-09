@@ -1,2 +1,1 @@
-install
-#mvn -f basic-client/pom.xml antrun:run
+test

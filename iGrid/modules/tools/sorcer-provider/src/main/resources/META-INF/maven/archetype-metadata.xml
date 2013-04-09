@@ -6,6 +6,7 @@
         name="sorcer-provider"
         >
 
+    <!-- Values provided here literally (without ${} reference) are used by other tools (i.e. the eclipse plugin) -->
     <requiredProperties>
         <requiredProperty key="version">
             <defaultValue>1.0.0-SNAPSHOT</defaultValue>
@@ -14,7 +15,7 @@
             <defaultValue>SampleService</defaultValue>
         </requiredProperty>
         <requiredProperty key="providerClass">
-            <defaultValue>${providerInterface}impl</defaultValue>
+            <defaultValue>${providerInterface}Impl</defaultValue>
         </requiredProperty>
         <requiredProperty key="projectDescription">
             <defaultValue>Sample Service</defaultValue>
@@ -33,6 +34,9 @@
         </requiredProperty>
         <requiredProperty key="usesMonitor">
             <defaultValue>false</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceIcon">
+            <defaultValue>icons/sorcer.png</defaultValue>
         </requiredProperty>
     </requiredProperties>
 
