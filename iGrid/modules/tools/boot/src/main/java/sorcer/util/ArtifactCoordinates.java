@@ -1,5 +1,7 @@
 package sorcer.util;
 
+import static sorcer.util.ArtifactCoordinates.coords;
+
 /**
  * @author Rafał Krupiński
  */
@@ -50,5 +52,17 @@ public class ArtifactCoordinates {
     @Override
     public String toString() {
         return getRelativePath();
+    }
+    
+    public static String getSorcerApi() { 
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-api", "11.1").toString();
+    }
+
+    public static String getDbpService() { 
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "dbp-service", "11.1").toString();
+    }
+    
+    public static String getJobberService() { 
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "jobber-service", "11.1").toString();
     }
 }

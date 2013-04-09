@@ -399,19 +399,25 @@ public class Sorcer implements SorcerConstants {
 		try {
 			// Try in user home directory first
 			properties.load((new FileInputStream(new File(filename))));
-			logger.info("loaded proprties from: " + filename);
+			logger.fine("loaded properties from: " + filename);
 
 		} catch (Exception e) {
 			try {
-				// No file give, try as resource sorcer/util/sorcer.env
-				InputStream stream = Sorcer.class.getResourceAsStream(filename);
-				if (stream != null)
-					properties.load(stream);
-				else
-					logger.severe("could not load properties as Sorcer resource file>"
-							+ filename + "<");
-			} catch (Throwable t2) {
-				throw new ConfigurationException(e);
+				// try to look for sorcer.env in IGRID_HOME/configs
+				properties.load((new FileInputStream(new File(System.getenv("IGRID_HOME")+"/configs/" + filename))));
+				logger.fine("loaded properties from: " + System.getenv("IGRID_HOME") +"/configs/" + filename);
+			} catch (Exception ee) {
+				try {
+					// No file give, try as resource sorcer/util/sorcer.env
+					InputStream stream = Sorcer.class.getResourceAsStream(filename);
+					if (stream != null)
+						properties.load(stream);
+					else
+						logger.severe("could not load properties as Sorcer resource file>"
+								+ filename + "<");
+				} catch (Throwable t2) {
+					throw new ConfigurationException(e);
+				}
 			}
 		}
 		reconcileProperties(properties);
@@ -592,18 +598,24 @@ public class Sorcer implements SorcerConstants {
 
 		} catch (Throwable t1) {
 			try {
-				// Can not access "filename" give try as resource
-				// sorcer/util/data.formats
-				InputStream stream = Sorcer.class.getResourceAsStream(filename);
-				if (stream != null)
-					props.load(stream);
-				else
-					logger.severe("could not load data node types from: "
-							+ filename);
-			} catch (Throwable t2) {
-				logger.severe("could not load data node types: \n"
-						+ t2.getMessage());
-				logger.throwing(Sorcer.class.getName(), "loadDataNodeTypes", t2);
+				// try to look for sorcer.env in IGRID_HOME/configs
+				props.load((new FileInputStream(new File(System.getenv("IGRID_HOME")+"/configs/" + filename))));
+				logger.fine("loaded data nodes from: " + System.getenv("IGRID_HOME") +"/configs/" + filename);
+			} catch (Exception e) {
+				try {
+					// Can not access "filename" give try as resource
+					// sorcer/util/data.formats
+					InputStream stream = Sorcer.class.getResourceAsStream(filename);
+					if (stream != null)
+						props.load(stream);
+					else
+						logger.severe("could not load data node types from: "
+								+ filename);
+				} catch (Throwable t2) {
+					logger.severe("could not load data node types: \n"
+							+ t2.getMessage());
+					logger.throwing(Sorcer.class.getName(), "loadDataNodeTypes", t2);
+				}
 			}
 
 		}
