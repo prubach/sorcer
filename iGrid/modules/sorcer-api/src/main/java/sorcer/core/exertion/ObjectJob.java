@@ -22,12 +22,12 @@ import java.rmi.RemoteException;
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.invoker.ObjectInvoker;
+import sorcer.core.provider.jobber.ExertionJobber;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.Jobber;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 
@@ -42,7 +42,7 @@ public class ObjectJob extends Job {
 	
 	public ObjectJob(String name) {
 		super(name);
-		addSignature(new ObjectSignature("execute", Jobber.class));
+		addSignature(new ObjectSignature("execute", ExertionJobber.class));
 	}
 
 	public ObjectJob(String name, Signature signature)

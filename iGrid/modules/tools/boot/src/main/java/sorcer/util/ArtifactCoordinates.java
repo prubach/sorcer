@@ -1,6 +1,6 @@
 package sorcer.util;
 
-import static sorcer.util.ArtifactCoordinates.coords;
+import sorcer.core.SorcerConstants;
 
 /**
  * @author Rafał Krupiński
@@ -17,7 +17,7 @@ public class ArtifactCoordinates {
         }
         String groupId = coordSplit[0];
         String artifactId = coordSplit[1];
-        String version = coordSplit.length == 3 ? coordSplit[2] : null;
+        String version = coordSplit.length == 3 ? coordSplit[2] : SorcerConstants.SORCER_VERSION;
         return new ArtifactCoordinates(groupId, artifactId, version);
     }
 
@@ -25,12 +25,19 @@ public class ArtifactCoordinates {
         return new ArtifactCoordinates(groupId, artifactId, version);
     }
 
+    public static ArtifactCoordinates coords(String groupId, String artifactId) {
+        return new ArtifactCoordinates(groupId, artifactId, SorcerConstants.SORCER_VERSION);
+    }
+
     public ArtifactCoordinates(String groupId, String artifactId, String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
     }
-
+    public ArtifactCoordinates(String groupId, String artifactId) {
+        this(groupId, artifactId, SorcerConstants.SORCER_VERSION);
+    }
+    
     public String getGroupId() {
         return groupId;
     }
@@ -55,14 +62,14 @@ public class ArtifactCoordinates {
     }
     
     public static String getSorcerApi() { 
-    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-api", "11.1").toString();
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-api").toString();
     }
 
     public static String getDbpService() { 
-    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "dbp-service", "11.1").toString();
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "dbp-service").toString();
     }
     
     public static String getJobberService() { 
-    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "jobber-service", "11.1").toString();
+    	return new ArtifactCoordinates("org.sorcersoft.sorcer", "jobber-service").toString();
     }
 }

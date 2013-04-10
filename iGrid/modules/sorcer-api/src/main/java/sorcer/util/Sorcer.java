@@ -1580,6 +1580,15 @@ public class Sorcer implements SorcerConstants {
 		return sb.toString();
 	}
 
+	public static void setCodeBaseByArtifacts(String[] artifactCoords) {
+		String[] jars = new String[artifactCoords.length];
+		for (int i=0;i<artifactCoords.length;i++) {
+			jars[i] = ArtifactCoordinates.coords(artifactCoords[i]).toString();
+		}
+		setCodeBase(jars);		
+	}
+
+	
 	public static void setCodeBase(String[] jars) {
 		String url = getWebsterUrl();		
 		String codebase = "";

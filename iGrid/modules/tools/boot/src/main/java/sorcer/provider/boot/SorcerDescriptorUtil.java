@@ -33,22 +33,27 @@ import static sorcer.util.ArtifactCoordinates.coords;
  */
 public class SorcerDescriptorUtil {
     final static Logger logger = Logger.getLogger("sorcer.provider.boot");
-    public static final ArtifactCoordinates SORCER_API = coords("org.sorcersoft.sorcer:sorcer-api:11.1");
-    public static final ArtifactCoordinates EXERTMONITOR_SERVICE = coords("org.sorcersoft.sorcer:exertmonitor-service:11.1");
-    public static final ArtifactCoordinates EXERTLET_UI = coords("org.sorcersoft.sorcer:exertlet-ui:11.1");
-    public static final ArtifactCoordinates DBP_SERVICE = coords("org.sorcersoft.sorcer:dbp-service:11.1");
-    public static final ArtifactCoordinates DSP_SERVICE = coords("org.sorcersoft.sorcer:dsp-service:11.1");
-    public static final ArtifactCoordinates CATALOGER_SERVICE = coords("org.sorcersoft.sorcer:cataloger-service:11.1");
-    public static final ArtifactCoordinates LOGGER_SERVICE = coords("org.sorcersoft.sorcer:logger-service:11.1");
-    public static final ArtifactCoordinates LOGGER_UI = coords("org.sorcersoft.sorcer:logger-ui:11.1");
-    public static final ArtifactCoordinates WEBSTER = coords("org.sorcersoft.sorcer:webster:11.1");
-    public static final ArtifactCoordinates SPACER_SERVICE = coords("org.sorcersoft.sorcer:spacer-service:11.1");
-    public static final ArtifactCoordinates JOBBER_SERVICE = coords("org.sorcersoft.sorcer:jobber-service:11.1");
+    public static final ArtifactCoordinates SORCER_API = coords("org.sorcersoft.sorcer:sorcer-api");
+    public static final ArtifactCoordinates PROVIDER_COMMON= coords("org.sorcersoft.sorcer:provider-common");
+    public static final ArtifactCoordinates EXERTMONITOR_SERVICE = coords("org.sorcersoft.sorcer:exertmonitor-service");
+    public static final ArtifactCoordinates EXERTLET_UI = coords("org.sorcersoft.sorcer:exertlet-ui");
+    public static final ArtifactCoordinates DBP_SERVICE = coords("org.sorcersoft.sorcer:dbp-service");
+    public static final ArtifactCoordinates DSP_SERVICE = coords("org.sorcersoft.sorcer:dsp-service");
+    public static final ArtifactCoordinates CATALOGER_SERVICE = coords("org.sorcersoft.sorcer:cataloger-service");
+    public static final ArtifactCoordinates LOGGER_SERVICE = coords("org.sorcersoft.sorcer:logger-service");
+    public static final ArtifactCoordinates LOGGER_UI = coords("org.sorcersoft.sorcer:logger-ui");
+    public static final ArtifactCoordinates WEBSTER = coords("org.sorcersoft.sorcer:webster");
+    public static final ArtifactCoordinates SPACER_SERVICE = coords("org.sorcersoft.sorcer:spacer-service");
+    public static final ArtifactCoordinates JOBBER_SERVICE = coords("org.sorcersoft.sorcer:jobber-service");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
 
     private static File repositoryRoot = new File(System.getProperty("user.home"), ".m2/repository");
+    private static String fs = File.separator;
+	private static String ps = File.pathSeparator;
+	private static String iGridHome = getHomeDir();
+		
 
     /**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
@@ -155,10 +160,8 @@ public class SorcerDescriptorUtil {
 //				+ Arrays.toString(roots) + ", address: " + "startPort: "
 //				+ startPort + ", endPort:" + endPort);
 		int websterPort = 0;
-		String iGridHome = getHomeDir();
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
-		String fs = File.separator;
 		// anonymous case
 		if (port == 0) {
 			websterPort = Booter.getAnonymousPort(); 
@@ -287,13 +290,12 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getSpacer(String policy,
 			String hostAddress, int port, String... spacerConfig)
 			throws IOException {
-		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = new File(repositoryRoot, SPACER_SERVICE.getRelativePath()).getAbsolutePath();
+		String spacerClasspath = new File(repositoryRoot, SPACER_SERVICE.getRelativePath()).getAbsolutePath() 
+							+ ps + new File(repositoryRoot, PROVIDER_COMMON.getRelativePath()).getAbsolutePath();
 		
 		// service provider codebase
         String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -403,13 +405,12 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getJobber(String policy,
 			String hostAddress, int port, String... jobberConfig)
 			throws IOException {
-		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = new File(repositoryRoot, JOBBER_SERVICE.getRelativePath()).getAbsolutePath();
+		String jobberClasspath = new File(repositoryRoot, JOBBER_SERVICE.getRelativePath()).getAbsolutePath()
+							+ ps + new File(repositoryRoot, PROVIDER_COMMON.getRelativePath()).getAbsolutePath();
 		
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -519,9 +520,6 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getExertMonitor(String policy,
 			String hostAddress, int port, String... exertmonitorConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 
@@ -529,7 +527,9 @@ public class SorcerDescriptorUtil {
 		// service provider classpath
 		String exertmonitorClasspath =
                 repositoryRoot + fs + EXERTMONITOR_SERVICE.getRelativePath() + ps
-                + repositoryRoot + fs + SLEEPYCAT.getRelativePath();
+                + repositoryRoot + fs + SLEEPYCAT.getRelativePath() +ps
+                + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
+                
 		
 		// service provider codebase
         String exertmonitorCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -642,16 +642,14 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getDatabaseStorer(String policy,
 			String hostAddress, int port, String... sdbConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 
 		// service provider classpath
 		String dbpc = repositoryRoot + fs + DBP_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath();
+				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath()
+                + ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -763,16 +761,14 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getDataspaceStorer(String policy,
 			String hostAddress, int port, String... sdbConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
-		
 		// service provider classpath
 		String dbpc = repositoryRoot + fs + DSP_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath();
+				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath()
+				+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
+				
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -883,13 +879,12 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getCataloger(String policy,
 			String hostAddress, int port, String... catalogerConfig)
 			throws IOException {
-		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = repositoryRoot + fs + CATALOGER_SERVICE.getRelativePath();
+		String catalogClasspath = repositoryRoot + fs + CATALOGER_SERVICE.getRelativePath()
+							+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
 
 		// service provider codebase		
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1001,16 +996,14 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getLogger(String policy,
 			String hostAddress, int port, String... loggerConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
         //TODO RKR nie jestem pewien czy logger-ui powinien być w classpath I codebase
 		String loggerClasspath = repositoryRoot + fs + LOGGER_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + LOGGER_UI.getRelativePath();
+				+ ps + repositoryRoot + fs + LOGGER_UI.getRelativePath()
+				+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
 
 		// service provider codebase
 		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1121,8 +1114,6 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getLookup(String policy,
 			String hostAddress, int port, String... lookupConfig)
 			throws IOException {
-		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' system property not declared");
 		String jiniHome = iGridHome+fs+"lib"+fs+"river";
@@ -1231,8 +1222,6 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getQosCataloger(String policy,
 			String hostAddress, int port, String... qosCatalogerConfig)
 			throws IOException {
-		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
@@ -1348,9 +1337,6 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getSlaMonitor(String policy,
 			String hostAddress, int port, String... slamonitorConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getProperty("iGrid.home");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
@@ -1466,9 +1452,6 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getOnDemandProvisioner(String policy,
 			String hostAddress, int port, String... ondemandprovisionerConfig)
 			throws IOException {
-		String fs = File.separator;
-		String ps = File.pathSeparator;
-		String iGridHome = System.getenv("IGRID_HOME");
 		String rioHome = System.getenv("RIO_HOME");
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' property not declared");

@@ -8,45 +8,13 @@
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
 	</parent>
-
+	<packaging>pom</packaging>
 	<artifactId>sorcer-tests</artifactId>
 	<name>SORCER sorcer-tests</name>
+	<modules>
+		<module>ju-arithmetic</module>
+		<module>tests</module>
+	</modules>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sorcer-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>webster</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>jobber-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>exertmonitor-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sleepycat</groupId>
-			<artifactId>je</artifactId>
-			<version>${v.sleepycat}</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 
 </project>

@@ -22,12 +22,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import sorcer.util.bdb.sdb.SdbConnection;
+
 /**
  * @author Mike Sobolewski
  */
 public class Handler extends URLStreamHandler {
 
-	public static void register() {
+/*	public static void register() {
 		final String packageName = Handler.class.getPackage().getName();
 		final String pkg = packageName.substring(0,
 				packageName.lastIndexOf('.'));
@@ -40,7 +42,7 @@ public class Handler extends URLStreamHandler {
 			uriHandlers += pkg;
 			System.setProperty(protocolPathProp, uriHandlers);
 		}
-	}
+	}*/
     
 	/* (non-Javadoc)
 	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)

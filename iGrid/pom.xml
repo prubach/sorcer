@@ -75,9 +75,30 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.3.2</version>
                 </plugin>
+		<plugin>
+		  <groupId>org.bitstrings.maven.plugins</groupId>
+		  <artifactId>dependencypath-maven-plugin</artifactId>
+		  <version>1.1.1</version>
+		</plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+	    <plugin>
+	      <artifactId>maven-clean-plugin</artifactId>
+	      <version>2.5</version>
+	      <configuration>
+		<filesets>
+		  <fileset>
+		    <directory>databases</directory>
+		    <includes>
+		      <include>**/*</include>
+		      <include>**/*</include>
+		    </includes>
+		    <followSymlinks>false</followSymlinks>
+		  </fileset>
+		</filesets>
+	      </configuration>
+	    </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -87,6 +108,29 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+	    <plugin>
+	      <groupId>org.bitstrings.maven.plugins</groupId>
+	      <artifactId>dependencypath-maven-plugin</artifactId>
+	      <version>1.1.1</version>
+		<executions>
+		  <execution>
+		      <id>set-all</id>
+		      <goals>
+			  <goal>set</goal>
+		      </goals>
+		      <configuration>
+			  <propertySets>
+			  	<propertySet>
+			    	<suffix>norepo</suffix>
+                        <relativeTo>${settings.localRepository}</relativeTo>
+                        <transitive>false</transitive>
+                        <autoRelativeSuffix>true</autoRelativeSuffix>
+                </propertySet>
+		      </propertySets>
+		      </configuration>
+		  </execution>
+	      </executions>
+	    </plugin>
         </plugins>
     </build>
     <repositories>

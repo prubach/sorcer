@@ -16,9 +16,38 @@ s * Copyright 2009 the original author or authors.
  */
 package sorcer.core.provider;
 
-import com.sun.jini.config.Config;
-import com.sun.jini.start.LifeCycle;
-import com.sun.jini.thread.TaskManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.security.Permission;
+import java.security.Policy;
+import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -79,36 +108,9 @@ import sorcer.util.Sorcer;
 import sorcer.util.SorcerUtil;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.security.Permission;
-import java.security.Policy;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import com.sun.jini.config.Config;
+import com.sun.jini.start.LifeCycle;
+import com.sun.jini.thread.TaskManager;
 
 /**
  * The ServiceProvider class is a type of {@link ServiceExerter} with dependency
@@ -184,19 +186,23 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 		RemoteContextManagement, SorcerConstants {
 	// RemoteMethodControl is needed to enable Proxy Constraints
 
-	static {
-		//Handler.register();
-		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-	}
-	
-	public static final String COMPONENT = ServiceProvider.class.getName();
-
 	/** Logger and configuration component name for service provider. */
 	static final String PROVIDER = ServiceProvider.class.getName();
 
 	/** Logger for logging information about this instance */
 	protected static final Logger logger = Logger.getLogger(PROVIDER);
 
+	static {
+		//Handler.register();
+		try {
+			URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+		} catch (Error e) {
+			logger.severe("URL Stream Handler Factory setting failed!");
+		}
+	}
+	
+	public static final String COMPONENT = ServiceProvider.class.getName();
+	
 	protected ProviderDelegate delegate;
 
 	static final String DEFAULT_PROVIDER_PROPERTY = "provider.properties";
