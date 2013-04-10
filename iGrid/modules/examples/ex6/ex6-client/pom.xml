@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>client-common</artifactId>
+			<artifactId>requestor-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

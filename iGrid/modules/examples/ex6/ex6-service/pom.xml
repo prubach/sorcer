@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>client-common</artifactId>
+            <artifactId>provider-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

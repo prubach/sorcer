@@ -41,7 +41,6 @@ import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
-import sorcer.util.bdb.sdb.Handler;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 import com.sleepycat.collections.StoredMap;
@@ -52,9 +51,9 @@ import com.sun.jini.start.LifeCycle;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DatabaseProvider extends ServiceProvider implements DatabaseStorer {
 
-	static {
+	/*static {
 		Handler.register();
-	}
+	}*/
 
 	private SorcerDatabase db;
 

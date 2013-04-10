@@ -26,6 +26,11 @@
             <artifactId>logger-ui</artifactId>
             <version>${project.version}</version>
         </dependency>       
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>provider-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

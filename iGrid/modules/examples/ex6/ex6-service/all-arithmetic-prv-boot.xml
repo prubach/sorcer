@@ -7,7 +7,7 @@
 	<target name="all-arithmetic">
 	  <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
 		<classpath refid="boot.classpath"/>
-		<arg value="src/main/resources/META-INF/sorcer/boot-all-arithmetic.config" />
+		<arg value="src/main/resources/META-INF/sorcer/services.config" />
 		<sysproperty key="iGrid.home" value="${iGrid.home}" />
 		<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 		<sysproperty key="java.security.policy" value="../policy/arithmetic-beans-prv.policy" />

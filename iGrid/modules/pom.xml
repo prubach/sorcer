@@ -25,6 +25,7 @@
         <module>sorcer-security-ui</module>
         <module>sorcer-tests</module>
         <module>exertlet-ui</module>
-        <module>client-common</module>
+        <module>requestor-common</module>
+        <module>provider-common</module>
     </modules>
 </project>

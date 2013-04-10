@@ -24,17 +24,16 @@ import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.DataspaceStorer;
-import sorcer.util.bdb.sdb.Handler;
 
 import com.sun.jini.start.LifeCycle;
 
 @SuppressWarnings("rawtypes")
 public class DataSpaceProvider extends ServiceProvider implements DataspaceStorer {
 
-	static {
+	/*static {
 		Handler.register();
 	}
-	
+	*/
 	public DataSpaceProvider() throws RemoteException {
 		// do nothing
 	}
