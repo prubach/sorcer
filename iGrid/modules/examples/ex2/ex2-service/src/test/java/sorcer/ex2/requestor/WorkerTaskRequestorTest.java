@@ -16,7 +16,7 @@ import org.junit.Test;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.ex2.provider.Worker;
+import sorcer.ex2.provider.WorkerProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -39,7 +39,7 @@ public class WorkerTaskRequestorTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-//	@Before
+	@Before
 	public void setUp() throws Exception {
 		hostname = InetAddress.getLocalHost().getHostName();
 
@@ -50,17 +50,17 @@ public class WorkerTaskRequestorTest {
 		context.putValue("to/provider/name", "Testing Provider");
 	}
 
-//	@Test
+	@Test
 	public void contextSerializationTest() throws IOException {
 		// test serialization of the requestor's context
 		TestUtil.testSerialization(context, true);
 	}
 	
-//	@Test
+	@Test
 	public void providerResultTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
+		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
 
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
@@ -68,11 +68,11 @@ public class WorkerTaskRequestorTest {
 		assertEquals((Integer)task.getContext().getValue("provider/result"), new Integer(1111));
 	}
 	
-//	@Test
+	@Test
 	public void providerMessageTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
+		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
 
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
@@ -80,11 +80,11 @@ public class WorkerTaskRequestorTest {
 		assertEquals(task.getContext().getValue("provider/message"), "Done work: 1111");
 	}
 	
-//	@Test
+	@Test
 	public void providerHostNameTest() throws RemoteException, ContextException, TransactionException, 
 		ExertionException, UnknownHostException, SignatureException {
 		
-		ObjectSignature signature = new ObjectSignature("doWork", Worker.class);
+		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
 		//logger.info("result: " + task);
