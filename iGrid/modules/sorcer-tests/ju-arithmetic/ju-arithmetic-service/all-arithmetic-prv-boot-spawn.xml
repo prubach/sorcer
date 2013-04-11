@@ -5,10 +5,11 @@
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />
 	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
-	<property name="spawn.provider" value="no" />
+	<property name="spawn.provider" value="yes" />
 			
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
 	
-	<prepare-boot-and-mvn />
-		
+	<prepare-boot />
+	<!--<prepare-boot-and-mvn />
+	-->	
 </project>

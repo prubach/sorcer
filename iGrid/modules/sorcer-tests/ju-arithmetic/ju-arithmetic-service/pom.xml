@@ -28,6 +28,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>provider-common</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.river</groupId>

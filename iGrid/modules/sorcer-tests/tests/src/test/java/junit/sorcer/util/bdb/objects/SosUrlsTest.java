@@ -39,11 +39,8 @@ public class SosUrlsTest {
 				+ "/configs/policy.all");
 
 		System.setSecurityManager(new RMISecurityManager());
-
-		Sorcer.setCodeBase(new String[] { ArtifactCoordinates.getDbpService(), ArtifactCoordinates.getSorcerApi() });
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));
-
 		ServiceExertion.debug = true;
 	}
 

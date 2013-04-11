@@ -22,6 +22,7 @@ import sorcer.core.SorcerConstants;
 //import sorcer.core.context.model.VarModel;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
+import sorcer.util.Sorcer;
 import sorcer.util.SorcerUtil;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
@@ -44,6 +45,9 @@ public class SorcerDatabaseTest implements SorcerConstants {
 		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
+		Sorcer.setCodeBaseByArtifacts(new String[] {
+				"org.sorcersoft.sorcer:sorcer-api",
+				"org.sorcersoft.sorcer:ju-arithmetic-api" });
 	}
 	
 	private static SorcerDatabaseRunner runner;

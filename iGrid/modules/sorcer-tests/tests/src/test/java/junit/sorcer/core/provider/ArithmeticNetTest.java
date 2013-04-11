@@ -1,9 +1,7 @@
 package junit.sorcer.core.provider;
 
 import static org.junit.Assert.assertEquals;
-import static sorcer.co.operator.entry;
 import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.cxt;
 import static sorcer.eo.operator.exert;
 import static sorcer.eo.operator.get;
 import static sorcer.eo.operator.in;
@@ -13,21 +11,11 @@ import static sorcer.eo.operator.jobContext;
 import static sorcer.eo.operator.out;
 import static sorcer.eo.operator.output;
 import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.put;
 import static sorcer.eo.operator.result;
 import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.srv;
 import static sorcer.eo.operator.strategy;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
-//import static sorcer.vo.operator.args;
-//import static sorcer.vo.operator.outputVars;
-//import static sorcer.vo.operator.expr;
-//import static sorcer.vo.operator.expression;
-//import static sorcer.vo.operator.inputVars;
-//import static sorcer.vo.operator.var;
-//import static sorcer.vo.operator.varModel;
-//import static sorcer.vo.operator.vars;
 
 import java.io.IOException;
 import java.rmi.RMISecurityManager;
@@ -40,9 +28,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
-//import sorcer.core.context.model.VarModel;
-import sorcer.core.provider.jobber.ExertionJobber;
-import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -52,6 +37,15 @@ import sorcer.service.Task;
 import sorcer.util.Sorcer;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
+//import static sorcer.vo.operator.args;
+//import static sorcer.vo.operator.outputVars;
+//import static sorcer.vo.operator.expr;
+//import static sorcer.vo.operator.expression;
+//import static sorcer.vo.operator.inputVars;
+//import static sorcer.vo.operator.var;
+//import static sorcer.vo.operator.varModel;
+//import static sorcer.vo.operator.vars;
+//import sorcer.core.context.model.VarModel;
 //import sorcer.vfe.Var;
 
 /**
@@ -69,24 +63,19 @@ public class ArithmeticNetTest implements SorcerConstants {
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] {
 				"org.sorcersoft.sorcer:sorcer-api",
-				"org.sorcersoft.sorcer:ju-arithmetic-api", 
-				"org.sorcersoft.sorcer:ju-arithmetic-service" });
+				"org.sorcersoft.sorcer:ju-arithmetic-api" });
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+		System.out.println("Webster:" + Sorcer.getWebsterUrl());
+		System.out.println("Codebase:" + System.getProperty("java.rmi.server.codebase"));
 	}
 	
-	//@BeforeClass 
+	@BeforeClass 
 	public static void setUpOnce() throws IOException, InterruptedException {
 		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("IGRID_HOME") 
 				+ "/modules/sorcer-tests/ju-arithmetic/ju-arithmetic-service/all-arithmetic-prv-boot-spawn.xml");
 		System.out.println("out: " + result.getOut());
 		System.out.println("err: " + result.getErr());
-		System.out.println("status: " + result.getExitValue());
-				
-//		result = ExecUtils.execCommand("ant -f " + System.getenv("IGRID_HOME") 
-//				+ "/modules/sorcer/src/junit/sorcer/core/provider/bin/arithmetic-prv-run-spawn.xml");
-//		System.out.println("out: " + result.getOut());
-//		System.out.println("err: " + result.getErr());
-//		System.out.println("status: " + result.getExitValue());
+		System.out.println("status: " + result.getExitValue());				
 		Thread.sleep(2000);
 	}
 	
@@ -155,6 +144,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 				sig("add", Adder.class),
 				context("add", in("arg/x1", 20.0),
 						in("arg/x2", 80.0)));
+		
 		t5 = exert(t5);
 		logger.info("t5 context: " + context(t5));
 		assertEquals("Wrong value for 100.0", value(context(t5), "result/value"), 100.0);
@@ -247,6 +237,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
 	
+	@Test
 	public void exertJobPullSeqTest() throws Exception {
 		Job job = createJob(Flow.SEQ, Access.PULL);
 		job = exert(job);
@@ -290,5 +281,18 @@ public class ArithmeticNetTest implements SorcerConstants {
 				sig("add", Adder.class),
 				context("add", input("arg/x1", 20.0), input("arg/x2", 80.0),
 						output("result/y", null)), strategy(Monitor.YES, Wait.NO));
+	}
+	
+	public static void main(String[] args) throws Exception {
+		ArithmeticNetTest ant = new ArithmeticNetTest();
+		ant.arithmeticProviderExertTest();
+		ant.arithmeticProviderGetTest();
+		ant.arithmeticProviderValueTest();
+		ant.arithmeticSpaceTaskTest();
+		ant.asyncTaskTest();
+		ant.exertJobPullParTest();
+		ant.exertJobPullSeqTest();
+		ant.exertJobPushParTest();
+		ant.exertJobPushSeqTest();
 	}
 }

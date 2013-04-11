@@ -19,7 +19,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>boot</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>ju-arithmetic-service</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>			
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>ju-arithmetic-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -60,9 +60,7 @@ public class ArithmeticNoNetTest implements SorcerConstants {
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] { 
 				"org.sorcersoft.sorcer:sorcer-api", 
-				"org.sorcersoft.sorcer:ju-arithmetic-api", 
-				"org.sorcersoft.sorcer:ju-arithmetic-service" });
-		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+				"org.sorcersoft.sorcer:ju-arithmetic-api" }); 
 	}
 	
 //	@SuppressWarnings({ "rawtypes", "unchecked" })

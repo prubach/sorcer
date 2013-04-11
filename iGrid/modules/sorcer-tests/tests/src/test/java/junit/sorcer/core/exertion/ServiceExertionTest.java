@@ -68,7 +68,7 @@ public class ServiceExertionTest {
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] { 
 				"org.sorcersoft.sorcer:ju-arithmetic-api", 
-				"org.sorcersoft.sorcer:ju-arithmetic-service" });
+				"org.sorcersoft.sorcer:sorcer-api" });
 	}
 	
 	@Before
