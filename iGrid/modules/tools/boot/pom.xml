@@ -21,7 +21,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-api</artifactId>
+		</dependency>
+		<dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
@@ -33,6 +37,11 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-start</artifactId>
+			<version>${v.rio}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -95,7 +104,7 @@
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
                         <argument>-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb.sos</argument>
                         <argument>-Djava.security.policy=policy/policy.all</argument>
-			<argument>-classpath</argument>
+						<argument>-classpath</argument>
                         <classpath/>
                         <argument>com.sun.jini.start.ServiceStarter</argument>
                         <argument>${config}</argument>
