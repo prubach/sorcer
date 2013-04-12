@@ -30,11 +30,11 @@
 			<artifactId>locker</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>boot</artifactId>
 			<version>${project.version}</version>			
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>jep</groupId>
 			<artifactId>jep</artifactId>
