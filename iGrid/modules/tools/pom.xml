@@ -23,6 +23,9 @@
 		<module>shell</module>
 		<module>ssb</module>
 		<module>sorcer-provider</module>
+		<module>sorcer-maven-plugin</module>
+
+		<!-- force download implicite dependencies -->
 		<module>dependencies</module>
 	</modules>
 </project>
