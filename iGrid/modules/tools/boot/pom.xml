@@ -22,8 +22,9 @@
 
     <dependencies>
 		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sorcer-api</artifactId>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<artifactId>sorcer-const</artifactId>
+            <version>11.1</version>
 		</dependency>
 		<dependency>
             <groupId>org.apache.river</groupId>

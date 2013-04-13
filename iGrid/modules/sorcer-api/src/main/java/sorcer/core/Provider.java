@@ -42,7 +42,7 @@ import sorcer.service.Signature;
  * @see Monitorable
  * @see Remote
  */
-public interface Provider extends Servicer, Monitorable, Remote {
+public interface Provider extends Servicer, Monitorable, Remote, Destroyer {
 
 	public Entry[] getAttributes() throws RemoteException;
 
@@ -75,7 +75,7 @@ public interface Provider extends Servicer, Monitorable, Remote {
 	 * 
 	 * @see sorcer.base.Provider#destroy()
 	 */
-	public void destroy() throws RemoteException;
+//	public void destroy() throws RemoteException;
 
 	/**
 	 * Destroy all services in this node (virtual machine) by calling each
@@ -83,7 +83,7 @@ public interface Provider extends Servicer, Monitorable, Remote {
 	 * 
 	 * @see sorcer.base.Provider#destroy()
 	 */
-	public void destroyNode() throws RemoteException;
+	//public void destroyNode() throws RemoteException;
 	
 	public void notifyInformation(Exertion task, String message)
 			throws RemoteException;

@@ -1,7 +1,5 @@
 package sorcer.boot;
 
-import static org.rioproject.start.ServiceStarter.ServiceReference;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,8 +12,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import sorcer.core.Provider;
-
+import org.rioproject.start.ServiceStarter.ServiceReference;
+import sorcer.core.Destroyer;
 import com.sun.jini.start.LifeCycle;
 
 /**
@@ -88,8 +86,8 @@ public class ServiceStarter {
 			List<Object> allServices = new ArrayList<Object>(riverServices);
 			allServices.addAll(this.rioServices);
 			for (Object o : allServices) {
-				if (o instanceof Provider) {
-					((Provider) o).destroyNode();
+				if (o instanceof Destroyer) {
+					((Destroyer) o).destroyNode();
 				} else if (o instanceof LifeCycle) {
 					((LifeCycle) o).unregister(o);
 				}

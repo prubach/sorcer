@@ -16,11 +16,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
@@ -29,6 +24,11 @@
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>locker</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-const</artifactId>
+			<version>${project.version}</version>			
 		</dependency>
 		<!--<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
