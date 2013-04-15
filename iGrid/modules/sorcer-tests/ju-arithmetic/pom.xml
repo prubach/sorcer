@@ -9,11 +9,11 @@
 		<version>11.1</version>
 	</parent>
 	<packaging>pom</packaging>
-	<artifactId>sorcer-tests</artifactId>
-	<name>SORCER sorcer-int-tests</name>
+	<artifactId>ju-arithmetic</artifactId>
+	<name>SORCER sorcer-int-tests :: ju-arithmetic</name>
 	<modules>
-		<module>ju-arithmetic</module>
-		<module>int-tests</module>
+		<module>ju-arithmetic-api</module>
+		<module>ju-arithmetic-service</module>
 	</modules>
 
 

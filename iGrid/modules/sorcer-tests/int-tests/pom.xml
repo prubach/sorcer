@@ -9,7 +9,7 @@
 		<version>11.1</version>
 	</parent>
 
-	<artifactId>tests</artifactId>
+	<artifactId>int-tests</artifactId>
 	<name>SORCER sorcer-int-tests :: Tests</name>
 
 	<dependencies>

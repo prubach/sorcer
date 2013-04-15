@@ -72,7 +72,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, InterruptedException {
 		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("IGRID_HOME") 
-				+ "/modules/sorcer-int-tests/ju-arithmetic/ju-arithmetic-service/all-arithmetic-prv-boot-spawn.xml");
+				+ "/modules/sorcer-tests/ju-arithmetic/ju-arithmetic-service/all-arithmetic-prv-boot-spawn.xml");
 		System.out.println("out: " + result.getOut());
 		System.out.println("err: " + result.getErr());
 		System.out.println("status: " + result.getExitValue());				

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="Arithmetic all bean services" default="boot.provider" basedir=".">
+
+
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property environment="env" />
+	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+	<property name="spawn.provider" value="yes" />
+			
+	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	
+	<prepare-boot />
+	<!--<prepare-boot-and-mvn />
+	-->	
+</project>
