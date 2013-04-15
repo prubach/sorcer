@@ -24,7 +24,6 @@
         <module>sorcer-api</module>
         <module>sorcer-util</module>
         <module>sorcer-security-ui</module>
-        <module>sorcer-tests</module>
         <module>exertlet-ui</module>
         <module>requestor-common</module>
         <module>provider-common</module>
