@@ -53,6 +53,7 @@ import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceDescriptor;
 import com.sun.jini.start.ServiceProxyAccessor;
+import org.rioproject.config.PlatformCapabilityConfig;
 
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
@@ -71,19 +72,19 @@ import com.sun.jini.start.ServiceProxyAccessor;
  * <P>
  * Services need to implement the following "non-activatable constructor":
  * <blockquote>
- * 
+ *
  * <pre>
  * &lt;impl&gt;(String[] args, LifeCycle lc)
  * </pre>
- * 
+ *
  * </blockquote>
- * 
+ *
  * where,
  * <UL>
  * <LI>args - are the service configuration arguments
  * <LI>lc - is the hosting environment's {@link LifeCycle} reference.
  * </UL>
- * 
+ *
  * @author Dennis Reedy
  */
 public class SorcerServiceDescriptor implements ServiceDescriptor {
@@ -122,7 +123,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 		/**
 		 * Constructs an instance of this class.
-		 * 
+		 *
 		 * @param impl
 		 *            reference to the implementation of the created service
 		 * @param proxy
@@ -137,7 +138,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	/**
 	 * Create a SorcerServiceDescriptor, assigning given parameters to their
 	 * associated, internal fields.
-	 * 
+	 *
 	 * @param codebase
 	 *            location where clients can download required service-related
 	 *            classes (for example, stubs, proxies, etc.). Codebase
@@ -172,7 +173,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 					this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
 				else
 					this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
-				
+
 			} catch (UnknownHostException e) {
 				logger.severe("Cannot get hostname for: " + codebase);
 			}
@@ -193,12 +194,12 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			LifeCycle lifeCycle, String... serverConfigArgs) {
 		this(descCodebase, policy, classpath, implClassName, null, lifeCycle, serverConfigArgs);
 	}
-	
+
 	/**
 	 * Create a SorcerServiceDescriptor. Equivalent to calling the other
 	 * overloaded constructor with <code>null</code> for the
 	 * <code>LifeCycle</code> reference.
-	 * 
+	 *
 	 * @param codebase
 	 *            location where clients can download required service-related
 	 *            classes (for example, stubs, proxies, etc.). Codebase
@@ -223,7 +224,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * Codebase accessor method.
-	 * 
+	 *
 	 * @return The codebase string associated with this service descriptor.
 	 */
 	public String getCodebase() {
@@ -232,7 +233,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * Policy accessor method.
-	 * 
+	 *
 	 * @return The policy string associated with this service descriptor.
 	 */
 	public String getPolicy() {
@@ -241,7 +242,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * <code>LifeCycle</code> accessor method.
-	 * 
+	 *
 	 * @return The <code>LifeCycle</code> object associated with this service
 	 *         descriptor.
 	 */
@@ -251,7 +252,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * LifCycle accessor method.
-	 * 
+	 *
 	 * @return The classpath string associated with this service descriptor.
 	 */
 	public String getClasspath() {
@@ -260,7 +261,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * Implementation class accessor method.
-	 * 
+	 *
 	 * @return The implementation class string associated with this service
 	 *         descriptor.
 	 */
@@ -270,7 +271,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * Service configuration arguments accessor method.
-	 * 
+	 *
 	 * @return The service configuration arguments associated with this service
 	 *         descriptor.
 	 */
@@ -306,8 +307,8 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 		PlatformLoader platformLoader = new PlatformLoader();
 		List<URL> urlList = new ArrayList<URL>();
-		PlatformLoader.Capability[] caps = platformLoader.getDefaultPlatform();
-		for (PlatformLoader.Capability cap : caps) {
+		PlatformCapabilityConfig[] caps = platformLoader.getDefaultPlatform();
+		for (PlatformCapabilityConfig cap : caps) {
 			URL[] urls = cap.getClasspathURLs();
 			urlList.addAll(Arrays.asList(urls));
 		}
@@ -316,9 +317,9 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 				String.class, defaultDir);
 		logger.finer("Platform dir: " + platformDir);
 		caps = platformLoader.parsePlatform(platformDir);
-		
-		logger.finer("Capabilities: " + Arrays.toString(caps)); 
-		for (PlatformLoader.Capability cap : caps) {
+
+		logger.finer("Capabilities: " + Arrays.toString(caps));
+		for (PlatformCapabilityConfig cap : caps) {
 			if (cap.getCommon()) {
 				URL[] urls = cap.getClasspathURLs();
 				urlList.addAll(Arrays.asList(urls));
@@ -385,7 +386,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			 * service policy, which takes effect (below) after the context
 			 * loader is (re)set.
 			 */
-			splitServicePolicy.grant(SorcerServiceDescriptor.class, null, 
+			splitServicePolicy.grant(SorcerServiceDescriptor.class, null,
 					new Permission[] { new AllPermission() });
 			globalPolicy.setPolicy(jsbCL, splitServicePolicy);
 		}
@@ -404,8 +405,8 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 								"Obtained implementation constructor: ",
 								constructor);
 			constructor.setAccessible(true);
-			impl = constructor.newInstance(getServerConfigArgs(), lifeCycle);				
-			
+			impl = constructor.newInstance(getServerConfigArgs(), lifeCycle);
+
 			if (logger.isLoggable(Level.FINEST))
 				logger.log(Level.FINEST,
 						"Obtained implementation instance: {0}", impl);
