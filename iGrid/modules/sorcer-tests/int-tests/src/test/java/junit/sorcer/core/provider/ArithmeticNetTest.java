@@ -34,6 +34,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
+import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
@@ -75,9 +76,22 @@ public class ArithmeticNetTest implements SorcerConstants {
 				+ "/modules/sorcer-tests/ju-arithmetic/ju-arithmetic-service/all-arithmetic-prv-boot-spawn.xml");
 		System.out.println("out: " + result.getOut());
 		System.out.println("err: " + result.getErr());
-		System.out.println("status: " + result.getExitValue());				
-		Thread.sleep(2000);
+		System.out.println("status: " + result.getExitValue());	
+		waitForServices();
 	}
+	
+	public static void waitForServices() throws InterruptedException {
+		boolean servicesUp = false;
+		int tries = 0; 
+		while (!servicesUp && tries < 8) {
+			Object subtractor = ProviderAccessor.getService(null, Subtractor.class);
+			if (subtractor!=null)
+				return;
+			Thread.sleep(1000);
+			tries++;
+		}
+	}
+	
 	
 	@AfterClass 
 	public static void cleanup() throws RemoteException, InterruptedException {

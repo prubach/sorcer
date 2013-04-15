@@ -96,6 +96,17 @@
 		    </includes>
 		    <followSymlinks>false</followSymlinks>
 		  </fileset>
+		  <fileset>
+		    <directory>logs/</directory>
+		    <includes>
+		      <include>remote/*</include>
+		      <include>*</include>
+		    </includes>
+		    <excludes>
+		      <exclude>remote</exclude>		      
+		    </excludes>
+		    <followSymlinks>false</followSymlinks>
+		  </fileset>
 		</filesets>
 	      </configuration>
 	    </plugin>

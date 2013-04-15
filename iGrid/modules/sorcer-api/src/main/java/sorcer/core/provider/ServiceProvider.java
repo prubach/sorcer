@@ -1795,7 +1795,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 		// temp fix
 		//delegate.destroy();
 		// temp fix
-		System.exit(0);
+		//System.exit(0);
 		unexport(true);
 		if (lifeCycle != null) {
 			lifeCycle.unregister(this);
