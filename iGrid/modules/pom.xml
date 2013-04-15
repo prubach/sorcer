@@ -20,6 +20,7 @@
         <module>tools</module>
         <module>examples</module>
         <module>providers</module>
+        <module>sorcer-const</module>
         <module>sorcer-api</module>
         <module>sorcer-util</module>
         <module>sorcer-security-ui</module>
