@@ -43,6 +43,7 @@ import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.eval.ContextNode;
 import sorcer.core.context.eval.ContextNodeException;
+import sorcer.core.context.model.Par;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Context;
@@ -2016,7 +2017,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// sb.append(val.toString() + " ");
 			// }
 			try {
-				val = getValue(path);
+				val = getAsis(path);
 			} catch (Exception ex) {
 				sb.append("\nUnable to retrieve value: " + ex.getMessage());
 				continue;
@@ -2760,6 +2761,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					if (((Tuple2) e)._1 instanceof String) {
 							putValue((String) ((Tuple2) e)._1, val);
 					}
+				} else if (e instanceof Par) {
+					putValue(((Par)e).getName(), ((Par)e).getAsis());
+					
 				}
 			}
 		} catch (Exception ex) {

@@ -16,12 +16,17 @@
  */
 package sorcer.po;
 
+import static sorcer.po.operator.pars;
+
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import sorcer.co.tuple.Parameter;
 import sorcer.core.context.model.Par;
-import sorcer.core.context.model.ParModel;
+import sorcer.core.context.model.ServiceModel;
+import sorcer.core.invoker.GroovyInvoker;
+import sorcer.core.invoker.ParSet;
+import sorcer.core.invoker.ServiceInvoker;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 
@@ -36,26 +41,102 @@ public class operator {
 		return new Par(name, argumnet);
 	}
 
-	public static ParModel parModel(Par... parameters)
+	public static Par par(ServiceModel pm, String name) throws ContextException {
+		Par parameter = new Par(name, pm.getAsis(name));
+		parameter.setScope(pm);
+		return parameter;
+	}
+	
+	public static ServiceModel model(Par... parameters)
 			throws EvaluationException, RemoteException, ContextException {
-		ParModel pm = new ParModel();
+		ServiceModel pm = new ServiceModel();
 		pm.add(parameters);
 		return pm;
 	}
 	
-	public static Object value(ParModel model, String parName,
+	public static Object value(ServiceModel model, String parName,
 			Parameter... parameters) throws ContextException {
 		return model.getValue(parName, parameters);
 	}
 	
-	public static Object value(ParModel model, Parameter... parameters)
-			throws ContextException, RemoteException {
-		return model.invoke(parameters);
+	public static Object value(Par par) throws EvaluationException,
+			RemoteException {
+		return par.getValue();
 	}
 	
-	public static ParModel result(ParModel model, String parname)
+	public static Object asis(Par par) throws EvaluationException,
+			RemoteException {
+		return par.getAsis();
+	}
+	
+	public static Object asis(ServiceModel model, String name)
+			throws ContextException, RemoteException {
+		return model.getAsis(name);
+	}
+	
+	public static void clearPars(Object invoker) {
+		if (invoker instanceof ServiceInvoker)
+			((ServiceInvoker)invoker).clearPars();
+	}
+	
+	public static Object value(ServiceModel model, Parameter... parameters)
+			throws ContextException, RemoteException {
+		return model.getValue(parameters);
+	}
+	
+	public static ServiceModel result(ServiceModel model, String parname)
 			throws ContextException, RemoteException {
 		model.setReturnPath(parname);
 		return model;
+	}
+
+	public static void add(ServiceModel parModel, Par... parameters)
+			throws RemoteException, ContextException {
+		for (int i = 0; i < parameters.length; i++) {
+			Par par = parameters[i];
+			parModel.add(parameters);
+		}
+	}
+	
+	public static void put(ServiceModel parModel, Par... parameters)
+			throws RemoteException, ContextException {
+		for (int i = 0; i < parameters.length; i++) {
+			Par par = parameters[i];
+			parModel.putValue(par.getName(), par.getAsis());
+		}
+	}
+
+	public static Par put(ServiceModel parModel, String name, Object value) throws ContextException {
+		parModel.putValue(name, value);
+		return par(parModel, name);
+	}
+	
+	public static Par set(Par par, Object value)
+			throws ContextException {
+		par.setValue(value);
+		if (par.getScope() != null) {
+			par.getScope().putValue(par.getName(), value);
+		}
+		return par;
+	}
+	
+	public static ParSet pars(Object invoker) {
+		if (invoker instanceof ServiceInvoker)
+			return ((ServiceInvoker) invoker).getPars();
+		else
+			return null;
+	}
+	
+	public static ParSet pars(String... parnames) {
+		ParSet ps = new ParSet();
+		for (String name : parnames) {
+			ps.add(new Par(name));
+		}
+		return ps;
+	}
+	
+	public static GroovyInvoker groovy(String expression, ParSet pars)
+			throws EvaluationException {
+		return new GroovyInvoker(expression, pars);
 	}
 }

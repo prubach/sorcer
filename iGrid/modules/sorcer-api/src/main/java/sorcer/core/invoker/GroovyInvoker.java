@@ -22,11 +22,13 @@ import groovy.lang.GroovyShell;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import sorcer.co.tuple.Parameter;
-import sorcer.service.Context;
+import sorcer.core.context.model.Par;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 
@@ -57,7 +59,19 @@ public class GroovyInvoker extends ServiceInvoker {
 		this.name = defaultName + count++;
 		this.expression = expression;
 	}
-
+	
+	public GroovyInvoker(String expression, ParSet parameters) throws EvaluationException {
+		this.name = defaultName + count++;
+		this.expression = expression;
+		this.pars = parameters;
+	}
+	
+	public GroovyInvoker(String expression, Par... parameters) throws EvaluationException {
+		this.name = defaultName + count++;
+		this.expression = expression;
+		this.pars = new ParSet(parameters);
+	}
+	
 	public GroovyInvoker(String name, String expression)
 	throws EvaluationException {
 		this(name, expression, (ServiceInvokerList)null);
@@ -105,16 +119,15 @@ public class GroovyInvoker extends ServiceInvoker {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
-	 */
-	@Override
-	public Object getValue(Parameter... entries) throws EvaluationException,
+	public Object invoke(Parameter... entries) throws EvaluationException,
 			RemoteException {
 		Object result = null;
-		if (shell == null)
-			shell = new GroovyShell();
-		initBindings();
+		shell = new GroovyShell();
+		try {
+			initBindings();
+		} catch (ContextException ex) {
+			throw new EvaluationException(ex);
+		}
 		try {
 			synchronized (shell) {
 				if (scriptFile != null) {
@@ -137,22 +150,29 @@ public class GroovyInvoker extends ServiceInvoker {
 		return result;
 	}
 	
-	private void initBindings() throws RemoteException, EvaluationException {
+	private void initBindings() throws RemoteException, ContextException {
 		if (invokeContext != null) {
-			Iterator i = invokeContext.entrySet().iterator();
-			while (i.hasNext()) {
-				Map.Entry entry = (Map.Entry) i.next();
-				Object val = entry.getValue();
-				if (val != null && val instanceof Invoking) {
-					if (!((Invoking)val).getName().equals(name)) {
-						val = ((Invoking) val).invoke(invokeContext);
-						shell.setVariable((String) entry.getKey(), val);
+			if (pars != null && pars.size() > 0) {
+				for (Par p : pars) {
+					if (p.getValue() == null) {
+						p.setValue(invokeContext.getValue(p.getName()));
 					} else {
-						continue;
+						invokeContext.putValue(p.getName(), p.getAsis());
 					}
 				}
-				shell.setVariable((String) entry.getKey(), val);
 			}
+		}
+		Iterator<Par> i = pars.iterator();
+		Object val = null;
+		String key = null;
+		while (i.hasNext()) {
+			Par entry = i.next();
+			val = entry.getValue();
+			key = (String) entry.getName();
+			if (val instanceof Invoking) {
+				val = ((Invoking) val).getValue();
+			}
+			shell.setVariable(key, val);
 		}
 	}
 	
