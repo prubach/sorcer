@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
-			<version>5.0-M3_sorcer</version>
+			<version>5.0-M2_sorcer</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
