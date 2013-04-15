@@ -35,6 +35,7 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
+		<!--FIXME remove-->
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
@@ -103,10 +104,8 @@
                         <argument>-Drio.home=${env.RIO_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
                         <argument>-Dwebster.tmp.dir=${env.IGRID_HOME}</argument>
-						<argument>-Dorg.rioproject.resolver.prune.platform=false</argument>
 
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
-                        <argument>-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb.sos</argument>
                         <argument>-Djava.security.policy=policy/policy.all</argument>
 						<argument>-classpath</argument>
                         <classpath/>

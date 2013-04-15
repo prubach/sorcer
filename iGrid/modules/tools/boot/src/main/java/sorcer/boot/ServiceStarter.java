@@ -30,6 +30,7 @@ public class ServiceStarter {
 	}
 
 	private void doMain(String[] args) throws IOException {
+		loadDefaultProperties();
 		String config;
 		if (args.length != 0) {
 			if (isConfigFile(args[0])) {
@@ -41,6 +42,18 @@ public class ServiceStarter {
 			config = CONFIG_RIO;
 		}
 		start(config);
+	}
+
+	private void loadDefaultProperties() {
+		setDefaultProperty("org.rioproject.resolver.prune.platform", "false");
+		setDefaultProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
+	}
+
+	private void setDefaultProperty(String key, String value) {
+		String userValue = System.getProperty(key);
+		if (userValue == null) {
+			System.setProperty(key, value);
+		}
 	}
 
 	private boolean isConfigFile(String path) {
