@@ -1,6 +1,0 @@
-#!/usr/bin/nsh -f
-
-import ${package}.${providerInterface}
-
-t1 = task("hello", sig("sayHelloWorld", ${providerInterface}.class), context("Hello", input(path("in", "value"), "TESTER"), output(path("out", "value"), null)));
-	
