@@ -4,7 +4,9 @@
     CGLib jars to load into the common classloader.
     -->
     <capability name="CGLib" common="yes">
-        <version>2.1.3</version>
-        <classpath>${user.home}/.m2/repository/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar</classpath>
+        <version>2.1_3</version>
+        <classpath>
+			<entry>cglib:cglib-nodep</entry>
+		</classpath>
     </capability>    
 </platform>

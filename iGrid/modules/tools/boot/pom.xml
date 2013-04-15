@@ -42,7 +42,7 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
-			<version>${v.rio}</version>
+			<version>5.0-M3_sorcer</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -61,22 +61,19 @@
             <version>1.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
-        <dependency>
             <groupId>org.rioproject.resolver</groupId>
             <artifactId>resolver-aether</artifactId>
             <version>${v.rio}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.11</version>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
 
     <build>
         <plugins>
@@ -101,13 +98,14 @@
                         <argument>-Drio.home=${env.RIO_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.IGRID_HOME}/configs/sorcer.env</argument>
                         <argument>-Dwebster.tmp.dir=${env.IGRID_HOME}</argument>
+						<argument>-Dorg.rioproject.resolver.prune.platform=false</argument>
 
                         <argument>-Djava.util.logging.config.file=${env.IGRID_HOME}/configs/sorcer.logging</argument>
                         <argument>-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb.sos</argument>
                         <argument>-Djava.security.policy=policy/policy.all</argument>
 						<argument>-classpath</argument>
                         <classpath/>
-                        <argument>com.sun.jini.start.ServiceStarter</argument>
+                        <argument>sorcer.boot.ServiceStarter</argument>
                         <argument>${config}</argument>
                     </arguments>
 

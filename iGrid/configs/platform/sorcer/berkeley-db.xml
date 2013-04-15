@@ -4,8 +4,10 @@
     Berkeley database jars to load into the common classloader.
     -->
     <capability name="Berkeley DB JE" common="yes">
-        <version>je-4.1.21</version>
+        <version>4.1.21</version>
         <manufacturer>Oracle</manufacturer>
-        <classpath>${user.home}/.m2/repository/com/sleepycat/je/4.1.21/je-4.1.21.jar</classpath>
+        <classpath>
+			<entry>com.sleepycat:je</entry>
+		</classpath>
     </capability>     
 </platform>
