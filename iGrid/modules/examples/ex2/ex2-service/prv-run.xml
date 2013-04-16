@@ -36,7 +36,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	
 	<!-- provider classpath -->
 	<path id="project.classpath">
-	    <path refid="compile.classpath"/>  
+	    <path refid="runtime.classpath"/>  
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${provider.service}/${v.sorcer}/${provider.service}-${v.sorcer}.jar" />
 	</path>
 
@@ -44,13 +44,13 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/${provider.api}/${v.sorcer}/${provider.api}-${v.sorcer}.jar" />
 	<property name="j2" value="${webster}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
 	<property name="j3" value="${webster}/org/sorcersoft/sorcer/exertlet-ui/${v.sorcer}/exertlet-ui-${v.sorcer}.jar" />
+	<property name="j4" value="${webster}/org/sorcersoft/sorcer/sorcer-const/${v.sorcer}/sorcer-const-${v.sorcer}.jar" />
 	
-	<condition property="provider.codebase" value="${j1} ${j2} ${j3}" >
+	<condition property="provider.codebase" value="${j1} ${j2} ${j3} ${j4}" >
 	  <not>
 	    <isset property="provider.codebase" />
 	  </not>
 	</condition>
-	
 
 	<!-- start provider -->
 	<target name="run.provider" depends="mvn-init">

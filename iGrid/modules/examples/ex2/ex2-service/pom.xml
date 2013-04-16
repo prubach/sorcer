@@ -17,13 +17,11 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex2-api</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+            <version>${project.version}</version>	
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

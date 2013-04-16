@@ -173,6 +173,8 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		<pathelement location="${mvn.repo}/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar" />
  		<pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar" />
 		<pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar" />
+		<pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar" />
+		<pathelement location="${mvn.repo}/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.jar" />		
 	</path>
 	
 	<path id="boot.classpath">
@@ -184,7 +186,6 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		<pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />
 		<pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}_sorcer/rio-start-${v.rio}_sorcer.jar" />
 		<pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar" />
-		<pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar" />
 	</path>
 	
 

@@ -620,20 +620,20 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				sItems = (Vector) get(key);
 				sb.append("\n");
 				
-				if (sItems.size()>0 && sItems.elementAt(0)!=null) {
+				if (sItems!=null && sItems.size()>0 && sItems.elementAt(0)!=null) {
 					if (((ServiceItem) sItems.elementAt(0)).attributeSets[0] instanceof Name)
 						sb.append(((Name) (((ServiceItem) sItems.elementAt(0)).attributeSets[0])).name);
 					else
 						sb.append(((ServiceItem) sItems.elementAt(0)).attributeSets[0]);
-				}
-				for (int i = 1; i < sItems.size(); i++) {
-					if (((ServiceItem) sItems.elementAt(i)).attributeSets[0] instanceof Name)
-						sb.append(",")
-								.append(((Name) (((ServiceItem) sItems
-										.elementAt(i)).attributeSets[0])).name);
-					else
-						sb.append(",")
-								.append(((ServiceItem) sItems.elementAt(i)).attributeSets[0]);
+					for (int i = 1; i < sItems.size(); i++) {
+						if (((ServiceItem) sItems.elementAt(i)).attributeSets[0] instanceof Name)
+							sb.append(",")
+									.append(((Name) (((ServiceItem) sItems
+											.elementAt(i)).attributeSets[0])).name);
+						else
+							sb.append(",")
+									.append(((ServiceItem) sItems.elementAt(i)).attributeSets[0]);
+					}
 				}
 				sb.append("==>\n");
 				sb.append(key);
