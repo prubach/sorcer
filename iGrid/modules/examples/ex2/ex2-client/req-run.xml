@@ -7,23 +7,22 @@
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
 	<property name="webster" value="${provider.webster.url}" />
-
+	
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
+	<property name="requestor.name" value="ex2-client" />
+	<property name="requestor.version" value="11.1" />
+	
 	<!-- provider codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex2-api/${v.sorcer}/ex2-api-${v.sorcer}.jar" />
 	<property name="j2" value="${webster}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
-
-	<!-- define classpath using the requestor's jar file and maven runtime classpath -->
-	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex2-client/${v.sorcer}/ex2-client-${v.sorcer}.jar" />
-	</path>
+	<property name="requestor.codebase" value="${j1} ${j2}" />
 	
-	<target name="run.requestor" depends="mvn-init">
+	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
 		<java classname="${requestor.class}" fork="yes">
-		 	<classpath refid="run.classpath"/>
+		 	<classpath refid="run-req.classpath"/>
 		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../policy/${requestor.name}.policy" />
-			<sysproperty key="java.rmi.server.codebase" value="${j1} ${j2}" />
+			<sysproperty key="java.security.policy" value="${basedir}/../policy/worker-req.policy" />
+			<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 			<arg value="${ex2-client.arg1}" />
 			<arg value="${ex2-client.arg2}" />
@@ -31,4 +30,5 @@
 		</java>
 	</target>
 </project>
+
 

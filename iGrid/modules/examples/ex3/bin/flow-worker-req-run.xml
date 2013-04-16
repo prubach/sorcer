@@ -3,12 +3,11 @@
 <project name="Worker Requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.name" value="flowWorker-run" />
 	<property name="requestor.class" value="sorcer.core.requestor.ExertionRunner" />
 	
-	<property name="pom.file" value="../ex3-client/pom.xml" />
+	<property name="pom.file" value="${basedir}/../ex3-client/pom.xml" />
 	<property name="ex3-client.arg1" value="sorcer.ex3.runner.FlowAccessWorkerRunner" />
-	<import file="../ex3-client/req-run.xml" />	
+	<import file="${basedir}/../ex3-client/req-run.xml" />	
 
 </project>
 

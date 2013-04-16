@@ -64,7 +64,11 @@ public class ArtifactCoordinates {
     public static String getSorcerApi() { 
     	return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-api").toString();
     }
-
+    
+    public static String getSorcerConst() { 
+        	return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-const").toString();
+    }
+    
     public static String getDbpService() { 
     	return new ArtifactCoordinates("org.sorcersoft.sorcer", "dbp-service").toString();
     }

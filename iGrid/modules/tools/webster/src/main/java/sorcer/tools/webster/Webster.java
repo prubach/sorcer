@@ -82,7 +82,7 @@ public class Webster implements Runnable {
     private int soTimeout = 0;
     private static Logger logger = Logger.getLogger("sorcer.tools.webster");
     private com.sun.jini.start.LifeCycle lifeCycle;
-    private boolean debug = true;
+    private boolean debug = false;
     private boolean isDaemon = false;
     private static String SERVER_DESCRIPTION=Webster.class.getName();
     private String tempDir;

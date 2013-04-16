@@ -1,27 +1,28 @@
 <?xml version="1.0"?>
 
 <project name="ssh" default="SORCER Shell" basedir=".">
+  
+	<property name="pom.file" value="${iGrid.home}/modules/tools/shell/pom.xml" />
 	<!-- load system environment variables -->
 	<property environment="env" />
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
 
-	<target name="SORCER Shell">
-		<java classname="sorcer.tools.shell.ExertionShell" fork="no">
-			<!--jvmarg value="-Xdock:name=SORCER Service Browser" /-->
+	<path id="run.classpath">
+	    <path refid="runtime.classpath"/>  
+	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
+	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/shell/${v.sorcer}/shell-${v.sorcer}.jar" />
+	</path>
+	<target name="SORCER Shell" depends="mvn-init">
+		<java classname="sorcer.tools.shell.ShellStarter" fork="no">
 			<classpath>
-				<pathelement location="${sorcer-ext.lib}/shell.jar" />
-				<pathelement location="${jini.lib}/jsk-lib.jar" />
-				<pathelement location="${jini.lib}/jsk-platform.jar" />
-				<pathelement location="${jini-dl.lib}/outrigger-dl.jar" />
-				<pathelement location="${jini.lib}/serviceui.jar" />
-				<pathelement location="${jini.lib}/high-scale-lib.jar" />
-				<pathelement location="${jini.lib}/reference-collections-1.0.1.jar" />
+			    <path refid="run.classpath"/>  				
 			</classpath>
 			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-			<sysproperty key="java.security.policy" value="../policy/shell.policy" />
-			<sysproperty key="ssb.logFile" value="../logs/browser.log" />
+			<sysproperty key="java.security.policy" value="${iGrid.home}/policy/sorcer.policy" />			
+			<arg value="--config ${env.IGRID_HOME}/bin/shell/configs/nsh-start.config " />
+			<arg value="--main  sorcer.tools.shell.NetworkShell" />			
 		</java>
 	</target>
 

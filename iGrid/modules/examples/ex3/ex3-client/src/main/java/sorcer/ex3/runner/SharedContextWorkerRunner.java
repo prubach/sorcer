@@ -15,9 +15,10 @@ import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
+import sorcer.util.Sorcer;
 
 public class SharedContextWorkerRunner extends ExertionRunner {
-	SharedAssociativeContext context = new SharedAssociativeContext("works");
+	SharedAssociativeContext context = new SharedAssociativeContext(Sorcer.getActualSpaceName());
 	
 	public Exertion getExertion(String... args) throws ExertionException {
 		String requestorName = getProperty("requestor.name");

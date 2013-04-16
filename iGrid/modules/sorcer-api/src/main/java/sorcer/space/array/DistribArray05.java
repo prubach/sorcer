@@ -17,6 +17,7 @@
 
 package sorcer.space.array;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +29,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.entry.UnusableEntriesException;
 import net.jini.space.JavaSpace05;
 
-public class DistribArray05 {
+public class DistribArray05 implements Serializable {
 	private JavaSpace05 space;
 
 	private String name;

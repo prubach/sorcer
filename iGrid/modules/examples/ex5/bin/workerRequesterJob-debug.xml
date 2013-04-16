@@ -47,7 +47,7 @@
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
 			<sysproperty key="sorcer.webster.internal" value="true" />
 			<sysproperty key="sorcer.webster.debug" value="true" />
-			<sysproperty key="sorcer.codbase.jars" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="sorcer.codebase.jars" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/${requestor.name}-req.policy" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />

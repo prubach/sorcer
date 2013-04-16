@@ -140,6 +140,22 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 			<isset property="requestor.policy" />
 		</not>
 	</condition>
+	
+	<target name="requestor.policy.check">
+	  <condition property="requestor.policy.exists">
+	    <available file="${requestor.policy}" type="file"/>
+	  </condition>
+	  <ac:if>
+	      <not>
+		<isset property="requestor.policy.exists" />
+	      </not>
+	      <ac:then>
+		<property name="requestor.policy" value="${iGrid.home}/policy/sorcer.policy" />
+		<echo>setting default policy: ${requestor.policy}</echo>
+	      </ac:then>
+	</ac:if>
+
+	</target>
 
 	<condition property="spawn.provider" value="no">
 		<not>
@@ -188,7 +204,7 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		<pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar" />
 	</path>
 	
-
+	
 	<condition property="pom.file" value="pom.xml">
 		<not>
 			<isset property="pom.file" />
@@ -228,16 +244,18 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 				<isset property="requestor.groupId"/>
 				<ac:then>
 					<artifact:dependencies pathId="requestor.classpath">
-						<dependency groupId="${requestor.groupId}" artifactId="${requestor.name}" version="${requestor.version}" />
+						<dependency groupId="${requestor.groupId}" artifactId="${requestor.name}" version="${requestor.version}" />						
 					</artifact:dependencies>
 					<path id="run-req.classpath">
 						<path refid="runtime.classpath" />
 						<path refid="requestor.classpath" />
+						<path refid="jini.classpath" />
 					</path>
 				</ac:then>
 				<ac:else>
 				  	<path id="run-req.classpath">
 						<path refid="runtime.classpath" />
+						<path refid="jini.classpath" />
 					</path>
 				</ac:else>
 			</ac:if>	
@@ -363,9 +381,10 @@ To run both (webserver and service) use the XML Ant sysntax as follws:
 		</ac:if>
 	</target>
 	
-	<target name="run.requestor" depends="mvn-init">
+	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
 		<property name="myclasspath" refid="run-req.classpath" />
 		<echo message="Run Classpath = ${myclasspath}" />
+		<echo>Policy: ${requestor.policy}</echo>	     
 		<ac:if>
 			<isset property="requestor.codebase" />
 			<ac:then>

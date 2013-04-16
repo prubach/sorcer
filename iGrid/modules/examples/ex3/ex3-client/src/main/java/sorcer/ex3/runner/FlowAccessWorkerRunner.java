@@ -14,15 +14,16 @@ import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+import sorcer.util.Sorcer;
 
 public class FlowAccessWorkerRunner extends ExertionRunner {
 
 	public Exertion getExertion(String... args) throws ExertionException {
 		String requestorName = getProperty("requestor.name");
 		String pn1, pn2, pn3;
-		pn1 = getProperty("provider.name.1");
-		pn2 = getProperty("provider.name.2");
-		pn3 = getProperty("provider.name.3");
+		pn1 = Sorcer.getSuffixedName(getProperty("provider.name.1")); 
+		pn2 = Sorcer.getSuffixedName(getProperty("provider.name.2"));
+		pn3 = Sorcer.getSuffixedName(getProperty("provider.name.3"));
 		
 		// define requestor data
 		Job job = null;

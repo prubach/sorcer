@@ -68,13 +68,6 @@ public class InternalWebster {
 			StringBuffer sb = new StringBuffer();
 			sb.append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
 			.append(';').append(userHome).append(fs).append(".m2").append(fs).append("repository");
-/*			sb.append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib-dl")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib-dl")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
-					.append(';').append(iGridHome).append(fs).append("deploy")
-					.append(';').append(iGridHome).append(fs).append("lib").append(fs).append("local").append(fs).append("lib-dl");*/
 			roots = sb.toString();
 		}
 

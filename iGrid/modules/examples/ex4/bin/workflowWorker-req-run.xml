@@ -3,7 +3,6 @@
 <project name="Worker Requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.name" value="worker-run" />
 	<property name="requestor.class" value="sorcer.core.requestor.ExertionRunner" />
 
 	<property name="pom.file" value="../ex4-client/pom.xml" />

@@ -36,6 +36,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.webster.InternalWebster;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.Sorcer;
 
 abstract public class ExertionRunner implements Runner, SorcerConstants {
@@ -47,9 +48,11 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 	protected Exertion exertion;
 	protected String jobberName;
 	protected static ExertionRunner requestor = null;
+	protected static boolean isWebsterInt = false;
 	final static String REQUESTOR_PROPERTIES_FILENAME = "requestor.properties";
 	
 	public static void main(String... args) throws Exception {
+		prepareCodebase();
 		prepareToRun(args);
 		requestor.preprocess(args);
 		requestor.process(args);
@@ -58,9 +61,6 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 
 	public static void prepareToRun(String... args) {
 		System.setSecurityManager(new RMISecurityManager());
-
-		// Initialize system properties: configs/sorcer.env
-		Sorcer.getEnvProperties();
 
 		String runnerType = null;
 		if (args.length == 0) {
@@ -86,11 +86,6 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 			requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
 		}
 
-		boolean isWebsterInt = false;
-		String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
-		if (val != null && val.length() != 0) {
-			isWebsterInt = val.equals("true");
-		}
 		if (isWebsterInt) {
 			String roots = System.getProperty(SorcerConstants.WEBSTER_ROOTS);
 			String[] tokens = null;
@@ -115,6 +110,37 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 		return jobberName;
 	}
 
+	public static void prepareCodebase() {
+		// Initialize system properties: configs/sorcer.env
+		Sorcer.getEnvProperties();
+		String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
+		if (val != null && val.length() != 0) {
+			isWebsterInt = val.equals("true");
+		}
+		String exertrun = System.getProperty("sorcer.exertrun.codebase");		
+		StringBuilder codebase = new StringBuilder();
+		if (exertrun!=null && !exertrun.isEmpty()) {
+			String[] artifacts = exertrun.split(" ");
+			for (String artifact : artifacts) {
+				if (codebase.length()>0)
+					codebase.append(" ");
+				if (!isWebsterInt)
+					codebase.append(Sorcer.getWebsterUrl()).append("/");	
+				codebase.append(ArtifactCoordinates.coords(artifact).toString());
+			}
+			// Add default codebase sorcer-api and sorcer-const
+			codebase.append(isWebsterInt ? " " + ArtifactCoordinates.getSorcerApi() : " " + Sorcer.getWebsterUrl() + "/" + ArtifactCoordinates.getSorcerApi());
+			codebase.append(isWebsterInt ? " " + ArtifactCoordinates.getSorcerConst() : " " + Sorcer.getWebsterUrl() + "/" + ArtifactCoordinates.getSorcerConst());
+			
+			logger.fine("ExertionRunner generated codebase: " + codebase.toString());
+			if (isWebsterInt)
+				System.setProperty("sorcer.codebase.jars", codebase.toString());
+			else
+				System.setProperty("java.rmi.server.codebase", codebase.toString());					
+		}		
+	}
+	
+	
 	public void preprocess(String... args) {
 		Exertion in = null;
 		try {
