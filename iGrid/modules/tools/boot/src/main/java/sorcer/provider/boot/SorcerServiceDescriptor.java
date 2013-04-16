@@ -305,45 +305,51 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			defaultDir = iGridHome+fs+"configs"+fs+"platform"+fs+"sorcer";
 		}
 
-		PlatformLoader platformLoader = new PlatformLoader();
-		List<URL> urlList = new ArrayList<URL>();
-		PlatformCapabilityConfig[] caps = platformLoader.getDefaultPlatform();
-		for (PlatformCapabilityConfig cap : caps) {
-			URL[] urls = cap.getClasspathURLs();
-			urlList.addAll(Arrays.asList(urls));
-		}
-
-		String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
-				String.class, defaultDir);
-		logger.finer("Platform dir: " + platformDir);
-		caps = platformLoader.parsePlatform(platformDir);
-
-		logger.finer("Capabilities: " + Arrays.toString(caps));
-		for (PlatformCapabilityConfig cap : caps) {
-			if (cap.getCommon()) {
+		CommonClassLoader commonCL = CommonClassLoader.getInstance();
+		// Don't load Platform Class Loader when it was already loaded before
+		if (commonCL.getURLs().length==0) {
+			
+			PlatformLoader platformLoader = new PlatformLoader();
+			List<URL> urlList = new ArrayList<URL>();
+			PlatformCapabilityConfig[] caps = platformLoader.getDefaultPlatform();
+			for (PlatformCapabilityConfig cap : caps) {
 				URL[] urls = cap.getClasspathURLs();
 				urlList.addAll(Arrays.asList(urls));
 			}
-		}
-
-		URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
-
-		/*
-		 * if(commonJARs.length==0) throw new
-		 * RuntimeException("No commonJARs have been defined");
-		 */
-		if (logger.isLoggable(Level.FINEST)) {
-			StringBuffer buffer = new StringBuffer();
-			for (int i = 0; i < commonJARs.length; i++) {
-				if (i > 0)
-					buffer.append("\n");
-				buffer.append(commonJARs[i].toExternalForm());
+	
+			String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
+					String.class, defaultDir);
+			logger.finer("Platform dir: " + platformDir);
+			caps = platformLoader.parsePlatform(platformDir);
+	
+			logger.finer("Capabilities: " + Arrays.toString(caps));
+			for (PlatformCapabilityConfig cap : caps) {
+				if (cap.getCommon()) {
+					URL[] urls = cap.getClasspathURLs();
+					urlList.addAll(Arrays.asList(urls));
+				}
 			}
-			logger.finest("commonJARs=\n" + buffer.toString());
+	
+			URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
+	
+			/*
+			 * if(commonJARs.length==0) throw new
+			 * RuntimeException("No commonJARs have been defined");
+			 */
+			if (logger.isLoggable(Level.FINEST)) {
+				StringBuffer buffer = new StringBuffer();
+				for (int i = 0; i < commonJARs.length; i++) {
+					if (i > 0)
+						buffer.append("\n");
+					buffer.append(commonJARs[i].toExternalForm());
+				}
+				logger.finest("commonJARs=\n" + buffer.toString());
+			}
+	
+			commonCL.addCommonJARs(commonJARs);
 		}
-
-		CommonClassLoader commonCL = CommonClassLoader.getInstance();
-		commonCL.addCommonJARs(commonJARs);
+		
+		
 		final Thread currentThread = Thread.currentThread();
 		ClassLoader currentClassLoader = currentThread.getContextClassLoader();
 

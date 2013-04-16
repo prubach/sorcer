@@ -10,7 +10,6 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<property environment="env" />
 	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
-	<prepare-boot />
 		
 </project>
 

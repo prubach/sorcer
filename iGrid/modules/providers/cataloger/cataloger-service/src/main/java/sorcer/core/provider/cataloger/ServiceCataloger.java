@@ -619,12 +619,13 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				key = (InterfaceList) it.next();
 				sItems = (Vector) get(key);
 				sb.append("\n");
-
-				if (((ServiceItem) sItems.elementAt(0)).attributeSets[0] instanceof Name)
-					sb.append(((Name) (((ServiceItem) sItems.elementAt(0)).attributeSets[0])).name);
-				else
-					sb.append(((ServiceItem) sItems.elementAt(0)).attributeSets[0]);
-
+				
+				if (sItems.size()>0 && sItems.elementAt(0)!=null) {
+					if (((ServiceItem) sItems.elementAt(0)).attributeSets[0] instanceof Name)
+						sb.append(((Name) (((ServiceItem) sItems.elementAt(0)).attributeSets[0])).name);
+					else
+						sb.append(((ServiceItem) sItems.elementAt(0)).attributeSets[0]);
+				}
 				for (int i = 1; i < sItems.size(); i++) {
 					if (((ServiceItem) sItems.elementAt(i)).attributeSets[0] instanceof Name)
 						sb.append(",")
