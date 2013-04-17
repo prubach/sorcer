@@ -14,9 +14,6 @@
 * limitations under the License.
 */
 
-
-import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.provider.boot.SorcerCapabilityDescriptor
 import sorcer.provider.boot.SorcerCapabilityDescriptor
 import sorcer.util.ArtifactCoordinates
 

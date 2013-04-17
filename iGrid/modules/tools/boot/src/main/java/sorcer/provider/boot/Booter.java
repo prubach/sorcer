@@ -96,8 +96,23 @@ public class Booter implements SorcerConstants {
         }
         return(buffer.toString());        
     }
-    
-    /**
+
+	/**
+	 * Return the classpath for the provided artifact coordinates.
+	 *
+	 * @param root base directory
+	 * @param coords artifact coordinates
+	 * @return The classpath with system dependent path delimiters
+	 */
+	public static String getClasspath(File root, ArtifactCoordinates...coords) {
+		String[]jars=new String[coords.length];
+		for (int i = 0; i < coords.length; i++) {
+			jars[i]=coords[i].getRelativePath(root);
+		}
+		return getClasspath(jars);
+	}
+
+	/**
      * Return the codebase for the provided JAR name and port. This method will 
      * first get the IP Address of the machine using 
      * <code>java.net.InetAddress.getLocalHost().getHostAddress()</code>, then

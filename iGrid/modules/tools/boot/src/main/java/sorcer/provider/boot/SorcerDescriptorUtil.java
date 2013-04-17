@@ -25,6 +25,7 @@ import com.sun.jini.start.ServiceDescriptor;
 import sorcer.util.ArtifactCoordinates;
 
 import static sorcer.util.ArtifactCoordinates.coords;
+import static sorcer.util.ArtifactCoordinates.sorcer;
 
 /**
  * Holds static attributes used during the startup of services and provides
@@ -33,18 +34,18 @@ import static sorcer.util.ArtifactCoordinates.coords;
  */
 public class SorcerDescriptorUtil {
     final static Logger logger = Logger.getLogger("sorcer.provider.boot");
-    public static final ArtifactCoordinates SORCER_API = coords("org.sorcersoft.sorcer:sorcer-api");
-    public static final ArtifactCoordinates PROVIDER_COMMON= coords("org.sorcersoft.sorcer:provider-common");
-    public static final ArtifactCoordinates EXERTMONITOR_SERVICE = coords("org.sorcersoft.sorcer:exertmonitor-service");
-    public static final ArtifactCoordinates EXERTLET_UI = coords("org.sorcersoft.sorcer:exertlet-ui");
-    public static final ArtifactCoordinates DBP_SERVICE = coords("org.sorcersoft.sorcer:dbp-service");
-    public static final ArtifactCoordinates DSP_SERVICE = coords("org.sorcersoft.sorcer:dsp-service");
-    public static final ArtifactCoordinates CATALOGER_SERVICE = coords("org.sorcersoft.sorcer:cataloger-service");
-    public static final ArtifactCoordinates LOGGER_SERVICE = coords("org.sorcersoft.sorcer:logger-service");
-    public static final ArtifactCoordinates LOGGER_UI = coords("org.sorcersoft.sorcer:logger-ui");
-    public static final ArtifactCoordinates WEBSTER = coords("org.sorcersoft.sorcer:webster");
-    public static final ArtifactCoordinates SPACER_SERVICE = coords("org.sorcersoft.sorcer:spacer-service");
-    public static final ArtifactCoordinates JOBBER_SERVICE = coords("org.sorcersoft.sorcer:jobber-service");
+    public static final ArtifactCoordinates SORCER_API = sorcer("sorcer-api");
+    public static final ArtifactCoordinates PROVIDER_COMMON= sorcer("provider-common");
+    public static final ArtifactCoordinates EXERTMONITOR_SERVICE = sorcer("exertmonitor-service");
+    public static final ArtifactCoordinates EXERTLET_UI = sorcer("exertlet-ui");
+    public static final ArtifactCoordinates DBP_SERVICE = sorcer("dbp-service");
+    public static final ArtifactCoordinates DSP_SERVICE = sorcer("dsp-service");
+    public static final ArtifactCoordinates CATALOGER_SERVICE = sorcer("cataloger-service");
+    public static final ArtifactCoordinates LOGGER_SERVICE = sorcer("logger-service");
+    public static final ArtifactCoordinates LOGGER_UI = sorcer("logger-ui");
+    public static final ArtifactCoordinates WEBSTER = sorcer("webster");
+    public static final ArtifactCoordinates SPACER_SERVICE = sorcer("spacer-service");
+    public static final ArtifactCoordinates JOBBER_SERVICE = sorcer("jobber-service");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
@@ -294,8 +295,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = new File(repositoryRoot, SPACER_SERVICE.getRelativePath()).getAbsolutePath() 
-							+ ps + new File(repositoryRoot, PROVIDER_COMMON.getRelativePath()).getAbsolutePath();
+		String spacerClasspath = Booter.getClasspath(repositoryRoot, SPACER_SERVICE, PROVIDER_COMMON);
 		
 		// service provider codebase
         String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -409,8 +409,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = new File(repositoryRoot, JOBBER_SERVICE.getRelativePath()).getAbsolutePath()
-							+ ps + new File(repositoryRoot, PROVIDER_COMMON.getRelativePath()).getAbsolutePath();
+		String jobberClasspath = Booter.getClasspath(repositoryRoot, JOBBER_SERVICE, PROVIDER_COMMON);
 		
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -525,13 +524,14 @@ public class SorcerDescriptorUtil {
 
 
 		// service provider classpath
-		String exertmonitorClasspath =
-                repositoryRoot + fs + EXERTMONITOR_SERVICE.getRelativePath() + ps
-                + repositoryRoot + fs + SLEEPYCAT.getRelativePath() +ps
-                + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
-                
-		
-		// service provider codebase
+		String exertmonitorClasspath = Booter.getClasspath(
+				repositoryRoot,
+				EXERTMONITOR_SERVICE,
+				SLEEPYCAT,
+				PROVIDER_COMMON
+		);
+
+	// service provider codebase
         String exertmonitorCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
                 SORCER_API,
                 SERVICEUI,
@@ -647,9 +647,12 @@ public class SorcerDescriptorUtil {
 		
 
 		// service provider classpath
-		String dbpc = repositoryRoot + fs + DBP_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath()
-                + ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
+		String dbpc = Booter.getClasspath(
+				repositoryRoot ,
+				DBP_SERVICE,
+				SLEEPYCAT,
+				PROVIDER_COMMON
+		);
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -765,10 +768,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String dbpc = repositoryRoot + fs + DSP_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + SLEEPYCAT.getRelativePath()
-				+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
-				
+		String dbpc = Booter.getClasspath(repositoryRoot, DSP_SERVICE, SLEEPYCAT, PROVIDER_COMMON);				
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -883,8 +883,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = repositoryRoot + fs + CATALOGER_SERVICE.getRelativePath()
-							+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
+		String catalogClasspath = Booter.getClasspath(repositoryRoot, CATALOGER_SERVICE, PROVIDER_COMMON);
 
 		// service provider codebase		
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1000,10 +999,8 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'iGrid.home' property not declared");
 		
 		// service provider classpath
-        //TODO RKR nie jestem pewien czy logger-ui powinien być w classpath I codebase
-		String loggerClasspath = repositoryRoot + fs + LOGGER_SERVICE.getRelativePath()
-				+ ps + repositoryRoot + fs + LOGGER_UI.getRelativePath()
-				+ ps + repositoryRoot + fs + PROVIDER_COMMON.getRelativePath();
+        //FIXME nie jestem pewien czy logger-ui powinien być w classpath I codebase
+		String loggerClasspath = Booter.getClasspath(repositoryRoot, LOGGER_SERVICE, LOGGER_UI, PROVIDER_COMMON);
 
 		// service provider codebase
 		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{

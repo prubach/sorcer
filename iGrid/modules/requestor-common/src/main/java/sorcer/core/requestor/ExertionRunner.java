@@ -122,15 +122,13 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 		if (exertrun!=null && !exertrun.isEmpty()) {
 			String[] artifacts = exertrun.split(" ");
 			for (String artifact : artifacts) {
-				if (codebase.length()>0)
+				if (codebase.length() > 0)
 					codebase.append(" ");
-				if (!isWebsterInt)
-					codebase.append(Sorcer.getWebsterUrl()).append("/");	
-				codebase.append(ArtifactCoordinates.coords(artifact).toString());
+				codebase.append(resolve(ArtifactCoordinates.coords(artifact)));
 			}
 			// Add default codebase sorcer-api and sorcer-const
-			codebase.append(isWebsterInt ? " " + ArtifactCoordinates.getSorcerApi() : " " + Sorcer.getWebsterUrl() + "/" + ArtifactCoordinates.getSorcerApi());
-			codebase.append(isWebsterInt ? " " + ArtifactCoordinates.getSorcerConst() : " " + Sorcer.getWebsterUrl() + "/" + ArtifactCoordinates.getSorcerConst());
+			codebase.append(' ').append(resolve(ArtifactCoordinates.getSorcerApi()));
+			codebase.append(' ').append(resolve(ArtifactCoordinates.getSorcerConst()));
 			
 			logger.fine("ExertionRunner generated codebase: " + codebase.toString());
 			if (isWebsterInt)
@@ -139,8 +137,12 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 				System.setProperty("java.rmi.server.codebase", codebase.toString());					
 		}		
 	}
-	
-	
+
+	private static String resolve(ArtifactCoordinates coords) {
+		return isWebsterInt ? coords.getRelativePath() : coords.fromRemote(Sorcer.getWebsterUrl());
+	}
+
+
 	public void preprocess(String... args) {
 		Exertion in = null;
 		try {

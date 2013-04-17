@@ -1,6 +1,7 @@
 package sorcer.util;
 
 import java.io.File;
+import java.net.URI;
 
 import sorcer.core.SorcerConstants;
 
@@ -9,6 +10,7 @@ import sorcer.core.SorcerConstants;
  */
 public class ArtifactCoordinates {
 	private static final String DEFAULT_PACKAGING = "jar";
+	private static final String SORCER_GROUP_ID = "org.sorcersoft.sorcer";
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -73,16 +75,12 @@ public class ArtifactCoordinates {
 		this(groupId, artifactId, DEFAULT_PACKAGING, SorcerConstants.SORCER_VERSION, null);
 	}
 
-	public String getGroupId() {
-		return groupId;
+	public String getRelativePath(String base) {
+		return new File(base, getRelativePath()).getPath();
 	}
 
-	public String getArtifactId() {
-		return artifactId;
-	}
-
-	public String getVersion() {
-		return version;
+	public String getRelativePath(File base) {
+		return new File(base, getRelativePath()).getPath();
 	}
 
 	public String getRelativePath() {
@@ -110,19 +108,26 @@ public class ArtifactCoordinates {
 		return fileFromLocalRepo().getPath();
 	}
 
-	public static String getSorcerApi() {
-		return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-api").toString();
+	public URI uriFromRemoteUri(URI base) {
+		return base.resolve(getRelativePath());
 	}
 
-	public static String getSorcerConst() {
-		return new ArtifactCoordinates("org.sorcersoft.sorcer", "sorcer-const").toString();
+	public String fromRemote(String uri) {
+		return uriFromRemoteUri(URI.create(uri)).toString();
 	}
 
-	public static String getDbpService() {
-		return new ArtifactCoordinates("org.sorcersoft.sorcer", "dbp-service").toString();
+	// FIXME move somewhere else
+	public static ArtifactCoordinates sorcer(String artifactId) {
+		return new ArtifactCoordinates(SORCER_GROUP_ID, artifactId, SorcerConstants.SORCER_VERSION);
 	}
 
-	public static String getJobberService() {
-		return new ArtifactCoordinates("org.sorcersoft.sorcer", "jobber-service").toString();
+	// FIXME move somewhere else
+	public static ArtifactCoordinates getSorcerApi() {
+		return sorcer("sorcer-api");
+	}
+
+	// FIXME move somewhere else
+	public static ArtifactCoordinates getSorcerConst() {
+		return sorcer("sorcer-const");
 	}
 }

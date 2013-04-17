@@ -517,6 +517,9 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
             return result;
         }
         File[] files = root.listFiles(new DirectoryFilter());
+		if (files==null || files.length == 0) {
+			return null;
+		}
         return findFile(name, files);
     }
 
