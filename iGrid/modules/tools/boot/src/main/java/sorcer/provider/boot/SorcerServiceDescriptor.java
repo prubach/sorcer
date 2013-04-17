@@ -54,6 +54,7 @@ import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceDescriptor;
 import com.sun.jini.start.ServiceProxyAccessor;
 import org.rioproject.config.PlatformCapabilityConfig;
+import sorcer.boot.util.ClassPathVerifier;
 
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
@@ -361,7 +362,8 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 				annotator, commonCL);
 		if (logger.isLoggable(Level.FINE))
 			ClassLoaderUtil.displayClassLoaderTree(jsbCL);
-		
+		new ClassPathVerifier().verifyClassPaths(jsbCL);
+
 		/*
 		 * ServiceClassLoader jsbCL = new
 		 * ServiceClassLoader(ClassLoaderUtil.getClasspathURLs(getClasspath()),
