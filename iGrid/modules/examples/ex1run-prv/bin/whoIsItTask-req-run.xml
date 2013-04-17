@@ -4,7 +4,6 @@
 
 	<!-- set property values -->
 	<property name="requestor.runner" value="sorcer.core.requestor.ExertionRunner" />
-	<property name="requestor.name" value="whoIsItTask" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItTaskRequestor" />
 
 	<property name="run.arg1" value="PULL" />

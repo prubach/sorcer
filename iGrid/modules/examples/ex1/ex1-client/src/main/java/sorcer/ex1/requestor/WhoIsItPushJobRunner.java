@@ -19,6 +19,7 @@ import sorcer.service.Task;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
+import sorcer.util.Sorcer;
 
 public class WhoIsItPushJobRunner extends ExertionRunner {
 
@@ -27,9 +28,9 @@ public class WhoIsItPushJobRunner extends ExertionRunner {
 	public Exertion getExertion(String... args) throws ExertionException {
 		// get the queried provider names and the requested jobber name
 		// arg[0] is the class name of this runner
-		String providerName1 = args[1];
-		String providerName2 = args[2];
-		jobberName = args[3];
+		String providerName1 = Sorcer.getSuffixedName(args[1]);
+		String providerName2 = Sorcer.getSuffixedName(args[2]);
+		jobberName = Sorcer.getSuffixedName(args[3]);
 		String hostname = null;
 		String ipAddress = null;
 		InetAddress inetAddress = null;

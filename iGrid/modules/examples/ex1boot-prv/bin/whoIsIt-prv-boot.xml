@@ -4,28 +4,50 @@ Specify property value for "provider.name".
 Also you might need to adjust the "soercer.env" properties 
 and  "java.util.logging.config.file" for your provider 
 -->
-<project name="WhoIsIt" default="run.provider" basedir=".">
+<project name="WhoIsIt" default="boot.ex1.provider" basedir="../../ex1/ex1-service">
 
 	<property environment="env" />
-	<property name="pom.file" value="${iGrid.home}/modules/examples/ex1/ex1-service/pom.xml" />
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property name="provider.name" value="whoIsIt" />
+	<property name="provider.config" value="src/main/resources/META-INF/sorcer/services.config" />
+	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
+			      
 	
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+		
+	<target name="boot.ex1.provider" depends="target.classes.check, mvn-init">
+		<property name="runtime.classpath.string" refid="runtime.classpath" />
+		      <java classname="sorcer.boot.ServiceStarter" fork="yes">
+			      <classpath refid="boot.classpath" />
+			      <arg value="${provider.config}" />
+			      <!--        <jvmarg value="-Xdebug"/>
+			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
+			      <sysproperty key="iGrid.home" value="${iGrid.home}" />
+			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
+			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
+			      <sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean1.config" />
+		      </java>
+	</target>
+	
+	
+	
+	
 
-	<!-- set property values here -->
+<!--	set property values here
 	<property name="provider.name" value="whoIsIt" />
 	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
 	
 	
 	<mvn-init />
 
-	<!-- define provider codebase, list jars only -->
+	define provider codebase, list jars only
 	<property name="j1" value="/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
 	<property name="j2" value="/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
 	<property name="j3" value="/org/sorcersoft/sorcer/exertlet-ui/${v.sorcer}/exertlet-ui-${v.sorcer}.jar" />
 
-	<!-- start service provider -->
+	start service provider
 	<target name="run.provider" >
-	  <!-- define provider classpath -->
+	  define provider classpath
 	  <path id="project.classpath">
 	      <path refid="runtime.classpath"/>  
 	      <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-service/${v.sorcer}/ex1-service-${v.sorcer}.jar" />
@@ -39,9 +61,7 @@ and  "java.util.logging.config.file" for your provider
 			<sysproperty key="sorcer.provider.codebase.jars" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 			<sysproperty key="java.security.policy" value="../policy/${provider.name}-bean.policy" />
-			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 		</java>
-	</target>
+	</target>-->
 </project>

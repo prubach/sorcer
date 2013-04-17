@@ -3,13 +3,11 @@
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
 	
 	<!-- set property values -->
-	<property name="requestor.runner" value="sorcer.core.requestor.ExertionRunner" />
-	<property name="requestor.name" value="whoIsItJob" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItPullJobRunner" />
 	
-	<property name="run.arg1" value="XYZ-MWS" />
-	<property name="run.arg2" value="ABC-MWS" />
-	<property name="run.arg3" value="Spacer-MWS" />
+	<property name="run.arg1" value="XYZ" />
+	<property name="run.arg2" value="ABC" />
+	<property name="run.arg3" value="Spacer" />
 
 	<import file="req-run.xml" />
 </project>

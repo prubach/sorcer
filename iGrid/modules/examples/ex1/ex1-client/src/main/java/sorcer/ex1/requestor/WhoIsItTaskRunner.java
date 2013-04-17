@@ -14,6 +14,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
+import sorcer.util.Sorcer;
 
 public class WhoIsItTaskRunner extends ExertionRunner {
 
@@ -24,7 +25,7 @@ public class WhoIsItTaskRunner extends ExertionRunner {
 		String providerName = null;
 		// define requestor data
 		if (args.length == 2)
-			providerName = args[1];
+			providerName = Sorcer.getSuffixedName(args[1]);
 		Task task = null;
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
@@ -38,7 +39,7 @@ public class WhoIsItTaskRunner extends ExertionRunner {
 					sorcer.ex1.WhoIsIt.class, providerName != null ? providerName : null);
 
 			task = new NetTask("Who Is It?", signature, context);
-			ServiceExertion.debug = true;
+ 			//ServiceExertion.debug = true;
 		} catch (Exception e) {
 			throw new ExertionException("Failed to create exertion", e);
 		}

@@ -10,33 +10,28 @@
 	<echo message="webster: ${provider.webster.url}" />
 	<property name="webster" value="${provider.webster.url}" />
 
+	<property name="requestor.runner" value="sorcer.core.requestor.ExertionRunner" />
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
+	<property name="requestor.name" value="ex1-client" />
+	<property name="requestor.api" value="ex1-api" />
+	<property name="requestor.client.api" value="ex1-client-api" />
+	<property name="requestor.version" value="11.1" />
 
-	<!-- provider codeabse jars -->
-	<property name="j1" value="/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
-	<property name="j2" value="/org/sorcersoft/sorcer/ex1-client-api/${v.sorcer}/ex1-client-api-${v.sorcer}.jar" />
-	<property name="j3" value="/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
-
-	<!-- define classpath using the requestor's jar file and maven runtime classpath -->
-	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-client/${v.sorcer}/ex1-client-${v.sorcer}.jar" />
-	</path>
-	
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.runner}" fork="yes">
-			<arg value="${requestor.class}" />		  
-			<arg value="${run.arg1}" />
-			<arg value="${run.arg2}" />
-			<arg value="${run.arg3}" />
-		 	<classpath refid="run.classpath"/>
-			<sysproperty key="iGrid.home" value="${iGrid.home}" />
+		 	<classpath refid="run-req.classpath"/>
 			<sysproperty key="sorcer.webster.internal" value="true" />
 			<sysproperty key="sorcer.webster.debug" value="true" />
 		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
-			<sysproperty key="sorcer.codebase.jars" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="sorcer.exertrun.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version} ${requestor.groupId}:${requestor.client.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="requestor.properties" value="../configs/worker-run.properties" />
+			<arg value="${requestor.class}" />		  
+			<arg value="${run.arg1}" />
+			<arg value="${run.arg2}" />
+			<arg value="${run.arg3}" />
 		</java>
-	</target>
+	</target>	
 </project>
 

@@ -183,6 +183,11 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
 			logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
 		}
+		// Exit webster
+		if (isWebsterInt) {
+			InternalWebster.stopWebster();
+		}
+			
 	}
 
 	public Transaction getTransaction() {

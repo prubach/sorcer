@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- 
+Specify property value for "provider.name".
+Also you might need to adjust the "soercer.env" properties 
+and  "java.util.logging.config.file" for your provider 
+-->
+<project name="WhoIsIt" default="boot.ex1.provider" basedir="../../ex1/ex1-service">
+
+	<property environment="env" />
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property name="provider.name" value="whoIsIt" />
+	<property name="provider.config" value="src/main/resources/META-INF/sorcer/services.config" />
+	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
+			      
+	
+	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+		
+	<target name="boot.ex1.provider" depends="target.classes.check, mvn-init">
+		<property name="runtime.classpath.string" refid="runtime.classpath" />
+		      <java classname="sorcer.boot.ServiceStarter" fork="yes">
+			      <classpath refid="boot.classpath" />
+			      <arg value="${provider.config}" />
+			      <!--        <jvmarg value="-Xdebug"/>
+			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
+			      <sysproperty key="iGrid.home" value="${iGrid.home}" />
+			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
+			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
+			      <sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean1.config" />
+		      </java>
+	</target>
+</project>

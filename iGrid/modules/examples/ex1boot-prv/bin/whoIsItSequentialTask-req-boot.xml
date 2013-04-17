@@ -3,8 +3,6 @@
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.runner" value="sorcer.core.requestor.ExertionRunner" />
-	<property name="requestor.name" value="whoIsItSequentialTask" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItSequentialTaskRunner" />
 
 	<property name="run.arg1" value="5" />

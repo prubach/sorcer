@@ -3,7 +3,6 @@
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.name" value="whoIsItBean" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.bean.WhoIsItBeanRequestor1" />
 	
 	<property name="run.arg1" value="Bean1-WhoIsIt?" />

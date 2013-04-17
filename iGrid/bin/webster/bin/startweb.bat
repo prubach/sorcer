@@ -5,6 +5,6 @@ REM JAVA_HOME="C:\Program Files\Java\jdk1.6.0_16"
 REM PATH=%PATH%;%JAVA_HOME%\bin;%ANT_HOME\bin
 echo Running WEBSTER
 cd %IGRID_HOME%\bin\webster\bin
-ant -f webster-run.xml
+ant -f webster-boot.xml
 PAUSE
 REM EOF

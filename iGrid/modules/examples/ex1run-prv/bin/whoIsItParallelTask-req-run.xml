@@ -3,7 +3,6 @@
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.name" value="whoIsItParallelTask" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItParallelTaskRequestor" />
 
 	<property name="run.arg1" value="5" />

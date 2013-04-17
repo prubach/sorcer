@@ -9,25 +9,22 @@
 	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
 	<property name="webster" value="${provider.webster.url}" />
+	
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
+	<property name="requestor.name" value="ex1-client" />
+	<property name="requestor.version" value="11.1" />
 
-
-	<!-- provider codeabse jars -->
+	<!-- requestor codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
 	<property name="j2" value="${webster}/org/sorcersoft/sorcer/ex1-client-api/${v.sorcer}/ex1-client-api-${v.sorcer}.jar" />
 	<property name="j3" value="${webster}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
 
-	<!-- define classpath using the requestor's jar file and maven runtime classpath -->
-	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-client/${v.sorcer}/ex1-client-${v.sorcer}.jar" />
-	</path>
-	
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">
 			<arg value="${run.arg1}" />
 			<arg value="${run.arg2}" />
 			<arg value="${run.arg3}" />
-		 	<classpath refid="run.classpath"/>
+		 	<classpath refid="run-req.classpath"/>
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
 			<!--<sysproperty key="sorcer.webster.internal" value="true" />
 			<sysproperty key="sorcer.webster.debug" value="true" />-->

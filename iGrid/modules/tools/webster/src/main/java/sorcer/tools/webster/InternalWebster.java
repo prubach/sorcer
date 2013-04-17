@@ -32,6 +32,7 @@ public class InternalWebster {
 	private static Logger logger = Logger.getLogger("sorcer.tools.webster");
 	private static boolean debug = false;
 	public static final String WEBSTER_ROOTS = "sorcer.webster.roots";
+	private static Webster webster;
 
 	/**
 	 * Start an internal webster, setting the webster root to the location of
@@ -99,7 +100,8 @@ public class InternalWebster {
 		}
 
 		String address = System.getProperty("sorcer.webster.interface");
-		port = new Webster(port, roots, address, minThreads, maxThreads, true).getPort();
+		webster = new Webster(port, roots, address, minThreads, maxThreads, true);
+		port = webster.getPort();
 		if (logger.isLoggable(Level.FINEST))
 			logger.finest("Webster MinThreads=" + minThreads + ", "
 					+ "MaxThreads=" + maxThreads);
@@ -132,7 +134,6 @@ public class InternalWebster {
 		System.setProperty("java.rmi.server.codebase", codebase);
 		if (logger.isLoggable(Level.FINE))
 			logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
-
 		return port;
 	}
 
@@ -147,6 +148,11 @@ public class InternalWebster {
 		return (array);
 	}
 
+	public static void stopWebster() {
+		if (webster != null)
+			webster.terminate();
+	}
+	
 	public static void main(String[] args) {
 		try {
 			startWebster(new String[] { "sorcer-prv-dl.jar" });

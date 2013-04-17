@@ -3,10 +3,9 @@
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.name" value="whoIsItSequentialTask" />
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItSequentialTaskRequestor" />
 
-	<property name="run.arg1" value="XYZ-MWS" />
+	<property name="run.arg1" value="XYZ" />
 	<property name="run.arg2" value="5" />
 	<import file="req-run.xml" />
 

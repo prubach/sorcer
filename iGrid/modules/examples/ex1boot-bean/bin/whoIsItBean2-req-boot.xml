@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <project name="Who Is It? requestor" default="run.requestor" basedir=".">
+
 	<!-- loads system environment variables -->
 	<property environment="env" />
 	<property name="pom.file" value="${iGrid.home}/modules/examples/ex1/ex1-client/pom.xml" />
@@ -10,29 +11,23 @@
 	<property name="webster" value="${provider.webster.url}" />
 
 	<!-- set property values -->
-	<property name="requestor.name" value="whoIsItBean" />
-	<property name="requestor.class" value="sorcer.core.requestor.ExertionRunner" />
+	<property name="requestor.runner" value="sorcer.core.requestor.ExertionRunner" />
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
+	<property name="requestor.name" value="ex1-client" />
+	<property name="requestor.api" value="ex1-api" />
+	<property name="requestor.client.api" value="ex1-client-api" />
+	<property name="requestor.version" value="11.1" />
 
-	<!-- provider codeabse jars -->
-	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
-	<property name="j2" value="${webster}/org/sorcersoft/sorcer/ex1-client-api/${v.sorcer}/ex1-client-api-${v.sorcer}.jar" />
-	<property name="j3" value="${webster}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar" />
-
-	<!-- define classpath using the requestor's jar file and maven runtime classpath -->
-	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/ex1-client/${v.sorcer}/ex1-client-${v.sorcer}.jar" />
-	</path>
-	
 	<target name="run.requestor" depends="mvn-init">
-		<java classname="${requestor.class}" fork="yes">
+		<java classname="${requestor.runner}" fork="yes">
+		 	<classpath refid="run-req.classpath"/>
 			<arg value="sorcer.ex1.requestor.bean.WhoIsItBeanRunner2" />
 			<arg value="Bean1-WhoIsIt?" />
-		 	<classpath refid="run.classpath"/>
 		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../policy/${requestor.name}-req.policy" />
-			<sysproperty key="java.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
+			<sysproperty key="sorcer.exertrun.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version} ${requestor.groupId}:${requestor.client.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 		</java>
 	</target>
+
 </project>
