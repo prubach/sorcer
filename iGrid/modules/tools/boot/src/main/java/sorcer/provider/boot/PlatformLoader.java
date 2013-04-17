@@ -43,7 +43,8 @@ public class PlatformLoader extends org.rioproject.config.PlatformLoader {
 		URL platformConfig =
 				PlatformLoader.class.getClassLoader().getResource("META-INF/platform.xml");
 		if (platformConfig == null) {
-			throw new RuntimeException("META-INF/platform.xml not found");
+			logger.warn("META-INF/platform.xml not found");
+			return new PlatformCapabilityConfig[0];
 		}
 		Collection<PlatformCapabilityConfig> c = parsePlatform(platformConfig);
 		return (c.toArray(new PlatformCapabilityConfig[c.size()]));

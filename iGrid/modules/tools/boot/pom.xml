@@ -22,8 +22,8 @@
 
     <dependencies>
 		<dependency>
-		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>sorcer-const</artifactId>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-const</artifactId>
             <version>11.1</version>
 		</dependency>
 		<dependency>
@@ -35,7 +35,7 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
-		<!--FIXME remove-->
+		<!--FIXME remove?-->
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>

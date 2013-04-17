@@ -64,8 +64,13 @@
             <artifactId>high-scale-lib</artifactId>
             <version>1.0.4-SNAPSHOT</version>
             <scope>runtime</scope>
-        </dependency>   
-    </dependencies>
+        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+	</dependencies>
 
     <build>
         <plugins>

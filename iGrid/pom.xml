@@ -16,7 +16,7 @@
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>
         <v.rio>5.0-M2</v.rio>
-        <v.groovy>2.0.6</v.groovy>
+        <v.groovy>2.1.2</v.groovy>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -47,6 +47,11 @@
                 <artifactId>rio-platform</artifactId>
                 <version>${v.rio}</version>
             </dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
