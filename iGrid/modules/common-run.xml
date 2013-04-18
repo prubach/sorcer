@@ -27,10 +27,18 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<property name="dospawn" value="false" />
 
 	<property environment="env" />
-	<property name="iGrid.home" value="${env.IGRID_HOME}" />
+	<property name="java.home" value="${env.JAVA_HOME}" />	
+	<condition property="iGrid.home" value="${env.IGRID_HOME}" else="${basedir}/../">
+		<isset property="env.IGRID_HOME" />
+	</condition>	
+	<condition property="rio.home" value="${env.RIO_HOME}" else="${iGrid.home}/lib/rio">
+		<isset property="env.RIO_HOME" />
+	</condition>
+	
 	<exec executable="hostname" outputproperty="hostname" />
 	<echo message="Hostname = ${hostname}" />
 	<echo message="env IGRID_HOME = ${iGrid.home}" />
+	<echo message="env RIO_HOME = ${rio.home}" />
 
 	<loadproperties srcfile="${iGrid.home}/configs/sorcer.env" />
 
@@ -40,9 +48,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<property name="v.sleepycat" value="${sorcer.lib.sleepycat.version}" />
 	<property name="v.rio" value="${sorcer.lib.rio.version}" />
 	<property name="v.groovy" value="${sorcer.lib.groovy.version}" />
-
-	<property name="java.home" value="${env.JAVA_HOME}" />
-	<property name="rio.home" value="${env.RIO_HOME}" />
+	
 	<property name="mvn.repo" value="${sorcer.local.repo.location}" />
 
 	<property name="jini.lib" value="${lib}/river/lib" />
@@ -156,7 +162,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<pathelement location="${mvn.repo}/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar" />
  		<pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar" />
 		<pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar" />
-		<pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar" />
+		<pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" />
 		<pathelement location="${mvn.repo}/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.jar" />		
 	</path>
 	
@@ -168,7 +174,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
 		<pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />
 		<pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}_sorcer/rio-start-${v.rio}_sorcer.jar" />
-		<pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar" />
+		<pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar" />
 		<pathelement location="${mvn.repo}/com/google/guava/14.0.1/guava-14.0.1.jar" />
 		<pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar" />
 		<pathelement location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar" />
@@ -252,7 +258,9 @@ To include this file in your custom *-run-buld.xml have the import line:
 			      <arg value="${provider.config}" />
 			      <!--        <jvmarg value="-Xdebug"/>
 			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-			      <sysproperty key="iGrid.home" value="${iGrid.home}" />
+				  <env key="RIO_HOME" value="${rio.home}" />
+				  <sysproperty key="iGrid.home" value="${iGrid.home}" />
+				  <sysproperty key="RIO_HOME" value="${rio.home}" />
 			      <sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
@@ -266,6 +274,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 			<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
 				<classpath refid="boot.classpath" />
 				<arg value="${basedir}/target/classes" />
+				<env key="RIO_HOME" value="${rio.home}" />
 				<sysproperty key="iGrid.home" value="${iGrid.home}" />
 				<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
@@ -276,6 +285,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		      <ac:else>
 			  <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
 				<classpath refid="boot.classpath" />
+				<env key="RIO_HOME" value="${rio.home}" />
 				<sysproperty key="iGrid.home" value="${iGrid.home}" />
 				<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />

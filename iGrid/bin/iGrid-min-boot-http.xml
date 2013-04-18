@@ -14,7 +14,8 @@
 			<arg value="../configs/boot-iGrid-min-http.config" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
-			<sysproperty key="rio.home" value="${env.RIO_HOME}" />
+			<env key="RIO_HOME" value="${rio.home}" />
+			<sysproperty key="rio.home" value="${rio.home}" />
 			<sysproperty key="java.security.policy" value="../policy/iGrid.policy" />
 			<sysproperty key="webster.tmp.dir" value="${iGrid.data}" />
 		</java>
