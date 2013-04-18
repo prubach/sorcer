@@ -15,11 +15,10 @@
  */
 package sorcer.provider.boot;
 
+import java.util.logging.Logger;
+
 import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.resolver.ResolverException;
-
-import java.net.URL;
-import java.util.Collection;
 
 /**
  * Parses platform configuration documents
@@ -28,6 +27,8 @@ import java.util.Collection;
  */
 public class PlatformLoader extends org.rioproject.config.PlatformLoader {
 
+	protected static final Logger logger = Logger.getLogger(PlatformLoader.class.getName());
+	
 	public PlatformLoader() throws ResolverException {
 	}
 
@@ -40,14 +41,17 @@ public class PlatformLoader extends org.rioproject.config.PlatformLoader {
 	 *                   default configuration
 	 */
 	public PlatformCapabilityConfig[] getDefaultPlatform() throws Exception {
+		PlatformCapabilityConfig[] plCap = new PlatformCapabilityConfig[0];
+		/*logger.severe("META-INF/platform.xml is not supported anymore.");
 		URL platformConfig =
 				PlatformLoader.class.getClassLoader().getResource("META-INF/platform.xml");
 		if (platformConfig == null) {
 			logger.warn("META-INF/platform.xml not found");
 			return new PlatformCapabilityConfig[0];
 		}
-		Collection<PlatformCapabilityConfig> c = parsePlatform(platformConfig);
-		return (c.toArray(new PlatformCapabilityConfig[c.size()]));
+		Collection<PlatformCapabilityConfig> c = parsePlatform(platformConfig);*/
+		//return (c.toArray(new PlatformCapabilityConfig[c.size()]));
+		return plCap;
 	}
 
 }
