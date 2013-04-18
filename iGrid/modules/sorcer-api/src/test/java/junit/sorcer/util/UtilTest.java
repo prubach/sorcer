@@ -32,10 +32,14 @@ public class UtilTest {
 	public void spaceSuffixTest() throws ExertionException, ContextException,
 			SignatureException {
 
-//		logger.info("space name: " + Sorcer.getSpaceName());
-//		logger.info("group space name: " + Sorcer.getSpaceGroup());
-//		logger.info("suffixed space name: "
-//				+ Sorcer.getSuffixedName(Sorcer.getProperSpaceName()));
+		/*logger.info("space name: " + Sorcer.getSpaceName());
+		logger.info("group space name: " + Sorcer.getSpaceGroup());
+		
+		logger.info("suffixed space name: "
+				+ Sorcer.getSuffixedName(Sorcer.getSpaceName()));
+		logger.info("actual space name: " +
+				Sorcer.getActualSpaceName());*/
+		
 		
 		assertEquals(Sorcer.getSuffixedName(Sorcer.getSpaceName()),
 				Sorcer.getSpaceName() + "-" + Sorcer.getNameSuffix());

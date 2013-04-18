@@ -39,6 +39,8 @@ import java.util.logging.Logger;
 
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.core.provider.ServiceProvider;
 import sorcer.service.ConfigurationException;
 import sorcer.service.Context;
 
@@ -93,7 +95,7 @@ import sorcer.service.Context;
  * @see sorcer.core.provider.DeploymentConfiguration
  */
 @SuppressWarnings("rawtypes")
-public class Sorcer implements SorcerConstants {
+public class Sorcer extends SorcerEnv {
 
 	final static Logger logger = Logger.getLogger(Sorcer.class.getName());
 
@@ -102,25 +104,6 @@ public class Sorcer implements SorcerConstants {
 	 */
 	private static String dbPrefix = "SOC";
 	private static String sepChar = ".";
-
-	/**
-	 * Collects all the properties from sorcer.env, related properties from a
-	 * provider properties file, provider Jini configuration file, and JVM
-	 * system properties.
-	 */
-	private static Properties props;
-
-	/**
-	 * Default name 'sorcer.env' for a file defining global environment
-	 * properties.
-	 */
-	public static String SORCER_ENV_FILENAME = "sorcer.env";
-
-	/*
-	 * location of the SORCER environment properties file loaded by this
-	 * environment
-	 */
-	private static String loadedEnvFile;
 
 	/**
 	 * Default name 'provider.properties' for a file defining provider
@@ -153,30 +136,49 @@ public class Sorcer implements SorcerConstants {
 		// system environment utility class
 	}
 
+	
 	/**
-	 * Returns the home directory of the iGrid environment.
-	 * 
-	 * @return a path of the home directory
+	 * Loads the environment properties from the default filename (sorcer.env)
+	 * or as given by the system property <code>sorcer.env.file</code> and
+	 * service context types from the default filename (node.types) or the
+	 * system property <code>sorcer.formats.file</code>.
 	 */
-	public static File getHomeDir() {
-		String hd = System.getenv("IGRID_HOME");
-
-		if (hd != null && hd.length() > 0) {
-			System.setProperty(IGRID_HOME, hd);
-			return new File(hd);
+	protected static void loadEnvironment() {
+		
+		String cntFile = null;
+		
+		try {
+			String envFile = System.getProperty("sorcer.env.file");
+			String cdtFrom = "(default)";
+			
+			if (props==null) SorcerEnv.loadBasicEnvironment();
+			cntFile = System.getProperty("sorcer.formats.file");
+			
+			updateCodebase();
+			logger.finer("Sorcer codebase: "
+					+ System.getProperty("java.rmi.server.codebase"));
+	
+			if (cntFile != null) {
+				loadDataNodeTypes(cntFile);
+				cdtFrom = "(system property)";
+			} else {
+				cntFile = CONTEXT_DATA_FORMATS;
+				loadDataNodeTypes(cntFile);
+				envFrom = "(Sorcer resource)";
+			}
+			logger.finer("Sorcer loaded " + envFrom + " properties " + envFile);
+			
+			logger.finer("Data formats loaded " + cdtFrom + " from: "
+					+ CONTEXT_DATA_FORMATS);
+	
+			logger.finer("* Sorcer provider accessor:"
+					+ Sorcer.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
+		} catch (Throwable t) {
+			logger.throwing(
+					Sorcer.class.getName(),
+					"Unable to find/load SORCER environment configuration files",
+					t);
 		}
-
-		hd = System.getProperty(IGRID_HOME);
-		if (hd != null && hd.length() > 0) {
-			return new File(hd);
-		}
-
-		hd = props.getProperty(IGRID_HOME);
-		if (hd != null && hd.length() > 0) {
-			return new File(hd);
-		}
-		throw new IllegalArgumentException(hd
-				+ " is not a valid 'iGrid.home' directory");
 	}
 
 	/**
@@ -303,239 +305,6 @@ public class Sorcer implements SorcerConstants {
 	}
 
 	/**
-	 * Loads the environment properties from the default filename (sorcer.env)
-	 * or as given by the system property <code>sorcer.env.file</code> and
-	 * service context types from the default filename (node.types) or the
-	 * system property <code>sorcer.formats.file</code>.
-	 */
-	private static void loadEnvironment() {
-		// Try and load from path given in system properties
-		String envFile = null;
-		String cntFile = null;
-		props = new Properties();
-
-		try {
-			envFile = System.getProperty("sorcer.env.file");
-			cntFile = System.getProperty("sorcer.formats.file");
-			String envFrom = "(default)", cdtFrom = "(default)";
-
-			if (envFile != null) {
-				props.load(new FileInputStream(envFile));
-				envFrom = "(system property)";
-				update(props);
-				loadedEnvFile = envFile;
-				
-			} else {
-				envFile = SORCER_ENV_FILENAME;
-				System.setProperty("sorcer.env.file", envFile);
-				props = loadProperties(envFile);
-				update(props);
-				envFrom = "(Sorcer resource)";
-			}
-			logger.fine("SORCER env properties:\n"
-					+ GenericUtil.getPropertiesString(props));
-			
-			updateCodebase();
-			logger.finer("Sorcer codebase: "
-					+ System.getProperty("java.rmi.server.codebase"));
-
-			if (cntFile != null) {
-				loadDataNodeTypes(cntFile);
-				cdtFrom = "(system property)";
-			} else {
-				cntFile = CONTEXT_DATA_FORMATS;
-				loadDataNodeTypes(cntFile);
-				envFrom = "(Sorcer resource)";
-			}
-			logger.finer("Sorcer loaded " + envFrom + " properties " + envFile);
-			
-			logger.finer("Data formats loaded " + cdtFrom + " from: "
-					+ CONTEXT_DATA_FORMATS);
-
-			logger.finer("* Sorcer provider accessor:"
-					+ Sorcer.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
-		} catch (Throwable t) {
-			logger.throwing(
-					Sorcer.class.getName(),
-					"Unable to find/load SORCER environment configuration files",
-					t);
-		}
-	}
-
-	public static Properties loadProperties(InputStream inputStream)
-			throws ConfigurationException {
-		Properties properties = new Properties();
-		try {
-			properties.load(inputStream);
-		} catch (IOException e) {
-			throw new ConfigurationException(e);
-		}
-		reconcileProperties(properties);
-		return properties;
-	}
-
-	public static Properties loadPropertiesNoException(String filename) {
-		Properties props = null;
-		try {
-			props = loadProperties(filename);
-		} catch (ConfigurationException e) {
-			logger.warning(e.toString());
-			e.printStackTrace();
-		}
-		return props;
-	}
-
-	/**
-	 * Tries to load properties from a <code>filename</code>, first in a local
-	 * directory. If there is no file in the local directory then load the file
-	 * from the classpath at sorcer/util/sorcer.env.
-	 * 
-	 * @throws IOException
-	 * @throws ConfigurationException
-	 */
-	public static Properties loadProperties(String filename)
-			throws ConfigurationException {
-		Properties properties = new Properties();
-		try {
-			// Try in user home directory first
-			properties.load((new FileInputStream(new File(filename))));
-			logger.fine("loaded properties from: " + filename);
-
-		} catch (Exception e) {
-			try {
-				// try to look for sorcer.env in IGRID_HOME/configs
-				properties.load((new FileInputStream(new File(System.getenv("IGRID_HOME")+"/configs/" + filename))));
-				logger.fine("loaded properties from: " + System.getenv("IGRID_HOME") +"/configs/" + filename);
-			} catch (Exception ee) {
-				try {
-					// No file give, try as resource sorcer/util/sorcer.env
-					InputStream stream = Sorcer.class.getResourceAsStream(filename);
-					if (stream != null)
-						properties.load(stream);
-					else
-						logger.severe("could not load properties as Sorcer resource file>"
-								+ filename + "<");
-				} catch (Throwable t2) {
-					throw new ConfigurationException(e);
-				}
-			}
-		}
-		reconcileProperties(properties);
-
-		return properties;
-	}
-
-	private static void reconcileProperties(Properties properties)
-			throws ConfigurationException {
-
-		update(properties);
-
-		// set the document root for HTTP server either for provider or
-		// requestor
-
-		String rootDir = null, dataDir = null;
-		rootDir = properties.getProperty(P_DATA_ROOT_DIR);
-		dataDir = properties.getProperty(P_DATA_DIR);
-		if (rootDir != null && dataDir != null) {
-			System.setProperty(DOC_ROOT_DIR, rootDir + File.separator + dataDir);
-		} else {
-			rootDir = properties.getProperty(R_DATA_ROOT_DIR);
-			dataDir = properties.getProperty(R_DATA_DIR);
-			if (rootDir != null && dataDir != null) {
-				System.setProperty(DOC_ROOT_DIR, rootDir + File.separator
-						+ dataDir);
-			}
-		}
-		dataDir = properties.getProperty(P_SCRATCH_DIR);
-		if (dataDir != null) {
-			System.setProperty(SCRATCH_DIR, dataDir);
-		} else {
-			dataDir = properties.getProperty(R_SCRATCH_DIR);
-			if (dataDir != null) {
-				System.setProperty(SCRATCH_DIR, dataDir);
-			}
-		}
-
-		String httpInterface = null, httpPort = null;
-		httpInterface = properties.getProperty(P_DATA_SERVER_INTERFACE);
-		httpPort = properties.getProperty(P_DATA_SERVER_PORT);
-		if (httpInterface != null) {
-			System.setProperty(DATA_SERVER_INTERFACE, httpInterface);
-			System.setProperty(DATA_SERVER_PORT, httpPort);
-		} else {
-			httpInterface = properties.getProperty(R_DATA_SERVER_INTERFACE);
-			httpPort = properties.getProperty(R_DATA_SERVER_PORT);
-			if (httpInterface != null) {
-				System.setProperty(DATA_SERVER_INTERFACE, httpInterface);
-				System.setProperty(DATA_SERVER_PORT, httpPort);
-			}
-		}
-	}
-
-	public static void updateCodebase() {
-		String codebase = System.getProperty("java.rmi.server.codebase");
-		if (codebase == null)
-			return;
-		String pattern = "${localhost}";
-		if (codebase.indexOf(pattern) >= 0) {
-			try {
-				String val = codebase.replace(pattern, getHostAddress());
-				System.setProperty("java.rmi.server.codebase", val);
-			} catch (UnknownHostException e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Overwrites defined properties in sorcer.env (iGrid.home,
-	 * provider.webster.interface, provider.webster.port) with those defined as
-	 * JVM system properties.
-	 * 
-	 * @param properties
-	 * @throws ConfigurationException
-	 */
-	private static void update(Properties properties)
-			throws ConfigurationException {
-		Enumeration<?> e = properties.propertyNames();
-		String key, value, evalue = null;
-		String pattern = "${localhost}";
-		// first substitute for this localhost
-		while (e.hasMoreElements()) {
-			key = (String) e.nextElement();
-			value = properties.getProperty(key);
-			if (value.equals(pattern)) {
-				try {
-					value = getHostAddress();
-				} catch (UnknownHostException ex) {
-					ex.printStackTrace();
-				}
-				properties.put(key, value);
-			}
-		}
-		// now substitute other entries accordingly 
-		e = properties.propertyNames();
-		while (e.hasMoreElements()) {
-			key = (String) e.nextElement();
-			value = properties.getProperty(key);
-			evalue = expandStringProperties(value, true);
-			// try SORCER env properties
-			if (evalue == null)
-				evalue = expandStringProperties(value, false);
-			if (evalue != null)
-				properties.put(key, evalue);
-			if (value.equals(pattern)) {
-				try {
-					evalue = getHostAddress();
-				} catch (UnknownHostException e1) {
-					e1.printStackTrace();
-				}
-				properties.put(key, evalue);
-			}
-		}
-	}
-
-	/**
 	 * Return
 	 * <code>true<code> if multicast for lookup discovery is enabled, otherwise <code>false<code>.
 	 * 
@@ -618,26 +387,6 @@ public class Sorcer implements SorcerConstants {
 				}
 			}
 
-		}
-	}
-
-	/**
-	 * Load context node (value) types from default 'node.types'. SORCER node
-	 * types specify application types of data nodes in SORCER service contexts.
-	 * It is an analog of MIME types in SORCER. Each type has a format
-	 * 'cnt/application/format/modifiers'.
-	 */
-	public static void loadContextNodeTypes(Hashtable<?, ?> map) {
-		if (map != null && !map.isEmpty()) {
-			String idName = null, cntName = null;
-			String[] tokens;
-			for (Enumeration<?> e = map.keys(); e.hasMoreElements();) {
-				idName = (String) e.nextElement();
-				tokens = toArray(idName);
-				cntName = ("".equals(tokens[1])) ? tokens[0] : tokens[1];
-				props.put(cntName,
-						Context.DATA_NODE_TYPE + APS + map.get(idName));
-			}
 		}
 	}
 
@@ -1439,147 +1188,6 @@ public class Sorcer implements SorcerConstants {
 		return port;
 	}
 
-	/**
-	 * Return the local host address based on the value of a system property.
-	 * using {@link java.net.InetAddress#getByName(String)}. If the system
-	 * property is not resolvable, return the default host address obtained from
-	 * {@link java.net.InetAddress#getLocalHost()}
-	 * 
-	 * @param property
-	 *            The property name to use
-	 * 
-	 * @return The local host address
-	 * 
-	 * @throws java.net.UnknownHostException
-	 *             if no IP address for the host name could be found.
-	 */
-	public static String getHostAddressFromProperty(String property)
-			throws java.net.UnknownHostException {
-		String host = getHostAddress();
-		String value = System.getProperty(property);
-		if (value != null) {
-			host = java.net.InetAddress.getByName(value).getHostAddress();
-		}
-		return (host);
-	}
-
-	/**
-	 * Return the local host address using
-	 * <code>java.net.InetAddress.getLocalHost().getHostAddress()</code>
-	 * 
-	 * @return The local host address
-	 * @throws java.net.UnknownHostException
-	 *             if no IP address for the local host could be found.
-	 */
-	public static String getHostAddress() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getHostAddress();
-	}
-
-	/**
-	 * Return the local host address for a passed in host using
-	 * {@link java.net.InetAddress#getByName(String)}
-	 * 
-	 * @param name
-	 *            The name of the host to return
-	 * 
-	 * @return The local host address
-	 * 
-	 * @throws java.net.UnknownHostException
-	 *             if no IP address for the host name could be found.
-	 */
-	public static String getHostAddress(String name)
-			throws java.net.UnknownHostException {
-		return java.net.InetAddress.getByName(name).getHostAddress();
-	}
-
-	/**
-	 * Return the local host name
-	 * <code>java.net.InetAddress.getLocalHost().getHostName()</code>
-	 * 
-	 * @return The local host name
-	 * @throws java.net.UnknownHostException
-	 *             if no hostname for the local host could be found.
-	 */
-	public static String getHostName() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getCanonicalHostName();
-		// return java.net.InetAddress.getLocalHost().getHostName();
-	}
-
-	/**
-	 * Return the SORCER environment properties loaded by default from the
-	 * 'sorcer.env' file.
-	 * 
-	 * @return The SORCER environment properties
-	 */
-	public static Properties getProperties() {
-		return props;
-	}
-
-	/**
-	 * Expands properties embedded in a string with ${some.property.name}. Also
-	 * treats ${/} as ${file.separator}.
-	 */
-	public static String expandStringProperties(String value,
-			boolean isSystemProperty) throws ConfigurationException {
-		int p = value.indexOf("${", 0);
-		if (p == -1) {
-			return value;
-		}
-		int max = value.length();
-		StringBuffer sb = new StringBuffer(max);
-		int i = 0; /* Index of last character we copied */
-		while (true) {
-			if (p > i) {
-				/* Copy in anything before the special stuff */
-				sb.append(value.substring(i, p));
-				i = p;
-			}
-			int pe = value.indexOf('}', p + 2);
-			if (pe == -1) {
-				/* No matching '}' found, just add in as normal text */
-				sb.append(value.substring(p, max));
-				break;
-			}
-			String prop = value.substring(p + 2, pe);
-			if (prop.equals("/")) {
-				sb.append(File.separatorChar);
-			} else {
-				try {
-					String val = null;
-					if (isSystemProperty) {
-						val = prop.length() == 0 ? null : System
-								.getProperty(prop);
-						if (val == null) {
-							// try System env
-							val = prop.length() == 0 ? null : System
-									.getenv(prop);
-						}
-					} else {
-						val = prop.length() == 0 ? null : props
-								.getProperty(prop);
-					}
-					if (val != null) {
-						sb.append(val);
-					} else {
-						return null;
-					}
-				} catch (SecurityException e) {
-					throw new ConfigurationException(e);
-				}
-			}
-			i = pe + 1;
-			p = value.indexOf("${", i);
-			if (p == -1) {
-				/* No more to expand -- copy in any extra. */
-				if (i < max) {
-					sb.append(value.substring(i, max));
-				}
-				break;
-			}
-		}
-		return sb.toString();
-	}
-
 	public static void setCodeBaseByArtifacts(String[] artifactCoords) {
 		String[] jars = new String[artifactCoords.length];
 		for (int i=0;i<artifactCoords.length;i++) {
@@ -1588,6 +1196,22 @@ public class Sorcer implements SorcerConstants {
 		setCodeBase(jars);		
 	}
 
+
+	public static void updateCodebase() {
+		String codebase = System.getProperty("java.rmi.server.codebase");
+		if (codebase == null)
+			return;
+		String pattern = "${localhost}";
+		if (codebase.indexOf(pattern) >= 0) {
+			try {
+				String val = codebase.replace(pattern, getHostAddress());
+				System.setProperty("java.rmi.server.codebase", val);
+			} catch (UnknownHostException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
 	
 	public static void setCodeBase(String[] jars) {
 		String url = getWebsterUrl();		
@@ -1675,4 +1299,24 @@ public class Sorcer implements SorcerConstants {
 		return name + "-" + getDefaultNameSuffix(suffixLength);
 	}
 
+	
+	/**
+	 * Load context node (value) types from default 'node.types'. SORCER node
+	 * types specify application types of data nodes in SORCER service contexts.
+	 * It is an analog of MIME types in SORCER. Each type has a format
+	 * 'cnt/application/format/modifiers'.
+	 */
+	public static void loadContextNodeTypes(Hashtable<?, ?> map) {
+		if (map != null && !map.isEmpty()) {
+			String idName = null, cntName = null;
+			String[] tokens;
+			for (Enumeration<?> e = map.keys(); e.hasMoreElements();) {
+				idName = (String) e.nextElement();
+				tokens = toArray(idName);
+				cntName = ("".equals(tokens[1])) ? tokens[0] : tokens[1];
+				props.put(cntName,
+						Context.DATA_NODE_TYPE + APS + map.get(idName));
+			}
+		}
+	}
 }

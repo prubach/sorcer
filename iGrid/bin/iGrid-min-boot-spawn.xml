@@ -3,17 +3,14 @@
 
 	<import file="../modules/common-run.xml" />
 
-	<prepare-boot />
 	<target name="iGrid" depends="clean, services" />
 
 	<target name="services">
-		<java classname="com.sun.jini.start.ServiceStarter" fork="yes" spawn="yes">
+		<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="yes">
 			<classpath refid="boot.classpath"/>
 			<arg value="../configs/boot-iGrid-min.config" />
 			<sysproperty key="iGrid.home" value="${iGrid.home}" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
 			<sysproperty key="java.security.policy" value="../policy/iGrid.policy" />
-			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 		</java>
 	</target>
 	

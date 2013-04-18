@@ -3,7 +3,7 @@ package sorcer.util;
 import java.io.File;
 import java.net.URI;
 
-import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 
 /**
  * @author Rafał Krupiński
@@ -35,7 +35,7 @@ public class ArtifactCoordinates {
 		String artifactId = coordSplit[1];
 		String packaging = DEFAULT_PACKAGING;
 		String classifier = null;
-		String version = SorcerConstants.SORCER_VERSION;
+		String version = getDefaultVersion(groupId);
 
 		if (length == 3) {
 			version = coordSplit[2];
@@ -64,7 +64,7 @@ public class ArtifactCoordinates {
 	}
 
 	public static ArtifactCoordinates coords(String groupId, String artifactId) {
-		return new ArtifactCoordinates(groupId, artifactId, DEFAULT_PACKAGING, SorcerConstants.SORCER_VERSION, null);
+		return new ArtifactCoordinates(groupId, artifactId, DEFAULT_PACKAGING, getDefaultVersion(groupId), null);
 	}
 
 	public ArtifactCoordinates(String groupId, String artifactId, String version) {
@@ -72,7 +72,7 @@ public class ArtifactCoordinates {
 	}
 
 	public ArtifactCoordinates(String groupId, String artifactId) {
-		this(groupId, artifactId, DEFAULT_PACKAGING, SorcerConstants.SORCER_VERSION, null);
+		this(groupId, artifactId, DEFAULT_PACKAGING, getDefaultVersion(groupId), null);
 	}
 
 	public String getRelativePath(String base) {
@@ -100,7 +100,7 @@ public class ArtifactCoordinates {
 	}
 
 	public File fileFromLocalRepo() {
-		File repo = new File(System.getProperty("user.home"), ".m2/repository");
+		File repo = new File(SorcerEnv.getRepoDir());
 		return new File(repo, getRelativePath());
 	}
 
@@ -118,7 +118,7 @@ public class ArtifactCoordinates {
 
 	// FIXME move somewhere else
 	public static ArtifactCoordinates sorcer(String artifactId) {
-		return new ArtifactCoordinates(SORCER_GROUP_ID, artifactId, SorcerConstants.SORCER_VERSION);
+		return new ArtifactCoordinates(SORCER_GROUP_ID, artifactId, SorcerEnv.getSorcerVersion());
 	}
 
 	// FIXME move somewhere else
@@ -130,4 +130,17 @@ public class ArtifactCoordinates {
 	public static ArtifactCoordinates getSorcerConst() {
 		return sorcer("sorcer-const");
 	}
+	
+	    
+	public static String getDefaultVersion(String groupId) {
+	    if (groupId==null) return null;
+	    if (groupId.contains("org.sorcersoft.sorcer")) return SorcerEnv.getSorcerVersion();
+	    if (groupId.contains("org.apache.river")) return SorcerEnv.getRiverVersion();
+	    if (groupId.contains("net.jini")) return SorcerEnv.getRiverVersion();
+	    if (groupId.contains("org.dancres.blitz")) return SorcerEnv.getBlitzVersion();
+	    if (groupId.contains("com.sleepycat")) return SorcerEnv.getSleepyCatVersion();
+	    if (groupId.contains("org.codehaus.groovy")) return SorcerEnv.getGroovyVersion();
+	    if (groupId.contains("org.rioproject")) return SorcerEnv.getRioVersion();
+	    return null;    	    	
+	} 
 }

@@ -23,6 +23,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
+
 /**
  * Helper class for starting an Internal Webster
  * 
@@ -61,14 +63,13 @@ public class InternalWebster {
 		InetAddress ip = InetAddress.getLocalHost();
 		String localIPAddress = ip.getHostAddress();
 		String iGridHome = System.getProperty("iGrid.home");
-		String userHome = System.getProperty("user.home");
 		roots = System.getProperty(WEBSTER_ROOTS);
 		if (roots == null) {
 			// defaults iGrid roots
 			String fs = File.separator;
 			StringBuffer sb = new StringBuffer();
 			sb.append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
-			.append(';').append(userHome).append(fs).append(".m2").append(fs).append("repository");
+			.append(';').append(SorcerEnv.getRepoDir());
 			roots = sb.toString();
 		}
 

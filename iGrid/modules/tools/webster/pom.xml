@@ -22,5 +22,10 @@
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
         </dependency>
+       	<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-const</artifactId>
+			<version>${project.version}</version>			
+		</dependency>
 	</dependencies>
 </project>

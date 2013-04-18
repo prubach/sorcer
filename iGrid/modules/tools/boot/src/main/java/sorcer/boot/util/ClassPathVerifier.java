@@ -12,6 +12,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sorcer.core.SorcerEnv;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -31,7 +33,7 @@ public class ClassPathVerifier {
 		HashMultimap<String, ClassLoader> dest = HashMultimap.create();
 		Multimap<String, ClassLoader> classLoaders = Multimaps.invertFrom(classPaths, dest);
 		for (String key : classLoaders.keySet()) {
-			if (!key.contains(".m2/repository"))
+			if (!key.contains(SorcerEnv.getRepoDir()))
 				continue;
 			if (classLoaders.get(key).size() > 1) {
 				out.println(key + " is loaded by multiple class loaders:");

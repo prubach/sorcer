@@ -23,6 +23,7 @@ import com.sun.jini.config.ConfigUtil;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.core.SorcerEnv;
 
 import static sorcer.util.ArtifactCoordinates.coords;
 import static sorcer.util.ArtifactCoordinates.sorcer;
@@ -50,7 +51,7 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
 
-    private static File repositoryRoot = new File(System.getProperty("user.home"), ".m2/repository");
+    private static File repositoryRoot = new File(SorcerEnv.getRepoDir());
     private static String fs = File.separator;
 	private static String ps = File.pathSeparator;
 	private static String iGridHome = getHomeDir();
@@ -1113,12 +1114,12 @@ public class SorcerDescriptorUtil {
 			throws IOException {
 		if (iGridHome == null)
 			throw new RuntimeException("'iGrid.home' system property not declared");
-		String jiniHome = iGridHome+fs+"lib"+fs+"river";
-		String reggieClasspath = jiniHome+fs+"lib"+fs+"reggie.jar";
-		String reggieCodebase = Booter.getCodebase(new String[] {
-				"reggie-dl.jar", "jsk-dl.jar", "sorcer-prv-dl.jar" }, 
-				hostAddress, Integer.toString(port));
-		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
+		String reggieClasspath = repositoryRoot + fs + 
+				new ArtifactCoordinates("org.apache.river","reggie").toString();
+		String reggieCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+				new ArtifactCoordinates("org.apache.river","reggie-dl")
+        }, hostAddress, Integer.toString(port));
+ 		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
 		return (new SorcerServiceDescriptor(reggieCodebase, policy,
 				reggieClasspath, implClass, lookupConfig));
 	}

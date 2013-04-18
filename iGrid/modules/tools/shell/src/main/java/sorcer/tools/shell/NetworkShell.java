@@ -69,6 +69,7 @@ import net.jini.lookup.entry.UIDescriptor;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -261,6 +262,10 @@ public class NetworkShell implements DiscoveryListener {
 		}
 		ShellCmd cmd = null;
 		//System.out.println("main request: " + request);
+		if (request==null) {
+			// Exit when CTRL+D is pressed
+			System.exit(0);
+		}
 		while ((request.length() > 0 && BUILTIN_QUIT_COMMAND.indexOf(request) < 0)
 				|| request.length() == 0) {
 			shellTokenizer = new StringTokenizer(request);
@@ -299,6 +304,9 @@ public class NetworkShell implements DiscoveryListener {
 				shellOutput.print(SYSTEM_PROMPT);
 				shellOutput.flush();
 				String in = shellInput.readLine();
+				// Exit if CTRL+D pressed
+				if (in==null) System.exit(0);
+				
 				// fore !! run the previous command
 				if (!in.equals("!!")) {
 					instance.request = in;
@@ -952,7 +960,7 @@ public class NetworkShell implements DiscoveryListener {
 					+ "lib" + File.separator + "sorcer" + File.separator
 					+ "lib-ext";
 			return (sorcerLibDir + ";" + sorcerLibDLDir + ";" + sorcerExtDir);*/
-			return SorcerConstants.MVN_REPO;
+			return SorcerEnv.getRepoDir();
 		}
 
 		/**
@@ -987,7 +995,7 @@ public class NetworkShell implements DiscoveryListener {
 				String[] systemRoots = { sorcerLibDir, sorcerLibDLDir, sorcerExtDir };
 				*/
 				
-				String[] systemRoots = { SorcerConstants.MVN_REPO };
+				String[] systemRoots = { SorcerEnv.getRepoDir() };
 				
 				String[] realRoots = (roots == null ? systemRoots : roots);
 				

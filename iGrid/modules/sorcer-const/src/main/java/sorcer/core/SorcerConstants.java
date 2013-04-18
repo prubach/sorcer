@@ -29,7 +29,7 @@ public interface SorcerConstants {
 	// J_ATTRIBURE is variable name in Jini configuration file
 	/* service provider genetic properties */
 	public static final String SORCER_VERSION = "11.1";
-
+	
 	public static final String P_UNDEFINED = "undefined";
 
 	public static final String P_PROVIDER_NAME = "provider.name";
@@ -247,6 +247,20 @@ public interface SorcerConstants {
 	public static final String S_COMMANDER_NAME = "sorcer.commander.name";
 
 	public static final String S_SERVICE_ACCESSOR_PROVIDER_NAME = "provider.lookup.accessor";
+
+	public static final String S_SORCER_REPO = "sorcer.local.repo.location";
+	
+	public static final String S_VERSION_RIVER = "sorcer.lib.river.version";
+	
+	public static final String S_VERSION_BLITZ = "sorcer.lib.blitz.version";
+	
+	public static final String S_VERSION_RIO = "sorcer.lib.rio.version";
+		
+	public static final String S_VERSION_GROOVY = "sorcer.lib.groovy.version";
+	
+	public static final String S_VERSION_SLEEPYCAT = "sorcer.lib.sleepycat.version";
+	
+	public static final String S_VERSION_SORCER = "sorcer.version";
 
 	public static final String IGRID_HOME = "iGrid.home";
 
@@ -1156,11 +1170,6 @@ public interface SorcerConstants {
 			INCOMPLETE = "Incomplete";
 	public static final String EXPORT_CONTROL = "Export Control",
 			ACCESS_CLASS = "Access Class";
-	
-	/**
-	 * Maven Repository location
-	 */
-	public static final String MVN_REPO = System.getProperty("user.home") + "/.m2/repository/";
 }
 
 

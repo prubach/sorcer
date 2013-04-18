@@ -23,7 +23,7 @@ java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
 #handlers=java.util.logging.FileHandler
 java.util.logging.FileHandler.level=ALL
 java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
-java.util.logging.FileHandler.pattern=../logs/sorcer.log
+java.util.logging.FileHandler.pattern=%h/iGrid/logs/sorcer%u.log
 java.util.logging.FileHandler.limit=10000000
 java.util.logging.FileHandler.count=3
 
@@ -48,19 +48,19 @@ java.util.logging.FileHandler.count=3
 # For all sorcer.* packages except core packages
 sorcer.level=INFO
 # For all sorcer.core.* core packages except core providers
-sorcer.core.level=FINER
+sorcer.core.level=FINE
 # SORCER booter
 sorcer.provider.boot.level=FINER
-org.rioproject.boot.level=FINER
+org.rioproject.boot.level=INFO
 # For all dispatch classes
 sorcer.core.dispatch.level=FINER
 # SORCER security logging
 sorcer.core.security.level=OFF
 # Used by service providers except core providers
-sorcer.core.provider.level=FINER
+sorcer.core.provider.level=FINE
 #sorcer.core.provider.jobber.ServiceJobberlevel=FINER
 # Used by SORCER core service providers
-sorcer.core.provider.ServiceProvider.level=FINER
+sorcer.core.provider.ServiceProvider.level=FINE
 # Logger to facilitate testing
 sorcer.test.level=FINE
 # All other logging purposes

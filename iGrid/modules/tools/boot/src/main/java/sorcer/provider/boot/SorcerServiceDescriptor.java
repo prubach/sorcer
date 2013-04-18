@@ -55,6 +55,7 @@ import com.sun.jini.start.ServiceDescriptor;
 import com.sun.jini.start.ServiceProxyAccessor;
 import org.rioproject.config.PlatformCapabilityConfig;
 import sorcer.boot.util.ClassPathVerifier;
+import sorcer.core.SorcerEnv;
 
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
@@ -487,7 +488,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
     final private static File[] jarRoots;
 
     static {
-        File repo = new File(System.getProperty("user.home"), ".m2/repository/");
+        File repo = new File(SorcerEnv.getRepoDir());           
         jarRoots = new File[]{
                 new File(repo, "org/apache/river"),
                 new File(repo, "net/jini"),
