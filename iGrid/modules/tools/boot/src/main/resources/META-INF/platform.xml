@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Default platform configuration
+-->
+<platform>
+     <!--
+    SORCER jars to load into the common classloader.
+    -->
+    <capability name="SORCER" common="yes">
+        <!--
+        <version>5.0</version>
+        -->
+        <version>11.1</version>
+        <manufacturer>SORCERsoft.org</manufacturer>
+<!--         <classpath>${user.home}/.m2/repository/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar:${user.home}/.m2/repository/org/sorcersoft/sorcer/provider-common/11.1/provider-common-11.1.jar</classpath> -->
+          <classpath>
+			<entry>org.sorcersoft.sorcer:sorcer-api</entry>
+			<entry>org.sorcersoft.sorcer:provider-common</entry>
+		</classpath> 
+     </capability>
+    
+    <!--
+    River (Jini) jars to load into the common classloader.
+    -->
+    <capability name="River" common="yes">
+        <version>2.2.1</version>
+        <manufacturer>Apache Software Foundation</manufacturer>
+<!--        <classpath>${user.home}/.m2/repository/net/jini/jsk-dl/2.2.1/jsk-dl-2.2.1.jar:${user.home}/.m2/repository/net/jini/lookup/serviceui/2.2.1/serviceui-2.2.1.jar</classpath>-->
+         <classpath>
+			<entry>net.jini:jsk-dl</entry>
+			<entry>net.jini.lookup:serviceui</entry>
+		</classpath> 
+    </capability>
+    
+    <!--
+    Berkeley database jars to load into the common classloader.
+    -->
+    <capability name="Berkeley DB JE" common="yes">
+        <version>4.1.21</version>
+        <manufacturer>Oracle</manufacturer>
+	<!--    <classpath>${user.home}/.m2/repository/com/sleepycat/je/4.1.21/je-4.1.21.jar</classpath> -->
+         <classpath>
+			<entry>com.sleepycat:je</entry>
+		</classpath>
+    </capability>  
+    
+    <!--
+    Rio jars to load into the common classloader.
+    -->
+    <capability name="Rio"
+                class="org.rioproject.system.capability.software.RioSupport"
+                common="yes">
+        <version>5.0-M2</version>
+<!--        <classpath>${user.home}/.m2/repository/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:${user.home}/.m2/repository/org/rioproject/rio-api/5.0-M2/rio-api-5.0-M2.jar</classpath> -->
+         <classpath>
+			<entry>org.rioproject:rio-platform</entry>
+			<entry>org.rioproject:rio-api</entry>
+		</classpath>
+    </capability>
+    
+</platform>
