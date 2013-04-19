@@ -22,7 +22,7 @@
 		<module>boot</module>
 		<module>shell</module>
 		<module>ssb</module>
-<!--		<module>sorcer-maven-plugin</module> -->
+		<module>sorcer-maven-plugin</module>
 
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>

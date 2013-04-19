@@ -71,6 +71,17 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>sorcer-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>sorcer</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.2.1</version>
@@ -108,7 +119,7 @@
 		      <include>*</include>
 		    </includes>
 		    <excludes>
-		      <exclude>remote</exclude>		      
+		      <exclude>remote</exclude>
 		    </excludes>
 		    <followSymlinks>false</followSymlinks>
 		  </fileset>
