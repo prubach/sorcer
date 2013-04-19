@@ -33,6 +33,7 @@ public class ClassPathVerifier {
 		HashMultimap<String, ClassLoader> dest = HashMultimap.create();
 		Multimap<String, ClassLoader> classLoaders = Multimaps.invertFrom(classPaths, dest);
 		for (String key : classLoaders.keySet()) {
+			// don't check bootstrap classpath
 			if (!key.contains(SorcerEnv.getRepoDir()))
 				continue;
 			if (classLoaders.get(key).size() > 1) {
@@ -67,8 +68,6 @@ public class ClassPathVerifier {
 			loaderList.add(classloader);
 			classloader = classloader.getParent();
 		}
-		loaderList.add(null);
-		Collections.reverse(loaderList);
 		return loaderList;
 	}
 

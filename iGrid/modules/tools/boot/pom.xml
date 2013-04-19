@@ -35,16 +35,10 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
-		<!--FIXME remove?-->
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
-	    <version>${v.rio}</version>
-	    <!-- <version>5.0-M2_sorcer</version> -->
+			<version>${v.rio}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

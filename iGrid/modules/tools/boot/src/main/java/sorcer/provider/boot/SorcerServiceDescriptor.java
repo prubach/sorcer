@@ -17,8 +17,6 @@
 package sorcer.provider.boot;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -32,9 +30,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,8 +48,12 @@ import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceDescriptor;
 import com.sun.jini.start.ServiceProxyAccessor;
+
 import org.rioproject.config.PlatformCapabilityConfig;
+import org.rioproject.config.PlatformLoader;
+
 import sorcer.boot.util.ClassPathVerifier;
+import sorcer.boot.util.JarClassPathHelper;
 import sorcer.core.SorcerEnv;
 
 /**
@@ -110,6 +109,8 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	};
 	private static AggregatePolicyProvider globalPolicy = null;
 	private static Policy initialGlobalPolicy = null;
+
+	private static JarClassPathHelper classPathHelper = new JarClassPathHelper();
 
 	/**
 	 * Object returned by
@@ -300,7 +301,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		/* Set common JARs to the CommonClassLoader */
 		String defaultDir = null;
 		String fs = File.separator;
-		String iGridHome = System.getProperty("iGrid.home");
+		String iGridHome = SorcerEnv.getHomeDir().getPath();
 		if (iGridHome == null) {
 			logger.info("'iGrid.home' not defined, no default platformDir");
 		} else {
@@ -313,16 +314,11 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			
 			PlatformLoader platformLoader = new PlatformLoader();
 			List<URL> urlList = new ArrayList<URL>();
-			PlatformCapabilityConfig[] caps = platformLoader.getDefaultPlatform();
-			for (PlatformCapabilityConfig cap : caps) {
-				URL[] urls = cap.getClasspathURLs();
-				urlList.addAll(Arrays.asList(urls));
-			}
-	
+
 			String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
 					String.class, defaultDir);
 			logger.finer("Platform dir: " + platformDir);
-			caps = platformLoader.parsePlatform(platformDir);
+			PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir);
 	
 			logger.finer("Capabilities: " + Arrays.toString(caps));
 			for (PlatformCapabilityConfig cap : caps) {
@@ -449,89 +445,10 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
         List<String>cpList=new LinkedList<String>();
 		for (String s : Booter.toArray(cp)) {
 			cpList.add(s);
-            getClassPathFromJar(cpList, new File(s));
+            classPathHelper.getClassPathFromJar(cpList, new File(s));
         }
 		return Booter.getClasspath(cpList.toArray(new String[cpList.size()]));
 	}
-
-    private void getClassPathFromJar(List<String> buff, File f) {
-        try {
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("Creating jar file path from ["
-                        + f.getCanonicalPath() + "]");
-            JarFile jar = new JarFile(f);
-            Manifest man = jar.getManifest();
-            if (man == null) {
-                return;
-            }
-            Attributes attributes = man.getMainAttributes();
-            if (attributes == null) {
-                return;
-            }
-            String values = (String) attributes.get(new Attributes.Name(
-                    "Class-Path"));
-            if (values != null) {
-                for (String v : Booter.toArray(values)) {
-                    File add = findFile(v);
-                    if (add != null) {
-                        buff.add(add.getCanonicalPath());
-                    } else {
-                        logger.warning("Could not find " + v + " on the search path");
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    final private static File[] jarRoots;
-
-    static {
-        File repo = new File(SorcerEnv.getRepoDir());           
-        jarRoots = new File[]{
-                new File(repo, "org/apache/river"),
-                new File(repo, "net/jini"),
-                new File(repo, "org/sorcersoft"),
-                new File(System.getProperty("iGrid.home"), "lib")};
-    }
-
-    private static File findFile(String name) {
-        File file = new File(name);
-        if (file.exists()) {
-            return file;
-        }
-        return findFile(name, jarRoots);
-    }
-
-    private static File findFile(String name, File[] roots) {
-        for (File root : roots) {
-            File file = findJar(root, name);
-            if (file != null) {
-                return file;
-            }
-        }
-        return null;
-    }
-
-    private static File findJar(File root, String name) {
-        File result = new File(root, name);
-        if (result.exists()) {
-            return result;
-        }
-        File[] files = root.listFiles(new DirectoryFilter());
-		if (files==null || files.length == 0) {
-			return null;
-		}
-        return findFile(name, files);
-    }
-
-    private static class DirectoryFilter implements FileFilter {
-        @Override
-        public boolean accept(File pathname) {
-            return pathname.isDirectory();
-        }
-    }
 
     public String toString() {
 		return "SorcerServiceDescriptor{"

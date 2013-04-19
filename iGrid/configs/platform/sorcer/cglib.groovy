@@ -1,6 +1,4 @@
 import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.provider.boot.SorcerCapabilityDescriptor
 
 def getPlatformCapabilityConfig() {
     def cap = new SorcerCapabilityDescriptor()
