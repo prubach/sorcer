@@ -27,5 +27,6 @@
         <module>exertlet-ui</module>
         <module>requestor-common</module>
         <module>provider-common</module>
-    </modules>
+	<module>sorcer-par-modeling</module>
+     </modules>
 </project>

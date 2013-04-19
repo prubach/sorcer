@@ -19,8 +19,8 @@ package sorcer.core.signature;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
-import sorcer.core.invoker.ObjectInvoker;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
@@ -29,8 +29,6 @@ import sorcer.util.ObjectCloner;
 public class ObjectSignature extends ServiceSignature {
 
 	//static final long serialVersionUID = 8042346568722803852L;
-
-	private ObjectInvoker invoker;
 
 	Class<?> providerType;
 
@@ -133,35 +131,6 @@ public class ObjectSignature extends ServiceSignature {
 		this.providerType = providerType;
 	}
 
-	/**
-	    <p> Returns the invoker for this signature. </p>
-
-	    @return the invoker
-	 */
-	public ObjectInvoker getInvoker() {
-		return invoker;
-	}
-
-	/**   
-	    <p> Sets the object invoker for this signature. </p>
-
-	    @param invoker the object invoker to set
-	 */
-	public void setEvaluator(ObjectInvoker invoker) {
-		this.invoker = invoker;
-	}
-
-	public ObjectInvoker createInvoker() throws InstantiationException,
-	IllegalAccessException {
-		if (target == null && providerType != null) {
-			invoker = new ObjectInvoker(providerType.newInstance(),
-					selector);
-		} else
-			invoker = new ObjectInvoker(target, selector);
-		this.invoker.setParameters(args);
-		return invoker;
-	}
-
 	public Class<?>[] getTypes() throws ContextException {
 		return argTypes;
 	}
@@ -227,6 +196,10 @@ public class ObjectSignature extends ServiceSignature {
 		Object obj = null;
 		Method m = null;
 		try {
+			logger.info("providerType: " + providerType);
+			logger.info("selector: " + selector);
+			logger.info("argTypes: " + Arrays.toString(argTypes));
+
 			obj = providerType.newInstance();
 			if (argTypes != null)
 				m = providerType.getMethod(selector, argTypes);
@@ -313,7 +286,7 @@ public class ObjectSignature extends ServiceSignature {
 	}
 
 	public String toString() {
-		String provider = providerType == null ? ""+invoker : ""+providerType;
+		String provider = providerType == null ? ""+target.getClass() : ""+providerType;
 
 		return this.getClass() + ";" + providerName + ";" + execType + ";" + isActive + ";"
 		+ provider + ";" + selector;

@@ -760,6 +760,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		return this;
 	}
 	
+	protected Object getArgs() throws ContextException {
+		return context.getArgs();
+	}
+	
 	// no control context
 	public String info() {
 		StringBuffer info = new StringBuffer().append(
