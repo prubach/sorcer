@@ -173,7 +173,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar" />
 		<pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
 		<pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />
-		<pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}_sorcer/rio-start-${v.rio}_sorcer.jar" />
+		<pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar" />
 		<pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar" />
 		<pathelement location="${mvn.repo}/com/google/guava/14.0.1/guava-14.0.1.jar" />
 		<pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar" />
