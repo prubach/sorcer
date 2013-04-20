@@ -70,7 +70,8 @@
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
+<!--                Temporarily disabled because of a problem when building from scratch
+				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>sorcer-maven-plugin</artifactId>
 					<executions>
@@ -85,7 +86,7 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.2.1</version>
-                </plugin>
+		  </plugin> -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>

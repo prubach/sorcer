@@ -42,11 +42,6 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
-//import static sorcer.vo.operator.evaluator;
-//import static sorcer.vo.operator.exertionFilter;
-//import static sorcer.vo.operator.setFilter;
-//import static sorcer.vo.operator.var;
-//import sorcer.vfe.Var;
 import sorcer.util.Sorcer;
 
 /**

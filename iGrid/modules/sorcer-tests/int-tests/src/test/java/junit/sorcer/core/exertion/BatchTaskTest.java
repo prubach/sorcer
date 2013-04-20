@@ -42,6 +42,9 @@ public class BatchTaskTest {
 		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
+		Sorcer.setCodeBaseByArtifacts(new String[] { 
+				"org.sorcersoft.sorcer:ju-arithmetic-api", 
+				"org.sorcersoft.sorcer:sorcer-api" });
 	}
 
 //	@SuppressWarnings("unchecked")
