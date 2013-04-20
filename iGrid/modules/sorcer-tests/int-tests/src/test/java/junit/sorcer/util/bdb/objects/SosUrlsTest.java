@@ -31,7 +31,11 @@ public class SosUrlsTest {
 			.getName());
 
 	static {
-		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+		try {
+			URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+		} catch (Error e) {
+			logger.severe("URL Stream Handler Factory setting failed!");
+		}
 		// System.setProperty("java.protocol.handler.pkgs",
 		// "sorcer.util.bdb.sos");
 
