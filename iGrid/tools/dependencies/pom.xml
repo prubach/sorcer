@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>dependencies</artifactId>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>SORCER tools :: dependencies</name>
 	<description>SORCER dummy module that downloads libraries required at runtime and installs them in the local maven repository</description>
 	<url>http://sorcersoft.org/</url>
@@ -41,6 +41,12 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 
 	<dependencies>

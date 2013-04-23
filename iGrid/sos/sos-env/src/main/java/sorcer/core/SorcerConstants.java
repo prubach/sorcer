@@ -1169,6 +1169,8 @@ public interface SorcerConstants {
 			INCOMPLETE = "Incomplete";
 	public static final String EXPORT_CONTROL = "Export Control",
 			ACCESS_CLASS = "Access Class";
+
+	String CODEBASE_SEPARATOR = " ";
 }
 
 

@@ -142,5 +142,25 @@ public class ArtifactCoordinates {
 	    if (groupId.contains("org.codehaus.groovy")) return SorcerEnv.getGroovyVersion();
 	    if (groupId.contains("org.rioproject")) return SorcerEnv.getRioVersion();
 	    return null;    	    	
-	} 
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public String getClassifier() {
+		return classifier;
+	}
+
+	public String getPackaging() {
+		return packaging;
+	}
 }
