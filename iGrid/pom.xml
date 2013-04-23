@@ -65,6 +65,21 @@
                 <version>2.0.1</version>
                 <scope>test</scope>
             </dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-api</artifactId>
+				<version>1.13.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-impl</artifactId>
+				<version>1.13.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-util</artifactId>
+				<version>1.13.1</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 

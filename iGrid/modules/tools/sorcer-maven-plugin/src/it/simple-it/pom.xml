@@ -20,7 +20,7 @@
         <artifactId>sorcer-maven-plugin</artifactId>
         <version>11.1</version>
             <goals>
-              <goal>boot</goal>
+              <goal>sorcer</goal>
             </goals>
       </plugin>
     </plugins>
