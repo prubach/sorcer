@@ -12,18 +12,18 @@
 
     <artifactId>sos</artifactId>
     <packaging>pom</packaging>
-    <name>SORCER Operating System</name>
+    <name>SORCER OS</name>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
 
     <modules>
         <module>sos-env</module>
-        <module>sorcer-api</module>
-        <module>sorcer-util</module>
-        <module>sorcer-security-ui</module>
-        <module>exertlet-ui</module>
-        <module>requestor-common</module>
-        <module>provider-common</module>
-		<module>sorcer-par-modeling</module>
+        <module>sos-platform</module>
+        <module>sos-util</module>
+        <module>sos-security-sui</module>
+        <module>sos-exertlet-sui</module>
+        <module>commons-req</module>
+        <module>commons-prv</module>
+		<module>sos-mod</module>
      </modules>
 </project>

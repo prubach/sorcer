@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Jini basic services" default="Sorcer" basedir=".">
 
-	<import file="../modules/common-run.xml" />
+	<import file="../bin/common-run.xml" />
 	<target name="Sorcer" depends="clean, services" />
 	<property name="sorcer.data" value="${sorcer.home}/data" />
 

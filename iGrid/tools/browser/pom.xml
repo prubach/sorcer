@@ -1,0 +1,105 @@
+<project
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <version>11.1</version>
+        <artifactId>tools</artifactId>
+    </parent>
+
+    <artifactId>browser</artifactId>
+    <packaging>jar</packaging>
+    <name>SORCER tools :: browser</name>
+    <description>SORCER</description>
+    <url>http://sorcersoft.org/</url>
+
+    <dependencies>
+         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>webster</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cheiron.jsc</groupId>
+            <artifactId>jsc-admin</artifactId>
+            <version>0.1-b31078</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.apple</groupId>
+            <artifactId>AppleJavaExtensions</artifactId>
+            <version>1.4</version>
+        </dependency>
+	<dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+        </dependency>
+ 	<dependency>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-platform</artifactId>
+        </dependency>
+ 	<dependency>
+            <groupId>net.jini.lookup</groupId>
+            <artifactId>serviceui</artifactId>
+	    <version>${v.jini}</version>
+        </dependency>
+        <dependency>
+            <groupId>au.net.Zeus</groupId>
+            <artifactId>reference-collections</artifactId>
+            <version>1.0.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.boundary</groupId>
+            <artifactId>high-scale-lib</artifactId>
+            <version>1.0.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1.1</version>
+
+                <configuration>
+                    <mainClass>sorcer.ssb.SorcerServiceBrowser</mainClass>
+                	<arguments>
+                	 	<argument>${project.basedir}/configs/ssb.config</argument>
+                	</arguments>
+                    <systemProperties>
+                        <systemProperty><key>java.util.logging.config.file</key><value>${env.SORCER_HOME}/configs/sorcer.logging</value></systemProperty>
+                        <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>
+                        <systemProperty><key>java.security.policy</key><value>${project.basedir}/policy/ssb.policy</value></systemProperty>
+                        <systemProperty><key>data.server.port</key><value>9000</value></systemProperty>
+                        <systemProperty><key>data.root.dir</key><value>${env.SORCER_HOME}/data</value></systemProperty>
+                        <systemProperty><key>requestor.data.dir</key><value>optimization/input</value></systemProperty>
+                        <systemProperty><key>sorcer.env.file</key><value>${env.SORCER_HOME}/configs/sorcer.env</value></systemProperty>
+                        <systemProperty><key>sorcer.formats.file</key><value>${env.SORCER_HOME}/configs/data.formats</value></systemProperty>
+                    </systemProperties>
+
+                    <workingDirectory>${project.basedir}</workingDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

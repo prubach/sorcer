@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<project name="arithmetic tester" default="run.requestor" basedir=".">
+
+	<property name="ex6-req.arg1" value="f5xS" />
+	<property name="ex6-req.arg2" value="20" />
+	<import file="ex6-req-run.xml" />
+
+</project>
+
+
+

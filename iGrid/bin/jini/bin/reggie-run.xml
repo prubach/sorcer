@@ -2,7 +2,7 @@
 
 <project name="lookup service" default="reggie" basedir=".">
 
-	<import file="../../../modules/common-run.xml" />
+	<import file="../../../bin/common-run.xml" />
 
 	<target name="reggie">
 		<java jar="${jini.lib}/start.jar" fork="yes">

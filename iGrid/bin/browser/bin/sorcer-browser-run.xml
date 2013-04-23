@@ -5,7 +5,7 @@
 	<property name="pom.file" value="${sorcer.home}/modules/tools/ssb/pom.xml" />
 	<!-- load system environment variables -->
 	<property environment="env" />
-	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	
 	<path id="run.classpath">
 	    <path refid="runtime.classpath"/>  

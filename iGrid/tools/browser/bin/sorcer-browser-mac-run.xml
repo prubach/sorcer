@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<project name="SSB" default="SORCER Service Browser" basedir=".">
+	<property name="pom.file" value="${basedir}/../pom.xml" />
+	<!-- load system environment variables -->
+	<property environment="env" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+	
+	<path id="run.classpath">
+	    <path refid="runtime.classpath"/>  
+	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
+	</path>
+
+	<target name="SORCER Service Browser" depends="mvn-init">
+		<java classname="sorcer.ssb.SorcerServiceBrowser" fork="yes" maxmemory="1g">
+			<arg value="${basedir}/../configs/ssb.config" />
+			<jvmarg value="-Xdock:name=SORCER Service Browser" />
+			<jvmarg value="-Xdock:icon=sorcer-dock.png" />
+			<classpath>
+			    <path refid="run.classpath"/>  				
+			</classpath>
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="java.security.policy" value="${basedir}/../policy/ssb.policy" />
+			<sysproperty key="ssb.logFile" value="${basedir}/../logs/browser.log" />
+			<sysproperty key="ssb.logLen" value="300" />
+
+			<!-- Configuration for remote requestor/provider data access -->
+<!--			<sysproperty key="data.server" value="10.131.5.90" />
+			<sysproperty key="data.server.port" value="9000" />
+			<sysproperty key="data.root.dir" value="${sorcer.home}/data" />
+			<sysproperty key="requestor.data.dir" value="optimization/input" />-->
+		</java>
+	</target>
+</project>

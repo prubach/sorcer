@@ -1,9 +1,0 @@
-module sorcer {
-   module service {
-      module xml {
-         interface JobMediator {
-	    void executeJob(in string jobXML);
-	 };    
-      };
-   };
-};

@@ -23,7 +23,10 @@
     </properties>
 
     <modules>
-        <module>modules</module>
+        <module>sos</module>
+        <module>sos-providers</module>
+        <module>tools</module>
+        <module>examples</module>        
     </modules>
 
     <dependencyManagement>
@@ -40,7 +43,7 @@
             </dependency>
             <dependency>
                 <groupId>org.sorcersoft.sorcer</groupId>
-                <artifactId>sorcer-api</artifactId>
+                <artifactId>sos-platform</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

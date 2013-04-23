@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>ex1</artifactId>
+        <version>11.1</version>
+    </parent>
+
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <artifactId>ex1-req</artifactId>
+    <name>SORCER examples :: ex1 :: req</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-req-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+        	<version>${project.version}</version>
+        </dependency>        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>commons-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+
+
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+<!--                           <argument>-Xdebug</argument>
+                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
+ -->                        
+ 						<argument>-Dsorcer.home=${env.SORCER_HOME}</argument>
+                        <argument>-Dsorcer.env.file=${env.SORCER_HOME}/configs/sorcer.env</argument>
+                        <argument>-Djava.util.logging.config.file=${env.SORCER_HOME}/configs/sorcer.logging</argument>
+                        <argument>-Djava.security.policy=${env.SORCER_HOME}/configs/sorcer.policy</argument>
+						<argument>-Dsorcer.webster.internal=true</argument>
+						<argument>-Dsorcer.webster.debug=true</argument>
+						<argument>-Dsorcer.codebase.jars=/org/sorcersoft/sorcer/ex1-req-api/11.1/ex1-req-api-11.1.jar;/org/sorcersoft/sorcer/ex1-api/11.1/ex1-api-11.1.jar;/org/sorcersoft/sorcer/sos-platform/11.1/sos-platform-11.1.jar</argument>
+                        <argument>-classpath</argument><classpath/>
+                        <argument>sorcer.core.requestor.ExertionRunner</argument>
+                        <argument>sorcer.ex1.requestor.WhoIsItTaskRunner</argument>
+                        <argument>WhoIsIt?</argument>
+                    </arguments>
+
+                    <workingDirectory>${project.root}</workingDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

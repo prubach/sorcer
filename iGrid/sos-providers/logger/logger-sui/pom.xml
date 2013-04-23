@@ -1,0 +1,26 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>logger</artifactId>
+	</parent>
+
+	<artifactId>logger-sui</artifactId>
+	<packaging>jar</packaging>
+	<name>SORCER OS :: providers :: logger :: sui</name>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+
+	<dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+        	<version>${project.version}</version>
+        </dependency>    </dependencies>
+
+</project>

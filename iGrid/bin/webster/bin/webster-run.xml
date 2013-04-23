@@ -6,7 +6,7 @@
 	<property name="pom.file" value="${sorcer.home}/modules/tools/webster/pom.xml" />
 	<!-- load system environment variables -->
 	<property environment="env" />
-	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 	<property name="provider.webster" value="${provider.webster.interface.TMP}" />
 	<echo message="provider.webster = ${provider.webster}" />
@@ -14,7 +14,7 @@
 	
 	<path id="run.classpath">
 	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/webster/${v.sorcer}/webster-${v.sorcer}.jar" />
+	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/webster/${v.sorcer}/sos-webster-${v.sorcer}.jar" />
 	</path>
 
 	<target name="webster" depends="mvn-init">

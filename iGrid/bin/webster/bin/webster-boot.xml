@@ -4,7 +4,7 @@
 	
 	<!-- load system environment variables -->
 	<property environment="env" />
-	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	<echo message="SORCER_HOME: ${sorcer.home}" />
 	<property name="iGrid.data" value="${sorcer.home}/data" />
 

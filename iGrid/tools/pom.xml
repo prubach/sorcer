@@ -1,0 +1,30 @@
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>sorcer-root</artifactId>
+	</parent>
+
+	<artifactId>tools</artifactId>
+	<packaging>pom</packaging>
+	<name>SORCER tools</name>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+
+	<modules>
+		<module>locker</module>
+		<module>sos-webster</module>
+		<module>sos-boot</module>
+		<module>sos-shell</module>
+		<module>browser</module>
+		<module>sorcer-maven-plugin</module>
+
+		<!-- force download implicit dependencies -->
+		<module>dependencies</module>
+	</modules>
+</project>

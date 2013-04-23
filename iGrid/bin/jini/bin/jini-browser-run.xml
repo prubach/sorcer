@@ -3,7 +3,7 @@
 <project name="Service Browser" default="jini-browser" basedir=".">
 	<!-- system environment variables -->
 	<property environment="env" />
-	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 	<target name="jini-browser">
 		<java classname="com.sun.jini.example.browser.Browser" fork="yes">
