@@ -301,11 +301,11 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		/* Set common JARs to the CommonClassLoader */
 		String defaultDir = null;
 		String fs = File.separator;
-		String iGridHome = SorcerEnv.getHomeDir().getPath();
-		if (iGridHome == null) {
-			logger.info("'iGrid.home' not defined, no default platformDir");
+		String sorcerHome = SorcerEnv.getHomeDir().getPath();
+		if (sorcerHome == null) {
+			logger.info("'sorcer.home' not defined, no default platformDir");
 		} else {
-			defaultDir = iGridHome+fs+"configs"+fs+"platform"+fs+"sorcer";
+			defaultDir = sorcerHome+fs+"configs"+fs+"platform"+fs+"sorcer";
 		}
 
 		CommonClassLoader commonCL = CommonClassLoader.getInstance();

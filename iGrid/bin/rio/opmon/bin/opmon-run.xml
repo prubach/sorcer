@@ -4,9 +4,9 @@
 
 	<property environment="env" />
 	<property name="java.home" value="${env.JAVA_HOME}" />
-	<property name="iGrid.home" value="${env.IGRID_HOME}" />
-	<property name="common.lib" value="${iGrid.home}/common" />
-	<property name="rio.lib" value="${iGrid.home}/common/rio3_2" />
+	<property name="sorcer.home" value="${env.SORCER_HOME}" />
+	<property name="common.lib" value="${sorcer.home}/common" />
+	<property name="rio.lib" value="${sorcer.home}/common/rio3_2" />
 
 	<target name="opmon">
 		<java classname="org.jini.rio.utilities.opmon.OpMonitor" inputstring="..\configs\utils.config" fork="yes">

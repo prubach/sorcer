@@ -26,7 +26,7 @@ public class SorcerEnv implements SorcerConstants {
 	 * Default name 'sorcer.env' for a file defining global environment
 	 * properties.
 	 */
-	public static String SORCER_ENV_FILENAME = "sorcer.env";
+	public static String SORCER_ENV_FILENAME = SorcerConstants.S_ENV_FIENAME;
 
 	/*
 	 * location of the SORCER environment properties file loaded by this
@@ -48,29 +48,29 @@ public class SorcerEnv implements SorcerConstants {
 	}
 	
 	/**
-	 * Returns the home directory of the iGrid environment.
+	 * Returns the home directory of the Sorcer environment.
 	 * 
 	 * @return a path of the home directory
 	 */
 	public static File getHomeDir() {
-		String hd = System.getenv("IGRID_HOME");
+		String hd = System.getenv("SORCER_HOME");
 
 		if (hd != null && hd.length() > 0) {
-			System.setProperty(IGRID_HOME, hd);
+			System.setProperty(SORCER_HOME, hd);
 			return new File(hd);
 		}
 
-		hd = System.getProperty(IGRID_HOME);
+		hd = System.getProperty(SORCER_HOME);
 		if (hd != null && hd.length() > 0) {
 			return new File(hd);
 		}
 
-		hd = props.getProperty(IGRID_HOME);
+		hd = props.getProperty(SORCER_HOME);
 		if (hd != null && hd.length() > 0) {
 			return new File(hd);
 		}
 		throw new IllegalArgumentException(hd
-				+ " is not a valid 'iGrid.home' directory");
+				+ " is not a valid 'sorcer.home' directory");
 	}
 	
 	/** 
@@ -165,9 +165,9 @@ public class SorcerEnv implements SorcerConstants {
 
 		} catch (Exception e) {
 			try {
-				// try to look for sorcer.env in IGRID_HOME/configs
-				properties.load((new FileInputStream(new File(System.getenv("IGRID_HOME")+"/configs/" + filename))));
-				logger.fine("loaded properties from: " + System.getenv("IGRID_HOME") +"/configs/" + filename);
+				// try to look for sorcer.env in SORCER_HOME/configs
+				properties.load((new FileInputStream(new File(System.getenv("SORCER_HOME")+"/configs/" + filename))));
+				logger.fine("loaded properties from: " + System.getenv("SORCER_HOME") +"/configs/" + filename);
 			} catch (Exception ee) {
 				try {
 					// No file give, try as resource sorcer/util/sorcer.env
@@ -176,7 +176,7 @@ public class SorcerEnv implements SorcerConstants {
 						properties.load(stream);
 					else
 						logger.severe("could not load properties as Sorcer resource file>"
-								+ filename + "<");
+								+ filename + "<" );
 				} catch (Throwable t2) {
 					throw new ConfigurationException(e);
 				}
@@ -259,7 +259,7 @@ public class SorcerEnv implements SorcerConstants {
 	}
 	
 	/**
-	 * Overwrites defined properties in sorcer.env (iGrid.home,
+	 * Overwrites defined properties in sorcer.env (sorcer.home,
 	 * provider.webster.interface, provider.webster.port) with those defined as
 	 * JVM system properties.
 	 * 

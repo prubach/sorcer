@@ -59,7 +59,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 			.getLogger(ArithmeticNetTest.class.getName());
 
 	static {
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] {
@@ -72,7 +72,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 	
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, InterruptedException {
-		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("IGRID_HOME") 
+		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("SORCER_HOME") 
 				+ "/modules/sorcer-tests/ju-arithmetic/ju-arithmetic-service/all-arithmetic-prv-boot-spawn.xml");
 		System.out.println("out: " + result.getOut());
 		System.out.println("err: " + result.getErr());

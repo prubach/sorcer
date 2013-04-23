@@ -31,19 +31,19 @@ To include this file in your custom *-run-buld.xml have the import line:
 	
 	<dirname property="common-run.loc" file="${ant.file.SorcerCommon}"/>
 	
-	<condition property="iGrid.home" value="${env.IGRID_HOME}" else="${common-run.loc}/../">
-		<isset property="env.IGRID_HOME" />
+	<condition property="sorcer.home" value="${env.SORCER_HOME}" else="${common-run.loc}/../">
+		<isset property="env.SORCER_HOME" />
 	</condition>	
-	<condition property="rio.home" value="${env.RIO_HOME}" else="${iGrid.home}/lib/rio">
+	<condition property="rio.home" value="${env.RIO_HOME}" else="${sorcer.home}/lib/rio">
 		<isset property="env.RIO_HOME" />
 	</condition>
 	
 	<exec executable="hostname" outputproperty="hostname" />
 	<echo message="Hostname = ${hostname}" />
-	<echo message="env IGRID_HOME = ${iGrid.home}" />
+	<echo message="env SORCER_HOME = ${sorcer.home}" />
 	<echo message="env RIO_HOME = ${rio.home}" />
 
-	<loadproperties srcfile="${iGrid.home}/configs/sorcer.env" />
+	<loadproperties srcfile="${sorcer.home}/configs/sorcer.env" />
 
 	<property name="v.sorcer" value="${sorcer.version}" />
 	<property name="v.jini" value="${sorcer.lib.river.version}" />
@@ -58,9 +58,9 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<property name="jini-dl.lib" value="${lib}/river/lib-dl" />
 	<property name="jini-ext.lib" value="${lib}/river/lib-ext" />
 
-	<property name="docs" value="${iGrid.home}/docs/${module.name}" />
-	<property name="iGrid.policy" value="${iGrid.home}/policy" />
-	<property name="iGrid.config" value="${iGrid.home}/configs" />
+	<property name="docs" value="${sorcer.home}/docs/${module.name}" />
+	<property name="sorcer.policy" value="${sorcer.home}/policy" />
+	<property name="sorcer.config" value="${sorcer.home}/configs" />
 
 	
 	<taskdef resource="net/sf/antcontrib/antlib.xml" uri="http://ant-contrib.sourceforge.net">
@@ -126,7 +126,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<isset property="requestor.policy.exists" />
 	      </not>
 	      <ac:then>
-		<property name="requestor.policy" value="${iGrid.home}/policy/sorcer.policy" />
+		<property name="requestor.policy" value="${sorcer.home}/policy/sorcer.policy" />
 		<echo>setting default policy: ${requestor.policy}</echo>
 	      </ac:then>
 	</ac:if>
@@ -262,11 +262,11 @@ To include this file in your custom *-run-buld.xml have the import line:
 			      <!--        <jvmarg value="-Xdebug"/>
 			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 				  <env key="RIO_HOME" value="${rio.home}" />
-				  <sysproperty key="iGrid.home" value="${iGrid.home}" />
+				  <sysproperty key="sorcer.home" value="${sorcer.home}" />
 				  <sysproperty key="RIO_HOME" value="${rio.home}" />
-			      <sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			      <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-			      <sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			      <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
 		      </java>
 		  </ac:then>
@@ -278,10 +278,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<classpath refid="boot.classpath" />
 				<arg value="${basedir}/target/classes" />
 				<env key="RIO_HOME" value="${rio.home}" />
-				<sysproperty key="iGrid.home" value="${iGrid.home}" />
-				<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+				<sysproperty key="sorcer.home" value="${sorcer.home}" />
+				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-				<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
 			</java>
 		      </ac:then>
@@ -289,10 +289,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 			  <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
 				<classpath refid="boot.classpath" />
 				<env key="RIO_HOME" value="${rio.home}" />
-				<sysproperty key="iGrid.home" value="${iGrid.home}" />
-				<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+				<sysproperty key="sorcer.home" value="${sorcer.home}" />
+				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-				<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
 			  </java>
 		      </ac:else>
@@ -311,18 +311,18 @@ To include this file in your custom *-run-buld.xml have the import line:
 			  	<echo message="Run Codebase = ${requestor.codebase}" />
 				<java classname="${requestor.class}" fork="yes">
 					<classpath refid="run-req.classpath" />
-					<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+					<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
-					<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 					<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
 				</java>
 			</ac:then>
 			<ac:else>
 				<java classname="${requestor.class}" fork="yes">
 					<classpath refid="run-req.classpath" />
-					<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+					<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
-					<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				</java>
 			</ac:else>
 		</ac:if>

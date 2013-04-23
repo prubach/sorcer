@@ -1599,7 +1599,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.matchInterfaceOnly = matchInterfaceOnly;
 			serviceType.startDate = new Date().toString();
 			serviceType.userDir = System.getProperty("user.dir");
-			// serviceType.iGridHome = System.getProperty("iGrid.home");
+			// serviceType.sorcerHome = System.getProperty("sorcer.home");
 			serviceType.userName = System.getProperty("user.name");
 			serviceType.iconName = config.getIconName();
 
@@ -2983,11 +2983,11 @@ public class ProviderDelegate implements SorcerConstants {
 			contextLogger = Logger.getLogger(PRIVATE_CONTEXT_LOGGER + "."
 					+ getProviderName());
 
-			String igridpath = System.getenv("IGRID_HOME");
-			if (igridpath == null) {
-				igridpath = System.getProperty(IGRID_HOME);
+			String sorcerpath = System.getenv("SORCER_HOME");
+			if (sorcerpath == null) {
+				sorcerpath = System.getProperty(SORCER_HOME);
 			}
-			h = new FileHandler(igridpath + "/logs/remote/context-"
+			h = new FileHandler(sorcerpath + "/logs/remote/context-"
 					+ getProviderName() + "-" + getHostName() + "-cxt%g.log",
 					20000, 8, true);
 			if (h != null) {
@@ -3006,9 +3006,9 @@ public class ProviderDelegate implements SorcerConstants {
 		try {
 			providerLogger = Logger.getLogger(PRIVATE_PROVIDER_LOGGER + "."
 					+ getProviderName());
-			String igridpath = System.getenv("IGRID_HOME");
+			String igridpath = System.getenv("SORCER_HOME");
 			if (igridpath == null) {
-				igridpath = System.getProperty(IGRID_HOME);
+				igridpath = System.getProperty(SORCER_HOME);
 			}
 			h = new FileHandler(igridpath + "/logs/remote/provider-"
 					+ getProviderName() + "-" + getHostName() + "-prv%g.log",

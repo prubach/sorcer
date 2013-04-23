@@ -19,6 +19,7 @@
         <v.groovy>2.1.2</v.groovy>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ 	<sorcer.home>${project.basedir}</sorcer.home>
     </properties>
 
     <modules>
@@ -127,6 +128,15 @@
 		</filesets>
 	      </configuration>
 	    </plugin>
+<!--	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-surefire-plugin</artifactId>
+		<configuration>
+		  <systemPropertyVariables>
+		      <SORCER_HOME>${sorcer.home}</SORCER_HOME>
+		  </systemPropertyVariables>
+		</configuration>
+	    </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

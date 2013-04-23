@@ -155,7 +155,7 @@ if ($?prompt) then
 
 	# iGrid config facility
 	source ~/configs/.iGrid_config
-	source $IGRID_HOME/configs/.iGrid_env
+	source $SORCER_HOME/configs/.iGrid_env
 
 	switch ($PLATFORM)
 	    case "Darwin":

@@ -47,11 +47,12 @@ public class ServiceStarter {
 	}
 
 	private void loadDefaultProperties() {
-		String iGridHome = System.getProperty(SorcerConstants.IGRID_HOME);
+		String sorcerHome = System.getProperty(SorcerConstants.SORCER_HOME);
+		System.out.println("ServiceStarter got SORCER_HOME: " + sorcerHome);
 		setDefaultProperty("org.rioproject.resolver.prune.platform", "false");
 		setDefaultProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
-		setDefaultProperty("java.util.logging.config.file",  iGridHome + "/configs/sorcer.logging");
-		setDefaultProperty("sorcer.env.file",  iGridHome + "/configs/sorcer.env");
+		setDefaultProperty("java.util.logging.config.file",  sorcerHome + "/configs/sorcer.logging");
+		setDefaultProperty("sorcer.env.file",  sorcerHome + "/configs/sorcer.env");
 	}
 
 	private void setDefaultProperty(String key, String value) {

@@ -8,6 +8,7 @@
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
 	</parent>
+
 	<packaging>pom</packaging>
 	<artifactId>sorcer-tests</artifactId>
 	<name>SORCER sorcer-int-tests</name>

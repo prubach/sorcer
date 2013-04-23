@@ -15,10 +15,10 @@ echo Default CLASSPATH_FILE is $CLASSPATH_FILE
 
 
 echo Creating local classpath.txt file in $PWD
-echo ${IGRID_HOME}/classes > classpath.txt
-echo ${IGRID_HOME}/lib/river/lib/jsk-platform.jar >> classpath.txt
-echo ${IGRID_HOME}/lib/river/lib/jsk-lib.jar >> classpath.txt
-echo ${IGRID_HOME}/lib/rio/rio.jar >> classpath.txt
+echo ${SORCER_HOME}/classes > classpath.txt
+echo ${SORCER_HOME}/lib/river/lib/jsk-platform.jar >> classpath.txt
+echo ${SORCER_HOME}/lib/river/lib/jsk-lib.jar >> classpath.txt
+echo ${SORCER_HOME}/lib/rio/rio.jar >> classpath.txt
 cat $CLASSPATH_FILE >> classpath.txt
 
 echo Creating local startup.m file in $PWD

@@ -32,7 +32,7 @@ set RIO_LOG_DIR="%USERPROFILE%"\.rio\logs\
 set classpath=-cp %RIO_HOME%\lib\boot.jar;%JINI_HOME%\lib\start.jar;
 set launchTarget=com.sun.jini.start.ServiceStarter
 
-%JAVA_HOME%\bin\java -server -jar -Djava.security.policy=%RIO_HOME%\policy\policy.all -Djava.protocol.handler.pkgs=net.jini.url -DRIO_HOME=%RIO_HOME% -DJINI_HOME=%JINI_HOME% -DRIO_LOG_DIR=%RIO_LOG_DIR% %RIO_HOME%\lib\boot.jar %IGRID_HOME%\bin\rio\monitor\start-activatable-monitor.config
+%JAVA_HOME%\bin\java -server -jar -Djava.security.policy=%RIO_HOME%\policy\policy.all -Djava.protocol.handler.pkgs=net.jini.url -DRIO_HOME=%RIO_HOME% -DJINI_HOME=%JINI_HOME% -DRIO_LOG_DIR=%RIO_LOG_DIR% %RIO_HOME%\lib\boot.jar %SORCER_HOME%\bin\rio\monitor\start-activatable-monitor.config
 
 endlocal
 

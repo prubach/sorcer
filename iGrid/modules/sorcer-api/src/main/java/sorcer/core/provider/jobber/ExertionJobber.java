@@ -74,7 +74,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 		try {
 			logger = Logger.getLogger("local." + ExertionJobber.class.getName() + "."
 					+ getProviderName());
-			h = new FileHandler(System.getProperty(IGRID_HOME)
+			h = new FileHandler(System.getProperty(SORCER_HOME)
 					+ "/logs/remote/local-Jobber-" + delegate.getHostName() + "-" + getProviderName()
 					+ "%g.log", 20000, 8, true);
 			if (h != null) {

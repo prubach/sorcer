@@ -12,10 +12,10 @@ java -Djava.security.manager= \
     -Djavax.net.ssl.trustStore=../configs/truststore.server \
     -Djavax.net.ssl.keyStore=../configs/keyStore.server \
     -Djava.security.auth.login.config=../configs/serverjaas.config \
-    -Djava.util.logging.config.file=${IGRID_HOME}/configs/sorcer.logging \
+    -Djava.util.logging.config.file=${SORCER_HOME}/configs/sorcer.logging \
     -Djava,security.auth.login.config=${SORCER_BASEURL}/jaas.config \
     -Djava.security.policy=../policy/grider-prv.policy \
     -Dsorcer.server.codebase="${SORCER_BASEURL}/dispatcher-dl.jar ${SORCER_BASEURL}/dispatcher-ui.jar ${JINI_BASEURL}/sdm-dl.jar ${SORCER_BASEURL}" \
-    -Dserver.classpath="${IGRID_HOME}/lib/dispatcher.jar" \
+    -Dserver.classpath="${SORCER_HOME}/lib/dispatcher.jar" \
     -Dserver.impl="sorcer.core.grid.provider.grider.GridDispatcherProviderImpl" \
     -jar $JINI_HOME/lib/start.jar ../configs/secure-start-grider-prv.config

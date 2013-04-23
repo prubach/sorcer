@@ -17,7 +17,7 @@
  
  * Service-Oriented Computing Environment: SORCER build configuration
  * Make sure the following variables are changed to reflect your environment:
- *    IGRID_HOME        iGrid location
+ *    SORCER_HOME        Sorcer location
  *    JAVA_HOME         JDK location
  *    ANT_HOME          Apache Ant location
  Please see also the ../common-build.xml for classpaths, definitions and targets
@@ -49,8 +49,8 @@
 	<property name="sorcer.slamonitor" value="./src/main/java/sorcer/core/provider/qos/sla/slamonitor" />
 	<property name="sorcer.ondemandprovisioner" value="./src/main/java/sorcer/core/provider/autonomic/provisioner/servme" />
 	<property name="ju-arithmeric" value="./src/test/java/junit/sorcer/core/provider" />
-	<property name="examples.ex6" value="${iGrid.home}/modules/examples/ex6" />
-	<property name="examples.ex10a" value="${iGrid.home}/modules/examples/ex10a" />
+	<property name="examples.ex6" value="${sorcer.home}/modules/examples/ex6" />
+	<property name="examples.ex10a" value="${sorcer.home}/modules/examples/ex10a" />
 	<property name="preferred_list" value="./configs/preferred.list" />
 
 	<!-- Directory paths where source code can be found relative to the current directory -->
@@ -207,7 +207,7 @@
 			<topclass name="net.jini.admin.Administrable" />
 			<topclass name="sorcer.util.Stopwatch" />
 			<topclass name="sorcer.ui.serviceui.UIFrameFactory" />
-			<fileset dir="${iGrid.home}/classes">
+			<fileset dir="${sorcer.home}/classes">
 				<include name="sorcer/util/sorcer.env" />
 				<include name="sorcer/util/data.formats" />
 			</fileset>
@@ -292,7 +292,7 @@
 			<in name="net.jini.core.lookup" />
 			<topclass name="sorcer.ui.serviceui.UIComponentFactory" />
 
-			<fileset dir="${iGrid.home}/classes">
+			<fileset dir="${sorcer.home}/classes">
 				<include name="sorcer/util/sorcer.env" />
 				<include name="sorcer/util/data.formats" />
 			</fileset>
@@ -326,8 +326,8 @@
 			<topclass name="sorcer.ui.exertlet.NetletUI" />
 			<topclass name="sorcer.ui.serviceui.UIComponentFactory" />
 			<topclass name="com.artima.lookup.util.ConsistentSet" />
-			<fileset dir="${iGrid.home}/modules/sorcer" includes="html/" />
-			<fileset dir="${iGrid.home}/classes">
+			<fileset dir="${sorcer.home}/modules/sorcer" includes="html/" />
+			<fileset dir="${sorcer.home}/classes">
 				<include name="sorcer/ui/exertlet/netlets.html" />
 				<include name="sorcer/ui/exertlet/icon-info16.png" />
 				<include name="sorcer/ui/exertlet/static-imports.txt" />
@@ -381,8 +381,8 @@
 	</fileset>
 
 	<target name="copy-meta-inf-files">
-		<mkdir dir="${iGrid.home}/classes/META-INF" />
-		<copy todir="${iGrid.home}/classes/META-INF">
+		<mkdir dir="${sorcer.home}/classes/META-INF" />
+		<copy todir="${sorcer.home}/classes/META-INF">
 			<fileset dir="configs">
 				<include name="PREFERRED.LIST" />
 			</fileset>

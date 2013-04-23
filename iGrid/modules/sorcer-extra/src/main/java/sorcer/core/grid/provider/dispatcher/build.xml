@@ -3,14 +3,14 @@
 <project name="SORCER" default="install" basedir=".">
 
 	<property environment="env" />
-	<property name="iGrid.home" value="${env.IGRID_HOME}" />
-	<property name="lib" value="${iGrid.home}/lib" />
+	<property name="sorcer.home" value="${env.SORCER_HOME}" />
+	<property name="lib" value="${sorcer.home}/lib" />
 	<property name="common.lib" value="${lib}/common" />
 	<property name="support.lib" value="${common.lib}/buildsupport" />
 	<property name="CODEBASE" value="${env.APP_CODEBASE}" />
 	<property name="CURRDIR" value="sorcer/provider/grid/dispatcher" />
-	<property name="DISTRIBUTION" value="${env.IGRID_HOME}/modules/sorcer/bin/${CURRDIR}" />
-	<property name="CONFIG" value="${env.IGRID_HOME}/modules/sorcer/configs/services" />
+	<property name="DISTRIBUTION" value="${env.SORCER_HOME}/modules/sorcer/bin/${CURRDIR}" />
+	<property name="CONFIG" value="${env.SORCER_HOME}/modules/sorcer/configs/services" />
 
 	<path id="project.classpath">
 		<pathelement path="${env.CLASSPATH}" />

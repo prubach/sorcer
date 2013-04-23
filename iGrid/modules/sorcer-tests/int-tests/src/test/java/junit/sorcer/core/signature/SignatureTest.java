@@ -36,8 +36,8 @@ public class SignatureTest {
 
 	static {
 		System.setProperty("java.util.logging.config.file",
-				System.getenv("IGRID_HOME") + "/configs/sorcer.logging");
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
+				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		System.setSecurityManager(new RMISecurityManager());

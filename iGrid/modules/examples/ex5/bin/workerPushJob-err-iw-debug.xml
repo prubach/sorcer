@@ -4,7 +4,7 @@
 
 	<!-- loads system environment variables -->
 	<property environment="env" />
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 	<property name="webster" value="${provider.webster.url}" />
 	<echo message="webster: ${webster}" />
 
@@ -45,13 +45,13 @@
 			<arg value="Worker3" />
 			<arg value="Jobber" />
 			<classpath refid="project.classpath" />
-			<sysproperty key="iGrid.home" value="${iGrid.home}" />
+			<sysproperty key="sorcer.home" value="${sorcer.home}" />
 			<sysproperty key="sorcer.webster.internal" value="true" />
 			<sysproperty key="sorcer.webster.debug" value="true" />
 			<sysproperty key="sorcer.codbase.jars" value="${j1} ${j2} ${j3}" />
-			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/${requestor.name}-req.policy" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 		</java>
 	</target>
 

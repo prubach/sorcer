@@ -13,7 +13,7 @@ and  "java.util.logging.config.file" for your provider
 	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
 			      
 	
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 		
 	<target name="boot.ex1.provider" depends="target.classes.check, mvn-init">
 		<property name="runtime.classpath.string" refid="runtime.classpath" />
@@ -22,7 +22,7 @@ and  "java.util.logging.config.file" for your provider
 			      <arg value="${provider.config}" />
 			      <!--        <jvmarg value="-Xdebug"/>
 			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-			      <sysproperty key="iGrid.home" value="${iGrid.home}" />
+			      <sysproperty key="sorcer.home" value="${sorcer.home}" />
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
 			      <sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean1.config" />

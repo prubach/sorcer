@@ -39,7 +39,7 @@ public class Requestors {
 	}
 
 	public static Properties loadProperties(String filename) {
-		logger.info("iGrid.home: " + System.getProperty("iGrid.home"));
+		logger.info("sorcer.home: " + System.getProperty("sorcer.home"));
 		Properties props = Sorcer.getEnvProperties();
 		logger.info("Loading properties in filename: " + filename);
 		Properties properties = new Properties();

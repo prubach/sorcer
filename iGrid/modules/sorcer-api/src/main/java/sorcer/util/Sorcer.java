@@ -53,7 +53,7 @@ import sorcer.service.Context;
  * and is shared among all provider components or even across multiple
  * providers.
  * <p>
- * The information is collected from iGrid/config/sorcer.env mainly and can be
+ * The information is collected from Sorcer/config/sorcer.env mainly and can be
  * updated by specific values from a provider Jini configuration file, provider
  * properties file, and JVM system properties.
  * <p>
@@ -88,7 +88,7 @@ import sorcer.service.Context;
  * the location and name of a data type file. Data types are defined in service
  * contexts by a particular composite attribute
  * <code>dnt|application|modifiers</code>, see examples in
- * <code>iGrid/data.formats</code>. Data type associations (for example
+ * <code>Sorcer/data.formats</code>. Data type associations (for example
  * <code>dnt|etds|object|Hashtable.output</code>) can be used to lookup data
  * nodes in service contexts {@link #Contexts.getMarkedPaths}.
  * 
@@ -367,9 +367,9 @@ public class Sorcer extends SorcerEnv {
 
 		} catch (Throwable t1) {
 			try {
-				// try to look for sorcer.env in IGRID_HOME/configs
-				props.load((new FileInputStream(new File(System.getenv("IGRID_HOME")+"/configs/" + filename))));
-				logger.fine("loaded data nodes from: " + System.getenv("IGRID_HOME") +"/configs/" + filename);
+				// try to look for sorcer.env in SORCER_HOME/configs
+				props.load((new FileInputStream(new File(System.getenv("SORCER_HOME")+"/configs/" + filename))));
+				logger.fine("loaded data nodes from: " + System.getenv("SORCER_HOME") +"/configs/" + filename);
 			} catch (Exception e) {
 				try {
 					// Can not access "filename" give try as resource
@@ -881,9 +881,9 @@ public class Sorcer extends SorcerEnv {
 		try {
 			String val = null;
 
-			val = properties.getProperty(S_HOME);
+			val = properties.getProperty(SORCER_HOME);
 			if (val != null && val.length() != 0)
-				props.put(S_HOME, val);
+				props.put(SORCER_HOME, val);
 
 			val = properties.getProperty(S_JOBBER_NAME);
 			if (val != null && val.length() != 0)
@@ -897,9 +897,9 @@ public class Sorcer extends SorcerEnv {
 			if (val != null && val.length() != 0)
 				props.put(S_COMMANDER_NAME, val);
 
-			val = properties.getProperty(IGRID_HOME);
+			val = properties.getProperty(SORCER_HOME);
 			if (val != null && val.length() != 0)
-				props.put(IGRID_HOME, val);
+				props.put(SORCER_HOME, val);
 
 			val = properties.getProperty(S_RMI_HOST);
 			if (val != null && val.length() != 0)
@@ -1008,7 +1008,7 @@ public class Sorcer extends SorcerEnv {
 	 * @return a scratch directory
 	 */
 	static public File getSorcerHomeDir() {
-		return new File(System.getProperty(IGRID_HOME));
+		return new File(System.getProperty(SORCER_HOME));
 	}
 
 	/**

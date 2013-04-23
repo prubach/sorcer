@@ -1,6 +1,7 @@
 package junit.sorcer.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
 
@@ -28,6 +29,18 @@ public class UtilTest {
 	private final static Logger logger = Logger.getLogger(UtilTest.class
 			.getName());
 
+
+	@Test
+	public void envSettingsTest() throws ExertionException, ContextException,
+			SignatureException {
+		try {
+			assertNotNull(System.getenv("SORCER_HOME"));
+			logger.info("SORCER_HOME: " + Sorcer.getHomeDir());
+		} catch (AssertionError ae) {
+			logger.severe("SORCER_HOME must be set and point to the Sorcer root directory!!!");
+		}		
+	}
+	
 	@Test
 	public void spaceSuffixTest() throws ExertionException, ContextException,
 			SignatureException {

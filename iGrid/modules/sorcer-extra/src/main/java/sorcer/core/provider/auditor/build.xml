@@ -3,7 +3,7 @@
  * Copyight (C) 2004 SORCER Lab, Texas Tech University. All rights reserved.
  * Service-Oriented Computing Environmet: Examples build configuration
  * Make sure the following variables are changed to reflect your environment:
- *    IGRID_HOME        iGrid location
+ *    SORCER_HOME        Sorcer location
  *    JAVA_HOME         JDK Location
  *    JINI_HOME         Jini location
  *    RIO_HOME          Rio location
@@ -20,17 +20,17 @@
     <property name="jini.home" value="${env.JINI_HOME}"/>
     <property name="rio.home" value="${env.RIO_HOME}"/>
     <property name="ant.home" value="${env.ANT_HOME}"/>
-    <property name="iGrid.home" value="${env.IGRID_HOME}"/>
-    <property name="classes" value="${iGrid.home}/classes" />
-    <property name="lib" value="${iGrid.home}/lib"/>  
+    <property name="sorcer.home" value="${env.SORCER_HOME}"/>
+    <property name="classes" value="${sorcer.home}/classes" />
+    <property name="lib" value="${sorcer.home}/lib"/>  
 	<property name="common.lib" value="${lib}/common" />
 	<property name="support.lib" value="${common.lib}/buildsupport" />
-    <property name="docs" value="${iGrid.home}/docs/${module.name}" />
+    <property name="docs" value="${sorcer.home}/docs/${module.name}" />
     <property name="servlet.api" value="${env.CATALINA_HOME}/common/lib/servlet-api.jar" />
     <property name="jaxp.home" value="${env.JAXP_HOME}" />
     <property name="CURRDIR" value="sorcer/core/provider/auditor" />
-    <property name="DISTRIBUTION" value="${env.IGRID_HOME}/modules/sorcer/bin/${CURRDIR}" />
-    <property name="common.lib" value="${iGrid.home}/common"/>   
+    <property name="DISTRIBUTION" value="${env.SORCER_HOME}/modules/sorcer/bin/${CURRDIR}" />
+    <property name="common.lib" value="${sorcer.home}/common"/>   
     <property name="CODEBASE" value="${env.APP_CODEBASE}" />
 
     <patternset id="ant.java">
@@ -245,7 +245,7 @@
   </target>
 
   <target name="auditor-dl.jar">
-            <classdepandjar jarfile="${iGrid.home}/lib/auditor-dl.jar" files="true">	
+            <classdepandjar jarfile="${sorcer.home}/lib/auditor-dl.jar" files="true">	
 	    <classpath refid="project.classpath"/>
             <in  name="sorcer"/>
 	    <in name="net.jini" />

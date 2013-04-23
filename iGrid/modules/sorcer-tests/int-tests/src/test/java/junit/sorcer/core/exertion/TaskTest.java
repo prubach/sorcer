@@ -80,8 +80,8 @@ public class TaskTest {
 	static {
 		ServiceExertion.debug = true;
 		System.setProperty("java.util.logging.config.file",
-				System.getenv("IGRID_HOME") + "/configs/sorcer.logging");
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
+				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		//Sorcer.setCodeBaseByArtifacts(new String[] { 

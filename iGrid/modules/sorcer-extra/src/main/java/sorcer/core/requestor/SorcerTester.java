@@ -321,7 +321,7 @@ import sorcer.util.SorcerUtil;
 	 * @return a scratch directory
 	 */
 	 public File getSorcerHomeDir() {
-		return new File(System.getenv("IGRID_HOME"));
+		return new File(System.getenv("SORCER_HOME"));
 	}
 	
 	 public Properties getProperties() {

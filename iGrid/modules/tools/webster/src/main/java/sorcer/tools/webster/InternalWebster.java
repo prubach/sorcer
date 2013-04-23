@@ -62,13 +62,13 @@ public class InternalWebster {
 		String roots;
 		InetAddress ip = InetAddress.getLocalHost();
 		String localIPAddress = ip.getHostAddress();
-		String iGridHome = System.getProperty("iGrid.home");
+		String sorcerHome = System.getProperty("sorcer.home");
 		roots = System.getProperty(WEBSTER_ROOTS);
 		if (roots == null) {
-			// defaults iGrid roots
+			// defaults Sorcer roots
 			String fs = File.separator;
 			StringBuffer sb = new StringBuffer();
-			sb.append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
+			sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
 			.append(';').append(SorcerEnv.getRepoDir());
 			roots = sb.toString();
 		}

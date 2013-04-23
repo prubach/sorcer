@@ -62,11 +62,11 @@
 
                     <mainClass>sorcer.tools.shell.ShellStarter</mainClass>
                     <systemProperties>
-                        <systemProperty><key>iGrid.home</key><value>${env.IGRID_HOME}</value></systemProperty>
+                        <systemProperty><key>sorcer.home</key><value>${env.SORCER_HOME}</value></systemProperty>
                         <!--<systemProperty><key>rio.home</key><value>${env.RIO_HOME}</value></systemProperty>-->
-                        <systemProperty><key>sorcer.env.file</key><value>${env.IGRID_HOME}/configs/sorcer.env</value></systemProperty>
-                        <systemProperty><key>webster.tmp.dir</key><value>${env.IGRID_HOME}</value></systemProperty>
-                        <systemProperty><key>java.util.logging.config.file</key><value>${env.IGRID_HOME}/configs/sorcer.logging</value></systemProperty>
+                        <systemProperty><key>sorcer.env.file</key><value>${env.SORCER_HOME}/configs/sorcer.env</value></systemProperty>
+                        <systemProperty><key>webster.tmp.dir</key><value>${env.SORCER_HOME}</value></systemProperty>
+                        <systemProperty><key>java.util.logging.config.file</key><value>${env.SORCER_HOME}/configs/sorcer.logging</value></systemProperty>
                         <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>
                         <systemProperty><key>java.security.policy</key><value>../../sorcer/policy/policy.all</value></systemProperty>
                         <systemProperty><key>ssb.logFile</key><value>logs/browser.log</value></systemProperty>

@@ -7,9 +7,9 @@
 	<!-- set global properties 
 	     WARNING: YOU MAY HAVE TO MODIFY THE IMPORT STATEMENT DEPENDING
 	              ON WHERE PROJECT IS PLACED UNDER MODULES -->
-	<import file="${env.IGRID_HOME}/modules/common-build.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-build.xml" />
 	<property name="src" value="./src" />
-	<property name="resources" value="${iGrid.home}/modules/sorcer/resources" />
+	<property name="resources" value="${sorcer.home}/modules/sorcer/resources" />
 
 	<!-- The sources to compile -->
 	<patternset id="ant.java">
@@ -122,26 +122,26 @@
     </target>	
 
 	<target name="copy-run-prv-files">
-		<mkdir dir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/configs" />
-		<mkdir dir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/bin" />
-		<mkdir dir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/policy" />
-		<mkdir dir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/logs" />
-		<copy todir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/configs">
+		<mkdir dir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/configs" />
+		<mkdir dir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/bin" />
+		<mkdir dir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/policy" />
+		<mkdir dir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/logs" />
+		<copy todir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/configs">
 			<fileset dir="configs">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<copy todir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/bin">
+		<copy todir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/bin">
 			<fileset dir="bin">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<copy todir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/policy">
+		<copy todir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/policy">
 			<fileset dir="policy">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<chmod dir="${iGrid.home}/bin/MODULE_TYPE/${module.name}/provider/bin" 
+		<chmod dir="${sorcer.home}/bin/MODULE_TYPE/${module.name}/provider/bin" 
 			   perm="755" 
 			   includes="*.sh" />
 	</target>

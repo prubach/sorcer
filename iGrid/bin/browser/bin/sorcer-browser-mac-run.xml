@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 <project name="SSB" default="SORCER Service Browser" basedir=".">
-	<property name="pom.file" value="${iGrid.home}/modules/tools/ssb/pom.xml" />
+	<property name="pom.file" value="${sorcer.home}/modules/tools/ssb/pom.xml" />
 	<!-- load system environment variables -->
 	<property environment="env" />
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 	
 	<path id="run.classpath">
 	    <path refid="runtime.classpath"/>  
@@ -27,7 +27,7 @@
 			<!-- Configuration for remote requestor/provider data access -->
 <!--			<sysproperty key="data.server" value="10.131.5.90" />
 			<sysproperty key="data.server.port" value="9000" />
-			<sysproperty key="data.root.dir" value="${iGrid.home}/data" />
+			<sysproperty key="data.root.dir" value="${sorcer.home}/data" />
 			<sysproperty key="requestor.data.dir" value="optimization/input" />-->
 		</java>
 	</target>

@@ -82,13 +82,13 @@ fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched.
 if $cygwin ; then
-    [ -n "$IGRID_HOME" ] && IGRID_HOME=`cygpath --unix "$IGRID_HOME"`
+    [ -n "$SORCER_HOME" ] && SORCER_HOME=`cygpath --unix "$SORCER_HOME"`
     [ -n "$JAVACMD" ] && JAVACMD=`cygpath --unix "$JAVACMD"`
     [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
     [ -n "$CP" ] && CP=`cygpath --path --unix "$CP"`
 else
-    if [ -n "IGRID_HOME" -a `expr "$IGRID_HOME":'\/$'` ] ; then
-        IGRID_HOME=`echo $IGRID_HOME | sed -e 's/\/$//'`
+    if [ -n "SORCER_HOME" -a `expr "$SORCER_HOME":'\/$'` ] ; then
+        SORCER_HOME=`echo $SORCER_HOME | sed -e 's/\/$//'`
     fi
 fi
 
@@ -98,8 +98,8 @@ then
     [ -n "$JAVA_HOME" ] && JAVA_HOME=`( cd "$JAVA_HOME" ; pwd )`
 fi
 
-# Attempt to set IGRID_HOME if it is not already set.
-if [ -z "$IGRID_HOME" -o ! -d "$IGRID_HOME" ] ; then
+# Attempt to set SORCER_HOME if it is not already set.
+if [ -z "$SORCER_HOME" -o ! -d "$SORCER_HOME" ] ; then
     # Resolve links: $0 may be a link to iGrid's home.
     PRG="$0"
     # Need this for relative symlinks.
@@ -114,13 +114,13 @@ if [ -z "$IGRID_HOME" -o ! -d "$IGRID_HOME" ] ; then
     done
     SAVED="`pwd`"
     cd "`dirname \"$PRG\"`/.."
-    IGRID_HOME="`pwd -P`"
+    SORCER_HOME="`pwd -P`"
     cd "$SAVED"
 fi
 
 # Use IGRID default if still not found
 if [ -z "$NSH_CONF" ] ; then
-    NSH_CONF="$IGRID_HOME/bin/shell/configs/nsh-start.config"
+    NSH_CONF="$SORCER_HOME/bin/shell/configs/nsh-start.config"
 fi
 
 # Use the user nsh start-config file if exists.
@@ -130,7 +130,7 @@ if [ -e $startConfigFile ] ; then
 fi
 
 # Read sorcer.env to set the Sorcer Jar repository location
-MVN_REPO_TMP=`sed '/^\#/d' $IGRID_HOME/configs/sorcer.env | grep 'sorcer.local.repo.location'  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'` 
+MVN_REPO_TMP=`sed '/^\#/d' $SORCER_HOME/configs/sorcer.env | grep 'sorcer.local.repo.location'  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'` 
 echo $MVN_REPO_TMP | sed -e 's/\./_/g' | sed "s,\${user_home},$HOME,g" > /tmp/repo_ttt
 MVN_REPO=`cat /tmp/repo_ttt`
 rm /tmp/repo_ttt
@@ -138,7 +138,7 @@ if [ -z "MVN_REPO" ] ; then
     MVN_REPO="$HOME/.m2/repository"
 fi
 
-SORCER_VERSION=`sed '/^\#/d' $IGRID_HOME/configs/sorcer.env | grep 'sorcer.version'  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'` 
+SORCER_VERSION=`sed '/^\#/d' $SORCER_HOME/configs/sorcer.env | grep 'sorcer.version'  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'` 
 if [ -z "SORCER_VERSION" ] ; then
   SORCER_VERSION="11.1"
 fi
@@ -216,12 +216,12 @@ TOOLS_JAR="$JAVA_HOME/lib/tools.jar"
 
 # For Darwin, add NSH_APP_NAME to the JAVA_OPTS as -Xdock:name
 if $darwin; then
-    JAVA_OPTS="$JAVA_OPTS -Xdock:name=NSH_APP_NAME -Xdock:icon=$IGRID_HOME/bin/shell/configs/sorcer-dock-rgb.png"
+    JAVA_OPTS="$JAVA_OPTS -Xdock:name=NSH_APP_NAME -Xdock:icon=$SORCER_HOME/bin/shell/configs/sorcer-dock-rgb.png"
 fi
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin ; then
-  	IGRID_HOME=`cygpath --mixed "$IGRID_HOME"`
+  	SORCER_HOME=`cygpath --mixed "$SORCER_HOME"`
     JAVA_HOME=`cygpath --mixed "$JAVA_HOME"`
     NSH_CONF=`cygpath --mixed "$NSH_CONF"`
     CP=`cygpath --path --mixed "$CP"`    
@@ -275,11 +275,11 @@ startShell ( ) {
     else
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$STARTER_CLASSPATH" \
-            -Djava.security.policy="$IGRID_HOME"/bin/shell/policy/shell.policy \
+            -Djava.security.policy="$SORCER_HOME"/bin/shell/policy/shell.policy \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
             -Desh.starter.conf="$NSH_CONF" \
-            -DiGrid.home="$IGRID_HOME" \
+            -DiGrid.home="$SORCER_HOME" \
             -Dtools.jar="$TOOLS_JAR" \
             $STARTER_MAIN_CLASS \
             --main $CLASS \

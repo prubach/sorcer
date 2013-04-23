@@ -5,7 +5,7 @@ IGRID_URL="http://${IGRID_WEBSTER}:${IGRID_WEBSTER_PORT}"
 
 
 CODEBASE="${IGRID_URL}/bboard-dl.jar ${JINI_BASEURL}/sdm-dl.jar"
-APP_BASE="${IGRID_HOME}/modules/wservices/doc"
+APP_BASE="${SORCER_HOME}/modules/wservices/doc"
 
 echo class server ${IGRID_URL}
 echo " "

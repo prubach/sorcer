@@ -4,8 +4,8 @@
 umask 002
 
 # Environment variables for Java, Jini, Rio, Ant, CVS, and Webster
-# IGRID_HOME is usually set in .iGrid_config
-#setenv IGRID_HOME /home/sobolemw/workspace/iGrid-08
+# SORCER_HOME is usually set in .iGrid_config
+#setenv SORCER_HOME /home/sobolemw/workspace/iGrid-08
 
 setenv JAVA_HOME /usr/java/jdk1.5.0_15
 setenv JINI_HOME /home/sobolemw/jini2_1
@@ -15,4 +15,4 @@ setenv CVSROOT /research/sorcer/iGrid.cvsrep
 setenv IGRID_WEBSTER 10.131.5.106
 setenv IGRID_WEBSTER_PORT 9010
 
-setenv PATH ${JAVA_HOME}/bin:${ANT_HOME}/bin:${IGRID_HOME}/sorcer/bin:$PATH
+setenv PATH ${JAVA_HOME}/bin:${ANT_HOME}/bin:${SORCER_HOME}/sorcer/bin:$PATH

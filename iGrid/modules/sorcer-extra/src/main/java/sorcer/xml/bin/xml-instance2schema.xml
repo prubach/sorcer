@@ -4,7 +4,7 @@
 	
 	<!-- loads system environment variables -->
 	<property environment="env"/>
-	<import file="${env.IGRID_HOME}/modules/common-run.xml"/>
+	<import file="${env.SORCER_HOME}/modules/common-run.xml"/>
 	
 	<!-- set property values here -->
 	<property name="requestor.name" value="xml-instance2schema"/>
@@ -12,20 +12,20 @@
 		value="org.exolab.castor.xml.schema.util.XMLInstance2Schema"/>
 	
 	<path id="project.classpath">
-		<pathelement location="${iGrid.home}/common/castor-1.2-xml-schema.jar"/>
-		<pathelement location="${iGrid.home}/common/castor-1.2-anttasks.jar"/>
-		<pathelement location="${iGrid.home}/common/castor-1.2-xml.jar"/>
-		<pathelement location="${iGrid.home}/common/log4j-1.2.15.jar"/>
+		<pathelement location="${sorcer.home}/common/castor-1.2-xml-schema.jar"/>
+		<pathelement location="${sorcer.home}/common/castor-1.2-anttasks.jar"/>
+		<pathelement location="${sorcer.home}/common/castor-1.2-xml.jar"/>
+		<pathelement location="${sorcer.home}/common/log4j-1.2.15.jar"/>
 		<pathelement
-			location="${iGrid.home}/common/commons-logging-api-1.1.jar"/>
-		<pathelement location="${iGrid.home}/common/xalan.jar"/>
-		<pathelement location="${iGrid.home}/common/xerces.jar"/>
-		<pathelement location="${iGrid.home}/common/jaxb-xjc.jar"/>
+			location="${sorcer.home}/common/commons-logging-api-1.1.jar"/>
+		<pathelement location="${sorcer.home}/common/xalan.jar"/>
+		<pathelement location="${sorcer.home}/common/xerces.jar"/>
+		<pathelement location="${sorcer.home}/common/jaxb-xjc.jar"/>
 	</path>
 	
 	<target name="run">
 		<java classname="${requestor.class}" fork="yes">
-			<arg line="${iGrid.home}/data/maelstrom/input/static.xml"/>
+			<arg line="${sorcer.home}/data/maelstrom/input/static.xml"/>
 			<classpath refid="project.classpath"/>
 		</java>
 	</target>
@@ -35,9 +35,9 @@
 			classname="org.castor.anttask.XMLInstance2SchemaTask"
 			classpathref="project.classpath"/>
 		
-		<mkdir dir="${iGrid.home}/data/maelstrom/input/generated"/>
-		<schema-gen file="${iGrid.home}/data/maelstrom/input/static.xml"
-			XmlschemaFileName="${iGrid.home}/data/maelstrom/input/generated/schema.xsd"/>
+		<mkdir dir="${sorcer.home}/data/maelstrom/input/generated"/>
+		<schema-gen file="${sorcer.home}/data/maelstrom/input/static.xml"
+			XmlschemaFileName="${sorcer.home}/data/maelstrom/input/generated/schema.xsd"/>
 	</target>
 	
 </project>

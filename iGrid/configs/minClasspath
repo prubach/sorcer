@@ -2,15 +2,15 @@
 
 # linux and mac
 #
-export CLASSPATH=${IGRID_HOME}/classes:${IGRID_HOME}/lib/common/jna.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/river/lib/jsk-platform.jar:${IGRID_HOME}/lib/river/lib/jsk-lib.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/rio/rio.jar:${IGRID_HOME}/lib/common/jini-core.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/common/jini-ext.jar:${IGRID_HOME}/lib/common/jep-2.4.1a.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/common/sun-util.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/common/jfreechart/jcommon-1.0.17.jar
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/lib/common/jfreechart/jfreechart-1.0.14.jar
+export CLASSPATH=${SORCER_HOME}/classes:${SORCER_HOME}/lib/common/jna.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/river/lib/jsk-platform.jar:${SORCER_HOME}/lib/river/lib/jsk-lib.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/rio/rio.jar:${SORCER_HOME}/lib/common/jini-core.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/common/jini-ext.jar:${SORCER_HOME}/lib/common/jep-2.4.1a.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/common/sun-util.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/common/jfreechart/jcommon-1.0.17.jar
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/lib/common/jfreechart/jfreechart-1.0.14.jar
 
-export CLASSPATH=$CLASSPATH:${IGRID_HOME}/../Products/classes
+export CLASSPATH=$CLASSPATH:${SORCER_HOME}/../Products/classes
 
 # jre
 #
@@ -21,7 +21,7 @@ fi
 
 # windows
 #
-#export CLASSPATH_WIN=".:${IGRID_HOME}\classes:${IGRID_HOME}\lib\common\jna.jar:${IGRID_HOME}\lib\river\lib\jsk-platform.jar:${IGRID_HOME}\lib\river\lib\jsk-lib.jar:${IGRID_HOME}\lib\rio\rio.jar:${IGRID_HOME}\lib\common\jini-core.jar:${IGRID_HOME}\lib\common\jini-ext.jar:${IGRID_HOME}\lib\common\jep-2.4.1a.jar:${IGRID_HOME}\lib\common\sun-util.jar"
-export CLASSPATH_WIN="$IGRID_HOME\classes;$IGRID_HOME\lib\common\jna.jar;$IGRID_HOME\lib\river\lib\jsk-platform.jar;$IGRID_HOME\lib\river\lib\jsk-lib.jar;$IGRID_HOME\lib\rio\rio.jar;$IGRID_HOME\lib\common\jini-core.jar;$IGRID_HOME\lib\common\jini-ext.jar;$IGRID_HOME\lib\common\jep-2.4.1a.jar;$IGRID_HOME\lib\common\sun-util.jar"
+#export CLASSPATH_WIN=".:${SORCER_HOME}\classes:${SORCER_HOME}\lib\common\jna.jar:${SORCER_HOME}\lib\river\lib\jsk-platform.jar:${SORCER_HOME}\lib\river\lib\jsk-lib.jar:${SORCER_HOME}\lib\rio\rio.jar:${SORCER_HOME}\lib\common\jini-core.jar:${SORCER_HOME}\lib\common\jini-ext.jar:${SORCER_HOME}\lib\common\jep-2.4.1a.jar:${SORCER_HOME}\lib\common\sun-util.jar"
+export CLASSPATH_WIN="$SORCER_HOME\classes;$SORCER_HOME\lib\common\jna.jar;$SORCER_HOME\lib\river\lib\jsk-platform.jar;$SORCER_HOME\lib\river\lib\jsk-lib.jar;$SORCER_HOME\lib\rio\rio.jar;$SORCER_HOME\lib\common\jini-core.jar;$SORCER_HOME\lib\common\jini-ext.jar;$SORCER_HOME\lib\common\jep-2.4.1a.jar;$SORCER_HOME\lib\common\sun-util.jar"
 
-#set CLASSPATH=%IGRID_HOME%\classes;%IGRID_HOME%\lib\common\jna.jar;%IGRID_HOME%\lib\river\lib\jsk-platform.jar;%IGRID_HOME%\lib\river\lib\jsk-lib.jar;%IGRID_HOME%\lib\rio\rio.jar;%IGRID_HOME%\lib\common\jini-core.jar;%IGRID_HOME%\lib\common\jini-ext.jar;%IGRID_HOME%\lib\common\jep-2.4.1a.jar;%IGRID_HOME%\lib\common\sun-util.jar
+#set CLASSPATH=%SORCER_HOME%\classes;%SORCER_HOME%\lib\common\jna.jar;%SORCER_HOME%\lib\river\lib\jsk-platform.jar;%SORCER_HOME%\lib\river\lib\jsk-lib.jar;%SORCER_HOME%\lib\rio\rio.jar;%SORCER_HOME%\lib\common\jini-core.jar;%SORCER_HOME%\lib\common\jini-ext.jar;%SORCER_HOME%\lib\common\jep-2.4.1a.jar;%SORCER_HOME%\lib\common\sun-util.jar

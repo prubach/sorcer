@@ -30,7 +30,7 @@ setlocal
 set classpath=-cp %RIO_UTILS%\lib\opmon.jar;%RIO_HOME%\lib\rio.jar;%JINI_HOME%\lib\jsk-platform.jar;%JINI_HOME%\lib\jsk-lib.jar;
 set launchTarget=org.jini.rio.utilities.opmon.OpMonitor
 
-start "Opmon" /min "%JAVA_HOME%\bin\java" -hotspot %classpath% -Djava.protocol.handler.pkgs=net.jini.url %launchTarget% %IGRID_HOME%\bin\rio\opmon\configs\utils.config
+start "Opmon" /min "%JAVA_HOME%\bin\java" -hotspot %classpath% -Djava.protocol.handler.pkgs=net.jini.url %launchTarget% %SORCER_HOME%\bin\rio\opmon\configs\utils.config
 
 endlocal
 

@@ -4,9 +4,9 @@
 
 <!-- loads system environment variables -->
 	<property environment="env" />
-	<property name="pom.file" value="${iGrid.home}/modules/examples/ex1/ex1-client/pom.xml" />
+	<property name="pom.file" value="${sorcer.home}/modules/examples/ex1/ex1-client/pom.xml" />
 	 
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
 	<property name="webster" value="${provider.webster.url}" />
 	
@@ -25,13 +25,13 @@
 			<arg value="${run.arg2}" />
 			<arg value="${run.arg3}" />
 		 	<classpath refid="run-req.classpath"/>
-			<sysproperty key="iGrid.home" value="${iGrid.home}" />
+			<sysproperty key="sorcer.home" value="${sorcer.home}" />
 			<!--<sysproperty key="sorcer.webster.internal" value="true" />
 			<sysproperty key="sorcer.webster.debug" value="true" />-->
-		  	<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
 			<sysproperty key="java.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 		</java>
 	</target>
 </project>

@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
-public class iGridCmd extends ShellCmd {
+public class SorcerCmd extends ShellCmd {
 	{
 		COMMAND_NAME = "ig";
 
@@ -32,13 +32,13 @@ public class iGridCmd extends ShellCmd {
 
 		COMMAND_USAGE = "ig -h | -n | -d";
 
-		COMMAND_HELP = "Display IGRID_HOME \n  -h  cd to IGRID_HOME\n"
+		COMMAND_HELP = "Display SORCER_HOME \n  -h  cd to SORCER_HOME\n"
 				+"-n  cd to the netlets directory\n  -d  cd to http data root directory.";
 	}
 
 	private PrintStream out;
 
-	public iGridCmd() {
+	public SorcerCmd() {
 	}
 
 	public void execute() throws Throwable {
@@ -46,7 +46,7 @@ public class iGridCmd extends ShellCmd {
 		StringTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		if (numTokens == 0) {
-			out.println("IGRID_HOME: " + System.getenv("IGRID_HOME"));
+			out.println("SORCER_HOME: " + System.getenv("SORCER_HOME"));
 			return;
 		}
 		String option = myTk.nextToken();
@@ -55,16 +55,16 @@ public class iGridCmd extends ShellCmd {
 		}
 
 		if (option.equals("-h")) {
-			NetworkShell.setRequest("cd " + System.getenv("IGRID_HOME"));
+			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME"));
 			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("-n")) {
-			NetworkShell.setRequest("cd " + System.getenv("IGRID_HOME")
+			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
 					+ File.separator + "netlets" + File.separator + "src");
 			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("-d")) {
-			NetworkShell.setRequest("cd " + System.getenv("IGRID_HOME")
+			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
 					+ File.separator + "data");
 			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
 			cmd.execute();

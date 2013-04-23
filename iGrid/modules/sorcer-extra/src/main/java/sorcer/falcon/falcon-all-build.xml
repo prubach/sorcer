@@ -3,7 +3,7 @@
  * Copyight (C) 2004 SORCER Lab, Texas Tech University. All rights reserved.
  * Service-Oriented Computing Environmet: SORCER Cataloger build configuration
  * Make sure the following variables are changed to reflect your environment:
- *    IGRID_HOME        	iGrid location
+ *    SORCER_HOME        	Sorcer location
  *    JAVA_HOME         	JDK Location
  *	  IGRID_WEBSTER_PORT 	The class server (webster) port
  *    ANT_HOME          	Jakarta Ant location

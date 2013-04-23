@@ -239,7 +239,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			logger = Logger.getLogger("local."
 					+ ServiceCataloger.class.getName() + "."
 					+ getProviderName());
-			h = new FileHandler(System.getProperty(IGRID_HOME)
+			h = new FileHandler(System.getProperty(SORCER_HOME)
 					+ "/logs/remote/local-Cataloger-" + delegate.getHostName()
 					+ "-" + getProviderName() + "%g.log", 20000, 8, true);
 			if (h != null) {

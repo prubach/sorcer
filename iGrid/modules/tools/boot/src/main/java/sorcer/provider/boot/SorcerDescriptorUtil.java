@@ -54,7 +54,7 @@ public class SorcerDescriptorUtil {
     private static File repositoryRoot = new File(SorcerEnv.getRepoDir());
     private static String fs = File.separator;
 	private static String ps = File.pathSeparator;
-	private static String iGridHome = getHomeDir();
+	private static String sorcerHome = getHomeDir();
 		
 
     /**
@@ -67,12 +67,12 @@ public class SorcerDescriptorUtil {
 	 *            The roots webster should serve
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 *         webster using an anonymous port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/common/sorcer/webster.com</tt>
+	 *         will be loaded from <tt>sorcer.home/common/sorcer/webster.com</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getWebster(String policy, String[] roots)
 			throws IOException {
@@ -91,12 +91,12 @@ public class SorcerDescriptorUtil {
 	 *            The roots webster should serve
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/common/sorcer</tt>
+	 *         will be loaded from <tt>sorcer.home/common/sorcer</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getWebster(String policy, int port,
 			String[] roots) throws IOException {
@@ -122,7 +122,7 @@ public class SorcerDescriptorUtil {
 	 *            If true, set the <tt>sorcer.tools.debug</tt> property
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>${iGrid.home}/common/sorcer</tt>
+	 *         will be loaded from <tt>${sorcer.home}/common/sorcer</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
@@ -150,7 +150,7 @@ public class SorcerDescriptorUtil {
 	 *
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>${iGrid.home}/common/sorcer</tt>
+	 *         will be loaded from <tt>${sorcer.home}/common/sorcer</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
@@ -162,8 +162,8 @@ public class SorcerDescriptorUtil {
 //				+ Arrays.toString(roots) + ", address: " + "startPort: "
 //				+ startPort + ", endPort:" + endPort);
 		int websterPort = 0;
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		// anonymous case
 		if (port == 0) {
 			websterPort = Booter.getAnonymousPort(); 
@@ -207,12 +207,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Spacer will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Spacer using an anonymous port. The <tt>jobberConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSpacer(String policy, String jobberConfig)
 			throws IOException {
@@ -231,12 +231,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Spacer will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSpacer(String policy,
 			String... jobberConfig) throws IOException {
@@ -255,12 +255,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Spacer will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSpacer(String policy, int port,
 			String... jobberConfig) throws IOException {
@@ -282,18 +282,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Spacer will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Spacer using an anonymous port. The <tt>spacer.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSpacer(String policy,
 			String hostAddress, int port, String... spacerConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String spacerClasspath = Booter.getClasspath(repositoryRoot, SPACER_SERVICE, PROVIDER_COMMON);
@@ -321,12 +321,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>jobberConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getJobber(String policy, String jobberConfig)
 			throws IOException {
@@ -345,12 +345,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getJobber(String policy,
 			String... jobberConfig) throws IOException {
@@ -369,12 +369,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getJobber(String policy, int port,
 			String... jobberConfig) throws IOException {
@@ -396,18 +396,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getJobber(String policy,
 			String hostAddress, int port, String... jobberConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String jobberClasspath = Booter.getClasspath(repositoryRoot, JOBBER_SERVICE, PROVIDER_COMMON);
@@ -435,12 +435,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the ExertMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>exertmonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getExertMonitor(String policy, String exertmonitorConfig)
 			throws IOException {
@@ -459,12 +459,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ExertMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>exertmonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getExertMonitor(String policy,
 			String... exertmonitorConfig) throws IOException {
@@ -483,12 +483,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ExertMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>exertmonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getExertMonitor(String policy, int port,
 			String... exertmonitorConfig) throws IOException {
@@ -510,18 +510,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ExertMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>exertmonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getExertMonitor(String policy,
 			String hostAddress, int port, String... exertmonitorConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 
 
 		// service provider classpath
@@ -558,12 +558,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the DatabaseStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ObjectStore using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDatabaseStorer(String policy, String sdbConfig)
 			throws IOException {
@@ -582,12 +582,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DatabaseStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDatabaseStorer(String policy,
 			String... sdbConfig) throws IOException {
@@ -606,12 +606,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DatabaseStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDatabaseStorer(String policy, int port,
 			String... sdbConfig) throws IOException {
@@ -633,18 +633,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DatabaseStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDatabaseStorer(String policy,
 			String hostAddress, int port, String... sdbConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 
 		// service provider classpath
@@ -680,12 +680,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the DataspaceStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ObjectStore using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDataspaceStorer(String policy, String sdbConfig)
 			throws IOException {
@@ -704,12 +704,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DataspaceStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDataspaceStorer(String policy,
 			String... sdbConfig) throws IOException {
@@ -728,12 +728,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DataspaceStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDataspaceStorer(String policy, int port,
 			String... sdbConfig) throws IOException {
@@ -755,18 +755,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the DataspaceStore will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getDataspaceStorer(String policy,
 			String hostAddress, int port, String... sdbConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String dbpc = Booter.getClasspath(repositoryRoot, DSP_SERVICE, SLEEPYCAT, PROVIDER_COMMON);				
@@ -795,12 +795,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Cataloger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Cataloger using an anonymous port. The <tt>catalogerConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getCataloger(String policy, String catalogerConfig)
 			throws IOException {
@@ -819,12 +819,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Cataloger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Cataloger using an anonymous port. The <tt>cataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getCataloger(String policy,
 			String... catalogerConfig) throws IOException {
@@ -843,12 +843,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Cataloger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Cataloger using an anonymous port. The <tt>cataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getCataloger(String policy, int port,
 			String... catalogerConfig) throws IOException {
@@ -870,18 +870,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Cataloger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Cataloger using an anonymous port. The <tt>cataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getCataloger(String policy,
 			String hostAddress, int port, String... catalogerConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String catalogClasspath = Booter.getClasspath(repositoryRoot, CATALOGER_SERVICE, PROVIDER_COMMON);
@@ -911,12 +911,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the ServiceLogger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ServiceLogger using an anonymous port. The <tt>loggerConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getLogger(String policy, String loggerConfig)
 			throws IOException {
@@ -935,12 +935,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ServiceLogger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ServiceLogger using an anonymous port. The <tt>logger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getLogger(String policy,
 			String... loggerConfig) throws IOException {
@@ -959,12 +959,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ServiceLogger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ServiceLogger using an anonymous port. The <tt>logger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getLogger(String policy, int port,
 			String... loggerConfig) throws IOException {
@@ -986,18 +986,18 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the ServiceLogger will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         ServiceLogger using an anonymous port. The <tt>logger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getLogger(String policy,
 			String hostAddress, int port, String... loggerConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
         //FIXME nie jestem pewien czy logger-ui powinien być w classpath I codebase
@@ -1112,8 +1112,8 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getLookup(String policy,
 			String hostAddress, int port, String... lookupConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' system property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' system property not declared");
 		String reggieClasspath = repositoryRoot + fs + 
 				new ArtifactCoordinates("org.apache.river","reggie").toString();
 		String reggieCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1135,12 +1135,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         QosCataloger using an anonymous port. The <tt>qosCatalogerConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getQosCataloger(String policy, String qosCatalogerConfig)
 			throws IOException {
@@ -1159,12 +1159,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         QosCataloger using an anonymous port. The <tt>qoscataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getQosCataloger(String policy,
 			String... qosCatalogerConfig) throws IOException {
@@ -1183,12 +1183,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         QosCataloger using an anonymous port. The <tt>qoscataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getQosCataloger(String policy, int port,
 			String... qosCatalogerConfig) throws IOException {
@@ -1210,22 +1210,22 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         QosCataloger using an anonymous port. The <tt>qoscataloger.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getQosCataloger(String policy,
 			String hostAddress, int port, String... qosCatalogerConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String qosCatalogClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"qoscataloger.jar"
+				sorcerHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"qoscataloger.jar"
 		});
 //TODO: added arithmetic-dl.jar - workaround for problems running scripts with QoS from Exertlet-UI		
 		// service provider codebase
@@ -1250,12 +1250,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>slamonitorConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSlaMonitor(String policy, String slamonitorConfig)
 			throws IOException {
@@ -1274,12 +1274,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the SlaMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         SlaMonitor using an anonymous port. The <tt>slamonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSlaMonitor(String policy,
 			String... slamonitorConfig) throws IOException {
@@ -1298,12 +1298,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the SlaMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         SlaMonitor using an anonymous port. The <tt>slamonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSlaMonitor(String policy, int port,
 			String... slamonitorConfig) throws IOException {
@@ -1325,22 +1325,22 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the SlaMonitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         SlaMonitor using an anonymous port. The <tt>slamonitor.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getSlaMonitor(String policy,
 			String hostAddress, int port, String... slamonitorConfig)
 			throws IOException {
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String slamonitorClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"slamonitor.jar",ps,iGridHome,fs,"lib",fs,"common",fs,"derby.jar"
+				sorcerHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"slamonitor.jar",ps,sorcerHome,fs,"lib",fs,"common",fs,"derby.jar"
 		});
 		
 	
@@ -1365,12 +1365,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration file the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>ondemandprovisionerConfig</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getOnDemandProvisioner(String policy, String ondemandprovisionerConfig)
 			throws IOException {
@@ -1389,12 +1389,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the OnDemandProvisioner will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         OnDemandProvisioner using an anonymous port. The <tt>ondemandprovisioner.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getOnDemandProvisioner(String policy,
 			String... ondemandprovisionerConfig) throws IOException {
@@ -1413,12 +1413,12 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the OnDemandProvisioner will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         OnDemandProvisioner using an anonymous port. The <tt>ondemandprovisioner.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getOnDemandProvisioner(String policy, int port,
 			String... ondemandprovisionerConfig) throws IOException {
@@ -1440,23 +1440,23 @@ public class SorcerDescriptorUtil {
 	 *            The configuration options the OnDemandProvisioner will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         OnDemandProvisioner using an anonymous port. The <tt>ondemandprovisioner.jar</tt> file
-	 *         will be loaded from <tt>iGrid.home/lib</tt>
+	 *         will be loaded from <tt>sorcer.home/lib</tt>
 	 * 
 	 * @throws IOException
 	 *             If there are problems getting the anonymous port
 	 * @throws RuntimeException
-	 *             If the <tt>iGrid.home</tt> system property is not set
+	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
 	public static ServiceDescriptor getOnDemandProvisioner(String policy,
 			String hostAddress, int port, String... ondemandprovisionerConfig)
 			throws IOException {
 		String rioHome = System.getenv("RIO_HOME");
-		if (iGridHome == null)
-			throw new RuntimeException("'iGrid.home' property not declared");
+		if (sorcerHome == null)
+			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
 		String ondemandprovisionerClasspath = ConfigUtil.concat(new Object[] {
-				iGridHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"ondemandprovisioner.jar",ps,rioHome,fs,"lib",fs,"rio-platform.jar"
+				sorcerHome,fs,"lib",fs,"sorcer",fs,"lib",fs,"ondemandprovisioner.jar",ps,rioHome,fs,"lib",fs,"rio-platform.jar"
 		});
 		
 		// service provider codebase
@@ -1513,23 +1513,23 @@ public class SorcerDescriptorUtil {
 	}
 
 	/**
-	 * Returns the home directory of the iGrid environment.
+	 * Returns the home directory of the Sorcer environment.
 	 * 
 	 * @return a path of the home directory
 	 */
 	public static String getHomeDir() {
-		String hd = System.getenv("IGRID_HOME");
+		String hd = System.getenv("SORCER_HOME");
 
 		if (hd != null && hd.length() > 0) {
 			return hd;
 		} else {
-			hd = System.getProperty("iGrid.home");
+			hd = System.getProperty("sorcer.home");
 			if (hd != null && hd.length() > 0) {
 				return hd;
 			}
 		}
 		throw new IllegalArgumentException(hd
-				+ " is not a vald iGrid home directory");
+				+ " is not a vald Sorcer home directory");
 	}
 
 }

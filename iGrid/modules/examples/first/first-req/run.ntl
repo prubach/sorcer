@@ -1,0 +1,6 @@
+#!/usr/bin/nsh -f
+
+import com.sorcersoft.first.HelloWorld
+
+t1 = task("hello", sig("sayHelloWorld", HelloWorld.class), context("Hello", input(path("in", "value"), "TESTER"), output(path("out", "value"), null)));
+	

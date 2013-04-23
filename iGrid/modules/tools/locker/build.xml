@@ -4,7 +4,7 @@
 	<import file="../../common-build.xml" />
 	<property name="src" value="./src" />
 
-	<property name="resources" value="${iGrid.home}/modules/sorcer/resources" />
+	<property name="resources" value="${sorcer.home}/modules/sorcer/resources" />
 	<fileset dir="${resources}" id="icons">
 		<include name="sorcer-ico.png" />
 	</fileset>

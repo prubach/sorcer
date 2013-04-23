@@ -4,27 +4,27 @@
 
 	<property environment="env" />
 	<property name="java.home" value="${env.JAVA_HOME}" />
-	<property name="iGrid.home" value="${env.IGRID_HOME}" />
+	<property name="sorcer.home" value="${env.SORCER_HOME}" />
 	<property name="jini.home" value="${env.JINI_HOME}" />
 	<property name="rio.home" value="${env.RIO_HOME}" />
-	<property name="common.lib" value="${iGrid.home}/common" />
-	<property name="rio.lib" value="${iGrid.home}/common/rio3_2" />
-	<property name="iGrid.policy" value="${iGrid.home}/policy" />
+	<property name="common.lib" value="${sorcer.home}/common" />
+	<property name="rio.lib" value="${sorcer.home}/common/rio3_2" />
+	<property name="sorcer.policy" value="${sorcer.home}/policy" />
 
 	<target name="cybernode">
 		<java classname="com.sun.jini.start.ServiceStarter" fork="yes">
-			<arg value="${iGrid.home}/bin/rio/cybernode/configs/start-cybernode.config" />
+			<arg value="${sorcer.home}/bin/rio/cybernode/configs/start-cybernode.config" />
 			<classpath>
 				<pathelement location="${rio.lib}/boot.jar" />
 				<pathelement location="${common.lib}/start.jar" />
 			</classpath>
-			<sysproperty key="java.security.policy" value="${iGrid.policy}/policy.all" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/policy.all" />
 			<sysproperty key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="JINI_HOME" value="${jini.home}" />
 			<sysproperty key="RIO_LOG_DIR" value="logs/" />
-			<sysproperty key="IGRID_HOME" value="${iGrid.home}" />
+			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 		</java>
 	</target>
 

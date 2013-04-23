@@ -17,9 +17,9 @@
 
     <modules>
         <module>first-api</module>
-        <module>first-service</module>
-        <module>first-client</module>
+        <module>first-prv</module>
+        <module>first-req</module>
         <module>first-proxy</module>
-        <module>first-ui</module>
+        <module>first-sui</module>
     </modules>
 </project>

@@ -39,7 +39,7 @@ public class SosUrlsTest {
 		// System.setProperty("java.protocol.handler.pkgs",
 		// "sorcer.util.bdb.sos");
 
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/policy.all");
 
 		System.setSecurityManager(new RMISecurityManager());

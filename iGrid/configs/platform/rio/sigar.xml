@@ -7,7 +7,7 @@
         <description>Hyperic SIGAR</description>
         <version>1.6</version>
         <manufacturer>Hyperic</manufacturer>
-        <classpath>${iGrid.home}/lib/common/hyperic/sigar.jar</classpath>
+        <classpath>${sorcer.home}/lib/common/hyperic/sigar.jar</classpath>
     </capability>
 
 </platform>

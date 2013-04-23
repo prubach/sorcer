@@ -42,7 +42,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 			.getLogger(SorcerDatabaseTest.class.getName());
 	
 	static {
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/policy.all");
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] {

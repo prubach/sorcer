@@ -3,9 +3,9 @@
 <project name="Worker Requestor" default="run.requestor" basedir=".">
 	<!-- system environment variables -->
 	<property environment="env" />
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 
-	<echo message="IGRID_HOME: ${iGrid.home}" />
+	<echo message="SORCER_HOME: ${sorcer.home}" />
 	<echo message="WEBSTER: ${provider.webster.url}" />
 
 	<!-- set property values here -->
@@ -31,10 +31,10 @@
 		<java classname="${requestor.class}" fork="yes">
 			<arg value="sorcer.arithmetic.requestor.ArithmeticExertletRunner" />
 			<classpath refid="run.classpath"/>
-			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/${requestor.name}.policy" />
 			<sysproperty key="sorcer.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
-			<sysproperty key="sorcer.env.file" value="${iGrid.home}/configs/sorcer.env" />
+			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="java.security.policy" value="src/main/resources/policy/${requestor.name}.policy" />
 		</java>
 	</target>		

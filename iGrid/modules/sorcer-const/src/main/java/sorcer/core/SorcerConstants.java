@@ -29,6 +29,8 @@ public interface SorcerConstants {
 	// J_ATTRIBURE is variable name in Jini configuration file
 	/* service provider genetic properties */
 	public static final String SORCER_VERSION = "11.1";
+	// SORCER global properties defined in sorcer.util.Sorcer.java
+	public static final String SORCER_HOME = "sorcer.home";
 	
 	public static final String P_UNDEFINED = "undefined";
 
@@ -217,9 +219,6 @@ public interface SorcerConstants {
 
 	public static final String J_TEMPLATE_MATCH = "templateMatch";
 
-	// SORCER global properties defined in sorcer.util.Sorcer.java
-	public static final String S_HOME = "sorcer.home";
-
 	public static final String S_ENV_FIENAME = "sorcer.env";
 
 	public static final String S_SERVICE_ID_FILENAME = "service.id.filename";
@@ -262,7 +261,7 @@ public interface SorcerConstants {
 	
 	public static final String S_VERSION_SORCER = "sorcer.version";
 
-	public static final String IGRID_HOME = "iGrid.home";
+	//public static final String SORCER_HOME = "sorcer.home";
 
 	// discovery and lookup
 
@@ -276,8 +275,8 @@ public interface SorcerConstants {
 
 	/**
 	 * SORCER server side commands
-	 */
-	public static final int SORCER_HOME = 500;
+	 */ 
+	//public static final int SORCER_HOME = 500;
 
 	public static final int AS_PROPS = 501;
 

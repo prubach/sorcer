@@ -277,13 +277,13 @@ public class GenericUtil implements Serializable {
 	 * 
 	 * @param command
 	 * @param scratchDir
-	 * @param iGridHome
+	 * @param sorcerHome
 	 * @param mcrEnvVarReference
 	 * @param mcrHome
 	 * @return
 	 */
 	public static Vector<String> getScriptToRunCompiledMatlabExec(
-			String command, File scratchDir, String iGridHome,
+			String command, File scratchDir, String sorcerHome,
 			String mcrEnvVarReference, String mcrHome) {
 
 		Vector<String> scriptVect = new Vector<String>();
@@ -300,11 +300,11 @@ public class GenericUtil implements Serializable {
 		scriptVect.add("echo \"going to execute: " + command + "\"");
 		// scriptVect.add("export PATH=" + nativeLibDir.getAbsolutePath()
 		// + ":${PATH}");
-		scriptVect.add("export IGRID_HOME=" + iGridHome);
+		scriptVect.add("export SORCER_HOME=" + sorcerHome);
 		scriptVect.add("export " + mcrEnvVarReference + "=" + mcrHome);
 		// set SET_MATLAB_DYLD_LD_LIB_PATH=1 since this is compiled matlab
 		scriptVect.add("SET_MATLAB_DYLD_LD_LIB_PATH=1");
-		scriptVect.add("source $IGRID_HOME/configs/shellEnv");
+		scriptVect.add("source $SORCER_HOME/configs/shellEnv");
 		scriptVect.add(command);
 		scriptVect.add("echo \"done\" > done.tmp");
 		scriptVect.add("mv done.tmp done.txt");

@@ -36,7 +36,7 @@ public class PrintHttpmdUrl {
 			return;
 		}
 
-		String dir = System.getProperty("iGrid.home") + File.separator + "lib";
+		String dir = System.getProperty("sorcer.home") + File.separator + "lib";
 		System.out.println("codebase=" + codebase);
 		int i = codebase.indexOf(":");
 		codebase = "httpmd" + codebase.substring(i);

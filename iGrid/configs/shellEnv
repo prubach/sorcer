@@ -1,10 +1,10 @@
 #!/bin/bash
 
 
-# IGRID_HOME must be set
+# SORCER_HOME must be set
 #
-if [ "x$IGRID_HOME" == "x" ]; then
-	echo "*** error: IGRID_HOME is not set; exiting in 5 seconds."
+if [ "x$SORCER_HOME" == "x" ]; then
+	echo "*** error: SORCER_HOME is not set; exiting in 5 seconds."
 	sleep 5
 	exit 1
 fi
@@ -12,8 +12,8 @@ fi
 
 # set classpath and add sbin to path
 #
-source $IGRID_HOME/configs/minClasspath
-export SBIN_HOME=$IGRID_HOME/sbin
+source $SORCER_HOME/configs/minClasspath
+export SBIN_HOME=$SORCER_HOME/sbin
 export PATH=$SBIN_HOME:$PATH
 
 
@@ -42,7 +42,7 @@ fi
 #
 if [ $IS_LINUX == 1 ]; then
 	
-	export SORCER_AMD64_LINUX_NATIVE_LIB_DIR=$IGRID_HOME/lib/native/amd64-linux
+	export SORCER_AMD64_LINUX_NATIVE_LIB_DIR=$SORCER_HOME/lib/native/amd64-linux
 	
 	if [ "x$MCR_HOME" != "x" -a $SET_MATLAB_DYLD_LD_LIB_PATH == 1 ]; then	
 	
@@ -62,7 +62,7 @@ fi
 #
 if [ $IS_MAC == 1 ]; then
 
-	export SORCER_UNIVERSAL64_MACOSX_NATIVE_LIB_DIR=$IGRID_HOME/lib/native/universal64-macosx
+	export SORCER_UNIVERSAL64_MACOSX_NATIVE_LIB_DIR=$SORCER_HOME/lib/native/universal64-macosx
 	
 	if [ "x$MCRROOT" != "x" -a $SET_MATLAB_DYLD_LD_LIB_PATH == 1 ]; then
 	
@@ -70,7 +70,7 @@ if [ $IS_MAC == 1 ]; then
 		export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${MCRROOT}/bin/maci64 ;
 		export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${MCRROOT}/sys/os/maci64;
 		export XAPPLRESDIR=${MCRROOT}/X11/app-defaults;
-		export SORCER_AMD64_LINUX_NATIVE_LIB_DIR=$IGRID_HOME/lib/native/universal64-macosx
+		export SORCER_AMD64_LINUX_NATIVE_LIB_DIR=$SORCER_HOME/lib/native/universal64-macosx
 		
 	fi
 	

@@ -366,7 +366,7 @@ abstract public class SorcerRequestor implements SorcerConstants {
 	 * @return a scratch directory
 	 */
 	 public File getSorcerHomeDir() {
-		return new File(System.getProperty(IGRID_HOME));
+		return new File(System.getProperty(SORCER_HOME));
 	}
 	
 	 public Properties getProperties() {

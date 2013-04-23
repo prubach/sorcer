@@ -40,39 +40,39 @@
 			<topclass name="sorcer.tools.shell.NetworkShell" />
 			<topclass name="sorcer.tools.shell.ShellStarter" />
 			<topclass name="sorcer.jini.lookup.AttributesUtil" />
-			<fileset dir="${iGrid.home}/modules/tools/shell/src">
+			<fileset dir="${sorcer.home}/modules/tools/shell/src">
 				<include name="sorcer/tools/shell/cmds/static-imports.txt" />
 			</fileset>
 		</classdepandjar>
 	</target>
 
 	<target name="copy-run-prv-files">
-		<mkdir dir="${iGrid.home}/bin/${module.name}/configs" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/bin" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/policy" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/logs" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/configs" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/bin" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/policy" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/logs" />
 
-		<copy todir="${iGrid.home}/bin/${module.name}/configs">
+		<copy todir="${sorcer.home}/bin/${module.name}/configs">
 			<fileset dir="configs">
 				<include name="*" />
 			</fileset>
 		</copy>
 
-		<copy todir="${iGrid.home}/bin/${module.name}/bin">
+		<copy todir="${sorcer.home}/bin/${module.name}/bin">
 			<fileset dir="bin">
 				<include name="*" />
 			</fileset>
 		</copy>
 
-		<copy todir="${iGrid.home}/bin/${module.name}/policy">
+		<copy todir="${sorcer.home}/bin/${module.name}/policy">
 			<fileset dir="policy">
 				<include name="*" />
 			</fileset>
 		</copy>
 
-		<chmod dir="${iGrid.home}/bin/${module.name}/bin" perm="755" includes="*.sh" />
-		<chmod dir="${iGrid.home}/bin/${module.name}/bin" perm="755" includes="nsh" />
-		<chmod dir="${iGrid.home}/bin/${module.name}/bin" perm="755" includes="*.xrt" />
+		<chmod dir="${sorcer.home}/bin/${module.name}/bin" perm="755" includes="*.sh" />
+		<chmod dir="${sorcer.home}/bin/${module.name}/bin" perm="755" includes="nsh" />
+		<chmod dir="${sorcer.home}/bin/${module.name}/bin" perm="755" includes="*.xrt" />
 	</target>
 
 	<target name="local-prepare">

@@ -25,6 +25,6 @@ set JINI_LIB=%JINI_HOME%\lib
 set JINI_LIB_DL=%JINI_HOME%\lib-dl
 set RIO_SUBS_LIB=%RIO_SUBSTRATES_HOME%\lib
 set RIO_UTILS_LIB=%RIO_UTILS%\lib
-set IGRID_LIB=%IGRID_HOME%\lib
+set SORCER_LIB=%SORCER_HOME%\lib
 
-start "Rio Webster" /min "%JAVA_HOME%\bin\java" -hotspot -jar -Djava.protocol.handler.pkgs=net.jini.url -Dorg.jini.rio.tools.webster.debug -Dorg.jini.rio.tools.webster.root=%RIO_HOME%\lib;%JINI_HOME%;%JINI_LIB%;%JINI_LIB_DL%;%RIO_SUBS_LIB%;%RIO_UTILS_LIB%;%IGRID_LIB%; -Dorg.jini.rio.tools.webster.port=9000 -Djava.security.policy=%RIO_HOME%\policy\policy.all %RIO_HOME%\lib\webster.jar
+start "Rio Webster" /min "%JAVA_HOME%\bin\java" -hotspot -jar -Djava.protocol.handler.pkgs=net.jini.url -Dorg.jini.rio.tools.webster.debug -Dorg.jini.rio.tools.webster.root=%RIO_HOME%\lib;%JINI_HOME%;%JINI_LIB%;%JINI_LIB_DL%;%RIO_SUBS_LIB%;%RIO_UTILS_LIB%;%SORCER_LIB%; -Dorg.jini.rio.tools.webster.port=9000 -Djava.security.policy=%RIO_HOME%\policy\policy.all %RIO_HOME%\lib\webster.jar
