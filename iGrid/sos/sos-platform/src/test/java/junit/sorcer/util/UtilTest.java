@@ -30,7 +30,7 @@ public class UtilTest {
 
 
 	@BeforeClass
-	public void envSettingsTest() throws ExertionException, ContextException,
+	public static void envSettingsTest() throws ExertionException, ContextException,
 			SignatureException {
 		try {
 			assertNotNull(System.getenv("SORCER_HOME"));
