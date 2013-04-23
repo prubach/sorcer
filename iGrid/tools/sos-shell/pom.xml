@@ -10,7 +10,7 @@
         <artifactId>tools</artifactId>
     </parent>
 
-    <artifactId>shell</artifactId>
+    <artifactId>sos-shell</artifactId>
 
     <name>SORCER tools :: shell</name>
     <description>SORCER</description>

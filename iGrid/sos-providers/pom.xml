@@ -10,7 +10,7 @@
 		<artifactId>modules</artifactId>
 	</parent>
 
-	<artifactId>providers</artifactId>
+	<artifactId>sos-providers</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER OS :: providers</name>
 	<description>SORCER</description>

@@ -118,7 +118,7 @@ if [ -z "$SORCER_HOME" -o ! -d "$SORCER_HOME" ] ; then
     cd "$SAVED"
 fi
 
-# Use IGRID default if still not found
+# Use SORCER default if still not found
 if [ -z "$NSH_CONF" ] ; then
     NSH_CONF="$SORCER_HOME/bin/shell/configs/nsh-start.config"
 fi
@@ -131,9 +131,11 @@ fi
 
 # Read sorcer.env to set the Sorcer Jar repository location
 MVN_REPO_TMP=`sed '/^\#/d' $SORCER_HOME/configs/sorcer.env | grep 'sorcer.local.repo.location'  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'` 
-echo $MVN_REPO_TMP | sed -e 's/\./_/g' | sed "s,\${user_home},$HOME,g" > /tmp/repo_ttt
-MVN_REPO=`cat /tmp/repo_ttt`
+echo $MVN_REPO_TMP | sed -e 's/\./\@/g' | sed "s,\${user@home},$HOME,g" > /tmp/repo_ttt
+echo `cat /tmp/repo_ttt` | sed -e "s:@:.:g" > /tmp/repo_tt
+MVN_REPO=`cat /tmp/repo_tt`
 rm /tmp/repo_ttt
+rm /tmp/repo_tt
 if [ -z "MVN_REPO" ] ; then
     MVN_REPO="$HOME/.m2/repository"
 fi
@@ -145,9 +147,9 @@ fi
 
 # the classpath to start nsh then application specific classpath is defined in nsh-start.config
 
-SORCER_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/shell/$SORCER_VERSION/shell-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sorcer-const/$SORCER_VERSION/sorcer-const-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/boot/$SORCER_VERSION/boot-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$SORCER_VERSION/sorcer-api-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/webster/$SORCER_VERSION/webster-$SORCER_VERSION.jar"
+SORCER_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$SORCER_VERSION/sos-shell-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sos-env/$SORCER_VERSION/sos-env-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$SORCER_VERSION/sos-boot-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sos-platform/$SORCER_VERSION/sos-platform-$SORCER_VERSION.jar:$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$SORCER_VERSION/sos-webster-$SORCER_VERSION.jar"
 
-STARTER_CLASSPATH="$SORCER_CLASSPATH:$MVN_REPO/org/rioproject/resolver/resolver-api/5.0-M2/resolver-api-5.0-M2.jar:$MVN_REPO/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:$MVN_REPO/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.jar:$MVN_REPO/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:$MVN_REPO/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:$MVN_REPO/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:$MVN_REPO/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:$MVN_REPO/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:$MVN_REPO/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar"
+STARTER_CLASSPATH="$SORCER_CLASSPATH:$MVN_REPO/org/rioproject/resolver/resolver-api/5.0-M2/resolver-api-5.0-M2.jar:$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:$MVN_REPO/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.jar:$MVN_REPO/org/rioproject/rio-platform/5.0-M2/rio-platform-5.0-M2.jar:$MVN_REPO/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar:$MVN_REPO/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar:$MVN_REPO/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar:$MVN_REPO/net/jini/jsk-platform/2.2.1/jsk-platform-2.2.1.jar:$MVN_REPO/net/jini/jsk-lib/2.2.1/jsk-lib-2.2.1.jar"
 
 
 # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
@@ -279,7 +281,7 @@ startShell ( ) {
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
             -Desh.starter.conf="$NSH_CONF" \
-            -DiGrid.home="$SORCER_HOME" \
+            -Dsorcer.home="$SORCER_HOME" \
             -Dtools.jar="$TOOLS_JAR" \
             $STARTER_MAIN_CLASS \
             --main $CLASS \
