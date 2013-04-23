@@ -25,7 +25,7 @@ grant {
 	permission java.security.SecurityPermission "getProperty.sorcer.core.provider.policer.PolicyFileProvider.basePolicyClass";
 	permission java.security.SecurityPermission "getProperty.policy.expandProperties";
 	permission java.security.SecurityPermission "getProperty.policy.ignoreIdentityScope";
-	permission java.security.SecurityPermission "getProperty.policy.allowSystemProperty";
+	permission java.security.SecurityPermission "getProperty.sorcer.policyowSystemProperty";
 	permission java.security.SecurityPermission "getProperty.com.sun.jini.start.servicePolicyProvider";
 	permission java.security.SecurityPermission "getProperty.com.sun.jini.start.AggregatePolicyProvider";
 	permission java.security.SecurityPermission "getProperty.com.sun.jini.start.AggregatePolicyProvider.mainPolicyClass";

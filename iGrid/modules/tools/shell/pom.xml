@@ -68,7 +68,7 @@
                         <systemProperty><key>webster.tmp.dir</key><value>${env.SORCER_HOME}</value></systemProperty>
                         <systemProperty><key>java.util.logging.config.file</key><value>${env.SORCER_HOME}/configs/sorcer.logging</value></systemProperty>
                         <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>
-                        <systemProperty><key>java.security.policy</key><value>../../sorcer/policy/policy.all</value></systemProperty>
+                        <systemProperty><key>java.security.policy</key><value>../../sorcer/configs/sorcer.policy</value></systemProperty>
                         <systemProperty><key>ssb.logFile</key><value>logs/browser.log</value></systemProperty>
                     </systemProperties>
                     <arguments>

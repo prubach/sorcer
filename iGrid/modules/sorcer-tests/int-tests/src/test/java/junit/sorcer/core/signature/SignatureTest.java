@@ -38,7 +38,7 @@ public class SignatureTest {
 		System.setProperty("java.util.logging.config.file",
 				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/policy.all");
+				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] {

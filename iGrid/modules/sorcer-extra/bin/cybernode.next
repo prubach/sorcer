@@ -20,6 +20,6 @@ UNICAST=
 # WEBSTER=-Dcom.sun.rio.tools.webster
 WEBSTER=-Dcom.sun.rio.service.codebase=$WEBSTER_URL
 
-java -server -cp $CLASSES $QOS $DEBUG $UNICAST $WEBSTER -Dcom.sun.rio.groups="fiper.DEV,fiper.*" -Djava.security.policy=${RIO_HOME}/policy/policy.all -Dcom.sun.rio.cybernode.maxservices=12 com.sun.rio.services.cybernode.CybernodeStarter &
+java -server -cp $CLASSES $QOS $DEBUG $UNICAST $WEBSTER -Dcom.sun.rio.groups="fiper.DEV,fiper.*" -Djava.security.policy=${RIO_HOME}/configs/sorcer.policy -Dcom.sun.rio.cybernode.maxservices=12 com.sun.rio.services.cybernode.CybernodeStarter &
 
 

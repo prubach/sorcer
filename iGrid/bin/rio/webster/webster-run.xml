@@ -19,7 +19,7 @@
 		<java jar="${common.lib}/rio3_2/webster.jar" fork="yes">
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="org.jini.rio.tools.webster.debug" value="true" />
-			<sysproperty key="java.security.policy" value="${sorcer.policy}/policy.all" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 			<sysproperty key="org.jini.rio.tools.webster.root" value="${common.lib}/rio3_2;${lib};${common.lib}" />
 			<sysproperty key="org.jini.rio.tools.webster.port" value="${webster.port}" />
 		</java>

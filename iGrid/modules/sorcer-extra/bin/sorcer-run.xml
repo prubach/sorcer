@@ -7,7 +7,7 @@
 
 	<target name="midas">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
@@ -17,7 +17,7 @@
 
 	<target name="midas2">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
@@ -27,7 +27,7 @@
 
 	<target name="byzantium">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="INITIAL_LOOKUP_GROUP" value="${sorcer.groups}" />
@@ -38,7 +38,7 @@
 
 	<target name="byzantium2">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="INITIAL_LOOKUP_GROUP" value="${sorcer.groups}" />
@@ -50,7 +50,7 @@
 	
 	<target name="silenus">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="INITIAL_LOOKUP_GROUP" value="${sorcer.groups}" />
@@ -61,7 +61,7 @@
 
 	<target name="polycephaly">
 		<java jar="${jini.home}/lib/start.jar" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="SORCER_HOME" value="${sorcer.home}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
@@ -90,7 +90,7 @@
 	<!--
 	<target name="byzantium-speed" depends="print">
 		<java classname="sorcer.silenus.examples.bytestore.ByteStoreSpeedMeasure" fork="yes">
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="java.rmi.server.codebase" value="${sorcer.http.codebase}" />
 			<sysproperty key="sorcer.http.codebase" value="${sorcer.http.codebase}" />
 			<classpath>

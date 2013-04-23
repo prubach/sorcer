@@ -41,7 +41,7 @@
                     <systemProperties>
                         <systemProperty><key>java.util.logging.config.file</key><value>${env.SORCER_HOME}/configs/sorcer.logging</value></systemProperty>
                         <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>
-                        <systemProperty><key>java.security.policy</key><value>${env.SORCER_HOME}/policy/policy.all</value></systemProperty>
+                        <systemProperty><key>java.security.policy</key><value>${env.SORCER_HOME}/configs/sorcer.policy</value></systemProperty>
 <!--
                         <systemProperty><key>data.server.port</key><value>9000</value></systemProperty>
                         <systemProperty><key>data.root.dir</key><value>${env.SORCER_HOME}/data</value></systemProperty>

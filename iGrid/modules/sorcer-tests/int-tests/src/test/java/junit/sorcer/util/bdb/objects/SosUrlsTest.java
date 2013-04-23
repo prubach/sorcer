@@ -40,7 +40,7 @@ public class SosUrlsTest {
 		// "sorcer.util.bdb.sos");
 
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/policy.all");
+				+ "/configs/sorcer.policy");
 
 		System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"

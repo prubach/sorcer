@@ -18,7 +18,7 @@
 				<pathelement location="${rio.lib}/boot.jar" />
 				<pathelement location="${common.lib}/start.jar" />
 			</classpath>
-			<sysproperty key="java.security.policy" value="${sorcer.policy}/policy.all" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 			<sysproperty key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="JINI_HOME" value="${jini.home}" />
 			<sysproperty key="RIO_LOG_DIR" value="logs/" />

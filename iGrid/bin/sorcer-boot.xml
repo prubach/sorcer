@@ -16,7 +16,7 @@
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />
 			<env key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="rio.home" value="${rio.home}" />
-			<sysproperty key="java.security.policy" value="../policy/sorcer.policy" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="webster.tmp.dir" value="${sorcer.data}" />
 		</java>
 	</target>

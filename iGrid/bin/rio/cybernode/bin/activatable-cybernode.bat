@@ -34,7 +34,7 @@ set PATH=%PATH%;"%USERPROFILE%"\.rio\native
 set classpath=-cp %RIO_HOME%\lib\boot.jar;%JINI_HOME%\lib\start.jar;
 set launchTarget=com.sun.jini.start.ServiceStarter
 
-%JAVA_HOME%\bin\java -server %classpath% -Djava.protocol.handler.pkgs=net.jini.url -Djava.security.policy=%RIO_HOME%\policy\policy.all -DRIO_HOME=%RIO_HOME% -DJINI_HOME=%JINI_HOME% -DRIO_LOG_DIR=%RIO_LOG_DIR% %launchTarget% %RIO_HOME%\configs\start-activatable-cybernode.config
+%JAVA_HOME%\bin\java -server %classpath% -Djava.protocol.handler.pkgs=net.jini.url -Djava.security.policy=%RIO_HOME%\policy\sorcer.policy -DRIO_HOME=%RIO_HOME% -DJINI_HOME=%JINI_HOME% -DRIO_LOG_DIR=%RIO_LOG_DIR% %launchTarget% %RIO_HOME%\configs\start-activatable-cybernode.config
 
 endlocal
 

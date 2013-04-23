@@ -32,7 +32,7 @@ fi
 JINI_LIB=$JINI_HOME/lib
 XML=$RIO_HOME/xml
 
-$JAVA_HOME/bin/java -jar -Djava.protocol.handler.pkgs=net.jini.url -Dorg.jini.rio.tools.webster.debug -Dorg.jini.rio.tools.webster.root="$RIO_HOME/lib;$JINI_HOME;$JINI_LIB;$XML" -Dorg.jini.rio.tools.webster.port=9000 -Djava.security.policy=$RIO_HOME/policy/policy.all $RIO_HOME/lib/webster.jar
+$JAVA_HOME/bin/java -jar -Djava.protocol.handler.pkgs=net.jini.url -Dorg.jini.rio.tools.webster.debug -Dorg.jini.rio.tools.webster.root="$RIO_HOME/lib;$JINI_HOME;$JINI_LIB;$XML" -Dorg.jini.rio.tools.webster.port=9000 -Djava.security.policy=$RIO_HOME/configs/sorcer.policy $RIO_HOME/lib/webster.jar
 
 
 

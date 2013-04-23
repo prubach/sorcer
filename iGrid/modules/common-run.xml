@@ -126,7 +126,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<isset property="requestor.policy.exists" />
 	      </not>
 	      <ac:then>
-		<property name="requestor.policy" value="${sorcer.home}/policy/sorcer.policy" />
+		<property name="requestor.policy" value="${sorcer.home}/configs/sorcer.policy" />
 		<echo>setting default policy: ${requestor.policy}</echo>
 	      </ac:then>
 	</ac:if>

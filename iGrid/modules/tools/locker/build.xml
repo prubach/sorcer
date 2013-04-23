@@ -144,13 +144,13 @@
 
 	<target name="testremote" depends="compile">
 		<java classname="org.dancres.blitz.jini.lockmgr.MutexTest" classpathref="remote.classpath" fork="true">
-			<jvmarg value="-Djava.security.policy=/Users/dan/src/jini/lock/config/policy.all" />
+			<jvmarg value="-Djava.security.policy=/Users/dan/src/jini/lock/config/sorcer.policy" />
 		</java>
 	</target>
 
 	<target name="testconflict" depends="compile">
 		<java classname="org.dancres.blitz.jini.lockmgr.Conflicter" classpathref="remote.classpath" fork="true">
-			<jvmarg value="-Djava.security.policy=/Users/dan/src/jini/lock/config/policy.all" />
+			<jvmarg value="-Djava.security.policy=/Users/dan/src/jini/lock/config/sorcer.policy" />
 		</java>
 	</target>
 

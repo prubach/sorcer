@@ -56,7 +56,7 @@ public class ArithmeticNoNetTest implements SorcerConstants {
 	
 	static {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/policy.all");
+				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
 		Sorcer.setCodeBaseByArtifacts(new String[] { 
 				"org.sorcersoft.sorcer:sorcer-api", 

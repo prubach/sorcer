@@ -24,7 +24,7 @@
 			</classpath>
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-			<sysproperty key="java.security.policy" value="${sorcer.policy}/policy.all" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 			<sysproperty key="provider.webster.root" value="${mvn.repo};${sorcer.home}/lib/river/lib;${sorcer.home}/lib/river/lib-dl" />
 			<sysproperty key="provider.webster.port" value="${provider.webster.port}" />
 			<sysproperty key="provider.webster.interface" value="${provider.webster}" /> 

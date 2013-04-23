@@ -38,4 +38,4 @@ fi
 classpath="-cp $RIO_HOME/lib/boot.jar:$JINI_HOME/lib/start.jar"
 launchTarget=com.sun.jini.start.ServiceStarter
 
-$JAVA_HOME/bin/java -server $classpath -Djava.security.policy=$RIO_UTILS/policy/policy.all -Djava.protocol.handler.pkgs=net.jini.url -DRIO_UTILS=$RIO_UTILS -DRIO_HOME=$RIO_HOME -DJINI_HOME=$JINI_HOME $launchTarget $RIO_UTILS/configs/start-lincoln.config 
+$JAVA_HOME/bin/java -server $classpath -Djava.security.policy=$RIO_UTILS/configs/sorcer.policy -Djava.protocol.handler.pkgs=net.jini.url -DRIO_UTILS=$RIO_UTILS -DRIO_HOME=$RIO_HOME -DJINI_HOME=$JINI_HOME $launchTarget $RIO_UTILS/configs/start-lincoln.config 

@@ -44,4 +44,4 @@ fi
 classpath="-cp $RIO_HOME/lib/boot.jar:$JINI_HOME/lib/start.jar"
 launchTarget=com.sun.jini.start.ServiceStarter
 echo "Starting Persistent Cybernode ... "
-$JAVA_HOME/bin/java -server $classpath -Djava.security.policy=$RIO_HOME/policy/policy.all -Djava.protocol.handler.pkgs=net.jini.url -DRIO_HOME=$RIO_HOME -DJINI_HOME=$JINI_HOME -DRIO_LOG_DIR=$RIO_LOG_DIR $launchTarget $RIO_HOME/configs/start-persistent-cybernode.config
+$JAVA_HOME/bin/java -server $classpath -Djava.security.policy=$RIO_HOME/configs/sorcer.policy -Djava.protocol.handler.pkgs=net.jini.url -DRIO_HOME=$RIO_HOME -DJINI_HOME=$JINI_HOME -DRIO_LOG_DIR=$RIO_LOG_DIR $launchTarget $RIO_HOME/configs/start-persistent-cybernode.config

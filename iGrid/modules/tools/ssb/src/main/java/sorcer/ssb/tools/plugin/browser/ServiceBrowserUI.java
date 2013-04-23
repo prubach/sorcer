@@ -2521,7 +2521,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		String HOME = ServiceBrowserConfig.BROWSER_HOME;
 
 		String[] cmd = { JAVA_HOME + "/bin/java",
-				"-Djava.security.policy=" + HOME + "/policy.all", "-cp",
+				"-Djava.security.policy=" + HOME + "/sorcer.policy", "-cp",
 				HOME + "/update.jar", "Start", HOME };
 		Runtime rt = Runtime.getRuntime();
 		try {

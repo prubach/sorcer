@@ -17,7 +17,7 @@
 				<pathelement location="${sorcer.lib}/sorcer-prv.jar" />
 			</classpath>
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-			<sysproperty key="java.security.policy" value="${sorcer.policy}/policy.all" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 		</java>
 	</target>
 

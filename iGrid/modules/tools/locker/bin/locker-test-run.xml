@@ -29,7 +29,7 @@ Also you might need to adjust the classpath (project.classpath) for your request
 		<java classname="${requestor.class}" fork="yes">
 			<classpath refid="project.classpath" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../policy/policy.all" />
+			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="java.rmi.server.codebase" value="${provider.webster.url}/lockmgr-dl.jar ${provider.webster.url}/jsk-dl.jar" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="provider.webster.interface" value="${provider.webster.interface}" />

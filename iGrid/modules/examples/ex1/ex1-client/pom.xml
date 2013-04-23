@@ -52,7 +52,7 @@
  						<argument>-Dsorcer.home=${env.SORCER_HOME}</argument>
                         <argument>-Dsorcer.env.file=${env.SORCER_HOME}/configs/sorcer.env</argument>
                         <argument>-Djava.util.logging.config.file=${env.SORCER_HOME}/configs/sorcer.logging</argument>
-                        <argument>-Djava.security.policy=${env.SORCER_HOME}/policy/policy.all</argument>
+                        <argument>-Djava.security.policy=${env.SORCER_HOME}/configs/sorcer.policy</argument>
 						<argument>-Dsorcer.webster.internal=true</argument>
 						<argument>-Dsorcer.webster.debug=true</argument>
 						<argument>-Dsorcer.codebase.jars=/org/sorcersoft/sorcer/ex1-client-api/11.1/ex1-client-api-11.1.jar;/org/sorcersoft/sorcer/ex1-api/11.1/ex1-api-11.1.jar;/org/sorcersoft/sorcer/sorcer-api/11.1/sorcer-api-11.1.jar</argument>
