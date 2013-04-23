@@ -1,6 +1,6 @@
 #!/bin/sh
 
-WEBSTER="http://${IGRID_WEBSTER}:${IGRID_WEBSTER_PORT}"
+WEBSTER="http://${SORCER_WEBSTER}:${SORCER_WEBSTER_PORT}"
 
 echo "Webster: ${WEBSTER}"
 

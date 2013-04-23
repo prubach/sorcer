@@ -2,8 +2,8 @@
 
 echo "[Run] Starting  Dispatcher Provider..."
 
-SORCER_BASEURL="http://${IGRID_PORTAL_HOST}:${IGRID_PORTAL_PORT}"
-JINI_BASEURL="http://${IGRID_WEBSTER}:${IGRID_WEBSTER_PORT}"
+SORCER_BASEURL="http://${SORCER_PORTAL_HOST}:${SORCER_PORTAL_PORT}"
+JINI_BASEURL="http://${SORCER_WEBSTER}:${SORCER_WEBSTER_PORT}"
 
 echo "${SORCER_BASEURL}/scheduler-dl.jar ${JINI_BASEURL}/sdm-dl.jar"
 

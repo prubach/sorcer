@@ -3,7 +3,7 @@
 # Replace MYPROVIDER with your provider name and specify property value for "PROVIDER_CLASS"
 # Also you might need to adjust the classpath (provider.classpath) for your provider.
 
-WEBSTER="http://${IGRID_WEBSTER}:${IGRID_WEBSTER_PORT}"
+WEBSTER="http://${SORCER_WEBSTER}:${SORCER_WEBSTER_PORT}"
 
 PROVIDER_NAME="functionEvaluator"
 PROVIDER_CLASS="sorcer.falcon.validation.functionEvaluation.provider.FunctionEvaluatorImpl"

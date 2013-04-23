@@ -534,9 +534,9 @@ public class Booter implements SorcerConstants {
 	 * @return a webster host name.
 	 */
 	public static String getWebsterHostName() {
-		String hn = System.getenv("IGRID_WEBSTER");
+		String hn = System.getenv("SORCER_WEBSTER");
 		if (hn != null && hn.length() > 0) {
-			logger.finer("webster hostname as 'IGRID_WEBSTER': " + hn);
+			logger.finer("webster hostname as 'SORCER_WEBSTER': " + hn);
 			return hn;
 		}
 
@@ -569,7 +569,7 @@ public class Booter implements SorcerConstants {
 	 */
 	public static String getWebsterInterface() 
 	{
-		String intf = System.getenv("IGRID_WEBSTER_INTERFACE");
+		String intf = System.getenv("SORCER_WEBSTER_INTERFACE");
 
 		if (intf  != null && intf.length() > 0) {
 			logger.finer("webster interface as the system environment value: "+ intf);
@@ -607,9 +607,9 @@ public class Booter implements SorcerConstants {
 	 * @return a port number
 	 */
 	public static int getWebsterPort() {
-		String wp = System.getenv("IGRID_WEBSTER_PORT");
+		String wp = System.getenv("SORCER_WEBSTER_PORT");
 		if (wp != null && wp.length() > 0) {
-			logger.finer("webster port as 'IGRID_WEBSTER_PORT': " + wp);
+			logger.finer("webster port as 'SORCER_WEBSTER_PORT': " + wp);
 			return new Integer(wp);
 		}
 
@@ -635,7 +635,7 @@ public class Booter implements SorcerConstants {
 	 * @return a port number
 	 */
 	public static int getWebsterStartPort() {
-		String hp = System.getenv("IGRID_WEBSTER_START_PORT");
+		String hp = System.getenv("SORCER_WEBSTER_START_PORT");
 
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
@@ -660,7 +660,7 @@ public class Booter implements SorcerConstants {
 	 * @return a port number
 	 */
 	public static int getWebsterEndPort() {
-		String hp = System.getenv("IGRID_WEBSTER_END_PORT");
+		String hp = System.getenv("SORCER_WEBSTER_END_PORT");
 
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);

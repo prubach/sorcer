@@ -5,7 +5,7 @@
  * Make sure the following variables are changed to reflect your environment:
  *    SORCER_HOME        	Sorcer location
  *    JAVA_HOME         	JDK Location
- *	  IGRID_WEBSTER_PORT 	The class server (webster) port
+ *	  SORCER_WEBSTER_PORT 	The class server (webster) port
  *    ANT_HOME          	Jakarta Ant location
  Please see also the ../common-build.xml for classpaths, definitions and targets
 -->

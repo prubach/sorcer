@@ -18,7 +18,7 @@
 	</path>-->
 	<!-- loads system environment variables -->
 	<property environment="env" />
-	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
+	<import file="${env.SORCER_HOME}/modules/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
 	
 	<!-- provider codeabse jars -->

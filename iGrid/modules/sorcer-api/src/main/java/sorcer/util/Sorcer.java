@@ -187,7 +187,7 @@ public class Sorcer extends SorcerEnv {
 	 * @return a webster host name.
 	 */
 	public static String getWebsterInterface() {
-		String hn = System.getenv("IGRID_WEBSTER_INTERFACE");
+		String hn = System.getenv("SORCER_WEBSTER_INTERFACE");
 
 		if (hn != null && hn.length() > 0) {
 			return hn;
@@ -221,7 +221,7 @@ public class Sorcer extends SorcerEnv {
 		if (port != 0)
 			return port;
 
-		String wp = System.getenv("IGRID_WEBSTER_PORT");
+		String wp = System.getenv("SORCER_WEBSTER_PORT");
 		if (wp != null && wp.length() > 0) {
 			return new Integer(wp);
 		}
@@ -250,7 +250,7 @@ public class Sorcer extends SorcerEnv {
 	 * @return a port number
 	 */
 	public static int getWebsterStartPort() {
-		String hp = System.getenv("IGRID_WEBSTER_START_PORT");
+		String hp = System.getenv("SORCER_WEBSTER_START_PORT");
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
 		}
@@ -275,7 +275,7 @@ public class Sorcer extends SorcerEnv {
 	 * @return a port number
 	 */
 	public static int getWebsterEndPort() {
-		String hp = System.getenv("IGRID_WEBSTER_END_PORT");
+		String hp = System.getenv("SORCER_WEBSTER_END_PORT");
 
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);

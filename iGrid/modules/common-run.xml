@@ -91,10 +91,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 
 	<echo message="provider.webster.interface.TMP = ${provider.webster.interface.TMP}" />
 
-	<condition property="provider.webster.url" value="http://${env.IGRID_WEBSTER_INTERFACE}:${env.IGRID_WEBSTER_PORT}">
+	<condition property="provider.webster.url" value="http://${env.SORCER_WEBSTER_INTERFACE}:${env.SORCER_WEBSTER_PORT}">
 		<and>
-			<isset property="env.IGRID_WEBSTER_INTERFACE" />
-			<isset property="env.IGRID_WEBSTER_PORT" />
+			<isset property="env.SORCER_WEBSTER_INTERFACE" />
+			<isset property="env.SORCER_WEBSTER_PORT" />
 		</and>
 	</condition>
 

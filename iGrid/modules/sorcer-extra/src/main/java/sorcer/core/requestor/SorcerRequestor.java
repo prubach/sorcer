@@ -196,7 +196,7 @@ abstract public class SorcerRequestor implements SorcerConstants {
 	 * @return a webster host name.
 	 */
 	public String getWebsterInterface() {
-		String hn = System.getenv("IGRID_WEBSTER_INTERFACE");
+		String hn = System.getenv("SORCER_WEBSTER_INTERFACE");
 
 		if (hn != null && hn.length() > 0) {
 			logger.finer("webster hostname as the system environment value: "
@@ -239,9 +239,9 @@ abstract public class SorcerRequestor implements SorcerConstants {
 		if (port != 0)
 			return port;
 
-		String wp = System.getenv("IGRID_WEBSTER_PORT");
+		String wp = System.getenv("SORCER_WEBSTER_PORT");
 		if (wp != null && wp.length() > 0) {
-			logger.finer("requestor webster port as 'IGRID_WEBSTER_PORT': " + wp);
+			logger.finer("requestor webster port as 'SORCER_WEBSTER_PORT': " + wp);
 			return new Integer(wp);
 		}
 
