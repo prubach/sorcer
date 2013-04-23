@@ -35,18 +35,19 @@ import static sorcer.util.ArtifactCoordinates.sorcer;
  */
 public class SorcerDescriptorUtil {
     final static Logger logger = Logger.getLogger("sorcer.provider.boot");
-    public static final ArtifactCoordinates SORCER_API = sorcer("sos-platform");
-    public static final ArtifactCoordinates PROVIDER_COMMON= sorcer("commons-prv");
+    public static final ArtifactCoordinates SOS_PLATFORM = sorcer("sos-platform");
+    public static final ArtifactCoordinates SOS_ENV = sorcer("sos-env");
+    public static final ArtifactCoordinates COMMONS_PRV = sorcer("commons-prv");
     public static final ArtifactCoordinates EXERTMONITOR_SERVICE = sorcer("exertmonitor-prv");
     public static final ArtifactCoordinates EXERTLET_UI = sorcer("sos-exertlet-sui");
-    public static final ArtifactCoordinates DBP_SERVICE = sorcer("dbp-prv");
-    public static final ArtifactCoordinates DSP_SERVICE = sorcer("dsp-prv");
-    public static final ArtifactCoordinates CATALOGER_SERVICE = sorcer("cataloger-prv");
-    public static final ArtifactCoordinates LOGGER_SERVICE = sorcer("logger-prv");
-    public static final ArtifactCoordinates LOGGER_UI = sorcer("logger-sui");
+    public static final ArtifactCoordinates DBP_PRV = sorcer("dbp-prv");
+    public static final ArtifactCoordinates DSP_PRV = sorcer("dsp-prv");
+    public static final ArtifactCoordinates CATALOGER_PRV = sorcer("cataloger-prv");
+    public static final ArtifactCoordinates LOGGER_PRV = sorcer("logger-prv");
+    public static final ArtifactCoordinates LOGGER_SUI = sorcer("logger-sui");
     public static final ArtifactCoordinates WEBSTER = sorcer("webster");
-    public static final ArtifactCoordinates SPACER_SERVICE = sorcer("spacer-prv");
-    public static final ArtifactCoordinates JOBBER_SERVICE = sorcer("jobber-prv");
+    public static final ArtifactCoordinates SPACER_PRV = sorcer("spacer-prv");
+    public static final ArtifactCoordinates JOBBER_PRV = sorcer("jobber-prv");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
@@ -296,11 +297,12 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = Booter.getClasspath(repositoryRoot, SPACER_SERVICE, PROVIDER_COMMON);
+		String spacerClasspath = Booter.getClasspath(repositoryRoot, SPACER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
         String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -410,11 +412,12 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = Booter.getClasspath(repositoryRoot, JOBBER_SERVICE, PROVIDER_COMMON);
+		String jobberClasspath = Booter.getClasspath(repositoryRoot, JOBBER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -529,12 +532,13 @@ public class SorcerDescriptorUtil {
 				repositoryRoot,
 				EXERTMONITOR_SERVICE,
 				SLEEPYCAT,
-				PROVIDER_COMMON
+                COMMONS_PRV
 		);
 
 	// service provider codebase
         String exertmonitorCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -650,14 +654,15 @@ public class SorcerDescriptorUtil {
 		// service provider classpath
 		String dbpc = Booter.getClasspath(
 				repositoryRoot ,
-				DBP_SERVICE,
+                DBP_PRV,
 				SLEEPYCAT,
-				PROVIDER_COMMON
+                COMMONS_PRV
 		);
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -769,11 +774,12 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String dbpc = Booter.getClasspath(repositoryRoot, DSP_SERVICE, SLEEPYCAT, PROVIDER_COMMON);				
+		String dbpc = Booter.getClasspath(repositoryRoot, DSP_PRV, SLEEPYCAT, COMMONS_PRV);
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -884,11 +890,12 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = Booter.getClasspath(repositoryRoot, CATALOGER_SERVICE, PROVIDER_COMMON);
+		String catalogClasspath = Booter.getClasspath(repositoryRoot, CATALOGER_PRV, COMMONS_PRV);
 
 		// service provider codebase		
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
         }, hostAddress, Integer.toString(port));
@@ -1001,14 +1008,15 @@ public class SorcerDescriptorUtil {
 		
 		// service provider classpath
         //FIXME nie jestem pewien czy logger-sui powinien być w classpath I codebase
-		String loggerClasspath = Booter.getClasspath(repositoryRoot, LOGGER_SERVICE, LOGGER_UI, PROVIDER_COMMON);
+		String loggerClasspath = Booter.getClasspath(repositoryRoot, LOGGER_PRV, LOGGER_SUI, COMMONS_PRV);
 
 		// service provider codebase
 		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SORCER_API,
+                SOS_PLATFORM,
+                SOS_ENV,
                 SERVICEUI,
                 EXERTLET_UI,
-                LOGGER_UI,
+                LOGGER_SUI,
         }, hostAddress, Integer.toString(port));
 		// Logger is a partner to ServiceTasker
 		String implClass = "sorcer.core.provider.logger.RemoteLoggerManager";

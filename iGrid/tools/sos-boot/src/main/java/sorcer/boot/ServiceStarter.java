@@ -48,7 +48,6 @@ public class ServiceStarter {
 
 	private void loadDefaultProperties() {
 		String sorcerHome = System.getProperty(SorcerConstants.SORCER_HOME);
-		System.out.println("ServiceStarter got SORCER_HOME: " + sorcerHome);
 		setDefaultProperty("org.rioproject.resolver.prune.platform", "false");
 		setDefaultProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
 		setDefaultProperty("java.util.logging.config.file",  sorcerHome + "/configs/sorcer.logging");

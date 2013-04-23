@@ -1,25 +1,24 @@
 package junit.sorcer.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.logging.Logger;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
 import net.jini.space.JavaSpace05;
-
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
+
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Mike Sobolewski
@@ -30,7 +29,7 @@ public class UtilTest {
 			.getName());
 
 
-	@Test
+	@BeforeClass
 	public void envSettingsTest() throws ExertionException, ContextException,
 			SignatureException {
 		try {

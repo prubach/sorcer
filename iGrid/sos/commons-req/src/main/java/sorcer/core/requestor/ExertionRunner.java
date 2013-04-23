@@ -124,11 +124,11 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 			for (String artifact : artifacts) {
 				if (codebase.length() > 0)
 					codebase.append(" ");
-				codebase.append(resolve(ArtifactCoordinates.coords(artifact)));
+                codebase.append(resolve(ArtifactCoordinates.coords(artifact)));
 			}
 			// Add default codebase sos-platform and sos-env
-			codebase.append(' ').append(resolve(ArtifactCoordinates.getSorcerApi()));
-			codebase.append(' ').append(resolve(ArtifactCoordinates.getSorcerConst()));
+			codebase.append(' ').append(resolve(ArtifactCoordinates.getSosPlatform()));
+			codebase.append(' ').append(resolve(ArtifactCoordinates.getSosEnv()));
 			
 			logger.fine("ExertionRunner generated codebase: " + codebase.toString());
 			if (isWebsterInt)
@@ -139,7 +139,7 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 	}
 
 	private static String resolve(ArtifactCoordinates coords) {
-		return isWebsterInt ? coords.getRelativePath() : coords.fromRemote(Sorcer.getWebsterUrl());
+		return isWebsterInt ? coords.getRelativePath() : coords.fromRemote(Sorcer.getWebsterUrl() + "/");
 	}
 
 
@@ -223,17 +223,17 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 				// check local resource
 				if (is == null)
 					is = (InputStream) (new FileInputStream(filename));
-				if (is != null) {
-					props = new Properties();
-					props.load(is);
-				} else {
+
+                props = new Properties();
+				props.load(is);
+				/*else {
 					System.err
 							.println("Not able to open stream on properties: "
 									+ filename);
 					System.err.println("Service runner class: "
 							+ this.getClass());
 					return;
-				}
+				}   */
 			}
 		} catch (IOException ioe) {
 			logger.info("Not able to load requestor properties");

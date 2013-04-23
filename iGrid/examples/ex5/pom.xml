@@ -18,6 +18,6 @@
 
 	<modules>
 		<module>ex5-api</module>
-		<module>ex5-service</module>
+		<module>ex5-prv</module>
 	</modules>
 </project>

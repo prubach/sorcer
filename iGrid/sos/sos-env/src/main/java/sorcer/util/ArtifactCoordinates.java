@@ -122,12 +122,12 @@ public class ArtifactCoordinates {
 	}
 
 	// FIXME move somewhere else
-	public static ArtifactCoordinates getSorcerApi() {
+	public static ArtifactCoordinates getSosPlatform() {
 		return sorcer("sos-platform");
 	}
 
 	// FIXME move somewhere else
-	public static ArtifactCoordinates getSorcerConst() {
+	public static ArtifactCoordinates getSosEnv() {
 		return sorcer("sos-env");
 	}
 	
