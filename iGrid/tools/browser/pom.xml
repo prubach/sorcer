@@ -24,7 +24,7 @@
          </dependency>
          <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>webster</artifactId>
+            <artifactId>sos-webster</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

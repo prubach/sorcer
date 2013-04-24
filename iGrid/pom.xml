@@ -19,8 +19,8 @@
         <v.rio>5.0-M2</v.rio>
         <v.groovy>2.1.2</v.groovy>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
- 	<sorcer.home>${project.basedir}</sorcer.home>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sorcer.home>${project.basedir}</sorcer.home>
     </properties>
 
     <modules>
@@ -93,6 +93,7 @@
 				<plugin>
 					<groupId>${project.groupId}</groupId>
 					<artifactId>sorcer-maven-plugin</artifactId>
+					<version>${v.sorcer}</version>
 					<executions>
 						<execution>
 							<goals>

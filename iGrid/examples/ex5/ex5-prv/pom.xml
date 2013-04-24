@@ -10,7 +10,7 @@
         <version>11.1</version>
     </parent>
 
-    <artifactId>ex5-service</artifactId>
+    <artifactId>ex5-prv</artifactId>
     <name>SORCER examples :: ex5 :: prv</name>
     
     <dependencies>
