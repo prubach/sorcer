@@ -12,7 +12,7 @@
 
 	<artifactId>first-prv</artifactId>
 	<packaging>jar</packaging>
-	<name>SORCER first :: prv</name>
+	<name>SORCER examples :: first :: prvovider</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 
@@ -25,19 +25,29 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-            <version>11.1</version>
         </dependency>
-        <dependency>
+		<dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
-            <version>11.1</version>
-        </dependency>        
+            <version>${v.sorcer}</version>
+        </dependency>
+
 		<!-- CodeBase -->
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>first-proxy</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.sorcersoft.sorcer</groupId>
+					<artifactId>locker</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.sorcersoft.sorcer</groupId>
+					<artifactId>sos-env</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>

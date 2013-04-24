@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>first-proxy</artifactId>
-    <name>SORCER first :: proxy</name>
+    <name>SORCER examples :: first :: proxy</name>
 
     <dependencies>
         <dependency>

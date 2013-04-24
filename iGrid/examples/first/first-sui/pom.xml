@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>first-ui</artifactId>
-    <name>SORCER first :: sui</name>
+    <name>SORCER examples :: first :: service UI</name>
 
     <dependencies>
         <dependency>

@@ -10,7 +10,6 @@
         <version>11.1</version>
     </parent>
 
-    <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex6-api</artifactId>
     <name>SORCER examples :: ex6 :: api</name>
 
