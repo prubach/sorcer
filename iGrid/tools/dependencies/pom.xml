@@ -16,6 +16,10 @@
 	<description>SORCER dummy module that downloads libraries required at runtime and installs them in the local maven repository</description>
 	<url>http://sorcersoft.org/</url>
 
+	<properties>
+		<v.sigar>1.6.4</v.sigar>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -34,7 +38,7 @@
 							</executableDependency>
 							<mainClass>org.sorcersoft.sigar.Zip</mainClass>
 							<arguments>
-								<argument>org.sorcersoft.sigar:sigar:zip:native:1.6.4</argument>
+								<argument>org.sorcersoft.sigar:sigar:zip:native:${v.sigar}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -53,12 +57,12 @@
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
 			<artifactId>sigar-maven</artifactId>
-			<version>1.6.4</version>
+			<version>${v.sigar}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
 			<artifactId>sigar</artifactId>
-			<version>1.6.4</version>
+			<version>${v.sigar}</version>
 		</dependency>
 		<!-- RIVER -->
 		<dependency>
