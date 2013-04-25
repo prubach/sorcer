@@ -6,6 +6,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,20 @@ public class Resolver {
 		return resolver.resolveAbsolute(coords);
 	}
 
+	public static String resolveRelative(ArtifactCoordinates coords){
+		return resolver.resolveRelative(coords);
+	}
+
+	public static String resolveRelative(String coords){
+		return resolveRelative(ArtifactCoordinates.coords(coords));
+	}
+
+	public static String resolveAbsolute(String baseUri, ArtifactCoordinates coords){
+		return URI.create(baseUri).resolve(resolveRelative(coords)).toString();
+	}
+
 	/**
+	 * FIXME accept base url
 	 * Resolve array of artifacts to a codebase, space-separated list of relative paths
 	 *
 	 * @param coords array of artifact coordinates

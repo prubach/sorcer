@@ -1,16 +1,10 @@
 package sorcer.util;
 
-import java.io.File;
-import java.net.URI;
-
-import sorcer.core.SorcerEnv;
-
 /**
  * @author Rafał Krupiński
  */
 public class ArtifactCoordinates {
 	private static final String DEFAULT_PACKAGING = "jar";
-	private static final String SORCER_GROUP_ID = "org.sorcersoft.sorcer";
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -35,7 +29,8 @@ public class ArtifactCoordinates {
 		String artifactId = coordSplit[1];
 		String packaging = DEFAULT_PACKAGING;
 		String classifier = null;
-		String version = getDefaultVersion(groupId);
+		//if version is not specified it will be resolved by the Resolver#resolveVersion
+		String version = null;
 
 		if (length == 3) {
 			version = coordSplit[2];
@@ -63,27 +58,12 @@ public class ArtifactCoordinates {
 		return new ArtifactCoordinates(groupId, artifactId, DEFAULT_PACKAGING, version, null);
 	}
 
-	public static ArtifactCoordinates coords(String groupId, String artifactId) {
-		return new ArtifactCoordinates(groupId, artifactId, DEFAULT_PACKAGING, getDefaultVersion(groupId), null);
-	}
-
 	public ArtifactCoordinates(String groupId, String artifactId, String version) {
 		this(groupId, artifactId, DEFAULT_PACKAGING, version, null);
 	}
 
-	public ArtifactCoordinates(String groupId, String artifactId) {
-		this(groupId, artifactId, DEFAULT_PACKAGING, getDefaultVersion(groupId), null);
-	}
-
-	public String getRelativePath(String base) {
-		return new File(base, getRelativePath()).getPath();
-	}
-
-	public String getRelativePath(File base) {
-		return new File(base, getRelativePath()).getPath();
-	}
-
-	public String getRelativePath() {
+	@Override
+	public String toString() {
 		StringBuilder result = new StringBuilder(groupId.replace('.', '/'));
 		result.append('/').append(artifactId).append('/').append(version).append('/').append(artifactId).append('-')
 				.append(version);
@@ -92,56 +72,6 @@ public class ArtifactCoordinates {
 		}
 		result.append('.').append(packaging);
 		return result.toString();
-	}
-
-	@Override
-	public String toString() {
-		return getRelativePath();
-	}
-
-	public File fileFromLocalRepo() {
-		File repo = new File(SorcerEnv.getRepoDir());
-		return new File(repo, getRelativePath());
-	}
-
-	public String fromLocalRepo() {
-		return fileFromLocalRepo().getPath();
-	}
-
-	public URI uriFromRemoteUri(URI base) {
-		return base.resolve(getRelativePath());
-	}
-
-	public String fromRemote(String uri) {
-		return uriFromRemoteUri(URI.create(uri)).toString();
-	}
-
-	// FIXME move somewhere else
-	public static ArtifactCoordinates sorcer(String artifactId) {
-		return new ArtifactCoordinates(SORCER_GROUP_ID, artifactId, SorcerEnv.getSorcerVersion());
-	}
-
-	// FIXME move somewhere else
-	public static ArtifactCoordinates getSosPlatform() {
-		return sorcer("sos-platform");
-	}
-
-	// FIXME move somewhere else
-	public static ArtifactCoordinates getSosEnv() {
-		return sorcer("sos-env");
-	}
-	
-	    
-	public static String getDefaultVersion(String groupId) {
-	    if (groupId==null) return null;
-	    if (groupId.contains("org.sorcersoft.sorcer")) return SorcerEnv.getSorcerVersion();
-	    if (groupId.contains("org.apache.river")) return SorcerEnv.getRiverVersion();
-	    if (groupId.contains("net.jini")) return SorcerEnv.getRiverVersion();
-	    if (groupId.contains("org.dancres.blitz")) return SorcerEnv.getBlitzVersion();
-	    if (groupId.contains("com.sleepycat")) return SorcerEnv.getSleepyCatVersion();
-	    if (groupId.contains("org.codehaus.groovy")) return SorcerEnv.getGroovyVersion();
-	    if (groupId.contains("org.rioproject")) return SorcerEnv.getRioVersion();
-	    return null;    	    	
 	}
 
 	public String getGroupId() {
@@ -162,5 +92,13 @@ public class ArtifactCoordinates {
 
 	public String getPackaging() {
 		return packaging;
+	}
+
+	public void setClassifier(String classifier) {
+		this.classifier = classifier;
+	}
+
+	public void setPackaging(String packaging) {
+		this.packaging = packaging;
 	}
 }

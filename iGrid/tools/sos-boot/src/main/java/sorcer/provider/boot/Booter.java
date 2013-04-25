@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
+import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
 
 
@@ -98,21 +99,6 @@ public class Booter implements SorcerConstants {
     }
 
 	/**
-	 * Return the classpath for the provided artifact coordinates.
-	 *
-	 * @param root base directory
-	 * @param coords artifact coordinates
-	 * @return The classpath with system dependent path delimiters
-	 */
-	public static String getClasspath(File root, ArtifactCoordinates...coords) {
-		String[]jars=new String[coords.length];
-		for (int i = 0; i < coords.length; i++) {
-			jars[i]=coords[i].getRelativePath(root);
-		}
-		return getClasspath(jars);
-	}
-
-	/**
      * Return the codebase for the provided JAR name and port. This method will 
      * first get the IP Address of the machine using 
      * <code>java.net.InetAddress.getLocalHost().getHostAddress()</code>, then
@@ -167,7 +153,7 @@ public class Booter implements SorcerConstants {
     public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {
         String[] jars = new String[artifacts.length];
         for (int i = 0; i < artifacts.length; i++) {
-            jars[i] = artifacts[i].getRelativePath();
+            jars[i] = Resolver.resolveRelative(artifacts[i]);
         }
         return getCodebase(jars, address, port);
     }

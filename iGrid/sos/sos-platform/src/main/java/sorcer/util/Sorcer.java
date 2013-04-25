@@ -41,7 +41,7 @@ import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.ConfigurationException;
+import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 
 /**
@@ -1191,7 +1191,7 @@ public class Sorcer extends SorcerEnv {
 	public static void setCodeBaseByArtifacts(String[] artifactCoords) {
 		String[] jars = new String[artifactCoords.length];
 		for (int i=0;i<artifactCoords.length;i++) {
-			jars[i] = ArtifactCoordinates.coords(artifactCoords[i]).toString();
+			jars[i] = Resolver.resolveRelative(artifactCoords[i]);
 		}
 		setCodeBase(jars);		
 	}

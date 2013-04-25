@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.config.PlatformCapabilityConfig;
 
+import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.LibraryPathHelper;
 
@@ -72,7 +73,7 @@ public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
 			coords += COORDS_SEPARATOR + getVersion();
 		}
 		try {
-			return ArtifactCoordinates.coords(coords).fromLocalRepo();
+			return Resolver.resolveAbsolute(coords);
 		} catch (IllegalArgumentException x) {
 			return entry;
 		}

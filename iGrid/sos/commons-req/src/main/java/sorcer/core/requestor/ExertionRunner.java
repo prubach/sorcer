@@ -30,12 +30,14 @@ import java.util.logging.Logger;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.SorcerConstants;
+import sorcer.resolver.Resolver;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.webster.InternalWebster;
+import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.Sorcer;
 
@@ -127,8 +129,8 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
                 codebase.append(resolve(ArtifactCoordinates.coords(artifact)));
 			}
 			// Add default codebase sos-platform and sos-env
-			codebase.append(' ').append(resolve(ArtifactCoordinates.getSosPlatform()));
-			codebase.append(' ').append(resolve(ArtifactCoordinates.getSosEnv()));
+			codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
+			codebase.append(' ').append(resolve(Artifact.getSosEnv()));
 			
 			logger.fine("ExertionRunner generated codebase: " + codebase.toString());
 			if (isWebsterInt)
@@ -139,7 +141,9 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 	}
 
 	private static String resolve(ArtifactCoordinates coords) {
-		return isWebsterInt ? coords.getRelativePath() : coords.fromRemote(Sorcer.getWebsterUrl() + "/");
+		return isWebsterInt
+				? Resolver.resolveRelative(coords)
+				: Resolver.resolveAbsolute(Sorcer.getWebsterUrl(), coords);
 	}
 
 

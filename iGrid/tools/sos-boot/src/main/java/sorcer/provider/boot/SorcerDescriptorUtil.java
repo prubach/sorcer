@@ -22,11 +22,11 @@ import java.util.logging.Logger;
 import com.sun.jini.config.ConfigUtil;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
+import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
-import sorcer.core.SorcerEnv;
 
 import static sorcer.util.ArtifactCoordinates.coords;
-import static sorcer.util.ArtifactCoordinates.sorcer;
+import static sorcer.util.Artifact.sorcer;
 
 /**
  * Holds static attributes used during the startup of services and provides
@@ -52,7 +52,6 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
 
-    private static File repositoryRoot = new File(SorcerEnv.getRepoDir());
     private static String fs = File.separator;
 	private static String ps = File.pathSeparator;
 	private static String sorcerHome = getHomeDir();
@@ -177,7 +176,7 @@ public class SorcerDescriptorUtil {
 			websterPort = Booter.getPort();
 		}
 		
-		String importCodeBase = new File(repositoryRoot, WEBSTER.getRelativePath()).getCanonicalPath();
+		String importCodeBase = Resolver.resolveAbsolute(WEBSTER);
 		String websterRoots = concat(roots, ';');
 		String websterClass = "sorcer.tools.webster.Webster";
 		if (debug) {
@@ -297,7 +296,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = Booter.getClasspath(repositoryRoot, SPACER_PRV, COMMONS_PRV);
+		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
         String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -412,7 +411,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = Booter.getClasspath(repositoryRoot, JOBBER_PRV, COMMONS_PRV);
+		String jobberClasspath = Resolver.resolveClassPath(JOBBER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
         String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -528,11 +527,10 @@ public class SorcerDescriptorUtil {
 
 
 		// service provider classpath
-		String exertmonitorClasspath = Booter.getClasspath(
-				repositoryRoot,
+		String exertmonitorClasspath = Resolver.resolveClassPath(
 				EXERTMONITOR_SERVICE,
 				SLEEPYCAT,
-                COMMONS_PRV
+				COMMONS_PRV
 		);
 
 	// service provider codebase
@@ -652,11 +650,10 @@ public class SorcerDescriptorUtil {
 		
 
 		// service provider classpath
-		String dbpc = Booter.getClasspath(
-				repositoryRoot ,
-                DBP_PRV,
+		String dbpc = Resolver.resolveClassPath(
+				DBP_PRV,
 				SLEEPYCAT,
-                COMMONS_PRV
+				COMMONS_PRV
 		);
 		
 		// service provider codebase
@@ -774,7 +771,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String dbpc = Booter.getClasspath(repositoryRoot, DSP_PRV, SLEEPYCAT, COMMONS_PRV);
+		String dbpc = Resolver.resolveClassPath(DSP_PRV, SLEEPYCAT, COMMONS_PRV);
 		
 		// service provider codebase
         String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -890,7 +887,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = Booter.getClasspath(repositoryRoot, CATALOGER_PRV, COMMONS_PRV);
+		String catalogClasspath = Resolver.resolveClassPath(CATALOGER_PRV, COMMONS_PRV);
 
 		// service provider codebase		
 		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1007,8 +1004,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-        //FIXME nie jestem pewien czy logger-sui powinien być w classpath I codebase
-		String loggerClasspath = Booter.getClasspath(repositoryRoot, LOGGER_PRV, LOGGER_SUI, COMMONS_PRV);
+		String loggerClasspath = Resolver.resolveClassPath(LOGGER_PRV, LOGGER_SUI, COMMONS_PRV);
 
 		// service provider codebase
 		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
@@ -1122,10 +1118,10 @@ public class SorcerDescriptorUtil {
 			throws IOException {
 		if (sorcerHome == null)
 			throw new RuntimeException("'sorcer.home' system property not declared");
-		String reggieClasspath = repositoryRoot + fs + 
-				new ArtifactCoordinates("org.apache.river","reggie").toString();
+		String reggieClasspath = Resolver.resolveClassPath(
+				coords("org.apache.river:reggie"));
 		String reggieCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-				new ArtifactCoordinates("org.apache.river","reggie-dl")
+				ArtifactCoordinates.coords("org.apache.river:reggie-dl")
         }, hostAddress, Integer.toString(port));
  		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
 		return (new SorcerServiceDescriptor(reggieCodebase, policy,

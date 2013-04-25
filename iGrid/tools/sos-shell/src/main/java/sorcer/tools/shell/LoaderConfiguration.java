@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sorcer.core.SorcerEnv;
-import sorcer.util.ArtifactCoordinates;
+import sorcer.resolver.Resolver;
 
 /**
  * Class used to configure a RootLoader from a stream or by using
@@ -165,7 +164,7 @@ public class LoaderConfiguration {
             String propertyValue = null;
             // Interpret Maven Artifact coordinates
             if (propertyKey.startsWith("mvn:")) {            	
-            	propertyValue = SorcerEnv.getRepoDir()+ "/" + ArtifactCoordinates.coords(propertyKey.substring(4)).toString();
+            	propertyValue = Resolver.resolveAbsolute(propertyKey.substring(4));
             }  else {         
             	propertyValue = System.getProperty(propertyKey);
             }

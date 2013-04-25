@@ -86,6 +86,7 @@ import sorcer.core.provider.proxy.Partner;
 import sorcer.core.provider.proxy.Partnership;
 import sorcer.core.provider.ui.ProviderUI;
 import sorcer.falcon.base.Conditional;
+import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;
@@ -933,7 +934,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
 		UIDescriptor uiDesc2 = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/"+ ArtifactCoordinates.coords("org.sorcersoft.sorcer:sos-exertlet-sui:11.1").getRelativePath());
+			URL uiUrl = new URL(Resolver.resolveAbsolute(Sorcer.getWebsterUrl() , ArtifactCoordinates.coords("org.sorcersoft.sorcer:sos-exertlet-sui:11.1")));
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/exertlet/sos-exertlet-sui.html");
 
