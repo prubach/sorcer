@@ -3,14 +3,14 @@
 
 	<import file="../../../bin/common-run.xml" />
 
-	<target name="jini all">
-		<java jar="${lib}/boot.jar" fork="yes">
-			<arg value="../configs/boot-jini.config" />
-			<sysproperty key="sorcer.home" value="${sorcer.home}" />
-			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-			<sysproperty key="java.security.policy" value="../policy/jini.policy" />
-			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-		</java>
+	<target name="jini all" depends="mvn-init">
+        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+            <classpath refid="boot.classpath"/>
+            <arg value="../configs/boot-jini.config" />
+            <sysproperty key="sorcer.home" value="${sorcer.home}" />
+            <sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
+            <sysproperty key="java.security.policy" value="../policy/jini.policy" />
+        </java>
 	</target>
 
 </project>

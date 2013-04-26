@@ -3,9 +3,9 @@
 <project name="code server" default="webster" basedir=".">
 
 
-	<property name="pom.file" value="${sorcer.home}/modules/tools/webster/pom.xml" />
+    <property environment="env" />
+	<property name="pom.file" value="${env.SORCER_HOME}/tools/sos-webster/pom.xml" />
 	<!-- load system environment variables -->
-	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 	<property name="provider.webster" value="${provider.webster.interface.TMP}" />

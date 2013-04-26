@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 
 <project name="SSB" default="SORCER Service Browser" basedir=".">
-	
-	<property name="pom.file" value="${sorcer.home}/modules/tools/ssb/pom.xml" />
-	<!-- load system environment variables -->
-	<property environment="env" />
+
+    <!-- load system environment variables -->
+    <property environment="env" />
+    <property name="pom.file" value="${env.SORCER_HOME}/tools/browser/pom.xml" />
+
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	
 	<path id="run.classpath">

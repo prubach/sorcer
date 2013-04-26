@@ -84,9 +84,9 @@ import com.sun.jini.start.LifeCycle;
  * <li>It uses <code>ServiceDiscoveryManager</code> with lookup cache.<br>
  * <li>It uses an internal hash map for storing services called
  * {@link CatalogerInfo}
- * <li>The key of the map is an {@link InterfaceList}, the value is the vector
+ * <li>The key of the map is an InterfaceList, the value is the vector
  * of service proxies
- * <li>{@link InterfaceList} is a list of interfaces with <code>equals</code>
+ * <li>InterfaceList is a list of interfaces with <code>equals</code>
  * overridden such that for <code>(interfaceList1.equals(interfaceList2)</code>
  * returns <code>true</code> if all elements contained in
  * <code>interfaceList2</code> are contained in <code>interfaceList1</code>.
@@ -264,7 +264,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * second provider's name. Expected that more entries will be needed to
 	 * identify a provider in the future. See also lookup for a given ServiceID.
 	 * 
-	 * @see sorcer.core.Cataloger#lookup(net.jini.core.entry.Entry[])
+	 * @see sorcer.core.Cataloger#lookup(Class[])
 	 */
 	public ServiceItem lookupItem(String providerName, Class... serviceTypes)
 			throws RemoteException {
@@ -274,7 +274,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	/**
 	 * Returns a SORCER service provider identified by its primary service type.
 	 * 
-	 * @param primaryInterface
+	 * @param serviceTypes
 	 *            - interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -290,7 +290,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * 
 	 * @param providerName
 	 *            - a provider name, a friendly provider's ID.
-	 * @param primaryInterface
+	 * @param serviceTypes
 	 *            - interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -313,7 +313,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	/**
 	 * Returns a SORCER service provider identified by its service ID.
 	 * 
-	 * @param serviceID
+	 * @param sid
 	 *            - provider's ID
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -435,14 +435,14 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * presents provider's interfaces of discovered services along with
 	 * associated contexts per defined interface or individual interface method.
 	 * 
-	 * @see sorcer.core.Provider#getMainUIDescriptor()
+	 * @see sorcer.core.provider.ServiceProvider#getMainUIDescriptor
 	 */
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
 			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/cataloger-ui.jar");
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
-					+ "/cataloger/cataloger.html");
+					+ "/deploy/cataloger.html");
 
 			// URL exportUrl, String className, String name, String helpFilename
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
@@ -773,7 +773,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		/**
 		 * Tests if provider is still alive.
 		 * 
-		 * @param provider
+		 * @param si
 		 * @return true if a provider is alive, otherwise false
 		 * @throws RemoteException
 		 */

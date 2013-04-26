@@ -1,6 +1,7 @@
 package sorcer.resolver;
 
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.GenericUtil;
 
 import java.io.File;
 
@@ -24,9 +25,12 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 	public String resolveRelative(ArtifactCoordinates artifactCoordinates) {
 		String artifactId = artifactCoordinates.getArtifactId();
 		String version = artifactCoordinates.getVersion();
+        //if (version==null) version = resolveVersion(artifactCoordinates.getGroupId(), artifactCoordinates.getArtifactId());
+        if (version==null) version = resolveVersion(artifactCoordinates.getGroupId());
 		String classifier = artifactCoordinates.getClassifier();
 
-		StringBuilder result = new StringBuilder(artifactCoordinates.getGroupId().replace('.', FILE_SEPARATOR));
+		StringBuilder result = new StringBuilder(FILE_SEPARATOR);
+        result.append(artifactCoordinates.getGroupId().replace('.', FILE_SEPARATOR));
 		result.append(FILE_SEPARATOR).append(artifactId).append(FILE_SEPARATOR).append(version).append(FILE_SEPARATOR).append(artifactId).append('-')
 				.append(version);
 		if (classifier != null) {

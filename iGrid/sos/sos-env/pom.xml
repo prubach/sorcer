@@ -14,7 +14,16 @@
     <url>http://sorcersoft.org/</url>
     <description>Service ORiented Computing EnviRonment</description>
 
-    <dependencies>	
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
         <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>

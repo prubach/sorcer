@@ -16,38 +16,9 @@ s * Copyright 2009 the original author or authors.
  */
 package sorcer.core.provider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.security.Permission;
-import java.security.Policy;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-
+import com.sun.jini.config.Config;
+import com.sun.jini.start.LifeCycle;
+import com.sun.jini.thread.TaskManager;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -69,12 +40,8 @@ import net.jini.lookup.ui.MainUI;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-import sorcer.core.AccessDeniedException;
-import sorcer.core.AdministratableProvider;
+import sorcer.core.*;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
-import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.RemoteContextManagement;
@@ -87,42 +54,42 @@ import sorcer.core.provider.proxy.Partnership;
 import sorcer.core.provider.ui.ProviderUI;
 import sorcer.falcon.base.Conditional;
 import sorcer.resolver.Resolver;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.MonitorException;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.service.Spacer;
-import sorcer.service.Task;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.ArtifactCoordinates;
+import sorcer.util.Artifact;
 import sorcer.util.ObjectLogger;
 import sorcer.util.Sorcer;
 import sorcer.util.SorcerUtil;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
-import com.sun.jini.config.Config;
-import com.sun.jini.start.LifeCycle;
-import com.sun.jini.thread.TaskManager;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.security.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
- * The ServiceProvider class is a type of {@link ServiceExerter} with dependency
+ * The ServiceProvider class is a type of {@link Provider} with dependency
  * injection defined by a Jini 2 configuration, proxy management, and own
  * service discovery management for registering its proxies. In the simplest
  * case, the provider exports and registers its own (outer) proxy with the
- * primary method {@link Provider#service(Exertion)}. The functionality of an
+ * primary method {@link Servicer#service}. The functionality of an
  * outer proxy can be extended by its inner server functionality with its Remote
  * inner proxy. In this case, the outer proxies have to implement {@link Outer}
  * interface and each outer proxy is registered with the inner proxy allocated
- * with {@link Outer#setProxy} invoked on the outer proxy. Obviously an outer
+ * with {@link sorcer.core.provider.proxy.Outer#getInner()} invoked on the outer proxy. Obviously an outer
  * proxy can implement own interfaces with the help of its embedded inner proxy
  * that in turn can consit of multiple own inner proxies as needed. This class
  * implements the {@link Outer} interface, so can extend its functionality by
@@ -168,15 +135,15 @@ import com.sun.jini.thread.TaskManager;
  * lookup services. Multiple SORECER servers can be deployed within a single
  * {@link ServiceProvider} as its own service beans.
  * 
- * @see Proivider
+ * @see Provider
  * @see ServiceIDListener
- * @see ReferentUuuid
+ * @see ReferentUuid
  * @see AdministratableProvider
  * @see ProxyAccessor
  * @see ServerProxyTrust
  * @see RemoteMethodControl 
  * @see LifeCycle
- * @see Partener
+ * @see Partner
  * @see Partnership
  * @see RemoteContextManagement 
  * @see SorcerConstants
@@ -592,12 +559,12 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 	/**
 	 * Returns a proxy object for this provider. If the smart proxy is alocated
 	 * then returns a non exported object to be registerd with loookup services.
-	 * However, if a smart proxy implements {@link OuteProxy} then the
+	 * However, if a smart proxy implements {@link Outer} then the
 	 * provider's proxy is set as its inner proxy. Otherwise the {@link Remote}
 	 * outer proxy of this provider is returned.
 	 * 
 	 * @return a proxy, or null
-	 * @see sorcer.base.Provider#getProxy()
+	 * @see sorcer.core.Provider
 	 */
 	public Object getProxy() {
 		return delegate.getProxy();
@@ -694,8 +661,8 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 	 * Log information about failing to initialize the service and rethrow the
 	 * appropriate exception.
 	 * 
-	 * @param the
-	 *            exception produced by the failure
+	 * @param e
+	 * the exception produced by the failure
 	 */
 	static void initFailed(Throwable e) throws Exception {
 		String message = null;
@@ -742,8 +709,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 	 * "properties" in the provider's Jini configuration file. However
 	 * provider's properties can be defined directly in Jini provider's
 	 * configuration file - the latter recommended.
-	 * 
-	 * @param config
+	 *
 	 *            Jini configuration
 	 * @throws Exception
 	 */
@@ -934,7 +900,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
 		UIDescriptor uiDesc2 = null;
 		try {
-			URL uiUrl = new URL(Resolver.resolveAbsolute(Sorcer.getWebsterUrl() , ArtifactCoordinates.coords("org.sorcersoft.sorcer:sos-exertlet-sui:11.1")));
+			URL uiUrl = new URL(Resolver.resolveAbsolute(Sorcer.getWebsterUrl()  + "/", Artifact.sorcer("sos-exertlet-sui")));
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/exertlet/sos-exertlet-sui.html");
 
@@ -1786,7 +1752,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.base.Provider#destroy()
+	 * @see sorcer.core.Destroyer#destroy()
 	 */
 	public void destroy() throws RemoteException {
 		logger.log(Level.INFO, "Destroying service " + getProviderName());
@@ -1809,7 +1775,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 	 * Destroy all services in this node (virtual machine) by calling each
 	 * destroy().
 	 * 
-	 * @see sorcer.base.Provider#destroy()
+	 * @see sorcer.core.Destroyer#destroy()
 	 */
 	public void destroyNode() throws RemoteException {
 		for (ServiceProvider provider : providers) {

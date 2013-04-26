@@ -46,4 +46,33 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 		}
 		return properties.getProperty("version");
 	}
+
+    public String resolveVersion(String groupId) {
+        String resourceName = "META-INF/maven/versions.properties";
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
+        if (resource == null) {
+            return null;
+        }
+        String version = null;
+        Properties properties = new Properties();
+        InputStream inputStream = null;
+        try {
+            inputStream = resource.openStream();
+            properties.load(inputStream);
+            version = properties.getProperty(groupId);
+        } catch (IOException x) {
+            throw new RuntimeException("Could not load versions.properties file from sos-env.jar");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    //igonre
+                }
+            }
+        }
+        if (version!=null) return version;
+        else throw new RuntimeException("Could not load version " + groupId + " from versions.properties");
+    }
+
 }

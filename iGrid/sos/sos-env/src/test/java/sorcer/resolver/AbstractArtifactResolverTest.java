@@ -28,7 +28,16 @@ public class AbstractArtifactResolverTest {
 		Assert.assertNotNull(version);
 	}
 
-	@Test
+    @Test
+    public void testResolveVersionGroup() throws Exception {
+        String version = resolver.resolveVersion("org.apache.river");
+        Assert.assertNotNull(version);
+        version = resolver.resolveVersion("org.sorcersoft.sorcer");
+        Assert.assertNotNull(version);
+    }
+
+
+    @Test
 	public void testResolveVersionImproper() throws Exception {
 		String version = resolver.resolveVersion("---mxbnvksghlk", "asdasdasd");
 		Assert.assertNull(version);
