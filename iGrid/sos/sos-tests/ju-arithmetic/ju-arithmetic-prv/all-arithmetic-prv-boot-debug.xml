@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="Arithmetic all bean services" default="debug.provider" basedir=".">
+
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property environment="env" />
+	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+	<property name="spawn.provider" value="no" />
+			
+	<import file="../../../../bin/common-run.xml" />
+	
+	<target name="debug.provider" depends="mvn-init">
+		<property name="runtime.classpath.string" refid="runtime.classpath" />
+		<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
+			<classpath refid="boot.classpath" />
+			<arg value="${provider.config}" />
+			<jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
+			<env key="RIO_HOME" value="${rio.home}" />
+			<sysproperty key="sorcer.home" value="${sorcer.home}" />
+			<sysproperty key="RIO_HOME" value="${rio.home}" />
+			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+			<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
+		</java>
+	</target>
+</project>
