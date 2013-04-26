@@ -1,39 +1,53 @@
 <?xml version="1.0"?>
 
 <project name="code server" default="webster" basedir=".">
-
-
-    <property environment="env" />
-	<property name="pom.file" value="${env.SORCER_HOME}/tools/sos-webster/pom.xml" />
 	<!-- load system environment variables -->
-	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
-
+	<property environment="env" />
+	<import file="${env.IGRID_HOME}/modules/common-run.xml" />
 	<property name="provider.webster" value="${provider.webster.interface.TMP}" />
 	<echo message="provider.webster = ${provider.webster}" />
 	<echo message="provider.webster.port ${provider.webster.port}" />
+	<!-- Jini distribution code server -->
+	<target name="httpd">
+		<java jar="${jini.lib}/tools.jar" fork="yes">
+			<arg line="-verbose -port ${provider.webster.port} -dir ${lib}" />
+		</java>
+	</target>
+	<!-- IGRID Data Directory -->
+	<property name="iGrid.data" value="${iGrid.home}/data" />
+	<!-- SORCER code server: Webster -->
+	<!-- webster root directories -->
+	<property name="d1" value="${sorcer-dl.lib}" />
+	<property name="d2" value="${sorcer.lib}" />
+	<property name="d3" value="${jini-dl.lib}" />
+	<property name="d4" value="${rio.lib}" />
+	<property name="d5" value="${common.lib}" />
+	<property name="d6" value="${common.lib}/blitz" />
+	<!-- Required when eng-eval.jar needs to be in the codebase -->
+	<property name="d7" value="${eng-dl.lib}" />
+	<property name="d8" value="${eng.lib}" />
+	<property name="d9" value="${lib}" />
+	<property name="d10" value="${iGrid.data}" />
+	<property name="d11" value="${env.IGRID_HOME}/../Products/lib/products/lib"/>
+	<property name="d12" value="${env.IGRID_HOME}/../Products/lib/products/lib-dl"/>
+	<property name="d13" value="${common.lib}/jfreechart" />
+	<property name="rootdirs" value="${d1};${d2};${d3};${d4};${d5};${d6};${d7};${d8};${d9};${d10};${d11};${d12};${d13}" />
+	<!--property name="rd" value="${requestor.data}" /-->
+	<!--property name="pd" value="${provider.data}" /-->
+	<!--property name="sd" value="${ishared.data}" /-->
+	<property name="webster.tmp.dir" value="${iGrid.data}" />
 	
-	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
-	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/webster/${v.sorcer}/sos-webster-${v.sorcer}.jar" />
-	</path>
-
-	<target name="webster" depends="mvn-init">
-		<java classname="sorcer.tools.webster.Webster" maxmemory="500M" fork="yes">
-			<classpath>
-			    <path refid="run.classpath"/>  				
-			</classpath>
-			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+	<!-- start webster -->
+	<target name="webster">
+		<java jar="${sorcer-ext.lib}/webster.jar" maxmemory="450M" fork="yes">
+			<sysproperty key="java.util.logging.config.file" value="${iGrid.home}/configs/sorcer.logging" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
-			<sysproperty key="provider.webster.root" value="${mvn.repo};${sorcer.home}/lib/river/lib;${sorcer.home}/lib/river/lib-dl" />
-			<sysproperty key="provider.webster.port" value="${provider.webster.port}" />
-			<sysproperty key="provider.webster.interface" value="${provider.webster}" /> 
-			<sysproperty key="provider.webster.debug" value="true" />
-			<!-- Configuration for remote requestor/provider data access -->
-<!--			<sysproperty key="data.server" value="10.131.5.90" />
-			<sysproperty key="data.server.port" value="9000" />
-			<sysproperty key="data.root.dir" value="${sorcer.home}/data" />
-			<sysproperty key="requestor.data.dir" value="optimization/input" />-->
+			<sysproperty key="java.security.policy" value="${iGrid.policy}/policy.all" />
+			<sysproperty key="webster.root" value="${rootdirs}" />
+			<sysproperty key="webster.port" value="${provider.webster.port}" />
+			<sysproperty key="webster.tmp.dir" value="${webster.tmp.dir}" />
+			<sysproperty key="webster.interface" value="${provider.webster}" /> 
+			<sysproperty key="webster.debug" value="true" />
 		</java>
 	</target>
 </project>
