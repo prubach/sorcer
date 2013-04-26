@@ -1,0 +1,13 @@
+import static sorcer.eo.operator.*;
+import static sorcer.co.operator.*;
+import static sorcer.tools.shell.NetworkShell.nshUrl;
+
+//common SORCER classes
+import sorcer.service.*;
+import sorcer.service.Signature.*;
+import sorcer.service.Strategy.*;
+import sorcer.core.exertion.*;
+
+import sorcer.service.*;
+import sorcer.core.context.model.*;
+import java.io.*;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<platform>
+    <!--
+    Groovy jars to load into the common classloader.
+    -->
+    <capability name="Groovy" common="yes">
+        <version>2.0.6</version>
+        <classpath>${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/2.0.6/groovy-all-2.0.6.jar</classpath>
+    </capability>    
+</platform>
