@@ -16,8 +16,6 @@
 	<url>http://sorcersoft.org/</url>
 
 	<modules>
-		<module>account</module>
-		<module>arithmetic</module>
 		<module>ex1</module>
 		<module>ex2</module>
 		<module>ex3</module>
@@ -26,8 +24,6 @@
 		<module>ex5</module>  
 		-->
 		<module>ex6</module>
-		<module>hello</module>
-		<module>simple</module>
-    <module>first</module>
-  </modules>
+		<module>first</module>
+	</modules>
 </project>
