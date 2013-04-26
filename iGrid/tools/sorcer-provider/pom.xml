@@ -17,6 +17,11 @@
     <description>SORCER provider archetype</description>
     <url>http://sorcersoft.com/</url>
 
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+		<skipTests>true</skipTests>
+	</properties>
+
     <build>
         <extensions>
             <extension>

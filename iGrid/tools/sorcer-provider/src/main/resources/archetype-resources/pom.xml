@@ -23,10 +23,10 @@
 
     <modules>
         <module>${rootArtifactId}-api</module>
-        <module>${rootArtifactId}-service</module>
+        <module>${rootArtifactId}-prv</module>
         <module>${rootArtifactId}-proxy</module>
-        <module>${rootArtifactId}-ui</module>
-        <module>${rootArtifactId}-client</module>
+        <module>${rootArtifactId}-sui</module>
+        <module>${rootArtifactId}-req</module>
     </modules>
 
     <dependencyManagement>

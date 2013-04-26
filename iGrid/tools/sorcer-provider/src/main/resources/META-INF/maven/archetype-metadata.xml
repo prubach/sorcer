@@ -41,7 +41,7 @@
     </requiredProperties>
 
     <modules>
-        <module id="${artifactId}-client" dir="__rootArtifactId__-client" name="${artifactId}-client">
+        <module id="${artifactId}-req" dir="__rootArtifactId__-req" name="${artifactId}-req">
             <fileSets>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
@@ -93,7 +93,7 @@
                 </fileSet>
             </fileSets>
         </module>
-        <module id="${artifactId}-service" dir="__rootArtifactId__-service" name="${artifactId}-service">
+        <module id="${artifactId}-req" dir="__rootArtifactId__-req" name="${artifactId}-v">
             <fileSets>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
@@ -134,7 +134,7 @@
                 </fileSet>
             </fileSets>
         </module>
-        <module id="${artifactId}-ui" dir="__rootArtifactId__-ui" name="${artifactId}-ui">
+        <module id="${artifactId}-sui" dir="__rootArtifactId__-sui" name="${artifactId}-sui">
             <fileSets>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
