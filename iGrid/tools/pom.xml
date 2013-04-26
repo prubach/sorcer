@@ -23,6 +23,7 @@
 		<module>sos-shell</module>
 		<module>browser</module>
 		<module>sorcer-maven-plugin</module>
+		<module>sos-localhost</module>
 
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
