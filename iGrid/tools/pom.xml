@@ -24,6 +24,7 @@
 		<module>browser</module>
 		<module>sorcer-maven-plugin</module>
 		<module>sos-localhost</module>
+		<module>sorcer-provider</module>
 
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>

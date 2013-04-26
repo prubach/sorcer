@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        name="sorcer-provider"
+        >
+
+    <!-- Values provided here literally (without ${} reference) are used by other tools (i.e. the eclipse plugin) -->
+    <requiredProperties>
+        <requiredProperty key="version">
+            <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="providerInterface">
+            <defaultValue>SampleService</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="providerClass">
+            <defaultValue>${providerInterface}Impl</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="projectDescription">
+            <defaultValue>Sample Service</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceName">
+            <defaultValue>${providerInterface}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceDescription">
+            <defaultValue>${projectDescription}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceGroup">
+            <defaultValue>sorcer.TEST</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="usesSpacer">
+            <defaultValue>false</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="usesMonitor">
+            <defaultValue>false</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="serviceIcon">
+            <defaultValue>/META-INF/sorcer/sorcer.png</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
+
+    <modules>
+        <module id="${artifactId}-client" dir="__rootArtifactId__-client" name="${artifactId}-client">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/scripts</directory>
+                    <includes>
+                        <include>run.ntl</include>
+                        <include>run.xml</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-api" dir="__rootArtifactId__-api" name="${artifactId}-api">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <excludes>
+                        <exclude>
+                            **/*.png
+                        </exclude>
+                    </excludes>
+                </fileSet>
+                <fileSet filtered="false" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>
+                            **/*.png
+                        </include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-service" dir="__rootArtifactId__-service" name="${artifactId}-service">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+<!--		    <includes>
+			<include>**/*.policy</include>
+                    </includes>-->
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/scripts</directory>
+                    <includes>
+                        <include>boot.xml</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-proxy" dir="__rootArtifactId__-proxy" name="${artifactId}-proxy">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${artifactId}-ui" dir="__rootArtifactId__-ui" name="${artifactId}-ui">
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/test/resources</directory>
+                </fileSet>
+            </fileSets>
+        </module>
+    </modules>
+</archetype-descriptor>
