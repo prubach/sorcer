@@ -60,8 +60,8 @@ public class EmxCmd extends ShellCmd {
 				+ "\n  -y   show asynchronous monitored exertions"
 				+ "\n  -e   print the selected exertion"
 				+ "\n  <exertion index>   select the exertion given <exertion index>"
-				+ "\n  -c   print the data context of selected exertion"
-				+ "\n  -cc   print the control context of selected exertion"
+				+ "\n  -c   print the data dataContext of selected exertion"
+				+ "\n  -cc   print the control dataContext of selected exertion"
 				+ "\n  -ccc   print both data and control contexts of selected exertion"
 				+ "\n  -s   save the selected exertion in a given file ";
 
@@ -129,7 +129,7 @@ public class EmxCmd extends ShellCmd {
 					ExertionInfo xrtInfo = exertionInfos[selectedExertion];
 					printExertion(xrtInfo.getStoreId(), true, false);
 				}
-			} else if (next.equals("-cc")) {
+			} else if (next.equals("-controlContext")) {
 				isEmxMode = false;
 				if (selectedExertion >= 0) {
 					ExertionInfo xrtInfo = exertionInfos[selectedExertion];
@@ -173,13 +173,13 @@ public class EmxCmd extends ShellCmd {
 		} else if (numTokens == 2) {
 			next = myTk.nextToken();
 			if (next.equals("-e") || next.equals("-c")
-					|| next.equals("-cc") || next.equals("-ccc")) {
+					|| next.equals("-controlContext") || next.equals("-ccc")) {
 				isEmxMode = false;
 				boolean isContext = false;
 				boolean isControlContext = false;
 				if (next.equals("-c"))
 					isContext = true;
-				if (next.equals("-cc"))
+				if (next.equals("-controlContext"))
 					isControlContext = true;
 				if (next.equals("-ccc")) {
 					isContext = true;
@@ -222,7 +222,7 @@ public class EmxCmd extends ShellCmd {
 		out.println(((ServiceExertion) xrt).describe());
 		if (isContext) {
 			out.println("\nData Context:");
-			out.println(xrt.getContext());
+			out.println(xrt.getDataContext());
 		}
 		if (isControlContext) {
 			out.print("\nControl Context:");

@@ -217,7 +217,7 @@ public class DataStorageCmd extends ShellCmd {
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-				out.println("XXXXXXXXXXXXX context: " + cxt);
+				out.println("XXXXXXXXXXXXX dataContext: " + cxt);
 				try {
 					store("dupa");
 					List<String>  records = list(Store.object);

@@ -122,7 +122,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 			}
 		ExertionSessionInfo.add((ServiceExertion)exertion);
 		//Provider is expecting exertion field in Context to be set.
-		xrt.getContext().setExertion(xrt); 
+		xrt.getDataContext().setExertion(xrt);
 		updateInputs(exertion);
 		((ServiceExertion)exertion).startExecTime();
 		((ServiceExertion) exertion).setStatus(ExecState.RUNNING);
@@ -166,7 +166,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 			try {
 				if (ei.isTask())
 					((MonitoringSession) ((ServiceExertion) exertion).getMonitorSession())
-							.changed(((NetTask) exertion).getContext(), ExecState.Category.FAILED);
+							.changed(((NetTask) exertion).getDataContext(), ExecState.Category.FAILED);
 			} catch (Exception ex0) {
 				ex0.printStackTrace();
 			} finally {

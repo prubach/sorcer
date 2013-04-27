@@ -16,6 +16,31 @@
  */
 package sorcer.eo;
 
+import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceTemplate;
+import net.jini.core.transaction.Transaction;
+import sorcer.co.tuple.*;
+import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
+import sorcer.core.context.*;
+import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.exertion.*;
+import sorcer.core.signature.EvaluationSignature;
+import sorcer.core.signature.NetSignature;
+import sorcer.core.signature.ObjectSignature;
+import sorcer.core.signature.ServiceSignature;
+import sorcer.service.*;
+import sorcer.service.Signature.Direction;
+import sorcer.service.Signature.ReturnPath;
+import sorcer.service.Signature.Type;
+import sorcer.service.Strategy.*;
+import sorcer.util.ExertionShell;
+import sorcer.util.ServiceAccessor;
+import sorcer.util.Sorcer;
+import sorcer.util.bdb.SosURL;
+import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.sdb.SdbUtil;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -25,67 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
-
-import net.jini.core.lookup.ServiceItem;
-import net.jini.core.lookup.ServiceTemplate;
-import net.jini.core.transaction.Transaction;
-import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.IndexedTriplet;
-import sorcer.co.tuple.Parameter;
-import sorcer.co.tuple.Path;
-import sorcer.co.tuple.Tuple2;
-import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
-import sorcer.core.context.ArrayContext;
-import sorcer.core.context.ControlContext;
-import sorcer.core.context.ThrowableTrace;
-import sorcer.core.context.IControlContext;
-import sorcer.core.context.ListContext;
-import sorcer.core.context.PositionalContext;
-import sorcer.core.context.ServiceContext;
-import sorcer.core.context.SharedAssociativeContext;
-import sorcer.core.context.SharedIndexedContext;
-import sorcer.core.exertion.EvaluationTask;
-import sorcer.core.exertion.NetJob;
-import sorcer.core.exertion.NetTask;
-import sorcer.core.exertion.ObjectJob;
-import sorcer.core.exertion.ObjectTask;
-import sorcer.core.signature.EvaluationSignature;
-import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ObjectSignature;
-import sorcer.core.signature.ServiceSignature;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Executor;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Identifiable;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.Revaluation;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.Signature.Direction;
-import sorcer.service.Signature.ReturnPath;
-import sorcer.service.Signature.Type;
-import sorcer.service.SignatureException;
-import sorcer.service.Spacer;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
-import sorcer.service.Strategy.Monitor;
-import sorcer.service.Strategy.Provision;
-import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
-import sorcer.util.ExertionShell;
-import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
-import sorcer.util.bdb.SosURL;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
-import sorcer.util.bdb.sdb.SdbUtil;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {
@@ -166,20 +130,20 @@ public class operator {
 
 	public static void put(Exertion exertion, Tuple2<String, ?>... entries)
 			throws ContextException {
-		put(exertion.getContext(), entries);
+		put(exertion.getDataContext(), entries);
 	}
 
 	public static Exertion setContext(Exertion exertion, Context context) {
-		((ServiceExertion) exertion).setContext(context);
+		((ServiceExertion) exertion).setDataContext(context);
 		return exertion;
 	}
 
-	public static IControlContext control(Exertion exertion)
+	public static ControlContext control(Exertion exertion)
 			throws ContextException {
 		return exertion.getControlContext();
 	}
 
-	public static IControlContext control(Exertion exertion, String childName)
+	public static ControlContext control(Exertion exertion, String childName)
 			throws ContextException {
 		return exertion.getExertion(childName).getControlContext();
 	}
@@ -207,11 +171,11 @@ public class operator {
 			Exertion xrt = (Exertion) entries[0];
 			if (entries.length >= 2 && entries[1] instanceof String)
 				xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
-			return xrt.getContext();
+			return xrt.getDataContext();
 		} else if (entries[0] instanceof String
 				&& entries[1] instanceof Exertion) {
 			return ((Job) entries[1]).getComponentExertion((String) entries[0])
-					.getContext();
+					.getDataContext();
 		}
 		String name = getUnknown();
 		List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
@@ -654,7 +618,7 @@ public class operator {
 		if (context == null) {
 			context = new ServiceContext();
 		}
-		task.setContext(context);
+		task.setDataContext(context);
 
 		if (access != null) {
 			task.setAccess(access);
@@ -735,7 +699,7 @@ public class operator {
 		}
 		job.addSignature(signature);
 		if (data != null)
-			job.setContext(data);
+			job.setDataContext(data);
 
 		if (job instanceof NetJob && control != null) {
 			job.setControlContext(control);
@@ -745,9 +709,9 @@ public class operator {
 				job.getSignatures().clear();
 				job.addSignature(procSig);
 				if (data != null)
-					job.setContext(data);
+					job.setDataContext(data);
 				else
-					job.getContext().setExertion(job);
+					job.getDataContext().setExertion(job);
 			}
 		}
 		if (exertions.size() > 0) {
@@ -755,12 +719,12 @@ public class operator {
 				job.addExertion(ex);
 			}
 			for (Pipe p : pipes) {
-				logger.finer("from context: " + p.in.getContext().getName()
+				logger.finer("from dataContext: " + p.in.getDataContext().getName()
 						+ " path: " + p.inPath);
-				logger.finer("to context: " + p.out.getContext().getName()
+				logger.finer("to dataContext: " + p.out.getDataContext().getName()
 						+ " path: " + p.outPath);
-				p.out.getContext().connect(p.outPath, p.inPath,
-						p.in.getContext());
+				p.out.getDataContext().connect(p.outPath, p.inPath,
+						p.in.getDataContext());
 			}
 		} else
 			throw new ExertionException("No component exertion defined.");
@@ -786,7 +750,7 @@ public class operator {
 	}
 
 	public static Object get(Exertion exertion) throws ContextException {
-		return ((ServiceContext) exertion.getContext()).getReturnValue();
+		return ((ServiceContext) exertion.getDataContext()).getReturnValue();
 	}
 
 	public static <V> V asis(Object evaluation) throws EvaluationException {
@@ -906,7 +870,7 @@ public class operator {
 		if (returnPath != null) {
 			return context.getValue(returnPath.path);
 		} else
-			throw new ExertionException("No return path in the context: "
+			throw new ExertionException("No return path in the dataContext: "
 					+ context.getName());
 	}
 
@@ -926,16 +890,16 @@ public class operator {
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ReturnPath returnPath = xrt.getContext().getReturnPath();
+		ReturnPath returnPath = xrt.getDataContext().getReturnPath();
 		if (returnPath != null) {
 			if (xrt instanceof Task) {
-				return xrt.getContext().getValue(returnPath.path);
+				return xrt.getDataContext().getValue(returnPath.path);
 			} else if (xrt instanceof Job) {
 				return ((Job) xrt).getValue(returnPath.path);
 			}
 		} else {
 			if (xrt instanceof Task) {
-				return xrt.getContext();
+				return xrt.getDataContext();
 			} else if (xrt instanceof Job) {
 				return ((Job) xrt).getJobContext();
 			}
@@ -955,7 +919,7 @@ public class operator {
 				List<Signature> sigs = ((ControlContext) param).getSignatures();
 				ControlContext cc = (ControlContext) param;
 				cc.setSignatures(null);
-				Context tc = exertion.getContext();
+				Context tc = exertion.getDataContext();
 				items.add(tc);
 				items.add(cc);
 				items.addAll(sigs);
@@ -981,7 +945,7 @@ public class operator {
 	}
 
 	public static List<ThrowableTrace> exceptions(Exertion exertion) {
-		return exertion.getThrowables();
+		return exertion.getExceptions();
 	}
 
 	public static Task exert(Task input, Entry... entries)
@@ -1244,9 +1208,9 @@ public class operator {
 			} else if (o instanceof Flow) {
 				cc.setFlowType((Flow) o);
 			} else if (o instanceof Monitor) {
-				cc.isMonitored((Monitor) o);
+				cc.isMonitorable((Monitor) o);
 			} else if (o instanceof Provision) {
-				cc.isProvisioned((Provision) o);
+				cc.isProvisionable((Provision) o);
 			} else if (o instanceof Wait) {
 				cc.isWait((Wait) o);
 			} else if (o instanceof Signature) {
@@ -1565,7 +1529,7 @@ public class operator {
 
 	/**
 	 * Returns an instance by class method initialization with a service
-	 * context.
+	 * dataContext.
 	 * 
 	 * @param signature
 	 * @return object created

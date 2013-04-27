@@ -127,7 +127,7 @@ public class Jobs implements SorcerConstants {
 
 	public static boolean isMonitorable(Job job) {
 		ControlContext cc = job.getControlContext();
-		return cc.isMonitored();
+		return cc.isMonitorable();
 	}
 
 	public static Vector<Exertion> getInputExertions(Job job) {
@@ -165,25 +165,25 @@ public class Jobs implements SorcerConstants {
 		cc.setGoodUntilDate(sc.getGoodUntilDate());
 		cc.setDomainID(sc.getDomainID());
 		cc.setSubdomainID(sc.getSubdomainID());
-		// cc.setLinkCount(sc.getLinkCount());
-		// cc.setExceptionCount(sc.getExceptionCount());
+		// controlContext.setLinkCount(sc.getLinkCount());
+		// controlContext.setExceptionCount(sc.getExceptionCount());
 		cc.setDomainName(sc.getDomainName());
-		// cc.setCP(sc.getCP());
+		// controlContext.setCP(sc.getCP());
 		cc.setPathIds(sc.getPathIds());
-		// cc.scratch = sc.scratch;
+		// controlContext.scratch = sc.scratch;
 		cc.setMetacontext(sc.getMetacontext());
 		cc.isPersistantTaskAssociated = ((ServiceContext) sc).isPersistantTaskAssociated;
 		return cc;
 	}
 
 	public static void removeExceptions(Job job) {
-		removeExceptions(job.getContext());
+		removeExceptions(job.getDataContext());
 		for (int i = 0; i < job.size(); i++) {
 			if (((ServiceExertion) job.exertionAt(i)).isJob())
 				removeExceptions((Job) job.exertionAt(i));
 			else
 				removeExceptions(((ServiceExertion) job.exertionAt(i))
-						.getContext());
+						.getDataContext());
 		}
 	}
 
@@ -220,8 +220,8 @@ public class Jobs implements SorcerConstants {
 			else if (((ServiceExertion) refJob.exertionAt(i)).isTask()
 					&& ((ServiceExertion) resJob.exertionAt(i)).isTask())
 				preserveNodeReferences(((ServiceExertion) refJob.exertionAt(i))
-						.getContext(), ((ServiceExertion) resJob.exertionAt(i))
-						.getContext());
+						.getDataContext(), ((ServiceExertion) resJob.exertionAt(i))
+						.getDataContext());
 		}
 	}
 
@@ -237,8 +237,8 @@ public class Jobs implements SorcerConstants {
 			Job job = (Job) ex;
 			if (job.getId() == null)
 				job.setId(getId());
-			if (job.getContext().getId() == null)
-				job.getContext().setId(getId());
+			if (job.getDataContext().getId() == null)
+				job.getDataContext().setId(getId());
 			for (int i = 0; i < job.size(); i++)
 				replaceNullIDs(job.exertionAt(i));
 		} else
@@ -248,9 +248,9 @@ public class Jobs implements SorcerConstants {
 	public static void replaceNullIDs(ServiceExertion task) {
 		if (task.getId() == null)
 			task.setId(getId());
-		if (task.getContext() != null) {
-			if (task.getContext().getId() == null)
-				task.getContext().setId(getId());
+		if (task.getDataContext() != null) {
+			if (task.getDataContext().getId() == null)
+				task.getDataContext().setId(getId());
 		}
 	}
 
@@ -293,14 +293,14 @@ public class Jobs implements SorcerConstants {
 	// For Recursion
 	private static void collectTaskContexts(Exertion exertion, List<Context> contexts) {
 		if (exertion instanceof Conditional)
-			contexts.add(exertion.getContext());
+			contexts.add(exertion.getDataContext());
 		else if (exertion instanceof Job) {
 			for (int i = 0; i < ((Job) exertion).getExertions().size(); i++)
 				collectTaskContexts(((Job) exertion).exertionAt(i),
 						contexts);
 		}
 		else if (exertion instanceof Task) {
-			contexts.add(exertion.getContext());
+			contexts.add(exertion.getDataContext());
 		}
 	}
 }

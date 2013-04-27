@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import sorcer.service.Context;
@@ -50,9 +51,9 @@ public interface Provider extends Servicer, Monitorable, Remote, Destroyer {
 
 	public Configuration getProviderConfiguration() throws RemoteException;
 
-	public void init() throws RemoteException;
+	public boolean init() throws RemoteException, ConfigurationException;
 
-	public void init(String propFile) throws RemoteException;
+	public boolean init(String propFile) throws RemoteException, ConfigurationException;
 
 	public void restore() throws RemoteException;
 
@@ -109,7 +110,7 @@ public interface Provider extends Servicer, Monitorable, Remote, Destroyer {
 	public Properties getJavaSystemProperties() throws RemoteException;
 
 	/**
-	 * Updates the monitor with the current context.
+	 * Updates the monitor with the current dataContext.
 	 * 
 	 * @param ctx
 	 * @throws RemoteException

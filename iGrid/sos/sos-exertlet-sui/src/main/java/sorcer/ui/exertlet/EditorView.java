@@ -525,12 +525,12 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			openOutPanel("Failed to process the exertlet!");
 			return;
 		}
-		if (exertion.getThrowables().size() > 0) {
-			openOutPanel(exertion.getThrowables().toString());
+		if (exertion.getExceptions().size() > 0) {
+			openOutPanel(exertion.getExceptions().toString());
 		} else {
 			StringBuilder sb = new StringBuilder();
 			if (exertion instanceof Task)
-				sb.append(exertion.getContext().toString());
+				sb.append(exertion.getDataContext().toString());
 			else
 				sb.append(((Job) exertion).getJobContext().toString());
 			if (debug) {
@@ -539,7 +539,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 					sb.append(((ServiceExertion) exertion).getControlContext()
 							.toString());
 				else
-					sb.append(((Job) exertion).getJobControlContext()
+					sb.append(((Job) exertion).getControlInfo()
 							.toString());
 			}
 			openOutPanel(sb.toString());
@@ -600,7 +600,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		String script = ((RemoteContextManagement) provider).getContextScript();
 
 		if (script == null || script.length() == 0) {
-			script = "No context script availble from the provider: \n"
+			script = "No dataContext script availble from the provider: \n"
 					+ provider;
 		}
 		if (model != null)

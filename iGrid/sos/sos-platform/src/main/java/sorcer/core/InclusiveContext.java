@@ -25,7 +25,7 @@ import sorcer.service.ContextException;
 /**
  * The InclusiveContext is an interface designed to enable CDS providers to
  * encapsulate the query for data from multiple EDS providers into a single
- * request. This inclusive context is also designed to be a container for the
+ * request. This inclusive dataContext is also designed to be a container for the
  * view of data which satisfies the query. The InclusiveContext can return an
  * iterator which can iterate through the tuples which satisfy the query. It
  * also returns a metadata object which basically contains information about the
@@ -39,9 +39,9 @@ import sorcer.service.ContextException;
 public interface InclusiveContext extends Context {
 
 	/**
-	 * This method enables the user to give a different context-specific name to
+	 * This method enables the user to give a different dataContext-specific name to
 	 * an existing path. The map gives the user the ability to specify names for
-	 * attributes depending on the context of the query
+	 * attributes depending on the dataContext of the query
 	 * 
 	 * @param newPath
 	 *            specify new name for path
@@ -63,9 +63,9 @@ public interface InclusiveContext extends Context {
 	// Other methods already implemented in the Impl should be added here
 	// ******************************************************************
 	/**
-	 * This method enables the user to give a different context-specific name to
+	 * This method enables the user to give a different dataContext-specific name to
 	 * an existing path. The map gives the user the ability to specify names for
-	 * attributes depending on the context of the query
+	 * attributes depending on the dataContext of the query
 	 * 
 	 * @param newPath
 	 *            specify new name for path

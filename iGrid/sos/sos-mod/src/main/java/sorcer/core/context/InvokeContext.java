@@ -47,7 +47,7 @@ public class InvokeContext extends ServiceContext<Object> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.service.Evaluation#getValue(sorcer.core.context.Path.Entry[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException, RemoteException {

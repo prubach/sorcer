@@ -190,7 +190,7 @@ public interface Cataloger extends Remote {
 	public ServiceTemplate getTemplate() throws RemoteException;
 
 	/**
-	 * Get the context from the provider specified for the interface and method
+	 * Get the dataContext from the provider specified for the interface and method
 	 * requested
 	 * 
 	 * @param providerName
@@ -206,7 +206,7 @@ public interface Cataloger extends Remote {
 			String methodName) throws RemoteException;
 
 	/**
-	 * Saves the context to the provider specified for the interface and method
+	 * Saves the dataContext to the provider specified for the interface and method
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
@@ -223,7 +223,7 @@ public interface Cataloger extends Remote {
 			String methodName, Context theContext) throws RemoteException;
 
 	/**
-	 * Delete the context from the provider specified for the interface and
+	 * Delete the dataContext from the provider specified for the interface and
 	 * method
 	 * 
 	 * @param providerName
@@ -252,7 +252,7 @@ public interface Cataloger extends Remote {
 			String serviceType) throws RemoteException;
 
 	/**
-	 * Create an exertion on the provider specified, sending the context to the
+	 * Create an exertion on the provider specified, sending the dataContext to the
 	 * method specified.
 	 * 
 	 * @param providerName
@@ -268,15 +268,15 @@ public interface Cataloger extends Remote {
 			String methodName, Context theContext) throws RemoteException;
 
 	/**
-	 * Returns the template context with which the provider is registered. This
-	 * template context is pulled out of the service attribute (Entry):
+	 * Returns the template dataContext with which the provider is registered. This
+	 * template dataContext is pulled out of the service attribute (Entry):
 	 * SorcerServiceType.
 	 * 
 	 * @param provider
 	 *            - provider name
 	 * @param method
 	 *            - a method name
-	 * @return a service context for a given provider name and its method
+	 * @return a service dataContext for a given provider name and its method
 	 * @throws RemoteException
 	 */
 	public Context getContexts(Class provider, String method)

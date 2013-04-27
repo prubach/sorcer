@@ -90,7 +90,7 @@ public class ArithmeticTester implements SorcerConstants {
 			result = tester.f5xP(args[1], args[2]);
 		
 //		logger.info(">>>>>>>>>>>>> exceptions: " + exceptions(result));
-//		logger.info(">>>>>>>>>>>>> result context: " + context(result));
+//		logger.info(">>>>>>>>>>>>> result dataContext: " + dataContext(result));
 	}
 	
 	// two level composition
@@ -117,7 +117,7 @@ public class ArithmeticTester implements SorcerConstants {
 		   pipe(out(f4, path(result, y)), in(f5, path(arg, x2))));
 
 		Exertion out = exert(f1);
-		logger.info("job f1 context: " + jobContext(out));
+		logger.info("job f1 dataContext: " + jobContext(out));
 		logger.info("job f1/f5/result/y: " + get(out, "f1/f5/result/y"));
 		
 		return out;
@@ -146,7 +146,7 @@ public class ArithmeticTester implements SorcerConstants {
 		   pipe(out(f5, path(result, y)), in(f3, path(arg, x2))));
 
 		Exertion out = exert(f1);
-		logger.info("job f1 context: " + jobContext(out));
+		logger.info("job f1 dataContext: " + jobContext(out));
 		logger.info("job f1 f1/f3/result/y: " + get(out, path("f1", "f3", result, y)));
 		
 		return out;
@@ -176,7 +176,7 @@ public class ArithmeticTester implements SorcerConstants {
 
 		Exertion out = exert(f1);
 
-		logger.info("job f1 context: " + jobContext(out));
+		logger.info("job f1 dataContext: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 
 		return out;
@@ -210,8 +210,8 @@ public class ArithmeticTester implements SorcerConstants {
 		System.out.println("Execution time: " + (end-start) + " ms.");
 		
 		logger.info("out name: " + name(out));
-		logger.info("job f1 context: " + context(out));
-		logger.info("job f1 job context: " + jobContext(out));
+		logger.info("job f1 dataContext: " + context(out));
+		logger.info("job f1 job dataContext: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 		logger.info("task f4 trace: " + trace(exertion(out, "f1/f2/f4")));
 		logger.info("task f5 trace: " + trace(exertion(out, "f1/f2/f5")));
@@ -248,8 +248,8 @@ private Exertion f1SEQpull() throws Exception {
 		System.out.println("Execution time: " + (end-start) + " ms.");
 		
 		logger.info("out name: " + name(out));
-		logger.info("job f1 context: " + context(out));
-		logger.info("job f1 job context: " + jobContext(out));
+		logger.info("job f1 dataContext: " + context(out));
+		logger.info("job f1 job dataContext: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 		logger.info("task f4 trace: " + trace(exertion(out, "f1/f2/f4")));
 		logger.info("task f5 trace: " + trace(exertion(out, "f1/f2/f5")));
@@ -272,7 +272,7 @@ private Exertion f1SEQpull() throws Exception {
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -291,7 +291,7 @@ private Exertion f1SEQpull() throws Exception {
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -312,7 +312,7 @@ private Exertion f1SEQpull() throws Exception {
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -332,7 +332,7 @@ private Exertion f1SEQpull() throws Exception {
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 control: " + control(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
@@ -348,14 +348,14 @@ private Exertion f1SEQpull() throws Exception {
 						in("arg/x2", 80.0), out("result/y", null)),
 				strategy(Monitor.YES, Wait.NO));
 		
-		logger.info("task f5 control context: " + control(f5));
+		logger.info("task f5 control dataContext: " + control(f5));
 		
 		Exertion out = null;
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -374,9 +374,9 @@ private Exertion f1SEQpull() throws Exception {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < to; i++) {
 			f5.setName("f5-" + i);
-			f5.getContext().setName("f5-" + i);
+			f5.getDataContext().setName("f5-" + i);
 			out = exert(f5);
-			System.out.println("out context: " + name(f5) + "\n" + context(out));
+			System.out.println("out dataContext: " + name(f5) + "\n" + context(out));
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
@@ -417,7 +417,7 @@ private Exertion f1SEQpull() throws Exception {
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end - start) + " ms.");
-		logger.info("got last context #" + tally + "\n" + fList.get(tally-1).get().getContext());
+		logger.info("got last dataContext #" + tally + "\n" + fList.get(tally-1).get().getDataContext());
 		logger.info("run in parallel: " + tally);
 		return fList.get(tally-1).get();
 	}

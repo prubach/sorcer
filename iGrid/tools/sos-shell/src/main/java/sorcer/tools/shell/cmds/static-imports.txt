@@ -11,7 +11,7 @@ import sorcer.service.Strategy.*;
 import sorcer.core.exertion.*;
 
 import sorcer.service.*;
-import sorcer.core.context.model.*;
+import sorcer.core.dataContext.model.*;
 //import sorcer.vfe.util.*;
 //import sorcer.vfe.*;
 import java.io.*;

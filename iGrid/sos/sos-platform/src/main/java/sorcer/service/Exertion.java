@@ -17,26 +17,25 @@
 
 package sorcer.service;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.List;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.co.tuple.Parameter;
-
-import sorcer.core.context.IControlContext;
-import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * An exertion is a federated service command (statement) communicated by a requestor -
  * {@link Servicer#service}, to a service provider {@link Servicer}. It is a
  * form of service-oriented message with an enclosed service
  * {@link sorcer.service.Context} and a collection of service
- * {@link sorcer.service.Signature}s. The service context specifies service data
+ * {@link sorcer.service.Signature}s. The service dataContext specifies service data
  * to be processed by the service providers matching exertion's signatures. An
  * exertion's signature can carry own implementation when its type is associated
  * with a provided codebase.<br>
@@ -45,14 +44,14 @@ import sorcer.service.Strategy.Flow;
  * separate from the actions that service providers carry out. Exertions are
  * also completely separate from each other and do not know what other exertions
  * do. However, they can pass parameters via contexts by mapping
- * {@link Context#map} expected input context values in terms of expected output
+ * {@link Context#map} expected input dataContext values in terms of expected output
  * values calculated by other exertion. The operation {@link Exertion#exert} of
  * this interface provides for execution of desired actions enclosed in
  * exertions, thus keeping the knowledge of what to do inside of the exertions,
  * instead of having another parts of SO program to make these decisions. When
  * an exertion is invoked then the exertion redirects control to a dynamically
  * bound {@link sorcer.service.Servicer} matching the exertion's signature of
- * type {@link Operator.Type} <code>PROCESS</code>. <br>
+ * type Operate <code>PROCESS</code>. <br>
  * The <code>Exertion</code> interface also provides for the Composite design
  * pattern and defines a common elementary behavior for all exertions of
  * {@link sorcer.service.Task} type and control flow exertions (for branching
@@ -103,36 +102,34 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	public Exertion addExertion(Exertion component);
 	
 	/**
-	 * Returns a service context (service data) of this exertion to be processed
+	 * Returns a service dataContext (service data) of this exertion to be processed
 	 * by its methods as specified by exertion's signatures.
 	 * 
-	 * @return a service context
+	 * @return a service dataContext
 	 * @see #getSignatures
 	 */
-	public Context getContext();
-	// synonym, the same as  getContext();
-	public Context getDataContext();
+    public Context getContext();
+    // synonym, the same as  getContext();
+    public Context getDataContext();
 
-	/**
-	 * Returns a service context (service data) of the component exertion.
-	 * 
-	 * @return a service context
-	 * @see #getSignatures
-	 */
-	public Context getContext(String componentExertionName);
-	
-	public List<ThrowableTrace> getThrowables();
-	
+    /**
+     * Returns a service context (service data) of the component exertion.
+     *
+     * @return a service context
+     * @see #getSignatures
+     */
+    public Context getContext(String componentExertionName);
+
 	public List<String> getTrace();
 	
 	/**
-	 * Returns a control context (service control strategy) of this exertion to be 
+	 * Returns a control dataContext (service control strategy) of this exertion to be
 	 * realized by a tasker, jobber or spacer.
 	 * 
-	 * @return a control context
+	 * @return a control dataContext
 	 * @see #getSignatures
 	 */
-	public IControlContext getControlContext();
+	public ControlContext getControlContext();
 	
 	/**
 	 * Returns a process signature, all pre-processing, post-processing, and
@@ -156,7 +153,7 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	 * Returns a flow type for this exertion execution. A flow type indicates if
 	 * this exertion can be executed sequentially, in parallel, or concurrently
 	 * with other component exertions within this exertion. The concurrent
-	 * execution requires all mapped inputs in the exertion context to be
+	 * execution requires all mapped inputs in the exertion dataContext to be
 	 * assigned before this exertion can be executed.
 	 * 
 	 * @return a flow type
@@ -202,6 +199,12 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	public List<Exertion> getExertions();
 	
 	/**
+	 * Returns the list of traces of thrown exceptions.
+	 * @return ThrowableTrace list
+	 */ 
+	public List<ThrowableTrace> getExceptions();
+	
+	/**
 	 * Returns a component exertion with a given name.
 	 * @return Exertion list
 	 */ 
@@ -223,13 +226,22 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	public boolean isMonitored();
 	
 	/**
+	 * Returns <code>true</code> if this exertion can be provisioned for its
+	 * execution, otherwise <code>false</code>.
+	 * 
+	 * @return <code>true</code> if this exertion can be
+	 *         provisioned.
+	 */
+	public boolean isProvisionable();
+	
+	/**
 	 * Returns <code>true</code> if this result exertion should be returned to
 	 * its requestor synchronously, otherwise <code>false</code> when accessed
 	 * asynchronously.
 	 * 
 	 * @return <code>true</code> if this exertion is returned synchronously.
 	 */
-	public boolean isWait();
+	public boolean isWaitable();
 	
 	/**
 	 * Returns <code>true</code> if this exertion requires execution by a

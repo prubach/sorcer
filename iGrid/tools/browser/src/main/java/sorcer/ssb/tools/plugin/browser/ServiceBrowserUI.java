@@ -347,7 +347,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 		System.out.println("DiscoveryManagement=" + _discoMgr);
 		System.out.println("allowDestroy=" + allowDestroy);
-		System.out.println("security context=" + _ctx);
+		System.out.println("security dataContext=" + _ctx);
 
 		try {
 			_lrm = (LeaseRenewalManager) Config.getNonNullEntry(_config,

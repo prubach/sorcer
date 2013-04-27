@@ -62,7 +62,7 @@ import sorcer.service.Signature.ReturnPath;
 import sorcer.util.SorcerUtil;
 
 /**
- * Implements the base-level service context interface {@link Context}.
+ * Implements the base-level service dataContext interface {@link Context}.
  */
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ServiceContext<T> extends Hashtable<String, Object> implements
@@ -101,7 +101,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	protected Uuid parentId;
 
-	// a flag for the context to be shared
+	// a flag for the dataContext to be shared
 	// for data piping see: map. connect, pipe
 	protected boolean isShared = false;
 
@@ -139,13 +139,13 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * <p>
-	 * Returns <code>true</code> if this context is revaluable, otherwise
-	 * <code>false</code>. If context is revaluable then the values of this
-	 * context that implement the {@link Evaluation} interface are evaluated for
+	 * Returns <code>true</code> if this dataContext is revaluable, otherwise
+	 * <code>false</code>. If dataContext is revaluable then the values of this
+	 * dataContext that implement the {@link Evaluation} interface are evaluated for
 	 * its requested evaluated values.
 	 * </p>
 	 * 
-	 * @return the <code>true</code> if this context is revaluable.
+	 * @return the <code>true</code> if this dataContext is revaluable.
 	 */
 	public boolean isRevaluable() {
 		return isRevaluable;
@@ -153,7 +153,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * <p>
-	 * Assign revaluability of this context.
+	 * Assign revaluability of this dataContext.
 	 * </p>
 	 * 
 	 * @param isRevaluable
@@ -176,7 +176,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 */
 	protected Hashtable metacontext;
 
-	/** The exertion that uses this context */
+	/** The exertion that uses this dataContext */
 	protected ServiceExertion exertion;
 
 	protected String currentSelector;
@@ -184,7 +184,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	protected String currentPrefix;
 
 	/**
-	 * For persistence layers to differentiate with saved context already
+	 * For persistence layers to differentiate with saved dataContext already
 	 * associated to task or not.
 	 */
 	public boolean isPersistantTaskAssociated = false;
@@ -202,9 +202,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Default constructor for the ServiceContext class. The constructor calls the method init, 
-	 * defines the the service context name sets the root name to a blank string creates a new 
+	 * defines the the service dataContext name sets the root name to a blank string creates a new
 	 * hash tables for path identifications, delPath, and linked paths. The constructor creates the 
-	 * context identification number via the UUID factory generate method.
+	 * dataContext identification number via the UUID factory generate method.
 	 */
 	public ServiceContext() {
 		init();
@@ -288,7 +288,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/**
-	 * Initializes the service context class by allocating storage for all
+	 * Initializes the service dataContext class by allocating storage for all
 	 * simple and composite attributes and their associations. It creates system
 	 * data attributes: SORCER_TYPE - dnt, CONTEXT_PARAMETER - cp, ACTION -
 	 * action.
@@ -318,7 +318,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// annotating input output files associated with source applications
 			setCompositeAttribute(DATA_NODE_TYPE + APS + APPLICATION + APS
 					+ FORMAT + APS + MODIFIER);
-			// directional attributes with the context ID
+			// directional attributes with the dataContext ID
 			setCompositeAttribute(CONTEXT_PARAMETER + APS + DIRECTION + APS
 					+ PATH + APS + CONTEXT_ID);
 			// relationship to providers
@@ -588,7 +588,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		}
 
 		if (result == null) {
-			// could be in a linked context
+			// could be in a linked dataContext
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
@@ -615,7 +615,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					// System.out.println("getValue: \""+path+"\" passed
 					// with
 					// "+linkPath);
-					// looking for something in this linked context
+					// looking for something in this linked dataContext
 					String keyInLinkedCntxt;
 					if (offset.equals(""))
 						keyInLinkedCntxt = path.substring(len + 1);
@@ -727,7 +727,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public Object putValue(String path, Object value) throws ContextException {
-		// test if path is in a linked context
+		// test if path is in a linked dataContext
 		Enumeration e = null;
 		e = localLinkPaths();
 		String linkPath;
@@ -744,11 +744,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// the offset. We drop down in the link only if there is
 			// a match here. This is required to distinguish from,
 			// say, linkPath + m (where m is not the last piece of the
-			// offset), which should not go into the linked context,
-			// but in the linking context.
+			// offset), which should not go into the linked dataContext,
+			// but in the linking dataContext.
 			//
 			// be sure to handle these cases:
-			// offset = "" -- the whole context linked
+			// offset = "" -- the whole dataContext linked
 			// offset has no CPS, as in offset="abc"
 			// offset has a CPS, as in offset="ab/c"
 			if (index < 0) {
@@ -762,11 +762,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// System.out.println("extendedLinkPath="+extendedLinkPath);
 			if (path.startsWith(extendedLinkPath)
 					&& (path.indexOf(CPS, len) == len || path.length() == len)) {
-				// looking to place object in this linked context
+				// looking to place object in this linked dataContext
 				// System.out.println("putValue--place \""+path+"\" in link:
 				// "+linkPath);
 				String keyInLinkedCntxt;
-				// for this path, find path in linked context
+				// for this path, find path in linked dataContext
 				if (offset.equals(""))
 					keyInLinkedCntxt = path.substring(len + 1);
 				else
@@ -777,7 +777,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				return linkedCntxt.putValue(keyInLinkedCntxt, value);
 			}
 		}
-		// else, put it in this context
+		// else, put it in this dataContext
 		// System.out.println("putValue: path=\""+path+"\" + value=\""+value+"\"");
 		Object obj = null;
 		if (value == null)
@@ -830,7 +830,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public void removeLink(String path) throws ContextException {
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = getContextMap(path);// , true); // don't descend
 		// final
 		// link
@@ -868,21 +868,21 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			throw new ContextException("ERROR: path is null");
 
 		/*
-		 * Allow adding to non context-leaf nodes // Check if this is a
-		 * context-leaf node; throw exception otherwise; // this policy ensures
+		 * Allow adding to non dataContext-leaf nodes // Check if this is a
+		 * dataContext-leaf node; throw exception otherwise; // this policy ensures
 		 * namespace uniqueness; otherwise, rules for // aliased or shadowed
 		 * paths must be devised. Enumeration e = getPaths(); String path; int
 		 * len; while (e.hasMoreElements()) { path = (String)e.nextElement(); if
 		 * (path.startsWith(key)) { len = path.length(); if
 		 * (path.indexOf(CPS,len) == len) { throw new ContextException("ERROR:
-		 * path \""+path+"\" is not a context-leaf node; remove dependent
-		 * context-leaf nodes or choose another path in \""+getName()+"\"
+		 * path \""+path+"\" is not a dataContext-leaf node; remove dependent
+		 * dataContext-leaf nodes or choose another path in \""+getName()+"\"
 		 * first"); } } }
 		 */
 
 		if (cntxt == null)
 			throw new ContextException(
-					"Failed to create ContextLink:  context to link is null");
+					"Failed to create ContextLink:  dataContext to link is null");
 		if (offset == null)
 			throw new ContextException(
 					"Failed to create ContextLink:  offset is null");
@@ -912,14 +912,14 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		Object[] map = cntxt.getContextMap(offset);
 		if (map[0] == null || map[1] == null)
 			throw new ContextException("ERROR: path \"" + offset
-					+ "\" in context \"" + cntxt.getName() + "\" is invalid");
+					+ "\" in dataContext \"" + cntxt.getName() + "\" is invalid");
 
 		// check if this cntxt is already loaded in memory.
 		// ...
 
 		// using map will collapse redundant links
 		ContextLink link = new ContextLink((Context) map[0], (String) map[1]);
-		// Put the link count against the path in the context
+		// Put the link count against the path in the dataContext
 		/*
 		 * Integer linkCount =
 		 * (Integer)(((ServiceContextImpl)map[0]).linkedPaths
@@ -941,7 +941,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	public Object putLink(String name, String path, String id, String offset)
 			throws ContextException {
-		// insert link to the most recent version context with
+		// insert link to the most recent version dataContext with
 		// identification==id
 		float version = (float) -1.0;
 		return putLink(name, path, id, version, offset);
@@ -952,9 +952,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		// insert a ContextLink (a.k.a. a symbolic link) to cntxt
 		// this makes this.getValue(path) == cntxt.getValue(offset)
 
-		// retrieve context from data store
+		// retrieve dataContext from data store
 		Context cntxt = null;
-		// cntxt = cntxtAccessor.getContext(id, version, principal);
+		// cntxt = cntxtAccessor.getDataContext(id, version, principal);
 		// temporary
 		cntxt = cntxtAccessor.getContext(id, principal);
 		return putLink(name, path, cntxt, offset);
@@ -971,7 +971,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			if (value instanceof ContextLink)
 				result = (ContextLink) value;
 		} else if (value == null) {
-			// could be in a linked context
+			// could be in a linked dataContext
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
@@ -991,7 +991,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				len = extendedLinkPath.length();
 				if (path.startsWith(extendedLinkPath)
 						&& (path.indexOf(CPS, len) == len || path.length() == len)) {
-					// looking for something in this linked context
+					// looking for something in this linked dataContext
 					String keyInLinkedCntxt;
 					if (offset.equals(""))
 						keyInLinkedCntxt = path.substring(len + 1);
@@ -1010,7 +1010,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	/*
 	 * public Object[] getContextMap(String path) throws ContextException { //
 	 * returns array containing the ServiceContext in which path // is found and
-	 * the absolute path in that context return getContextMap(path, false); }
+	 * the absolute path in that dataContext return getContextMap(path, false); }
 	 */
 
 	public Object[] getContextMap(String path) throws ContextException {
@@ -1026,10 +1026,10 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			/*
 			 * if (value instanceof ContextLink) { if (linkStop) { // stop at
 			 * the link, don't go into it System.out.println("Link Stop True");
-			 * result[0] = this;//((ContextLink)value).getContext(principal);
+			 * result[0] = this;//((ContextLink)value).getDataContext(principal);
 			 * result[1] = path;//((ContextLink)value).offset; } else { // drop
 			 * down into the link System.out.println("Link Stop false");
-			 * result[0] = ((ContextLink)value).getContext(principal); result[1]
+			 * result[0] = ((ContextLink)value).getDataContext(principal); result[1]
 			 * = ((ContextLink)value).offset; // if the offset is itself a
 			 * ContextLink, we need // to keep going. // **********to be
 			 * implemented********* } } else { result[0] = this; result[1] =
@@ -1039,7 +1039,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			result[1] = path;
 		} else if (value == null) {
 			// System.out.println("getContextMap: looking for links");
-			// could be in a linked context
+			// could be in a linked dataContext
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
@@ -1075,7 +1075,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			}
 		}
 		if (result[0] == null) {
-			// the path belongs in this context, but is not in the
+			// the path belongs in this dataContext, but is not in the
 			// hashtable. We'll return the map anyway.
 			// System.out.println("getContextMap: no mapping");
 			result[0] = this;
@@ -1162,7 +1162,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public boolean isAttribute(String attributeName) throws ContextException {
 		boolean result = isLocalAttribute(attributeName);
 		if (!result) {
-			// not an attribute of the top-level context; check all
+			// not an attribute of the top-level dataContext; check all
 			// top-level linked contexts (which in turn will check
 			// their top-level contexts, etc. until a match is found or
 			// all contexts are exhausted )
@@ -1187,7 +1187,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				&& getDataAttributeMap().get(attributeName).equals(
 						attributeName);
 		if (!result) {
-			// not an attribute of the top-level context; check all
+			// not an attribute of the top-level dataContext; check all
 			// top-level linked contexts (which in turn will check
 			// their top-level contexts, etc. until a match is found or
 			// all contexts are exhausted)
@@ -1213,7 +1213,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				&& !getDataAttributeMap().get(attributeName).equals(
 						attributeName);
 		if (!result) {
-			// not an attribute of the top-level context; check all
+			// not an attribute of the top-level dataContext; check all
 			// top-level linked contexts (which in turn will check
 			// their top-level contexts, etc. until a match is found or
 			// all contexts are exhausted)
@@ -1243,7 +1243,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String val = null;
 		Hashtable table;
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = getContextMap(path);
 		ServiceContext cntxt = (ServiceContext) map[0];
 		String mappedKey = (String) map[1];
@@ -1261,7 +1261,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			throws ContextException {
 		String attrValue, result = null;
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = getContextMap(path);
 		Context cntxt = (Context) map[0];
 		String mappedKey = (String) map[1];
@@ -1307,7 +1307,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		Hashtable values;
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = getContextMap(path);
 		ServiceContext cntxt = (ServiceContext) map[0];
 		String mappedKey = (String) map[1];
@@ -1324,21 +1324,21 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			cntxt.addCompositeAssociation(mappedKey, attribute, attributeValue);
 		else
 			throw new ContextException("No attribute defined: \"" + attribute
-					+ "\" in this context (name=\"" + cntxt.getName() + "\"");
+					+ "\" in this dataContext (name=\"" + cntxt.getName() + "\"");
 		return this;
 	}
 
 	public Context addCompositeAssociation(String path, String metaattribute,
 			String metaattributeValue) throws ContextException {
 
-		// locate the context and context path for this path
+		// locate the dataContext and dataContext path for this path
 		Object[] map = getContextMap(path);
 		Context cntxt = (Context) map[0];
 		String mappedKey = (String) map[1];
 
 		if (!cntxt.isMetaattribute(metaattribute))
 			throw new ContextException("No metaattribute defined: "
-					+ metaattribute + " in context " + cntxt.getName());
+					+ metaattribute + " in dataContext " + cntxt.getName());
 		String[] attrs = SorcerUtil.tokenize(
 				cntxt.getLocalMetapath(metaattribute), APS);
 		String[] vals = SorcerUtil.tokenize(metaattributeValue, APS);
@@ -1346,7 +1346,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			throw new ContextException("Invalid:  The metavalue of \""
 					+ metaattributeValue + "\" for metaattribute \""
 					+ metaattribute + APS + getLocalMetapath(metaattribute)
-					+ "\" is invalid in this context (name=\""
+					+ "\" is invalid in this dataContext (name=\""
 					+ cntxt.getName() + "\"");
 		for (int i = 0; i < attrs.length; i++)
 			((ServiceContext) cntxt).addComponentAssociation(mappedKey,
@@ -1452,7 +1452,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				}
 			}
 		}
-		// above we just checked the top-level context; next, check
+		// above we just checked the top-level dataContext; next, check
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = localLinkPaths();
@@ -1482,7 +1482,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		else
 			attr = attributeValue;
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = null;
 		map = getContextMap(path);
 
@@ -1505,14 +1505,14 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				cntxt.removeAttributeValue(mappedKey, attrs[i]);
 		} else
 			throw new ContextException("No attribute defined: " + attr
-					+ " in context " + cntxt.getName());
+					+ " in dataContext " + cntxt.getName());
 	}
 
 	public String getLocalMetapath(String metaattribute)
 			throws ContextException {
 		// return the metapath (attribute-name n-tuple) equivalent to
 		// this metaattribute; format is a String with attributes
-		// separated by the CMPS (context metapath separator)
+		// separated by the CMPS (dataContext metapath separator)
 		if (isMetaattribute(metaattribute))
 			return (String) getDataAttributeMap().get(metaattribute);
 		else
@@ -1629,9 +1629,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/**
-	 * Returns a list of input context values marked as data input.
+	 * Returns a list of input dataContext values marked as data input.
 	 * 
-	 * @return a list of input values of this context
+	 * @return a list of input values of this dataContext
 	 * @throws ContextException
 	 * @throws ContextException
 	 */
@@ -1648,11 +1648,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/**
-	 * Returns a list of output context values marked as data input.
+	 * Returns a list of output dataContext values marked as data input.
 	 * 
 	 * @throws ContextException
 	 * 
-	 * @return list of output values of this context
+	 * @return list of output values of this dataContext
 	 * @throws ContextException
 	 */
 	public List<Object> getOutValues() throws ContextException {
@@ -1723,7 +1723,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/*
-	 * Extensions for further context operations
+	 * Extensions for further dataContext operations
 	 */
 
 	public Context<Object> getSubcontext() {
@@ -1757,7 +1757,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 	
 	public Context appendSubcontext(Context cntxt) throws ContextException {
-		// get the whole context, with the context root name as the
+		// get the whole dataContext, with the dataContext root name as the
 		// path prefix
 		String key;
 		Vector vec = new Vector();
@@ -1787,20 +1787,20 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public Context appendSubcontext(Context cntxt, String path,
 			boolean prefixContextName) throws ContextException {
 
-		// appendSubcontext snips the context (passed in as the first
+		// appendSubcontext snips the dataContext (passed in as the first
 		// argument) BEFORE the requested node and returns it appended
-		// to the context object. Said another way: if the context, ctx,
+		// to the dataContext object. Said another way: if the dataContext, ctx,
 		// has the following keys
 		//
 		// a/b
 		// a/b/c
 		// d/e
 		//
-		// appendSubcontext(ctx, "a/b") returns context with keys
+		// appendSubcontext(ctx, "a/b") returns dataContext with keys
 		// b
 		// b/c
 		//
-		// appendSubcontext(ctx, "a") returns context with keys
+		// appendSubcontext(ctx, "a") returns dataContext with keys
 		// a/b
 		// a/b/c
 
@@ -1812,7 +1812,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (path == null)
 			throw new ContextException("null path");
 		if (path.equals("")) {
-			// append entire context
+			// append entire dataContext
 			return appendSubcontext(cntxt);
 		}
 
@@ -1822,8 +1822,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String mappedKey = (String) map[1];
 		// System.out.println("path="+path);
 		// System.out.println("mappedKey="+mappedKey);
-		// System.out.println("orig context name="+cntxt.getName());
-		// System.out.println("mapped context name="+mappedCntxt.getName());
+		// System.out.println("orig dataContext name="+cntxt.getName());
+		// System.out.println("mapped dataContext name="+mappedCntxt.getName());
 
 		int len = mappedKey.length();
 		Enumeration e = ((Hashtable) mappedCntxt).keys();
@@ -1892,7 +1892,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		// now all attributes are set, and metaattributes are set
 		// implicitly IF the metaattribute definitions are set in the
-		// new context. So, next we set the definitions, or at least
+		// new dataContext. So, next we set the definitions, or at least
 		// try...
 
 		String metapath_target, metapath_source;
@@ -1902,21 +1902,21 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			attr = (String) e.nextElement();
 			if (!mappedCntxt.isLocalMetaattribute(attr))
 				continue;
-			// is this also an attribute in the current context?
+			// is this also an attribute in the current dataContext?
 			if (isSingletonAttribute(attr)) {
 				logger.info("The attribute \""
 						+ attr
-						+ "\" has conflicting definitions; it is a metaattribute in the source context and a singleton attribute in the target context.  Please correct before performing this operation");
+						+ "\" has conflicting definitions; it is a metaattribute in the source dataContext and a singleton attribute in the target dataContext.  Please correct before performing this operation");
 				logger.info("Src metacontext="
 						+ ((ServiceContext) mappedCntxt).metacontext);
 				logger.info("this metacontext=" + metacontext);
 				throw new ContextException("The attribute \"" + attr
 						+ "\" has conflicting definitions;");// it
-				// is a metaattribute in the source context and a singleton
-				// attribute in the target context.
+				// is a metaattribute in the source dataContext and a singleton
+				// attribute in the target dataContext.
 				// Please correct before performing this operation");
 			}
-			// is this also a metaattribute in the current context?
+			// is this also a metaattribute in the current dataContext?
 			if (isMetaattribute(attr)) {
 				// check to see the definitions are the same
 				metapath_source = (String) ((ServiceContext) mappedCntxt)
@@ -1926,8 +1926,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					throw new ContextException("The metaattribute \"" + attr
 							+ "\" has conflicting definitions");// in
 				// the source and target contexts; in the source
-				// context, it has metapath = \""+metapath_source+"\",
-				// while in the target context it
+				// dataContext, it has metapath = \""+metapath_source+"\",
+				// while in the target dataContext it
 				// has metapath = \""+metapath_target+"\".
 				// Please correct befe performing this operation.");
 			}
@@ -1940,7 +1940,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	public void removePath(String path) throws ContextException {
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = null;
 		map = getContextMap(path);
 		ServiceContext cntxt = (ServiceContext) map[0];
@@ -2308,7 +2308,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public Object setReturnValue(Object value) throws ContextException {
 		// System.out.println("setReturnValue value: " + value);
 		// System.out.println("return path: " + returnPath);
-		// System.out.println("setReturnValue BEFORE context: " + this);
+		// System.out.println("setReturnValue BEFORE dataContext: " + this);
 		if (returnPath == null)
 			returnPath = new ReturnPath(Context.RETURN);
 
@@ -2440,11 +2440,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	protected Context updateLinkedContext(ContextLink link)
 			throws ContextException {
-		// return the linked context, converting it to a ServiceContextImpl if
+		// return the linked dataContext, converting it to a ServiceContextImpl if
 		// necessary
 		Context sc = link.getContext(principal);
 		if (sc.getClass() != this.getClass()) {
-			// logger.fine("converting linked context to " + this.getClass());
+			// logger.fine("converting linked dataContext to " + this.getClass());
 			sc = new ServiceContext(sc);
 			link.context = sc;
 		}
@@ -2473,9 +2473,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		// insert a ContextLink (a.k.a. a symbolic link) to cntxt
 		// this makes this.getValue(key) == cntxt.getValue(offset)
 
-		// retrieve context from data store
+		// retrieve dataContext from data store
 		Context cntxt = null;
-		// cntxt = cntxtAccessor.getContext(id, version, principal);
+		// cntxt = cntxtAccessor.getDataContext(id, version, principal);
 		// temporary
 		cntxt = new ServiceContext(cntxtAccessor.getContext(id, principal));
 		return putLink(SERVICE_CONTEXT, path, cntxt, offset);
@@ -2597,8 +2597,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public String getNodeType(Object obj) throws ContextException {
-		// deprecated. If this object appears in the context more
-		// than once, there is no guarantee that the correct context
+		// deprecated. If this object appears in the dataContext more
+		// than once, there is no guarantee that the correct dataContext
 		// type will be returned. Best not to have an orphaned
 		// object.
 		String path = getPath(obj);
@@ -2612,7 +2612,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String attributeName;
 		Vector values = new Vector();
 
-		// locate the context and context path for this key
+		// locate the dataContext and dataContext path for this key
 		Object[] map = getContextMap(path);
 		Context cntxt = (Context) map[0];
 		String mappedKey = (String) map[1];
@@ -2825,7 +2825,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/**
-	 * Record this context as updated if the related exertion is monitored.
+	 * Record this dataContext as updated if the related exertion is monitored.
 	 * 
 	 * @throws RemoteException
 	 * @throws MonitorException
@@ -2835,7 +2835,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (mxrt != null && mxrt.isMonitored()
 				&& mxrt.getMonitorSession() != null) {
 			try {
-				putValue("context/checkpoint/time", SorcerUtil.getDateTime());
+				putValue("dataContext/checkpoint/time", SorcerUtil.getDateTime());
 				mxrt.getMonitorSession().changed(this, Category.UPDATED);
 			} catch (Exception e) {
 				throw new ContextException(e);
@@ -2844,7 +2844,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	/**
-	 * Record this context acording to the corresponding aspect if the related
+	 * Record this dataContext acording to the corresponding aspect if the related
 	 * exertion is monitored.
 	 * 
 	 * @throws RemoteException
@@ -2885,7 +2885,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.service.Evaluation#getValue(sorcer.core.context.Path.Entry[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
 	public T getValue(Parameter... entries) throws EvaluationException, RemoteException {
@@ -2906,7 +2906,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					obj = getReturnValue(entries);
 				}
 			} else if (path.startsWith("super")) {
-				obj = (T) exertion.getContext().getValue(path.substring(6));
+				obj = (T) exertion.getDataContext().getValue(path.substring(6));
 			} else {
 				obj = (T) getValue0(path);
 				if (obj instanceof Evaluation && isRevaluable) {

@@ -11,7 +11,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
@@ -34,9 +33,9 @@ public class WorkerSingletonRequestor {
 
 		Exertion exertion = new WorkerSingletonRequestor().getExertion(pn);
 		Exertion result = exertion.exert();
-		logger.info("Output context: \n" + result.getContext());
-		logger.info("Output context: \n"
-				+ result.getExertion("work").getContext());
+		logger.info("Output dataContext: \n" + result.getDataContext());
+		logger.info("Output dataContext: \n"
+				+ result.getExertion("work").getDataContext());
 	}
 
 	private Exertion getExertion(String pn) throws Exception {

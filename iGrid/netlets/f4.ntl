@@ -3,6 +3,6 @@
 import sorcer.arithmetic.provider.Multiplier;
 
 task("f4", sig("multiply", Multiplier.class),
-	context("multiply", 
+	dataContext("multiply",
 		input("arg/x1", 10.0d), 
 		input("arg/x2", 50.0d)));

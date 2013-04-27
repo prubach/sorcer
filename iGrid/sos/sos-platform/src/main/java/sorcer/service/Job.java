@@ -33,7 +33,7 @@ import net.jini.core.transaction.TransactionException;
 import sorcer.co.tuple.Entry;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.eo.operator;
@@ -44,7 +44,7 @@ import sorcer.security.util.SorcerPrincipal;
  * A job is a composite service-oriented message comprised of {@link Exertion}
  * instances with its own service {@link Context} and a collection of service
  * {@link Signature}s. The job's signature is usually referring to a
- * {@link sorcer.service.Jobber} and the job's context describes the composition
+ * {@link sorcer.service.Jobber} and the job's dataContext describes the composition
  * of component exertions as defined by the Interpreter programming pattern.
  * 
  * @see sorcer.service.Exertion
@@ -125,7 +125,7 @@ public abstract class Job extends ServiceExertion {
 	public List<Signature> getSignatures() {
 		if (signatures != null)
 			for (int i = 0; i < signatures.size(); i++)
-				signatures.get(i).setProviderName(cc.getRendezvousName());
+				signatures.get(i).setProviderName(controlContext.getRendezvousName());
 		return signatures;
 	}
 
@@ -195,12 +195,12 @@ public abstract class Job extends ServiceExertion {
 	public Exertion getMasterExertion() {
 		String contextName = null;
 		try {
-			contextName = (String) cc.getValue(ControlContext.MASTER_EXERTION);
+			contextName = (String) controlContext.getValue(ControlContext.MASTER_EXERTION);
 		} catch (ContextException ex) {
 			ex.printStackTrace();
 		}
 		if (contextName == null
-				&& cc.getFlowType().equals(ControlContext.SEQUENTIAL)) {
+				&& controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)) {
 			return (size() > 0) ? exertionAt(size() - 1) : null;
 		} else {
 			Exertion master = null;
@@ -216,13 +216,13 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public void setRendezvousName(String jobberName) {
-		cc.setRendezvousName(jobberName);
+		controlContext.setRendezvousName(jobberName);
 	}
 
 	public Signature getProcessSignature() {
 		Signature method = super.getProcessSignature();
 		if (method != null)
-			method.setProviderName(cc.getRendezvousName());
+			method.setProviderName(controlContext.getRendezvousName());
 		return method;
 	}
 	
@@ -232,7 +232,7 @@ public abstract class Job extends ServiceExertion {
 //		if (exertions.size()==2)
 //			signatures.add(new NetSignature("service", RemoteJobber.class));
 		((ServiceExertion) ex).setIndex(exertions.indexOf(ex));
-		cc.registerExertion(ex);
+		controlContext.registerExertion(ex);
 		((ServiceExertion) ex).setParentId(getId());
 		return this;
 	}
@@ -253,14 +253,14 @@ public abstract class Job extends ServiceExertion {
 
 	public Job addExertion(Exertion exertion, int priority) {
 		addExertion(exertion);
-		cc.setPriority(exertion, priority);
+		controlContext.setPriority(exertion, priority);
 		return this;
 	}
 
 	public Exertion removeExertion(Exertion exertion) {
 		// int index = ((ExertionImpl)exertion).getIndex();
 		exertions.remove(exertion);
-		cc.deregisterExertion(this, exertion);
+		controlContext.deregisterExertion(this, exertion);
 		return exertion;
 	}
 
@@ -345,7 +345,7 @@ public abstract class Job extends ServiceExertion {
 	
 	/**
 	 * Returns a string representation of Contexts of this Job, containing the
-	 * String representation of each context in it's exertion.
+	 * String representation of each dataContext in it's exertion.
 	 */
 	public String jobContextToString() {
 		StringBuffer sb = new StringBuffer();
@@ -359,13 +359,13 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public void setMasterExertion(Exertion exertion) {
-		cc.setMasterExertion(exertion);
+		controlContext.setMasterExertion(exertion);
 	}
 
 	public void setOwnerId(String id) {
 		ownerId = id;
-		if (cc != null)
-			cc.setOwnerID(id);
+		if (controlContext != null)
+			controlContext.setOwnerID(id);
 		for (int i = 0; i < exertions.size(); i++)
 			(((ServiceExertion) exertionAt(i))).setOwnerId(id);
 	}
@@ -404,15 +404,18 @@ public abstract class Job extends ServiceExertion {
 		return exs;
 	}
 	
-	public List<ThrowableTrace> getThrowables() {
-		List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
-		for (Exertion ext : exertions) {
-			exceptions.addAll(ext.getThrowables());
-		}
-		return exceptions;
-	}
-	
-	/**
+    @Override
+    public List<ThrowableTrace> getExceptions() {
+        List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
+        for (Exertion ext : exertions) {
+            exceptions.addAll(ext.getExceptions());
+        }
+        return exceptions;
+    }
+
+
+
+    /**
 	 * Return true if this composite <code>Job</code> is a tree.
 	 * 
 	 * @param visited
@@ -442,13 +445,15 @@ public abstract class Job extends ServiceExertion {
 		return linkContext(cxt, "job[" + getName() + "]");
 	}
 
-	public Context getJobControlContext() {
-		ServiceContext cxt = new ServiceContext("control/" + name);
-		cxt.setSubject("job/control/context", name);
-		return linkControlContext(cxt, "job[" + getName() + "]");
-	}
+    public Context getControlInfo() {
+        ServiceContext cxt = new ServiceContext(name);
+        cxt.setSubject("job/control/context", name);
 
-	@Override
+        return linkControlContext(cxt, "job[" + getName() + "]");
+    }
+
+
+    @Override
 	public Context linkContext(Context context, String path) {
 		Exertion ext;
 		for (int i = 0; i < size(); i++) {
@@ -505,7 +510,7 @@ public abstract class Job extends ServiceExertion {
 		int index = path.indexOf(last);
 		String contextPath = path.substring(index + last.length() + 1);
 
-		return exti.getContext().getValue(contextPath);
+		return exti.getDataContext().getValue(contextPath);
 	}
 
 	public Object getValue(String path) throws ContextException {
@@ -547,14 +552,14 @@ public abstract class Job extends ServiceExertion {
 		}
 		int index = path.indexOf(last);
 		String contextPath = path.substring(index + last.length() + 1);
-		exti.getContext().putValue(contextPath, value);
+		exti.getDataContext().putValue(contextPath, value);
 		return value;
 	}
 	
 	
 	public Context getComponentContext(String path) {
 		Exertion xrt = getComponentExertion(path);
-		return xrt.getContext();
+		return xrt.getDataContext();
 	}
 	
 	public Context getComponentControlContext(String path) {

@@ -192,7 +192,7 @@ public class operator {
 	}
 
 //	@SuppressWarnings("unchecked")
-//	public static <T extends Object> Context context(T... entries)
+//	public static <T extends Object> Context dataContext(T... entries)
 //			throws ContextException {
 //		String name = getUnknown("cxt-");
 //		List<Tuple2<String, ?>> pairs = new ArrayList<Tuple2<String, ?>>();

@@ -145,8 +145,8 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 
 		setServiceID(job);
 		try {
-			if (((ServiceExertion)job).getControlContext().isMonitored()
-					&& !(((NetJob)job).getControlContext()).isWait()) {
+			if (((ServiceExertion)job).getControlContext().isMonitorable()
+					&& !(((NetJob)job).getControlContext()).isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
 				new JobThread((Job) job, this).start();
@@ -311,11 +311,11 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 		((ControlContext) ((NetJob)job).getControlContext()).setFeedback(comment);
 		if (job.getMasterExertion() != null
 				&& ((ServiceExertion) job.getMasterExertion()).isTask()) {
-			((ServiceExertion) (job.getMasterExertion())).getContext()
+			((ServiceExertion) (job.getMasterExertion())).getDataContext()
 					.putValue(Context.JOB_COMMENTS, comment);
 
 			Contexts.markOut(((ServiceExertion) (job.getMasterExertion()))
-					.getContext(), Context.JOB_COMMENTS);
+					.getDataContext(), Context.JOB_COMMENTS);
 
 		}
 	}

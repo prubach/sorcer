@@ -97,21 +97,21 @@ public interface SignatureDispatchment extends ActionListener {
 	/**
 	 * Gets the list of contexts currently stored on the provider.
 	 * 
-	 * @return String array of the currently stored context names
+	 * @return String array of the currently stored dataContext names
 	 */
 	String[] getSavedContextList();
 
 	/**
-	 * Obtains the context for the specified method name from the network.
+	 * Obtains the dataContext for the specified method name from the network.
 	 * 
 	 * @param methodName
-	 *            String representing the method to obtain the context from
-	 * @return the service context for the method
+	 *            String representing the method to obtain the dataContext from
+	 * @return the service dataContext for the method
 	 */
 	Context getContext(String methodName);
 
 	/**
-	 * Save a context back to the network, saves the context as the currently
+	 * Save a dataContext back to the network, saves the dataContext as the currently
 	 * selected method name.
 	 * 
 	 * @param theContext
@@ -121,11 +121,11 @@ public interface SignatureDispatchment extends ActionListener {
 	Boolean saveContext(Context theContext);
 
 	/**
-	 * Save the context to the network, this stores the context under the name
+	 * Save the dataContext to the network, this stores the dataContext under the name
 	 * provided in newName.
 	 * 
 	 * @param newName
-	 *            String representing the name the context should be saved as
+	 *            String representing the name the dataContext should be saved as
 	 * @param theContext
 	 *            Context to be saved.
 	 * @return Boolean indicating if the operation was successful.
@@ -133,17 +133,17 @@ public interface SignatureDispatchment extends ActionListener {
 	Boolean saveContext(String newName, Context theContext);
 
 	/**
-	 * Delete a context from the network, the context to be deleted is defined
+	 * Delete a dataContext from the network, the dataContext to be deleted is defined
 	 * by the String methodName.
 	 * 
 	 * @param methodName
-	 *            String with the name of the context to delete.
+	 *            String with the name of the dataContext to delete.
 	 * @return Boolean indicating if the operation was successful.
 	 */
 	Boolean deleteContext(String methodName);
 
 	/**
-	 * This method creates an exertion using the context provided by the user.
+	 * This method creates an exertion using the dataContext provided by the user.
 	 * The results of the exertion are returned to the user.
 	 * 
 	 * @param theContext

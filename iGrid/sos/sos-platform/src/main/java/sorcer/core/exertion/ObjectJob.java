@@ -58,7 +58,7 @@ public class ObjectJob extends Job {
 			throws SignatureException {
 		this(name, signature);
 		if (context != null)
-			this.context = (ServiceContext) context;
+			this.dataContext = (ServiceContext) context;
 	}
 	
 	public Job doJob(Transaction txn) throws ExertionException,
@@ -73,7 +73,7 @@ public class ObjectJob extends Job {
 					.initInstance(parameters, paramTypes);
 		} catch (Exception e) {
 			e.printStackTrace();
-			context.reportException(e);
+			dataContext.reportException(e);
 		}
 		return result;
 	}

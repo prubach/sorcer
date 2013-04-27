@@ -9,7 +9,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.co.tuple.Parameter;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
@@ -45,7 +45,7 @@ public class KPExertion implements Exertion {
 		return null;
 	}
 
-	public Context getContext() {
+	public Context getDataContext() {
 		return null;
 	}
 
@@ -84,7 +84,7 @@ public class KPExertion implements Exertion {
 	}
 
 	public boolean isMonitored() {
-		return getControlContext().isMonitored();
+		return getControlContext().isMonitorable();
 	}
 	
 	/*
@@ -110,7 +110,7 @@ public class KPExertion implements Exertion {
 	 * @see sorcer.service.Exertion#getDataContext()
 	 */
 	@Override
-	public Context getDataContext() {
+	public Context getContext() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -127,8 +127,7 @@ public class KPExertion implements Exertion {
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#getExceptions()
 	 */
-	@Override
-	public List<ThrowableTrace> getThrowables() {
+	public List<ThrowableTrace> getExceptions() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -152,7 +151,7 @@ public class KPExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#getContext(java.lang.String)
+	 * @see sorcer.service.Exertion#getDataContext(java.lang.String)
 	 */
 	@Override
 	public Context getContext(String componentExertionName) {
@@ -191,8 +190,8 @@ public class KPExertion implements Exertion {
 	 * @see sorcer.service.Exertion#isWait()
 	 */
 	@Override
-	public boolean isWait() {
-		return getControlContext().isWait();
+	public boolean isWaitable() {
+		return getControlContext().isWaitable();
 	}
 
 	/* (non-Javadoc)
@@ -214,7 +213,7 @@ public class KPExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction, sorcer.core.context.Path.Entry[])
+	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction, sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Parameter... entries)
@@ -224,7 +223,7 @@ public class KPExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#exert(sorcer.core.context.Path.Entry[])
+	 * @see sorcer.service.Exertion#exert(sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
 	public Exertion exert(Parameter... entries) throws TransactionException,
@@ -261,5 +260,10 @@ public class KPExertion implements Exertion {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public boolean isProvisionable() {
+        return getControlContext().isProvisionable();
+    }
+
 
 }

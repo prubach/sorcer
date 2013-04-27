@@ -7,9 +7,9 @@ that use the Worker services defined in the example ex2.
 			b) network access of components to providers. Components can be pushed to providers (Acess.PUSH) 
 			   or pulled (Acess.PULL) from the network by providers matching their signatures.
 	2. PipingWorkerRunner
-		- creates a pipe of three Worker services via data context pipes
+		- creates a pipe of three Worker services via data dataContext pipes
 	3. SharedContextWorkerRunner
-		- uses a collaboration of three Worker services that share a distributed data context in the network
+		- uses a collaboration of three Worker services that share a distributed data dataContext in the network
 		
 For prerequisites and how to run Ant scripts see the README file in the ex1 directory.
 		

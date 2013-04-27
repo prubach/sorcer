@@ -21,6 +21,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.UUID;
 
+import net.jini.core.lookup.ServiceID;
 import net.jini.lookup.entry.ServiceType;
 import sorcer.core.SorcerConstants;
 
@@ -158,12 +159,9 @@ public class SorcerServiceInfo extends ServiceType {
 	public String mutexId;
 	
 	/**
-	 * A persistent UUID for this particular service. Guaranteed to be the same
-	 * if the same service starts on the same machine and
-	 * {@link SorcerConstants#P_SERVICE_ID_PERSISTENT} or
-	 * {@link SorcerConstants#J_SERVICE_ID_PERSISTENT} is set to true.
-	 */
-	public UUID persitentUuid;
+	 * A persistent UUID for this particular service.
+	 */	
+	public ServiceID serviceID;
 
 	/**
 	 * Returns the provider's name of this service.

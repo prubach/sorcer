@@ -109,9 +109,9 @@ abstract public class CatalogExertionDispatcher extends ExertionDispatcher
 			if (ex instanceof Conditional) {
 				result = (ServiceExertion) execConditional(ex);
 			} else if (((ServiceExertion)ex).isTask()) {
-				//logger.info("CONTEXT BEFORE: " + ex.getContext());
+				//logger.info("CONTEXT BEFORE: " + ex.getDataContext());
 				result = execTask((Task) ex);
-				//logger.info("CONTEXT AFTER: " + ex.getContext());
+				//logger.info("CONTEXT AFTER: " + ex.getDataContext());
 			} else if (((ServiceExertion) ex).isJob()) {
 				result = execJob((Job) ex);
 			} else {

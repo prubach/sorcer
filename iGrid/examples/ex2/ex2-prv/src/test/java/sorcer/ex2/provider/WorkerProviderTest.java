@@ -50,11 +50,11 @@ public class WorkerProviderTest {
 	@Test
 	public void contextTest() throws IOException,
 			IllegalAccessException, InvocationTargetException {
-		// test serialization of the provider's context
+		// test serialization of the provider's dataContext
 		TestUtil.testSerialization(context, true);
 		
-		// test serialization of the provider's context
-		//TestUtil.testClone(context, true);
+		// test serialization of the provider's dataContext
+		//TestUtil.testClone(dataContext, true);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class WorkerProviderTest {
 	public void testSayHi() throws ContextException, IOException {
 		Context result = provider.sayHi(context);
 		//logger.info("result: " + result);
-		// test serialization of the returned context
+		// test serialization of the returned dataContext
 		TestUtil.testSerialization(result, true);
 		assertTrue(result.getValue("provider/message").equals("Hi " + hostName + "!"));
 	}

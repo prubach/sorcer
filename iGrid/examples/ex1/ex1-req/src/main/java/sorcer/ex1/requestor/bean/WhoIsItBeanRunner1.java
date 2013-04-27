@@ -9,7 +9,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
@@ -43,8 +42,8 @@ public class WhoIsItBeanRunner1 extends ExertionRunner {
 	}
 
 	public void postprocess() {
-		logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getThrowables());
+		logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + exertion.getControlContext().getTrace());
-		logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
+		logger.info("<<<<<<<<<< Ouput dataContext: \n" + exertion.getDataContext());
 	}
 }

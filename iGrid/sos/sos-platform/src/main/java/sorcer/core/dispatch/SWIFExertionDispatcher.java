@@ -148,7 +148,7 @@ abstract public class SWIFExertionDispatcher extends ExertionDispatcher
 		String INPUT_PARAM = null;
 
 		try {
-			Context ctx = task.getContext();
+			Context ctx = task.getDataContext();
 			QNameService = (String) ctx.getValue("QNameService");
 			QNamePort = (String) ctx.getValue("QNamePort");
 

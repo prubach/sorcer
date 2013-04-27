@@ -348,7 +348,7 @@ public class ExertProcessor {
 		if (inner instanceof WhileExertion) {
 			try {
 				while (((WhileExertion) exertion).isTrue()) {
-					saveState(whileState, inner.getContext());
+					saveState(whileState, inner.getDataContext());
 
 					if (firstWhileIteration > 0) {
 						((WhileExertion) exertion).adjustConditionVariables();
@@ -359,7 +359,7 @@ public class ExertProcessor {
 					firstWhileIteration++;
 				}
 
-				restoreState(whileState, inner.getContext());
+				restoreState(whileState, inner.getDataContext());
 				return exertion;
 			} catch (Exception e) {
 				logger
@@ -373,7 +373,7 @@ public class ExertProcessor {
 		else if (inner instanceof IfExertion) {
 			try {
 				while (((WhileExertion) exertion).isTrue()) {
-					saveState(ifState, inner.getContext());
+					saveState(ifState, inner.getDataContext());
 
 					if (firstIfIteration > 0) {
 						((WhileExertion) exertion).adjustConditionVariables();
@@ -384,7 +384,7 @@ public class ExertProcessor {
 					firstIfIteration++;
 				}
 
-				restoreState(ifState, inner.getContext());
+				restoreState(ifState, inner.getDataContext());
 				return exertion;
 			} catch (Exception e) {
 				logger
@@ -422,7 +422,7 @@ public class ExertProcessor {
 		try {
 			if (isValidExertion(task)) {
 				while (((WhileExertion) exertion).isTrue()) {
-					saveState(state, task.getContext());
+					saveState(state, task.getDataContext());
 
 					if (firstIteration > 0) {
 						((WhileExertion) exertion).adjustConditionVariables();
@@ -432,7 +432,7 @@ public class ExertProcessor {
 					((WhileExertion) exertion).setDoExertion(task);
 					firstIteration++;
 				}
-				restoreState(state, task.getContext());
+				restoreState(state, task.getDataContext());
 				return exertion;
 			} else {
 				logger
@@ -471,7 +471,7 @@ public class ExertProcessor {
 
 				// order of the statements is the loop is very important
 				while (((WhileExertion) exertion).isTrue()) {
-					saveState(state, exertion.getContext());
+					saveState(state, exertion.getDataContext());
 
 					if (jobIteration > 0) {
 						((WhileExertion) exertion).adjustConditionVariables();
@@ -485,7 +485,7 @@ public class ExertProcessor {
 					jobIteration++;
 				}
 				// restore the (i-1) result, which is the correct answer
-				restoreState(state, exertion.getContext());
+				restoreState(state, exertion.getDataContext());
 				return exertion;
 
 			} else {
@@ -523,29 +523,29 @@ public class ExertProcessor {
 				if (((IfExertion) exertion).isTrue()) {
 					this.doWhileExertion(((IfExertion) exertion)
 							.getThenExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getThenExertion());
 					copyContext(((IfExertion) exertion).getThenExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				} else {
 					if (innerElse instanceof WhileExertion) {
 						Exertion remoteResult = this
 								.doWhileExertion(((IfExertion) exertion)
 										.getElseExertion());
 						((IfExertion) exertion).setElseExertion(remoteResult);
-						exertion.getContext().putValue("exertion/done",
+						exertion.getDataContext().putValue("exertion/done",
 								((IfExertion) exertion).getElseExertion());
 						copyContext(((IfExertion) exertion).getElseExertion()
-								.getContext(), exertion.getContext());
+								.getDataContext(), exertion.getDataContext());
 					} else if (innerElse instanceof IfExertion) {
 						Exertion remoteResult = this
 								.doIfExertion(((IfExertion) exertion)
 										.getElseExertion());
 						((IfExertion) exertion).setElseExertion(remoteResult);
-						exertion.getContext().putValue("exertion/done",
+						exertion.getDataContext().putValue("exertion/done",
 								((IfExertion) exertion).getElseExertion());
 						copyContext(((IfExertion) exertion).getElseExertion()
-								.getContext(), exertion.getContext());
+								.getDataContext(), exertion.getDataContext());
 					} else if (innerElse instanceof Task) {
 						Exertion remoteResult = this.doIfTask(exertion);
 						((IfExertion) exertion)
@@ -571,29 +571,29 @@ public class ExertProcessor {
 					this
 							.doIfExertion(((IfExertion) exertion)
 									.getThenExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getThenExertion());
 					copyContext(((IfExertion) exertion).getThenExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				} else {
 					if (innerElse instanceof WhileExertion) {
 						Exertion remoteResult = this
 								.doWhileExertion(((IfExertion) exertion)
 										.getElseExertion());
 						((IfExertion) exertion).setElseExertion(remoteResult);
-						exertion.getContext().putValue("exertion/done",
+						exertion.getDataContext().putValue("exertion/done",
 								((IfExertion) exertion).getElseExertion());
 						copyContext(((IfExertion) exertion).getElseExertion()
-								.getContext(), exertion.getContext());
+								.getDataContext(), exertion.getDataContext());
 					} else if (innerElse instanceof IfExertion) {
 						Exertion remoteResult = this
 								.doIfExertion(((IfExertion) exertion)
 										.getElseExertion());
 						((IfExertion) exertion).setElseExertion(remoteResult);
-						exertion.getContext().putValue("exertion/done",
+						exertion.getDataContext().putValue("exertion/done",
 								((IfExertion) exertion).getElseExertion());
 						copyContext(((IfExertion) exertion).getElseExertion()
-								.getContext(), exertion.getContext());
+								.getDataContext(), exertion.getDataContext());
 					} else if (innerElse instanceof Task) {
 						Exertion remoteResult = this.doIfTask(exertion);
 						((IfExertion) exertion)
@@ -642,17 +642,17 @@ public class ExertProcessor {
 				if (((IfExertion) exertion).isTrue()) {
 					this.doTask((Task) ((IfExertion) exertion)
 							.getThenExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getThenExertion());
 					copyContext(((IfExertion) exertion).getThenExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				} else {
 					this.doTask((Task) ((IfExertion) exertion)
 							.getElseExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getElseExertion());
 					copyContext(((IfExertion) exertion).getElseExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				}
 				return exertion;
 			} else {
@@ -684,16 +684,16 @@ public class ExertProcessor {
 			if (isValidExertion(((IfExertion) exertion).getThenExertion())) {
 				if (((IfExertion) exertion).isTrue()) {
 					this.doRendezvousExertion((Job) ((IfExertion) exertion).getThenExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getThenExertion());
 					copyContext(((IfExertion) exertion).getThenExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				} else {
 					this.doRendezvousExertion((Job) ((IfExertion) exertion).getElseExertion());
-					exertion.getContext().putValue("exertion/done",
+					exertion.getDataContext().putValue("exertion/done",
 							((IfExertion) exertion).getElseExertion());
 					copyContext(((IfExertion) exertion).getElseExertion()
-							.getContext(), exertion.getContext());
+							.getDataContext(), exertion.getDataContext());
 				}
 				return exertion;
 			} else {
@@ -713,7 +713,7 @@ public class ExertProcessor {
 	}
 
 	/**
-	 * This mehtod saves all the data nodes of a context and put it on a Map.
+	 * This mehtod saves all the data nodes of a dataContext and put it on a Map.
 	 * 
 	 * @param mapBackUp
 	 *            HashMap where the ServiceContext data nodes are saved
@@ -736,7 +736,7 @@ public class ExertProcessor {
 	}
 
 	/**
-	 * Copies the backup map of the context to the passed context.
+	 * Copies the backup map of the dataContext to the passed dataContext.
 	 * 
 	 * @param mapBackUp
 	 *            Saved HashMap which is used to restore from
@@ -761,7 +761,7 @@ public class ExertProcessor {
 	}
 
 	/**
-	 * Copies the data nodes from one context to another (shallow copy).
+	 * Copies the data nodes from one dataContext to another (shallow copy).
 	 * 
 	 * @param fromContext
 	 *            ServiceContext
@@ -876,19 +876,19 @@ public class ExertProcessor {
 		if (task.getPreprocessSignatures().size() > 0) {
 			Context cxt = preprocess(task);
 			cxt.setExertion(task);
-			task.setContext(cxt);
+			task.setDataContext(cxt);
 		}
 		// execute service task
 		List<Signature> ts = new ArrayList<Signature>(1);
 		Signature tsig = task.getProcessSignature();
-		((ServiceContext)task.getContext()).setCurrentSelector(tsig.getSelector());
-		((ServiceContext)task.getContext()).setCurrentPrefix(((ServiceSignature)tsig).getPrefix());
+		((ServiceContext)task.getDataContext()).setCurrentSelector(tsig.getSelector());
+		((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)tsig).getPrefix());
 
 		ts.add(tsig);
 		task.setSignatures(ts);
 		if (tsig.getReturnPath() != null)
 			try {
-				((ServiceContext)task.getContext()).setReturnPath(tsig.getReturnPath());
+				((ServiceContext)task.getDataContext()).setReturnPath(tsig.getReturnPath());
 			} catch (ContextException e) {
 				e.printStackTrace();
 				throw new ExertionException(e);
@@ -907,7 +907,7 @@ public class ExertProcessor {
 		if (task.getPostprocessSignatures().size() > 0) {
 			Context cxt = postprocess(task);
 			cxt.setExertion(task);
-			task.setContext(cxt);
+			task.setDataContext(cxt);
 		}
 		if (task.getStatus() <= ExecState.FAILED) {
 			task.stopExecTime();
@@ -935,12 +935,12 @@ public class ExertProcessor {
 			throws ExertionException {
 		Signature.Type type = signatures.get(0).getType();
 		Task t = null;
-		Context shared = task.getContext();
+		Context shared = task.getDataContext();
 		for (int i = 0; i < signatures.size(); i++) {
 			t = task(task.getName() + "-" + i, signatures.get(i), shared);
 			signatures.get(i).setType(Signature.SRV);
-			((ServiceContext)task.getContext()).setCurrentSelector(signatures.get(i).getSelector());
-			((ServiceContext)task.getContext()).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
+			((ServiceContext)task.getDataContext()).setCurrentSelector(signatures.get(i).getSelector());
+			((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
 
 			List<Signature> tmp = new ArrayList<Signature>(1);
 			tmp.add(signatures.get(i));
@@ -949,24 +949,24 @@ public class ExertProcessor {
 			try {
 				t = t.doTask();
 				signatures.get(i).setType(type);
-				shared = t.getContext();
+				shared = t.getDataContext();
 				if (t.getStatus() <= ExecState.FAILED) {
 					task.setStatus(ExecState.FAILED);
 					ExertionException ne = new ExertionException(
 							"Batch signature failed: " + signatures.get(i));
 					task.reportException(ne);
-					task.setContext(shared);
+					task.setDataContext(shared);
 					return shared;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				task.setStatus(ExecState.FAILED);
 				task.reportException(e);
-				task.setContext(shared);
+				task.setDataContext(shared);
 				return shared;
 			}
 		}
-		// return the service context of the last exertion
+		// return the service dataContext of the last exertion
 		return shared;
 	}
 }

@@ -248,7 +248,7 @@ public class ObjectInvoker extends ServiceInvoker {
 					}
 				}
 			}
-			// ((ServiceContext)context).setCurrentSelector(selector);
+			// ((ServiceContext)dataContext).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);

@@ -46,7 +46,7 @@ import sorcer.util.exec.ExecUtils.CmdResult;
 //import static sorcer.vo.operator.var;
 //import static sorcer.vo.operator.varModel;
 //import static sorcer.vo.operator.vars;
-//import sorcer.core.context.model.VarModel;
+//import sorcer.core.dataContext.model.VarModel;
 //import sorcer.vfe.Var;
 
 /**
@@ -160,7 +160,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 						in("arg/x2", 80.0)));
 		
 		t5 = exert(t5);
-		logger.info("t5 context: " + context(t5));
+		logger.info("t5 dataContext: " + context(t5));
 		assertEquals("Wrong value for 100.0", value(context(t5), "result/value"), 100.0);
 	}
 	
@@ -173,7 +173,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 				context("add", in("arg/x1", 20.0),
 						in("arg/x2", 80.0), result("result/y")));
 		t5 = exert(t5);
-//		logger.info("t5 context: " + context(t5));
+//		logger.info("t5 dataContext: " + dataContext(t5));
 //		logger.info("t5 value: " + get(t5));
 		assertEquals("Wrong value for 100.0", get(t5), 100.0);
 	}
@@ -213,7 +213,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 				strategy(Access.PULL, Wait.YES));
 		
 		t5 = exert(t5);
-//		logger.info("t5 context: " + context(t5));
+//		logger.info("t5 dataContext: " + dataContext(t5));
 //		logger.info("t5 value: " + get(t5, "result/y"));
 		assertEquals("Wrong value for 100.0", get(t5, "result/y"), 100.0);
 	}
@@ -223,8 +223,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 		Job job = createJob(Flow.PAR, Access.PUSH);
 		job = exert(job);
 		//logger.info("job j1: " + job);
-		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		//logger.info("job j1 job dataContext: " + dataContext(job));
+		logger.info("job j1 job dataContext: " + jobContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
@@ -234,8 +234,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 		Job job = createJob(Flow.SEQ, Access.PUSH);
 		job = exert(job);
 		//logger.info("job j1: " + job);
-		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		//logger.info("job j1 job dataContext: " + dataContext(job));
+		logger.info("job j1 job dataContext: " + jobContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
@@ -245,8 +245,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 		Job job = createJob(Flow.PAR, Access.PULL);
 		job = exert(job);
 		//logger.info("job j1: " + job);
-		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		//logger.info("job j1 job dataContext: " + dataContext(job));
+		logger.info("job j1 job dataContext: " + jobContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}
@@ -256,8 +256,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 		Job job = createJob(Flow.SEQ, Access.PULL);
 		job = exert(job);
 		//logger.info("job j1: " + job);
-		//logger.info("job j1 job context: " + context(job));
-		logger.info("job j1 job context: " + jobContext(job));
+		//logger.info("job j1 job dataContext: " + dataContext(job));
+		logger.info("job j1 job dataContext: " + jobContext(job));
 		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
 		assertEquals(get(job, "j1/t3/result/y"), 400.00);
 	}

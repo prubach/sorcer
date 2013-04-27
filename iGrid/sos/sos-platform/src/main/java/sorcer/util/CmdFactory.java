@@ -109,7 +109,7 @@ abstract public class CmdFactory {
 		String context = getContext(cmdName);
 		cmd = null;
 		if (context == null) {
-			logger.severe("getCmd:No context defined for command: " + cmdName);
+			logger.severe("getCmd:No dataContext defined for command: " + cmdName);
 		} else {
 			cmd = getCmd(cmdName, context);
 			if (invoker != null)

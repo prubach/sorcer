@@ -39,7 +39,7 @@ public class WhoIsItPullJobRequestor {
 		Exertion result = ex.exert(null, spacerName);
 		
 		ServiceExertion.debug = true;
-		logger.info("Job exceptions job: \n" + result.getThrowables());
+		logger.info("Job exceptions job: \n" + result.getExceptions());
 		logger.info("Output job: \n" + result);
 		logger.info("Output context1: \n" + result.getContext("Who Is It1?"));
 		logger.info("Output context2: \n" + result.getContext("Who Is It2?"));

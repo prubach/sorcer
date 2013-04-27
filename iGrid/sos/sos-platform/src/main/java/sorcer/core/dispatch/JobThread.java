@@ -28,7 +28,7 @@ public class JobThread extends Thread {
 	}
 
 	public void run() {
-		logger.finer("*** Exertion dispatcher started with control context ***\n"
+		logger.finer("*** Exertion dispatcher started with control dataContext ***\n"
 				+ job.getControlContext());
 		Dispatcher dispatcher = null;
 		try {

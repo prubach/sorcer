@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.nfunk.jep.JEP;
 
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.falcon.base.Conditional;
@@ -40,6 +39,7 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.util.Log;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 
 /**
  * WhileExertion is a new exertion extending from the {@link ServiceExertion}
@@ -152,18 +152,18 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	public void setDoExertion(Exertion exertion) {
 		if (this.isJob()) {
 			this.baseExertion = exertion;
-			// this.setContext(exertion.getContext()); doesn't work for job and
+			// this.setDataContext(exertion.getDataContext()); doesn't work for job and
 			// not needed for task
 		}
 
 		if (condition != null) {
 			try {
 				if (((ServiceExertion) exertion).isTask())
-					condition.setConditionalContext(exertion.getContext());
+					condition.setConditionalContext(exertion.getDataContext());
 
 				else if (((ServiceExertion) exertion).isJob())
 					condition.setConditionalContext(((Job) exertion)
-							.getMasterExertion().getContext());
+							.getMasterExertion().getDataContext());
 
 			} catch (ContextException e) {
 				e.printStackTrace();
@@ -172,14 +172,14 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Sets the context of the base exertion (job/task) recursively.
+	 * Sets the dataContext of the base exertion (job/task) recursively.
 	 * 
 	 * @param context
-	 *            the modified context
+	 *            the modified dataContext
 	 * @see Context
 	 */
 	public void setConditionalContext(Context context) {
-		((ServiceExertion) baseExertion).setContext(context);
+		((ServiceExertion) baseExertion).setDataContext(context);
 	}
 
 	/**
@@ -196,27 +196,27 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Returns the context name of the actual job/task.
+	 * Returns the dataContext name of the actual job/task.
 	 * 
-	 * @return String the name of the context
+	 * @return String the name of the dataContext
 	 * @see sorcer.service.ServiceExertion#getContextName()
 	 */
 	public String getContextName() {
-		return ((ServiceExertion) baseExertion).getContext().getName();
+		return ((ServiceExertion) baseExertion).getDataContext().getName();
 	}
 
 	/**
-	 * Returns the context of a job or task.
+	 * Returns the dataContext of a job or task.
 	 * 
 	 * @return ServiceContext
 	 */
-	public Context getContext() {
+	public Context getDataContext() {
 		if (this.isTask()) {
-			return baseExertion.getContext();
+			return baseExertion.getDataContext();
 		}
 
 		else if (this.isJob()) {
-			return ((Job) baseExertion).getMasterExertion().getContext();
+			return ((Job) baseExertion).getMasterExertion().getDataContext();
 		}
 
 		else
@@ -274,7 +274,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Sets a reference between the given variable name and context path. This
+	 * Sets a reference between the given variable name and dataContext path. This
 	 * method is used for the legacy way when the condition component is not
 	 * given.
 	 * 
@@ -334,7 +334,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 */
 	public void adjustConditionVariables() throws ExertionException {
 		testLog.finest("***Adjusting Condition Variables***");
-		Context context = this.getContext();
+		Context context = this.getDataContext();
 		Map map = null;
 
 		if (condition != null) {
@@ -378,9 +378,9 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 					// set on the contextLink is static
 					// other data nodes may not begin with the initial path.
 					if (baseExertion instanceof IfExertion) {
-						((Context) context.getValue("in/context/thenExertion"))
+						((Context) context.getValue("in/dataContext/thenExertion"))
 								.putValue((String) map.get(varName), value);
-						((Context) context.getValue("in/context/elseExertion"))
+						((Context) context.getValue("in/dataContext/elseExertion"))
 								.putValue((String) map.get(varName), value);
 					}
 
@@ -397,13 +397,13 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 
 	/**
 	 * Evaluates the string expression from the given variables that correlates
-	 * to a path, which then points to the actual data nodes in the context.
+	 * to a path, which then points to the actual data nodes in the dataContext.
 	 * 
 	 * @return Object result from the expression
 	 */
 	protected double evalCondition() {
 		JEP jepParser = new JEP();
-		Context context = this.getContext();
+		Context context = this.getDataContext();
 		Iterator iter = mapReference.entrySet().iterator();
 		double result = 0;
 
@@ -443,9 +443,9 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	public boolean isTrue() throws ExertionException {
 		if (condition != null) {
 			try {
-				condition.setConditionalContext(this.getContext());
+				condition.setConditionalContext(this.getDataContext());
 			} catch (ContextException ce) {
-				testLog.finest("Unable to setContext on Condition: " + ce);
+				testLog.finest("Unable to setDataContext on Condition: " + ce);
 				ce.printStackTrace();
 			}
 			boolean conditionResult = condition.isTrue();
@@ -473,7 +473,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Returns the Map reference of variable names and their associated context
+	 * Returns the Map reference of variable names and their associated dataContext
 	 * path.
 	 * 
 	 * @return Map the map reference
@@ -577,7 +577,6 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#getExceptions()
 	 */
-	@Override
 	public List<ThrowableTrace> getThrowables() {
 		// TODO Auto-generated method stub
 		return null;

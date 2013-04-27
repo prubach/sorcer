@@ -29,6 +29,6 @@ public class ArithmeticExertletRunner extends ExertletRunner {
 
 	public void postprocess(String... args) {
 		super.postprocess();
-		logger.info("<<<<<<<<<< f5 context: \n" + ((Job)exertion).getExertion("f5").getContext());
+		logger.info("<<<<<<<<<< f5 dataContext: \n" + ((Job)exertion).getExertion("f5").getDataContext());
 	}
 }

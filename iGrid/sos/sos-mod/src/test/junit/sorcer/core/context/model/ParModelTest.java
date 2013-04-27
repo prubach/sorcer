@@ -61,7 +61,7 @@ public class ParModelTest {
 				+ ((ServiceInvoker) pm.getAsis("add")).invoke());
 
 		pm.setReturnPath("add");
-		logger.info("pm context value: " + pm.invoke());
+		logger.info("pm dataContext value: " + pm.invoke());
 
 	}
 
@@ -88,7 +88,7 @@ public class ParModelTest {
 				+ ((ServiceInvoker) pm.getAsis("add")).invoke());
 
 		pm.setReturnPath("add");
-		logger.info("pm context value: " + pm.invoke());
+		logger.info("pm dataContext value: " + pm.invoke());
 
 		x = pm.getPar("x");
 		y = pm.getPar("y");

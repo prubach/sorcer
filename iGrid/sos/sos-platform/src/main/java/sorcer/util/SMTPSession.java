@@ -199,7 +199,7 @@ public class SMTPSession {
 
 	/**
 	 * Send the message to the argument recipient only using the existing
-	 * SMTPSession context.
+	 * SMTPSession dataContext.
 	 * 
 	 * @param recipient
 	 *            the recipients email address
@@ -210,8 +210,8 @@ public class SMTPSession {
 	}
 
 	/**
-	 * Send the message to the session recipient, cc and bcc recipients using
-	 * the existing SMTPSession context.
+	 * Send the message to the session recipient, controlContext and bcc recipients using
+	 * the existing SMTPSession dataContext.
 	 */
 	public String send() {
 		StringBuffer results = new StringBuffer();

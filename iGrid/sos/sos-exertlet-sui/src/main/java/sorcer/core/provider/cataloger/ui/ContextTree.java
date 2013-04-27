@@ -42,7 +42,7 @@ import sorcer.service.ContextException;
 
 /**
  * ContextTree is a JPanel that contains the Jtree as well as the TreeModel it
- * represents. This class contains methods for creating the context from the
+ * represents. This class contains methods for creating the dataContext from the
  * tree as well as adding and removing nodes. This class also contains several
  * subclasses to control mouse behavior, the tree rendering and monitor changes
  * to the tree.
@@ -157,11 +157,11 @@ public class ContextTree extends JPanel {
 	}
 
 	/**
-	 * This method generates the context from the current tree model, it is
-	 * significantly easier to make a new context from the tree than it is to
-	 * try to maintain the current context thru the changes to the tree. This
+	 * This method generates the dataContext from the current tree model, it is
+	 * significantly easier to make a new dataContext from the tree than it is to
+	 * try to maintain the current dataContext thru the changes to the tree. This
 	 * function calls doRootGenerateContext which recursively creates the
-	 * context.
+	 * dataContext.
 	 * 
 	 * @return Context representing the tree.
 	 */
@@ -174,8 +174,8 @@ public class ContextTree extends JPanel {
 	}
 
 	/**
-	 * This function recursively goes thru the tree adding items to the context
-	 * using the tree path as the path for the context and the datanode as the
+	 * This function recursively goes thru the tree adding items to the dataContext
+	 * using the tree path as the path for the dataContext and the datanode as the
 	 * data. The function also marks the node for the type of data it is
 	 * (input/output).
 	 * 
@@ -185,7 +185,7 @@ public class ContextTree extends JPanel {
 	 *            Object representing were we currently are in the tree
 	 * @param currentPath
 	 *            String representing the current path we are in the tree, added
-	 *            to with the context path separator of /
+	 *            to with the dataContext path separator of /
 	 * @return Context we added to.
 	 */
 	public Context doRootGenerateContext(Context theContext, Object current,
@@ -198,7 +198,7 @@ public class ContextTree extends JPanel {
 		// have kids and
 		// that we are
 		// not at root
-		{ // dont want root because it is technically the name of the context
+		{ // dont want root because it is technically the name of the dataContext
 			// and not a valid path
 
 			// we have no kids so we just output the path.
@@ -243,7 +243,7 @@ public class ContextTree extends JPanel {
 					// special
 					// type
 					{
-						// System.out.println("child user object is a context node "
+						// System.out.println("child user object is a dataContext node "
 						// +i);
 						ContextNodeType cnt = (ContextNodeType) ((DefaultMutableTreeNode) child)
 								.getUserObject(); // get the special type
@@ -304,7 +304,7 @@ public class ContextTree extends JPanel {
 		/*
 		 * String cxt=new String(); StringBuffer buf=new StringBuffer();
 		 * ((ServiceContext)theContext).toStringComplete(cxt, buf);
-		 * System.out.println("current context is "+cxt);
+		 * System.out.println("current dataContext is "+cxt);
 		 */
 		return theContext;
 	}
@@ -561,7 +561,7 @@ public class ContextTree extends JPanel {
 				Component c; // get the original component by calling super
 
 				if (((ContextNodeType) userObject).getObject() instanceof ContextNode) // handle
-					// context
+					// dataContext
 					// nodes
 					// by
 					// getting

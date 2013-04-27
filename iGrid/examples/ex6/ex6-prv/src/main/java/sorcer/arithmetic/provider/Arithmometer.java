@@ -35,8 +35,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Adder} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -53,8 +53,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Subtractor} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -71,8 +71,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Multiplier} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -89,8 +89,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Divider} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws ContextException 
 	 * @throws RemoteExceptionO
 	 */
@@ -107,7 +107,7 @@ public class Arithmometer implements Serializable {
 	 * (add, subtract, multiply, or divide) from the instance of ArrayContext.
 	 * 
 	 * @param input
-	 *            service context
+	 *            service dataContext
 	 * @param selector
 	 *            a name of arithmetic operation
 	 * @return
@@ -176,7 +176,7 @@ public class Arithmometer implements Serializable {
 	 * (add, subtract, multiply, or divide) from the instance of ServiceContext.
 	 * 
 	 * @param input
-	 *            service context
+	 *            service dataContext
 	 * @param selector
 	 *            a name of arithmetic operation
 	 * @return

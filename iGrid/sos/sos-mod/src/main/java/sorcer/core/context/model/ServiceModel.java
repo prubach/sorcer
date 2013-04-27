@@ -36,9 +36,9 @@ import sorcer.service.EvaluationException;
 
 /**
  * In service-based modeling, a parameter (for short a par) is a special kind of
- * variable, used in a service context to refer to one of the pieces of data
- * provided as input to the invokers (subroutines of the context). These pieces
- * of data are called arguments. A service context, as a map of pairs (Pars),
+ * variable, used in a service dataContext to refer to one of the pieces of data
+ * provided as input to the invokers (subroutines of the dataContext). These pieces
+ * of data are called arguments. A service dataContext, as a map of pairs (Pars),
  * parameter name and its argument <name, argument> is the definition of a
  * independent and dependent arguments. Arguments that dependent on other
  * arguments are subroutines (invokers), so that, each time the subroutine is
@@ -75,7 +75,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.service.Evaluation#getValue(sorcer.core.context.Path.Entry[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException {
@@ -215,7 +215,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#evaluate(sorcer.service.Context)
+	 * @see sorcer.core.dataContext.model.Modeling#evaluate(sorcer.service.Context)
 	 */
 	@Override
 	public Context evaluate(Context modelContext) throws EvaluationException,
@@ -225,7 +225,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#configureEvaluation(sorcer.service.Context)
+	 * @see sorcer.core.dataContext.model.Modeling#configureEvaluation(sorcer.service.Context)
 	 */
 	@Override
 	public Context configureEvaluation(Context modelContext)
@@ -235,7 +235,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#selectEvaluation(sorcer.service.Context)
+	 * @see sorcer.core.dataContext.model.Modeling#selectEvaluation(sorcer.service.Context)
 	 */
 	@Override
 	public Context selectEvaluation(Context modelContext)
@@ -245,7 +245,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#updateEvaluation(sorcer.service.Context)
+	 * @see sorcer.core.dataContext.model.Modeling#updateEvaluation(sorcer.service.Context)
 	 */
 	@Override
 	public Context updateEvaluation(Context modelContext)
@@ -255,7 +255,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#getResult()
+	 * @see sorcer.core.dataContext.model.Modeling#getResult()
 	 */
 	@Override
 	public Object getResult() throws EvaluationException, RemoteException {
@@ -264,7 +264,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Modeling#writeResult()
+	 * @see sorcer.core.dataContext.model.Modeling#writeResult()
 	 */
 	@Override
 	public boolean writeResult() throws EvaluationException, RemoteException {

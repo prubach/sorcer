@@ -6,15 +6,15 @@
 // or iGrid/examples/ex6/bin/all-arithmetic-prv-boot.xml
 
 import sorcer.arithmetic.provider.Adder;
-import sorcer.core.context.PositionalContext;
+import sorcer.core.dataContext.PositionalContext;
 import sorcer.core.exertion.ServiceTask;
 import sorcer.core.signature.ServiceSignature;
 
-PositionalContext context = new PositionalContext("add");
-context.putInValueAt("arg/x1", 10d, 1);
-context.putInValueAt("arg/x2", 50d, 2);
+PositionalContext dataContext = new PositionalContext("add");
+dataContext.putInValueAt("arg/x1", 10d, 1);
+dataContext.putInValueAt("arg/x2", 50d, 2);
 		
 ServiceSignature method = new ServiceSignature("add", Adder.class);
 ServiceTask task = new ServiceTask("add", method);
-task.setContext(context);
+task.setContext(dataContext);
 return task;

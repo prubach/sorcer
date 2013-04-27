@@ -47,7 +47,7 @@ public class ContextTest {
 		assertTrue("Wrong value for k1=1.0", m.get("k1").equals(1.0));
 
 		Context<?> cxt = context(in("k1", 1.0), in("k2", 2.0), in("k3", 3.0), out("k4", 4.0));
-		logger.info("in/out context: " + cxt);
+		logger.info("in/out dataContext: " + cxt);
 		assertEquals(get(cxt, "k1"), 1.0);
 		assertEquals(get(cxt, "k2"), 2.0);
 		assertEquals(get(cxt, "k3"), 3.0);
@@ -73,15 +73,15 @@ public class ContextTest {
 //		assertEquals(revalue(cxt, "k5"), 100.0);
 	
 		cxt = context(entry("k1", 1.0), entry("k2", 2.0), entry("k3", 3.0));
-		logger.info("context cxt:  " + cxt.getClass());
-		//logger.info("entry context cxt:  " + cxt);
+		logger.info("dataContext cxt:  " + cxt.getClass());
+		//logger.info("entry dataContext cxt:  " + cxt);
 		assertEquals(get(cxt, "k2"), 2.0);
 		assertEquals(get(cxt, "k3"), 3.0);
 	}
 	
 //	@Test
 //	public void contextClosureTest() throws ExertionException, ContextException, RemoteException {
-//		Context<?> cxt = context(in("x1"), in("x2"), 
+//		Context<?> cxt = dataContext(in("x1"), in("x2"),
 //				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))));
 //		revaluable(cxt);
 //		//logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
@@ -90,7 +90,7 @@ public class ContextTest {
 	
 //	@Test
 //	public void evaluatedContextTest() throws ExertionException, ContextException {
-//		Context<?> cxt = context(in(var("x1")), in(var("x2")), 
+//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
 //				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))));
 //		revaluable(cxt);
 //		logger.info("cxt: " + cxt);
@@ -101,7 +101,7 @@ public class ContextTest {
 	
 //	@Test
 //	public void evaluatedContextWithResultTest() throws ExertionException, ContextException {
-//		Context<?> cxt = context(in(var("x1")), in(var("x2")), 
+//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
 //				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))),
 //				result("y"));
 //		logger.info("cxt: " + cxt);
@@ -110,17 +110,17 @@ public class ContextTest {
 //		logger.info("cxt2: " + cxt);
 //		logger.info("cxt value:  " + value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
 //		
-//		// No path for the evaluation is specified in the context cxt
+//		// No path for the evaluation is specified in the dataContext cxt
 //		assertEquals(value(cxt, entry("x1", 10.0), entry("x2", 50.0)), 500.0);
 //	}
 	
 //	@Test
 //	public void evaluateAcrossContextsTest() throws ExertionException, ContextException {
-//		Context<?> cxt = context(in(var("x1")), in(var("x2")), 
+//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
 //				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))),
 //				result("y"));
 //		revaluable(cxt);
-//		Context<?> cxt0 = context(in(var("x11", 10.0)), in(var("x21", 50.0)));
+//		Context<?> cxt0 = dataContext(in(var("x11", 10.0)), in(var("x21", 50.0)));
 ////		logger.info("x11: " + value(var("x11", cxt0)));
 ////		logger.info("x21: " + value(var("x21", cxt0)));
 //		

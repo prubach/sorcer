@@ -25,8 +25,8 @@ import sorcer.space.array.DistribArray05;
 import sorcer.util.ProviderAccessor;
 
 /**
- * SpaceContext persists its context nodes in a distributed array in JavaSpace with 
- * the name provided in the constructor. In the data context path values correspond 
+ * SpaceContext persists its dataContext nodes in a distributed array in JavaSpace with
+ * the name provided in the constructor. In the data dataContext path values correspond
  * to indices of elements in the distributed array. 
  */
 
@@ -42,7 +42,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#writeValue(java.lang.String, java.lang.Object)
+	 * @see sorcer.core.dataContext.SpaceContext#writeValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public Object writeValue(String path, Object value) throws ContextException, RemoteException {
@@ -56,7 +56,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#readValue(java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#readValue(java.lang.String)
 	 */
 	@Override
 	public Object readValue(String path) throws ContextException, RemoteException {
@@ -77,7 +77,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#takeValue(java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#takeValue(java.lang.String)
 	 */
 	@Override
 	public Object takeValue(String path) throws ContextException, RemoteException {
@@ -103,7 +103,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#aliasValue(java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#aliasValue(java.lang.String)
 	 */
 	@Override
 	public Object aliasValue(String path, String alias) throws ContextException,
@@ -113,7 +113,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#share()
+	 * @see sorcer.core.dataContext.SpaceContext#share()
 	 */
 	@Override
 	public void share() throws ContextException, RemoteException {
@@ -122,7 +122,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#unshare()
+	 * @see sorcer.core.dataContext.SpaceContext#unshare()
 	 */
 	@Override
 	public void unshare() throws ContextException, RemoteException {

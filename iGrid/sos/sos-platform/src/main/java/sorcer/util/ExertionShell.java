@@ -17,43 +17,27 @@
 
 package sorcer.util;
 
-import java.rmi.RemoteException;
-import java.util.concurrent.Callable;
-import java.util.logging.Logger;
-
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.core.transaction.server.TransactionManager;
-
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
-
 import sorcer.co.tuple.Parameter;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ExertProcessor;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.lookup.ProviderID;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.service.Spacer;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
-import sorcer.service.Task;
+
+import java.rmi.RemoteException;
+import java.util.concurrent.Callable;
+import java.util.logging.Logger;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 
 /**
  * @author Mike Sobolewski
@@ -123,7 +107,7 @@ public class ExertionShell implements Callable {
 			return processAsTask();
 		}
 		transaction = txn;
-		Context<?> cxt = exertion.getContext();
+		Context<?> cxt = exertion.getDataContext();
 		cxt.setExertion(exertion);
 		Signature signature = exertion.getProcessSignature();
 		Servicer provider = null;
@@ -203,8 +187,8 @@ public class ExertionShell implements Callable {
 		} else {
 			 result = provider.service(exertion, transaction);
 		}
-		if (result.getThrowables().size() > 0) {
-			for (ThrowableTrace et : result.getThrowables()) {
+		if (result.getExceptions().size() > 0) {
+			for (ThrowableTrace et : result.getExceptions()) {
 				if (et.getThrowable() instanceof Error)
 					((ServiceExertion)result).setStatus(ExecState.ERROR); 
 			}

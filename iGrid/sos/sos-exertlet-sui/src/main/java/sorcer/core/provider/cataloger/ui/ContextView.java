@@ -17,7 +17,7 @@
 
 package sorcer.core.provider.cataloger.ui;
 
-//function call to model to get context.
+//function call to model to get dataContext.
 //also add buttons to bottom for tree and list view. 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -59,9 +59,9 @@ import sorcer.service.ContextException;
  * This class implements the Context editing window, which is used in the
  * Cataloger UI and the task manager integrated into providers. The edit window
  * shows either a tree @see ContextTree or a list view @see ContextList of a
- * context. The edit window contains two tabs (one for input and one for output)
+ * dataContext. The edit window contains two tabs (one for input and one for output)
  * displaying the Contexts. The bottom of the window contains the control panel
- * which holds the various operations that can be performed on the context.
+ * which holds the various operations that can be performed on the dataContext.
  * These operations include Add Path, Add Data Node, Remove Item, Clear Context,
  * Load Other, Delete Context, Save Context, Save As, and Exert Task.
  */
@@ -99,12 +99,12 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	private JFrame loadOtherPanel;
 
 	/**
-	 * ContextTree for input context
+	 * ContextTree for input dataContext
 	 */
 	private ContextTree treePanelInput;
 
 	/**
-	 * ContextTree for output context
+	 * ContextTree for output dataContext
 	 */
 	private ContextTree treePanelOutput;
 
@@ -114,7 +114,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	private JTabbedPane tabbedContextPane;
 
 	/**
-	 * Private copy of the context used for various operations, like load other
+	 * Private copy of the dataContext used for various operations, like load other
 	 * and save as.
 	 */
 	private Context theContext;
@@ -144,19 +144,19 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	 */
 	private static String REMOVE_NODE = "remove";
 	/**
-	 * String command for clearing the context
+	 * String command for clearing the dataContext
 	 */
 	private static String CLEAR_CONTEXT = "clear";
 	/**
-	 * String command for saving the context
+	 * String command for saving the dataContext
 	 */
 	private static String SAVE_CONTEXT = "saveContext";
 	/**
-	 * String command for loading a different context
+	 * String command for loading a different dataContext
 	 */
 	private static String LOAD_CONTEXT = "loadOtherContext";
 	/**
-	 * String command for confirming loading a different context
+	 * String command for confirming loading a different dataContext
 	 */
 	private static String LOAD_FROM_CONTEXT_CONFIRM = "loadOtherContextConfirm";
 	/**
@@ -168,7 +168,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	 */
 	private static String SAVE_AS_CONTEXT_CONFIRM = "saveASContextConfirm";
 	/**
-	 * String command for loading the delete context window
+	 * String command for loading the delete dataContext window
 	 */
 	private static String DELETE_CONTEXT = "deleteContext";
 	/**
@@ -181,7 +181,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	private static String LAUNCH_SERVICE = "liftoff";
 
 	/**
-	 * Constructor for creating the context view panel
+	 * Constructor for creating the dataContext view panel
 	 * 
 	 * @param signatureDispatcher
 	 *            Remote dispatcher to use.
@@ -345,9 +345,9 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	}
 
 	/**
-	 * This functions rebuilds the ContextTree with the context specified. This
-	 * is called whenever the context is updated. The method works by iterating
-	 * thru the context creating path and datanodes on the tree.
+	 * This functions rebuilds the ContextTree with the dataContext specified. This
+	 * is called whenever the dataContext is updated. The method works by iterating
+	 * thru the dataContext creating path and datanodes on the tree.
 	 * 
 	 * @param treePanel
 	 * @link ContexTree to update to theContext
@@ -522,7 +522,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 			// load from other confirm
 			loadOtherPanel.dispose();
 			theContext = signatureDispatcher.getContext(loadOtherBox
-					.getSelectedItem().toString()); // get the requested context
+					.getSelectedItem().toString()); // get the requested dataContext
 			treePanelInput.clear();
 			buildTreeFromContext(treePanelInput, theContext);
 			Context newOutput = new ServiceContext("No Output");
@@ -559,7 +559,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 						treePanelOutput.generateContext());
 
 		} else if (DELETE_CONTEXT.equals(command)) {
-			// load delete context window
+			// load delete dataContext window
 			loadOtherPanel = new JFrame("Delete Context");
 			JPanel panel = new JPanel();
 			loadOtherLabel = new JLabel("Delete Context: ");
@@ -599,7 +599,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 				if (tabbedContextPane.getSelectedIndex() == 0) // do the
 					// currently
 					// displayed
-					// context
+					// dataContext
 					result = (ServiceContext) signatureDispatcher
 							.exertService(treePanelInput.generateContext());
 				if (tabbedContextPane.getSelectedIndex() == 1)
@@ -621,7 +621,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 			 * JTabbedPane();
 			 * 
 			 * JComponent panel1 =
-			 * makeTextPanel("INPUT CONTEXT\n\n"+model.context.toString());
+			 * makeTextPanel("INPUT CONTEXT\n\n"+model.dataContext.toString());
 			 * tabbedPane.addTab("Input Context", null, panel1,
 			 * "Input Context"); tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 			 * 
@@ -659,17 +659,17 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	}
 
 	/**
-	 * Updates the context view when the BrowserModel has changed.
+	 * Updates the dataContext view when the BrowserModel has changed.
 	 * 
 	 * @param context
-	 *            : the context that will be updated
+	 *            : the dataContext that will be updated
 	 * @param update
 	 *            : object that is updated
 	 */
 	public void update(Observable context, Object updated) {
 		model = (BrowserModel) context;
 
-		// hide myself if anything but the context changes
+		// hide myself if anything but the dataContext changes
 		if (updated.toString().equals(BrowserModel.PROVIDER_UPDATED))
 			this.setVisible(false);
 		if (updated.toString().equals(BrowserModel.INTERFACE_UPDATED))
@@ -677,7 +677,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 		if (updated.toString().equals(BrowserModel.METHOD_UPDATED))
 			this.setVisible(false);
 
-		if (updated.equals(BrowserModel.CONTEXT_UPDATED)) // show on new context
+		if (updated.equals(BrowserModel.CONTEXT_UPDATED)) // show on new dataContext
 		{
 			if (model.getSelectedMethod() == null) // validate the request
 			{

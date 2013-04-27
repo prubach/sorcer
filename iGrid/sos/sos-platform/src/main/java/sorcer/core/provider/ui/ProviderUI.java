@@ -29,7 +29,7 @@ import sorcer.core.provider.proxy.Outer;
 import sorcer.util.Log;
 
 /**
- * SORCER provider attribute and context viewer. It also allows to create a
+ * SORCER provider attribute and dataContext viewer. It also allows to create a
  * service task for its provider and submit the task for the provider execution.
  */
 public class ProviderUI extends JPanel {

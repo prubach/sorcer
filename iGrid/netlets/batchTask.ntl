@@ -1,6 +1,6 @@
 #!/usr/bin/env nsh -f
 
-import sorcer.core.context.ServiceContext;
+import sorcer.core.dataContext.ServiceContext;
 import sorcer.core.exertion.ServiceTask;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.ex1.requestor.RequestorMessage;
@@ -14,10 +14,10 @@ InetAddress inetAddress = InetAddress.getLocalHost();
 hostname = inetAddress.getHostName();
 ipAddress = inetAddress.getHostAddress();
 
-Context context = new ServiceContext("Who Is It?");
-context.putValue("requestor/message", new RequestorMessage("SORCER"));
-context.putValue("requestor/hostname", hostname);
-context.putValue("requestor/address", ipAddress);
+Context dataContext = new ServiceContext("Who Is It?");
+dataContext.putValue("requestor/message", new RequestorMessage("SORCER"));
+dataContext.putValue("requestor/hostname", hostname);
+dataContext.putValue("requestor/address", ipAddress);
 
 Signature signature1 = new ServiceSignature("getHostAddress",
 		sorcer.ex1.WhoIsIt.class, providername, Operation.PREPROCESS);
@@ -28,4 +28,4 @@ Signature signature3 = new ServiceSignature("getCanonicalHostName",
 Signature signature4 = new ServiceSignature("getTimestamp",
 		sorcer.ex1.WhoIsIt.class, providername, Operation.POSTPROCESS);
 
-Task task = new ServiceTask("Who Is It?", context, signature1, signature2, signature3, signature4);
+Task task = new ServiceTask("Who Is It?", dataContext, signature1, signature2, signature3, signature4);

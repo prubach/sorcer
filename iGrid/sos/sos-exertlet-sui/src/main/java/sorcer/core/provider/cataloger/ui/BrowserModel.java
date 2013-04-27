@@ -340,7 +340,7 @@ public class BrowserModel extends Observable implements Serializable {
 
 	/**
 	 * <p>
-	 *  Returns a declarative context definition.
+	 *  Returns a declarative dataContext definition.
 	 * </p>
 	 * 
 	 * @return the contextScript
@@ -351,7 +351,7 @@ public class BrowserModel extends Observable implements Serializable {
 
 	/**
 	 * <p>
-	 * Assigns a declarative context definition.
+	 * Assigns a declarative dataContext definition.
 	 * </p>
 	 * 
 	 * @param contextScript

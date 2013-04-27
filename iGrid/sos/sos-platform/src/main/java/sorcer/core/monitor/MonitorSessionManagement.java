@@ -139,13 +139,13 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * Providers use this method to update the state of monitorable exertion.
 	 * 
 	 * @param context
-	 *            The service context of monitorable exertion.
+	 *            The service dataContext of monitorable exertion.
 	 *            
 	 * @param aspect
-	 *            The aspect of context change.
+	 *            The aspect of dataContext change.
 	 * 
 	 * @throws MonitorException
-	 *             1) If there is no such session 2) The context does not
+	 *             1) If there is no such session 2) The dataContext does not
 	 *             belong to this session
 	 * 
 	 * @throws RemoteException

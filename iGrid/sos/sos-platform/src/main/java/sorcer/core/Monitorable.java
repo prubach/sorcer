@@ -38,7 +38,7 @@ public interface Monitorable {
 
 	/**
 	 * MonitorManagers call stop on a MonitorableServicer. Once stop is called,
-	 * the monitorables must return the context and then initiate the cleanup.
+	 * the monitorables must return the dataContext and then initiate the cleanup.
 	 * 
 	 * @throws UnknownExertionException
 	 *             if the exertion is not executed by this provider.
@@ -54,7 +54,7 @@ public interface Monitorable {
 	/**
 	 * MonitorManagers call suspend a MonitorableServicer. Once suspend is
 	 * called, the monitorables must suspend immediatly and return the suspended
-	 * state of the context.
+	 * state of the dataContext.
 	 * 
 	 * @throws UnknownExertionException
 	 *             if the exertion is not executed by this provider.

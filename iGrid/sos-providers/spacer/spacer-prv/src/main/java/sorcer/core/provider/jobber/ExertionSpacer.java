@@ -162,8 +162,8 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 	public Exertion doJob(Exertion job) {
 		setServiceID(job);
 		try {
-			if (job.getControlContext().isMonitored()
-					&& !job.getControlContext().isWait()) {
+			if (job.getControlContext().isMonitorable()
+					&& !job.getControlContext().isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
 				new JobThread((Job) job, this).start();
@@ -297,7 +297,7 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 			return;
 		Job job = (Job) ex;
 		Vector recipents = null;
-		String notifyees = ((ControlContext) job.getContext()).getNotifyList();
+		String notifyees = ((ControlContext) job.getDataContext()).getNotifyList();
 		if (notifyees != null) {
 			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
@@ -322,14 +322,14 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 		}
 		String comment = "Your job '" + job.getName()
 				+ "' has been submitted.\n" + to;
-		((ControlContext) job.getContext()).setFeedback(comment);
+		((ControlContext) job.getDataContext()).setFeedback(comment);
 		if (job.getMasterExertion() != null
 				&& ((ServiceExertion) job.getMasterExertion()).isTask()) {
-			((ServiceExertion) (job.getMasterExertion())).getContext()
+			((ServiceExertion) (job.getMasterExertion())).getDataContext()
 					.putValue(Context.JOB_COMMENTS, comment);
 
 			Contexts.markOut(
-					((ServiceExertion) (job.getMasterExertion())).getContext(),
+					((ServiceExertion) (job.getMasterExertion())).getDataContext(),
 					Context.JOB_COMMENTS);
 
 		}
@@ -459,7 +459,7 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 		Exertion e = null;
 		for (int i = 0; i < job.size(); i++) {
 			e = job.exertionAt(i);
-			((ControlContext) job.getContext()).setReview(e, true);
+			((ControlContext) job.getDataContext()).setReview(e, true);
 			if (((ServiceExertion) e).isJob())
 				prepareToStep((Job) e);
 		}
@@ -470,7 +470,7 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 		setServiceID(task);
 		try {
 			if (task.isMonitored()
-					&& !task.isWait()) {
+					&& !task.isWaitable()) {
 				replaceNullExertionIDs(task);
 				notifyViaEmail(task);
 				new TaskThread((Task) task, this).start();

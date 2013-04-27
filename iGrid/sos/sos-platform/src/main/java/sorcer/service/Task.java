@@ -17,17 +17,8 @@
 
 package sorcer.service;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ContextLink;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.EvaluationTask;
 import sorcer.core.exertion.NetTask;
@@ -37,6 +28,15 @@ import sorcer.core.signature.EvaluationSignature;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+
 /**
  * A <code>Task</code> is an elementary service-oriented message
  * {@link Exertion} (with its own service {@link Context} and a collection of
@@ -45,7 +45,7 @@ import sorcer.core.signature.ObjectSignature;
  * <code>SERVICE</code>, <code>PREPROCESS</code>, <code>POSTROCESS</code>, and
  * <code>APPEND</code>. However, only a single <code>PROCESS</code> signature
  * can be associated with a task but multiple preprocessing, postprocessing, and
- * context appending methods can be added.
+ * dataContext appending methods can be added.
  * 
  * @see sorcer.service.Exertion
  * @see sorcer.service.Job
@@ -107,7 +107,8 @@ public class Task extends ServiceExertion {
 			taskClass = NetTask.class;
 		} else if (signature.getClass() == EvaluationSignature.class) {
 			taskClass = EvaluationTask.class;
-		} 
+        }
+
 		Constructor<? extends Task> constructor;
 		constructor = taskClass.getConstructor(String.class,
 				signature.getClass(), Context.class);
@@ -155,9 +156,9 @@ public class Task extends ServiceExertion {
 		if (signatures != null)
 			for (int i = 0; i < signatures.size(); i++)
 				((NetSignature) signatures.get(i)).setOwnerId(oid);
-		// Util.debug("Context : "+ context);
-		if (context != null)
-			context.setOwnerID(oid);
+		// Util.debug("Context : "+ dataContext);
+		if (dataContext != null)
+			dataContext.setOwnerID(oid);
 	}
 
 	public ServiceContext doIt() throws ExertionException {
@@ -203,8 +204,8 @@ public class Task extends ServiceExertion {
 		String time = getControlContext().getExecTime();
 		if (time != null && time.length() > 0)
 			sb.append("\n\texec time=").append(time);
-		//sb.append(cc).append("\n");
-		sb.append(context);
+		sb.append(controlContext).append("\n");
+		sb.append(dataContext);
 		sb.append("\n=== DONE PRINTING TASK ===\n");
 
 		return sb.toString();
@@ -252,8 +253,8 @@ public class Task extends ServiceExertion {
 	@Override
 	public Context linkContext(Context context, String path) {
 		try {
-			context.putValue(path + CPS + "data[" + getContext().getName()
-					+ "]", new ContextLink(getContext(), ""));
+			context.putValue(path + CPS + "data[" + getDataContext().getName()
+					+ "]", new ContextLink(getDataContext(), ""));
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
@@ -272,13 +273,6 @@ public class Task extends ServiceExertion {
 		return context;
 	}
 
-	public List<ThrowableTrace> getThrowables() {
-		List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
-		if (cc != null)
-			return cc.getExceptions();
-		else
-			return exceptions;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -317,7 +311,7 @@ public class Task extends ServiceExertion {
 	
 	/**
 	 * <p>
-	 * Returns <code>true</code> if this task takes its service context from the
+	 * Returns <code>true</code> if this task takes its service dataContext from the
 	 * previously executed task in sequence, otherwise <code>false</code>.
 	 * </p>
 	 * 
@@ -330,7 +324,7 @@ public class Task extends ServiceExertion {
 	/**
 	 * <p>
 	 * Assigns <code>isContinous</code> <code>true</code> to if this task takes
-	 * its service context from the previously executed task in sequence.
+	 * its service dataContext from the previously executed task in sequence.
 	 * </p>
 	 * 
 	 * @param isContinous

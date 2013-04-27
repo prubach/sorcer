@@ -38,8 +38,8 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * Implements the {@link Adder} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -56,8 +56,8 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * Implements the {@link Subtractor} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -74,8 +74,8 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * Implements the {@link Multiplier} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -92,8 +92,8 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * Implements the {@link Divider} interface.
 	 * 
 	 * @param context
-	 *            input context for this operation
-	 * @return an output service context
+	 *            input dataContext for this operation
+	 * @return an output service dataContext
 	 * @throws ContextException 
 	 * @throws RemoteExceptionO
 	 */
@@ -110,7 +110,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * (add, subtract, multiply, or divide) from the instance of ArrayContext.
 	 * 
 	 * @param input
-	 *            service context
+	 *            service dataContext
 	 * @param selector
 	 *            a name of arithmetic operation
 	 * @return
@@ -181,7 +181,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * (add, subtract, multiply, or divide) from the instance of ServiceContext.
 	 * 
 	 * @param input
-	 *            service context
+	 *            service dataContext
 	 * @param selector
 	 *            a name of arithmetic operation
 	 * @return
@@ -193,7 +193,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 			throws RemoteException, ContextException {
 		PositionalContext cxt = (PositionalContext) context;
 		try {
-			//logger.info("selector: " + ((ServiceContext)context).getCurrentSelector());
+			//logger.info("selector: " + ((ServiceContext)dataContext).getCurrentSelector());
 			// get sorted list of input values
 			List<Double> inputs = (List<Double>)Contexts.getNamedInValues(context);
 			if (inputs == null || inputs.size() == 0) {

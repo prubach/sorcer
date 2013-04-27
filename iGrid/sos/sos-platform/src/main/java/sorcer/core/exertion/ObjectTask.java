@@ -17,7 +17,6 @@
 
 package sorcer.core.exertion;
 
-import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
@@ -25,13 +24,10 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
-import sorcer.util.SorcerUtil;
 
 /**
  * The SORCER object task extending the basic task implementation {@link Task}.
@@ -67,36 +63,36 @@ public class ObjectTask extends Task {
 	public ObjectTask(String name, Signature signature, Context context)
 			throws SignatureException {
 		this(name, signature);
-		this.context = (ServiceContext) context;
+		this.dataContext = (ServiceContext) context;
 	}
 	
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		((ServiceContext) context).setCurrentSelector(getProcessSignature().getSelector());
-		((ServiceContext) context).setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
+		((ServiceContext) dataContext).setCurrentSelector(getProcessSignature().getSelector());
+		((ServiceContext) dataContext).setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
 		try {
 			if (getProcessSignature().getReturnPath() != null)
-				context.setReturnPath(getProcessSignature().getReturnPath());
+				dataContext.setReturnPath(getProcessSignature().getReturnPath());
 
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
 			Class[] paramTypes = new Class[] { Context.class };
-			Object[] parameters = new Object[] { context };
-			if (context.getArgsPath() != null) {
+			Object[] parameters = new Object[] {dataContext};
+			if (dataContext.getArgsPath() != null) {
 				paramTypes = os.getTypes();
 				parameters = (Object[]) getArgs();
 			}
 			Object result = ((ObjectSignature) getProcessSignature())
 					.initInstance(parameters, paramTypes);
 			if (result instanceof Context) {
-				if (context.getReturnPath() != null)
-					context.setReturnValue(((Context) result).getValue(context
+				if (dataContext.getReturnPath() != null)
+					dataContext.setReturnValue(((Context) result).getValue(dataContext
 							.getReturnPath().path));
 			} else {
-				context.setReturnValue(result);
+				dataContext.setReturnValue(result);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			context.reportException(e);
+			dataContext.reportException(e);
 		}
 		return this;
 	}

@@ -33,8 +33,8 @@ import sorcer.util.ProviderAccessor;
 
 /**
  * ServiceContext implementing the java.util.List interface.
- * Default context paths for elements in the list are in the form by path <code>element[i]</code>
- * with the context root <code>List</code>;
+ * Default dataContext paths for elements in the list are in the form by path <code>element[i]</code>
+ * with the dataContext root <code>List</code>;
  */
 @SuppressWarnings({ "serial", "unchecked" })
 public class SharedIndexedContext<T extends Object> extends ServiceContext implements IndexedContext, SpaceContext {
@@ -64,7 +64,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	 * Return an index of this ListContext path.
 	 * 
 	 * @param path
-	 *            ListContext context path
+	 *            ListContext dataContext path
 	 * @return an index of the ListContext path
 	 */
 	public int pathIndex(String path) {
@@ -91,7 +91,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.IndexedContext#putValue(int, java.lang.Object)
+	 * @see sorcer.core.dataContext.IndexedContext#putValue(int, java.lang.Object)
 	 */
 	@Override
 	public Object putValue(int i, Object value) throws ContextException {
@@ -252,7 +252,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#readValue(java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#readValue(java.lang.String)
 	 */
 	@Override
 	public Object readValue(String path) throws ContextException, RemoteException {
@@ -273,7 +273,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#takeValue(java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#takeValue(java.lang.String)
 	 */
 	@Override
 	public Object takeValue(String path) throws ContextException,
@@ -295,7 +295,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#writeValue(java.lang.String, java.lang.Object)
+	 * @see sorcer.core.dataContext.SpaceContext#writeValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public Object writeValue(String path, Object value)
@@ -315,7 +315,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#aliasValue(java.lang.String, java.lang.String)
+	 * @see sorcer.core.dataContext.SpaceContext#aliasValue(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Object aliasValue(String path, String alias)
@@ -325,7 +325,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#share()
+	 * @see sorcer.core.dataContext.SpaceContext#share()
 	 */
 	@Override
 	public void share() throws ContextException, RemoteException {
@@ -334,7 +334,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#unshare()
+	 * @see sorcer.core.dataContext.SpaceContext#unshare()
 	 */
 	@Override
 	public void unshare() throws ContextException, RemoteException {

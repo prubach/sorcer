@@ -37,7 +37,7 @@ import sorcer.co.tuple.Parameter;
  * In other words, a service signature is a specification of a service that can
  * be requested dynamically at the boundary of a service provider. Operations
  * include modifying a service {@link Context} or disclosing information about
- * the service context.
+ * the service dataContext.
  * 
  * @author Mike Sobolewski
  */

@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
-//import sorcer.core.context.model.VarModel;
+//import sorcer.core.dataContext.model.VarModel;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.Sorcer;
@@ -280,7 +280,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	
 	//@Test
 	public void sdbURL() throws Exception {
-		URL sbdUrl = new URL("sbd://myIterface/name#context=2345");
+		URL sbdUrl = new URL("sbd://myIterface/name#dataContext=2345");
 		Object obj = sbdUrl.openConnection().getContent();
 	}
 }

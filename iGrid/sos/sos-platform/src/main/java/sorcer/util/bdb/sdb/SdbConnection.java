@@ -35,7 +35,7 @@ import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
  *
  * sdb URL = sos://serviceType/providerName#objectType=Uuid
  * 
- * objectType = context, exertion, table, var, varModel, object
+ * objectType = dataContext, exertion, table, var, varModel, object
  */
 public class SdbConnection extends URLConnection {
 

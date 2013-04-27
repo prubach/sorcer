@@ -21,7 +21,6 @@ import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.Provider;
-import sorcer.core.exertion.NetJob;
 import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
@@ -47,7 +46,7 @@ public class CatalogSingletonDispatcher extends CatalogExertionDispatcher {
 		Task exertion = (Task) ((Job) xrt).exertionAt(0);
 		exertion.startExecTime();
 		// Provider is expecting exertion field in Context to be set.
-		exertion.getContext().setExertion(exertion);
+		exertion.getDataContext().setExertion(exertion);
 		try {
 			result = execTask(exertion);
 			if (result.getStatus() <= FAILED) {

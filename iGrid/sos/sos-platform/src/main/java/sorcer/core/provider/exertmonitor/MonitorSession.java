@@ -253,7 +253,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: ctx cannot be NULL");
 
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setContext(ctx);
+			runtimeExertion.setDataContext(ctx);
 		persist();
 	}
 
@@ -273,7 +273,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		runtimeExertion.setStatus(ExecState.DONE);
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setContext(ctx);
+			runtimeExertion.setDataContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -295,7 +295,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		runtimeExertion.setStatus(ExecState.FAILED);
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setContext(ctx);
+			runtimeExertion.setDataContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();

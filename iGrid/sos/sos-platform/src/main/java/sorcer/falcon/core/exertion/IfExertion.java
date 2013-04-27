@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import org.nfunk.jep.JEP;
 
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.service.Context;
@@ -40,7 +39,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.util.Log;
-
+import sorcer.core.context.ControlContext.ThrowableTrace;
 /**
  * The IfExertion implements the Conditional interface. It supports the
  * branching algorithmic logic for the new exertions. It contains three
@@ -64,8 +63,8 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	protected Exertion elseExertion;
 
 	/**
-	 * The context of the ifExertion, independent from the component exertion's
-	 * context.
+	 * The dataContext of the ifExertion, independent from the component exertion's
+	 * dataContext.
 	 */
 	protected Context ifContext;
 
@@ -120,25 +119,25 @@ public class IfExertion extends ServiceExertion implements Conditional {
 		this.elseExertion = elseExertion;
 
 		try {
-			ifContext.putValue("in/context/thenExertion", thenExertion
-					.getContext());
-			ifContext.putValue("in/context/elseExertion", elseExertion
-					.getContext());
+			ifContext.putValue("in/dataContext/thenExertion", thenExertion
+					.getDataContext());
+			ifContext.putValue("in/dataContext/elseExertion", elseExertion
+					.getDataContext());
 
 			// initially set the ifContext with the data nodes of the
-			// thenExertion context (mirror)
+			// thenExertion dataContext (mirror)
 			// it is done this way to accomidate WhileExertion(IfExertion)
 			// compound statments, where the
-			// getContext of IfExertion which WhileExertion will use has
-			// reference to both thenExertion context and
-			// elseExertion context. This is needed to increment both data nodes
-			// in the then and else context.
-			Enumeration e = thenExertion.getContext().contextPaths();
+			// getDataContext of IfExertion which WhileExertion will use has
+			// reference to both thenExertion dataContext and
+			// elseExertion dataContext. This is needed to increment both data nodes
+			// in the then and else dataContext.
+			Enumeration e = thenExertion.getDataContext().contextPaths();
 			String path = null;
 
 			while (e.hasMoreElements()) {
 				path = new String((String) e.nextElement());
-				ifContext.putValue(path, thenExertion.getContext().getValue(
+				ifContext.putValue(path, thenExertion.getDataContext().getValue(
 						path));
 			}
 		} catch (ContextException e) {
@@ -196,31 +195,31 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Returns the context name of the ifExertion, which uses the thenExertion
+	 * Returns the dataContext name of the ifExertion, which uses the thenExertion
 	 * by default.
 	 * 
-	 * @return String the name of the context
+	 * @return String the name of the dataContext
 	 * @see sorcer.service.ServiceExertion#getContextName()
 	 */
 	public String getContextName() {
-		return thenExertion.getContext().getName();
+		return thenExertion.getDataContext().getName();
 	}
 
 	/**
-	 * Returns the context of the IfExertion, where the thenExertion and
+	 * Returns the dataContext of the IfExertion, where the thenExertion and
 	 * elseExertion's are also inserted too.
 	 * 
 	 * @return ServiceContext
 	 */
-	public Context getContext() {
+	public Context getDataContext() {
 		return ifContext;
 	}
 
 	/**
-	 * Sets the context of the IfExertion by default.
+	 * Sets the dataContext of the IfExertion by default.
 	 * 
 	 * @param context
-	 *            the context to replace the current context
+	 *            the dataContext to replace the current dataContext
 	 */
 	public void setConditionalContext(Context context) {
 		this.ifContext = context;
@@ -275,7 +274,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * This method allows to setup the condition without passing the condition
 	 * object. It is done by first setting the variables in the condition
 	 * boolean expression. The variables will be the reference to the actual
-	 * data nodes in the context by specifying the context data nodes path as an
+	 * data nodes in the dataContext by specifying the dataContext data nodes path as an
 	 * argument.
 	 * 
 	 * @param variableName
@@ -311,7 +310,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 */
 	protected double evalCondition() {
 		JEP jepParser = new JEP();
-		Context context = this.getContext();
+		Context context = this.getDataContext();
 		Iterator iter = mapReference.entrySet().iterator();
 		double result = 0;
 
@@ -352,9 +351,9 @@ public class IfExertion extends ServiceExertion implements Conditional {
 
 		if (condition != null) {
 			try {
-				condition.setConditionalContext(this.getContext());
+				condition.setConditionalContext(this.getDataContext());
 			} catch (ContextException ce) {
-				testLog.finest("Unable to setContext on Condition: " + ce);
+				testLog.finest("Unable to setDataContext on Condition: " + ce);
 				ce.printStackTrace();
 			}
 			boolean conditionResult = condition.isTrue();
@@ -382,7 +381,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	}
 
 	/**
-	 * Returns the Map reference of variable names and their associated context
+	 * Returns the Map reference of variable names and their associated dataContext
 	 * path.
 	 * 
 	 * @return Map the reference between the given variable names and data node
@@ -439,8 +438,8 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	public void setElseExertion(Exertion elseExertion) {
 		this.elseExertion = elseExertion;
 		try {
-			ifContext.putValue("in/context/elseExertion", elseExertion
-					.getContext());
+			ifContext.putValue("in/dataContext/elseExertion", elseExertion
+					.getDataContext());
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
@@ -455,8 +454,8 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	public void setThenExertion(Exertion thenExertion) {
 		this.thenExertion = thenExertion;
 		try {
-			ifContext.putValue("in/context/thenExertion", thenExertion
-					.getContext());
+			ifContext.putValue("in/dataContext/thenExertion", thenExertion
+					.getDataContext());
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
@@ -512,7 +511,6 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#getExceptions()
 	 */
-	@Override
 	public List<ThrowableTrace> getThrowables() {
 		// TODO Auto-generated method stub
 		return null;

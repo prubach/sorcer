@@ -9,7 +9,6 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.Signature;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Task;
 import sorcer.util.Log;
@@ -30,7 +29,7 @@ public class WhoIsItTaskRequestor {
 		}
 		Exertion result = new WhoIsItTaskRequestor().getExertion(providerAccess)
 				.exert(null);
-		logger.info("Output context: \n" + result.getContext());
+		logger.info("Output dataContext: \n" + result.getDataContext());
 	}
 
 	public Exertion getExertion(Access providerAccess) throws Exception {

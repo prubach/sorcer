@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import sorcer.core.context.ThrowableTrace;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 
 public class ExertCmd extends ShellCmd {
 
@@ -45,7 +45,7 @@ public class ExertCmd extends ShellCmd {
 		COMMAND_USAGE = "exert [-cc] [[-s | --s | --m] <output filename>] <input filename>";
 
 		COMMAND_HELP = "Manage and execute the federation of services specified by the <input filename>;" 
-				+ "\n  -cc   print the executed exertion with control context"
+				+ "\n  -cc   print the executed exertion with control dataContext"
 				+ "\n  -s   save the command output in a file"
 				+ "\n  --s   serialize the command output in a file"
 				+ "\n  --m   marshal the the command output in a file";
@@ -101,7 +101,7 @@ public class ExertCmd extends ShellCmd {
 				if (nextToken.equals("-s")) {
 					outPersisted = true;
 					outputFile = new File("" + d + File.separator + nextToken);
-				} else if (nextToken.equals("-cc"))
+				} else if (nextToken.equals("-controlContext"))
 					outputControlContext = true;
 				else if (nextToken.equals("-m"))
 					marshalled = true;
@@ -155,12 +155,12 @@ public class ExertCmd extends ShellCmd {
 				return;
 			}
 			Exertion xrt = (Exertion) result;
-			if (xrt.getThrowables().size() > 0) {
+			if (xrt.getExceptions().size() > 0) {
 				if (commandLine) {
 					out.println("Exceptions: ");
-					out.println(xrt.getThrowables());
+					out.println(xrt.getExceptions());
 				} else {
-					List<ThrowableTrace> ets = xrt.getThrowables();
+					List<ThrowableTrace> ets = xrt.getExceptions();
 					for (ThrowableTrace t : ets) {
 						System.err.println(t.describe());
 					}
@@ -172,7 +172,7 @@ public class ExertCmd extends ShellCmd {
 			if (xrt.isJob())
 				out.println(((Job)xrt).getJobContext());
 			else
-				out.println(xrt.getContext());
+				out.println(xrt.getDataContext());
 			if (outputControlContext) {
 				out.println("\n---> OUTPUT CONTROL CONTEXT --->");
 				out.println(xrt.getControlContext());
@@ -181,7 +181,7 @@ public class ExertCmd extends ShellCmd {
 			if (et.getTarget() != null) {
 				out.println("\n--- Failed to excute exertion ---");
 				out.println(((ServiceExertion) et.getTarget()).describe());
-				out.println(((ServiceExertion) et.getTarget()).getContext());
+				out.println(((ServiceExertion) et.getTarget()).getDataContext());
 				if (!commandLine) {
 					out.println("Script failed: " + scriptFilename);
 					out.println(script);

@@ -10,7 +10,7 @@ public class ContextManager extends ContextManagementAdapter {
 	
 	public String getContextScript() throws RemoteException {
 		StringBuilder sb = new StringBuilder();
-		sb.append("context(\"arithmetic\",\n");
+		sb.append("dataContext(\"arithmetic\",\n");
 		sb.append("\t input(path(\"arg/x1\"), 10.0d),\n");
 		sb.append("\t input(path(\"arg/x2\"), 50.0d))");
 		return sb.toString();

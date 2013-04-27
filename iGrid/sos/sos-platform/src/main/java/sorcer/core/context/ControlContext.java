@@ -17,6 +17,9 @@
 
 package sorcer.core.context;
 
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ import sorcer.util.Log;
 import sorcer.util.Stopwatch;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ControlContext extends ServiceContext implements Strategy, IControlContext {
+public class ControlContext extends ServiceContext implements Strategy {
 
 	private static final long serialVersionUID = 7280700425027799253L;
 
@@ -47,8 +50,6 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 	// control context name
 	public final static String CONTROL_CONTEXT = "control/strategy";
 
-	public static boolean debug = true;
-
 	/**
 	 * A flow type indicates if this exertion can be executed sequentially, in
 	 * parallel, or concurrently with other component exertions within this
@@ -57,10 +58,10 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 	 */
 	public final static String EXERTION_FLOW = "exertion" + CPS + "flow";
 
-	public final static String MONITOR_ENABLE = "exertion" + CPS + "monitor" + CPS + "enabled";
-	
+	public final static String EXERTION_PROVISIONABLE = "exertion" + CPS + "provisionable";
+		
 	// exertion monitor state
-	public final static String EXERTION_MONITOR_STATE = "exertion" + CPS + "monitor" + CPS + "state";
+	public final static String EXERTION_MONITORABLE = "exertion" + CPS + "monitorable";
 
 	// exertion access type
 	public final static String EXERTION_ACCESS = "exertion" + CPS + "access";
@@ -132,13 +133,13 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 
 	public final static String SORCER_VARIABLES_PATH = "supportObjects/sorcerVariables";
 
-	public final static String EXERTION_MONITOR = "exertion/enable/monitor";
+	public final static String EXERTION_MONITORING = "exertion/monitor/enabled";
 
-	public final static String EXERTION_WAIT_FOR = "exertion/waitFor/result";
+	public final static String EXERTION_WAITABLE = "exertion/waitable";
 	
-	public final static String EXERTION_WAIT_FROM = "exertion/submitted/at";
+	public final static String EXERTION_WAITED_FROM = "exertion/waited/from";
 
-	public final static String NOTIFICATION_MANAGER = "exertion/enable/notifications";
+	public final static String NOTIFICATION_MANAGEMENT = "exertion/notifications/enabled";
 
 	public final static String TRUE = "true";
 
@@ -153,24 +154,15 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 	private List<String> traceList = new ArrayList<String>();
 
 	private Object mutexId;
-
-	// sent from the host 
-	private String from;
-	
-	//  User name of this context sent
-	private String sender;
 	
 	// for getting execution time
 	private Stopwatch stopwatch;
-
-	private  Provision isProvisioned = Provision.NO;
 
 	// this class logger
 	private static Logger logger = Log.getSorcerCoreLog();
 
 	public ControlContext() {
-		super((String)null);
-		subjectPath = CONTROL_CONTEXT;
+		super(CONTROL_CONTEXT, CONTROL_CONTEXT);
 		setDomainID("0");
 		setSubdomainID("0");
 		setExecTimeRequested(true);
@@ -181,23 +173,17 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 		setComponentAttribute(EXERTION_REVIEW);
 		setComponentAttribute(PRIORITY);
 		setComponentAttribute(NOTIFY_EXEC);
-		setMonitored(false);
+		setMonitorable(false);
+		setProvisionable(false);
 		setNotifierEnabled(false);
 		setExecTimeRequested(true);
-		setWait(true);
+		setWaitable(true);
 		put(EXCEPTIONS, exceptions);
 		put(TRACE_LIST, traceList);
-		sender = System.getProperty("user.name");
-		try {
-			from = InetAddress.getLocalHost().getHostName();
-		} catch (UnknownHostException e) {
-			from = "unresolved";
-		}
 	}
 
 	public ControlContext(Exertion exertion) {
 		this();
-		name = exertion.getName();
 		this.exertion = (ServiceExertion) exertion;
 		subjectValue = exertion.getName();
 		// make it visible via the path EXERTION
@@ -261,27 +247,27 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 				get(MASTER_EXERTION)));
 	}
 
-	public boolean isWait() {
-		return Boolean.TRUE.equals(get(EXERTION_WAIT_FOR));
+	public boolean isWaitable() {
+		return Boolean.TRUE.equals(get(EXERTION_WAITABLE));
 	}
 
-	public void setWait(boolean state) {
-		put(EXERTION_WAIT_FOR, new Boolean(state));
+	public void setWaitable(boolean state) {
+		put(EXERTION_WAITABLE, new Boolean(state));
 	}
 
 	public void isWait(Wait value) {
 		if (Wait.YES.equals(value) || Wait.TRUE.equals(value)) 
-				put(EXERTION_WAIT_FOR, true);
+				put(EXERTION_WAITABLE, true);
 		else if (Wait.NO.equals(value) || Wait.FALSE.equals(value))
-			put(EXERTION_WAIT_FOR, false);
+			put(EXERTION_WAITABLE, false);
 	}
 	
 	public void setNotifierEnabled(boolean state) {
-		put(NOTIFICATION_MANAGER, new Boolean(state));
+		put(NOTIFICATION_MANAGEMENT, new Boolean(state));
 	}
 
 	public boolean isNotifierEnabled() {
-		return Boolean.TRUE.equals(get(NOTIFICATION_MANAGER));
+		return Boolean.TRUE.equals(get(NOTIFICATION_MANAGEMENT));
 	}
 
 	public void setNodeReferencePreserved(boolean state) {
@@ -301,31 +287,42 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 			put(EXERTION_FLOW, type);
 	}
 	
-	public boolean isMonitored() {
-		return Boolean.TRUE.equals(get(MONITOR_ENABLE));
+	public boolean isMonitorable() {
+		return Boolean.TRUE.equals(get(EXERTION_MONITORABLE));
 	}
 
-	public void isMonitored(Monitor value) {
+	public void isMonitorable(Monitor value) {
 		if (Monitor.YES.equals(value) || Monitor.TRUE.equals(value)) 
-				put(MONITOR_ENABLE, true);
+				put(EXERTION_MONITORABLE, true);
 		else if (Monitor.NO.equals(value) || Monitor.FALSE.equals(value))
-			put(MONITOR_ENABLE, false);
+			put(EXERTION_MONITORABLE, false);
 	}
 	
-	public void setMonitored(boolean state) {
-		put(MONITOR_ENABLE, new Boolean(state));
+	public void setMonitorable(boolean state) {
+		put(EXERTION_MONITORABLE, new Boolean(state));
 	}
 	
-	public void setProvitioning(Provision state) {
-		isProvisioned = state;
+	public void isProvisionable(Provision value) {
+		if (Provision.YES.equals(value) || Provision.TRUE.equals(value)) 
+				put(EXERTION_PROVISIONABLE, true);
+		else if (Provision.NO.equals(value) || Provision.FALSE.equals(value))
+			put(EXERTION_PROVISIONABLE, false);
+	}
+	
+	public void setProvisionable(boolean state) {
+		put(EXERTION_PROVISIONABLE, new Boolean(state));
+	}
+	
+	public boolean isProvisionable() {
+		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
 	
 	public MonitoringManagement getMonitor() {
-		return (MonitoringManagement) get(EXERTION_MONITOR);
+		return (MonitoringManagement) get(EXERTION_MONITORING);
 	}
 
 	public void setMonitor(MonitoringManagement monitor) {
-		put(EXERTION_MONITOR, monitor);
+		put(EXERTION_MONITORING, monitor);
 	}
 
 	public void setAccessType(Access access) {
@@ -633,7 +630,7 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 	}
 
 	public void appendTrace(String info) {
-		if (ControlContext.debug)
+		if (ServiceExertion.debug)
 			traceList.add(info);
 	}
 
@@ -649,10 +646,52 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 		exceptions.add(new ThrowableTrace(message, t));
 	}
 
-    public List<ThrowableTrace> getExceptions() {
+	public class ThrowableTrace implements Serializable {
+		private static final long serialVersionUID = 1L;
+		public String message;
+		public Throwable throwable;
+		public String stackTrace;
+
+		public ThrowableTrace(Throwable t) {
+			throwable = t;
+			stackTrace = getStackTrace(t);
+		}
+
+		public ThrowableTrace(String message, Throwable t) {
+			this(t);
+			this.message = message;
+		}
+
+		public Throwable getThrowable() {
+			return throwable;
+		}
+		
+		public String toString() {
+			String info = message != null ? message : throwable.getMessage();
+			if (throwable != null)
+				return throwable.getClass().getName() + ": " + info;
+			else
+				return info;
+		}
+		
+		public String describe() {
+			return stackTrace;
+		}
+	}
+	
+	public List<ThrowableTrace> getExceptions() {
 		return exceptions;
 	}
 	
+	public static String getStackTrace(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw, true);
+		if (t.getStackTrace() != null) t.printStackTrace(pw);
+		pw.flush();
+		sw.flush();
+		return sw.toString();
+	}
+
 	public String describeExceptions() {
 		if (exceptions.size() == 0)
 			return "no exceptions thrown\n";
@@ -682,14 +721,6 @@ public class ControlContext extends ServiceContext implements Strategy, IControl
 
 	public void setStopwatch(Stopwatch stopwatch) {
 		this.stopwatch = stopwatch;
-	}
-
-	public Provision isProvisioned() {
-		return isProvisioned;
-	}
-
-	public void isProvisioned(Provision isProvisioned) {
-		this.isProvisioned = isProvisioned;
 	}
 
 	public Object getMutexId() {

@@ -35,7 +35,7 @@ public class AdderImpl implements Adder {
 		logger.info("add result: " + out);
 		
 //		Logger contextLogger = provider.getContextLogger();
-//		contextLogger.info("context logging; add result: " + out);
+//		contextLogger.info("dataContext logging; add result: " + out);
 //		
 //		Logger providerLogger =  provider.getProviderLogger();
 //		providerLogger.info("provider logging; add result: " + out);

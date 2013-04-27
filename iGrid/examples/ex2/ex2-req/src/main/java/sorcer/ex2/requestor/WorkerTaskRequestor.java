@@ -9,7 +9,6 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
@@ -32,7 +31,7 @@ public class WorkerTaskRequestor {
 
 		Exertion exertion = new WorkerTaskRequestor().getExertion(pn);
 		Exertion result = exertion.exert();
-		logger.info("Output context: \n" + result.getContext());
+		logger.info("Output dataContext: \n" + result.getDataContext());
 	}
 
 	private Exertion getExertion(String pn) throws Exception {

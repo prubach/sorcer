@@ -23,9 +23,9 @@ import java.io.Serializable;
 /**
  * The <code>Link</code> interface allows path values of service contexts to
  * be linked to other service contexts using instances implementing this
- * interface. The interface provides for service context linking. Context links
- * are references to an offset (path) in a context, which allows the reuse of
- * existing service context objects.
+ * interface. The interface provides for service dataContext linking. Context links
+ * are references to an offset (path) in a dataContext, which allows the reuse of
+ * existing service dataContext objects.
  * 
  * @author Mike Sobolewski
  */
@@ -39,24 +39,24 @@ public interface Link extends Serializable {
 	public String getName();
 
 	/**
-	 * Assign a link name for its linked context.
+	 * Assign a link name for its linked dataContext.
 	 * 
 	 * @param name
-	 *            a name for this context link
+	 *            a name for this dataContext link
 	 */
 	public void setName(String name);
 
 	/**
-	 * Returns the path offset into this linked context.
+	 * Returns the path offset into this linked dataContext.
 	 * 
 	 * @return an offset of this link
 	 */
 	public String getOffset();
 
 	/**
-	 * Sets the offset in this linked context. If the offset itself is obtained
+	 * Sets the offset in this linked dataContext. If the offset itself is obtained
 	 * by traversing a link (meaning there is a redundant link), the offset is
-	 * recalculated and the link object is reset to point to the owning context
+	 * recalculated and the link object is reset to point to the owning dataContext
 	 * (removing the redundancy).
 	 * 
 	 * @param offset
@@ -65,23 +65,23 @@ public interface Link extends Serializable {
 	public void setOffset(String offset) throws ContextException;
 
 	/**
-	 * Assignes a link service context associated with this link.
+	 * Assignes a link service dataContext associated with this link.
 	 * 
 	 * @param ctxt
 	 */
 	public void setContext(Context ctxt);
 
 	/**
-	 * Returns true if the linked context associated with this link is enclosed
+	 * Returns true if the linked dataContext associated with this link is enclosed
 	 * into the link, otherwise false.
 	 * 
-	 * @return true if the linked context is enclosed in this link
+	 * @return true if the linked dataContext is enclosed in this link
 	 */
 	public boolean isLocal();
 
 	/**
 	 * Returns a boolean indicating whether the linked contexed is retrived from
-	 * a persitent context storage into this link - <code>true</code>
+	 * a persitent dataContext storage into this link - <code>true</code>
 	 * indicating if the linked contexed is already fetched; <code>false</code>
 	 * otherwise.
 	 * 
@@ -91,7 +91,7 @@ public interface Link extends Serializable {
 
 	/**
 	 * Assignes a boolean indicating whether the linked contexed is retrived
-	 * from a persitent context storage into this link.
+	 * from a persitent dataContext storage into this link.
 	 * 
 	 * @param state
 	 *            <code>true</code> indicating if the linked contexed is

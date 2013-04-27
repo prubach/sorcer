@@ -167,7 +167,7 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 		if (in != null)
 			requestor.setExertion(in);
 		if (exertion != null)
-			logger.info(">>>>>>>>>> Input context: \n" + exertion.getContext());
+			logger.info(">>>>>>>>>> Input dataContext: \n" + exertion.getDataContext());
 	}
 
 	public void process(String... args) throws Exception {
@@ -185,9 +185,9 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 	
 	public void postprocess(String... args) {
 		if (exertion != null) {
-			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getThrowables());
+			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
-			logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
+			logger.info("<<<<<<<<<< Ouput dataContext: \n" + exertion.getDataContext());
 		}
 		// Exit webster
 		if (isWebsterInt) {

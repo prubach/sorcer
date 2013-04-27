@@ -166,7 +166,7 @@ public class SorcerDescriptorUtil {
 		// anonymous case
 		if (port == 0) {
 			websterPort = Booter.getAnonymousPort(); 
-			System.setProperty("provider.webster.port", "" + port);
+			System.setProperty("webster.port", "" + port);
 		}
 		else if (port > 0) {
 			websterPort = port;
@@ -179,7 +179,7 @@ public class SorcerDescriptorUtil {
 		String websterRoots = concat(roots, ';');
 		String websterClass = "sorcer.tools.webster.Webster";
 		if (debug) {
-			System.setProperty("sorcer.tools.webster.debug", "1");
+			System.setProperty("webster.debug", "1");
 		}
 		String websterAddress = address;
 		if (address == null || address.length() == 0) {

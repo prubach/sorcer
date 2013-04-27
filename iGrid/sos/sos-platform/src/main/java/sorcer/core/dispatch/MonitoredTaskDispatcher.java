@@ -71,7 +71,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
 			if (result.getStatus() <= ExecState.FAILED) {
 				xrt.setStatus(ExecState.FAILED);
 				state = ExecState.FAILED;
-				xrt.getMonitorSession().changed(result.getContext(),
+				xrt.getMonitorSession().changed(result.getDataContext(),
 						ExecState.Category.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
@@ -81,7 +81,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
 				notifyExertionExecution(xrt, result);
 				state = ExecState.DONE;
 				xrt.setStatus(ExecState.DONE);
-				xrt.getMonitorSession().changed(result.getContext(),
+				xrt.getMonitorSession().changed(result.getDataContext(),
 						ExecState.Category.DONE);
 			}
 		} catch (Exception e) {

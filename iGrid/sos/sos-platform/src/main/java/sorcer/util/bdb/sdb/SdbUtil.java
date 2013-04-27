@@ -79,7 +79,7 @@ public class SdbUtil {
 	}
 
 	/**
-	 * Returns a context to be used with
+	 * Returns a dataContext to be used with
 	 * {@link StorageManagement#contextStore(Context)}
 	 * 
 	 * @param uuid
@@ -91,7 +91,7 @@ public class SdbUtil {
 	 */
 	static public Context getStoreContext(Object object)
 			throws ContextException {
-		ServiceContext cxt = new ServiceContext("store context");
+		ServiceContext cxt = new ServiceContext("store dataContext");
 		cxt.putInValue(StorageManagement.object_stored, object);
 		cxt.putInValue(StorageManagement.object_uuid,
 				((Identifiable) object).getId());
@@ -100,19 +100,19 @@ public class SdbUtil {
 	}
 
 	/**
-	 * Returns a context to be used with
+	 * Returns a dataContext to be used with
 	 * {@link StorageManagement#rertieve(Context)}
 	 * 
 	 * @param uuid
 	 *            {@link Uuid}
 	 * @param type
-	 *            one of: exertion, context, var, table, varModel, object
+	 *            one of: exertion, dataContext, var, table, varModel, object
 	 * @return retrieval {@link Context}
 	 * @throws ContextException
 	 */
 	static public Context getRetrieveContext(Uuid uuid, Store type)
 			throws ContextException {
-		ServiceContext cxt = new ServiceContext("retrieve context");
+		ServiceContext cxt = new ServiceContext("retrieve dataContext");
 		cxt.putInValue(StorageManagement.object_type, type);
 		cxt.putInValue(StorageManagement.object_uuid, uuid);
 		cxt.setReturnPath(StorageManagement.object_retrieved);
@@ -125,7 +125,7 @@ public class SdbUtil {
 	}
 
 	/**
-	 * Returns a context to be used with
+	 * Returns a dataContext to be used with
 	 * {@link StorageManagement#contextUpdate(Context)}
 	 * 
 	 * @param object
@@ -137,7 +137,7 @@ public class SdbUtil {
 	 */
 	static public Context getUpdateContext(Object object, Uuid uuid)
 			throws ContextException {
-		ServiceContext cxt = new ServiceContext("update context");
+		ServiceContext cxt = new ServiceContext("update dataContext");
 		cxt.putInValue(StorageManagement.object_uuid, uuid);
 		cxt.putInValue(StorageManagement.object_updated, object);
 		cxt.setReturnPath(StorageManagement.object_url);
@@ -146,7 +146,7 @@ public class SdbUtil {
 
 	static public Context getListContext(Store storeType)
 			throws ContextException {
-		ServiceContext cxt = new ServiceContext("storage list context");
+		ServiceContext cxt = new ServiceContext("storage list dataContext");
 		cxt.putInValue(StorageManagement.store_type, storeType);
 		cxt.setReturnPath(StorageManagement.store_content_list);
 		return cxt;

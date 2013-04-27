@@ -285,11 +285,11 @@ abstract public class ExertionDispatcher implements Dispatcher,
 		int argIndex = -1;
 		try {
 			Hashtable toInMap = Contexts.getInPathsMap(toContext);
-//			logger.info("**************** updating inputs in context toContext = " + toContext);
+//			logger.info("**************** updating inputs in dataContext toContext = " + toContext);
 //			logger.info("**************** updating based on = " + toInMap);
 			for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
 				toPath = (String) e.nextElement();
-				// find argument for parametric context
+				// find argument for parametric dataContext
 				if (toPath.endsWith("]")) {
 					Tuple2<String, Integer> pair = (Tuple2<String, Integer>)getPathIndex(toPath);
 					argIndex = pair._2;
@@ -300,7 +300,7 @@ abstract public class ExertionDispatcher implements Dispatcher,
 				toPathcp = (String) toInMap.get(toPath);
 //				logger.info("**************** toPathcp = " + toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-//				logger.info("**************** context ID = " + Contexts.getContextParameterID(toPathcp));
+//				logger.info("**************** dataContext ID = " + Contexts.getContextParameterID(toPathcp));
 				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
 //				logger.info("**************** fromContext = " + fromContext);
 //				logger.info("**************** before updating toContext: " + toContext
@@ -327,11 +327,11 @@ abstract public class ExertionDispatcher implements Dispatcher,
 						// make contextual substitution
 						Contexts.copyValue(fromContext, fromPath, toContext, toPath);
 					}
-//					logger.info("**************** updated context:\n" + toContext);
+//					logger.info("**************** updated dataContext:\n" + toContext);
 				}
 			}
 		} catch (Exception ex) {
-			throw new ExertionException("Failed to update data context: " + toContext.getName() 
+			throw new ExertionException("Failed to update data dataContext: " + toContext.getName()
 					+ " at: " + toPath + " from: " + fromPath, ex);
 		}
 	}
@@ -349,8 +349,8 @@ abstract public class ExertionDispatcher implements Dispatcher,
 	}
 	
 	protected ServiceContext getSharedContext(String path, String id) {
-		// try to get the context with particular id.
-		// If not found, then find a context with particular path.
+		// try to get the dataContext with particular id.
+		// If not found, then find a dataContext with particular path.
 		Context hc;
 		if (ServiceContext.EMPTY_LEAF.equals(path) || "".equals(path))
 			return null;
@@ -450,14 +450,14 @@ abstract public class ExertionDispatcher implements Dispatcher,
 				outTask.getDescription());
 		if (((NetTask) outTask).getStatus() > 0)
 			sb
-					.append("\n\nTask executed sucessfully with the input context:\n");
+					.append("\n\nTask executed sucessfully with the input dataContext:\n");
 		else
-			sb.append("\n\nTask execution FAILED; The input context was:\n");
+			sb.append("\n\nTask execution FAILED; The input dataContext was:\n");
 		sb.append(inTask.contextToString()).append(
-				"\n\nincluding the following output context:\n").append(
-				outTask.getContext());
+				"\n\nincluding the following output dataContext:\n").append(
+				outTask.getDataContext());
 		sb.append("\n\nincluding the specific output paths:\n").append(
-				Contexts.getFormattedOut(outTask.getContext(), true));
+				Contexts.getFormattedOut(outTask.getDataContext(), true));
 
 		for (int i = 0; i < recipients.size() - 1; i++)
 			to = to + recipients.elementAt(i) + ",";

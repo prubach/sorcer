@@ -18,16 +18,13 @@
 package sorcer.core.exertion;
 
 import java.rmi.RemoteException;
-import java.util.Map;
 
 import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.EvaluationSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
-import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
@@ -52,7 +49,7 @@ public class EvaluationTask extends Task {
 			EvaluationSignature es = new EvaluationSignature(evaluator);
 			es.setEvaluator(evaluator);
 			addSignature(es);
-			context.setExertion(this);
+			dataContext.setExertion(this);
 		}
 	}
 
@@ -74,7 +71,7 @@ public class EvaluationTask extends Task {
 		super(name);
 		addSignature(signature);
 		if (context != null)
-			setContext(context);
+			setDataContext(context);
 	}
 
 	/*
@@ -85,8 +82,8 @@ public class EvaluationTask extends Task {
 	@Override
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException {
-		((ServiceContext)context).setCurrentSelector(getProcessSignature().getSelector());
-		((ServiceContext)context).setCurrentPrefix(((ServiceSignature)getProcessSignature()).getPrefix());
+		((ServiceContext) dataContext).setCurrentSelector(getProcessSignature().getSelector());
+		((ServiceContext) dataContext).setCurrentPrefix(((ServiceSignature)getProcessSignature()).getPrefix());
 
 		if (signatures.size() > 1) {
 			try {
@@ -97,7 +94,7 @@ public class EvaluationTask extends Task {
 			}
 		}
 		
-		context.appendTrace("" + getEvaluation());
+		dataContext.appendTrace("" + getEvaluation());
 		return this;
 	}
 

@@ -23,19 +23,22 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
+
 /**
  * Helper class for starting an Internal Webster
  *
- * @author Dennis Reedy and Mike Sobolewski
+ * @author Dennis Reedy, adapted for SORCER by Mike Sobolewski
  */
 public class InternalWebster {
-    private static Logger logger = Logger.getLogger(InternalWebster.class.getName());
+    private static Logger logger = Logger.getLogger("sorcer.tools.webster");
     private static boolean debug = false;
-    public static final String WEBSTER_ROOTS = "sorcer.webster.roots";
+    public static final String WEBSTER_ROOTS = "webster.roots";
+    private static Webster webster;
 
     /**
      * Start an internal webster, setting the webster root to the location of
-     * SORCER lib-dl directories, and appending exportJars as the codebase jars
+     * SORCER lib-dl directories, and appending exportJars as the export jars
      * for the JVM.
      *
      * @param exportJars
@@ -46,11 +49,11 @@ public class InternalWebster {
      * @throws IOException
      *             If there are errors creating Webster
      */
-    public static Webster startWebster(String... exportJars) throws IOException {
+    public static Webster startWebster(String[] exportJars) throws IOException {
         String codebase = System.getProperty("java.rmi.server.codebase");
-//		if (codebase != null)
-//			throw new RuntimeException("Codebase is alredy specified: "
-//					+ codebase);
+        if (codebase != null)
+            throw new RuntimeException("Codebase is alredy specified: "
+                    + codebase);
 
         String d = System.getProperty("webster.debug");
         if (d != null && d.equals("true"))
@@ -59,23 +62,18 @@ public class InternalWebster {
         String roots;
         InetAddress ip = InetAddress.getLocalHost();
         String localIPAddress = ip.getHostAddress();
-        String iGridHome = System.getProperty("iGrid.home");
+        String sorcerHome = System.getProperty("sorcer.home");
         roots = System.getProperty(WEBSTER_ROOTS);
         if (roots == null) {
-            // defaults iGrid roots
+            // defaults Sorcer roots
             String fs = File.separator;
             StringBuffer sb = new StringBuffer();
-            sb.append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib-dl")
-                    .append(';').append(iGridHome).append(fs).append("lib").append(fs).append("sorcer").append(fs).append("lib")
-                    .append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib-dl")
-                    .append(';').append(iGridHome).append(fs).append("lib").append(fs).append("eng").append(fs).append("lib")
-                    .append(';').append(iGridHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
-                    .append(';').append(iGridHome).append(fs).append("deploy")
-                    .append(';').append(iGridHome).append(fs).append("lib").append(fs).append("local").append(fs).append("lib-dl");
+            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
+                    .append(';').append(SorcerEnv.getRepoDir());
             roots = sb.toString();
         }
 
-        String sMinThreads = System.getProperty("sorcer.webster.minThreads",
+        String sMinThreads = System.getProperty("webster.minThreads",
                 "1");
         int minThreads = 1;
         try {
@@ -84,7 +82,7 @@ public class InternalWebster {
             logger.log(Level.WARNING, "Bad Min Threads Number [" + sMinThreads
                     + "], " + "default to " + minThreads, e);
         }
-        String sMaxThreads = System.getProperty("sorcer.webster.maxThreads",
+        String sMaxThreads = System.getProperty("webster.maxThreads",
                 "10");
         int maxThreads = 10;
         try {
@@ -93,7 +91,7 @@ public class InternalWebster {
             logger.log(Level.WARNING, "Bad Max Threads Number [" + sMaxThreads
                     + "], " + "default to " + maxThreads, e);
         }
-        String sPort = System.getProperty("sorcer.webster.port", "0");
+        String sPort = System.getProperty("webster.port", "0");
         int port = 0;
         try {
             port = Integer.parseInt(sPort);
@@ -102,9 +100,9 @@ public class InternalWebster {
                     + "default to " + port, e);
         }
 
-        String address = System.getProperty("sorcer.webster.interface");
-        Webster webster = new Webster(port, roots, address, minThreads, maxThreads, true);
-        port = Webster.getPort();
+        String address = System.getProperty("webster.interface");
+        webster = new Webster(port, roots, address, minThreads, maxThreads, true);
+        port = webster.getPort();
         if (logger.isLoggable(Level.FINEST))
             logger.finest("Webster MinThreads=" + minThreads + ", "
                     + "MaxThreads=" + maxThreads);
@@ -117,7 +115,7 @@ public class InternalWebster {
         if (exportJars != null)
             jars = exportJars;
         else {
-            jarsList = System.getProperty("sorcer.codbase.jars");
+            jarsList = System.getProperty("codebase.jars");
             if (jarsList == null || jarsList.length() == 0)
                 throw new RuntimeException(
                         "No jar files available for the webster codebase");
@@ -137,7 +135,6 @@ public class InternalWebster {
         System.setProperty("java.rmi.server.codebase", codebase);
         if (logger.isLoggable(Level.FINE))
             logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
-
         return webster;
     }
 
@@ -152,6 +149,11 @@ public class InternalWebster {
         return (array);
     }
 
+    public static void stopWebster() {
+        if (webster != null)
+            webster.terminate();
+    }
+
     public static void main(String[] args) {
         try {
             startWebster(new String[] { "sorcer-prv-dl.jar" });
@@ -161,3 +163,4 @@ public class InternalWebster {
     }
 
 }
+

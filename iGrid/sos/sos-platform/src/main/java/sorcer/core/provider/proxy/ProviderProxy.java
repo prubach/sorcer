@@ -39,7 +39,7 @@ import net.jini.security.proxytrust.SingletonProxyTrustIterator;
  * would implement the functionality of Jini2.0(TM) Security and semantics to
  * ReferentUuid. If not it implements the semantics of ReferentUuid.
  * 
- * Functionality of Jini2.0 Security implemented by this ProxyWrapper Ability to
+ * Functionality of Jini2.0 Security implemented by this ProviderProxy Ability to
  * set and get client constraints Ability to getProxyTrustIterator
  * 
  * Functionality of ReferentUuid The unique identifier assigned to the current
@@ -48,7 +48,7 @@ import net.jini.security.proxytrust.SingletonProxyTrustIterator;
  */
 
 @SuppressWarnings("rawtypes")
-public class ProxyWrapper {
+public class ProviderProxy {
 
 	/**
 	 * Public static factory method that creates and returns an instance of

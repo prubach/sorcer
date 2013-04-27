@@ -129,15 +129,15 @@ public class CollectionOperatorsTest {
 	@Test
 	public void listContextOperatorTest() throws ContextException {
 		ListContext<Double> context = listContext(1.1, 1.2, 1.3, 1.4, 1.5);
-		//logger.info(" index 1: " + context.get(1));
+		//logger.info(" index 1: " + dataContext.get(1));
 		assertEquals(context.get(1), 1.2);
 		context.putValue(1, 5.0);
 		assertEquals(context.get(1), 5.0);
-		//logger.info("context path 1: " + context.pathFor(1));
+		//logger.info("dataContext path 1: " + dataContext.pathFor(1));
 		assertEquals(context.pathFor(1), "element[1]");
-		//logger.info("list context: " + context);
-		//logger.info("elements: " + context.getElements());
-		//context.putValue("element[1]", 10.0);
+		//logger.info("list dataContext: " + dataContext);
+		//logger.info("elements: " + dataContext.getElements());
+		//dataContext.putValue("element[1]", 10.0);
 		assertEquals(context.getElements(), list(1.1, 5.0, 1.3, 1.4, 1.5));
 		context.set(1, 20.0);
 		assertEquals(20.0, context.get(1));

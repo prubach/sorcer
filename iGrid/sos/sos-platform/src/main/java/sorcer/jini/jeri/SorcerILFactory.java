@@ -242,7 +242,7 @@ public class SorcerILFactory extends BasicILFactory {
 
 				return ((ServerProxyTrust) impl).getProxyVerifier();
 			}
-			// handle context management by the containing provider
+			// handle dataContext management by the containing provider
 			try {
 				if (decl == ContextManagement.class) {
 					Object obj = method.invoke((ContextManagement)impl, args);

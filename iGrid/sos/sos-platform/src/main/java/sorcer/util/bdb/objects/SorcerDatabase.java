@@ -181,7 +181,7 @@ public class SorcerDatabase {
 //    }
 //    
 //    /**
-//     * Return the {@link sorcer.core.context.model.VarModel} storage container.
+//     * Return the {@link sorcer.core.dataContext.model.VarModel} storage container.
 //     */
 //    public final Database getVarModelDatabase() {
 //        return varModelDb;

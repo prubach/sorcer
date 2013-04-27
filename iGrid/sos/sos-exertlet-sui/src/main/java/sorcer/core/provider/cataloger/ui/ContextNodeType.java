@@ -22,7 +22,7 @@ package sorcer.core.provider.cataloger.ui;
  * ContextTree for the UI. This class stores the current data object, a boolean
  * indicating if it is a dataNode or path and optionally the direction
  * (input/output). This data is used when the tree is converted back to a
- * context.
+ * dataContext.
  * 
  * 
  * @author Greg McChesney
@@ -66,7 +66,7 @@ public class ContextNodeType {
 	public static String DEFAULTTYPE = "Default";
 
 	/**
-	 * Constructor for new nodes, accepts the original data from the context and
+	 * Constructor for new nodes, accepts the original data from the dataContext and
 	 * a boolean indicating if it is a data node. If it is a path then its a
 	 * string with the path name
 	 * 

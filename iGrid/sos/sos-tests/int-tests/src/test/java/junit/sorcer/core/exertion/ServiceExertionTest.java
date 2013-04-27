@@ -77,7 +77,7 @@ public class ServiceExertionTest {
 	public void exertTaskTest() throws ExertionException, ContextException {
 		eTask = exert(eTask);
 
-		// exert and them get the value from task's context
+		// exert and them get the value from task's dataContext
 		//logger.info("eTask value @ result/y = " + get(exert(eTask), path(result, y)));
 		assertTrue("Wrong eTask value for 100.0", get(eTask, path(result, y)).equals(100.0));
 		
@@ -90,12 +90,12 @@ public class ServiceExertionTest {
 	
 	@Test
 	public void exertJobTest() throws ExertionException, ContextException {
-		// just get value from job's context
+		// just get value from job's dataContext
 		logger.info("eJob value @  t3/arg/x2 = " + get(eJob, "j1/t3/arg/x2"));
 		assertTrue("Wrong eJob value for " + Context.Value.NULL, 
 				get(eJob, "/j1/t3/arg/x2").equals(Context.Value.NULL));
 		
-		// exert and then get the value from job's context
+		// exert and then get the value from job's dataContext
 		eJob = exert(eJob);
 		logger.info("eJob: " + eJob);
 
@@ -115,7 +115,7 @@ public class ServiceExertionTest {
 		//logger.info("eJob value @  j2/t4/arg/x2 = " + exert(eJob, "j2/t4/arg/x2"));
 		assertTrue("Wrong eJob value for 50.0", get(eJob, "/j1/j2/t4/arg/x2").equals(50.0));
 			
-		logger.info("job context: " + jobContext(eJob));
+		logger.info("job dataContext: " + jobContext(eJob));
 		logger.info("value at j1/t3/result/y: " + get(eJob, "j1/t3/result/y"));
 		logger.info("value at t3, result/y: " + get(eJob, "t3", "result/y"));
 
@@ -202,7 +202,7 @@ public class ServiceExertionTest {
 	private Exertion createTask() throws Exception {
 		
 //		Task task = task("t1", sig("add", Adder.class), 
-//		   context("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
+//		   dataContext("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
 //		      out(path(result, y), null)));
 
 		Task task = task("t1", sig("add", AdderImpl.class), 
@@ -216,15 +216,15 @@ public class ServiceExertionTest {
 	private Exertion createJob() throws Exception {
 	
 //		Task t3 = task("t3", sig("subtract", Subtractor.class), 
-//		   context("subtract", in(path(arg, x1), null), in(path(arg, x2), null),
+//		   dataContext("subtract", in(path(arg, x1), null), in(path(arg, x2), null),
 //		      out(path(result, y), null)));
 //		
 //		Task t4 = task("t4", sig("multiply", Multiplier.class), 
-//				   context("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),
+//				   dataContext("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),
 //				      out(path(result, y), null)));
 //		
 //		Task t5 = task("t5", sig("add", Adder.class), 
-//		   context("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
+//		   dataContext("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
 //		      out(path(result, y), null)));
 //
 //		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
@@ -260,7 +260,7 @@ public class ServiceExertionTest {
 	@Test
 	public void exertXrtTest() throws Exception {
 		Exertion xrt = createXrt();
-		logger.info("job context " + ((Job)xrt).getJobContext());
+		logger.info("job dataContext " + ((Job)xrt).getJobContext());
 		
 		logger.info("xrt value @  t3/arg/x1 = " + get(xrt, "t3/arg/x1"));
 		logger.info("xrt value @  t3/arg/x2 = " + get(xrt, "t3/arg/x2"));
@@ -272,7 +272,7 @@ public class ServiceExertionTest {
 	// two level job composition
 	@SuppressWarnings("unchecked")
 	private Exertion createXrt() throws Exception {
-		// using the data context in jobs
+		// using the data dataContext in jobs
 		Task t3 = xrt("t3", sig("subtract", SubtractorImpl.class), 
 				cxt("subtract", in("arg/x1", null), in("arg/x2", null),
 						out("result/y", null)));

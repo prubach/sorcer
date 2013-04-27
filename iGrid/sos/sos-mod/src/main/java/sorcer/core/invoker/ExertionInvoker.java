@@ -108,7 +108,7 @@ public class ExertionInvoker extends ServiceInvoker {
 				throw new EvaluationException(e);
 			}
 		if (evaluatedExertion instanceof Task)
-			return evaluatedExertion.getContext();
+			return evaluatedExertion.getDataContext();
 		else if (evaluatedExertion instanceof Job) 
 			return ((Job)evaluatedExertion).getJobContext();
 		return null;

@@ -1,7 +1,7 @@
 /*
 s * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,38 +16,9 @@ s * Copyright 2009 the original author or authors.
  */
 package sorcer.core.provider;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.security.Permission;
-import java.security.Policy;
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-
+import com.sun.jini.config.Config;
+import com.sun.jini.start.LifeCycle;
+import com.sun.jini.thread.TaskManager;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -66,16 +37,11 @@ import net.jini.lookup.JoinManager;
 import net.jini.lookup.ServiceIDListener;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
-import net.jini.lookup.ui.factory.JFrameFactory;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-import sorcer.core.AccessDeniedException;
-import sorcer.core.AdministratableProvider;
+import sorcer.core.*;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
-import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.RemoteContextManagement;
@@ -87,45 +53,41 @@ import sorcer.core.provider.proxy.Partner;
 import sorcer.core.provider.proxy.Partnership;
 import sorcer.core.provider.ui.ProviderUI;
 import sorcer.falcon.base.Conditional;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.MonitorException;
-import sorcer.service.ServiceExertion;
+import sorcer.resolver.Resolver;
+import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.service.Spacer;
-import sorcer.service.Task;
-import sorcer.tools.webster.Webster;
-import sorcer.ui.exertlet.NetletEditor;
-import sorcer.ui.exertlet.NetletUI;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.ObjectLogger;
-import sorcer.util.ProviderAccessor;
-import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.*;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
-import com.sun.jini.config.Config;
-import com.sun.jini.start.LifeCycle;
-import com.sun.jini.thread.TaskManager;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.security.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import sorcer.tools.webster.Webster;
 
 /**
- * The ServiceProvider class is a type of {@link ServiceExerter} with dependency
+ * The ServiceProvider class is a type of {@link Provider} with dependency
  * injection defined by a Jini 2 configuration, proxy management, and own
  * service discovery management for registering its proxies. In the simplest
  * case, the provider exports and registers its own (outer) proxy with the
- * primary method {@link Provider#service(Exertion)}. The functionality of an
+ * primary method {@link Servicer#service}. The functionality of an
  * outer proxy can be extended by its inner server functionality with its Remote
  * inner proxy. In this case, the outer proxies have to implement {@link Outer}
  * interface and each outer proxy is registered with the inner proxy allocated
- * with {@link Outer#setProxy} invoked on the outer proxy. Obviously an outer
+ * with {@link sorcer.core.provider.proxy.Outer#getInner()} invoked on the outer proxy. Obviously an outer
  * proxy can implement own interfaces with the help of its embedded inner proxy
  * that in turn can consit of multiple own inner proxies as needed. This class
  * implements the {@link Outer} interface, so can extend its functionality by
@@ -157,7 +119,7 @@ import com.sun.jini.thread.TaskManager;
  * exported server proxy becomes the primary provider's proxy. However, if no
  * exporter is defined then server proxy becomes the inner proxy of this
  * provider's proxy (outer proxy). Thus, exported servers use outer proxies
- * while not exported user inner proxies of this provider. In this context, a
+ * while not exported user inner proxies of this provider. In this dataContext, a
  * smart proxy implementing {@link Outer} interface can get the outer proxy and
  * its inner proxy composed in either direction provider/server proxy
  * relationship.
@@ -173,13 +135,13 @@ import com.sun.jini.thread.TaskManager;
  *
  * @see Provider
  * @see ServiceIDListener
- * @see ReferentUuuid
+ * @see ReferentUuid
  * @see AdministratableProvider
  * @see ProxyAccessor
  * @see ServerProxyTrust
  * @see RemoteMethodControl
  * @see LifeCycle
- * @see Partener
+ * @see Partner
  * @see Partnership
  * @see RemoteContextManagement
  * @see SorcerConstants
@@ -190,18 +152,22 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         RemoteContextManagement, SorcerConstants {
     // RemoteMethodControl is needed to enable Proxy Constraints
 
-    static {
-        //Handler.register();
-        URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-    }
-
-    public static final String COMPONENT = ServiceProvider.class.getName();
-
     /** Logger and configuration component name for service provider. */
     static final String PROVIDER = ServiceProvider.class.getName();
 
     /** Logger for logging information about this instance */
     protected static final Logger logger = Logger.getLogger(PROVIDER);
+
+    static {
+        //Handler.register();
+        try {
+            URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+        } catch (Error e) {
+            logger.severe("URL Stream Handler Factory setting failed!");
+        }
+    }
+
+    public static final String COMPONENT = ServiceProvider.class.getName();
 
     protected ProviderDelegate delegate;
 
@@ -211,7 +177,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     int loopCount = 0;
 
-    /** The login context, for logging out */
+    /** The login dataContext, for logging out */
     private LoginContext loginContext;
 
     /** The provider's JoinManager. */
@@ -219,8 +185,9 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     private LookupDiscoveryManager ldmgr;
 
-    // the current number of shared providers
+    // the number of shared providers
     protected static int tally = 0;
+
     // the size of this service node
     protected static int size = 0;
 
@@ -230,7 +197,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     // all providers in the same shared JVM
     private static List<ServiceProvider> providers = new ArrayList<ServiceProvider>();
 
-    //private ClassLoader serviceClassLoader;
+    private ClassLoader serviceClassLoader;
 
     private String[] accessorGroups = DiscoveryGroupManagement.ALL_GROUPS;
 
@@ -249,16 +216,15 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      */
     public ServiceProvider(String[] args, LifeCycle lifeCycle) throws Exception {
         this();
-
         // count initialized shared providers
         tally = tally + 1;
         size = tally;
         // load Sorcer environment properties via static initializer
         Sorcer.getProperties();
-        //serviceClassLoader = Thread.currentThread().getContextClassLoader();
-        final Configuration config = ConfigurationProvider.getInstance(args);
-        // args, delegate.getClass().getClassLoader());
-        //args, serviceClassLoader);
+        serviceClassLoader = Thread.currentThread().getContextClassLoader();
+        final Configuration config = ConfigurationProvider.getInstance(
+                // args, delegate.getClass().getClassLoader());
+                args, serviceClassLoader);
         delegate.setJiniConfig(config);
         // inspect class loader tree
         // com.sun.jini.start.ClassLoaderUtil.displayContextClassLoaderTree();
@@ -615,12 +581,12 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /**
      * Returns a proxy object for this provider. If the smart proxy is alocated
      * then returns a non exported object to be registerd with loookup services.
-     * However, if a smart proxy implements {@link OuteProxy} then the
+     * However, if a smart proxy implements {@link Outer} then the
      * provider's proxy is set as its inner proxy. Otherwise the {@link Remote}
      * outer proxy of this provider is returned.
      *
      * @return a proxy, or null
-     * @see sorcer.base.Provider#getProxy()
+     * @see sorcer.core.Provider
      */
     public Object getProxy() {
         return delegate.getProxy();
@@ -677,7 +643,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         logger.entering(this.getClass().toString(), "init");
         this.lifeCycle = lifeCycle;
         try {
-            // Take the login context entry from the configuration file, if this
+            // Take the login dataContext entry from the configuration file, if this
             // entry is null, server will start without a subject
             loginContext = (LoginContext) delegate.getDeploymentConfig().getEntry(
                     PROVIDER, "loginContext", LoginContext.class, null);
@@ -717,8 +683,8 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * Log information about failing to initialize the service and rethrow the
      * appropriate exception.
      *
-     * @param the
-     *            exception produced by the failure
+     * @param e
+     * the exception produced by the failure
      */
     static void initFailed(Throwable e) throws Exception {
         String message = null;
@@ -766,7 +732,6 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * provider's properties can be defined directly in Jini provider's
      * configuration file - the latter recommended.
      *
-     * @param config
      *            Jini configuration
      * @throws Exception
      */
@@ -783,7 +748,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
             // Use locators specified in the Jini configuration file, otherwise
             // from the environment configuration
             // String[] lookupLocators = (String[]) Config.getNonNullEntry(
-            // delegate.getJiniConfig(), PROVIDER, "lookupLocators",
+            // delegate.getDeploymentConfig(), PROVIDER, "lookupLocators",
             // String[].class, new String[] {});
             String[] lookupLocators = new String[] {};
             String locators = delegate.getProviderConfig().getProperty(
@@ -941,44 +906,45 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     /**
      * Returns an array of additional service UI descriptors to be included in a
-     * Jini service item that is registerd with lookup services. By default a
+     * Jini service item that is registered with lookup services. By default a
      * generic ServiceProvider service UI is provided with: attribute viewer,
-     * context and task editor for this service provider.
+     * dataContext and task editor for this service provider.
      *
      * @return an array of service UI descriptors
      */
     public UIDescriptor[] getServiceUIEntries() {
-        UIDescriptor uiDesc1 = null;
-        try {
-            uiDesc1 = UIDescriptorFactory.getUIDescriptor(
-                    MainUI.ROLE,
-                    new UIComponentFactory(new URL[] { new URL(Sorcer
-                            .getWebsterUrl() + "/exertlet-ui.jar") },
-                            NetletEditor.class.getName()));
-        } catch (Exception ex) {
-            logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
-        }
+//		UIDescriptor uiDesc1 = null;
+//		try {
+//			uiDesc1 = UIDescriptorFactory.getUIDescriptor(
+//					MainUI.ROLE,
+//					new UIComponentFactory(new URL[] { new URL(Sorcer
+//							.getWebsterUrl() + "/commons-prv.jar") },
+//							NetletEditor.class.getName()));
+//		} catch (Exception ex) {
+//			logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
+//		}
 
         UIDescriptor uiDesc2 = null;
         try {
-            URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/exertlet-ui.jar");
+            URL uiUrl = new URL(Resolver.resolveAbsolute(Sorcer.getWebsterUrl()  + "/", Artifact.sorcer("sos-exertlet-sui")));
             URL helpUrl = new URL(Sorcer.getWebsterUrl()
-                    + "/exertlet/exertlet-ui.html");
+                    + "/exertlet/sos-exertlet-sui.html");
 
             // URL exportUrl, String className, String name, String helpFilename
             uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                    (JFrameFactory) new UIFrameFactory(new URL[] { uiUrl },
-                            NetletUI.class.getName(), "Exertlet Editor",
+                    new UIFrameFactory(new URL[] { uiUrl },
+                            "sorcer.ui.exertlet.NetletUI", "Exertlet Editor",
                             helpUrl));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc1, uiDesc2 };
+        //return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc1, uiDesc2 };
+        return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc2 };
     }
 
     /**
-     * Returnes an appended list of enrties that includes UI descriptors of this
+     * Returns an appended list of entries that includes UI descriptors of this
      * provider.
      *
      * @param serviceAttributes
@@ -1029,7 +995,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     public Context<?> getContext(Context<?> context) throws RemoteException {
         // TODO can be extended for finding service type and its selector in the
-        // context parameter
+        // dataContext parameter
         try {
             context.putValue(ContextManagement.CONTEXT_REQUEST_PATH,
                     getContext());
@@ -1065,11 +1031,11 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /*
      * (non-Javadoc)
      *
-     * @see sorcer.core.context.ContextManagement#getContextScript()
+     * @see sorcer.core.dataContext.ContextManagement#getContextScript()
      */
     @Override
     public String getContextScript() throws RemoteException {
-        // implement context management in subcllases
+        // implement dataContext management in subcllases
         ContextManagement contextManager = delegate.getContextManager();
         if (contextManager != null)
             return contextManager.getContextScript();
@@ -1080,11 +1046,11 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /*
      * (non-Javadoc)
      *
-     * @see sorcer.core.context.ContextManagement#getContext()
+     * @see sorcer.core.dataContext.ContextManagement#getDataContext()
      */
     @Override
     public Context<?> getContext() throws RemoteException {
-        // implement context management in subcllases
+        // implement dataContext management in subcllases
         ContextManagement contextManager = delegate.getContextManager();
         if (contextManager != null)
             return contextManager.getContext();
@@ -1096,7 +1062,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * (non-Javadoc)
      *
      * @see
-     * sorcer.core.context.ContextManagement#getMethodContextScript(java.lang
+     * sorcer.core.dataContext.ContextManagement#getMethodContextScript(java.lang
      * .String, java.lang.String)
      */
     @Override
@@ -1114,7 +1080,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * (non-Javadoc)
      *
      * @see
-     * sorcer.core.context.ContextManagement#currentContextList(java.lang.String
+     * sorcer.core.dataContext.ContextManagement#currentContextList(java.lang.String
      * )
      */
     @Override
@@ -1179,7 +1145,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * (non-Javadoc)
      *
      * @see
-     * sorcer.core.context.ContextManagement#deleteContext(java.lang.String,
+     * sorcer.core.dataContext.ContextManagement#deleteContext(java.lang.String,
      * java.lang.String)
      */
     @Override
@@ -1234,7 +1200,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * (non-Javadoc)
      *
      * @see
-     * sorcer.core.context.ContextManagement#getMethodContext(java.lang.String,
+     * sorcer.core.dataContext.ContextManagement#getMethodContext(java.lang.String,
      * java.lang.String)
      */
     @Override
@@ -1268,7 +1234,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         } catch (IOException ioe) {
             // logger.throwing(this.getClass().getName(), "getMethodContext",
             // ioe);
-            // logger.info("no context file availabe for the provider: " +
+            // logger.info("no dataContext file availabe for the provider: " +
             // getProviderName());
             contextLoaded = false;
         }
@@ -1284,7 +1250,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * (non-Javadoc)
      *
      * @see
-     * sorcer.core.context.ContextManagement#saveMethodContext(java.lang.String,
+     * sorcer.core.dataContext.ContextManagement#saveMethodContext(java.lang.String,
      * java.lang.String, sorcer.service.Context)
      */
     @Override
@@ -1477,7 +1443,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     /**
      * A provider responsibility is to check a task completeness in paricular
-     * the relevance of the task's context.
+     * the relevance of the task's dataContext.
      */
     public boolean isValidTask(Exertion task) throws RemoteException,
             ExertionException {
@@ -1527,7 +1493,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         } else if (this instanceof Spacer) {
             ep = new ExertProcessor(exertion, delegate, (Spacer) this);
         } else if (exertion instanceof Task && exertion.isMonitored()) {
-            if (exertion.isWait())
+            if (exertion.isWaitable())
                 return doMonitoredTask(exertion, null);
             else {
                 // asynchronous execution
@@ -1537,7 +1503,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
                     }
                 });
                 try {
-                    exertion.getContext().putValue(
+                    exertion.getDataContext().putValue(
                             ControlContext.EXERTION_WAITED_FROM,
                             SorcerUtil.getDateTime());
                 } catch (ContextException e) {
@@ -1668,9 +1634,10 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         return delegate.getScratchDir(scratchDirNamePrefix);
     }
 
+
     // this methods generates a scratch directory with a prefix on the unique
     // directory name
-    // and puts the directory into the context under a fixed path (path is in
+    // and puts the directory into the dataContext under a fixed path (path is in
     // SorcerConstants)
     public File getScratchDir(Context context, String scratchDirNamePrefix)
             throws RemoteException {
@@ -1679,23 +1646,23 @@ public class ServiceProvider implements Provider, ServiceIDListener,
             scratchDir = delegate.getScratchDir(context, scratchDirNamePrefix);
         } catch (Exception e) {
             throw new RemoteException("***error: problem getting scratch "
-                    + "directory and adding path/url to context"
-                    + "\ncontext name = " + context.getName() + "\ncontext = "
+                    + "directory and adding path/url to dataContext"
+                    + "\ndataContext name = " + context.getName() + "\ndataContext = "
                     + context + "\nscratchDirNamePrefix = "
                     + scratchDirNamePrefix + "\nexception = " + e.toString());
         }
         return scratchDir;
     }
 
-    // method adds scratch dir to context
+    // method adds scratch dir to dataContext
     public File getScratchDir(Context context) throws RemoteException {
         return getScratchDir(context, "");
         // File scratchDir;
         // try {
-        // scratchDir = delegate.getScratchDir(context);
+        // scratchDir = delegate.getScratchDir(dataContext);
         // } catch (Exception e) {
         // throw new RemoteException("***error: problem getting scratch "
-        // + "directory and adding path/url to context, exception "
+        // + "directory and adding path/url to dataContext, exception "
         // + "follows:\n" + e.toString());
         // }
         // return scratchDir;
@@ -1757,7 +1724,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /**
      * MonitorManagers call suspend a MonitorableServicer. Once suspend is
      * called, the monitorables must suspend immediatly and return the suspended
-     * state of the context.
+     * state of the dataContext.
      *
      * @throws UnknownExertionException
      *             if the exertion is not executed by this provider.
@@ -1803,7 +1770,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     }
 
     /**
-     * Calls the delegate to update the monitor with the current context.
+     * Calls the delegate to update the monitor with the current dataContext.
      *
      * @param context
      * @throws MonitorException
@@ -1817,7 +1784,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /**
      * Destroy the service, if possible, including its persistent storage.
      *
-     * @see sorcer.base.Provider#destroy()
+     * @see sorcer.core.Destroyer#destroy()
      */
     public void destroy() throws RemoteException {
         logger.log(Level.INFO, "Destroying service " + getProviderName());
@@ -1850,7 +1817,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * Destroy all services in this node (virtual machine) by calling each
      * destroy().
      *
-     * @see sorcer.base.Provider#destroy()
+     * @see sorcer.core.Destroyer#destroy()
      */
     public void destroyNode() throws RemoteException {
         for (ServiceProvider provider : providers) {
@@ -1880,7 +1847,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
 
     public boolean loadContextDatabase() throws RemoteException {
         try {
-            FileInputStream fis = new FileInputStream("context.cxnt");
+            FileInputStream fis = new FileInputStream("dataContext.cxnt");
             ObjectInputStream in = new ObjectInputStream(fis);
             try {
                 theContextMap = (HashMap<String, Context>) in.readObject();
@@ -1960,7 +1927,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     public final static String MAX_THREADS = "maxThreads";
     public final static String MANAGER_TIMEOUT = "threadTimeout";
     public final static String LOAD_FACTOR = "loadFactor";
-    // wait for a TaskThread result in increments
+    // wait for a TakThread result in increments
     public final static String WAIT_INCREMENT = "waitForResultIncrement";
 
     /*
@@ -1994,7 +1961,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         MonitoredTaskDispatcher dispatcher = null;
         try {
             dispatcher = new MonitoredTaskDispatcher(task, null, false, this);
-            // logger.finer("*** MonitoredTaskDispatcher started with control context ***\n"
+            // logger.finer("*** MonitoredTaskDispatcher started with control dataContext ***\n"
             // + task.getControlContext());
             // int COUNT = 1000;
             // int count = COUNT;

@@ -24,7 +24,7 @@ import javax.swing.JSplitPane;
 /**
  * BrowserWindow is the main UI component of CatalogerUI and the providers
  * integrated Task Manager Tab. It displays the provider, interface,
- * method(SignatureView), and the context(ContextView) in a JSplitPane.
+ * method(SignatureView), and the dataContext(ContextView) in a JSplitPane.
  */
 public class BrowserWindow extends JSplitPane {
 	private static final long serialVersionUID = -7979919060009568791L;
@@ -41,7 +41,7 @@ public class BrowserWindow extends JSplitPane {
 	public BrowserWindow(BrowserModel model, SignatureDispatchment dispatcher,
 			boolean withProviderList) {
 		super();
-		// combines the signature and context panes.
+		// combines the signature and dataContext panes.
 		SignatureView sigPane = new SignatureView(withProviderList);
 		sigPane.addListeners(dispatcher, dispatcher.getProviderListener(),
 				dispatcher.getInterfaceListener(), dispatcher

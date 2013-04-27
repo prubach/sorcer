@@ -31,30 +31,30 @@ import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.ReturnPath;
 
 /**
- * Service context classes that implement this interface provide SORCER generic
+ * Service dataContext classes that implement this interface provide SORCER generic
  * metacomputing data structures for storage, retrieval, and propagation of
  * heterogeneous information across all SORCER service providers. Two generic
  * implementations are provided: {@link ServiceContext} and
  * {@link ProviderContextImpl}. Usually the former is used by service requestors
  * and the latter with more functionality is used by service providers. The
  * ServiceContextImpl class implements the ProviderContext interface that
- * extends ServiceContext. An example of a specific service context is
+ * extends ServiceContext. An example of a specific service dataContext is
  * illustrated by {@link ArrayContext}.
  * <p>
- * A service context is a tree-like structure with two types of nodes. Leaf
+ * A service dataContext is a tree-like structure with two types of nodes. Leaf
  * nodes are called data (value) nodes and the remaining nodes are called
- * context attribute nodes. Context attributes define a namespace for the data
- * in a uniform way for use by all related services. A path of context
- * attributes leading from the root of the context to any leaf node along with
- * its data node is called a context element (path/data). Thus a path is a
+ * dataContext attribute nodes. Context attributes define a namespace for the data
+ * in a uniform way for use by all related services. A path of dataContext
+ * attributes leading from the root of the dataContext to any leaf node along with
+ * its data node is called a dataContext element (path/data). Thus a path is a
  * hierarchical attribute of data contained in the leaf node. A data node can
  * contain any Java object; in particular a generic {@see ContextNode} is
  * available.
  * <p>
  * Context paths can be marked with attributes set by using the method
  * {@link #setAttribute(String)}, which allow for efficient search of related
- * data by service providers (service context clients). The search issue becomes
- * critical when a namespace in the context may change or when data nodes
+ * data by service providers (service dataContext clients). The search issue becomes
+ * critical when a namespace in the dataContext may change or when data nodes
  * contain remote references, for example a URL. It is usually assumed that
  * provider-enforced data associations are more stable than user-oriented paths.
  * Each direct service invocation {@link Servicer.service(ServiceContext)}
@@ -63,13 +63,13 @@ import sorcer.service.Signature.ReturnPath;
  * Service contexts are defined by this common interface with efficient
  * service-oriented APIs. However, there are some similarities with XML
  * terminology. The root element in XML contains all other XML elements.
- * Similarly, in each service context, the root extends to all data nodes. A
- * path with its data node (context element) is conceptually similar to an XML
- * element. XML tags (markup) correspond to context attributes. A context data
- * node can be considered the analog of data in XML, however a service context
+ * Similarly, in each service dataContext, the root extends to all data nodes. A
+ * path with its data node (dataContext element) is conceptually similar to an XML
+ * element. XML tags (markup) correspond to dataContext attributes. A dataContext data
+ * node can be considered the analog of data in XML, however a service dataContext
  * data node has rich OO semantics. Finally, data attributes in service contexts
  * can be compared to element attributes in XML. However, data attributes have
- * more meta-attribute meaning than XML attributes. While context attributes
+ * more meta-attribute meaning than XML attributes. While dataContext attributes
  * provide a name space for direct access to data nodes via
  * {@link #getValue(String)}, data attributes specify the data node for indirect
  * efficient retrieval (search) by service providers. *
@@ -77,10 +77,10 @@ import sorcer.service.Signature.ReturnPath;
 public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 		Identifiable {
 
-	/** context parameter (cp) */
+	/** dataContext parameter (cp) */
 	final static String CONTEXT_PARAMETER = "cp";
 
-	/** context pipe (pipe) */
+	/** dataContext pipe (pipe) */
 	final static String PIPE = "pipe";
 
 	/** directional attribute (da) */
@@ -94,7 +94,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	final static String PATH = "path";
 
-	/** context nameID (cid) */
+	/** dataContext nameID (cid) */
 	final static String CONTEXT_ID = "cid";
 
 	/** SORCER type (ft) */
@@ -171,7 +171,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 			+ SorcerConstants.CPS + "data";
 
 	/**
-	 * An object to specify no context data.
+	 * An object to specify no dataContext data.
 	 */
 	final static Object NO_DATA = new Object() {
 		public String toString() {
@@ -180,32 +180,32 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	};
 
 	/**
-	 * Returns a name of this service context.
+	 * Returns a name of this service dataContext.
 	 * 
-	 * @return context name
+	 * @return dataContext name
 	 */
 	public String getName();
 
 	/**
-	 * Assigns a name for this service context.
+	 * Assigns a name for this service dataContext.
 	 * 
 	 * @param name
-	 *            a context name to set.
+	 *            a dataContext name to set.
 	 */
 	public void setName(String contextName);
 
 	/**
-	 * Returns a name of the root context node.
+	 * Returns a name of the root dataContext node.
 	 * 
-	 * @return name of the root context node
+	 * @return name of the root dataContext node
 	 */
 	public String getRootName();
 
 	/**
-	 * Assigns a root name for this service context.
+	 * Assigns a root name for this service dataContext.
 	 * 
 	 * @param rootName
-	 *            name of the root context node
+	 *            name of the root dataContext node
 	 */
 	public void setRootName(String rootName);
 
@@ -370,14 +370,14 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public void setSubdomainName(String name);
 
 	/**
-	 * Returns a principal using this service context.
+	 * Returns a principal using this service dataContext.
 	 * 
 	 * @return a Principal
 	 */
 	public SorcerPrincipal getPrincipal();
 
 	/**
-	 * Assigns a principal to this service context.
+	 * Assigns a principal to this service dataContext.
 	 * 
 	 * @param principal
 	 *            the principal to set.
@@ -413,23 +413,23 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Hashtable<String, Object> getDelPathIds();
 
 	/**
-	 * Returns the exertion associated with this context.
+	 * Returns the exertion associated with this dataContext.
 	 * 
 	 * @return Exertion
 	 */
 	public Exertion getExertion();
 
 	/**
-	 * Returns the service provider associated with this context
+	 * Returns the service provider associated with this dataContext
 	 * 
 	 * @return Provider
 	 */
 	public Provider getProvider();
 
 	/**
-	 * Returns the path of the return value associated with this context
+	 * Returns the path of the return value associated with this dataContext
 	 * 
-	 * @return The context path
+	 * @return The dataContext path
 	 */
 	public ReturnPath<T> getReturnPath();
 
@@ -442,20 +442,20 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public void setExertion(Exertion task) throws ExertionException;
 
 	/**
-	 * Returns the subject path in this context. A subject is a path/value
-	 * association and is interpreted as the context constituent about which
-	 * something is predicated. Other path/value associations of this context
-	 * are interpreted as complements of the context subject.
+	 * Returns the subject path in this dataContext. A subject is a path/value
+	 * association and is interpreted as the dataContext constituent about which
+	 * something is predicated. Other path/value associations of this dataContext
+	 * are interpreted as complements of the dataContext subject.
 	 * 
 	 * @return the subject path
 	 */
 	public String getSubjectPath();
 
 	/**
-	 * Returns the subject value in this context. A subject is a path/value
-	 * association and is interpreted as the context constituent about which
-	 * something is predicated. Other path/value associations of this context
-	 * are interpreted as complements of the context subject.
+	 * Returns the subject value in this dataContext. A subject is a path/value
+	 * association and is interpreted as the dataContext constituent about which
+	 * something is predicated. Other path/value associations of this dataContext
+	 * are interpreted as complements of the dataContext subject.
 	 * 
 	 * @return the subject value
 	 */
@@ -463,10 +463,10 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Assigns the subject <code>value</code> at <code>path</code> in this
-	 * context. A subject is a path/value association and is interpreted as the
-	 * context constituent about which something is predicated. Other path/value
-	 * associations of this context are interpreted as complements of the
-	 * context subject.
+	 * dataContext. A subject is a path/value association and is interpreted as the
+	 * dataContext constituent about which something is predicated. Other path/value
+	 * associations of this dataContext are interpreted as complements of the
+	 * dataContext subject.
 	 * 
 	 * @param path
 	 *            the subject path
@@ -486,7 +486,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * 
 	 * @param path
 	 *            the attribute-based key
-	 * @return this context value
+	 * @return this dataContext value
 	 * @throws ContextException
 	 */
 	public Object get(String path);
@@ -498,7 +498,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * 
 	 * @param path
 	 *            the attribute-based key
-	 * @return this context value
+	 * @return this dataContext value
 	 * @throws ContextException
 	 */
 	public T getValue(String path, Parameter... entries)
@@ -510,7 +510,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * 
 	 * @param path
 	 *            the attribute-based key
-	 * @return this context value
+	 * @return this dataContext value
 	 * @throws ContextException
 	 */
 	public Object getValue(String path, Object defaultValue)
@@ -538,8 +538,8 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Object remove(Object path);
 
 	/**
-	 * Creates a context pipe between output parameter at outPath in this
-	 * context to an input parameter at inPath in outContext. The pipe allow for
+	 * Creates a dataContext pipe between output parameter at outPath in this
+	 * dataContext to an input parameter at inPath in outContext. The pipe allow for
 	 * passing on parameters between different contexts within the same
 	 * exertion.
 	 * 
@@ -548,7 +548,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * @param inPath
 	 *            a location of input parameter
 	 * @param inContext
-	 *            an input parameter context
+	 *            an input parameter dataContext
 	 * @throws ContextException
 	 */
 	public void connect(String outPath, String inPath, Context inContext)
@@ -558,7 +558,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 			throws ContextException;
 
 	/**
-	 * Marks mapping between output parameter at fromParh in this context to an
+	 * Marks mapping between output parameter at fromParh in this dataContext to an
 	 * input parameter at toPath in toContext. Mappings allow for passing on
 	 * parameters between different contexts within the same exertion.
 	 * 
@@ -567,7 +567,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * @param toPath
 	 *            a location of input parameter
 	 * @param toContext
-	 *            an input parameter context
+	 *            an input parameter dataContext
 	 * @throws ContextException
 	 */
 	public void map(String fromPath, String toPath, Context toContext)
@@ -575,7 +575,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Removes the {@link ContextLink} object pointed to by path. If object is
-	 * not a context link, a ContextException will be thrown.
+	 * not a dataContext link, a ContextException will be thrown.
 	 * 
 	 * @throws ContextException
 	 * @see #removePath
@@ -584,15 +584,15 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns an <code>Object</code> array containing the ServiceContext in
-	 * which path belongs and the absolute path in that context.
+	 * which path belongs and the absolute path in that dataContext.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @return <code>Object</code> array of length two. The first element is the
 	 *         ServiceContext; the second element is the path in the
-	 *         ServiceContext. Note, a context node is not required at the
-	 *         returned path in the returned context--the results merely
-	 *         indicate the mapping (getValue on the resulting context at the
+	 *         ServiceContext. Note, a dataContext node is not required at the
+	 *         returned path in the returned dataContext--the results merely
+	 *         indicate the mapping (getValue on the resulting dataContext at the
 	 *         resulting path will yield the contents)
 	 * 
 	 * @throws ContextException
@@ -601,26 +601,26 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Object[] getContextMap(String path) throws ContextException;
 
 	/**
-	 * Records this context in related monitoring session.
+	 * Records this dataContext in related monitoring session.
 	 **/
 	public void checkpoint() throws ContextException;
 
 	/**
 	 * Annotates the path with the tuple (value sequence) specified by a
-	 * relation in the domain of attribute product related to the context data
+	 * relation in the domain of attribute product related to the dataContext data
 	 * nodes.The relation can be either a single search attribute (property) or
 	 * attribute product. The search attribute-value sequence must be separated
 	 * by the <code>Context.APS</code>. Marked data nodes can be found by their
-	 * tuples (@link #getMarkedPaths} independently of associative context paths
-	 * defined by context attributes {@link #getValue}. It is usually assumed
-	 * that search relations are more stable than user friendly context paths.
+	 * tuples (@link #getMarkedPaths} independently of associative dataContext paths
+	 * defined by dataContext attributes {@link #getValue}. It is usually assumed
+	 * that search relations are more stable than user friendly dataContext paths.
 	 * 
-	 * Tuple attributes and relations must first be registered with the context
+	 * Tuple attributes and relations must first be registered with the dataContext
 	 * with {@link #addAttribute}, {@link #addProperty}, or {@link #addRelation}
 	 * before they are used in contexts.
 	 * 
 	 * @param path
-	 *            the location in the context namespace
+	 *            the location in the dataContext namespace
 	 * @param tuple
 	 *            the domain-value sequence
 	 * @return self
@@ -629,11 +629,11 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Context mark(String path, String tuple) throws ContextException;
 
 	/**
-	 * Returns the enumeration of all context paths matching the given
+	 * Returns the enumeration of all dataContext paths matching the given
 	 * association.
 	 * 
 	 * @param association
-	 *            the association of this context to be matched
+	 *            the association of this dataContext to be matched
 	 * @return the enumeration of matches for the given association
 	 * @throws ContextException
 	 */
@@ -644,7 +644,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	 * Returns the List of all values with paths matching the given association.
 	 * 
 	 * @param association
-	 *            the association of this context to be matched
+	 *            the association of this dataContext to be matched
 	 * @return the List of matches for the given association
 	 * @throws ContextException
 	 */
@@ -660,7 +660,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns boolean value designating if <code>attributeName</code> is an
-	 * attribute in the top-level context. Does not descend into linked
+	 * attribute in the top-level dataContext. Does not descend into linked
 	 * contexts. Is true if attribute is singleton or metaattribute type.
 	 * 
 	 * @see #isLocalSingletonAttribute
@@ -670,7 +670,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns boolean value designating if <code>attributeName</code> is a
-	 * singleton attribute in the top-level context. Does not descend into
+	 * singleton attribute in the top-level dataContext. Does not descend into
 	 * linked contexts.
 	 * 
 	 * @see #isLocalAttribute
@@ -680,7 +680,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns boolean value designating if <code>attributeName</code> is a meta
-	 * attribute in the top-level context. Does not descend into linked
+	 * attribute in the top-level dataContext. Does not descend into linked
 	 * contexts.
 	 * 
 	 * @see #isLocalAttribute
@@ -690,7 +690,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns a {@link boolean} value designating if <code>attributeName</code>
-	 * is an attribute in this context including any linked contexts
+	 * is an attribute in this dataContext including any linked contexts
 	 * 
 	 * @return <code>boolean</code>
 	 * @throws ContextException
@@ -704,7 +704,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns a {@link boolean} value designating if <code>attributeName</code>
-	 * is a singleton attribute in this context including any linked contexts
+	 * is a singleton attribute in this dataContext including any linked contexts
 	 * 
 	 * @return <code>boolean</code>
 	 * @throws ContextException
@@ -719,7 +719,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns a {@link boolean} value designating if <code>attributeName</code>
-	 * is a meta attribute in this context including any linked contexts
+	 * is a meta attribute in this dataContext including any linked contexts
 	 * 
 	 * @return <code>boolean</code>
 	 * @throws ContextException
@@ -734,11 +734,11 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns the value part of the specified attribute that has been assigned
-	 * to this context node. The attribute can be either a singleton attribute
+	 * to this dataContext node. The attribute can be either a singleton attribute
 	 * or a meta-attribute, which is itself a collection of attributes.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @param attributeName
 	 *            the name of the metaattribute
 	 * 
@@ -752,12 +752,12 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns the value part of the specified singleton attribute that has been
-	 * assigned to this context node. A singleton attribute is a single
+	 * assigned to this dataContext node. A singleton attribute is a single
 	 * attribute with a single value as distinguished from a metaattribute which
 	 * designates multiple attribute-value pairs.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @param attributeName
 	 *            the name of the metaattribute
 	 * 
@@ -771,12 +771,12 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns the value part of the specified metaattribute that has been
-	 * assigned to this context node. The attribute value is a concatenation of
-	 * the individual attribute values, separated by the context meta-path
+	 * assigned to this dataContext node. The attribute value is a concatenation of
+	 * the individual attribute values, separated by the dataContext meta-path
 	 * separator character (CMPS).
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @param attributeName
 	 *            the name of the metaattribute
 	 * 
@@ -793,10 +793,10 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns the metapath for the given metaattribute in the top-level
-	 * context. Meta-definitions in linked contexts are not examined, and in
+	 * dataContext. Meta-definitions in linked contexts are not examined, and in
 	 * general can be different. To examine metapaths in linked contexts, call
 	 * getLocalMetapath operating on the <code>ServiceContext</code> that is
-	 * linked (which can be obtained, for example, from the getContext method of
+	 * linked (which can be obtained, for example, from the getDataContext method of
 	 * {@link ContextLink} objects. Context links can be found using
 	 * {@link getLinks}). Returns <code>null</code> if not defined.
 	 * 
@@ -819,7 +819,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns an {@link Enumeration} of the locations of all the objects in
-	 * this context. The enumeration includes objects that reside in linked
+	 * this dataContext. The enumeration includes objects that reside in linked
 	 * contexts.
 	 * 
 	 * @return <code>Enumeration</code>
@@ -831,11 +831,11 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> contextPaths() throws ContextException;
 
 	/**
-	 * Returns the enumeration of all context paths matching the given regular
+	 * Returns the enumeration of all dataContext paths matching the given regular
 	 * expression.
 	 * 
 	 * @param regex
-	 *            the regular expression to which paths of this context are to
+	 *            the regular expression to which paths of this dataContext are to
 	 *            be matched
 	 * @return an enumeration of matches for the given regular expression
 	 * @throws ContextException
@@ -843,16 +843,16 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> paths(String regex) throws ContextException;
 
 	/**
-	 * Returns an enumeration of all values of this service context.
+	 * Returns an enumeration of all values of this service dataContext.
 	 * 
-	 * @return an enumeration of all context values
+	 * @return an enumeration of all dataContext values
 	 * @throws ContextException
 	 */
 	public Enumeration<?> contextValues() throws ContextException;
 
 	/**
 	 * Returns an {@link Enumeration} of the locations of the first-level
-	 * {@link ContextLink} objects in this context. The enumeration does not
+	 * {@link ContextLink} objects in this dataContext. The enumeration does not
 	 * include ContextLink objects that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
@@ -864,7 +864,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns an {@link Enumeration} of the locations of the
-	 * {@link ContextLink} objects in this context. The enumeration includes
+	 * {@link ContextLink} objects in this dataContext. The enumeration includes
 	 * ContextLink objects that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
@@ -877,7 +877,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns an {@link Enumeration} of all the {@link ContextLink} objects in
-	 * this context including any ContextLinks that reside in linked contexts.
+	 * this dataContext including any ContextLinks that reside in linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
 	 * @throws ContextException
@@ -889,7 +889,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns an {@link Enumeration} of the top-level {@link ContextLink}
-	 * objects in this context. Does not include ContextLinks that reside in
+	 * objects in this dataContext. Does not include ContextLinks that reside in
 	 * linked contexts.
 	 * 
 	 * @return <code>Enumeration</code>
@@ -902,12 +902,12 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Returns the {@link ContextLink} object that resides at path in the
-	 * context. This method is necessary since ContextLink objects are otherwise
+	 * dataContext. This method is necessary since ContextLink objects are otherwise
 	 * transparent. For example, getValue(path) returns a value in the linked
-	 * context, not the LinkedContext object.
+	 * dataContext, not the LinkedContext object.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @return <code>ContextLink</code> if a ContextLink object resides at path;
 	 *         <code>null</code> otherwise.
 	 * @throws ContextException
@@ -916,41 +916,41 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Link getLink(String path) throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_IN.
 	 */
 	public Object putInValue(String path, Object value) throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_OUT.
 	 */
 	public Object putOutValue(String path, Object value)
 			throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_INOUT.
 	 */
 	public Object putInoutValue(String path, Object value)
 			throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_IN.
 	 */
 	public Object putInValue(String path, Object value, String association)
 			throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_OUT.
 	 */
 	public Object putOutValue(String path, Object value, String association)
 			throws ContextException;
 
 	/**
-	 * Allocates a value in the context with the directional attribute set to
+	 * Allocates a value in the dataContext with the directional attribute set to
 	 * DA_INOUT.
 	 */
 	public Object putInoutValue(String path, Object value, String association)
@@ -972,7 +972,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Context setInout(String path) throws ContextException;
 
 	/*
-	 * Extensions for further context operations
+	 * Extensions for further dataContext operations
 	 */
 	public Context getSubcontext();
 
@@ -984,7 +984,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 			throws ContextException;
 
 	/**
-	 * Removes a context node from the context. If the designated path points to
+	 * Removes a dataContext node from the dataContext. If the designated path points to
 	 * a {@link ContextLink} object, a {@link ContextException} will be thrown.
 	 * Use {@link removeLink} to remove link contexts.
 	 * 
@@ -994,14 +994,14 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public void removePath(String path) throws ContextException;
 
 	/**
-	 * Returns a string representation of this context.
+	 * Returns a string representation of this dataContext.
 	 * 
 	 * @return a string representation
 	 */
 	public String toString();
 
 	/**
-	 * Returns a plain string representation of this context or in the HTML
+	 * Returns a plain string representation of this dataContext or in the HTML
 	 * format.
 	 * 
 	 * @param isHTML
@@ -1010,7 +1010,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public String toString(boolean isHTML);
 
 	/**
-	 * Check if this context is export controlled, accessible to principals from
+	 * Check if this dataContext is export controlled, accessible to principals from
 	 * export controlled countries.
 	 * 
 	 * @return true if is export controlled
@@ -1018,17 +1018,17 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public boolean isExportControlled();
 
 	/**
-	 * Assigns export control for this context to <code>state</code> boolean.
+	 * Assigns export control for this dataContext to <code>state</code> boolean.
 	 * 
 	 * @param state
-	 *            of export control for this context
+	 *            of export control for this dataContext
 	 */
 	public void isExportControlled(boolean state);
 
 	/**
-	 * Returns path of first occurrence of object in the context. Returns null
+	 * Returns path of first occurrence of object in the dataContext. Returns null
 	 * if not found. This method is useful for orphaned objects, but should be
-	 * used with caution, since the same object can appear in the context in
+	 * used with caution, since the same object can appear in the dataContext in
 	 * multiple places, and the location may have relevance to interpretation.
 	 * If an object is orphaned, it is best to re-think how the object was
 	 * obtained. It is best to refer to the object with the unique path.
@@ -1036,7 +1036,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public String getPath(Object obj) throws ContextException;
 
 	/**
-	 * Returns all singleton attributes for the top-level context. Does not
+	 * Returns all singleton attributes for the top-level dataContext. Does not
 	 * descend into linked contexts to retrieve attributes (see
 	 * {@link getSingletonAttributes} which does look in linked contexts).
 	 * 
@@ -1048,7 +1048,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> localSimpleAttributes();
 
 	/**
-	 * Returns all singleton attributes for the context. Descends into linked
+	 * Returns all singleton attributes for the dataContext. Descends into linked
 	 * contexts to retrieve underlying singleton attributes (see
 	 * {@link getLocalSingletonAttributes} which does not look in linked
 	 * contexts).
@@ -1063,10 +1063,10 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
 	/**
 	 * Get all meta associations (meta attribute-meta value pairs) at the
-	 * specified context node.
+	 * specified dataContext node.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @return Enumeration of meta associations (of type <code>String</code>)
 	 * @throws ContextException
 	 * @see #getAssociations
@@ -1076,14 +1076,14 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> metaassociations(String path) throws ContextException;
 
 	/**
-	 * Returns all locally defined attributes in this context (metacontext).
+	 * Returns all locally defined attributes in this dataContext (metacontext).
 	 * 
 	 * @return Enumeration of local attributes (all of type <code>String</code>)
 	 */
 	public Enumeration<?> localAttributes();
 
 	/**
-	 * Returns all composite attributes for the top-level context. Does not
+	 * Returns all composite attributes for the top-level dataContext. Does not
 	 * descend into linked contexts to retrieve meta attributes (see
 	 * {@link getCompositeAttributes} which does look in linked contexts).
 	 * 
@@ -1094,7 +1094,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> localCompositeAttributes();
 
 	/**
-	 * Returns all meta attributes for the context. Descends into linked
+	 * Returns all meta attributes for the dataContext. Descends into linked
 	 * contexts to retrieve underlying meta attributes (see
 	 * {@link getLocalMetaattributes} which does not look in linked contexts).
 	 * 
@@ -1107,7 +1107,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> compositeAttributes() throws ContextException;
 
 	/**
-	 * Returns all attributes (singleton and meta) for the context. Descends
+	 * Returns all attributes (singleton and meta) for the dataContext. Descends
 	 * into linked contexts to retrieve underlying attributes (see
 	 * {@link getLocalMetaattributes} or {@link getLocalSingletonAttributes}
 	 * which do not look in linked contexts).
@@ -1122,10 +1122,10 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 	public Enumeration<?> getAttributes() throws ContextException;
 
 	/**
-	 * Returns all attributes (simple and composite) at path in the context.
+	 * Returns all attributes (simple and composite) at path in the dataContext.
 	 * 
 	 * @param path
-	 *            the location in the context
+	 *            the location in the dataContext
 	 * @return Enumeration of attributes (all of type <code>String</code>)
 	 * @throws ContextException
 	 */
@@ -1146,9 +1146,9 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 		ASSOCIATIVE, SHARED, POSITIONAL, LIST, INDEXED, ARRAY
 	}
 	
-	final static String PARAMETER_TYPES = "context/parameter/types";
-	final static String PARAMETER_VALUES = "context/parameter/values/";
-	final static String TARGET = "context/target";
-	final static String RETURN = "context/result";
+	final static String PARAMETER_TYPES = "dataContext/parameter/types";
+	final static String PARAMETER_VALUES = "dataContext/parameter/values/";
+	final static String TARGET = "dataContext/target";
+	final static String RETURN = "dataContext/result";
 
 }

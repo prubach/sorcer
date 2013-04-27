@@ -39,9 +39,9 @@ mxe [-a | -d | -f | -r | -y] | [-e <exertion index> | <exertion name>] [-c | -cc
   -y 	show monitored asynchronous exertions
   <exertion index> | <exertion name>		select a monitored exertion with <exertion index> or <exertion name>
   -v	show selected exertion
-  -c [<exertion index>]			print the data context of the selected exertion
-  -cc [<exertion index>]		print the control context of a selected exertion
-  -ccc [<exertion index>]		print the data context and control context of a selected exertion
+  -c [<exertion index>]			print the data dataContext of the selected exertion
+  -cc [<exertion index>]		print the control dataContext of a selected exertion
+  -ccc [<exertion index>]		print the data dataContext and control dataContext of a selected exertion
   -s <output filename>			save info in a file
 
 

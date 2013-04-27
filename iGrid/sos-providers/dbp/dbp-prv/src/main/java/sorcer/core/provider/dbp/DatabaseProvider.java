@@ -383,7 +383,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 	}
 	
 	protected void setupDatabase() throws DatabaseException {
-		Configuration config = delegate.getJiniConfig();
+		Configuration config = delegate.getDeploymentConfig();
 		String dbHome = null;
 		try {
 			dbHome = (String) config.getEntry(ServiceProvider.COMPONENT,

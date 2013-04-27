@@ -79,10 +79,10 @@ import sorcer.service.Context;
  * specified, can override settings in the existing Env object.
  * </ol>
  * <p>
- * The SORCER environment includes context data types. These types are similar
+ * The SORCER environment includes dataContext data types. These types are similar
  * to MIME types and are loaded like the environment properties
  * <code>sorcer.env</code> described above. They associate applications to a
- * format of data contained in context data nodes. Data types can be either
+ * format of data contained in dataContext data nodes. Data types can be either
  * loaded from a file (default name <code>data.formats</code>) or database. A
  * JVM system property <code>sorcer.formats.file</code> can be used to indicate
  * the location and name of a data type file. Data types are defined in service
@@ -112,7 +112,7 @@ public class Sorcer extends SorcerEnv {
 	public static String PROVIDER_PROPERTIES_FILENAME = "provider.properties";
 
 	/**
-	 * Default name 'data.formats' for a file defining service context node
+	 * Default name 'data.formats' for a file defining service dataContext node
 	 * types.
 	 */
 	private static String CONTEXT_DATA_FORMATS = "data.formats";
@@ -140,7 +140,7 @@ public class Sorcer extends SorcerEnv {
 	/**
 	 * Loads the environment properties from the default filename (sorcer.env)
 	 * or as given by the system property <code>sorcer.env.file</code> and
-	 * service context types from the default filename (node.types) or the
+	 * service dataContext types from the default filename (node.types) or the
 	 * system property <code>sorcer.formats.file</code>.
 	 */
 	protected static void loadEnvironment() {
@@ -355,10 +355,10 @@ public class Sorcer extends SorcerEnv {
 	 * node types specify application types of data nodes in service contexts.
 	 * It is analogous to MIME types in SORCER. Each type has a format
 	 * 'cnt/application/format/modifiers' or in the association format
-	 * 'cnt|application|format|modifiers' when used with {@link #Context.getMarkedPaths}.
+	 * 'cnt|application|format|modifiers' when used with {@link Context}.
 	 * 
 	 * @param filename
-	 *            name of file containing service context node type definitions.
+	 *            name of file containing service dataContext node type definitions.
 	 */
 	private static void loadDataNodeTypes(String filename) {
 		try {
@@ -561,7 +561,7 @@ public class Sorcer extends SorcerEnv {
 	 * @see name of the system Cataloger
 	 */
 	public static String getCatalogerName() {
-		return props.getProperty(P_CATALOOGER_NAME, "Cataloger");
+		return props.getProperty(P_CATALOGER_NAME, "Cataloger");
 	}
 	
 	/**
@@ -807,18 +807,18 @@ public class Sorcer extends SorcerEnv {
 	}
 
 	/**
-	 * Returns the name of the JNDI context factory.
+	 * Returns the name of the JNDI dataContext factory.
 	 * 
-	 * @return a fully qualified name of class of context factory
+	 * @return a fully qualified name of class of dataContext factory
 	 */
 	public static String getContextFactory() {
 		return "com.sun.jndi.rmi.registry.RegistryContextFactory";
 	}
 
 	/**
-	 * Returns the JNDI context provider URL string.
+	 * Returns the JNDI dataContext provider URL string.
 	 * 
-	 * @return URL string of the JNDI context provider
+	 * @return URL string of the JNDI dataContext provider
 	 */
 	public static String getContextProviderUrl() {
 		return getRmiUrl();
@@ -1301,7 +1301,7 @@ public class Sorcer extends SorcerEnv {
 
 	
 	/**
-	 * Load context node (value) types from default 'node.types'. SORCER node
+	 * Load dataContext node (value) types from default 'node.types'. SORCER node
 	 * types specify application types of data nodes in SORCER service contexts.
 	 * It is an analog of MIME types in SORCER. Each type has a format
 	 * 'cnt/application/format/modifiers'.

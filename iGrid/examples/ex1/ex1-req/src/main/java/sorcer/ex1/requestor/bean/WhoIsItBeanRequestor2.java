@@ -28,7 +28,7 @@ public class WhoIsItBeanRequestor2 {
 		
 		Exertion result = new WhoIsItBeanRequestor2()
 			.getExertion().exert(null);
-		logger.info("<<<<<<<<<< Exceptions: \n" + result.getThrowables());
+		logger.info("<<<<<<<<<< Exceptions: \n" + result.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
 		logger.info("<<<<<<<<<< Result: \n" + result);
 	}

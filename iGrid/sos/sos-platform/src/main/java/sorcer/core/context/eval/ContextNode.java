@@ -75,22 +75,22 @@ public class ContextNode implements Serializable, SorcerConstants {
 
 	private int dataType;
 
-	// data store for this context node
+	// data store for this dataContext node
 	private Object data;
 
-	// current value for this context node
+	// current value for this dataContext node
 
 	private Object value;
 
 	public ContextNode() {
-		// empty context node
+		// empty dataContext node
 	}
 
 	public ContextNode(String name) {
 		this.name = name;
 	}
 
-	// When the data within a context node is a DB object/or some other object
+	// When the data within a dataContext node is a DB object/or some other object
 	public ContextNode(String name, Object data) {
 		this(name);
 		this.data = data;
@@ -1356,7 +1356,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 				download(localFile);
 				// download(new File(dir, fileName));
 				setData(Sorcer.getScratchURL(new File(dir, fileName)));
-				logger.info("set context node URL to: " + getData());
+				logger.info("set dataContext node URL to: " + getData());
 				StringBuffer cmd = new StringBuffer("chmod +777 ")
 						.append(localFile);
 				Process p = Runtime.getRuntime().exec(cmd.toString());

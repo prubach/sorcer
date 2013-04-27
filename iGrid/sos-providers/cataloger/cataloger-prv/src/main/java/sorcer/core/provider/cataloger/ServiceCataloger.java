@@ -116,7 +116,7 @@ import com.sun.jini.start.LifeCycle;
  * <code>sorcer.</code>) and its value is a list of interface's method names.
  * 
  * <li>)<code>getMethodContext(providerName, methodName))</code> returns the
- * template context with which the provider is registered. This template context
+ * template dataContext with which the provider is registered. This template dataContext
  * is pulled out of the service attribute (Entry): {@link SorcerServiceInfo}.
  * </ol>
  */
@@ -190,7 +190,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		init();
 	}
 
-	public void init() {
+	public boolean init() {
 		try {
 			initLogger();
 			LookupLocator[] specificLocators = null;
@@ -226,11 +226,12 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			logger.info("------------------------------");
 		} catch (IOException ex) {
 			ex.printStackTrace();
-			System.exit(1);
-		} catch (ClassNotFoundException cnfe) {
+            return false;
+        } catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
-			System.exit(1);
+            return false;
 		}
+        return true;
 	}
 
 	private void initLogger() {
@@ -1137,7 +1138,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public Boolean saveContext(String providerName, String interfaceName,
 				String methodName, Context theContext) throws RemoteException {
-			logger.info("Inside save context");
+			logger.info("Inside save dataContext");
 			Collection c = values();
 			if (c == null) {
 				logger.info("Values is Null");
@@ -1189,7 +1190,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public Boolean deleteContext(String providerName, String interfaceName,
 				String methodName) {
-			logger.info("Inside delete context");
+			logger.info("Inside delete dataContext");
 			Collection c = values();
 			if (c == null) {
 				logger.info("Values is Null");
@@ -1240,7 +1241,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public String[] getSavedContextList(String providerName,
 				String interfaceName) {
-			logger.info("Inside get context list");
+			logger.info("Inside get dataContext list");
 			Collection c = values();
 			if (c == null) {
 				logger.info("Values is Null");
@@ -1290,7 +1291,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public Context exertService(String providerName, Class serviceType,
 				String methodName, Context theContext) throws RemoteException {
-			logger.info("Inside save context");
+			logger.info("Inside save dataContext");
 			Collection c = values();
 			if (c == null) {
 				logger.info("Values is Null");
@@ -1330,10 +1331,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 										methodName, serviceType);
 								Task task = new NetTask(serviceType
 										+ methodName, method);
-								task.setContext(theContext);
+								task.setDataContext(theContext);
 								NetTask task2 = (NetTask) ((Servicer) temp)
 										.service(task, null);
-								return task2.getContext();
+								return task2.getDataContext();
 							} catch (Exception e) {
 								logger.info("error converting to provider"
 										+ e.getMessage());

@@ -1,13 +1,13 @@
 Federated Variable-Evaluator (FVE) Design Pattern
 
 Basic FVE classes in:
-package sorcer.core.context.eval
+package sorcer.core.dataContext.eval
 
 Evaluation Service in:
 package sorcer.core.provider.eval
 
 Test Cases in: 
-sorcer.test.context.VariableTester.java
+sorcer.test.dataContext.VariableTester.java
 
 Various design variables in:
 package engineering.core.design

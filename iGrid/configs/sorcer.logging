@@ -67,7 +67,7 @@ sorcer.test.level=FINE
 sorcer.random.level=FINER
 
 # remote logger
-# domain specific provider and context loggers
+# domain specific provider and dataContext loggers
 private.level=ALL
 # local loggers exposed by the remote logger
 local.level=ALL
@@ -78,18 +78,18 @@ local.level=ALL
 #sorcer.vfe.filter.Filter.level=ALL
 #sorcer.vfe.filter.BasicFileFilter.level=ALL
 #sorcer.vfe.evaluator.level=OFF
-#sorcer.core.context.model.level=OFF
-#sorcer.core.context.model.explore.level=ALL
-#sorcer.core.context.model.opti.level=ALL
-#sorcer.core.context.model.explore.Explorer.level=ALL
-#sorcer.core.context.model.explore.ExploreDispatcher.level=ALL
-#sorcer.core.context.model.explore.ModelManager.level=ALL
-#sorcer.core.context.model.opti.level=ALL
+#sorcer.core.dataContext.model.level=OFF
+#sorcer.core.dataContext.model.explore.level=ALL
+#sorcer.core.dataContext.model.opti.level=ALL
+#sorcer.core.dataContext.model.explore.Explorer.level=ALL
+#sorcer.core.dataContext.model.explore.ExploreDispatcher.level=ALL
+#sorcer.core.dataContext.model.explore.ModelManager.level=ALL
+#sorcer.core.dataContext.model.opti.level=ALL
 
 # Other specialized loggers
 sorcer.core.dispatchlevel=ALL
-#sorcer.core.context.eval.level=OFF
-#sorcer.core.context.level=ALL
+#sorcer.core.dataContext.eval.level=OFF
+#sorcer.core.dataContext.level=ALL
 #sorcer.jini.jeri.SorcerILFactory.level=ALL
 #org.sadun.text.ffp.level=OFF
 sorcer.ui.tools.level=FINER

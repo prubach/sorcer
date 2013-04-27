@@ -52,7 +52,7 @@ public class WorkerTaskRequestorTest {
 
 	@Test
 	public void contextSerializationTest() throws IOException {
-		// test serialization of the requestor's context
+		// test serialization of the requestor's dataContext
 		TestUtil.testSerialization(context, true);
 	}
 	
@@ -65,7 +65,7 @@ public class WorkerTaskRequestorTest {
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
 		//logger.info("result: " + task);
-		assertEquals((Integer)task.getContext().getValue("provider/result"), new Integer(1111));
+		assertEquals((Integer)task.getDataContext().getValue("provider/result"), new Integer(1111));
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class WorkerTaskRequestorTest {
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
 		//logger.info("result: " + task);
-		assertEquals(task.getContext().getValue("provider/message"), "Done work: 1111");
+		assertEquals(task.getDataContext().getValue("provider/message"), "Done work: 1111");
 	}
 	
 	@Test
@@ -88,6 +88,6 @@ public class WorkerTaskRequestorTest {
 		Exertion task = new ObjectTask("work", signature, context);
 		task = task.exert();
 		//logger.info("result: " + task);
-		assertEquals(task.getContext().getValue("provider/host/name"), hostname);
+		assertEquals(task.getDataContext().getValue("provider/host/name"), hostname);
 	}
 }

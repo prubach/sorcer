@@ -29,15 +29,15 @@ import sorcer.co.tuple.Parameter;
 public interface Revaluation {
 
 	/**
-	 * Returns true if this context is revaluable, otherwise false
+	 * Returns true if this dataContext is revaluable, otherwise false
 	 * 
-	 * @return true if this context is revaluable
+	 * @return true if this dataContext is revaluable
 	 */
 	public boolean isRevaluable();
 
 	/**
 	 * <p>
-	 * Assign revaluability of this context.
+	 * Assign revaluability of this dataContext.
 	 * </p>
 	 * 
 	 * @param isEvaluable

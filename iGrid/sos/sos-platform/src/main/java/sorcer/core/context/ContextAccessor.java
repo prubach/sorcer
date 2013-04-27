@@ -23,7 +23,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 
 /**
- * ContextAccessor defines the signatures for interfacing with a context
+ * ContextAccessor defines the signatures for interfacing with a dataContext
  * storage repository.
  * 
  * @version $Revision: 1.1 $
@@ -31,29 +31,29 @@ import sorcer.service.ContextException;
 public interface ContextAccessor {
 
 	/**
-	 * Performs a save operation, storing and returning the context with a
+	 * Performs a save operation, storing and returning the dataContext with a
 	 * incremented version. The id remains unchanged.
 	 * 
 	 * @param cntxt
-	 *            a context to place in the data store.
+	 *            a dataContext to place in the data store.
 	 * @return the stored ServiceContext with incremented version
 	 * @throws ContextException
 	 *             thrown if cntxt is not already in data store or if the
-	 *             context's GAppPrincipal does not provide the required
+	 *             dataContext's GAppPrincipal does not provide the required
 	 *             authorization.
 	 * @see Context.setPrincipal
 	 */
 	public Context save(Context cntxt) throws ContextException;
 
 	/**
-	 * Saves context to the data store, assigning a unique id with version set
-	 * to 1.0 to the returned context.
+	 * Saves dataContext to the data store, assigning a unique id with version set
+	 * to 1.0 to the returned dataContext.
 	 * 
 	 * @param cntxt
-	 *            a context to persist in the data store.
+	 *            a dataContext to persist in the data store.
 	 * @return the stored ServiceContext with new id
 	 * @throws ContextException
-	 *             thrown if context's GAppPrincipal does not provide the
+	 *             thrown if dataContext's GAppPrincipal does not provide the
 	 *             required authorization.
 	 * @see Context.setPrincipal
 	 */
@@ -63,11 +63,11 @@ public interface ContextAccessor {
 	 * Returns the ServiceContext with given id and the most current version.
 	 * 
 	 * @param id
-	 *            the context identification
+	 *            the dataContext identification
 	 * @param prin
 	 *            provides authorization
 	 * @throws ContextException
-	 *             thrown if given id doesn't exist in context storage or if
+	 *             thrown if given id doesn't exist in dataContext storage or if
 	 *             GAppPrincipal does not provide the required authorization.
 	 * 
 	 */
@@ -78,14 +78,14 @@ public interface ContextAccessor {
 	 * Returns the ServiceContext with given id and version.
 	 * 
 	 * @param id
-	 *            the context identification
+	 *            the dataContext identification
 	 * @param version
-	 *            the version number for this context; if < 0, latest version
+	 *            the version number for this dataContext; if < 0, latest version
 	 *            returned.
 	 * @param prin
 	 *            provides authorization
 	 * @throws ContextException
-	 *             thrown if id and/or version doesn't exist in context storage
+	 *             thrown if id and/or version doesn't exist in dataContext storage
 	 *             or GAppPrincipal does not provide the required authorization.
 	 * 
 	 */
@@ -93,7 +93,7 @@ public interface ContextAccessor {
 			SorcerPrincipal prin) throws ContextException;
 
 	/**
-	 * Returns revision history of context with given id.
+	 * Returns revision history of dataContext with given id.
 	 */
 	public String getHistory(String id);
 

@@ -10,7 +10,7 @@ public interface Destroyer {
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.base.Provider#destroy()
+	 * @see sorcer.core.ServiceProvider#destroy()
 	 */
 	void destroy() throws RemoteException;
 
@@ -18,7 +18,7 @@ public interface Destroyer {
 	 * Destroy all services in this node (virtual machine) by calling each
 	 * destroy().
 	 * 
-	 * @see sorcer.base.Provider#destroy()
+	 * @see sorcer.core.ServiceProvider#destroy()
 	 */
 	void destroyNode() throws RemoteException;
 

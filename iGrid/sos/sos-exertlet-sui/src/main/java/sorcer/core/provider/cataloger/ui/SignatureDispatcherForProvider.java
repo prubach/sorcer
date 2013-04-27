@@ -366,11 +366,11 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 	}
 
 	/**
-	 * Obtains the context for the specified method name from the network.
+	 * Obtains the dataContext for the specified method name from the network.
 	 * 
 	 * @param methodName
-	 *            String representing the method to obtain the context from
-	 * @return the service context for the method
+	 *            String representing the method to obtain the dataContext from
+	 * @return the service dataContext for the method
 	 */
 	public Context getContext(String methodName) {
 		// offline mode!
@@ -382,7 +382,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 		 * cxt.putValue("balance/amount",0); cxt.putValue("test3/Slacker",new
 		 * ContextNode("master3","value")); cxt.putValue("test3/HEHE",new
 		 * ContextNode("master5","value")); }catch (ContextException e) {
-		 * e.printStackTrace();} System.out.println("context"+cxt); return cxt;
+		 * e.printStackTrace();} System.out.println("dataContext"+cxt); return cxt;
 		 */
 
 		try {
@@ -390,14 +390,14 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 					methodName);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("failed to get context for: " + model.getSelectedInterfaceName() + ":" +  methodName);
+			System.out.println("failed to get dataContext for: " + model.getSelectedInterfaceName() + ":" +  methodName);
 		}
 		return new ServiceContext("Failed");
 
 	}
 
 	/**
-	 * Save a context back to the network, saves the context as the currently
+	 * Save a dataContext back to the network, saves the dataContext as the currently
 	 * selected method name.
 	 * 
 	 * @param theContext
@@ -411,18 +411,18 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 					.getSelectedMethod(), theContext);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("failed to save context: " + theContext);
+			System.out.println("failed to save dataContext: " + theContext);
 		}
 
 		return false;
 	}
 
 	/**
-	 * Save the context to the network, this stores the context under the name
+	 * Save the dataContext to the network, this stores the dataContext under the name
 	 * provided in newName.
 	 * 
 	 * @param newName
-	 *            String representing the name the context should be saved as
+	 *            String representing the name the dataContext should be saved as
 	 * @param theContext
 	 *            Context to be saved.
 	 * @return Boolean indicating if the operation was successful.
@@ -439,7 +439,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 	}
 
 	/**
-	 * This method creates an exertion using the context provided by the user.
+	 * This method creates an exertion using the dataContext provided by the user.
 	 * The results of the exertion are returned to the user.
 	 * 
 	 * @param theContext
@@ -453,10 +453,10 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 					.getSelectedMethod(), model.getSelectedInterface());
 			Task task = new NetTask(model.getSelectedInterfaceName()
 					+ model.getSelectedMethod(), method);
-			task.setContext(theContext);
+			task.setDataContext(theContext);
 			NetTask task2 = (NetTask) ((Servicer) provider).service(task,
 					null);
-			return task2.getContext();
+			return task2.getDataContext();
 		} catch (Exception e) {
 			System.out.println("failed to exert!");
 		}
@@ -479,7 +479,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 	/**
 	 * Gets the list of contexts currently stored on the provider.
 	 * 
-	 * @return String array of the currently stored context names
+	 * @return String array of the currently stored dataContext names
 	 */
 	public String[] getSavedContextList() {
 		try {
@@ -491,11 +491,11 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 	}
 
 	/**
-	 * Delete a context from the network, the context to be deleted is defined
+	 * Delete a dataContext from the network, the dataContext to be deleted is defined
 	 * by the String methodName.
 	 * 
 	 * @param methodName
-	 *            String with the name of the context to delete.
+	 *            String with the name of the dataContext to delete.
 	 * @return Boolean indicating if the operation was successful.
 	 */
 	public Boolean deleteContext(String methodName) {

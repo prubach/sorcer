@@ -116,11 +116,11 @@ public interface SorcerConstants {
 
 	// code server, constants with sorcer.* prefix recommended as system
 	// properties
-	public static final String SORCER_WEBSTER_INTERNAL = "sorcer.webster.internal";
+	public static final String SORCER_WEBSTER_INTERNAL = "webster.internal";
 
 	public static final String SORCER_CODE_SERVER_INTERNAL = "ssb.codeserver.internal";
 
-	public static final String WEBSTER_ROOTS = "sorcer.webster.roots";
+	public static final String WEBSTER_ROOTS = "webster.roots";
 
 	public static final String J_WEBSTER_HANDLER = "websterHandler";
 
@@ -128,9 +128,9 @@ public interface SorcerConstants {
 
 	public static final String R_WEBSTER_INTERFACE = "requester.webster.interface";
 
-	public static final String R_WEBSTER_PORT = "requestor.webster.port";
+	public static final String R_WEBSTER_PORT = "webster.port";
 	
-	public static final String S_WEBSTER_INTERFACE = "system.webster.interface";
+	public static final String S_WEBSTER_INTERFACE = "webster.interface";
 
 	public static final String J_WEBSTER_INTERFACE = "websterInterface";
 
@@ -191,7 +191,7 @@ public interface SorcerConstants {
 
 	public static final String J_GROUPS = "providerGroups";
 
-	public static final String P_CATALOOGER_NAME = "provider.catalog.name";
+	public static final String P_CATALOGER_NAME = "provider.catalog.name";
 	
 	public static final String J_CATALOG_NAME = "catalogName";
 	

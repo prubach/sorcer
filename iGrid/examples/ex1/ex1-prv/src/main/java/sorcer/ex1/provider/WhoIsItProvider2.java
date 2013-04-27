@@ -27,7 +27,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
 		String hostname;
-		logger.info("Got context to process: " + context);
+		logger.info("Got dataContext to process: " + context);
 		try {
 			hostname = InetAddress.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
@@ -50,7 +50,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			
 			Logger rl = getRemoteLogger();
 			if (rl != null)
-				rl.info(">>>>>>>>>>>> out context: " + context);
+				rl.info(">>>>>>>>>>>> out dataContext: " + context);
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -90,7 +90,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			
 			Logger rl = getRemoteLogger();
 			if (rl != null)
-				rl.info(">>>>>>>>>>>> out context: " + context);
+				rl.info(">>>>>>>>>>>> out dataContext: " + context);
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();

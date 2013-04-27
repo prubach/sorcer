@@ -42,7 +42,7 @@ public class PipedContextWorkerRunner extends ExertionRunner {
 			context3.putInValue("requestor/operand/1", 0);
 			context3.putInValue("requestor/operand/2", 0);
 
-			// pass the parameters from one context to the next context
+			// pass the parameters from one dataContext to the next dataContext
 			// piping parameters should be annotated via in, out, or inout paths
 			context1.connect("provider/result", "requestor/operand/1", context3);
 			context2.connect("provider/result", "requestor/operand/2", context3);

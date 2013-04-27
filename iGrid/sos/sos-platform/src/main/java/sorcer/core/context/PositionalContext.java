@@ -43,7 +43,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#getInValueAt(sorcer.service.Context, int)
+	 * @see sorcer.core.dataContext.Positioning#getInValueAt(sorcer.service.Context, int)
 	 */
 	@Override
 	public Object getInValueAt(int index) throws ContextException {
@@ -51,7 +51,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#getInoutValueAt(sorcer.service.Context, int)
+	 * @see sorcer.core.dataContext.Positioning#getInoutValueAt(sorcer.service.Context, int)
 	 */
 	@Override
 	public Object getInoutValueAt(int index) throws ContextException {
@@ -59,7 +59,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#getOutValueAt(sorcer.service.Context, int)
+	 * @see sorcer.core.dataContext.Positioning#getOutValueAt(sorcer.service.Context, int)
 	 */
 	@Override
 	public Object getOutValueAt(int index) throws ContextException {
@@ -68,7 +68,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#getValueAt(sorcer.service.Context, int)
+	 * @see sorcer.core.dataContext.Positioning#getValueAt(sorcer.service.Context, int)
 	 */
 	@Override
 	public Object getValueAt(int index) throws ContextException {
@@ -77,7 +77,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#getValuesAt(sorcer.service.Context, int)
+	 * @see sorcer.core.dataContext.Positioning#getValuesAt(sorcer.service.Context, int)
 	 */
 	@Override
 	public List<Object> getValuesAt(int index) throws ContextException {
@@ -86,7 +86,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#putInValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
+	 * @see sorcer.core.dataContext.Positioning#putInValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
 	 */
 	@Override
 	public Object putInValueAt(String path, Object value,
@@ -99,7 +99,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 			}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#putInoutValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
+	 * @see sorcer.core.dataContext.Positioning#putInoutValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
 	 */
 	@Override
 	public Object putInoutValueAt(String path, Object value,
@@ -112,7 +112,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.Positioning#putOutValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
+	 * @see sorcer.core.dataContext.Positioning#putOutValueAt(sorcer.service.Context, java.lang.String, java.lang.Object, int)
 	 */
 	@Override
 	public Object putOutValueAt(String path, Object value, int index)
@@ -127,7 +127,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.context.Positioning#putValueAt(sorcer.service.Context,
+	 * @see sorcer.core.dataContext.Positioning#putValueAt(sorcer.service.Context,
 	 * java.lang.String, java.lang.Object, int)
 	 */
 	@Override

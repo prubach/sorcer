@@ -32,11 +32,11 @@ MEX (EMX monitors and monitored exertions)
       	mxe -f	fetch failed exertion
 	mxe -y	fetch asynchronous exertion
 	mxe index	print the selected exertion at 'index'
-	mxe -c		print the data context of the selected exertion
-	mxe -cc		print the control context of the selected exertion
+	mxe -c		print the data dataContext of the selected exertion
+	mxe -cc		print the control dataContext of the selected exertion
 	mxe -ccc	print the both contexts of the selected exertion	
-	mxe -c 0	print the data context of the first exertion
-	mxe -cc	1	print the control context of the second exertion
+	mxe -c 0	print the data dataContext of the first exertion
+	mxe -cc	1	print the control dataContext of the second exertion
 	mxe -ccc 0	print the both contexts of the first exertion
 		
 	

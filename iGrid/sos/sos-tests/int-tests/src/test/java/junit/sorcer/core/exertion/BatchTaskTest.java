@@ -51,13 +51,13 @@ public class BatchTaskTest {
 //	@Test
 //	public void batchTask1aTest() throws Exception {
 //		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-//		// testing with getValueEndsWith for vars in the context with prefixed paths
+//		// testing with getValueEndsWith for vars in the dataContext with prefixed paths
 //		Task batch1 = task(
 //				"batch1",
 //				type(sig(expr("x1 * x2", vars("x1", "x2")), result("x5")), Signature.PRE),
 //				type(sig(expr("x3 + x4", vars("x3","x4")), result("x6")), Signature.PRE),
 //				type(sig(expr("x5 - x6", vars("x5", "x6")), result("result/y")), Signature.SRV),
-//				context(in("arg/x1", 10.0), in("arg/x2", 50.0), 
+//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
 //						in("arg/x3", 20.0), in("arg/x4", 80.0)));
 //		
 //		//logger.info("task t: " + value(batch1));
@@ -68,13 +68,13 @@ public class BatchTaskTest {
 //	@Test
 //	public void batchTask1bTest() throws Exception {
 //		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-//		// testing with getValueEndsWith for vars in the context with prefixed paths
+//		// testing with getValueEndsWith for vars in the dataContext with prefixed paths
 //		Task batch1 = task(
 //				"batch1",
 //				sig(expr("x1 * x2", vars("x1", "x2")), result("x5")),
 //				sig(expr("x3 + x4", vars("x3","x4")), result("x6")),
 //				sig(expr("x5 - x6", vars("x5", "x6")), result("result/y")),
-//				context(in("arg/x1", 10.0), in("arg/x2", 50.0), 
+//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
 //						in("arg/x3", 20.0), in("arg/x4", 80.0)));
 //		
 //		//logger.info("task t: " + value(batch1));
@@ -90,7 +90,7 @@ public class BatchTaskTest {
 //				type(sig(expr("x4 + x3", vars("x3","x4")), result("x6")), Signature.PRE),
 //				sig(expr("x5 - x6", vars("x5", "x6")), result("result/y", Direction.IN)),
 //				type(sig("add", AdderImpl.class, result("result/z")), Signature.POST), 
-//				context(in("arg/x1", 10.0), in("arg/x2", 50.0), 
+//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
 //						in("arg/x3", 20.0), in("arg/x4", 80.0)));
 //		
 //		batch2 = exert(batch2);
@@ -105,7 +105,7 @@ public class BatchTaskTest {
 	@Test
 	public void batchTask3Test() throws Exception {
 		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-		// shared context with named paths
+		// shared dataContext with named paths
 		Task batch3 = task("batch3",
 				type(sig("multiply", MultiplierImpl.class, result("subtract/x1", Direction.IN)), Signature.PRE),
 				type(sig("add", AdderImpl.class, result("subtract/x2", Direction.IN)), Signature.PRE),
@@ -122,7 +122,7 @@ public class BatchTaskTest {
 	@Test
 	public void batchTask4Test() throws Exception {
 		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-		// shared context with prefixed paths
+		// shared dataContext with prefixed paths
 		Task batch3 = task("batch3",
 				type(sig("multiply#op1", MultiplierImpl.class, result("op3/x1", Direction.IN)), Signature.PRE),
 				type(sig("add#op2", AdderImpl.class, result("op3/x2", Direction.IN)), Signature.PRE),

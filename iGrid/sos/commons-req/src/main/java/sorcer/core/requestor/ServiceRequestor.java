@@ -170,7 +170,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 	
 	public void postprocess(String... args) {
 		if (exertion != null) {
-			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getThrowables());
+			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
 			logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
 		}

@@ -202,7 +202,7 @@ abstract public class SecureContentPane extends JPanel {
 				DynamicPolicyProvider dpolicy = new DynamicPolicyProvider();
 
 				// Subject subject =
-				// Subject.getSubject(AccessController.getContext());
+				// Subject.getSubject(AccessController.getDataContext());
 
 				Set principals = loginContext.getSubject().getPrincipals();
 				Principal[] ps = new Principal[principals.size()];

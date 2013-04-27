@@ -33,7 +33,7 @@ import sorcer.ui.exertlet.EditorView;
 public class ContextScriptView extends JPanel {
 
 	/**
-	 * Private copy of the context used for various operations, like load other
+	 * Private copy of the dataContext used for various operations, like load other
 	 * and save as.
 	 */	
 	private EditorView browser;
@@ -47,7 +47,7 @@ public class ContextScriptView extends JPanel {
 	private JTabbedPane tabbedPane;
 	
 	/**
-	 * Constructor for creating the context view panel
+	 * Constructor for creating the dataContext view panel
 	 * 
 	 * @param signatureDispatcher
 	 *            Remote dispatcher to use.

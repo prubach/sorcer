@@ -40,8 +40,8 @@ import com.sleepycat.je.DatabaseException;
 //import static sorcer.vo.operator.inputVars;
 //import static sorcer.vo.operator.outputVars;
 //import static sorcer.vo.operator.parametricModel;
-//import sorcer.core.context.model.ParametricModel;
-//import sorcer.core.context.model.VarModel;
+//import sorcer.core.dataContext.model.ParametricModel;
+//import sorcer.core.dataContext.model.VarModel;
 //import sorcer.vfe.Var;
 //import sorcer.vfe.util.Table;
 /**
@@ -403,7 +403,7 @@ public class SorcerDatabaseRunner {
     }
     
     /**
-     * Populate the context entities in the database.  
+     * Populate the dataContext entities in the database.
      * @throws IOException 
      */
 	private void addContexts(ArrayList<Context> contexts) throws IOException {
@@ -412,7 +412,7 @@ public class SorcerDatabaseRunner {
     }
 
 	 /**
-     * Populate the context in the database.  
+     * Populate the dataContext in the database.
      */
 	private void addContext(Context context) {
 		Set<Context> contextSet = views.getContextSet();
@@ -420,7 +420,7 @@ public class SorcerDatabaseRunner {
     }
 	
 	 /**
-     * Populate the context entities in the database.  
+     * Populate the dataContext entities in the database.
      */
 	private void addContexts() {
 		StoredValueSet<Context> contextSet = views.getContextSet();
@@ -524,7 +524,7 @@ public class SorcerDatabaseRunner {
 	}
 	
 	 /**
-     * Get the context names returned by an iterator of entity value objects.
+     * Get the dataContext names returned by an iterator of entity value objects.
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
      */

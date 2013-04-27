@@ -68,14 +68,14 @@ public class ServiceSignature implements Signature, SorcerConstants {
 
 	protected ServiceExertion exertion;
 
-	/** preprocess, process, postprocess, append context */
+	/** preprocess, process, postprocess, append dataContext */
 	protected Type execType = Type.SRV;
 
 	/** indicates whether this method is being processed by the exert method */
 	protected boolean isActive = true;
 
 	/**
-	 * a context template to define the context appended from a provider
+	 * a dataContext template to define the dataContext appended from a provider
 	 * identified by this method
 	 */
 	private String[] contextTemplateIDs;

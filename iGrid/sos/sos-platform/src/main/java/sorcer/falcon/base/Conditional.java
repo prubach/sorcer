@@ -25,7 +25,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 
 /**
- * An Conditional is a closure with its service context for its free variables
+ * An Conditional is a closure with its service dataContext for its free variables
  * in the form of path/value pairs with paths being guards's parameters.
  * 
  * @see Exertion
@@ -45,21 +45,21 @@ public interface Conditional {
 	public boolean isTrue() throws ExertionException;
 
 	/**
-	 * This sets the context of the Condtion component with the current modified
-	 * context by the provider for evaluation.
+	 * This sets the dataContext of the Condtion component with the current modified
+	 * dataContext by the provider for evaluation.
 	 * 
 	 * @param context
-	 *            the modified context by the provider
+	 *            the modified dataContext by the provider
 	 * @throws ContextException
 	 *             problem regarding setting or retrieving values in the
-	 *             context
+	 *             dataContext
 	 */
 	public void setConditionalContext(Context context) throws ContextException;
 
 	/**
 	 * Returns the a referencing environment for the non-local variables inside
 	 * this Conditional. It is a mapping between a given variable name to the
-	 * corresponding data path in the service context related to this
+	 * corresponding data path in the service dataContext related to this
 	 * conditional. This mapping is used by the condition evaluator (isTrue)
 	 * method.
 	 * 

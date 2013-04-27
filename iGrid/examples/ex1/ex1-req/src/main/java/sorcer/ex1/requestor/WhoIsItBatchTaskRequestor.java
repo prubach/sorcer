@@ -30,9 +30,9 @@ public class WhoIsItBatchTaskRequestor {
 		
 		Exertion result = new WhoIsItBatchTaskRequestor().getExertion(providerName)
 				.exert(null);
-		logger.info("Exceptions: \n" + result.getThrowables());
+		logger.info("Exceptions: \n" + result.getExceptions());
 		logger.info("Trace: \n" + result.getTrace());
-		logger.info("Ouptut context: \n" + result.getContext());
+		logger.info("Ouptut dataContext: \n" + result.getDataContext());
 	}
 	
 	public Exertion getExertion(String providername) throws Exception {
