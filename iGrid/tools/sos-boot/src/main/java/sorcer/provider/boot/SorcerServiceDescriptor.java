@@ -165,24 +165,27 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			String classpath, String implClassName, String address,
 			// Optional Args
 			LifeCycle lifeCycle, String... serverConfigArgs) {
-		if (descCodebase == null || policy == null || classpath == null
+		if (policy == null || classpath == null
 				|| implClassName == null)
-			throw new NullPointerException("Codebase, policy, classpath, and "
+			throw new NullPointerException("Policy, classpath, and "
 					+ "implementation cannot be null");
-		if (descCodebase.indexOf("http://") < 0) {
-			String[] jars = Booter.toArray(descCodebase);
-			try {
-				if (address == null)
-					this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
-				else
-					this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
 
-			} catch (UnknownHostException e) {
-				logger.severe("Cannot get hostname for: " + codebase);
-			}
-		}
-		else
-			this.codebase = descCodebase;
+        if (descCodebase!=null) {
+            if (descCodebase.indexOf("http://") < 0) {
+                String[] jars = Booter.toArray(descCodebase);
+                try {
+                    if (address == null)
+                        this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
+                    else
+                        this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
+
+                } catch (UnknownHostException e) {
+                    logger.severe("Cannot get hostname for: " + codebase);
+                }
+            }
+            else
+                this.codebase = descCodebase;
+        }
 		logger.info("SORCER booter codebase: " + codebase);
 		this.policy = policy;
 		this.classpath = setClasspath(classpath);
@@ -351,8 +354,13 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		final Thread currentThread = Thread.currentThread();
 		ClassLoader currentClassLoader = currentThread.getContextClassLoader();
 
-		ClassAnnotator annotator = new ClassAnnotator(ClassLoaderUtil
-				.getCodebaseURLs(getCodebase()), new Properties());
+
+		ClassAnnotator annotator = null;
+        if (getCodebase() != null) {
+
+            annotator = new ClassAnnotator(ClassLoaderUtil
+                    .getCodebaseURLs(getCodebase()), new Properties());
+        }
 
 		ServiceClassLoader jsbCL = new ServiceClassLoader(ServiceClassLoader
 				.getURIs(ClassLoaderUtil.getClasspathURLs(getClasspath())),

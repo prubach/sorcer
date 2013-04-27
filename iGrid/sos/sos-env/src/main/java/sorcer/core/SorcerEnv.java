@@ -270,7 +270,7 @@ public class SorcerEnv implements SorcerConstants {
 			throws ConfigurationException {
 		Enumeration<?> e = properties.propertyNames();
 		String key, value, evalue = null;
-		String pattern = "${localhost}";
+		String pattern = "${" + "localhost" + "}";
 //		String userDirPattern = "${user.home}";
 		// first substitute for this localhost
 		while (e.hasMoreElements()) {

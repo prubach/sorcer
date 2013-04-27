@@ -476,11 +476,11 @@ public class Booter implements SorcerConstants {
 		
 		// use the local host address if requested
 		String pattern = "${localhost}";
-        String value = props.getProperty("webster.interface");
+        String value = props.getProperty("provider.webster.interface");
         if (value!=null && value.indexOf(pattern) >= 0) {
 			try {
 				String val = value.replace(pattern, getHostAddress());
-				props.put("webster.interface", val);
+				props.put("provider.webster.interface", val);
 			} catch (UnknownHostException e1) {
                 logger.log(Level.WARNING, "Could not resolve hostname", e1);
             }
@@ -682,7 +682,7 @@ public class Booter implements SorcerConstants {
 		if (port == 0) {
 			try {
 				port = Booter.getAnonymousPort();
-				System.setProperty("webster.port", "" + port);
+				System.setProperty("provider.webster.port", "" + port);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

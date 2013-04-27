@@ -166,7 +166,7 @@ public class SorcerDescriptorUtil {
 		// anonymous case
 		if (port == 0) {
 			websterPort = Booter.getAnonymousPort(); 
-			System.setProperty("webster.port", "" + port);
+			System.setProperty("provider.webster.port", "" + port);
 		}
 		else if (port > 0) {
 			websterPort = port;

@@ -71,8 +71,8 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
                               ClassLoader parent,
                               Properties metaData) {
         super(searchPath, parent);
-        if(annotator==null)
-            throw new NullPointerException("annotator is null");
+        //if(annotator==null)
+        //    throw new NullPointerException("annotator is null");
         this.annotator = annotator;
         this.searchPath = searchPath;
         if(metaData!=null)
@@ -117,7 +117,10 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
      * {@link sorcer.provider.boot.ClassAnnotator}
      */
     public URL[] getURLs() {
-        return(annotator.getURLs());
+        if (annotator!=null)
+            return(annotator.getURLs());
+        else
+            return null;
     }
     
     /**
@@ -166,7 +169,10 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
      * @see net.jini.loader.ClassAnnotation#getClassAnnotation
      */
     public String getClassAnnotation() {
-        return (annotator.getClassAnnotation());
+        if (annotator!=null)
+            return (annotator.getClassAnnotation());
+        else
+            return "";
     }
     
     /**

@@ -17,6 +17,7 @@
 
 package sorcer.core.context;
 
+import static sorcer.eo.operator.subject;
 import static sorcer.eo.operator.value;
 
 import java.io.Serializable;
@@ -231,6 +232,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public ServiceContext(String subjectPath, Object subjectValue) {
+        this(subjectPath);
 		this.subjectPath = subjectPath;
 		this.subjectValue = subjectValue;
 	}
@@ -2835,7 +2837,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (mxrt != null && mxrt.isMonitored()
 				&& mxrt.getMonitorSession() != null) {
 			try {
-				putValue("dataContext/checkpoint/time", SorcerUtil.getDateTime());
+				putValue("context/checkpoint/time", SorcerUtil.getDateTime());
 				mxrt.getMonitorSession().changed(this, Category.UPDATED);
 			} catch (Exception e) {
 				throw new ContextException(e);

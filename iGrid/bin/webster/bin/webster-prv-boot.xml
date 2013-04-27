@@ -11,7 +11,7 @@
 	<target name="webster">
         <java classname="sorcer.boot.ServiceStarter" fork="yes">
             <classpath refid="boot.classpath"/>
-			<arg value="../configs/start-webster.config" />
+			<arg value="../configs/start-webster-prv.config" />
 			<sysproperty key="java.security.policy" value="../policy/webster.policy" />
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
