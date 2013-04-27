@@ -1,16 +1,6 @@
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.input;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.op;
-import static sorcer.eo.operator.output;
-import static sorcer.eo.operator.path;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.task;
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
-import sorcer.service.Job;
-import sorcer.service.Task;
 
 String arg = "arg", result = "result";
 String x1 = "x1", x2 = "x2", y = "y";
