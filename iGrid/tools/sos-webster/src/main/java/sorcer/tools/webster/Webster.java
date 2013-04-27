@@ -16,36 +16,18 @@
  */
 package sorcer.tools.webster;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.BindException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationProvider;
+import sorcer.core.Destroyer;
+
+import java.io.*;
+import java.net.*;
+import java.rmi.RemoteException;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.jini.config.Configuration;
-import net.jini.config.ConfigurationProvider;
 
 /**
  * Webster is a HTTP server which can serve code from multiple codebases.
@@ -67,7 +49,7 @@ import net.jini.config.ConfigurationProvider;
  *
  * @author Dennis Reedy and Mike Sobolewski
  */
-public class Webster implements Runnable {
+public class Webster implements Runnable, Destroyer {
     static final String BASE_COMPONENT = "sorcer.tools";
     static final String CODESERVER = BASE_COMPONENT+".codeserver";
 
@@ -860,6 +842,16 @@ public class Webster implements Runnable {
             }
         }
         return(wildcarded);
+    }
+
+    @Override
+    public void destroy() throws RemoteException {
+       terminate();
+    }
+
+    @Override
+    public void destroyNode() throws RemoteException {
+        terminate();
     }
 
     class Head implements Runnable {
