@@ -1,0 +1,61 @@
+package sorcer.arithmetic.requestor;
+
+import static sorcer.eo.operator.context;
+import static sorcer.eo.operator.in;
+import static sorcer.eo.operator.out;
+import static sorcer.eo.operator.sig;
+import static sorcer.eo.operator.strategy;
+import static sorcer.eo.operator.task;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.codehaus.groovy.control.CompilationFailedException;
+
+import sorcer.arithmetic.provider.Adder;
+import sorcer.core.requestor.ServiceRequestor;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.SignatureException;
+import sorcer.service.Strategy.Monitor;
+import sorcer.service.Strategy.Wait;
+import sorcer.service.Task;
+
+public class ArithmeticRequestor extends ServiceRequestor {
+
+	/* (non-Javadoc)
+	 * @see sorcer.core.requestor.ServiceRequestor#getExertion(java.lang.String[])
+	 */
+	@Override
+	public Exertion getExertion(String... args) throws ExertionException {
+		try {
+			if (getProperty("exertion.filename") != null)
+				exertion = (Exertion)evaluate(new File(getProperty("exertion.filename")));
+			else
+				exertion = createExertion(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExertionException(e);
+		} 
+		
+		return exertion;
+	}
+
+	public Exertion createExertion(String... args) throws ExertionException,
+			SignatureException, ContextException {
+		Task f5 = task(
+				"f5",
+				sig("add", Adder.class),
+				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+						out("result/y", null)), strategy(Monitor.NO, Wait.YES));
+		return f5;
+	}
+	
+	public void postprocess(String... args) {
+		super.postprocess();
+		logger.info("<<<<<<<<<< f5 context: \n" + ((Job)exertion).getExertion("f5").getContext());
+	}
+
+}
