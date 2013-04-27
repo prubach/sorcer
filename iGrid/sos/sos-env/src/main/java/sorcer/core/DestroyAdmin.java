@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
  *  Interface used to identify a Sorcer Provider
  * @author Pawel Rubach
  */
-public interface Destroyer {
+public interface DestroyAdmin {
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 

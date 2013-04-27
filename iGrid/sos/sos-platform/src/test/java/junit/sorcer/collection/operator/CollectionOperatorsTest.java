@@ -62,7 +62,6 @@ public class CollectionOperatorsTest {
 		
 		List<Double> d_list = (List<Double>)o_list.get(0);
 		assertEquals(d_list, Arrays.asList(array(1.1, 2.1, 3.1)));
-		
 		assertEquals(o_list.get(0), list(1.1, 2.1, 3.1));
 		assertEquals(o_list.get(1), 4.1);
 		assertEquals(o_list.get(2), list(11.1, 12.1, 13.1));

@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.rioproject.start.ServiceStarter.ServiceReference;
-import sorcer.core.Destroyer;
+import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerConstants;
 
 import com.sun.jini.start.LifeCycle;
@@ -104,8 +104,8 @@ public class ServiceStarter {
 			List<Object> allServices = new ArrayList<Object>(riverServices);
 			allServices.addAll(this.rioServices);
 			for (Object o : allServices) {
-				if (o instanceof Destroyer) {
-					((Destroyer) o).destroyNode();
+				if (o instanceof DestroyAdmin) {
+					((DestroyAdmin) o).destroyNode();
 				} else if (o instanceof LifeCycle) {
 					((LifeCycle) o).unregister(o);
 				}

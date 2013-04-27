@@ -18,7 +18,7 @@ package sorcer.tools.webster;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
-import sorcer.core.Destroyer;
+import sorcer.core.DestroyAdmin;
 
 import java.io.*;
 import java.net.*;
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  *
  * @author Dennis Reedy and Mike Sobolewski
  */
-public class Webster implements Runnable, Destroyer {
+public class Webster implements Runnable {
     static final String BASE_COMPONENT = "sorcer.tools";
     static final String CODESERVER = BASE_COMPONENT+".codeserver";
 
@@ -842,16 +842,6 @@ public class Webster implements Runnable, Destroyer {
             }
         }
         return(wildcarded);
-    }
-
-    @Override
-    public void destroy() throws RemoteException {
-       terminate();
-    }
-
-    @Override
-    public void destroyNode() throws RemoteException {
-        terminate();
     }
 
     class Head implements Runnable {

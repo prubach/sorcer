@@ -1784,7 +1784,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
     /**
      * Destroy the service, if possible, including its persistent storage.
      *
-     * @see sorcer.core.Destroyer#destroy()
+     * @see sorcer.core.DestroyAdmin#destroy()
      */
     public void destroy() throws RemoteException {
         logger.log(Level.INFO, "Destroying service " + getProviderName());
@@ -1817,7 +1817,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * Destroy all services in this node (virtual machine) by calling each
      * destroy().
      *
-     * @see sorcer.core.Destroyer#destroy()
+     * @see sorcer.core.DestroyAdmin#destroy()
      */
     public void destroyNode() throws RemoteException {
         for (ServiceProvider provider : providers) {

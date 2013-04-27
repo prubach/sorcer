@@ -43,7 +43,7 @@ import sorcer.service.Signature;
  * @see Monitorable
  * @see Remote
  */
-public interface Provider extends Servicer, Monitorable, Remote, Destroyer {
+public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
 
 	public Entry[] getAttributes() throws RemoteException;
 
