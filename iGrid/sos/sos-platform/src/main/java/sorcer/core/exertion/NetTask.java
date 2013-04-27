@@ -73,19 +73,19 @@ public class NetTask extends ObjectTask {
 	public NetTask(String name, NetSignature signature, Context context) {
 		this(name);
 		signatures.add(signature);
-		setDataContext(context);
+		setContext(context);
 	}
 	
 	public NetTask(String name, String description, NetSignature signature, Context context) {
 		this(name, description);
 		signatures.add(signature);
-		setDataContext(context);
+		setContext(context);
 	}
 
 	public NetTask(String name, Signature[] signatures,  Context context)
 			throws SignatureException {
 		this(name);
-		setDataContext(context);
+		setContext(context);
 
 		try {
 			for (Signature s : signatures)

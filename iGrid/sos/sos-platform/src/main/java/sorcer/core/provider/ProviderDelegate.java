@@ -106,10 +106,8 @@ import static sorcer.eo.operator.sig;
  * actual work for both generic SORCER servers and SORCER service beans. Also it
  * provides the basic functionality for {@link Provider}s. Multiple SORECER
  * exerters can be deployed within a single (@link ServiceProvider}.
- * 
- * @see sorcer.core.provider.ServiceExerter
+ *
  * @see sorcer.core.provider.ServiceProvider
- * @see sorcer.core.provider.bean.ProviderBean
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ProviderDelegate implements SorcerConstants {
@@ -877,7 +875,7 @@ public class ProviderDelegate implements SorcerConstants {
 					if (task.getPreprocessSignatures().size() > 0) {
 						Context cxt = preprocess(task);
 						cxt.setExertion(task);
-						task.setDataContext(cxt);
+						task.setContext(cxt);
 						task.setServicer(provider);
 					}
 					// service processing
@@ -907,7 +905,7 @@ public class ProviderDelegate implements SorcerConstants {
 					if (task.getPostprocessSignatures().size() > 0) {
 						Context cxt = postprocess(task);
 						cxt.setExertion(task);
-						task.setDataContext(cxt);
+						task.setContext(cxt);
 						task.setServicer(provider);
 					}
 					confirmExec(task);
@@ -1112,7 +1110,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 				// clear task in the dataContext
 				result.setExertion(null);
-				task.setDataContext(result);
+				task.setContext(result);
 				task.setStatus(ExecState.DONE);
 				return task;
 			} catch (Exception e) {
@@ -1298,7 +1296,7 @@ public class ProviderDelegate implements SorcerConstants {
 				cxt = (ServiceContext) invokeMethod(sig.getSelector(), cxt);
 				logger.info("doTask: TASK DONE BY DELEGATE OF ="
 						+ provider.getProviderName());
-				task.setDataContext(cxt);
+				task.setContext(cxt);
 				task.setStatus(ExecState.DONE);
 				// clear the exertion and the dataContext
 				cxt.setExertion(null);

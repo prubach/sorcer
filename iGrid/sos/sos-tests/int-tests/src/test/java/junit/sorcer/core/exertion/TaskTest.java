@@ -206,7 +206,7 @@ public class TaskTest {
 		Object arg = new double[] { 10.0, 50.0 };
 		//cxt.setReturnPath("result/y").setArgs(new double[] {10.0, 50.0});
 		cxt.setReturnPath("result/y").setArgs(arg);
-		objTask.setDataContext(cxt);
+		objTask.setContext(cxt);
 		
 		//logger.info("objTask value: " + value(objTask));
 		assertEquals("Wrong value for 500.0", value(objTask), 500.0);

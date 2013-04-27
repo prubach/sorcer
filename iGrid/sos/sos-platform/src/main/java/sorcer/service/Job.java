@@ -446,7 +446,8 @@ public abstract class Job extends ServiceExertion {
 	}
 
     public Context getControlInfo() {
-        ServiceContext cxt = new ServiceContext(name);
+        ServiceContext cxt = new ServiceContext("control/" + name);
+        //ServiceContext cxt = new ServiceContext(name);
         cxt.setSubject("job/control/context", name);
 
         return linkControlContext(cxt, "job[" + getName() + "]");

@@ -120,7 +120,7 @@ public class ExertProcessor {
 
 	/**
 	 * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
-	 * Jobber. This constructor is used when handling {@link ServiceJobs}.
+	 * Jobber. This constructor is used when handling {@link Job}.
 	 * 
 	 * @param exertion
 	 *            Exertion
@@ -137,7 +137,7 @@ public class ExertProcessor {
 
 	/**
 	 * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
-	 * Spacer. This constructor is used when handling {@link ServiceJobs}.
+	 * Spacer. This constructor is used when handling {@link Job}.
 	 * 
 	 * @param exertion
 	 *            Exertion
@@ -876,7 +876,7 @@ public class ExertProcessor {
 		if (task.getPreprocessSignatures().size() > 0) {
 			Context cxt = preprocess(task);
 			cxt.setExertion(task);
-			task.setDataContext(cxt);
+			task.setContext(cxt);
 		}
 		// execute service task
 		List<Signature> ts = new ArrayList<Signature>(1);
@@ -907,7 +907,7 @@ public class ExertProcessor {
 		if (task.getPostprocessSignatures().size() > 0) {
 			Context cxt = postprocess(task);
 			cxt.setExertion(task);
-			task.setDataContext(cxt);
+			task.setContext(cxt);
 		}
 		if (task.getStatus() <= ExecState.FAILED) {
 			task.stopExecTime();
@@ -955,14 +955,14 @@ public class ExertProcessor {
 					ExertionException ne = new ExertionException(
 							"Batch signature failed: " + signatures.get(i));
 					task.reportException(ne);
-					task.setDataContext(shared);
+					task.setContext(shared);
 					return shared;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				task.setStatus(ExecState.FAILED);
 				task.reportException(e);
-				task.setDataContext(shared);
+				task.setContext(shared);
 				return shared;
 			}
 		}

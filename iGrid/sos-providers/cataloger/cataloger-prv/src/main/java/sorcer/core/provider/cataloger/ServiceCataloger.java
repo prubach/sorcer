@@ -1331,7 +1331,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 										methodName, serviceType);
 								Task task = new NetTask(serviceType
 										+ methodName, method);
-								task.setDataContext(theContext);
+								task.setContext(theContext);
 								NetTask task2 = (NetTask) ((Servicer) temp)
 										.service(task, null);
 								return task2.getDataContext();

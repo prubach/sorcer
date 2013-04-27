@@ -525,7 +525,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		return sessionId;
 	}
 
-	public ServiceExertion setDataContext(Context dataContext) {
+	public ServiceExertion setContext(Context dataContext) {
 		this.dataContext = (ServiceContext) dataContext;
 		((ServiceContext) dataContext).setExertion(this);
 		return this;

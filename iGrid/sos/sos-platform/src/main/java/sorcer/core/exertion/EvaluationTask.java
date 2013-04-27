@@ -71,7 +71,7 @@ public class EvaluationTask extends Task {
 		super(name);
 		addSignature(signature);
 		if (context != null)
-			setDataContext(context);
+			setContext(context);
 	}
 
 	/*

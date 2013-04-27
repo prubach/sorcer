@@ -253,8 +253,8 @@ public class Task extends ServiceExertion {
 	@Override
 	public Context linkContext(Context context, String path) {
 		try {
-			context.putValue(path + CPS + "data[" + getDataContext().getName()
-					+ "]", new ContextLink(getDataContext(), ""));
+			context.putValue(path + CPS + "data[" + getContext().getName()
+					+ "]", new ContextLink(getContext(), ""));
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}

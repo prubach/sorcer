@@ -179,7 +179,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * @see Context
 	 */
 	public void setConditionalContext(Context context) {
-		((ServiceExertion) baseExertion).setDataContext(context);
+		((ServiceExertion) baseExertion).setContext(context);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * Returns the task.
 	 * 
 	 * @return Exertion a ServiceTask
-	 * @see sorcer.service.Exertion#task()
+	 * @see sorcer.service.Task
 	 */
 	public Exertion task() {
 		return baseExertion;

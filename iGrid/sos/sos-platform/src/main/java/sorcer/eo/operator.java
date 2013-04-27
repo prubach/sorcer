@@ -134,7 +134,7 @@ public class operator {
 	}
 
 	public static Exertion setContext(Exertion exertion, Context context) {
-		((ServiceExertion) exertion).setDataContext(context);
+		((ServiceExertion) exertion).setContext(context);
 		return exertion;
 	}
 
@@ -618,7 +618,7 @@ public class operator {
 		if (context == null) {
 			context = new ServiceContext();
 		}
-		task.setDataContext(context);
+		task.setContext(context);
 
 		if (access != null) {
 			task.setAccess(access);
@@ -699,7 +699,7 @@ public class operator {
 		}
 		job.addSignature(signature);
 		if (data != null)
-			job.setDataContext(data);
+			job.setContext(data);
 
 		if (job instanceof NetJob && control != null) {
 			job.setControlContext(control);
@@ -709,7 +709,7 @@ public class operator {
 				job.getSignatures().clear();
 				job.addSignature(procSig);
 				if (data != null)
-					job.setDataContext(data);
+					job.setContext(data);
 				else
 					job.getDataContext().setExertion(job);
 			}
@@ -750,7 +750,7 @@ public class operator {
 	}
 
 	public static Object get(Exertion exertion) throws ContextException {
-		return ((ServiceContext) exertion.getDataContext()).getReturnValue();
+		return ((ServiceContext) exertion.getContext()).getReturnValue();
 	}
 
 	public static <V> V asis(Object evaluation) throws EvaluationException {

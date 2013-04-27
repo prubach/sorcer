@@ -453,7 +453,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 					.getSelectedMethod(), model.getSelectedInterface());
 			Task task = new NetTask(model.getSelectedInterfaceName()
 					+ model.getSelectedMethod(), method);
-			task.setDataContext(theContext);
+			task.setContext(theContext);
 			NetTask task2 = (NetTask) ((Servicer) provider).service(task,
 					null);
 			return task2.getDataContext();

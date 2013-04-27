@@ -56,8 +56,7 @@ public class CatalogSequentialDispatcher extends CatalogExertionDispatcher
 				// support for continuous pre and post execution of task
 				// signatures
 				if (i > 0 && se.isTask() && ((Task) se).isContinous())
-					se.setDataContext(inputXrts.elementAt(i - 1).getDataContext());
-
+					se.setContext(inputXrts.elementAt(i - 1).getDataContext());
 				if (isInterupted(se)) {
 					se.stopExecTime();
 					dispatchers.remove(xrt.getId());

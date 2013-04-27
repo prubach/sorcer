@@ -253,7 +253,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: ctx cannot be NULL");
 
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setDataContext(ctx);
+			runtimeExertion.setContext(ctx);
 		persist();
 	}
 
@@ -273,7 +273,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		runtimeExertion.setStatus(ExecState.DONE);
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setDataContext(ctx);
+			runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -295,7 +295,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		runtimeExertion.setStatus(ExecState.FAILED);
 		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setDataContext(ctx);
+			runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -423,8 +423,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	 * Searches if any SessionResource exists with this parent session with a
 	 * child session having the same value for the cookie.
 	 * 
-	 * @param The
-	 *            cookie for which corresponding to a SessionResource contained
+	 * @param cookie for which corresponding to a SessionResource contained
 	 *            in this session resource
 	 * 
 	 * @returns null if no such SessionResource exists
