@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -40,6 +41,7 @@ import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.Sorcer;
+import sorcer.core.SorcerEnv;
 
 abstract public class ExertionRunner implements Runner, SorcerConstants {
 	/** Logger for logging information about this instance */
@@ -94,7 +96,7 @@ abstract public class ExertionRunner implements Runner, SorcerConstants {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens);
+				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir() });
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

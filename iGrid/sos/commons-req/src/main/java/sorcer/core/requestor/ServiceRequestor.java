@@ -43,6 +43,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Sorcer;
+import sorcer.core.SorcerEnv;
 
 /**
  * The abstract class with the methods that define the initialization and
@@ -117,7 +118,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens);
+				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir() });
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
