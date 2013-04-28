@@ -4,13 +4,13 @@
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />
 	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
-	<property name="spawn.provider" value="no" />
+	<property name="provider.spawn" value="no" />
 			
 	<import file="../../../../bin/common-run.xml" />
 	
 	<target name="debug.provider" depends="mvn-init">
 		<property name="runtime.classpath.string" refid="runtime.classpath" />
-		<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
+		<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
 			<classpath refid="boot.classpath" />
 			<arg value="${provider.config}" />
 			<jvmarg value="-Xdebug"/>
