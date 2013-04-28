@@ -23,8 +23,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerEnv;
-
 /**
  * Helper class for starting an Internal Webster
  *
@@ -49,7 +47,7 @@ public class InternalWebster {
      * @throws IOException
      *             If there are errors creating Webster
      */
-    public static Webster startWebster(String[] exportJars) throws IOException {
+    public static Webster startWebster(String[] exportJars, String[] websterRoots) throws IOException {
         String codebase = System.getProperty("java.rmi.server.codebase");
         if (codebase != null)
             throw new RuntimeException("Codebase is alredy specified: "
@@ -64,13 +62,17 @@ public class InternalWebster {
         String localIPAddress = ip.getHostAddress();
         String sorcerHome = System.getProperty("sorcer.home");
         roots = System.getProperty(WEBSTER_ROOTS);
-        if (roots == null) {
+        String fs = File.separator;
+        StringBuffer sb = new StringBuffer();
+        if (roots == null && websterRoots == null) {
             // defaults Sorcer roots
-            String fs = File.separator;
-            StringBuffer sb = new StringBuffer();
-            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl")
-                    .append(';').append(SorcerEnv.getRepoDir());
+            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
             roots = sb.toString();
+        } else if (websterRoots != null) {
+            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
+            for (int i=0; i<websterRoots.length; i++) {
+                sb.append(';').append(websterRoots[0]);
+            }
         }
 
         String sMinThreads = System.getProperty("webster.minThreads",
@@ -124,7 +126,7 @@ public class InternalWebster {
         }
 
         codebase = "";
-        StringBuffer sb = new StringBuffer();
+        sb = new StringBuffer();
         for (int i = 0; i < jars.length - 1; i++) {
             sb.append("http://").append(localIPAddress).append(":")
                     .append(port).append("/").append(jars[i]).append(" ");
@@ -156,7 +158,8 @@ public class InternalWebster {
 
     public static void main(String[] args) {
         try {
-            startWebster(new String[] { "sorcer-prv-dl.jar" });
+            String home = System.getenv("user.home");
+            startWebster(new String[] { "sorcer-prv-dl.jar" }, new String[] { home + "/.m2/repository/" });
         } catch (Exception ex) {
             ex.printStackTrace();
         }

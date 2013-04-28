@@ -31,6 +31,7 @@ import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Sorcer;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 
 public class StartSorcerBrowser {
 	public static boolean isWebsterInt = false;
@@ -56,7 +57,7 @@ public class StartSorcerBrowser {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens);
+				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir()});
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
