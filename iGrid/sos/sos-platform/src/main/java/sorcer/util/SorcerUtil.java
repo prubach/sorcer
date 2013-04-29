@@ -529,7 +529,7 @@ public class SorcerUtil implements SorcerConstants {
 	 * @return true if the directory is deleted
 	 * @throws Exception
 	 */
-	public static boolean deleteDir(File dir) throws Exception {
+	public static boolean deleteDir(File dir) {
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
 			for (int i = 0; i < children.length; i++) {
