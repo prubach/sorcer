@@ -29,7 +29,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
 
-public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
+public class MonitoredTaskDispatcher extends MonitoredExertDispatcher
 		implements SorcerConstants {
 
 	/**
@@ -46,7 +46,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.dispatch.ExertionDispatcher#dispatchExertions()
+	 * @see sorcer.core.dispatch.ExertDispatcher#dispatchExertions()
 	 */
 	@Override
 	public void dispatchExertions() throws ExertionException {
@@ -55,7 +55,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertionDispatcher
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dispatch.ExertionDispatcher#collectResults()
+	 * @see sorcer.core.dispatch.ExertDispatcher#collectResults()
 	 */
 	@Override
 	public void collectResults() throws ExertionException {

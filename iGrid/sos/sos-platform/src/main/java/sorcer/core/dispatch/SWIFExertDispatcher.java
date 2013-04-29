@@ -42,11 +42,11 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 
-abstract public class SWIFExertionDispatcher extends ExertionDispatcher
+abstract public class SWIFExertDispatcher extends ExertDispatcher
 		implements SorcerConstants {
 
-	public SWIFExertionDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, Provider provider) throws Throwable {
+	public SWIFExertDispatcher(Job job, Set<Context> sharedContext,
+                               boolean isSpawned, Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider);
 		DispatchThread gthread = new DispatchThread();
 		gthread.start();
@@ -256,10 +256,10 @@ abstract public class SWIFExertionDispatcher extends ExertionDispatcher
 
 		private ServiceExertion result;
 
-		private ExertionDispatcher dispatcher;
+		private ExertDispatcher dispatcher;
 
 		public ExertionThread(ServiceExertion exertion,
-				ExertionDispatcher dispatcher) {
+				ExertDispatcher dispatcher) {
 			ex = exertion;
 			this.dispatcher = dispatcher;
 			if (isMonitored)

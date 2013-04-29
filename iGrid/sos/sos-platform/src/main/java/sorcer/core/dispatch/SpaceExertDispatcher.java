@@ -42,18 +42,18 @@ import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 
 @SuppressWarnings("rawtypes")
-abstract public class SpaceExertionDispatcher extends ExertionDispatcher
+abstract public class SpaceExertDispatcher extends ExertDispatcher
 		implements SorcerConstants {
 	protected JavaSpace05 space;
 	protected int doneExertionIndex = 0;
 	protected LokiMemberUtil myMemberUtil;
 
-	public SpaceExertionDispatcher() {
+	public SpaceExertDispatcher() {
 		//do nothing
 	}
 	
-	public SpaceExertionDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, LokiMemberUtil memUtil, Provider provider) throws Throwable {
+	public SpaceExertDispatcher(Job job, Set<Context> sharedContext,
+                                boolean isSpawned, LokiMemberUtil memUtil, Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider);
 		
 		space = ProviderAccessor.getSpace();
@@ -83,8 +83,8 @@ abstract public class SpaceExertionDispatcher extends ExertionDispatcher
 		myMemberUtil = memUtil;
 	}
 
-	public SpaceExertionDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, Provider provider) throws Throwable {
+	public SpaceExertDispatcher(Job job, Set<Context> sharedContext,
+                                boolean isSpawned, Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider);
 
 	}
@@ -126,7 +126,7 @@ abstract public class SpaceExertionDispatcher extends ExertionDispatcher
 		notifyAll();
 	}
 
-	// abstract in ExertionDispatcher
+	// abstract in ExertDispatcher
 	protected void preExecExertion(Exertion exertion) throws ExertionException,
 			SignatureException {
 //		try {

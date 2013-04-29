@@ -31,7 +31,6 @@ import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ServiceSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -48,13 +47,13 @@ import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 
-abstract public class CatalogExertionDispatcher extends ExertionDispatcher
+abstract public class CatalogExertDispatcher extends ExertDispatcher
 		implements SorcerConstants {
 
 	private final static int SLEEP_TIME = 20;
 	
-	public CatalogExertionDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, Provider provider) throws Throwable {
+	public CatalogExertDispatcher(Job job, Set<Context> sharedContext,
+                                  boolean isSpawned, Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider);
 		dThread = new DispatchThread();
 		try {
@@ -356,10 +355,10 @@ abstract public class CatalogExertionDispatcher extends ExertionDispatcher
 
 		private Exertion result;
 
-		private ExertionDispatcher dispatcher;
+		private ExertDispatcher dispatcher;
 
 		public ExertionThread(ServiceExertion exertion,
-				ExertionDispatcher dispatcher) {
+				ExertDispatcher dispatcher) {
 			ex = exertion;
 			this.dispatcher = dispatcher;
 			if (isMonitored)

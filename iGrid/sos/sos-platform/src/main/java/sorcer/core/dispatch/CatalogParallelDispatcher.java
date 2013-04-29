@@ -30,7 +30,7 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 
-public class CatalogParallelDispatcher extends CatalogExertionDispatcher {
+public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;
 
 	public CatalogParallelDispatcher(Job job, Set<Context> sharedContexts,

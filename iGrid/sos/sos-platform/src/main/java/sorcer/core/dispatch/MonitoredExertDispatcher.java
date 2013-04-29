@@ -53,7 +53,7 @@ import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 
-public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
+public abstract class MonitoredExertDispatcher extends ExertDispatcher
 		implements SorcerConstants {
 
 	public static MonitorSessionManagement sessionMonitor;
@@ -66,8 +66,8 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 
 	protected int doneExertionIndex = 0;
 
-	public MonitoredExertionDispatcher(Exertion exertion,
-			Set<Context> sharedContext, boolean isSpawned, Provider provider)
+	public MonitoredExertDispatcher(Exertion exertion,
+                                    Set<Context> sharedContext, boolean isSpawned, Provider provider)
 			throws Throwable {
 		super(exertion, sharedContext, isSpawned, provider);
 				
@@ -82,7 +82,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 		this.xrt = (ServiceExertion)register(exertion);
 
 		// make the monitor session of this exertion active
-		ExertionDispatcher.logger.log(Level.FINER, "Dispatching task now: " + xrt.getName());
+		ExertDispatcher.logger.log(Level.FINER, "Dispatching task now: " + xrt.getName());
 		MonitoringSession session = (MonitoringSession) (xrt.getMonitorSession());
 		session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
 				DEFAULT_TIMEOUT_PERIOD);
@@ -105,8 +105,8 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 				exertion, LEASE_RENEWAL_PERIOD));
 
 		MonitoringSession session = (MonitoringSession) (registeredExertion.getMonitorSession());
-		ExertionDispatcher.logger.info("Session for the exertion =" + session);
-		ExertionDispatcher.logger.info("Lease to be renewed for duration ="
+		ExertDispatcher.logger.info("Session for the exertion =" + session);
+		ExertDispatcher.logger.info("Lease to be renewed for duration ="
 				+ (session.getLease().getExpiration() - System
 						.currentTimeMillis()));
 		lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -143,7 +143,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 			state = sxrt.getStatus();
 		
 		xrt.stopExecTime();
-		ExertionDispatcher.dispatchers.remove(xrt.getId());
+		ExertDispatcher.dispatchers.remove(xrt.getId());
 		ExertionSessionInfo.removeLease();
 		dThread.stop = true;
 	}
@@ -153,7 +153,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 		ServiceExertion ei = (ServiceExertion) exertion;
 		preExecExertion(exertion);
 
-		ExertionDispatcher.logger.log(Level.INFO,
+		ExertDispatcher.logger.log(Level.INFO,
 				"Prexec Exertion done .... noe executing exertion");
 		try {
 			if (ei.isTask())
@@ -181,12 +181,12 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 	private void execTask(NetTask task) throws ExertionException,
 			SignatureException {
 
-		ExertionDispatcher.logger.log(Level.INFO, "start executing task");
+		ExertDispatcher.logger.log(Level.INFO, "start executing task");
 		try {
 			Servicer provider = ProviderAccessor.getProvider(task
 					.getProcessSignature().getProviderName(), task
 					.getServiceType());
-			ExertionDispatcher.logger.log(Level.INFO, "got a provider:" + provider);
+			ExertDispatcher.logger.log(Level.INFO, "got a provider:" + provider);
 
 			if (provider == null) {
 				String msg = null;
@@ -200,7 +200,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 				throw new ExertionException(msg, task);
 			} else {
 				// setTaskProvider(task, provider.getProviderName());
-				ExertionDispatcher.logger.log(Level.INFO, "Servicing task now ..............");
+				ExertDispatcher.logger.log(Level.INFO, "Servicing task now ..............");
 				MonitoringSession session = (MonitoringSession) (task
 						.getMonitorSession());
 				session.init((Monitorable) provider, LEASE_RENEWAL_PERIOD,
@@ -212,7 +212,7 @@ public abstract class MonitoredExertionDispatcher extends ExertionDispatcher
 			}
 		} catch (RemoteException re) {
 			re.printStackTrace();
-			ExertionDispatcher.logger.log(Level.SEVERE, "dispatcher execution failed for task: "
+			ExertDispatcher.logger.log(Level.SEVERE, "dispatcher execution failed for task: "
 					+ task);
 			throw new ExertionException("Remote Exception while executing task");
 		} catch (MonitorException mse) {

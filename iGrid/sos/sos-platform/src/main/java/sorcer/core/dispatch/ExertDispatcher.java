@@ -66,7 +66,7 @@ import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 
 @SuppressWarnings("rawtypes")
-abstract public class ExertionDispatcher implements Dispatcher,
+abstract public class ExertDispatcher implements Dispatcher,
 		SorcerConstants, ExecState {
 	protected final static Logger logger = Log.getDispatchLog();
 
@@ -97,19 +97,19 @@ abstract public class ExertionDispatcher implements Dispatcher,
 
 	protected static Cataloger catalog; // The SORCER catalog
 
-	protected static Hashtable<Uuid, ExertionDispatcher> dispatchers 
-		= new Hashtable<Uuid, ExertionDispatcher>();
+	protected static Hashtable<Uuid, ExertDispatcher> dispatchers
+		= new Hashtable<Uuid, ExertDispatcher>();
 
 	protected ThreadGroup disatchGroup;
 	
 	protected DispatchThread dThread;
 
-	public static Hashtable<Uuid, ExertionDispatcher> getDispatchers() {
+	public static Hashtable<Uuid, ExertDispatcher> getDispatchers() {
 		return dispatchers;
 	}
 
-	public static void setDispatchers(Hashtable<Uuid, ExertionDispatcher> dispatchers) {
-		ExertionDispatcher.dispatchers = dispatchers;
+	public static void setDispatchers(Hashtable<Uuid, ExertDispatcher> dispatchers) {
+		ExertDispatcher.dispatchers = dispatchers;
 	}
 
 	public Provider getProvider() {
@@ -120,11 +120,11 @@ abstract public class ExertionDispatcher implements Dispatcher,
 		this.provider = provider;
 	}
 
-	public ExertionDispatcher() {
+	public ExertDispatcher() {
 	}
 
-	public ExertionDispatcher(Exertion exertion, Set<Context> sharedContexts,
-			boolean isSpawned, Provider provider) throws Throwable {
+	public ExertDispatcher(Exertion exertion, Set<Context> sharedContexts,
+                           boolean isSpawned, Provider provider) throws Throwable {
 		ServiceExertion sxrt = (ServiceExertion)exertion;
 		this.xrt = (ServiceExertion)sxrt;
 		this.subject = sxrt.getSubject();
@@ -163,8 +163,8 @@ abstract public class ExertionDispatcher implements Dispatcher,
 		return xrt;
 	}
 
-	public static ExertionDispatcher getDispatcher(String jobID) {
-		return (ExertionDispatcher)dispatchers.get(jobID);
+	public static ExertDispatcher getDispatcher(String jobID) {
+		return (ExertDispatcher)dispatchers.get(jobID);
 	}
 
 	public int getState() {
@@ -581,7 +581,7 @@ abstract public class ExertionDispatcher implements Dispatcher,
 	}
 
 	public NetJob stopJob() throws RemoteException {
-		ExertionDispatcher dispatcher = null;
+		ExertDispatcher dispatcher = null;
 
 		// job.setStatus(HALTED);
 		// for (int i=0;i<runningExertionIDs.size();i++) {
@@ -593,7 +593,7 @@ abstract public class ExertionDispatcher implements Dispatcher,
 	}
 
 	public NetJob suspendJob() throws RemoteException {
-		ExertionDispatcher dispatcher = null;
+		ExertDispatcher dispatcher = null;
 		// job.setStatus(SUSPENDED);
 		// for (int i=0;i<runningExertionIDs.size();i++) {
 		// dispatcher = getDispatcher((String)runningExertionIDs.elementAt(i));

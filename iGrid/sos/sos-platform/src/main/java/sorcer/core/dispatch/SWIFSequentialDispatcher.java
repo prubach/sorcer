@@ -30,7 +30,7 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 
-public class SWIFSequentialDispatcher extends SWIFExertionDispatcher implements
+public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 		SorcerConstants {
 
 	public SWIFSequentialDispatcher(Job job, Set<Context> sharedContext,

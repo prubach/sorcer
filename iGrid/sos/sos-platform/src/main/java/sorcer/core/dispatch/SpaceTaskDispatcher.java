@@ -28,7 +28,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 
-public class SpaceTaskDispatcher extends SpaceExertionDispatcher {
+public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 	
 	@SuppressWarnings("rawtypes")
 	public SpaceTaskDispatcher(NetTask task, Set<Context> sharedContexts,

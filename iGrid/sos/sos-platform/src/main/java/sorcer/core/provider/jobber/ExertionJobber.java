@@ -181,7 +181,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 	// }
 
 	// //else assume the Jobber called on is current one.
-	// ExertionDispatcher dispatcher = getDispatcher(jobID);
+	// ExertDispatcher dispatcher = getDispatcher(jobID);
 	// if (dispatcher == null) {
 	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
 	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);
@@ -203,7 +203,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 	// public Exertion suspendJob(String jobID,Subject subject)
 	// throws RemoteException, ExertionException, ExertionMethodException {
 
-	// ExertionDispatcher dispatcher = getDispatcher(jobID);
+	// ExertDispatcher dispatcher = getDispatcher(jobID);
 	// if (dispatcher == null) {
 	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
 	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);

@@ -113,7 +113,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 				dispatcher = new SWIFSequentialDispatcher(job,
 						sharedContexts, isSpawned, provider);
 			}
-			//logger.info("*** tally of used dispatchers: " + ExertionDispatcher.getDispatchers().size());
+			//logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
 		} catch (Throwable e) {
 			e.printStackTrace();
 			throw new DispatcherException(

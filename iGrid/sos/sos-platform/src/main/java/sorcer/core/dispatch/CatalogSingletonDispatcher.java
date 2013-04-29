@@ -27,7 +27,7 @@ import sorcer.service.Job;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 
-public class CatalogSingletonDispatcher extends CatalogExertionDispatcher {
+public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 
 	public CatalogSingletonDispatcher(Job job, Set<Context> sharedContexts,
 			boolean isSpawned, Provider provider) throws Throwable {

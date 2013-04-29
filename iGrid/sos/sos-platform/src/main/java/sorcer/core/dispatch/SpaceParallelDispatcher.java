@@ -30,7 +30,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 
-public class SpaceParallelDispatcher extends SpaceExertionDispatcher {
+public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 
 	public SpaceParallelDispatcher(Job job, Set<Context> sharedContexts,
 			boolean isSpawned, LokiMemberUtil myMemberUtil, Provider provider) throws Throwable {

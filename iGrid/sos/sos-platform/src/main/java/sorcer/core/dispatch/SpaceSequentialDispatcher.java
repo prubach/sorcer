@@ -31,7 +31,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
 
-public class SpaceSequentialDispatcher extends SpaceExertionDispatcher {
+public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 
 	@SuppressWarnings("rawtypes")
 	public SpaceSequentialDispatcher(Job job, Set<Context> sharedContexts,
