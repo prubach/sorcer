@@ -30,7 +30,7 @@ import sorcer.service.Servicer;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
-import sorcer.util.ExertionShell;
+import sorcer.util.ExertManager;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.
@@ -105,7 +105,7 @@ public class NetTask extends ObjectTask {
 	}
 	
 	public Task doTask(Transaction txn) throws ExertionException, SignatureException, RemoteException {	
-		ExertionShell esh = new ExertionShell(this);
+		ExertManager esh = new ExertManager(this);
 		try {
 			return (Task)esh.exert();
 		} catch (TransactionException e) {

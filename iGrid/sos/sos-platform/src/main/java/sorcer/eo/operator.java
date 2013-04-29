@@ -34,7 +34,7 @@ import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.*;
-import sorcer.util.ExertionShell;
+import sorcer.util.ExertManager;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
@@ -970,7 +970,7 @@ public class operator {
 			Transaction transaction, Parameter... entries)
 			throws ExertionException {
 		try {
-			ExertionShell esh = new ExertionShell(input);
+			ExertManager esh = new ExertManager(input);
 			Exertion result = null;
 			try {
 				result = esh.exert(transaction, null, entries);

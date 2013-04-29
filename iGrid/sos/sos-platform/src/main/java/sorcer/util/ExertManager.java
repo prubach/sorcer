@@ -43,19 +43,19 @@ import sorcer.core.context.ControlContext.ThrowableTrace;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ExertionShell implements Callable {
-	protected final static Logger logger = Logger.getLogger(ExertionShell.class
+public class ExertManager implements Callable {
+	protected final static Logger logger = Logger.getLogger(ExertManager.class
 			.getName());
 
 	private ServiceExertion exertion;
 	private Transaction transaction;
 	private static MutualExclusion locker;
 
-	public ExertionShell(Exertion xrt) {
+	public ExertManager(Exertion xrt) {
 		exertion = (ServiceExertion) xrt;
 	}
 
-	public ExertionShell(Exertion xrt, Transaction txn) {
+	public ExertManager(Exertion xrt, Transaction txn) {
 		exertion = (ServiceExertion) xrt;
 		transaction = txn;
 
@@ -286,7 +286,7 @@ public class ExertionShell implements Callable {
 
 	@Override
 	public String toString() {
-		return "ExertionShell for: " + exertion.getName();
+		return "ExertManager for: " + exertion.getName();
 	}
 
 	/*

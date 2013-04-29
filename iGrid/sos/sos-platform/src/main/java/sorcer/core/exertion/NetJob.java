@@ -27,7 +27,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-import sorcer.util.ExertionShell;
+import sorcer.util.ExertManager;
 
 public class NetJob extends Job {
 
@@ -64,7 +64,7 @@ public class NetJob extends Job {
 	@Override
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ExertionShell esh = new ExertionShell(this);
+		ExertManager esh = new ExertManager(this);
 		return (Job)esh.exert(txn, null);
 	}
 	

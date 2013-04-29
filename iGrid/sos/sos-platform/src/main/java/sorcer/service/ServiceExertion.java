@@ -34,7 +34,7 @@ import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.util.ExertionShell;
+import sorcer.util.ExertManager;
 
 import javax.security.auth.Subject;
 import java.io.Serializable;
@@ -160,7 +160,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Parameter... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ExertionShell esh = new ExertionShell(this);
+		ExertManager esh = new ExertManager(this);
 		Exertion result = null;
 		try {
 			result = esh.exert(txn, null, entries);
@@ -184,7 +184,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertionShell esh = new ExertionShell(this);
+		ExertManager esh = new ExertManager(this);
 		return esh.exert(entries);
 	}
 
@@ -196,7 +196,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertionShell esh = new ExertionShell(this);
+		ExertManager esh = new ExertManager(this);
 		return esh.exert(txn, providerName);
 	}
 	
