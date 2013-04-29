@@ -1171,6 +1171,7 @@ public interface SorcerConstants {
 			ACCESS_CLASS = "Access Class";
 
 	String CODEBASE_SEPARATOR = " ";
+	String S_KEY_SORCER_ENV = "sorcer.env.file";
 }
 
 

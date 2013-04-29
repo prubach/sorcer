@@ -131,7 +131,7 @@ public class SorcerEnv implements SorcerConstants {
 				
 			} else {
 				envFile = SORCER_ENV_FILENAME;
-				System.setProperty("sorcer.env.file", envFile);
+				System.setProperty(S_KEY_SORCER_ENV, envFile);
 				props = loadProperties(envFile);
 				update(props);
 				envFrom = "(Sorcer resource)";
