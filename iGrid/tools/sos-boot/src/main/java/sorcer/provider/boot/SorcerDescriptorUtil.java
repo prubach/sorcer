@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import com.sun.jini.config.ConfigUtil;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
+import org.apache.commons.lang3.StringUtils;
 import sorcer.resolver.Resolver;
-import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
 
 import static sorcer.util.ArtifactCoordinates.coords;
@@ -50,8 +50,8 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates SPACER_PRV = sorcer("spacer-prv");
     public static final ArtifactCoordinates JOBBER_PRV = sorcer("jobber-prv");
 
-    public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je:4.1.21");
-    public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui:2.2.1");
+    public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je");
+    public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
 
     private static String fs = File.separator;
 	private static String ps = File.pathSeparator;
@@ -176,7 +176,7 @@ public class SorcerDescriptorUtil {
 		}
 		
 		String importCodeBase = Resolver.resolveAbsolute(WEBSTER);
-		String websterRoots = concat(roots, ';');
+		String websterRoots = StringUtils.join(roots, ';');
 		String websterClass = "sorcer.tools.webster.Webster";
 		if (debug) {
 			System.setProperty("webster.debug", "1");
@@ -298,12 +298,12 @@ public class SorcerDescriptorUtil {
 		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
-        String spacerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+        String spacerCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.jobber.ExertionSpacer";
 		return (new SorcerServiceDescriptor(spacerCodebase, policy,
 				spacerClasspath, implClass, spacerConfig));
@@ -413,12 +413,12 @@ public class SorcerDescriptorUtil {
 		String jobberClasspath = Resolver.resolveClassPath(JOBBER_PRV, COMMONS_PRV);
 		
 		// service provider codebase
-        String jobberCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+        String jobberCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
 				jobberClasspath, implClass, jobberConfig));
@@ -533,12 +533,12 @@ public class SorcerDescriptorUtil {
 		);
 
 	// service provider codebase
-        String exertmonitorCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+        String exertmonitorCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 
 
 		// service provider codebase
@@ -656,12 +656,12 @@ public class SorcerDescriptorUtil {
 		);
 		
 		// service provider codebase
-        String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+        String dbpCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 		
 		String implClass = "sorcer.core.provider.dbp.DatabaseProvider";
 		return (new SorcerServiceDescriptor(dbpCodebase, policy,
@@ -773,12 +773,12 @@ public class SorcerDescriptorUtil {
 		String dbpc = Resolver.resolveClassPath(DSP_PRV, SLEEPYCAT, COMMONS_PRV);
 		
 		// service provider codebase
-        String dbpCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+        String dbpCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 		
 		String implClass = "sorcer.core.provider.dsp.DataspaceProvider";
 		return (new SorcerServiceDescriptor(dbpCodebase, policy,
@@ -889,12 +889,12 @@ public class SorcerDescriptorUtil {
 		String catalogClasspath = Resolver.resolveClassPath(CATALOGER_PRV, COMMONS_PRV);
 
 		// service provider codebase		
-		String catalogCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
+		String catalogCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+		}, hostAddress, Integer.toString(port));
 		
 		String implClass = "sorcer.core.provider.cataloger.ServiceCataloger";
 		return (new SorcerServiceDescriptor(catalogCodebase, policy,
@@ -1006,13 +1006,13 @@ public class SorcerDescriptorUtil {
 		String loggerClasspath = Resolver.resolveClassPath(LOGGER_PRV, LOGGER_SUI, COMMONS_PRV);
 
 		// service provider codebase
-		String loggerCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-                LOGGER_SUI,
-        }, hostAddress, Integer.toString(port));
+		String loggerCodebase = getCodebase(new ArtifactCoordinates[]{
+				SOS_PLATFORM,
+				SOS_ENV,
+				SERVICEUI,
+				EXERTLET_UI,
+				LOGGER_SUI,
+		}, hostAddress, Integer.toString(port));
 		// Logger is a partner to ServiceTasker
 		String implClass = "sorcer.core.provider.logger.RemoteLoggerManager";
 		return (new SorcerServiceDescriptor(loggerCodebase, policy,
@@ -1119,9 +1119,9 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' system property not declared");
 		String reggieClasspath = Resolver.resolveClassPath(
 				coords("org.apache.river:reggie"));
-		String reggieCodebase = Booter.getCodebase(new ArtifactCoordinates[]{
+		String reggieCodebase = getCodebase(new ArtifactCoordinates[]{
 				ArtifactCoordinates.coords("org.apache.river:reggie-dl")
-        }, hostAddress, Integer.toString(port));
+		}, hostAddress, Integer.toString(port));
  		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
 		return (new SorcerServiceDescriptor(reggieCodebase, policy,
 				reggieClasspath, implClass, lookupConfig));
@@ -1486,36 +1486,6 @@ public class SorcerDescriptorUtil {
 	}
 
 	/**
-	 * Concatenate the strings resulting from calling
-	 * {@link java.lang.String#valueOf(Object)} on each element of an array of
-	 * objects with a follow up separator. Passing a zero length array will
-	 * result in the empty string being returned.
-	 * 
-	 * @param objects
-	 *            the array of objects to be processed.
-	 * @param objects
-	 *            a character separator.
-	 * @return the concatenation of the return values from calling
-	 *         <code>String.valueOf</code> on each element of
-	 *         <code>objects</code>.
-	 * @throws NullPointerException
-	 *             if <code>objects</code> is <code>null</code>.
-	 */
-	public static String concat(Object[] objects, char separator) {
-		if (objects.length == 0)
-			return "";
-		int tally = objects.length;
-		final StringBuffer buf = new StringBuffer(String.valueOf(objects[0]));
-		if (tally > 1)
-			buf.append(separator);
-		for (int i = 1; i < tally - 1; i++)
-			buf.append(objects[i]).append(separator);
-
-		buf.append(objects[tally - 1]);
-		return buf.toString();
-	}
-
-	/**
 	 * Returns the home directory of the Sorcer environment.
 	 * 
 	 * @return a path of the home directory
@@ -1535,4 +1505,11 @@ public class SorcerDescriptorUtil {
 				+ " is not a vald Sorcer home directory");
 	}
 
+	public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {
+		String[] jars = new String[artifacts.length];
+		for (int i = 0; i < artifacts.length; i++) {
+			jars[i] = Resolver.resolveRelative(artifacts[i]);
+		}
+		return Booter.getCodebase(jars, address, port);
+	}
 }

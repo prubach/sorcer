@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.rioproject.config.PlatformCapabilityConfig;
 
 import sorcer.resolver.Resolver;
-import sorcer.util.ArtifactCoordinates;
 import sorcer.util.LibraryPathHelper;
 
 /**

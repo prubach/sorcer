@@ -1,7 +1,5 @@
 package sorcer.util;
 
-import sorcer.core.SorcerEnv;
-
 /**
  * @author Rafał Krupiński
  */
@@ -9,7 +7,7 @@ public class Artifact {
 	private static final String SORCER_GROUP_ID = "org.sorcersoft.sorcer";
 
 	public static ArtifactCoordinates sorcer(String artifactId) {
-		return new ArtifactCoordinates(SORCER_GROUP_ID, artifactId, SorcerEnv.getSorcerVersion());
+		return ArtifactCoordinates.coords(SORCER_GROUP_ID + ":" + artifactId);
 	}
 
 	public static ArtifactCoordinates getSosPlatform() {

@@ -15,7 +15,6 @@
 */
 
 import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.util.ArtifactCoordinates
 import sorcer.resolver.Resolver
 
 def getPlatformCapabilityConfig() {

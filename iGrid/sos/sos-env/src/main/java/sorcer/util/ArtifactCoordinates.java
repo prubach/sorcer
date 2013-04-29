@@ -5,6 +5,7 @@ package sorcer.util;
  */
 public class ArtifactCoordinates {
 	private static final String DEFAULT_PACKAGING = "jar";
+	private static final char MVN_SEP = ':';
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -12,10 +13,8 @@ public class ArtifactCoordinates {
 	private String packaging;
 
 	/**
-	 * 
-	 * @param coords
-	 *            artifact coordinates in the form of
-	 *            groupId:artifactId[[:packaging[:classifier]]:version]
+	 * @param coords artifact coordinates in the form of
+	 *               groupId:artifactId[[:packaging[:classifier]]:version]
 	 * @throws IllegalArgumentException
 	 */
 	public static ArtifactCoordinates coords(String coords) {
@@ -64,13 +63,13 @@ public class ArtifactCoordinates {
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder(groupId.replace('.', '/'));
-		result.append('/').append(artifactId).append('/').append(version).append('/').append(artifactId).append('-')
-				.append(version);
+		StringBuilder result = new StringBuilder(groupId).append(MVN_SEP).append(artifactId).append(MVN_SEP).append(packaging);
 		if (classifier != null) {
-			result.append('-').append(classifier);
+			result.append(MVN_SEP).append(classifier);
 		}
-		result.append('.').append(packaging);
+		if (version != null) {
+			result.append(MVN_SEP).append(version);
+		}
 		return result.toString();
 	}
 

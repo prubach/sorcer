@@ -15,7 +15,7 @@
 */
 
 import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.util.ArtifactCoordinates
+import sorcer.resolver.Resolver
 
 def getPlatformCapabilityConfig() {
     return new SorcerCapabilityDescriptor("Sigar",
@@ -28,5 +28,5 @@ def getPlatformCapabilityConfig() {
 }
 
 String getLib(String coords) {
-    return new File(ArtifactCoordinates.coords(coords).fileFromLocalRepo().getParent(), "lib");
+    return new File(new File(Resolver.resolveAbsolute(coords)).getParent(), "lib").getPath();
 }

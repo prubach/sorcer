@@ -150,15 +150,7 @@ public class Booter implements SorcerConstants {
                 "/"+jar}));
     }
 
-    public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {
-        String[] jars = new String[artifacts.length];
-        for (int i = 0; i < artifacts.length; i++) {
-            jars[i] = Resolver.resolveRelative(artifacts[i]);
-        }
-        return getCodebase(jars, address, port);
-    }
-
-    /**
+	/**
      * Return the codebase for the provided JAR names, port and address
      * 
      * @param jars Array of JAR names
