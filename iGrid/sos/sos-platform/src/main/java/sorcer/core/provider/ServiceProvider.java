@@ -1479,7 +1479,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
      * @throws ExertionException
      * @see Exertion
      * @see Conditional
-     * @see ExertProcessor
+     * @see ControlFlowManager
      * @throws RemoteException
      * @throws ExertionException
      */
@@ -1487,11 +1487,11 @@ public class ServiceProvider implements Provider, ServiceIDListener,
             throws ExertionException {
         // create an instance of the ExertionProcessor and call on the
         // process method, returns an Exertion
-        ExertProcessor ep = null;
+        ControlFlowManager ep = null;
         if (this instanceof Jobber) {
-            ep = new ExertProcessor(exertion, delegate, (Jobber) this);
+            ep = new ControlFlowManager(exertion, delegate, (Jobber) this);
         } else if (this instanceof Spacer) {
-            ep = new ExertProcessor(exertion, delegate, (Spacer) this);
+            ep = new ControlFlowManager(exertion, delegate, (Spacer) this);
         } else if (exertion instanceof Task && exertion.isMonitored()) {
             if (exertion.isWaitable())
                 return doMonitoredTask(exertion, null);
@@ -1515,7 +1515,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
                 return exertion;
             }
         } else {
-            ep = new ExertProcessor(exertion, delegate);
+            ep = new ControlFlowManager(exertion, delegate);
         }
         return ep.process(threadManager);
     }
@@ -1917,7 +1917,7 @@ public class ServiceProvider implements Provider, ServiceIDListener,
         }
         logger.info("waitIncrement: " + waitIncrement);
 
-        ExertProcessor.WAIT_INCREMENT = waitIncrement;
+        ControlFlowManager.WAIT_INCREMENT = waitIncrement;
 
         threadManager = new TaskManager(maxThreads, timeout, loadFactor);
     }

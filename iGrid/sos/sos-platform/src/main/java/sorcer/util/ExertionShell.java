@@ -27,7 +27,7 @@ import sorcer.co.tuple.Parameter;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetJob;
-import sorcer.core.provider.ExertProcessor;
+import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.lookup.ProviderID;
@@ -118,7 +118,7 @@ public class ExertionShell implements Callable {
 						return ((Task) exertion).doTask(txn);
 					} else {
 						try {
-							return new ExertProcessor().doTask((Task)exertion);
+							return new ControlFlowManager().doTask((Task)exertion);
 						} catch (ContextException e) {
 							e.printStackTrace();
 							throw new ExertionException(e);

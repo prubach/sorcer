@@ -41,7 +41,7 @@ import sorcer.core.dispatch.SpaceTaskDispatcher;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.core.provider.ExertProcessor;
+import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
@@ -138,7 +138,7 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 			System.out.println("ServiceSpacer.service(): ************************************ exertion = " + exertion);
 			// create an instance of the ExertionProcessor and call on the
 			// process method, returns an Exertion
-			return new ExertProcessor(exertion, delegate, this)
+			return new ControlFlowManager(exertion, delegate, this)
 					.process(threadManager);
 		} catch (Exception e) {
 			e.printStackTrace();

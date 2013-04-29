@@ -34,7 +34,7 @@ import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.exertion.NetJob;
-import sorcer.core.provider.ExertProcessor;
+import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
@@ -113,7 +113,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 			setServiceID(exertion);
 			// Create an instance of the ExertionProcessor and call on the
 			// process method, returns an Exertion
-			return new ExertProcessor(exertion, delegate, this).process(threadManager);
+			return new ControlFlowManager(exertion, delegate, this).process(threadManager);
 
 		} 
 		catch (Exception e) {

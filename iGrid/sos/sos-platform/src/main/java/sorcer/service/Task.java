@@ -23,7 +23,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.EvaluationTask;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
-import sorcer.core.provider.ExertProcessor;
+import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.EvaluationSignature;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
@@ -336,7 +336,7 @@ public class Task extends ServiceExertion {
 
 	protected Task doBatchTask(Transaction txn) throws RemoteException,
 			ExertionException, SignatureException {
-		ExertProcessor ep = new ExertProcessor();
+		ControlFlowManager ep = new ControlFlowManager();
 		return ep.doIntraTask(this);
 	}
 
