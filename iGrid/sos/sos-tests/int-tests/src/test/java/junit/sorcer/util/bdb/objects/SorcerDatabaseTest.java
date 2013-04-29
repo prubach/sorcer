@@ -56,7 +56,8 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, DatabaseException {
 		dbDir = new File("./tmp/ju-sorcer-db");
-		System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
+        SorcerUtil.deleteDir(dbDir);
+        System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
 		String homeDir = "./tmp/ju-sorcer-db";
 		runner = new SorcerDatabaseRunner(homeDir);
