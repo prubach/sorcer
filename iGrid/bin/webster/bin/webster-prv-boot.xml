@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="configurable code server" default="webster" basedir=".">
+<project name="Boot webster" default="webster" basedir=".">
 	
 	<!-- load system environment variables -->
 	<property environment="env" />

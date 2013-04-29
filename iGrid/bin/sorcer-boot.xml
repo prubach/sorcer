@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<project name="Jini basic services" default="Sorcer" basedir=".">
+<project name="SOS kernel services" default="kernel" basedir=".">
 
 	<import file="../bin/common-run.xml" />
-	<target name="Sorcer" depends="clean, services" />
+	<target name="kernel" depends="clean, services" />
 	<property name="sorcer.data" value="${sorcer.home}/data" />
 
 	<target name="services">

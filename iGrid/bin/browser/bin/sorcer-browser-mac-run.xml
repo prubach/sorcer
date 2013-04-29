@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="SSB" default="SORCER Service Browser" basedir=".">
+<project name="Service Browser" default="browser" basedir=".">
     <!-- load system environment variables -->
     <property environment="env" />
 
@@ -12,7 +12,7 @@
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
 	</path>
 
-	<target name="SORCER Service Browser" depends="mvn-init">
+	<target name="browser" depends="mvn-init">
 		<java classname="sorcer.ssb.SorcerServiceBrowser" fork="yes" maxmemory="1g">
 			<arg value="${basedir}/../configs/ssb.config" />
 			<jvmarg value="-Xdock:name=SORCER Service Browser" />
