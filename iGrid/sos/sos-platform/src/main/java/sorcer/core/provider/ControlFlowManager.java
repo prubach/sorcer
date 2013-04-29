@@ -62,19 +62,19 @@ import com.sun.jini.thread.TaskManager;
  */
 
 /**
- * The ExertionProcessor class is responsible for handling all types of exertion
- * ({@link Conditional}, {@link NetJob}, {@link NetTask}).
+ * The ControlFlowManager class is responsible for handling control floe of conditional exertions
+ * ({@link Conditional}, {@link IfExertion}, {@link WhileExertion}).
  * 
- * This class is used by the {@link ServiceExerter} class and
- * {@link ProviderBean} for executing {@link Exertions}.
+ * This class is used by the {@link ServiceProvider} class and
+ * {@link ProviderDelegate} for executing {@link Exertion}.
  */
-public class ExertProcessor {
+public class ControlFlowManager {
 
 	/**
 	 * Logger for this ExerterController logging.
 	 */
 	protected static final Logger logger = Logger
-			.getLogger(ExertProcessor.class.getName());
+			.getLogger(ControlFlowManager.class.getName());
 
 	/**
 	 * ExertionDelegate reference needed for handling exertions.
@@ -101,7 +101,7 @@ public class ExertProcessor {
 	/**
 	 * Default Constructor.
 	 */
-	public ExertProcessor() {
+	public ControlFlowManager() {
 		// do nothng
 	}
 
@@ -113,7 +113,7 @@ public class ExertProcessor {
 	 * @param delegate
 	 *            ExerterDelegate
 	 */
-	public ExertProcessor(Exertion exertion, ProviderDelegate delegate) {
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate) {
 		this.delegate = delegate;
 		this.exertion = exertion;
 	}
@@ -129,8 +129,8 @@ public class ExertProcessor {
 	 * @param jobber
 	 *            Jobber
 	 */
-	public ExertProcessor(Exertion exertion, ProviderDelegate delegate,
-			Jobber jobber) {
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+                              Jobber jobber) {
 		this(exertion, delegate);
 		this.jobber = jobber;
 	}
@@ -146,8 +146,8 @@ public class ExertProcessor {
 	 * @param spacer
 	 *            Spacer
 	 */
-	public ExertProcessor(Exertion exertion, ProviderDelegate delegate,
-			Spacer spacer) {
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+                              Spacer spacer) {
 		this(exertion, delegate);
 		this.jobber = null;
 		this.spacer = spacer;
