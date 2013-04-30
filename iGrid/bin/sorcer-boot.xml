@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="SOS kernel services" default="kernel" basedir=".">
+<project name="SOS kernel services" default="kernel" basedir="../../../../Desktop">
 
 	<import file="../bin/common-run.xml" />
 	<target name="kernel" depends="clean, services" />
@@ -21,10 +21,9 @@
 		</java>
 	</target>
 
-	<target name="clean" description="Deletes database files">
+	<target name="clean" description="Delete database files">
 		<delete dir="${sorcer.home}/logs/dbfiles_blitz" failonerror="false" />
 		<delete dir="${sorcer.home}/logs/dbfiles_monitor" failonerror="false" />
-		<delete dir="${sorcer.home}/logs/slamonitor.sla_db" failonerror="false" />
 		<delete file="${sorcer.home}/bin/monitoredjobs_index.obf" failonerror="false" />
 		<delete file="${sorcer.home}/bin/monitoredjobs_temp.obf" failonerror="false" />
 		<delete file="${sorcer.home}/bin/monitoredjobs.obf" failonerror="false" />
