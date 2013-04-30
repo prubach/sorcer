@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="SOS kernel services" default="kernel" basedir="../../../../Desktop">
+<project name="SOS kernel services" default="kernel" basedir=".">
 
 	<import file="../bin/common-run.xml" />
 	<target name="kernel" depends="clean, services" />

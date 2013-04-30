@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="SOS kernel services + webster" default="kernel+webster" basedir="../../../../Desktop">
+<project name="SOS kernel services + webster" default="kernel+webster" basedir=".">
 
 	<import file="../bin/common-run.xml" />
 	<target name="kernel+webster" depends="clean, services" />
