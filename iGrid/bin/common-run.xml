@@ -45,6 +45,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 
 	<loadproperties srcfile="${sorcer.home}/configs/sorcer.env" />
 
+	<!-- remove property entries below  for this to work -->
+	<!-- exec `mvn compile` in sos/sos-env -->
+	<!--<loadproperties srcfile="${sorcer.home}/sos/sos-/target/classes/versions.properties" />-->
+
 	<property name="v.sorcer" value="${sorcer.version}" />
 	<property name="v.jini" value="${sorcer.lib.river.version}" />
 	<property name="v.blitz" value="${sorcer.lib.blitz.version}" />

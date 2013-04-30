@@ -13,7 +13,6 @@ public class AbstractArtifactResolverTest {
 	@Before
 	public void init() {
 		resolver = new RepositoryArtifactResolver(null);
-		//resolver = new RepositoryArtifactResolver(System.getProperty("user.home") + "/.m2/repository");
 	}
 
 	@Test
@@ -28,16 +27,7 @@ public class AbstractArtifactResolverTest {
 		Assert.assertNotNull(version);
 	}
 
-    @Test
-    public void testResolveVersionGroup() throws Exception {
-        String version = resolver.resolveVersion("org.apache.river");
-        Assert.assertNotNull(version);
-        version = resolver.resolveVersion("org.sorcersoft.sorcer");
-        Assert.assertNotNull(version);
-    }
-
-
-    @Test
+    @Test(expected = IllegalArgumentException.class)
 	public void testResolveVersionImproper() throws Exception {
 		String version = resolver.resolveVersion("---mxbnvksghlk", "asdasdasd");
 		Assert.assertNull(version);
