@@ -30,8 +30,7 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 		}
 		String classifier = artifactCoordinates.getClassifier();
 
-		StringBuilder result = new StringBuilder().append(SEP);
-		result.append(groupId.replace('.', SEP));
+		StringBuilder result = new StringBuilder(groupId.replace('.', SEP));
 		result.append(SEP).append(artifactId).append(SEP).append(version).append(SEP)
 				.append(artifactId).append('-').append(version);
 		if (classifier != null) {

@@ -1,6 +1,10 @@
 package sorcer.util;
 
 /**
+ * This is a tool to make referring to sorcer jars a bit easier.
+ *
+ * Please avoid using it in examples for other artifacts than core SORCER.
+ * 
  * @author Rafał Krupiński
  */
 public class Artifact {

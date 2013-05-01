@@ -3,6 +3,7 @@ package sorcer.resolver;
 import sorcer.util.ArtifactCoordinates;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -65,18 +66,21 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 	 */
 	public String resolveVersion(String groupId, String artifactId) {
 		String version = resolveCachedVersion(groupId, artifactId);
-		if (version != null) {
+		if (version != null && checkFileExists(groupId, artifactId, version)) {
 			return version;
 		}
 
 		version = loadVersionFromPomProperties(groupId, artifactId);
-		if (version != null) {
-			versions.put(key(groupId, artifactId), version);
-			return version;
-		} else {
-			throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId
-					+ " from versions.properties");
+		if (version == null) {
+			throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId);
 		}
+		versions.put(key(groupId, artifactId), version);
+		return version;
+	}
+
+	private boolean checkFileExists(String groupId, String artifactId, String version) {
+		String path = resolveAbsolute(ArtifactCoordinates.coords(groupId, artifactId, version));
+		return new File(path).exists();
 	}
 
 	private String key(String groupId, String artifactId) {
@@ -99,7 +103,13 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 		} finally {
 			close(inputStream);
 		}
-		return properties.getProperty("version");
+
+		String version = properties.getProperty("version");
+		if(version==null){
+			throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId
+					+ " from versions.properties");
+		}
+		return version;
 	}
 
 	/**

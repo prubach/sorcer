@@ -52,11 +52,15 @@ public class Resolver {
 	}
 
 	/**
-	 * FIXME accept base url
-	 * Resolve array of artifacts to a codebase, space-separated list of relative paths
+	 * This is helper method for use in *.config files. The resulting string is
+	 * passed to SorcerServiceDescriptor constructor as a codebase string.
 	 *
-	 * @param coords array of artifact coordinates
+	 * FIXME It's the constructors responsibility to prepend URL prefix of the webster. This is a bug and should be fixed.
+	 * 
+	 * @param coords
+	 *            array of artifact coordinates
 	 */
+	@SuppressWarnings("unused")
 	public static String resolveCodeBase(ArtifactCoordinates... coords) {
 		String[] relatives = new String[coords.length];
 		for (int i = 0; i < coords.length; i++) {
