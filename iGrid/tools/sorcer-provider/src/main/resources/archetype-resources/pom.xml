@@ -13,7 +13,6 @@
         <v.sorcer>11.1</v.sorcer>
     </properties>
 
-    <artifactId>${rootArtifactId}</artifactId>
     <version>${version}</version>
     <name>SORCER ${rootArtifactId}</name>
     <description>${projectDescription}</description>
