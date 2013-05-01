@@ -8,7 +8,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />
-	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+	<property name="provider.config" value="${basedir}/target/classes/META-INF/sorcer/services.config" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 		
 </project>
