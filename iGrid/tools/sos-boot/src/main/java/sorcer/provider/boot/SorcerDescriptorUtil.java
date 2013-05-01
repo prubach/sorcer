@@ -165,8 +165,8 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		// anonymous case
 		if (port == 0) {
-			websterPort = Booter.getAnonymousPort(); 
-			System.setProperty("provider.webster.port", "" + port);
+			websterPort = Booter.getAnonymousPort();
+			System.setProperty("provider.webster.port", "" + websterPort);
 		}
 		else if (port > 0) {
 			websterPort = port;
@@ -187,7 +187,7 @@ public class SorcerDescriptorUtil {
 			//Booter.getHostAddressFromProperty("java.rmi.server.hostname");
 		}
 		System.setProperty("provider.webster.interface", websterAddress);
-		logger.fine("webster started at: " + websterAddress + ":" + port + ", hostname: " + address);
+		logger.fine("webster started at: " + websterAddress + ":" + websterPort + ", hostname: " + address);
 		return (new NonActivatableServiceDescriptor("", policy, importCodeBase,
 				websterClass,
 				new String[] { "-port", "" + websterPort, "-roots", websterRoots,
