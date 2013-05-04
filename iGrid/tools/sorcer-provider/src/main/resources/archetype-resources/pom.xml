@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>sorcer-root</artifactId>
-        <version>11.1</version>
-    </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<version>11.1</version>
+		<artifactId>sorcer-root</artifactId>
+	</parent>
 
-    <properties>
-        <v.sorcer>11.1</v.sorcer>
-    </properties>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<version>${version}</version>
+	<packaging>pom</packaging>
+	<name>SORCER :: ${rootArtifactId}</name>
+	<description>${serviceDescription}</description>
 
-    <version>${version}</version>
-    <name>SORCER ${rootArtifactId}</name>
-    <description>${projectDescription}</description>
+	<properties>
+		<v.sorcer>11.1</v.sorcer>
+	</properties>
 
-    <groupId>${groupId}</groupId>
-    <packaging>pom</packaging>
+	<modules>
+		<module>${rootArtifactId}-api</module>
+		<module>${rootArtifactId}-prv</module>
+		<module>${rootArtifactId}-req</module>
+		<module>${rootArtifactId}-proxy</module>
+		<module>${rootArtifactId}-sui</module>
+	</modules>
 
-    <modules>
-        <module>${rootArtifactId}-api</module>
-        <module>${rootArtifactId}-prv</module>
-        <module>${rootArtifactId}-proxy</module>
-        <module>${rootArtifactId}-sui</module>
-        <module>${rootArtifactId}-req</module>
-    </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.sorcersoft.sorcer</groupId>
-                <artifactId>sorcer-api</artifactId>
-                <version>${v.sorcer}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-api</artifactId>
+				<version>${v.sorcer}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <project default="run.requestor" basedir=".">
 	<!-- set property values here -->
-	<property name="requestor.name" value="first-req" />
-	<property name="requestor.version" value="1.0-SNAPSHOT" />
-	<property name="requestor.class" value="com.sorcersoft.first.HelloWorldTester" />
+	<property name="requestor.name" value="${rootArtifactId}-req" />
+	<property name="requestor.version" value="${version}" />
+	<property name="requestor.class" value="${package}.${providerInterface}Tester" />
 
-	<property name="requestor.api" value="first-api"/>
-	<property name="requestor.groupId" value="com.example.sorcer"/>
+	<property name="requestor.api" value="${rootArtifactId}-api"/>
+	<property name="requestor.groupId" value="${groupId}"/>
 	<property name="requestor.policy" value="src/main/resources/policy/req.policy"/>
 
 	<!-- loads system environment variables -->

@@ -26,7 +26,7 @@ private static Logger logger = Log.getTestLog();
 		System.setSecurityManager(new RMISecurityManager());
 		logger.info("Starting HelloWorldTester");
 		
-		Task t1 = task("hello", sig("sayHelloWorld", HelloWorld.class), 
+		Task t1 = task("hello", sig("sayHelloWorld", HelloWorld.class),
 				   context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
 		
 		logger.info("Task t1 prepared: " + t1);

@@ -40,115 +40,85 @@
         </requiredProperty>
     </requiredProperties>
 
-    <modules>
+	<fileSets>
+		<fileSet filtered="true" packaged="false">
+			<directory></directory>
+			<includes>
+				<include>README.txt</include>
+			</includes>
+		</fileSet>
+
+	</fileSets>
+
+	<modules>
+		<module id="${artifactId}-api" dir="__rootArtifactId__-api" name="${artifactId}-api">
+			<fileSets>
+				<fileSet filtered="true" packaged="true" encoding="UTF-8">
+					<directory>src/main/java</directory>
+				</fileSet>
+			</fileSets>
+		</module>
+
+		<module id="${artifactId}-proxy" dir="__rootArtifactId__-proxy" name="${artifactId}-proxy"/>
+
+		<module id="${artifactId}-prv" dir="__rootArtifactId__-prv" name="${artifactId}-prv">
+			<fileSets>
+				<fileSet filtered="true" packaged="false">
+					<directory/>
+					<includes>
+						<include>boot.xml</include>
+					</includes>
+				</fileSet>
+				<fileSet filtered="true" packaged="true" encoding="UTF-8">
+					<directory>src/main/java</directory>
+				</fileSet>
+<!--
+				<fileSet filtered="true" packaged="true" encoding="UTF-8">
+					<directory>src/test/java</directory>
+				</fileSet>
+-->
+				<fileSet filtered="true" packaged="false" encoding="UTF-8">
+					<directory>src/main/resources</directory>
+					<includes>
+						<include>
+							**/*.config
+						</include>
+					</includes>
+					<excludes>
+						<exclude>
+							**/*.png
+							**/*.policy
+						</exclude>
+					</excludes>
+				</fileSet>
+				<fileSet filtered="false" packaged="false" encoding="UTF-8">
+					<directory>src/main/resources</directory>
+					<includes>
+						<include>**/*.png</include>
+						<include>**/*.policy</include>
+					</includes>
+				</fileSet>
+			</fileSets>
+		</module>
+
         <module id="${artifactId}-req" dir="__rootArtifactId__-req" name="${artifactId}-req">
             <fileSets>
+				<fileSet filtered="true" packaged="false">
+					<directory/>
+					<includes>
+						<include>run.xml</include>
+						<include>*.ntl</include>
+					</includes>
+				</fileSet>
                 <fileSet filtered="true" packaged="true" encoding="UTF-8">
                     <directory>src/main/java</directory>
                 </fileSet>
                 <fileSet filtered="true" packaged="false" encoding="UTF-8">
                     <directory>src/main/resources</directory>
                 </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/resources</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                    <directory>src/main/scripts</directory>
-                    <includes>
-                        <include>run.ntl</include>
-                        <include>run.xml</include>
-                    </includes>
-                </fileSet>
             </fileSets>
         </module>
-        <module id="${artifactId}-api" dir="__rootArtifactId__-api" name="${artifactId}-api">
-            <fileSets>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                    <directory>src/main/resources</directory>
-                    <excludes>
-                        <exclude>
-                            **/*.png
-                        </exclude>
-                    </excludes>
-                </fileSet>
-                <fileSet filtered="false" packaged="false" encoding="UTF-8">
-                    <directory>src/main/resources</directory>
-                    <includes>
-                        <include>
-                            **/*.png
-                        </include>
-                    </includes>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                    <directory>src/test/resources</directory>
-                </fileSet>
-            </fileSets>
-        </module>
-        <module id="${artifactId}-prv" dir="__rootArtifactId__-prv" name="${artifactId}-prv">
-            <fileSets>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                    <directory>src/main/resources</directory>
-<!--		    <includes>
-			<include>**/*.policy</include>
-                    </includes>-->
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/resources</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                    <directory>src/main/scripts</directory>
-                    <includes>
-                        <include>boot.xml</include>
-                    </includes>
-                </fileSet>
-            </fileSets>
-        </module>
-        <module id="${artifactId}-proxy" dir="__rootArtifactId__-proxy" name="${artifactId}-proxy">
-            <fileSets>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/resources</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/resources</directory>
-                </fileSet>
-            </fileSets>
-        </module>
-        <module id="${artifactId}-sui" dir="__rootArtifactId__-sui" name="${artifactId}-sui">
-            <fileSets>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/main/resources</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/java</directory>
-                </fileSet>
-                <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                    <directory>src/test/resources</directory>
-                </fileSet>
-            </fileSets>
-        </module>
+
+        <module id="${artifactId}-sui" dir="__rootArtifactId__-sui" name="${artifactId}-sui"/>
     </modules>
 </archetype-descriptor>

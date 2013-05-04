@@ -6,6 +6,6 @@ Before starting this provider (development):
 2) start the Registry Service
   This can be done by starting SORCER from the distribution
 3) start the service itself by calling
-    ant -f first-prv/boot.xml
+    ant -f ${rootArtifactId}-prv/boot.xml
 4) test the service by running its requestor:
-    ant -f first-req/run.xml
+    ant -f ${rootArtifactId}-req/run.xml

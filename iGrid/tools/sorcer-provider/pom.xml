@@ -10,17 +10,13 @@
     </parent>
 
     <artifactId>sorcer-provider</artifactId>
-    <packaging>maven-archetype</packaging>
+	<version>1.0.0-alfa-1</version>
+	<packaging>maven-archetype</packaging>
 
     <name>SORCER tools :: sorcer provider archetype</name>
 
     <description>SORCER provider archetype</description>
     <url>http://sorcersoft.com/</url>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>true</skipTests>
-	</properties>
 
     <build>
         <extensions>

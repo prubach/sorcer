@@ -6,18 +6,35 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<version>11.1</version>
-		<artifactId>examples</artifactId>
+		<artifactId>sorcer-root</artifactId>
 	</parent>
+
+	<groupId>com.example.sorcer</groupId>
 	<artifactId>first</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>SORCER examples :: first</name>
+	<name>SORCER :: first</name>
+	<description>Sample Service description</description>
 
-    <modules>
-        <module>first-api</module>
-        <module>first-prv</module>
-        <module>first-req</module>
-        <module>first-proxy</module>
-        <module>first-sui</module>
-    </modules>
+	<properties>
+		<v.sorcer>11.1</v.sorcer>
+	</properties>
+
+	<modules>
+		<module>first-api</module>
+		<module>first-prv</module>
+		<module>first-req</module>
+		<module>first-proxy</module>
+		<module>first-sui</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-api</artifactId>
+				<version>${v.sorcer}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
