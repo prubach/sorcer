@@ -61,12 +61,12 @@ import sorcer.util.SorcerUtil;
 import com.sun.jini.start.LifeCycle;
 
 /**
- * ExertionSpacer - The SORCER rendezvous service provider that provides
+ * ServiceSpacer - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using JavaSpace from which provides PULL
  * exertions to be executed.
  * 
  */
-public class ExertionSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
+public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
 	private static Logger logger;
 	private LokiMemberUtil myMemberUtil;
 
@@ -75,8 +75,8 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 	 * 
 	 * @throws RemoteException
 	 */
-	public ExertionSpacer() throws RemoteException {
-		myMemberUtil = new LokiMemberUtil(ExertionSpacer.class.getName());
+	public ServiceSpacer() throws RemoteException {
+		myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
 	}
 
 	/**
@@ -88,16 +88,16 @@ public class ExertionSpacer extends ServiceProvider implements Spacer, Executor,
 	 * 
 	 *             Require ctor for Jini 2 NonActivatableServiceDescriptor
 	 */
-	public ExertionSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
+	public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-		myMemberUtil = new LokiMemberUtil(ExertionSpacer.class.getName());
+		myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
 		initLogger();
 	}
 
 	private void initLogger() {
 		Handler h = null;
 		try {
-			logger = Logger.getLogger("local." + ExertionSpacer.class.getName()
+			logger = Logger.getLogger("local." + ServiceSpacer.class.getName()
 					+ "." + getProviderName());
 			h = new FileHandler(System.getProperty(SORCER_HOME)
 					+ "/logs/remote/local-Spacer-" + delegate.getHostName()
