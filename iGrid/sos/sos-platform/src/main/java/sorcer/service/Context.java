@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.jini.id.Uuid;
-import sorcer.co.tuple.Parameter;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.security.util.SorcerPrincipal;

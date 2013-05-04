@@ -96,11 +96,7 @@ public class UuidObject implements SecureIdentifiable, Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Identifiable#setName(java.lang.String)
-	 */
-	@Override
+
 	public void setName(String name) {
 		this.name = name;
 	}

@@ -20,7 +20,6 @@ package sorcer.service;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
-import sorcer.co.tuple.Parameter;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Strategy.Access;

@@ -2,10 +2,10 @@
 <project name="SOS kernel services" default="kernel" basedir=".">
 
 	<import file="../bin/common-run.xml" />
-	<target name="kernel" depends="clean, services" />
+	<target name="kernel" depends="clean, SOS" />
 	<property name="sorcer.data" value="${sorcer.home}/data" />
 
-	<target name="services">
+	<target name="SOS">
 		<java classname="sorcer.boot.ServiceStarter" fork="yes">
 			<jvmarg value="-Djava.net.preferIPv4Stack=true" />
 <!--		        <jvmarg value="-Xdebug"/>

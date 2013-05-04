@@ -20,7 +20,7 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.context.model.ServiceModel;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -56,7 +56,7 @@ public class ExertionInvoker extends ServiceInvoker {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException,

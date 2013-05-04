@@ -17,6 +17,7 @@
 
 package sorcer.co.tuple;
 
+import sorcer.service.Parameter;
 import sorcer.service.Strategy;
 
 public class StrategyEntry extends Path<Strategy> implements Parameter {

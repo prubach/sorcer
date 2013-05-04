@@ -8,7 +8,7 @@ import java.util.Map;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Context;
@@ -193,15 +193,6 @@ public class CCKExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Identifiable#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction, sorcer.core.dataContext.Path.Entry[])
 	 */
 	@Override
@@ -231,7 +222,7 @@ public class CCKExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException,
@@ -241,7 +232,7 @@ public class CCKExertion implements Exertion {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#substitute(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Evaluation<Object> substitute(Parameter... entries)

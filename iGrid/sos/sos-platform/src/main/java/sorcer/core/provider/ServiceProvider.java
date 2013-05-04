@@ -146,7 +146,7 @@ import sorcer.tools.webster.Webster;
  * @see RemoteContextManagement
  * @see SorcerConstants
  */
-public class ServiceProvider implements Provider, ServiceIDListener,
+public class ServiceProvider implements Identifiable, Provider, ServiceIDListener,
         ReferentUuid, AdministratableProvider, ProxyAccessor, ServerProxyTrust,
         RemoteMethodControl, LifeCycle, Partner, Partnership,
         RemoteContextManagement, SorcerConstants {
@@ -534,6 +534,16 @@ public class ServiceProvider implements Provider, ServiceIDListener,
                 re.printStackTrace();
             }
         return true;
+    }
+
+    @Override
+    public Object getId() {
+            return delegate.getServiceID();
+        }
+
+    @Override
+    public String getName() {
+        return delegate.getProviderName();
     }
 
     /**

@@ -26,7 +26,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.logging.Logger;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -191,7 +191,7 @@ public class ObjectInvoker extends ServiceInvoker {
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException,

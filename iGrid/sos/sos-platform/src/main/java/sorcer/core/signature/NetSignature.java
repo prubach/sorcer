@@ -52,7 +52,7 @@ public class NetSignature extends ObjectSignature {
 	private boolean isUnicast;
 
 	// provider bound to this signature
-	transient private Servicer provider;
+	transient private Provider provider;
 
 	protected List<Entry> attributes;
 
@@ -142,7 +142,7 @@ public class NetSignature extends ObjectSignature {
 			//e.printStackTrace();
 			provider = null;
 			try {
-				provider = Accessor.getServicer(this);
+				provider = (Provider)Accessor.getServicer(this);
 			} catch (SignatureException e1) {
 				provider = null;
 			}
@@ -152,7 +152,7 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public void setServicer(Servicer provider) {
-		this.provider = provider;
+		this.provider = (Provider)provider;
 	}
 
 	public String action() {

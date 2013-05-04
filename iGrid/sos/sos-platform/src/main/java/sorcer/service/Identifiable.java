@@ -23,6 +23,4 @@ public interface Identifiable {
 
 	public String getName();
 
-	public void setName(String name);
-
 }

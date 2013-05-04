@@ -337,12 +337,7 @@ public class operator {
 			return ((Identifiable) identifiable).getName();
 		else
 			return null;
-	}
-
-	public static Identifiable name(String name, Identifiable identifiable) {
-		identifiable.setName(name);
-		return identifiable;
-	}
+    }
 
 	public static List<String> names(Identifiable... array) {
 		List<String> names = new ArrayList<String>(array.length);
@@ -362,10 +357,8 @@ public class operator {
 	/**
 	 * Makes this Revaluation revaluable, so its return value is to be again
 	 * evaluated as well.
-	 * 
-	 * @param var
-	 *            to be marked as revaluable
-	 * @return an uevaluable Evaluation
+     *
+	 * @return an revaluable Evaluation
 	 * @throws EvaluationException
 	 */
 	public static Revaluation revaluable(Revaluation evaluation,
@@ -539,11 +532,17 @@ public class operator {
 				(ObjectSignature) signature);
 	}
 
-	public static ObjectTask task(ObjectSignature signature, Context context)
-			throws SignatureException {
-		return new ObjectTask(signature.getSelector(),
-				(ObjectSignature) signature, context);
-	}
+    public static Task task(String name, Signature signature, Context context)
+            throws SignatureException {
+        if (signature instanceof NetSignature) {
+            return new NetTask(name, (NetSignature) signature, context);
+        } else if (signature instanceof ObjectSignature) {
+            return new ObjectTask(name, (ObjectSignature) signature, context);
+        } else if (signature instanceof EvaluationSignature) {
+            return new EvaluationTask(name, (EvaluationSignature) signature, context);
+        } else
+            return new Task(name, signature, context);
+    }
 
 	public static <T> Task batch(String name, T... elems)
 			throws ExertionException {

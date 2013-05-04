@@ -85,6 +85,12 @@ public class Task extends ServiceExertion {
 		this.description = description;
 	}
 
+    public Task(String name, Signature signature, Context context) {
+        this(name);
+        addSignature(signature);
+        dataContext = (ServiceContext)context;
+    }
+
 	public Task(String name, List<Signature> signatures) {
 		this(name, "", signatures);
 	}

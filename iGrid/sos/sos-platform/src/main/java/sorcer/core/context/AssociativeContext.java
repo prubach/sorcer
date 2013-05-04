@@ -16,7 +16,7 @@
  */
 package sorcer.core.context;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.service.ContextException;
 
 /**

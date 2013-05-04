@@ -17,8 +17,6 @@
 
 package sorcer.service;
 
-import sorcer.co.tuple.Parameter;
-
 /**
  * If an Evaluation that is Revaluation isRevaluable then it returns the
  * revaluated value, otherwise returns the evaluated value (

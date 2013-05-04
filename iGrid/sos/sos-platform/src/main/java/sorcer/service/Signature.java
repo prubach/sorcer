@@ -20,8 +20,6 @@ package sorcer.service;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import sorcer.co.tuple.Parameter;
-
 /**
  * A service <code>Signature</code> is an indirect behavioral feature of
  * {@link Exertion}s that declares a service that can be performed by instances

@@ -19,8 +19,6 @@ package sorcer.service;
 
 import java.rmi.RemoteException;
 
-import sorcer.co.tuple.Parameter;
-
 public interface  Evaluation <T> {
 
 	public String getName();

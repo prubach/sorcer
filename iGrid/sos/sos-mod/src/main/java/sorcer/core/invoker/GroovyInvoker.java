@@ -22,12 +22,9 @@ import groovy.lang.GroovyShell;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.context.model.Par;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;

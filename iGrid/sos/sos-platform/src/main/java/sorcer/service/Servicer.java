@@ -24,32 +24,29 @@ import net.jini.core.transaction.TransactionException;
 
 /**
  * An top-level common interface for all service peers in
- * SORCER. Each servicer accepts a federated command {@link Exertion} to
+ * SORCER. Each servicer accepts a request for {@link sorcer.service.Exertion} to
  * exert the federation of collaborating services.
  * 
  * @author Mike Sobolewski
  */
 public interface Servicer {
-
-	
-	public String getProviderName() throws RemoteException;
 	
 	/**
 	 * A generic service request as specified by an exertion - a generic service
 	 * message. It can be carried out dynamically and indirectly by any
 	 * <code>Servicer</code> peer and directly by a <code>Servicer</code>
-	 * matching the exertion's method {@link Signature}.
+	 * matching the exertion's method {@link sorcer.service.Signature}.
 	 * 
 	 * @param exertion
 	 *            an input exertion
 	 * @param txn
 	 *            The transaction (if any) under which to provide service.
 	 * @return a resulting exertion
-	 * @throws TransactionException
+	 * @throws net.jini.core.transaction.TransactionException
 	 *             if a transaction error occurs
-	 * @throws ExertionException
+	 * @throws sorcer.service.ExertionException
 	 *             if an exertion invocation failed for any reason
-	 * @throws RemoteException
+	 * @throws java.rmi.RemoteException
 	 */
 	public Exertion service(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException;

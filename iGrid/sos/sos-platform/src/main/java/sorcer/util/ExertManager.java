@@ -23,7 +23,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.core.transaction.server.TransactionManager;
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetJob;

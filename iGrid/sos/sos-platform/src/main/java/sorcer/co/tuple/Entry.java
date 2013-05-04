@@ -18,6 +18,7 @@
 package sorcer.co.tuple;
 
 import sorcer.service.Context;
+import sorcer.service.Parameter;
 
 public class Entry<T1, T2> extends Tuple2<T1, T2> implements Parameter {
 

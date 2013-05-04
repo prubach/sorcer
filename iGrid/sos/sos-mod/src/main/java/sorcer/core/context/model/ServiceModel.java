@@ -20,7 +20,7 @@ package sorcer.core.context.model;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.invoker.ContextInvoking;
@@ -123,7 +123,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.invoker.Invoking#invoke(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.core.invoker.Invoking#invoke(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object invoke(Parameter... entries) throws RemoteException,
@@ -135,7 +135,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	 * (non-Javadoc)
 	 * 
 	 * @see sorcer.core.invoker.Invoking#invoke(sorcer.service.Context,
-	 * sorcer.co.tuple.Parameter[])
+	 * sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object invoke(Context context, Parameter... entries)

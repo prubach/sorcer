@@ -33,7 +33,7 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import sorcer.core.provider.jobber.ExertionJobber;
+import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -247,8 +247,8 @@ public class ServiceExertionTest {
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-		Job job = job("j1", sig("execute", ExertionJobber.class), 
-					job("j2", sig("execute", ExertionJobber.class), t4, t5), 
+		Job job = job("j1", sig("execute", ServiceJobber.class),
+					job("j2", sig("execute", ServiceJobber.class), t4, t5),
 					t3,
 					pipe(out(t4, path(result, y)), in(t3, path(arg, x1))),
 					pipe(out(t5, path(result, y)), in(t3, path(arg, x2))));
@@ -287,9 +287,9 @@ public class ServiceExertionTest {
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-		Job job = xrt("j1", sig("execute", ExertionJobber.class), 
+		Job job = xrt("j1", sig("execute", ServiceJobber.class),
 					cxt(in("arg/x1", 10.0), out("job/result")), 
-				xrt("j2", sig("execute", ExertionJobber.class), t4, t5), 
+				xrt("j2", sig("execute", ServiceJobber.class), t4, t5),
 				t3,
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));

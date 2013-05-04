@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.Parameter;
-import sorcer.core.context.ServiceContext;
+import sorcer.service.Parameter;
 import sorcer.core.context.model.Par;
 import sorcer.core.context.model.ServiceModel;
 import sorcer.service.Context;
@@ -255,7 +254,7 @@ public abstract class ServiceInvoker<T> extends Observable implements Invoking<T
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.service.Evaluation#substitute(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

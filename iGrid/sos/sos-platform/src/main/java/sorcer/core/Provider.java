@@ -31,20 +31,23 @@ import net.jini.core.lookup.ServiceID;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.service.Identifiable;
 import sorcer.service.MonitorException;
 import sorcer.service.Servicer;
 import sorcer.service.Signature;
 
 /**
  * This is an interface that defines how a provider interacts with other code 
- * the through the methods that are exposed. It extends {@link Servicer}, 
- * {@link Monitorable}, and {@link Remote}.
- * @see Servicer
- * @see Monitorable
- * @see Remote
+ * the through the methods that are exposed. It extends {@link sorcer.service.Servicer},
+ * {@link sorcer.core.Monitorable}, and {@link java.rmi.Remote}.
+ * @see sorcer.service.Servicer
+ * @see sorcer.core.Monitorable
+ * @see java.rmi.Remote
  */
-public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
+public interface Provider extends Servicer, Monitorable, Remote {
 
+	public String getProviderName() throws RemoteException;
+	
 	public Entry[] getAttributes() throws RemoteException;
 
 	public List<Object> getProperties() throws RemoteException;
@@ -76,7 +79,7 @@ public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
 	 * 
 	 * @see sorcer.base.Provider#destroy()
 	 */
-//	public void destroy() throws RemoteException;
+	public void destroy() throws RemoteException;
 
 	/**
 	 * Destroy all services in this node (virtual machine) by calling each
@@ -84,7 +87,7 @@ public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
 	 * 
 	 * @see sorcer.base.Provider#destroy()
 	 */
-	//public void destroyNode() throws RemoteException;
+	public void destroyNode() throws RemoteException;
 	
 	public void notifyInformation(Exertion task, String message)
 			throws RemoteException;
@@ -110,11 +113,11 @@ public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
 	public Properties getJavaSystemProperties() throws RemoteException;
 
 	/**
-	 * Updates the monitor with the current dataContext.
+	 * Updates the monitor with the current context.
 	 * 
 	 * @param ctx
-	 * @throws RemoteException
-	 * @throws ExertionException
+	 * @throws java.rmi.RemoteException
+	 * @throws sorcer.service.ExertionException
 	 */
 	public void changed(Context<?> ctx, Object aspect) throws RemoteException, MonitorException;
 
@@ -125,7 +128,7 @@ public interface Provider extends Servicer, Monitorable, Remote, DestroyAdmin {
 	 * /** Returns a proxy of this provider to be used by its requestors.
 	 * 
 	 * @return a provider proxy
-	 * @throws RemoteException
+	 * @throws java.rmi.RemoteException
 	 */
 	public Object getProxy() throws RemoteException;
 

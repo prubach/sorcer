@@ -937,8 +937,12 @@ public class ControlFlowManager {
 		Task t = null;
 		Context shared = task.getDataContext();
 		for (int i = 0; i < signatures.size(); i++) {
-			t = task(task.getName() + "-" + i, signatures.get(i), shared);
-			signatures.get(i).setType(Signature.SRV);
+            try {
+                t = task(task.getName() + "-" + i, signatures.get(i), shared);
+            } catch (SignatureException e) {
+                throw new  ExertionException(e);
+            }
+            signatures.get(i).setType(Signature.SRV);
 			((ServiceContext)task.getDataContext()).setCurrentSelector(signatures.get(i).getSelector());
 			((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
 

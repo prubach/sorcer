@@ -21,7 +21,7 @@ import static sorcer.po.operator.pars;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.context.model.Par;
 import sorcer.core.context.model.ServiceModel;
 import sorcer.core.invoker.GroovyInvoker;

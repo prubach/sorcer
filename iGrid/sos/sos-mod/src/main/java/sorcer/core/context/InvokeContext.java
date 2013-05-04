@@ -19,7 +19,7 @@ package sorcer.core.context;
 
 import java.rmi.RemoteException;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.core.invoker.ServiceInvoker;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;

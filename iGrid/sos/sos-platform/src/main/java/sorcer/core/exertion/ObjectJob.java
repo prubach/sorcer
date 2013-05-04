@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.provider.jobber.ExertionJobber;
+import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -41,7 +41,7 @@ public class ObjectJob extends Job {
 	
 	public ObjectJob(String name) {
 		super(name);
-		addSignature(new ObjectSignature("execute", ExertionJobber.class));
+		addSignature(new ObjectSignature("execute", ServiceJobber.class));
 	}
 
 	public ObjectJob(String name, Signature signature)
@@ -63,7 +63,7 @@ public class ObjectJob extends Job {
 	
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		// return (Job) new ExertionJobber().exec(job, txn);
+		// return (Job) new ServiceJobber().exec(job, txn);
 		Job result = null;
 		try {
 			ObjectSignature os = (ObjectSignature) getProcessSignature();

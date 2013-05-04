@@ -26,7 +26,7 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -237,7 +237,7 @@ public class CmdInvoker extends ServiceInvoker {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object getValue(Parameter... entries) throws EvaluationException,

@@ -17,7 +17,6 @@
 
 package sorcer.core.context;
 
-import static sorcer.eo.operator.subject;
 import static sorcer.eo.operator.value;
 
 import java.io.Serializable;
@@ -38,7 +37,7 @@ import java.util.regex.Pattern;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;

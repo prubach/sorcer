@@ -109,7 +109,7 @@ public abstract class Job extends ServiceExertion {
 
 	/**
 	 * Initialize it with assigning it a new ControlContext and a defaultMethod
-	 * with serviceType as "sorcer.core.provider.jobber.ExertionJobber" name as
+	 * with serviceType as "sorcer.core.provider.jobber.ServiceJobber" name as
 	 * "service" and providerName "*"
 	 * @throws SignatureException 
 	 */

@@ -118,10 +118,6 @@ public class MarshalledData implements Serializable, Identifiable {
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Identifiable#setName(java.lang.String)
-	 */
-	@Override
 	public void setName(String name) {
 		this.name = name;
 	}

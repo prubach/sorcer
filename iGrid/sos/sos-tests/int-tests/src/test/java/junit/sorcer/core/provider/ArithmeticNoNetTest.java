@@ -36,7 +36,7 @@ import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
 //import sorcer.core.dataContext.model.VarModel;
-import sorcer.core.provider.jobber.ExertionJobber;
+import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -147,9 +147,9 @@ public class ArithmeticNoNetTest implements SorcerConstants {
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-		Job job = srv("j1", sig("execute", ExertionJobber.class), 
+		Job job = srv("j1", sig("execute", ServiceJobber.class),
 					cxt(in("arg/x1", 10.0), result("job/result", from("j1/t3/result/y"))), 
-				srv("j2", sig("execute", ExertionJobber.class), t4, t5), 
+				srv("j2", sig("execute", ServiceJobber.class), t4, t5),
 				t3,
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));

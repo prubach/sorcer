@@ -5,7 +5,7 @@ package sorcer.core.context.model;
 
 import java.rmi.RemoteException;
 
-import sorcer.co.tuple.Parameter;
+import sorcer.service.Parameter;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
 import sorcer.service.Identity;
@@ -52,7 +52,7 @@ public class Par<T> extends Identity implements Parameter, Evaluation<T>, Compar
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
 	 */
 	@Override
 	public T getValue(Parameter... entries) throws EvaluationException,
@@ -64,7 +64,7 @@ public class Par<T> extends Identity implements Parameter, Evaluation<T>, Compar
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#substitute(sorcer.co.tuple.Parameter[])
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Evaluation<T> substitute(Parameter... parameters)
