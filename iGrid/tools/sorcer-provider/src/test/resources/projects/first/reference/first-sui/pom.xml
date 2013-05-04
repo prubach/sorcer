@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-	<artifactId>first-ui</artifactId>
+	<artifactId>first-sui</artifactId>
 	<name>SORCER :: first :: service UI</name>
 
 	<dependencies>

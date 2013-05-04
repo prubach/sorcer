@@ -16,7 +16,7 @@
 
 	<!-- provider codeabse jars -->
 	<property name="j1" value="${provider.webster.url}/com/example/sorcer/first-api/${requestor.version}/first-api-${requestor.version}.jar" />
-	<property name="j2" value="${provider.webster.url}/com/example/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
+	<property name="j2" value="${provider.webster.url}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
 	<property name="requestor.codebase" value="${j1} ${j2}" />
 </project>
 
