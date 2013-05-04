@@ -1,4 +1,4 @@
-package com.sorcersoft.first;
+package com.example.sorcer;
 
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.exert;
@@ -18,15 +18,15 @@ import sorcer.service.Exertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
 
-public class HelloWorldTester implements SorcerConstants {
+public class SampleServiceTester implements SorcerConstants {
 
 private static Logger logger = Log.getTestLog();
 	
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
-		logger.info("Starting HelloWorldTester");
+		logger.info("Starting SampleServiceTester");
 		
-		Task t1 = task("hello", sig("sayHelloWorld", HelloWorld.class), 
+		Task t1 = task("hello", sig("sayHelloWorld", SampleService.class),
 				   context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
 		
 		logger.info("Task t1 prepared: " + t1);

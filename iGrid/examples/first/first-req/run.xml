@@ -1,30 +1,22 @@
 <?xml version="1.0"?>
-
 <project default="run.requestor" basedir=".">
-
 	<!-- set property values here -->
 	<property name="requestor.name" value="first-req" />
-	<property name="requestor.version" value="1.0-SNAPSHOT" />
-	<property name="requestor.class" value="com.sorcersoft.first.HelloWorldTester" />
-	
+	<property name="requestor.version" value="1.0.0-SNAPSHOT" />
+	<property name="requestor.class" value="com.example.sorcer.SampleServiceTester" />
+
 	<property name="requestor.api" value="first-api"/>
-	<property name="requestor.groupId" value="org.sorcersoft.sorcer"/>
+	<property name="requestor.groupId" value="com.example.sorcer"/>
 	<property name="requestor.policy" value="src/main/resources/policy/req.policy"/>
-	
-	<!-- provider codeabse jars -->
-<!--	<path id="requestor.codebase">
-	    <pathelement location="${'org.sorcersoft.sorcer:first-api:jar'}"/>
-	    <pathelement location="${'org.sorcersoft.sorcer:sos-platform:jar'}"/>
-	</path>-->
+
 	<!-- loads system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
-	
+
 	<!-- provider codeabse jars -->
-	<property name="j1" value="${provider.webster.url}/org/sorcersoft/sorcer/first-api/${requestor.version}/first-api-${requestor.version}.jar" />
+	<property name="j1" value="${provider.webster.url}/com/example/sorcer/first-api/${requestor.version}/first-api-${requestor.version}.jar" />
 	<property name="j2" value="${provider.webster.url}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
 	<property name="requestor.codebase" value="${j1} ${j2}" />
-	
 </project>
 

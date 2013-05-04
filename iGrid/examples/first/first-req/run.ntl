@@ -1,6 +1,6 @@
 #!/usr/bin/nsh -f
 
-import com.sorcersoft.first.HelloWorld
+import com.example.sorcer.SampleService
 
-t1 = task("hello", sig("sayHelloWorld", HelloWorld.class), dataContext("Hello", input(path("in", "value"), "TESTER"), output(path("out", "value"), null)));
+t1 = task("hello", sig("sayHelloWorld", SampleService.class), dataContext("Hello", input(path("in", "value"), "TESTER"), output(path("out", "value"), null)));
 	
