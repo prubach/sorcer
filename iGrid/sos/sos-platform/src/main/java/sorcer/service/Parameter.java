@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-package sorcer.co.tuple;
+package sorcer.service;
 
 /**
- * Any input value to close over underlying free variables. 
+ * Any input value in particular used to close over free variables.
  */
 
 public interface Parameter {
