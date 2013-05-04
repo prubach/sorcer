@@ -52,19 +52,19 @@ import sorcer.util.SorcerUtil;
 import com.sun.jini.start.LifeCycle;
 
 /**
- * ExertionJobber - The SORCER rendezvous service provider that provides
+ * ServiceJobber - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using directly (PUSH) service providers.
  * 
  */
-public class ExertionJobber extends ServiceProvider implements Jobber, Executor, SorcerConstants {
-	private Logger logger = Logger.getLogger(ExertionJobber.class.getName());
+public class ServiceJobber extends ServiceProvider implements Jobber, Executor, SorcerConstants {
+	private Logger logger = Logger.getLogger(ServiceJobber.class.getName());
 
-	public ExertionJobber() throws RemoteException {
+	public ServiceJobber() throws RemoteException {
 		// do nothing
 	}
 
 	// require constructor for Jini 2 NonActivatableServiceDescriptor
-	public ExertionJobber(String[] args, LifeCycle lifeCycle) throws Exception {
+	public ServiceJobber(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
 		initLogger();
 	}
@@ -72,7 +72,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 	private void initLogger() {
 		Handler h = null;
 		try {
-			logger = Logger.getLogger("local." + ExertionJobber.class.getName() + "."
+			logger = Logger.getLogger("local." + ServiceJobber.class.getName() + "."
 					+ getProviderName());
 			h = new FileHandler(System.getProperty(SORCER_HOME)
 					+ "/logs/remote/local-Jobber-" + delegate.getHostName() + "-" + getProviderName()
@@ -129,9 +129,9 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		//logger.info("*********************************************ExertionJobber.exert(), exertion = " + exertion);
+		//logger.info("*********************************************ServiceJobber.exert(), exertion = " + exertion);
 		Exertion ex = doJob(exertion, txn);
-		//logger.info("*********************************************ExertionJobber.exert(), ex = " + ex);
+		//logger.info("*********************************************ServiceJobber.exert(), ex = " + ex);
 
 		return ex;
 	}
@@ -141,7 +141,7 @@ public class ExertionJobber extends ServiceProvider implements Jobber, Executor,
 	}
 	
 	public Exertion doJob(Exertion job, Transaction txn) {
-		//logger.info("*********************************************ExertionJobber.doJob(), job = " + job);
+		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
 
 		setServiceID(job);
 		try {
