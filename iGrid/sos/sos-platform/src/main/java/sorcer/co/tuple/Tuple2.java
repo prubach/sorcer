@@ -19,6 +19,7 @@ package sorcer.co.tuple;
 
 import java.io.Serializable;
 
+import sorcer.service.Parameter;
 import sorcer.service.Strategy;
 
 public class Tuple2<T1, T2> implements Parameter, Serializable {
