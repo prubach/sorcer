@@ -2,18 +2,17 @@
 
 <project name="Transaction Manager" default="mahalo" basedir=".">
 
-	<import file="../../../bin/common-run.xml" />
+    <import file="../../common-run.xml" />
 
 	<target name="mahalo">
-		<java jar="${common.lib}/start.jar" fork="yes" spawn="yes">
-			<sysproperty key="java.security.policy" value="../policy/jini.policy" />
-			<sysproperty key="sorcer.home" value="${sorcer.home}" />
-			<sysproperty key="provider.webster.url" value="${provider.webster.url}/" />
-			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			<sysproperty key="impl.class" value="com.sun.jini.mahalo.TransientMahaloImpl" />
-			<sysproperty key="impl.jar" value="mahalo.jar" />
-			<sysproperty key="dl.jar" value="mahalo-dl.jar" />
-			<arg value="../configs/start-generic.config" />
+        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+            <jvmarg value="-Djava.net.preferIPv4Stack=true" />
+            <classpath refid="boot.classpath"/>
+            <arg value="../configs/start-mahalo.config" />
+            <sysproperty key="sorcer.home" value="${sorcer.home}" />
+            <sysproperty key="java.security.policy" value="../policy/jini.policy" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
 		</java>
 	</target>
 

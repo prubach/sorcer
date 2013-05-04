@@ -14,7 +14,6 @@
 				<pathelement location="${jini.lib}/serviceui-1.1.jar" />
 				<pathelement location="${jini.lib}/jsk-lib.jar" />
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
-				<pathelement location="${sorcer.lib}/sorcer-prv.jar" />
 			</classpath>
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />

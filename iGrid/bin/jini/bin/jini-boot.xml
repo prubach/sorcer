@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <project name="Jini basic services" default="jini all" basedir=".">
 
-	<import file="../../../bin/common-run.xml" />
+    <import file="../../common-run.xml" />
 
-	<target name="jini all" depends="mvn-init">
+	<target name="jini all">
         <java classname="sorcer.boot.ServiceStarter" fork="yes">
+            <jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <classpath refid="boot.classpath"/>
             <arg value="../configs/boot-jini.config" />
             <sysproperty key="sorcer.home" value="${sorcer.home}" />
-            <sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
             <sysproperty key="java.security.policy" value="../policy/jini.policy" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
         </java>
 	</target>
 

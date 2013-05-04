@@ -100,11 +100,9 @@ import static sorcer.eo.operator.sig;
 
 /**
  * There are two types of SORCER service servers: generic service servers -
- * subclasses of {@link ServiceExerter} - and service beans - subclasses of
- * {@link sorcer.core.provider.bean.ExerterBean}. Service beans use the Rio
- * provisioning framework to be deployed in Rio cybernodes. This class does the
- * actual work for both generic SORCER servers and SORCER service beans. Also it
- * provides the basic functionality for {@link Provider}s. Multiple SORECER
+ * subclasses of {@link ServiceProvider} - and service beans. This class does the
+ * actual work for both generic SORCER providers and SORCER service beans. Also it
+ * provides the basic functionality for {@link Provider}s. Multiple SORCER
  * exerters can be deployed within a single (@link ServiceProvider}.
  *
  * @see sorcer.core.provider.ServiceProvider
@@ -232,7 +230,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * A remote inner proxy implements Remote interface. Usually outer proxy
 	 * complements its functionality by invoking remote calls on the inner proxy
 	 * server. Thus, inner proxy can make remote calls on another service
-	 * provider, for example {@link #Provider.service(Exertion)), while the
+	 * provider, for example {@link #Servicer.service(Exertion)), while the
 	 * outer proxy still can call directly on the originating service provider.
 	 */
 	private Remote innerProxy = null;
@@ -676,7 +674,7 @@ public class ProviderDelegate implements SorcerConstants {
 		try {
 			outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
 					outerExporter.export(provider), getServerUuid());
-			// outerProxy = outerExporter.export((Remote) provider);
+			//outerProxy = outerExporter.export((Remote) provider);
 			logger.fine("outerProxy: " + outerProxy);
 		} catch (ExportException ee) {
 			logger.throwing(ProviderDelegate.class.getName(), "configure", ee);
@@ -686,9 +684,6 @@ public class ProviderDelegate implements SorcerConstants {
 		exports.put(outerProxy, outerExporter);
 		logger.fine(">>>>>>>>>>> exported outerProxy: \n" + outerProxy
 				+ ", outerExporter: \n" + outerExporter);
-
-		// outerProxy = SecureProxyWrapper.createServiceProxy(getProxy(),
-		// serverUuid);
 
 		logger.info("PROXIES >>>>> provider: " + providerProxy + "\nsmart: "
 				+ smartProxy + "\nouter: " + outerProxy + "\ninner: "

@@ -22,6 +22,9 @@ import net.jini.id.ReferentUuid;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 
+import net.jini.admin.Administrable;
+import sorcer.util.Log;
+
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -31,6 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * The Service provider should wrap up the smart proxy/stub. The
@@ -49,6 +53,10 @@ import java.util.List;
 
 @SuppressWarnings("rawtypes")
 public class ProviderProxy {
+
+    static final long serialVersionUID = -242006752320266252L;
+
+    protected final static Logger logger = Log.getTestLog();
 
 	/**
 	 * Public static factory method that creates and returns an instance of
@@ -86,7 +94,7 @@ public class ProviderProxy {
 
 	// -------------------------------ReferentUuidInvocationHandler------------------------------
 	private static class ReferentUuidInvocationHandler implements InvocationHandler, Serializable {
-		private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 242006752320266247L;
 		protected final Object proxy;
 		protected final Uuid proxyID;
 
@@ -157,25 +165,35 @@ public class ProviderProxy {
 			return super.getInterfaces(server, RemoteMethodControl.class);
 		}
 
-		public Object invoke(Object server, Method m, Object[] args) throws Throwable {
-            if ("getReferentUuid".equals(m.getName())) {
+        public Object invoke(Object server, Method m, Object[] args) throws Throwable {
+            String selector = m.getName();
+            if ("getReferentUuid".equals(selector)) {
                 return proxyID;
-            } else if ("getProxy".equals(m.getName())) {
+            } else if ("getProxy".equals(selector)) {
                 return proxy;
-            } else  if ("hashCode".equals(m.getName())) {
+            } else  if ("hashCode".equals(selector)) {
                 return proxyID.hashCode();
-            } else if ("equals".equals(m.getName()) && args.length == 1) {
+            } else if ("equals".equals(selector) && args.length == 1) {
                 return !(args.length != 1 || !(args[0] instanceof ReferentUuid)) && proxyID.equals(((ReferentUuid) args[0]).getReferentUuid());
-            } else if ("toString".equals(m.getName())) {
+            } else if ("toString".equals(selector)) {
                 return "refID=" + proxyID + " : proxy=" + proxy;
-            } else if ("getConstraints".equals(m.getName())) {
-                    return ((RemoteMethodControl) proxy).getConstraints();
-            } else if ("setConstraints".equals(m.getName())) {
-                    return m.invoke(proxy, args);
-            } else if ("getProxyTrustIterator".equals(m.getName())) {
+            } else if ("getConstraints".equals(selector)) {
+                return ((RemoteMethodControl) proxy).getConstraints();
+            } else if ("setConstraints".equals(selector)) {
+                return m.invoke(proxy, args);
+            } else if ("getProxyTrustIterator".equals(selector)) {
                 return new SingletonProxyTrustIterator(server);
+            } else if ("getAdmin".equals(selector)) {
+                return ((Administrable)proxy).getAdmin();
             }
-            return m.invoke(proxy, args);
+            Object obj = null;
+            try {
+                obj  = m.invoke(proxy, args);
+            } catch (Exception e) {
+                logger.info("proxy method: " + m + " for args: " + args);
+                e.printStackTrace();
+            }
+            return obj;
         }
 
 		private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {

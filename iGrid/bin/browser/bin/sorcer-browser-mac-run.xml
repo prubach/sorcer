@@ -20,7 +20,8 @@
 			<classpath>
 			    <path refid="run.classpath"/>  				
 			</classpath>
-			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="java.security.policy" value="${basedir}/../policy/ssb.policy" />
 			<sysproperty key="ssb.logFile" value="${basedir}/../logs/browser.log" />
 			<sysproperty key="ssb.logLen" value="300" />

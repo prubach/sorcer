@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="lookup service" default="reggie" basedir=".">
+<project name="Lookup service" default="reggie" basedir=".">
 
     <import file="../../common-run.xml" />
 
@@ -12,6 +12,7 @@
             <sysproperty key="sorcer.home" value="${sorcer.home}" />
             <sysproperty key="java.security.policy" value="../policy/jini.policy" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
         </java>
 	</target>
 
