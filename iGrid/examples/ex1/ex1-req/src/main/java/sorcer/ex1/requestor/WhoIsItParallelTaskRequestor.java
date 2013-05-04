@@ -41,7 +41,7 @@ public class WhoIsItParallelTaskRequestor {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < tally; i++) {
 			task = req.getExertion();
-			task.setName(task.getName() + "-" + i);
+            ((Task)task).setName(task.getName() + "-" + i);
 			ec = new ExertionCallable(task);
 			logger.info("exertion submit: " + task.getName());
 			Future<Exertion> future = pool.submit(ec);
