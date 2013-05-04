@@ -16,16 +16,16 @@
 
 package sorcer.ui.serviceui;
 
-import java.io.IOException;
-import java.rmi.MarshalledObject;
-import java.util.Collections;
-
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.attribute.UIFactoryTypes;
 import net.jini.lookup.ui.factory.JComponentFactory;
 import net.jini.lookup.ui.factory.JDialogFactory;
 import net.jini.lookup.ui.factory.JFrameFactory;
 import net.jini.lookup.ui.factory.JWindowFactory;
+
+import java.io.IOException;
+import java.rmi.MarshalledObject;
+import java.util.Collections;
 
 /**
  * A helper utility that creates a UIDescriptor as part of the ServiceUI project

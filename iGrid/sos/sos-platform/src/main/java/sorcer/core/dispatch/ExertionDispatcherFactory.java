@@ -17,20 +17,19 @@
 
 package sorcer.core.dispatch;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import sorcer.core.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.exertion.Jobs;
-import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The

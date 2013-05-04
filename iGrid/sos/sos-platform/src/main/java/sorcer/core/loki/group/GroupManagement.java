@@ -1,8 +1,10 @@
 package sorcer.core.loki.group;
 
-import java.rmi.*;
-import sorcer.core.provider.proxy.*;
-import sorcer.service.*;
+import sorcer.core.provider.proxy.RemotePartner;
+import sorcer.service.Context;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * The group management interface lays the interface for database

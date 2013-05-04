@@ -17,12 +17,11 @@
 
 package sorcer.core;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
+import sorcer.util.DocumentDescriptor;
 
 import javax.transaction.InvalidTransactionException;
-
-import sorcer.util.DocumentDescriptor;
+import java.io.IOException;
+import java.rmi.RemoteException;
 
 /**
  * The file store interface to access remote directories.

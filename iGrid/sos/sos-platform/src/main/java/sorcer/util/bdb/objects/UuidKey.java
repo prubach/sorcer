@@ -17,9 +17,9 @@
 
 package sorcer.util.bdb.objects;
 
-import java.io.Serializable;
-
 import net.jini.id.Uuid;
+
+import java.io.Serializable;
 
 /**
  * A Uuid key serves as the key in the key/data pair for multiple entities.

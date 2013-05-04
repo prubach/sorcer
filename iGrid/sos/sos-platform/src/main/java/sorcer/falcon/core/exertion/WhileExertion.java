@@ -17,29 +17,17 @@
 
 package sorcer.falcon.core.exertion;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import org.nfunk.jep.JEP;
-
 import sorcer.core.SorcerConstants;
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.falcon.base.Conditional;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
+import sorcer.service.*;
 import sorcer.util.Log;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * WhileExertion is a new exertion extending from the {@link ServiceExertion}

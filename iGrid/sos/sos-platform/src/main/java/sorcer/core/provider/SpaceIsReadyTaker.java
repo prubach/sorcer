@@ -16,11 +16,11 @@
  */
 package sorcer.core.provider;
 
-import java.util.concurrent.ExecutorService;
-
 import net.jini.core.transaction.Transaction;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.util.ProviderAccessor;
+
+import java.util.concurrent.ExecutorService;
 
 public class SpaceIsReadyTaker extends SpaceTaker {
 	

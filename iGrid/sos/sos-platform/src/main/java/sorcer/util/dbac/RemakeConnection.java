@@ -17,12 +17,12 @@
 
 package sorcer.util.dbac;
 
+import sorcer.util.Stopwatch;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-
-import sorcer.util.Stopwatch;
 
 // This class will attempt to remake the connection with 
 // the applications server every sleepTime seconds (by default).

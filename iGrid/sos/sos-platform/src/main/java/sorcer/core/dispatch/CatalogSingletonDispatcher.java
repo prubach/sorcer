@@ -17,15 +17,11 @@
 
 package sorcer.core.dispatch;
 
+import sorcer.core.Provider;
+import sorcer.service.*;
+
 import java.rmi.RemoteException;
 import java.util.Set;
-
-import sorcer.core.Provider;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
 
 public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 

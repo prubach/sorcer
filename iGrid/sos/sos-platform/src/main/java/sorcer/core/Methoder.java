@@ -17,9 +17,9 @@
 
 package sorcer.core;
 
-import java.rmi.Remote;
-
 import sorcer.core.signature.NetSignature;
+
+import java.rmi.Remote;
 
 /**
  * The marker interface for provider's executiny any service task. This provider

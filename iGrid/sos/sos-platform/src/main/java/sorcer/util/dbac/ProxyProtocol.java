@@ -17,18 +17,17 @@
 
 package sorcer.util.dbac;
 
-import java.io.IOException;
-import java.util.Vector;
-import java.util.logging.Logger;
-
 import sorcer.core.SorcerConstants;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.Protocol;
 import sorcer.util.ProtocolStream;
 import sorcer.util.Result;
-import sorcer.util.Sorcer;
 import sorcer.util.SorcerUtil;
 import sorcer.util.ui.Launcher;
+
+import java.io.IOException;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * The ProxyProtocol class implements generic Protocol interface to

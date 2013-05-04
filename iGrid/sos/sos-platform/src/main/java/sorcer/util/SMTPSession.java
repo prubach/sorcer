@@ -17,10 +17,10 @@
 
 package sorcer.util;
 
+import sun.net.smtp.SmtpClient;
+
 import java.io.PrintStream;
 import java.net.InetAddress;
-
-import sun.net.smtp.SmtpClient;
 
 /**
  * The SMTPSession class allows to send email messages using SmtpClient

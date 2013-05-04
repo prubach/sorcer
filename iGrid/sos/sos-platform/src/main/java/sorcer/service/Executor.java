@@ -18,12 +18,11 @@
 
 package sorcer.service;
 
-import java.rmi.RemoteException;
-
-import javax.security.auth.Subject;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+
+import javax.security.auth.Subject;
+import java.rmi.RemoteException;
 
 /**
  * An top-level common local interface for all service-to-service (S2S)

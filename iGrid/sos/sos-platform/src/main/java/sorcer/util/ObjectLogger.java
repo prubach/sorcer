@@ -17,21 +17,14 @@
 
 package sorcer.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.rmi.MarshalledObject;
-import java.util.ArrayList;
-
 import net.jini.io.MarshalInputStream;
 import net.jini.io.MarshalOutputStream;
 import net.jini.io.MarshalledInstance;
+
+import java.io.*;
+import java.net.URL;
+import java.rmi.MarshalledObject;
+import java.util.ArrayList;
 
 public class ObjectLogger {
 	private static String logDir = "./";

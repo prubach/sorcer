@@ -16,17 +16,7 @@
  */
 package sorcer.core.provider;
 
-import static sorcer.eo.operator.task;
-
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
+import com.sun.jini.thread.TaskManager;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
@@ -37,25 +27,16 @@ import sorcer.core.signature.ServiceSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.falcon.core.exertion.IfExertion;
 import sorcer.falcon.core.exertion.WhileExertion;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Executor;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.service.Spacer;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
-import sorcer.service.Task;
 import sorcer.util.AccessorException;
 import sorcer.util.ProviderAccessor;
 
-import com.sun.jini.thread.TaskManager;
+import java.rmi.RemoteException;
+import java.util.*;
+import java.util.logging.Logger;
+
+import static sorcer.eo.operator.task;
 
 /**
  * @author Mike Sobolewski

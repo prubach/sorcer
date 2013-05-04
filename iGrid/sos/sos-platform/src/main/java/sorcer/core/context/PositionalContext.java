@@ -17,11 +17,11 @@
 
 package sorcer.core.context;
 
-import java.util.Arrays;
-import java.util.List;
-
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mike Sobolewski

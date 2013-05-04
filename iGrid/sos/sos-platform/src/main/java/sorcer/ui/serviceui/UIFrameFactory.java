@@ -1,5 +1,9 @@
 package sorcer.ui.serviceui;
 
+import net.jini.core.lookup.ServiceItem;
+import net.jini.lookup.ui.factory.JFrameFactory;
+
+import javax.swing.*;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URL;
@@ -8,15 +12,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-
-import net.jini.core.lookup.ServiceItem;
-import net.jini.lookup.ui.factory.JFrameFactory;
 
 /**
  * The UIFrameFactory class is a helper for use with the ServiceUI

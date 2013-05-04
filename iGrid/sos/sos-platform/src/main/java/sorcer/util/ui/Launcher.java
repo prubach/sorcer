@@ -17,26 +17,15 @@
 
 package sorcer.util.ui;
 
+import sorcer.util.*;
+
 import java.applet.Applet;
-import java.awt.Button;
-import java.awt.Choice;
-import java.awt.Component;
+import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
-
-import sorcer.util.CmdManager;
-import sorcer.util.Invoker;
-import sorcer.util.Mandate;
-import sorcer.util.Protocol;
-import sorcer.util.SorcerUtil;
 
 public abstract class Launcher extends Applet implements Observer, Invoker,
 		Runnable {

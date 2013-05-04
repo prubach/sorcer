@@ -17,11 +17,11 @@
 
 package sorcer.core;
 
-import java.rmi.RemoteException;
-import java.util.Vector;
-
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
+
+import java.rmi.RemoteException;
+import java.util.Vector;
 
 public interface SorcerNotifierProtocol extends Provider {
 

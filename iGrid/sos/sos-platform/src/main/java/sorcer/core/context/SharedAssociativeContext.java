@@ -17,12 +17,12 @@
 
 package sorcer.core.context;
 
-import java.rmi.RemoteException;
-
 import net.jini.space.JavaSpace05;
 import sorcer.service.ContextException;
 import sorcer.space.array.DistribArray05;
 import sorcer.util.ProviderAccessor;
+
+import java.rmi.RemoteException;
 
 /**
  * SpaceContext persists its dataContext nodes in a distributed array in JavaSpace with

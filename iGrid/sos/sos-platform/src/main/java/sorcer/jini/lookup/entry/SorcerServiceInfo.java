@@ -17,13 +17,10 @@
 
 package sorcer.jini.lookup.entry;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.util.UUID;
-
 import net.jini.core.lookup.ServiceID;
 import net.jini.lookup.entry.ServiceType;
-import sorcer.core.SorcerConstants;
+
+import java.awt.*;
 
 /**
  * Human-oriented information about the "type" of a SORCER service. This is not

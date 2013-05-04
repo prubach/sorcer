@@ -17,9 +17,9 @@
 
 package sorcer.core.context;
 
-import java.rmi.RemoteException;
-
 import sorcer.service.Context;
+
+import java.rmi.RemoteException;
 
 /**
  * Context Management provides methods for managing contexts over the network.

@@ -17,27 +17,8 @@
 
 package sorcer.core.context;
 
-import static sorcer.eo.operator.value;
-
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.service.Parameter;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
@@ -45,21 +26,21 @@ import sorcer.core.context.eval.ContextNode;
 import sorcer.core.context.eval.ContextNodeException;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
+import sorcer.service.*;
 import sorcer.service.ExecState.Category;
-import sorcer.service.Exertion;
-import sorcer.service.Identifiable;
-import sorcer.service.Link;
-import sorcer.service.MonitorException;
-import sorcer.service.Revaluation;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
 import sorcer.util.SorcerUtil;
+
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.*;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
+import static sorcer.eo.operator.value;
 
 /**
  * Implements the base-level service dataContext interface {@link Context}.

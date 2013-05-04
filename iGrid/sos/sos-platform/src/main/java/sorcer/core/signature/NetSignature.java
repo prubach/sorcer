@@ -17,22 +17,16 @@
 
 package sorcer.core.signature;
 
-import java.lang.reflect.Method;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
-
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Name;
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
+
+import java.lang.reflect.Method;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
 
 public class NetSignature extends ObjectSignature {
 

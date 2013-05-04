@@ -17,9 +17,9 @@
 
 package sorcer.util.observable;
 
-import java.rmi.RemoteException;
-
 import sorcer.service.EvaluationException;
+
+import java.rmi.RemoteException;
 
 public interface ObservableManagement {
 

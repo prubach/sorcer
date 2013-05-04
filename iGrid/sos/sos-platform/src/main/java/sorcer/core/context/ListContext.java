@@ -17,14 +17,9 @@
 
 package sorcer.core.context;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import sorcer.service.ContextException;
+
+import java.util.*;
 
 /**
  * ServiceContext implementing the java.util.List interface.

@@ -17,16 +17,14 @@
 
 package sorcer.core.provider.ui;
 
-import java.awt.GridLayout;
-import java.util.logging.Logger;
-
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.Provider;
 import sorcer.core.provider.proxy.Outer;
 import sorcer.util.Log;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.logging.Logger;
 
 /**
  * SORCER provider attribute and dataContext viewer. It also allows to create a

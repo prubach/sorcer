@@ -17,10 +17,10 @@
 
 package sorcer.core;
 
-import java.util.Iterator;
-
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+
+import java.util.Iterator;
 
 /**
  * The InclusiveContext is an interface designed to enable CDS providers to

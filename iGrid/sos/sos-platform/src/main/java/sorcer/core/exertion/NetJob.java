@@ -17,8 +17,6 @@
 
 package sorcer.core.exertion;
 
-import java.rmi.RemoteException;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.security.util.Auth;
@@ -28,6 +26,8 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.ExertManager;
+
+import java.rmi.RemoteException;
 
 public class NetJob extends Job {
 

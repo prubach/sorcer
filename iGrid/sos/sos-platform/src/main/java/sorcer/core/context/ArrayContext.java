@@ -17,11 +17,11 @@
 
 package sorcer.core.context;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import sorcer.core.SorcerConstants;
 import sorcer.service.ContextException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Array dataContext has an array like access to a service dataContext. Accessing

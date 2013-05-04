@@ -17,12 +17,12 @@
 
 package sorcer.core;
 
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+
 import java.io.InvalidObjectException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
-
-import sorcer.service.Context;
-import sorcer.service.ContextException;
 
 @SuppressWarnings("rawtypes")
 public interface StorageManagement {

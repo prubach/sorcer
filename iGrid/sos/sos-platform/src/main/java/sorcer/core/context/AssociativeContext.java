@@ -16,8 +16,8 @@
  */
 package sorcer.core.context;
 
-import sorcer.service.Parameter;
 import sorcer.service.ContextException;
+import sorcer.service.Parameter;
 
 /**
  * @author Mike Sobolewski

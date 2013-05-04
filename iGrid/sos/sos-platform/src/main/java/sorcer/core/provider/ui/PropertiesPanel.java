@@ -17,22 +17,18 @@
 
 package sorcer.core.provider.ui;
 
-import java.awt.BorderLayout;
+import sorcer.core.Provider;
+import sorcer.util.SorcerUtil;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.border.TitledBorder;
-
-import sorcer.core.Provider;
-import sorcer.util.SorcerUtil;
 
 public class PropertiesPanel extends JPanel {
 

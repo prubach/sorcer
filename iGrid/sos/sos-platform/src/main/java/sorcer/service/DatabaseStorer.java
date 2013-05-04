@@ -17,9 +17,9 @@
 
 package sorcer.service;
 
-import java.rmi.Remote;
-
 import sorcer.core.StorageManagement;
+
+import java.rmi.Remote;
 
 public interface DatabaseStorer extends StorageManagement, Remote { 
 	

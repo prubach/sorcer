@@ -17,9 +17,9 @@
 
 package sorcer.service;
 
-import java.util.List;
-
 import sorcer.core.context.ControlContext.ThrowableTrace;
+
+import java.util.List;
 
 public interface Strategy extends Parameter {
 

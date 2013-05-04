@@ -17,9 +17,9 @@
 
 package sorcer.core.misc;
 
-import java.io.Serializable;
-
 import net.jini.id.Uuid;
+
+import java.io.Serializable;
 
 public class MsgRef implements Serializable {
 

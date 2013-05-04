@@ -17,6 +17,11 @@
 
 package sorcer.core.provider.proxy;
 
+import net.jini.core.constraint.RemoteMethodControl;
+import net.jini.id.ReferentUuid;
+import net.jini.id.Uuid;
+import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -26,11 +31,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.jini.core.constraint.RemoteMethodControl;
-import net.jini.id.ReferentUuid;
-import net.jini.id.Uuid;
-import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 
 /**
  * The Service provider should wrap up the smart proxy/stub. The

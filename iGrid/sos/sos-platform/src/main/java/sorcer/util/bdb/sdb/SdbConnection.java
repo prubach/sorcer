@@ -16,19 +16,19 @@
  */
 package sorcer.util.bdb.sdb;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.in;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-
 import sorcer.core.Provider;
 import sorcer.core.StorageManagement;
 import sorcer.service.Context;
 import sorcer.util.ProviderLookup;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import static sorcer.eo.operator.context;
+import static sorcer.eo.operator.in;
 
 /**
  * @author Mike Sobolewski

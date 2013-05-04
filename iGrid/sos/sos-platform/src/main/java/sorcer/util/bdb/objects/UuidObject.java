@@ -17,14 +17,14 @@
 
 package sorcer.util.bdb.objects;
 
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.Date;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.SecureIdentifiable;
+
+import java.io.Serializable;
+import java.security.Principal;
+import java.util.Date;
 
 /**
  * A UuidObject serves as the Uuid/Object pair for multiple stored entities.

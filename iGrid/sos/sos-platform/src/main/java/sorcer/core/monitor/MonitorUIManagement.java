@@ -17,16 +17,16 @@
 
 package sorcer.core.monitor;
 
-import java.rmi.RemoteException;
-import java.security.Principal;
-import java.util.Map;
-
 import net.jini.id.Uuid;
 import sorcer.core.UEID;
 import sorcer.service.ExecState.Category;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionInfo;
 import sorcer.service.MonitorException;
+
+import java.rmi.RemoteException;
+import java.security.Principal;
+import java.util.Map;
 
 /**
  * An interface for UI to interact with the monitor. Get all the refIDs and

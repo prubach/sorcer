@@ -17,10 +17,10 @@
 
 package sorcer.co.tuple;
 
-import java.io.Serializable;
-
 import sorcer.service.Parameter;
 import sorcer.service.Strategy;
+
+import java.io.Serializable;
 
 public class Tuple2<T1, T2> implements Parameter, Serializable {
 	public T1 _1 = null;

@@ -17,10 +17,6 @@
 package sorcer.core.provider;
 
 // Imported classes
-import java.rmi.RemoteException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.logging.Logger;
 
 import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
@@ -45,6 +41,11 @@ import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
 import sorcer.util.ProviderAccessor;
+
+import java.rmi.RemoteException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Logger;
 
 /**
  * This is a class creates a JavaSpace taker that extends the {@link Thread}

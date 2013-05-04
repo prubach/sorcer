@@ -17,11 +17,11 @@
 
 package sorcer.core.monitor;
 
-import java.io.Serializable;
-
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.RemoteServiceEvent;
+
+import java.io.Serializable;
 
 /**
  * Monitor Event is passed back by MonitorManager to notify the Service Broker

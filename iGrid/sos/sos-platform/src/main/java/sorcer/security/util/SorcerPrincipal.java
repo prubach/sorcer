@@ -17,11 +17,11 @@
 
 package sorcer.security.util;
 
-import java.io.Serializable;
-import java.security.Principal;
-
 import sorcer.core.SorcerConstants;
 import sorcer.util.SorcerUtil;
+
+import java.io.Serializable;
+import java.security.Principal;
 
 /**
  * Implementation of the Principal interface.

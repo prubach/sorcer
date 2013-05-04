@@ -16,11 +16,10 @@
  */
 package sorcer.service;
 
-import java.io.Serializable;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.service.Identifiable;
+
+import java.io.Serializable;
 
 /**
  * Abstract Java class Identity 

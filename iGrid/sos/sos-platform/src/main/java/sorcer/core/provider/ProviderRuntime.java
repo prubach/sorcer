@@ -16,12 +16,11 @@
  */
 package sorcer.core.provider;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-
 import net.jini.core.lookup.ServiceID;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+
+import java.io.Serializable;
 
 /**
  * @author Mike Sobolewski

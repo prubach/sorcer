@@ -17,12 +17,11 @@
 
 package sorcer.core;
 
-import java.rmi.RemoteException;
-
-import javax.security.auth.Subject;
-
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+
+import javax.security.auth.Subject;
+import java.rmi.RemoteException;
 
 /**
  * All providers that need to be monitored implement this interface. If a

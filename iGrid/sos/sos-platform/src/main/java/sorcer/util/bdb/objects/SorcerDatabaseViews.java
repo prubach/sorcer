@@ -17,14 +17,6 @@
 
 package sorcer.util.bdb.objects;
 
-import java.io.IOException;
-
-import net.jini.id.Uuid;
-import sorcer.core.provider.ProviderRuntime;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ServiceExertion;
-
 import com.sleepycat.bind.EntityBinding;
 import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.serial.ClassCatalog;
@@ -34,6 +26,13 @@ import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredSortedMap;
 import com.sleepycat.collections.StoredValueSet;
+import net.jini.id.Uuid;
+import sorcer.core.provider.ProviderRuntime;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ServiceExertion;
+
+import java.io.IOException;
 
 /**
  * ExertionDatabaseViews defines the data bindings and collection views for the

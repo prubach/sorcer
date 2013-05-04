@@ -17,8 +17,6 @@
 
 package sorcer.core.exertion;
 
-import javax.security.auth.Subject;
-
 import net.jini.core.entry.Entry;
 import net.jini.id.Uuid;
 import net.jini.lookup.entry.Name;
@@ -26,6 +24,8 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
+
+import javax.security.auth.Subject;
 
 public class ExertionEnvelop implements Entry {
 

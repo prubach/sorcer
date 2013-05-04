@@ -17,13 +17,7 @@
 
 package sorcer.util;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.StringBufferInputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;

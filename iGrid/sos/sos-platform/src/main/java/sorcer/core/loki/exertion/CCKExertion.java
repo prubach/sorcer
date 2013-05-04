@@ -1,25 +1,18 @@
 package sorcer.core.loki.exertion;
 
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
+import net.jini.id.Uuid;
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.service.*;
+import sorcer.service.Strategy.Access;
+import sorcer.service.Strategy.Flow;
+
 import java.rmi.RemoteException;
 import java.security.Key;
 import java.util.List;
 import java.util.Map;
-
-import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
-import net.jini.id.Uuid;
-import sorcer.service.Parameter;
-import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
-import sorcer.service.Context;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
 
 public class CCKExertion implements Exertion {
 	public Map<Uuid, Key> ccKeys;

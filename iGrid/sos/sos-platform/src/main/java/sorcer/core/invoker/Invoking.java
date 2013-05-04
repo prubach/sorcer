@@ -17,13 +17,13 @@
 
 package sorcer.core.invoker;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-
-import sorcer.service.Parameter;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
+import sorcer.service.Parameter;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
 
 /**
  * @author Mike Sobolewski

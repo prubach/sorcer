@@ -17,13 +17,6 @@
 
 package sorcer.core.exertion;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.SorcerConstants;
@@ -32,16 +25,11 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.service.Task;
+
+import java.util.*;
 
 public class Jobs implements SorcerConstants {
 

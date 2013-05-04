@@ -1,9 +1,9 @@
 package sorcer.core.context;
 
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Strategy;
-import sorcer.core.context.ControlContext.ThrowableTrace;
 
 import java.util.List;
 

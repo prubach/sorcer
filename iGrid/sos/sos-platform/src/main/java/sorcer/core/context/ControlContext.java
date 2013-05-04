@@ -17,27 +17,19 @@
 
 package sorcer.core.context;
 
+import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.service.*;
+import sorcer.util.Log;
+import sorcer.util.Stopwatch;
+
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
-
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
-import sorcer.service.Strategy;
-import sorcer.util.Log;
-import sorcer.util.Stopwatch;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ControlContext extends ServiceContext implements Strategy {

@@ -17,10 +17,10 @@
 
 package sorcer.service;
 
-import java.util.Set;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+
+import java.util.Set;
 
 /**
  * An asynchronus exertion is a service-oriented indirect message with an

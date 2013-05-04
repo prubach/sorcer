@@ -17,10 +17,10 @@
 
 package sorcer.util.ui;
 
+import sorcer.util.CallbackModel;
+
 import java.util.Hashtable;
 import java.util.Observable;
-
-import sorcer.util.CallbackModel;
 
 public class Model extends Observable implements CallbackModel {
 	public String from, to;

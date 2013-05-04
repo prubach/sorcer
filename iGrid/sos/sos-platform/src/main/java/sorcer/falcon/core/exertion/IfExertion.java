@@ -17,29 +17,16 @@
 
 package sorcer.falcon.core.exertion;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 import org.nfunk.jep.JEP;
-
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
+import sorcer.service.*;
 import sorcer.util.Log;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+
+import java.util.*;
+import java.util.logging.Logger;
 /**
  * The IfExertion implements the Conditional interface. It supports the
  * branching algorithmic logic for the new exertions. It contains three

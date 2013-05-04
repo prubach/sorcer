@@ -1,5 +1,9 @@
 package sorcer.ui.serviceui;
 
+import net.jini.core.lookup.ServiceItem;
+import net.jini.lookup.ui.factory.JComponentFactory;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -11,14 +15,6 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import net.jini.core.lookup.ServiceItem;
-import net.jini.lookup.ui.factory.JComponentFactory;
 
 /**
  * The UIComponentFactory class is a helper for use with the ServiceUI

@@ -17,14 +17,14 @@
 
 package sorcer.util.bdb;
 
+import sorcer.service.EvaluationException;
+import sorcer.util.bdb.sdb.SdbUtil;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
-
-import sorcer.service.EvaluationException;
-import sorcer.util.bdb.sdb.SdbUtil;
 
 /**
  * @author Mike Sobolewski

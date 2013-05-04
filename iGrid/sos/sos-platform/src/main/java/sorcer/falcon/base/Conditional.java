@@ -17,12 +17,12 @@
 
 package sorcer.falcon.base;
 
-import java.util.Map;
-
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+
+import java.util.Map;
 
 /**
  * An Conditional is a closure with its service dataContext for its free variables

@@ -17,15 +17,14 @@
 
 package sorcer.core.loki.crypt;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.Scanner;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 
 /**
  * The encryption thread is sparked by an encryption manager for the processing

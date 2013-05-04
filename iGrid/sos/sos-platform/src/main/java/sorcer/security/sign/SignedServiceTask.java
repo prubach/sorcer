@@ -17,6 +17,8 @@
 
 package sorcer.security.sign;
 
+import sorcer.core.exertion.NetTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -25,10 +27,6 @@ import java.rmi.MarshalledObject;
 import java.security.InvalidKeyException;
 import java.security.PublicKey;
 import java.security.SignatureException;
-import java.util.List;
-
-import sorcer.core.exertion.NetTask;
-import sorcer.service.Signature;
 
 /**
  * <p>

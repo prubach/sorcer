@@ -17,20 +17,15 @@
 
 package sorcer.core.exertion;
 
-import java.rmi.RemoteException;
-import java.util.Arrays;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.util.ExertManager;
+
+import java.rmi.RemoteException;
+import java.util.Arrays;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.

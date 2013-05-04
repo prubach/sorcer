@@ -17,16 +17,16 @@
 
 package sorcer.core;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.HashMap;
-
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceTemplate;
 import sorcer.service.Context;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.HashMap;
 
 /**
  * Defines the interface for the SORCER catalog service. It is implemented by

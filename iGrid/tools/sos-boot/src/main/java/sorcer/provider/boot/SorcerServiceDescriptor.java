@@ -142,7 +142,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * Create a SorcerServiceDescriptor, assigning given parameters to their
 	 * associated, internal fields.
 	 *
-	 * @param codebase
+	 * @param descCodebase
 	 *            location where clients can download required service-related
 	 *            classes (for example, stubs, proxies, etc.). Codebase
 	 *            components must be separated by spaces in which each component

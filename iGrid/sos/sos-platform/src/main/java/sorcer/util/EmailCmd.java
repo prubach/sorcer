@@ -17,11 +17,11 @@
 
 package sorcer.util;
 
+import sorcer.core.SorcerConstants;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
-
-import sorcer.core.SorcerConstants;
 
 /**
  * EmailCmd is a psedofactory for all email commands. It implements commands

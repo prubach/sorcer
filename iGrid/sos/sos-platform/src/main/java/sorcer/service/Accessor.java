@@ -17,15 +17,11 @@
 
 package sorcer.service;
 
-import java.util.logging.Logger;
-
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.SorcerConstants;
-import sorcer.util.AccessorException;
-import sorcer.util.Log;
-import sorcer.util.ProviderAccessor;
-import sorcer.util.ProviderLookup;
-import sorcer.util.Sorcer;
+import sorcer.util.*;
+
+import java.util.logging.Logger;
 
 /**
  * A service accessing facility that allows to find dynamically a network

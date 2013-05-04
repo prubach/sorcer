@@ -17,9 +17,9 @@
 
 package sorcer.core.provider.proxy;
 
-import java.rmi.Remote;
-
 import sorcer.service.Servicer;
+
+import java.rmi.Remote;
 
 /**
  * Remote servers and other compound remote proxies using inner proxies to

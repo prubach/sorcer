@@ -1,20 +1,14 @@
 package sorcer.core.loki.key;
 
-import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import net.jini.id.Uuid;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.DHParameterSpec;
-
-import net.jini.id.Uuid;
+import java.math.BigInteger;
+import java.security.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * key generator for the implementation and operation of the

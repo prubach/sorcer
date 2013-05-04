@@ -17,14 +17,6 @@
 
 package sorcer.core.signature;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.logging.Logger;
-
 import net.jini.core.lookup.ServiceID;
 import sorcer.core.SorcerConstants;
 import sorcer.service.Exertion;
@@ -32,6 +24,14 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.util.Log;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 public class ServiceSignature implements Signature, SorcerConstants {
 

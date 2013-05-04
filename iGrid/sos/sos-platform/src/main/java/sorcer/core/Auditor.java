@@ -17,10 +17,10 @@
 
 package sorcer.core;
 
+import sorcer.service.Context;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-
-import sorcer.service.Context;
 
 public interface Auditor extends Remote {
 	public void audit(Context context) throws RemoteException;

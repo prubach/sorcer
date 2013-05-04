@@ -17,32 +17,22 @@
 
 package sorcer.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.AccessControlException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.resolver.Resolver;
 import sorcer.service.Context;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.AccessControlException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Sorcer utility class provides the global environment configuration for

@@ -17,9 +17,9 @@
 
 package sorcer.util;
 
-import java.io.Serializable;
-
 import sorcer.security.util.SorcerPrincipal;
+
+import java.io.Serializable;
 
 /* A Mandate is a serialized command object that contains all
  *  the data required to execute a specific request.

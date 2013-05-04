@@ -17,12 +17,6 @@
 
 package sorcer.util;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
@@ -34,11 +28,13 @@ import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
 import sorcer.core.SorcerConstants;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Accessor;
-import sorcer.service.DynamicAccessor;
-import sorcer.service.Servicer;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
 
 /**
  * ProviderLoactor is a simple wrapper class over Jini's LookupDiscover. It

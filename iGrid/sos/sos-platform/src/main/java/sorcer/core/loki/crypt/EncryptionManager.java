@@ -17,24 +17,12 @@
 
 package sorcer.core.loki.crypt;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PipedReader;
-import java.io.PipedWriter;
-import java.io.Reader;
+import javax.crypto.*;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyAgreement;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  * The encryption manager class implements block, stream, and threaded pipe

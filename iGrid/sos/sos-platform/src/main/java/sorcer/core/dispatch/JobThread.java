@@ -1,14 +1,13 @@
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
-import sorcer.core.exertion.NetJob;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;
 import sorcer.service.Job;
+
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
 
 public class JobThread extends Thread {
 	private final static Logger logger = Logger.getLogger(JobThread.class

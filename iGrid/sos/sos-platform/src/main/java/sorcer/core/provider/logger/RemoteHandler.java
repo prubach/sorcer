@@ -16,12 +16,12 @@
  */
 package sorcer.core.provider.logger;
 
+import sorcer.util.ProviderLookup;
+
 import java.rmi.RemoteException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import sorcer.util.ProviderLookup;
 
 /**
  * This class gets a proxy to the Logger and forwards the LogRecord to the

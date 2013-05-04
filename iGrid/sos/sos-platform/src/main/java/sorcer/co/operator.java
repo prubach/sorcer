@@ -16,27 +16,12 @@
  */
 package sorcer.co;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import sorcer.co.tuple.StrategyEntry;
-import sorcer.co.tuple.Tuple1;
-import sorcer.co.tuple.Tuple2;
-import sorcer.co.tuple.Tuple3;
-import sorcer.co.tuple.Tuple4;
-import sorcer.co.tuple.Tuple5;
-import sorcer.co.tuple.Tuple6;
+import sorcer.co.tuple.*;
 import sorcer.core.context.ListContext;
 import sorcer.service.ContextException;
 import sorcer.service.Strategy;
+
+import java.util.*;
 
 public class operator {
 

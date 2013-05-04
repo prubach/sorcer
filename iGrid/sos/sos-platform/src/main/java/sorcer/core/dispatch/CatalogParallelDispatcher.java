@@ -17,18 +17,13 @@
 
 package sorcer.core.dispatch;
 
+import sorcer.core.Provider;
+import sorcer.core.exertion.Jobs;
+import sorcer.service.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import sorcer.core.Provider;
-import sorcer.core.exertion.Jobs;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
 
 public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;

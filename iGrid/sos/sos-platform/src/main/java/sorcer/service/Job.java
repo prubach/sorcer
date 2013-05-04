@@ -17,16 +17,6 @@
 
 package sorcer.service;
 
-import java.rmi.RemoteException;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.security.auth.Subject;
-
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -39,6 +29,15 @@ import sorcer.core.signature.NetSignature;
 import sorcer.eo.operator;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
+
+import javax.security.auth.Subject;
+import java.rmi.RemoteException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * A job is a composite service-oriented message comprised of {@link Exertion}

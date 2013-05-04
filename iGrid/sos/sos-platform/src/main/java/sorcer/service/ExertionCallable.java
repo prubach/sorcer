@@ -1,9 +1,9 @@
 package sorcer.service;
 
+import net.jini.core.transaction.TransactionException;
+
 import java.rmi.RemoteException;
 import java.util.concurrent.Callable;
-
-import net.jini.core.transaction.TransactionException;
 
 public class ExertionCallable implements Callable<Exertion> {
 	private Exertion exertion;

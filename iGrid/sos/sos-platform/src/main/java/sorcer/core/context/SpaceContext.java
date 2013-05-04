@@ -17,9 +17,9 @@
 
 package sorcer.core.context;
 
-import java.rmi.RemoteException;
-
 import sorcer.service.ContextException;
+
+import java.rmi.RemoteException;
 
 /**
  * @author Mike Sobolewski

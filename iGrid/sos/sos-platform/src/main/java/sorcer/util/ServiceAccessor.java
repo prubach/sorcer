@@ -17,13 +17,6 @@
 
 package sorcer.util;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -41,6 +34,13 @@ import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.service.SignatureException;
+
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * A service discovery and management utility allowing to access services by

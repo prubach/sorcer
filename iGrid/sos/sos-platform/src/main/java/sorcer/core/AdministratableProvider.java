@@ -17,13 +17,12 @@
 
 package sorcer.core;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-
+import com.sun.jini.admin.DestroyAdmin;
 import net.jini.admin.Administrable;
 import net.jini.admin.JoinAdmin;
 
-import com.sun.jini.admin.DestroyAdmin;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 public interface AdministratableProvider extends Administrable, JoinAdmin,
 		DestroyAdmin, Remote {

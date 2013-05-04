@@ -17,12 +17,12 @@
 
 package sorcer.service;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-
 import net.jini.core.lease.Lease;
 import net.jini.core.transaction.server.TransactionConstants;
 import sorcer.core.Monitorable;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
 
 /**
  * An interface for controlling the session in the server. The session is

@@ -17,34 +17,20 @@
 
 package sorcer.core.context.eval;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.logging.Logger;
-
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.EvaluationException;
 import sorcer.util.GenericUtil;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.io.*;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * The class <code>ContextNode</code> is a wrapper for externally persisted

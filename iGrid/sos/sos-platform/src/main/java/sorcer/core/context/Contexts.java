@@ -17,28 +17,17 @@
 
 package sorcer.core.context;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import net.jini.id.Uuid;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.eval.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.util.SorcerUtil;
+
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * The Contexts class provides utility services to ServiceContext that are

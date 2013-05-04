@@ -34,10 +34,6 @@ package sorcer.security.sign;
  * limitations under the License.
  */
 
-import java.security.AccessController;
-
-import javax.security.auth.Subject;
-
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.LookupDiscovery;
@@ -45,6 +41,9 @@ import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
 import sorcer.core.context.ServiceContext;
+
+import javax.security.auth.Subject;
+import java.security.AccessController;
 
 /**
  * <p>

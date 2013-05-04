@@ -17,19 +17,13 @@
 
 package sorcer.core.context;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import net.jini.space.JavaSpace05;
-
 import sorcer.service.ContextException;
 import sorcer.space.array.DistribArray05;
 import sorcer.util.ProviderAccessor;
+
+import java.rmi.RemoteException;
+import java.util.*;
 
 /**
  * ServiceContext implementing the java.util.List interface.

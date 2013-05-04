@@ -17,17 +17,13 @@
 
 package sorcer.util.dbac;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-
 import sorcer.core.SorcerConstants;
 import sorcer.util.DataProtocolStream;
 import sorcer.util.Protocol;
 import sorcer.util.SorcerUtil;
+
+import java.io.*;
+import java.net.Socket;
 
 /**
  * The SocketProtocol class implements interface Protocol to ApplicationServer.

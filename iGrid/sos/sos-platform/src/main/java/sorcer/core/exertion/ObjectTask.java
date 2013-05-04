@@ -17,17 +17,13 @@
 
 package sorcer.core.exertion;
 
-import java.rmi.RemoteException;
-
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.core.signature.ServiceSignature;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
+
+import java.rmi.RemoteException;
 
 /**
  * The SORCER object task extending the basic task implementation {@link Task}.

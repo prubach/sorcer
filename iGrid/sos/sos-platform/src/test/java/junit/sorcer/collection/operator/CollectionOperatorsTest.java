@@ -1,20 +1,9 @@
 package junit.sorcer.collection.operator;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static sorcer.co.operator.array;
-import static sorcer.co.operator.bag;
-import static sorcer.co.operator.dictionary;
-import static sorcer.co.operator.entry;
-import static sorcer.co.operator.key;
-import static sorcer.co.operator.list;
-import static sorcer.co.operator.listContext;
-import static sorcer.co.operator.map;
-//import static sorcer.co.operator.table;
-import static sorcer.co.operator.value;
-import static sorcer.eo.operator.strategy;
-//import static sorcer.vo.operator.*;
+import org.junit.Test;
+import sorcer.core.context.ListContext;
+import sorcer.service.ContextException;
+import sorcer.service.EvaluationException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,17 +11,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
+import static sorcer.co.operator.*;
 
+//import static sorcer.co.operator.table;
+//import static sorcer.vo.operator.*;
 //import sorcer.co.tuple.FidelityEntry;
-import sorcer.co.tuple.StrategyEntry;
-import sorcer.co.tuple.Tuple2;
-import sorcer.co.tuple.Tuple3;
-import sorcer.core.context.ListContext;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
 //import sorcer.vfe.util.Table;
 
 /**

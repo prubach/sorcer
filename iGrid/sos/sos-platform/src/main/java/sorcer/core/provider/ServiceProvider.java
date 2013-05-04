@@ -57,6 +57,7 @@ import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
+import sorcer.tools.webster.Webster;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
@@ -76,7 +77,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import sorcer.tools.webster.Webster;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency

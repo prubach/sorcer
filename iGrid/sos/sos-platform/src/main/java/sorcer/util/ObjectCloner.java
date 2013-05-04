@@ -17,10 +17,6 @@
 
 package sorcer.util;
 
-import java.io.IOException;
-import java.rmi.MarshalledObject;
-import java.util.UUID;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import net.jini.io.MarshalledInstance;
@@ -28,6 +24,9 @@ import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
+
+import java.io.IOException;
+import java.rmi.MarshalledObject;
 
 public class ObjectCloner {
 

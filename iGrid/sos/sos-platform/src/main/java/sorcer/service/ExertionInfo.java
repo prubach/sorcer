@@ -17,11 +17,11 @@
 
 package sorcer.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import net.jini.id.Uuid;
 import sorcer.service.ExecState.Category;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Mike Sobolewski

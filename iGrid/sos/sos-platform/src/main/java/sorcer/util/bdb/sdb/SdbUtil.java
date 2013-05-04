@@ -17,34 +17,20 @@
 
 package sorcer.util.bdb.sdb;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.result;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.value;
-
-import java.net.URL;
-import java.util.List;
-
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.StorageManagement;
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.DatabaseStorer;
-import sorcer.service.DataspaceStorer;
-import sorcer.service.ExertionException;
-import sorcer.service.Identifiable;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+
+import java.net.URL;
+import java.util.List;
+
+import static sorcer.eo.operator.*;
 
 /**
  * @author Mike Sobolewski

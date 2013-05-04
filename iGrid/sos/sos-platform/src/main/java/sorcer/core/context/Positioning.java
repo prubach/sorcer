@@ -17,9 +17,9 @@
 
 package sorcer.core.context;
 
-import java.util.List;
-
 import sorcer.service.ContextException;
+
+import java.util.List;
 
 /**
  * @author Mike Sobolewski

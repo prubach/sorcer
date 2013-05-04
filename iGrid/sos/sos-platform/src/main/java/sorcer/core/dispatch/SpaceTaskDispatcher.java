@@ -17,9 +17,6 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
-import java.util.Set;
-
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
@@ -27,6 +24,9 @@ import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.util.ProviderAccessor;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 	

@@ -17,15 +17,14 @@
 
 package sorcer.security.util;
 
+import sorcer.core.SorcerConstants;
+import sorcer.util.Crypt;
+
+import javax.security.auth.Subject;
 import java.security.Principal;
 import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.security.auth.Subject;
-
-import sorcer.core.SorcerConstants;
-import sorcer.util.Crypt;
 
 public class Auth {
 

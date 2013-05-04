@@ -17,9 +17,9 @@
 
 package sorcer.core;
 
-import java.rmi.Remote;
-
 import sorcer.util.Mandator;
+
+import java.rmi.Remote;
 
 /**
  * A service that specializes in storing and retrieving SORCER service-oriented

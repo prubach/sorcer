@@ -17,10 +17,10 @@
 
 package sorcer.util.observable;
 
-import java.rmi.RemoteException;
-
 import net.jini.id.Uuid;
 import sorcer.service.EvaluationException;
+
+import java.rmi.RemoteException;
 
 public interface Observer {
 

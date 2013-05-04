@@ -17,12 +17,12 @@
 
 package sorcer.core.context.eval;
 
+import groovy.lang.GroovyShell;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
-import groovy.lang.GroovyShell;
 
 /**
  * This class is used to represent a Groovy Object stored in a dataContext. A special class was created

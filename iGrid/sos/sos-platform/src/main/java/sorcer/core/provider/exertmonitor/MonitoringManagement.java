@@ -17,12 +17,12 @@
 
 package sorcer.core.provider.exertmonitor;
 
-import java.rmi.Remote;
-
 import sorcer.core.Monitorable;
 import sorcer.core.monitor.MonitorManagement;
 import sorcer.core.monitor.MonitorSessionManagement;
 import sorcer.core.monitor.MonitorUIManagement;
+
+import java.rmi.Remote;
 
 public interface MonitoringManagement extends Monitorable, MonitorManagement,
 		MonitorSessionManagement, MonitorUIManagement, Remote {

@@ -17,18 +17,14 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
-import java.util.Set;
-
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 		SorcerConstants {

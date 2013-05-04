@@ -1,34 +1,24 @@
 package junit.sorcer.core.context;
 
+import org.junit.Test;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.ExertionException;
+
+import java.util.Map;
+import java.util.logging.Logger;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.entry;
 import static sorcer.co.operator.map;
-import static sorcer.eo.operator.revalue;
-import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.*;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.put;
-import static sorcer.eo.operator.result;
-import static sorcer.eo.operator.value;
+
 //import static sorcer.vo.operator.evaluators;
 //import static sorcer.vo.operator.expr;
 //import static sorcer.vo.operator.name;
 //import static sorcer.vo.operator.var;
 //import static sorcer.vo.operator.vars;
-
-import java.rmi.RemoteException;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import org.junit.Test;
-
-import sorcer.core.context.PositionalContext;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExertionException;
 
 /**
  * @author Mike Sobolewski

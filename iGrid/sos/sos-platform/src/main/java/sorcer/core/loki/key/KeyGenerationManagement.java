@@ -1,16 +1,11 @@
 package sorcer.core.loki.key;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.Vector;
+import net.jini.id.Uuid;
 
 import javax.crypto.KeyAgreement;
-
-import net.jini.id.Uuid;
+import java.security.*;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * The Key Generation Management provides the interface for

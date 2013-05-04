@@ -17,11 +17,10 @@
 
 package sorcer.core.loki.crypt;
 
+import javax.crypto.KeyAgreement;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-
-import javax.crypto.KeyAgreement;
 
 /**
  * The encryption management interface describes the standard methods for both

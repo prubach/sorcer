@@ -22,8 +22,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import sorcer.util.bdb.sdb.SdbConnection;
-
 /**
  * @author Mike Sobolewski
  */
