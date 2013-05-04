@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>sorcer-provider</artifactId>
-	<version>1.0.0-alfa-2</version>
+	<version>1.0.0-alfa-3</version>
 	<packaging>maven-archetype</packaging>
 
     <name>SORCER tools :: sorcer provider archetype</name>
