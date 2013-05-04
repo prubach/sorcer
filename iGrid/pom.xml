@@ -30,7 +30,28 @@
         <module>examples</module>
     </modules>
 
-    <dependencyManagement>
+	<developers>
+		<developer>
+			<name>Mike Sobolewski</name>
+			<id>mwsobol</id>
+			<timezone>-6</timezone>
+			<organization>SorcerSoft S.A.</organization>
+		</developer>
+		<developer>
+			<name>Paweł Rubach</name>
+			<id>prubach</id>
+			<timezone>+1</timezone>
+			<organization>SorcerSoft S.A.</organization>
+		</developer>
+		<developer>
+			<name>Rafał Krupiński</name>
+			<id>rafalkrupinski</id>
+			<timezone>+1</timezone>
+			<organization>SorcerSoft S.A.</organization>
+		</developer>
+	</developers>
+
+	<dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
