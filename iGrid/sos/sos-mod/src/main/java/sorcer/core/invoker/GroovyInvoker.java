@@ -25,6 +25,7 @@ import java.rmi.RemoteException;
 import java.util.Iterator;
 
 import sorcer.core.Invoking;
+import sorcer.service.Evaluation;
 import sorcer.service.Parameter;
 import sorcer.core.context.model.Par;
 import sorcer.service.ContextException;
@@ -168,7 +169,7 @@ public class GroovyInvoker extends ServiceInvoker {
 			val = entry.getValue();
 			key = (String) entry.getName();
 			if (val instanceof Invoking) {
-				val = ((Invoking) val).getValue();
+				val = ((Evaluation) val).getValue();
 			}
 			shell.setVariable(key, val);
 		}

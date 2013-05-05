@@ -63,7 +63,7 @@ import sorcer.util.observable.Observer;
  * of the dataContext.
  */
 @SuppressWarnings("rawtypes")
-public abstract class ServiceInvoker<T> extends Observable implements Invoking<T>, Observer {
+public abstract class ServiceInvoker<T> extends Observable implements Evaluation<T>, Invoking<T>, Observer {
 
 	//the cached value
 	protected T value;
@@ -167,19 +167,17 @@ public abstract class ServiceInvoker<T> extends Observable implements Invoking<T
 	 * {@link #invoke} so the invoker is aware that the new par may be added to
 	 * the model.
 	 * 
-	 * @param name
-	 *            Name of the variable to be added
-	 * @param value
-	 *            Initial value or new value for the variable
+	 * @param parameter
+	 *            a parameter to be added
+
 	 * @throws RemoteException
 	 * @throws EvaluationException
-	 * @throws VarException
 	 */
-	public ServiceInvoker addPar(Par par) throws EvaluationException,
+	public ServiceInvoker addPar(Par parameter) throws EvaluationException,
 			RemoteException {
-		if (par.getAsis() instanceof ServiceInvoker) {
-			((ServiceInvoker) par.getValue()).addObserver(this);
-			pars.add(par);
+		if (parameter.getAsis() instanceof ServiceInvoker) {
+			((ServiceInvoker) parameter.getValue()).addObserver(this);
+			pars.add(parameter);
 			value = null;
 			setChanged();
 			notifyObservers(this);
