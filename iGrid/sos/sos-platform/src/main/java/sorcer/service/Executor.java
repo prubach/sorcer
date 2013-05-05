@@ -61,8 +61,8 @@ public interface Executor {
 	 * 
 	 * @param subject
 	 *            <code>subject</code> invoking the <code>exertion</code>
-	 * @param task
-	 *            an input task
+	 * @param signature
+	 *            an service reference
 	 * @return true if authorized, otherwise false
 	 * @throws RemoteException
 	 */

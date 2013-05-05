@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package sorcer.core.invoker;
+package sorcer.core;
 
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
@@ -58,7 +58,7 @@ import java.rmi.RemoteException;
  * of the dataContext.
  */
 @SuppressWarnings("rawtypes")
-public interface Invoking<T> extends Evaluation<T>, Serializable {
+public interface Invoking<T> {
 
 	public T invoke(Parameter... entries) throws RemoteException,
 		EvaluationException;

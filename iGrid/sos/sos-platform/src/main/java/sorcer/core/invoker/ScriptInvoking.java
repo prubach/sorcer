@@ -18,10 +18,12 @@
 package sorcer.core.invoker;
 
 
+import sorcer.core.Invoking;
+
 /**
  * @author Mike Sobolewski
  */
 
-public interface ScriptInvoking extends Invoking {
+public interface ScriptInvoking<T> extends Invoking<T> {
 
 }

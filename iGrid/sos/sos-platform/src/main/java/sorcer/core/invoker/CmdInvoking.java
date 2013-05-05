@@ -18,10 +18,12 @@
 package sorcer.core.invoker;
 
 
+import sorcer.core.Invoking;
+
 /**
  * @author Mike Sobolewski
  */
 
-public interface CmdInvoking extends Invoking {
+public interface CmdInvoking<T> extends Invoking<T> {
 
 }
