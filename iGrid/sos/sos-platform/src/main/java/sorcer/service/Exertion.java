@@ -20,6 +20,7 @@ package sorcer.service;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
+import sorcer.core.Invoking;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Strategy.Access;
@@ -70,7 +71,7 @@ import java.util.List;
  * @see sorcer.service.AsyncExertion
  * @author Mike Sobolewski
  */
-public interface Exertion extends Serializable, Evaluation<Object>, Identifiable {
+public interface Exertion extends  Evaluation<Object>, Invoking<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.
@@ -183,7 +184,6 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	 *             if a transaction error occurs
 	 * @throws ExertionException
 	 *             if processing this exertion causes an error
-	 * @see #setServicer
 	 */
 	public <T extends Exertion> T exert(Transaction txn, Parameter... entries) throws TransactionException,
 			ExertionException, RemoteException;
@@ -252,6 +252,10 @@ public interface Exertion extends Serializable, Evaluation<Object>, Identifiable
 	 *         {@link Jobber}.
 	 */
 	public boolean isJob();
+
+    public boolean isTask();
+
+    public boolean isCmd();
 
 	/**
 	 * Return true if this exertion is atop an acyclic graph in which no node

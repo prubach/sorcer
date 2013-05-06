@@ -1728,6 +1728,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return null;
 	}
 
+    public Context append(Context context) throws ContextException {
+        putAll((ServiceContext)context);
+        return this;
+    }
+
 	public Context appendContext(Context cntxt) throws ContextException {
 		String key;
 		Enumeration e = cntxt.contextPaths();

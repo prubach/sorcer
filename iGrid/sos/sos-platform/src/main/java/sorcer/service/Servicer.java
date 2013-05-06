@@ -20,6 +20,7 @@ package sorcer.service;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
@@ -27,7 +28,7 @@ import java.rmi.RemoteException;
  * SORCER. Each servicer accepts a request for {@link sorcer.service.Exertion} to
  * exert the federation of collaborating services.
  * 
- * @author Mike Sobolewski
+ * @author Mike Sobolewski                ś
  */
 public interface Servicer {
 	

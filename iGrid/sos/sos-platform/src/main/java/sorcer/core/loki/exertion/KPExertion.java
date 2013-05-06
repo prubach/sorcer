@@ -245,8 +245,51 @@ public class KPExertion implements Exertion {
 		return null;
 	}
 
+    /* (non-Javadoc)
+ * @see sorcer.service.Exertion#isProvisionable()
+ */
+    @Override
     public boolean isProvisionable() {
-        return getControlContext().isProvisionable();
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isTask()
+     */
+    @Override
+    public boolean isTask() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isCmd()
+     */
+    @Override
+    public boolean isCmd() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Invoker#invoke(sorcer.service.Parameter[])
+     */
+    @Override
+    public Object invoke(Parameter... entries) throws RemoteException,
+            EvaluationException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Invoker#invoke(sorcer.service.Context, sorcer.service.Parameter[])
+     */
+    @Override
+    public Object invoke(Context context, Parameter... entries)
+            throws RemoteException, EvaluationException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

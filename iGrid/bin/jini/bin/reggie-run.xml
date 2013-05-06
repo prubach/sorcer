@@ -9,10 +9,10 @@
             <jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <classpath refid="boot.classpath"/>
             <arg value="../configs/start-reggie.config" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
             <sysproperty key="sorcer.home" value="${sorcer.home}" />
             <sysproperty key="java.security.policy" value="../policy/jini.policy" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
-            <sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
         </java>
 	</target>
 

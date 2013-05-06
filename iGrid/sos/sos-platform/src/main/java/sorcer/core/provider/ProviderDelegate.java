@@ -230,7 +230,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * A remote inner proxy implements Remote interface. Usually outer proxy
 	 * complements its functionality by invoking remote calls on the inner proxy
 	 * server. Thus, inner proxy can make remote calls on another service
-	 * provider, for example {@link #Servicer.service(Exertion)), while the
+	 * provider, for example {@link Servicer#service), while the
 	 * outer proxy still can call directly on the originating service provider.
 	 */
 	private Remote innerProxy = null;
@@ -244,7 +244,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * redirected calls using its inner proxy (redirected remote invocations).
 	 * Any method of not Remote interface implemented by a SORCER service
 	 * provider can be invoked via the Servicer remote interface,
-	 * {@link #Servicer.service(Exertion)} - recommended approach. That
+	 * {@link Servicer#service} - recommended approach. That
 	 * provider's direct invocation method is embedded into a service method of
 	 * the provided exertion.
 	 */
@@ -669,12 +669,11 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		// get exporters for outer and inner proxy
 		getExporters(jconfig);
-		logger.fine("exporting provider: " + provider);
+		logger.info("exporting provider: " + provider);
 		logger.info("outerExporter = " + outerExporter);
 		try {
-			outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
-					outerExporter.export(provider), getServerUuid());
-			//outerProxy = outerExporter.export((Remote) provider);
+		    outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
+		        outerExporter.export(provider), getServerUuid());
 			logger.fine("outerProxy: " + outerProxy);
 		} catch (ExportException ee) {
 			logger.throwing(ProviderDelegate.class.getName(), "configure", ee);
@@ -1222,20 +1221,20 @@ public class ProviderDelegate implements SorcerConstants {
 			// job.copyNodes(outJob);
 			// job.setStatus(outJob.getStatus());
 
-			try {
-				// this is really to invoke notify observers on Variables which
-				// are being observed by a Variable, which is contained
-				// by a ResponseVariable. the Variable contained by the
-				// ResponseVariable needs to calculate the new response based
-				// on the current values in the observable Variables.
-				// when the DataNodes of those Variables were changed, nobody
-				// told those Variables...indeed, the Variables contained by
-				// ResponseVariables should be observing DataNodes...
-				// job.restoreDependencies();
-			} catch (Throwable ex) {
-				throw new RemoteException(
-						"restoring dependencies in job failed", ex);
-			}
+//			try {
+//				// this is really to invoke notify observers on Variables which
+//				// are being observed by a Variable, which is contained
+//				// by a ResponseVariable. the Variable contained by the
+//				// ResponseVariable needs to calculate the new response based
+//				// on the current values in the observable Variables.
+//				// when the DataNodes of those Variables were changed, nobody
+//				// told those Variables...indeed, the Variables contained by
+//				// ResponseVariables should be observing DataNodes...
+//				// job.restoreDependencies();
+//			} catch (Throwable ex) {
+//				throw new RemoteException(
+//						"restoring dependencies in job failed", ex);
+//			}
 			return job;
 		} else
 			return outJob;
@@ -1474,8 +1473,6 @@ public class ProviderDelegate implements SorcerConstants {
 	/**
 	 * Set a name of the provider. The name may be defined in this provider's
 	 * properties file.
-	 * 
-	 * @see #load(name)
 	 */
 	public void setProviderName(String name) throws RemoteException {
 		config.setProviderName(name);
@@ -1515,7 +1512,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * provider.
 	 * <li>A main UIDescriptor if the provider overrides
 	 * <li>Extra lookup attributes set via #addExtraLookupAttribute(Entry)
-	 * {@link ServiceExerter#getMainUIDescriptor()}.
+	 * {@link ServiceProvider#getMainUIDescriptor()}.
 	 * </ul>
 	 * 
 	 * @return an array of Jini Service Entries.
@@ -2592,7 +2589,7 @@ public class ProviderDelegate implements SorcerConstants {
 	/**
 	 * Returns a proxy object for this provider. If the smart proxy is alocated
 	 * then returns a non exported object to be registerd with loookup services.
-	 * However, if a smart proxy implements {@link OuterProxy} then the
+	 * However, if a smart proxy implements {@link sorcer.core.provider.proxy.Outer} then the
 	 * provider's proxy is set as its inner proxy. Otherwise the {@link Remote}
 	 * outer proxy of this provider is returned.
 	 * 

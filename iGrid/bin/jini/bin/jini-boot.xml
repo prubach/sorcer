@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Jini basic services" default="jini all" basedir=".">
+<project name="Jini booter services" default="jini all" basedir=".">
 
     <import file="../../common-run.xml" />
 
@@ -7,10 +7,10 @@
         <java classname="sorcer.boot.ServiceStarter" fork="yes">
             <jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <classpath refid="boot.classpath"/>
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
             <arg value="../configs/boot-jini.config" />
             <sysproperty key="sorcer.home" value="${sorcer.home}" />
             <sysproperty key="java.security.policy" value="../policy/jini.policy" />
-            <sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
         </java>
 	</target>
 

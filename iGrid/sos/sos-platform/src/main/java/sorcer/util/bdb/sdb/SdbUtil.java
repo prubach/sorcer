@@ -67,9 +67,7 @@ public class SdbUtil {
 	/**
 	 * Returns a dataContext to be used with
 	 * {@link StorageManagement#contextStore(Context)}
-	 * 
-	 * @param uuid
-	 *            {@link Uuid}
+	 *
 	 * @param object
 	 *            to be stored
 	 * @return storage {@link Context}
@@ -87,7 +85,7 @@ public class SdbUtil {
 
 	/**
 	 * Returns a dataContext to be used with
-	 * {@link StorageManagement#rertieve(Context)}
+	 * {@link StorageManagement#contextRetrieve(Context)}
 	 * 
 	 * @param uuid
 	 *            {@link Uuid}

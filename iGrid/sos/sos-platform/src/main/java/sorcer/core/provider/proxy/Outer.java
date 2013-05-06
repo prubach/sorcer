@@ -38,7 +38,7 @@ public interface Outer extends Administrable, Servicer {
 	 * its inner proxy.
 	 * 
 	 * @return an inner proxy of thos proxy
-	 * @throws ProviderException
+	 * @throws RemoteException
 	 */
 	public Remote getInner() throws RemoteException;
 

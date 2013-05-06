@@ -15,7 +15,8 @@
 				<pathelement location="${jini.lib}/jsk-lib.jar" />
 				<pathelement location="${jini.lib}/jsk-platform.jar" />
 			</classpath>
-			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 		</java>
 	</target>

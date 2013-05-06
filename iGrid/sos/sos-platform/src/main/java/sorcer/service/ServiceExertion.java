@@ -43,7 +43,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable, MonitoredExertion {
+public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
 
 	static final long serialVersionUID = -3907402419486719293L;
 
@@ -152,7 +152,35 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 				+ Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + "/"
 				+ Integer.toString(c.get(Calendar.YEAR));
 	}
-	
+
+    /* (non-Javadoc)
+	 * @see sorcer.service.Invoker#invoke(sorcer.service.Parameter[])
+	 */
+    @Override
+    public Object invoke(Parameter... entries) throws RemoteException,
+            EvaluationException {
+        try {
+            return exert(entries);
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Invoker#invoke(sorcer.service.Context, sorcer.service.Parameter[])
+     */
+    @Override
+    public Object invoke(Context context, Parameter... entries)
+            throws RemoteException, EvaluationException {
+        substitute(entries);
+        try {
+            dataContext.append(context);
+            return exert();
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
+    }
+
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction, sorcer.core.dataContext.Path.Entry[])
 	 */
@@ -245,12 +273,8 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	public void setFlow(Flow type) {
 		controlContext.setFlowType(type);
 	}
-	
-	public abstract boolean isJob();
 
-	public abstract boolean isTask();
-
-	public List<Signature> getSignatures() {
+    public List<Signature> getSignatures() {
 		return signatures;
 	}
 
@@ -908,7 +932,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	public void setMonitorSession(MonitoringSession monitorSession) {
 		this.monitorSession = monitorSession;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see sorcer.service.Evaluation#getValue()
 	 */
@@ -923,37 +947,51 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getAsIs()
-	 */
-	@Override
-	public Object getAsis() throws EvaluationException, RemoteException {
-		return getValue();
-	}
+    /* (non-Javadoc)
+     * @see sorcer.service.Evaluation#getAsIs()
+     */
+    @Override
+    public Object getAsis() throws EvaluationException, RemoteException {
+        return getValue();
+    }
 
-	public Object getValue(String path) throws ContextException {
-		if (path.startsWith("super")) {
-			return parent.getDataContext().getValue(path.substring(6));
-		} else
-			return dataContext.getValue(path);
-	}
+    public Object getValue(String path) throws ContextException {
+        if (path.startsWith("super")) {
+            return parent.getContext().getValue(path.substring(6));
+        } else
+            return dataContext.getValue(path);
+    }
 
 	public Object putValue(String path, Object value) throws ContextException {
 		return dataContext.putValue(path, value);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#getExceptions()
-	 */
-	@Override
-	public List<ThrowableTrace> getExceptions() {
-		List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
-		if (controlContext != null)
-			return controlContext.getExceptions();
-		else
-			return exceptions;
-	}
+    /* (non-Javadoc)
+ * @see sorcer.service.Exertion#getExceptions()
+ */
+    @Override
+    public List<ThrowableTrace> getExceptions() {
+        List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
+        if (controlContext != null)
+            return controlContext.getExceptions();
+        else
+            return exceptions;
+    }
+
+    @Override
+    public boolean isJob() {
+        return false;
+    }
+
+    @Override
+    public boolean isTask()  {
+        return false;
+    }
+
+    @Override
+    public boolean isCmd()  {
+        return false;
+    }
 
 	
 	public String describe() {

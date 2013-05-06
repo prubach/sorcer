@@ -234,8 +234,40 @@ public class CCKExertion implements Exertion {
 		return null;
 	}
 
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isProvisionable()
+     */
+    @Override
     public boolean isProvisionable() {
-        return getControlContext().isProvisionable();
+        // TODO Auto-generated method stub
+        return false;
     }
 
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isTask()
+     */
+    @Override
+    public boolean isTask() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isCmd()
+     */
+    @Override
+    public boolean isCmd() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Object invoke(Parameter... entries) throws RemoteException, EvaluationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Object invoke(Context context, Parameter... entries) throws RemoteException, EvaluationException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
