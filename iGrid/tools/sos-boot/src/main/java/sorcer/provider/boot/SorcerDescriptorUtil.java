@@ -304,7 +304,7 @@ public class SorcerDescriptorUtil {
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
-		String implClass = "sorcer.core.provider.jobber.ExertionSpacer";
+		String implClass = "sorcer.core.provider.jobber.ServiceSpacer";
 		return (new SorcerServiceDescriptor(spacerCodebase, policy,
 				spacerClasspath, implClass, spacerConfig));
 
@@ -312,7 +312,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ExertionJobber using the Webster port created
+	 * ServiceJobber using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -336,7 +336,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ExertionJobber using the Webster port created
+	 * ServiceJobber using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -359,7 +359,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ExertionJobber
+	 * ServiceJobber
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -384,7 +384,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ExertionJobber.
+	 * ServiceJobber.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -419,7 +419,7 @@ public class SorcerDescriptorUtil {
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
-		String implClass = "sorcer.core.provider.jobber.ExertionJobber";
+		String implClass = "sorcer.core.provider.jobber.ServiceJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
 				jobberClasspath, implClass, jobberConfig));
 
