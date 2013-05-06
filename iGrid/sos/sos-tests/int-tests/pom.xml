@@ -12,6 +12,11 @@
 	<artifactId>int-tests</artifactId>
 	<name>SORCER sorcer-int-tests :: Tests</name>
 
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+		<skipTests>true</skipTests>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
