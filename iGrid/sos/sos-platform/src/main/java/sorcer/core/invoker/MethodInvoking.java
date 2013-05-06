@@ -18,7 +18,7 @@
 package sorcer.core.invoker;
 
 
-import sorcer.core.Invoking;
+import sorcer.service.Invoking;
 
 /**
  * @author Mike Sobolewski

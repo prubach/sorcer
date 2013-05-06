@@ -123,7 +123,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.Invoking#invoke(sorcer.service.Parameter[])
+	 * @see sorcer.service.Invoking#invoke(sorcer.service.Parameter[])
 	 */
 	@Override
 	public Object invoke(Parameter... entries) throws RemoteException,
@@ -134,7 +134,7 @@ public class ServiceModel extends ServiceContext<Object> implements Modeling,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.Invoking#invoke(sorcer.service.Context,
+	 * @see sorcer.service.Invoking#invoke(sorcer.service.Context,
 	 * sorcer.service.Parameter[])
 	 */
 	@Override

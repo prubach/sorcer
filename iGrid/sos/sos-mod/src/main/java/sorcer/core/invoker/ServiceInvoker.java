@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.co.tuple.Entry;
-import sorcer.core.Invoking;
+import sorcer.service.Invoking;
 import sorcer.service.*;
 import sorcer.core.context.model.Par;
 import sorcer.core.context.model.ServiceModel;

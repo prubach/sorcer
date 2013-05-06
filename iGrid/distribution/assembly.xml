@@ -99,10 +99,10 @@
         <fileSet>
             <!-- WHY DOESNT settings.localRepository WORK HERE??? -->
             <directory>
-                ${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${hyperic.version}/lib
+                ${user.home}/.m2/repository/org/sorcersoft/sigar/${hyperic.version}/lib
             </directory>
             <fileMode>0644</fileMode>
-            <outputDirectory>lib/${org.sorcersoft.sigar.sigar}</outputDirectory>
+            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
             <excludes>
                 <exclude>junit.jar</exclude>
                 <exclude>log4j.jar</exclude>
@@ -116,51 +116,12 @@
        <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <excludes>
-                <exclude>net.jini:jsk-dl</exclude>
-                <exclude>net.jini:start</exclude>
-                <exclude>net.jini:jsk-platform</exclude>
-                <exclude>net.jini:jsk-resources</exclude>
-                <exclude>net.jini:jsk-lib</exclude>
-                <exclude>net.jini.lookup:serviceui</exclude>
-                <exclude>org.apache.river:reggie-dl</exclude>
-                <exclude>org.apache.river:reggie</exclude>
-                <exclude>org.apache.river:mahalo-dl</exclude>
-                <exclude>org.apache.river:mahalo</exclude>
-                <exclude>org.apache.river:fiddler-dl</exclude>
-                <exclude>org.apache.river:fiddler</exclude>
-                <exclude>org.apache.river:mercury-dl</exclude>
-                <exclude>org.apache.river:mercury</exclude>
-                <exclude>org.apache.river:norm-dl</exclude>
-                <exclude>org.apache.river:norm</exclude>
-                <exclude>org.apache.river:outrigger-dl</exclude>
-                <exclude>org.apache.river:outrigger</exclude>
-                <exclude>org.apache.river:start</exclude>
-
-                <exclude>org.sorcersoft.sorcer:sos-platform:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-env:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-boot:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-webster:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-shell:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-util:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-exertlet-sui:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:sos-security-sui:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:commons-req:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:commons-prv:jar</exclude>
-                <!-- sos-providers -->
-                <exclude>org.sorcersoft.sorcer:cataloger-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:dbp-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:dsp-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:exertmonitor-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:jobber-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:logger-prv:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:logger-sui:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:spacer-prv:jar</exclude>
-
-                <!--<exclude>org.sorcersoft.sorcer:dependencies:jar</exclude>-->
-                <exclude>org.sorcersoft.sorcer:browser:jar</exclude>
-                <exclude>org.sorcersoft.sorcer:locker:jar</exclude>
-
-
+                <exclude>net.jini:*</exclude>
+                <exclude>net.jini.lookup:*</exclude>
+                <exclude>org.apache.river:*</exclude>
+                <exclude>org.sorcersoft.sorcer:*</exclude>
+                <exclude>org.rioproject.resolver:*</exclude>
+                <exclude>org.rioproject:*</exclude>
 
                 <exclude>ant:*</exclude>
                 <exclude>jline:*</exclude>
@@ -168,12 +129,7 @@
                 <exclude>*:oar</exclude>
                 <exclude>*:zip</exclude>
 
-                <exclude>org.rioproject.resolver:resolver-aether</exclude>
-                <exclude>org.rioproject.resolver:resolver-project</exclude>
-                <exclude>org.rioproject.resolver:resolver-api</exclude>
-                <exclude>org.rioproject:rio-platform</exclude>
-                <exclude>org.rioproject:rio-start</exclude>
-        
+
         
                 <!-- The following exclusions are for the resolver(s) and it's dependencies -->
 <!--                <exclude>org.rioproject.resolver:resolver-aether</exclude>
@@ -190,7 +146,7 @@
                 <exclude>org.eclipse.jdt.core.compiler:*</exclude>
                 <exclude>org.mvel:*</exclude>-->
                 </excludes>
-            <outputDirectory>lib/commons/lib</outputDirectory>
+            <outputDirectory>lib/commons</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
@@ -198,6 +154,10 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
+                <include>net.jini:*</include>
+                <include>net.jini.lookup:*</include>
+                <include>org.apache.river:*</include>
+<!--
                 <include>net.jini:jsk-dl</include>
                 <include>net.jini:start</include>
                 <include>net.jini:jsk-platform</include>
@@ -217,6 +177,7 @@
                 <include>org.apache.river:outrigger-dl</include>
                 <include>org.apache.river:outrigger</include>
                 <include>org.apache.river:start</include>
+-->
             </includes>
             <outputDirectory>lib/${org.apache.river}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
@@ -226,14 +187,15 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>org.sorcersoft.sorcer:sos-platform:jar</include>
+                <include>org.sorcersoft.sorcer:*</include>
+<!--
                 <include>org.sorcersoft.sorcer:sos-env:jar</include>
                 <include>org.sorcersoft.sorcer:sos-util:jar</include>
                 <include>org.sorcersoft.sorcer:sos-exertlet-sui:jar</include>
                 <include>org.sorcersoft.sorcer:sos-security-sui:jar</include>
                 <include>org.sorcersoft.sorcer:commons-req:jar</include>
                 <include>org.sorcersoft.sorcer:commons-prv:jar</include>
-                <!-- sos-providers -->
+                &lt;!&ndash; sos-providers &ndash;&gt;
                 <include>org.sorcersoft.sorcer:cataloger-prv:jar</include>
                 <include>org.sorcersoft.sorcer:dbp-prv:jar</include>
                 <include>org.sorcersoft.sorcer:dsp-prv:jar</include>
@@ -242,13 +204,14 @@
                 <include>org.sorcersoft.sorcer:logger-prv:jar</include>
                 <include>org.sorcersoft.sorcer:logger-sui:jar</include>
                 <include>org.sorcersoft.sorcer:spacer-prv:jar</include>
-                <!-- tools-->
+                &lt;!&ndash; tools&ndash;&gt;
                 <include>org.sorcersoft.sorcer:sos-boot:jar</include>
                 <include>org.sorcersoft.sorcer:sos-webster:jar</include>
                 <include>org.sorcersoft.sorcer:sos-shell:jar</include>
                 <include>org.sorcersoft.sorcer:dependencies:jar</include>
                 <include>org.sorcersoft.sorcer:browser:jar</include>
                 <include>org.sorcersoft.sorcer:locker:jar</include>
+-->
             </includes>
             <outputDirectory>lib/${org.sorcersoft.sorcer}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
@@ -258,11 +221,15 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useStrictFiltering>true</useStrictFiltering>
             <includes>
+                <include>org.rioproject.resolver:*</include>
+                <include>org.rioproject:*</include>
+<!--
                 <include>org.rioproject.resolver:resolver-aether</include>
                 <include>org.rioproject.resolver:resolver-project</include>
                 <include>org.rioproject.resolver:resolver-api</include>
                 <include>org.rioproject:rio-platform</include>
                 <include>org.rioproject:rio-start</include>
+-->
             </includes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
