@@ -223,8 +223,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         Sorcer.getProperties();
         serviceClassLoader = Thread.currentThread().getContextClassLoader();
         final Configuration config = ConfigurationProvider.getInstance(
-                // args, delegate.getClass().getClassLoader());
-                args, serviceClassLoader);
+                 args, delegate.getClass().getClassLoader());
+                //args, serviceClassLoader);
         delegate.setJiniConfig(config);
         // inspect class loader tree
         // com.sun.jini.start.ClassLoaderUtil.displayContextClassLoaderTree();
