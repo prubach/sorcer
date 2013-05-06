@@ -211,9 +211,12 @@ public class TaskTest {
 		//logger.info("objTask value: " + value(objTask));
 		assertEquals("Wrong value for 500.0", value(objTask), 500.0);
 		
-		ObjectTask objTask2 = task(sig("multiply", new Multiply(), double[].class), 
+		ObjectTask objTask2 = (ObjectTask)task("test", sig("multiply", new Multiply(), double[].class),
 				context(args(new double[] {10.0, 50.0}), result("result/y")));
-		name("t4", objTask2);
+		//TODO: Fix this name...
+		//name("t4", objTask2);
+
+
 		//logger.info("objTask2 value: " + value(objTask2));
 		assertEquals("Wrong value for 500.0", value(objTask2), 500.0);
 	}
