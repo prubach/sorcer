@@ -70,7 +70,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 		System.out.println("Codebase:" + System.getProperty("java.rmi.server.codebase"));
 	}
 	
-	@BeforeClass 
+	@BeforeClass
 	public static void setUpOnce() throws IOException, InterruptedException {
 		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("SORCER_HOME") 
 				+ "/sos/sos-tests/ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
@@ -79,8 +79,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 		System.out.println("status: " + result.getExitValue());	
 		waitForServices();
 	}
-	
-	public static void waitForServices() throws InterruptedException {
+
+    public static void waitForServices() throws InterruptedException {
 		boolean servicesUp = false;
 		int tries = 0; 
 		while (!servicesUp && tries < 8) {

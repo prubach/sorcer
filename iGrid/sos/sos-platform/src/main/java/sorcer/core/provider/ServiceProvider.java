@@ -1800,7 +1800,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         if (joinManager != null)
             joinManager.terminate();
         tally = tally - 1;
-        logger.finer("destroyd provider: " + getProviderName() + ", providers left: " + tally);
+        logger.finer("destroyed provider: " + getProviderName() + ", providers left: " + tally);
         if (threadManager != null)
             threadManager.terminate();
         unexport(true);
