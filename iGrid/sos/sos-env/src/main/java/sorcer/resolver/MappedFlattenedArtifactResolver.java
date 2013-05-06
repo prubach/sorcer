@@ -19,6 +19,10 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	protected Map<String, String> groupDirMap;
 
+	public MappedFlattenedArtifactResolver(File rootDir) {
+		this.rootDir = rootDir;
+	}
+
 	{
 		String resourceName = "META-INF/maven/repolayout.properties";
 		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
