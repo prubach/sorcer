@@ -2,6 +2,9 @@ package sorcer.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,23 +26,20 @@ import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.collection.CollectResult;
-import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.impl.ArtifactResolver;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResolutionException;
-import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.sonatype.aether.util.artifact.JavaScopes;
 import org.sonatype.aether.util.graph.DefaultDependencyNode;
 
-import sorcer.util.ArtifactResultTransformer;
 import sorcer.util.ArtifactUtil;
 import sorcer.util.EnvFileHelper;
 import sorcer.util.PolicyFileHelper;
 
-import com.google.common.collect.Lists;
+import com.jcabi.aether.Aether;
 
 /**
  * Boot sorcer provider
@@ -54,7 +54,7 @@ public class BootMojo extends AbstractMojo {
 	/**
 	 * Location of the services file.
 	 */
-	@Parameter(required = true, defaultValue = "${project.build.outputDirectory}/META-INF/sorcer/services.config")
+	@Parameter
 	private File servicesConfig;
 
 	@Parameter(required = true, defaultValue = "true")
@@ -90,12 +90,16 @@ public class BootMojo extends AbstractMojo {
 	protected String mainClass;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		String projectOutDir = project.getBuild().getDirectory();
+		if (servicesConfig == null) {
+			servicesConfig = new File("first-prv/target/classes/META-INF/sorcer/services.config");
+		}
+
 		Log log = getLog();
 		log.debug("servicesConfig: " + servicesConfig);
 		// log.debug("webster: " + webster);
 		log.info("starting sorcer");
 
-		String projectOutDir = project.getBuild().getDirectory();
 		String policy = PolicyFileHelper.preparePolicyFile(projectOutDir);
 
 		// prepare sorcer.env with updated group
@@ -103,49 +107,79 @@ public class BootMojo extends AbstractMojo {
 		String classPath = resolveClassPath("org.sorcersoft.sorcer:sos-boot:11.1");
 		getLog().info("Classpath = " + classPath);
 
-		ProcessBuilder procBld = new ProcessBuilder().command("java", _D("sorcer.env.file", sorcerEnv),
-				_D("java.security.policy", policy), "-cp", classPath, mainClass, servicesConfig.getPath());
-		procBld.redirectErrorStream(true);
-		Process proc = null;
+		Map<String, Object> _d = new HashMap<String, Object>();
+		_d.put("java.net.preferIPv4Stack", true);
+		_d.put("java.rmi.server.useCodebaseOnly", false);
+		_d.put("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
+		String sorcerHome = System.getenv("SORCER_HOME");
+		_d.put("sorcer.home", sorcerHome);
+		_d.put("rio.home", System.getenv("RIO_HOME"));
+		_d.put("webster.tmp.dir", new File(sorcerHome, "data"));
+		_d.put("sorcer.env.file", sorcerEnv);
+		_d.put("java.security.policy", policy);
 
+		ProcessBuilder procBld = new ProcessBuilder().command("java");
+		procBld.command().addAll(_D(_d));
+		procBld.command().addAll(Arrays.asList("-classpath", classPath, mainClass, servicesConfig.getPath()));
+
+		Process proc = null;
 		try {
-			proc = procBld.start();
-			Thread.sleep(100);
-			// if next call throws exception, then we're probably good - process
-			// hasn't finished yet.
-			int x = proc.exitValue();
-			throw new MojoExecutionException("Process exited with value " + x);
-		} catch (IllegalThreadStateException x) {
-			if (proc != null) {
-				// put the process object in the context, so DestroyMojo can
-				// kill it.
-				putProcess(getPluginContext(), proc);
-			} else {
-				throw new MojoFailureException("Could not start java process");
+			try {
+				proc = procBld.start();
+				// give it a second to exit on error
+				Thread.sleep(1000);
+				// if next call throws exception, then we're probably good -
+				// process
+				// hasn't finished yet.
+				int x = proc.exitValue();
+				throw new MojoExecutionException("Process exited with value " + x);
+			} catch (IllegalThreadStateException x) {
+				if (proc != null) {
+					// put the process object in the context, so DestroyMojo can
+					// kill it.
+					Thread.sleep(10000);
+					putProcess(getPluginContext(), proc);
+				} else {
+					throw new MojoFailureException("Could not start java process");
+				}
+			} catch (IOException e) {
+				throw new MojoFailureException("Could not start java process", e);
 			}
 		} catch (InterruptedException e) {
 			throw new MojoFailureException("Could not start java process", e);
-		} catch (IOException e) {
-			throw new MojoFailureException("Could not start java process", e);
 		}
+	}
 
+	private List<String> _D(Map<String, Object> d) {
+		List<String> result = new ArrayList<String>(d.size());
+		for (Map.Entry<String, Object> e : d.entrySet()) {
+			result.add(_D(e.getKey(), e.getValue().toString()));
+		}
+		return result;
 	}
 
 	private String resolveClassPath(String coords) throws MojoExecutionException {
 		try {
 			DependencyRequest request = new DependencyRequest();
 			DefaultDependencyNode dependencyNode = new DefaultDependencyNode();
-			Dependency rootDep = new Dependency(new DefaultArtifact(coords), null);
+			DefaultArtifact artifact = new DefaultArtifact(coords);
+			Dependency rootDep = new Dependency(artifact, JavaScopes.RUNTIME);
 			dependencyNode.setDependency(rootDep);
+			request.setRoot(dependencyNode);
+			request.setCollectRequest(new CollectRequest(rootDep, remoteRepos));
+			List<Artifact> artifacts = new Aether(project, repoSession.getLocalRepository().getBasedir()).resolve(
+					artifact, JavaScopes.RUNTIME);
 
+			// DependencyResult result =
+			// repositorySystem.resolveDependencies(repoSession, request);
 
-			CollectResult result = repositorySystem.collectDependencies(repoSession, new CollectRequest(rootDep, remoteRepos));
-			//return ArtifactUtil.toJavaClassPath(artifacts);
-			return null;
-		//} catch (DependencyResolutionException e) {
-		//	throw new MojoExecutionException("Error while resolving dependencies", e);
-		} catch (DependencyCollectionException e) {
+			return ArtifactUtil.toJavaClassPath(artifacts);
+		} catch (DependencyResolutionException e) {
 			throw new MojoExecutionException("Error while resolving dependencies", e);
+			/*
+			 * } catch (DependencyCollectionException e) { throw new
+			 * MojoExecutionException("Error while resolving dependencies", e);
+			 */
 		}
 	}
 
