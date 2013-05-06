@@ -24,7 +24,12 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-env</artifactId>
-            <version>11.1</version>
+            <version>${v.sorcer}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-webster</artifactId>
+			<version>${v.sorcer}</version>
 		</dependency>
 		<dependency>
             <groupId>org.apache.river</groupId>
@@ -104,7 +109,7 @@
                     <executable>java</executable>
                     <executableDependency>
                         <groupId>${project.groupId}</groupId>
-                        <artifactId>boot</artifactId>
+                        <artifactId>sos-boot</artifactId>
                     </executableDependency>
 
                     <arguments>

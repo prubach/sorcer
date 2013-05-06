@@ -10,6 +10,7 @@
     <version>11.1</version>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
+	<inceptionYear>2013</inceptionYear>
 
     <properties>
 		<v.sorcer>11.1</v.sorcer>
