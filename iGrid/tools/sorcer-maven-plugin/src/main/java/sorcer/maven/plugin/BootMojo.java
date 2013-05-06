@@ -105,7 +105,7 @@ public class BootMojo extends AbstractMojo {
 
 		ProcessBuilder procBld = new ProcessBuilder().command("java", _D("sorcer.env.file", sorcerEnv),
 				_D("java.security.policy", policy), "-cp", classPath, mainClass, servicesConfig.getPath());
-		procBld.inheritIO();
+		procBld.redirectErrorStream(true);
 		Process proc = null;
 
 		try {
@@ -138,8 +138,8 @@ public class BootMojo extends AbstractMojo {
 			Dependency rootDep = new Dependency(new DefaultArtifact(coords), null);
 			dependencyNode.setDependency(rootDep);
 
+
 			CollectResult result = repositorySystem.collectDependencies(repoSession, new CollectRequest(rootDep, remoteRepos));
-			//List<Artifact> artifacts = Lists.transform(result.getArtifactResults(), new ArtifactResultTransformer());
 			//return ArtifactUtil.toJavaClassPath(artifacts);
 			return null;
 		//} catch (DependencyResolutionException e) {
