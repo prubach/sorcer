@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
 
 /**
  * @author Rafał Krupiński
@@ -26,12 +27,17 @@ public class JarClassPathHelper {
 	final private static File[] jarRoots;
 
 	static {
-		String repo = SorcerEnv.getRepoDir();
-		jarRoots = new File[] {
-				new File(repo, "org/apache/river"),
-				new File(repo, "net/jini"),
-				new File(repo, "org/sorcersoft"),
-				new File(SorcerEnv.getHomeDir(), "lib") };
+        if (Resolver.isMaven()) {
+            String repo = SorcerEnv.getRepoDir();
+            jarRoots = new File[] {
+                    new File(repo, "org/apache/river"),
+                    new File(repo, "net/jini"),
+                    new File(repo, "org/sorcersoft"),
+                    new File(SorcerEnv.getHomeDir(), "lib") };
+        } else {
+            jarRoots = new File[] {
+                    new File(Resolver.getRootDir()) };
+        }
 	}
 
 	public void getClassPathFromJar(List<String> buff, File f) {

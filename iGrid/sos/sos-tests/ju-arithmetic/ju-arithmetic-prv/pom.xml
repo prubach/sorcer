@@ -28,22 +28,48 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
+<!--
             <scope>provided</scope>
+-->
         </dependency>
         <dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
+            <scope>provided</scope>
+<!--
             <scope>runtime</scope>
+-->
         </dependency>
         <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+    <build>
+    <plugins>
+  <!--      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+                <archive>
+                    <manifest>
+                        <addClasspath>true</addClasspath>
+                        <addExtensions>false</addExtensions>
+                        <classpathPrefix></classpathPrefix>
+                        <classpathLayoutType>custom</classpathLayoutType>
+                        <customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+                    </manifest>
+                </archive>
+            </configuration>
+        </plugin>-->
+    </plugins>
+    </build>
 </project>

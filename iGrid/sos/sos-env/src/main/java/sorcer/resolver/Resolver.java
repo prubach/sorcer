@@ -81,4 +81,9 @@ public class Resolver {
     public static String getRootDir() {
         return resolver.getRootDir();
     }
+
+    public static boolean isMaven() {
+        return (resolver instanceof RepositoryArtifactResolver);
+    }
+
 }

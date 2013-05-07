@@ -174,7 +174,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<pathelement location="${lib.dir}/commons/commons-lang3.jar" />
 		<!--<pathelement location="${lib.dir}/commons/google-collections.jar" />-->
 	</path>
-	
+
+
+    <path id="runtime.classpath">
+    </path>
 	
 	<condition property="pom.file" value="pom.xml">
 		<not>
@@ -183,7 +186,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 	</condition>
 
 	<target name="mvn-init">
-		<mvn-init />
+	<!--	<mvn-init />-->
 	</target>
 
 	<macrodef name="mvn-init" xmlns:artifact="urn:maven-artifact-ant">
@@ -259,7 +262,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 			      <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
+                  <sysproperty key="provider.runtime.classpath" value="" />
 		      </java>
 		  </ac:then>
 		  <ac:else>
@@ -274,7 +277,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
+                <sysproperty key="provider.runtime.classpath" value="" />
 			</java>
 		      </ac:then>
 		      <ac:else>
@@ -285,8 +288,8 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
-			  </java>
+                <sysproperty key="provider.runtime.classpath" value="" />
+              </java>
 		      </ac:else>
 		    </ac:if>
 		  </ac:else>

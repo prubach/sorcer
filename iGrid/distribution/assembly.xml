@@ -155,7 +155,7 @@
                 ${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/lib
             </directory>
             <fileMode>0644</fileMode>
-            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
+            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
             <excludes>
                 <exclude>junit.jar</exclude>
                 <exclude>log4j.jar</exclude>
