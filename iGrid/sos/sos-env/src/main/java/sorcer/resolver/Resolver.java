@@ -16,9 +16,7 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public class Resolver {
-	//this is the place to put a proper ArtifactResolver implementation.
-	//if we're going to use ${SORCER_HOME}/lib or ${SORCER_HOME}/internal-repo either change it, or write a factory
-	private static ArtifactResolver resolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
+	private static ArtifactResolver resolver = new ArtifactResolverFactory().createResolver();
 
 	/**
 	 * Resolve artifact coordinates to absolute path
