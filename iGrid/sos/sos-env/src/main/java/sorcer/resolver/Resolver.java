@@ -77,4 +77,8 @@ public class Resolver {
 		}
 		return StringUtils.join(result, File.pathSeparator);
 	}
+
+    public static String getRootDir() {
+        return resolver.getRootDir();
+    }
 }

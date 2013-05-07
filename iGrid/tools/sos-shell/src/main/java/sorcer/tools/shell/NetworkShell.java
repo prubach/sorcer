@@ -70,6 +70,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
@@ -993,8 +994,8 @@ public class NetworkShell implements DiscoveryListener {
 						+ File.separator + "lib-ext";
 				String[] systemRoots = { sorcerLibDir, sorcerLibDLDir, sorcerExtDir };
 				*/
-				
-				String[] systemRoots = { SorcerEnv.getRepoDir() };
+
+				String[] systemRoots = {Resolver.getRootDir() };
 				
 				String[] realRoots = (roots == null ? systemRoots : roots);
 				

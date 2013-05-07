@@ -34,7 +34,7 @@ public class ClassPathVerifier {
 		Multimap<String, ClassLoader> classLoaders = Multimaps.invertFrom(classPaths, dest);
 		for (String key : classLoaders.keySet()) {
 			// don't check bootstrap classpath
-			if (!key.contains(SorcerEnv.getRepoDir()))
+			if (SorcerEnv.getRepoDir()==null || !key.contains(SorcerEnv.getRepoDir()))
 				continue;
 			if (classLoaders.get(key).size() > 1) {
 				out.println(key + " is loaded by multiple class loaders:");

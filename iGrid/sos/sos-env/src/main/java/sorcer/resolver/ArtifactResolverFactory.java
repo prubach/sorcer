@@ -18,13 +18,15 @@ import sorcer.util.ArtifactCoordinates;
 public class ArtifactResolverFactory {
 
 	public ArtifactResolver createResolver() {
-		File repoRoot = new File(SorcerEnv.getRepoDir());
-		ArtifactResolver artifactResolver = new RepositoryArtifactResolver(repoRoot.getPath());
-
-		if (tryResolve(Artifact.getSosEnv(), artifactResolver)) {
-			return artifactResolver;
-		}
-
+        File repoRoot = null;
+        String repoDir = SorcerEnv.getRepoDir();
+        if (repoDir !=null) {
+            repoRoot = new File(repoDir);
+            ArtifactResolver artifactResolver = new RepositoryArtifactResolver(repoRoot.getPath());
+            if (tryResolve(Artifact.getSosEnv(), artifactResolver)) {
+                return artifactResolver;
+            }
+        }
 		repoRoot = new File(SorcerEnv.getHomeDir(), "lib");
 		return new MappedFlattenedArtifactResolver(repoRoot);
 	}

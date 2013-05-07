@@ -40,4 +40,9 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 		return result.toString();
 
 	}
+
+    @Override
+    public String getRootDir() {
+        return root;
+    }
 }

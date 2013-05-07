@@ -87,6 +87,18 @@
 
         <!-- Configuration files -->
         <fileSet>
+            <directory>${basedir}/../configs/</directory>
+            <outputDirectory>/configs</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>sorcer.env</exclude>
+                <exclude>sorcer.logging</exclude>
+            </excludes>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
             <directory>${basedir}/src/main/configs</directory>
             <outputDirectory>/configs</outputDirectory>
             <includes>
@@ -95,14 +107,55 @@
             <filtered>false</filtered>
         </fileSet>
 
+        <!-- bin files -->
+        <fileSet>
+            <directory>${basedir}/../bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>common-run.xml</exclude>
+                <exclude>webster/bin/webster-run.xml</exclude>
+            </excludes>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+
+        <!-- empty log dir -->
+        <fileSet>
+            <directory>${basedir}/src/main/logs</directory>
+            <outputDirectory>/logs</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+
+        <!-- docs files-->
+        <fileSet>
+            <directory>${basedir}/src/main/docs</directory>
+            <outputDirectory>/docs</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+
         <!-- Hyperic -->
         <fileSet>
-            <!-- WHY DOESNT settings.localRepository WORK HERE??? -->
             <directory>
-                ${user.home}/.m2/repository/org/sorcersoft/sigar/${hyperic.version}/lib
+                ${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/lib
             </directory>
             <fileMode>0644</fileMode>
-            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
+            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
             <excludes>
                 <exclude>junit.jar</exclude>
                 <exclude>log4j.jar</exclude>
@@ -120,6 +173,7 @@
                 <exclude>net.jini.lookup:*</exclude>
                 <exclude>org.apache.river:*</exclude>
                 <exclude>org.sorcersoft.sorcer:*</exclude>
+                <exclude>org.sorcersoft.sigar:*</exclude>
                 <exclude>org.rioproject.resolver:*</exclude>
                 <exclude>org.rioproject:*</exclude>
 
@@ -157,27 +211,6 @@
                 <include>net.jini:*</include>
                 <include>net.jini.lookup:*</include>
                 <include>org.apache.river:*</include>
-<!--
-                <include>net.jini:jsk-dl</include>
-                <include>net.jini:start</include>
-                <include>net.jini:jsk-platform</include>
-                <include>net.jini:jsk-lib</include>
-                <include>net.jini:jsk-resources</include>
-                <include>net.jini.lookup:serviceui</include>
-                <include>org.apache.river:reggie-dl</include>
-                <include>org.apache.river:reggie</include>
-                <include>org.apache.river:mahalo-dl</include>
-                <include>org.apache.river:mahalo</include>
-                <include>org.apache.river:fiddler-dl</include>
-                <include>org.apache.river:fiddler</include>
-                <include>org.apache.river:mercury-dl</include>
-                <include>org.apache.river:mercury</include>
-                <include>org.apache.river:norm-dl</include>
-                <include>org.apache.river:norm</include>
-                <include>org.apache.river:outrigger-dl</include>
-                <include>org.apache.river:outrigger</include>
-                <include>org.apache.river:start</include>
--->
             </includes>
             <outputDirectory>lib/${org.apache.river}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
@@ -217,19 +250,22 @@
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
+        <!-- The rest of the service download (-api, -proxy and -ui) jars go into the lib-dl directory -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>org.sorcersoft.sigar:*</include>
+            </includes>
+            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <useStrictFiltering>true</useStrictFiltering>
             <includes>
                 <include>org.rioproject.resolver:*</include>
                 <include>org.rioproject:*</include>
-<!--
-                <include>org.rioproject.resolver:resolver-aether</include>
-                <include>org.rioproject.resolver:resolver-project</include>
-                <include>org.rioproject.resolver:resolver-api</include>
-                <include>org.rioproject:rio-platform</include>
-                <include>org.rioproject:rio-start</include>
--->
             </includes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>

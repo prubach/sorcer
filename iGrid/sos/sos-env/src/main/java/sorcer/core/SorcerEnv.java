@@ -77,7 +77,8 @@ public class SorcerEnv implements SorcerConstants {
 	 * @return Sorcer Local jar repo location 
 	 */
 	public static String getRepoDir() {
-		String repo = props.getProperty(SorcerConstants.S_SORCER_REPO).trim();
+		String repo = props.getProperty(SorcerConstants.S_SORCER_REPO);
+        if (repo!=null) repo = repo.trim();
 		
 		if (repo != null && !repo.isEmpty()) {
 			try {
@@ -93,7 +94,7 @@ public class SorcerEnv implements SorcerConstants {
 		} else {
 			// Fall back to default location in user's home/.m2
 			try {
-				File repoDir = new File(System.getProperty("user.home")+"/.m2/repository/");
+				File repoDir = new File(System.getProperty("user.home")+"/.m2/repository");
 				if (repoDir.exists() && repoDir.isDirectory())
 					return repo;
 			} catch (Throwable t) {
@@ -103,7 +104,7 @@ public class SorcerEnv implements SorcerConstants {
 						t);
 			}						
 		}
-		return null;								
+		return null;
 	}
 	
 	

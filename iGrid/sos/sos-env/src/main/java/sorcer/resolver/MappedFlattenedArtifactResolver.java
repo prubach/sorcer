@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,10 +15,10 @@ import sorcer.util.ArtifactCoordinates;
  */
 public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
-	public static final String GROUPDIR_DEFAULT = "common";
+	public static final String GROUPDIR_DEFAULT = "commons";
 	protected File rootDir;
 
-	protected Map<String, String> groupDirMap;
+	protected Map<String, String> groupDirMap = new HashMap<String, String>();
 
 	public MappedFlattenedArtifactResolver(File rootDir) {
 		this.rootDir = rootDir;
@@ -37,7 +38,7 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 			// properties is a Map<Object, Object> but it contains only Strings
 			@SuppressWarnings("unchecked")
 			Map<String, String> propertyMap = (Map) properties;
-			versions.putAll(propertyMap);
+			groupDirMap.putAll(propertyMap);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not load repolayout.properties", e);
 		} finally {
@@ -59,7 +60,12 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 		} else {
 			groupDir = GROUPDIR_DEFAULT;
 		}
-		return new File(groupDir, coords.getArtifactId() + '-' + coords.getClassifier() + '.' + coords.getPackaging())
+		return new File(groupDir, coords.getArtifactId() + (coords.getClassifier()!=null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging())
 				.getPath();
 	}
+
+    @Override
+    public String getRootDir() {
+        return rootDir.toString();
+    }
 }
