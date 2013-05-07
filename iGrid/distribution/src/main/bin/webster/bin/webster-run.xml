@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<project name="Run webster" default="webster" basedir=".">
+
+
+    <property environment="env" />
+	<!-- load system environment variables -->
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+
+	<property name="provider.webster" value="${provider.webster.interface.TMP}" />
+	<echo message="provider.webster = ${provider.webster}" />
+	<echo message="provider.webster.port ${provider.webster.port}" />
+	
+	<path id="run.classpath">
+	    <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
+	    <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
+	</path>
+
+	<target name="webster">
+		<java classname="sorcer.tools.webster.Webster" maxmemory="500M" fork="yes">
+			<classpath>
+			    <path refid="run.classpath"/>  				
+			</classpath>
+			<sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
+			<sysproperty key="webster.root" value="${mvn.repo};${sorcer.home}/lib/" />
+			<sysproperty key="webster.port" value="${provider.webster.port}" />
+			<sysproperty key="webster.interface" value="${provider.webster}" />
+			<sysproperty key="webster.debug" value="true" />
+		</java>
+	</target>
+</project>
