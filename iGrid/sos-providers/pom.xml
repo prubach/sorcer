@@ -24,6 +24,7 @@
 		<module>exertmonitor</module>
 		<module>dbp</module>
 		<module>dsp</module>
-	</modules>
+        <module>exerter</module>
+    </modules>
 	
 </project>
