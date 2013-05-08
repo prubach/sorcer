@@ -122,9 +122,9 @@ To include this file in your custom *-run-buld.xml have the import line:
 
 	</target>
 
-	<condition property="spawn.provider" value="no">
+	<condition property="provider.spawn" value="no">
 		<not>
-			<isset property="spawn.provider" />
+			<isset property="provider.spawn" />
 		</not>
 	</condition>
 
@@ -251,7 +251,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 		<ac:if>
 		  <isset property="provider.config" />		 
 		    <ac:then>
-		      <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
+		      <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
 			      <classpath refid="boot.classpath" />
 			      <arg value="${provider.config}" />
 			      <!--        <jvmarg value="-Xdebug"/>
@@ -263,13 +263,14 @@ To include this file in your custom *-run-buld.xml have the import line:
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
                   <sysproperty key="provider.runtime.classpath" value="" />
+                  <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		      </java>
 		  </ac:then>
 		  <ac:else>
 		    <ac:if>
 		      <isset property="target.classes.exists" />		 
 		      <ac:then>
-			<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
+			<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
 				<classpath refid="boot.classpath" />
 				<arg value="${basedir}/target/classes" />
 				<env key="RIO_HOME" value="${rio.home}" />
@@ -278,10 +279,11 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
                 <sysproperty key="provider.runtime.classpath" value="" />
+                <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			</java>
 		      </ac:then>
 		      <ac:else>
-			  <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${spawn.provider}">
+			  <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
 				<classpath refid="boot.classpath" />
 				<env key="RIO_HOME" value="${rio.home}" />
 				<sysproperty key="sorcer.home" value="${sorcer.home}" />
@@ -289,6 +291,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
                 <sysproperty key="provider.runtime.classpath" value="" />
+                <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
               </java>
 		      </ac:else>
 		    </ac:if>
@@ -310,6 +313,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
 					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 					<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
+                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 				</java>
 			</ac:then>
 			<ac:else>
@@ -318,6 +322,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 					<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
 					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 				</java>
 			</ac:else>
 		</ac:if>
