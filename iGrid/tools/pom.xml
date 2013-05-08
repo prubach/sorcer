@@ -29,4 +29,23 @@
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
 	</modules>
+	<build>
+	<plugins>
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<configuration>
+		    <archive>
+			<manifest>
+			    <addClasspath>true</addClasspath>
+			    <addExtensions>false</addExtensions>
+			    <classpathPrefix></classpathPrefix>
+			    <classpathLayoutType>custom</classpathLayoutType>
+			    <customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+			</manifest>
+		    </archive>
+		</configuration>
+	    </plugin>
+	</plugins>
+	</build>
 </project>

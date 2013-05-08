@@ -185,58 +185,9 @@ To include this file in your custom *-run-buld.xml have the import line:
 		</not>
 	</condition>
 
+	<!-- left for compatibility with development common-run.xml -->
 	<target name="mvn-init">
-	<!--	<mvn-init />-->
 	</target>
-
-	<macrodef name="mvn-init" xmlns:artifact="urn:maven-artifact-ant">
-		<attribute name="run.pom.file" default="${pom.file}" />
-		<attribute name="requestor.api.jar" default="${requestor.groupId}:${requestor.api}:jar" />
-		<sequential>
-			<echo>run.pom.file=@{run.pom.file}</echo>
-			<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant" classpath="${lib.dir}/commons/maven-ant-tasks.jar" />
-			<condition property="maven.repo.local" value="${mvn.repo}" else="${user.home}/.m2/repository">
-				<isset property="mvn.repo" />
-			</condition>
-			<echo>maven.repo.local=${maven.repo.local}</echo>
-			<artifact:localRepository id="local.repository" path="${maven.repo.local}" />
-			<artifact:pom file="@{run.pom.file}" id="maven.project" />
-			<artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile" versionsId="dependency.versions">
-				<pom refid="maven.project" />
-				<localRepository refid="local.repository" />
-			</artifact:dependencies>
-			<artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
-				<pom refid="maven.project" />
-				<localRepository refid="local.repository" />
-			</artifact:dependencies>
-			<artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
-				<pom refid="maven.project" />
-				<localRepository refid="local.repository" />
-			</artifact:dependencies>
-
-			<ac:if>
-				<isset property="requestor.groupId"/>
-				<ac:then>
-					<artifact:dependencies pathId="requestor.classpath">
-						<dependency groupId="${requestor.groupId}" artifactId="${requestor.name}" version="${requestor.version}" />						
-					</artifact:dependencies>
-					<path id="run-req.classpath">
-						<path refid="runtime.classpath" />
-						<path refid="requestor.classpath" />
-						<path refid="jini.classpath" />
-					</path>
-				</ac:then>
-				<ac:else>
-				  	<path id="run-req.classpath">
-						<path refid="runtime.classpath" />
-						<path refid="jini.classpath" />
-					</path>
-				</ac:else>
-			</ac:if>	
-
-
-		</sequential>
-	</macrodef>
 
 	<target name="target.classes.check">
 	  <condition property="target.classes.exists">
@@ -244,10 +195,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 	  </condition>
 	</target>
 	
-	<target name="boot.provider" depends="target.classes.check, mvn-init">
-	    <property name="runtime.classpath.string" refid="runtime.classpath" />
-		<echo message="Runtime Classpath = ${runtime.classpath.string}" />
-		
+	<target name="boot.provider" depends="target.classes.check">
 		<ac:if>
 		  <isset property="provider.config" />		 
 		    <ac:then>
@@ -256,14 +204,14 @@ To include this file in your custom *-run-buld.xml have the import line:
 			      <arg value="${provider.config}" />
 			      <!--        <jvmarg value="-Xdebug"/>
 			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-				  <env key="RIO_HOME" value="${rio.home}" />
-				  <sysproperty key="sorcer.home" value="${sorcer.home}" />
-				  <sysproperty key="RIO_HOME" value="${rio.home}" />
+			      <env key="RIO_HOME" value="${rio.home}" />
+			      <sysproperty key="sorcer.home" value="${sorcer.home}" />
+			      <sysproperty key="RIO_HOME" value="${rio.home}" />
 			      <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                  <sysproperty key="provider.runtime.classpath" value="" />
-                  <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+			      <sysproperty key="provider.runtime.classpath" value="" />
+			      <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		      </java>
 		  </ac:then>
 		  <ac:else>
@@ -278,8 +226,8 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                <sysproperty key="provider.runtime.classpath" value="" />
-                <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+				<sysproperty key="provider.runtime.classpath" value="" />
+				<sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			</java>
 		      </ac:then>
 		      <ac:else>
@@ -290,16 +238,16 @@ To include this file in your custom *-run-buld.xml have the import line:
 				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                <sysproperty key="provider.runtime.classpath" value="" />
-                <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-              </java>
+				<sysproperty key="provider.runtime.classpath" value="" />
+				<sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+			 </java>
 		      </ac:else>
 		    </ac:if>
 		  </ac:else>
 		</ac:if>
 	</target>
 	
-	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
+	<target name="run.requestor" depends="requestor.policy.check">
 		<property name="myclasspath" refid="run-req.classpath" />
 		<echo message="Run Classpath = ${myclasspath}" />
 		<echo>Policy: ${requestor.policy}</echo>	     
@@ -313,7 +261,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
 					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 					<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
-                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+					<sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 				</java>
 			</ac:then>
 			<ac:else>
@@ -322,7 +270,7 @@ To include this file in your custom *-run-buld.xml have the import line:
 					<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 					<sysproperty key="java.security.policy" value="${requestor.policy}" />
 					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+					<sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 				</java>
 			</ac:else>
 		</ac:if>

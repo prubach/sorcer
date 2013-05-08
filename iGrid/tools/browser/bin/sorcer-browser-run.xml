@@ -8,7 +8,9 @@
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	
 	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
+	    <path refid="runtime.classpath"/>
+        <path refid="jini.classpath"/>
+        <pathelement location="${lib.dir}/sorcer/browser.jar" />
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
 	</path>
 

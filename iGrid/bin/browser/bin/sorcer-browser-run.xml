@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 
 <project name="SSB" default="SORCER Service Browser" basedir=".">
-
-    <!-- load system environment variables -->
-    <property environment="env" />
-    <property name="pom.file" value="${env.SORCER_HOME}/tools/browser/pom.xml" />
-
+	
+	<property name="pom.file" value="${basedir}/../pom.xml" />
+	<!-- load system environment variables -->
+	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	
 	<path id="run.classpath">
-	    <path refid="runtime.classpath"/>  
+	    <path refid="runtime.classpath"/>
+        <path refid="jini.classpath"/>
+        <pathelement location="${lib.dir}/sorcer/browser.jar" />
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
 	</path>
 
@@ -20,8 +21,7 @@
 			<classpath>
 			    <path refid="run.classpath"/>  				
 			</classpath>
-            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="java.security.policy" value="${basedir}/../policy/ssb.policy" />
 			<sysproperty key="ssb.logFile" value="${basedir}/../logs/browser.log" />
 			<sysproperty key="ssb.logLen" value="300" />
