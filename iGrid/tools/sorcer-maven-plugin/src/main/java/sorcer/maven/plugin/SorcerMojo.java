@@ -1,107 +1,53 @@
 package sorcer.maven.plugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-
-import javax.annotation.Nullable;
+import java.util.Set;
 
 import org.apache.maven.artifact.resolver.AbstractArtifactResolutionException;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.InstantiationStrategy;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.DefaultDependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionException;
-import org.apache.maven.project.DependencyResolutionResult;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
-import org.codehaus.plexus.util.StringUtils;
 import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyFilter;
-import org.sonatype.aether.impl.ArtifactResolver;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
 import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
-import org.sonatype.aether.util.filter.ExclusionsDependencyFilter;
 
-import com.google.common.base.Function;
+import sorcer.maven.util.ArtifactResultTransformer;
+import sorcer.maven.util.ArtifactUtil;
+
 import com.google.common.collect.Collections2;
-import sorcer.util.ArtifactResultTransformer;
-import sorcer.util.ArtifactUtil;
+import com.jcabi.aether.Aether;
 
 /**
  * @author Rafał Krupiński
  */
-@Mojo(name = "sorcer", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON, defaultPhase = LifecyclePhase.INITIALIZE)
-public class SorcerMojo extends AbstractMojo {
-	private static final String SERVICE_SUFFIX = "-prv";
-
-	@Component
-	protected ArtifactResolver artifactResolver;
-
+//@Mojo(name = "provider", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON, defaultPhase = LifecyclePhase.INITIALIZE)
+public class SorcerMojo extends AbstractSorcerMojo {
 	@Component
 	protected RepositorySystem repoSystem;
 
 	@Component
 	protected ProjectDependenciesResolver projectDependenciesResolver;
 
-	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
-	protected RepositorySystemSession repoSession;
-
 	@Parameter(defaultValue = "${project.remotePluginRepositories}", readonly = true)
 	protected List<RemoteRepository> remoteRepos;
 
 	@Parameter(defaultValue = "${session}")
 	protected MavenSession mavenSession;
-
-	/**
-	 * Provider name, by default it's artifactId without '-prv' part
-	 */
-	@Parameter
-	protected String providerName;
-
-	/**
-	 * API artifact, by default it's ${groupId}:${providerName}-api if such
-	 * artifact is declared in the dependencies section. The artifact with its
-	 * dependencies create providers classpath
-	 * 
-	 * currently unused
-	 */
-	@SuppressWarnings("unused")
-	@Parameter
-	protected org.apache.maven.model.Dependency api;
-
-	/**
-	 * proxy artifact, by default it's ${groupId}:${providerName}-proxy if such
-	 * artifact is declared in the dependencies section. This and 'ui' artifacts
-	 * (if present) create providers codebase
-	 */
-	@Parameter
-	protected org.apache.maven.model.Dependency proxy;
-
-	/**
-	 * UI artifact, by default it's ${groupId}:${providerName}-ui if such
-	 * artifact is declared in the dependencies section
-	 */
-	@Parameter
-	protected org.apache.maven.model.Dependency ui;
 
 	/**
 	 * Extra entries to be put in the codebase. Proxy and UI are added
@@ -111,18 +57,16 @@ public class SorcerMojo extends AbstractMojo {
 	@Parameter
 	protected org.apache.maven.model.Dependency[] codebase;
 
-	@Parameter(defaultValue = "${project}", readonly = true)
-	protected MavenProject project;
-
 	protected Artifact artifact;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		Aether aether = createAether();
+
 		artifact = new DefaultArtifact(project.getGroupId(), project.getArtifactId(), project.getPackaging(),
 				project.getVersion());
-		resolveProviderName();
 		try {
-			resolveProviderDependencies();
+			resolveProviderDependencies(aether);
 		} catch (AbstractArtifactResolutionException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		} catch (RepositoryException e) {
@@ -132,38 +76,26 @@ public class SorcerMojo extends AbstractMojo {
 		}
 	}
 
-	private void resolveProviderName() throws MojoFailureException {
-		if (StringUtils.isBlank(providerName)) {
-			String artifactId = project.getArtifactId();
-			if (!artifactId.endsWith(SERVICE_SUFFIX)) {
-				throw new MojoFailureException("Undefined 'providerName'");
-			}
-			providerName = artifactId.substring(0, artifactId.length() - SERVICE_SUFFIX.length());
-		}
-		getLog().info("providerName = " + providerName);
-	}
-
-	private void resolveProviderDependencies() throws MojoFailureException, MojoExecutionException,
+	private void resolveProviderDependencies(Aether aether) throws MojoFailureException, MojoExecutionException,
 			RepositoryException, AbstractArtifactResolutionException, DependencyResolutionException {
-		String codebase = resolveCodeBase();
+		String codebase = resolveCodeBase(aether);
 		getLog().info(codebase);
 		mavenSession.getCurrentProject().getProperties().setProperty("provider.codebase", codebase);
 
-		String classpath = resolveClassPath();
+		String classpath = resolveClassPath(aether);
 		getLog().info(classpath);
 		mavenSession.getCurrentProject().getProperties().setProperty("provider.classpath", classpath);
 	}
 
-	protected String resolveCodeBase() throws AbstractArtifactResolutionException, RepositoryException,
+	protected String resolveCodeBase(Aether aether) throws AbstractArtifactResolutionException, RepositoryException,
 			MojoExecutionException, MojoFailureException {
-		Artifact proxyArtifact = resolveModuleDependency(proxy, "proxy");
-		Artifact uiArtifact = resolveModuleDependency(ui, "ui");
 
-		List<Artifact> codeBaseArtifacts = new LinkedList<Artifact>();
-		if (proxyArtifact != null)
-			codeBaseArtifacts.add(proxyArtifact);
-		if (uiArtifact != null)
-			codeBaseArtifacts.add(uiArtifact);
+		Set<Artifact> codeBaseArtifacts = new HashSet<Artifact>();
+
+		for (String coords : (List<String>) project.getParent().getProperties().get(KEY_CODEBASE)) {
+			List<Artifact> resolve = aether.resolve(new DefaultArtifact(coords), JavaScopes.RUNTIME);
+			codeBaseArtifacts.addAll(resolve);
+		}
 
 		if (this.codebase != null) {
 			for (org.apache.maven.model.Dependency codeBaseDependency : codebase) {
@@ -174,6 +106,15 @@ public class SorcerMojo extends AbstractMojo {
 			}
 		}
 		return buildClassPathString(getDependencies(codeBaseArtifacts, JavaScopes.RUNTIME), "resolveCodeBase");
+	}
+
+	protected String resolveClassPath(Aether aether)
+			throws org.sonatype.aether.resolution.DependencyResolutionException {
+		Set<Artifact> artifacts = new HashSet<Artifact>();
+		for (String coords : (List<String>) project.getParent().getProperties().get(KEY_CLASSPATH)) {
+			artifacts.addAll(aether.resolve(new DefaultArtifact(coords), JavaScopes.COMPILE));
+		}
+		return buildClassPathString(artifacts, "resolveClassPath");
 	}
 
 	private String buildClassPathString(Collection<Artifact> dependencies, String resolveMethod) {
@@ -187,45 +128,11 @@ public class SorcerMojo extends AbstractMojo {
 			} else {
 				coma = true;
 			}
-			result.append("\n\t\t\t\tsorcer.util.ArtifactCoordinates.coords(\"").append(ArtifactUtil.key(dependency)).append("\")");
+			result.append("\n\t\t\t\tsorcer.util.ArtifactCoordinates.coords(\"").append(ArtifactUtil.key(dependency))
+					.append("\")");
 		}
 		result.append("\n\t\t\t})");
 		return result.toString();
-	}
-
-	protected String resolveClassPath() throws DependencyResolutionException {
-		DefaultDependencyResolutionRequest request = new DefaultDependencyResolutionRequest(project, repoSession);
-
-		DependencyFilter runtimeFilter = DependencyFilterUtils.classpathFilter(JavaScopes.RUNTIME);
-
-		// booter is required as a dependency of the provider project to start
-		// the service, but shouldn't be part of provider classpath
-		ExclusionsDependencyFilter booterExclusion = new ExclusionsDependencyFilter(
-				Arrays.asList("org.sorcersoft.sorcer:sos-boot"));
-
-		request.setResolutionFilter(DependencyFilterUtils.andFilter(runtimeFilter, booterExclusion));
-		DependencyResolutionResult resolutionResult = projectDependenciesResolver.resolve(request);
-
-		Collection<Artifact> dependencies = Collections2.transform(resolutionResult.getDependencies(),
-				new Function<Dependency, Artifact>() {
-					@Nullable
-					@Override
-					public Artifact apply(@Nullable Dependency input) {
-						return input == null ? null : input.getArtifact();
-					}
-				});
-
-		Collection<Artifact> result = new ArrayList<Artifact>(dependencies.size() + 1);
-		result.add(new DefaultArtifact(ArtifactUtil.key(project.getArtifact())));
-		result.addAll(dependencies);
-
-		return buildClassPathString(result, "resolveClassPath");
-	}
-
-	protected Artifact resolveModuleDependency(org.apache.maven.model.Dependency userValue, String type)
-			throws AbstractArtifactResolutionException, RepositoryException, MojoExecutionException,
-			MojoFailureException {
-		return resolveProjectDependency(userValue, project.getGroupId(), providerName + "-" + type);
 	}
 
 	private Artifact resolveProjectDependency(org.apache.maven.model.Dependency dependency, String defaultGroupId,
@@ -267,7 +174,7 @@ public class SorcerMojo extends AbstractMojo {
 		collectRequest.setDependencies(toDependencies(artifacts, scope));
 		collectRequest.setRepositories(remoteRepos);
 
-		DependencyResult dependencyResult = repoSystem.resolveDependencies(repoSession, new DependencyRequest(
+		DependencyResult dependencyResult = repoSystem.resolveDependencies(repositorySystemSession, new DependencyRequest(
 				collectRequest, DependencyFilterUtils.classpathFilter(scope)));
 
 		return Collections2.transform(dependencyResult.getArtifactResults(), new ArtifactResultTransformer());

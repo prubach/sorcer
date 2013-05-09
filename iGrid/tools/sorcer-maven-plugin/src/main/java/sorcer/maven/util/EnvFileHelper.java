@@ -1,4 +1,4 @@
-package sorcer.util;
+package sorcer.maven.util;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoFailureException;

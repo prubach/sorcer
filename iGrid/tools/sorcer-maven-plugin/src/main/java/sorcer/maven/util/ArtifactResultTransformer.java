@@ -1,4 +1,4 @@
-package sorcer.util;
+package sorcer.maven.util;
 
 import com.google.common.base.Function;
 import org.sonatype.aether.artifact.Artifact;
