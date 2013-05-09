@@ -669,10 +669,14 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		// get exporters for outer and inner proxy
 		getExporters(jconfig);
-		logger.info("exporting provider: " + provider);
+		logger.fine("exporting provider: " + provider);
 		logger.info("outerExporter = " + outerExporter);
 		try {
-		    outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
+            if (outerExporter == null) {
+                logger.severe("No exporter for provider:" + getProviderName());
+                return;
+            }
+            outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
 		        outerExporter.export(provider), getServerUuid());
 			logger.fine("outerProxy: " + outerProxy);
 		} catch (ExportException ee) {
@@ -878,7 +882,7 @@ public class ProviderDelegate implements SorcerConstants {
 					tsig.setServicer(provider);
 					if (tsig.getReturnPath() != null)
 						try {
-							((ServiceContext) task.getDataContext())
+							((ServiceContext) task.getContext())
 									.setReturnPath(tsig.getReturnPath());
 						} catch (ContextException e) {
 							e.printStackTrace();
@@ -949,11 +953,11 @@ public class ProviderDelegate implements SorcerConstants {
 				((NetSignature) ss).setServicer(provider);
 			try {
 				t = Task.newTask(task.getName() + "-" + i, ss,
-						task.getDataContext());
+						task.getContext());
 				ss.setType(Signature.SRV);
-				((ServiceContext) task.getDataContext()).setCurrentSelector(ss
+				((ServiceContext) task.getContext()).setCurrentSelector(ss
 						.getSelector());
-				((ServiceContext) task.getDataContext())
+				((ServiceContext) task.getContext())
 						.setCurrentPrefix(((ServiceSignature) ss).getPrefix());
 
 				t.setContinous(true);
@@ -990,7 +994,7 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		// return the service dataContext of the last exertion
 		resetSigantures(signatures, st);
-		Context ctx = result.getExertions().get(job.size() - 1).getDataContext();
+		Context ctx = result.getExertions().get(job.size() - 1).getContext();
 		return ctx;
 	}
 
@@ -1006,7 +1010,7 @@ public class ProviderDelegate implements SorcerConstants {
 			pn = getProviderName();
 			if (pn == null || pn.length() == 0)
 				pn = getDescription();
-			Contexts.putOutValue(task.getDataContext(), TASK_PROVIDER, pn + "@"
+			Contexts.putOutValue(task.getContext(), TASK_PROVIDER, pn + "@"
 					+ hostName + ":" + hostAddress);
 		} catch (ContextException ex) {
 			// ignore
@@ -1066,7 +1070,7 @@ public class ProviderDelegate implements SorcerConstants {
 		if (impl != null) {
 			if (task.getProcessSignature().getReturnPath() != null) {
 				try {
-					((ServiceContext) task.getDataContext()).setReturnPath(task
+					((ServiceContext) task.getContext()).setReturnPath(task
 							.getProcessSignature().getReturnPath());
 				} catch (ContextException e) {
 					task.reportException(e);
@@ -1074,8 +1078,8 @@ public class ProviderDelegate implements SorcerConstants {
 			}
 			// determine args and parameterTpes from the dataContext
 			Class[] argTypes = new Class[] { Context.class };
-			Object[] args = new Object[] { task.getDataContext() };
-			ServiceContext cxt = (ServiceContext) task.getDataContext();
+			Object[] args = new Object[] { task.getContext() };
+			ServiceContext cxt = (ServiceContext) task.getContext();
 			boolean isContextual = true;
 			if (cxt.getParameterTypes() != null & cxt.getArgs() != null) {
 				argTypes = cxt.getParameterTypes();
@@ -1084,26 +1088,58 @@ public class ProviderDelegate implements SorcerConstants {
 			}
 			Method m = null;
 			try {
-				m = impl.getClass().getMethod(selector, argTypes);
+                // invoking exertions with no parameters
+                if (selector.equals("invoke") && impl instanceof Exertion) {
+                    m = impl.getClass().getMethod(selector,
+                            new Class[] { Context.class, Parameter[].class });
+                } else if (selector.equals("exert") && impl instanceof ExertManager) {
+                    m = impl.getClass().getMethod(selector,
+                            new Class[] { Exertion.class, Parameter[].class });
+                } else
+                    m = impl.getClass().getMethod(selector, argTypes);
 				logger.info("Executing service bean method: " + m + " by: "
 						+ config.getProviderName());
 				Context result;
-				task.getDataContext().setExertion(task);
-				((ServiceContext) task.getDataContext())
+				task.getContext().setExertion(task);
+				((ServiceContext) task.getContext())
 						.setCurrentSelector(selector);
-				((ServiceContext) task.getDataContext())
+				((ServiceContext) task.getContext())
 						.setCurrentPrefix(((ServiceSignature) task
 								.getProcessSignature()).getPrefix());
 
-				if (isContextual) {
-					result = (Context) m.invoke(impl, args);
-				} else {
-					result = task.getDataContext();
-					((ServiceContext) result).setReturnValue(m.invoke(impl,
-							args));
-				}
-				// clear task in the dataContext
-				result.setExertion(null);
+                if (isContextual) {
+                    if(selector.equals("invoke") && impl instanceof Exertion) {
+                        Exertion xrt = (Exertion) m.invoke(impl,
+                                new Object[] { args[0], new Parameter[] {} });
+                        if (xrt.isJob())
+                            result = ((Job)xrt).getJobContext();
+                        else
+                            result = xrt.getContext();
+                        task.getControlContext().getExceptions().addAll(xrt.getExceptions());
+                        task.getTrace().addAll(xrt.getTrace());
+                    } else {
+                        result = (Context) m.invoke(impl, args);
+                    }
+
+                } else {
+                    result = task.getContext();
+                    if(selector.equals("exert") && impl instanceof ExertManager) {
+                        Exertion xrt = (Exertion) m.invoke(impl,
+                                new Object[] { args[0], new Parameter[] {} });
+                        if (xrt.isJob())
+                            result = ((Job)xrt).getJobContext();
+                        else
+                            result = xrt.getContext();
+                        task.getControlContext().getExceptions().addAll(xrt.getExceptions());
+                        task.getTrace().addAll(xrt.getTrace());
+                    } else {
+                        ((ServiceContext) result).setReturnValue(m.invoke(impl,
+                                args));
+                    }
+                }
+                // clear task in the context
+
+                result.setExertion(null);
 				task.setContext(result);
 				task.setStatus(ExecState.DONE);
 				return task;
@@ -1215,7 +1251,7 @@ public class ProviderDelegate implements SorcerConstants {
 			throw new ExertionException("transaction failure", te);
 		}
 
-		if (((ControlContext) job.getDataContext()).isNodeReferencePreserved()) {
+		if (((ControlContext) job.getContext()).isNodeReferencePreserved()) {
 			Jobs.preserveNodeReferences(job, outJob);
 			// copy DataNodes to object passed in
 			// job.copyNodes(outJob);
@@ -1269,7 +1305,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	public Task execTask(Task task) throws ExertionException,
 			SignatureException, RemoteException {
-		ServiceContext cxt = (ServiceContext) task.getDataContext();
+		ServiceContext cxt = (ServiceContext) task.getContext();
 		try {
 			if (cxt.isValid(task.getProcessSignature())) {
 				Signature sig = task.getProcessSignature();
@@ -1286,13 +1322,13 @@ public class ProviderDelegate implements SorcerConstants {
 					((NetSignature) sig).setServicer(provider);
 				task.setStatus(ExecState.FAILED);
 				logger.info("DELEGATE EXECUTING TASK: " + task + " by sig: "
-						+ task.getProcessSignature() + " for dataContext: " + cxt);
+						+ task.getProcessSignature() + " for context: " + cxt);
 				cxt = (ServiceContext) invokeMethod(sig.getSelector(), cxt);
 				logger.info("doTask: TASK DONE BY DELEGATE OF ="
 						+ provider.getProviderName());
 				task.setContext(cxt);
 				task.setStatus(ExecState.DONE);
-				// clear the exertion and the dataContext
+				// clear the exertion and the context
 				cxt.setExertion(null);
 				task.setServicer(null);
 				logger.info("CONTEXT GOING OUT: " + cxt);
@@ -1404,7 +1440,7 @@ public class ProviderDelegate implements SorcerConstants {
 					+ "(using getScratchDir() and add scratch dir key and value "
 					+ "yourself may be better)."
 					+ "\n\tdataContext name = "
-					+ context.getName() + "\n\tdataContext = " + context);
+					+ context.getName() + "\n\tcontext = " + context);
 		}
 
 		Contexts.putOutValue(context, SCRATCH_DIR_KEY,
@@ -1761,7 +1797,7 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	public void destroy() throws RemoteException {
-		if (spaceEnabled) {
+        if (spaceEnabled && spaceHandlingPools != null) {
 			for (ExecutorService es : spaceHandlingPools)
 				shutdownAndAwaitTermination(es);
 			if (interfaceGroup != null) {
@@ -1794,14 +1830,14 @@ public class ProviderDelegate implements SorcerConstants {
 
 	public boolean isValidTask(Exertion servicetask) throws RemoteException,
 			ExertionException {
-		if (!(servicetask instanceof NetTask)) {
-			servicetask.getDataContext().reportException(
-					new ExertionException(getProviderName()
-							+ " received the exertion of unexpected type: "
-							+ servicetask.getClass().getName()));
-			return false;
-		}
-		NetTask task = (NetTask) servicetask;
+        if (servicetask.getContext() == null) {
+            servicetask.getContext().reportException(
+                    new ExertionException(getProviderName()
+                            + " no service context in task: "
+                            + servicetask.getClass().getName()));
+            return false;
+        }
+        Task task = (Task)servicetask;
 
 		// if (task.subject == null)
 		// throw new ExertionException("No subject provided with the task '" +

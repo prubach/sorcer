@@ -17,39 +17,62 @@
 
 package sorcer.util;
 
+import java.rmi.RemoteException;
+import java.util.concurrent.Callable;
+import java.util.logging.Logger;
+
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.core.transaction.server.TransactionManager;
+
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
+
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext.ThrowableTrace;
+//import sorcer.core.dispatch.ProvisionManager;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.lookup.ProviderID;
-import sorcer.service.*;
+import sorcer.service.Accessor;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.EvaluationException;
+import sorcer.service.ExecState;
+import sorcer.service.Exerter;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.Jobber;
+import sorcer.service.Parameter;
+import sorcer.service.ServiceExertion;
+import sorcer.service.Servicer;
+import sorcer.service.Signature;
+import sorcer.service.SignatureException;
+import sorcer.service.Spacer;
 import sorcer.service.Strategy.Access;
-
-import java.rmi.RemoteException;
-import java.util.concurrent.Callable;
-import java.util.logging.Logger;
+import sorcer.service.Task;
 
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ExertManager implements Callable {
+public class ExertManager implements Exerter, Callable {
 	protected final static Logger logger = Logger.getLogger(ExertManager.class
 			.getName());
 
 	private ServiceExertion exertion;
 	private Transaction transaction;
 	private static MutualExclusion locker;
+	//private ProvisionManager provisionManager;
 
+	public ExertManager() {
+	}
+	
 	public ExertManager(Exertion xrt) {
 		exertion = (ServiceExertion) xrt;
 	}
@@ -59,25 +82,37 @@ public class ExertManager implements Callable {
 		transaction = txn;
 
 	}
-
-	public Exertion exert(Parameter... entries) throws TransactionException, ExertionException,
-			RemoteException {
-		try {
-			exertion.substitute(entries);
-		} catch (EvaluationException e) {
-			e.printStackTrace();
-			throw new  ExertionException(e);
-		}
-		return exert((Transaction) null, (String) null);
+	
+	public Exertion exert(Parameter... entries) throws TransactionException,
+			ExertionException, RemoteException {
+		return exert((Transaction) null, (String) null, entries);
 	}
 
-	public Exertion exert(Exertion xrt) throws TransactionException,
-			ExertionException, RemoteException {
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exerter#exert(sorcer.service.Exertion, sorcer.service.Parameter[])
+	 */
+	@Override
+	public Exertion exert(Exertion xrt, Parameter... entries)
+			throws TransactionException, ExertionException, RemoteException {
+		try {
+			xrt.substitute(entries);
+		} catch (EvaluationException e) {
+			throw new ExertionException(e);
+		}
 		return exert(xrt, (Transaction) null, (String) null);
 	}
-
-	public Exertion exert(Exertion xrt, Transaction txn)
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exerter#exert(sorcer.service.Exertion, net.jini.core.transaction.Transaction, sorcer.service.Parameter[])
+	 */
+	@Override
+	public Exertion exert(Exertion xrt, Transaction txn, Parameter... entries)
 			throws TransactionException, ExertionException, RemoteException {
+		try {
+			xrt.substitute(entries);
+		} catch (EvaluationException e) {
+			throw new ExertionException(e);
+		}
 		transaction = txn;
 		return exert(xrt, txn, (String) null);
 	}
@@ -98,15 +133,24 @@ public class ExertManager implements Callable {
 			throws TransactionException, ExertionException, RemoteException {
 		try {
 			exertion.substitute(entries);
-		} catch (EvaluationException ex) {
+			if (entries != null && entries.length > 0) {
+				/*for (Parameter param : entries) {
+					if (param instanceof Deployment && exertion.isProvisionable()) {
+						System.out.println("ZZZZZZZZZZZZZZZ ExertDispatcher>ProvisionManger configuration: " + ((Deployment)param).getConfigs());
+						provisionManager = new ProvisionManager(exertion, ((Deployment)param).getConfigs());
+						provisionManager.deployServices();
+					}
+				}   */
+			}
+		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new ExertionException();
+			throw new ExertionException(ex);
 		}
 		if (exertion instanceof Job && ((Job) exertion).size() == 1) {
 			return processAsTask();
 		}
 		transaction = txn;
-		Context<?> cxt = exertion.getDataContext();
+		Context<?> cxt = exertion.getContext();
 		cxt.setExertion(exertion);
 		Signature signature = exertion.getProcessSignature();
 		Servicer provider = null;
@@ -164,7 +208,7 @@ public class ExertManager implements Callable {
 				throw new ExertionException("exerting failed ", e);
 			}
 		}
-		// provider = ProviderLookup.getService(signature);
+		 //Provider tasker = ProviderLookup.getProvider(exertion.getProcessSignature());
 		// provider = ProviderAccessor.getProvider(null, signature
 		// .getServiceType());
 		if (provider == null) {
@@ -178,22 +222,35 @@ public class ExertManager implements Callable {
 				"bootstrapping: " + ((Provider) provider).getProviderName()
 						+ ":" + ((Provider) provider).getProviderID());
 		((NetSignature) signature).setServicer(provider);
-		logger.info("Provider found: " + provider + ", for: " + signature);
-		Exertion result = null;
+		logger.info("Provider found for: " + signature + "\n\t" + provider);
 		if (((Provider) provider).mutualExclusion()) {
-			 result =  serviceMutualExclusion((Provider) provider, exertion,
+			 return serviceMutualExclusion((Provider) provider, exertion,
 					transaction);
 		} else {
-			 result = provider.service(exertion, transaction);
-		}
-		if (result.getExceptions().size() > 0) {
-			for (ThrowableTrace et : result.getExceptions()) {
-				if (et.getThrowable() instanceof Error)
-					((ServiceExertion)result).setStatus(ExecState.ERROR); 
+			// test exertion for serialization
+			// try {
+			// //ObjectLogger.persistMarshalled("exertionfile", exertion);
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			//logger.info("ExertShell.exert(): going to call service!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			Exertion result = null;
+			try {
+				result = provider.service(exertion, transaction);
+			} finally {
+				/* if (provisionManager != null) {
+					provisionManager.undeploy();
+				}  */
 			}
-			((ServiceExertion)result).setStatus(ExecState.FAILED); 
-		}		
-		return result;
+			if (result != null && result.getExceptions().size() > 0) {
+				for (ThrowableTrace et : result.getExceptions()) {
+					if (et.getThrowable() instanceof Error)
+						((ServiceExertion) result).setStatus(ExecState.ERROR);
+				}
+				((ServiceExertion)result).setStatus(ExecState.FAILED); 
+			}	
+			return result;
+		}
 	}
 
 	private Exertion processAsTask() throws RemoteException,
@@ -285,7 +342,10 @@ public class ExertManager implements Callable {
 
 	@Override
 	public String toString() {
-		return "ExertManager for: " + exertion.getName();
+		if (exertion == null)
+			return "ExertionShell";
+		else
+			return "ExertionShell for: " + exertion.getName();
 	}
 
 	/*

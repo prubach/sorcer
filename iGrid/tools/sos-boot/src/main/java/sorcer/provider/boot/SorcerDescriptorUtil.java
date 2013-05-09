@@ -296,11 +296,11 @@ public class SorcerDescriptorUtil {
 		
 		// service provider classpath
 		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, COMMONS_PRV);
-		
+
 		// service provider codebase
         String spacerCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -415,7 +415,7 @@ public class SorcerDescriptorUtil {
 		// service provider codebase
         String jobberCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -424,8 +424,124 @@ public class SorcerDescriptorUtil {
 				jobberClasspath, implClass, jobberConfig));
 
 	}
-	
-	/**
+
+    /**
+     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+     * ServiceJobber using the Webster port created
+     * by this utility.
+     *
+     * @param policy
+     *            The security policy file to use
+     * @param exerterConfig
+     *            The configuration file the Monitor will use
+     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+     *         Monitor using an anonymous port. The <tt>jobberConfig</tt> file
+     *         will be loaded from <tt>sorcer.home/lib</tt>
+     *
+     * @throws IOException
+     *             If there are problems getting the anonymous port
+     * @throws RuntimeException
+     *             If the <tt>sorcer.home</tt> system property is not set
+     */
+    public static ServiceDescriptor getExerter(String policy, String exerterConfig)
+            throws IOException {
+        return (getExerter(policy, new String[] { exerterConfig }));
+
+    }
+
+    /**
+     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+     * ServiceJobber using the Webster port created
+     * by this utility.
+     *
+     * @param policy
+     *            The security policy file to use
+     * @param exerterConfig
+     *            The configuration options the Monitor will use
+     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+     *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
+     *         will be loaded from <tt>sorcer.home/lib</tt>
+     *
+     * @throws IOException
+     *             If there are problems getting the anonymous port
+     * @throws RuntimeException
+     *             If the <tt>sorcer.home</tt> system property is not set
+     */
+    public static ServiceDescriptor getExerter(String policy,
+                                              String... exerterConfig) throws IOException {
+        return (getExerter(policy, Booter.getPort(), exerterConfig));
+    }
+
+    /**
+     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+     * ServiceJobber
+     *
+     * @param policy
+     *            The security policy file to use
+     * @param port
+     *            The port to use when constructing the codebase
+     * @param exerterConfig
+     *            The configuration options the Monitor will use
+     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+     *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
+     *         will be loaded from <tt>sorcer.home/lib</tt>
+     *
+     * @throws IOException
+     *             If there are problems getting the anonymous port
+     * @throws RuntimeException
+     *             If the <tt>sorcer.home</tt> system property is not set
+     */
+    public static ServiceDescriptor getExerter(String policy, int port,
+                                              String... exerterConfig) throws IOException {
+        return (getExerter(policy, Booter.getHostAddress(), port, exerterConfig));
+
+    }
+
+    /**
+     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+     * {@link sorcer.core.provider.ServiceTasker} with beaned
+     * {@link sorcer.util.ExertManager}, called Exerter.
+     *
+     * @param policy
+     *            The security policy file to use
+     * @param hostAddress
+     *            The address to use when constructing the codebase
+     * @param port
+     *            The port to use when constructing the codebase
+     * @param exerterConfig
+     *            The configuration options the ExertManager provider will use
+     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+     *         Exerter using an anonymous port. The <tt>sorcer-prv.jar</tt> file
+     *         will be loaded from <tt>iGrid.home/lib/sorcer/lib</tt>
+     *
+     * @throws IOException
+     *             If there are problems getting the anonymous port
+     * @throws RuntimeException
+     *             If the <tt>iGrid.home</tt> system property is not set
+     */
+    public static ServiceDescriptor getExerter(String policy,
+                                              String hostAddress, int port, String... exerterConfig)
+            throws IOException {
+        if (sorcerHome == null)
+            throw new RuntimeException("'sorcer.home' property not declared");
+
+        // service provider classpath
+        String exerterClasspath = Resolver.resolveClassPath(COMMONS_PRV);
+
+        // service provider codebase
+        String exerterCodebase = getCodebase(new ArtifactCoordinates[]{
+                SOS_PLATFORM,
+                //SOS_ENV,
+                SERVICEUI,
+                EXERTLET_UI,
+        }, hostAddress, Integer.toString(port));
+        String implClass = "sorcer.core.provider.ServiceTasker";
+        return (new SorcerServiceDescriptor(exerterCodebase, policy,
+                exerterClasspath, implClass, exerterConfig));
+
+    }
+
+    /**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 * ExertMonitor using the Webster port created
 	 * by this utility.
@@ -527,6 +643,7 @@ public class SorcerDescriptorUtil {
 
 		// service provider classpath
 		String exertmonitorClasspath = Resolver.resolveClassPath(
+                //SOS_PLATFORM,
 				EXERTMONITOR_SERVICE,
 				SLEEPYCAT,
 				COMMONS_PRV
@@ -535,7 +652,7 @@ public class SorcerDescriptorUtil {
 	// service provider codebase
         String exertmonitorCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -650,6 +767,7 @@ public class SorcerDescriptorUtil {
 
 		// service provider classpath
 		String dbpc = Resolver.resolveClassPath(
+                //SOS_PLATFORM,
 				DBP_PRV,
 				SLEEPYCAT,
 				COMMONS_PRV
@@ -658,7 +776,7 @@ public class SorcerDescriptorUtil {
 		// service provider codebase
         String dbpCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -775,7 +893,7 @@ public class SorcerDescriptorUtil {
 		// service provider codebase
         String dbpCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -890,8 +1008,8 @@ public class SorcerDescriptorUtil {
 
 		// service provider codebase		
 		String catalogCodebase = getCodebase(new ArtifactCoordinates[]{
-				SOS_PLATFORM,
-				SOS_ENV,
+			    SOS_PLATFORM,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
@@ -1008,7 +1126,7 @@ public class SorcerDescriptorUtil {
 		// service provider codebase
 		String loggerCodebase = getCodebase(new ArtifactCoordinates[]{
 				SOS_PLATFORM,
-				SOS_ENV,
+				//SOS_ENV,
 				SERVICEUI,
 				EXERTLET_UI,
 				LOGGER_SUI,

@@ -833,10 +833,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             if (!done) {
                 try {
                     unexport(true);
+                    return;
                 } catch (Exception e) {
                     logger.log(Level.INFO,
                             "unable to unexport after failure during startup",
                             e);
+                    return;
                 }
             }
         }
