@@ -159,6 +159,11 @@ else
   STARTER_CLASSPATH="$SORCER_CLASSPATH:$LIB_DIR/rio/resolver-api.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/logback-core.jar:$LIB_DIR/commons/logback-classic.jar:$LIB_DIR/rio/rio-platform.jar:$LIB_DIR/commons/groovy-all.jar:$LIB_DIR/commons/reference-collections.jar:$LIB_DIR/commons/high-scale-lib.jar:$LIB_DIR/river/jsk-platform.jar:$LIB_DIR/river/jsk-lib.jar"
 fi
 
+# Set RIO_HOME if not already set
+if [ -z "$RIO_HOME" ]; then
+    RIO_HOME=$SORCER_HOME/lib/rio
+    export RIO_HOME
+fi
 
 # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
 # global classpath. Network shell behaves then the same as the java interpreter

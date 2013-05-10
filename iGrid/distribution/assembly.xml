@@ -117,6 +117,7 @@
             <excludes>
                 <exclude>common-run.xml</exclude>
                 <exclude>webster/bin/webster-run.xml</exclude>
+		<exclude>shell/configs/nsh-start.config</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -161,6 +162,17 @@
                 <exclude>log4j.jar</exclude>
             </excludes>
         </fileSet>
+	
+        <!-- Rio resolver files-->
+        <fileSet>
+	    <directory>${basedir}/../lib/rio/lib/resolver</directory>
+	    <outputDirectory>/lib/rio/lib/resolver</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+
 
     </fileSets>
 
