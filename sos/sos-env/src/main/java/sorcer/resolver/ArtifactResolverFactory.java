@@ -18,17 +18,20 @@ import sorcer.util.ArtifactCoordinates;
 public class ArtifactResolverFactory {
 
 	public ArtifactResolver createResolver() {
-        File repoRoot = null;
-        String repoDir = SorcerEnv.getRepoDir();
-        if (repoDir !=null) {
-            repoRoot = new File(repoDir);
-            ArtifactResolver artifactResolver = new RepositoryArtifactResolver(repoRoot.getPath());
+        //repoRoot = new File();
+        //File repoRoot = null;
+        String rootDir = SorcerEnv.getHomeDir().toString().concat(File.separator + "lib");// SorcerEnv.getRepoDir();
+        if (rootDir !=null) {
+            File rootFile = new File(rootDir);
+            ArtifactResolver artifactResolver = new MappedFlattenedArtifactResolver(rootFile);
+            //ArtifactResolver artifactResolver = new RepositoryArtifactResolver(repoRoot.getPath());
             if (tryResolve(Artifact.getSosEnv(), artifactResolver)) {
                 return artifactResolver;
             }
         }
-		repoRoot = new File(SorcerEnv.getHomeDir(), "lib");
-		return new MappedFlattenedArtifactResolver(repoRoot);
+        rootDir = SorcerEnv.getRepoDir();
+        if (rootDir==null) throw new RuntimeException("Problem determining resolving mechanism!");
+        return new RepositoryArtifactResolver(rootDir);
 	}
 
 	private boolean tryResolve(ArtifactCoordinates coords, ArtifactResolver resolver) {
