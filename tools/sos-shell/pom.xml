@@ -1,0 +1,85 @@
+<project
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <version>11.1</version>
+        <artifactId>tools</artifactId>
+    </parent>
+
+    <artifactId>sos-shell</artifactId>
+
+    <name>SORCER tools :: sos-shell</name>
+    <description>SORCER</description>
+    <url>http://sorcersoft.org/</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-webster</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>sorcer.tools.shell.ShellStarter</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+
+                <configuration>
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                    <includePluginDependencies>false</includePluginDependencies>
+
+                    <mainClass>sorcer.tools.shell.ShellStarter</mainClass>
+                    <systemProperties>
+                        <systemProperty><key>sorcer.home</key><value>${env.SORCER_HOME}</value></systemProperty>
+                        <!--<systemProperty><key>rio.home</key><value>${env.RIO_HOME}</value></systemProperty>-->
+                        <systemProperty><key>sorcer.env.file</key><value>${env.SORCER_HOME}/configs/sorcer.env</value></systemProperty>
+                        <systemProperty><key>webster.tmp.dir</key><value>${env.SORCER_HOME}</value></systemProperty>
+                        <systemProperty><key>java.util.logging.config.file</key><value>${env.SORCER_HOME}/configs/sorcer.logging</value></systemProperty>
+                        <systemProperty><key>java.protocol.handler.pkgs</key><value>net.jini.url</value></systemProperty>
+                        <systemProperty><key>java.security.policy</key><value>../../sorcer/configs/sorcer.policy</value></systemProperty>
+                        <systemProperty><key>ssb.logFile</key><value>logs/browser.log</value></systemProperty>
+                    </systemProperties>
+                    <arguments>
+                        <argument>--main</argument>
+                        <argument>sorcer.tools.shell.NetworkShell</argument>
+                    </arguments>
+
+                    <workingDirectory>${project.root}</workingDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
