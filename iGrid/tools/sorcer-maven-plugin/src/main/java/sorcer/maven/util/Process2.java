@@ -20,6 +20,10 @@ public class Process2 {
 		}
 	}
 
+	public void waitFor() throws InterruptedException {
+		process.waitFor();
+	}
+
 	/**
 	 * {@link Process#waitFor()} with timeout
 	 * 
@@ -27,12 +31,14 @@ public class Process2 {
 	 * 
 	 * @param timeout
 	 *            timeout in milliseconds, not supported yet
+	 * @param destroy
+	 *            wheather to kill the process after the timeout has passed
 	 * @return
 	 * @throws InterruptedException
 	 *             if the waiting thread was interrupted or if it has reached
 	 *             the timeout
 	 */
-	public int waitFor(long timeout) throws InterruptedException {
+	public int waitFor(long timeout, boolean destroy) throws InterruptedException {
 		return process.waitFor();
 	}
 

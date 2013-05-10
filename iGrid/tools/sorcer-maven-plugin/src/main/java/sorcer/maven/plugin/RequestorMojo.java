@@ -50,14 +50,14 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(property = "basedir", readonly = true)
 	protected File baseDir;
 
-	@Parameter(defaultValue = "${basedir}/../first-prv/target/test-classes/sorcer.env")
+	@Parameter(defaultValue = "${project.build.testOutputDirectory}/sorcer.env")
 	protected File sorcerEnvFile;
 
 	@Parameter(defaultValue = "runtime")
 	protected String scope;
 
-	@Parameter
-	protected boolean debugger;
+	@Parameter(property = "sorcer.requestor.debug", defaultValue = "${sorcer.provider.debug}")
+	protected boolean debug;
 
 	@Parameter
 	protected List<String> codebase = new ArrayList<String>();
@@ -70,6 +70,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		if (!project.getPackaging().equals("jar")) {
+			getLog().warn("Plugin misconfigured: run on a project with packaging other than jar");
+		}
 
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
 
@@ -88,7 +91,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		builder.setProperties(sysProps);
 		builder.setMainClass(mainClass);
 		builder.setClassPath(buildClasspath());
-		builder.setDebugger(debugger);
+		builder.setDebugger(debug);
 
 		try {
 			if (waitBeforeRun > 0) {
@@ -96,7 +99,11 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			}
 			getLog().info("Starting requestor process");
 			Process2 process = builder.startProcess();
-			process.waitFor(10000);
+			if(debug){
+				process.waitFor();
+			}else{
+				process.waitFor(10000, true);
+			}
 			getLog().info("Requestor process has finished");
 		} catch (InterruptedException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
