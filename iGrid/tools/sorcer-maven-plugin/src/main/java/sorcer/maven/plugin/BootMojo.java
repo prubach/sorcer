@@ -22,56 +22,50 @@ import org.sonatype.aether.util.artifact.JavaScopes;
 
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
-import sorcer.maven.util.PolicyFileHelper;
-import sorcer.maven.util.SorcerProcessBuilder;
+import sorcer.maven.util.JavaProcessBuilder;
 
 /**
  * Boot sorcer provider
  */
 @Execute(phase = LifecyclePhase.COMPILE)
-@Mojo(name = "provider", aggregator = true, defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
+@Mojo(name = "provider", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
 public class BootMojo extends AbstractSorcerMojo {
 	/**
 	 * Location of the services file.
 	 */
-	//@Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/sorcer/services.config")
-	@Parameter(defaultValue = "${basedir}/first-prv/target/classes/META-INF/sorcer/services.config")
+	@Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/sorcer/services.config")
 	private File servicesConfig;
-
-	@Parameter(defaultValue = "${v.sorcer}")
-	protected String sorcerVersion;
 
 	@Parameter(required = true, defaultValue = "sorcer.boot.ServiceStarter")
 	protected String mainClass;
 
+	@Parameter(property = "project.build.directory", readonly = true)
+	protected File projectOutputDir;
+
+	@Parameter(defaultValue = "${v.sorcer}")
+	protected String sorcerVersion;
+
+	@Parameter(defaultValue = "org.sorcersoft.sorcer:sos-boot")
+	protected String booter;
+
+	@Parameter(defaultValue = "${providerName}-prv")
+	protected String provider;
+
+	@Parameter(property = "sorcer.provider.debug")
+	protected boolean debug;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		String key = getProviderProjectKey();
-		if (System.getProperty(key) != null) {
-			return;
-		}
-		String providerProject = (String) project.getParent().getProperties().get(KEY_PROVIDER);
-		System.setProperty(key, providerProject);
-
-		String projectOutDir = project.getBuild().getDirectory();
-		if (servicesConfig == null) {
-			servicesConfig = new File("target/classes/META-INF/sorcer/services.config");
-		}
-
 		Log log = getLog();
 		log.debug("servicesConfig: " + servicesConfig);
-		log.info("starting sorcer");
-
-		String policy = PolicyFileHelper.preparePolicyFile(projectOutDir);
 
 		// prepare sorcer.env with updated group
-		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutDir);
+		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
 		List<Artifact> artifacts;
 
 		try {
-			artifacts = createAether().resolve(new DefaultArtifact("org.sorcersoft.sorcer:sos-boot:" + sorcerVersion),
-					JavaScopes.RUNTIME);
+			artifacts = resolveDependencies(new DefaultArtifact(booter + ":" + sorcerVersion), JavaScopes.RUNTIME);
 		} catch (DependencyResolutionException e) {
-			throw new MojoExecutionException("Error while resolving dependencies", e);
+			throw new MojoExecutionException("Error while resolving booter dependencies", e);
 		}
 
 		Map<String, String> properties = new HashMap<String, String>();
@@ -83,15 +77,16 @@ public class BootMojo extends AbstractSorcerMojo {
 		properties.put("rio.home", System.getenv("RIO_HOME"));
 		properties.put("webster.tmp.dir", new File(sorcerHome, "data").getPath());
 		properties.put("sorcer.env.file", sorcerEnv);
-		properties.put("java.security.policy", policy);
+		properties.put("java.security.policy", new File(testOutputDir, "sorcer.policy").getPath());
 
-		SorcerProcessBuilder builder = new SorcerProcessBuilder(getLog());
+		JavaProcessBuilder builder = new JavaProcessBuilder(getLog());
 		builder.setMainClass(mainClass);
 		builder.setProperties(properties);
 		builder.setParameters(Arrays.asList(servicesConfig.getPath()));
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
+		builder.setDebugger(debug);
 
+		log.info("starting sorcer");
 		putProcess(builder.startProcess());
 	}
-
 }

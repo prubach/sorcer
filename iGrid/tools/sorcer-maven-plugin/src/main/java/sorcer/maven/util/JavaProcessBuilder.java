@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +20,16 @@ import org.apache.maven.plugin.logging.Log;
 /**
  * @author Rafał Krupiński
  */
-public class SorcerProcessBuilder {
+public class JavaProcessBuilder {
 	protected Map<String, String> properties;
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
-
+	protected File workingDir;
+protected boolean debugger;
 	protected Log log;
 
-	public SorcerProcessBuilder(Log log) {
+	public JavaProcessBuilder(Log log) {
 		this.log = log;
 	}
 
@@ -47,8 +49,21 @@ public class SorcerProcessBuilder {
 		this.parameters = parameters;
 	}
 
-	public Process startProcess() throws MojoExecutionException, MojoFailureException {
+	public void setWorkingDir(File workingDir) {
+		this.workingDir = workingDir;
+	}
+
+	public void setDebugger(boolean debugger) {
+		this.debugger = debugger;
+	}
+
+	public Process2 startProcess() throws MojoExecutionException, MojoFailureException {
 		ProcessBuilder procBld = new ProcessBuilder().command("java");
+
+		if(debugger){
+			procBld.command().addAll(Arrays.asList("-Xdebug","-Xrunjdwp:transport=dt_socket,server=y,address=8000"));
+		}
+
 		procBld.command().addAll(_D(properties));
 		String classPath = StringUtils.join(classPathList, File.pathSeparator);
 		procBld.command().addAll(asList("-classpath", classPath, mainClass));
@@ -56,7 +71,14 @@ public class SorcerProcessBuilder {
 			procBld.command().addAll(parameters);
 		}
 
-		log.info(StringUtils.join(procBld.command(), " "));
+		if (workingDir == null) {
+			// the default
+			// make explicit for logging purpose
+			workingDir = new File(System.getProperty("user.dir"));
+		}
+		procBld.directory(workingDir);
+
+		log.info("[" + workingDir.getPath() + "] " + StringUtils.join(procBld.command(), " "));
 
 		redirectIO(procBld);
 
@@ -74,7 +96,7 @@ public class SorcerProcessBuilder {
 				throw new MojoExecutionException("Process exited with value " + x);
 			} catch (IllegalThreadStateException x) {
 				if (proc != null) {
-					return proc;
+					return new Process2(proc);
 				} else {
 					throw new MojoFailureException("Could not start java process");
 				}
@@ -97,7 +119,7 @@ public class SorcerProcessBuilder {
 			inheritIOMethod.invoke(processBuilder);
 		} catch (NoSuchMethodException e) {
 			// looks like we're not in jdk1.7
-			//return
+			// return
 		} catch (InvocationTargetException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {

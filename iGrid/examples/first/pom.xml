@@ -24,7 +24,7 @@
 	<modules>
 		<module>first-api</module>
 		<module>first-prv</module>
-		<module>first-req</module>
+		<!--<module>first-req</module>-->
 		<module>first-proxy</module>
 		<module>first-sui</module>
 	</modules>
@@ -39,27 +39,6 @@
 						<id>sorcer-init</id>
 						<goals>
 							<goal>initialize</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>sorcer-preit</id>
-						<goals>
-							<goal>provider</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>sorcer-it</id>
-						<goals>
-							<goal>run-requestor</goal>
-						</goals>
-						<configuration>
-							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
-						</configuration>
-					</execution>
-					<execution>
-						<id>sorcer-postit</id>
-						<goals>
-							<goal>destroy</goal>
 						</goals>
 					</execution>
 				</executions>

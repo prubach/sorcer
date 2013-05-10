@@ -1,5 +1,6 @@
 package sorcer.maven.plugin;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -33,6 +33,9 @@ import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
 
+import sorcer.maven.util.Process2;
+import sorcer.maven.util.TestCycleHelper;
+
 import com.jcabi.aether.Aether;
 
 /**
@@ -46,6 +49,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	public static final String KEY_PROVIDER = "sorcer.provider";
 	public static final String KEY_PROCESS = BootMojo.class.getName() + ".process";
 	public static final String KEY_CODEBASE_REQUESTOR = "sorcer.requestor.codebase";
+	public static final String KEY_PROVIDER_PATH = "sorcer.provider.path";
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
 	protected RepositorySystemSession repositorySystemSession;
@@ -59,6 +63,9 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	@Component
 	protected RepositorySystem repositorySystem;
 
+	@Parameter(property = "project.build.testOutputDirectory", readonly = true)
+	protected File testOutputDir;
+
 	protected Aether createAether() {
 		return new Aether(project, repositorySystemSession.getLocalRepository().getBasedir());
 	}
@@ -69,18 +76,12 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 		return super.getPluginContext();
 	}
 
-	public void putProcess(Process process) {
-		project.getProperties().put(KEY_PROCESS, process);
+	public void putProcess(Process2 process) {
+		TestCycleHelper.getInstance().setProcess(process);
 	}
 
-	public Process getProcess() {
-		return (Process) project.getProperties().get(KEY_PROCESS);
-	}
-
-	protected String getProviderProjectKey() {
-		// return "sorcer.provier." +
-		// project.getParent().getProperties().get(KEY_PROVIDER_NAME);
-		return "sorcer.provider." + project.getProperties().get(KEY_PROVIDER_NAME);
+	public Process2 getProcess() {
+		return TestCycleHelper.getInstance().getProcess();
 	}
 
 	protected List<String> createClasspath(Artifact artifact, String scope) throws MojoExecutionException {

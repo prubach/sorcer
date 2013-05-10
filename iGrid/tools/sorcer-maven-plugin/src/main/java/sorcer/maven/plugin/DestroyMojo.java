@@ -7,6 +7,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
+import sorcer.maven.util.Process2;
+
 /**
  * @author Rafał Krupiński
  */
@@ -15,12 +17,14 @@ public class DestroyMojo extends AbstractSorcerMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		System.getProperties().remove(getProviderProjectKey());
-
-		Process process = getProcess();
+		Process2 process = getProcess();
 		if (process != null) {
-			getLog().error("KILL KILL KILL");
-			process.destroy();
+			if (process.running()) {
+				getLog().info("KILL KILL KILL");
+				process.destroy();
+			} else {
+				getLog().warn("Process dead");
+			}
 		}
 	}
 }

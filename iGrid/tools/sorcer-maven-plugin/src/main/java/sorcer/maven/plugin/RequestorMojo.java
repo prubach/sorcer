@@ -2,6 +2,7 @@ package sorcer.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +28,8 @@ import org.sonatype.aether.util.artifact.JavaScopes;
 
 import sorcer.core.SorcerEnv;
 import sorcer.maven.util.ArtifactUtil;
-import sorcer.maven.util.SorcerProcessBuilder;
+import sorcer.maven.util.JavaProcessBuilder;
+import sorcer.maven.util.Process2;
 
 /**
  * @author Rafał Krupiński
@@ -42,11 +44,23 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(property = "project.build.directory", readonly = true)
 	protected File targetDir;
 
-	@Parameter(required = true, property = "sorcer.requestor.mainClass")
+	@Parameter(property = "sorcer.requestor.mainClass", required = true)
 	protected String mainClass;
 
 	@Parameter(property = "basedir", readonly = true)
 	protected File baseDir;
+
+	@Parameter(defaultValue = "${basedir}/../first-prv/target/test-classes/sorcer.env")
+	protected File sorcerEnvFile;
+
+	@Parameter(defaultValue = "runtime")
+	protected String scope;
+
+	@Parameter
+	protected boolean debugger;
+
+	@Parameter
+	protected List<String> codebase = new ArrayList<String>();
 
 	/**
 	 * Milliseconds to wait before starting the requestor
@@ -61,23 +75,28 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 		Map<String, String> sysProps = new HashMap<String, String>();
 		sysProps.put("java.util.logging.config.file", new File(sorcerHome, "configs/sorcer.logging").getPath());
-		sysProps.put("java.security.policy", new File(baseDir,"first-prv/target/sorcer.policy").getPath());
-		sysProps.put("sorcer.env.file", new File(targetDir, "sorcer.env").getPath());
+		sysProps.put("java.security.policy", new File(testOutputDir, "sorcer.policy").getPath());
+		sysProps.put("sorcer.env.file", sorcerEnvFile.getPath());
 		sysProps.put("java.rmi.server.codebase", buildCodeBase());
 		sysProps.put("java.rmi.server.useCodebaseOnly", "false");
+		if (!websterRoots.isEmpty()) {
+			websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
+			sysProps.put("webster.roots", StringUtils.join(websterRoots, ";"));
+		}
 
-		SorcerProcessBuilder builder = new SorcerProcessBuilder(getLog());
+		JavaProcessBuilder builder = new JavaProcessBuilder(getLog());
 		builder.setProperties(sysProps);
 		builder.setMainClass(mainClass);
 		builder.setClassPath(buildClasspath());
+		builder.setDebugger(debugger);
 
 		try {
 			if (waitBeforeRun > 0) {
 				Thread.sleep(waitBeforeRun);
 			}
 			getLog().info("Starting requestor process");
-			Process process = builder.startProcess();
-			process.waitFor();
+			Process2 process = builder.startProcess();
+			process.waitFor(10000);
 			getLog().info("Requestor process has finished");
 		} catch (InterruptedException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
@@ -86,10 +105,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 	private Collection<String> buildClasspath() throws MojoExecutionException {
 		Set<Artifact> artifacts = new HashSet<Artifact>();
-		List<String> cp = Arrays.asList( (String)project.getProperties().get(KEY_REQUESTOR));
+		List<String> cp = Arrays.asList((String) project.getProperties().get(KEY_REQUESTOR));
 		try {
 			for (String coords : cp) {
-				artifacts.addAll(resolveDependencies(new DefaultArtifact(coords), JavaScopes.RUNTIME));
+				artifacts.addAll(resolveDependencies(new DefaultArtifact(coords), JavaScopes.TEST));
 			}
 			return ArtifactUtil.toString(artifacts);
 		} catch (DependencyResolutionException e) {
@@ -100,12 +119,14 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	private List<String> websterRoots = new LinkedList<String>();
 
 	private String buildCodeBase() throws MojoExecutionException {
-		List<String> cb = (List<String>) project.getProperties().get(KEY_CODEBASE_REQUESTOR);
+		List<String> cb = new LinkedList<String>(Arrays.asList(project.getProperties().getProperty(KEY_REQUESTOR)));
+		cb.addAll(codebase);
+
 		Set<Artifact> artifacts = new HashSet<Artifact>();
 		try {
 			String repositoryPath = repositorySystemSession.getLocalRepository().getBasedir().getCanonicalPath();
 			for (String s : cb) {
-				artifacts.addAll(resolveDependencies(new DefaultArtifact(s), JavaScopes.RUNTIME));
+				artifacts.addAll(resolveDependencies(new DefaultArtifact(s), JavaScopes.TEST));
 			}
 			List<String> codeBaseList = new LinkedList<String>();
 			for (Artifact artifact : artifacts) {

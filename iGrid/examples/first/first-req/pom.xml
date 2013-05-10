@@ -10,6 +10,25 @@
 	<artifactId>first-req</artifactId>
 	<name>SORCER :: first :: requestor</name>
 
+<!--
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<version>${v.sorcer}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>policy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+-->
+
 	<dependencies>
 		<dependency>
 			<groupId>com.example.sorcer</groupId>
@@ -19,6 +38,12 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-platform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>first-prv</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

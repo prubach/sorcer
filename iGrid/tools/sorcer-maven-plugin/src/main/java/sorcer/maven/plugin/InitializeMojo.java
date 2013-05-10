@@ -1,5 +1,6 @@
 package sorcer.maven.plugin;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -12,6 +13,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.StringUtils;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.resolution.ArtifactDescriptorException;
+import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
+import org.sonatype.aether.resolution.ArtifactDescriptorResult;
+
+import sorcer.maven.util.ArtifactUtil;
 
 /**
  * @author Rafał Krupiński
@@ -53,22 +60,60 @@ public class InitializeMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.groupId}:${project.artifactId}-req:${project.version}")
 	protected String requestor;
 
+	@Parameter
+	protected File providerPath;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		MavenProject parent = project.getParent();
-		if (parent != null && parent.getProperties().containsKey(KEY_PROVIDER_NAME)) {
-			getLog().warn("providerName already set; skipping mojo");
-			return;
+		Properties props = project.getProperties();
+		if (!isPomProject()) {
+			props.putAll(project.getParent().getProperties());
+			providerName = props.getProperty(KEY_PROVIDER_NAME);
+		} else {
+			props.setProperty(KEY_PROVIDER_NAME, providerName);
+			props.setProperty(KEY_REQUESTOR, requestor);
+			props.setProperty(KEY_PROVIDER, provider);
+			// props.setProperty(KEY_PROVIDER_PATH, providerPath.getPath());
+			props.put(KEY_CLASSPATH, Arrays.asList(api, provider, proxy));
+			props.put(KEY_CODEBASE, Arrays.asList(api, proxy, sui));
 		}
 		assertNotEmpty("providerName", providerName);
+	}
 
-		Properties props = project.getProperties();
-		props.put(KEY_PROVIDER_NAME, providerName);
-		props.put(KEY_CLASSPATH, Arrays.asList(api, provider, proxy));
-		props.put(KEY_CODEBASE, Arrays.asList(api, proxy, sui));
-		props.put(KEY_CODEBASE_REQUESTOR, Arrays.asList(api));
-		props.put(KEY_REQUESTOR, requestor);
-		props.put(KEY_PROVIDER, provider);
+	// if we're run on a pom project, assume it's a provider root
+	// otherwise, asume we're in a prv module
+	private void configure() throws MojoExecutionException {
+
+		MavenProject mainProject = isPomProject() ? project : project.getParent();
+
+		if (providerName == null) {
+			providerName = mainProject.getArtifactId();
+		}
+
+		api = resolveModule(mainProject, api, "api");
+
+	}
+
+	private String resolveModule(MavenProject project, String userData, String role) {
+		String name = userData != null ? userData : project.getArtifactId() + "-" + role;
+		if (project.getModules().contains(name)) {
+
+			return name;
+		}
+		return null;
+	}
+
+	private Artifact readParent() throws MojoExecutionException {
+		ArtifactDescriptorResult artifactDescriptorResult;
+		try {
+			artifactDescriptorResult = repositorySystem.readArtifactDescriptor(repositorySystemSession,
+					new ArtifactDescriptorRequest(ArtifactUtil.toAetherArtifact(project.getParentArtifact()),
+							remoteRepositories, "initialize"));
+		} catch (ArtifactDescriptorException e) {
+			getLog().info("could not read parent project");
+			return null;
+		}
+		return resolveArtifact(artifactDescriptorResult.getArtifact());
 	}
 
 	private void assertNotEmpty(String name, String value) throws MojoExecutionException {
@@ -78,4 +123,7 @@ public class InitializeMojo extends AbstractSorcerMojo {
 		getLog().info("providerName = " + providerName);
 	}
 
+	public boolean isPomProject() {
+		return project.getPackaging().equals("pom");
+	}
 }

@@ -22,7 +22,7 @@
         <v.sigar>1.6.4</v.sigar>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sorcer.home>${project.basedir}</sorcer.home>
+		<!--<sorcer.home>${project.basedir}</sorcer.home>-->
     </properties>
 
     <modules>
