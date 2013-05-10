@@ -59,8 +59,6 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<property name="mvn.repo" value="${sorcer.local.repo.location}" />
 
 	<property name="jini.lib" value="${lib}/river/lib" />
-	<property name="jini-dl.lib" value="${lib}/river/lib-dl" />
-	<property name="jini-ext.lib" value="${lib}/river/lib-ext" />
 
 	<property name="docs" value="${sorcer.home}/docs/${module.name}" />
 	<property name="sorcer.policy" value="${sorcer.home}/policy" />

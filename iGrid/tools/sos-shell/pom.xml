@@ -12,7 +12,7 @@
 
     <artifactId>sos-shell</artifactId>
 
-    <name>SORCER tools :: shell</name>
+    <name>SORCER tools :: sos-shell</name>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
 

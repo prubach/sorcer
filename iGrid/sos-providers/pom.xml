@@ -12,7 +12,7 @@
 
 	<artifactId>sos-providers</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER OS :: providers</name>
+	<name>SORCER OS :: sos-providers</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

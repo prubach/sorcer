@@ -185,6 +185,29 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>prepackage</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>target/sorcer-${project.version}/bin/sorcer-boot.xml</file>
+                    <replacements>
+                        <replacement>
+                            <token>bin/common-run.xml</token>
+                            <value>bin/sorcer-run.xml</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
 
                 <configuration>
