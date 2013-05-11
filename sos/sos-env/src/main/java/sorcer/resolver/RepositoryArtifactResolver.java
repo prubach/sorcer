@@ -45,4 +45,9 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
     public String getRootDir() {
         return root;
     }
+
+    @Override
+    public String getRepoDir() {
+        return root;
+    }
 }

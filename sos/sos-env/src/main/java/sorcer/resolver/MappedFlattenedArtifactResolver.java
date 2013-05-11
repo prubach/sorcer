@@ -48,7 +48,9 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
-		return new File(rootDir, resolveRelative(artifactCoordinates)).getPath();
+        String relPath = resolveRelative(artifactCoordinates);
+        if (relPath==null) return null;
+        else return new File(rootDir, relPath).getPath();
 	}
 
 	@Override
@@ -60,12 +62,21 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 		} else {
 			groupDir = GROUPDIR_DEFAULT;
 		}
-		return new File(groupDir, coords.getArtifactId() + (coords.getClassifier()!=null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging())
-				.getPath();
+        File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier()!=null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging());
+        File jar = new File(rootDir, relFile.getPath());
+        if (jar.exists())
+            return relFile.getPath();
+        else
+            return null;
 	}
 
     @Override
     public String getRootDir() {
+        return rootDir.toString();
+    }
+
+    @Override
+    public String getRepoDir() {
         return rootDir.toString();
     }
 }

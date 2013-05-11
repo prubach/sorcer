@@ -39,21 +39,6 @@
             <outputDirectory>/</outputDirectory>
         </fileSet>-->
 
-        <!-- bin directory -->
-        <fileSet>
-            <directory>${basedir}/bin</directory>
-            <includes>
-                <include>*</include>
-            </includes>
-            <excludes>
-                <exclude>browser/pom.xml</exclude>
-            </excludes>
-
-            <filtered>true</filtered>
-            <fileMode>0755</fileMode>
-            <outputDirectory>/bin</outputDirectory>
-        </fileSet>
-
         <!-- docs directory -->
 <!--
         <fileSet>
@@ -119,12 +104,18 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-                <exclude>common-run.xml</exclude>
+                <exclude>blitz/bin/blitz-all-boot.xml</exclude>
+                <exclude>blitz/bin/blitz-boot-spawn.xml</exclude>
+                <exclude>blitz/bin/locker-boot-spawn.xml</exclude>
+                <exclude>blitz/bin/blitz.sh</exclude>
+                <exclude>browser/pom.xml</exclude>
                 <exclude>webster/bin/webster-run.xml</exclude>
-		<exclude>shell/configs/nsh-start.config</exclude>
+                <exclude>shell/configs/nsh-start.config</exclude>
             </excludes>
             <filtered>false</filtered>
+            <fileMode>0755</fileMode>
         </fileSet>
+
         <fileSet>
             <directory>${basedir}/src/main/bin</directory>
             <outputDirectory>/bin</outputDirectory>
