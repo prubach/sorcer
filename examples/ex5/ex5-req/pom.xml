@@ -12,6 +12,10 @@
 	<artifactId>ex5-req</artifactId>
 	<name>SORCER examples :: ex5 :: req</name>
 
+    <properties>
+        <skipTests>true</skipTests>
+    </properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>

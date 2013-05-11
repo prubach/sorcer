@@ -141,14 +141,6 @@ To include this file in your custom *-run-buld.xml have the import line:
 		</not>
 	</condition>
 
-	<target name="groovyRun">
-		<groovy src="${groovySrc}">
-			<classpath>
-				<pathelement location="${groovyDir}" />
-			</classpath>
-		</groovy>
-	</target>
-
 	<target name="set-hostname">
 		<condition property="hostname" value="${env.HOST}">
 			<os family="unix" />
