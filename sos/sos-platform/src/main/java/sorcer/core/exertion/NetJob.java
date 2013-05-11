@@ -21,15 +21,12 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.util.ExertManager;
 
 import java.rmi.RemoteException;
 
-public class NetJob extends Job {
+public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 
 	private static final long serialVersionUID = 7060442151643838169L;
 
