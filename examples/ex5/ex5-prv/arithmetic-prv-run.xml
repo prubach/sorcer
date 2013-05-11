@@ -4,7 +4,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Running Arithmetic" default="run.provider" basedir=".">
+<project name="Arithmetic provider" default="run.Arithmetic" basedir=".">
 
     <!-- system environment variables -->
     <property environment="env" />
@@ -55,7 +55,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 
     <!-- start provider -->
-    <target name="run.provider" depends="mvn-init">
+    <target name="run.Arithmetic" depends="mvn-init">
         <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
             <classpath refid="jini.classpath"/>
             <sysproperty key="java.security.manager" value="" />

@@ -190,7 +190,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		init();
 	}
 
-	public boolean init() {
+	public void init() {
 		try {
 			initLogger();
 			LookupLocator[] specificLocators = null;
@@ -226,12 +226,9 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			logger.info("------------------------------");
 		} catch (IOException ex) {
 			ex.printStackTrace();
-            return false;
         } catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
-            return false;
 		}
-        return true;
 	}
 
 	private void initLogger() {

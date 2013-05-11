@@ -13,7 +13,7 @@
 	<name>SORCER examples :: ex5 :: req</name>
 
     <properties>
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
     </properties>
 
 	<dependencies>

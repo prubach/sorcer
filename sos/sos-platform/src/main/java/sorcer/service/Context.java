@@ -38,12 +38,12 @@ import sorcer.service.Signature.ReturnPath;
  * metacomputing data structures for storage, retrieval, and propagation of
  * heterogeneous information across all SORCER service providers. Two generic
  * implementations are provided: {@link ServiceContext} and
- * {@link ProviderContextImpl}. Usually the former is used by service requestors
- * and the latter with more functionality is used by service providers. The
- * ServiceContextImpl class implements the ProviderContext interface that
- * extends ServiceContext. An example of a specific service context is
- * illustrated by {@link ArrayContext}.
- * <p>
+ * {@link sorcer.core.context.PositionalContext}. Usually the former is used by
+ * service requestors and the latter with more functionality is used by service
+ * providers. The ServiceContextImpl class implements the ProviderContext
+ * interface that extends ServiceContext. An example of a specific service context
+ * is illustrated by {@link ArrayContext}.
+ * <p/>
  * A service context is a tree-like structure with two types of nodes. Leaf
  * nodes are called data (value) nodes and the remaining nodes are called
  * context attribute nodes. Context attributes define a namespace for the data
@@ -53,16 +53,16 @@ import sorcer.service.Signature.ReturnPath;
  * hierarchical attribute of data contained in the leaf node. A data node can
  * contain any Java object; in particular a generic {@see ContextNode} is
  * available.
- * <p>
+ * <p/>
  * Context paths can be marked with attributes set by using the method
  * {@link #setAttribute(String)}, which allow for efficient search of related
  * data by service providers (service context clients). The search issue becomes
  * critical when a namespace in the context may change or when data nodes
  * contain remote references, for example a URL. It is usually assumed that
  * provider-enforced data associations are more stable than user-oriented paths.
- * Each direct service invocation {@link Servicer.service(ServiceContext)}
+ * Each direct service invocation {@link Servicer#service}
  * requires data in the ServiceContext format.
- * <p>
+ * <p/>
  * Service contexts are defined by this common interface with efficient
  * service-oriented APIs. However, there are some similarities with XML
  * terminology. The root element in XML contains all other XML elements.
@@ -74,7 +74,7 @@ import sorcer.service.Signature.ReturnPath;
  * can be compared to element attributes in XML. However, data attributes have
  * more meta-attribute meaning than XML attributes. While context attributes
  * provide a name space for direct access to data nodes via
- * {@link #getValue(String)}, data attributes specify the data node for indirect
+ * {@link Context#getValue}, data attributes specify the data node for indirect
  * efficient retrieval (search) by service providers. *
  */
 @SuppressWarnings("rawtypes")
@@ -193,7 +193,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @param name
      *            a context name to set.
      */
-    public void setName(String contextName);
+    public void setName(String name);
 
 //	/**
 //	 * Returns a name of the root context node.
@@ -225,7 +225,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getParentPath();
 
     /**
-     * @param parentPath
+     * @param path
      *            The parentPath to set.
      */
     public void setParentPath(String path);
@@ -241,7 +241,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getCreationDate();
 
     /**
-     * @param creationDate
+     * @param date
      *            The creationDate to set.
      */
     public void setCreationDate(String date);
@@ -251,16 +251,16 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getLastUpdateDate();
 
     /**
-     * @param lastUpdateDate
+     * @param date
      *            The lastUpdateDate to set.
      */
     public void setLastUpdateDate(String date);
 
     /**
-     * @param description
+     * @param date
      *            The description to set.
      */
-    public void setDescription(String text);
+    public void setDescription(String date);
 
     /**
      */
@@ -275,13 +275,13 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getOwnerID();
 
     /**
-     * @param ownerID
+     * @param id
      *            The ownerID to set.
      */
     public void setOwnerID(String id);
 
     /**
-     * @param subjectID
+     * @param id
      *            The subjectID to set.
      */
     public void setSubjectID(String id);
@@ -291,7 +291,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getSubjectID();
 
     /**
-     * @param project
+     * @param projectName
      *            The project to set.
      */
     public void setProject(String projectName);
@@ -304,7 +304,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @param accessClass
      *            The accessClass to set.
      */
-    public void setAccessClass(String acessClass);
+    public void setAccessClass(String accessClass);
 
     /**
      */
@@ -325,7 +325,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getGoodUntilDate();
 
     /**
-     * @param goodUntilDate
+     * @param date
      *            The goodUntilDate to set.
      */
     public void setGoodUntilDate(String date);
@@ -335,7 +335,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getDomainID();
 
     /**
-     * @param domainID
+     * @param id
      *            The domainID to set.
      */
     public void setDomainID(String id);
@@ -345,7 +345,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getSubdomainID();
 
     /**
-     * @param subdomainID
+     * @param id
      *            The subdomainID to set.
      */
     public void setSubdomainID(String id);
@@ -355,7 +355,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getDomainName();
 
     /**
-     * @param domainName
+     * @param name
      *            The domainName to set.
      */
     public void setDomainName(String name);
@@ -365,7 +365,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public String getSubdomainName();
 
     /**
-     * @param subdomainName
+     * @param name
      *            The subdomainName to set.
      */
     public void setSubdomainName(String name);
@@ -397,7 +397,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @param metacontext
      *            The metacontext to set.
      */
-    public void setMetacontext(Hashtable<String, Map<String, String>> hc);
+    public void setMetacontext(Hashtable<String, Map<String, String>> metacontext);
 
     /**
      * Returns the exertion associated with this context.
@@ -603,7 +603,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * that search relations are more stable than user friendly context paths.
      *
      * Tuple attributes and relations must first be registered with the context
-     * with {@link #addAttribute}, {@link #addProperty}, or {@link #addRelation}
+     * with (addAttribute}, addProperty, and addRelation)
      * before they are used in contexts.
      *
      * @param path
@@ -641,9 +641,9 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * Register an attribute with a ServiceContext's metacontext
      *
      * @param attribute
-     *            name
+     *            the attribute descriptor
      */
-    public void setAttribute(String descriptor) throws ContextException;
+    public void setAttribute(String attribute) throws ContextException;
 
     /**
      * Returns boolean value designating if <code>attributeName</code> is an
@@ -682,8 +682,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>boolean</code>
      * @throws ContextException
      * @see #isLocalAttribute
-     * @see #setSingletonAttribute
-     * @see #setMetaattribute
+     * @see #setAttribute
      * @see #isSingletonAttribute
      * @see #isMetaattribute
      */
@@ -696,8 +695,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>boolean</code>
      * @throws ContextException
      * @see #isLocalAttribute
-     * @see #setSingletonAttribute
-     * @see #setMetaattribute
+     * @see #setAttribute
      * @see #isAttribute
      * @see #isMetaattribute
      */
@@ -711,8 +709,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>boolean</code>
      * @throws ContextException
      * @see #isLocalAttribute
-     * @see #setSingletonAttribute
-     * @see #setMetaattribute
+     * @see #setAttribute
      * @see #isAttribute
      * @see #isSingletonAttribute
      */
@@ -784,20 +781,18 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * general can be different. To examine metapaths in linked contexts, call
      * getLocalMetapath operating on the <code>ServiceContext</code> that is
      * linked (which can be obtained, for example, from the getContext method of
-     * {@link ContextLink} objects. Context links can be found using
-     * {@link getLinks}). Returns <code>null</code> if not defined.
+     * {@link ContextLink} objects. Returns <code>null</code> if not defined.
      *
-     * Metapaths are set using {@link setMetaattribute}
+     * Metapaths are set using {@link #getLocalMetapath}
      *
      * @param metaattributeName
      *            the name of the metaattribute
      *
      * @return the metapath or <code>null</code> if not defined
      * @throws ContextException
-     * @see #getLinks
      * @see ContextLink
-     * @see #setMetaattribute
-     * @see #getComponentAttributes
+     * @see #setAttribute
+     * @see #getAttributes
      */
     public String getLocalMetapath(String metaattributeName)
             throws ContextException;
@@ -812,8 +807,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>Enumeration</code>
      * @throws ContextException
      * @see ContextLink
-     * @see #getLocalLinkPaths
-     * @see #getLinks
      */
     public Enumeration<?> contextPaths() throws ContextException;
 
@@ -845,7 +838,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>Enumeration</code>
      * @throws ContextException
      * @see ContextLink
-     * @see #getLinkPaths
      */
     public Enumeration<?> localLinkPaths() throws ContextException;
 
@@ -857,8 +849,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>Enumeration</code>
      * @throws ContextException
      * @see ContextLink
-     * @see #getLocalLinkPaths
-     * @see #getLinks
      */
     public Enumeration<?> linkPaths() throws ContextException;
 
@@ -869,8 +859,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>Enumeration</code>
      * @throws ContextException
      * @see ContextLink
-     * @see #getLocalLinks
-     * @see #getLinkPaths
      */
     public Enumeration<?> links() throws ContextException;
 
@@ -882,8 +870,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>Enumeration</code>
      * @throws ContextException
      * @see ContextLink
-     * @see #getLinks
-     * @see #getLocalLinkPaths
      */
     public Enumeration<?> localLinks() throws ContextException;
 
@@ -975,7 +961,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Removes a context node from the context. If the designated path points to
      * a {@link ContextLink} object, a {@link ContextException} will be thrown.
-     * Use {@link removeLink} to remove link contexts.
+     * Use {@link #removeLink} to remove link contexts.
      *
      * @see #removeLink
      * @throws ContextException
@@ -1027,25 +1013,22 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Returns all singleton attributes for the top-level context. Does not
      * descend into linked contexts to retrieve attributes (see
-     * {@link getSingletonAttributes} which does look in linked contexts).
+     * {@link #getAttributes} which does look in linked contexts).
      *
      * @return Enumeration of singleton attributes (all of type
      *         <code>String</code>)
-     * @see #getSingletonAttributes
-     * @see #getLocalMetaattribute
+     * @see #getAttributes
      */
     public Enumeration<?> localSimpleAttributes();
 
     /**
      * Returns all singleton attributes for the context. Descends into linked
      * contexts to retrieve underlying singleton attributes (see
-     * {@link getLocalSingletonAttributes} which does not look in linked
+     * {@link #getAttributes} which does not look in linked
      * contexts).
      *
      * @return Enumeration of meta attributes (all of type <code>String</code>)
      * @throws ContextException
-     * @see #getLocalSingletonAttributes
-     * @see #getMetaattributes
      * @see #getAttributes
      */
     public Enumeration<?> simpleAttributes() throws ContextException;
@@ -1058,9 +1041,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      *            the location in the context
      * @return Enumeration of meta associations (of type <code>String</code>)
      * @throws ContextException
-     * @see #getAssociations
-     * @see #getAssociations(String)
-     * @see #getSingletonAssociations
      */
     public Enumeration<?> metaassociations(String path) throws ContextException;
 
@@ -1068,29 +1048,27 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * Returns all locally defined attributes in this context (metacontext).
      *
      * @return Enumeration of local attributes (all of type <code>String</code>)
+     * @see #getAttributes
      */
     public Enumeration<?> localAttributes();
 
     /**
      * Returns all composite attributes for the top-level context. Does not
      * descend into linked contexts to retrieve meta attributes (see
-     * {@link getCompositeAttributes} which does look in linked contexts).
+     * {@link #compositeAttributes} which does look in linked contexts).
      *
      * @return Enumeration of meta attributes (all of type <code>String</code>)
-     * @see #getMetaattributes
-     * @see #getLocalSingletonAttributes
+     * @see #compositeAttributes
      */
     public Enumeration<?> localCompositeAttributes();
 
     /**
      * Returns all meta attributes for the context. Descends into linked
      * contexts to retrieve underlying meta attributes (see
-     * {@link getLocalMetaattributes} which does not look in linked contexts).
+     * {@link #localCompositeAttributes} which does not look in linked contexts).
      *
      * @return Enumeration of meta attributes (all of type <code>String</code>)
      * @throws ContextException
-     * @see #getLocalMetaattributes
-     * @see #getSingletonAttributes
      * @see #getAttributes
      */
     public Enumeration<?> compositeAttributes() throws ContextException;
@@ -1098,15 +1076,11 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Returns all attributes (singleton and meta) for the context. Descends
      * into linked contexts to retrieve underlying attributes (see
-     * {@link getLocalMetaattributes} or {@link getLocalSingletonAttributes}
+     * {@link #localCompositeAttributes} or {@link #getAttributes}
      * which do not look in linked contexts).
      *
      * @return Enumeration of attributes (all of type <code>String</code>)
      * @throws ContextException
-     * @see #getMetaattributes
-     * @see #getSingletonAttributes
-     * @see #getLocalMetaattributes
-     * @see #getLocalSingletonAttributes
      */
     public Enumeration<?> getAttributes() throws ContextException;
 

@@ -24,7 +24,7 @@ public class NetArithmeticReq implements SorcerConstants {
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReq.class.getName());
 
-	public static Job createArithmeticExertlet() throws Exception {
+	public static Job createArithmeticJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
@@ -47,7 +47,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		return job;
 	}
 	
-	public static Job getTaskedNetJob() throws Exception {
+	public static Job createFlatAritheticJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
@@ -66,6 +66,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		
 		return job;
 	}
+
 	private static Task getAddTask() throws Exception {
 		Context context = new PositionalContext("add");
 		context.putInValue("arg1/value", 20.0);

@@ -34,6 +34,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
                 "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex5-api" });
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+        System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}
 	
 	@Test
@@ -44,7 +45,9 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 		Task result = (Task)task.exert();		
 		Context out = (Context)result.getReturnValue();
 
-		logger.info("1job1task/subtract/result/value: " 
+        logger.info("out context: " + out);
+
+                logger.info("1job1task/subtract/result/value: "
 				+ out.getValue("1job1task/subtract/result/value"));
 		assertEquals(out.getValue("1job1task/subtract/result/value"), 1210.0);
 	}

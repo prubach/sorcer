@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Arithmetic all bean services" default="boot.provider" basedir=".">
+<project name="Arithmetic beans" default="boot.provider" basedir=".">
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />

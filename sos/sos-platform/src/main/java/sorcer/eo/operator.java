@@ -586,7 +586,11 @@ public class operator {
 		}
 		if (ss != null) {
 			if (ss instanceof NetSignature) {
-				task = new NetTask(tname, (NetSignature) ss);
+                try {
+                    task = new NetTask(tname, (NetSignature) ss);
+                } catch (SignatureException e) {
+                    throw new ExertionException(e);
+                }
 			} else if (ss instanceof ObjectSignature) {
 				try {
 					task = task((ObjectSignature) ss);
