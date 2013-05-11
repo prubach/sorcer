@@ -108,7 +108,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		this.subject = sxrt.getSubject();
 		this.sharedContexts = sharedContexts;
 		this.isSpawned = isSpawned;
-		this.isMonitored = sxrt.isMonitored();
+		this.isMonitored = sxrt.isMonitorable();
 		this.provider = provider;
 		sxrt.setStatus(RUNNING);
 		initialize();

@@ -489,19 +489,9 @@ public class operator {
 		return sig.getSelector();
 	}
 
-	public static EvaluationTask task(EvaluationSignature signature)
-			throws ExertionException {
-		return new EvaluationTask(signature);
-	}
-
 	public static Signature type(Signature signature, Signature.Type type) {
 		signature.setType(type);
 		return signature;
-	}
-
-	public static EvaluationTask task(EvaluationSignature signature,
-			Context context) throws ExertionException {
-		return new EvaluationTask(signature, context);
 	}
 
 	public static ObjectSignature sig(String operation, Object object,
@@ -541,8 +531,6 @@ public class operator {
             return new NetTask(name, (NetSignature) signature, context);
         } else if (signature instanceof ObjectSignature) {
             return new ObjectTask(name, (ObjectSignature) signature, context);
-        } else if (signature instanceof EvaluationSignature) {
-            return new EvaluationTask(name, (EvaluationSignature) signature, context);
         } else
             return new Task(name, signature, context);
     }
@@ -606,8 +594,6 @@ public class operator {
 					throw new ExertionException(e);
 				}
 				task.setName(tname);
-			} else if (ss instanceof EvaluationSignature) {
-				task = new EvaluationTask(tname, (EvaluationSignature) ss);
 			} else if (ss instanceof ServiceSignature) {
 				task = new Task(tname, ss);
 			}
@@ -759,7 +745,7 @@ public class operator {
 		if (evaluation instanceof Evaluation) {
 			try {
 				synchronized (evaluation) {
-					return ((Evaluation<V>) evaluation).getAsis();
+					return ((Evaluation<V>) evaluation).asis();
 				}
 			} catch (RemoteException e) {
 				throw new EvaluationException(e);

@@ -17,19 +17,27 @@
 
 package sorcer.core.context;
 
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
-import sorcer.service.*;
-import sorcer.util.Log;
-import sorcer.util.Stopwatch;
-
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
+
+import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.Signature;
+import sorcer.service.Strategy;
+import sorcer.util.Log;
+import sorcer.util.Stopwatch;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ControlContext extends ServiceContext implements Strategy {
@@ -392,7 +400,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		try {
 			String b = getAttributeValue(exertion, GET_EXEC_TIME);
 			result = TRUE.equals(b);
-		} catch (java.lang.ClassCastException ex) {
+		} catch (ClassCastException ex) {
 			// v04 control context
 			Hashtable table = (Hashtable) metacontext.get(GET_EXEC_TIME);
 			result = ((Boolean) table.get(exertion.getContext().getName()))
@@ -415,7 +423,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		try {
 			String b = getAttributeValue(exertion, SKIPPED_);
 			result = TRUE.equals(b);
-		} catch (java.lang.ClassCastException ex) {
+		} catch (ClassCastException ex) {
 			// v04 control context
 			Hashtable table = (Hashtable) metacontext.get(SKIPPED_);
 			result = ((Boolean) table.get(exertion.getContext().getName()))
@@ -468,7 +476,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		try {
 			String i = getAttributeValue(exertion, PRIORITY);
 			result = (i == NULL) ? NORMAL_PRIORITY : Integer.parseInt(i);
-		} catch (java.lang.ClassCastException ex) {
+		} catch (ClassCastException ex) {
 			logger.throwing(ControlContext.class.getName(), "getPriority", ex);
 			return -1;
 		}
@@ -525,9 +533,6 @@ public class ControlContext extends ServiceContext implements Strategy {
 			String oldPath = job.exertionAt(i).getContext().getName();
 			((ServiceExertion) job.exertionAt(i)).setIndex(i);
 			put(job.exertionAt(i).getContext().getName(), remove(oldPath));
-			getPathIds().put(job.exertionAt(i).getContext().getName(),
-					getPathIds().remove(oldPath));
-
 			Hashtable map;
 			Hashtable imc = getMetacontext();
 			String key;
@@ -600,16 +605,6 @@ public class ControlContext extends ServiceContext implements Strategy {
 			}
 		}
 		String newPath = exertion.getContext().getName();
-		Hashtable pathIds = getPathIds();
-		String datafileid = (String) pathIds.get(oldPath);
-
-		// remove attribute values
-		remove(oldPath);
-		getPathIds().remove(oldPath);
-
-		put(newPath, ((ServiceExertion) exertion).getId());
-		pathIds.put(newPath, datafileid);
-
 		Hashtable map;
 		Hashtable imc = getMetacontext();
 		e = ((Hashtable) imc.get(CONTEXT_ATTRIBUTES)).keys();

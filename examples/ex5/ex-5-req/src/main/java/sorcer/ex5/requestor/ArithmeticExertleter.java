@@ -8,13 +8,13 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ContextLink;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
-import sorcer.service.Invoker;
+import sorcer.service.Evaluation;
+import sorcer.service.Invocation;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
@@ -36,6 +36,19 @@ public class ArithmeticExertleter implements SorcerConstants {
 	}
 	
 	@Test
+	public void evaluateArithmeticExertleter() throws Exception {
+		
+		NetSignature signature = new NetSignature("getValue", Evaluation.class);
+		Task task = new NetTask("eval", signature);
+		Task result = (Task)task.exert();		
+		Context out = (Context)result.getReturnValue();
+
+		logger.info("1job1task/subtract/result/value: " 
+				+ out.getValue("1job1task/subtract/result/value"));
+		assertEquals(out.getValue("1job1task/subtract/result/value"), 1210.0);
+	}
+	
+	@Test
 	public void exertArithmeticExertleter() throws Exception {
 		
 		Context addContext = new PositionalContext("add");
@@ -50,7 +63,7 @@ public class ArithmeticExertleter implements SorcerConstants {
 		invokeContext.putLink("add", addContext, "");
 		invokeContext.putLink("multiply", multiplyContext, "");
 		
-		NetSignature signature = new NetSignature("invoke", Invoker.class);
+		NetSignature signature = new NetSignature("invoke", Invocation.class);
 		
 		Task task = new NetTask("invoke", signature, invokeContext);
 		Task result = (Task)task.exert();		
@@ -74,7 +87,7 @@ public class ArithmeticExertleter implements SorcerConstants {
 		invokeContext.putLink("add", addContext, "");
 		invokeContext.putLink("multiply", multiplyContext, "");
 		
-		NetSignature signature = new NetSignature("invoke", Invoker.class);
+		NetSignature signature = new NetSignature("invoke", Invocation.class);
 		
 		Task task = new NetTask("invoke", signature, invokeContext);
 		Task result = (Task)task.exert();		

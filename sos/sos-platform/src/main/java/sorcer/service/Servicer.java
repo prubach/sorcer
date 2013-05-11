@@ -17,18 +17,17 @@
 
 package sorcer.service;
 
+import java.rmi.RemoteException;
+
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 
 /**
  * An top-level common interface for all service peers in
  * SORCER. Each servicer accepts a request for {@link sorcer.service.Exertion} to
  * exert the federation of collaborating services.
  * 
- * @author Mike Sobolewski                ś
+ * @author Mike Sobolewski
  */
 public interface Servicer {
 	

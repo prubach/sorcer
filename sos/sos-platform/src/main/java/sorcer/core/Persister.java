@@ -17,18 +17,14 @@
 
 package sorcer.core;
 
-import sorcer.util.Mandator;
+import java.io.Serializable;
+import java.rmi.RemoteException;
 
-import java.rmi.Remote;
+import sorcer.service.EvaluationException;
 
-/**
- * A service that specializes in storing and retrieving SORCER service-oriented
- * programs and their components.
- */
-public interface Persister extends Remote, Provider, Mandator {
-	// public boolean isAuthorized(Subject subject, String serviceType, String
-	// providerName) throws RemoteException;
-	// public void addPersistenceEventListener(PersistenceEventListener p)
-	// throws RemoteException;
+public interface Persister extends Serializable {
 
+	public void setValue(Object value) throws EvaluationException, RemoteException;
+	
+	public boolean isPersistable();
 }

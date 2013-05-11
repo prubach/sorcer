@@ -46,9 +46,9 @@ public class ArithmeticExertService implements SorcerConstants {
 	
 		Context out = (Context) result.getContext();
 //		logger.info("out context: " + out);
-//		logger.info("1job1task/subtract/result/value: "
-//				+ out.getValue(
-//						"1job1task/subtract/result/value"));
+		logger.info("1job1task/subtract/result/value: "
+				+ out.getValue(
+						"1job1task/subtract/result/value"));
 		assertEquals(
 				out.getValue("1job1task/subtract/result/value"),
 				400.0);

@@ -374,7 +374,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 				e.printStackTrace();
 			}
 			treePanel.rootNode.setUserObject(new ContextNodeType(theContext
-					.getRootName(), false));
+					.getSubjectPath(), false));
 			ArrayList<String> keys = new ArrayList<String>(
 					((ServiceContext) theContext).keySet());
 			Collections.sort(keys);
@@ -663,7 +663,7 @@ public class ContextView extends JPanel implements Observer, ActionListener,
 	 * 
 	 * @param context
 	 *            : the dataContext that will be updated
-	 * @param update
+	 * @param updated
 	 *            : object that is updated
 	 */
 	public void update(Observable context, Object updated) {

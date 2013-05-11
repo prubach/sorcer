@@ -18,13 +18,10 @@
 package sorcer.service;
 
 import net.jini.core.transaction.Transaction;
-import sorcer.core.context.ContextLink;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.EvaluationTask;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.signature.EvaluationSignature;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 
@@ -36,22 +33,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-
 /**
  * A <code>Task</code> is an elementary service-oriented message
- * {@link Exertion} (with its own service {@link Context} and a collection of
- * service {@link sorcer.service.Signature}s. Signatures of four
- * {@link Signature.Type}s can be associated with each task:
+ * {@link sorcer.service.Exertion} (with its own service {@link sorcer.service.Context} and a collection of
+ * service {@link Signature}s. Signatures of four
+ * {@link sorcer.service.Signature.Type}s can be associated with each task:
  * <code>SERVICE</code>, <code>PREPROCESS</code>, <code>POSTROCESS</code>, and
  * <code>APPEND</code>. However, only a single <code>PROCESS</code> signature
  * can be associated with a task but multiple preprocessing, postprocessing, and
- * dataContext appending methods can be added.
+ * context appending methods can be added.
  * 
- * @see sorcer.service.Exertion
- * @see sorcer.service.Job
+ * @see Exertion
+ * @see Job
  * 
  * @author Mike Sobolewski
  */
+@SuppressWarnings("rawtypes")
 public class Task extends ServiceExertion {
 
 	private static final long serialVersionUID = 5179772214884L;
@@ -80,16 +77,16 @@ public class Task extends ServiceExertion {
 		addSignature(signature);
 	}
 	
+	public Task(String name, Signature signature, Context context) {
+		this(name);
+		addSignature(signature);
+		dataContext = (ServiceContext)context;
+	}
+	
 	public Task(String name, String description) {
 		this(name);
 		this.description = description;
 	}
-
-    public Task(String name, Signature signature, Context context) {
-        this(name);
-        addSignature(signature);
-        dataContext = (ServiceContext)context;
-    }
 
 	public Task(String name, List<Signature> signatures) {
 		this(name, "", signatures);
@@ -109,12 +106,11 @@ public class Task extends ServiceExertion {
 		Class<? extends Task> taskClass = null;
 		if (signature.getClass() == ObjectSignature.class) {
 			taskClass = ObjectTask.class;
+		} else if (signature.getClass() == ObjectSignature.class) {
+			taskClass = ObjectTask.class;
 		} else if (signature.getClass() == NetSignature.class) {
 			taskClass = NetTask.class;
-		} else if (signature.getClass() == EvaluationSignature.class) {
-			taskClass = EvaluationTask.class;
-        }
-
+		}
 		Constructor<? extends Task> constructor;
 		constructor = taskClass.getConstructor(String.class,
 				signature.getClass(), Context.class);
@@ -143,10 +139,16 @@ public class Task extends ServiceExertion {
 		index = new Integer(i);
 	}
 
-	public boolean isTask() {
+	@Override
+	public boolean isTask()  {
 		return true;
 	}
-
+	
+	@Override
+	public boolean isCmd()  {
+		return (signatures.size() == 1);
+	}
+	
 	public boolean hasChild(String childName) {
 		return false;
 	}
@@ -162,7 +164,7 @@ public class Task extends ServiceExertion {
 		if (signatures != null)
 			for (int i = 0; i < signatures.size(); i++)
 				((NetSignature) signatures.get(i)).setOwnerId(oid);
-		// Util.debug("Context : "+ dataContext);
+		// Util.debug("Context : "+ context);
 		if (dataContext != null)
 			dataContext.setOwnerID(oid);
 	}
@@ -184,21 +186,22 @@ public class Task extends ServiceExertion {
 				"\n=== START PRINTNIG TASK ===\nExertion Description: "
 						+ getClass().getName() + ":" + name);
 		sb.append("\n\tstatus: ").append(getStatus());
-		sb.append(", task ID=")
-				.append(getId())
-				.append(", description: ")
-				.append(description)
-				.append(", priority: ")
-				.append(priority)
-				// .append( ", Index=" + getIndex()).append(", AccessClass=")
-				.append(getAccessClass()).append(
+		sb.append(", task ID=");
+		sb.append(getId());
+		sb.append(", description: ");
+		sb.append(description);
+		sb.append(", priority: ");
+		sb.append(priority);
+		// .append( ", Index=" + getIndex())
+		sb.append(", AccessClass=");
+		sb.append(getAccessClass()).append(
 				// ", isExportControlled=" + isExportControlled()).append(
-						", providerName: ")
-				.append(getProcessSignature().getProviderName())
-				.append(", principal: ").append(getPrincipal())
-				.append(", serviceType: ").append(getServiceType())
-				.append(", selector: ").append(getSelector())
-				.append(", parent ID: ").append(parentId);
+				", providerName: ");
+		sb.append(getProcessSignature().getProviderName());
+		sb.append(", principal: ").append(getPrincipal());
+		sb.append(", serviceType: ").append(getServiceType());
+		sb.append(", selector: ").append(getSelector());
+		sb.append(", parent ID: ").append(parentId);
 
 		if (signatures.size() == 1) {
 			sb.append(getProcessSignature().getProviderName());
@@ -235,7 +238,7 @@ public class Task extends ServiceExertion {
 	 * @param visited
 	 *            ignored
 	 * @return true; elementary exertions are always "trees"
-	 * @see Exertion#isTree()
+	 * @see sorcer.service.Exertion#isTree()
 	 */
 	public boolean isTree(Set visited) {
 		visited.add(this);
@@ -259,8 +262,7 @@ public class Task extends ServiceExertion {
 	@Override
 	public Context linkContext(Context context, String path) {
 		try {
-			context.putValue(path + CPS + "data[" + getContext().getName()
-					+ "]", new ContextLink(getContext(), ""));
+			((ServiceContext) context).putLink(path, getContext());
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
@@ -270,15 +272,12 @@ public class Task extends ServiceExertion {
 	@Override
 	public Context linkControlContext(Context context, String path) {
 		try {
-			context.putValue(path + CPS + "control["
-					+ getControlContext().getName() + "]", new ContextLink(
-					getControlContext(), ""));
+			((ServiceContext) context).putLink(path, getControlContext());
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
 		return context;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -317,7 +316,7 @@ public class Task extends ServiceExertion {
 	
 	/**
 	 * <p>
-	 * Returns <code>true</code> if this task takes its service dataContext from the
+	 * Returns <code>true</code> if this task takes its service context from the
 	 * previously executed task in sequence, otherwise <code>false</code>.
 	 * </p>
 	 * 
@@ -330,7 +329,7 @@ public class Task extends ServiceExertion {
 	/**
 	 * <p>
 	 * Assigns <code>isContinous</code> <code>true</code> to if this task takes
-	 * its service dataContext from the previously executed task in sequence.
+	 * its service context from the previously executed task in sequence.
 	 * </p>
 	 * 
 	 * @param isContinous

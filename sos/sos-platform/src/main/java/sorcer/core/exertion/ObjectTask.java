@@ -72,10 +72,10 @@ public class ObjectTask extends Task {
 
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
 			Class[] paramTypes = new Class[] { Context.class };
-			Object[] parameters = new Object[] {dataContext};
+			Object[] parameters = new Object[] { dataContext };
 			if (dataContext.getArgsPath() != null) {
 				paramTypes = os.getTypes();
-				parameters = (Object[]) getArgs();
+				parameters = (Object[]) dataContext.getArgs();
 			}
 			Object result = ((ObjectSignature) getProcessSignature())
 					.initInstance(parameters, paramTypes);

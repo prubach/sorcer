@@ -40,7 +40,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		subject = task.getSubject();
 		this.sharedContexts = sharedContexts;
 		this.isSpawned = isSpawned;
-		isMonitored = task.isMonitored();
+		isMonitored = task.isMonitorable();
 		state = RUNNING;
 		dispatchers.put(task.getId(), this);
 		dispatchExertions();

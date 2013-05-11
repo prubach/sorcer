@@ -469,7 +469,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 	public Exertion doTask(Exertion task) throws RemoteException {
 		setServiceID(task);
 		try {
-			if (task.isMonitored()
+			if (task.isMonitorable()
 					&& !task.isWaitable()) {
 				replaceNullExertionIDs(task);
 				notifyViaEmail(task);

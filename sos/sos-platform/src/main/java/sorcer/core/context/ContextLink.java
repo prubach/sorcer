@@ -18,6 +18,7 @@
 package sorcer.core.context;
 
 import net.jini.id.Uuid;
+import net.jini.id.UuidFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Context;
@@ -25,78 +26,81 @@ import sorcer.service.ContextException;
 import sorcer.service.Link;
 import sorcer.util.SorcerUtil;
 
-// import sorcer.core.util.*;
-
 /**
- * Provides for service dataContext linking. Context links are references to an
- * offset (path) in a dataContext, which allows the reuse of dataContext objects.
+ * Provides for service context linking. Context links are references to an
+ * offset (path) in a context, which allows the reuse of context objects.
  * 
- * @version $Revision: 1.2 $, $Date: 2007/08/15 22:11:10 $
  */
+@SuppressWarnings("rawtypes")
 public class ContextLink implements SorcerConstants, Link {
 
 	private static final long serialVersionUID = -7115324059076651991L;
 
-	protected String name, offset;
-
-	protected Uuid contextId;
+	private String name;
 	
-	protected float version;
+	private String offset = "";
 
-	protected boolean fetched;
+	private Uuid contextId;
+	
+	private float version;
+
+	private boolean fetched;
 
 	// runtime variables:
-	public Context context;
+	private Context linkedContext;
 
+	private SorcerPrincipal linkPrincipal;
+	
 	private static ContextAccessor cntxtAccessor;
-
-	public int status = -1;
-
-	public String restoreName = null;
-
-	public String rootName = null;
-
+	
 	/**
-	 * Add a dataContext link given the dataContext id and offset. Note the dataContext must
+	 * Add a context link given the context id and offset. Note the context must
 	 * have already been persisted in database.
 	 */
 	public ContextLink(Uuid id, float version, String offset,
 			SorcerPrincipal principal) throws ContextException {
-		// fetch dataContext
 		contextId = id;
 		this.version = version;
-		context = getContext(principal);
-		if (context == null) {
-			status = BROKEN_LINK;
-			// restoreName = name;
-			// name = "Broken Link";
-			return;
-			// throw new ContextException("Failed to create ContextLink: dataContext
-			// to link is null");
+		if (principal != null)
+			linkedContext = getContext(principal);
+		if (linkedContext == null) {
 		} else if (offset == null) {
-			status = BROKEN_LINK;
-			this.name = context.getName();
+			this.name = linkedContext.getName();
 			fetched = true;
-			// throw new ContextException("Failed to create ContextLink: offset
-			// is null");
 		} else {
-			this.name = context.getName();
+			this.name = linkedContext.getName();
 			setOffset(offset);
 			fetched = true;
 		}
 	}
 
 	/**
-	 * Returns a dataContext liink identifier.
+	 * Add a context link given the context and offset. Public access to this
+	 * method is probably temporary, as the preferred constructor is
+	 * {@link ContextLink(String, sorcer.security.util.SorcerPrincipal, String)}, since that method
+	 * requires the context has already been persisted.
 	 * 
-	 * @return a liink identifier
+	 */
+	public ContextLink(Context context, String offset) throws ContextException {
+		this(UuidFactory.generate(), 1.0f, "", null);
+		linkedContext = context;
+	}
+
+	public ContextLink(Context context) throws ContextException {
+		this(context, "");
+	}
+	
+	/**
+	 * Returns a context link identifier.
+	 * 
+	 * @return a link identifier
 	 */
 	public Uuid getId() {
 		return contextId;
 	}
 
 	/**
-	 * Assigns a pesrsistent datastore identifier for this linked dataContext.
+	 * Assigns a persistent datastore identifier for this linked context.
 	 * 
 	 * @param id a link identifier
 	 */
@@ -104,58 +108,14 @@ public class ContextLink implements SorcerConstants, Link {
 		contextId = id;
 	}
 	
-	/**
-	 * Add a dataContext link given the dataContext and offset. Public access to this
-	 * method is probably temporary, as the preferred constructor is
-	 * {@link #contextLink(String, SorcerPrincipal, String)}, since that method
-	 * requires the dataContext has already been persisted.
-	 * 
-	 */
-	public ContextLink(Context ctxt, String offset) throws ContextException {
-		if (ctxt == null) {
-			status = BROKEN_LINK;
-			restoreName = name;
-			// name = "Broken Link";
-			return;
-		}
-		// throw new ContextException("Failed to create ContextLink: dataContext to
-		// link is null");}
-		else if (offset == null) {
-			status = BROKEN_LINK;
-			this.name = ctxt.getName();
-			context = ctxt;
-			version = ctxt.getVersion();
-			Uuid id = context.getId();
-			if (id != null)
-				contextId = id;
-			fetched = true;
-			return;
-			// throw new ContextException("Failed to create ContextLink: offset
-			// is null");}}
-		} else {
-			this.name = ctxt.getName();
-			context = ctxt;
-			version = ctxt.getVersion();
-			setOffset(offset);
-			Uuid id = context.getId();
-			if (id != null)
-				contextId = id;
-			fetched = true;
-		}
-	}
-
 	/*
 	 * public String rootName() { return SorcerUtil.firstToken(offset, CPS); }
 	 */
 	public String getName() {
 		String result = name == null ? SorcerUtil.firstToken(offset, CPS) : name;
 		if (result.equals(""))
-			result = context.getRootName(); // assuming we have the dataContext...
+			result = linkedContext.getSubjectPath(); // assuming we have the context...
 		return result;
-	}
-
-	public String getRootName() {
-		return context.getRootName();
 	}
 
 	public String getOffset() {
@@ -167,31 +127,28 @@ public class ContextLink implements SorcerConstants, Link {
 	}
 
 	/**
-	 * Sets the offset in this linked dataContext. If the offset itself is obtained
+	 * Sets the offset in this linked context. If the offset itself is obtained
 	 * by traversing a link (meaning there is a redundant link), the offset is
-	 * recalculated and the link object is reset to point to the owning dataContext
+	 * recalculated and the link object is reset to point to the owning context
 	 * (removing the redundancy).
 	 * <P>
 	 * Note: when links are originally set in ServiceContext, checks are
 	 * performed.
 	 */
 	public void setOffset(String offset) throws ContextException {
-		// validate offset is in this dataContext
-		Object[] result = context.getContextMap(offset);
+		// validate offset is in this context
+		Object[] result = linkedContext.getContextMapping(offset);
 
 		if ((((String) result[1]).trim()).equals("")) {
 			if (!isSameContext(result[0], result[1])) {
 				// the alternative is throwing an exception:
 				// throw new ContextException("Failed in setOffset: offset=
-				// \""+offset+"\" is not in this dataContext, but in the dataContext
-				// with name=\""+dataContext.getName()+"\". Link and
-				// offset=\""+result[1]+"\" should be set in this dataContext
+				// \""+offset+"\" is not in this context, but in the context
+				// with name=\""+context.getName()+"\". Link and
+				// offset=\""+result[1]+"\" should be set in this context
 				// instead");
 				this.offset = offset;
-				return;
 			}
-			// Check if some rootname has changed
-
 			return;
 		}
 
@@ -202,41 +159,38 @@ public class ContextLink implements SorcerConstants, Link {
 					this.offset = offset;
 				}
 			} else {
-				restoreName = name;
-				// name = "Broken Link";
-				status = BROKEN_LINK;
 				this.offset = (String) result[1];
 				return;
 			}
 			return;
-		} else if (result[0] != context) {
+		} else if (result[0] != linkedContext) {
 			this.offset = (String) result[1];
-			this.context = (Context) result[0];
-			this.version = context.getVersion();
-			this.contextId = context.getId();
+			this.linkedContext = (Context) result[0];
+			this.version = linkedContext.getVersion();
+			this.contextId = linkedContext.getId();
 			this.fetched = true;
 			// status = BROKEN_LINK;
 
 			// the alternative is throwing an exception:
 			// throw new ContextException("Failed in setOffset: offset=
-			// \""+offset+"\" is not in this dataContext, but in the dataContext with
-			// name=\""+dataContext.getName()+"\". Link and offset=\""+result[1]+"\"
-			// should be set in this dataContext instead");
+			// \""+offset+"\" is not in this context, but in the context with
+			// name=\""+context.getName()+"\". Link and offset=\""+result[1]+"\"
+			// should be set in this context instead");
 		} else
 			this.offset = offset;
 	}
 
 	public String toString() {
-		String str = "Link:\"" + name + "\"";
-		return str;
+		String str = "Link:\"" + name + "\":" + offset;
+		return str + "\n" + linkedContext;
 	}
 
 	public boolean isSameContext(Object cntxt, Object offset) {
-		if (cntxt != context) {
+		if (cntxt != linkedContext) {
 			this.offset = (String) offset;
-			this.context = (Context) cntxt;
-			this.version = context.getVersion();
-			this.contextId = context.getId();
+			this.linkedContext = (Context) cntxt;
+			this.version = linkedContext.getVersion();
+			this.contextId = linkedContext.getId();
 			this.fetched = true;
 			return true;
 		}
@@ -244,19 +198,32 @@ public class ContextLink implements SorcerConstants, Link {
 	}
 
 	/**
-	 * Return the dataContext. The {@link SorcerPrincipal} is given for authorization.
+	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} for this principal if not
+	 * fetched yet.
 	 */
-	public Context getContext(SorcerPrincipal prin) throws ContextException {
+	public Context getContext() throws ContextException {
+		if (linkPrincipal != null)
+			return getContext(linkPrincipal);
+		else
+			return linkedContext;
+	}
+	
+	/**
+	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} is given for authorization.
+	 */
+	public Context getContext(SorcerPrincipal principal)
+			throws ContextException {
 		if (!fetched) {
-			Context cntxt;
-			cntxt = cntxtAccessor.getContext(contextId, version, prin);
+			if (principal != null)
+				linkedContext = cntxtAccessor.getContext(contextId, version,
+						principal);
 			fetched = true;
 		}
-		return context;
+		return linkedContext;
 	}
 
 	public void setContext(Context ctxt) {
-		context = ctxt;
+		linkedContext = ctxt;
 	}
 
 	public boolean isRemote() {
@@ -264,7 +231,7 @@ public class ContextLink implements SorcerConstants, Link {
 	}
 
 	public boolean isLocal() {
-		return context != null;
+		return linkedContext != null;
 	}
 
 	public boolean isFetched() {

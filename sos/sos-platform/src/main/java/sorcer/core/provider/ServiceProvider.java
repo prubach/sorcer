@@ -1501,7 +1501,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             ep = new ControlFlowManager(exertion, delegate, (Jobber) this);
         } else if (this instanceof Spacer) {
             ep = new ControlFlowManager(exertion, delegate, (Spacer) this);
-        } else if (exertion instanceof Task && exertion.isMonitored()) {
+        } else if (exertion instanceof Task && exertion.isMonitorable()) {
             if (exertion.isWaitable())
                 return doMonitoredTask(exertion, null);
             else {

@@ -140,7 +140,6 @@ public class Jobs implements SorcerConstants {
 		cc.setId(sc.getId());
 		cc.setParentPath(sc.getParentPath());
 		cc.setParentID((sc.getParentID() == null) ? null : sc.getParentID());
-		cc.setRootName(sc.getRootName());
 		cc.setCreationDate(sc.getCreationDate());
 		cc.setLastUpdateDate(sc.getLastUpdateDate());
 		cc.setDescription(sc.getDescription());
@@ -157,7 +156,6 @@ public class Jobs implements SorcerConstants {
 		// controlContext.setExceptionCount(sc.getExceptionCount());
 		cc.setDomainName(sc.getDomainName());
 		// controlContext.setCP(sc.getCP());
-		cc.setPathIds(sc.getPathIds());
 		// controlContext.scratch = sc.scratch;
 		cc.setMetacontext(sc.getMetacontext());
 		cc.isPersistantTaskAssociated = ((ServiceContext) sc).isPersistantTaskAssociated;
