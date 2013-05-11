@@ -2,6 +2,7 @@
 
 <project name="bliz service" default="blitz" basedir=".">
 
+	<property name="sorcer.distro.in.libs" value="true" />
 	<import file="../../common-run.xml" />
 
 	<property environment="env" />
