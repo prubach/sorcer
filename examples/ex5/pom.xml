@@ -19,5 +19,6 @@
 	<modules>
 		<module>ex5-api</module>
 		<module>ex5-prv</module>
+        <module>ex5-req</module>
 	</modules>
 </project>

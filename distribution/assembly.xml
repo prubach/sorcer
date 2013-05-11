@@ -45,6 +45,10 @@
             <includes>
                 <include>*</include>
             </includes>
+            <excludes>
+                <exclude>browser/pom.xml</exclude>
+            </excludes>
+
             <filtered>true</filtered>
             <fileMode>0755</fileMode>
             <outputDirectory>/bin</outputDirectory>

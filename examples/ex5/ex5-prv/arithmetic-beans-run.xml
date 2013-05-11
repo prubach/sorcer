@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project name="Arithmetic all bean services" default="boot.provider" basedir=".">
+
+    <property name="pom.file" value="${basedir}/pom.xml" />
+    <property environment="env" />
+    <property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+    <import file="${env.SORCER_HOME}/bin/common-run.xml" />
+
+</project>

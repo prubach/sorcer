@@ -6,6 +6,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 <project name="Run Worker Provider" default="run.provider" basedir=".">
 
+    <property name="pom.file" value="ex5-prv/pom.xml" />
 	<!-- system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
