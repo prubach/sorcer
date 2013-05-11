@@ -19,50 +19,57 @@ package sorcer.core.exertion;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
+import sorcer.service.Signature.Type;
 import sorcer.util.ExertManager;
 
 import java.rmi.RemoteException;
 
 public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 
-	private static final long serialVersionUID = 7060442151643838169L;
+    private static final long serialVersionUID = 7060442151643838169L;
 
-	public NetJob() {
-		// do nothing
-	}
+    public NetJob() {
+        // do nothing
+    }
 
-	public NetJob(String name) {
-		super(name);
-	}
+    public NetJob(String name) {
+        super(name);
+        try {
+            signatures.add(new NetSignature("service", Jobber.class, Type.SRV));
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public NetJob(SorcerPrincipal principal) throws ExertionException {
-		this("undefined" + count++, principal);
-	}
+    public NetJob(SorcerPrincipal principal) throws ExertionException {
+        this("undefined" + count++, principal);
+    }
 
-	public NetJob(String name, SorcerPrincipal principal)
-			throws ExertionException {
-		super(name);
-		if (principal != null)
-			subject = Auth.createSubject(principal);
-		setPrincipal(principal);
-	}
+    public NetJob(String name, SorcerPrincipal principal)
+            throws ExertionException {
+        super(name);
+        if (principal != null)
+            subject = Auth.createSubject(principal);
+        setPrincipal(principal);
+    }
 
-	public static ServiceExertion getTemplate() {
-		NetJob temp = new NetJob();
-		return temp;
-	}
+    public static ServiceExertion getTemplate() {
+        NetJob temp = new NetJob();
+        return temp;
+    }
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Job#doJob(net.jini.core.transaction.Transaction)
-	 */
-	@Override
-	public Job doJob(Transaction txn) throws ExertionException,
-			SignatureException, RemoteException, TransactionException {
-		ExertManager esh = new ExertManager(this);
-		return (Job)esh.exert(txn, null);
-	}
-	
+    /* (non-Javadoc)
+     * @see sorcer.service.Job#doJob(net.jini.core.transaction.Transaction)
+     */
+    @Override
+    public Job doJob(Transaction txn) throws ExertionException,
+            SignatureException, RemoteException, TransactionException {
+        ExertManager esh = new ExertManager(this);
+        return (Job)esh.exert(txn, null);
+    }
+
 }
