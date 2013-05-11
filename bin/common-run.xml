@@ -55,8 +55,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<property name="v.sleepycat" value="${sorcer.lib.sleepycat.version}" />
 	<property name="v.rio" value="${sorcer.lib.rio.version}" />
 	<property name="v.groovy" value="${sorcer.lib.groovy.version}" />
-	
-	<property name="mvn.repo" value="${sorcer.local.repo.location}" />
+
+    <condition property="mvn.repo"  value="${sorcer.local.repo.location}" else="${env.HOME}/.m2/repository/">
+        <isset property="sorcer.local.repo.location" />
+    </condition>
 
 	<property name="jini.lib" value="${lib}/river/lib" />
 

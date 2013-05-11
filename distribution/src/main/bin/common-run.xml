@@ -39,6 +39,10 @@ To include this file in your custom *-run-buld.xml have the import line:
 	<condition property="rio.home" value="${env.RIO_HOME}" else="${lib.dir}/rio">
 		<isset property="env.RIO_HOME" />
 	</condition>
+
+    <condition property="mvn.repo"  value="${sorcer.local.repo.location}" else="${env.HOME}/.m2/repository/">
+        <isset property="sorcer.local.repo.location" />
+    </condition>
 	
 	<exec executable="hostname" outputproperty="hostname" />
 	<echo message="Hostname = ${hostname}" />

@@ -20,13 +20,13 @@ public class ArtifactResolverFactory {
 	public ArtifactResolver createResolver() {
         //repoRoot = new File();
         //File repoRoot = null;
-        String rootDir = SorcerEnv.getHomeDir().toString().concat(File.separator + "lib");// SorcerEnv.getRepoDir();
+        String rootDir = SorcerEnv.getHomeDir().toString() + (File.separator + "lib");// SorcerEnv.getRepoDir();
         if (rootDir !=null) {
             File rootFile = new File(rootDir);
             ArtifactResolver artifactResolver = new MappedFlattenedArtifactResolver(rootFile);
             //ArtifactResolver artifactResolver = new RepositoryArtifactResolver(repoRoot.getPath());
             if (tryResolve(Artifact.getSosEnv(), artifactResolver)) {
-                return artifactResolver;
+                return new HybridArtifactResolver(rootFile, SorcerEnv.getRepoDir());
             }
         }
         rootDir = SorcerEnv.getRepoDir();
@@ -36,6 +36,6 @@ public class ArtifactResolverFactory {
 
 	private boolean tryResolve(ArtifactCoordinates coords, ArtifactResolver resolver) {
 		String artifactPath = resolver.resolveAbsolute(coords);
-		return new File(artifactPath).exists();
+		return artifactPath!=null;
 	}
 }
