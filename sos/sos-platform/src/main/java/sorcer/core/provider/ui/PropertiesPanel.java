@@ -18,7 +18,7 @@
 package sorcer.core.provider.ui;
 
 import sorcer.core.Provider;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -96,7 +96,7 @@ public class PropertiesPanel extends JPanel {
 					if (value != null) {
 						data.add(((Object) (new Object[] {
 								displayName,
-								(value.getClass().isArray() ? SorcerUtil
+								(value.getClass().isArray() ? StringUtils
 										.arrayToString(value) : value) })));
 						// now store the actual class, field, isEditable
 						fields.add(new Object[] { className, fName });

@@ -30,7 +30,7 @@ import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
 import java.io.IOException;
@@ -275,7 +275,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 		String notifyees = ((ControlContext) ((NetJob)job).getControlContext())
 				.getNotifyList();
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);

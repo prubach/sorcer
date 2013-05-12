@@ -18,7 +18,7 @@
 package sorcer.core;
 
 import net.jini.core.lookup.ServiceID;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 /**
  * Sometimes it's critical to identify an exertion associated with a provider.
@@ -63,7 +63,7 @@ public class UEID {
 	}
 
 	public static UEID fromString(String ueid) {
-		String[] str = SorcerUtil.tokenize(ueid, "|");
+		String[] str = StringUtils.tokenize(ueid, "|");
 		ServiceID sid = null;
 
 		try {

@@ -18,7 +18,7 @@
 package sorcer.security.util;
 
 import sorcer.core.SorcerConstants;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import java.io.Serializable;
 import java.security.Principal;
@@ -212,7 +212,7 @@ public class SorcerPrincipal implements Principal, Serializable, SorcerConstants
 			return null;
 
 		else {
-			String[] tok = SorcerUtil.tokenize(str, SEP);
+			String[] tok = StringUtils.tokenize(str, SEP);
 			SorcerPrincipal gp = new SorcerPrincipal();
 			gp.setId(tok[1]);
 			gp.setName(tok[2]);

@@ -10,9 +10,9 @@ import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.util.SorcerUtil;
 
 import com.sun.jini.start.LifeCycle;
+import sorcer.util.StringUtils;
 
 public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 
@@ -128,7 +128,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	@Override
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
-		context.putValue("provider/timestamp", SorcerUtil.getDateTime());
+		context.putValue("provider/timestamp", StringUtils.getDateTime());
 		return context;
 	}
 }

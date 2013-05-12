@@ -56,7 +56,7 @@ import sorcer.service.Signature;
 import sorcer.service.Spacer;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import com.sun.jini.start.LifeCycle;
 
@@ -299,7 +299,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 		Vector recipents = null;
 		String notifyees = ((ControlContext) job.getDataContext()).getNotifyList();
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);

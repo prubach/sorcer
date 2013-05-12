@@ -138,6 +138,7 @@ import sorcer.service.Task;
 import sorcer.util.AccessorException;
 import sorcer.util.ExertManager;
 import sorcer.util.GenericUtil;
+import sorcer.util.IOUtil;
 import sorcer.util.Log;
 import sorcer.util.Mandator;
 import sorcer.util.ObjectLogger;
@@ -145,7 +146,7 @@ import sorcer.util.ProviderAccessor;
 import sorcer.util.ProviderLocator;
 import sorcer.util.ProviderLookup;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 import sorcer.util.dbac.SocketProtocol;
@@ -418,7 +419,7 @@ public class ProviderDelegate implements SorcerConstants {
 		// set provider join groups if defined in provider's properties
 		groupsToDiscover = Sorcer.getLookupGroups();
 		logger.info("ServiceProvider:groups to discover="
-				+ SorcerUtil.arrayToString(groupsToDiscover));
+				+ StringUtils.arrayToString(groupsToDiscover));
 		// set provider space group if defined in provider's properties
 		spaceGroup = config.getProperty(J_SPACE_GROUP, Sorcer.getSpaceGroup());
 		// set provider space name if defined in provider's properties
@@ -1512,7 +1513,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @throws Exception
 	 */
 	public boolean deleteDir(File dir) throws Exception {
-		return SorcerUtil.deleteDir(dir);
+		return IOUtil.deleteDir(dir);
 	}
 
 	/**
@@ -1627,7 +1628,7 @@ public class ProviderDelegate implements SorcerConstants {
 			Subject subject = Subject.getSubject(context);
 			// logger.finer("The subject in Provider Delegate is: " + subject);
 		} catch (Exception ex) {
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 
 		// This construct may look strange. But it ensures that this class loads
@@ -1678,7 +1679,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.repository = config.getDataDir();
 			serviceType.shortDescription = config.getProperty(P_DESCRIPTION);
 			serviceType.location = config.getProperty(P_LOCATION);
-			serviceType.groups = SorcerUtil.arrayToCSV(groupsToDiscover);
+			serviceType.groups = StringUtils.arrayToCSV(groupsToDiscover);
 			serviceType.spaceGroup = spaceGroup;
 			serviceType.spaceName = spaceName;
 			serviceType.puller = spaceEnabled;
@@ -1705,7 +1706,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.serviceID = provider.getProviderID();
 		} catch (Exception ex) {
 			logger.warning("Some problem in accessing attributes");
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 		String hostName = null, hostAddress = null;
 		hostName = config.getProviderHostName();
@@ -1988,12 +1989,12 @@ public class ProviderDelegate implements SorcerConstants {
 			message = "NO MESSAGE OR EXCEPTION PASSED";
 		else if (message == null && e != null) {
 			if (fullStackTrace)
-				message = SorcerUtil.stackTraceToString(e);
+				message = StringUtils.stackTraceToString(e);
 			else
 				message = e.getMessage();
 		} else {
 			if (fullStackTrace)
-				message = message + " " + SorcerUtil.stackTraceToString(e);
+				message = message + " " + StringUtils.stackTraceToString(e);
 			else
 				message = message + " " + e.getMessage();
 		}
@@ -2519,7 +2520,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_WEBSTER_PORT, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_GROUPS, String[].class));
 			} catch (ConfigurationException e3) {
 				val = null;
@@ -2546,7 +2547,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_SPACE_NAME, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_LOCATORS, String[].class));
 			} catch (ConfigurationException e) {
 				val = null;
@@ -2880,7 +2881,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	private Object instantiateScriplet(String scripletFilename)
 			throws Exception {
-		String[] tokens = SorcerUtil.tokenize(scripletFilename, "|");
+		String[] tokens = StringUtils.tokenize(scripletFilename, "|");
 		Object bean = null;
 		Object configurator = null;
 		GroovyShell shell = null;

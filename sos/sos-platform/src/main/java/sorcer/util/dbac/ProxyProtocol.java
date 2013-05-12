@@ -22,7 +22,7 @@ import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.Protocol;
 import sorcer.util.ProtocolStream;
 import sorcer.util.Result;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 import sorcer.util.ui.Launcher;
 
 import java.io.IOException;
@@ -209,7 +209,7 @@ abstract public class ProxyProtocol implements Protocol, SorcerConstants {
 		String out = processCmd(CHANGEPASSWD, userPassword);
 
 		if (out.startsWith("passwordChanged")) {
-			String[] tokens = SorcerUtil.tokenize(out, DELIM);
+			String[] tokens = StringUtils.tokenize(out, DELIM);
 			// Util.debug(this, "changedPassword: " + tokens[1] + DELIM +
 			// tokens[2]);
 			if (!userPassword.equals(tokens[2])) {

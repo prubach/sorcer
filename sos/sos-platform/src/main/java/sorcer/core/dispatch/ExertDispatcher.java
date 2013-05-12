@@ -400,7 +400,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		Vector recipients = null;
 		String notifyees = parent.getControlContext().getNotifyList(inTask);
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipients = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipients.addElement(list[i]);
@@ -640,7 +640,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		Vector recipents = null;
 		String notifyees = job.getControlContext().getNotifyList(task);
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);

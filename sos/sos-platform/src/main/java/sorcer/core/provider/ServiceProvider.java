@@ -373,7 +373,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		}
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Added lookup groups: {0}",
-					SorcerUtil.arrayToString(groups));
+					StringUtils.arrayToString(groups));
 		}
 	}
 
@@ -409,7 +409,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Removed lookup groups: {0}",
-					SorcerUtil.arrayToString(groups));
+					StringUtils.arrayToString(groups));
 		}
 	}
 
@@ -434,7 +434,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Set lookup groups: {0}",
-					SorcerUtil.arrayToString(groups));
+					StringUtils.arrayToString(groups));
 		}
 	}
 
@@ -467,7 +467,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		ldmgr.addLocators(locators);
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Added lookup locators: {0}",
-					SorcerUtil.arrayToString(locators));
+					StringUtils.arrayToString(locators));
 		}
 	}
 
@@ -489,7 +489,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		ldmgr.removeLocators(locators);
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Removed lookup locators: {0}",
-					SorcerUtil.arrayToString(locators));
+					StringUtils.arrayToString(locators));
 		}
 	}
 
@@ -503,7 +503,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		ldmgr.setLocators(locators);
 		if (logger.isLoggable(Level.CONFIG)) {
 			logger.log(Level.CONFIG, "Set lookup locators: {0}",
-					SorcerUtil.arrayToString(locators));
+					StringUtils.arrayToString(locators));
 		}
 	}
 
@@ -744,7 +744,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			String[] lookupLocators = new String[] {};
 			String locators = delegate.getProviderConfig().getProperty(P_LOCATORS);
 			if (locators != null && locators.length() > 0) {
-				lookupLocators = SorcerUtil.getTokens(locators, " ,");
+				lookupLocators = locators.split("[ ,]");
 			}
 			logger.finer("provider lookup locators: "
 					+ (lookupLocators.length == 0 ? "no locators" : Arrays
@@ -1441,7 +1441,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	}
 
 	public String getInfo() throws RemoteException {
-		return SorcerUtil.arrayToString(getAttributes());
+		return StringUtils.arrayToString(getAttributes());
 	}
 
 	public boolean isValidMethod(String name) throws RemoteException,
@@ -1495,7 +1495,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				try {
 					exertion.getContext().putValue(
 							ControlContext.EXERTION_WAITED_FROM,
-							SorcerUtil.getDateTime());
+							StringUtils.getDateTime());
 				} catch (ContextException e) {
 					// ignore it
 					e.printStackTrace();

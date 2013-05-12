@@ -90,22 +90,22 @@ public class EmailCmd implements SorcerConstants, Command {
 		if (args[MCC] == null || args[MCC].length() == 0)
 			cc = null;
 		else
-			cc = SorcerUtil.tokenize(args[MCC], ",");
+			cc = StringUtils.tokenize(args[MCC], ",");
 
 		if (args[MBCC] == null || args[MBCC].length() == 0)
 			bcc = null;
 		else
-			bcc = SorcerUtil.tokenize(args[MBCC], ",");
+			bcc = StringUtils.tokenize(args[MBCC], ",");
 
 		if (args[MTEXT] == null || args[MTEXT].length() == 0)
 			lines = null;
 		else
-			lines = SorcerUtil.tokenize(args[MTEXT], "\n\r");
+			lines = StringUtils.tokenize(args[MTEXT], "\n\r");
 
 		// Util.debug(this, "lines=" + Util.arrayToString(lines));
 
 		// Util.debug(this, "EmailCmd.args[MTO]=" + args[MTO]);
-		to = SorcerUtil.tokenize(args[MTO], ",");
+		to = StringUtils.tokenize(args[MTO], ",");
 
 		if (to.length >= 1) {
 			// Util.debug(this, "EmailCmd.to=" + to[0]);
