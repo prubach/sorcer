@@ -5,12 +5,12 @@ import java.io.IOException;
 
 import org.codehaus.groovy.control.CompilationFailedException;
 
-import sorcer.core.requestor.ExertletRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
 
-public class ArithmeticExertletRunner extends ExertletRunner {
+public class ArithmeticExertletRunner extends ServiceRequestor {
 
 	/* (non-Javadoc)
 	 * @see sorcer.core.requestor.ExertionRunner#getExertion(java.lang.String[])

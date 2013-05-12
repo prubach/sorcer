@@ -4,7 +4,7 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -15,7 +15,7 @@ import sorcer.service.Task;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
-public class PipedContextWorkerRunner extends ExertionRunner {
+public class PipedContextWorkerRunner extends ServiceRequestor {
 
 	public Exertion getExertion(String... args) throws ExertionException {
 		String requestorName = getProperty("requestor.name");
