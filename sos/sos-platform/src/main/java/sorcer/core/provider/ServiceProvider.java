@@ -2008,7 +2008,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		return (Task) dispatcher.getExertion();
+		return dispatcher.getExertion();
 	}
 	
 }

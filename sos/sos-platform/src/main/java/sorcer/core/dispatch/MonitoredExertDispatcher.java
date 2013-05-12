@@ -75,7 +75,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 		// make the monitor session of this exertion active
 		ExertDispatcher.logger.log(Level.FINER, "Dispatching task now: " + xrt.getName());
-		MonitoringSession session = (MonitoringSession) (xrt.getMonitorSession());
+		MonitoringSession session = xrt.getMonitorSession();
 		session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
 				DEFAULT_TIMEOUT_PERIOD);
 		lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -96,7 +96,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 		ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(l,
 				exertion, LEASE_RENEWAL_PERIOD));
 
-		MonitoringSession session = (MonitoringSession) (registeredExertion.getMonitorSession());
+		MonitoringSession session = registeredExertion.getMonitorSession();
 		ExertDispatcher.logger.info("Session for the exertion =" + session);
 		ExertDispatcher.logger.info("Lease to be renewed for duration ="
 				+ (session.getLease().getExpiration() - System
@@ -157,8 +157,8 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 			ei.reportException(ex);
 			try {
 				if (ei.isTask())
-					((MonitoringSession) ((ServiceExertion) exertion).getMonitorSession())
-							.changed(((NetTask) exertion).getDataContext(), ExecState.Category.FAILED);
+					((ServiceExertion) exertion).getMonitorSession()
+							.changed(exertion.getDataContext(), ExecState.Category.FAILED);
 			} catch (Exception ex0) {
 				ex0.printStackTrace();
 			} finally {
@@ -193,8 +193,8 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 			} else {
 				// setTaskProvider(task, provider.getProviderName());
 				ExertDispatcher.logger.log(Level.INFO, "Servicing task now ..............");
-				MonitoringSession session = (MonitoringSession) (task
-						.getMonitorSession());
+				MonitoringSession session = task
+						.getMonitorSession();
 				session.init((Monitorable) provider, LEASE_RENEWAL_PERIOD,
 						DEFAULT_TIMEOUT_PERIOD);
 				lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -240,7 +240,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 				logger.log(Level.INFO, "Recieved Remote event from the exert monitor:\n"
 						+ re);
 				if (!(((MonitorEvent) re).getExertion() instanceof Exertion))
-					postExecExertion((ServiceExertion) ((MonitorEvent) re)
+					postExecExertion(((MonitorEvent) re)
 							.getExertion());
 			} catch (Exception e) {
 				e.printStackTrace();

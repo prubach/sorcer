@@ -336,7 +336,7 @@ public class DocumentDescriptor implements SorcerConstants, Serializable {
 			ClassNotFoundException {
 		in.defaultReadObject();
 		if (convertor != null)
-			documentACL = convertor.unpack((Hashtable) in.readObject());
+			documentACL = convertor.unpack(in.readObject());
 	}
 
 }

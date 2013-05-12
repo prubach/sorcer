@@ -89,7 +89,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		logger.finer("<===================== template for space task to be collected: \n"
 				+ temp.describe());
 
-		ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(temp);
+		ExertionEnvelop resultEnvelop = takeEnvelop(temp);
 		logger.finer("collected result envelope  <===================== \n"
 				+ resultEnvelop.describe());
 
@@ -104,13 +104,13 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 	public void collectFails() throws ExertionException {
 		ExertionEnvelop template;
 		template = ExertionEnvelop.getTemplate();
-		template.exertionID = ((NetTask)xrt).getId();
+		template.exertionID = xrt.getId();
 		template.state = new Integer(FAILED);
 
 		logger.finer("<===================== template for failed task to be collected: \n"
 				+ template.describe());
 
-		ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(template);
+		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {
 			NetTask result = (NetTask) resultEnvelop.exertion;
 			state = FAILED;
@@ -118,19 +118,19 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 			result.setStatus(FAILED);
 			xrt = result;
 		}
-		dispatchers.remove(((NetTask)xrt).getId());
+		dispatchers.remove(xrt.getId());
 	}
 	
 	public void collectErrors() throws ExertionException {
 		ExertionEnvelop template;
 		template = ExertionEnvelop.getTemplate();
-		template.exertionID = ((NetTask)xrt).getId();
+		template.exertionID = xrt.getId();
 		template.state = new Integer(ERROR);
 
 		logger.finer("<===================== template for error task to be collected: \n"
 				+ template.describe());
 
-		ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(template);
+		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {
 			NetTask result = (NetTask) resultEnvelop.exertion;
 			state = ERROR;
@@ -138,7 +138,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 			result.setStatus(ERROR);
 			xrt = result;
 		}
-		dispatchers.remove(((NetTask)xrt).getId());
+		dispatchers.remove(xrt.getId());
 	}
 
 }

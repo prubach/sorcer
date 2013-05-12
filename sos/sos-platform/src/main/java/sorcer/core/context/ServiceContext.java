@@ -1579,7 +1579,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String path;
 		Vector<Link> links = new Vector<Link>();
 		while (e.hasMoreElements()) {
-			path = (String) e.nextElement();
+			path = e.nextElement();
 			links.addElement(getLink(path));
 		}
 		return links.elements();
@@ -1770,7 +1770,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		String metapath_target, metapath_source;
 		// enumerate over local metaattributes
-		e = ((ServiceContext) mappedCntxt).getDataAttributeMap().keys();
+		e = mappedCntxt.getDataAttributeMap().keys();
 		while (e.hasMoreElements()) {
 			attr = (String) e.nextElement();
 			if (!mappedCntxt.isLocalMetaattribute(attr))
@@ -1781,7 +1781,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 						+ attr
 						+ "\" has conflicting definitions; it is a metaattribute in the source context and a singleton attribute in the target context.  Please correct before performing this operation");
 				logger.info("Src metacontext="
-						+ ((ServiceContext) mappedCntxt).metacontext);
+						+ mappedCntxt.metacontext);
 				logger.info("this metacontext=" + metacontext);
 				throw new ContextException("The attribute \"" + attr
 						+ "\" has conflicting definitions;");// it
@@ -1792,7 +1792,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// is this also a metaattribute in the current context?
 			if (isMetaattribute(attr)) {
 				// check to see the definitions are the same
-				metapath_source = (String) ((ServiceContext) mappedCntxt)
+				metapath_source = (String) mappedCntxt
 						.getDataAttributeMap().get(attr);
 				metapath_target = (String) getDataAttributeMap().get(attr);
 				if (!metapath_target.equals(metapath_source))
@@ -1804,7 +1804,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				// has metapath = \""+metapath_target+"\".
 				// Please correct befe performing this operation.");
 			}
-			metapath = (String) ((ServiceContext) mappedCntxt)
+			metapath = (String) mappedCntxt
 					.getDataAttributeMap().get(attr);
 			setCompositeAttribute(attr + APS + metapath);
 		}
@@ -1934,7 +1934,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			if (val == null)
 				sb.append("null");
 			else if (val.getClass().isArray())
-				sb.append(StringUtils.arrayToString((Object[]) val));
+				sb.append(StringUtils.arrayToString(val));
 			else
 				sb.append(val.toString());
 			// report attributes

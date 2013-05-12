@@ -263,7 +263,7 @@ public class ProviderLocator implements DynamicAccessor, SorcerConstants {
 			if (((NetSignature)signature).isUnicast()) {
 				String[] locators = Sorcer.getLookupLocators();
 				for (String locator : locators) {
-					proxy = (Servicer) ProviderLocator.getService(locator,
+					proxy = ProviderLocator.getService(locator,
 							signature.getServiceType(), signature
 									.getProviderName());
 					if (proxy != null && proxy instanceof Servicer)

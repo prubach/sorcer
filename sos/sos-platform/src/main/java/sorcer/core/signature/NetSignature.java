@@ -322,8 +322,8 @@ public class NetSignature extends ObjectSignature {
 				ExertionException eme = new ExertionException(
 						"Not supported method: " + serviceType + "#" + selector
 								+ " by: "
-								+ ((Provider) provider).getProviderName());
-				((Provider) provider).notifyException(context.getExertion(),
+								+ provider.getProviderName());
+				provider.notifyException(context.getExertion(),
 						"unsupported method", eme);
 				throw eme;
 			}

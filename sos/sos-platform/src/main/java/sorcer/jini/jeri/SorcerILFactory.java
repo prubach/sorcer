@@ -240,7 +240,7 @@ public class SorcerILFactory extends BasicILFactory {
 			// handle dataContext management by the containing provider
 			try {
 				if (decl == ContextManagement.class) {
-					Object obj = method.invoke((ContextManagement)impl, args);
+					Object obj = method.invoke(impl, args);
 					return obj;
 				}
 				// Check if the invocation is to be made on provider's service beans

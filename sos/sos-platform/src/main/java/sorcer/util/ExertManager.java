@@ -85,7 +85,7 @@ public class ExertManager implements Exerter, Callable {
 	
 	public Exertion exert(Parameter... entries) throws TransactionException,
 			ExertionException, RemoteException {
-		return exert((Transaction) null, (String) null, entries);
+		return exert(null, (String) null, entries);
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +99,7 @@ public class ExertManager implements Exerter, Callable {
 		} catch (EvaluationException e) {
 			throw new ExertionException(e);
 		}
-		return exert(xrt, (Transaction) null, (String) null);
+		return exert(xrt, null, (String) null);
 	}
 	
 	/* (non-Javadoc)

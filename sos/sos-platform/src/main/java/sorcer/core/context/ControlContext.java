@@ -495,11 +495,11 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public void registerExertion(Exertion ex) {
 		if (ex instanceof Job)
-			put(ex.getControlContext().getName(), ((ServiceExertion) ex).getId());
+			put(ex.getControlContext().getName(), ex.getId());
 		else {
-			put(ex.getContext().getName(), ((ServiceExertion) ex).getId());
+			put(ex.getContext().getName(), ex.getId());
 		}
-		setPriority((Exertion) ex, MAX_PRIORITY
+		setPriority(ex, MAX_PRIORITY
 				- ((ServiceExertion) ex).getIndex());
 		setExecTimeRequested(ex, true);
 	}

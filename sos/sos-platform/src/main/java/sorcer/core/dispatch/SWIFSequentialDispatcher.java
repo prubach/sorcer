@@ -52,7 +52,7 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 			exertion = (ServiceExertion) inputXrts.elementAt(i);
 			if (isInterupted(exertion))
 				return;
-			exertion = (ServiceExertion) execExertion(exertion);
+			exertion = execExertion(exertion);
 			if (exertion.getStatus() <= FAILED)// ||
 				// exertion.getState()<=FAILED)
 				xrt.setStatus(FAILED);
@@ -64,7 +64,7 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 		if (isInterupted(masterXrt))
 			return;
 		if (masterXrt != null) {
-			exertion = (ServiceExertion) execExertion(masterXrt);// executeMasterExertion();
+			exertion = execExertion(masterXrt);// executeMasterExertion();
 			if (exertion.getStatus() <= FAILED) {
 				state = FAILED;
 				xrt.setStatus(FAILED);
@@ -87,7 +87,7 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 	}
 
 	public void setStatus(ServiceExertion ex, int status) {
-		((ServiceExertion) ex).setStatus(status);
+		ex.setStatus(status);
 	}
 
 }

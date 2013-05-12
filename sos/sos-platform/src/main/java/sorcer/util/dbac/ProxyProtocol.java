@@ -265,7 +265,7 @@ abstract public class ProxyProtocol implements Protocol, SorcerConstants {
 	}
 
 	public Vector executeQueryFor(String parameters) {
-		return (Vector) executeQueryFor(parameters);
+		return executeQueryFor(parameters);
 	}
 
 	public Object executeUpdate(String sql, boolean isString) {

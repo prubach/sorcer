@@ -81,16 +81,16 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher
 		preExecExertion(ex);
 		Exertion result = null;
 		try {
-			result = (exi.isTask()) ? ((Exertion) execTask((NetTask) ex))
-					: ((ServiceExertion) execJob((NetJob) ex));
+			result = (exi.isTask()) ? execTask((NetTask) ex)
+					: execJob((NetJob) ex);
 		} catch (Exception e) {
 			exi.reportException(e);
-			result = (Exertion) exi;
+			result = exi;
 			((ServiceExertion) result).setStatus(FAILED);
 		}
 		// set subject after result is recieved.
 		((ServiceExertion) result).setSubject(subject);
-		postExecExertion((Exertion) exi, result);
+		postExecExertion(exi, result);
 		return (ServiceExertion) result;
 	}
 
@@ -261,11 +261,11 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher
 			} catch (ExertionException ee) {
 				ee.printStackTrace();
 				result = ex;
-				((ServiceExertion) result).setStatus(FAILED);
+				result.setStatus(FAILED);
 			} catch (SignatureException eme) {
 				eme.printStackTrace();
 				result = ex;
-				((ServiceExertion) result).setStatus(FAILED);
+				result.setStatus(FAILED);
 			}
 		}
 

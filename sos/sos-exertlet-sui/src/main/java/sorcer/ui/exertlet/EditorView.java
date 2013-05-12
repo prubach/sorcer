@@ -384,7 +384,6 @@ public class EditorView extends JPanel implements HyperlinkListener {
 
 	private void openFile() {
 		int returnVal = fileChooser.showOpenDialog(EditorView.this);
-		BufferedWriter br = null;
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			if (file != null) {
@@ -536,7 +535,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			if (debug) {
 				sb.append("\n\n\n");
 				if (exertion instanceof Task)
-					sb.append(((ServiceExertion) exertion).getControlContext()
+					sb.append(exertion.getControlContext()
 							.toString());
 				else
 					sb.append(((Job) exertion).getControlInfo()

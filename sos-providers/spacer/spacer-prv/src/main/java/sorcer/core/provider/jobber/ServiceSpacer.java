@@ -42,7 +42,6 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -267,12 +266,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 	// }
 
 	private String getDataURL(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig()
+		return getDelegate().getProviderConfig()
 				.getProperty("provider.dataURL") + filename;
 	}
 
 	private String getDataFilename(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig()
+		return getDelegate().getProviderConfig()
 				.getDataDir() + "/" + filename;
 	}
 
@@ -282,10 +281,10 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 	}
 
 	private void replaceNullExertionIDs(Exertion ex) {
-		if (ex != null && ((ServiceExertion) ex).getId() == null) {
+		if (ex != null && ex.getId() == null) {
 			((ServiceExertion) ex)
 					.setId(UuidFactory.generate());
-			if (((ServiceExertion) ex).isJob()) {
+			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
 					replaceNullExertionIDs(((Job) ex).exertionAt(i));
 			}
@@ -293,7 +292,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 	}
 
 	private void notifyViaEmail(Exertion ex) throws ContextException {
-		if (ex == null || ((ServiceExertion) ex).isTask())
+		if (ex == null || ex.isTask())
 			return;
 		Job job = (Job) ex;
 		Vector recipents = null;
@@ -324,12 +323,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 				+ "' has been submitted.\n" + to;
 		((ControlContext) job.getDataContext()).setFeedback(comment);
 		if (job.getMasterExertion() != null
-				&& ((ServiceExertion) job.getMasterExertion()).isTask()) {
-			((ServiceExertion) (job.getMasterExertion())).getDataContext()
+				&& job.getMasterExertion().isTask()) {
+			job.getMasterExertion().getDataContext()
 					.putValue(Context.JOB_COMMENTS, comment);
 
 			Contexts.markOut(
-					((ServiceExertion) (job.getMasterExertion())).getDataContext(),
+					job.getMasterExertion().getDataContext(),
 					Context.JOB_COMMENTS);
 
 		}
@@ -357,7 +356,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 
 			try {
 				dispatcher = ExertionDispatcherFactory.getFactory()
-						.createDispatcher((NetJob) job,
+						.createDispatcher(job,
 								new HashSet<Context>(), false, myMemberUtil, provider);
 				while (dispatcher.getState() != ExecState.DONE
 						&& dispatcher.getState() != ExecState.FAILED
@@ -460,7 +459,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 		for (int i = 0; i < job.size(); i++) {
 			e = job.exertionAt(i);
 			((ControlContext) job.getDataContext()).setReview(e, true);
-			if (((ServiceExertion) e).isJob())
+			if (e.isJob())
 				prepareToStep((Job) e);
 		}
 		return;

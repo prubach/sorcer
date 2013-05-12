@@ -53,7 +53,7 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		Exertion result = null;
 		while (workers.size() > 0) {
 			for (int i = 0; i < workers.size(); i++) {
-				result = ((ExertionThread) workers.get(i)).getResult();
+				result = workers.get(i).getResult();
 				if (result != null) {
 					ServiceExertion se = (ServiceExertion) result;
 					se.stopExecTime();
@@ -94,7 +94,7 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 			// finally execute Master Exertion
 			masterXrt = (ServiceExertion) execExertion(masterXrt);
 			masterXrt.stopExecTime();
-			if (((ServiceExertion) masterXrt).getStatus() <= FAILED)
+			if (masterXrt.getStatus() <= FAILED)
 				xrt.setStatus(FAILED);
 			else
 				xrt.setStatus(DONE);

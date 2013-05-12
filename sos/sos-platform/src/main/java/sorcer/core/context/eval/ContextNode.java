@@ -632,11 +632,11 @@ public class ContextNode implements Serializable, SorcerConstants {
 			String delimiter = (String) itemDataVect.elementAt(4);
 			obj = this.getFileItemValue(line, field, delimiter);
 			// convert to proper type
-			if (((String) itemDataVect.elementAt(1)).equals("Double"))
+			if (itemDataVect.elementAt(1).equals("Double"))
 				obj = new Double((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("Integer"))
+			if (itemDataVect.elementAt(1).equals("Integer"))
 				obj = new Integer((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("String"))
+			if (itemDataVect.elementAt(1).equals("String"))
 				obj = obj.toString();
 		} else if (itemDataVect.elementAt(0).equals("File2")) {
 			int line = ((Integer) itemDataVect.elementAt(2)).intValue();
@@ -652,11 +652,11 @@ public class ContextNode implements Serializable, SorcerConstants {
 			obj = this.getFileItemValue(line, field, delimiter, field2,
 					delimiter2);
 			// convert to proper type
-			if (((String) itemDataVect.elementAt(1)).equals("Double"))
+			if (itemDataVect.elementAt(1).equals("Double"))
 				obj = new Double((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("Integer"))
+			if (itemDataVect.elementAt(1).equals("Integer"))
 				obj = new Integer((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("String"))
+			if (itemDataVect.elementAt(1).equals("String"))
 				obj = obj.toString();
 		} else if (itemDataVect.elementAt(0).equals("Keyword Filter")) {
 			String keyword = (String) itemDataVect.elementAt(2);
@@ -669,11 +669,11 @@ public class ContextNode implements Serializable, SorcerConstants {
 
 			obj = this.getFileItemValue(keyword, field, delimiter);
 			// convert to proper type
-			if (((String) itemDataVect.elementAt(1)).equals("Double"))
+			if (itemDataVect.elementAt(1).equals("Double"))
 				obj = new Double((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("Integer"))
+			if (itemDataVect.elementAt(1).equals("Integer"))
 				obj = new Integer((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("String"))
+			if (itemDataVect.elementAt(1).equals("String"))
 				obj = obj.toString();
 		} else if (itemDataVect.elementAt(0).equals("Keyword Filter2")) {
 			String keyword = (String) itemDataVect.elementAt(2);
@@ -689,11 +689,11 @@ public class ContextNode implements Serializable, SorcerConstants {
 			obj = this.getFileItemValue(keyword, field, delimiter, subField,
 					subDelimiter);
 			// convert to proper type
-			if (((String) itemDataVect.elementAt(1)).equals("Double"))
+			if (itemDataVect.elementAt(1).equals("Double"))
 				obj = new Double((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("Integer"))
+			if (itemDataVect.elementAt(1).equals("Integer"))
 				obj = new Integer((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("String"))
+			if (itemDataVect.elementAt(1).equals("String"))
 				obj = obj.toString();
 		} else if (itemDataVect.elementAt(0).equals("Keyword Filter3")) {
 			String keyword = (String) itemDataVect.elementAt(2);
@@ -712,11 +712,11 @@ public class ContextNode implements Serializable, SorcerConstants {
 
 			obj = this.getFileItemValue(keyword, lineAfter, field, delimiter);
 			// convert to proper type
-			if (((String) itemDataVect.elementAt(1)).equals("Double"))
+			if (itemDataVect.elementAt(1).equals("Double"))
 				obj = new Double((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("Integer"))
+			if (itemDataVect.elementAt(1).equals("Integer"))
 				obj = new Integer((String) obj);
-			if (((String) itemDataVect.elementAt(1)).equals("String"))
+			if (itemDataVect.elementAt(1).equals("String"))
 				obj = obj.toString();
 		} else if (itemDataVect.elementAt(0).equals("Method")) {
 			// parse out the signature of the method
@@ -1144,7 +1144,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 		Vector fileContents = new Vector();
 		InputStream is = this.openStream();
 		InputStreamReader iSR = new InputStreamReader(is);
-		BufferedReader bR = new BufferedReader((Reader) iSR);
+		BufferedReader bR = new BufferedReader(iSR);
 		boolean eof = false;
 
 		while (!eof) {

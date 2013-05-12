@@ -359,29 +359,29 @@ public class ProviderDelegate implements SorcerConstants {
 		};
 
 		public static void add(ServiceExertion ex) {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			esb.exertionID = ex.getId();
-			esb.session = (MonitoringSession) ex.getMonitorSession();
+			esb.session = ex.getMonitorSession();
 			if (ex.getMonitorSession() != null)
 				lrm.renewUntil(
-						((MonitoringSession) ex.getMonitorSession()).getLease(),
+						ex.getMonitorSession().getLease(),
 						Lease.ANY, null);
 		}
 
 		public static MonitoringSession getSession() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.session : null;
 		}
 
 		public static Uuid getID() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.exertionID : null;
 		}
 
 		public static void removeLease() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			try {
-				lrm.remove(((MonitoringSession) esb.session).getLease());
+				lrm.remove(esb.session.getLease());
 			} catch (Exception e) {
 			}
 		}
@@ -1207,9 +1207,9 @@ public class ProviderDelegate implements SorcerConstants {
 			} else {
 				obj = m.invoke(impl, args);
 			}
-			((ServiceContext) result).setReturnValue(obj);
+			result.setReturnValue(obj);
 		} else {
-			((ServiceContext) result).setReturnValue(m.invoke(impl, args));
+			result.setReturnValue(m.invoke(impl, args));
 		}
 		return result;
 	}
@@ -1418,7 +1418,7 @@ public class ProviderDelegate implements SorcerConstants {
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
 			} else {
-				((ServiceContext) sc).setReturnValue(execMethod.invoke(
+				sc.setReturnValue(execMethod.invoke(
 						provider, args));
 				result = sc;
 			}
@@ -1664,7 +1664,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 		attrVec.addAll(extraLookupAttributes);
 
-		return (Entry[]) attrVec.toArray(new Entry[] {});
+		return attrVec.toArray(new Entry[] {});
 	}
 
 	/**
@@ -1904,7 +1904,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 			}
 		}
-		Class st = ((NetSignature) task.getProcessSignature()).getServiceType();
+		Class st = task.getProcessSignature().getServiceType();
 
 		if (publishedServiceTypes == null) {
 			servicetask.getDataContext().reportException(
@@ -1937,9 +1937,9 @@ public class ProviderDelegate implements SorcerConstants {
 					return true;
 				if (protocol == null)
 					createProtocol();
-				return ((ProxyProtocol) protocol).isAuthorized(
-						(SorcerPrincipal) principal, ((NetSignature) task
-								.getProcessSignature()).getServiceType(),
+				return protocol.isAuthorized(
+						(SorcerPrincipal) principal, task
+						.getProcessSignature().getServiceType(),
 						config.getProviderName());
 			}
 		}
@@ -1969,7 +1969,7 @@ public class ProviderDelegate implements SorcerConstants {
 			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) ProviderAccessor
 					.getNotifierProvider();
 
-			mr = new MsgRef(((ServiceExertion) task).getId(), notificationType,
+			mr = new MsgRef(task.getId(), notificationType,
 					config.getProviderName(), message,
 					((ServiceExertion) task).getSessionId());
 			// Util.debug(this, "::notify() RUNTIME SESSION ID:" +
@@ -2461,7 +2461,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 			try {
 				val = ""
-						+ (Boolean) jiniConfig.getEntry(
+						+ jiniConfig.getEntry(
 								ServiceProvider.PROVIDER,
 								J_SERVICE_ID_PERSISTENT, boolean.class);
 			} catch (ConfigurationException e) {
@@ -2986,7 +2986,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 				// if partner exported use it as the primary proxy
 				if (partner != null) {
-					pp = partnerExporter.export((Remote) partner);
+					pp = partnerExporter.export(partner);
 					if (pp != null) {
 						innerProxy = outerProxy;
 						outerProxy = pp;

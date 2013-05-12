@@ -629,11 +629,11 @@ public class AdminView {
 						try {
 							Object value = f[k].get(atts[j]);
 							if (value != null) {
-								data.add(((Object) (new Object[] {
+								data.add(new Object[] {
 												displayName,
 												(value.getClass().isArray() ? Util
 														.arrayToString(value)
-														: value) })));
+														: value) });
 								// now store the actual class,field,isEditable
 								boolean isEditable = !ServiceControlled.class
 										.isAssignableFrom(eClass);

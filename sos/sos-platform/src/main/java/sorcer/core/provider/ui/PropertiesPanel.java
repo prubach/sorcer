@@ -94,10 +94,10 @@ public class PropertiesPanel extends JPanel {
 				try {
 					Object value = f[k].get(prop);
 					if (value != null) {
-						data.add(((Object) (new Object[] {
+						data.add(new Object[] {
 								displayName,
 								(value.getClass().isArray() ? StringUtils
-										.arrayToString(value) : value) })));
+										.arrayToString(value) : value) });
 						// now store the actual class, field, isEditable
 						fields.add(new Object[] { className, fName });
 					}

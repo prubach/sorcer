@@ -738,7 +738,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				}
 				ServiceItem[] sitems = new ServiceItem[arItems.size()];
 				for (int i = 0; i < arItems.size(); i++) {
-					sitems[i] = (ServiceItem) arItems.get(i);
+					sitems[i] = arItems.get(i);
 				}
 				return sitems;
 			} else {
