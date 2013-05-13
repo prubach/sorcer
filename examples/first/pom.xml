@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
+		<artifactId>examples</artifactId>
 		<version>11.1</version>
-		<artifactId>sorcer-root</artifactId>
 	</parent>
 
 	<groupId>com.example.sorcer</groupId>
@@ -23,10 +23,27 @@
 	<modules>
 		<module>first-api</module>
 		<module>first-prv</module>
-		<module>first-req</module>
+		<!--<module>first-req</module>-->
 		<module>first-proxy</module>
 		<module>first-sui</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sorcer-init</id>
+						<goals>
+							<goal>initialize</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>
