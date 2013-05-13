@@ -8,7 +8,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />
 	<property name="beans.id" value="1" />
-    	<import file="prv-run.xml" />
+        <import file="prv-run.xml" />
 
 </project>
 
