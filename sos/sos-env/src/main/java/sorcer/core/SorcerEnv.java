@@ -459,7 +459,7 @@ public class SorcerEnv implements SorcerConstants {
 	 * @param key
 	 * @return
 	 */
-	public static String getRiverVersion() {
+	/*public static String getRiverVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_RIVER, "2.2.1");
 	}
 
@@ -477,7 +477,7 @@ public class SorcerEnv implements SorcerConstants {
 
 	public static String getSleepyCatVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_SLEEPYCAT, "4.1.21");
-	}
+	} */
 	public static String getSorcerVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_SORCER, SORCER_VERSION);
 	}
