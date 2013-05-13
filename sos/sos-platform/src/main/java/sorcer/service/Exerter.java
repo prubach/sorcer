@@ -17,10 +17,10 @@
 
 package sorcer.service;
 
+import java.rmi.RemoteException;
+
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-
-import java.rmi.RemoteException;
 
 /**
  * A functionality required for running exertions with given parameters.

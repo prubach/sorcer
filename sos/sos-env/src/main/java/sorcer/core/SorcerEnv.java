@@ -96,7 +96,7 @@ public class SorcerEnv implements SorcerConstants {
 			try {
 				File repoDir = new File(System.getProperty("user.home")+"/.m2/repository");
 				if (repoDir.exists() && repoDir.isDirectory())
-					return repo;
+					return repoDir.getAbsolutePath();
 			} catch (Throwable t) {
 				logger.throwing(
 						SorcerEnv.class.getName(),

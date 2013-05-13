@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
-<project name="SOS kernel services" default="kernel" basedir=".">
+<project name="SOS" default="kernel" basedir=".">
 
-	<import file="../bin/common-run.xml" />
-	<target name="kernel" depends="clean, SOS" />
+    <property name="sorcer.distro.in.libs" value="true" />
+    <import file="../bin/common-run.xml" />
+    <target name="kernel" depends="clean, SOS" />
 	<property name="sorcer.data" value="${sorcer.home}/data" />
 
 	<target name="SOS">

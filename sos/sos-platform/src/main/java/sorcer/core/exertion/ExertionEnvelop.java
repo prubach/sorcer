@@ -106,9 +106,9 @@ public class ExertionEnvelop implements Entry {
 		ee.exertion = ex;
 		ee.serviceType = ss.getServiceType();
 		ee.providerName = ss.getProviderName();
-		ee.exertionID = ((ServiceExertion) ex).getId();
+		ee.exertionID = ex.getId();
 		ee.parentID = ((ServiceExertion) ex).getParentId();
-		ee.isJob = new Boolean(((ServiceExertion) ex).isJob());
+		ee.isJob = new Boolean(ex.isJob());
 
 		return ee;
 	}

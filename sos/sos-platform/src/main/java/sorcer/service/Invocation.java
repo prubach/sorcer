@@ -17,48 +17,40 @@
 
 package sorcer.service;
 
-import sorcer.service.Context;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Parameter;
-
-import java.io.Serializable;
 import java.rmi.RemoteException;
 
 /**
- * @author Mike Sobolewski
- */
-
-/**
- * The invoker interface defines dataContext driven invocations on a service dataContext
+ * The Invocation interface defines context driven invocations on a service context
  * containing its parameters (paths) and arguments (values). The requested
  * invocation is specified by the array of contexts.
  * 
  * The semantics for how parameters can be declared and how the arguments get
  * passed to the parameters of callable unit are defined by the language, but
  * the details of how this is represented in any particular computing system
- * depend on the calling conventions of that system. A dataContext-driven computing
+ * depend on the calling conventions of that system. A context-driven computing
  * system defines callable unit called invokers used within a scope of service
  * contexts, data structures defined in SORCER.
  * 
- * A service dataContext is dictionary (associative array) composed of a collection
+ * A service context is dictionary (associative array) composed of a collection
  * of (key, value) pairs, such that each possible key appears at most once in
  * the collection. Keys are considered as parameters and values as arguments of
  * the service invokers accepting service contexts as their input data. A key is
  * expressed by a path of attributes like directories in paths of a file system.
- * Paths define a namespace of the dataContext parameters. A dataContext argument is any
- * object referenced by its path or returned by a dataContext invoker referenced by
- * its path inside the dataContext. An ordered list of parameters is usually
+ * Paths define a namespace of the context parameters. A context argument is any
+ * object referenced by its path or returned by a context invoker referenced by
+ * its path inside the context. An ordered list of parameters is usually
  * included in the definition of an invoker, so that, each time the invoker is
- * called, the dataContext arguments for that call can be assigned to the
- * corresponding parameters of the invoker. The dataContext values for all paths
- * inside the dataContext are defined explicitly by corresponding objects or
+ * called, the context arguments for that call can be assigned to the
+ * corresponding parameters of the invoker. The context values for all paths
+ * inside the context are defined explicitly by corresponding objects or
  * calculated by corresponding invokers. Thus, requesting a value for a path in
- * a dataContext is a computation defined by a invoker composition within the scope
- * of the dataContext.
+ * a context is a computation defined by a invoker composition within the scope
+ * of the context.
+ * 
+ * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public interface Invoking<T> {
+public interface Invocation<T> {
 
 	public T invoke(Parameter... entries) throws RemoteException,
 		EvaluationException;

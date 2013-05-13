@@ -20,7 +20,7 @@ package sorcer.util.dbac;
 import sorcer.core.SorcerConstants;
 import sorcer.util.DataProtocolStream;
 import sorcer.util.Protocol;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -45,7 +45,7 @@ public class SocketProtocol extends ProxyProtocol implements Protocol,
 	private int BUFSIZE = 1024;
 
 	public SocketProtocol(String hostPort) {
-		String items[] = SorcerUtil.tokenize(hostPort, ":");
+		String items[] = StringUtils.tokenize(hostPort, ":");
 		serverName = items[0];
 		serverPort = Integer.parseInt(items[1]);
 	}

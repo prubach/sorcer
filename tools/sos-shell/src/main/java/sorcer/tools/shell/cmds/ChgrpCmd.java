@@ -87,7 +87,7 @@ public class ChgrpCmd extends ShellCmd {
 				groups = getGroupArray(myTk, numTokens - 2);
 			}
 			if ((myIdx < registrars.size()) && (myIdx >= 0)) {
-				ServiceRegistrar myReg = (ServiceRegistrar) registrars
+				ServiceRegistrar myReg = registrars
 						.get(myIdx);
 				if (myReg != null) {
 					setGroups(myReg, myIdx, groups);

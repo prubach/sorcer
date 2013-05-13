@@ -123,7 +123,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 			String path = null;
 
 			while (e.hasMoreElements()) {
-				path = new String((String) e.nextElement());
+				path = (String) e.nextElement();
 				ifContext.putValue(path, thenExertion.getDataContext().getValue(
 						path));
 			}
@@ -219,7 +219,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @see sorcer.service.ServiceExertion#isJob()
 	 */
 	public boolean isJob() {
-		return ((ServiceExertion) thenExertion).isJob();
+		return thenExertion.isJob();
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @see sorcer.service.ServiceExertion#isTask()
 	 */
 	public boolean isTask() {
-		return ((ServiceExertion) thenExertion).isTask();
+		return thenExertion.isTask();
 	}
 
 	/**

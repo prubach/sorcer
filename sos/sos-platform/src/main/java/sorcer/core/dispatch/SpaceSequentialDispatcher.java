@@ -68,8 +68,8 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 				}
 			}
 			logger.finer("waiting for exertion " + i + ", id="
-					+ ((ServiceExertion) exertion).getId() + ".............");
-			waitForExertion(((ServiceExertion) exertion).getIndex());
+					+ exertion.getId() + ".............");
+			waitForExertion(exertion.getIndex());
 		}
 		dThread.stop = true;
 	}

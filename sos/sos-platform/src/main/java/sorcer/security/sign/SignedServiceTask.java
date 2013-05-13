@@ -111,7 +111,7 @@ public final class SignedServiceTask extends NetTask implements
 	 *                if the object could not be accessed
 	 */
 	public byte[] getProcessByteSignature() {
-		byte abyte0[] = (byte[]) signatureBytes.clone();
+		byte abyte0[] = signatureBytes.clone();
 		return abyte0;
 	}
 

@@ -24,6 +24,7 @@
 			<sysproperty key="java.security.policy" value="${basedir}/../policy/worker-req.policy" />
 			<sysproperty key="java.rmi.server.codebase" value="${requestor.codebase}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			<arg value="${ex2-req.arg1}" />
 			<arg value="${ex2-req.arg2}" />
 			<arg value="${ex2-req.arg3}" />			

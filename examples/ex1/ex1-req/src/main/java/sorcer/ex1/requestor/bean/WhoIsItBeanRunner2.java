@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
 import sorcer.service.Context;
@@ -13,7 +13,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
-public class WhoIsItBeanRunner2 extends ExertionRunner {
+public class WhoIsItBeanRunner2 extends ServiceRequestor {
 
 	public Exertion getExertion(String... args) throws ExertionException {
 		String hostname, ipAddress;

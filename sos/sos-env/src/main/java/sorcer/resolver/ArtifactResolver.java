@@ -11,4 +11,5 @@ public interface ArtifactResolver {
 	String resolveRelative(ArtifactCoordinates artifactCoordinates);
 	String resolveRelative(String artifactCoordinates);
     String getRootDir();
+    String getRepoDir();
 }

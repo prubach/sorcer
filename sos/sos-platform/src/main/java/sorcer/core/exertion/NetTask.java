@@ -29,98 +29,108 @@ import java.util.Arrays;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.
- * 
+ *
  * @author Mike Sobolewski
  */
-public class NetTask extends ObjectTask {
+public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocation<Object> {
 
-	private static final long serialVersionUID = -6741189881780105534L;
+    private static final long serialVersionUID = -6741189881780105534L;
 
-	
-	public NetTask() {
-		// do nothing
-	}
+    public NetTask() {
+        // do nothing
+    }
 
-	public NetTask(String name) {
-		super(name);
-	}
+    public NetTask(String name) {
+        super(name);
+    }
 
-	public NetTask(Uuid jobId, int jobState) {
-		setParentId(jobId);
-		status = new Integer(jobState);
-	}
+    public NetTask(Uuid jobId, int jobState) {
+        setParentId(jobId);
+        status = new Integer(jobState);
+    }
 
-	public NetTask(String name, String description) {
-		this(name);
-		this.description = description;
-	}
+    public NetTask(String name, String description) {
+        this(name);
+        this.description = description;
+    }
 
-	public NetTask(String name, NetSignature signature) {
-		this(name, "");
-		signatures.add(signature);
-	}
+    public NetTask(String name, Signature signature)
+            throws SignatureException {
+        this(name, null, signature, null);
+    }
 
-	public NetTask(String name, String description, NetSignature signature) {
-		this(name, description);
-		signatures.add(signature);
-	}
+    public NetTask(String name, String description, Signature signature)
+            throws SignatureException {
+        this(name, description, signature, null);
+    }
 
-	public NetTask(String name, NetSignature signature, Context context) {
-		this(name);
-		signatures.add(signature);
-		setContext(context);
-	}
-	
-	public NetTask(String name, String description, NetSignature signature, Context context) {
-		this(name, description);
-		signatures.add(signature);
-		setContext(context);
-	}
+    public NetTask(String name, Signature signature, Context context)
+            throws SignatureException {
+        this(name, null, signature, context);
+    }
 
-	public NetTask(String name, Signature[] signatures,  Context context)
-			throws SignatureException {
-		this(name);
-		setContext(context);
+    public NetTask(String name, String description, Signature signature,
+                   Context context) throws SignatureException {
+        this(name, description);
+        if (signature instanceof NetSignature)
+            addSignature(signature);
+        else
+            throw new SignatureException("Net task requires NetSignature: "
+                    + signature);
+        if (context != null)
+            setContext(context);
+    }
 
-		try {
-			for (Signature s : signatures)
-				((NetSignature) s).setExertion(this);
-		} catch (ExertionException e) {
-			e.printStackTrace();
-		}
-		this.signatures.addAll(Arrays.asList(signatures));
-	}
-	
-	public void setServicer(Servicer provider) {
-		((NetSignature) getProcessSignature()).setServicer(provider);
-	}
+    public NetTask(String name, Signature[] signatures, Context context)
+            throws SignatureException {
+        this(name);
+        setContext(context);
 
-	public Servicer getServicer() {
-		return ((NetSignature) getProcessSignature()).getServicer();
-	}
-	
-	public Task doTask(Transaction txn) throws ExertionException, SignatureException, RemoteException {	
-		ExertManager esh = new ExertManager(this);
-		try {
-			return (Task)esh.exert();
-		} catch (TransactionException e) {
-			throw new ExertionException(e);
-		}
-	}
-	
-	public static NetTask getTemplate() {
-		NetTask temp = new NetTask();
-		temp.status = new Integer(INITIAL);
-		temp.priority = null;
-		temp.index = null;
-		temp.signatures = null;
-		return temp;
-	}
+        try {
+            for (Signature s : signatures) {
+                if (s instanceof NetSignature)
+                    ((NetSignature) s).setExertion(this);
+                else
+                    throw new SignatureException("Net task requires NetSignature: "
+                            + s);
+            }
+        } catch (ExertionException e) {
+            e.printStackTrace();
+        }
+        this.signatures.addAll(Arrays.asList(signatures));
+    }
 
-	public static NetTask getTemplate(String provider) {
-		NetTask temp = getTemplate();
-		temp.getProcessSignature().setProviderName(provider);
-		return temp;
-	}
+    public void setServicer(Servicer provider) {
+        ((NetSignature) getProcessSignature()).setServicer(provider);
+    }
+
+    public Servicer getServicer() {
+        return ((NetSignature) getProcessSignature()).getServicer();
+    }
+
+    public Task doTask(Transaction txn) throws ExertionException,
+            SignatureException, RemoteException {
+        ExertManager esh = new ExertManager(this);
+        try {
+            return (Task) esh.exert();
+        } catch (TransactionException e) {
+            throw new ExertionException(e);
+        }
+    }
+
+    public static NetTask getTemplate() {
+        NetTask temp = new NetTask();
+        temp.status = new Integer(INITIAL);
+        temp.priority = null;
+        temp.index = null;
+        temp.signatures = null;
+        return temp;
+    }
+
+    public static NetTask getTemplate(String provider) {
+        NetTask temp = getTemplate();
+        temp.getProcessSignature().setProviderName(provider);
+        return temp;
+    }
 
 }

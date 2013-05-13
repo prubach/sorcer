@@ -213,7 +213,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 				InputStream is = this.getClass().getResourceAsStream(filename);
 				// check local resource
 				if (is == null)
-					is = (InputStream) (new FileInputStream(filename));
+					is = new FileInputStream(filename);
 				if (is != null) {
 					props = new Properties();
 					props.load(is);

@@ -21,22 +21,24 @@ import sorcer.util.Sorcer;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExertService implements SorcerConstants {
+public class ArithmeticExertServiceTest implements SorcerConstants {
 
 	private final static Logger logger = Logger
-			.getLogger(ArithmeticExertService.class.getName());
+			.getLogger(ArithmeticExertServiceTest.class.getName());
 
 	static {
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
-				+ "/configs/policy.all");
-		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBase(new String[] { "ex5-arithmetic-beans.jar",  "sorcer-prv-dl.jar" });
-		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
+                + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
+        Sorcer.setCodeBaseByArtifacts(new String[] {
+                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:ex5-api" });
+        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
 	
 	@Test
 	public void exertExerter() throws Exception {
-		Job exertion = NetArithmeticReq.getJobInJobNetArithmeticJob();
+		Job exertion = NetArithmeticReqTest.getJobInJobNetArithmeticJob();
 		Task task = new NetTask("exert", new NetSignature("exert",
 				Exerter.class),
 				new ServiceContext(exertion));
@@ -46,9 +48,9 @@ public class ArithmeticExertService implements SorcerConstants {
 	
 		Context out = (Context) result.getContext();
 //		logger.info("out context: " + out);
-//		logger.info("1job1task/subtract/result/value: "
-//				+ out.getValue(
-//						"1job1task/subtract/result/value"));
+		logger.info("1job1task/subtract/result/value: "
+				+ out.getValue(
+						"1job1task/subtract/result/value"));
 		assertEquals(
 				out.getValue("1job1task/subtract/result/value"),
 				400.0);

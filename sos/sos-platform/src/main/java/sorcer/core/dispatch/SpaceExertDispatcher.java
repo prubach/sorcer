@@ -89,7 +89,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
 		}
 		ExertionEnvelop ee = new ExertionEnvelop();
 		if (exertion == xrt)
-			ee.parentID = ((ServiceExertion) exertion).getId();
+			ee.parentID = exertion.getId();
 		else
 			ee.parentID = ((ServiceExertion) exertion).getParentId();
 		ee.state = ExecState.POISONED;

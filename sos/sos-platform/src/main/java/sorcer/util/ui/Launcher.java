@@ -21,7 +21,10 @@ import sorcer.util.*;
 
 import java.applet.Applet;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -43,6 +46,21 @@ public abstract class Launcher extends Applet implements Observer, Invoker,
 
 	// use for data exchange, allow gc
 	public static Object buffer = null;
+
+	public static Properties loadConfiguration(Properties props, String filename)
+			throws IOException {
+		System.out.println("load:filename=" + filename);
+		InputStream is = Launcher.class.getResourceAsStream(filename);
+		if (is == null)
+			is = new FileInputStream(new File(filename));
+		if (is != null) {
+			props = (props == null) ? new Properties() : props;
+			props.load(is);
+		} else {
+			logger.info("Not able to open stream on properties " + filename);
+		}
+		return props;
+	}
 
 	// public void addTip(Component c, String msg) {
 	// if (msg!=null)
@@ -95,7 +113,7 @@ public abstract class Launcher extends Applet implements Observer, Invoker,
 	public void update(String aspect, String[] args) {
 		// implemented by subclasses
 		logger.info("Launcher>>update:aspect: " + aspect + " args: "
-				+ SorcerUtil.arrayToString(args));
+				+ StringUtils.arrayToString(args));
 	}
 
 	public void update(Observable o, Object aspect, Object arg1) {
@@ -228,7 +246,7 @@ public abstract class Launcher extends Applet implements Observer, Invoker,
 	}
 
 	public void getCBDocFile(String filename, String target) {
-		String fn = SorcerUtil.urlEncode(filename);
+		String fn = StringUtils.urlEncode(filename);
 		try {
 			getAppletContext().showDocument(new URL(getCodeBase(), fn),
 					model().isInBrowser ? target : "_blank");
@@ -239,7 +257,7 @@ public abstract class Launcher extends Applet implements Observer, Invoker,
 	}
 
 	public void getDBDocFile(String filename, String target) {
-		String fn = SorcerUtil.urlEncode(filename);
+		String fn = StringUtils.urlEncode(filename);
 		try {
 			getAppletContext().showDocument(new URL(getDocumentBase(), fn),
 					model().isInBrowser ? target : "_blank");
@@ -259,7 +277,7 @@ public abstract class Launcher extends Applet implements Observer, Invoker,
 		model().props = new Properties();
 		try {
 			String defFileName = model().getAppDefaultsFile();
-			SorcerUtil.loadConfiguration(model().props, defFileName);
+			loadConfiguration(model().props, defFileName);
 			// model().props.load(new URL(getCodeBase(),
 			// defFileName).openStream());
 		} catch (IOException e) {

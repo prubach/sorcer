@@ -20,7 +20,6 @@ package sorcer.core.dispatch;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
-import net.jini.io.context.ClientSubject;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
@@ -72,7 +71,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			// ignore it, local call		
 		}
 		logger.finest("preExecExertions>>>...UPDATING INPUTS...");
-		if (((ServiceExertion) exertion).isTask()) {
+		if (exertion.isTask()) {
 				updateInputs(exertion);
 			
 		}
@@ -97,11 +96,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			preExecExertion(ex);
 			if (ex instanceof Conditional) {
 				result = (ServiceExertion) execConditional(ex);
-			} else if (((ServiceExertion)ex).isTask()) {
+			} else if (ex.isTask()) {
 				//logger.info("CONTEXT BEFORE: " + ex.getDataContext());
 				result = execTask((Task) ex);
 				//logger.info("CONTEXT AFTER: " + ex.getDataContext());
-			} else if (((ServiceExertion) ex).isJob()) {
+			} else if (ex.isJob()) {
 				result = execJob((Job) ex);
 			} else {
 				logger.warning("Unknown ServiceExertion");
@@ -156,11 +155,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 	private Exertion execConditional(Exertion exertion)
 			throws ExertionException {
 
-		String codebase = ((NetSignature) exertion.getProcessSignature())
+		String codebase = exertion.getProcessSignature()
 				.getCodebase();
-		String providerName = ((NetSignature) exertion
-				.getProcessSignature()).getProviderName();
-		Class serviceType = ((NetSignature) exertion.getProcessSignature())
+		String providerName = exertion
+				.getProcessSignature().getProviderName();
+		Class serviceType = exertion.getProcessSignature()
 				.getServiceType();
 
 		Servicer provider = ProviderAccessor.getProvider(providerName,
@@ -220,7 +219,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 
 				// Catalog lookup or use Lookup Service for the particular
 				// service
-				Provider provider = (Provider) ProviderAccessor.getProvider(
+				Provider provider = ProviderAccessor.getProvider(
 						sig.getProviderName(), sig.getServiceType(), codebase);
 
 				if (provider == null) {
@@ -237,8 +236,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 					// setTaskProvider(task, provider.getProviderName());
 					task.setServicer(provider);
 					// client security
-					ClientSubject cs = null;
 					/*
+					ClientSubject cs = null;
 					 * try{ // //cs =
 					 * (ClientSubject)ServerContext.getServerContextElement
 					 * (ClientSubject.class); }catch (Exception ex){
@@ -291,7 +290,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			 */
 			for (int i = 0; i < jobbers.length; i++) {
 				if (jobbers[i] != null) {
-					if (!((Provider) provider).getProviderID().equals(
+					if (!provider.getProviderID().equals(
 							jobbers[i].serviceID)) {
 						logger.finest("\n***Jobber: " + i + " ServiceID: "
 								+ jobbers[i].serviceID);

@@ -76,7 +76,7 @@ public class KPExertion implements Exertion {
 		return false;
 	}
 
-	public boolean isMonitored() {
+	public boolean isMonitorable() {
 		return getControlContext().isMonitorable();
 	}
 	
@@ -220,7 +220,7 @@ public class KPExertion implements Exertion {
 	 * @see sorcer.service.Evaluation#getAsis()
 	 */
 	@Override
-	public Object getAsis() throws EvaluationException, RemoteException {
+	public Object asis() throws EvaluationException, RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}

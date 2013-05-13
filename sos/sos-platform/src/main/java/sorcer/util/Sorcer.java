@@ -1019,7 +1019,7 @@ public class Sorcer extends SorcerEnv {
 	 * @throws Exception
 	 */
 	public boolean deleteDir(File dir) throws Exception {
-		return SorcerUtil.deleteDir(dir);
+		return IOUtil.deleteDir(dir);
 	}
 
 	private static synchronized String getUniqueId() {

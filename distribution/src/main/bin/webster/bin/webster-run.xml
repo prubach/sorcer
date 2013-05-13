@@ -2,12 +2,13 @@
 
 <project name="Run webster" default="webster" basedir=".">
 
-
+    <property name="sorcer.distro.in.libs" value="true" />
     <property environment="env" />
 	<!-- load system environment variables -->
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
-	<property name="provider.webster" value="${provider.webster.interface.TMP}" />
+    <property name="sorcer.distro.in.libs" value="true" />
+    <property name="provider.webster" value="${provider.webster.interface.TMP}" />
 	<echo message="provider.webster = ${provider.webster}" />
 	<echo message="provider.webster.port ${provider.webster.port}" />
 	

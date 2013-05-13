@@ -17,20 +17,6 @@
 
 package sorcer.service;
 
-import net.jini.core.lookup.ServiceID;
-import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
-import sorcer.co.tuple.Entry;
-import sorcer.core.SorcerConstants;
-import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
-import sorcer.core.context.ServiceContext;
-import sorcer.core.signature.NetSignature;
-import sorcer.eo.operator;
-import sorcer.security.util.Auth;
-import sorcer.security.util.SorcerPrincipal;
-
-import javax.security.auth.Subject;
 import java.rmi.RemoteException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -39,18 +25,36 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.security.auth.Subject;
+
+import net.jini.core.lookup.ServiceID;
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
+import sorcer.co.tuple.Entry;
+import sorcer.core.context.Contexts;
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.signature.NetSignature;
+import sorcer.eo.operator;
+import sorcer.security.util.Auth;
+import sorcer.security.util.SorcerPrincipal;
+import sorcer.service.Signature.Direction;
+import sorcer.service.Signature.ReturnPath;
+
 /**
- * A job is a composite service-oriented message comprised of {@link Exertion}
- * instances with its own service {@link Context} and a collection of service
- * {@link Signature}s. The job's signature is usually referring to a
- * {@link sorcer.service.Jobber} and the job's dataContext describes the composition
+ * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
+ * instances with its own service {@link sorcer.service.Context} and a collection of service
+ * {@link sorcer.service.Signature}s. The job's signature is usually referring to a
+ * {@link Jobber} and the job's context describes the composition
  * of component exertions as defined by the Interpreter programming pattern.
  * 
- * @see sorcer.service.Exertion
- * @see sorcer.service.Task
+ * @see Exertion
+ * @see Task
  * 
  * @author Mike Sobolewski
  */
+@SuppressWarnings("rawtypes")
 public abstract class Job extends ServiceExertion {
 
 	private static final long serialVersionUID = -6161435179772214884L;
@@ -63,11 +67,11 @@ public abstract class Job extends ServiceExertion {
 	 */
 	protected List<Exertion> exertions = new ArrayList<Exertion>();
 
-	public Integer state = new Integer(ExecState.INITIAL);
+	public Integer state = new Integer(INITIAL);
 
 	/**
 	 * Constructs a job and sets all default values to it.
-	 * @throws SignatureException 
+	 * @throws sorcer.service.SignatureException
 	 */
 	public Job() {
 		exertions = new ArrayList<Exertion>();
@@ -80,7 +84,7 @@ public abstract class Job extends ServiceExertion {
 	 * 
 	 * @param name
 	 *            The name of the job.
-	 * @throws SignatureException 
+	 * @throws sorcer.service.SignatureException
 	 */
 	public Job(String name) {
 		super(name);
@@ -89,7 +93,7 @@ public abstract class Job extends ServiceExertion {
 	/**
 	 * Constructs a job and sets all default values to it.
 	 * 
-	 * @param name
+	 * @param exertion
 	 *            The first Exertion of the job.
 	 */
 	public Job(Exertion exertion) {
@@ -110,7 +114,7 @@ public abstract class Job extends ServiceExertion {
 	 * Initialize it with assigning it a new ControlContext and a defaultMethod
 	 * with serviceType as "sorcer.core.provider.jobber.ServiceJobber" name as
 	 * "service" and providerName "*"
-	 * @throws SignatureException 
+	 * @throws sorcer.service.SignatureException
 	 */
 	private void init() {
 		NetSignature s = new NetSignature("service", Jobber.class);
@@ -128,24 +132,9 @@ public abstract class Job extends ServiceExertion {
 		return signatures;
 	}
 
-	/** {@inheritDoc} */
-	public boolean isJob() {
-		// jobs with one exertion are not treated as job compositions
-		// inner element is treated as standalone exertion and the outer
-		// one as the dummy container for a technical reason 
-		// to use the operator 'xrt' in EOL for both 'task' and 'job'.
-		if (exertions.size() > 0)
-			return true;
-		else
-			return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.service.ServiceExertion#isTask()
-	 */
 	@Override
-	public boolean isTask() {
-		return !isJob();
+	public boolean isJob() {
+		return true;
 	}
 	
 	public boolean hasChild(String childName) {
@@ -204,7 +193,7 @@ public abstract class Job extends ServiceExertion {
 		} else {
 			Exertion master = null;
 			for (int i = 0; i < size(); i++) {
-				if (((ServiceExertion) exertionAt(i)).getId().equals(
+				if (exertionAt(i).getId().equals(
 						contextName)) {
 					master = exertionAt(i);
 					break;
@@ -278,8 +267,8 @@ public abstract class Job extends ServiceExertion {
 	 *                if the <tt>index</tt> is negative or not less than the
 	 *                current size of this <tt>Job</tt> object.
 	 */
-	public Exertion exertionAt(int i) {
-		return (Exertion) exertions.get(i);
+	public Exertion exertionAt(int index) {
+		return (Exertion) exertions.get(index);
 	}
 
 	public abstract Job doJob(Transaction txn) throws ExertionException,
@@ -344,9 +333,10 @@ public abstract class Job extends ServiceExertion {
 	
 	/**
 	 * Returns a string representation of Contexts of this Job, containing the
-	 * String representation of each dataContext in it's exertion.
+	 * String representation of each context in it's exertion.
+	 * @throws sorcer.service.ExertionException
 	 */
-	public String jobContextToString() {
+	public String jobContextToString() throws ExertionException {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < exertions.size(); i++) {
 			if (((ServiceExertion) exertionAt(i)).isJob())
@@ -403,24 +393,22 @@ public abstract class Job extends ServiceExertion {
 		return exs;
 	}
 	
-    @Override
-    public List<ThrowableTrace> getExceptions() {
-        List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
-        for (Exertion ext : exertions) {
-            exceptions.addAll(ext.getExceptions());
-        }
-        return exceptions;
-    }
-
-
-
-    /**
+	@Override
+	public List<ThrowableTrace> getExceptions() {
+		List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
+		for (Exertion ext : exertions) {
+			exceptions.addAll(ext.getExceptions());
+		}
+		return exceptions;
+	}
+	
+	/**
 	 * Return true if this composite <code>Job</code> is a tree.
 	 * 
 	 * @param visited
 	 *            a set of visited exertions
 	 * @return true if this <code>Job</code> composite is a tree
-	 * @see Exertion#isTree()
+	 * @see sorcer.service.Exertion#isTree()
 	 */
 	public boolean isTree(Set visited) {
 		visited.add(this);
@@ -439,29 +427,26 @@ public abstract class Job extends ServiceExertion {
 	}
 	
 	public Context getJobContext() {
-		ServiceContext cxt = new ServiceContext("job/" + name);
+		ServiceContext cxt = new ServiceContext(name);
 		cxt.setSubject("job/data/context", name);
-		return linkContext(cxt, "job[" + getName() + "]");
+		
+		return linkContext(cxt, getName());
 	}
 
-    public Context getControlInfo() {
-        ServiceContext cxt = new ServiceContext("control/" + name);
-        //ServiceContext cxt = new ServiceContext(name);
-        cxt.setSubject("job/control/context", name);
+	public Context getControlInfo() {
+		ServiceContext cxt = new ServiceContext(name);
+		cxt.setSubject("job/control/context", name);
+		
+		return linkControlContext(cxt, getName());
+	}
 
-        return linkControlContext(cxt, "job[" + getName() + "]");
-    }
-
-
-    @Override
+	@Override
 	public Context linkContext(Context context, String path) {
 		Exertion ext;
 		for (int i = 0; i < size(); i++) {
 			ext = exertions.get(i);
 			try {
-				((ServiceExertion) ext).linkContext(context, path + SorcerConstants.CPS
-						+ (ext instanceof Job ? "job[" : "task[")
-						+ ext.getName() + "]");
+				((ServiceExertion) ext).linkContext(context, path + CPS + ext.getName());
 			} catch (ContextException e) {
 				e.printStackTrace();
 			}
@@ -475,9 +460,8 @@ public abstract class Job extends ServiceExertion {
 		for (int i = 0; i < size(); i++) {
 			ext = exertions.get(i);
 			try {
-				((ServiceExertion) ext).linkControlContext(context, path + SorcerConstants.CPS
-						+ (ext instanceof Job ? "job" : "task[")
-						+ ext.getName() + "]");
+				((ServiceExertion) ext).linkControlContext(context, path + CPS
+						+ ext.getName());
 			} catch (ContextException e) {
 				e.printStackTrace();
 			}
@@ -510,7 +494,7 @@ public abstract class Job extends ServiceExertion {
 		int index = path.indexOf(last);
 		String contextPath = path.substring(index + last.length() + 1);
 
-		return exti.getDataContext().getValue(contextPath);
+		return exti.getContext().getValue(contextPath);
 	}
 
 	public Object getValue(String path) throws ContextException {
@@ -552,14 +536,17 @@ public abstract class Job extends ServiceExertion {
 		}
 		int index = path.indexOf(last);
 		String contextPath = path.substring(index + last.length() + 1);
-		exti.getDataContext().putValue(contextPath, value);
+		exti.getContext().putValue(contextPath, value);
 		return value;
 	}
 	
+	public Object getJobReturnValue() throws ContextException {
+		return ((ServiceContext)getJobContext()).getReturnJobValue();
+	}
 	
 	public Context getComponentContext(String path) {
 		Exertion xrt = getComponentExertion(path);
-		return xrt.getDataContext();
+		return xrt.getContext();
 	}
 	
 	public Context getComponentControlContext(String path) {

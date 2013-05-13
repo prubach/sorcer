@@ -19,18 +19,22 @@ package sorcer.service;
 
 import java.rmi.RemoteException;
 
+
+/**
+ * A functionality required by all evaluations in SORCER.
+ * 
+ * @author Mike Sobolewski
+ */
 public interface  Evaluation <T> {
 
-	public String getName();
-
 	/**
-	 * Returns the value of the existing value that might be invalid.
+	 * Returns the value of the existing value of this evaluation that might be invalid.
 	 * 
 	 * @return the value as is
-	 * @throws EvaluationException
-	 * @throws RemoteException
+	 * @throws sorcer.service.EvaluationException
+	 * @throws java.rmi.RemoteException
 	 */
-	public T getAsis() throws EvaluationException, RemoteException;
+	public T asis() throws EvaluationException, RemoteException;
 	
 	
 	/**
@@ -38,16 +42,16 @@ public interface  Evaluation <T> {
 	 * exiting value with no need to evaluate it if it's still valid.
 	 * 
 	 * @return the current value of this evaluation
-	 * @throws EvaluationException
-	 * @throws RemoteException
+	 * @throws sorcer.service.EvaluationException
+	 * @throws java.rmi.RemoteException
 	 */
 	public T getValue(Parameter... entries) throws EvaluationException, RemoteException;
 	
 	/**
 	 * Realizes the substitution for this evaluation with respect to the provided parameters.
 	 * @param entries substitution parameters
-	 * @throws EvaluationException
-	 * @throws RemoteException
+	 * @throws sorcer.service.EvaluationException
+	 * @throws java.rmi.RemoteException
 	 */
 	public Evaluation<T> substitute(Parameter... entries) throws EvaluationException, RemoteException;
 	

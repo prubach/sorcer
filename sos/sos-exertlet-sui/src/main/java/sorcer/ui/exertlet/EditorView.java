@@ -52,7 +52,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
 import sorcer.ui.util.JIconButton;
 import sorcer.ui.util.WindowUtilities;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 /**
  * HTML file browser and file editor
@@ -370,7 +370,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				try {
 					getContextFromProvider();
 				} catch (RemoteException e) {
-					openEditor(SorcerUtil.stackTraceToString(e));
+					openEditor(StringUtils.stackTraceToString(e));
 					e.printStackTrace();
 				}
 				return;
@@ -384,7 +384,6 @@ public class EditorView extends JPanel implements HyperlinkListener {
 
 	private void openFile() {
 		int returnVal = fileChooser.showOpenDialog(EditorView.this);
-		BufferedWriter br = null;
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			if (file != null) {
@@ -464,7 +463,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 					openOutPanel(result.toString());
 				}
 			} catch (Exception e) {
-				openOutPanel(SorcerUtil.stackTraceToString(e));
+				openOutPanel(StringUtils.stackTraceToString(e));
 			}
 		}
 
@@ -505,15 +504,15 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				out = exertion.exert();
 			}
 		} catch (RemoteException e) {
-			openOutPanel(SorcerUtil.stackTraceToString(e));
+			openOutPanel(StringUtils.stackTraceToString(e));
 			e.printStackTrace();
 			return;
 		} catch (TransactionException e) {
-			openOutPanel(SorcerUtil.stackTraceToString(e));
+			openOutPanel(StringUtils.stackTraceToString(e));
 			e.printStackTrace();
 			return;
 		} catch (ExertionException e) {
-			openOutPanel(SorcerUtil.stackTraceToString(e));
+			openOutPanel(StringUtils.stackTraceToString(e));
 			e.printStackTrace();
 			return;
 		}
@@ -536,7 +535,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			if (debug) {
 				sb.append("\n\n\n");
 				if (exertion instanceof Task)
-					sb.append(((ServiceExertion) exertion).getControlContext()
+					sb.append(exertion.getControlContext()
 							.toString());
 				else
 					sb.append(((Job) exertion).getControlInfo()

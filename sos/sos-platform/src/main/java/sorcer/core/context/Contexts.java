@@ -22,7 +22,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.eval.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import java.net.MalformedURLException;
 import java.util.*;
@@ -43,10 +43,10 @@ public class Contexts implements SorcerConstants {
 	// job broker
 	final static String JOBBER_IS_DIRECT = "jobber" + CPS + "is direct";
 
-	// control dataContext name
+	// control context name
 	final static String CONTROL_CONTEXT = "Control Context";
 
-	// control dataContext attributes
+	// control context attributes
 	final static String JOB_STRATEGY = "job" + CPS + "strategy";
 
 	final static String JOB_STRATEGY_ACCESS = "job" + CPS + "strategy" + CPS
@@ -86,7 +86,7 @@ public class Contexts implements SorcerConstants {
 
 	final static String JOB_NOTIFY_EXEC = "job" + CPS + NOTIFY_EXEC;
 
-	// control dataContext values
+	// control context values
 	final static String SPACE = "space";
 
 	final static String CATALOG = "catalog";
@@ -109,8 +109,8 @@ public class Contexts implements SorcerConstants {
 	 * the given <code>subpath</code> string.
 	 * <p>
 	 * Caution - a match does not indicate the returned results are subpaths of
-	 * given path. For instance, consider dataContext that contains paths. It is
-	 * recommended to end a matched substring with the dataContext path separator
+	 * given path. For instance, consider context that contains paths. It is
+	 * recommended to end a matched substring with the context path separator
 	 * (SORCER.CPS).
 	 * 
 	 * <ul>
@@ -121,13 +121,11 @@ public class Contexts implements SorcerConstants {
 	 * a call to this method with path="a/b" will return both "a/b/c" and
 	 * "a/bb/d" and only the first is a subpath.
 	 * 
-	 * @param cxt
+	 * @param context
 	 *            ServiceContext to query
 	 * @param subpath
 	 *            the match string
-	 * @return a Vector of dataContext values maching a path
-	 * @see #getStartsWithPaths
-	 * @see #getSortedStartsWithValues
+	 * @return a Vector of context values maching a path
 	 */
 	public static List getValuesStartsWith(Context context, String subpath)
 			throws ContextException {
@@ -210,7 +208,7 @@ public class Contexts implements SorcerConstants {
 	 * Returns list of paths that start with the given subpath string.
 	 * <p>
 	 * Caution - a match does not indicate the returned paths are subpaths of
-	 * given path. It is recommended to end a matched substring with the dataContext
+	 * given path. It is recommended to end a matched substring with the context
 	 * path separator (SORCER.CPS).
 	 * 
 	 * @param context
@@ -218,7 +216,7 @@ public class Contexts implements SorcerConstants {
 	 * @param subpath
 	 *            the match string
 	 * @return a Vector of matching paths
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static ArrayList getKeysStartsWith(Context context, String subpath)
 			throws ContextException {
@@ -237,7 +235,7 @@ public class Contexts implements SorcerConstants {
 			throws ContextException {
 		List ids = getValuesStartsWith(cxt, path);
 		if (ids != null && ids.size() > 0) {
-			SorcerUtil.bubbleSort(ids);
+			StringUtils.bubbleSort(ids);
 			return ids;
 		} else
 			return null;
@@ -270,9 +268,9 @@ public class Contexts implements SorcerConstants {
 			throw new ContextException("Caught MalformedURLException", me);
 		}
 
-		// remove sorcer variables from new dataContext
+		// remove sorcer variables from new context
 		// these objects are new objects and collide with old
-		// object IDs in original dataContext
+		// object IDs in original context
 		((Hashtable) toCntxt).remove(SORCER_VARIABLES_PATH);
 	}
 
@@ -303,13 +301,34 @@ public class Contexts implements SorcerConstants {
 		} else {
 			throw new ContextException("RequestorContext"
 					+ ".getContextVariableHashtable(ServiceContext): "
-					+ "There are no ContextVariables in " + "this dataContext.");
+					+ "There are no ContextVariables in " + "this context.");
 		}
 	}
 
+	// public static void restoreDependencies(Context cntxt)
+	// throws ContextException {
+	// if (containsContextVariables(cntxt)) {
+	// Hashtable h = null;
+	// h = getContextVariableMap(cntxt);
+	// Enumeration vals = h.elements();
+	//
+	// while (vals.hasMoreElements()) {
+	// Object obj = vals.nextElement();
+	// if (obj instanceof Observer) {
+	// try {
+	// ((Observer) obj).restoreDependencies();
+	// } catch (ObserverException e) {
+	// throw new ContextException(
+	// "A ServiceObserverException " + "was thrown", e);
+	// }
+	// }
+	// }
+	// }
+	// }
+
 	public static void deleteContextVariables(Context cntxt) {
 		if (containsContextVariables(cntxt)) {
-			((Hashtable) cntxt).remove(SORCER_VARIABLES_PATH);
+			cntxt.remove(SORCER_VARIABLES_PATH);
 		}
 	}
 
@@ -361,7 +380,7 @@ public class Contexts implements SorcerConstants {
 	}
 
 	public static String getFormattedOut(Context sc, boolean isHTML) {
-		// return dataContext with outpaths
+		// return context with outpaths
 		String inoutAssoc = Context.DIRECTION + SorcerConstants.APS
 				+ Context.DA_INOUT + APS;
 		String outAssoc = Context.DIRECTION + SorcerConstants.APS
@@ -405,7 +424,7 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Sets dataContext type as input for a path
+	 * Sets context type as input for a path
 	 */
 	public static Context markIn(Context cntxt, String path)
 			throws ContextException {
@@ -414,7 +433,7 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Sets dataContext type as out for a path
+	 * Sets context type as out for a path
 	 */
 	public static Context markOut(Context cntxt, String path)
 			throws ContextException {
@@ -423,16 +442,7 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Sets dataContext type as err for a path
-	 */
-	public static Context markErr(Context cntxt, String path)
-			throws ContextException {
-		return cntxt.mark(path, Context.CONTEXT_PARAMETER
-				+ APS + Context.DA_ERR + APS + APS);
-	}
-
-	/**
-	 * Sets dataContext type as inout for a path
+	 * Sets context type as inout for a path
 	 */
 	public static Context markInout(Context cntxt, String path)
 			throws ContextException {
@@ -551,13 +561,13 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Returns all dataContext nodes recursively in this dataContext and all its emebded
+	 * Returns all context nodes recursively in this context and all its emebded
 	 * contexts, tasks, and jobs.
 	 * 
 	 * @param context
-	 *            a servcie dataContext
-	 * @return a list -f {@link ContextNodes}.
-	 * @throws ContextException
+	 *            a servcie context
+	 * @return a list -f {@link ContextNode}.
+	 * @throws sorcer.service.ContextException
 	 */
 	public static ContextNode[] getAllContextNodes(Context context)
 			throws ContextException {
@@ -593,7 +603,7 @@ public class Contexts implements SorcerConstants {
 		List allNodes = new ArrayList();
 		List additional = null;
 
-		additional = Arrays.asList(getAllContextNodes(task.getDataContext()));
+		additional = Arrays.asList(getAllContextNodes(task.getContext()));
 		if (additional.size() > 0)
 			allNodes.addAll(additional);
 		ContextNode[] result = new ContextNode[allNodes.size()];
@@ -607,7 +617,7 @@ public class Contexts implements SorcerConstants {
 		List allNodes = new ArrayList();
 		List additional = null;
 
-		List<Exertion> exertions = ((Job) job).getExertions();
+		List<Exertion> exertions = job.getExertions();
 		for (Object exertion : exertions) {
 			if (exertion instanceof ServiceExertion) {
 				additional = Arrays
@@ -685,16 +695,16 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Returns the list of all dataContext paths matching the given regular
+	 * Returns the list of all context paths matching the given regular
 	 * expression.
 	 * 
 	 * @param regex
-	 *            the regular expression to which paths of this dataContext are to
+	 *            the regular expression to which paths of this context are to
 	 *            be matched
 	 * @param context
-	 *            a service dataContext
+	 *            a service context
 	 * @return an enumeration of matches for the given regular expression
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public List getPaths(String regex, Context context)
 			throws ContextException {
@@ -720,9 +730,9 @@ public class Contexts implements SorcerConstants {
 	 * Returns a list of all paths marked as data input.
 	 * 
 	 * @param cntxt
-	 *            a service dataContext
+	 *            a service context
 	 * @return list of all paths marked as input
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static List getInPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
@@ -784,9 +794,9 @@ public class Contexts implements SorcerConstants {
 	 * Returns a list of all paths marked as data output.
 	 * 
 	 * @param cntxt
-	 *            a service dataContext
+	 *            a service context
 	 * @return list of all paths marked as data output
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static List getOutPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
@@ -805,27 +815,6 @@ public class Contexts implements SorcerConstants {
 		return list;
 	}
 
-
-	/**
-	 * Returns a list of all paths marked as errors.
-	 * 
-	 * @param context
-	 *            a service dataContext
-	 * @return list of all paths marked as errors
-	 * @throws ContextException
-	 */
-	public static List getErrPaths(Context context) throws ContextException {
-		// get all the in and err paths
-		String errAssoc = Context.DIRECTION + APS + Context.DA_ERR;
-		String[] errPaths = Contexts.getMarkedPaths(context, errAssoc);
-		List list = new ArrayList();
-
-		if (errPaths != null)
-			for (int i = 0; i < errPaths.length; i++)
-				list.add(errPaths[i]);
-		return list;
-	}
-	
 	public static List getNamedOutPaths(Context cntxt) throws ContextException {
 		// get all the in and out paths
 		return getPrefixedOutPaths(cntxt, ((ServiceContext)cntxt).getCurrentSelector());
@@ -859,9 +848,9 @@ public class Contexts implements SorcerConstants {
 	 * Returns a map of all paths marked as data input.
 	 * 
 	 * @param cntxt
-	 *            a service dataContext
+	 *            a service context
 	 * @return map of all paths marked as data input
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static Hashtable getInPathsMap(Context cntxt)
 			throws ContextException {
@@ -888,9 +877,9 @@ public class Contexts implements SorcerConstants {
 	 * associations.
 	 * 
 	 * @param cntxt
-	 *            a service dataContext
+	 *            a service context
 	 * @return map of all path marked as output with corresponding associations
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static Hashtable getOutPathsMap(Context cntxt)
 			throws ContextException {
@@ -914,7 +903,7 @@ public class Contexts implements SorcerConstants {
 
 	public static void copyContextNodesFrom(Context toContext,
 			Context fromContext) throws ContextException {
-		// copy all sorcerNodes from fromContext to this dataContext.
+		// copy all sorcerNodes from fromContext to this context.
 		for (Enumeration e = fromContext.contextPaths(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
 			if (fromContext.getValue(key) instanceof ContextNode)
@@ -963,17 +952,17 @@ public class Contexts implements SorcerConstants {
 	}
 
 	public static String getContextParameterPath(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.secondToken(
+		return (contextParameter == null) ? null : StringUtils.secondToken(
 				contextParameter, SEP);
 	}
 
 	public static String getContextParameterID(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.thirdToken(
+		return (contextParameter == null) ? null : StringUtils.thirdToken(
 				contextParameter, SEP);
 	}
 
 	public static String getContextParameterDirection(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.firstToken(
+		return (contextParameter == null) ? null : StringUtils.firstToken(
 				contextParameter, SEP);
 	}
 
@@ -1003,8 +992,7 @@ public class Contexts implements SorcerConstants {
 
 	public static Enumeration getPathsWithoutLinkedPaths(
 			ServiceContext contextTree, Enumeration e, boolean linkStop)
-			throws ContextException {
-
+					throws ContextException {
 		Vector keys = new Vector();
 		String key, path;
 		ContextLink link;
@@ -1015,33 +1003,28 @@ public class Contexts implements SorcerConstants {
 			String key1 = (String) e.nextElement();
 			if ((contextTree.getValue(key1) instanceof ContextLink)) {
 				link = (ContextLink) contextTree.getValue(key1);
-				if (!(link.status == SorcerConstants.BROKEN_LINK)) {
-					if (!linkStop) {
-						// get subcontext for recursion
-
-						subcntxt = link.getContext(principal).getSubcontext(
-								link.offset.trim());
-						// getSubcontext cuts above, which is what we want
-						Enumeration el = getPathsWithoutLinkedPaths(
-								(ServiceContext) subcntxt,
-								((ServiceContext) subcntxt).keys(), true);
-						while (el.hasMoreElements()) {
-							path = (String) el.nextElement();
-							String str = key1 + SorcerConstants.CPS + path;
-							keys.addElement(str);
-						}
-						keys.removeElement(key1);
-					} else if (linkStop) {
-						keys.addElement(key1);
+				if (!linkStop) {
+					// get subcontext for recursion
+					subcntxt = link.getContext(principal).getSubcontext(
+							link.getOffset().trim());
+					// getSubcontext cuts above, which is what we want
+					Enumeration el = getPathsWithoutLinkedPaths(
+							(ServiceContext) subcntxt,
+							((ServiceContext) subcntxt).keys(), true);
+					while (el.hasMoreElements()) {
+						path = (String) el.nextElement();
+						String str = key1 + SorcerConstants.CPS + path;
+						keys.addElement(str);
 					}
-				} else {
+					keys.removeElement(key1);
+				} else if (linkStop) {
 					keys.addElement(key1);
 				}
 			} else {
 				keys.addElement(key1);
 			}
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1057,29 +1040,23 @@ public class Contexts implements SorcerConstants {
 			String key1 = (String) e.nextElement();
 			if ((contextTree.getValue(key1) instanceof ContextLink)) {
 				link = (ContextLink) contextTree.getValue(key1);
-				if (link.status != SorcerConstants.BROKEN_LINK) {
-					// get subcontext for recursion
-
-					subcntxt = link.getContext(principal).getSubcontext(
-							link.offset.trim());
-					// getSubcontext cuts above, which is what we want
-					Enumeration el = getPathsWithoutLinkedPaths(
-							(ServiceContext) subcntxt,
-							((ServiceContext) subcntxt).keys());
-					while (el.hasMoreElements()) {
-						path = (String) el.nextElement();
-						String str = key1 + SorcerConstants.CPS + path;
-						keys.addElement(str);
-					}
-					keys.removeElement(key1);
-				} else if (link.status == SorcerConstants.BROKEN_LINK) {
-					keys.addElement(key1);
+				subcntxt = link.getContext(principal).getSubcontext(
+						link.getOffset().trim());
+				// getSubcontext cuts above, which is what we want
+				Enumeration el = getPathsWithoutLinkedPaths(
+						(ServiceContext) subcntxt,
+						((ServiceContext) subcntxt).keys());
+				while (el.hasMoreElements()) {
+					path = (String) el.nextElement();
+					String str = key1 + SorcerConstants.CPS + path;
+					keys.addElement(str);
 				}
+				keys.removeElement(key1);
 			} else {
 				keys.addElement(key1);
 			}
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1096,13 +1073,13 @@ public class Contexts implements SorcerConstants {
 			if (values != null) { // if no attributes are set, values==null;
 				Enumeration e = values.keys();
 				while (e.hasMoreElements())
-					keys.addElement((String) e.nextElement());
+					keys.addElement(e.nextElement());
 			}
 		} else {
 			// it is a metaattribute
 			String metapath = cntxt.getLocalMetapath(attribute);
 			if (metapath != null) {
-				String[] attrs = SorcerUtil.tokenize(metapath,
+				String[] attrs = StringUtils.tokenize(metapath,
 						SorcerConstants.APS);
 				String[][] paths = new String[attrs.length][];
 				int ii = -1;
@@ -1154,7 +1131,7 @@ public class Contexts implements SorcerConstants {
 				}
 			}
 		}
-		// above we just checked the top-level dataContext; next, check
+		// above we just checked the top-level context; next, check
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = cntxt.localLinkPaths();
@@ -1162,7 +1139,7 @@ public class Contexts implements SorcerConstants {
 		String keysInLink[], linkPath;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) ((ServiceContext) cntxt).get(linkPath);
+			link = (ContextLink) cntxt.get(linkPath);
 			keysInLink = getPathsWithAttribute(((ServiceContext) cntxt)
 					.getLinkedContext(link), attribute);
 			if (keysInLink != null)
@@ -1215,9 +1192,9 @@ public class Contexts implements SorcerConstants {
 			// it is a metaattribute
 			String metapath = cntxt.getLocalMetapath(attr);
 			if (metapath != null) {
-				String[] attrs = SorcerUtil.tokenize(metapath,
+				String[] attrs = StringUtils.tokenize(metapath,
 						SorcerConstants.APS);
-				String[] vals = SorcerUtil.tokenize(value, SorcerConstants.APS);
+				String[] vals = StringUtils.tokenize(value, SorcerConstants.APS);
 				if (attrs.length != vals.length)
 					throw new ContextException("Invalid association: \""
 							+ association + "\"  metaattribute \"" + attr
@@ -1274,7 +1251,7 @@ public class Contexts implements SorcerConstants {
 				}
 			}
 		}
-		// above we just checked the top-level dataContext; next, check
+		// above we just checked the top-level context; next, check
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = cntxt.localLinkPaths();
@@ -1321,12 +1298,12 @@ public class Contexts implements SorcerConstants {
 	}
 
 	/**
-	 * Get all associations (simple and composite) in the provided dataContext.
+	 * Get all associations (simple and composite) in the provided context.
 	 * 
 	 * @param context
-	 *            a servcie dataContext
+	 *            a servcie context
 	 * @return Enumeration of associations (of type <code>String</code>)
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static Enumeration getAssociations(Context context)
 			throws ContextException {
@@ -1347,7 +1324,7 @@ public class Contexts implements SorcerConstants {
 				}
 			}
 		// we just added all the attribute-value pairs from
-		// the top-level dataContext; check first level links,
+		// the top-level context; check first level links,
 		// which in turn will check their links, etc., etc.
 		Enumeration e2 = context.localLinkPaths();
 		ContextLink link;
@@ -1370,14 +1347,14 @@ public class Contexts implements SorcerConstants {
 
 	/**
 	 * Get all singleton associations (attribute-value pairs) at the specified
-	 * dataContext node.
+	 * context node.
 	 * 
 	 * @param context
-	 *            a service dataContext
+	 *            a service context
 	 * @param key
-	 *            the location in the dataContext
+	 *            the location in the context
 	 * @return Enumeration of associations (of type <code>String</code>)
-	 * @throws ContextException
+	 * @throws sorcer.service.ContextException
 	 */
 	public static Enumeration getAssociations(Context context, String key)
 			throws ContextException {
@@ -1397,8 +1374,8 @@ public class Contexts implements SorcerConstants {
 		String attributeName;
 		Vector values = new Vector();
 
-		// locate the dataContext and dataContext path for this key
-		Object[] map = context.getContextMap(key);
+		// locate the context and context path for this key
+		Object[] map = context.getContextMapping(key);
 
 		Context cntxt = (Context) map[0];
 		String mappedKey = (String) map[1];
@@ -1432,7 +1409,7 @@ public class Contexts implements SorcerConstants {
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
 			if (values.get(key).equals(value))
-				if (((ServiceContext) context).get(key) instanceof ContextNode)
+				if (context.get(key) instanceof ContextNode)
 					return true;
 		}
 		return false;
@@ -1443,7 +1420,7 @@ public class Contexts implements SorcerConstants {
 		Vector contextNodes = new Vector();
 		String[] paths = getMarkedPaths(context, association);
 		if (paths == null)
-			return (String[]) null;
+			return null;
 		for (int i = 0; i < paths.length; i++)
 			if (context.getValue(paths[i]) instanceof ContextNode)
 				contextNodes.addElement(paths[i]);

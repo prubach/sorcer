@@ -64,18 +64,18 @@ public class ObjectTask extends Task {
 	
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		((ServiceContext) dataContext).setCurrentSelector(getProcessSignature().getSelector());
-		((ServiceContext) dataContext).setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
+		dataContext.setCurrentSelector(getProcessSignature().getSelector());
+		dataContext.setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
 		try {
 			if (getProcessSignature().getReturnPath() != null)
 				dataContext.setReturnPath(getProcessSignature().getReturnPath());
 
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
 			Class[] paramTypes = new Class[] { Context.class };
-			Object[] parameters = new Object[] {dataContext};
+			Object[] parameters = new Object[] { dataContext };
 			if (dataContext.getArgsPath() != null) {
 				paramTypes = os.getTypes();
-				parameters = (Object[]) getArgs();
+				parameters = (Object[]) dataContext.getArgs();
 			}
 			Object result = ((ObjectSignature) getProcessSignature())
 					.initInstance(parameters, paramTypes);

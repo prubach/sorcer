@@ -1,38 +1,55 @@
 package sorcer.ex5.requestor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Test;
-
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ContextLink;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
-import sorcer.service.Invoker;
+import sorcer.service.Evaluation;
+import sorcer.service.Invocation;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
+
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExertleter implements SorcerConstants {
+public class ArithmeticExertleterTest implements SorcerConstants {
 
 	private final static Logger logger = Logger
-			.getLogger(NetArithmeticReq.class.getName());
+			.getLogger(NetArithmeticReqTest.class.getName());
 
 	static {
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
-				+ "/configs/policy.all");
+		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
+				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBase(new String[] { "ex5-arithmetic-beans.jar",  "sorcer-prv-dl.jar" });
+        Sorcer.setCodeBaseByArtifacts(new String[] {
+                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:ex5-api" });
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+        System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
+	}
+	
+	@Test
+	public void evaluateArithmeticExertleter() throws Exception {
+		
+		NetSignature signature = new NetSignature("getValue", Evaluation.class);
+		Task task = new NetTask("eval", signature);
+		Task result = (Task)task.exert();		
+		Context out = (Context)result.getReturnValue();
+
+        logger.info("out context: " + out);
+
+                logger.info("1job1task/subtract/result/value: "
+				+ out.getValue("1job1task/subtract/result/value"));
+		assertEquals(out.getValue("1job1task/subtract/result/value"), 1210.0);
 	}
 	
 	@Test
@@ -50,7 +67,7 @@ public class ArithmeticExertleter implements SorcerConstants {
 		invokeContext.putLink("add", addContext, "");
 		invokeContext.putLink("multiply", multiplyContext, "");
 		
-		NetSignature signature = new NetSignature("invoke", Invoker.class);
+		NetSignature signature = new NetSignature("invoke", Invocation.class);
 		
 		Task task = new NetTask("invoke", signature, invokeContext);
 		Task result = (Task)task.exert();		
@@ -74,7 +91,7 @@ public class ArithmeticExertleter implements SorcerConstants {
 		invokeContext.putLink("add", addContext, "");
 		invokeContext.putLink("multiply", multiplyContext, "");
 		
-		NetSignature signature = new NetSignature("invoke", Invoker.class);
+		NetSignature signature = new NetSignature("invoke", Invocation.class);
 		
 		Task task = new NetTask("invoke", signature, invokeContext);
 		Task result = (Task)task.exert();		

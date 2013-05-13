@@ -23,7 +23,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -140,7 +139,6 @@ public class Jobs implements SorcerConstants {
 		cc.setId(sc.getId());
 		cc.setParentPath(sc.getParentPath());
 		cc.setParentID((sc.getParentID() == null) ? null : sc.getParentID());
-		cc.setRootName(sc.getRootName());
 		cc.setCreationDate(sc.getCreationDate());
 		cc.setLastUpdateDate(sc.getLastUpdateDate());
 		cc.setDescription(sc.getDescription());
@@ -157,7 +155,6 @@ public class Jobs implements SorcerConstants {
 		// controlContext.setExceptionCount(sc.getExceptionCount());
 		cc.setDomainName(sc.getDomainName());
 		// controlContext.setCP(sc.getCP());
-		cc.setPathIds(sc.getPathIds());
 		// controlContext.scratch = sc.scratch;
 		cc.setMetacontext(sc.getMetacontext());
 		cc.isPersistantTaskAssociated = ((ServiceContext) sc).isPersistantTaskAssociated;
@@ -167,10 +164,10 @@ public class Jobs implements SorcerConstants {
 	public static void removeExceptions(Job job) {
 		removeExceptions(job.getDataContext());
 		for (int i = 0; i < job.size(); i++) {
-			if (((ServiceExertion) job.exertionAt(i)).isJob())
+			if (job.exertionAt(i).isJob())
 				removeExceptions((Job) job.exertionAt(i));
 			else
-				removeExceptions(((ServiceExertion) job.exertionAt(i))
+				removeExceptions(job.exertionAt(i)
 						.getDataContext());
 		}
 	}
@@ -190,10 +187,10 @@ public class Jobs implements SorcerConstants {
 
 	public static void preserveNodeReferences(Exertion ref, Exertion res)
 			throws ContextException {
-		if (((ServiceExertion) ref).isJob() && ((ServiceExertion) res).isJob())
+		if (ref.isJob() && res.isJob())
 			preserveNodeReferences((Job) ref, (Job) res);
 		else
-			preserveNodeReferences((ServiceExertion) ref, (ServiceExertion) res);
+			preserveNodeReferences(ref, res);
 	}
 
 	public static void preserveNodeReferences(Job refJob,
@@ -201,14 +198,14 @@ public class Jobs implements SorcerConstants {
 		int size = (refJob.size() < resJob.size()) ? refJob.size() : resJob
 				.size();
 		for (int i = 0; i < size; i++) {
-			if (((ServiceExertion) refJob.exertionAt(i)).isJob()
-					&& ((ServiceExertion) resJob.exertionAt(i)).isJob())
+			if (refJob.exertionAt(i).isJob()
+					&& resJob.exertionAt(i).isJob())
 				preserveNodeReferences((Job) refJob.exertionAt(i),
 						(Job) resJob.exertionAt(i));
-			else if (((ServiceExertion) refJob.exertionAt(i)).isTask()
-					&& ((ServiceExertion) resJob.exertionAt(i)).isTask())
-				preserveNodeReferences(((ServiceExertion) refJob.exertionAt(i))
-						.getDataContext(), ((ServiceExertion) resJob.exertionAt(i))
+			else if (refJob.exertionAt(i).isTask()
+					&& resJob.exertionAt(i).isTask())
+				preserveNodeReferences(refJob.exertionAt(i)
+						.getDataContext(), resJob.exertionAt(i)
 						.getDataContext());
 		}
 	}
@@ -221,7 +218,7 @@ public class Jobs implements SorcerConstants {
 	public static void replaceNullIDs(Exertion ex) {
 		if (ex == null)
 			return;
-		if (((ServiceExertion) ex).isJob()) {
+		if (ex.isJob()) {
 			Job job = (Job) ex;
 			if (job.getId() == null)
 				job.setId(getId());
@@ -263,11 +260,11 @@ public class Jobs implements SorcerConstants {
 			throw new ExertionException("No Method For Exertion e=" + ex);
 
 		ExertionEnvelop eenv = ExertionEnvelop.getTemplate();
-		eenv.serviceType = ((NetSignature) ex.getProcessSignature()).getServiceType();
-		eenv.providerName = ((NetSignature) ex.getProcessSignature()).getProviderName();
+		eenv.serviceType = ex.getProcessSignature().getServiceType();
+		eenv.providerName = ex.getProcessSignature().getProviderName();
 		eenv.exertion = ex;
-		eenv.exertionID = ((ServiceExertion)ex).getId();
-		eenv.isJob = new Boolean(((ServiceExertion) ex).isJob());
+		eenv.exertionID = ex.getId();
+		eenv.isJob = new Boolean(ex.isJob());
 		eenv.state = new Integer(ExecState.INITIAL);
 		return eenv;
 	}
@@ -283,7 +280,7 @@ public class Jobs implements SorcerConstants {
 		if (exertion instanceof Conditional)
 			contexts.add(exertion.getDataContext());
 		else if (exertion instanceof Job) {
-			for (int i = 0; i < ((Job) exertion).getExertions().size(); i++)
+			for (int i = 0; i < exertion.getExertions().size(); i++)
 				collectTaskContexts(((Job) exertion).exertionAt(i),
 						contexts);
 		}

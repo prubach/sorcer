@@ -50,9 +50,9 @@ public interface Provider extends Servicer, Monitorable, Remote {
 
 	public Configuration getProviderConfiguration() throws RemoteException;
 
-	public boolean init() throws RemoteException, ConfigurationException;
+	public void init() throws RemoteException, ConfigurationException;
 
-	public boolean init(String propFile) throws RemoteException, ConfigurationException;
+	public void init(String propFile) throws RemoteException, ConfigurationException;
 
 	public void restore() throws RemoteException;
 

@@ -20,9 +20,7 @@
 		<module>ex2</module>
 		<module>ex3</module>
 		<module>ex4</module>
-		<!--		Requires QOS 
-		<module>ex5</module>  
-		-->
+		<module>ex5</module>
 		<module>ex6</module>
 		<module>first</module>
 	</modules>

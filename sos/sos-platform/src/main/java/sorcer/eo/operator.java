@@ -123,7 +123,7 @@ public class operator {
 	public static <T extends Context> T put(T context, Tuple2... entries)
 			throws ContextException {
 		for (int i = 0; i < entries.length; i++) {
-			if (context instanceof Context) {
+			if (context != null) {
 				context.putValue(((Tuple2<String, ?>) entries[i])._1,
 						((Tuple2<String, ?>) entries[i])._2);
 			}
@@ -264,8 +264,8 @@ public class operator {
 								((DataEntry) entryList.get(i)).value(), i + 1);
 					} else if (entryList.get(i) instanceof Tuple2) {
 						pcxt.putValueAt(
-								(String) ((Tuple2<String, ?>) entryList.get(i))._1,
-								((Tuple2<String, ?>) entryList.get(i))._2,
+								entryList.get(i)._1,
+								entryList.get(i)._2,
 								i + 1);
 					}
 				}
@@ -290,8 +290,8 @@ public class operator {
 								((Entry) entryList.get(i)).value());
 					} else if (entryList.get(i) instanceof Tuple2) {
 						cxt.putValue(
-								(String) ((Tuple2<String, ?>) entryList.get(i))._1,
-								((Tuple2<String, ?>) entryList.get(i))._2);
+								entryList.get(i)._1,
+								entryList.get(i)._2);
 					}
 				}
 			}
@@ -455,7 +455,7 @@ public class operator {
 	}
 
 	public static Signature sig(Class<?> serviceType) throws SignatureException {
-		return sig(serviceType, (ReturnPath) null);
+		return sig(serviceType, null);
 	}
 
 	public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
@@ -489,19 +489,9 @@ public class operator {
 		return sig.getSelector();
 	}
 
-	public static EvaluationTask task(EvaluationSignature signature)
-			throws ExertionException {
-		return new EvaluationTask(signature);
-	}
-
 	public static Signature type(Signature signature, Signature.Type type) {
 		signature.setType(type);
 		return signature;
-	}
-
-	public static EvaluationTask task(EvaluationSignature signature,
-			Context context) throws ExertionException {
-		return new EvaluationTask(signature, context);
 	}
 
 	public static ObjectSignature sig(String operation, Object object,
@@ -532,17 +522,15 @@ public class operator {
 	public static ObjectTask task(ObjectSignature signature)
 			throws SignatureException {
 		return new ObjectTask(signature.getSelector(),
-				(ObjectSignature) signature);
+				signature);
 	}
 
     public static Task task(String name, Signature signature, Context context)
             throws SignatureException {
         if (signature instanceof NetSignature) {
-            return new NetTask(name, (NetSignature) signature, context);
+            return new NetTask(name, signature, context);
         } else if (signature instanceof ObjectSignature) {
-            return new ObjectTask(name, (ObjectSignature) signature, context);
-        } else if (signature instanceof EvaluationSignature) {
-            return new EvaluationTask(name, (EvaluationSignature) signature, context);
+            return new ObjectTask(name, signature, context);
         } else
             return new Task(name, signature, context);
     }
@@ -598,7 +586,11 @@ public class operator {
 		}
 		if (ss != null) {
 			if (ss instanceof NetSignature) {
-				task = new NetTask(tname, (NetSignature) ss);
+                try {
+                    task = new NetTask(tname, ss);
+                } catch (SignatureException e) {
+                    throw new ExertionException(e);
+                }
 			} else if (ss instanceof ObjectSignature) {
 				try {
 					task = task((ObjectSignature) ss);
@@ -606,8 +598,6 @@ public class operator {
 					throw new ExertionException(e);
 				}
 				task.setName(tname);
-			} else if (ss instanceof EvaluationSignature) {
-				task = new EvaluationTask(tname, (EvaluationSignature) ss);
 			} else if (ss instanceof ServiceSignature) {
 				task = new Task(tname, ss);
 			}
@@ -740,7 +730,7 @@ public class operator {
 	}
 
 	public static Object get(Context context) throws ContextException {
-		return ((ServiceContext) context).getReturnValue();
+		return context.getReturnValue();
 	}
 
 	public static Object get(Context context, int index)
@@ -752,14 +742,14 @@ public class operator {
 	}
 
 	public static Object get(Exertion exertion) throws ContextException {
-		return ((ServiceContext) exertion.getContext()).getReturnValue();
+		return exertion.getContext().getReturnValue();
 	}
 
 	public static <V> V asis(Object evaluation) throws EvaluationException {
 		if (evaluation instanceof Evaluation) {
 			try {
 				synchronized (evaluation) {
-					return ((Evaluation<V>) evaluation).getAsis();
+					return ((Evaluation<V>) evaluation).asis();
 				}
 			} catch (RemoteException e) {
 				throw new EvaluationException(e);
@@ -773,8 +763,8 @@ public class operator {
 
 	public static Object get(Exertion exertion, String component, String path)
 			throws ExertionException {
-		Exertion c = ((Exertion) exertion).getExertion(component);
-		return get((Exertion) c, path);
+		Exertion c = exertion.getExertion(component);
+		return get(c, path);
 	}
 
 	public static Object value(URL url) throws IOException {
@@ -793,7 +783,7 @@ public class operator {
 				if (target.getRef() == null) {
 					url.setTarget(SdbUtil.store(value));
 				} else {
-					SdbUtil.update((URL) target, value);
+					SdbUtil.update(target, value);
 				}
 			} catch (Exception e) {
 				throw new EvaluationException(e);
@@ -953,7 +943,7 @@ public class operator {
 	public static Task exert(Task input, Entry... entries)
 			throws ExertionException {
 		try {
-			return (Task) ((Task) input).exert(null, entries);
+			return ((Task) input).exert(null, entries);
 		} catch (Exception e) {
 			throw new ExertionException(e);
 		}
@@ -1524,9 +1514,9 @@ public class operator {
 			throws SignatureException {
 		if (signature.getSelector() == null
 				|| signature.getSelector().equals("new"))
-			return ((ObjectSignature) signature).newInstance();
+			return signature.newInstance();
 		else
-			return ((ObjectSignature) signature).initInstance();
+			return signature.initInstance();
 	}
 
 	/**

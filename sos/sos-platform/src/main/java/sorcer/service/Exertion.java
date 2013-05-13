@@ -70,7 +70,7 @@ import java.util.List;
  * @see sorcer.service.AsyncExertion
  * @author Mike Sobolewski
  */
-public interface Exertion extends  Evaluation<Object>, Invoking<Object>, Serializable, Identifiable {
+public interface Exertion extends  Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.
@@ -221,7 +221,7 @@ public interface Exertion extends  Evaluation<Object>, Invoking<Object>, Seriali
 	 * @return <code>true</code> if this exertion requires its execution to be
 	 *         monitored.
 	 */
-	public boolean isMonitored();
+	public boolean isMonitorable();
 	
 	/**
 	 * Returns <code>true</code> if this exertion can be provisioned for its

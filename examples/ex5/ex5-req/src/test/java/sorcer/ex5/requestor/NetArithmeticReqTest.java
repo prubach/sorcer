@@ -1,43 +1,41 @@
 package sorcer.ex5.requestor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Test;
-
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.exertion.ObjectJob;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex5.provider.Adder;
 import sorcer.ex5.provider.Multiplier;
 import sorcer.ex5.provider.Subtractor;
 import sorcer.service.Context;
-import sorcer.service.Exertion;
 import sorcer.service.Job;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
+
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class NetArithmeticReq implements SorcerConstants {
+public class NetArithmeticReqTest  implements SorcerConstants  {
 
 	private final static Logger logger = Logger
-			.getLogger(NetArithmeticReq.class.getName());
+			.getLogger(NetArithmeticReqTest.class.getName());
 
 	static {
-		System.setProperty("java.security.policy", System.getenv("IGRID_HOME")
-				+ "/configs/policy.all");
-		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBase(new String[] { "ex5-arithmetic-beans.jar",  "sorcer-prv-dl.jar" });
-		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
+                + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
+        Sorcer.setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:ex5-api"});
+        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
 	
 	@Test
@@ -106,7 +104,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		context.putInValue("arg2/value", 80.0);
 		// We know that the output is gonna be placed in this path
 		context.putOutValue("out/value", 0);
-		Signature method = new NetSignature("add", Adder.class);
+		NetSignature method = new NetSignature("add", Adder.class);
 		Task task = new NetTask("add", method);
 		task.setContext(context);
 		return task;
@@ -118,7 +116,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		context.putInValue("arg2/value", 50.0);
 		// We know that the output is gonna be placed in this path
 		context.putOutValue("out/value", 0);
-		Signature method = new NetSignature("multiply", Multiplier.class);
+		NetSignature method = new NetSignature("multiply", Multiplier.class);
 		Task task = new NetTask("multiply", method);
 		task.setContext(context);
 		return task;
@@ -130,7 +128,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		context.putInValueAt("arg1/value", 0.0, 1);
 		// We want to stick in the result of add in here
 		context.putInValueAt("arg2/value", 0.0, 2);
-		Signature method = new NetSignature("subtract", Subtractor.class);
+		NetSignature method = new NetSignature("subtract", Subtractor.class);
 		Task task = new NetTask("subtract",
 				"processing results from two previous tasks", method);
 		task.setContext(context);

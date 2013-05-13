@@ -16,8 +16,56 @@
  */
 package sorcer.core.provider;
 
-import com.sun.jini.config.Config;
+import static sorcer.eo.operator.sig;
 import groovy.lang.GroovyShell;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
+import java.security.AccessControlContext;
+import java.security.AccessControlException;
+import java.security.AccessController;
+import java.security.Principal;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+import javax.security.auth.Subject;
+
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
@@ -39,8 +87,12 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import sorcer.core.*;
+import sorcer.core.AccessDeniedException;
 import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerNotifierProtocol;
+import sorcer.core.UEID;
+import sorcer.core.UnknownExertionException;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
@@ -65,52 +117,50 @@ import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.*;
+import sorcer.service.Configurable;
+import sorcer.service.Configurator;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.Evaluation;
+import sorcer.service.ExecState;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.Jobber;
+import sorcer.service.MonitorException;
+import sorcer.service.MonitoringSession;
+import sorcer.service.Parameter;
+import sorcer.service.ServiceExertion;
+import sorcer.service.Servicer;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.util.*;
+import sorcer.service.Task;
+import sorcer.util.AccessorException;
+import sorcer.util.ExertManager;
+import sorcer.util.GenericUtil;
+import sorcer.util.IOUtil;
+import sorcer.util.Log;
+import sorcer.util.Mandator;
+import sorcer.util.ObjectLogger;
+import sorcer.util.ProviderAccessor;
+import sorcer.util.ProviderLocator;
+import sorcer.util.ProviderLookup;
+import sorcer.util.Sorcer;
+import sorcer.util.StringUtils;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 import sorcer.util.dbac.SocketProtocol;
 
-import javax.security.auth.Subject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.server.ExportException;
-import java.security.*;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.*;
-
-import static sorcer.eo.operator.sig;
+import com.sun.jini.config.Config;
 
 /**
- * There are two types of SORCER service servers: generic service servers -
- * subclasses of {@link ServiceProvider} - and service beans. This class does the
- * actual work for both generic SORCER providers and SORCER service beans. Also it
- * provides the basic functionality for {@link Provider}s. Multiple SORCER
- * exerters can be deployed within a single (@link ServiceProvider}.
- *
- * @see sorcer.core.provider.ServiceProvider
+ * The provider delegate implements most of the intialization and configuration
+ * of service providers by dependency injection.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ProviderDelegate implements SorcerConstants {
 
-	private static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
+	static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
 
 	static final int TRY_NUMBER = 5;
 	
@@ -121,8 +171,6 @@ public class ProviderDelegate implements SorcerConstants {
 	private static Set visited;
 
 	private static final Logger logger = Log.getProviderLog();
-
-	private volatile boolean running = true;
 
 	private Logger remoteLogger;
 
@@ -197,7 +245,7 @@ public class ProviderDelegate implements SorcerConstants {
 	/** lease manager also used by provider workers. */
 	protected static LeaseRenewalManager leaseManager = new LeaseRenewalManager();
 
-	protected sorcer.core.Provider provider;
+	protected Provider provider;
 
 	protected boolean mutualExclusion = true;
 
@@ -220,7 +268,7 @@ public class ProviderDelegate implements SorcerConstants {
 	private Object smartProxy = null;
 
 	/**
-	 * A {@link Remote} partner object expending functionality of this provider.
+	 * A {@link java.rmi.Remote} partner object expending functionality of this provider.
 	 * The provider's inner proxy can be used by the outer proxy of this
 	 * provider to make remote redirectional calls on this partner.
 	 */
@@ -238,7 +286,7 @@ public class ProviderDelegate implements SorcerConstants {
 	/**
 	 * An outer service proxy, by default the proxy of this provider, is used
 	 * from by service requestors if provider's smart proxy is absent. At least
-	 * two generic Remote interface: {@link Servicer} and {@link Provider} are
+	 * two generic Remote interface: {@link sorcer.service.Servicer} and {@link sorcer.core.Provider} are
 	 * implemented by outer proxies of all SORCER service providers. Each SORCER
 	 * provider uses outer proxy to actually call directly its provider and make
 	 * redirected calls using its inner proxy (redirected remote invocations).
@@ -311,29 +359,29 @@ public class ProviderDelegate implements SorcerConstants {
 		};
 
 		public static void add(ServiceExertion ex) {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			esb.exertionID = ex.getId();
-			esb.session = (MonitoringSession) ex.getMonitorSession();
+			esb.session = ex.getMonitorSession();
 			if (ex.getMonitorSession() != null)
 				lrm.renewUntil(
-						((MonitoringSession) ex.getMonitorSession()).getLease(),
+						ex.getMonitorSession().getLease(),
 						Lease.ANY, null);
 		}
 
 		public static MonitoringSession getSession() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.session : null;
 		}
 
 		public static Uuid getID() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.exertionID : null;
 		}
 
 		public static void removeLease() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			try {
-				lrm.remove(((MonitoringSession) esb.session).getLease());
+				lrm.remove(esb.session.getLease());
 			} catch (Exception e) {
 			}
 		}
@@ -342,12 +390,12 @@ public class ProviderDelegate implements SorcerConstants {
 	public ProviderDelegate() {
 	}
 
-	public boolean init(sorcer.core.Provider provider) throws RemoteException,
+	public void init(Provider provider) throws RemoteException,
 			ConfigurationException {
-		return init(provider, null);
+		init(provider, null);
 	}
 
-	public boolean init(sorcer.core.Provider provider, String configFilename)
+	public void init(Provider provider, String configFilename)
 			throws RemoteException, ConfigurationException {
 		this.provider = provider;
 		String providerProperties = configFilename;
@@ -362,9 +410,7 @@ public class ProviderDelegate implements SorcerConstants {
 				e.printStackTrace();
 			}
 		}
-
 		restore();
-
 		String str;
 		// set provider's ID persistance flag if defined in provider's
 		// properties
@@ -373,7 +419,7 @@ public class ProviderDelegate implements SorcerConstants {
 		// set provider join groups if defined in provider's properties
 		groupsToDiscover = Sorcer.getLookupGroups();
 		logger.info("ServiceProvider:groups to discover="
-				+ SorcerUtil.arrayToString(groupsToDiscover));
+				+ StringUtils.arrayToString(groupsToDiscover));
 		// set provider space group if defined in provider's properties
 		spaceGroup = config.getProperty(J_SPACE_GROUP, Sorcer.getSpaceGroup());
 		// set provider space name if defined in provider's properties
@@ -403,7 +449,6 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 
 		initDynamicServiceAccessor();
-		return initSpaceSupport();
 	}
 
 	private void initDynamicServiceAccessor() {
@@ -426,7 +471,7 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 	}
 
-	private boolean initSpaceSupport() throws ConfigurationException, RemoteException {
+	void initSpaceSupport() throws ConfigurationException, RemoteException {
 		try {
 			hostName = InetAddress.getLocalHost().getHostName();
 			hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -458,14 +503,13 @@ public class ProviderDelegate implements SorcerConstants {
 
 		if (spaceEnabled) {
 			try {
-				return startSpaceTakers();
+				startSpaceTakers();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.severe("Provider HALTED: Couldn't start Workers");
 				provider.destroy();
 			}
 		}
-		return true;
 	}
 
 	protected void configure(Configuration jconfig) throws ExportException {
@@ -517,7 +561,7 @@ public class ProviderDelegate implements SorcerConstants {
 						String.class, "*");
 				Level level = (Level) jconfig.getEntry(
 						ServiceProvider.COMPONENT, REMOTE_LOGGER_LEVEL,
-						java.util.logging.Level.class, Level.ALL);
+						Level.class, Level.ALL);
 				loggerName = (String) jconfig.getEntry(
 						ServiceProvider.COMPONENT, REMOTE_LOGGER_NAME,
 						String.class,
@@ -672,15 +716,15 @@ public class ProviderDelegate implements SorcerConstants {
 		logger.fine("exporting provider: " + provider);
 		logger.info("outerExporter = " + outerExporter);
 		try {
-            if (outerExporter == null) {
-                logger.severe("No exporter for provider:" + getProviderName());
-                return;
-            }
-            outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
-		        outerExporter.export(provider), getServerUuid());
-			logger.fine("outerProxy: " + outerProxy);
-		} catch (ExportException ee) {
-			logger.throwing(ProviderDelegate.class.getName(), "configure", ee);
+			if (outerExporter == null) {
+					logger.severe("No exporter for provider:" + getProviderName());
+					return;
+				}
+				outerProxy = (Remote) ProviderProxy.wrapServiceProxy(
+					outerExporter.export(provider), getServerUuid());
+				logger.fine("outerProxy: " + outerProxy);
+		} catch (Exception ee) {
+			logger.throwing(ProviderDelegate.class.getName(), "deploymnet failed", ee);
 		}
 		providerProxy = outerProxy;
 		adminProxy = outerProxy;
@@ -691,20 +735,6 @@ public class ProviderDelegate implements SorcerConstants {
 		logger.info("PROXIES >>>>> provider: " + providerProxy + "\nsmart: "
 				+ smartProxy + "\nouter: " + outerProxy + "\ninner: "
 				+ innerProxy);
-		// allow for enough time to export the provider's proxy and stay alive
-		new Thread(threadGroup, new KeepAwake()).start();
-	}
-
-	public class KeepAwake implements Runnable {
-
-		public void run() {
-			try {
-				while (running) {
-					Thread.sleep(ProviderDelegate.KEEP_ALIVE_TIME);
-				}
-			} catch (Exception doNothing) {
-			}
-		}
 	}
 
 	private void initThreadGroups() {
@@ -716,7 +746,7 @@ public class ProviderDelegate implements SorcerConstants {
 		interfaceGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
 	}
 
-	public boolean startSpaceTakers() throws ConfigurationException, RemoteException {
+	public void startSpaceTakers() throws ConfigurationException, RemoteException {
 		ExecutorService spaceWorkerPool;
 		spaceHandlingPools = new ArrayList<ExecutorService>();
 		String msg;
@@ -724,17 +754,14 @@ public class ProviderDelegate implements SorcerConstants {
 			msg = "ERROR: No space found, spaceName = " + spaceName
 					+ ", spaceGroup = " + spaceGroup;
 			logger.severe(msg);
-			return false;
 		}
 		if (workerTransactional && tManager == null) {
 			msg = "ERROR: no transactional manager found....";
 			logger.severe(msg);
-			return false;
 		}
 		if (publishedServiceTypes == null || publishedServiceTypes.length == 0) {
 			msg = "ERROR: no published interfaces found....";
 			logger.severe(msg);
-			return false;
 		}
 
 		initThreadGroups();
@@ -822,7 +849,6 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		// interfaceGroup.list();
 		// namedGroup.list();
-		return true;
 	}
 
 	public Task doTask(Task task, Transaction transaction)
@@ -992,7 +1018,7 @@ public class ProviderDelegate implements SorcerConstants {
 			resetSigantures(signatures, st);
 			throw ne;
 		}
-		// return the service dataContext of the last exertion
+		// return the service context of the last exertion
 		resetSigantures(signatures, st);
 		Context ctx = result.getExertions().get(job.size() - 1).getContext();
 		return ctx;
@@ -1076,70 +1102,47 @@ public class ProviderDelegate implements SorcerConstants {
 					task.reportException(e);
 				}
 			}
-			// determine args and parameterTpes from the dataContext
+			// determine args and parameterTpes from the context
 			Class[] argTypes = new Class[] { Context.class };
-			Object[] args = new Object[] { task.getContext() };
 			ServiceContext cxt = (ServiceContext) task.getContext();
 			boolean isContextual = true;
 			if (cxt.getParameterTypes() != null & cxt.getArgs() != null) {
 				argTypes = cxt.getParameterTypes();
-				args = (Object[]) cxt.getArgs();
 				isContextual = false;
-			}
+			} 
 			Method m = null;
 			try {
-                // invoking exertions with no parameters
-                if (selector.equals("invoke") && impl instanceof Exertion) {
-                    m = impl.getClass().getMethod(selector,
-                            new Class[] { Context.class, Parameter[].class });
-                } else if (selector.equals("exert") && impl instanceof ExertManager) {
-                    m = impl.getClass().getMethod(selector,
-                            new Class[] { Exertion.class, Parameter[].class });
-                } else
-                    m = impl.getClass().getMethod(selector, argTypes);
+				// select the proper method for the bean type
+				if (selector.equals("invoke") && impl instanceof Exertion) {
+					m = impl.getClass().getMethod(selector,
+							new Class[] { Context.class, Parameter[].class });
+					isContextual = true;
+				} else if (selector.equals("exert") && impl instanceof ExertManager) {
+					m = impl.getClass().getMethod(selector,
+							new Class[] { Exertion.class, Parameter[].class });
+					isContextual = false;
+				} else if (selector.equals("getValue") && impl instanceof Evaluation) {
+					m = impl.getClass().getMethod(selector,
+							new Class[] { Parameter[].class });
+					isContextual = false;
+				} else
+					m = impl.getClass().getMethod(selector, argTypes);
 				logger.info("Executing service bean method: " + m + " by: "
 						+ config.getProviderName());
-				Context result;
 				task.getContext().setExertion(task);
 				((ServiceContext) task.getContext())
 						.setCurrentSelector(selector);
 				((ServiceContext) task.getContext())
 						.setCurrentPrefix(((ServiceSignature) task
 								.getProcessSignature()).getPrefix());
-
-                if (isContextual) {
-                    if(selector.equals("invoke") && impl instanceof Exertion) {
-                        Exertion xrt = (Exertion) m.invoke(impl,
-                                new Object[] { args[0], new Parameter[] {} });
-                        if (xrt.isJob())
-                            result = ((Job)xrt).getJobContext();
-                        else
-                            result = xrt.getContext();
-                        task.getControlContext().getExceptions().addAll(xrt.getExceptions());
-                        task.getTrace().addAll(xrt.getTrace());
-                    } else {
-                        result = (Context) m.invoke(impl, args);
-                    }
-
-                } else {
-                    result = task.getContext();
-                    if(selector.equals("exert") && impl instanceof ExertManager) {
-                        Exertion xrt = (Exertion) m.invoke(impl,
-                                new Object[] { args[0], new Parameter[] {} });
-                        if (xrt.isJob())
-                            result = ((Job)xrt).getJobContext();
-                        else
-                            result = xrt.getContext();
-                        task.getControlContext().getExceptions().addAll(xrt.getExceptions());
-                        task.getTrace().addAll(xrt.getTrace());
-                    } else {
-                        ((ServiceContext) result).setReturnValue(m.invoke(impl,
-                                args));
-                    }
-                }
-                // clear task in the context
-
-                result.setExertion(null);
+				
+				Context result = task.getContext();
+				if (isContextual) 
+					result = execContextualBean(m, task, impl);
+				else
+					result = execParametricBean(m, task, impl);
+				// clear task in the context
+				result.setExertion(null);
 				task.setContext(result);
 				task.setStatus(ExecState.DONE);
 				return task;
@@ -1152,8 +1155,67 @@ public class ProviderDelegate implements SorcerConstants {
 		return task;
 	}
 
+	private Context execContextualBean(Method m, Task task,
+			Object impl) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, ContextException {
+		Context result = task.getContext();
+		String selector = task.getProcessSignature().getSelector();
+		Object[] args = new Object[] { task.getContext() };
+		if(selector.equals("invoke") && impl instanceof Exertion) {
+			Exertion xrt = (Exertion) m.invoke(impl, 
+					new Object[] { args[0], new Parameter[] {} });
+			if (xrt.isJob())
+				result = ((Job)xrt).getJobContext();
+			else
+				result = xrt.getContext();
+			task.getControlContext().getExceptions().addAll(xrt.getExceptions());
+			task.getTrace().addAll(xrt.getTrace());
+		} else {
+			result = (Context) m.invoke(impl, args);
+		}
+		return result;
+	}
+	
+	private Context execParametricBean(Method m, Task task,
+			Object impl) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, ContextException {
+		Context result = task.getContext();
+		String selector = task.getProcessSignature().getSelector();
+		Class[] argTypes = ((ServiceContext)result).getParameterTypes();
+		Object[] args = (Object[]) ((ServiceContext)result).getArgs();
+		if (selector.equals("exert") && impl instanceof ExertManager) {
+			Exertion xrt = null;
+			if (args.length == 1) {
+				xrt = (Exertion) m.invoke(impl, new Object[] { args[0],
+						new Parameter[] {} });
+			} else {
+				xrt = (Exertion) m.invoke(impl, args);
+			}
+			if (xrt.isJob())
+				result = ((Job) xrt).getJobContext();
+			else
+				result = xrt.getContext();
+			task.getControlContext().getExceptions()
+					.addAll(xrt.getExceptions());
+			task.getTrace().addAll(xrt.getTrace());
+			//((ServiceContext) result).setReturnValue(result);
+
+		} else if (selector.equals("getValue") && impl instanceof Evaluation) {
+			Object obj;
+			if (argTypes == null) {
+				obj = m.invoke(impl, new Object[] { new Parameter[] {} });
+			} else {
+				obj = m.invoke(impl, args);
+			}
+			result.setReturnValue(obj);
+		} else {
+			result.setReturnValue(m.invoke(impl, args));
+		}
+		return result;
+	}
+
 	protected ServiceExertion forwardTask(ServiceExertion task,
-			sorcer.core.Provider requestor) throws ExertionException,
+			Provider requestor) throws ExertionException,
 			RemoteException, SignatureException, ContextException {
 		// check if we do not look with the same exertion
 		Servicer recipient = null;
@@ -1253,24 +1315,6 @@ public class ProviderDelegate implements SorcerConstants {
 
 		if (((ControlContext) job.getContext()).isNodeReferencePreserved()) {
 			Jobs.preserveNodeReferences(job, outJob);
-			// copy DataNodes to object passed in
-			// job.copyNodes(outJob);
-			// job.setStatus(outJob.getStatus());
-
-//			try {
-//				// this is really to invoke notify observers on Variables which
-//				// are being observed by a Variable, which is contained
-//				// by a ResponseVariable. the Variable contained by the
-//				// ResponseVariable needs to calculate the new response based
-//				// on the current values in the observable Variables.
-//				// when the DataNodes of those Variables were changed, nobody
-//				// told those Variables...indeed, the Variables contained by
-//				// ResponseVariables should be observing DataNodes...
-//				// job.restoreDependencies();
-//			} catch (Throwable ex) {
-//				throw new RemoteException(
-//						"restoring dependencies in job failed", ex);
-//			}
 			return job;
 		} else
 			return outJob;
@@ -1374,7 +1418,7 @@ public class ProviderDelegate implements SorcerConstants {
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
 			} else {
-				((ServiceContext) sc).setReturnValue(execMethod.invoke(
+				sc.setReturnValue(execMethod.invoke(
 						provider, args));
 				result = sc;
 			}
@@ -1454,7 +1498,7 @@ public class ProviderDelegate implements SorcerConstants {
 		return scratchDir;
 	}
 
-	// adds scratch dir to dataContext
+	// adds scratch dir to context
 	public File getScratchDir(Context context) throws ContextException,
 			MalformedURLException {
 		return getScratchDir(context, "");
@@ -1469,7 +1513,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @throws Exception
 	 */
 	public boolean deleteDir(File dir) throws Exception {
-		return SorcerUtil.deleteDir(dir);
+		return IOUtil.deleteDir(dir);
 	}
 
 	/**
@@ -1478,7 +1522,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @param scratchFile
 	 * @return a URL of the data HTTP server
 	 * 
-	 * @throws MalformedURLException
+	 * @throws java.net.MalformedURLException
 	 */
 	public URL getScratchURL(File scratchFile) throws MalformedURLException {
 		return Sorcer.getScratchURL(scratchFile);
@@ -1509,7 +1553,9 @@ public class ProviderDelegate implements SorcerConstants {
 	/**
 	 * Set a name of the provider. The name may be defined in this provider's
 	 * properties file.
-	 */
+     *
+     * @param name
+     */
 	public void setProviderName(String name) throws RemoteException {
 		config.setProviderName(name);
 	}
@@ -1543,8 +1589,8 @@ public class ProviderDelegate implements SorcerConstants {
 	 * <p>
 	 * This function will create the following entries:
 	 * <ul>
-	 * <li>A {@link Name}.
-	 * <li>A {@link SorcerServiceInfo}entry with all the information about this
+	 * <li>A {@link net.jini.lookup.entry.Name}.
+	 * <li>A {@link sorcer.jini.lookup.entry.SorcerServiceInfo}entry with all the information about this
 	 * provider.
 	 * <li>A main UIDescriptor if the provider overrides
 	 * <li>Extra lookup attributes set via #addExtraLookupAttribute(Entry)
@@ -1552,7 +1598,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * </ul>
 	 * 
 	 * @return an array of Jini Service Entries.
-	 * @throws ConfigurationException
+	 * @throws net.jini.config.ConfigurationException
 	 */
 	public Entry[] getAttributes() {
 		final List<Entry> attrVec = new ArrayList<Entry>();
@@ -1577,12 +1623,12 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 			}
 
-			// add the service dataContext of this provider to provider attributes
+			// add the service context of this provider to provider attributes
 			AccessControlContext context = AccessController.getContext();
 			Subject subject = Subject.getSubject(context);
 			// logger.finer("The subject in Provider Delegate is: " + subject);
 		} catch (Exception ex) {
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 
 		// This construct may look strange. But it ensures that this class loads
@@ -1618,11 +1664,11 @@ public class ProviderDelegate implements SorcerConstants {
 
 		attrVec.addAll(extraLookupAttributes);
 
-		return (Entry[]) attrVec.toArray(new Entry[] {});
+		return attrVec.toArray(new Entry[] {});
 	}
 
 	/**
-	 * Creates an entry that is a {@link SorcerServiceInfo}.
+	 * Creates an entry that is a {@link sorcer.jini.lookup.entry.SorcerServiceInfo}.
 	 * 
 	 * @return an entry for the provider.
 	 */
@@ -1633,7 +1679,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.repository = config.getDataDir();
 			serviceType.shortDescription = config.getProperty(P_DESCRIPTION);
 			serviceType.location = config.getProperty(P_LOCATION);
-			serviceType.groups = SorcerUtil.arrayToCSV(groupsToDiscover);
+			serviceType.groups = StringUtils.arrayToCSV(groupsToDiscover);
 			serviceType.spaceGroup = spaceGroup;
 			serviceType.spaceName = spaceName;
 			serviceType.puller = spaceEnabled;
@@ -1647,7 +1693,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 			if (publishedServiceTypes == null && spaceEnabled) {
 				logger.severe(getProviderName()
-						+ "does NOT declare its space interfaces");
+						+ " does NOT declare its space interfaces");
 				System.exit(1);
 			}
 			if (publishedServiceTypes != null) {
@@ -1660,7 +1706,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.serviceID = provider.getProviderID();
 		} catch (Exception ex) {
 			logger.warning("Some problem in accessing attributes");
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 		String hostName = null, hostAddress = null;
 		hostName = config.getProviderHostName();
@@ -1682,7 +1728,7 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	/**
-	 * Restores the ServiceID from {@link SorcerConstants#S_SERVICE_ID_FILENAME}
+	 * Restores the ServiceID from {@link sorcer.core.SorcerConstants#S_SERVICE_ID_FILENAME}
 	 * .
 	 * <p>
 	 * Please note: There is currently no method to save the ServiceID. So this
@@ -1722,7 +1768,7 @@ public class ProviderDelegate implements SorcerConstants {
 	/**
 	 * Retrieves the Unique ID of this server.
 	 * 
-	 * @return the {@link Uuid} of this server
+	 * @return the {@link net.jini.id.Uuid} of this server
 	 */
 	public Uuid getServerUuid() {
 		ensureServerUuidIsSet();
@@ -1742,7 +1788,7 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	/**
-	 * Sets the Uuid of this server from a given {@link Uuid}.
+	 * Sets the Uuid of this server from a given {@link net.jini.id.Uuid}.
 	 * 
 	 * @param serverID
 	 *            the Uuid to use.
@@ -1797,7 +1843,7 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	public void destroy() throws RemoteException {
-        if (spaceEnabled && spaceHandlingPools != null) {
+		if (spaceEnabled && spaceHandlingPools != null) {
 			for (ExecutorService es : spaceHandlingPools)
 				shutdownAndAwaitTermination(es);
 			if (interfaceGroup != null) {
@@ -1820,8 +1866,6 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 			}
 		}
-		// stop delegates's KeepAwake thread
-		running = false;
 	}
 
 	public void fireEvent() throws RemoteException {
@@ -1830,14 +1874,14 @@ public class ProviderDelegate implements SorcerConstants {
 
 	public boolean isValidTask(Exertion servicetask) throws RemoteException,
 			ExertionException {
-        if (servicetask.getContext() == null) {
-            servicetask.getContext().reportException(
-                    new ExertionException(getProviderName()
-                            + " no service context in task: "
-                            + servicetask.getClass().getName()));
-            return false;
-        }
-        Task task = (Task)servicetask;
+		if (servicetask.getContext() == null) {
+			servicetask.getContext().reportException(
+					new ExertionException(getProviderName()
+							+ " no service context in task: "
+							+ servicetask.getClass().getName()));
+			return false;
+		}
+		Task task = (Task)servicetask;
 
 		// if (task.subject == null)
 		// throw new ExertionException("No subject provided with the task '" +
@@ -1860,7 +1904,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 			}
 		}
-		Class st = ((NetSignature) task.getProcessSignature()).getServiceType();
+		Class st = task.getProcessSignature().getServiceType();
 
 		if (publishedServiceTypes == null) {
 			servicetask.getDataContext().reportException(
@@ -1893,9 +1937,9 @@ public class ProviderDelegate implements SorcerConstants {
 					return true;
 				if (protocol == null)
 					createProtocol();
-				return ((ProxyProtocol) protocol).isAuthorized(
-						(SorcerPrincipal) principal, ((NetSignature) task
-								.getProcessSignature()).getServiceType(),
+				return protocol.isAuthorized(
+						(SorcerPrincipal) principal, task
+						.getProcessSignature().getServiceType(),
 						config.getProviderName());
 			}
 		}
@@ -1925,7 +1969,7 @@ public class ProviderDelegate implements SorcerConstants {
 			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) ProviderAccessor
 					.getNotifierProvider();
 
-			mr = new MsgRef(((ServiceExertion) task).getId(), notificationType,
+			mr = new MsgRef(task.getId(), notificationType,
 					config.getProviderName(), message,
 					((ServiceExertion) task).getSessionId());
 			// Util.debug(this, "::notify() RUNTIME SESSION ID:" +
@@ -1945,12 +1989,12 @@ public class ProviderDelegate implements SorcerConstants {
 			message = "NO MESSAGE OR EXCEPTION PASSED";
 		else if (message == null && e != null) {
 			if (fullStackTrace)
-				message = SorcerUtil.stackTraceToString(e);
+				message = StringUtils.stackTraceToString(e);
 			else
 				message = e.getMessage();
 		} else {
 			if (fullStackTrace)
-				message = message + " " + SorcerUtil.stackTraceToString(e);
+				message = message + " " + StringUtils.stackTraceToString(e);
 			else
 				message = message + " " + e.getMessage();
 		}
@@ -2003,12 +2047,12 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	/**
-	 * Indicates the change of the monitored service dataContext.
+	 * Indicates the change of the monitored service context.
 	 * 
 	 * @param sc
-	 *            the service dataContext
-	 * @throws MonitorException
-	 * @throws RemoteException
+	 *            the service context
+	 * @throws sorcer.service.MonitorException
+	 * @throws java.rmi.RemoteException
 	 */
 	public void changed(Context sc, Object aspect) throws RemoteException,
 			MonitorException {
@@ -2082,7 +2126,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * the configuration settings for all SORCER service providers. It uses the
 	 * provider properties file and/or Jini configuration file. The global
 	 * environment properties are copied from this configuration to the
-	 * {@link Sorcer} properties.
+	 * {@link sorcer.util.Sorcer} properties.
 	 */
 	public class DeploymentConfiguration {
 
@@ -2283,10 +2327,9 @@ public class ProviderDelegate implements SorcerConstants {
 		 * @see #getProperty
 		 */
 		public void loadConfiguration(String filename) {
-            InputStream is = null;
-            try {
+			try {
 				// check the class resource
-				is = provider.getClass().getResourceAsStream(
+				InputStream is = provider.getClass().getResourceAsStream(
 						filename);
 				// next check local resource
 				if (is == null) {
@@ -2303,15 +2346,7 @@ public class ProviderDelegate implements SorcerConstants {
 			} catch (Exception ex) {
 				logger.warning("Not able to load provider's file properties"
 						+ filename);
-            } finally {
-                if (is != null) {
-                    try {
-                        is.close();
-                    } catch (IOException e) {
-                        //ignore
-                    }
-                }
-            }
+			}
 		}
 
 		public Properties getProviderProperties() {
@@ -2322,7 +2357,7 @@ public class ProviderDelegate implements SorcerConstants {
 		 * Returns a value of a comma separated property as defined in. If the
 		 * property value is not defined for the delegate's provider then the
 		 * equivalent SORCR environment value value is returned.
-		 * {@link SorcerConstants}.
+		 * {@link sorcer.core.SorcerConstants}.
 		 * 
 		 * @param key
 		 *            a property (attribute)
@@ -2426,7 +2461,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 			try {
 				val = ""
-						+ (Boolean) jiniConfig.getEntry(
+						+ jiniConfig.getEntry(
 								ServiceProvider.PROVIDER,
 								J_SERVICE_ID_PERSISTENT, boolean.class);
 			} catch (ConfigurationException e) {
@@ -2485,7 +2520,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_WEBSTER_PORT, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_GROUPS, String[].class));
 			} catch (ConfigurationException e3) {
 				val = null;
@@ -2512,7 +2547,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_SPACE_NAME, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_LOCATORS, String[].class));
 			} catch (ConfigurationException e) {
 				val = null;
@@ -2544,7 +2579,6 @@ public class ProviderDelegate implements SorcerConstants {
 
 	public String getProviderName() {
 		return config.getProviderName();
-		// return provider.getProviderName();
 	}
 
 	public Provider getProvider() {
@@ -2623,10 +2657,10 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	/**
-	 * Returns a proxy object for this provider. If the smart proxy is alocated
-	 * then returns a non exported object to be registerd with loookup services.
+	 * Returns a proxy object for this provider. If the smart proxy is allocated
+	 * then returns a non exported object to be registered with loookup services.
 	 * However, if a smart proxy implements {@link sorcer.core.provider.proxy.Outer} then the
-	 * provider's proxy is set as its inner proxy. Otherwise the {@link Remote}
+	 * provider's proxy is set as its inner proxy. Otherwise the {@link java.rmi.Remote}
 	 * outer proxy of this provider is returned.
 	 * 
 	 * @return a proxy, or null
@@ -2687,10 +2721,9 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @param config
 	 *            the configuration to use for supplying the exporter
 	 * @return the exporter to use to export this server
-	 * @throws ConfigurationException
+	 * @throws net.jini.config.ConfigurationException
 	 *             if a problem occurs retrieving entries from the configuration
 	 */
-	@SuppressWarnings("unchecked")
 	private void getExporters(Configuration config) {
 		try {
 			String exporterInterface = Sorcer.getProperty(P_EXPORTER_INTERFACE);
@@ -2848,7 +2881,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	private Object instantiateScriplet(String scripletFilename)
 			throws Exception {
-		String[] tokens = SorcerUtil.tokenize(scripletFilename, "|");
+		String[] tokens = StringUtils.tokenize(scripletFilename, "|");
 		Object bean = null;
 		Object configurator = null;
 		GroovyShell shell = null;
@@ -2882,7 +2915,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	private Object initBean(Object serviceBean) {
 		try {
-			java.lang.reflect.Method m = serviceBean.getClass().getMethod(
+			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, new Object[] { provider });
 		} catch (Exception e) {
@@ -2902,7 +2935,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 *            name of the partner service
 	 * @param partnerType
 	 *            service type (interface) of the partner service
-	 * @throws ExportException
+	 * @throws java.rmi.server.ExportException
 	 */
 	private Remote getPartner(String partnerName, Class partnerType)
 			throws ExportException {
@@ -2953,7 +2986,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 				// if partner exported use it as the primary proxy
 				if (partner != null) {
-					pp = partnerExporter.export((Remote) partner);
+					pp = partnerExporter.export(partner);
 					if (pp != null) {
 						innerProxy = outerProxy;
 						outerProxy = pp;
@@ -3033,53 +3066,52 @@ public class ProviderDelegate implements SorcerConstants {
 		return remoteLogger;
 	}
 
-    private void initContextLogger() {
-        Handler h = null;
-        try {
-            contextLogger = Logger.getLogger(PRIVATE_CONTEXT_LOGGER + "."
-                    + getProviderName());
+	private void initContextLogger() {
+		Handler h = null;
+		try {
+			contextLogger = Logger.getLogger(PRIVATE_CONTEXT_LOGGER + "."
+					+ getProviderName());
 
-            String sorcerpath = System.getenv("SORCER_HOME");
-            if (sorcerpath == null) {
-                sorcerpath = System.getProperty(SORCER_HOME);
-            }
-            h = new FileHandler(sorcerpath + "/logs/remote/dataContext-"
-                    + getProviderName() + "-" + getHostName() + "-cxt%g.log",
-                    20000, 8, true);
-            if (h != null) {
-                h.setFormatter(new SimpleFormatter());
-                contextLogger.addHandler(h);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+			String igridpath = System.getenv("SORCER_HOME");
+			if (igridpath == null) {
+				igridpath = System.getProperty(SORCER_HOME);
+			}
+			h = new FileHandler(igridpath + "/logs/remote/context-"
+					+ getProviderName() + "-" + getHostName() + "-cxt%g.log",
+					20000, 8, true);
+			if (h != null) {
+				h.setFormatter(new SimpleFormatter());
+				contextLogger.addHandler(h);
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-    private void initProviderLogger() {
-        Handler h = null;
-        try {
-            providerLogger = Logger.getLogger(PRIVATE_PROVIDER_LOGGER + "."
-                    + getProviderName());
-            String igridpath = System.getenv("SORCER_HOME");
-            if (igridpath == null) {
-                igridpath = System.getProperty(SORCER_HOME);
-            }
-            h = new FileHandler(igridpath + "/logs/remote/provider-"
-                    + getProviderName() + "-" + getHostName() + "-prv%g.log",
-                    20000, 8, true);
-            if (h != null) {
-                h.setFormatter(new SimpleFormatter());
-                providerLogger.addHandler(h);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+	private void initProviderLogger() {
+		Handler h = null;
+		try {
+			providerLogger = Logger.getLogger(PRIVATE_PROVIDER_LOGGER + "."
+					+ getProviderName());
+			String igridpath = System.getenv("SORCER_HOME");
+			if (igridpath == null) {
+				igridpath = System.getProperty(SORCER_HOME);
+			}
+			h = new FileHandler(igridpath + "/logs/remote/provider-"
+					+ getProviderName() + "-" + getHostName() + "-prv%g.log",
+					20000, 8, true);
+			if (h != null) {
+				h.setFormatter(new SimpleFormatter());
+				providerLogger.addHandler(h);
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void initRemoteLogger(Level level, String managerName,
 			String loggerName) {
@@ -3122,6 +3154,14 @@ public class ProviderDelegate implements SorcerConstants {
 		return monitorable;
 	}
 
+	 void spaceEnabled(boolean enabled) {
+		spaceEnabled = enabled;
+	}
+
+	public boolean spaceEnabled() {
+		return spaceEnabled;
+	}
+	
 	public List<ExecutorService> getSpaceHandlingPools() {
 		return spaceHandlingPools;
 	}
@@ -3146,7 +3186,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	/**
 	 * <p>
-	 * Returns a dataContext manager of this delegate as defined in the Jini
+	 * Returns a context manager of this delegate as defined in the Jini
 	 * configuration file.
 	 * </p>
 	 * 

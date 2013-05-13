@@ -27,6 +27,7 @@
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
 			<sysproperty key="sorcer.exertrun.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version} ${requestor.groupId}:${requestor.client.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />2
 		</java>
 	</target>
 

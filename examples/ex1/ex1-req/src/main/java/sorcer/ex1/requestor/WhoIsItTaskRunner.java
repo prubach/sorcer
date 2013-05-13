@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -16,7 +16,7 @@ import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItTaskRunner extends ExertionRunner {
+public class WhoIsItTaskRunner extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 

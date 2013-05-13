@@ -28,6 +28,6 @@ public class StrategyEntry extends Path<Strategy> implements Parameter {
 	};
 	
 	public Strategy strategy() {
-		return (Strategy)_2;
+		return _2;
 	}
 }
