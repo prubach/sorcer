@@ -110,7 +110,14 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
+	<distributionManagement>
+		<site>
+			<id>hashnot</id>
+			<url>scp://hashnot.com/srv/www/sorcer/</url>
+		</site>
+	</distributionManagement>
+
+	<build>
         <pluginManagement>
             <plugins>
                 <plugin>
