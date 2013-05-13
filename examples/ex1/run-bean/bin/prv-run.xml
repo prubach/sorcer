@@ -57,6 +57,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
 			<sysproperty key="sorcer.provider.config" value="../configs/whoIsIt-bean${beans.id}.config" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			<arg value="${sorcer.home}/configs/startup-prv.config" />
 		</java>
 	</target>		

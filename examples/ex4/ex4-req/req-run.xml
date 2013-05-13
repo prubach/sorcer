@@ -21,6 +21,7 @@
 			<sysproperty key="sorcer.exertrun.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="requestor.properties" value="../configs/worker-run.properties" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			<arg value="${ex4-req.arg1}" />
 			<arg value="${ex4-req.arg2}" />
 			<arg value="${ex4-req.arg3}" />			
