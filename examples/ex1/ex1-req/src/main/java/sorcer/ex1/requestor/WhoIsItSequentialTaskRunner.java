@@ -2,11 +2,13 @@ package sorcer.ex1.requestor;
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
+import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -17,12 +19,12 @@ import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItSequentialTaskRunner extends ExertionRunner {
+public class WhoIsItSequentialTaskRunner extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 
 	@Override
-	public void process(String... args) throws Exception {
+	public void process(String... args) throws ExertionException {
 		int tally = 3;
 		if (args.length == 2)
 			tally = new Integer(args[1]);
@@ -32,8 +34,12 @@ public class WhoIsItSequentialTaskRunner extends ExertionRunner {
 		for (int i = 0; i < tally; i++) {
 			task = getExertion();
 			((ServiceExertion)task).setName(task.getName() + "-" + i);
-			task = task.exert(null);
-			logger.info("got sequentially executed task: " + task.getName());
+            try {
+                task = task.exert(null);
+            } catch (Exception e) {
+                throw new ExertionException(e);
+            }
+            logger.info("got sequentially executed task: " + task.getName());
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time for " + tally + " sequential tasks : " + (end - start) + " ms.");

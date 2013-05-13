@@ -151,18 +151,21 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		RemoteContextManagement, SorcerConstants {
 	// RemoteMethodControl is needed to enable Proxy Constraints
 
+    /** Logger and configuration component name for service provider. */
+    static final String PROVIDER = ServiceProvider.class.getName();
+
+    /** Logger for logging information about this instance */
+    protected static final Logger logger = Logger.getLogger(PROVIDER);
+
 	static {
-		//Handler.register();
-		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+        try {
+            URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
+        } catch (Error e) {
+            logger.severe("URL Stream Handler Factory setting failed!");
+        }
 	}
 	
 	public static final String COMPONENT = ServiceProvider.class.getName();
-
-	/** Logger and configuration component name for service provider. */
-	static final String PROVIDER = ServiceProvider.class.getName();
-
-	/** Logger for logging information about this instance */
-	protected static final Logger logger = Logger.getLogger(PROVIDER);
 
 	protected ProviderDelegate delegate;
 
@@ -1792,7 +1795,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		if (joinManager != null)
 			joinManager.terminate();
 		tally = tally - 1;
-		logger.info("destroyd provider: " + getProviderName() + ", providers left: " + tally);
+		logger.info("destroyed provider: " + getProviderName() + ", providers left: " + tally);
 		if (threadManager != null)
 			threadManager.terminate();
 
@@ -1807,11 +1810,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				System.exit(0);
 		} 
 		
-		delegate.destroy();
 		unexport(true);
 		if (lifeCycle != null) {
 			lifeCycle.unregister(this);
 		}
+        delegate.destroy();
 		// stop KeepAwake thread
 		running = false;
 	}

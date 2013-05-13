@@ -10,10 +10,10 @@
     <version>11.1</version>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
-	<inceptionYear>2013</inceptionYear>
+    <inceptionYear>2013</inceptionYear>
 
     <properties>
-		<v.sorcer>11.1</v.sorcer>
+        <v.sorcer>11.1</v.sorcer>
         <v.jini>2.2.1</v.jini>
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>
@@ -21,8 +21,8 @@
         <v.groovy>2.1.2</v.groovy>
         <v.sigar>1.6.4</v.sigar>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sorcer.home>${project.basedir}</sorcer.home>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sorcer.home>${project.basedir}</sorcer.home>
     </properties>
 
     <modules>
@@ -32,28 +32,28 @@
         <module>examples</module>
     </modules>
 
-	<developers>
-		<developer>
-			<name>Mike Sobolewski</name>
-			<id>mwsobol</id>
-			<timezone>-6</timezone>
-			<organization>SorcerSoft S.A.</organization>
-		</developer>
-		<developer>
-			<name>Paweł Rubach</name>
-			<id>prubach</id>
-			<timezone>+1</timezone>
-			<organization>SorcerSoft S.A.</organization>
-		</developer>
-		<developer>
-			<name>Rafał Krupiński</name>
-			<id>rafalkrupinski</id>
-			<timezone>+1</timezone>
-			<organization>SorcerSoft S.A.</organization>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>Mike Sobolewski</name>
+            <id>mwsobol</id>
+            <timezone>-6</timezone>
+            <organization>SorcerSoft S.A.</organization>
+        </developer>
+        <developer>
+            <name>Paweł Rubach</name>
+            <id>prubach</id>
+            <timezone>+1</timezone>
+            <organization>SorcerSoft S.A.</organization>
+        </developer>
+        <developer>
+            <name>Rafał Krupiński</name>
+            <id>rafalkrupinski</id>
+            <timezone>+1</timezone>
+            <organization>SorcerSoft S.A.</organization>
+        </developer>
+    </developers>
 
-	<dependencyManagement>
+    <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
@@ -75,11 +75,11 @@
                 <artifactId>rio-platform</artifactId>
                 <version>${v.rio}</version>
             </dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>1.7.5</version>
-			</dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.5</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -92,93 +92,93 @@
                 <version>2.0.1</version>
                 <scope>test</scope>
             </dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-api</artifactId>
-				<version>1.13.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-impl</artifactId>
-				<version>1.13.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.aether</groupId>
-				<artifactId>aether-util</artifactId>
-				<version>1.13.1</version>
-			</dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-api</artifactId>
+                <version>1.13.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-impl</artifactId>
+                <version>1.13.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-util</artifactId>
+                <version>1.13.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>${project.groupId}</groupId>
-					<artifactId>sorcer-maven-plugin</artifactId>
-					<version>${v.sorcer}</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>sorcer</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.2.1</version>
-				</plugin>
-				<plugin>
+            <plugins>
+                <plugin>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>sorcer-maven-plugin</artifactId>
+                    <version>${v.sorcer}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>sorcer</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.2.1</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.3.2</version>
                 </plugin>
-				<plugin>
-					<groupId>org.bitstrings.maven.plugins</groupId>
-					<artifactId>dependencypath-maven-plugin</artifactId>
-					<version>1.1.1</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<filesets>
-					<fileset>
-						<directory>databases</directory>
-						<includes>
-							<include>**/*</include>
-							<include>**/*</include>
-						</includes>
-						<followSymlinks>false</followSymlinks>
-					</fileset>
-						<fileset>
-							<directory>logs/</directory>
-							<includes>
-								<include>remote/*</include>
-								<include>*</include>
-							</includes>
-							<excludes>
-								<exclude>remote</exclude>
-							</excludes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-			<!--	    <plugin>
-					  <groupId>org.apache.maven.plugins</groupId>
-					  <artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-					  <systemPropertyVariables>
-						  <SORCER_HOME>${sorcer.home}</SORCER_HOME>
-					  </systemPropertyVariables>
-					</configuration>
-					</plugin>-->
+                <plugin>
+                    <groupId>org.bitstrings.maven.plugins</groupId>
+                    <artifactId>dependencypath-maven-plugin</artifactId>
+                    <version>1.1.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>databases</directory>
+                            <includes>
+                                <include>**/*</include>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>logs/</directory>
+                            <includes>
+                                <include>remote/*</include>
+                                <include>*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>remote</exclude>
+                            </excludes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <!--	    <plugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                      <systemPropertyVariables>
+                          <SORCER_HOME>${sorcer.home}</SORCER_HOME>
+                      </systemPropertyVariables>
+                    </configuration>
+                    </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -188,29 +188,29 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-	    <plugin>
-	      <groupId>org.bitstrings.maven.plugins</groupId>
-	      <artifactId>dependencypath-maven-plugin</artifactId>
-	      <version>1.1.1</version>
-		<executions>
-		  <execution>
-		      <id>set-all</id>
-		      <goals>
-			  <goal>set</goal>
-		      </goals>
-		      <configuration>
-			  <propertySets>
-			  	<propertySet>
-			    	<suffix>norepo</suffix>
-                        <relativeTo>${settings.localRepository}</relativeTo>
-                        <transitive>false</transitive>
-                        <autoRelativeSuffix>true</autoRelativeSuffix>
-                </propertySet>
-		      </propertySets>
-		      </configuration>
-		  </execution>
-	      </executions>
-	    </plugin>
+            <plugin>
+                <groupId>org.bitstrings.maven.plugins</groupId>
+                <artifactId>dependencypath-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>set-all</id>
+                        <goals>
+                            <goal>set</goal>
+                        </goals>
+                        <configuration>
+                            <propertySets>
+                                <propertySet>
+                                    <suffix>norepo</suffix>
+                                    <relativeTo>${settings.localRepository}</relativeTo>
+                                    <transitive>false</transitive>
+                                    <autoRelativeSuffix>true</autoRelativeSuffix>
+                                </propertySet>
+                            </propertySets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <repositories>

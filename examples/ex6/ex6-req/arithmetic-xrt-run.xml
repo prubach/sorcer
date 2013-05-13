@@ -36,6 +36,7 @@
 			<sysproperty key="sorcer.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="java.security.policy" value="src/main/resources/policy/${requestor.name}.policy" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		</java>
 	</target>		
 </project>

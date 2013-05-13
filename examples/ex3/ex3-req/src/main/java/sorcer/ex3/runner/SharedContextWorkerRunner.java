@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import sorcer.core.context.SharedAssociativeContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -17,7 +17,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
-public class SharedContextWorkerRunner extends ExertionRunner {
+public class SharedContextWorkerRunner extends ServiceRequestor {
 	SharedAssociativeContext context = new SharedAssociativeContext(Sorcer.getActualSpaceName());
 	
 	public Exertion getExertion(String... args) throws ExertionException {

@@ -7,7 +7,7 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ExertionRunner;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -21,7 +21,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItPullJobRunner extends ExertionRunner {
+public class WhoIsItPullJobRunner extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 
