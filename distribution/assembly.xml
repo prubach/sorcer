@@ -18,41 +18,25 @@
 
 -->
 <assembly>
-    <!--<id>bin</id>-->
-    <!-- We dont use the <id> element to avoid the extension to the directory
-         and zip name -->
-    <formats>
-        <format>dir</format>
-        <format>zip</format>
-    </formats>
-    <includeBaseDirectory>false</includeBaseDirectory>
-    <files>
-        <file>
-            <source>${basedir}/../pom.xml</source>
-            <outputDirectory>/configs/poms</outputDirectory>
-            <destName>sorcer-main.pom</destName>
-        </file>
-        <!-- Copy the logging configuration file -->
-        <file>
-            <source>${basedir}/src/main/configs/sorcer.logging</source>
-            <outputDirectory>/configs/</outputDirectory>
-            <destName>sorcer.logging</destName>
-        </file>
-    </files>
-    <fileSets>
-
-        <!-- docs directory -->
-<!--
-        <fileSet>
-            <directory>${basedir}/../deploy</directory>
-            <includes>
-                <include>**</include>
-            </includes>
-            &lt;!&ndash;<filtered>true</filtered>
-            <fileMode>0644</fileMode>&ndash;&gt;
-            <outputDirectory>/deploy</outputDirectory>
-        </fileSet>
--->
+        <formats>
+            <format>dir</format>
+            <format>zip</format>
+        </formats>
+        <includeBaseDirectory>false</includeBaseDirectory>
+        <files>
+            <file>
+                <source>${basedir}/../pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sorcer-main.pom</destName>
+            </file>
+            <!-- Copy the logging configuration file -->
+            <file>
+                <source>${basedir}/src/main/configs/sorcer.logging</source>
+                <outputDirectory>/configs/</outputDirectory>
+                <destName>sorcer.logging</destName>
+            </file>
+        </files>
+        <fileSets>
 
         <!-- examples -->
         <fileSet>
@@ -124,6 +108,8 @@
             </includes>
             <excludes>
                 <exclude>versions.properties</exclude>
+                <exclude>shellEnv</exclude>
+                <exclude>template/**</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
