@@ -155,7 +155,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	}
 
 	/**
-	 * @param aServiceInterface
+	 * @param serviceInterface
 	 *            the class of the type of service you are looking for. Class is
 	 *            usually an interface class.
 	 */
