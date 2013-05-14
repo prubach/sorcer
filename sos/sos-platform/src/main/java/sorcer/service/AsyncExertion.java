@@ -35,7 +35,7 @@ public interface AsyncExertion extends Exertion {
 
 	/**
 	 * Gives this exerion asynchronously to its assigned provider for to a
-	 * dynamically bound {@link sorcer.service.Servicer} matching its
+	 * dynamically bound {@link Service} matching its
 	 * {@link Operator.Type} signature. If a service provider is not
 	 * set, then this exertion finds dynamically
 	 * any availale service provider matching its process signature for its

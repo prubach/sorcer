@@ -35,7 +35,7 @@ public class Accessor {
 	protected final static Logger logger = Log.getTestLog();
 	
 	/**
-	 * A factory returning instances of {@link Servicer}s.
+	 * A factory returning instances of {@link Service}s.
 	 */
 	private static DynamicAccessor accessor;
 
@@ -61,10 +61,10 @@ public class Accessor {
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
+	 * @return the requested {@link Service}
 	 * @throws SignatureException 
 	 */
-	public static Servicer getServicer(Signature signature)
+	public static Service getServicer(Signature signature)
 			throws SignatureException {
 		logger.fine("using accessor: " + accessor);
 		return accessor.getServicer(signature);

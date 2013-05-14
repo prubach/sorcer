@@ -28,7 +28,7 @@ import java.rmi.RemoteException;
  * An top-level common local interface for all service-to-service (S2S)
  * providers in SORCER. Each service accepts a service-oriented message
  * {@link Exertion} to be processed locally as the result
- * {@link Servicer#service(Exertion, Transaction)} of and returns it after
+ * {@link Service#service(Exertion, Transaction)} of and returns it after
  * exerting it.
  * 
  * @author Mike Sobolewski
@@ -38,7 +38,7 @@ public interface Executor {
 	/**
 	 * A generic service request as specified by an exertion - a generic service
 	 * message. It can be carried out dynamically and indirectly by any
-	 * <code>Servicer</code> peer and directly by a <code>Servicer</code>
+	 * <code>Service</code> peer and directly by a <code>Service</code>
 	 * matching the exertion's method {@link Signature}.
 	 * 
 	 * @param exertion

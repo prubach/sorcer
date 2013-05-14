@@ -30,17 +30,17 @@ public interface DynamicAccessor {
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
+	 * @return the requested {@link Service}
 	 * @throws SignatureException 
 	 */
-	Servicer getServicer(Signature signature) throws SignatureException;
+	Service getServicer(Signature signature) throws SignatureException;
 	
 	/**
 	 * Returns a service item containing the servicer matching its {@link Signature}.
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
+	 * @return the requested {@link Service}
 	 * @throws QosResourceException 
 	 */
 	ServiceItem getServiceItem(Signature signature) throws SignatureException;

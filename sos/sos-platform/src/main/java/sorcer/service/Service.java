@@ -29,12 +29,12 @@ import net.jini.core.transaction.TransactionException;
  * 
  * @author Mike Sobolewski
  */
-public interface Servicer {
+public interface Service {
 	
 	/**
 	 * A generic service request as specified by an exertion - a generic service
 	 * message. It can be carried out dynamically and indirectly by any
-	 * <code>Servicer</code> peer and directly by a <code>Servicer</code>
+	 * <code>Service</code> peer and directly by a <code>Service</code>
 	 * matching the exertion's method {@link sorcer.service.Signature}.
 	 * 
 	 * @param exertion
@@ -48,7 +48,11 @@ public interface Servicer {
 	 *             if an exertion invocation failed for any reason
 	 * @throws java.rmi.RemoteException
 	 */
-	public Exertion service(Exertion exertion, Transaction txn)
-			throws TransactionException, ExertionException, RemoteException;
+    public Exertion service(Exertion exertion, Transaction txn)
+            throws TransactionException, ExertionException, RemoteException;
+
+
+    public Exertion service(Exertion exertion)
+            throws TransactionException, ExertionException, RemoteException;
 
 }

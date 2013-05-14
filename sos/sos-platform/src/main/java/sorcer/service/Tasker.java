@@ -24,5 +24,5 @@ import java.rmi.Remote;
  * specified by signatures associated with the instance of service
  * {@link sorcer.service.Task} and control flow exertion of task type.
  */
-public interface Tasker extends Servicer, Remote {
+public interface Tasker extends Service, Remote {
 }

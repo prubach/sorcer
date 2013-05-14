@@ -24,5 +24,5 @@ import java.rmi.Remote;
  * runtime federation of all needed service providers to execute all component
  * exertions of the received job.
  */
-public interface Jobber extends Servicer, Remote {
+public interface Jobber extends Service, Remote {
 }
