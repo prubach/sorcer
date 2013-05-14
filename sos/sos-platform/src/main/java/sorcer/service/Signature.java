@@ -23,12 +23,12 @@ import java.util.Arrays;
 /**
  * A service <code>Signature</code> is an indirect behavioral feature of
  * {@link Exertion}s that declares a service that can be performed by instances
- * of {@link Servicer}s. It contains a service type and a selector of operation
+ * of {@link Service}s. It contains a service type and a selector of operation
  * of that service type (interface). Its implicit parameter and return value is
  * a service {@link Context}. Thus, the explicit signature of service-oriented
  * operations is defined by the same {@link Context} type for any exertion
  * parameter and return value . A signature may include a collection of optional
- * attributes describing a preferred {@link Servicer} with a given service type.
+ * attributes describing a preferred {@link Service} with a given service type.
  * Also a signature can carry own implementation when its type is implemented
  * with the provided codebase.
  * <p>
