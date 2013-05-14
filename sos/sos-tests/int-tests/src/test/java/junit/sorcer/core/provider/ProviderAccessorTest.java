@@ -53,7 +53,7 @@ public class ProviderAccessorTest implements SorcerConstants {
 	@Test
 	public void providerLookatorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = (Service)ProviderLocator.getService(Jobber.class, 10);
+		Service provider = (Service)ProviderLocator.getService(Jobber.class, 10000);
 		//logger.info("ProviderLocator provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
