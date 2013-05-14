@@ -72,7 +72,7 @@ abstract public class AuthUserAgent {
 	}
 
 	/**
-	 * Created GUI and discover an instance of Servicer or create exertion.
+	 * Created GUI and discover an instance of Service or create exertion.
 	 * 
 	 * @param config
 	 * @throws ConfigurationException
