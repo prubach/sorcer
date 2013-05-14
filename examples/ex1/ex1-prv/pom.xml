@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex1</artifactId>
-        <version>11.1</version>
+        <version>13.1</version>
     </parent>
 
     <artifactId>ex1-prv</artifactId>

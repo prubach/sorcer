@@ -153,10 +153,10 @@ To include this file in your custom *-run-buld.xml have the import line:
         <ac:then>
             <!-- jini start classpath -->
             <path id="jini.classpath">
-                <pathelement location="${lib.dir}/river/jsk-platform.jar" />
-                <pathelement location="${lib.dir}/river/jsk-lib.jar" />
+                <pathelement location="${lib.dir}/jini/jsk-platform.jar" />
+                <pathelement location="${lib.dir}/jini/jsk-lib.jar" />
                 <pathelement location="${lib.dir}/river/start.jar" />
-                <pathelement location="${lib.dir}/river/serviceui.jar" />
+                <pathelement location="${lib.dir}/jini-lookup/serviceui.jar" />
                 <pathelement location="${lib.dir}/commons/reference-collections.jar" />
                 <pathelement location="${lib.dir}/commons/high-scale-lib.jar" />
                 <pathelement location="${lib.dir}/commons/slf4j-api.jar" />
@@ -169,15 +169,20 @@ To include this file in your custom *-run-buld.xml have the import line:
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar" />
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
-                <pathelement location="${lib.dir}/river/jsk-resources.jar" />
+                <pathelement location="${lib.dir}/jini/jsk-resources.jar" />
                 <pathelement location="${lib.dir}/rio/rio-platform.jar" />
-                <pathelement location="${lib.dir}/rio/resolver-api.jar" />
-                <pathelement location="${lib.dir}/rio/resolver-aether.jar" />
+                <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar" />
+                <pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar" />
                 <pathelement location="${lib.dir}/rio/rio-start.jar" />
                 <pathelement location="${lib.dir}/commons/groovy-all.jar" />
                 <pathelement location="${lib.dir}/commons/guava.jar" />
                 <pathelement location="${lib.dir}/commons/commons-lang3.jar" />
                 <!--<pathelement location="${lib.dir}/commons/google-collections.jar" />-->
+            </path>
+            <path id="runtime.classpath">
+            </path>
+
+            <path id="requstor.classpath">
             </path>
         </ac:then>
         <ac:else>
