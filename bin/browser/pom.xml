@@ -54,18 +54,6 @@
             <artifactId>serviceui</artifactId>
 	    <version>${v.jini}</version>
         </dependency>
-        <dependency>
-            <groupId>au.net.Zeus</groupId>
-            <artifactId>reference-collections</artifactId>
-            <version>1.0.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.boundary</groupId>
-            <artifactId>high-scale-lib</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>

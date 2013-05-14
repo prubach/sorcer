@@ -43,11 +43,6 @@
             <version>${v.sorcer}</version>
         </dependency>
         <dependency>
-            <groupId>com.boundary</groupId>
-            <artifactId>high-scale-lib</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-webster</artifactId>
             <version>${v.sorcer}</version>

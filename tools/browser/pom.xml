@@ -40,32 +40,20 @@
             <groupId>com.apple</groupId>
             <artifactId>AppleJavaExtensions</artifactId>
             <version>1.4</version>
-        </dependency>
-	<dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-        </dependency>
- 	<dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
-        </dependency>
- 	<dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-	    <version>${v.jini}</version>
-        </dependency>
-        <dependency>
-            <groupId>au.net.Zeus</groupId>
-            <artifactId>reference-collections</artifactId>
-            <version>1.0.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.boundary</groupId>
-            <artifactId>high-scale-lib</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
-            <scope>runtime</scope>
-        </dependency>
+		</dependency>
+		<dependency>
+			<groupId>org.rioproject</groupId>
+			<artifactId>rio-platform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-platform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.jini.lookup</groupId>
+			<artifactId>serviceui</artifactId>
+			<version>${v.jini}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
