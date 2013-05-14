@@ -62,18 +62,18 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	}
 
 	/*
-	 * Returns a @link{Servicer} with the given signtures.
+	 * Returns a @link{Service} with the given signtures.
 	 * 
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
-	public Servicer getServicer(Signature signature) {
+	public Service getServicer(Signature signature) {
 		return getService(signature);
 	}
 
-	public static Servicer getService(Signature signature) {
+	public static Service getService(Signature signature) {
 		ProviderLookup lookup = new ProviderLookup(signature.getProviderName(),
 				signature.getServiceType());
-		return (Servicer) lookup.getService();
+		return (Service) lookup.getService();
 	}
 
 	/**
@@ -114,9 +114,9 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Servicer getProvider(String providerName,
+	public final static Service getProvider(String providerName,
 			String serviceType) {
-		return (Servicer) getService(providerName, serviceType);
+		return (Service) getService(providerName, serviceType);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Servicer getProvider(String serviceType) {
+	public final static Service getProvider(String serviceType) {
 		return getProvider(null, serviceType);
 	}
 

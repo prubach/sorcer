@@ -65,7 +65,7 @@ import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.service.Context;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.service.Task;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
@@ -75,9 +75,9 @@ import sorcer.util.StringUtils;
 import com.sun.jini.start.LifeCycle;
 
 /**
- * The facility for maintaining a cache of all SORCER OS :: providers {@link Servicer}
+ * The facility for maintaining a cache of all SORCER OS :: providers {@link sorcer.service.Service}
  * s as specified by
- * <code>provider.template.match=sorcer.service.Servicer</code> in the
+ * <code>provider.template.match=sorcer.service.Service</code> in the
  * <code>sorcer.env</code> configuration file.
  * <p>
  * <ul>
@@ -167,7 +167,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 	public ServiceTemplate getTemplate() throws RemoteException {
 		String templateMatch = Sorcer.getProperty(P_TEMPLATE_MATCH,
-				"" + sorcer.service.Servicer.class);
+				"" + Service.class);
 		logger.info(P_TEMPLATE_MATCH + ": " + templateMatch);
 		ServiceTemplate template;
 		try {
@@ -212,7 +212,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 					groups, specificLocators, null), null);
 
 			String templateMatch = Sorcer.getProperty(P_TEMPLATE_MATCH,
-					sorcer.service.Servicer.class.getName());
+					Service.class.getName());
 			ServiceTemplate template = new ServiceTemplate(null,
 					new Class[] { Class.forName(templateMatch) }, null);
 			cinfo = new CatalogerInfo();
@@ -827,8 +827,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 					} else
 						serviceName = service.getClass().getName();
 				}
-				// list only interfaces of the Servicer type in package name
-				if (service instanceof Servicer) {
+				// list only interfaces of the Service type in package name
+				if (service instanceof Service) {
 					if (map.get(serviceName) == null) {
 						map.put(serviceName, StringUtils.arrayToString(clazz)
 								+ ";;" + StringUtils.arrayToString(attributes)); // getInterfaceList(clazz,sorcerTypes));
@@ -877,8 +877,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						} else
 							serviceName = service.getClass().getName();
 					}
-					// list only interfaces of the Servicer type in package name
-					if (service instanceof Servicer) {
+					// list only interfaces of the Service type in package name
+					if (service instanceof Service) {
 						if (!toReturn.contains(serviceName)) {
 							toReturn.add(serviceName);
 							// map.put(serviceName,Util.arrayToString(clazz)+";;"+Util.arrayToString(attributes)
@@ -1329,7 +1329,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 								Task task = new NetTask(serviceType
 										+ methodName, method);
 								task.setContext(theContext);
-								NetTask task2 = (NetTask) ((Servicer) temp)
+								NetTask task2 = (NetTask) ((Service) temp)
 										.service(task, null);
 								return task2.getDataContext();
 							} catch (Exception e) {

@@ -180,13 +180,13 @@ public class ProviderAccessor extends ServiceAccessor implements
 		if (providerName != null && providerName.equals(ANY))
 			providerName = null;
 		try {
-			//servicer = (Servicer)ProviderLookup.getService(providerName, serviceType);
+			//servicer = (Service)ProviderLookup.getService(providerName, serviceType);
 			cataloger = getCataloger();
 			if (cataloger != null) {
 				int tryNo = 0;
 				while (tryNo < LUS_REAPEAT) {
 					servicer = cataloger.lookup(providerName, serviceType);
-					//servicer = (Servicer)cataloger.lookupItem(providerName, serviceType).service;
+					//servicer = (Service)cataloger.lookupItem(providerName, serviceType).service;
 					if (servicer != null)
 						break;
 						
@@ -647,7 +647,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * 
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
-	public Servicer getServicer(Signature signature) throws SignatureException {
+	public Service getServicer(Signature signature) throws SignatureException {
 		return getProvider(signature.getProviderName(),
 				signature.getServiceType());
 	}

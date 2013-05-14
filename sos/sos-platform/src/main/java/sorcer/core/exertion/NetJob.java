@@ -24,7 +24,7 @@ import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.util.ExertManager;
+import sorcer.util.ExertProcessor;
 
 import java.rmi.RemoteException;
 
@@ -68,7 +68,7 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
     @Override
     public Job doJob(Transaction txn) throws ExertionException,
             SignatureException, RemoteException, TransactionException {
-        ExertManager esh = new ExertManager(this);
+        ExertProcessor esh = new ExertProcessor(this);
         return (Job)esh.exert(txn, null);
     }
 

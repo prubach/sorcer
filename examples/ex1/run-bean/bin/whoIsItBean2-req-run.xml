@@ -4,10 +4,9 @@
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.ex1.requestor.bean.WhoIsItBeanRequestor2" />
-
 	<property name="run.arg1" value="Bean2-WhoIsIt?" />
+	<import file="req-run.xml" />
 
-	<import file="req-run.xml" />	
 </project>
 
 

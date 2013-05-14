@@ -37,14 +37,20 @@ public class SorcerEnv implements SorcerConstants {
 	/**
 	 * Stores the description of where from the sorcer env was loaded
 	 */
-		
 	protected static String envFrom;
 
-	/**
+    /**
+     * Indicates if Booter is used in this environment.
+     */
+    private static boolean bootable = false;
+
+
+    /**
 	 * Loads the environment from the SORCER file configuration sorcer.env.
 	 */
 	static {
 		loadBasicEnvironment();
+
 	}
 	
 	/**
@@ -454,10 +460,33 @@ public class SorcerEnv implements SorcerConstants {
 		return (host);
 	}
 
+    /**
+     * <p>
+     * Return <code>true</code> is a SORCER {@link sorcer.provider.boot.Booter}
+     * is used, otherwise <code>false</code>,
+     * </p>
+     *
+     * @return the bootable
+     */
+    public static boolean isBootable() {
+        return bootable;
+    }
+
+    /**
+     * <p>
+     * Assigns <code>true</code> by the {@link sorcer.provider.boot.Booter} when
+     * used.
+     * </p>
+     *
+     * @param bootable
+     *            the bootable to set
+     */
+    public static void setBootable(boolean bootable) {
+        SorcerEnv.bootable = bootable;
+    }
+
 	/**
 	 * Library versions
-	 * @param key
-	 * @return
 	 */
 	/*public static String getRiverVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_RIVER, "2.2.1");

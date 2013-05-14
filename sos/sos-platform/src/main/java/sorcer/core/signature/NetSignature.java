@@ -126,7 +126,7 @@ public class NetSignature extends ObjectSignature {
 		attributes.addAll(attributes);
 	}
 
-	public Servicer getServicer() {
+	public Service getServicer() {
 		if (provider == null) return provider;
 		try {
 			// ping provider to see if alive
@@ -145,7 +145,7 @@ public class NetSignature extends ObjectSignature {
 		return provider;
 	}
 
-	public void setServicer(Servicer provider) {
+	public void setServicer(Service provider) {
 		this.provider = (Provider)provider;
 	}
 

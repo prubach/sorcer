@@ -28,7 +28,7 @@ import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * the method calls to the right exposed object. SORCER service beans (objects
  * with methods taking a parameter {@link sorcer.service.Context} and returning
  * {@link sorcer.service.Context} can be used transparently as
- * {@link sorcer.service.Servicer}s with either
+ * {@link sorcer.service.Service}s with either
  * {@link sorcer.core.provider.ServiceProvider} or
  * {@link sorcer.core.provider.bean.ProviderBean}.
  */
@@ -172,7 +172,7 @@ public class SorcerILFactory extends BasicILFactory {
 			if (curr != null && !exposedInterfaces.contains(curr))
 				exposedInterfaces.add(curr);
 		}
-		exposedInterfaces.add(Servicer.class);
+		exposedInterfaces.add(Service.class);
 		exposedInterfaces.add(RemoteMethodControl.class);
 		exposedInterfaces.add(TrustEquivalence.class);
 		// exposedInterfaces.add(net.jini.admin.Administrable.class);
@@ -250,7 +250,7 @@ public class SorcerILFactory extends BasicILFactory {
 					return obj;
 				} else {
 					if (method.getName().equals("service")
-							&& decl == Servicer.class) {
+							&& decl == Service.class) {
 						((ServiceProvider) impl).setServiceComponents(serviceBeanMap);
 					}
 					Object obj = method.invoke(impl, args);

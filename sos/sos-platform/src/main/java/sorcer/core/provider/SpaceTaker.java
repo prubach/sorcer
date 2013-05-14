@@ -34,7 +34,7 @@ import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.loki.exertion.KPExertion;
+import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
@@ -298,7 +298,7 @@ public class SpaceTaker extends Thread implements LeaseListener,
 
 	protected void initDataMember(ExertionEnvelop ee, Transaction txn) {
 		try {
-			KPExertion ckpeRes = (KPExertion) ee.exertion;
+			KPEntry ckpeRes = (KPEntry) ee.exertion;
 			data.myMemberUtil.setGroupSeqId(ckpeRes.GroupSeqId);
 			data.myMemberUtil.takewriteKPExertion(ckpeRes.publicKey,
 					data.entry.serviceType);

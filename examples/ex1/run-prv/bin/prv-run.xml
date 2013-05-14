@@ -4,7 +4,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Running Who Is It Bean" default="run.provider" basedir=".">
+<project name="Running WhoIsIt Provider" default="run.provider" basedir=".">
 
 	<!-- system environment variables -->
 	<property environment="env" />
@@ -28,7 +28,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	  <not><isset property="provider.class" /></not>
 	</condition>
 	
-	<condition property="beans.id" value ="1" >
+	<condition property="beans.id" value ="" >
 	  <not><isset property="beans.id" /></not>
 	</condition>
 

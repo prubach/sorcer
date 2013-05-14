@@ -9,11 +9,10 @@ import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
 import sorcer.service.Jobber;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.ProviderLocator;
 import sorcer.util.ProviderLookup;
-import sorcer.util.Sorcer;
 import sorcer.util.Stopwatch;
 
 /**
@@ -34,7 +33,7 @@ public class ProviderAccessorTest implements SorcerConstants {
 	@Test
 	public void providerAcessorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Servicer provider = ProviderAccessor.getProvider(Jobber.class);
+		Service provider = ProviderAccessor.getProvider(Jobber.class);
 		//logger.info("ProviderAccessor provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
@@ -44,7 +43,7 @@ public class ProviderAccessorTest implements SorcerConstants {
 	@Test
 	public void providerLookupTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Servicer provider = (Servicer)ProviderLookup.getService(Jobber.class);
+		Service provider = (Service)ProviderLookup.getService(Jobber.class);
 		//logger.info("ProviderLookup provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
@@ -54,7 +53,7 @@ public class ProviderAccessorTest implements SorcerConstants {
 	@Test
 	public void providerLookatorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Servicer provider = (Servicer)ProviderLocator.getService(Jobber.class);
+		Service provider = (Service)ProviderLocator.getService(Jobber.class);
 		//logger.info("ProviderLocator provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);

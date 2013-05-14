@@ -16,6 +16,9 @@
  */
 package sorcer.provider.boot;
 
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,17 +26,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import sorcer.core.SorcerConstants;
-import sorcer.resolver.Resolver;
-import sorcer.util.ArtifactCoordinates;
 
 
 /**
@@ -74,7 +69,8 @@ public class Booter implements SorcerConstants {
 		} catch (IOException e) {
 			logger.severe("Cannot load the SORCER environment");
 		}
-	}
+        SorcerEnv.setBootable(true);
+    }
 
 	/** This class cannot be instantiated. */
 	private Booter() {

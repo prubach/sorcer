@@ -162,7 +162,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 		Class serviceType = exertion.getProcessSignature()
 				.getServiceType();
 
-		Servicer provider = ProviderAccessor.getProvider(providerName,
+		Service provider = ProviderAccessor.getProvider(providerName,
 				serviceType, codebase);
 
 		try {

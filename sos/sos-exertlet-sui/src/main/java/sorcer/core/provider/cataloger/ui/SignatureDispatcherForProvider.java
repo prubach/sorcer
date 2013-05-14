@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -36,6 +37,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
+import sorcer.service.Service;
 import sorcer.service.Task;
 
 /**
@@ -48,6 +50,9 @@ import sorcer.service.Task;
  * 
  */
 public class SignatureDispatcherForProvider implements SignatureDispatchment {
+
+	protected static final Logger logger = Logger
+			.getLogger(SignatureDispatcherForProvider.class.getName());
 	/**
 	 * The Cataloger service object. Passed in by constructor from CatalogerUI
 	 * class
@@ -449,7 +454,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 			Task task = new NetTask(model.getSelectedInterfaceName()
 					+ model.getSelectedMethod(), method);
 			task.setContext(theContext);
-			NetTask task2 = (NetTask) provider.service(task,
+			NetTask task2 = (NetTask) ((Service) provider).service(task,
 					null);
 			return task2.getDataContext();
 		} catch (Exception e) {

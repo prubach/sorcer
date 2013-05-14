@@ -13,7 +13,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.ShellStarter;
-import sorcer.util.ExertManager;
+import sorcer.util.ExertProcessor;
 
 	public class ScriptThread extends Thread {
 		private String script;
@@ -46,7 +46,7 @@ import sorcer.util.ExertManager;
 				}
 			}
 			if (target instanceof Exertion) {
-				ExertManager esh = new ExertManager((Exertion) target);
+				ExertProcessor esh = new ExertProcessor((Exertion) target);
 				try {
 					result = esh.exert();
 				} catch (RemoteException e) {

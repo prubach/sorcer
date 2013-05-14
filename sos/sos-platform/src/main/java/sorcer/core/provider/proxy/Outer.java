@@ -18,7 +18,7 @@
 package sorcer.core.provider.proxy;
 
 import net.jini.admin.Administrable;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -29,7 +29,7 @@ import java.rmi.RemoteException;
  * 
  * @author Mike Sobolewski
  */
-public interface Outer extends Administrable, Servicer {
+public interface Outer extends Administrable, Service {
 
 	/**
 	 * Returns the inner proxy of this provider. Inner proxies can be provided

@@ -82,7 +82,7 @@ import java.util.logging.Logger;
  * injection defined by a Jini 2 configuration, proxy management, and own
  * service discovery management for registering its proxies. In the simplest
  * case, the provider exports and registers its own (outer) proxy with the
- * primary method {@link Servicer#service(Exertion, Transaction)}. The functionality of an
+ * primary method {@link sorcer.service.Service#service(Exertion, Transaction)}. The functionality of an
  * outer proxy can be extended by its inner server functionality with its Remote
  * inner proxy. In this case, the outer proxies have to implement {@link sorcer.core.provider.proxy.Outer}
  * interface and each outer proxy is registered with the inner proxy allocated
@@ -1783,41 +1783,41 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		delegate.changed(context, aspect);
 	}
 
-	/**
-	 * Destroy the service, if possible, including its persistent storage.
-	 * 
-	 * @see Provider#destroy()
-	 */
-	public void destroy() throws RemoteException {
-		logger.log(Level.INFO, "Destroying service " + getProviderName());
-		if (ldmgr != null)
-			ldmgr.terminate();
-		if (joinManager != null)
-			joinManager.terminate();
-		tally = tally - 1;
-		logger.info("destroyed provider: " + getProviderName() + ", providers left: " + tally);
-		if (threadManager != null)
-			threadManager.terminate();
+    /**
+     * Destroy the service, if possible, including its persistent storage.
+     *
+     * @see Provider#destroy()
+     */
+    public void destroy() throws RemoteException {
+        logger.log(Level.INFO, "Destroying service " + getProviderName());
+        if (ldmgr != null)
+            ldmgr.terminate();
+        if (joinManager != null)
+            joinManager.terminate();
+        tally = tally - 1;
+        logger.info("destroyd provider: " + getProviderName() + ", providers left: " + tally);
+        if (threadManager != null)
+            threadManager.terminate();
 
-		if (tally == 0) {
-			ProviderAccessor.terminateDiscovery();
-			if (Webster.getWebster() != null) {
-				Webster.getWebster().terminate();
-			}
-			// option for service nodes size > 1
-			// allows for discarding cpmplementarory, not SORCER services 
-			if (size > 1)
-				System.exit(0);
-		} 
-		
-		unexport(true);
-		if (lifeCycle != null) {
-			lifeCycle.unregister(this);
-		}
+        unexport(true);
         delegate.destroy();
-		// stop KeepAwake thread
-		running = false;
-	}
+        if (lifeCycle != null) {
+            lifeCycle.unregister(this);
+        }
+
+        if (tally == 0) {
+            ProviderAccessor.terminateDiscovery();
+            if (Webster.getWebster() != null) {
+                Webster.getWebster().terminate();
+            }
+            // option for service nodes size > 1
+            // allows for discarding cpmplementarory, not SORCER services
+            if (Sorcer.isBootable() && size > 1)
+                System.exit(0);
+        }
+        // stop KeepAwake thread
+        running = false;
+    }
 	
 	/**
 	 * Destroy all services in this node (virtual machine) by calling each

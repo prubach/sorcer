@@ -34,13 +34,13 @@ import java.util.logging.Logger;
 
 /**
  * This is an interface that defines how a provider interacts with other code 
- * the through the methods that are exposed. It extends {@link sorcer.service.Servicer},
+ * the through the methods that are exposed. It extends {@link sorcer.service.Service},
  * {@link sorcer.core.Monitorable}, and {@link java.rmi.Remote}.
- * @see sorcer.service.Servicer
+ * @see sorcer.service.Service
  * @see sorcer.core.Monitorable
  * @see java.rmi.Remote
  */
-public interface Provider extends Servicer, Monitorable, Remote {
+public interface Provider extends Service, Monitorable, Remote {
 
 	public String getProviderName() throws RemoteException;
 	

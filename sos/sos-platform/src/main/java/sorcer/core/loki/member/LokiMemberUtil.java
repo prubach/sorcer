@@ -9,8 +9,8 @@ import sorcer.core.context.ArrayContext;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.crypt.EncryptionManagement;
 import sorcer.core.loki.crypt.EncryptionManager;
-import sorcer.core.loki.exertion.CCKExertion;
-import sorcer.core.loki.exertion.KPExertion;
+import sorcer.core.loki.exertion.CCKEntry;
+import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.group.GroupManagement;
 import sorcer.core.loki.key.KeyGenerationManagement;
 import sorcer.core.loki.key.KeyGenerator;
@@ -106,7 +106,7 @@ public class LokiMemberUtil
 	
 	//------------------------------------------------------------------------------------------------------------
 	
-	public CCKExertion readCCK(Class serviceType)
+	public CCKEntry readCCK(Class serviceType)
 	{
 		try
 		{
@@ -126,7 +126,7 @@ public class LokiMemberUtil
 	        { logger.info(printEE("LOOKING FOR CCK EXERTION",cckeeTemp)); }
 			
 			ExertionEnvelop cckeeRes = (ExertionEnvelop)space.read(cckeeTemp,null,Lease.FOREVER);
-			CCKExertion cckeRes = (CCKExertion)cckeeRes.exertion;
+			CCKEntry cckeRes = (CCKEntry)cckeeRes.exertion;
 			
 			if(debug)
 			{
@@ -147,7 +147,7 @@ public class LokiMemberUtil
 		return null;
 	}
 	
-	public KPExertion readKP(Class serviceType,Vector<Uuid> ids,Vector<KeyPair> r_pairs)
+	public KPEntry readKP(Class serviceType,Vector<Uuid> ids,Vector<KeyPair> r_pairs)
 	{
 		try
 		{
@@ -166,7 +166,7 @@ public class LokiMemberUtil
 		    { logger.info(printEE("LOOKING FOR KEY PAIR EXERTION",kpeeTemp)); }
 	
 			ExertionEnvelop kpeeRes = (ExertionEnvelop)space.read(kpeeTemp,null,Lease.FOREVER);
-	    	KPExertion kpeRes = (KPExertion)kpeeRes.exertion;
+	    	KPEntry kpeRes = (KPEntry)kpeeRes.exertion;
 	
 	    	//--------------------------------------
 	    	KeyGenerator kg = new KeyGenerator();
@@ -192,7 +192,7 @@ public class LokiMemberUtil
 		return null;
 	}
 	
-	public CCKExertion takeCCK(Class serviceType)
+	public CCKEntry takeCCK(Class serviceType)
 	{
 		try
 		{
@@ -212,7 +212,7 @@ public class LokiMemberUtil
 	        { logger.info(printEE("LOOKING FOR CCK EXERTION",cckeeTemp)); }
 			
 			ExertionEnvelop cckeeRes = (ExertionEnvelop)space.take(cckeeTemp,null,Lease.FOREVER);
-			CCKExertion cckeRes = (CCKExertion)cckeeRes.exertion;
+			CCKEntry cckeRes = (CCKEntry)cckeeRes.exertion;
 			
 			if(debug)
 			{
@@ -233,7 +233,7 @@ public class LokiMemberUtil
 		return null;
 	}
 	
-	public KPExertion takeKP(Class serviceType,Vector<Uuid> ids,Vector<KeyPair> r_pairs)
+	public KPEntry takeKP(Class serviceType,Vector<Uuid> ids,Vector<KeyPair> r_pairs)
 	{
 		try
 		{
@@ -252,7 +252,7 @@ public class LokiMemberUtil
 		    { logger.info(printEE("LOOKING FOR KEY PAIR EXERTION",kpeeTemp)); }
 	
 			ExertionEnvelop kpeeRes = (ExertionEnvelop)space.take(kpeeTemp,null,Lease.FOREVER);
-	    	KPExertion kpeRes = (KPExertion)kpeeRes.exertion;
+	    	KPEntry kpeRes = (KPEntry)kpeeRes.exertion;
 	
 	    	//--------------------------------------
 	    	KeyGenerator kg = new KeyGenerator();
@@ -305,13 +305,13 @@ public class LokiMemberUtil
 	    	cckEE.serviceType = serviceType;
 	    	space.takeIfExists(cckEE,null,Lease.FOREVER);
 	        
-	    	cckEE.exertion = CCKExertion.get(myKeyGen.genCompoundKeys(ids,r_pairs));
+	    	cckEE.entry = CCKEntry.get(myKeyGen.genCompoundKeys(ids, r_pairs));
 	        space.write(cckEE,null,Lease.FOREVER);
 	        
 	        if(debug)
 	        { logger.info(printEE("COMPLIMENTARY COMPOUND KEY EXERTION CONTAINS",cckEE)); }
 			
-			myCryptMan.init(myKeyGen.genSharedKey(myKeyAgreement,((CCKExertion)cckEE.exertion).ccKeys.get(myUID)));
+			myCryptMan.init(myKeyGen.genSharedKey(myKeyAgreement,((CCKEntry)cckEE.exertion).ccKeys.get(myUID)));
 			
 			return cckEE;
 		}
@@ -394,7 +394,7 @@ public class LokiMemberUtil
 	        ckpee.exertionID = UuidFactory.generate();
 			space.takeIfExists(ckpee,null,Lease.FOREVER);
 			
-	        ckpee.exertion = KPExertion.get(true,null,myKeyPair.getPublic(),groupSeqId);
+	        ckpee.entry = KPEntry.get(true, null, myKeyPair.getPublic(), groupSeqId);
 			space.write(ckpee,null,Lease.FOREVER);
 			
 			if(debug)
@@ -471,7 +471,7 @@ public class LokiMemberUtil
 			kpEE.serviceType = serviceType;
 	        kpEE.exertionID = myUID;
 	    	space.takeIfExists(kpEE,null,Lease.FOREVER);
-	        kpEE.exertion = KPExertion.get(false,enCipher.doFinal(l_baos.toByteArray()),myKeyPair.getPublic(),groupName);
+	        kpEE.entry = KPEntry.get(false, enCipher.doFinal(l_baos.toByteArray()), myKeyPair.getPublic(), groupName);
 	        space.write(kpEE,null,Lease.FOREVER);
 			
 	        if(debug)

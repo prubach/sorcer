@@ -50,7 +50,7 @@ import sorcer.service.Job;
 import sorcer.service.Jobber;
 import sorcer.service.Parameter;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.service.Spacer;
@@ -61,8 +61,8 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ExertManager implements Exerter, Callable {
-	protected final static Logger logger = Logger.getLogger(ExertManager.class
+public class ExertProcessor implements Exerter, Callable {
+	protected final static Logger logger = Logger.getLogger(ExertProcessor.class
 			.getName());
 
 	private ServiceExertion exertion;
@@ -70,14 +70,14 @@ public class ExertManager implements Exerter, Callable {
 	private static MutualExclusion locker;
 	//private ProvisionManager provisionManager;
 
-	public ExertManager() {
+	public ExertProcessor() {
 	}
 	
-	public ExertManager(Exertion xrt) {
+	public ExertProcessor(Exertion xrt) {
 		exertion = (ServiceExertion) xrt;
 	}
 
-	public ExertManager(Exertion xrt, Transaction txn) {
+	public ExertProcessor(Exertion xrt, Transaction txn) {
 		exertion = (ServiceExertion) xrt;
 		transaction = txn;
 
@@ -153,7 +153,7 @@ public class ExertManager implements Exerter, Callable {
 		Context<?> cxt = exertion.getContext();
 		cxt.setExertion(exertion);
 		Signature signature = exertion.getProcessSignature();
-		Servicer provider = null;
+		Service provider = null;
 		try {
 			if (!(signature instanceof NetSignature)) {
 				if (exertion instanceof Task) {

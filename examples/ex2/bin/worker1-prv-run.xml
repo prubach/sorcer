@@ -9,7 +9,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<property name="provider.name" value="worker" />
 	<property name="provider.class" value="sorcer.ex2.provider.WorkerProvider" />
 	<property name="beans.id" value="1" />
-	
+
 	<property name="pom.file" value="../ex2-prv/pom.xml" />
 	<import file="../ex2-prv/prv-run.xml" />
 

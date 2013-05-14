@@ -1,13 +1,16 @@
 <?xml version="1.0"?>
 
-<project name="Who Is It? requestor" default="run.requestor" basedir=".">
+<project name="Who Is It? push job" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
 	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItPushJobRequestor" />
 
 	<property name="run.arg1" value="XYZ" />
+
 	<property name="run.arg2" value="ABC" />
+
 	<property name="run.arg3" value="Spacer" />
+
 	<import file="req-run.xml" />
 
 </project>

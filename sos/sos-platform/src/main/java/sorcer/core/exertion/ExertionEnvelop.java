@@ -47,7 +47,9 @@ public class ExertionEnvelop implements Entry {
 
 	public Exertion exertion;
 
-	public byte[] encryptedExertion;
+    public Entry entry;
+
+    public byte[] encryptedExertion;
 
 	public Subject providerSubject;
 

@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import com.sun.jini.config.ConfigUtil;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
 import org.apache.commons.lang3.StringUtils;
@@ -500,7 +499,7 @@ public class SorcerDescriptorUtil {
     /**
      * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
      * {@link sorcer.core.provider.ServiceTasker} with beaned
-     * {@link sorcer.util.ExertManager}, called Exerter.
+     * {@link sorcer.util.ExertProcessor}, called Exerter.
      *
      * @param policy
      *            The security policy file to use
@@ -509,7 +508,7 @@ public class SorcerDescriptorUtil {
      * @param port
      *            The port to use when constructing the codebase
      * @param exerterConfig
-     *            The configuration options the ExertManager provider will use
+     *            The configuration options the ExertProcessor provider will use
      * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
      *         Exerter using an anonymous port. The <tt>sorcer-prv.jar</tt> file
      *         will be loaded from <tt>iGrid.home/lib/sorcer/lib</tt>

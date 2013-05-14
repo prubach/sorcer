@@ -28,6 +28,7 @@ import sorcer.service.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.rpc.*;
+import javax.xml.rpc.Service;
 import java.rmi.RemoteException;
 import java.util.Set;
 

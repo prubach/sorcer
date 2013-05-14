@@ -17,7 +17,7 @@ import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.util.Sorcer;
@@ -57,7 +57,7 @@ public class CalculatorUI extends JPanel implements ActionListener {
 	private ServiceItem item;
 
 	// SORCER provider or semismart proxy Service#service(Exertion)
-	private Servicer provider;
+	private Service provider;
 
 	/** Creates new CalulatorUI Component */
 	public CalculatorUI(Object obj) {

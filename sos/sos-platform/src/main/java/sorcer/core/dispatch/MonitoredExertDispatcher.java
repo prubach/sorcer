@@ -175,7 +175,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 		ExertDispatcher.logger.log(Level.INFO, "start executing task");
 		try {
-			Servicer provider = ProviderAccessor.getProvider(task
+			Service provider = ProviderAccessor.getProvider(task
 					.getProcessSignature().getProviderName(), task
 					.getServiceType());
 			ExertDispatcher.logger.log(Level.INFO, "got a provider:" + provider);

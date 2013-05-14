@@ -4,8 +4,8 @@
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.ex2.requestor.WorkerTaskRequestor" />
-	
 	<property name="pom.file" value="../ex2-req/pom.xml" />
+
 	<import file="../ex2-req/req-run.xml" />	
 	<property name="ex2-req.arg1" value="Worker1" />
 	

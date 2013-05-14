@@ -19,6 +19,7 @@ package sorcer.core.grid.provider.dispatcher;
 
 import java.rmi.RMISecurityManager;
 
+import sorcer.service.Service;
 import sorcer.util.Sorcer;
 
 import net.jini.core.lookup.ServiceItem;
@@ -47,7 +48,7 @@ public class TestCaller {
 	try {
 	    LookupDiscovery disco = new LookupDiscovery(Sorcer.getLookupGroups());
 	    sdm = new ServiceDiscoveryManager(disco, new LeaseRenewalManager());
-	    lCache1 = sdm.createLookupCache(new ServiceTemplate(null, new Class[] { sorcer.service.Servicer.class} , null),
+	    lCache1 = sdm.createLookupCache(new ServiceTemplate(null, new Class[] { Service.class} , null),
 					    null,  null);    
 	}catch (Exception e) {
 	    e.printStackTrace();
