@@ -16,56 +16,8 @@
  */
 package sorcer.core.provider;
 
-import static sorcer.eo.operator.sig;
+import com.sun.jini.config.Config;
 import groovy.lang.GroovyShell;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.server.ExportException;
-import java.security.AccessControlContext;
-import java.security.AccessControlException;
-import java.security.AccessController;
-import java.security.Principal;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
-import javax.security.auth.Subject;
-
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
@@ -87,12 +39,8 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import sorcer.core.AccessDeniedException;
+import sorcer.core.*;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerNotifierProtocol;
-import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
@@ -117,31 +65,38 @@ import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Configurable;
-import sorcer.service.Configurator;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Jobber;
-import sorcer.service.MonitorException;
-import sorcer.service.MonitoringSession;
-import sorcer.service.Parameter;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Service;
+import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.service.Task;
 import sorcer.util.*;
-import sorcer.util.ExertProcessor;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 import sorcer.util.dbac.SocketProtocol;
 
-import com.sun.jini.config.Config;
+import javax.security.auth.Subject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
+import java.security.*;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.*;
+
+import static sorcer.eo.operator.sig;
 
 /**
  * The provider delegate implements most of the intialization and configuration
@@ -409,7 +364,7 @@ public class ProviderDelegate implements SorcerConstants {
 		// set provider join groups if defined in provider's properties
 		groupsToDiscover = Sorcer.getLookupGroups();
 		logger.info("ServiceProvider:groups to discover="
-				+ SorcerUtil.arrayToString(groupsToDiscover));
+                + StringUtils.arrayToString(groupsToDiscover));
 		// set provider space group if defined in provider's properties
 		spaceGroup = config.getProperty(J_SPACE_GROUP, Sorcer.getSpaceGroup());
 		// set provider space name if defined in provider's properties
@@ -1409,7 +1364,7 @@ public class ProviderDelegate implements SorcerConstants {
 				result = (Context) execMethod.invoke(provider, args);
 			} else {
 				((ServiceContext) sc).setReturnValue(execMethod.invoke(
-						provider, args));
+                        provider, args));
 				result = sc;
 			}
 			return result;
@@ -1503,7 +1458,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @throws Exception
 	 */
 	public boolean deleteDir(File dir) throws Exception {
-		return SorcerUtil.deleteDir(dir);
+        return IOUtil.deleteDir(dir);
 	}
 
 	/**
@@ -1618,7 +1573,7 @@ public class ProviderDelegate implements SorcerConstants {
 			Subject subject = Subject.getSubject(context);
 			// logger.finer("The subject in Provider Delegate is: " + subject);
 		} catch (Exception ex) {
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+            logger.warning(StringUtils.stackTraceToString(ex));
 		}
 
 		// This construct may look strange. But it ensures that this class loads
@@ -1669,7 +1624,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.repository = config.getDataDir();
 			serviceType.shortDescription = config.getProperty(P_DESCRIPTION);
 			serviceType.location = config.getProperty(P_LOCATION);
-			serviceType.groups = SorcerUtil.arrayToCSV(groupsToDiscover);
+            serviceType.groups = StringUtils.arrayToCSV(groupsToDiscover);
 			serviceType.spaceGroup = spaceGroup;
 			serviceType.spaceName = spaceName;
 			serviceType.puller = spaceEnabled;
@@ -1696,7 +1651,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.serviceID = provider.getProviderID();
 		} catch (Exception ex) {
 			logger.warning("Some problem in accessing attributes");
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+            logger.warning(StringUtils.stackTraceToString(ex));
 		}
 		String hostName = null, hostAddress = null;
 		hostName = config.getProviderHostName();
@@ -1928,9 +1883,9 @@ public class ProviderDelegate implements SorcerConstants {
 				if (protocol == null)
 					createProtocol();
 				return ((ProxyProtocol) protocol).isAuthorized(
-						(SorcerPrincipal) principal, ((NetSignature) task
-								.getProcessSignature()).getServiceType(),
-						config.getProviderName());
+                        (SorcerPrincipal) principal, ((NetSignature) task
+                        .getProcessSignature()).getServiceType(),
+                        config.getProviderName());
 			}
 		}
 		return false;
@@ -1979,12 +1934,12 @@ public class ProviderDelegate implements SorcerConstants {
 			message = "NO MESSAGE OR EXCEPTION PASSED";
 		else if (message == null && e != null) {
 			if (fullStackTrace)
-				message = SorcerUtil.stackTraceToString(e);
+                message = StringUtils.stackTraceToString(e);
 			else
 				message = e.getMessage();
 		} else {
 			if (fullStackTrace)
-				message = message + " " + SorcerUtil.stackTraceToString(e);
+                message = StringUtils.stackTraceToString(e);
 			else
 				message = message + " " + e.getMessage();
 		}
@@ -2510,7 +2465,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_WEBSTER_PORT, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+                val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_GROUPS, String[].class));
 			} catch (ConfigurationException e3) {
 				val = null;
@@ -2537,7 +2492,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_SPACE_NAME, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+                val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_LOCATORS, String[].class));
 			} catch (ConfigurationException e) {
 				val = null;
@@ -2871,7 +2826,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	private Object instantiateScriplet(String scripletFilename)
 			throws Exception {
-		String[] tokens = SorcerUtil.tokenize(scripletFilename, "|");
+        String[] tokens = StringUtils.tokenize(scripletFilename, "|");
 		Object bean = null;
 		Object configurator = null;
 		GroovyShell shell = null;

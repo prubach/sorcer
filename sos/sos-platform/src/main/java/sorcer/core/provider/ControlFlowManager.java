@@ -157,11 +157,11 @@ public class ControlFlowManager {
 					logger.info("********************************************* exertion Conditional");
 					result = doConditional(exertion);
 					logger.info("********************************************* exertion Conditional; result: " + result);
-				} else if (((ServiceExertion) exertion).isJob()) {
+                } else if (exertion.isJob()) {
 					logger.info("********************************************* exertion isJob()");
 					result = doRendezvousExertion((Job) exertion);
 					logger.info("********************************************* exertion isJob(); result: " + result);
-				} else if (((ServiceExertion) exertion).isTask()) {
+                } else if (exertion.isTask()) {
 					logger.info("********************************************* exertion isTask()");
 					result = doTask((Task) exertion);
 					logger.info("********************************************* exertion isTask(); result: " + result);
@@ -422,7 +422,7 @@ public class ControlFlowManager {
 				Class providerType = ((NetSignature) method)
 						.getServiceType();
 				String codebase = ((NetSignature) method).getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+                Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
@@ -475,7 +475,7 @@ public class ControlFlowManager {
 				Class providerType = ((NetSignature) method)
 						.getServiceType();
 				String codebase = ((NetSignature) method).getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
@@ -641,7 +641,7 @@ public class ControlFlowManager {
 				Class providerType = ((NetSignature) method)
 						.getServiceType();
 				String codebase = ((NetSignature) method).getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 
 				return provider.service(exertion, null);
@@ -682,7 +682,7 @@ public class ControlFlowManager {
 				Class providerType = ((NetSignature) method)
 						.getServiceType();
 				String codebase = ((NetSignature) method).getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
