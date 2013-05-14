@@ -7,13 +7,13 @@
     <artifactId>sorcer-root</artifactId>
     <packaging>pom</packaging>
     <name>SORCER Project</name>
-    <version>11.1</version>
+    <version>13.1</version>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
     <inceptionYear>2013</inceptionYear>
 
     <properties>
-        <v.sorcer>11.1</v.sorcer>
+        <v.sorcer>13.1</v.sorcer>
         <v.jini>2.2.1</v.jini>
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>

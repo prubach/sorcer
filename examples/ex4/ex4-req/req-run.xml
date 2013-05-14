@@ -11,7 +11,7 @@
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex4-req" />
 	<property name="requestor.api" value="ex2-api" />
-	<property name="requestor.version" value="11.1" />
+	<property name="requestor.version" value="13.1" />
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">

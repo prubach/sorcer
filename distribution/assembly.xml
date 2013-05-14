@@ -4,7 +4,7 @@
          and zip name -->
     <formats>
         <format>dir</format>
-        <!--<format>zip</format>-->
+        <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
@@ -21,16 +21,6 @@
         </file>
     </files>
     <fileSets>
-
-<!--        <fileSet>
-            <directory>${basedir}/..</directory>
-            <includes>
-                <include>LICENSE.txt</include>
-                <include>NOTICE.txt</include>
-                <include>index.html</include>
-            </includes>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>-->
 
         <!-- docs directory -->
 <!--
@@ -55,6 +45,8 @@
             <excludes>
                 <exclude>pom.xml</exclude>
                 <exclude>*.iml</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*/*.iml</exclude>
                 <exclude>first/**</exclude>
                 <exclude>first</exclude>
             </excludes>
@@ -64,8 +56,19 @@
             <directory>${basedir}/src/main/examples</directory>
             <outputDirectory>/examples</outputDirectory>
             <includes>
+                <include>prepare-repository.xml</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/examples</directory>
+            <outputDirectory>/examples</outputDirectory>
+            <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+               <exclude>prepare-repository.xml</exclude>
+            </excludes>
             <filtered>true</filtered>
         </fileSet>
 
@@ -90,6 +93,7 @@
             <excludes>
                 <exclude>sorcer.env</exclude>
                 <exclude>sorcer.logging</exclude>
+                <exclude>versions.properties</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -99,7 +103,18 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+                <exclude>versions.properties</exclude>
+            </excludes>
             <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/configs</directory>
+            <outputDirectory>/configs</outputDirectory>
+            <includes>
+                <include>versions.properties</include>
+            </includes>
+            <filtered>true</filtered>
         </fileSet>
 
         <!-- bin files -->
@@ -203,11 +218,29 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>net.jini:*</include>
-                <include>net.jini.lookup:*</include>
                 <include>org.apache.river:*</include>
             </includes>
             <outputDirectory>lib/${org.apache.river}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- Jini libs -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>net.jini:*</include>
+            </includes>
+            <outputDirectory>lib/${net.jini}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- Jini libs -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>net.jini.lookup:*</include>
+            </includes>
+            <outputDirectory>lib/${net.jini.lookup}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
@@ -235,10 +268,19 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useStrictFiltering>true</useStrictFiltering>
             <includes>
-                <include>org.rioproject.resolver:*</include>
                 <include>org.rioproject:*</include>
             </includes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.rioproject.resolver:*</include>
+            </includes>
+            <outputDirectory>lib/${org.rioproject.resolver}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
