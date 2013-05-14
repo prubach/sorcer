@@ -429,7 +429,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 						new Class[] { Class.forName("sorcer.service.Caller") },
 						null, getLookupGroups());
 
-			return (Caller) caller;
+			return caller;
 		} catch (Exception e) {
 			// Just Report and exit
 			e.printStackTrace();

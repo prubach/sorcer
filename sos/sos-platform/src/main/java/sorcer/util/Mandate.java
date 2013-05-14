@@ -79,7 +79,7 @@ public class Mandate implements Serializable {
 		StringBuffer sb = new StringBuffer("Mandate: \n");
 		sb.append("commandID=" + commandID + "\n");
 		sb.append("results=" + results + "\n");
-		sb.append("args=" + SorcerUtil.arrayToString(args) + "\n");
+		sb.append("args=" + StringUtils.arrayToString(args) + "\n");
 		sb.append("principal=" + principal);
 		return sb.toString();
 	}

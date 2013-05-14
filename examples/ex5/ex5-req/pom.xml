@@ -30,17 +30,17 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>
+        	<version>${v.sorcer}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>commons-req</artifactId>
-			<version>${project.version}</version>
+			<version>${v.sorcer}</version>
 		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-boot</artifactId>
-            <version>${project.version}</version>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
             <groupId>com.boundary</groupId>
@@ -50,11 +50,12 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-webster</artifactId>
-            <version>${project.version}</version>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>

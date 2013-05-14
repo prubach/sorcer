@@ -193,7 +193,7 @@ public abstract class Job extends ServiceExertion {
 		} else {
 			Exertion master = null;
 			for (int i = 0; i < size(); i++) {
-				if (((ServiceExertion) exertionAt(i)).getId().equals(
+				if (exertionAt(i).getId().equals(
 						contextName)) {
 					master = exertionAt(i);
 					break;
@@ -437,7 +437,7 @@ public abstract class Job extends ServiceExertion {
 		ServiceContext cxt = new ServiceContext(name);
 		cxt.setSubject("job/control/context", name);
 		
-		return linkControlContext(cxt,  getName());
+		return linkControlContext(cxt, getName());
 	}
 
 	@Override

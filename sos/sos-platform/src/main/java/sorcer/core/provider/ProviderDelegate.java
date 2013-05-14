@@ -138,6 +138,7 @@ import sorcer.service.Task;
 import sorcer.util.AccessorException;
 import sorcer.util.ExertManager;
 import sorcer.util.GenericUtil;
+import sorcer.util.IOUtil;
 import sorcer.util.Log;
 import sorcer.util.Mandator;
 import sorcer.util.ObjectLogger;
@@ -145,7 +146,7 @@ import sorcer.util.ProviderAccessor;
 import sorcer.util.ProviderLocator;
 import sorcer.util.ProviderLookup;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 import sorcer.util.dbac.SocketProtocol;
@@ -358,29 +359,29 @@ public class ProviderDelegate implements SorcerConstants {
 		};
 
 		public static void add(ServiceExertion ex) {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			esb.exertionID = ex.getId();
-			esb.session = (MonitoringSession) ex.getMonitorSession();
+			esb.session = ex.getMonitorSession();
 			if (ex.getMonitorSession() != null)
 				lrm.renewUntil(
-						((MonitoringSession) ex.getMonitorSession()).getLease(),
+						ex.getMonitorSession().getLease(),
 						Lease.ANY, null);
 		}
 
 		public static MonitoringSession getSession() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.session : null;
 		}
 
 		public static Uuid getID() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.exertionID : null;
 		}
 
 		public static void removeLease() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			try {
-				lrm.remove(((MonitoringSession) esb.session).getLease());
+				lrm.remove(esb.session.getLease());
 			} catch (Exception e) {
 			}
 		}
@@ -418,7 +419,7 @@ public class ProviderDelegate implements SorcerConstants {
 		// set provider join groups if defined in provider's properties
 		groupsToDiscover = Sorcer.getLookupGroups();
 		logger.info("ServiceProvider:groups to discover="
-				+ SorcerUtil.arrayToString(groupsToDiscover));
+				+ StringUtils.arrayToString(groupsToDiscover));
 		// set provider space group if defined in provider's properties
 		spaceGroup = config.getProperty(J_SPACE_GROUP, Sorcer.getSpaceGroup());
 		// set provider space name if defined in provider's properties
@@ -1206,9 +1207,9 @@ public class ProviderDelegate implements SorcerConstants {
 			} else {
 				obj = m.invoke(impl, args);
 			}
-			((ServiceContext) result).setReturnValue(obj);
+			result.setReturnValue(obj);
 		} else {
-			((ServiceContext) result).setReturnValue(m.invoke(impl, args));
+			result.setReturnValue(m.invoke(impl, args));
 		}
 		return result;
 	}
@@ -1417,7 +1418,7 @@ public class ProviderDelegate implements SorcerConstants {
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
 			} else {
-				((ServiceContext) sc).setReturnValue(execMethod.invoke(
+				sc.setReturnValue(execMethod.invoke(
 						provider, args));
 				result = sc;
 			}
@@ -1512,7 +1513,7 @@ public class ProviderDelegate implements SorcerConstants {
 	 * @throws Exception
 	 */
 	public boolean deleteDir(File dir) throws Exception {
-		return SorcerUtil.deleteDir(dir);
+		return IOUtil.deleteDir(dir);
 	}
 
 	/**
@@ -1627,7 +1628,7 @@ public class ProviderDelegate implements SorcerConstants {
 			Subject subject = Subject.getSubject(context);
 			// logger.finer("The subject in Provider Delegate is: " + subject);
 		} catch (Exception ex) {
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 
 		// This construct may look strange. But it ensures that this class loads
@@ -1663,7 +1664,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 		attrVec.addAll(extraLookupAttributes);
 
-		return (Entry[]) attrVec.toArray(new Entry[] {});
+		return attrVec.toArray(new Entry[] {});
 	}
 
 	/**
@@ -1678,7 +1679,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.repository = config.getDataDir();
 			serviceType.shortDescription = config.getProperty(P_DESCRIPTION);
 			serviceType.location = config.getProperty(P_LOCATION);
-			serviceType.groups = SorcerUtil.arrayToCSV(groupsToDiscover);
+			serviceType.groups = StringUtils.arrayToCSV(groupsToDiscover);
 			serviceType.spaceGroup = spaceGroup;
 			serviceType.spaceName = spaceName;
 			serviceType.puller = spaceEnabled;
@@ -1705,7 +1706,7 @@ public class ProviderDelegate implements SorcerConstants {
 			serviceType.serviceID = provider.getProviderID();
 		} catch (Exception ex) {
 			logger.warning("Some problem in accessing attributes");
-			logger.warning(SorcerUtil.stackTraceToString(ex));
+			logger.warning(StringUtils.stackTraceToString(ex));
 		}
 		String hostName = null, hostAddress = null;
 		hostName = config.getProviderHostName();
@@ -1903,7 +1904,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 			}
 		}
-		Class st = ((NetSignature) task.getProcessSignature()).getServiceType();
+		Class st = task.getProcessSignature().getServiceType();
 
 		if (publishedServiceTypes == null) {
 			servicetask.getDataContext().reportException(
@@ -1936,9 +1937,9 @@ public class ProviderDelegate implements SorcerConstants {
 					return true;
 				if (protocol == null)
 					createProtocol();
-				return ((ProxyProtocol) protocol).isAuthorized(
-						(SorcerPrincipal) principal, ((NetSignature) task
-								.getProcessSignature()).getServiceType(),
+				return protocol.isAuthorized(
+						(SorcerPrincipal) principal, task
+						.getProcessSignature().getServiceType(),
 						config.getProviderName());
 			}
 		}
@@ -1968,7 +1969,7 @@ public class ProviderDelegate implements SorcerConstants {
 			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) ProviderAccessor
 					.getNotifierProvider();
 
-			mr = new MsgRef(((ServiceExertion) task).getId(), notificationType,
+			mr = new MsgRef(task.getId(), notificationType,
 					config.getProviderName(), message,
 					((ServiceExertion) task).getSessionId());
 			// Util.debug(this, "::notify() RUNTIME SESSION ID:" +
@@ -1988,12 +1989,12 @@ public class ProviderDelegate implements SorcerConstants {
 			message = "NO MESSAGE OR EXCEPTION PASSED";
 		else if (message == null && e != null) {
 			if (fullStackTrace)
-				message = SorcerUtil.stackTraceToString(e);
+				message = StringUtils.stackTraceToString(e);
 			else
 				message = e.getMessage();
 		} else {
 			if (fullStackTrace)
-				message = message + " " + SorcerUtil.stackTraceToString(e);
+				message = message + " " + StringUtils.stackTraceToString(e);
 			else
 				message = message + " " + e.getMessage();
 		}
@@ -2460,7 +2461,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 			try {
 				val = ""
-						+ (Boolean) jiniConfig.getEntry(
+						+ jiniConfig.getEntry(
 								ServiceProvider.PROVIDER,
 								J_SERVICE_ID_PERSISTENT, boolean.class);
 			} catch (ConfigurationException e) {
@@ -2519,7 +2520,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_WEBSTER_PORT, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_GROUPS, String[].class));
 			} catch (ConfigurationException e3) {
 				val = null;
@@ -2546,7 +2547,7 @@ public class ProviderDelegate implements SorcerConstants {
 				props.put(P_SPACE_NAME, val);
 
 			try {
-				val = SorcerUtil.arrayToCSV((String[]) jiniConfig.getEntry(
+				val = StringUtils.arrayToCSV((String[]) jiniConfig.getEntry(
 						ServiceProvider.PROVIDER, J_LOCATORS, String[].class));
 			} catch (ConfigurationException e) {
 				val = null;
@@ -2880,7 +2881,7 @@ public class ProviderDelegate implements SorcerConstants {
 
 	private Object instantiateScriplet(String scripletFilename)
 			throws Exception {
-		String[] tokens = SorcerUtil.tokenize(scripletFilename, "|");
+		String[] tokens = StringUtils.tokenize(scripletFilename, "|");
 		Object bean = null;
 		Object configurator = null;
 		GroovyShell shell = null;
@@ -2985,7 +2986,7 @@ public class ProviderDelegate implements SorcerConstants {
 				}
 				// if partner exported use it as the primary proxy
 				if (partner != null) {
-					pp = partnerExporter.export((Remote) partner);
+					pp = partnerExporter.export(partner);
 					if (pp != null) {
 						innerProxy = outerProxy;
 						outerProxy = pp;

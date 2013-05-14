@@ -151,7 +151,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void init() {
 		cookie = UuidFactory.generate();
-		if (((ServiceExertion) initialExertion).isJob())
+		if (initialExertion.isJob())
 			addSessions((Job) initialExertion, (Job) runtimeExertion, this);
 	}
 
@@ -175,7 +175,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	private HashMap<Uuid, MonitorSession> collectSessions(HashMap<Uuid, MonitorSession> map) {
 		MonitorSession resource;
 		for (int i = 0; i < size(); i++) {
-			resource = (MonitorSession) get(i);
+			resource = get(i);
 			map.put(cookie, resource);
 			collectSessions(map);
 		}
@@ -247,7 +247,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
 
-		if (runtimeExertion instanceof ServiceExertion)
+		if (runtimeExertion != null)
 			runtimeExertion.setContext(ctx);
 		persist();
 	}
@@ -267,8 +267,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				" This exertion is completed " + runtimeExertion.getName());
 
 		runtimeExertion.setStatus(ExecState.DONE);
-		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setContext(ctx);
+		runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -289,8 +288,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(ExecState.FAILED);
-		if (runtimeExertion instanceof ServiceExertion)
-			runtimeExertion.setContext(ctx);
+		runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -352,11 +350,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	private void resetState() {
 		int failedCount = 0, suspendedCount = 0, doneCount = 0;
 		for (int i = 0; i < size(); i++) {
-			if (((MonitorSession) get(i)).isFailed())
+			if (get(i).isFailed())
 				failedCount++;
-			else if (((MonitorSession) get(i)).isSuspended())
+			else if (get(i).isSuspended())
 				suspendedCount++;
-			else if (((MonitorSession) get(i)).isDone())
+			else if (get(i).isDone())
 				doneCount++;
 			else
 				// logger.log(Level.INFO,
@@ -364,7 +362,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 						.println("State not accounted for while resetting state"
 								+ i
 								+ " state="
-								+ ((MonitorSession) get(i)).getState());
+								+ get(i).getState());
 
 		}
 		// logger.log(Level.SEVERE,
@@ -382,11 +380,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	}
 
 	public int getState() {
-		return ((ServiceExertion) runtimeExertion).getStatus();
+		return runtimeExertion.getStatus();
 	}
 
 	public boolean isInitial() {
-		return (((ServiceExertion) runtimeExertion).getStatus() == ExecState.INITIAL);
+		return (runtimeExertion.getStatus() == ExecState.INITIAL);
 	}
 
 	public boolean isInSpace() {
@@ -431,7 +429,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		else {
 			MonitorSession resource;
 			for (int i = 0; i < size(); i++)
-				if ((resource = ((MonitorSession) get(i))
+				if ((resource = get(i)
 						.getSessionResource(cookie)) != null)
 					return resource;
 		}
@@ -467,7 +465,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public void leaseCancelled() {
 		try {
-			((ServiceExertion) runtimeExertion)
+			runtimeExertion
 					.reportException(new Exception(
 							"Lease was cancelled..The provider did not renew the lease"));
 			runtimeExertion.setStatus(ExecState.FAILED);
@@ -485,7 +483,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public void timedOut() {
 		try {
-			((ServiceExertion) runtimeExertion).reportException(new Exception(
+			runtimeExertion.reportException(new Exception(
 					"This exertion was timedout."));
 			runtimeExertion.setStatus(ExecState.FAILED);
 

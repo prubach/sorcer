@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.provider.exertmonitor.IMonitorSession;
-import sorcer.util.SorcerUtil;
+import sorcer.util.IOUtil;
 import sorcer.util.bdb.objects.UuidKey;
 
 import com.sleepycat.collections.StoredMap;
@@ -54,7 +54,7 @@ public class SessionDatabaseTest implements SorcerConstants {
 	@AfterClass 
 	public static void cleanup() throws Exception {
 		// delete database home directory and close database
-		SorcerUtil.deleteDir(dbDir);
+		IOUtil.deleteDir(dbDir);
 		if (runner != null) {
             try {
                 // Always attempt to close the database cleanly.

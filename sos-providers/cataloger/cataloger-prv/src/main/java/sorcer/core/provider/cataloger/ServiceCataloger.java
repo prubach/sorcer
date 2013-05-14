@@ -70,7 +70,7 @@ import sorcer.service.Task;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import com.sun.jini.start.LifeCycle;
 
@@ -140,7 +140,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		String sls = getProperty(P_LOCATORS);
 
 		if (sls != null)
-			locators = (String[]) SorcerUtil.tokenize(sls, ",");
+			locators = StringUtils.tokenize(sls, ",");
 		try {
 			if (locators != null && locators.length > 0) {
 				specificLocators = new LookupLocator[locators.length];
@@ -160,7 +160,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 	public String[] getGroups() throws RemoteException {
 		String gs = getProperty(P_GROUPS);
-		String[] groups = (gs == null) ? Sorcer.getLookupGroups() : SorcerUtil
+		String[] groups = (gs == null) ? Sorcer.getLookupGroups() : StringUtils
 				.tokenize(gs, ",");
 		return groups;
 	}
@@ -197,7 +197,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			String sls = getProperty(P_LOCATORS);
 
 			if (sls != null)
-				locators = (String[]) SorcerUtil.tokenize(sls, " ,");
+				locators = StringUtils.tokenize(sls, " ,");
 			if (locators != null && locators.length > 0) {
 				specificLocators = new LookupLocator[locators.length];
 				for (int i = 0; i < specificLocators.length; i++) {
@@ -206,7 +206,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			}
 
 			String gs = getProperty(P_GROUPS);
-			String[] groups = (gs == null) ? Sorcer.getLookupGroups() : SorcerUtil
+			String[] groups = (gs == null) ? Sorcer.getLookupGroups() : StringUtils
 					.tokenize(gs, ",");			
 			lookupMgr = new ServiceDiscoveryManager(new LookupDiscoveryManager(
 					groups, specificLocators, null), null);
@@ -738,7 +738,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				}
 				ServiceItem[] sitems = new ServiceItem[arItems.size()];
 				for (int i = 0; i < arItems.size(); i++) {
-					sitems[i] = (ServiceItem) arItems.get(i);
+					sitems[i] = arItems.get(i);
 				}
 				return sitems;
 			} else {
@@ -830,8 +830,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				// list only interfaces of the Servicer type in package name
 				if (service instanceof Servicer) {
 					if (map.get(serviceName) == null) {
-						map.put(serviceName, SorcerUtil.arrayToString(clazz)
-								+ ";;" + SorcerUtil.arrayToString(attributes)); // getInterfaceList(clazz,sorcerTypes));
+						map.put(serviceName, StringUtils.arrayToString(clazz)
+								+ ";;" + StringUtils.arrayToString(attributes)); // getInterfaceList(clazz,sorcerTypes));
 					}
 				}
 			}

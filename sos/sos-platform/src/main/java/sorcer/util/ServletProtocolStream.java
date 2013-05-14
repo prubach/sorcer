@@ -62,7 +62,7 @@ public class ServletProtocolStream implements ProtocolStream {
 	 * @return String
 	 */
 	public String readEscapedLine() throws java.io.IOException {
-		return SorcerUtil.escapeReturns(in.readLine());
+		return StringUtils.escapeReturns(in.readLine());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ServletProtocolStream implements ProtocolStream {
 	 * @return void
 	 */
 	public void writeEscapedLine(String str) throws java.io.IOException {
-		out.println(SorcerUtil.escapeReturns(str));
+		out.println(StringUtils.escapeReturns(str));
 	}
 
 	/**

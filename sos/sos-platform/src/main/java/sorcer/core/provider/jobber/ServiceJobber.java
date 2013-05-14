@@ -30,7 +30,7 @@ import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 import sorcer.util.Sorcer;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
 import java.io.IOException;
@@ -135,8 +135,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 
 		setServiceID(job);
 		try {
-			if (((ServiceExertion)job).getControlContext().isMonitorable()
-					&& !(((NetJob)job).getControlContext()).isWaitable()) {
+			if (job.getControlContext().isMonitorable()
+					&& !(job.getControlContext()).isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
 				new JobThread((Job) job, this).start();
@@ -240,13 +240,13 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 	// }
 
 	private String getDataURL(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig().getProperty(
+		return getDelegate().getProviderConfig().getProperty(
 				"provider.dataURL")
 				+ filename;
 	}
 
 	private String getDataFilename(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig().getDataDir() + "/"
+		return getDelegate().getProviderConfig().getDataDir() + "/"
 				+ filename;
 	}
 
@@ -257,10 +257,10 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 
 
 	private void replaceNullExertionIDs(Exertion ex) {
-		if (ex != null && ((ServiceExertion) ex).getId() == null) {
+		if (ex != null && ex.getId() == null) {
 			((ServiceExertion) ex)
 					.setId(UuidFactory.generate());
-			if (((ServiceExertion) ex).isJob()) {
+			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
 					replaceNullExertionIDs(((Job) ex).exertionAt(i));
 			}
@@ -268,14 +268,14 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 	}
 
 	private void notifyViaEmail(Exertion ex) throws ContextException {
-		if (ex == null || ((ServiceExertion) ex).isTask())
+		if (ex == null || ex.isTask())
 			return;
 		Job job = (Job) ex;
 		Vector recipents = null;
-		String notifyees = ((ControlContext) ((NetJob)job).getControlContext())
+		String notifyees = job.getControlContext()
 				.getNotifyList();
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);
@@ -298,13 +298,13 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 		}
 		String comment = "Your job '" + job.getName()
 				+ "' has been submitted.\n" + to;
-		((ControlContext) ((NetJob)job).getControlContext()).setFeedback(comment);
+		job.getControlContext().setFeedback(comment);
 		if (job.getMasterExertion() != null
-				&& ((ServiceExertion) job.getMasterExertion()).isTask()) {
-			((ServiceExertion) (job.getMasterExertion())).getDataContext()
+				&& job.getMasterExertion().isTask()) {
+			job.getMasterExertion().getDataContext()
 					.putValue(Context.JOB_COMMENTS, comment);
 
-			Contexts.markOut(((ServiceExertion) (job.getMasterExertion()))
+			Contexts.markOut(job.getMasterExertion()
 					.getDataContext(), Context.JOB_COMMENTS);
 
 		}
@@ -318,8 +318,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 		Exertion e = null;
 		for (int i = 0; i < job.size(); i++) {
 			e = job.exertionAt(i);
-			(((NetJob)job).getControlContext()).setReview(e, true);
-			if (((ServiceExertion) e).isJob())
+			(job.getControlContext()).setReview(e, true);
+			if (e.isJob())
 				prepareToStep((Job) e);
 		}
 	}

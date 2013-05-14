@@ -12,7 +12,7 @@ import sorcer.ex1.WhoIsIt;
 import sorcer.ex1.provider.ProviderMessage;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 public class WhoIsItBean2 implements WhoIsIt {
 
@@ -106,7 +106,7 @@ public class WhoIsItBean2 implements WhoIsIt {
 	@Override
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
-		context.putValue("provider/timestamp", SorcerUtil.getDateTime());
+		context.putValue("provider/timestamp", StringUtils.getDateTime());
 		return context;
 	}
 }

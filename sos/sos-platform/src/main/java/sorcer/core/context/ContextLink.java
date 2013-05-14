@@ -24,7 +24,7 @@ import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Link;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 /**
  * Provides for service context linking. Context links are references to an
@@ -112,7 +112,7 @@ public class ContextLink implements SorcerConstants, Link {
 	 * public String rootName() { return SorcerUtil.firstToken(offset, CPS); }
 	 */
 	public String getName() {
-		String result = name == null ? SorcerUtil.firstToken(offset, CPS) : name;
+		String result = name == null ? StringUtils.firstToken(offset, CPS) : name;
 		if (result.equals(""))
 			result = linkedContext.getSubjectPath(); // assuming we have the context...
 		return result;

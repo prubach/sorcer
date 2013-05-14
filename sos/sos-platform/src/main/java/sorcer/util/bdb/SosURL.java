@@ -44,7 +44,7 @@ public class SosURL {
 	}
 
 	public Object getContent() throws IOException {
-		return ((URL) target).getContent();
+		return target.getContent();
 	}
 
 	public URL getTarget() {
@@ -66,7 +66,7 @@ public class SosURL {
 				if (target.getRef() == null) {
 					target = SdbUtil.store(value);
 				} else {
-					SdbUtil.update((URL) target, value);
+					SdbUtil.update(target, value);
 				}
 			} catch (Exception e) {
 				throw new EvaluationException(e);

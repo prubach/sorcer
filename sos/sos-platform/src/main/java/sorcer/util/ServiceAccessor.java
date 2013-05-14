@@ -309,9 +309,9 @@ public class ServiceAccessor implements SorcerConstants {
 			try {
 				logger.finer("[openDiscoveryManagement]\n"
 						+ "\tSORCER Group(s): "
-						+ SorcerUtil.arrayToString(groups) + "\n"
+						+ StringUtils.arrayToString(groups) + "\n"
 						+ "\tLocators:        "
-						+ SorcerUtil.arrayToString(locators));
+						+ StringUtils.arrayToString(locators));
 
 				ldManager = new LookupDiscoveryManager(groups, locators, null);
 				sdManager = new ServiceDiscoveryManager(ldManager,
@@ -628,9 +628,9 @@ public class ServiceAccessor implements SorcerConstants {
 
 		logger.info("getServiceTemplate >> \n serviceID: " + serviceID
 				+ "\nproviderName: " + providerName + "\nserviceTypes: "
-				+ SorcerUtil.arrayToString(serviceTypes)
+				+ StringUtils.arrayToString(serviceTypes)
 				+ "\npublishedServiceTypes: "
-				+ SorcerUtil.arrayToString(publishedServiceTypes));
+				+ StringUtils.arrayToString(publishedServiceTypes));
 
 		return new ServiceTemplate(serviceID, types, attributes);
 	}

@@ -32,7 +32,7 @@ public class JobThread extends Thread {
 		Dispatcher dispatcher = null;
 		try {
 			dispatcher = ExertionDispatcherFactory.getFactory()
-					.createDispatcher((Job) job, provider);
+					.createDispatcher(job, provider);
 			try {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());

@@ -402,7 +402,7 @@ public class ExertMonitor extends ServiceProvider implements
 			while (ki.hasNext()) {
 				key = ki.next();
 				ServiceExertion xrt = (ServiceExertion) (getSession(key)).getRuntimeExertion();						
-				if (((ServiceExertion) xrt).getPrincipal().getId()
+				if (xrt.getPrincipal().getId()
 						.equals(((SorcerPrincipal) principal).getId())) {
 					if (category == null || category.equals(Category.ALL)
 							|| xrt.getStatus() == category.ordinal()) {
@@ -419,7 +419,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 	public Exertion getMonitorableExertion(Uuid id, Principal principal)
 			throws RemoteException, MonitorException {
-			Exertion xrt = ((ServiceExertion) getSession(id).getRuntimeExertion());
+			Exertion xrt = getSession(id).getRuntimeExertion();
 			if (((ServiceExertion) xrt).getPrincipal().getId()
 					.equals(((SorcerPrincipal) principal).getId()))
 				return xrt;
@@ -447,7 +447,7 @@ public class ExertMonitor extends ServiceProvider implements
 			key = ki.next();
 			ex = (getSession(key)).getRuntimeExertion();
 
-			if (cookie.exertionID.equals(((ServiceExertion) ex).getId())
+			if (cookie.exertionID.equals(ex.getId())
 					&& ((ServiceExertion) ex).getPrincipal().getId()
 							.equals(((SorcerPrincipal) principal).getId()))
 				return ex;

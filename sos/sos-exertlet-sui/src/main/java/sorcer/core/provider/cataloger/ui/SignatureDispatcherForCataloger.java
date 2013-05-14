@@ -21,7 +21,6 @@ package sorcer.core.provider.cataloger.ui;
 
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -43,9 +42,6 @@ import sorcer.service.Context;
  * 
  */
 public class SignatureDispatcherForCataloger implements SignatureDispatchment {
-
-	protected static final Logger logger = Logger
-			.getLogger(SignatureDispatcherForCataloger.class.getName());
 	/**
 	 * The Cataloger service object. Passed in by constructor from CatalogerUI
 	 * class

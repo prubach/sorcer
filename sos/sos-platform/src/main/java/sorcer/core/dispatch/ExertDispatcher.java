@@ -142,7 +142,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 	}
 
 	public static ExertDispatcher getDispatcher(String jobID) {
-		return (ExertDispatcher)dispatchers.get(jobID);
+		return dispatchers.get(jobID);
 	}
 
 	public int getState() {
@@ -269,7 +269,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 				toPath = (String) e.nextElement();
 				// find argument for parametric dataContext
 				if (toPath.endsWith("]")) {
-					Tuple2<String, Integer> pair = (Tuple2<String, Integer>)getPathIndex(toPath);
+					Tuple2<String, Integer> pair = getPathIndex(toPath);
 					argIndex = pair._2;
 					if	(argIndex >=0) {
 						newToPath = pair._1;
@@ -389,8 +389,8 @@ abstract public class ExertDispatcher implements Dispatcher,
 	public void notifyExertionExecution(Exertion parent, Exertion inex, Exertion outex) {
 		if (inex instanceof Conditional && outex instanceof Conditional) {
 			// do nothing for now
-		} else if (((ServiceExertion) inex).isTask()
-				&& ((ServiceExertion) outex).isTask())
+		} else if (inex.isTask()
+				&& outex.isTask())
 			notifyTaskExecution(parent, (ServiceExertion) inex, (ServiceExertion) outex);
 	}
 
@@ -400,7 +400,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		Vector recipients = null;
 		String notifyees = parent.getControlContext().getNotifyList(inTask);
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipients = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipients.addElement(list[i]);
@@ -426,7 +426,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 
 		sb.append(outTask.getName()).append("\n\nDescription:\n").append(
 				outTask.getDescription());
-		if (((NetTask) outTask).getStatus() > 0)
+		if (outTask.getStatus() > 0)
 			sb
 					.append("\n\nTask executed sucessfully with the input dataContext:\n");
 		else
@@ -483,7 +483,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	 */
 
 	protected void notifyFailure(String msg, ServiceExertion t, long seqNum) {
-		SorcerNotifierProtocol fni = null;// SorcerNotifierImpl.getSorcerNotifier();
 		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
 		String msgID = null;
 		String UserID = null;
@@ -499,7 +498,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	}
 
 	protected void notifyException(String msg, ServiceExertion t, long seqNum) {
-		SorcerNotifierProtocol fni = null;// SorcerNotifierImpl.getSorcerNotifier();
 		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
 		String msgID = null;
 		String UserID = null;
@@ -515,7 +513,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	}
 
 	protected void notifyInformation(String msg, ServiceExertion t, long seqNum) {
-		SorcerNotifierProtocol fni = null; // SorcerNotifierImpl.getSorcerNotifier();
 		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
 		String msgID = null;
 		String UserID = null;
@@ -531,7 +528,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	}
 
 	protected void notifyWarning(String msg, ServiceExertion t, long seqNum) {
-		SorcerNotifierProtocol fni = null; // SorcerNotifierImpl.getSorcerNotifier();
 		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
 		String msgID = null;
 		String UserID = null;
@@ -559,7 +555,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	}
 
 	public NetJob stopJob() throws RemoteException {
-		ExertDispatcher dispatcher = null;
 
 		// job.setStatus(HALTED);
 		// for (int i=0;i<runningExertionIDs.size();i++) {
@@ -640,7 +635,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		Vector recipents = null;
 		String notifyees = job.getControlContext().getNotifyList(task);
 		if (notifyees != null) {
-			String[] list = SorcerUtil.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);
@@ -685,7 +680,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 				inputXrts.removeElement(ex);
 		} else {
 			ext.setStatus(INITIAL);
-			if (((ServiceExertion) ex).isJob()) {
+			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
 					reconcileInputExertions(((Job) ex).exertionAt(i));
 			}
@@ -699,7 +694,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 						|| (xrt.getStatus() == INITIAL) || (xrt.getStatus() <= ERROR))) {
 			ServiceExertion ft = null;
 			for (int i = 0; i < ((Job)xrt).size() - 1; i++) {
-				if (((ServiceExertion) ((Job)xrt).exertionAt(i)).isTask()) {
+				if (((Job)xrt).exertionAt(i).isTask()) {
 					ft = (ServiceExertion) ((Job)xrt).exertionAt(i);
 					if (ft.getStatus() != DONE
 							&& xrt.getControlContext().isReview(ft)

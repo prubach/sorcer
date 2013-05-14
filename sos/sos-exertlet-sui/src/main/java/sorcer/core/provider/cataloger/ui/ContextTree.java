@@ -125,8 +125,7 @@ public class ContextTree extends JPanel {
 		thisThat = this; // get a reference to our current object
 
 		// make a new root node
-		rootNode = new DefaultMutableTreeNode(new ContextNodeType(new String(
-				"Root Node"), false));
+		rootNode = new DefaultMutableTreeNode(new ContextNodeType("Root Node", false));
 
 		// make the new model
 		treeModel = new DefaultTreeModel(rootNode);
@@ -168,7 +167,7 @@ public class ContextTree extends JPanel {
 	public Context generateContext() {
 		ServiceContext context = new ServiceContext(rootNode.getUserObject()
 				.toString()); // put root name here!
-		context = (ServiceContext) doRootGenerateContext((Context) context,
+		context = (ServiceContext) doRootGenerateContext(context,
 				treeModel.getRoot(), "");
 		return context;
 	}
@@ -574,7 +573,7 @@ public class ContextTree extends JPanel {
 				else
 					// handle all other types
 					c = super.getTreeCellRendererComponent(tree,
-							((ContextNodeType) userObject).toString(), sel,
+							userObject.toString(), sel,
 							expanded, leaf, row, hasFocus);
 
 				if (((ContextNodeType) userObject).isDataNode()) // set the

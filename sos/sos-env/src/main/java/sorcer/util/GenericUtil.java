@@ -593,7 +593,7 @@ public class GenericUtil implements Serializable {
 		InputStreamReader iSR = new InputStreamReader(
 				myConnect.getInputStream());
 
-		BufferedReader bR = new BufferedReader((Reader) iSR);
+		BufferedReader bR = new BufferedReader(iSR);
 		boolean eof = false;
 		Vector<String> fileContents = new Vector<String>();
 
@@ -999,7 +999,7 @@ public class GenericUtil implements Serializable {
 			ClassNotFoundException {
 		FileInputStream fIS = new FileInputStream(file);
 		ObjectInputStream oIS = new ObjectInputStream(fIS);
-		Object obj = (Object) oIS.readObject();
+		Object obj = oIS.readObject();
 		fIS.close();
 		return obj;
 	}
@@ -2264,7 +2264,7 @@ public class GenericUtil implements Serializable {
 					+ ", did not complete due to an " + "io error.";
 			throw new RuntimeException(errorMessage, ex);
 		}
-		return (Thread) worker;
+		return worker;
 	}
 
 	private static boolean hasArg(String test, String[] args) {

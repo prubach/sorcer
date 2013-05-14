@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
+		<artifactId>examples</artifactId>
 		<version>11.1</version>
-		<artifactId>sorcer-root</artifactId>
 	</parent>
 
 	<groupId>com.example.sorcer</groupId>
@@ -23,16 +23,19 @@
 	<modules>
 		<module>first-api</module>
 		<module>first-prv</module>
-		<module>first-req</module>
+		<!--<module>first-req</module>-->
 		<module>first-proxy</module>
 		<module>first-sui</module>
 	</modules>
+
+	<build>
+	</build>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-api</artifactId>
+				<artifactId>sos-platform</artifactId>
 				<version>${v.sorcer}</version>
 			</dependency>
 		</dependencies>

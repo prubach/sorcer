@@ -22,7 +22,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.eval.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import java.net.MalformedURLException;
 import java.util.*;
@@ -235,7 +235,7 @@ public class Contexts implements SorcerConstants {
 			throws ContextException {
 		List ids = getValuesStartsWith(cxt, path);
 		if (ids != null && ids.size() > 0) {
-			SorcerUtil.bubbleSort(ids);
+			StringUtils.bubbleSort(ids);
 			return ids;
 		} else
 			return null;
@@ -328,7 +328,7 @@ public class Contexts implements SorcerConstants {
 
 	public static void deleteContextVariables(Context cntxt) {
 		if (containsContextVariables(cntxt)) {
-			((Hashtable) cntxt).remove(SORCER_VARIABLES_PATH);
+			cntxt.remove(SORCER_VARIABLES_PATH);
 		}
 	}
 
@@ -617,7 +617,7 @@ public class Contexts implements SorcerConstants {
 		List allNodes = new ArrayList();
 		List additional = null;
 
-		List<Exertion> exertions = ((Job) job).getExertions();
+		List<Exertion> exertions = job.getExertions();
 		for (Object exertion : exertions) {
 			if (exertion instanceof ServiceExertion) {
 				additional = Arrays
@@ -952,17 +952,17 @@ public class Contexts implements SorcerConstants {
 	}
 
 	public static String getContextParameterPath(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.secondToken(
+		return (contextParameter == null) ? null : StringUtils.secondToken(
 				contextParameter, SEP);
 	}
 
 	public static String getContextParameterID(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.thirdToken(
+		return (contextParameter == null) ? null : StringUtils.thirdToken(
 				contextParameter, SEP);
 	}
 
 	public static String getContextParameterDirection(String contextParameter) {
-		return (contextParameter == null) ? null : SorcerUtil.firstToken(
+		return (contextParameter == null) ? null : StringUtils.firstToken(
 				contextParameter, SEP);
 	}
 
@@ -1024,7 +1024,7 @@ public class Contexts implements SorcerConstants {
 				keys.addElement(key1);
 			}
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1056,7 +1056,7 @@ public class Contexts implements SorcerConstants {
 				keys.addElement(key1);
 			}
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1073,13 +1073,13 @@ public class Contexts implements SorcerConstants {
 			if (values != null) { // if no attributes are set, values==null;
 				Enumeration e = values.keys();
 				while (e.hasMoreElements())
-					keys.addElement((String) e.nextElement());
+					keys.addElement(e.nextElement());
 			}
 		} else {
 			// it is a metaattribute
 			String metapath = cntxt.getLocalMetapath(attribute);
 			if (metapath != null) {
-				String[] attrs = SorcerUtil.tokenize(metapath,
+				String[] attrs = StringUtils.tokenize(metapath,
 						SorcerConstants.APS);
 				String[][] paths = new String[attrs.length][];
 				int ii = -1;
@@ -1139,7 +1139,7 @@ public class Contexts implements SorcerConstants {
 		String keysInLink[], linkPath;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) ((ServiceContext) cntxt).get(linkPath);
+			link = (ContextLink) cntxt.get(linkPath);
 			keysInLink = getPathsWithAttribute(((ServiceContext) cntxt)
 					.getLinkedContext(link), attribute);
 			if (keysInLink != null)
@@ -1192,9 +1192,9 @@ public class Contexts implements SorcerConstants {
 			// it is a metaattribute
 			String metapath = cntxt.getLocalMetapath(attr);
 			if (metapath != null) {
-				String[] attrs = SorcerUtil.tokenize(metapath,
+				String[] attrs = StringUtils.tokenize(metapath,
 						SorcerConstants.APS);
-				String[] vals = SorcerUtil.tokenize(value, SorcerConstants.APS);
+				String[] vals = StringUtils.tokenize(value, SorcerConstants.APS);
 				if (attrs.length != vals.length)
 					throw new ContextException("Invalid association: \""
 							+ association + "\"  metaattribute \"" + attr
@@ -1409,7 +1409,7 @@ public class Contexts implements SorcerConstants {
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
 			if (values.get(key).equals(value))
-				if (((ServiceContext) context).get(key) instanceof ContextNode)
+				if (context.get(key) instanceof ContextNode)
 					return true;
 		}
 		return false;
@@ -1420,7 +1420,7 @@ public class Contexts implements SorcerConstants {
 		Vector contextNodes = new Vector();
 		String[] paths = getMarkedPaths(context, association);
 		if (paths == null)
-			return (String[]) null;
+			return null;
 		for (int i = 0; i < paths.length; i++)
 			if (context.getValue(paths[i]) instanceof ContextNode)
 				contextNodes.addElement(paths[i]);

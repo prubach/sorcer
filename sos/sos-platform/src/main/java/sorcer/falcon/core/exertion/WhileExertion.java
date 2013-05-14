@@ -146,10 +146,10 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 
 		if (condition != null) {
 			try {
-				if (((ServiceExertion) exertion).isTask())
+				if (exertion.isTask())
 					condition.setConditionalContext(exertion.getDataContext());
 
-				else if (((ServiceExertion) exertion).isJob())
+				else if (exertion.isJob())
 					condition.setConditionalContext(((Job) exertion)
 							.getMasterExertion().getDataContext());
 
@@ -190,7 +190,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * @see sorcer.service.ServiceExertion#getContextName()
 	 */
 	public String getContextName() {
-		return ((ServiceExertion) baseExertion).getDataContext().getName();
+		return baseExertion.getDataContext().getName();
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * @see sorcer.service.ServiceExertion#isJob()
 	 */
 	public boolean isJob() {
-		return ((ServiceExertion) baseExertion).isJob();
+		return baseExertion.isJob();
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * @see sorcer.service.ServiceExertion#isTask()
 	 */
 	public boolean isTask() {
-		return ((ServiceExertion) baseExertion).isTask();
+		return baseExertion.isTask();
 	}
 
 	/**

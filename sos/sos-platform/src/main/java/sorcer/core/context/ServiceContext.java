@@ -32,6 +32,7 @@ import sorcer.service.ExecState.Category;
 import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
 import sorcer.util.SorcerUtil;
+import sorcer.util.StringUtils;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -264,7 +265,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public ServiceContext(Object object) throws ContextException {
 		this((object instanceof Identifiable) ? ((Identifiable)object).getName() : null);
 		setArgsPath(Context.PARAMETER_VALUES);
-		setArgs(new Object[] { object });
+		setArgs(new Object[]{object});
 		setParameterTypesPath(Context.PARAMETER_TYPES);
 		setParameterTypes(new Class[] { object.getClass() });
 	}
@@ -746,7 +747,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		if ((value instanceof ContextNode)
 				&& association.startsWith(CONTEXT_PARAMETER))
-			((ContextNode) value).setDA(SorcerUtil
+			((ContextNode) value).setDA(StringUtils
 					.secondToken(association, APS));
 		return obj;
 	}
@@ -988,7 +989,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public void setAttribute(String descriptor) throws ContextException {
-		String[] tokens = SorcerUtil.tokenize(descriptor, APS);
+		String[] tokens = StringUtils.tokenize(descriptor, APS);
 		if (tokens.length == 1)
 			setComponentAttribute(descriptor);
 		else
@@ -1005,7 +1006,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			throws ContextException {
 		// Register a composite ("composite|<component attributes>")
 		// with this ServiceContext
-		String composite = SorcerUtil.firstToken(descriptor, APS);
+		String composite = StringUtils.firstToken(descriptor, APS);
 		if (composite.startsWith(PRIVATE) && composite.endsWith(PRIVATE))
 			throw new ContextException("Illegal metaattribute name");
 		String components = descriptor.substring(composite.length() + 1);
@@ -1153,7 +1154,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String metapath = cntxt.getLocalMetapath(attributeName);
 
 		if (metapath != null) {
-			String[] attrs = SorcerUtil.tokenize(metapath, APS);
+			String[] attrs = StringUtils.tokenize(metapath, APS);
 			StringBuffer sb = new StringBuffer();
 			int count = 0;
 			for (int i = 0; i < attrs.length; i++) {
@@ -1178,7 +1179,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 					"No attribute or metaattribute specified in: "
 							+ association);
 
-		String[] attributes = SorcerUtil.tokenize(association, APS);
+		String[] attributes = StringUtils.tokenize(association, APS);
 		String values = association.substring(attributes[0].length() + 1);
 		if (attributes.length == 2)
 			return addComponentAssociation(path, attributes[0], values);
@@ -1221,9 +1222,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (!cntxt.isMetaattribute(metaattribute))
 			throw new ContextException("No metaattribute defined: "
 					+ metaattribute + " in context " + cntxt.getName());
-		String[] attrs = SorcerUtil.tokenize(
+		String[] attrs = StringUtils.tokenize(
 				cntxt.getLocalMetapath(metaattribute), APS);
-		String[] vals = SorcerUtil.tokenize(metaattributeValue, APS);
+		String[] vals = StringUtils.tokenize(metaattributeValue, APS);
 		if (attrs.length != vals.length)
 			throw new ContextException("Invalid:  The metavalue of \""
 					+ metaattributeValue + "\" for metaattribute \""
@@ -1274,9 +1275,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// it is a metaattribute
 			String metapath = getLocalMetapath(attr);
 			if (metapath != null) {
-				String[] attrs = SorcerUtil.tokenize(metapath,
+				String[] attrs = StringUtils.tokenize(metapath,
 						SorcerConstants.APS);
-				String[] vals = SorcerUtil.tokenize(value, SorcerConstants.APS);
+				String[] vals = StringUtils.tokenize(value, SorcerConstants.APS);
 				if (attrs.length != vals.length)
 					throw new ContextException("Invalid association: \""
 							+ association + "\"  metaattribute \"" + attr
@@ -1359,7 +1360,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String attr;
 		// accept also metaassociation
 		if (attributeValue.indexOf(APS) > 0)
-			attr = SorcerUtil.firstToken(attributeValue, APS);
+			attr = StringUtils.firstToken(attributeValue, APS);
 		else
 			attr = attributeValue;
 
@@ -1380,7 +1381,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			if (metavalues.size() == 0)
 				metacontext.remove(attr);
 		} else if (cntxt.isMetaattribute(attr)) {
-			String[] attrs = SorcerUtil.tokenize(cntxt.getLocalMetapath(attr),
+			String[] attrs = StringUtils.tokenize(cntxt.getLocalMetapath(attr),
 					APS);
 			for (int i = 0; i < attrs.length; i++)
 				cntxt.removeAttributeValue(mappedKey, attrs[i]);
@@ -1453,7 +1454,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			}
 			keys.addElement(key);
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1479,7 +1480,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			if (get(key) instanceof ContextLink)
 				keys.addElement(key);
 		}
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1569,7 +1570,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				keys.addElement(key);
 			}
 		}// end of instance of ContextLink
-		SorcerUtil.bubbleSort(keys);
+		StringUtils.bubbleSort(keys);
 		return keys.elements();
 	}
 
@@ -1578,7 +1579,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		String path;
 		Vector<Link> links = new Vector<Link>();
 		while (e.hasMoreElements()) {
-			path = (String) e.nextElement();
+			path = e.nextElement();
 			links.addElement(getLink(path));
 		}
 		return links.elements();
@@ -1769,7 +1770,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		String metapath_target, metapath_source;
 		// enumerate over local metaattributes
-		e = ((ServiceContext) mappedCntxt).getDataAttributeMap().keys();
+		e = mappedCntxt.getDataAttributeMap().keys();
 		while (e.hasMoreElements()) {
 			attr = (String) e.nextElement();
 			if (!mappedCntxt.isLocalMetaattribute(attr))
@@ -1780,7 +1781,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 						+ attr
 						+ "\" has conflicting definitions; it is a metaattribute in the source context and a singleton attribute in the target context.  Please correct before performing this operation");
 				logger.info("Src metacontext="
-						+ ((ServiceContext) mappedCntxt).metacontext);
+						+ mappedCntxt.metacontext);
 				logger.info("this metacontext=" + metacontext);
 				throw new ContextException("The attribute \"" + attr
 						+ "\" has conflicting definitions;");// it
@@ -1791,7 +1792,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// is this also a metaattribute in the current context?
 			if (isMetaattribute(attr)) {
 				// check to see the definitions are the same
-				metapath_source = (String) ((ServiceContext) mappedCntxt)
+				metapath_source = (String) mappedCntxt
 						.getDataAttributeMap().get(attr);
 				metapath_target = (String) getDataAttributeMap().get(attr);
 				if (!metapath_target.equals(metapath_source))
@@ -1803,7 +1804,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				// has metapath = \""+metapath_target+"\".
 				// Please correct befe performing this operation.");
 			}
-			metapath = (String) ((ServiceContext) mappedCntxt)
+			metapath = (String) mappedCntxt
 					.getDataAttributeMap().get(attr);
 			setCompositeAttribute(attr + APS + metapath);
 		}
@@ -1866,7 +1867,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			// sb.append("null");
 			if (val != null) {
 				if (val.getClass().isArray())
-					sb.append(SorcerUtil.arrayToString(val));
+					sb.append(StringUtils.arrayToString(val));
 				else if (val instanceof ContextNode
 						&& ((ContextNode) val).isURL()) {
 					URL url;
@@ -1933,7 +1934,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			if (val == null)
 				sb.append("null");
 			else if (val.getClass().isArray())
-				sb.append(SorcerUtil.arrayToString((Object[]) val));
+				sb.append(StringUtils.arrayToString(val));
 			else
 				sb.append(val.toString());
 			// report attributes
@@ -2697,7 +2698,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (mxrt != null && mxrt.isMonitorable()
 				&& mxrt.getMonitorSession() != null) {
 			try {
-				putValue("context/checkpoint/time", SorcerUtil.getDateTime());
+				putValue("context/checkpoint/time", StringUtils.getDateTime());
 				mxrt.getMonitorSession().changed(this, Category.UPDATED);
 			} catch (Exception e) {
 				throw new ContextException(e);

@@ -272,7 +272,7 @@ public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger
 			URL helpUrl = new URL(Sorcer.getWebsterUrl() + "/logger.html");
 		
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					(JFrameFactory) new UIFrameFactory(new URL[] { uiUrl }, 
+					new UIFrameFactory(new URL[] { uiUrl },
 							LoggerFrameUI.class
 							.getName(),
 							"Log Viewer",

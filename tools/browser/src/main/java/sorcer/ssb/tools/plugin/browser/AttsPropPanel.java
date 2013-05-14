@@ -65,8 +65,8 @@ public class AttsPropPanel extends JPanel {
 				displayName = displayName + "." + fName;
 				try {
 					Object value = f[k].get(atts[j]);
-					data.add(((Object) (new Object[] { displayName, 
-							(value.getClass().isArray() ? Util.arrayToString(value) : value)})));
+					data.add(new Object[] { displayName,
+							(value.getClass().isArray() ? Util.arrayToString(value) : value)});
 					// now store the actual class,field,isEditable
 
 					fields.add(new Object[] { className, fName });

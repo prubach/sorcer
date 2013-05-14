@@ -64,8 +64,8 @@ public class ObjectTask extends Task {
 	
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		((ServiceContext) dataContext).setCurrentSelector(getProcessSignature().getSelector());
-		((ServiceContext) dataContext).setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
+		dataContext.setCurrentSelector(getProcessSignature().getSelector());
+		dataContext.setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
 		try {
 			if (getProcessSignature().getReturnPath() != null)
 				dataContext.setReturnPath(getProcessSignature().getReturnPath());

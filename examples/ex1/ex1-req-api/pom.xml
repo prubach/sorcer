@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>
-        </dependency>    </dependencies>
-
+        	<version>${v.sorcer}</version>
+        </dependency>
+    </dependencies>
 </project>
