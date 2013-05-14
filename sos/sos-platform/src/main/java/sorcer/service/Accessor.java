@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import net.jini.core.lookup.ServiceItem;
@@ -35,7 +35,7 @@ public class Accessor {
 	protected final static Logger logger = Log.getTestLog();
 	
 	/**
-	 * A factory returning instances of {@link Servicer}s.
+	 * A factory returning instances of {@link Service}s.
 	 */
 	private static DynamicAccessor accessor;
 
@@ -61,10 +61,10 @@ public class Accessor {
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
+	 * @return the requested {@link Service}
 	 * @throws SignatureException 
 	 */
-	public static Servicer getServicer(Signature signature)
+	public static Service getServicer(Signature signature)
 			throws SignatureException {
 		logger.fine("using accessor: " + accessor);
 		return accessor.getServicer(signature);

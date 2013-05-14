@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,7 +38,7 @@ import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.*;
-import sorcer.util.ExertManager;
+import sorcer.util.ExertProcessor;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
@@ -962,7 +963,7 @@ public class operator {
 			Transaction transaction, Parameter... entries)
 			throws ExertionException {
 		try {
-			ExertManager esh = new ExertManager(input);
+			ExertProcessor esh = new ExertProcessor(input);
 			Exertion result = null;
 			try {
 				result = esh.exert(transaction, null, entries);
@@ -1445,7 +1446,7 @@ public class operator {
 		}
 	}
 
-	public static List<Servicer> providers(Signature signature)
+	public static List<Service> providers(Signature signature)
 			throws SignatureException {
 		ServiceTemplate st = new ServiceTemplate(null,
 				new Class[] { signature.getServiceType() }, null);
@@ -1454,9 +1455,9 @@ public class operator {
 		if (sis == null)
 			throw new SignatureException("No available providers of type: "
 					+ signature.getServiceType().getName());
-		List<Servicer> servicers = new ArrayList<Servicer>(sis.length);
+		List<Service> servicers = new ArrayList<Service>(sis.length);
 		for (ServiceItem si : sis) {
-			servicers.add((Servicer) si.service);
+			servicers.add((Service) si.service);
 		}
 		return servicers;
 	}
@@ -1470,7 +1471,7 @@ public class operator {
 	public static Object provider(Signature signature)
 			throws SignatureException {
 		Object target = null;
-		Servicer provider = null;
+		Service provider = null;
 		Class<?> providerType = null;
 		if (signature instanceof NetSignature) {
 			providerType = ((NetSignature) signature).getServiceType();

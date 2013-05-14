@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import java.rmi.RemoteException;
@@ -50,7 +50,7 @@ import sorcer.service.Job;
 import sorcer.service.Jobber;
 import sorcer.service.Parameter;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.service.Spacer;
@@ -61,8 +61,8 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ExertManager implements Exerter, Callable {
-	protected final static Logger logger = Logger.getLogger(ExertManager.class
+public class ExertProcessor implements Exerter, Callable {
+	protected final static Logger logger = Logger.getLogger(ExertProcessor.class
 			.getName());
 
 	private ServiceExertion exertion;
@@ -70,14 +70,14 @@ public class ExertManager implements Exerter, Callable {
 	private static MutualExclusion locker;
 	//private ProvisionManager provisionManager;
 
-	public ExertManager() {
+	public ExertProcessor() {
 	}
 	
-	public ExertManager(Exertion xrt) {
+	public ExertProcessor(Exertion xrt) {
 		exertion = (ServiceExertion) xrt;
 	}
 
-	public ExertManager(Exertion xrt, Transaction txn) {
+	public ExertProcessor(Exertion xrt, Transaction txn) {
 		exertion = (ServiceExertion) xrt;
 		transaction = txn;
 
@@ -153,7 +153,7 @@ public class ExertManager implements Exerter, Callable {
 		Context<?> cxt = exertion.getContext();
 		cxt.setExertion(exertion);
 		Signature signature = exertion.getProcessSignature();
-		Servicer provider = null;
+		Service provider = null;
 		try {
 			if (!(signature instanceof NetSignature)) {
 				if (exertion instanceof Task) {

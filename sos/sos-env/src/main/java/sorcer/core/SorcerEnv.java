@@ -1,3 +1,20 @@
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package sorcer.core;
 
 import java.io.File;
@@ -37,14 +54,20 @@ public class SorcerEnv implements SorcerConstants {
 	/**
 	 * Stores the description of where from the sorcer env was loaded
 	 */
-		
 	protected static String envFrom;
 
-	/**
+    /**
+     * Indicates if Booter is used in this environment.
+     */
+    private static boolean bootable = false;
+
+
+    /**
 	 * Loads the environment from the SORCER file configuration sorcer.env.
 	 */
 	static {
 		loadBasicEnvironment();
+
 	}
 	
 	/**
@@ -458,12 +481,35 @@ public class SorcerEnv implements SorcerConstants {
 		return (host);
 	}
 
+    /**
+     * <p>
+     * Return <code>true</code> is a SORCER {@link sorcer.provider.boot.Booter}
+     * is used, otherwise <code>false</code>,
+     * </p>
+     *
+     * @return the bootable
+     */
+    public static boolean isBootable() {
+        return bootable;
+    }
+
+    /**
+     * <p>
+     * Assigns <code>true</code> by the {@link sorcer.boot.provider.Booter} when
+     * used.
+     * </p>
+     *
+     * @param bootable
+     *            the bootable to set
+     */
+    public static void setBootable(boolean bootable) {
+        SorcerEnv.bootable = bootable;
+    }
+
 	/**
 	 * Library versions
-	 * @param key
-	 * @return
 	 */
-	public static String getRiverVersion() {
+	/*public static String getRiverVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_RIVER, "2.2.1");
 	}
 
@@ -481,7 +527,7 @@ public class SorcerEnv implements SorcerConstants {
 
 	public static String getSleepyCatVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_SLEEPYCAT, "4.1.21");
-	}
+	} */
 	public static String getSorcerVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_SORCER, SORCER_VERSION);
 	}

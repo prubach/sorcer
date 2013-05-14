@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import net.jini.core.transaction.Transaction;
@@ -34,7 +34,7 @@ import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.util.ExertManager;
+import sorcer.util.ExertProcessor;
 
 import javax.security.auth.Subject;
 import java.io.Serializable;
@@ -154,7 +154,31 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 				+ Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + "/"
 				+ Integer.toString(c.get(Calendar.YEAR));
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Service#service(sorcer.service.Exertion)
+	 */
+	@Override
+	public Exertion service(Exertion exertion) throws TransactionException,
+			ExertionException, RemoteException {
+		if (exertion == null)
+			return exert();
+		else
+			return exertion.exert();
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
+	 */
+	@Override
+	public Exertion service(Exertion exertion, Transaction txn)
+			throws TransactionException, ExertionException, RemoteException {
+		if (exertion == null)
+			return exert();
+		else
+			return exertion.exert(txn);
+	}
+
 	/* (non-Javadoc)
 	 * @see sorcer.service.Invoker#invoke(sorcer.service.Parameter[])
 	 */
@@ -202,7 +226,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Parameter... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ExertManager ed = new ExertManager(this);
+		ExertProcessor ed = new ExertProcessor(this);
 		Exertion result = null;
 		try {
 			result = ed.exert(txn, null, entries);
@@ -226,7 +250,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertManager esh = new ExertManager(this);
+		ExertProcessor esh = new ExertProcessor(this);
 		return esh.exert(entries);
 	}
 
@@ -238,7 +262,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertManager esh = new ExertManager(this);
+		ExertProcessor esh = new ExertProcessor(this);
 		return esh.exert(txn, providerName);
 	}
 	
@@ -323,12 +347,12 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		this.signatures.add(signature);
 	}
 	
-	public void setServicer(Servicer provider) {
+	public void setServicer(Service provider) {
 		NetSignature ps = (NetSignature)getProcessSignature();
 		ps.setServicer(provider);
 	}
 
-	public Servicer getServicer() {
+	public Service getServicer() {
 		NetSignature ps = (NetSignature)getProcessSignature();
 		return ps.getServicer();
 	}

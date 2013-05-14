@@ -1,25 +1,37 @@
+<!--
+
+
+    Copyright 2013 the original author or authors.
+    Copyright 2013 Sorcersoft.com S.A.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 <assembly>
     <!--<id>bin</id>-->
     <!-- We dont use the <id> element to avoid the extension to the directory
          and zip name -->
     <formats>
         <format>dir</format>
-        <!--<format>zip</format>-->
+        <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <files>
-        <!-- Copy the project's parent pom so we can correctly install Rio jars into the local repository -->
         <file>
             <source>${basedir}/../pom.xml</source>
             <outputDirectory>/configs/poms</outputDirectory>
             <destName>sorcer-main.pom</destName>
         </file>
-        <!-- Copy the Gnostic pom so we can correctly install Gnostic jars into the local repository -->
-<!--        <file>
-            <source>${basedir}/../rio-services/gnostic/pom.xml</source>
-            <outputDirectory>/config/poms</outputDirectory>
-            <destName>rio-gnostic.pom</destName>
-        </file>-->
         <!-- Copy the logging configuration file -->
         <file>
             <source>${basedir}/src/main/configs/sorcer.logging</source>
@@ -28,16 +40,6 @@
         </file>
     </files>
     <fileSets>
-
-<!--        <fileSet>
-            <directory>${basedir}/..</directory>
-            <includes>
-                <include>LICENSE.txt</include>
-                <include>NOTICE.txt</include>
-                <include>index.html</include>
-            </includes>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>-->
 
         <!-- docs directory -->
 <!--
@@ -52,17 +54,43 @@
         </fileSet>
 -->
 
-        <!-- examples zip -->
-<!--        <fileSet>
-            <directory>${basedir}/target/staging/examples</directory>
+        <!-- examples -->
+        <fileSet>
+            <directory>${basedir}/../examples/</directory>
+            <outputDirectory>/examples</outputDirectory>
             <includes>
-                <include>examples.zip</include>
+                <include>**/*</include>
             </includes>
-            <filtered>true</filtered>
-            <fileMode>0644</fileMode>-->
-<!--            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>pom.xml</exclude>
+                <exclude>*.iml</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*/*.iml</exclude>
+                <exclude>first/**</exclude>
+                <exclude>first</exclude>
+            </excludes>
+            <filtered>false</filtered>
         </fileSet>
--->
+        <fileSet>
+            <directory>${basedir}/src/main/examples</directory>
+            <outputDirectory>/examples</outputDirectory>
+            <includes>
+                <include>prepare-repository.xml</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/examples</directory>
+            <outputDirectory>/examples</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+               <exclude>prepare-repository.xml</exclude>
+            </excludes>
+            <filtered>true</filtered>
+        </fileSet>
+
         <!-- policy directory -->
         <fileSet>
             <directory>${basedir}/src/main/policy</directory>
@@ -84,6 +112,7 @@
             <excludes>
                 <exclude>sorcer.env</exclude>
                 <exclude>sorcer.logging</exclude>
+                <exclude>versions.properties</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -93,7 +122,18 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+                <exclude>versions.properties</exclude>
+            </excludes>
             <filtered>false</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}/src/main/configs</directory>
+            <outputDirectory>/configs</outputDirectory>
+            <includes>
+                <include>versions.properties</include>
+            </includes>
+            <filtered>true</filtered>
         </fileSet>
 
         <!-- bin files -->
@@ -187,77 +227,53 @@
                 <exclude>ant:*</exclude>
                 <exclude>jline:*</exclude>
                 <exclude>org.codehaus.izpack:*</exclude>
-                <exclude>*:oar</exclude>
                 <exclude>*:zip</exclude>
-
-
-        
-                <!-- The following exclusions are for the resolver(s) and it's dependencies -->
-<!--                <exclude>org.rioproject.resolver:resolver-aether</exclude>
-                <exclude>org.rioproject.resolver:resolver-project</exclude>
-                <exclude>org.sonatype.*</exclude>
-                <exclude>org.apache.maven:*</exclude>
-                <exclude>org.apache.maven.wagon:*</exclude>
-                <exclude>org.codehaus.plexus:*</exclude>
-                <exclude>nekohtml:*</exclude>-->
-                <!-- The following exclusions are for gnostic and it's dependencies -->
-<!--                <exclude>org.codehaus.janino:*</exclude>
-                <exclude>org.drools:*</exclude>
-                <exclude>antlr:*</exclude>
-                <exclude>org.eclipse.jdt.core.compiler:*</exclude>
-                <exclude>org.mvel:*</exclude>-->
                 </excludes>
             <outputDirectory>lib/commons</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
-        <!-- Get jsk-dl.jar, jmx-lookup.jar, reggie-dl.jar and serviceui.jar into the lib-dl directory -->
+        <!-- Apache River libs -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>net.jini:*</include>
-                <include>net.jini.lookup:*</include>
                 <include>org.apache.river:*</include>
             </includes>
             <outputDirectory>lib/${org.apache.river}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
-        <!-- The rest of the service download (-api, -proxy and -ui) jars go into the lib-dl directory -->
+        <!-- Jini libs -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>net.jini:*</include>
+            </includes>
+            <outputDirectory>lib/${net.jini}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- Jini libs -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>net.jini.lookup:*</include>
+            </includes>
+            <outputDirectory>lib/${net.jini.lookup}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- SORCER libs -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
                 <include>org.sorcersoft.sorcer:*</include>
-<!--
-                <include>org.sorcersoft.sorcer:sos-env:jar</include>
-                <include>org.sorcersoft.sorcer:sos-util:jar</include>
-                <include>org.sorcersoft.sorcer:sos-exertlet-sui:jar</include>
-                <include>org.sorcersoft.sorcer:sos-security-sui:jar</include>
-                <include>org.sorcersoft.sorcer:commons-req:jar</include>
-                <include>org.sorcersoft.sorcer:commons-prv:jar</include>
-                &lt;!&ndash; sos-providers &ndash;&gt;
-                <include>org.sorcersoft.sorcer:cataloger-prv:jar</include>
-                <include>org.sorcersoft.sorcer:dbp-prv:jar</include>
-                <include>org.sorcersoft.sorcer:dsp-prv:jar</include>
-                <include>org.sorcersoft.sorcer:exertmonitor-prv:jar</include>
-                <include>org.sorcersoft.sorcer:jobber-prv:jar</include>
-                <include>org.sorcersoft.sorcer:logger-prv:jar</include>
-                <include>org.sorcersoft.sorcer:logger-sui:jar</include>
-                <include>org.sorcersoft.sorcer:spacer-prv:jar</include>
-                &lt;!&ndash; tools&ndash;&gt;
-                <include>org.sorcersoft.sorcer:sos-boot:jar</include>
-                <include>org.sorcersoft.sorcer:sos-webster:jar</include>
-                <include>org.sorcersoft.sorcer:sos-shell:jar</include>
-                <include>org.sorcersoft.sorcer:dependencies:jar</include>
-                <include>org.sorcersoft.sorcer:browser:jar</include>
-                <include>org.sorcersoft.sorcer:locker:jar</include>
--->
             </includes>
             <outputDirectory>lib/${org.sorcersoft.sorcer}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 
-        <!-- The rest of the service download (-api, -proxy and -ui) jars go into the lib-dl directory -->
+        <!-- Sigar - necessary for the integrated Rio -->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
@@ -271,10 +287,19 @@
             <useProjectArtifact>false</useProjectArtifact>
             <useStrictFiltering>true</useStrictFiltering>
             <includes>
-                <include>org.rioproject.resolver:*</include>
                 <include>org.rioproject:*</include>
             </includes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.rioproject.resolver:*</include>
+            </includes>
+            <outputDirectory>lib/${org.rioproject.resolver}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 

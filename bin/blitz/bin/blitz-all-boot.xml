@@ -1,28 +1,44 @@
 <?xml version="1.0"?>
+<!--
+
+
+    Copyright 2013 the original author or authors.
+    Copyright 2013 Sorcersoft.com S.A.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
 
 <project name="bliz service" default="blitz" basedir=".">
 
-	<import file="../../../bin/common-run.xml" />
+	<property name="sorcer.distro.in.libs" value="true" />
+    <import file="../../common-run.xml" />
 
-	<property name="invoked.class" value="com.sun.jini.start.ServiceStarter" />
-	
-	<path id="project.classpath">
-			<pathelement location="${lib}/boot.jar" />	
-			<pathelement location="${common.lib}/river/lib/start.jar" />
-			<pathelement location="${common.lib}/river/lib/jsk-lib.jar" />
-			<pathelement location="${common.lib}/groovy/groovy-all-1.6-2.jar" />
-	</path>
-	
-	<target name="blitz">
-		<java classname="${invoked.class}" fork="yes">
-			<classpath refid="project.classpath" />
-			<arg value="../configs/start-blitz-all.config" />
-			<jvmarg value="-javaagent:${common.lib}/sorcer/boot.jar"/>
-			<sysproperty key="sorcer.home" value="${sorcer.home}" />
-			<sysproperty key="java.security.policy" value="../policy/blitz.policy" />
-			<sysproperty key="java.security.policy" value="../policy/blitz.policy" />
-			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-		</java>
-	</target>
+    <property environment="env" />
+    <property name="provider.config" value="../configs/start-blitz-all.config" />
+
+    <target name="blitz">
+        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+            <classpath refid="boot.classpath" />
+            <arg value="${provider.config}" />
+            <!--        <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
+            <sysproperty key="sorcer.home" value="${sorcer.home}" />
+            <sysproperty key="java.security.policy" value="../policy/blitz.policy" />
+            <sysproperty key="provider.webster.url" value="${provider.webster.url}/" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+        </java>
+    </target>
+
 
 </project>

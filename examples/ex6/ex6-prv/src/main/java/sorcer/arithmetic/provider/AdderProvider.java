@@ -1,9 +1,23 @@
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package sorcer.arithmetic.provider;
 
-import java.net.URL;
-import java.rmi.RemoteException;
-
-import net.jini.id.Uuid;
+import com.sun.jini.start.LifeCycle;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.arithmetic.provider.ui.CalculatorUI;
@@ -15,7 +29,8 @@ import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.util.Sorcer;
 
-import com.sun.jini.start.LifeCycle;
+import java.net.URL;
+import java.rmi.RemoteException;
 
 public class AdderProvider extends DatabaseProvider implements RemoteAdder {
 	private Arithmometer arithmometer = new Arithmometer();

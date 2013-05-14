@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,7 +35,7 @@ import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.loki.exertion.KPExertion;
+import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
@@ -298,7 +299,7 @@ public class SpaceTaker extends Thread implements LeaseListener,
 
 	protected void initDataMember(ExertionEnvelop ee, Transaction txn) {
 		try {
-			KPExertion ckpeRes = (KPExertion) ee.exertion;
+			KPEntry ckpeRes = (KPEntry) ee.exertion;
 			data.myMemberUtil.setGroupSeqId(ckpeRes.GroupSeqId);
 			data.myMemberUtil.takewriteKPExertion(ckpeRes.publicKey,
 					data.entry.serviceType);

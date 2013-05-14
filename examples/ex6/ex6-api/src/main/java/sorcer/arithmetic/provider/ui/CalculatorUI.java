@@ -1,3 +1,20 @@
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package sorcer.arithmetic.provider.ui;
 
 import java.awt.Color;
@@ -17,7 +34,7 @@ import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.util.Sorcer;
@@ -57,7 +74,7 @@ public class CalculatorUI extends JPanel implements ActionListener {
 	private ServiceItem item;
 
 	// SORCER provider or semismart proxy Service#service(Exertion)
-	private Servicer provider;
+	private Service provider;
 
 	/** Creates new CalulatorUI Component */
 	public CalculatorUI(Object obj) {

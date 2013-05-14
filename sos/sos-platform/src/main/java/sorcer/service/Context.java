@@ -1,7 +1,7 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import java.io.Serializable;
@@ -60,7 +59,7 @@ import sorcer.service.Signature.ReturnPath;
  * critical when a namespace in the context may change or when data nodes
  * contain remote references, for example a URL. It is usually assumed that
  * provider-enforced data associations are more stable than user-oriented paths.
- * Each direct service invocation {@link Servicer#service}
+ * Each direct service invocation {@link Service#service}
  * requires data in the ServiceContext format.
  * <p/>
  * Service contexts are defined by this common interface with efficient

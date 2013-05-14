@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import net.jini.core.transaction.Transaction;
@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * An exertion is a federated service command (statement) communicated by a requestor -
- * {@link Servicer#service}, to a service provider {@link Servicer}. It is a
+ * {@link Service#service}, to a service provider {@link Service}. It is a
  * form of service-oriented message with an enclosed service
  * {@link sorcer.service.Context} and a collection of service
  * {@link sorcer.service.Signature}s. The service dataContext specifies service data
@@ -49,7 +49,7 @@ import java.util.List;
  * exertions, thus keeping the knowledge of what to do inside of the exertions,
  * instead of having another parts of SO program to make these decisions. When
  * an exertion is invoked then the exertion redirects control to a dynamically
- * bound {@link sorcer.service.Servicer} matching the exertion's signature of
+ * bound {@link Service} matching the exertion's signature of
  * type Operate <code>PROCESS</code>. <br>
  * The <code>Exertion</code> interface also provides for the Composite design
  * pattern and defines a common elementary behavior for all exertions of
@@ -61,7 +61,7 @@ import java.util.List;
  * programming statements and {@link sorcer.service.Job}s analogous to
  * procedures in conventional procedural programming. <br>
  * Control flow exertions allow for branching and looping operations by
- * {@link sorcer.service.Servicer}s executing exertions. A job combined from
+ * {@link Service}s executing exertions. A job combined from
  * tasks and other jobs along with relevant control flow exertions is a
  * service-oriented procedure that can federate its execution with multiple
  * service providers bound dynamically in runtime as determined by
@@ -70,7 +70,7 @@ import java.util.List;
  * @see sorcer.service.AsyncExertion
  * @author Mike Sobolewski
  */
-public interface Exertion extends  Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
+public interface Exertion extends  Service, Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.

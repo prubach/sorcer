@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>examples</artifactId>
-		<version>11.1</version>
+		<version>13.1</version>
 	</parent>
 
 	<groupId>com.example.sorcer</groupId>
@@ -17,7 +17,7 @@
 	<description>Sample Service</description>
 
 	<properties>
-		<v.sorcer>11.1</v.sorcer>
+		<v.sorcer>13.1</v.sorcer>
 	</properties>
 
 	<modules>
@@ -29,27 +29,13 @@
 	</modules>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sorcer-init</id>
-						<goals>
-							<goal>initialize</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-api</artifactId>
+				<artifactId>sos-platform</artifactId>
 				<version>${v.sorcer}</version>
 			</dependency>
 		</dependencies>

@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import java.rmi.RemoteException;
@@ -29,12 +29,12 @@ import net.jini.core.transaction.TransactionException;
  * 
  * @author Mike Sobolewski
  */
-public interface Servicer {
+public interface Service {
 	
 	/**
 	 * A generic service request as specified by an exertion - a generic service
 	 * message. It can be carried out dynamically and indirectly by any
-	 * <code>Servicer</code> peer and directly by a <code>Servicer</code>
+	 * <code>Service</code> peer and directly by a <code>Service</code>
 	 * matching the exertion's method {@link sorcer.service.Signature}.
 	 * 
 	 * @param exertion
@@ -48,7 +48,11 @@ public interface Servicer {
 	 *             if an exertion invocation failed for any reason
 	 * @throws java.rmi.RemoteException
 	 */
-	public Exertion service(Exertion exertion, Transaction txn)
-			throws TransactionException, ExertionException, RemoteException;
+    public Exertion service(Exertion exertion, Transaction txn)
+            throws TransactionException, ExertionException, RemoteException;
+
+
+    public Exertion service(Exertion exertion)
+            throws TransactionException, ExertionException, RemoteException;
 
 }

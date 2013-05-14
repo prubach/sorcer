@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.core;
 
 import net.jini.core.discovery.LookupLocator;
@@ -39,7 +39,7 @@ public interface Cataloger extends Remote {
 	/**
 	 * Returns a SORCER service provider identified by its primary service type.
 	 * 
-	 * @param primaryInterface
+	 * @param primaryInterfaces
 	 *            - the interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -52,7 +52,7 @@ public interface Cataloger extends Remote {
 	 * 
 	 * @param providerName
 	 *            - a provider name, a friendly provider's ID.
-	 * @param primaryInterface
+	 * @param primaryInterfaces
 	 *            - interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -156,7 +156,7 @@ public interface Cataloger extends Remote {
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
-	 * @param interfaceName
+	 * @param serviceType
 	 *            the currently selected interface
 	 * @return a String array of the methods implemented by the interface.
 	 * @throws RemoteException
@@ -195,7 +195,7 @@ public interface Cataloger extends Remote {
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
-	 * @param interfaceName
+	 * @param serviceType
 	 *            the currently selected interface
 	 * @param methodName
 	 *            String of the currently selected method name

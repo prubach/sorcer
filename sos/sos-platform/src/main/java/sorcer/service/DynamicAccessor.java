@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.service;
 
 import net.jini.core.lookup.ServiceItem;
@@ -30,18 +30,18 @@ public interface DynamicAccessor {
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
+	 * @return the requested {@link Service}
 	 * @throws SignatureException 
 	 */
-	Servicer getServicer(Signature signature) throws SignatureException;
+	Service getServicer(Signature signature) throws SignatureException;
 	
 	/**
 	 * Returns a service item containing the servicer matching its {@link Signature}.
 	 * 
 	 * @param signature
 	 *            the signature of requested servicer
-	 * @return the requested {@link Servicer}
-	 * @throws QosResourceException 
+	 * @return the requested {@link Service}
+	 * @throws sorcer.service.SignatureException
 	 */
 	ServiceItem getServiceItem(Signature signature) throws SignatureException;
 

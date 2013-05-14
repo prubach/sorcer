@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,30 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.core.context;
+
+import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.service.*;
+import sorcer.util.Log;
+import sorcer.util.Stopwatch;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
-
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
-import sorcer.service.Strategy;
-import sorcer.util.Log;
-import sorcer.util.Stopwatch;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ControlContext extends ServiceContext implements Strategy {

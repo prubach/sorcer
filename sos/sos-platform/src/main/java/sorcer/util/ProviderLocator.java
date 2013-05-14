@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import net.jini.core.discovery.LookupLocator;
@@ -253,20 +253,20 @@ public class ProviderLocator implements DynamicAccessor, SorcerConstants {
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
 	@Override
-	public Servicer getServicer(Signature signature) throws SignatureException {
+	public Service getServicer(Signature signature) throws SignatureException {
 		return getService(signature);
 	}
 	
-	public static Servicer getService(Signature signature) throws SignatureException {
+	public static Service getService(Signature signature) throws SignatureException {
 		Object proxy = null;
 		try {
 			if (((NetSignature)signature).isUnicast()) {
 				String[] locators = Sorcer.getLookupLocators();
 				for (String locator : locators) {
-					proxy = ProviderLocator.getService(locator,
+					proxy = (Service) ProviderLocator.getService(locator,
 							signature.getServiceType(), signature
 									.getProviderName());
-					if (proxy != null && proxy instanceof Servicer)
+					if (proxy != null && proxy instanceof Service)
 						break;
 					else
 						continue;
@@ -278,10 +278,10 @@ public class ProviderLocator implements DynamicAccessor, SorcerConstants {
 		} catch (Exception ioe) {
 			throw new SignatureException(ioe);
 		} 
-		if (proxy == null || !(proxy instanceof Servicer)) {
+		if (proxy == null || !(proxy instanceof Service)) {
 			throw new SignatureException("Cannot find service for: "
 					+ signature);
 		} else
-			return (Servicer) proxy;
+			return (Service) proxy;
 	}
 }

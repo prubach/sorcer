@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>11.1</version>
+		<version>13.1</version>
 		<artifactId>sorcer-root</artifactId>
 	</parent>
 
@@ -17,7 +17,7 @@
 	<description>${serviceDescription}</description>
 
 	<properties>
-		<v.sorcer>11.1</v.sorcer>
+		<v.sorcer>13.1</v.sorcer>
 	</properties>
 
 	<modules>

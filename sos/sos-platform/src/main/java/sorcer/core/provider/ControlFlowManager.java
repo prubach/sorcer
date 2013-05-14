@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -141,6 +142,8 @@ public class ControlFlowManager {
 	 * @see NetJob
 	 * @see NetTask
 	 * @see Conditional
+	 * @throws RemoteException
+	 *             exception from other methods
 	 * @throws ExertionException
 	 *             exception from other methods
 	 */
@@ -155,11 +158,11 @@ public class ControlFlowManager {
 					logger.info("********************************************* exertion Conditional");
 					result = doConditional(exertion);
 					logger.info("********************************************* exertion Conditional; result: " + result);
-				} else if (exertion.isJob()) {
+                } else if (exertion.isJob()) {
 					logger.info("********************************************* exertion isJob()");
 					result = doRendezvousExertion((Job) exertion);
 					logger.info("********************************************* exertion isJob(); result: " + result);
-				} else if (exertion.isTask()) {
+                } else if (exertion.isTask()) {
 					logger.info("********************************************* exertion isTask()");
 					result = doTask((Task) exertion);
 					logger.info("********************************************* exertion isTask(); result: " + result);
@@ -333,7 +336,7 @@ public class ControlFlowManager {
 						((WhileExertion) exertion).adjustConditionVariables();
 					}
 
-					tmp = doWhileExertion(inner);
+					tmp = doWhileExertion((WhileExertion) inner);
 					((WhileExertion) exertion).setDoExertion(tmp);
 					firstWhileIteration++;
 				}
@@ -417,10 +420,10 @@ public class ControlFlowManager {
 				logger
 						.info("Task is not valid for this provider, forwarding task.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method
+				Class providerType = ((NetSignature) method)
 						.getServiceType();
-				String codebase = method.getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				String codebase = ((NetSignature) method).getCodebase();
+                Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
@@ -470,10 +473,10 @@ public class ControlFlowManager {
 			} else {
 				logger.info("Forwarding Job to SORCER-Jobber.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method
+				Class providerType = ((NetSignature) method)
 						.getServiceType();
-				String codebase = method.getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				String codebase = ((NetSignature) method).getCodebase();
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
@@ -594,11 +597,13 @@ public class ControlFlowManager {
 		}
 
 		else if (innerIf instanceof Task) {
-			return this.doIfTask(exertion);
+			Exertion remoteResult = this.doIfTask(exertion);
+			return remoteResult;
 		}
 
 		else if (innerIf instanceof Job) {
-			return this.doIfJob(exertion);
+			Exertion remoteResult = this.doIfJob(exertion);
+			return remoteResult;
 		}
 
 		else {
@@ -634,10 +639,10 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method
+				Class providerType = ((NetSignature) method)
 						.getServiceType();
-				String codebase = method.getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				String codebase = ((NetSignature) method).getCodebase();
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 
 				return provider.service(exertion, null);
@@ -675,10 +680,10 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method
+				Class providerType = ((NetSignature) method)
 						.getServiceType();
-				String codebase = method.getCodebase();
-				Servicer provider = ProviderAccessor.getProvider(null,
+				String codebase = ((NetSignature) method).getCodebase();
+				Service provider = ProviderAccessor.getProvider(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}
@@ -703,8 +708,8 @@ public class ControlFlowManager {
 			String path = null;
 
 			while (e.hasMoreElements()) {
-				path = (String) e.nextElement();
-				mapBackUp.put(path, context.get(path));
+				path = new String((String) e.nextElement());
+				mapBackUp.put(path, ((ServiceContext) context).get(path));
 			}
 		} catch (ContextException ce) {
 			logger.info("problem saving state of the ServiceContext " + ce);
@@ -727,7 +732,7 @@ public class ControlFlowManager {
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String path = (String) entry.getKey();
-			Object value = entry.getValue();
+			Object value = (Object) entry.getValue();
 
 			try {
 				context.putValue(path, value);
@@ -796,9 +801,9 @@ public class ControlFlowManager {
 	 *            Either a task or job
 	 */
 	public void resetExertionStatus(Exertion exertion) {
-		if (exertion.isTask()) {
+		if (((ServiceExertion) exertion).isTask()) {
 			((Task) exertion).setStatus(ExecState.INITIAL);
-		} else if (exertion.isJob()) {
+		} else if (((ServiceExertion) exertion).isJob()) {
 			for (int i = 0; i < ((Job) exertion).size(); i++) {
 				this.resetExertionStatus(((Job) exertion).exertionAt(i));
 			}
@@ -819,9 +824,9 @@ public class ControlFlowManager {
 			try {
 				if (xrt instanceof Conditional) {
 					result = doConditional(xrt);
-				} else if (xrt.isJob()) {
+				} else if (((ServiceExertion) xrt).isJob()) {
 					result = doRendezvousExertion((Job) xrt);
-				} else if (xrt.isTask()) {
+				} else if (((ServiceExertion) xrt).isTask()) {
 					result = doTask((Task) xrt);
 				}
 				stopped = true;

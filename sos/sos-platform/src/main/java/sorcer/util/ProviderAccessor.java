@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import net.jini.core.entry.Entry;
@@ -180,13 +180,13 @@ public class ProviderAccessor extends ServiceAccessor implements
 		if (providerName != null && providerName.equals(ANY))
 			providerName = null;
 		try {
-			//servicer = (Servicer)ProviderLookup.getService(providerName, serviceType);
+			//servicer = (Service)ProviderLookup.getService(providerName, serviceType);
 			cataloger = getCataloger();
 			if (cataloger != null) {
 				int tryNo = 0;
 				while (tryNo < LUS_REAPEAT) {
 					servicer = cataloger.lookup(providerName, serviceType);
-					//servicer = (Servicer)cataloger.lookupItem(providerName, serviceType).service;
+					//servicer = (Service)cataloger.lookupItem(providerName, serviceType).service;
 					if (servicer != null)
 						break;
 						
@@ -647,7 +647,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * 
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
-	public Servicer getServicer(Signature signature) throws SignatureException {
+	public Service getServicer(Signature signature) throws SignatureException {
 		return getProvider(signature.getProviderName(),
 				signature.getServiceType());
 	}
@@ -655,7 +655,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Used by the {@link Accessor} facility.
 	 * 
-	 * @throws QosResourceException
+	 * @throws SignatureException
 	 * 
 	 * @see sorcer.service.DynamicAccessor#getServiceItem(sorcer.service.Signature)
 	 */

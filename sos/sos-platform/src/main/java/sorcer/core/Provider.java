@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.core;
 
 // Imported Java classes
@@ -34,13 +34,13 @@ import java.util.logging.Logger;
 
 /**
  * This is an interface that defines how a provider interacts with other code 
- * the through the methods that are exposed. It extends {@link sorcer.service.Servicer},
+ * the through the methods that are exposed. It extends {@link sorcer.service.Service},
  * {@link sorcer.core.Monitorable}, and {@link java.rmi.Remote}.
- * @see sorcer.service.Servicer
+ * @see sorcer.service.Service
  * @see sorcer.core.Monitorable
  * @see java.rmi.Remote
  */
-public interface Provider extends Servicer, Monitorable, Remote {
+public interface Provider extends Service, Monitorable, Remote {
 
 	public String getProviderName() throws RemoteException;
 	

@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,18 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import sorcer.core.SorcerConstants;
-import sorcer.service.Identifiable;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SorcerUtil implements SorcerConstants {
 	/**

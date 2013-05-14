@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex1</artifactId>
-        <version>11.1</version>
+        <version>13.1</version>
     </parent>
 
     <artifactId>ex1-prv</artifactId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>            
+        	<version>${v.sorcer}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.river</groupId>
@@ -45,6 +45,7 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -55,6 +56,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
+            <version>${v.groovy}</version>
         </dependency>
     </dependencies>
 </project>

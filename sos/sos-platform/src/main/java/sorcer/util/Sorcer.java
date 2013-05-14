@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import sorcer.core.Provider;
@@ -80,9 +80,8 @@ import java.util.logging.Logger;
  * <code>dnt|application|modifiers</code>, see examples in
  * <code>Sorcer/data.formats</code>. Data type associations (for example
  * <code>dnt|etds|object|Hashtable.output</code>) can be used to lookup data
- * nodes in service contexts {@link #Contexts.getMarkedPaths}.
- * 
- * @see sorcer.core.provider.DeploymentConfiguration
+ * nodes in service contexts {@link Context#getMarkedValues(String)}
+ *
  */
 @SuppressWarnings("rawtypes")
 public class Sorcer extends SorcerEnv {
@@ -115,7 +114,7 @@ public class Sorcer extends SorcerEnv {
 	/** Port for a code sever (webster) */
 	private static int port = 0;
 
-	/**
+    /**
 	 * Loads the environment from the SORCER file configuration sorcer.env.
 	 */
 	static {
@@ -548,7 +547,6 @@ public class Sorcer extends SorcerEnv {
 	 * Gets a system Cataloger name for this environment.
 	 * 
 	 * @return a name of the system Cataloger
-	 * @see name of the system Cataloger
 	 */
 	public static String getCatalogerName() {
 		return props.getProperty(P_CATALOGER_NAME, "Cataloger");
@@ -567,7 +565,6 @@ public class Sorcer extends SorcerEnv {
 	 * Gets an exertion space group name to use with this environment.
 	 * 
 	 * @return a of space group name
-	 * @see getSpaceName
 	 */
 	public static String getSpaceGroup() {
 		return props.getProperty(P_SPACE_GROUP, getLookupGroups()[0]);
@@ -577,7 +574,6 @@ public class Sorcer extends SorcerEnv {
 	 * Returns an exertion space name to use with this environment.
 	 * 
 	 * @return a not suffixed space name
-	 * @see getSpaceName
 	 */
 
 	public static String getSpaceName() {
@@ -588,7 +584,6 @@ public class Sorcer extends SorcerEnv {
 	 * Returns an the actual space name, eventually suffixed, to use with this environment.
 	 * 
 	 * @return a space actual name
-	 * @see getSpaceName
 	 */
 	public static String getActualSpaceName() {		
 		return getActualName(getSpaceName());
@@ -787,10 +782,6 @@ public class Sorcer extends SorcerEnv {
 
 	/**
 	 * Uses getRMIHost and getRMIPort to return the RMI registry URL.
-	 * 
-	 * @return
-	 * @see getRMIHost
-	 * @see getRMIPort
 	 */
 	public static String getRmiUrl() {
 		return "rmi://" + Sorcer.getRmiHost() + ":" + Sorcer.getRmiPort() + "/";
@@ -1127,7 +1118,7 @@ public class Sorcer extends SorcerEnv {
 	/**
 	 * Get an anonymous port.
 	 * 
-	 * @return An anonymous port created by invoking {@link getPortAvailable()}.
+	 * @return An anonymous port created by invoking {@link #getPortAvailable()}.
 	 *         Once this method is called the return value is set statically for
 	 *         future reference
 	 * 
@@ -1289,7 +1280,6 @@ public class Sorcer extends SorcerEnv {
 		return name + "-" + getDefaultNameSuffix(suffixLength);
 	}
 
-	
 	/**
 	 * Load dataContext node (value) types from default 'node.types'. SORCER node
 	 * types specify application types of data nodes in SORCER service contexts.

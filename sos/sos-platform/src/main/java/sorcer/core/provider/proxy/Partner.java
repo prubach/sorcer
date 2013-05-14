@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,18 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.core.provider.proxy;
 
-import sorcer.service.Servicer;
+import sorcer.service.Service;
 
 /**
  * Servers and other compound proxies using inner proxies to extend their
  * functionalty via calls on the inner proxies implement this interface. To
  * provide service-to-service functionality this interface extends
- * {@link Servicer}.
+ * {@link sorcer.service.Service}.
  * 
  * @author Mike Sobolewski
  */
-public interface Partner extends Outer, Servicer {
+public interface Partner extends Outer, Service {
 }

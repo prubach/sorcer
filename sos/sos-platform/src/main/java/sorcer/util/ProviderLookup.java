@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import net.jini.core.entry.Entry;
@@ -62,18 +62,18 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	}
 
 	/*
-	 * Returns a @link{Servicer} with the given signtures.
+	 * Returns a @link{Service} with the given signtures.
 	 * 
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
-	public Servicer getServicer(Signature signature) {
+	public Service getServicer(Signature signature) {
 		return getService(signature);
 	}
 
-	public static Servicer getService(Signature signature) {
+	public static Service getService(Signature signature) {
 		ProviderLookup lookup = new ProviderLookup(signature.getProviderName(),
 				signature.getServiceType());
-		return (Servicer) lookup.getService();
+		return (Service) lookup.getService();
 	}
 
 	/**
@@ -114,9 +114,9 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Servicer getProvider(String providerName,
+	public final static Service getProvider(String providerName,
 			String serviceType) {
-		return (Servicer) getService(providerName, serviceType);
+		return (Service) getService(providerName, serviceType);
 	}
 
 	/**
@@ -150,12 +150,12 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Servicer getProvider(String serviceType) {
+	public final static Service getProvider(String serviceType) {
 		return getProvider(null, serviceType);
 	}
 
 	/**
-	 * @param aServiceInterface
+	 * @param serviceInterface
 	 *            the class of the type of service you are looking for. Class is
 	 *            usually an interface class.
 	 */

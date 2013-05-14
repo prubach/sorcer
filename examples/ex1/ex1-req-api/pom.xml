@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex1</artifactId>
-        <version>11.1</version>
+        <version>13.1</version>
     </parent>
 
     <groupId>org.sorcersoft.sorcer</groupId>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>
-        </dependency>    </dependencies>
-
+        	<version>${v.sorcer}</version>
+        </dependency>
+    </dependencies>
 </project>

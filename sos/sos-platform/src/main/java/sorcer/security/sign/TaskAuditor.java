@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.security.sign;
 
 /*
@@ -41,6 +41,7 @@ import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
 import sorcer.core.context.ServiceContext;
+import sorcer.service.Service;
 
 import javax.security.auth.Subject;
 import java.security.AccessController;
@@ -137,7 +138,7 @@ public class TaskAuditor {
 				sdm = new ServiceDiscoveryManager(disco,
 						new LeaseRenewalManager());
 				lCache1 = sdm.createLookupCache(new ServiceTemplate(null,
-						new Class[] { sorcer.service.Servicer.class }, null),
+						new Class[] { Service.class }, null),
 						null, null);
 			} catch (Exception e) {
 				e.printStackTrace();
