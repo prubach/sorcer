@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +43,7 @@ public class ServiceDiscoveryHelper{
      * Locates the first matching service via multicast discovery
      * @param serviceClass The class object representing the interface of the service
      * @param waitTime How to wait for the service to be discovered
-     * @throws IOException
+     * @throws java.io.IOException
      * @throws InterruptedException
      * @return  */    
     public static Object getService(Class serviceClass,long waitTime)
@@ -54,7 +55,7 @@ public class ServiceDiscoveryHelper{
      * Locates the first matching service via multicast discovery
      * @param serviceClass The class object representing the interface of the service
      * @param serviceName The Name attribute of the service
-     * @throws IOException
+     * @throws java.io.IOException
      * @throws InterruptedException
      * @return  */    
     public static Object getService(Class serviceClass,String serviceName,long waitTime)

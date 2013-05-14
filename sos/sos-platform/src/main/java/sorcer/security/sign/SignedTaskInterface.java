@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.security.sign;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public interface SignedTaskInterface {
 	 * 
 	 * @param signature
 	 *            of ServiceTask object
-	 * @param object
+	 * @param mobject
 	 *            whose signature is being saved
 	 *@exception IOException
 	 *                if the object could not be accessed
@@ -73,13 +73,13 @@ public interface SignedTaskInterface {
 	 * @param publickey
 	 *            of the key pair whose private key was used to encrypt the
 	 *            object
-	 * @param signature
+	 * @param signature1
 	 *            of the encrypted object
 	 * @exception IOException
 	 *                if the object could not be accessed
 	 * @exception ClassNotFoundException
 	 *                if the class for object could not be found
-	 * @exception SignatureExceptiono
+	 * @exception SignatureException
 	 *                if the signature is not of right format
 	 * @exception InvalidKeyException
 	 *                if the key supplied is not of right format

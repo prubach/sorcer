@@ -218,6 +218,62 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <strictCheck>true</strictCheck>
+                    <header>configs/template/license-header-org.txt</header>
+                    <includes>
+                        <include>**/*.java</include>
+                        <include>**/*.xml</include>
+                    </includes>
+                    <excludes>
+<!--
+                        <exclude>**/ovf/datamodel/*.java</exclude>
+-->
+                        <exclude>**/*.config</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.policy</exclude>
+                        <exclude>**/*.html</exclude>
+                        <exclude>**/*.data</exclude>
+                        <exclude>**/*.list</exclude>
+                        <exclude>**/*.rtf</exclude>
+                        <exclude>**/*.css</exclude>
+                        <exclude>**/*.c</exclude>
+                        <exclude>**/*.S</exclude>
+                        <exclude>**/notes/**</exclude>
+                        <exclude>**/archetype-resources/**</exclude>
+                        <exclude>**/first/reference/**/*.java</exclude>
+                        <exclude>**/first/reference/**/*.xml</exclude>
+                        <exclude>**/sos-misc/**/*</exclude>
+                        <exclude>**/jini/scripts/**</exclude>
+                        <exclude>**/.idea/**/*</exclude>
+                        <exclude>**/locker/**/*</exclude>
+                        <exclude>**/sos-webster/**</exclude>
+                        <exclude>**/util/exec/*.java</exclude>
+                        <exclude>**/classdepandjar/**</exclude>
+                        <!-- Rio code -->
+                        <exclude>**/TimeUtil.java</exclude>
+                        <exclude>**/PropertyHelper.java</exclude>
+                        <exclude>**/RemoteServiceEvent.java</exclude>
+                        <exclude>**/sorcer/provider/boot/*.java</exclude>
+                        <!-- other's code -->
+                        <exclude>**/shell/LoaderConfiguration.java</exclude>
+                        <exclude>**/RootLoader.java</exclude>
+                    </excludes>
+                    <mapping>
+                        <bnd>SCRIPT_STYLE</bnd>
+                        <tmpl>XML_STYLE</tmpl>
+                    </mapping>
+                    <properties>
+                        <license.year>2013</license.year>
+                    </properties>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <repositories>

@@ -1,7 +1,8 @@
-/*
- * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -320,7 +321,6 @@ public class GenericUtil implements Serializable {
 	 *            Source URL
 	 * @param destinationFile
 	 *            Destination file
-	 * @see writeUrlToFile
 	 * @throws IOException
 	 */
 	public static void download(URL sourceUrl, File destinationFile)
@@ -335,7 +335,6 @@ public class GenericUtil implements Serializable {
 	 *            Path to a file where contents are to be appended
 	 * @param afc
 	 *            Contents to append to file dataFile
-	 * @see appendVectorToFile
 	 * @throws IOException
 	 */
 	public static void appendFileContents(File dataFile, Vector<?> afc)
@@ -1839,7 +1838,6 @@ public class GenericUtil implements Serializable {
 	 * written by S. A. Burton but modified by E. D. Thompson
 	 * 
 	 * @author S. A. Burton, E. D. Thompson
-	 * @see GenericUtil.setFileContents
 	 */
 	public static void setFileContents(File file, String[] sA)
 			throws IOException {
@@ -3369,8 +3367,7 @@ public class GenericUtil implements Serializable {
 	/**
 	 * Deep copies a Double[][] to an ArrayList<List<?>>
 	 * 
-	 * @param Double
-	 *            [][] data
+	 * @param data
 	 * @return ArrayList<List<?>> copy of data
 	 * @author Travis Sims
 	 */

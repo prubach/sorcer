@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.core;
 
 /*
@@ -35,7 +35,7 @@ public interface ContextMetaData {
 	/**
 	 * Returns the label of the column at index
 	 * 
-	 * @param int index of the column/attribute
+	 * @param column index of the column/attribute
 	 */
 	// Returns the label of the column at index i;
 	public String getColumnLabel(int column)
@@ -45,7 +45,7 @@ public interface ContextMetaData {
 	 * 
 	 * Returns the name of the column at index i;
 	 * 
-	 * @param int index of the column/attribute
+	 * @param column index of the column/attribute
 	 */
 	// Returns the name of the column at index i;
 	public String getColumnName(int column)
@@ -54,7 +54,7 @@ public interface ContextMetaData {
 	/**
 	 * Returns the SQL type of the designated column
 	 * 
-	 * @param int index of the column/attribute
+	 * @param column index of the column/attribute
 	 */
 	// Returns the SQL type of the designated column
 	public int getColumnType(int column) throws ComprehensiveContextException;

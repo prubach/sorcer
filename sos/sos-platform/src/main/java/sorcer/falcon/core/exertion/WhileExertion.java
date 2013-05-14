@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.falcon.core.exertion;
 
 import org.nfunk.jep.JEP;
@@ -114,7 +114,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 
 	/**
 	 * Returns the condition component, which is an object implementing the
-	 * {@link Condtional} interface for this looping exertion.
+	 * {@link Conditional} interface for this looping exertion.
 	 * 
 	 * @return a condition for this exertion
 	 */
@@ -177,7 +177,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 *         operation
 	 * @param e
 	 *            the exception
-	 * @see sorcer.service.ServiceExertion#reportException(java.lang.Exception)
+	 * @see sorcer.service.ServiceExertion#reportException(Throwable)
 	 */
 	public void reportException(Exception e) {
 		((ServiceExertion) baseExertion).reportException(e);
@@ -187,7 +187,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * Returns the dataContext name of the actual job/task.
 	 * 
 	 * @return String the name of the dataContext
-	 * @see sorcer.service.ServiceExertion#getContextName()
+	 * @see sorcer.service.ServiceExertion#getContext()
 	 */
 	public String getContextName() {
 		return baseExertion.getDataContext().getName();

@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util.dbac;
 
 import sorcer.core.SorcerConstants;
@@ -311,11 +311,11 @@ abstract public class ProxyProtocol implements Protocol, SorcerConstants {
 	/**
 	 * Determines if the principal is allowed access the resource.
 	 * 
-	 * @param resourceName
+	 * @param providerName
 	 *            The name of the resource
-	 * @param operation
+	 * @param serviceType
 	 *            The name to the resource access operation (e.g., read, write)
-	 * @param principalName
+	 * @param principal
 	 *            The name of the principal
 	 * @return boolean Returns true if access is allowed. Otherwise returns
 	 *         false.

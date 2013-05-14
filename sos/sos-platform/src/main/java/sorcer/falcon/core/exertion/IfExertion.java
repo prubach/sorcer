@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.falcon.core.exertion;
 
 import org.nfunk.jep.JEP;
@@ -175,7 +175,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @return boolean value
 	 * @param e
 	 *            the exception to be added
-	 * @see sorcer.service.ServiceExertion#reportException(java.lang.Exception)
+	 * @see sorcer.service.ServiceExertion#reportException
 	 */
 	public void reportException(Exception e) {
 		((ServiceExertion) thenExertion).reportException(e);
@@ -186,7 +186,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * by default.
 	 * 
 	 * @return String the name of the dataContext
-	 * @see sorcer.service.ServiceExertion#getContextName()
+	 * @see sorcer.service.ServiceExertion#getContext()
 	 */
 	public String getContextName() {
 		return thenExertion.getDataContext().getName();
@@ -251,7 +251,6 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * 
 	 * @return Signature
 	 * @see NetSignature
-	 * @see RemoteServiceSignature
 	 */
 	public Signature getProcessSignature() {
 		return thenExertion.getProcessSignature();
@@ -278,11 +277,11 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	/**
 	 * Sets the boolean expression to be evaluated by the IfExertion if the
 	 * Condition is not set. The variables in the expression is set by using
-	 * {@link IfExertion#setVariable(String, String)}.
+	 * {@link IfExertion#setConditionVariable(String, String)}
 	 * 
 	 * @param expression
 	 *            the boolean expression
-	 * @see {@link WhileExertion#setVariable(String, String)}
+	 * @see {@link WhileExertion#setConditionVariable(String, String)}
 	 * @see JEP
 	 */
 	public void setCondition(String expression) {

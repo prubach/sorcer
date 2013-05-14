@@ -1,7 +1,8 @@
-/*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
- *  
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package sorcer.util;
 
 import java.util.logging.FileHandler;
@@ -80,7 +80,6 @@ import java.util.logging.SimpleFormatter;
  * @author Max Berger
  * @version $Id: Log.java,v 1.3 2007/07/27 18:35:06 sobolemw Exp $
  * @see java.util.logging.Logger
- * @see jgapp.util.Debug#stackTraceToString(Throwable)
  */
 
 public class Log {
