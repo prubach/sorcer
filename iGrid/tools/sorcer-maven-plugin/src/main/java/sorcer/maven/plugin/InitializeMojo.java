@@ -117,10 +117,11 @@ public class InitializeMojo extends AbstractSorcerMojo {
 	}
 
 	private void assertNotEmpty(String name, String value) throws MojoExecutionException {
-		if (StringUtils.isBlank(value)) {
-			throw new MojoExecutionException("Undefined '" + name + "'");
+		if (StringUtils.isNotBlank(value)) {
+			getLog().info(name + " = " + providerName);
+		} else {
+			getLog().warn("Empty " + name);
 		}
-		getLog().info("providerName = " + providerName);
 	}
 
 	public boolean isPomProject() {

@@ -48,6 +48,20 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- requestor codebase -->
+		<dependency>
+			<groupId>au.net.Zeus</groupId>
+			<artifactId>reference-collections</artifactId>
+			<version>1.0.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.stephenc.high-scale-lib</groupId>
+			<artifactId>high-scale-lib</artifactId>
+			<version>1.1.4</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -75,6 +89,9 @@
 						<configuration>
 							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
 							<scope>test</scope>
+							<codebase>
+								<codebase>au.net.Zeus:reference-collections:1.0.1</codebase>
+							</codebase>
 						</configuration>
 					</execution>
 					<execution>

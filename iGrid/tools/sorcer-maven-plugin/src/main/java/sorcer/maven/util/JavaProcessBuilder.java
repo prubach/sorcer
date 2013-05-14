@@ -26,8 +26,9 @@ public class JavaProcessBuilder {
 	protected String mainClass;
 	protected List<String> parameters;
 	protected File workingDir;
-protected boolean debugger;
+	protected boolean debugger;
 	protected Log log;
+	protected File output;
 
 	public JavaProcessBuilder(Log log) {
 		this.log = log;
@@ -57,11 +58,21 @@ protected boolean debugger;
 		this.debugger = debugger;
 	}
 
+	/**
+	 * Set standard and error output
+	 * 
+	 * @param output
+	 *            output file
+	 */
+	public void setOutput(File output) {
+		this.output = output;
+	}
+
 	public Process2 startProcess() throws MojoExecutionException, MojoFailureException {
 		ProcessBuilder procBld = new ProcessBuilder().command("java");
 
-		if(debugger){
-			procBld.command().addAll(Arrays.asList("-Xdebug","-Xrunjdwp:transport=dt_socket,server=y,address=8000"));
+		if (debugger) {
+			procBld.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=8000"));
 		}
 
 		procBld.command().addAll(_D(properties));
@@ -78,7 +89,12 @@ protected boolean debugger;
 		}
 		procBld.directory(workingDir);
 
-		log.info("[" + workingDir.getPath() + "] " + StringUtils.join(procBld.command(), " "));
+		StringBuilder cmdStr  = new StringBuilder("[").append(workingDir.getPath()).append("] ").append(StringUtils.join(procBld.command(), " "));
+		if(output!=null){
+			cmdStr.append(" > ").append(output.getPath());
+		}
+
+		log.info( output.toString() );
 
 		redirectIO(procBld);
 
@@ -113,13 +129,24 @@ protected boolean debugger;
 	 * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
 	 */
 	private void redirectIO(ProcessBuilder processBuilder) throws MojoFailureException {
-		Class<? extends ProcessBuilder> pbClass = processBuilder.getClass();
+		if (output != null) {
+			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[] { Boolean.TYPE }, true);
+			//processBuilder.redirectErrorStream(true);
+			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[]{File.class}, output);
+		} else {
+			invokeIgnoreErrors(processBuilder, "inheritIO", new Class[0]);
+		}
+	}
+
+	protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args)
+			throws MojoFailureException {
 		try {
-			Method inheritIOMethod = pbClass.getDeclaredMethod("inheritIO");
-			inheritIOMethod.invoke(processBuilder);
+			Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
+			return method.invoke(target, args);
 		} catch (NoSuchMethodException e) {
 			// looks like we're not in jdk1.7
-			// return
+			log.warn(e.getMessage(), e);
+			return null;
 		} catch (InvocationTargetException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {

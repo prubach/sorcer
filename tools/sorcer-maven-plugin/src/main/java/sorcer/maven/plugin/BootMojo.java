@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -54,9 +53,11 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(property = "sorcer.provider.debug")
 	protected boolean debug;
 
+	@Parameter(defaultValue = "${project.build.directory}/provider.log")
+	protected File logFile;
+	
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Log log = getLog();
-		log.debug("servicesConfig: " + servicesConfig);
+		getLog().debug("servicesConfig: " + servicesConfig);
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
@@ -85,8 +86,9 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setParameters(Arrays.asList(servicesConfig.getPath()));
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
 		builder.setDebugger(debug);
+		builder.setOutput(logFile);
 
-		log.info("starting sorcer");
+		getLog().info("starting sorcer");
 		putProcess(builder.startProcess());
 	}
 }

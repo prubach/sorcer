@@ -62,6 +62,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter
 	protected List<String> codebase = new ArrayList<String>();
 
+	@Parameter(defaultValue = "${project.build.directory}/requestor.log")
+	protected File logFile;
+
 	/**
 	 * Milliseconds to wait before starting the requestor
 	 */
@@ -92,6 +95,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		builder.setMainClass(mainClass);
 		builder.setClassPath(buildClasspath());
 		builder.setDebugger(debug);
+		builder.setOutput(logFile);
 
 		try {
 			if (waitBeforeRun > 0) {
