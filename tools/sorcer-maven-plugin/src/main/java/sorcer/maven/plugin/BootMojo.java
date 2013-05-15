@@ -121,7 +121,7 @@ public class BootMojo extends AbstractMojo {
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutDir);
-		String classPath = resolveClassPath("org.sorcersoft.sorcer:sos-boot:13.1");
+		String classPath = resolveClassPath("org.sorcersoft.sorcer:sos-boot:1.0-SNAPSHOT");
 		getLog().info("Classpath = " + classPath);
 
 		Map<String, Object> _d = new HashMap<String, Object>();

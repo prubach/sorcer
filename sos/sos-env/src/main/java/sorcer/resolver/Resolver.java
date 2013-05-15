@@ -63,7 +63,7 @@ public class Resolver {
 	}
 
 	public static String resolveAbsolute(String baseUri, ArtifactCoordinates coords){
-		return URI.create(baseUri).resolve(resolveRelative(coords)).toString();
+		return URI.create(baseUri).resolve(resolveRelative(coords).replace(File.separator, "/")).toString();
 	}
 
 	/**

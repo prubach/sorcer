@@ -35,7 +35,7 @@
 	<property name="requestor.name" value="ex1-req" />
 	<property name="requestor.api" value="ex1-api" />
 	<property name="requestor.client.api" value="ex1-req-api" />
-	<property name="requestor.version" value="13.1" />
+	<property name="requestor.version" value="1.0-SNAPSHOT" />
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.runner}" fork="yes">

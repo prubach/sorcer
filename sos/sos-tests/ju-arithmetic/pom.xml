@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>sos-tests</artifactId>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>13.1</version>
+		<artifactId>sos-tests</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<packaging>pom</packaging>
 	<artifactId>ju-arithmetic</artifactId>
-	<name>SORCER sorcer-int-tests :: ju-arithmetic</name>
+	<name>SORCER OS :: int tests :: arithmetic</name>
 
 	<modules>
 		<module>ju-arithmetic-api</module>

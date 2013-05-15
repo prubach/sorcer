@@ -7,12 +7,11 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ju-arithmetic</artifactId>
-        <version>13.1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ju-arithmetic-api</artifactId>
-    <name>SORCER sos-tests :: ju-arithmetic :: API</name>
+	<name>SORCER OS :: int tests :: arithmetic :: API</name>
 
     <dependencies>
         <dependency>

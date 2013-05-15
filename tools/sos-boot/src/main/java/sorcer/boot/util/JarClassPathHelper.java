@@ -61,7 +61,7 @@ public class JarClassPathHelper {
 		try {
 
 			log.debug("Creating jar file path from [{}]", f.getCanonicalPath());
-			JarFile jar = new JarFile(f);
+            JarFile jar = new JarFile(f);
 			Manifest man = jar.getManifest();
 			if (man == null) {
 				return;

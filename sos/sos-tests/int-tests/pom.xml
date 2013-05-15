@@ -6,15 +6,15 @@
 	<parent>
 		<artifactId>sos-tests</artifactId>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>13.1</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>int-tests</artifactId>
-	<name>SORCER sorcer-int-tests :: Tests</name>
+	<name>SORCER OS :: int tests :: integration tests</name>
 
 	<properties>
 		<maven.test.skip>true</maven.test.skip>
-		<skipTests>true</skipTests>
+		<skipTests>${maven.test.skip}</skipTests>
 	</properties>
 
 	<dependencies>

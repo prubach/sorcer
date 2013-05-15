@@ -5,15 +5,13 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>13.1</version>
-		<artifactId>sorcer-root</artifactId>
+		<artifactId>sorcer</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>examples</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER examples</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<modules>
 		<module>ex1</module>

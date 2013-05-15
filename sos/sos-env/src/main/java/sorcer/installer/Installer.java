@@ -18,14 +18,21 @@
 package sorcer.installer;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * User: prubach
@@ -41,10 +48,18 @@ public class Installer {
     protected static final Logger logger = Logger.getLogger(Installer.class.getName());
 
     {
-        repoDir = Resolver.getRepoDir();
-        if (repoDir == null || (!new File(repoDir).exists()))
+        try {
+            repoDir = Resolver.getRepoDir();
+            if (repoDir == null) {
+                logger.severe("repoDir is null");
+                throw new IOException("repoDir is null");
+            }
+            if (!new File(repoDir).exists())
+                FileUtils.forceMkdir(new File(repoDir));
+        } catch (IOException io) {
             logger.severe("Problem installing jars to local maven repository - repository directory does not exist!");
-
+            System.exit(-1);
+        }
         String resourceName = "META-INF/maven/versions.properties";
         URL resourceVersions = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (resourceVersions == null) {
@@ -105,6 +120,8 @@ public class Installer {
                 String artifactDir = Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/" + fileNoExt + "/" + version;
                 try {
                     FileUtils.forceMkdir(new File(artifactDir));
+                    extractZipFile(jar, "META-INF/maven/" + group + "/" + fileNoExt + "/pom.xml",
+                            artifactDir + "/" + fileNoExt + "-" + version + ".pom");
                     FileUtils.copyFile(jar, new File(artifactDir, fileNoExt + "-" + version + ".jar"));
                 } catch (IOException io) {
                     logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
@@ -113,8 +130,36 @@ public class Installer {
         }
     }
 
+
+    public void installPoms() {
+
+        String pomDir = SorcerEnv.getHomeDir() + "/configs/poms/";
+
+        File[] jars = new File(pomDir).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.getName().endsWith("pom"))
+                    return true;
+                return false;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+        String group = "org.sorcersoft.sorcer";
+        for (File jar : jars) {
+                String fileNoExt = jar.getName().replace("-" + SorcerEnv.getSorcerVersion() + ".pom", "");
+                String artifactDir = Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/" + fileNoExt + "/" + SorcerEnv.getSorcerVersion();
+                try {
+                    FileUtils.forceMkdir(new File(artifactDir));
+                    FileUtils.copyFile(jar, new File(artifactDir, jar.getName()));
+                } catch (IOException io) {
+                    logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
+                }
+        }
+    }
+
     public static void main(String[] args) {
-        new Installer().install();
+        Installer installer = new Installer();
+        installer.install();
+        installer.installPoms();
     }
 
     protected void close(Closeable inputStream) {
@@ -124,6 +169,40 @@ public class Installer {
             } catch (IOException e) {
                 // igonre
             }
+        }
+    }
+
+    public static void extractZipFile(File zipFileSrc, String relativeFilePath, String targetFilePath) {
+        try {
+            ZipFile zipFile = new ZipFile(zipFileSrc);
+            Enumeration<? extends ZipEntry> e = zipFile.entries();
+
+            while (e.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) e.nextElement();
+                // if the entry is not directory and matches relative file then extract it
+                if (!entry.isDirectory() && entry.getName().equals(relativeFilePath)) {
+                    InputStream bis = new BufferedInputStream(
+                            zipFile.getInputStream(entry));
+
+                    // write the inputStream to a FileOutputStream
+                    OutputStream outputStream =
+                            new FileOutputStream(new File(targetFilePath));
+
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+
+                    while ((read = bis.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+                    bis.close();
+                    outputStream.close();
+                } else {
+                    continue;
+                }
+            }
+        } catch (IOException e) {
+            logger.severe("IOError :" + e);
+            e.printStackTrace();
         }
     }
 }

@@ -6,15 +6,12 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>13.1</version>
 		<artifactId>dbp</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dbp-prv</artifactId>
-	<packaging>jar</packaging>
 	<name>SORCER OS :: providers :: dbp :: prv</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<dependencies>
         <dependency>

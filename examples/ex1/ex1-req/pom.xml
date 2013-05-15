@@ -7,10 +7,9 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex1</artifactId>
-        <version>13.1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex1-req</artifactId>
     <name>SORCER examples :: ex1 :: req</name>
 
@@ -55,7 +54,7 @@
                         <argument>-Djava.security.policy=${env.SORCER_HOME}/configs/sorcer.policy</argument>
 						<argument>-Dwebster.internal=true</argument>
 						<argument>-Dwebster.debug=true</argument>
-						<argument>-Dsorcer.codebase.jars=/org/sorcersoft/sorcer/ex1-req-api/13.1/ex1-req-api-13.1.jar;/org/sorcersoft/sorcer/ex1-api/13.1/ex1-api-13.1.jar;/org/sorcersoft/sorcer/sos-platform/13.1/sos-platform-13.1.jar</argument>
+						<argument>-Dsorcer.codebase.jars=/org/sorcersoft/sorcer/ex1-req-api/1.0/ex1-req-api-1.0.jar;/org/sorcersoft/sorcer/ex1-api/1.0/ex1-api-1.0.jar;/org/sorcersoft/sorcer/sos-platform/1.0/sos-platform-1.0.jar</argument>
                         <argument>-classpath</argument><classpath/>
                         <argument>sorcer.core.requestor.ExertionRunner</argument>
                         <argument>sorcer.ex1.requestor.WhoIsItTaskRunner</argument>
