@@ -47,6 +47,7 @@ import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
+import sorcer.provider.boot.Booter;
 
 /**
  * @author Rafał Krupiński
@@ -98,12 +99,13 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
+		List<String> websterRoots = new LinkedList<String>();
 
 		Map<String, String> sysProps = new HashMap<String, String>();
 		sysProps.put("java.util.logging.config.file", new File(sorcerHome, "configs/sorcer.logging").getPath());
 		sysProps.put("java.security.policy", new File(testOutputDir, "sorcer.policy").getPath());
 		sysProps.put("sorcer.env.file", sorcerEnvFile.getPath());
-		sysProps.put("java.rmi.server.codebase", buildCodeBase());
+		sysProps.put("java.rmi.server.codebase", buildCodeBase(websterRoots));
 		sysProps.put("java.rmi.server.useCodebaseOnly", "false");
 		if (!websterRoots.isEmpty()) {
 			websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
@@ -141,10 +143,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		return classPathList;
 	}
 
-	private List<String> websterRoots = new LinkedList<String>();
-
-	private String buildCodeBase() throws MojoExecutionException {
-		String host = "http://192.168.0.5:" + TestCycleHelper.getInstance().getWebsterPort();
+	private String buildCodeBase(List<String> websterRoots) throws MojoExecutionException {
+		String host = "http://" + Booter.getWebsterHostName() + ":" + TestCycleHelper.getInstance().getWebsterPort();
 		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, requestorCodebase, JavaScopes.TEST);
 
 		try {
