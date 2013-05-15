@@ -48,7 +48,7 @@
 	<loadproperties srcfile="${sorcer.home}/configs/sorcer.env" />
 	<loadproperties srcfile="${sorcer.home}/configs/versions.properties" />
 
-    <condition property="mvn.repo"  value="${sorcer.local.repo.location}" else="${env.HOME}/.m2/repository/">
+    <condition property="mvn.repo"  value="${sorcer.local.repo.location}" else="${user.home}/.m2/repository/">
         <isset property="sorcer.local.repo.location" />
     </condition>
 

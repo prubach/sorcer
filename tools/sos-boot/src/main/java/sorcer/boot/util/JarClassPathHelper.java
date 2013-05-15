@@ -61,6 +61,9 @@ public class JarClassPathHelper {
 		try {
 
 			log.debug("Creating jar file path from [{}]", f.getCanonicalPath());
+            if (f.getAbsolutePath().contains(" "))
+                f = new File(f.getCanonicalPath());
+            log.info("File to read manifest: " + f.toString());
             JarFile jar = new JarFile(f);
 			Manifest man = jar.getManifest();
 			if (man == null) {
