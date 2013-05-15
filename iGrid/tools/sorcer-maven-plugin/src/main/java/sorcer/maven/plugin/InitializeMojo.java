@@ -74,8 +74,10 @@ public class InitializeMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.groupId}:${project.artifactId}-prv:${project.version}")
 	protected String provider;
 
+/*
 	@Parameter(defaultValue = "${project.groupId}:${project.artifactId}-req:${project.version}")
 	protected String requestor;
+*/
 
 	@Parameter
 	protected File providerPath;
@@ -88,7 +90,7 @@ public class InitializeMojo extends AbstractSorcerMojo {
 			providerName = props.getProperty(KEY_PROVIDER_NAME);
 		} else {
 			props.setProperty(KEY_PROVIDER_NAME, providerName);
-			props.setProperty(KEY_REQUESTOR, requestor);
+			props.setProperty(KEY_REQUESTOR, api);
 			props.setProperty(KEY_PROVIDER, provider);
 			// props.setProperty(KEY_PROVIDER_PATH, providerPath.getPath());
 			props.put(KEY_CLASSPATH, Arrays.asList(api, provider, proxy));
@@ -98,9 +100,8 @@ public class InitializeMojo extends AbstractSorcerMojo {
 	}
 
 	// if we're run on a pom project, assume it's a provider root
-	// otherwise, asume we're in a prv module
+	// otherwise, assume we're in a provider module
 	private void configure() throws MojoExecutionException {
-
 		MavenProject mainProject = isPomProject() ? project : project.getParent();
 
 		if (providerName == null) {
@@ -108,7 +109,6 @@ public class InitializeMojo extends AbstractSorcerMojo {
 		}
 
 		api = resolveModule(mainProject, api, "api");
-
 	}
 
 	private String resolveModule(MavenProject project, String userData, String role) {

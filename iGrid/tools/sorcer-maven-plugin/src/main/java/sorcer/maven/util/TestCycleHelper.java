@@ -24,6 +24,7 @@ public class TestCycleHelper {
 	protected static ThreadLocal<TestCycleHelper> instance = new ThreadLocal<TestCycleHelper>();
 
 	protected String provider;
+	protected int websterPort;
 
 	/**
 	 * The provider process to kill in DestroyMojo (post-integration-test)
@@ -51,5 +52,13 @@ public class TestCycleHelper {
 
 	public void setProcess(Process2 process) {
 		this.process = process;
+	}
+
+	public int getWebsterPort() {
+		return websterPort;
+	}
+
+	public void setWebsterPort(int websterPort) {
+		this.websterPort = websterPort;
 	}
 }

@@ -106,12 +106,13 @@ public class JavaProcessBuilder {
 		}
 		procBld.directory(workingDir);
 
-		StringBuilder cmdStr  = new StringBuilder("[").append(workingDir.getPath()).append("] ").append(StringUtils.join(procBld.command(), " "));
-		if(output!=null){
+		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
+				.append(StringUtils.join(procBld.command(), " "));
+		if (output != null) {
 			cmdStr.append(" > ").append(output.getPath());
 		}
 
-		log.info( output.toString() );
+		log.info(cmdStr.toString());
 
 		redirectIO(procBld);
 
@@ -148,8 +149,8 @@ public class JavaProcessBuilder {
 	private void redirectIO(ProcessBuilder processBuilder) throws MojoFailureException {
 		if (output != null) {
 			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[] { Boolean.TYPE }, true);
-			//processBuilder.redirectErrorStream(true);
-			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[]{File.class}, output);
+			// processBuilder.redirectErrorStream(true);
+			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[] { File.class }, output);
 		} else {
 			invokeIgnoreErrors(processBuilder, "inheritIO", new Class[0]);
 		}
@@ -174,11 +175,7 @@ public class JavaProcessBuilder {
 	private List<String> _D(Map<String, String> d) {
 		List<String> result = new ArrayList<String>(d.size());
 		for (Map.Entry<String, String> e : d.entrySet()) {
-			String value = e.getValue();
-			if (value.contains(" ")) {
-				value = "\"" + value + "\"";
-			}
-			result.add(_D(e.getKey(), value));
+			result.add(_D(e.getKey(), e.getValue()));
 		}
 		return result;
 	}
