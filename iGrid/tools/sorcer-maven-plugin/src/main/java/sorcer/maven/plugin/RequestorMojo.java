@@ -20,7 +20,6 @@ package sorcer.maven.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,7 +77,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	protected boolean debug;
 
 	@Parameter
-	protected List<String> codebase = new ArrayList<String>();
+	protected List<String> requestorCodebase = new ArrayList<String>();
+
+	@Parameter
+	protected List<String> requestorClasspath = new ArrayList<String>();
 
 	@Parameter(defaultValue = "${project.build.directory}/requestor.log")
 	protected File logFile;
@@ -92,7 +94,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (!project.getPackaging().equals("jar")) {
-			getLog().warn("Plugin misconfigured: run on a project with packaging other than jar");
+			getLog().warn("Plugin misconfigured: runnig on a project with packaging other than jar");
 		}
 
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
@@ -133,35 +135,20 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	}
 
 	private Collection<String> buildClasspath() throws MojoExecutionException {
-		Set<Artifact> artifacts = new HashSet<Artifact>();
-		List<String> cp = new ArrayList<String>(Arrays.asList((String) project.getProperties().get(KEY_REQUESTOR)));
-
-		try {
-			for (String coords : cp) {
-				artifacts.addAll(resolveDependencies(new DefaultArtifact(coords), JavaScopes.TEST));
-			}
-			Collection<String> classPathList = ArtifactUtil.toString(artifacts);
-			classPathList.add(project.getBuild().getTestOutputDirectory());
-			return classPathList;
-		} catch (DependencyResolutionException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
-		}
+		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, requestorClasspath, JavaScopes.TEST);
+		Collection<String> classPathList = ArtifactUtil.toString(artifacts);
+		classPathList.add(project.getBuild().getTestOutputDirectory());
+		return classPathList;
 	}
 
 	private List<String> websterRoots = new LinkedList<String>();
 
 	private String buildCodeBase() throws MojoExecutionException {
-		List<String> cb = new LinkedList<String>(Arrays.asList(project.getProperties().getProperty(KEY_REQUESTOR)));
-		cb.addAll(codebase);
-
 		String host = "http://192.168.0.5:" + TestCycleHelper.getInstance().getWebsterPort();
+		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, requestorCodebase, JavaScopes.TEST);
 
-		Set<Artifact> artifacts = new HashSet<Artifact>();
 		try {
 			String repositoryPath = repositorySystemSession.getLocalRepository().getBasedir().getCanonicalPath();
-			for (String s : cb) {
-				artifacts.addAll(resolveDependencies(new DefaultArtifact(s), JavaScopes.TEST));
-			}
 			List<String> codeBaseList = new LinkedList<String>();
 			for (Artifact artifact : artifacts) {
 				File artifactFile = artifact.getFile();
@@ -178,9 +165,26 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			return StringUtils.join(codeBaseList, " ");
 		} catch (IOException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
+		}
+	}
+
+	protected Collection<Artifact> resolveDependencies(String propertyKey, Collection<String> userEntries, String scope)
+			throws MojoExecutionException {
+		List<String> coordinates = new LinkedList<String>();
+		if (propertyKey != null && project.getProperties().containsKey(propertyKey)) {
+			coordinates.add(project.getProperties().getProperty(propertyKey));
+		}
+		if (userEntries != null) {
+			coordinates.addAll(userEntries);
+		}
+		try {
+			Set<Artifact> artifacts = new HashSet<Artifact>(coordinates.size());
+			for (String coords : coordinates) {
+				artifacts.addAll(resolveDependencies(new DefaultArtifact(coords), scope));
+			}
+			return artifacts;
 		} catch (DependencyResolutionException e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
-
 	}
 }

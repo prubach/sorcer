@@ -153,8 +153,6 @@
                 <pathelement location="${lib.dir}/jini/jsk-lib.jar" />
                 <pathelement location="${lib.dir}/river/start.jar" />
                 <pathelement location="${lib.dir}/jini-lookup/serviceui.jar" />
-                <pathelement location="${lib.dir}/commons/reference-collections.jar" />
-                <pathelement location="${lib.dir}/commons/high-scale-lib.jar" />
                 <pathelement location="${lib.dir}/commons/slf4j-api.jar" />
                 <pathelement location="${lib.dir}/commons/logback-classic.jar" />
                 <pathelement location="${lib.dir}/commons/logback-core.jar" />
@@ -186,8 +184,6 @@
             <path id="jini.classpath">
                 <pathelement location="${mvn.repo}/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.jar" />
                 <pathelement location="${mvn.repo}/org/apache/river/start/${v.jini}/start-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/au/net/Zeus/reference-collections/1.0.1/reference-collections-1.0.1.jar" />
-                <pathelement location="${mvn.repo}/com/boundary/high-scale-lib/1.0.4-SNAPSHOT/high-scale-lib-1.0.4-SNAPSHOT.jar" />
                 <pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar" />
                 <pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar" />
                 <pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" />

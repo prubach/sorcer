@@ -10,24 +10,6 @@
 	<artifactId>first-req</artifactId>
 	<name>SORCER :: first :: requestor</name>
 
-<!--
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-maven-plugin</artifactId>
-				<version>${v.sorcer}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>policy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
--->
 
 	<dependencies>
 		<dependency>
