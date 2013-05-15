@@ -27,9 +27,10 @@ import java.security.Permission;
 import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -449,13 +450,13 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * manifest setting. If there is, append the settings to the classpath
 	 */
 	private String setClasspath(String cp) {
-
-        List<String>cpList=new LinkedList<String>();
-		for (String s : Booter.toArray(cp)) {
-			cpList.add(s);
-            classPathHelper.getClassPathFromJar(cpList, new File(s));
-        }
-		return Booter.getClasspath(cpList.toArray(new String[cpList.size()]));
+		String[] inClassPathArr = cp.split("[:;]");
+		Set<String> paths = new HashSet<String>();
+		for (String s : inClassPathArr) {
+			paths.add(s);
+			paths.addAll(classPathHelper.getClassPathFromJar(new File(s)));
+		}
+		return Booter.getClasspath(paths.toArray(new String[paths.size()]));
 	}
 
     public String toString() {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 Dennis Reedy
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,11 @@ package sorcer.boot.util;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -34,7 +36,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 
 /**
- * @author Rafał Krupiński
+ * @author Dennis Reedy
  */
 public class JarClassPathHelper {
 	final private static Logger log = LoggerFactory.getLogger(JarClassPathHelper.class);
@@ -50,40 +52,39 @@ public class JarClassPathHelper {
                     new File(repo, "org/apache/river"),
                     new File(repo, "net/jini"),
                     new File(repo, "org/sorcersoft"),
-                    new File(SorcerEnv.getHomeDir(), "lib") };
+                    new File(repo)
+			};
         } else {
             jarRoots = new File[] {
                     new File(Resolver.getRootDir()) };
         }
 	}
 
-	public void getClassPathFromJar(List<String> buff, File f) {
+	public Collection<String> getClassPathFromJar(File f) {
+		Set<String>result = new HashSet<String>();
+		log.debug("Creating jar file path from [{}]", f.getPath());
 		try {
-
-			log.debug("Creating jar file path from [{}]", f.getCanonicalPath());
-            if (f.getAbsolutePath().contains(" "))
-                f = new File(f.getCanonicalPath());
-            log.info("File to read manifest: " + f.toString());
             JarFile jar = new JarFile(f);
 			Manifest man = jar.getManifest();
 			if (man == null) {
-				return;
+				return result;
 			}
 			Attributes attributes = man.getMainAttributes();
 			if (attributes == null) {
-				return;
+				return result;
 			}
 			String values = (String) attributes.get(new Attributes.Name("Class-Path"));
 			if (values != null) {
 				for (String v : values.split(" ")) {
 					File add = findFile(v);
 					if (add != null) {
-						buff.add(add.getCanonicalPath());
+						result.add(add.getCanonicalPath());
 					} else {
 						log.warn("Could not find {} on the search path",v);
 					}
 				}
 			}
+			return result;
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Error while reading classpath", e);
 		}
