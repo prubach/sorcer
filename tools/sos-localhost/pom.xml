@@ -14,7 +14,12 @@
 	<name>SORCER tools :: localhost</name>
 	<description>Resolve the default local IP address using SIGAR</description>
 
-	<dependencies>
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <skipTests>${maven.test.skip}</skipTests>
+    </properties>
+
+    <dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
 			<artifactId>sigar</artifactId>
