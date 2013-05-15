@@ -6,18 +6,18 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>examples</artifactId>
-		<version>13.1</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.example.sorcer</groupId>
 	<artifactId>first</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SORCER :: first</name>
 	<description>Sample Service</description>
 
 	<properties>
-		<v.sorcer>13.1</v.sorcer>
+		<v.sorcer>1.0-SNAPSHOT</v.sorcer>
 	</properties>
 
 	<modules>

@@ -7,11 +7,11 @@
     <parent>
         <artifactId>sos</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>13.1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
-    <name>SORCER OS :: exertlet-sui</name>
 
-    <artifactId>sos-exertlet-sui</artifactId>
+	<artifactId>sos-exertlet-sui</artifactId>
+	<name>SORCER OS :: exertlet-sui</name>
 
     <dependencies>
         <dependency>

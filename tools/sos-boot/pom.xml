@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>13.1</version>
         <artifactId>tools</artifactId>
-    </parent>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
     <artifactId>sos-boot</artifactId>
 

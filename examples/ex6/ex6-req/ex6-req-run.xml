@@ -30,7 +30,7 @@
 	<!-- set property values here -->
 	<property name="requestor.name" value="ex6-req" />
     <property name="requestor.groupId" value="org.sorcersoft.sorcer" />
-    <property name="requestor.version" value="13.1" />
+    <property name="requestor.version" value="1.0-SNAPSHOT" />
 	<property name="requestor.class" value="sorcer.arithmetic.requestor.ArithmeticTester" />
     <property name="requestor.api" value="ex6-api" />
 

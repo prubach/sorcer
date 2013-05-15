@@ -4,21 +4,21 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.sorcersoft.sorcer</groupId>
-    <artifactId>sorcer-root</artifactId>
+    <artifactId>sorcer</artifactId>
     <packaging>pom</packaging>
     <name>SORCER Project</name>
-    <version>13.1</version>
+    <version>1.0-SNAPSHOT</version>
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
     <inceptionYear>2013</inceptionYear>
 
     <properties>
-        <v.sorcer>13.1</v.sorcer>
+        <v.sorcer>1.0-SNAPSHOT</v.sorcer>
         <v.jini>2.2.1</v.jini>
         <v.blitz>2.1.7</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>
         <v.rio>5.0-M2</v.rio>
-        <v.groovy>2.1.2</v.groovy>
+        <v.groovy>2.1.3</v.groovy>
         <v.sigar>1.6.4</v.sigar>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,18 +121,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>sorcer-maven-plugin</artifactId>
-                    <version>${v.sorcer}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>sorcer</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.2.1</version>
@@ -189,7 +177,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -313,4 +301,8 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
 </project>

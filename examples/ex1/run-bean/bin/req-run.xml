@@ -31,7 +31,7 @@
 	
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex1-req" />
-	<property name="requestor.version" value="13.1" />
+	<property name="requestor.version" value="1.0-SNAPSHOT" />
 
 	<!-- requestor codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />

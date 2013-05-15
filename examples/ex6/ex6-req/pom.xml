@@ -6,10 +6,9 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>ex6</artifactId>
-		<version>13.1</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>ex6-req</artifactId>
 	<name>SORCER examples :: ex6 :: req</name>
 
