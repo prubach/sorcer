@@ -27,7 +27,32 @@
             <file>
                 <source>${basedir}/../pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sorcer-main.pom</destName>
+                <destName>sorcer-root-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../tools/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>tools-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sos-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sos-providers-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/dbp/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>dbp-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sos-${v.sorcer}.pom</destName>
             </file>
             <!-- Copy the logging configuration file -->
             <file>
