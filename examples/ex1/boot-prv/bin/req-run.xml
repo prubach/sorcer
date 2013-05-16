@@ -38,9 +38,8 @@
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.runner}" fork="yes">
-            <jvmarg value="-Xdebug"/>
-            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
-
+      <!--      <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 		 	<classpath refid="run-req.classpath"/>
 			<sysproperty key="webster.internal" value="true" />
 			<sysproperty key="webster.debug" value="true" />

@@ -58,7 +58,8 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<!-- provider codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/${provider.api}/${v.sorcer}/${provider.api}-${v.sorcer}.jar" />
 	<property name="j2" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
-	<property name="j3" value="${webster}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
+    <property name="j3" value="${webster}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar" />
+	<property name="j4" value="${webster}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
 
 	<!-- start provider -->
 	<target name="run.provider" depends="mvn-init">
@@ -67,7 +68,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 			<sysproperty key="java.security.manager" value="" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/arithmetic-beans-prv.policy" />
-			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3} ${j4}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
 			<sysproperty key="sorcer.provider.config" value="../configs/${provider.bean}${beans.id}-prv.config" />

@@ -52,5 +52,10 @@
             <artifactId>rio-platform</artifactId>
             <version>${v.rio}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${v.groovy}</version>
+        </dependency>
     </dependencies>
 </project>

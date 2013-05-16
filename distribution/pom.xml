@@ -104,7 +104,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>dependencies</artifactId>
             <version>${project.version}</version>
-            <scope>import</scope>
+           <!-- <scope>import</scope>-->
         </dependency>
 
         <dependency>
