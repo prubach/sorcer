@@ -424,8 +424,10 @@ public class ProviderDelegate implements SorcerConstants {
 		} catch (UnknownHostException e) {
 			// ignore it
 		}
-		if (spaceEnabled)
-			space = ProviderAccessor.getSpace(spaceName, spaceGroup);
+		if (!spaceEnabled){
+			return;
+		}
+		space = ProviderAccessor.getSpace(spaceName, spaceGroup);
 		if (space == null) {
 			int ctr = 0;
 			while (space == null && ctr++ < TRY_NUMBER) {
@@ -447,14 +449,12 @@ public class ProviderDelegate implements SorcerConstants {
 		if (workerTransactional)
 			tManager = ProviderAccessor.getTransactionManager();
 
-		if (spaceEnabled) {
-			try {
-				startSpaceTakers();
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.severe("Provider HALTED: Couldn't start Workers");
-				provider.destroy();
-			}
+		try {
+			startSpaceTakers();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.severe("Provider HALTED: Couldn't start Workers");
+			provider.destroy();
 		}
 	}
 

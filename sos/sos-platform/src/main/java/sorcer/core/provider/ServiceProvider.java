@@ -1966,9 +1966,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 		public void run() {
 			try {
-				if (delegate.spaceEnabled()) {
-					delegate.initSpaceSupport();
-				}
+				delegate.initSpaceSupport();
 			} catch (Exception x) {
 				getLogger().log(Level.WARNING, "Error while initializing space", x);
 			}
