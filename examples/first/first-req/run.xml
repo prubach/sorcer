@@ -21,7 +21,7 @@
 <project default="run.requestor" basedir=".">
 	<!-- set property values here -->
 	<property name="requestor.name" value="first-req" />
-	<property name="requestor.version" value="1.1.0-SNAPSHOT" />
+	<property name="requestor.version" value="1.0-SNAPSHOT" />
 	<property name="requestor.class" value="com.example.sorcer.SampleServiceTester" />
 
 	<property name="requestor.api" value="first-api"/>
@@ -35,7 +35,9 @@
 
 	<!-- provider codeabse jars -->
 	<property name="j1" value="${provider.webster.url}/com/example/sorcer/first-api/${requestor.version}/first-api-${requestor.version}.jar" />
+<!--
 	<property name="j2" value="${provider.webster.url}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
-	<property name="requestor.codebase" value="${j1} ${j2}" />
+-->
+	<property name="requestor.codebase" value="${j1}" />
 </project>
 

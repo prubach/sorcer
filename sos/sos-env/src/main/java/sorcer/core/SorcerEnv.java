@@ -451,7 +451,11 @@ public class SorcerEnv implements SorcerConstants {
 		return java.net.InetAddress.getLocalHost().getCanonicalHostName();
 		// return java.net.InetAddress.getLocalHost().getHostName();
 	}
-	
+
+	public static String[]getWebsterRoots(){
+		String websterRootStr = System.getProperty(SorcerConstants.WEBSTER_ROOTS, getRepoDir());
+		return websterRootStr.split(";");
+	}
 
 	/**
 	 * Return the local host address based on the value of a system property.

@@ -1,6 +1,5 @@
-/**
- *
- * Copyright 2013 Rafał Krupiński
+/*
+ * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,33 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.maven.plugin;
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.Parameter;
+import sorcer.maven.util.PolicyFileHelper;
 
-import sorcer.maven.util.Process2;
+import java.io.File;
 
 /**
+ * Generate default policy file
+ * 
  * @author Rafał Krupiński
  */
-@Mojo(name = "destroy", aggregator = true, defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
-public class DestroyMojo extends AbstractSorcerMojo {
+@Mojo(name="policy", defaultPhase = LifecyclePhase.GENERATE_TEST_RESOURCES)
+public class PolicyMojo extends AbstractMojo {
+
+	@Parameter(property = "project.build.testOutputDirectory", readonly = true)
+	protected File testOutputDir;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		Process2 process = getProcess();
-		if (process != null) {
-			if (process.running()) {
-				getLog().info("KILL KILL KILL");
-				process.destroy();
-			} else {
-				getLog().warn("Process dead");
-			}
-		}
+		PolicyFileHelper.preparePolicyFile(testOutputDir.getPath());
 	}
 }
