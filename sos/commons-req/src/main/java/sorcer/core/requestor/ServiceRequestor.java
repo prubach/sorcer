@@ -176,6 +176,10 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
 			logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
 		}
+        // Exit webster
+        if (isWebsterInt) {
+            InternalWebster.stopWebster();
+        }
 	}
 
 	public Object evaluate(File scriptFile) throws CompilationFailedException,
