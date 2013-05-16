@@ -828,8 +828,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					ldmgr, null);
 			done = true;
 		} catch (Throwable e) {
-			logger.warning("Error initializing service: " + e.getMessage());
-			logger.throwing(ServiceProvider.class.getName(), "initAsSubject", e);
+			logger.log(Level.SEVERE, "Error initializing service: ", e);
 		} finally {
 			if (!done) {
 				try {
@@ -1968,6 +1967,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		public void run() {
 			try {
 				delegate.initSpaceSupport();
+			} catch (Exception x) {
+				getLogger().log(Level.WARNING, "Error while initializing space", x);
+			}
+			try {
 				while (running) {
 					Thread.sleep(ProviderDelegate.KEEP_ALIVE_TIME);
 				}
