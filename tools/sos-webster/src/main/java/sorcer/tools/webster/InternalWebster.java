@@ -17,6 +17,9 @@
  */
 package sorcer.tools.webster;
 
+import sorcer.core.SorcerConstants;
+import sorcer.resolver.Resolver;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -68,13 +71,14 @@ public class InternalWebster {
         if (roots == null && websterRoots == null) {
             // defaults Sorcer roots
             sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
-            roots = sb.toString();
+            sb.append(";").append(Resolver.getRepoDir()).append(";").append(Resolver.getRootDir());
         } else if (websterRoots != null) {
             sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
             for (int i=0; i<websterRoots.length; i++) {
-                sb.append(';').append(websterRoots[0]);
+                sb.append(';').append(websterRoots[i]);
             }
         }
+        roots = sb.toString();
 
         String sMinThreads = System.getProperty("webster.minThreads",
                 "1");
@@ -118,7 +122,7 @@ public class InternalWebster {
         if (exportJars != null)
             jars = exportJars;
         else {
-            jarsList = System.getProperty("codebase.jars");
+            jarsList = System.getProperty(SorcerConstants.CODEBASE_JARS);
             if (jarsList == null || jarsList.length() == 0)
                 throw new RuntimeException(
                         "No jar files available for the webster codebase");
@@ -160,7 +164,7 @@ public class InternalWebster {
     public static void main(String[] args) {
         try {
             String home = System.getenv("user.home");
-            startWebster(new String[] { "sorcer-prv-dl.jar" }, new String[] { home + "/.m2/repository/" });
+            startWebster(new String[] { "sorcer/sos-platform.jar" }, new String[] { home + "/.m2/repository/", home + "/lib/" });
         } catch (Exception ex) {
             ex.printStackTrace();
         }

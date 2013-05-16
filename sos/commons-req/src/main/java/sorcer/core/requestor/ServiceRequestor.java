@@ -67,12 +67,13 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 	protected Exertion exertion;
 	protected String jobberName;
 	protected GroovyShell shell;
+    protected static String[] codebaseJars;
     protected static boolean isWebsterInt = false;
 	protected static ServiceRequestor requestor = null;
 	
 	public static void main(String... args) throws Exception {
-        initialize(args);
         prepareCodebase();
+        initialize(args);
         requestor.preprocess(args);
 		requestor.process(args);
 		requestor.postprocess(args);
@@ -118,7 +119,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens, new String[] { Resolver.getRepoDir(), Resolver.getRootDir() });
+				InternalWebster.startWebster(codebaseJars, tokens);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -262,30 +263,30 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
         }
         String exertrun = System.getProperty(SorcerConstants.R_CODEBASE);
         StringBuilder codebase = new StringBuilder();
-        String websterUrl = System.getProperty(SorcerConstants.P_WEBSTER_URL);
         if (exertrun!=null && !exertrun.isEmpty()) {
             String[] artifacts = exertrun.split(" ");
             for (String artifact : artifacts) {
                 if (codebase.length() > 0)
                     codebase.append(" ");
-                codebase.append(websterUrl + "/" + Resolver.resolveRelative(coords(artifact)));
+                codebase.append(resolve(coords(artifact)));
             }
             // Add default codebase sos-platform and sos-env
-            codebase.append(' ').append(websterUrl + "/" + resolve(Artifact.getSosEnv()));
-            codebase.append(' ').append(websterUrl + "/" + resolve(Artifact.getSosPlatform()));
+            codebase.append(' ').append(resolve(Artifact.getSosEnv()));
+            codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
 
             logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
             if (isWebsterInt)
-                System.setProperty("sorcer.codebase.jars", codebase.toString());
+                System.setProperty(SorcerConstants.CODEBASE_JARS, codebase.toString());
             else
                 System.setProperty("java.rmi.server.codebase", codebase.toString());
 
+            codebaseJars = toArray(codebase.toString());
         }
     }
 
     private static String resolve(ArtifactCoordinates coords) {
         return isWebsterInt
                 ? Resolver.resolveRelative(coords)
-                : Resolver.resolveAbsolute(Sorcer.getWebsterUrl(), coords);
+                : Resolver.resolveAbsolute(Sorcer.getWebsterUrl() + "/", coords);
     }
 }
