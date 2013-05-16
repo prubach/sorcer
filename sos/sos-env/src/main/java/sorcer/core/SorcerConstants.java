@@ -126,6 +126,8 @@ public interface SorcerConstants {
 
 	public static final String P_WEBSTER_INTERFACE = "provider.webster.interface";
 
+    public static final String P_WEBSTER_URL = "provider.webster.url";
+
 	public static final String R_WEBSTER_INTERFACE = "requester.webster.interface";
 
 	public static final String R_WEBSTER_PORT = "webster.port";

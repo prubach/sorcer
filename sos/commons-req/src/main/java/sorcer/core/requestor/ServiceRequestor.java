@@ -118,7 +118,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir() });
+				InternalWebster.startWebster(tokens, new String[] { Resolver.getRepoDir(), Resolver.getRootDir() });
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -262,22 +262,24 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
         }
         String exertrun = System.getProperty(SorcerConstants.R_CODEBASE);
         StringBuilder codebase = new StringBuilder();
+        String websterUrl = System.getProperty(SorcerConstants.P_WEBSTER_URL);
         if (exertrun!=null && !exertrun.isEmpty()) {
             String[] artifacts = exertrun.split(" ");
             for (String artifact : artifacts) {
                 if (codebase.length() > 0)
                     codebase.append(" ");
-                codebase.append(Resolver.resolveRelative(coords(artifact)));
+                codebase.append(websterUrl + "/" + Resolver.resolveRelative(coords(artifact)));
             }
             // Add default codebase sos-platform and sos-env
-            codebase.append(' ').append(resolve(Artifact.getSosEnv()));
-            codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
+            codebase.append(' ').append(websterUrl + "/" + resolve(Artifact.getSosEnv()));
+            codebase.append(' ').append(websterUrl + "/" + resolve(Artifact.getSosPlatform()));
 
-            logger.fine("ExertionRunner generated codebase: " + codebase.toString());
+            logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
             if (isWebsterInt)
                 System.setProperty("sorcer.codebase.jars", codebase.toString());
             else
                 System.setProperty("java.rmi.server.codebase", codebase.toString());
+
         }
     }
 
