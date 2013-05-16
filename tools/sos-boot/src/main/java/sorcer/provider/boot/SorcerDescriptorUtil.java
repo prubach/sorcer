@@ -86,7 +86,8 @@ public class SorcerDescriptorUtil {
             String[] roots = {
                     sorcerHome + "/deploy",
                     sorcerHome + "/lib/river",
-                    Resolver.getRootDir()
+                    Resolver.getRootDir(),
+                    Resolver.getRepoDir()
             };
             return (getWebster(policy, port, roots));
         }
