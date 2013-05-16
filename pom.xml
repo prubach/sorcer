@@ -113,7 +113,7 @@
 	<distributionManagement>
 		<site>
 			<id>hashnot</id>
-			<url>scp://hashnot.com/srv/www/sorcer/</url>
+			<url>file://${siteDeployDir}</url>
 		</site>
 	</distributionManagement>
 
