@@ -34,6 +34,7 @@ import net.jini.id.UuidFactory;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.dispatch.DispatcherException;
@@ -99,9 +100,9 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 		try {
 			logger = Logger.getLogger("local." + ServiceSpacer.class.getName()
 					+ "." + getProviderName());
-			h = new FileHandler(System.getProperty(SORCER_HOME)
+			h = new FileHandler(SorcerEnv.getHomeDir()
 					+ "/logs/remote/local-Spacer-" + delegate.getHostName()
-					+ "-" + getProviderName() + "%g.log", 20000, 8, true);
+					+ "-" + getProviderName() + ".log", 20000, 8, true);
 			if (h != null) {
 				h.setFormatter(new SimpleFormatter());
 				logger.addHandler(h);

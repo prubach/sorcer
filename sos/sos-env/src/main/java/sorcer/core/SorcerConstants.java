@@ -148,6 +148,8 @@ public interface SorcerConstants {
 
 	public static final String J_WEBSTER_END_PORT = "websterEndPort";
 
+    public static final String R_CODEBASE= "requester.webster.codebase";
+
 	// used by HTTP data server
 	public static final String DATA_SERVER_INTERFACE = "data.server.interface";
 

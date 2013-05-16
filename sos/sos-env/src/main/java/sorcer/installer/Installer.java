@@ -18,14 +18,11 @@
 package sorcer.installer;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,14 +47,13 @@ public class Installer {
     {
         try {
             repoDir = Resolver.getRepoDir();
-            if (repoDir == null) {
-                logger.severe("repoDir is null");
-                throw new IOException("repoDir is null");
+            if (repoDir == null)                          {
+                throw new IOException("Repo Dir is null");
             }
-            if (!new File(repoDir).exists())
+            else
                 FileUtils.forceMkdir(new File(repoDir));
         } catch (IOException io) {
-            logger.severe("Problem installing jars to local maven repository - repository directory does not exist!");
+            logger.severe("Problem installing jars to local maven repository - repository directory does not exist! " + io.getMessage());
             System.exit(-1);
         }
         String resourceName = "META-INF/maven/versions.properties";
@@ -111,7 +107,7 @@ public class Installer {
                 public boolean accept(File pathname) {
                     if (pathname.getName().endsWith("jar"))
                         return true;
-                    return false;  //To change body of implemented methods use File | Settings | File Templates.
+                    return false;
                 }
             });
 
@@ -167,7 +163,7 @@ public class Installer {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                // igonre
+                // ignore
             }
         }
     }

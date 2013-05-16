@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
 import org.apache.commons.lang3.StringUtils;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
 
@@ -54,8 +55,49 @@ public class SorcerDescriptorUtil {
 
     private static String fs = File.separator;
 	private static String ps = File.pathSeparator;
-	private static String sorcerHome = getHomeDir();
-		
+	private static String sorcerHome = SorcerEnv.getHomeDir().getAbsolutePath();
+
+    /**
+     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+     * Webster.
+     *
+     * @param policy
+     *            The security policy file to use
+     *            The roots webster should serve
+     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
+     *         webster using an anonymous port. The <tt>webster.jar</tt> file
+     *         will be loaded from <tt>sorcer.home/common/sorcer/webster.com</tt>
+     *
+     * @throws IOException
+     *             If there are problems getting the anonymous port
+     * @throws RuntimeException
+     *             If the <tt>sorcer.home</tt> system property is not set
+     */
+    public static ServiceDescriptor getWebster(String policy, int port)
+            throws IOException {
+        if (Resolver.isMaven()) {
+            String[] roots = {
+                    sorcerHome + "/deploy",
+                    sorcerHome + "/lib/river",
+                    Resolver.getRepoDir()
+            };
+            return (getWebster(policy, port, roots));
+        } else {
+            String[] roots = {
+                    sorcerHome + "/deploy",
+                    sorcerHome + "/lib/river",
+                    Resolver.getRootDir()
+            };
+            return (getWebster(policy, port, roots));
+        }
+    }
+
+
+
+    public static ServiceDescriptor getWebster(String policy)
+            throws IOException {
+            return (getWebster(policy, 0));
+    }
 
     /**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
@@ -1254,26 +1296,6 @@ public class SorcerDescriptorUtil {
 			sArray = new String[] { s };
 		}
 		return (sArray);
-	}
-
-	/**
-	 * Returns the home directory of the Sorcer environment.
-	 * 
-	 * @return a path of the home directory
-	 */
-	public static String getHomeDir() {
-		String hd = System.getenv("SORCER_HOME");
-
-		if (hd != null && hd.length() > 0) {
-			return hd;
-		} else {
-			hd = System.getProperty("sorcer.home");
-			if (hd != null && hd.length() > 0) {
-				return hd;
-			}
-		}
-		throw new IllegalArgumentException(hd
-				+ " is not a vald Sorcer home directory");
 	}
 
 	public static String getCodebase(ArtifactCoordinates[] artifacts, String address, String port) {

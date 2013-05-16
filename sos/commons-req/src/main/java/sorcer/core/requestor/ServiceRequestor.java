@@ -18,6 +18,16 @@
 package sorcer.core.requestor;
 
 import groovy.lang.GroovyShell;
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
+import org.codehaus.groovy.control.CompilationFailedException;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
+import sorcer.service.*;
+import sorcer.tools.webster.InternalWebster;
+import sorcer.util.Artifact;
+import sorcer.util.Sorcer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,21 +39,9 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sorcer.util.ArtifactCoordinates;
 
-import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
-
-import org.codehaus.groovy.control.CompilationFailedException;
-
-import sorcer.core.SorcerConstants;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
-import sorcer.tools.webster.InternalWebster;
-import sorcer.util.Sorcer;
-import sorcer.core.SorcerEnv;
+import static sorcer.util.ArtifactCoordinates.coords;
 
 /**
  * The abstract class with the methods that define the initialization and
@@ -69,11 +67,13 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 	protected Exertion exertion;
 	protected String jobberName;
 	protected GroovyShell shell;
+    protected static boolean isWebsterInt = false;
 	protected static ServiceRequestor requestor = null;
 	
 	public static void main(String... args) throws Exception {
-		initialize(args);
-		requestor.preprocess(args);
+        initialize(args);
+        prepareCodebase();
+        requestor.preprocess(args);
 		requestor.process(args);
 		requestor.postprocess(args);
 	}
@@ -87,7 +87,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 		String runnerType = null;
 		if (args.length == 0) {
 			System.err
-					.println("Usage: Java sorcer.core.requestor.ExertionRunner  <runnerType>");
+					.println("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
 			System.exit(1);
 		} else {
 			runnerType = args[0];
@@ -107,7 +107,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 		} else {
 			requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
 		}
-		boolean isWebsterInt = false;
+		isWebsterInt = false;
 		String val = System.getProperty(SORCER_WEBSTER_INTERNAL);
 		if (val != null && val.length() != 0) {
 			isWebsterInt = val.equals("true");
@@ -141,13 +141,13 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 				logger.fine("Runner java.rmi.server.codebase: "
 						+ System.getProperty("java.rmi.server.codebase"));
 		} catch (ExertionException e) {
-			logger.throwing("ExertionRunner", "main", e);
+			logger.throwing("ServiceRequestor", "main", e);
 			System.exit(1);
 		} catch (ContextException e) {
-			logger.throwing("ExertionRunner", "main", e);
+			logger.throwing("ServiceRequestor", "main", e);
 			System.exit(1);
 		} catch (SignatureException e) {
-			logger.throwing("ExertionRunner", "main", e);
+			logger.throwing("ServiceRequestor", "main", e);
 			System.exit(1);
 		}
 		if (in != null)
@@ -161,11 +161,11 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			exertion = ((ServiceExertion) exertion).exert(
 					requestor.getTransaction(), requestor.getJobberName());
 		} catch (RemoteException re) {
-			logger.throwing("ExertionRunner", "main", re);
+			logger.throwing("ServiceRequestor", "main", re);
 		} catch (TransactionException te) {
-			logger.throwing("ExertionRunner", "main", te);
+			logger.throwing("ServiceRequestor", "main", te);
 		} catch (ExertionException ee) {
-			logger.throwing("ExertionRunner", "main", ee);
+			logger.throwing("ServiceRequestor", "main", ee);
 		}
 	}
 	
@@ -251,4 +251,39 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 		}
 		return (array);
 	}
+
+
+    public static void prepareCodebase() {
+        // Initialize system properties: configs/sorcer.env
+        Sorcer.getEnvProperties();
+        String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
+        if (val != null && val.length() != 0) {
+            isWebsterInt = val.equals("true");
+        }
+        String exertrun = System.getProperty(SorcerConstants.R_CODEBASE);
+        StringBuilder codebase = new StringBuilder();
+        if (exertrun!=null && !exertrun.isEmpty()) {
+            String[] artifacts = exertrun.split(" ");
+            for (String artifact : artifacts) {
+                if (codebase.length() > 0)
+                    codebase.append(" ");
+                codebase.append(Resolver.resolveRelative(coords(artifact)));
+            }
+            // Add default codebase sos-platform and sos-env
+            codebase.append(' ').append(resolve(Artifact.getSosEnv()));
+            codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
+
+            logger.fine("ExertionRunner generated codebase: " + codebase.toString());
+            if (isWebsterInt)
+                System.setProperty("sorcer.codebase.jars", codebase.toString());
+            else
+                System.setProperty("java.rmi.server.codebase", codebase.toString());
+        }
+    }
+
+    private static String resolve(ArtifactCoordinates coords) {
+        return isWebsterInt
+                ? Resolver.resolveRelative(coords)
+                : Resolver.resolveAbsolute(Sorcer.getWebsterUrl(), coords);
+    }
 }

@@ -17,6 +17,10 @@
  */
 package sorcer.core;
 
+import org.apache.commons.io.FileUtils;
+import sorcer.service.ConfigurationException;
+import sorcer.util.GenericUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,9 +29,6 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
-
-import sorcer.service.ConfigurationException;
-import sorcer.util.GenericUtil;
 
 public class SorcerEnv implements SorcerConstants {
 
@@ -79,17 +80,29 @@ public class SorcerEnv implements SorcerConstants {
 		String hd = System.getenv("SORCER_HOME");
 
 		if (hd != null && hd.length() > 0) {
+            try {
+                hd = new File(hd).getCanonicalPath();
+            } catch (IOException io) {
+            }
 			System.setProperty(SORCER_HOME, hd);
 			return new File(hd);
 		}
 
 		hd = System.getProperty(SORCER_HOME);
 		if (hd != null && hd.length() > 0) {
+            try {
+                hd = new File(hd).getCanonicalPath();
+            } catch (IOException io) {
+            }
 			return new File(hd);
 		}
 
 		hd = props.getProperty(SORCER_HOME);
 		if (hd != null && hd.length() > 0) {
+            try {
+                hd = new File(hd).getCanonicalPath();
+            } catch (IOException io) {
+            }
 			return new File(hd);
 		}
 		throw new IllegalArgumentException(hd
@@ -118,9 +131,13 @@ public class SorcerEnv implements SorcerConstants {
 			// Fall back to default location in user's home/.m2
 			try {
 				File repoDir = new File(System.getProperty("user.home")+"/.m2/repository");
-				if (repoDir.exists() && repoDir.isDirectory())
+                if (repoDir.exists() && repoDir.isDirectory())
 					return repoDir.getAbsolutePath();
-			} catch (Throwable t) {
+                else {
+                    FileUtils.forceMkdir(repoDir);
+                    return repoDir.getAbsolutePath();
+                }
+            } catch (Throwable t) {
 				logger.throwing(
 						SorcerEnv.class.getName(),
 						"The given Sorcer Jar Repo Location: " + repo + " does not exist or is not a directory!",

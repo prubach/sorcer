@@ -988,15 +988,6 @@ public class Sorcer extends SorcerEnv {
 	 * 
 	 * @return a scratch directory
 	 */
-	static public File getSorcerHomeDir() {
-		return new File(System.getProperty(SORCER_HOME));
-	}
-
-	/**
-	 * Returns a directory for providers's scratch files
-	 * 
-	 * @return a scratch directory
-	 */
 	static public File getScratchDir() {
 		return Sorcer.getNewScratchDir();
 	}

@@ -450,7 +450,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * manifest setting. If there is, append the settings to the classpath
 	 */
 	private String setClasspath(String cp) {
-		String[] inClassPathArr = cp.split("[:;]");
+		String[] inClassPathArr = cp.split(File.pathSeparator);
 		Set<String> paths = new HashSet<String>();
 		for (String s : inClassPathArr) {
 			paths.add(s);

@@ -23,8 +23,12 @@
     <target name="install">
         <echo message="Installing necessary libs to local maven repository"/>
         <property environment="env"/>
-        <property name="lib.dir" value="${env.SORCER_HOME}/lib"/>
-        <echo message="env SORCER_HOME ${env.SORCER_HOME}"/>
+        <dirname property="thisfile.loc" file="${ant.file.InstallLibs}"/>
+        <condition property="sorcer.home" value="${env.SORCER_HOME}" else="${thisfile.loc}/../">
+            <isset property="env.SORCER_HOME" />
+        </condition>
+        <property name="lib.dir" value="${sorcer.home}/lib"/>
+        <echo message="env SORCER_HOME ${sorcer.home}"/>
         <java classname="sorcer.installer.Installer" fork="no">
             <classpath>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>

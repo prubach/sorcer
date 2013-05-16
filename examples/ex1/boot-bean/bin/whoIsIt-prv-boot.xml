@@ -45,6 +45,7 @@ and  "java.util.logging.config.file" for your provider
 			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />			      
 			      <sysproperty key="sorcer.provider.config" value="../configs/${provider.name}-bean1.config" />
+                  <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		      </java>
 	</target>
 </project>

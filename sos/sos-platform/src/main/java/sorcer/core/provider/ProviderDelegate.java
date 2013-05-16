@@ -3018,12 +3018,8 @@ public class ProviderDelegate implements SorcerConstants {
 			contextLogger = Logger.getLogger(PRIVATE_CONTEXT_LOGGER + "."
 					+ getProviderName());
 
-			String igridpath = System.getenv("SORCER_HOME");
-			if (igridpath == null) {
-				igridpath = System.getProperty(SORCER_HOME);
-			}
-			h = new FileHandler(igridpath + "/logs/remote/context-"
-					+ getProviderName() + "-" + getHostName() + "-cxt%g.log",
+			h = new FileHandler(SorcerEnv.getHomeDir() + "/logs/remote/context-"
+					+ getProviderName() + "-" + getHostName() + "-ctx%g.log",
 					20000, 8, true);
 			if (h != null) {
 				h.setFormatter(new SimpleFormatter());
@@ -3041,11 +3037,7 @@ public class ProviderDelegate implements SorcerConstants {
 		try {
 			providerLogger = Logger.getLogger(PRIVATE_PROVIDER_LOGGER + "."
 					+ getProviderName());
-			String igridpath = System.getenv("SORCER_HOME");
-			if (igridpath == null) {
-				igridpath = System.getProperty(SORCER_HOME);
-			}
-			h = new FileHandler(igridpath + "/logs/remote/provider-"
+			h = new FileHandler(SorcerEnv.getHomeDir() + "/logs/remote/provider-"
 					+ getProviderName() + "-" + getHostName() + "-prv%g.log",
 					20000, 8, true);
 			if (h != null) {

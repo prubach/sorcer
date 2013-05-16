@@ -48,6 +48,7 @@ import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import net.jini.lookup.ui.factory.JFrameFactory;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.provider.logger.ui.LoggerFrameUI;
 import sorcer.ui.serviceui.UIDescriptorFactory;
@@ -137,7 +138,7 @@ public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger
 			FileHandler h;
 			try {
 				String fs = File.separator;
-				h = new FileHandler(System.getProperty(SORCER_HOME) + fs
+				h = new FileHandler(SorcerEnv.getHomeDir() + fs
 						+ "logs" + fs + "remote" + fs + "remote-logger-" + log.getName()
 						+ "%g.log", 20000, 8, true);
 

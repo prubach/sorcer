@@ -22,12 +22,12 @@
             <format>dir</format>
             <format>zip</format>
         </formats>
-        <includeBaseDirectory>false</includeBaseDirectory>
+        <includeBaseDirectory>true</includeBaseDirectory>
         <files>
             <file>
                 <source>${basedir}/../pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sorcer-root-${v.sorcer}.pom</destName>
+                <destName>sorcer-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../tools/pom.xml</source>
@@ -202,7 +202,7 @@
                 ${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/lib
             </directory>
             <fileMode>0644</fileMode>
-            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
+            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
             <excludes>
                 <exclude>junit.jar</exclude>
                 <exclude>log4j.jar</exclude>
@@ -290,9 +290,23 @@
             <includes>
                 <include>org.sorcersoft.sigar:*</include>
             </includes>
-            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
+            <excludes>
+                <exclude>org.sorcersoft.sigar:sigar:zip:native</exclude>
+            </excludes>
+            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>org.sorcersoft.sigar:sigar:zip:native</include>
+            </includes>
+            <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.classifier}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+
+
 
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>

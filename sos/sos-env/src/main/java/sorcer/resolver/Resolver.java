@@ -55,11 +55,11 @@ public class Resolver {
 	}
 
 	public static String resolveRelative(ArtifactCoordinates coords){
-		return resolver.resolveRelative(coords);
+		return resolver.resolveRelative(coords).replace(File.separator, "/");
 	}
 
 	public static String resolveRelative(String coords){
-		return resolveRelative(ArtifactCoordinates.coords(coords));
+		return resolveRelative(ArtifactCoordinates.coords(coords)).replace(File.separator, "/");
 	}
 
 	public static String resolveAbsolute(String baseUri, ArtifactCoordinates coords){

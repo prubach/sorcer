@@ -60,6 +60,7 @@ import net.jini.lookup.ui.factory.JFrameFactory;
 import sorcer.core.AdministratableProvider;
 import sorcer.core.Cataloger;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
@@ -238,8 +239,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			logger = Logger.getLogger("local."
 					+ ServiceCataloger.class.getName() + "."
 					+ getProviderName());
-			h = new FileHandler(System.getProperty(SORCER_HOME)
-					+ "/logs/remote/local-Cataloger-" + delegate.getHostName()
+			h = new FileHandler(SorcerEnv.getHomeDir()
+                    + "/logs/remote/local-Cataloger-" + delegate.getHostName()
 					+ "-" + getProviderName() + "%g.log", 20000, 8, true);
 			if (h != null) {
 				h.setFormatter(new SimpleFormatter());
