@@ -18,22 +18,20 @@
     limitations under the License.
 
 -->
-<project name="SOS HTTP" default="kernel+webster" basedir=".">
+<project name="SOS" default="kernel" basedir=".">
 
     <property name="sorcer.distro.in.libs" value="true" />
     <import file="../bin/common-run.xml" />
-    <target name="kernel+webster" depends="clean, SOS+webster" />
+    <target name="kernel" depends="clean, SOS" />
 	<property name="sorcer.data" value="${sorcer.home}/data" />
 
-	<target name="SOS+webster">
+	<target name="SOS">
 		<java classname="sorcer.boot.ServiceStarter" fork="yes">
 			<jvmarg value="-Djava.net.preferIPv4Stack=true" />
-<!--
-			<jvmarg value="-Xdebug"/>
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
--->
+<!--		        <jvmarg value="-Xdebug"/>
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 			<classpath refid="boot.classpath"/>
-			<arg value="../configs/sorcer-boot.config" />
+			<arg value="../configs/sorcer-boot-no-http.config" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos" />
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />

@@ -1094,7 +1094,7 @@ public class NetworkShell implements DiscoveryListener {
 		// System.out.println("initShell args: " + Arrays.toString(args));
 		// default initialization file
 		String nshConfigDir = System.getenv("SORCER_HOME") + File.separator
-				+ "bin" + File.separator + "shell" + File.separator + "configs";
+				+ "configs" + File.separator + "shell" + File.separator + "configs";
 		String configFilename = nshConfigDir + File.separator
 				+ "nsh-init.config";
 		// if initialization file not found look at the user home

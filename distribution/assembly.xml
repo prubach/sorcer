@@ -122,6 +122,10 @@
                 <exclude>sorcer.env</exclude>
                 <exclude>sorcer.logging</exclude>
                 <exclude>versions.properties</exclude>
+                <exclude>browser/pom.xml</exclude>
+                <exclude>shell/configs/nsh-start.config</exclude>
+                <exclude>template/**</exclude>
+                <exclude>shellEnv</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -133,8 +137,6 @@
             </includes>
             <excludes>
                 <exclude>versions.properties</exclude>
-                <exclude>shellEnv</exclude>
-                <exclude>template/**</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -155,13 +157,7 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-                <exclude>blitz/bin/blitz-all-boot.xml</exclude>
-                <exclude>blitz/bin/blitz-boot-spawn.xml</exclude>
-                <exclude>blitz/bin/locker-boot-spawn.xml</exclude>
-                <exclude>blitz/bin/blitz.sh</exclude>
-                <exclude>browser/pom.xml</exclude>
-                <exclude>webster/bin/webster-run.xml</exclude>
-                <exclude>shell/configs/nsh-start.config</exclude>
+                <exclude>webster-run.xml</exclude>
             </excludes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>

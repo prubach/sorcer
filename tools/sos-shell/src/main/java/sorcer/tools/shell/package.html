@@ -272,7 +272,7 @@ executing exertions (the <code>exert</code> commnad). If a Webster instance is n
         Instead of running &#8220;nsh&#8221;, run instead &#8220;rlwrap nsh&#8221;. Or create an alias
         in your .bash_profile (or appropriate login shell settings file).<br>
         <br>
-        <span style="font-family: monospace;"><code>alias nsh='rlwrap ${SORCER_HOME}/bin/shell/bin/nsh'</code></span> </p>
+        <span style="font-family: monospace;"><code>alias nsh='rlwrap ${SORCER_HOME}/bin/nsh'</code></span> </p>
         <p><strong>rlwrap</strong> is a readline wrapper, a utility that allows the editing of keyboard input for any other command. If not installed, open the terminal and type: <code>sudo port install rlwrap</code></p></td>
     </tr>
   </tbody>
@@ -283,8 +283,8 @@ executing exertions (the <code>exert</code> commnad). If a Webster instance is n
   <big><span style="font-weight: bold;"><a name="Configuring_the_CLI"></a>Configuring
 the nsh shell</span></big><br>
 The nsh shell startup script can be specifued by  the environmt variable <code>NSH_STARTUP</code> or by <code>$HOME/.nsh/startup</code>. </p>
-<p>User defined classes for the shell can be specified by the environment variable <code>CLASSPATH</code> or in a  shell start configuration. The nsh start configuration file can be specified by the environmt variable <code>NSH_CONF</code> or by <code>$HOME/.nsh/configs/nsh-start.config</code>; the default file is <code>$SORCER_HOME/bin/shell/configs/nsh-start.config</code>. </p>
-<p>The default shell initialization   file <span style="font-family: monospace;"><code>$SORCER_HOME/bin/shell/configs/nsh-init.config</code></span> is used if present. Alternatively an initialization file (with the <code>config</code> extention) can be passed as the first argument to the nsh or placed in <code>$HOME/.nsh/config</code>s. The nsh initialization  file supports the following configuration entries, with component <span
+<p>User defined classes for the shell can be specified by the environment variable <code>CLASSPATH</code> or in a  shell start configuration. The nsh start configuration file can be specified by the environmt variable <code>NSH_CONF</code> or by <code>$HOME/.nsh/configs/nsh-start.config</code>; the default file is <code>$SORCER_HOME/configs/shell/configs/nsh-start.config</code>. </p>
+<p>The default shell initialization   file <span style="font-family: monospace;"><code>$SORCER_HOME/configs/shell/configs/nsh-init.config</code></span> is used if present. Alternatively an initialization file (with the <code>config</code> extention) can be passed as the first argument to the nsh or placed in <code>$HOME/.nsh/config</code>s. The nsh initialization  file supports the following configuration entries, with component <span
  style="font-family: monospace;"><code>sorcer.tools.shell.NetworkShell</code></span>. </p>
 <ul>
   <li><span

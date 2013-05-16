@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+
+
+    Copyright 2013 the original author or authors.
+    Copyright 2013 Sorcersoft.com S.A.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project name="Run webster" default="webster" basedir=".">
+
+    <property name="sorcer.distro.in.libs" value="true" />
+    <property environment="env" />
+	<!-- load system environment variables -->
+	<import file="common-run.xml" />
+
+    <property name="sorcer.distro.in.libs" value="true" />
+    <property name="provider.webster" value="${provider.webster.interface.TMP}" />
+	<echo message="provider.webster = ${provider.webster}" />
+	<echo message="provider.webster.port ${provider.webster.port}" />
+	
+	<path id="run.classpath">
+	    <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
+	    <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
+	</path>
+
+	<target name="webster">
+		<java classname="sorcer.tools.webster.Webster" maxmemory="500M" fork="yes">
+			<classpath>
+			    <path refid="run.classpath"/>  				
+			</classpath>
+			<sysproperty key="java.rmi.server.useCodebaseOnly"  value="false" />
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
+			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
+			<sysproperty key="webster.root" value="${mvn.repo};${sorcer.home}/lib/" />
+			<sysproperty key="webster.port" value="${provider.webster.port}" />
+			<sysproperty key="webster.interface" value="${provider.webster}" />
+			<sysproperty key="webster.debug" value="true" />
+		</java>
+	</target>
+</project>
