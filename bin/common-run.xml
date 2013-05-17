@@ -166,7 +166,6 @@
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar" />
                 <pathelement location="${lib.dir}/rio/rio-platform.jar" />
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar" />
-                <pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar" />
                 <pathelement location="${lib.dir}/rio/rio-start.jar" />
                 <pathelement location="${lib.dir}/commons/groovy-all.jar" />
                 <pathelement location="${lib.dir}/commons/guava.jar" />

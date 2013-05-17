@@ -2,11 +2,11 @@
 
 ##############################################################################
 ##                                                                          ##
-##  SORCER Network Shell script for UN*X                                            ##
+##  SORCER OS Boot script for UN*X                                          ##
 ##                                                                          ##
 ##############################################################################
 
-SORCER_APP_NAME=ExertionShell
+SORCER_APP_NAME="Sorcer OS"
 
 # resolve links - $0 may be a soft-link
 PRG="$0"
@@ -21,26 +21,12 @@ while [ -h "$PRG" ] ; do
     fi
 done
 
-NSH_STARTUP="$HOME/.nsh/startup"
-if [ -r "$NSH_STARTUP" ] ; then
-    . "$NSH_STARTUP"
-fi
-
 DIRNAME=`dirname "$PRG"`
 
 . "$DIRNAME/common-run"
 
-# Use SORCER default if still not found
-if [ -z "$NSH_CONF" ] ; then
-    NSH_CONF="$SORCER_HOME/configs/shell/configs/nsh-start.config"
-fi
 
-# Use the user nsh start-config file if exists.
-startConfigFile="$HOME/.nsh/configs/nsh-start.config"
-if [ -e $startConfigFile ] ; then
-    NSH_CONF="$HOME/.nsh/configs/nsh-start.config"
-fi
-STARTER_MAIN_CLASS=sorcer.tools.shell.ShellStarter
+STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
 
-startShell sorcer.tools.shell.NetworkShell "$@"
+startSos ../configs/sorcer-boot.config "$@"
 

@@ -158,7 +158,24 @@
             </includes>
             <excludes>
                 <exclude>webster-run.xml</exclude>
+                <exclude>nsh</exclude>
+                <exclude>setenv</exclude>
+                <exclude>sorcer-boot</exclude>
+                <exclude>sorcer-boot-no-http</exclude>
             </excludes>
+            <filtered>false</filtered>
+            <fileMode>0644</fileMode>
+        </fileSet>
+            <!-- bin files -->
+        <fileSet>
+            <directory>${basedir}/../bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>nsh</include>
+                <include>setenv</include>
+                <include>sorcer-boot</include>
+                <include>sorcer-boot-no-http</include>
+            </includes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>
         </fileSet>
@@ -170,6 +187,7 @@
                 <include>**/*</include>
             </includes>
             <filtered>false</filtered>
+            <fileMode>0644</fileMode>
         </fileSet>
 
         <!-- empty log dir -->

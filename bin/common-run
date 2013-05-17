@@ -1,0 +1,431 @@
+# -*- mode:sh -*-
+
+##############################################################################
+##                                                                          ##
+##  The SORCER JVM Common Bootstrap for UN*X                                ##
+##                                                                          ##
+##############################################################################
+
+PROGNAME=`basename "$0"`
+
+#DIRNAME=`dirname "$0"`
+
+SCRIPT_PATH="$0"
+
+# Use the maximum available, or set MAX_FD != -1 to use that value.
+MAX_FD="maximum"
+
+warn ( ) {
+    echo "${PROGNAME}: $*"
+}
+
+die ( ) {
+    warn "$*"
+    exit 1
+}
+
+earlyInit ( ) {
+
+    # OS specific support (must be 'true' or 'false').
+    cygwin=false
+    msys=false
+    darwin=false
+    case "`uname`" in
+      CYGWIN* )
+        cygwin=true
+        ;;
+      Darwin* )
+        darwin=true
+        ;;
+      MINGW* )
+        msys=true
+        ;;
+    esac
+
+    if [ "$1" = "-cp" -o "$1" = "-classpath" -o "$1" = "--classpath" ] ; then
+        CP=$2
+        shift 2
+    fi
+
+    # Attempt to set JAVA_HOME if it's not already set.
+    if [ -z "$JAVA_HOME" ] ; then
+        if $darwin ; then
+            [ -z "$JAVA_HOME" -a -d "/Library/Java/Home" ] && export JAVA_HOME="/Library/Java/Home"
+            [ -z "$JAVA_HOME" -a -d "/System/Library/Frameworks/JavaVM.framework/Home" ] && export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Home"
+        else
+            javaExecutable="`which javac`"
+            [ -z "$javaExecutable" -o "`expr \"$javaExecutable\" : '\([^ ]*\)'`" = "no" ] && die "JAVA_HOME not set and cannot find javac to deduce location, please set JAVA_HOME."
+            # readlink(1) is not available as standard on Solaris 10.
+            readLink=`which readlink`
+            [ `expr "$readLink" : '\([^ ]*\)'` = "no" ] && die "JAVA_HOME not set and readlink not available, please set JAVA_HOME."
+            javaExecutable="`readlink -f \"$javaExecutable\"`"
+            javaHome="`dirname \"$javaExecutable\"`"
+            javaHome=`expr "$javaHome" : '\(.*\)/bin'`
+            JAVA_HOME="$javaHome"
+            export JAVA_HOME
+
+        fi
+    fi
+
+    # For Cygwin, ensure paths are in UNIX format before anything is touched.
+    if $cygwin ; then
+        [ -n "$SORCER_HOME" ] && SORCER_HOME=`cygpath --unix "$SORCER_HOME"`
+        [ -n "$JAVACMD" ] && JAVACMD=`cygpath --unix "$JAVACMD"`
+        [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+        [ -n "$CP" ] && CP=`cygpath --path --unix "$CP"`
+    else
+        if [ -n "SORCER_HOME" -a `expr "$SORCER_HOME":'\/$'` ] ; then
+            SORCER_HOME=`echo $SORCER_HOME | sed -e 's/\/$//'`
+        fi
+    fi
+
+    #  For MSYS, ensure paths are in appropriate format.
+    if $msys
+    then
+        [ -n "$JAVA_HOME" ] && JAVA_HOME=`( cd "$JAVA_HOME" ; pwd )`
+    fi
+
+    # Attempt to set SORCER_HOME if it is not already set.
+    if [ -z "$SORCER_HOME" -o ! -d "$SORCER_HOME" ] ; then
+        # Resolve links: $0 may be a link to Sorcer's home.
+        PRG="$0"
+        # Need this for relative symlinks.
+        while [ -h "$PRG" ] ; do
+            ls=`ls -ld "$PRG"`
+            link=`expr "$ls" : '.*-> \(.*\)$'`
+            if expr "$link" : '/.*' > /dev/null; then
+                PRG="$link"
+            else
+                PRG=`dirname "$PRG"`"/$link"
+            fi
+        done
+        SAVED="`pwd`"
+        cd "`dirname \"$PRG\"`/.."
+        SORCER_HOME="`pwd -P`"
+        cd "$SAVED"
+        export SORCER_HOME
+    fi
+
+    # Set RIO_HOME if not already set
+    if [ -z "$RIO_HOME" ]; then
+        RIO_HOME=$SORCER_HOME/lib/rio
+        export RIO_HOME
+    fi
+
+
+    # Read sorcer.env to set the Sorcer Jar repository location
+    MVN_REPO_TMP=$(getProperty sorcer.local.repo.location)
+    echo $MVN_REPO_TMP | sed -e 's/\./\@/g' | sed "s,\${user@home},$HOME,g" > /tmp/repo_ttt
+    echo `cat /tmp/repo_ttt` | sed -e "s:@:.:g" > /tmp/repo_tt
+    MVN_REPO=`cat /tmp/repo_tt`
+    rm /tmp/repo_ttt
+    rm /tmp/repo_tt
+    if [ -z "MVN_REPO" ] ; then
+        MVN_REPO="$HOME/.m2/repository"
+    fi
+
+    # the classpath to start nsh then application specific classpath is defined in nsh-start.config
+    LIB_DIR=$SORCER_HOME/lib
+
+    # Determine the Java command to use to start the JVM.
+    if [ -z "$JAVACMD" ] ; then
+        if [ -n "$JAVA_HOME" ] ; then
+            if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+                # IBM's JDK on AIX uses strange locations for the executables
+                JAVACMD="$JAVA_HOME/jre/sh/java"
+            else
+                JAVACMD="$JAVA_HOME/bin/java"
+            fi
+        else
+            JAVACMD="java"
+        fi
+    fi
+    if [ ! -x "$JAVACMD" ] ; then
+        die "JAVA_HOME is not defined correctly, can not execute: $JAVACMD"
+    fi
+    if [ -z "$JAVA_HOME" ] ; then
+        warn "JAVA_HOME environment variable is not set"
+    fi
+
+    # Increase the maximum file descriptors if we can.
+    if [ "$cygwin" = "false" -a "$darwin" = "false" ] ; then
+        MAX_FD_LIMIT=`ulimit -H -n`
+        if [ $? -eq 0 ] ; then
+            if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
+                MAX_FD="$MAX_FD_LIMIT"
+            fi
+            ulimit -n $MAX_FD
+            if [ $? -ne 0 ] ; then
+                warn "Could not set maximum file descriptor limit: $MAX_FD"
+            fi
+        else
+            warn "Could not query businessSystem maximum file descriptor limit: $MAX_FD_LIMIT"
+        fi
+    fi
+
+    # Setup Profiler
+    useprofiler=false
+    if [ "$PROFILER" != "" ] ; then
+        if [ -r "$PROFILER" ] ; then
+            . $PROFILER
+            useprofiler=true
+        else
+            die "Profiler file not found: $PROFILER"
+        fi
+    fi
+
+    return
+}
+
+lateInit ( ) {
+    # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
+    # global classpath. Network shell behaves then the same as the java interpreter
+    if [ -n "$CP" ] ; then
+        CP="$CP":.
+    elif [ -n "$CLASSPATH" ] ; then
+        CP="$CLASSPATH":.
+    else
+        CP=.
+
+    fi
+
+    # For Darwin, use classes.jar for TOOLS_JAR
+    TOOLS_JAR="$JAVA_HOME/lib/tools.jar"
+    #if $darwin; then
+    #    TOOLS_JAR="/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Classes/classes.jar"
+    #fi
+
+    # For Darwin, add NSH_APP_NAME to the JAVA_OPTS as -Xdock:name
+    if $darwin; then
+        JAVA_OPTS="$JAVA_OPTS -Xdock:name=SOS -Xdock:icon=$SORCER_HOME/configs/shell/configs/sorcer-dock-rgb.png"
+    fi
+
+    # For Cygwin, switch paths to Windows format before running java
+    if $cygwin ; then
+        SORCER_HOME=`cygpath --mixed "$SORCER_HOME"`
+        JAVA_HOME=`cygpath --mixed "$JAVA_HOME"`
+        CP=`cygpath --path --mixed "$CP"`
+        TOOLS_JAR=`cygpath --mixed "$TOOLS_JAR"`
+        STARTER_CLASSPATH=`cygpath --path --mixed "$STARTER_CLASSPATH"`
+
+        # We build the pattern for arguments to be converted via cygpath
+        ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
+        SEP=""
+        for dir in $ROOTDIRSRAW ; do
+            ROOTDIRS="$ROOTDIRS$SEP$dir"
+            SEP="|"
+        done
+        OURCYGPATTERN="(^($ROOTDIRS))"
+        # Add a user-defined pattern to the cygpath arguments
+        if [ "$IGRID_CYGPATTERN" != "" ] ; then
+            OURCYGPATTERN="$OURCYGPATTERN|($NSH_CYGPATTERN)"
+        fi
+        # Now convert the arguments - kludge to limit ourselves to /bin/sh
+        i=0
+        for arg in "$@" ; do
+            CHECK=`echo "$arg"|egrep -c "$OURCYGPATTERN" -`
+            if [ $CHECK -ne 0 ] ; then
+                eval `echo args$i`=`cygpath --path --ignore --mixed "$arg"`
+            else
+                eval `echo args$i`="\"$arg\""
+            fi
+            i=`expr $i + 1`
+        done
+        case $i in
+            0) set -- ;;
+            1) set -- "$args0" ;;
+            2) set -- "$args0" "$args1" ;;
+            3) set -- "$args0" "$args1" "$args2" ;;
+            4) set -- "$args0" "$args1" "$args2" "$args3" ;;
+            5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
+            6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
+            7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
+            8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
+            9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
+        esac
+
+    fi
+    return
+}
+
+getVersion ( ) {
+  PARAM=$1
+  RESULT=`sed '/^\#/d' $SORCER_HOME/configs/versions.properties | grep $PARAM  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'`
+  echo $RESULT
+}
+
+getProperty ( ) {
+  PARAM=$1
+  RESULT=`sed '/^\#/d' $SORCER_HOME/configs/sorcer.env | grep $PARAM  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'`
+  echo $RESULT
+}
+
+createBootCp ( ) {
+    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+      # Distro version
+      JINI_CLASSPATH="$LIB_DIR/jini/jsk-platform.jar:\
+$LIB_DIR/jini/jsk-lib.jar:\
+$LIB_DIR/river/start.jar:\
+$LIB_DIR/jini-lookup/serviceui.jar:\
+$LIB_DIR/commons/slf4j-api.jar:\
+$LIB_DIR/commons/logback-classic.jar:\
+$LIB_DIR/commons/logback-core.jar"
+  BOOT_CLASSPATH="$JINI_CLASSPATH:\
+$LIB_DIR/sorcer/sos-env.jar:\
+$LIB_DIR/sorcer/sos-boot.jar:\
+$LIB_DIR/sorcer/sos-webster.jar:\
+$LIB_DIR/jini/jsk-resources.jar:\
+$LIB_DIR/rio/rio-platform.jar:\
+$LIB_DIR/rio/rio-start.jar:\
+$LIB_DIR/rio-resolver/resolver-api.jar:\
+# $LIB_DIR/rio-resolver/resolver-aether.jar:\
+$LIB_DIR/rio/start.jar:\
+$LIB_DIR/commons/groovy-all.jar:\
+$LIB_DIR/commons/guava.jar:\
+$LIB_DIR/commons/commons-lang3.jar"
+    else
+      # MVN version
+      V_SORCER=$(getVersion v.sorcer)
+      if [ -z "V_SORCER" ] ; then
+        V_SORCER="1.0-SNAPSHOT"
+      fi
+      V_RIO=$(getVersion v.rio)
+      V_JINI=$(getVersion v.jini)
+      V_GROOVY=$(getVersion v.groovy)
+
+      JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
+$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
+$MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
+$MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"
+
+     BOOT_CLASSPATH="$JINI_CLASSPATH:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
+$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"
+
+    fi
+
+    # Determine webster url
+
+    WEBSTER_INTERFACE=$(getProperty provider.webster.interface=)
+    WEBSTER_PORT=$(getProperty provider.webster.port=)
+
+    if [ "$WEBSTER_INTERFACE"=="$${localhost}" ]; then
+        WEBSTER_INTERFACE=`hostname`
+    fi
+
+    if [ ! -z "$SORCER_WEBSTER_INTERFACE" ] && [ ! -z "$SORCER_WEBSTER_PORT" ]; then
+        WEBSTER_URL=http://$SORCER_WEBSTER_INTERFACE:$SORCER_WEBSTER_PORT
+    else
+        WEBSTER_URL=http://$WEBSTER_INTERFACE:$WEBSTER_PORT
+    fi
+}
+
+startSos ( ) {
+
+    echo "##############################################################################"
+    echo "##                       SORCER OS Booter"                                
+    echo "##   SORCER_HOME: $SORCER_HOME"
+    echo "##   RIO_HOME   : $RIO_HOME"
+    echo "##   Webster URL: $WEBSTER_URL"
+    echo "##"   
+    echo "##############################################################################"
+    echo " "
+    # echo $BOOT_CLASSPATH
+
+
+    CONFIG=$1
+    shift
+    # Start the Profiler or the JVM
+    if $useprofiler ; then
+        runProfiler
+    else
+        exec "$JAVACMD" $JAVA_OPTS \
+            -classpath "$BOOT_CLASSPATH" \
+            -Djava.net.preferIPv4Stack=true \
+            -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
+            -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos" \
+            -Djava.rmi.server.useCodebaseOnly=false \
+            -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+            -Dprogram.name="$PROGNAME" \
+            -Dsorcer.home="$SORCER_HOME" \
+            -Dtools.jar="$TOOLS_JAR" \
+            $STARTER_MAIN_CLASS \
+            $CONFIG \
+            "$@"
+    fi
+}
+
+
+startShell ( ) {
+	
+	if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+        # Distro version
+        LIB_DIR=$SORCER_HOME/lib
+        SHELL_CLASSPATH="$LIB_DIR/sorcer/sos-shell.jar:\
+$LIB_DIR/sorcer/sos-env.jar:\
+$LIB_DIR/sorcer/sos-boot.jar:\
+$LIB_DIR/sorcer/sos-platform.jar:\
+$LIB_DIR/sorcer/sos-webster.jar:\
+$LIB_DIR/rio-resolver/resolver-api.jar:\
+$LIB_DIR/commons/slf4j-api.jar:\
+$LIB_DIR/commons/logback-core.jar:\
+$LIB_DIR/commons/logback-classic.jar:\
+$LIB_DIR/rio/rio-platform.jar:\
+$LIB_DIR/commons/groovy-all.jar:\
+$LIB_DIR/jini/jsk-platform.jar:\
+$LIB_DIR/jini/jsk-lib.jar"
+    else        
+      	# MVN version
+      	SHELL_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
+$MVN_REPO//ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar:\
+$MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
+    fi
+
+    CLASS=$1
+    shift
+    # Start the Profiler or the JVM
+    if $useprofiler ; then
+        runProfiler
+    else
+        exec "$JAVACMD" $JAVA_OPTS \
+            -classpath "$SHELL_CLASSPATH" \
+            -Djava.security.policy="$SORCER_HOME"/configs/shell/policy/shell.policy \
+            -Djava.rmi.server.useCodebaseOnly=false \
+            -Dscript.name="$SCRIPT_PATH" \
+            -Dprogram.name="$PROGNAME" \
+            -Desh.starter.conf="$NSH_CONF" \
+            -Dsorcer.home="$SORCER_HOME" \
+            -Dtools.jar="$TOOLS_JAR" \
+            $STARTER_MAIN_CLASS \
+            --main $CLASS \
+            --config "$NSH_CONF" \
+            --classpath "$CP" \
+            "$@"
+    fi
+}
+
+earlyInit
+createBootCp
+lateInit
