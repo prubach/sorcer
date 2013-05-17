@@ -197,7 +197,7 @@ lateInit ( ) {
 
     # For Darwin, add NSH_APP_NAME to the JAVA_OPTS as -Xdock:name
     if $darwin; then
-        JAVA_OPTS="$JAVA_OPTS -Xdock:name=SOS -Xdock:icon=$SORCER_HOME/configs/shell/configs/sorcer-dock-rgb.png"
+        JAVA_OPTS="$JAVA_OPTS -Xdock:name=$SORCER_APP_NAME -Xdock:icon=$SORCER_HOME/configs/shell/configs/sorcer-dock-rgb.png"
     fi
 
     # For Cygwin, switch paths to Windows format before running java
