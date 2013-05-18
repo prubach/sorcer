@@ -189,6 +189,11 @@
 					<artifactId>dependencypath-maven-plugin</artifactId>
 					<version>1.1.1</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -344,4 +349,30 @@
 	<prerequisites>
 		<maven>3.0</maven>
 	</prerequisites>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.0.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<issueManagement>
+		<url>https://github.com/sorcersoft/sorcer/issues</url>
+		<system>github</system>
+	</issueManagement>
+
+	<scm>
+		<developerConnection>scm:git:git@github.com:sorcersoft/sorcer.git</developerConnection>
+		<connection>scm:git:git://github.com/sorcersoft/sorcer.git</connection>
+		<url>https://github.com/sorcersoft/sorcer</url>
+	</scm>
 </project>
