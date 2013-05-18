@@ -26,7 +26,7 @@ import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
-public class WorkflowWorkerRunner extends ServiceRequestor {
+public class CompositeJobRequestor extends ServiceRequestor {
 
 	/* (non-Javadoc)
 	 * @see sorcer.core.requestor.ExertionRunner#getExertion(java.lang.String[])
@@ -59,11 +59,11 @@ public class WorkflowWorkerRunner extends ServiceRequestor {
 	    context2.map("provider/result", "requestor/operand/2", context3);
 	    
 	    // define required services
-	    NetSignature signature1 = new NetSignature("doIt",
+	    NetSignature signature1 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class);
-		NetSignature signature2 = new NetSignature("doIt",
+		NetSignature signature2 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class);
-		NetSignature signature3 = new NetSignature("doIt",
+		NetSignature signature3 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class);
 
 		// define tasks
@@ -79,7 +79,7 @@ public class WorkflowWorkerRunner extends ServiceRequestor {
 		
 		// define a job control strategy
 		// use the catalog to delegate the tasks
-		job.setAccessType(Access.CATALOG); 
+		job.setAccessType(Access.PUSH);
 		// either parallel or sequential
 		job.setFlowType(Flow.SEQ);
 	     // time the job execution

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013 Rafał Krupiński
+ * Copyright 2013 the original author or authors.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util;
+package sorcer.ex2.provider;
 
-import com.google.common.base.Function;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.resolution.ArtifactResult;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
 
-import javax.annotation.Nullable;
+public interface Work {
 
-/**
-* @author Rafał Krupiński
-*/
-public class ArtifactResultTransformer implements Function<ArtifactResult, Artifact> {
-	@Nullable
-	@Override
-	public Artifact apply(@Nullable ArtifactResult input) {
-		return input == null ? null : input.getArtifact();
-	}
+    public Context exec(Context context) throws InvalidWork, ContextException;
 }

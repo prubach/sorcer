@@ -15,27 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util;
+package sorcer.maven.util;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.MojoFailureException;
+import com.google.common.base.Function;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.resolution.ArtifactResult;
 
-import java.io.File;
-import java.io.IOException;
+import javax.annotation.Nullable;
 
 /**
- * @author Rafał Krupiński
- */
-public class PolicyFileHelper {
-	public static String preparePolicyFile(String outputDirectory) throws MojoFailureException {
-		File policy = new File(outputDirectory, "sorcer.policy");
-		if (!policy.exists()) {
-			try {
-				FileUtils.write(policy, "grant {permission java.security.AllPermission;};");
-			} catch (IOException e) {
-				throw new MojoFailureException("could not write to " + outputDirectory, e);
-			}
-		}
-		return policy.getPath();
+* @author Rafał Krupiński
+*/
+public class ArtifactResultTransformer implements Function<ArtifactResult, Artifact> {
+	@Nullable
+	@Override
+	public Artifact apply(@Nullable ArtifactResult input) {
+		return input == null ? null : input.getArtifact();
 	}
 }

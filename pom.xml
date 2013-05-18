@@ -1,114 +1,163 @@
 <project
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.sorcersoft.sorcer</groupId>
-    <artifactId>sorcer</artifactId>
-    <packaging>pom</packaging>
-    <name>SORCER Project</name>
-    <version>1.0-SNAPSHOT</version>
-    <description>SORCER</description>
-    <url>http://sorcersoft.org/</url>
-    <inceptionYear>2013</inceptionYear>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.sorcersoft.sorcer</groupId>
+	<artifactId>sorcer</artifactId>
+	<packaging>pom</packaging>
+	<name>SORCER Project</name>
+	<version>1.0-SNAPSHOT</version>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+	<inceptionYear>2013</inceptionYear>
 
-    <properties>
-        <v.sorcer>1.0-SNAPSHOT</v.sorcer>
-        <v.jini>2.2.1</v.jini>
-        <v.blitz>2.1.7</v.blitz>
-        <v.sleepycat>4.1.21</v.sleepycat>
-        <v.rio>5.0-M2</v.rio>
-        <v.groovy>2.1.3</v.groovy>
-        <v.sigar>1.6.4</v.sigar>
+	<properties>
+		<v.sorcer>1.0-SNAPSHOT</v.sorcer>
+		<v.jini>2.2.1</v.jini>
+		<v.blitz>2.1.7</v.blitz>
+		<v.sleepycat>4.1.21</v.sleepycat>
+		<v.rio>5.0-M2</v.rio>
+		<v.groovy>2.1.3</v.groovy>
+		<v.sigar>1.6.4</v.sigar>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sorcer.home>${project.basedir}</sorcer.home>
-    </properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <modules>
-        <module>sos</module>
-        <module>sos-providers</module>
-        <module>tools</module>
-        <module>examples</module>
+	<modules>
+		<module>sos</module>
+		<module>sos-providers</module>
+		<module>tools</module>
+		<module>examples</module>
     </modules>
 
-    <developers>
-        <developer>
-            <name>Mike Sobolewski</name>
-            <id>mwsobol</id>
-            <timezone>-6</timezone>
-            <organization>SorcerSoft S.A.</organization>
-        </developer>
-        <developer>
-            <name>Paweł Rubach</name>
-            <id>prubach</id>
-            <timezone>+1</timezone>
-            <organization>SorcerSoft S.A.</organization>
-        </developer>
-        <developer>
-            <name>Rafał Krupiński</name>
-            <id>rafalkrupinski</id>
-            <timezone>+1</timezone>
-            <organization>SorcerSoft S.A.</organization>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>Mike Sobolewski</name>
+			<id>mwsobol</id>
+			<timezone>-6</timezone>
+			<organization>SorcerSoft.com S.A.</organization>
+		</developer>
+		<developer>
+			<name>Paweł Rubach</name>
+			<id>prubach</id>
+			<timezone>+1</timezone>
+			<organization>SorcerSoft.com S.A.</organization>
+		</developer>
+		<developer>
+			<name>Rafał Krupiński</name>
+			<id>rafalkrupinski</id>
+			<timezone>+1</timezone>
+			<organization>SorcerSoft.com S.A.</organization>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>R.M. Kolonay</name>
+		</contributor>
+        <contributor>
+            <name>Dennis Reedy</name>
+        </contributor>
+        <contributor>
+			<name>E. D. Thompson</name>
+		</contributor>
+		<contributor>
+			<name>S. A. Burton</name>
+		</contributor>
+		<contributor>
+			<name>Travis Sims</name>
+		</contributor>
+		<contributor>
+			<name>Greg McChesney</name>
+		</contributor>
+		<contributor>
+			<name>Thimmayya Ame</name>
+		</contributor>
+		<contributor>
+			<name>Daniel Kerr</name>
+		</contributor>
+		<contributor>
+			<name>Michael Alger</name>
+		</contributor>
+		<contributor>
+			<name>Saurabh Bhatla</name>
+		</contributor>
+		<contributor>
+			<name>Max Berger</name>
+		</contributor>
+		<contributor>
+			<name>Dawid Kurzyniec</name>
+		</contributor>
+		<contributor>
+			<name>Jochen Theodorou</name>
+		</contributor>
+		<contributor>
+			<name>Steven Harris</name>
+		</contributor>
+		<contributor>
+			<name>Peter C. Marks</name>
+		</contributor>
+		<contributor>
+			<name>J Clarke</name>
+		</contributor>
+	</contributors>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-all</artifactId>
-                <version>${v.groovy}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jini</groupId>
-                <artifactId>jsk-platform</artifactId>
-                <version>${v.jini}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.sorcersoft.sorcer</groupId>
-                <artifactId>sos-platform</artifactId>
-                <version>${v.sorcer}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.rioproject</groupId>
-                <artifactId>rio-platform</artifactId>
-                <version>${v.rio}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.5</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.8.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>gsbase</groupId>
-                <artifactId>gsbase</artifactId>
-                <version>2.0.1</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.sonatype.aether</groupId>
-                <artifactId>aether-api</artifactId>
-                <version>1.13.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.sonatype.aether</groupId>
-                <artifactId>aether-impl</artifactId>
-                <version>1.13.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.sonatype.aether</groupId>
-                <artifactId>aether-util</artifactId>
-                <version>1.13.1</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${v.groovy}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.jini</groupId>
+				<artifactId>jsk-platform</artifactId>
+				<version>${v.jini}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sos-platform</artifactId>
+				<version>${v.sorcer}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.rioproject</groupId>
+				<artifactId>rio-platform</artifactId>
+				<version>${v.rio}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>gsbase</groupId>
+				<artifactId>gsbase</artifactId>
+				<version>2.0.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-api</artifactId>
+				<version>1.13.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-impl</artifactId>
+				<version>1.13.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.aether</groupId>
+				<artifactId>aether-util</artifactId>
+				<version>1.13.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<distributionManagement>
 		<site>
@@ -118,177 +167,179 @@
 	</distributionManagement>
 
 	<build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.bitstrings.maven.plugins</groupId>
-                    <artifactId>dependencypath-maven-plugin</artifactId>
-                    <version>1.1.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>databases</directory>
-                            <includes>
-                                <include>**/*</include>
-                                <include>**/*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                        <fileset>
-                            <directory>logs/</directory>
-                            <includes>
-                                <include>remote/*</include>
-                                <include>*</include>
-                            </includes>
-                            <excludes>
-                                <exclude>remote</exclude>
-                            </excludes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.bitstrings.maven.plugins</groupId>
-                <artifactId>dependencypath-maven-plugin</artifactId>
-                <version>1.1.1</version>
-                <executions>
-                    <execution>
-                        <id>set-all</id>
-                        <goals>
-                            <goal>set</goal>
-                        </goals>
-                        <configuration>
-                            <propertySets>
-                                <propertySet>
-                                    <suffix>norepo</suffix>
-                                    <relativeTo>${settings.localRepository}</relativeTo>
-                                    <transitive>false</transitive>
-                                    <autoRelativeSuffix>true</autoRelativeSuffix>
-                                </propertySet>
-                            </propertySets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <strictCheck>true</strictCheck>
-                    <header>configs/template/license-header-org.txt</header>
-                    <includes>
-                        <include>**/*.java</include>
-                        <include>**/*.xml</include>
-                    </includes>
-                    <excludes>
-<!--
-                        <exclude>**/ovf/datamodel/*.java</exclude>
--->
-                        <exclude>**/*.config</exclude>
-                        <exclude>**/*.properties</exclude>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.policy</exclude>
-                        <exclude>**/*.html</exclude>
-                        <exclude>**/*.data</exclude>
-                        <exclude>**/*.list</exclude>
-                        <exclude>**/*.rtf</exclude>
-                        <exclude>**/*.css</exclude>
-                        <exclude>**/*.c</exclude>
-                        <exclude>**/*.S</exclude>
-                        <exclude>**/notes/**</exclude>
-                        <exclude>**/archetype-resources/**</exclude>
-                        <exclude>**/first/reference/**/*.java</exclude>
-                        <exclude>**/first/reference/**/*.xml</exclude>
-                        <exclude>**/sos-misc/**/*</exclude>
-                        <exclude>**/jini/scripts/**</exclude>
-                        <exclude>**/.idea/**/*</exclude>
-                        <exclude>**/locker/**/*</exclude>
-                        <exclude>**/sos-webster/**</exclude>
-                        <exclude>**/util/exec/*.java</exclude>
-                        <exclude>**/classdepandjar/**</exclude>
-                        <!-- Rio code -->
-                        <exclude>**/TimeUtil.java</exclude>
-                        <exclude>**/PropertyHelper.java</exclude>
-                        <exclude>**/RemoteServiceEvent.java</exclude>
-                        <exclude>**/sorcer/provider/boot/*.java</exclude>
-                        <!-- other's code -->
-                        <exclude>**/shell/LoaderConfiguration.java</exclude>
-                        <exclude>**/RootLoader.java</exclude>
-                    </excludes>
-                    <mapping>
-                        <bnd>SCRIPT_STYLE</bnd>
-                        <tmpl>XML_STYLE</tmpl>
-                    </mapping>
-                    <properties>
-                        <license.year>2013</license.year>
-                    </properties>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <repositories>
-        <repository>
-            <id>hashnot</id>
-            <url>http://mvn.hashnot.com/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sorcersoft.sorcer</groupId>
+					<artifactId>sorcer-maven-plugin</artifactId>
+					<version>${v.sorcer}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.bitstrings.maven.plugins</groupId>
+					<artifactId>dependencypath-maven-plugin</artifactId>
+					<version>1.1.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>databases</directory>
+							<includes>
+								<include>**/*</include>
+								<include>**/*</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>logs/</directory>
+							<includes>
+								<include>remote/*</include>
+								<include>*</include>
+							</includes>
+							<excludes>
+								<exclude>remote</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.bitstrings.maven.plugins</groupId>
+				<artifactId>dependencypath-maven-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+					<execution>
+						<id>set-all</id>
+						<goals>
+							<goal>set</goal>
+						</goals>
+						<configuration>
+							<propertySets>
+								<propertySet>
+									<suffix>norepo</suffix>
+									<relativeTo>${settings.localRepository}</relativeTo>
+									<transitive>false</transitive>
+									<autoRelativeSuffix>true</autoRelativeSuffix>
+								</propertySet>
+							</propertySets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<strictCheck>true</strictCheck>
+					<header>configs/template/license-header-org.txt</header>
+					<includes>
+						<include>**/*.java</include>
+						<include>**/*.xml</include>
+					</includes>
+					<excludes>
+						<exclude>**/*.config</exclude>
+						<exclude>**/*.properties</exclude>
+						<exclude>**/*.txt</exclude>
+						<exclude>**/*.policy</exclude>
+						<exclude>**/*.html</exclude>
+						<exclude>**/*.data</exclude>
+						<exclude>**/*.list</exclude>
+						<exclude>**/*.rtf</exclude>
+						<exclude>**/*.css</exclude>
+						<exclude>**/*.c</exclude>
+						<exclude>**/*.S</exclude>
+						<exclude>**/notes/**</exclude>
+						<exclude>**/archetype-resources/**</exclude>
+						<exclude>**/first/reference/**/*.java</exclude>
+						<exclude>**/first/reference/**/*.xml</exclude>
+						<exclude>**/sos-misc/**/*</exclude>
+						<exclude>**/jini/scripts/**</exclude>
+						<exclude>**/.idea/**/*</exclude>
+						<exclude>**/locker/**/*</exclude>
+						<exclude>**/sos-webster/**</exclude>
+						<exclude>**/util/exec/*.java</exclude>
+						<exclude>**/classdepandjar/**</exclude>
+						<!-- Rio code -->
+						<exclude>**/TimeUtil.java</exclude>
+						<exclude>**/PropertyHelper.java</exclude>
+						<exclude>**/RemoteServiceEvent.java</exclude>
+						<exclude>**/sorcer/provider/boot/*.java</exclude>
+						<!-- other's code -->
+						<exclude>**/shell/LoaderConfiguration.java</exclude>
+						<exclude>**/RootLoader.java</exclude>
+					</excludes>
+					<mapping>
+						<bnd>SCRIPT_STYLE</bnd>
+						<tmpl>XML_STYLE</tmpl>
+					</mapping>
+					<properties>
+						<license.year>2013</license.year>
+					</properties>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>hashnot</id>
+			<url>http://mvn.hashnot.com/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 
 		<!-- sleepycat -->
-        <repository>
-            <id>oracle</id>
-            <url>http://download.oracle.com/maven/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
+		<repository>
+			<id>oracle</id>
+			<url>http://download.oracle.com/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>hashnot</id>
-            <url>http://mvn.hashnot.com/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>hashnot</id>
+			<url>http://mvn.hashnot.com/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<prerequisites>
 		<maven>3.0</maven>

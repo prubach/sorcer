@@ -17,14 +17,13 @@
  */
 package sorcer.ex2.provider;
 
-import java.net.InetAddress;
-import java.rmi.RemoteException;
-
+import com.sun.jini.start.LifeCycle;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
-import com.sun.jini.start.LifeCycle;
+import java.net.InetAddress;
+import java.rmi.RemoteException;
 
 public class WorkerProvider extends ServiceTasker implements Worker {
 	
@@ -58,10 +57,19 @@ public class WorkerProvider extends ServiceTasker implements Worker {
 	public Context doWork(Context context) throws InvalidWork, RemoteException,
 			ContextException {		
 		context.putValue("provider/host/name", hostName);
-		int result = (Integer) context.getValue("requestor/operand/1")
+        Object workToDo = context.getValue("requestor/work");
+        if (workToDo != null && (workToDo instanceof Work)) {
+            // requestor's work to be done
+            Context out = ((Work)workToDo).exec(context);
+            context.append(out);
+        } else {
+            // default work to be done
+		     int result = (Integer) context.getValue("requestor/operand/1")
 				* (Integer) context.getValue("requestor/operand/2");
-		context.putValue("provider/result", result);
-		String reply = "Done work: " + result;
+            context.putValue("provider/result", result);
+        }
+		String reply = "Done work by: "
+                + (getProviderName() == null ? getClass() : getProviderName());
 		setMessage(context, reply);
 
 		// simulate longer execution time based on the value in

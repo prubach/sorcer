@@ -29,6 +29,11 @@
 			<artifactId>commons-prv</artifactId>
 			<version>${v.sorcer}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-env</artifactId>
+			<version>${v.sorcer}</version>
+		</dependency>
 
 		<!-- CodeBase -->
 		<dependency>
@@ -47,8 +52,48 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
 	</dependencies>
+
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>policy</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>sorcer-preit</id>
+						<goals>
+							<goal>provider</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>sorcer-it</id>
+						<goals>
+							<goal>run-requestor</goal>
+						</goals>
+						<configuration>
+							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
+							<scope>test</scope>
+							<requestorClasspath>
+								<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
+							</requestorClasspath>
+						</configuration>
+					</execution>
+					<execution>
+						<id>sorcer-postit</id>
+						<goals>
+							<goal>destroy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 
 		<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
 		<resources>

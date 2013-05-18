@@ -415,7 +415,7 @@ $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
-            -Desh.starter.conf="$NSH_CONF" \
+            -Dnsh.starter.config="$NSH_CONF" \
             -Dsorcer.home="$SORCER_HOME" \
             -Dtools.jar="$TOOLS_JAR" \
             $STARTER_MAIN_CLASS \

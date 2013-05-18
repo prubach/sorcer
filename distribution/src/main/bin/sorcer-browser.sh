@@ -1,0 +1,64 @@
+#!/bin/sh
+
+##############################################################################
+##                                                                          ##
+##  SORCER OS Boot script for UN*X                                          ##
+##                                                                          ##
+##############################################################################
+
+SORCER_APP_NAME="Sorcer Browser"
+
+# resolve links - $0 may be a soft-link
+PRG="$0"
+
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> /(.*/)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`/"$link"
+    fi
+done
+
+DIRNAME=`dirname "$PRG"`
+
+. "$DIRNAME/common-run"
+
+
+STARTER_MAIN_CLASS=sorcer.ssb.SorcerServiceBrowser
+CONFIG=../configs/browser/configs/ssb.config
+
+BROWSER_CLASSPATH=$JINI_CLASSPATH:$LIB_DIR/sorcer/browser.jar:$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-platform.jar:$LIB_DIR/sorcer/sos-webster.jar:$LIB_DIR/rio-resolver/resolver-api.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/logback-core.jar:$LIB_DIR/commons/logback-classic.jar:$LIB_DIR/rio/rio-platform.jar:$LIB_DIR/commons/groovy-all.jar:$LIB_DIR/commons/jsc-admin.jar
+
+echo "##############################################################################"
+echo "##                       SORCER OS Booter"
+echo "##   SORCER_HOME: $SORCER_HOME"
+echo "##   RIO_HOME   : $RIO_HOME"
+echo "##   Webster URL: $WEBSTER_URL"
+echo "##"
+echo "##############################################################################"
+echo " "
+# echo $BOOT_CLASSPATH
+
+# Start the Profiler or the JVM
+if $useprofiler ; then
+    runProfiler
+else
+    exec "$JAVACMD" $JAVA_OPTS \
+        -classpath "$BROWSER_CLASSPATH" \
+        -Djava.net.preferIPv4Stack=true \
+        -Dssb.logFile="$SORCER_HOME"/configs/browser/logs/browser.log \
+        -Dssb.logLen=300 \
+        -Djava.security.policy="$SORCER_HOME"/configs/browser/policy/ssb.policy \
+        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos" \
+        -Djava.rmi.server.useCodebaseOnly=false \
+        -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+        -Dprogram.name="$PROGNAME" \
+        -Dsorcer.home="$SORCER_HOME" \
+        -Dtools.jar="$TOOLS_JAR" \
+        $STARTER_MAIN_CLASS \
+        $CONFIG \
+        "$@"
+fi
+

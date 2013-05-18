@@ -79,9 +79,9 @@ public class WorkerTaskRequestorTest {
 		
 		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
 
-		Exertion task = new ObjectTask("work", signature, context);
+		Exertion task = new ObjectTask("doWork", signature, context);
 		task = task.exert();
-		//logger.info("result: " + task);
+		logger.info("result: " + task);
 		assertEquals((Integer)task.getDataContext().getValue("provider/result"), new Integer(1111));
 	}
 	
@@ -91,10 +91,11 @@ public class WorkerTaskRequestorTest {
 		
 		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
 
-		Exertion task = new ObjectTask("work", signature, context);
+		Exertion task = new ObjectTask("doWork", signature, context);
 		task = task.exert();
-		//logger.info("result: " + task);
-		assertEquals(task.getDataContext().getValue("provider/message"), "Done work: 1111");
+		logger.info("result: " + task);
+		assertEquals(task.getDataContext().getValue("provider/message"),
+                "Done work by: class sorcer.ex2.provider.WorkerProvider");
 	}
 	
 	@Test
@@ -102,9 +103,9 @@ public class WorkerTaskRequestorTest {
 		ExertionException, UnknownHostException, SignatureException {
 		
 		ObjectSignature signature = new ObjectSignature("doWork", WorkerProvider.class);
-		Exertion task = new ObjectTask("work", signature, context);
+		Exertion task = new ObjectTask("doWork", signature, context);
 		task = task.exert();
-		//logger.info("result: " + task);
+		logger.info("result: " + task);
 		assertEquals(task.getDataContext().getValue("provider/host/name"), hostname);
 	}
 }

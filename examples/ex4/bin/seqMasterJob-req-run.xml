@@ -25,7 +25,7 @@
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
 
 	<property name="pom.file" value="../ex4-req/pom.xml" />
-	<property name="ex4-req.arg1" value="sorcer.ex4.runner.WorkflowWorkerRunner" />
+	<property name="ex4-req.arg1" value="sorcer.ex4.runner.SeqMasterJobRequestor" />
 	<import file="../ex4-req/req-run.xml" />	
 
 </project>

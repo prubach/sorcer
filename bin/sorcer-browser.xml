@@ -19,7 +19,7 @@
 
 -->
 
-<project name="SSB" default="all" basedir=".">
+<project name="SSB" default="run" basedir=".">
 	
 	<property name="pom.file" value="${basedir}/../configs/browser/pom.xml" />
 	<!-- load system environment variables -->
@@ -39,7 +39,7 @@
             <os family="mac"/>
     </condition>
 
-    <target name="all" depends="SORCER Service Browser Mac, SORCER Service Browser" />
+    <target name="run" depends="SORCER Service Browser Mac, SORCER Service Browser" />
 
     <target name="SORCER Service Browser Mac" depends="mvn-init" if="isMac">
     	<java classname="sorcer.ssb.SorcerServiceBrowser" fork="yes" maxmemory="1g" >

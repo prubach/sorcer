@@ -30,5 +30,10 @@
             <artifactId>commons-req</artifactId>
             <version>${v.sorcer}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-api</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
     </dependencies>
 </project>

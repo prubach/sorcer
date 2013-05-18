@@ -22,7 +22,6 @@
         <module>sos-exertlet-sui</module>
         <module>commons-req</module>
         <module>commons-prv</module>
-		<module>sos-mod</module>
 		<module>sos-tests</module>
      </modules>
 </project>
