@@ -31,7 +31,7 @@ public class ArithmeticImpl implements Arithmetic {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see junit.sorcer.core.provider.Adder#add(sorcer.service.Context)
+	 * @see sorcer.ex5.provider.Adder#add(sorcer.service.Context)
 	 */
 	@Override
 	public Context add(Context context) throws RemoteException,
@@ -43,7 +43,7 @@ public class ArithmeticImpl implements Arithmetic {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * junit.sorcer.core.provider.Subtractor#subtract(sorcer.service.Context)
+	 * sorcer.ex5.provider.Subtractor#subtract(sorcer.service.Context)
 	 */
 	@Override
 	public Context subtract(Context context) throws RemoteException,
@@ -55,7 +55,7 @@ public class ArithmeticImpl implements Arithmetic {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * junit.sorcer.core.provider.Multiplier#multiply(sorcer.service.Context)
+	 * sorcer.ex5.provider.Multiplier#multiply(sorcer.service.Context)
 	 */
 	@Override
 	public Context multiply(Context context) throws RemoteException,
@@ -66,7 +66,7 @@ public class ArithmeticImpl implements Arithmetic {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see junit.sorcer.core.provider.Divider#divide(sorcer.service.Context)
+	 * @see sorcer.ex5.provider#divide(sorcer.service.Context)
 	 */
 	@Override
 	public Context divide(Context context) throws RemoteException,
@@ -74,4 +74,12 @@ public class ArithmeticImpl implements Arithmetic {
 		return arithmometer.divide(context);
 	}
 
+    /*
+	 * (non-Javadoc)
+	 *
+	 * @see sorcer.ex5.provider.Averager#average(sorcer.service.Context)
+	 */
+    @Override
+    public Context average(Context context) throws RemoteException, ContextException {
+        return arithmometer.average(context);    }
 }
