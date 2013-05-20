@@ -17,13 +17,14 @@
  */
 package sorcer.resolver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.PropertiesLoader;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -33,29 +34,16 @@ import java.util.Properties;
  */
 abstract public class AbstractArtifactResolver implements ArtifactResolver {
 
+	final private Logger log = LoggerFactory.getLogger(getClass());
+
 	// groupId_artifactId -> version
 	protected Map<String, String> versions = new HashMap<String, String>();
 
+	private static PropertiesLoader propertiesLoader = new PropertiesLoader();
+
 	{
-		String resourceName = "META-INF/maven/versions.properties";
-		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-		if (resource == null) {
-			throw new RuntimeException("Could not find versions.properties");
-		}
-		Properties properties = new Properties();
-		InputStream inputStream = null;
-		try {
-			inputStream = resource.openStream();
-			properties.load(inputStream);
-			// properties is a Map<Object, Object> but it contains only Strings
-			@SuppressWarnings("unchecked")
-			Map<String, String> propertyMap = (Map) properties;
-			versions.putAll(propertyMap);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load versions.properties", e);
-		} finally {
-			close(inputStream);
-		}
+		versions = propertiesLoader.loadAsMap("META-INF/maven/versions.properties", Thread.currentThread()
+				.getContextClassLoader());
 	}
 
 	@Override
@@ -72,14 +60,11 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 	 * Resolve version of artifact using versions.properties or pom.properties
 	 * from individual artifact jar the jar must be already in the classpath of
 	 * current thread context class loader in order to load its pom.version
-	 * 
-	 * @param groupId
-	 *            maven artifacts groupId
-	 * @param artifactId
-	 *            maven artifacts artifactId
+	 *
+	 * @param groupId    maven artifacts groupId
+	 * @param artifactId maven artifacts artifactId
 	 * @return artifacts version
-	 * @throws IllegalArgumentException
-	 *             if version could not be found
+	 * @throws IllegalArgumentException if version could not be found
 	 */
 	public String resolveVersion(String groupId, String artifactId) {
 		String version = resolveCachedVersion(groupId, artifactId);
@@ -106,23 +91,17 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 
 	private String loadVersionFromPomProperties(String groupId, String artifactId) {
 		String resourceName = String.format("META-INF/maven/%1$s/%2$s/pom.properties", groupId, artifactId);
-		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-		if (resource == null) {
-			return null;
-		}
-		Properties properties = new Properties();
-		InputStream inputStream = null;
+		Properties properties;
 		try {
-			inputStream = resource.openStream();
-			properties.load(inputStream);
-		} catch (IOException x) {
-			throw new IllegalArgumentException("Could not load pom.properties for " + groupId + ":" + artifactId, x);
-		} finally {
-			close(inputStream);
+			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+			properties = propertiesLoader.loadAsProperties(resourceName, contextClassLoader);
+		} catch (IllegalArgumentException x) {
+			log.debug("Could not find pom.properties for {}:{}", groupId, artifactId);
+			return null;
 		}
 
 		String version = properties.getProperty("version");
-		if(version==null){
+		if (version == null) {
 			throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId
 					+ " from versions.properties");
 		}
@@ -130,7 +109,6 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 	}
 
 	/**
-	 * 
 	 * @return cached version, may be null
 	 */
 	private String resolveCachedVersion(String groupId, String artifactId) {

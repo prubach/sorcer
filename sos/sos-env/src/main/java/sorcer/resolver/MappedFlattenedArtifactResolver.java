@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.PropertiesLoader;
 
 /**
  * @author Rafał Krupiński
@@ -43,24 +44,8 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	{
 		String resourceName = "META-INF/maven/repolayout.properties";
-		URL resource = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-		if (resource == null) {
-			throw new RuntimeException("Could not find repolayout.properties");
-		}
-		Properties properties = new Properties();
-		InputStream inputStream = null;
-		try {
-			inputStream = resource.openStream();
-			properties.load(inputStream);
-			// properties is a Map<Object, Object> but it contains only Strings
-			@SuppressWarnings("unchecked")
-			Map<String, String> propertyMap = (Map) properties;
-			groupDirMap.putAll(propertyMap);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load repolayout.properties", e);
-		} finally {
-			close(inputStream);
-		}
+		Map<String, String> propertyMap = new PropertiesLoader().loadAsMap(resourceName, Thread.currentThread().getContextClassLoader());
+		groupDirMap.putAll(propertyMap);
 	}
 
 	@Override
