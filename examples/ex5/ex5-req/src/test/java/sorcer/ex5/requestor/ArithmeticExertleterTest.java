@@ -140,12 +140,4 @@ public class ArithmeticExertleterTest implements SorcerConstants {
         assertEquals(out.getValue("1job1task/subtract/result/value"), 400.0);
 	}
 
-    @Test
-    public void temp() {
-           double d = Double.NaN;
-            logger.info("d: " + d);
-            d = d + 1.0;
-            logger.info("d: " + d);
-
-    }
 }
