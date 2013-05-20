@@ -146,6 +146,11 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
 		context.putValue("provider/timestamp", StringUtils.getDateTime());
+        String rhn = (String) context.getValue("requestor/hostname");
+        Message rmsg = (Message) context.getValue("requestor/message");
+        context.putValue("provider/message",
+                new ProviderMessage(rmsg.getMessage(), getProviderName(),
+                        rhn));
 		return context;
 	}
 }

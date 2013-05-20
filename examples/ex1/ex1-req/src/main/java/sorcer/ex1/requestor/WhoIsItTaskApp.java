@@ -31,7 +31,7 @@ import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItTaskRequestor {
+public class WhoIsItTaskApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -44,7 +44,7 @@ public class WhoIsItTaskRequestor {
 			if (!args[0].equals(Access.PUSH))
 				providerAccess = Access.PULL;
 		}
-		Exertion result = new WhoIsItTaskRequestor().getExertion(providerAccess)
+		Exertion result = new WhoIsItTaskApp().getExertion(providerAccess)
 				.exert(null);
 		logger.info("Output dataContext: \n" + result.getDataContext());
 	}

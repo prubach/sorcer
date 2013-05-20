@@ -27,12 +27,11 @@ import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItBeanRequestor2 {
+public class WhoIsItBeanApp2 {
 
 	private static Logger logger = Log.getTestLog();
 	private static String providerName;
@@ -43,7 +42,7 @@ public class WhoIsItBeanRequestor2 {
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 		
-		Exertion result = new WhoIsItBeanRequestor2()
+		Exertion result = new WhoIsItBeanApp2()
 			.getExertion().exert(null);
 		logger.info("<<<<<<<<<< Exceptions: \n" + result.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());

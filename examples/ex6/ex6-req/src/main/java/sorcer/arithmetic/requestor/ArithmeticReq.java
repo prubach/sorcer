@@ -40,7 +40,7 @@ import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
 
-public class ArithmeticRequestor extends ServiceRequestor {
+public class ArithmeticReq extends ServiceRequestor {
 
 	/* (non-Javadoc)
 	 * @see sorcer.core.requestor.ServiceRequestor#getExertion(java.lang.String[])

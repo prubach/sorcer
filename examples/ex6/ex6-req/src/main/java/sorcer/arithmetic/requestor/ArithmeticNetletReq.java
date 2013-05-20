@@ -27,7 +27,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
 
-public class ArithmeticExertletRunner extends ServiceRequestor {
+public class ArithmeticNetletReq extends ServiceRequestor {
 
 	/* (non-Javadoc)
 	 * @see sorcer.core.requestor.ExertionRunner#getExertion(java.lang.String[])

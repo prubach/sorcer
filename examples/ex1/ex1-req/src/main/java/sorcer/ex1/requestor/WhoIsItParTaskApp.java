@@ -19,6 +19,11 @@ package sorcer.ex1.requestor;
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import sorcer.core.context.ServiceContext;
@@ -26,13 +31,12 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
+import sorcer.service.ExertionCallable;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItSequentialTaskRequestor {
+public class WhoIsItParTaskApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -40,36 +44,45 @@ public class WhoIsItSequentialTaskRequestor {
 		System.setSecurityManager(new RMISecurityManager());
 		// initialize system environment from configs/sorcer.env
 		Sorcer.getEnvProperties();
-		
 		int tally = 3;
-		if (args.length == 2)
-			tally = new Integer(args[1]);
-		// create a service task and execute it 'tally' times
+		if (args.length == 1)
+			tally = new Integer(args[0]);
+		
 		Exertion task = null;
+		ExertionCallable ec = null;
+		List<Future<Exertion>> fList = new ArrayList<Future<Exertion>>(tally);
+		ExecutorService pool = Executors.newFixedThreadPool(tally);
+		WhoIsItParTaskApp req = new WhoIsItParTaskApp();
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < tally; i++) {
-			task = new WhoIsItSequentialTaskRequestor().getExertion();
-			((ServiceExertion)task).setName(task.getName() + "-" + i);
-			task = task.exert(null);
-			logger.info("got sequentially executed task: " + task.getName());
+			task = req.getExertion();
+            ((Task)task).setName(task.getName() + "-" + i);
+			ec = new ExertionCallable(task);
+			logger.info("exertion submit: " + task.getName());
+			Future<Exertion> future = pool.submit(ec);
+			fList.add(future);
+		}
+		pool.shutdown();
+		for (int i = 0; i < tally; i++) {
+			logger.info("got back task executed in parallel: " + fList.get(i).get().getName());
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("Execution time for " + tally + " sequential tasks : " + (end - start) + " ms.");
+		System.out.println("Execution time for " + tally + " parallel tasks : " + (end - start) + " ms.");
 	}
 
-	public Exertion getExertion() throws Exception {
+	private Exertion getExertion() throws Exception {
 		String hostname;
 		InetAddress inetAddress = InetAddress.getLocalHost();
 		hostname = inetAddress.getHostName();
 
 		Context context = new ServiceContext("Who Is It?");
-		context.putValue("requestor/message", new RequestorMessage("SORCER"));
+		context.putValue("requestor/message",  new RequestorMessage("SORCER"));
 		context.putValue("requestor/hostname", hostname);
 		
 		NetSignature signature = new NetSignature("getHostName",
 				sorcer.ex1.WhoIsIt.class);
 
-		Task task = new NetTask("Who Is It?", signature, context);
+		Task task = new NetTask("Who Is It?",  signature, context);
 		return task;
 	}
 }

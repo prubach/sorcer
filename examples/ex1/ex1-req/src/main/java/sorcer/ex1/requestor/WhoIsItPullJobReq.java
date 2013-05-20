@@ -17,28 +17,21 @@
  */
 package sorcer.ex1.requestor;
 
-import java.net.InetAddress;
-import java.util.logging.Logger;
-
-import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItParallelTaskRunner extends ServiceRequestor {
+import java.net.InetAddress;
+import java.util.logging.Logger;
+
+public class WhoIsItPullJobReq extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -75,18 +68,17 @@ public class WhoIsItParallelTaskRunner extends ServiceRequestor {
 					sorcer.ex1.WhoIsIt.class, providerName2);
 
 			Task task1 = new NetTask("Who Is It1?", signature1, context1);
-			Task task2 = new NetTask("Who Is It2?", signature2,  context2);
+			Task task2 = new NetTask("Who Is It2?", signature2, context2);
 			job = new NetJob();
 			job.addExertion(task1);
 			job.addExertion(task2);
 		} catch (Exception e) {
 			throw new ExertionException("Failed to create exertion", e);
 		}
-		ControlContext cc = job.getControlContext();
 		// PUSH or PULL provider access
-		cc.setAccessType(Access.PULL);
+		job.setAccess(Access.PULL);
 		// Exertion control flow PAR or SEQ
-		cc.setFlowType(Flow.PAR);
+		job.setFlow(Flow.PAR);
 
 		return job;
 	}

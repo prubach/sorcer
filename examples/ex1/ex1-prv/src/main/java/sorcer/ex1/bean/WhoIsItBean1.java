@@ -75,10 +75,8 @@ public class WhoIsItBean1 implements WhoIsIt {
 		try {
 			fqname = InetAddress.getLocalHost().getCanonicalHostName();
 			context.putValue("provider/fqname", fqname);
-			String rhn = (String) context.getValue("requestor/hostname");
-			Message rmsg = (Message) context.getValue("requestor/message");
-			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), provider.getProviderName(), rhn));
+            context.putValue("provider/message", "Hello "
+                    + context.getValue("requestor/address") + "!");
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -93,6 +91,8 @@ public class WhoIsItBean1 implements WhoIsIt {
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
 		context.putValue("provider/timestamp", StringUtils.getDateTime());
+        context.putValue("provider/message", "Hello "
+                + context.getValue("requestor/address") + "!");
 		return context;
 	}
 }

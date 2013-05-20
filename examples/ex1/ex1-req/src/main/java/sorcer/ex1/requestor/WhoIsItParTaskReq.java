@@ -38,7 +38,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItPushJobRunner extends ServiceRequestor {
+public class WhoIsItParTaskReq extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -75,7 +75,7 @@ public class WhoIsItPushJobRunner extends ServiceRequestor {
 					sorcer.ex1.WhoIsIt.class, providerName2);
 
 			Task task1 = new NetTask("Who Is It1?", signature1, context1);
-			Task task2 = new NetTask("Who Is It2?", signature2, context2);
+			Task task2 = new NetTask("Who Is It2?", signature2,  context2);
 			job = new NetJob();
 			job.addExertion(task1);
 			job.addExertion(task2);
@@ -84,7 +84,7 @@ public class WhoIsItPushJobRunner extends ServiceRequestor {
 		}
 		ControlContext cc = job.getControlContext();
 		// PUSH or PULL provider access
-		cc.setAccessType(Access.PUSH);
+		cc.setAccessType(Access.PULL);
 		// Exertion control flow PAR or SEQ
 		cc.setFlowType(Flow.PAR);
 

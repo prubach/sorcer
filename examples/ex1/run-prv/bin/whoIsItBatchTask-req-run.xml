@@ -22,7 +22,7 @@
 <project name="Who Is It? batch" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItBatchTaskRequestor" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItBatchApp" />
 
 	<property name="run.arg1" value="ABC" />
 

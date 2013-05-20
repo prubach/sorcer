@@ -26,12 +26,11 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItBeanRequestor1 {
+public class WhoIsItBeanApp1 {
 
 	private static Logger logger = Log.getTestLog();
 	private static String providerName;
@@ -42,7 +41,7 @@ public class WhoIsItBeanRequestor1 {
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 
-		Exertion result = new WhoIsItBeanRequestor1().getExertion().exert(null);
+		Exertion result = new WhoIsItBeanApp1().getExertion().exert(null);
 		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
 		logger.info("<<<<<<<<<< Result: \n" + result);
 	}

@@ -48,7 +48,7 @@
 	<!-- start provider -->
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">
-			<arg value="sorcer.arithmetic.requestor.ArithmeticExertletRunner" />
+			<arg value="sorcer.arithmetic.requestor.ArithmeticNetletReq" />
 			<classpath refid="run.classpath"/>
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/${requestor.name}.policy" />

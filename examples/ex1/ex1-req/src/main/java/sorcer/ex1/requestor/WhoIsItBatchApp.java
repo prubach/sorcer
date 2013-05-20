@@ -32,7 +32,7 @@ import sorcer.service.Signature.Type;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WhoIsItBatchTaskRequestor {
+public class WhoIsItBatchApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -45,7 +45,7 @@ public class WhoIsItBatchTaskRequestor {
 		logger.info("Who is provider \"" + providerName + "\"?");
 		
 		
-		Exertion result = new WhoIsItBatchTaskRequestor().getExertion(providerName)
+		Exertion result = new WhoIsItBatchApp().getExertion(providerName)
 				.exert(null);
 		logger.info("Exceptions: \n" + result.getExceptions());
 		logger.info("Trace: \n" + result.getTrace());
@@ -72,7 +72,9 @@ public class WhoIsItBatchTaskRequestor {
 		Signature signature4 = new NetSignature("getTimestamp",
 				sorcer.ex1.WhoIsIt.class, providername, Type.POST);
 		
-		Task task = new NetTask("Who Is It?",  new Signature[] { signature1, signature2, signature3, signature4 }, context);
+		Task task = new NetTask("Who Is It?",
+                new Signature[] { signature1, signature2, signature3, signature4 },
+                context);
 
 		return task;
 	}

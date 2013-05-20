@@ -47,10 +47,8 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 		try {
 			hostname = InetAddress.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
-			String rhn = (String) context.getValue("requestor/hostname");
-			Message msg = (Message) context.getValue("requestor/message");
-			context.putValue("provider/message", new ProviderMessage(msg
-					.getMessage(), getProviderName(), rhn));
+            context.putValue("provider/message", "Hello "
+                    + context.getValue("requestor/address") + "!");
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}
@@ -67,11 +65,9 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 		try {
 			ipAddress = InetAddress.getLocalHost().getHostAddress();
 			context.putValue("provider/address", ipAddress);
-			String rhn = (String) context.getValue("requestor/hostname");
-			Message rmsg = (Message) context.getValue("requestor/message");
-			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), getProviderName(), rhn));
-		} catch (UnknownHostException e1) {
+            context.putValue("provider/message", "Hello "
+                    + context.getValue("requestor/address") + "!");
+        } catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
 		}
@@ -87,10 +83,8 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 		try {
 			fqname = InetAddress.getLocalHost().getCanonicalHostName();
 			context.putValue("provider/fqname", fqname);
-			String rhn = (String) context.getValue("requestor/hostname");
-			Message rmsg = (Message) context.getValue("requestor/message");
-			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), getProviderName(), rhn));
+            context.putValue("provider/message", "Hello "
+                    + context.getValue("requestor/address") + "!");
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -105,6 +99,8 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
 		context.putValue("provider/timestamp", StringUtils.getDateTime());
+        context.putValue("provider/message", "Hello "
+                + context.getValue("requestor/address") + "!");
 		return context;
 	}
 }
