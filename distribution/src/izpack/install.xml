@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<installation version="1.0">
+    <info>
+        <appname>SORCER</appname>
+        <appversion>${v.sorcer}</appversion>
+        <authors>
+            <author email="michael.sobolewski@sorcersoft.com" name="Michael Sobolewski"/>
+            <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
+            <author email="rafal.krupinski@sorcersoft.com" name="Rafa&#x142; Krupi&#x144;ski"/>
+        </authors>
+        <url>http://sorcersoft.github.com/</url>
+        <uninstaller name="Uninstaller.jar" write="yes"/>
+        <javaversion>1.6</javaversion>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>no</writeinstallationinformation>
+       <!-- <pack200/>-->
+    </info>
+    <guiprefs height="480" resizable="no" width="640">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="default"/>
+        <modifier key="headingPanelCounter" value="progressbar"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+        <laf name="substance">
+            <os family="windows"/>
+            <param name="variant" value="creme"/>
+        </laf>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="APACHE-LICENSE-2.0.txt"/>
+        <res id="shortcutSpec.xml" src="SorcerInstaller_shortcutSpec.xml"/>
+        <res id="Unix_shortcutSpec.xml" src="SorcerInstaller_Unix_shortcutSpec.xml"/>
+        <res id="installer.langsel.img" src="sos.com_icon.png"/>
+        <res id="Installer.image" src="SOS-leftpanel.png"/>
+    </resources>
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <variables>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
+    <packs>
+        <pack name="Sorcer OS" preselected="yes" required="yes">
+            <description>SORCER Platform</description>
+            <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="bin/*.bat" os="windows"/>
+                <include name="bin/*.sh" os="unix"/>
+                <include name="bin/sorcer-boot" os="unix"/>
+                <include name="bin/sorcer-boot-no-http" os="unix"/>
+                <include name="bin/sorcer-browser" os="unix"/>
+                <include name="bin/blitz-all-boot" os="unix"/>
+                <include name="bin/common-run" os="unix"/>
+                <include name="bin/nsh" os="unix"/>
+                <include name="bin/*.xml"/>
+                <include name="configs/**/*"/>
+                <include name="docs/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="logs/**/*"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/blitz-all-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
+        </pack>
+        <pack name="Sorcer Examples" preselected="yes" required="no">
+            <description>Sorcer Examples</description>
+            <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}/examples"
+                     targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
+                <include name="**/*"/>
+            </fileset>
+        </pack>
+    </packs>
+    <native name="ShellLink.dll" type="izpack"/>
+    <native name="ShellLink_x64.dll" type="izpack"/>
+</installation>

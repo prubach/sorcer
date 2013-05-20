@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="Sorcer" location="applications"/>
+    <shortcut KdeUsername="root" applications="yes"
+        description="Start Sorcer platform" desktop="yes"
+        encoding="UTF-8" iconFile="$INSTALL_PATH/" iconIndex="0"
+        initialState="normal" name="Start Sorcer" programGroup="no"
+        startMenu="no" startup="no"
+        target="$INSTALL_PATH/bin/sorcer-boot" terminal="true" type="Application"/>
+    <shortcut KdeUsername="root" applications="yes" desktop="yes"
+        encoding="UTF-8" iconFile="$INSTALL_PATH/docs/sos.png"
+        iconIndex="0" initialState="normal" name="Sorcer Browser"
+        programGroup="no" startMenu="no" startup="no"
+        target="$INSTALL_PATH/bin/sorcer-browser" type="Application"/>
+    <shortcut KdeUsername="root" applications="yes"
+        description="Sorcer Network Shell" desktop="yes"
+        encoding="UTF-8" initialState="normal" name="Network Shell"
+        programGroup="no" startMenu="no" startup="no"
+        target="$INSTALL_PATH/bin/nsh" terminal="true"
+        type="Application" workingDirectory="$INSTALL_PATH"/>
+</shortcuts>
