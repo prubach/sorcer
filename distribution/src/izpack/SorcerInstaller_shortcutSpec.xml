@@ -2,16 +2,32 @@
 <shortcuts>
     <skipIfNotSupported/>
     <programGroup defaultName="Sorcer" location="applications"/>
-    <shortcut applications="yes" description="Start Sorcer platform"
-        desktop="yes" iconFile="$INSTALL_PATH/" iconIndex="0"
-        initialState="minimized" name="Start Sorcer" programGroup="no"
-        startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-boot.bat"/>
-    <shortcut applications="yes" desktop="yes"
-        iconFile="$INSTALL_PATH/docs/sos.png" iconIndex="0"
-        initialState="minimized" name="Sorcer Browser" programGroup="no"
-        startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-browser.bat"/>
-    <shortcut applications="yes" description="Sorcer Network Shell"
-        desktop="yes" initialState="noShow" name="Network Shell"
-        programGroup="no" startMenu="no" startup="no"
+    <shortcut applications="no" description="Start Sorcer platform"
+	desktop="yes" iconFile="$INSTALL_PATH/configs/sos.ico" iconIndex="0"
+        name="Start Sorcer" programGroup="yes"
+        startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-boot.bat" workingDirectory="$INSTALL_PATH"/>
+    <shortcut applications="no" desktop="yes"
+	iconFile="$INSTALL_PATH/configs/sos.ico" iconIndex="0"
+        initialState="minimized" name="Sorcer Browser" programGroup="yes"
+        startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-browser.bat" workingDirectory="$INSTALL_PATH"/>
+    <shortcut applications="no" description="Sorcer Network Shell"
+        desktop="yes" name="Network Shell"
+        programGroup="yes" startMenu="no" startup="no"
         target="$INSTALL_PATH/bin/nsh.bat" workingDirectory="$INSTALL_PATH"/>
+    <shortcut applications="no" description="Sorcer Examples"
+              desktop="yes" name="Sorcer Examples"
+              programGroup="yes" startMenu="no" startup="no"
+              target="$INSTALL_PATH/bin/setenv.bat" workingDirectory="$INSTALL_PATH/examples"/>
+    <shortcut
+		name="Uninstall Sorcer"
+		target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+		commandline=""
+		description="Uninstalls Sorcer Platform"
+		programGroup="yes"
+		desktop="no"
+		applications="no"
+		startMenu="no"
+		startup="no"
+		iconFile="%SystemRoot%\system32\SHELL32.dll"
+		iconIndex="31"/>
 </shortcuts>

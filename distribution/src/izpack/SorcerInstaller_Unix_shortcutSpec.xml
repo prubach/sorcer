@@ -5,18 +5,28 @@
     <shortcut KdeUsername="root" applications="yes"
         description="Start Sorcer platform" desktop="yes"
         encoding="UTF-8" iconFile="$INSTALL_PATH/" iconIndex="0"
-        initialState="normal" name="Start Sorcer" programGroup="no"
+        initialState="normal" name="Start Sorcer" programGroup="yes"
         startMenu="no" startup="no"
-        target="$INSTALL_PATH/bin/sorcer-boot" terminal="true" type="Application"/>
+        target="$INSTALL_PATH/bin/sorcer-boot" terminal="true" type="Application" workingDirectory="$INSTALL_PATH"/>
     <shortcut KdeUsername="root" applications="yes" desktop="yes"
         encoding="UTF-8" iconFile="$INSTALL_PATH/docs/sos.png"
         iconIndex="0" initialState="normal" name="Sorcer Browser"
-        programGroup="no" startMenu="no" startup="no"
-        target="$INSTALL_PATH/bin/sorcer-browser" type="Application"/>
+        programGroup="yes" startMenu="no" startup="no"
+        target="$INSTALL_PATH/bin/sorcer-browser" type="Application" workingDirectory="$INSTALL_PATH"/>
     <shortcut KdeUsername="root" applications="yes"
         description="Sorcer Network Shell" desktop="yes"
         encoding="UTF-8" initialState="normal" name="Network Shell"
-        programGroup="no" startMenu="no" startup="no"
+        programGroup="yes" startMenu="no" startup="no"
         target="$INSTALL_PATH/bin/nsh" terminal="true"
         type="Application" workingDirectory="$INSTALL_PATH"/>
+    <shortcut
+	name="Uninstall Rio"
+	target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
+	commandline=""
+	description="Uninstalls Rio"
+	programGroup="yes"
+	desktop="no"
+	applications="no"
+	startMenu="no"
+	startup="no" />
 </shortcuts>
