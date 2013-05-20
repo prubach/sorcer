@@ -419,7 +419,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a service provider
 	 */
-	public final static Object getService(String serviceName, Class serviceType) {
+	public static Object getService(String serviceName, Class serviceType) {
 		Object proxy = null;
 		if (serviceName != null && serviceName.equals(ANY))
 			serviceName = null;

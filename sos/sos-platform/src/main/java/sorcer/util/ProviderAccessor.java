@@ -175,7 +175,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 *            a provider service type (interface)
 	 * @return a SORCER provider service
 	 */
-	public final static Provider getProvider(String providerName, Class serviceType) {
+	public static Provider getProvider(String providerName, Class serviceType) {
 		Provider servicer = null;
 		if (providerName != null && providerName.equals(ANY))
 			providerName = null;
@@ -367,7 +367,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 *            the name of a spacer service provider
 	 * @return a Spacer proxy
 	 */
-	public final static Spacer getSpacer(String name) {
+	public static Spacer getSpacer(String name) {
 		String spacerName = (name == null) ? Sorcer.getProperty(S_SPACER_NAME)
 				: name;
 		try {
