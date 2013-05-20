@@ -94,8 +94,14 @@ public class ServiceStarter {
 		if (config.endsWith(CONFIG_RIO)) {
 			startRio(config);
 		} else {
-			com.sun.jini.start.ServiceStarter.main(new String[] { config });
+			startJini(config);
 		}
+	}
+
+	private void startJini(String config) {
+		sorcer.com.sun.jini.start.ServiceStarter serviceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
+		serviceStarter.addServiceListPostProcessor(new SorcerServiceListPostProcessor());
+		serviceStarter.startServices(new String[]{config});
 	}
 
 	private void startRio(String config) {
