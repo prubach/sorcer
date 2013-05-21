@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Who Is It? requestor" default="run.requestor" basedir=".">
+<project name="Who Is It? requestor1" default="run.requestor" basedir=".">
 
 	<!-- loads system environment variables -->
 	<property environment="env" />
@@ -30,7 +30,7 @@
 	<property name="webster" value="${provider.webster.url}" />
 
 	<!-- set property values -->
-	<property name="requestor.runner" value="sorcer.core.requestor.ServiceRequestor" />
+	<property name="service.requestor" value="sorcer.core.requestor.ServiceRequestor" />
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex1-req" />
 	<property name="requestor.api" value="ex1-api" />
@@ -38,7 +38,7 @@
 	<property name="requestor.version" value="1.0-SNAPSHOT" />
 
 	<target name="run.requestor" depends="mvn-init">
-		<java classname="${requestor.runner}" fork="yes">
+		<java classname="${service.requestor}" fork="yes">
 		 	<classpath refid="run-req.classpath"/>
 			<arg value="sorcer.ex1.requestor.bean.WhoIsItBeanReq1" />
 			<arg value="Bean1-WhoIsIt?" />

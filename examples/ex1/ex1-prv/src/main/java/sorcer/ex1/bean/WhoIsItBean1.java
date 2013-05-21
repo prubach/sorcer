@@ -20,6 +20,7 @@ package sorcer.ex1.bean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.util.logging.Logger;
 
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
@@ -33,20 +34,32 @@ import sorcer.util.StringUtils;
 public class WhoIsItBean1 implements WhoIsIt {
 
 	private ServiceProvider provider;
-	
-	public void init(Provider provider) {
+    private Logger logger;
+
+    public void init(Provider provider) {
 		this.provider = (ServiceProvider)provider;
+        try {
+            logger = provider.getLogger();
+        } catch (RemoteException e) {
+            // ignore it, local call
+        }
 	}
 	
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
 		String hostname;
+        logger.entering(WhoIsItBean2.class.getName(), "getHostName");
 		try {
 			hostname = InetAddress.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
-		} catch (UnknownHostException e) {
+
+            context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
+
+            logger.info("executed getHostName: " + context);
+
+        } catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 		return context;
@@ -60,6 +73,10 @@ public class WhoIsItBean1 implements WhoIsIt {
 			context.putValue("provider/address", ipAddress);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
+
+            context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
+
+            logger.info("executed getHostName: " + context);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}

@@ -43,7 +43,7 @@ public class WhoIsItSeqTaskReq extends ServiceRequestor {
 			task = getExertion();
 			((ServiceExertion)task).setName(task.getName() + "-" + i);
             try {
-                task = task.exert(null);
+                task = task.exert();
             } catch (Exception e) {
                 throw new ExertionException(e);
             }

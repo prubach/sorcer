@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Who Is It? requestor2" default="run.requestor" basedir=".">
+<project name="Who Is It? bean app2" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.ex1.requestor.bean.WhoIsItBeanApp2" />

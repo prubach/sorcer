@@ -49,7 +49,7 @@ public class WhoIsItSeqTaskApp {
 		for (int i = 0; i < tally; i++) {
 			task = new WhoIsItSeqTaskApp().getExertion();
 			((ServiceExertion)task).setName(task.getName() + "-" + i);
-			task = task.exert(null);
+			task = task.exert();
 			logger.info("got sequentially executed task: " + task.getName());
 		}
 		long end = System.currentTimeMillis();

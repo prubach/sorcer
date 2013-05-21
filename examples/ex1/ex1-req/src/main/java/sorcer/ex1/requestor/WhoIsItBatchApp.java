@@ -46,7 +46,7 @@ public class WhoIsItBatchApp {
 		
 		
 		Exertion result = new WhoIsItBatchApp().getExertion(providerName)
-				.exert(null);
+				.exert();
 		logger.info("Exceptions: \n" + result.getExceptions());
 		logger.info("Trace: \n" + result.getTrace());
 		logger.info("Ouptut dataContext: \n" + result.getDataContext());

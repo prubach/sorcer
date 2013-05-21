@@ -32,8 +32,8 @@ import sorcer.util.Sorcer;
 public class WhoIsItBeanReq1 extends ServiceRequestor {
 
 	public Exertion getExertion(String... args) throws ExertionException {
-		String ipAddress;
-		InetAddress inetAddress = null;
+        String hostname, ipAddress;
+        InetAddress inetAddress = null;
 		String providerName = null;
 		if (args.length == 2)
 			providerName = Sorcer.getSuffixedName(args[1]);
@@ -42,13 +42,15 @@ public class WhoIsItBeanReq1 extends ServiceRequestor {
 		Task task = null;
 		try {
 			inetAddress = InetAddress.getLocalHost();
-
-			ipAddress = inetAddress.getHostAddress();
+            hostname = inetAddress.getHostName();
+            ipAddress = inetAddress.getHostAddress();
 
 			Context context = new ServiceContext("Who Is It?");
-			context.putValue("requestor/address", ipAddress);
+            context.putValue("requestor/hostname", hostname);
+            context.putValue("requestor/address", ipAddress);
+            context.putValue("requestor/message", "Hi Bean1!");
 
-			NetSignature signature = new NetSignature("getHostName",
+            NetSignature signature = new NetSignature("getHostName",
 					sorcer.ex1.WhoIsIt.class, providerName != null ? providerName : null);
 
 			task = new NetTask("Who Is It?", signature, context);
@@ -61,6 +63,6 @@ public class WhoIsItBeanReq1 extends ServiceRequestor {
 	public void postprocess() {
 		logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + exertion.getControlContext().getTrace());
-		logger.info("<<<<<<<<<< Ouput dataContext: \n" + exertion.getDataContext());
+		logger.info("<<<<<<<<<< BeanReq1 Result: \n" + exertion);
 	}
 }

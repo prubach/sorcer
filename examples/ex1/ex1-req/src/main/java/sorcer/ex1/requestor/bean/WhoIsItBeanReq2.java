@@ -68,7 +68,7 @@ public class WhoIsItBeanReq2 extends ServiceRequestor {
 	public void postprocess() {
 		logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + exertion.getControlContext().getTrace());
-		logger.info("<<<<<<<<<< Ouput dataContext: \n" + exertion.getDataContext());
+		logger.info("<<<<<<<<<< BeanReq2 Result: \n" + exertion);
 	}
 	
 }

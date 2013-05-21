@@ -45,7 +45,7 @@ public class WhoIsItTaskApp {
 				providerAccess = Access.PULL;
 		}
 		Exertion result = new WhoIsItTaskApp().getExertion(providerAccess)
-				.exert(null);
+				.exert();
 		logger.info("Output dataContext: \n" + result.getDataContext());
 	}
 
