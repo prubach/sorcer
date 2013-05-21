@@ -4,9 +4,9 @@
                keypath="Environment"
                root="HKCU"
                string="$INSTALL_PATH"/>
-        <value name="PATH"
+        <!--<value name="PATH"
                keypath="Environment"
                root="HKCU"
-               string="$OLD_KEY_VALUE;&quot;$INSTALL_PATH\bin&quot;"/>
+               string="$OLD_KEY_VALUE;&quot;$INSTALL_PATH\bin&quot;"/>-->
     </pack>
 </registry>

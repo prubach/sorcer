@@ -359,7 +359,7 @@
                                 </goals>
                                 <configuration>
                                     <headerType>gui</headerType>
-                                    <icon>src/main/configs/sos.ico</icon>
+                                    <icon>src/main/configs/icons/sos.ico</icon>
                                     <outfile>target/sorcer-${project.version}-setup.exe</outfile>
                                     <jar>target/sorcer-${project.version}-setup.jar</jar>
                                     <errTitle>Sorcer</errTitle>
