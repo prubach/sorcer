@@ -42,11 +42,10 @@ public class WhoIsItBeanApp2 {
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 		
-		Exertion result = new WhoIsItBeanApp2()
-			.getExertion().exert(null);
+		Exertion result = new WhoIsItBeanApp2().getExertion().exert();
 		logger.info("<<<<<<<<<< Exceptions: \n" + result.getExceptions());
 		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
-		logger.info("<<<<<<<<<< Result: \n" + result);
+		logger.info("<<<<<<<<<< BeanApp2 Result: \n" + result);
 	}
 
 	private Exertion getExertion() throws Exception {
@@ -57,14 +56,14 @@ public class WhoIsItBeanApp2 {
 
 		Context context = new ServiceContext("Who Is It?");
 		context.putValue("requestor/message", new RequestorMessage(
-				"WhoIsIt Bean"));
+				"Bean2"));
 		context.putValue("requestor/hostname", hostname);
 		context.putValue("requestor/address", ipAddress);
 
 		NetSignature signature = new NetSignature("getHostName",
 				sorcer.ex1.WhoIsIt.class, providerName != null ? providerName : null);
 
-		Task task = new NetTask("Who Is It?",signature, context);
+		Task task = new NetTask("Who Is It?", signature, context);
 		return task;
 	}
 }

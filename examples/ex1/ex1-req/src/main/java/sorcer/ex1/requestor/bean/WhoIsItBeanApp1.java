@@ -41,18 +41,22 @@ public class WhoIsItBeanApp1 {
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 
-		Exertion result = new WhoIsItBeanApp1().getExertion().exert(null);
-		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
-		logger.info("<<<<<<<<<< Result: \n" + result);
-	}
+		Exertion result = new WhoIsItBeanApp1().getExertion().exert();
+        logger.info("<<<<<<<<<< Exceptions: \n" + result.getExceptions());
+        logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
+        logger.info("<<<<<<<<<< BeanApp1 Result: \n" + result);
+    }
 
 	private Exertion getExertion() throws Exception {
-		String ipAddress;
+        String hostname, ipAddress;
 		InetAddress inetAddress = InetAddress.getLocalHost();
+        hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 
 		Context context = new ServiceContext("Who Is It?");
+        context.putValue("requestor/hostname", hostname);
 		context.putValue("requestor/address", ipAddress);
+        context.putValue("requestor/message", "Hi Bean1!");
 
 		NetSignature signature = new NetSignature("getHostName",
 				sorcer.ex1.WhoIsIt.class, providerName != null ? providerName : null);
