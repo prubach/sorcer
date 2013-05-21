@@ -18,7 +18,10 @@
     limitations under the License.
 
 -->
-<project name="InstallLibs" default="install" basedir=".">
+<project name="InstallLibs" default="install_all" basedir=".">
+
+    <target name="install_all" depends="install, install_archetype">
+    </target>
 
     <target name="install">
         <echo message="Installing necessary libs to local maven repository"/>
@@ -32,9 +35,21 @@
         <java classname="sorcer.installer.Installer" fork="no">
             <classpath>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
-                <pathelement location="${lib.dir}/commons/sl4j-api.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
+                <pathelement location="${lib.dir}/commons/slf4j-api.jar"/>
+                <pathelement location="${lib.dir}/commons/slf4j-simple.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-io.jar"/>
             </classpath>
         </java>
     </target>
+    <target name="install_archetype">
+        <exec executable="mvn">
+            <arg value="archetype:crawl"/>
+        </exec>
+        <!-- Workaround an issue with maven archetype crawl that creates the archetype-catalog.xml file inside
+        the repository instead of the .m2 directory -->
+        <copy file="${user.home}/.m2/repository/archetype-catalog.xml" tofile="${user.home}/.m2/archetype-catalog.xml"/>
+        <copy></copy>
+    </target>
+
 </project>

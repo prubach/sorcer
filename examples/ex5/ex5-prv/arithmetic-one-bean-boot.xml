@@ -18,11 +18,11 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic beans" default="boot.provider" basedir=".">
+<project name="Arithmetic One Bean" default="boot.provider" basedir=".">
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
-    <property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+    <property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/boot-one-bean.config" />
     <import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 </project>

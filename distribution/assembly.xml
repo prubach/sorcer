@@ -50,6 +50,16 @@
                 <destName>dbp-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/jobber/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jobber-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertmonitor-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-${v.sorcer}.pom</destName>

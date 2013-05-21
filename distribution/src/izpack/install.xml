@@ -30,7 +30,7 @@
     </locale>
     <resources>
         <res id="LicencePanel.licence" parse="yes" src="APACHE-LICENSE-2.0.txt"/>
-        <res id="shortcutSpec.xml" src="SorcerInstaller_shortcutSpec.xml"/>
+        <res id="shortcutSpec.xml" src="SorcerInstaller_Win_shortcutSpec.xml"/>
         <res id="Unix_shortcutSpec.xml" src="SorcerInstaller_Unix_shortcutSpec.xml"/>
         <res id="installer.langsel.img" src="sos.com_icon.png"/>
         <res id="Installer.image" src="SOS-leftpanel.png"/>

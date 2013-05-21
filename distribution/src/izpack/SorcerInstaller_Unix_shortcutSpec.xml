@@ -21,15 +21,11 @@
               target="$INSTALL_PATH/bin/nsh" terminal="true"
               type="Application" workingDirectory="$INSTALL_PATH"
               iconFile="$INSTALL_PATH/configs/icons/konsole.png"/>
-    <shortcut
-            name="Uninstall Sorcer"
-            target="$INSTALL_PATH/bin/uninstall"
-            workingDirectory="$INSTALL_PATH"
-            iconFile="$INSTALL_PATH/configs/icons/uninstaller.png"
-            description="Uninstalls Sorcer"
-            programGroup="yes"
-            desktop="no"
-            applications="no"
-            startMenu="no"
-            startup="no"/>
+    <shortcut KdeUsername="root" applications="yes"
+              description="Uninstalls Sorcer" desktop="no"
+              encoding="UTF-8" initialState="normal" name="Uninstall Sorcer"
+              programGroup="yes"  startMenu="no" startup="no"
+              target="$INSTALL_PATH/bin/uninstall"
+              type="Application" workingDirectory="$INSTALL_PATH"
+              iconFile="$INSTALL_PATH/configs/icons/uninstaller.png"/>
 </shortcuts>

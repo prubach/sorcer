@@ -34,6 +34,7 @@
 	<path id="run.classpath">
 	    <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
 	    <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
+        <pathelement location="${lib.dir}/sorcer/sos-util.jar" />
 	</path>
 
 	<target name="webster">
