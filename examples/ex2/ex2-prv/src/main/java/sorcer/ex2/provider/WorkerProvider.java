@@ -63,10 +63,7 @@ public class WorkerProvider extends ServiceTasker implements Worker {
             Context out = ((Work)workToDo).exec(context);
             context.append(out);
         } else {
-            // default work to be done
-		     int result = (Integer) context.getValue("requestor/operand/1")
-				* (Integer) context.getValue("requestor/operand/2");
-            context.putValue("provider/result", result);
+            throw new InvalidWork("No Work found to do at path 'requestor/work'!");
         }
 		String reply = "Done work by: "
                 + (getProviderName() == null ? getClass() : getProviderName());

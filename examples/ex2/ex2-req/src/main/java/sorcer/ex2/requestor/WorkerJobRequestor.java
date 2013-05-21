@@ -25,11 +25,9 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.Signature;
-import sorcer.service.Task;
+import sorcer.ex2.provider.InvalidWork;
+import sorcer.ex2.provider.Work;
+import sorcer.service.*;
 import sorcer.util.Sorcer;
 import sorcer.util.Log;
 
@@ -62,25 +60,37 @@ public class WorkerJobRequestor {
 	private Exertion getExertion(String pn1, String pn2, String pn3) throws Exception {
 		String hostname = InetAddress.getLocalHost().getHostName();
 
-		Context context1 = new ServiceContext("work1");
+        Work work = new Work() {
+            public Context exec(Context cxt) throws InvalidWork, ContextException {
+                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
+                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
+                cxt.putOutValue("provider/result", arg1 * arg2);
+                return cxt;
+            }
+        };
+
+        Context context1 = new ServiceContext("work1");
 		context1.putValue("requstor/name", hostname);
 		context1.putValue("requestor/operand/1", 1);
 		context1.putValue("requestor/operand/2", 1);
 		context1.putValue("to/provider/name", pn1);
-		
-		Context context2 = new ServiceContext("work2");
+        context1.putValue("requestor/work", work);
+
+        Context context2 = new ServiceContext("work2");
 		context2.putValue("requstor/name", hostname);
 		context2.putValue("requestor/operand/1", 2);
 		context2.putValue("requestor/operand/2", 2);
 		context2.putValue("to/provider/name", pn2);
-		
-		Context context3 = new ServiceContext("work3");
+        context2.putValue("requestor/work", work);
+
+        Context context3 = new ServiceContext("work3");
 		context3.putValue("requstor/name", hostname);
 		context3.putValue("requestor/operand/1", 3);
 		context3.putValue("requestor/operand/2", 3);
 		context3.putValue("to/provider/name", pn3);
-		
-		NetSignature signature1 = new NetSignature("doWork",
+        context3.putValue("requestor/work", work);
+
+        NetSignature signature1 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class, pn1);
 		NetSignature signature2 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class, pn2);
