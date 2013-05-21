@@ -69,9 +69,9 @@
                 <include name="bin/sorcer-boot" os="unix"/>
                 <include name="bin/sorcer-boot-no-http" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
-                <include name="bin/blitz-all-boot" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
                 <include name="bin/nsh" os="unix"/>
+                <include name="bin/uninstall" os="unix"/>
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
@@ -81,8 +81,8 @@
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/bin/blitz-all-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
         </pack>
         <pack id="examples" name="Sorcer Examples" required="no">
             <description>Sorcer Examples</description>

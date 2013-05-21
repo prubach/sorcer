@@ -9,7 +9,7 @@ handlers=java.util.logging.ConsoleHandler, java.util.logging.FileHandler
     
 # Level for the root logger - is used by any logger
 # that does not have its level set
-.level=INFO
+.level=WARNING
 
 # Initialization class - the public default constructor 
 # of this class is called by the Logging framework
@@ -21,7 +21,7 @@ java.util.logging.ConsoleHandler.formatter=java.util.logging.SimpleFormatter
 
 # Configure Plain Text FileHandler
 #handlers=java.util.logging.FileHandler
-java.util.logging.FileHandler.level=ALL
+java.util.logging.FileHandler.level=INFO
 java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
 java.util.logging.FileHandler.pattern=../logs/sorcer%u.log
 java.util.logging.FileHandler.limit=10000000
@@ -46,45 +46,31 @@ java.util.logging.FileHandler.count=3
 #java.util.logging.SocketHandler.formatter = java.util.logging.XMLFormatter
 
 # For all sorcer.* packages except core packages
-sorcer.level=FINE
+sorcer.level=INFO
 # For all sorcer.core.* core packages except core providers
-sorcer.core.level=FINE
+sorcer.core.level=INFO
 # SORCER booter
-sorcer.provider.boot.level=FINE
-org.rioproject.boot.level=FINE
+sorcer.boot.level=INFO
+org.rioproject.boot.level=INFO
 # For all dispatch classes
-sorcer.core.dispatch.level=FINER
+sorcer.core.dispatch.level=INFO
 # SORCER security logging
 sorcer.core.security.level=OFF
 # Used by service providers except core providers
-sorcer.core.provider.level=FINE
+sorcer.core.provider.level=INFO
 #sorcer.core.provider.jobber.ServiceJobberlevel=FINER
 # Used by SORCER core service providers
-sorcer.core.provider.ServiceProvider.level=FINE
+sorcer.core.provider.ServiceProvider.level=INFO
 # Logger to facilitate testing
 sorcer.test.level=FINE
 # All other logging purposes
-sorcer.random.level=FINER
+sorcer.random.level=INFO
 
 # remote logger
 # domain specific provider and dataContext loggers
-private.level=ALL
+private.level=FINE
 # local loggers exposed by the remote logger
-local.level=ALL
-
-#Variable oriented loggers
-#sorcer.vfe.level=OFF
-#sorcer.vfe.Var.level=ALL
-#sorcer.vfe.filter.Filter.level=ALL
-#sorcer.vfe.filter.BasicFileFilter.level=ALL
-#sorcer.vfe.evaluator.level=OFF
-#sorcer.core.dataContext.model.level=OFF
-#sorcer.core.dataContext.model.explore.level=ALL
-#sorcer.core.dataContext.model.opti.level=ALL
-#sorcer.core.dataContext.model.explore.Explorer.level=ALL
-#sorcer.core.dataContext.model.explore.ExploreDispatcher.level=ALL
-#sorcer.core.dataContext.model.explore.ModelManager.level=ALL
-#sorcer.core.dataContext.model.opti.level=ALL
+local.level=FINE
 
 # Other specialized loggers
 sorcer.core.dispatchlevel=ALL
@@ -92,8 +78,8 @@ sorcer.core.dispatchlevel=ALL
 #sorcer.core.dataContext.level=ALL
 #sorcer.jini.jeri.SorcerILFactory.level=ALL
 #org.sadun.text.ffp.level=OFF
-sorcer.ui.tools.level=FINER
-sorcer.util.level=ALL
+sorcer.ui.tools.level=INFO
+sorcer.util.level=INFO
 
 # JavaSpace logging
 #com.sun.jini.outrigger.level=FINER

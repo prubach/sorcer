@@ -3,30 +3,33 @@
     <skipIfNotSupported/>
     <programGroup defaultName="Sorcer" location="applications"/>
     <shortcut KdeUsername="root" applications="yes"
-        description="Start Sorcer platform" desktop="yes"
-        encoding="UTF-8" iconFile="$INSTALL_PATH/" iconIndex="0"
-        initialState="normal" name="Start Sorcer" programGroup="yes"
-        startMenu="no" startup="no"
-        target="$INSTALL_PATH/bin/sorcer-boot" terminal="true" type="Application" workingDirectory="$INSTALL_PATH"/>
+              description="Start Sorcer platform" desktop="yes"
+              encoding="UTF-8" iconFile="$INSTALL_PATH/configs/icons/sos.png" iconIndex="0"
+              initialState="normal" name="Start Sorcer" programGroup="yes"
+              startMenu="no" startup="no"
+              target="$INSTALL_PATH/bin/sorcer-boot" terminal="true" type="Application"
+              workingDirectory="$INSTALL_PATH"/>
     <shortcut KdeUsername="root" applications="yes" desktop="yes"
-        encoding="UTF-8" iconFile="$INSTALL_PATH/docs/sos.png"
-        iconIndex="0" initialState="normal" name="Sorcer Browser"
-        programGroup="yes" startMenu="no" startup="no"
-        target="$INSTALL_PATH/bin/sorcer-browser" type="Application" workingDirectory="$INSTALL_PATH"/>
+              encoding="UTF-8" iconFile="$INSTALL_PATH/configs/icons/browser.png"
+              iconIndex="0" initialState="normal" name="Sorcer Browser"
+              programGroup="yes" startMenu="no" startup="no"
+              target="$INSTALL_PATH/bin/sorcer-browser" type="Application" workingDirectory="$INSTALL_PATH"/>
     <shortcut KdeUsername="root" applications="yes"
-        description="Sorcer Network Shell" desktop="yes"
-        encoding="UTF-8" initialState="normal" name="Network Shell"
-        programGroup="yes" startMenu="no" startup="no"
-        target="$INSTALL_PATH/bin/nsh" terminal="true"
-        type="Application" workingDirectory="$INSTALL_PATH"/>
+              description="Sorcer Network Shell" desktop="yes"
+              encoding="UTF-8" initialState="normal" name="Network Shell"
+              programGroup="yes" startMenu="no" startup="no"
+              target="$INSTALL_PATH/bin/nsh" terminal="true"
+              type="Application" workingDirectory="$INSTALL_PATH"
+              iconFile="$INSTALL_PATH/configs/icons/konsole.png"/>
     <shortcut
-	name="Uninstall Rio"
-	target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
-	commandline=""
-	description="Uninstalls Rio"
-	programGroup="yes"
-	desktop="no"
-	applications="no"
-	startMenu="no"
-	startup="no" />
+            name="Uninstall Sorcer"
+            target="$INSTALL_PATH/bin/uninstall"
+            workingDirectory="$INSTALL_PATH"
+            iconFile="$INSTALL_PATH/configs/icons/uninstaller.png"
+            description="Uninstalls Sorcer"
+            programGroup="yes"
+            desktop="no"
+            applications="no"
+            startMenu="no"
+            startup="no"/>
 </shortcuts>

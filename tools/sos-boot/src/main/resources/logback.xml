@@ -33,7 +33,7 @@
 		</encoder>
 	</appender>-->
 
-	<logger name="sorcer.boot" level="debug"/>
+	<logger name="sorcer.boot" level="info"/>
 
 	<logger name="org.rioproject.resolver.aether.util.ConsoleRepositoryListener" level="info">
 		<!--<appender-ref ref="resolver"/>-->

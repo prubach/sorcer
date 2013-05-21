@@ -3,11 +3,11 @@
     <skipIfNotSupported/>
     <programGroup defaultName="Sorcer" location="applications"/>
     <shortcut applications="no" description="Start Sorcer platform"
-	desktop="yes" iconFile="$INSTALL_PATH/configs/sos.ico" iconIndex="0"
+	desktop="yes" iconFile="$INSTALL_PATH/configs/icons/sos.ico" iconIndex="0"
         name="Start Sorcer" programGroup="yes"
         startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-boot.bat" workingDirectory="$INSTALL_PATH"/>
     <shortcut applications="no" desktop="yes"
-	iconFile="$INSTALL_PATH/configs/sos.ico" iconIndex="0"
+	iconFile="$INSTALL_PATH/configs/icons/sos.ico" iconIndex="0"
         initialState="minimized" name="Sorcer Browser" programGroup="yes"
         startMenu="no" startup="no" target="$INSTALL_PATH/bin/sorcer-browser.bat" workingDirectory="$INSTALL_PATH"/>
     <shortcut applications="no" description="Sorcer Network Shell"
@@ -17,7 +17,9 @@
     <shortcut applications="no" description="Sorcer Examples"
               desktop="yes" name="Sorcer Examples"
               programGroup="yes" startMenu="no" startup="no"
-              target="$INSTALL_PATH/bin/setenv.bat" workingDirectory="$INSTALL_PATH/examples"/>
+              target="$INSTALL_PATH/bin/setenv.bat" workingDirectory="$INSTALL_PATH/examples">
+              <createForPack name="Sorcer Examples"/>
+    </shortcut>
     <shortcut
 		name="Uninstall Sorcer"
 		target="$INSTALL_PATH\Uninstaller\uninstaller.jar"

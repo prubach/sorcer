@@ -126,6 +126,7 @@
                 <exclude>shell/configs/nsh-start.config</exclude>
                 <exclude>template/**</exclude>
                 <exclude>shellEnv</exclude>
+                <exclude>logback.xml</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
