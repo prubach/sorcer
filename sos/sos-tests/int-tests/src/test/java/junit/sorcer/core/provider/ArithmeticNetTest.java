@@ -89,14 +89,19 @@ public class ArithmeticNetTest implements SorcerConstants {
 	
 	@BeforeClass
 	public static void setUpOnce() throws IOException, InterruptedException {
-   		CmdResult result = ExecUtils.execCommand("ant -f "
-				+ "../ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
 
-//		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("SORCER_HOME")
-//				+ "/sos/sos-tests/ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
-		System.out.println("out: " + result.getOut());
-		System.out.println("err: " + result.getErr());
-		System.out.println("status: " + result.getExitValue());	
+        String startProvider = System.getProperty("junit.sorcer.provider.start");
+        if (startProvider==null || Boolean.parseBoolean(startProvider)) {
+            CmdResult result = ExecUtils.execCommand("ant -f "
+                    + "../ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
+
+            //		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("SORCER_HOME")
+            //				+ "/sos/sos-tests/ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
+            System.out.println("out: " + result.getOut());
+            System.out.println("err: " + result.getErr());
+            System.out.println("status: " + result.getExitValue());
+
+        }
 		waitForServices();
 	}
 

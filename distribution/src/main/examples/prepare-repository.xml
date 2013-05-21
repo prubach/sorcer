@@ -32,6 +32,7 @@
         <java classname="sorcer.installer.Installer" fork="no">
             <classpath>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
+                <pathelement location="${lib.dir}/commons/sl4j-api.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-io.jar"/>
             </classpath>
         </java>

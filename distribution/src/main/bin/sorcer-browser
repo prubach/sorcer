@@ -27,7 +27,7 @@ DIRNAME=`dirname "$PRG"`
 
 
 STARTER_MAIN_CLASS=sorcer.ssb.SorcerServiceBrowser
-CONFIG=../configs/browser/configs/ssb.config
+CONFIG=$SORCER_HOME/configs/browser/configs/ssb.config
 
 BROWSER_CLASSPATH=$JINI_CLASSPATH:$LIB_DIR/sorcer/browser.jar:$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-platform.jar:$LIB_DIR/sorcer/sos-webster.jar:$LIB_DIR/rio-resolver/resolver-api.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/logback-core.jar:$LIB_DIR/commons/logback-classic.jar:$LIB_DIR/rio/rio-platform.jar:$LIB_DIR/commons/groovy-all.jar:$LIB_DIR/commons/jsc-admin.jar
 
