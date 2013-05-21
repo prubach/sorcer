@@ -74,6 +74,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNetTest.class.getName());
+    private static boolean providerWasStarted = false;
 
 	static {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
@@ -92,6 +93,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 
         String startProvider = System.getProperty("junit.sorcer.provider.start");
         if (startProvider==null || Boolean.parseBoolean(startProvider)) {
+            providerWasStarted = true;
             CmdResult result = ExecUtils.execCommand("ant -f "
                     + "../ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
 
@@ -120,8 +122,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 	
 	@AfterClass 
 	public static void cleanup() throws RemoteException, InterruptedException {
-		Sorcer.destroyNode(null, Adder.class);
-//		Sorcer.destroy(null, Arithmetic.class);
+        if (providerWasStarted)
+		    Sorcer.destroyNode(null, Adder.class);
 	}
 	
 //	@Test
