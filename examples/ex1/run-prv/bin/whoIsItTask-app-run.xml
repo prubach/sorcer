@@ -19,17 +19,15 @@
 
 -->
 
-<project name="Who Is It? requestor" default="run.requestor" basedir=".">
+<project name="Who Is It? task req" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItSeqTaskApp" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItTaskApp" />
 
-	<property name="run.arg1" value="XYZ" />
-
-	<property name="run.arg2" value="5" />
+	<property name="run.arg1" value="PULL" />
 
 	<import file="req-run.xml" />
-
+	
 </project>
 
 

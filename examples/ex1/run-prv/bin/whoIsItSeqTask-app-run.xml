@@ -19,12 +19,14 @@
 
 -->
 
-<project name="Who Is It? batch" default="run.requestor" basedir=".">
+<project name="Who Is It? seq requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItBatchApp" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItSeqTaskApp" />
 
-	<property name="run.arg1" value="ABC" />
+	<property name="run.arg1" value="XYZ" />
+
+	<property name="run.arg2" value="5" />
 
 	<import file="req-run.xml" />
 
