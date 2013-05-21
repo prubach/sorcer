@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 
 import sorcer.core.provider.ServiceTasker;
-import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

@@ -14,10 +14,5 @@
     <name>SORCER OS :: sos-util</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>

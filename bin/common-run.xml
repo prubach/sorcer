@@ -163,6 +163,7 @@
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar" />
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
+                <pathelement location="${lib.dir}/sorcer/sos-util.jar" />
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar" />
                 <pathelement location="${lib.dir}/rio/rio-platform.jar" />
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar" />
@@ -195,6 +196,7 @@
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar" />
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar" />
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar" />
+                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar" />
                 <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar" />
                 <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
                 <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />

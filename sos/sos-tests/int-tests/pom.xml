@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -31,7 +31,7 @@
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>ju-arithmetic-prv</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>			
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
@@ -70,4 +70,24 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<version>${v.sorcer}</version>
+				<goals>
+					<goal>run-requestor</goal>
+				</goals>
+				<configuration>
+					<mainClass>junit.sorcer.core.provider.ArithmeticNetTest</mainClass>
+					<scope>test</scope>
+					<requestorClasspath>
+						<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
+						<requestorClasspath>org.sorcersoft.sorcer:sos-env:${v.sorcer}</requestorClasspath>
+					</requestorClasspath>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
