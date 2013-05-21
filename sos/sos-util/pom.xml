@@ -19,14 +19,5 @@
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>
-	<dependency>
-		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>sos-webster</artifactId>
-        <version>${project.version}</version>		
-	</dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-        </dependency>
     </dependencies>
 </project>
