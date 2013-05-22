@@ -61,11 +61,12 @@ public class SessionDatabaseTest implements SorcerConstants {
 	private static File dbDir;
 	
 	@BeforeClass 
-	public static void setUpOnce() throws IOException, DatabaseException {
+	public static void setUpOnce() throws IOException, DatabaseException, Exception {
 		dbDir = new File("./tmp/ju-session-db");
 		dbDir.mkdirs();
 		String homeDir = "./tmp/ju-session-db";
 		runner = new SessionDatabaseRunner(homeDir);
+        runner.run();
 	}
 	
 	@AfterClass 
@@ -82,10 +83,10 @@ public class SessionDatabaseTest implements SorcerConstants {
             }
         }
 	}
-	
-	@Test
+
+   @Test
 	public void sessionDatabaseTest() throws Exception {
-        runner.run();
+
         // get from the database three sessions transactionally persisted with three tasks
 		List<String> names = runner.returnExertionNames();
 		List<String> ln = list("t1", "t2");
@@ -94,8 +95,8 @@ public class SessionDatabaseTest implements SorcerConstants {
 		
 		assertEquals(names, ln);
 	}
-	
-	@Test
+
+    @Test
 	public void storedMapTest() throws Exception {
 		StoredMap<UuidKey, IMonitorSession> sm = runner.getViews()
 				.getSessionMap();

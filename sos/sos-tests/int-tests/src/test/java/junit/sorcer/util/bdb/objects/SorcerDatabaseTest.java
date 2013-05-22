@@ -71,13 +71,14 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	private static File dbDir;
 	
 	@BeforeClass 
-	public static void setUpOnce() throws IOException, DatabaseException {
+	public static void setUpOnce() throws IOException, DatabaseException, Exception {
 		dbDir = new File("./tmp/ju-sorcer-db");
         IOUtil.deleteDir(dbDir);
         System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
 		String homeDir = "./tmp/ju-sorcer-db";
 		runner = new SorcerDatabaseRunner(homeDir);
+        runner.run();
 	}
 	
 	@AfterClass 
@@ -97,7 +98,6 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	
 	@Test
 	public void storedcContextSetTest() throws Exception {
-        runner.run();
         // get from the database three contexts persisted   
 		List<String> names = runner.returnContextNames();
 		List<String> ln = list("c1", "c2", "c3");

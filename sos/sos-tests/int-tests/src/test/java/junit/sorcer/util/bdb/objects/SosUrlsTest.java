@@ -57,8 +57,7 @@ public class SosUrlsTest {
 
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
-
-		System.setSecurityManager(new RMISecurityManager());
+        System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));
 		ServiceExertion.debug = true;

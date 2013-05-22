@@ -27,6 +27,7 @@
                         <junit.sorcer.provider.start>true</junit.sorcer.provider.start>
                         <buildDirectory>${project.build.directory}</buildDirectory>
                     </systemPropertyVariables>
+                    <forkMode>always</forkMode>
                 </configuration>
             </plugin>
         </plugins>

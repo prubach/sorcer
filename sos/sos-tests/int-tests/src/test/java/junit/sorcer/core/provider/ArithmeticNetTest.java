@@ -17,34 +17,12 @@
  */
 package junit.sorcer.core.provider;
 
-import static org.junit.Assert.assertEquals;
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.input;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.output;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.result;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.value;
-
-import java.io.IOException;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -55,6 +33,15 @@ import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
+
+import java.io.File;
+import java.io.IOException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static sorcer.eo.operator.*;
 //import static sorcer.vo.operator.args;
 //import static sorcer.vo.operator.outputVars;
 //import static sorcer.vo.operator.expr;
@@ -76,6 +63,8 @@ public class ArithmeticNetTest implements SorcerConstants {
 			.getLogger(ArithmeticNetTest.class.getName());
     private static boolean providerWasStarted = false;
 
+    private static boolean destroyed = false;
+
 	static {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
@@ -94,11 +83,17 @@ public class ArithmeticNetTest implements SorcerConstants {
         String startProvider = System.getProperty("junit.sorcer.provider.start");
         if (startProvider==null || Boolean.parseBoolean(startProvider)) {
             providerWasStarted = true;
-            CmdResult result = ExecUtils.execCommand("ant -f "
-                    + "../ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
+            // Test where this script is located
+            String script = "../ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml";
+            if (!new File(script).exists()) {
+                script = SorcerEnv.getHomeDir() + "/sos/sos-tests/ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml";
+            }
+            if (!new File(script).exists()) {
+                logger.severe("Could not find script file to start service provider!!! \n" + script);
+                return;
+            }
+            CmdResult result = ExecUtils.execCommand("ant -f " + script);
 
-            //		CmdResult result = ExecUtils.execCommand("ant -f " + System.getenv("SORCER_HOME")
-            //				+ "/sos/sos-tests/ju-arithmetic/ju-arithmetic-prv/all-arithmetic-prv-boot-spawn.xml");
             System.out.println("out: " + result.getOut());
             System.out.println("err: " + result.getErr());
             System.out.println("status: " + result.getExitValue());
@@ -122,8 +117,10 @@ public class ArithmeticNetTest implements SorcerConstants {
 	
 	@AfterClass 
 	public static void cleanup() throws RemoteException, InterruptedException {
-        if (providerWasStarted)
+        if (providerWasStarted && !destroyed)  {
+            destroyed = true;
 		    Sorcer.destroyNode(null, Adder.class);
+        }
 	}
 	
 //	@Test

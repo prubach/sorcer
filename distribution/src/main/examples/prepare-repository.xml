@@ -45,10 +45,9 @@
     <target name="install_archetype">
         <exec executable="mvn">
             <arg value="archetype:crawl"/>
+            <!-- Workaround an issue with maven archetype crawl that creates the archetype-catalog.xml file inside
+            the repository instead of the .m2 directory -->
+            <arg value="-Dcatalog=${user.home}/.m2/archetype-catalog.xml"/>
         </exec>
-        <!-- Workaround an issue with maven archetype crawl that creates the archetype-catalog.xml file inside
-        the repository instead of the .m2 directory -->
-        <copy file="${user.home}/.m2/repository/archetype-catalog.xml" tofile="${user.home}/.m2/archetype-catalog.xml"/>
     </target>
-
 </project>
