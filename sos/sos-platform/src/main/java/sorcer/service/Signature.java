@@ -72,7 +72,15 @@ public interface Signature extends Serializable, Parameter {
 	 */
 	public void setReturnPath(ReturnPath path);
 
-	/**
+    /**
+     * Assigns a path to the return value with a path and directional attribute.
+     *
+     * @param path to the return value
+     * @param direction the path directional attribute
+     */
+    public void setReturnPath(String path, Direction direction);
+
+    /**
 	 * Returns a path to the return value by this signature.
 	 * 
 	 * @return path to the return value
@@ -100,7 +108,7 @@ public interface Signature extends Serializable, Parameter {
 	 * @param type
 	 *            a signature type
 	 */
-	public void setType(Signature.Type type);
+	public Signature setType(Signature.Type type);
 	
 	/**
 	 * Returns a codebase for the code implementing this signature. The codebase

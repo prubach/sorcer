@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-public class ServiceSignature implements Signature, SorcerConstants {
+    public class ServiceSignature implements Signature, SorcerConstants {
 
 	static final long serialVersionUID = -8527094638557595398L;
 
@@ -216,8 +216,9 @@ public class ServiceSignature implements Signature, SorcerConstants {
 		return execType;
 	}
 
-	public void setType(Type type) {
+	public Signature setType(Type type) {
 		execType = type;
+        return this;
 	}
 
 	public boolean isActive() {
@@ -442,7 +443,12 @@ public class ServiceSignature implements Signature, SorcerConstants {
 		this.returnPath = returnPath;
 	}
 
-	public ReturnPath getReturnPath() {
-		return returnPath;
+     @Override
+     public void setReturnPath(String path, Direction direction) {
+        returnPath = new ReturnPath<Object>(path, direction);
+     }
+
+     public ReturnPath getReturnPath() {
+	    return returnPath;
 	}
 }

@@ -33,7 +33,7 @@ import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WorkerTaskRequestor {
+public class WorkerTaskApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -49,7 +49,7 @@ public class WorkerTaskRequestor {
 
 		logger.info("Provider name: " + pn);
 
-		Exertion exertion = new WorkerTaskRequestor().getExertion(pn);
+		Exertion exertion = new WorkerTaskApp().getExertion(pn);
 		Exertion result = exertion.exert();
 		logger.info("Output dataContext: \n" + result.getDataContext());
 	}
@@ -65,10 +65,11 @@ public class WorkerTaskRequestor {
                 return cxt;
             }
         };
+
 		Context context = new ServiceContext("work");
 		context.putValue("requstor/name", hostname);
-		context.putValue("requestor/operand/1", 1);
-		context.putValue("requestor/operand/2", 1);
+		context.putValue("requestor/operand/1", 4);
+		context.putValue("requestor/operand/2", 4);
 		context.putValue("to/provider/name", pn);
         context.putValue("requestor/work", work);
 

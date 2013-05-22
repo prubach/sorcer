@@ -33,7 +33,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WorkerJobParRequestor {
+public class WorkerParJobApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -42,7 +42,7 @@ public class WorkerJobParRequestor {
 		// initialize system properties
 		Sorcer.getEnvProperties();
 
-		Exertion result = new WorkerJobParRequestor()
+		Exertion result = new WorkerParJobApp()
 			.getExertion().exert();
 		// get contexts of component exertions - in this case tasks
 		logger.info("Output context1: \n" + result.getContext("work1"));
@@ -53,7 +53,16 @@ public class WorkerJobParRequestor {
 	private Exertion getExertion() throws Exception {
 		String hostname = InetAddress.getLocalHost().getHostName();
 
-        Work work = new Work() {
+        Work work1 = new Work() {
+            public Context exec(Context cxt) throws InvalidWork, ContextException {
+                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
+                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
+                cxt.putOutValue("provider/result", arg1 + arg2);
+                return cxt;
+            }
+        };
+
+        Work work2 = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {
                 int arg1 = (Integer)cxt.getValue("requestor/operand/1");
                 int arg2 = (Integer)cxt.getValue("requestor/operand/2");
@@ -62,24 +71,32 @@ public class WorkerJobParRequestor {
             }
         };
 
+        Work work3 = new Work() {
+            public Context exec(Context cxt) throws InvalidWork, ContextException {
+                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
+                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
+                cxt.putOutValue("provider/result", arg1 - arg2);
+                return cxt;
+            }
+        };
+
 		Context context1 = new ServiceContext("work1");
 		context1.putValue("requstor/name", hostname);
 		context1.putValue("requestor/operand/1", 1);
 		context1.putValue("requestor/operand/2", 1);
-        context1.putValue("requestor/work", work);
-
+        context1.putValue("requestor/work", work1);
 
         Context context2 = new ServiceContext("work2");
 		context2.putValue("requstor/name", hostname);
 		context2.putValue("requestor/operand/1", 2);
 		context2.putValue("requestor/operand/2", 2);
-        context2.putValue("requestor/work", work);
+        context2.putValue("requestor/work", work2);
 
         Context context3 = new ServiceContext("work3");
 		context3.putValue("requstor/name", hostname);
 		context3.putValue("requestor/operand/1", 3);
 		context3.putValue("requestor/operand/2", 3);
-        context3.putValue("requestor/work", work);
+        context3.putValue("requestor/work", work3);
 
         NetSignature signature1 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class);

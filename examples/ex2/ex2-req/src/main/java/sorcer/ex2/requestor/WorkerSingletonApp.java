@@ -31,7 +31,7 @@ import sorcer.service.*;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WorkerSingletonRequestor {
+public class WorkerSingletonApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -47,7 +47,7 @@ public class WorkerSingletonRequestor {
 
 		logger.info("Provider name: " + pn);
 
-		Exertion exertion = new WorkerSingletonRequestor().getExertion(pn);
+		Exertion exertion = new WorkerSingletonApp().getExertion(pn);
 		Exertion result = exertion.exert();
 		logger.info("Output dataContext: \n" + result.getDataContext());
 		logger.info("Output dataContext: \n"
@@ -68,8 +68,8 @@ public class WorkerSingletonRequestor {
 
 		Context context = new ServiceContext("work");
 		context.putValue("requstor/name", hostname);
-		context.putValue("requestor/operand/1", 1);
-		context.putValue("requestor/operand/2", 1);
+		context.putValue("requestor/operand/1", 4);
+		context.putValue("requestor/operand/2", 4);
 		context.putValue("to/provider/name", pn);
         context.putValue("requestor/work", work);
 
