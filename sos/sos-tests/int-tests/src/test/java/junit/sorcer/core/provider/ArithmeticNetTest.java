@@ -122,58 +122,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 		    Sorcer.destroyNode(null, Adder.class);
         }
 	}
-	
-//	@Test
-//	public void arithmeticVars() throws Exception {
-//		Var y = var("y", expr("(x1 * x2) - (x3 + x4)", args(vars("x1", "x2", "x3", "x4")))); 
-//		Object val = value(y, entry("x1", 10.0), entry("x2", 50.0), entry("x3", 20.0), entry("x4", 80.0));
-//		//logger.info("y value: " + val);
-//		assertEquals(val, 400.0);
-//	}
-	
-//	@Test
-//	public void createJobModel() throws Exception {
-//		
-//		VarModel vm = varModel("Hello Arithmetic #1", 
-//				inputVars(var("x1", 10.0), var("x2", 50.0), var("x3", 20.0), var("x4", 80.0)),
-//				outputVars(var("t4", expression("x1 * x2", args(vars("x1", "x2")))), 
-//						var("t5", expression("x3 + x4", args(vars("x3", "x4")))),
-//						var("j1", expression("t4 - t5", args(vars("t4", "t5"))))));
-//				
-//		//logger.info("t4 value: " + value(var(vm, "t4")));
-//		assertEquals(value(var(vm, "t4")), 500.0);
-//
-//		//logger.info("t5 value: " + value(var(vm, "t5")));
-//		assertEquals(value(var(vm, "t5")), 100.0);
-//		
-//		//logger.info("j1 value: " + value(var(vm, "j1")));
-//		assertEquals(value(var(vm, "j1")), 400.0);
-//		
-//		assertEquals(value(var(put(vm, entry("x1", 20.0), entry("x2", 100.0)), "j1")), 1900.0);
-//		//logger.info("j1 value: " + value(var(vm, "j1")));
-//		//assertEquals(value(var(vm, "j1")), 1900.0);
-//	}
-	
-//	@Test
-//	public void createMogJob() throws Exception {
-//		
-//		VarModel vm = varModel("Hello Arithmetic #2", 
-//			inputVars(var("x1", 10.0), var("x2", 50.0), var("x3", 20.0), var("x4", 80.0)),
-//			outputVars(var("t4", expression("x1 * x2", args(vars("x1", "x2")))), 
-//				var("t5", task("t5", sig("add", AdderImpl.class), 
-//					cxt("add", in("arg/x3", var("x3")), in("arg/x4", var("x4")), result("result/y")))),
-//				var("j1", expression("t4 - t5", args(vars("t4", "t5"))))));
-//				
-//		//logger.info("t4 value: " + value(var(vm, "t4")));
-//		assertEquals(value(var(vm, "t4")), 500.0);
-//
-//		//logger.info("t5 value: " + value(var(vm, "t5")));
-//		assertEquals(value(var(vm, "t5")), 100.0);
-//		
-//		//logger.info("j1 value: " + value(var(vm, "j1")));
-//		assertEquals(value(var(vm, "j1")), 400.0);
-//	}
-	
+
 	@Test
 	public void arithmeticProviderExertTest() throws Exception {
 		

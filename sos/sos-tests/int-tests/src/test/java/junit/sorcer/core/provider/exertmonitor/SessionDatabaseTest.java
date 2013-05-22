@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.list;
 
 import java.io.File;
-import java.io.IOException;
 import java.rmi.RMISecurityManager;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +39,6 @@ import sorcer.util.IOUtil;
 import sorcer.util.bdb.objects.UuidKey;
 
 import com.sleepycat.collections.StoredMap;
-import com.sleepycat.je.DatabaseException;
 
 /**
  * @author Mike Sobolewski
@@ -61,12 +59,12 @@ public class SessionDatabaseTest implements SorcerConstants {
 	private static File dbDir;
 	
 	@BeforeClass 
-	public static void setUpOnce() throws IOException, DatabaseException, Exception {
+	public static void setUpOnce() throws Exception {
 		dbDir = new File("./tmp/ju-session-db");
 		dbDir.mkdirs();
 		String homeDir = "./tmp/ju-session-db";
 		runner = new SessionDatabaseRunner(homeDir);
-        runner.run();
+		runner.run();
 	}
 	
 	@AfterClass 
@@ -81,12 +79,11 @@ public class SessionDatabaseTest implements SorcerConstants {
                 System.err.println("Exception during database close:");
                 e.printStackTrace();
             }
-        }
+		}
 	}
-
-   @Test
+	
+	@Test
 	public void sessionDatabaseTest() throws Exception {
-
         // get from the database three sessions transactionally persisted with three tasks
 		List<String> names = runner.returnExertionNames();
 		List<String> ln = list("t1", "t2");
