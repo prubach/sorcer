@@ -6,7 +6,7 @@
 ##                                                                          ##
 ##############################################################################
 
-SORCER_APP_NAME="Sorcer OS"
+SORCER_APP_NAME="Sorcer_OS"
 
 # resolve links - $0 may be a soft-link
 PRG="$0"

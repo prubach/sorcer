@@ -49,7 +49,6 @@
         <!-- Workaround an issue with maven archetype crawl that creates the archetype-catalog.xml file inside
         the repository instead of the .m2 directory -->
         <copy file="${user.home}/.m2/repository/archetype-catalog.xml" tofile="${user.home}/.m2/archetype-catalog.xml"/>
-        <copy></copy>
     </target>
 
 </project>
