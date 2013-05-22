@@ -22,8 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
-import org.junit.Test;
-
 import sorcer.core.SorcerConstants;
 import sorcer.service.Jobber;
 import sorcer.service.Service;
@@ -46,8 +44,7 @@ public class ProviderAccessorTest implements SorcerConstants {
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
 	}
-	
-	@Test
+
 	public void providerAcessorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
 		Service provider = ProviderAccessor.getProvider(Jobber.class);
@@ -56,25 +53,29 @@ public class ProviderAccessorTest implements SorcerConstants {
 		assertNotNull(provider);
 
 	}
-	
-	@Test
+
 	public void providerLookupTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = (Service)ProviderLookup.getService(Jobber.class);
+		Service provider = (Service) ProviderLookup.getService(Jobber.class);
 		//logger.info("ProviderLookup provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
 
 	}
 
-	@Test
 	public void providerLookatorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = (Service)ProviderLocator.getService(Jobber.class, 10000);
+		Service provider = (Service) ProviderLocator.getService(Jobber.class, 10000);
 		//logger.info("ProviderLocator provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
 
 	}
 
+	public static void main(String[] args) throws Exception {
+		ProviderAccessorTest test = new ProviderAccessorTest();
+		test.providerAcessorTest();
+		test.providerLookatorTest();
+		test.providerLookupTest();
+	}
 }

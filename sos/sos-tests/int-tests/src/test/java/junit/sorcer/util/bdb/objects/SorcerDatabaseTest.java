@@ -128,42 +128,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 		
 		assertEquals(names, ln);
 	}
-	
-//	@Test
-//	public void storedTableSetTest() throws Exception {
-//		// the second run and the second db population
-//        runner.run();
-//        // get from the database three tables persisted twice
-//		List<String> names = runner.returnTableNames();
-//		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
-//		Collections.sort(names);
-//		logger.info("table names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-//	
-//	@Test
-//	public void storedTableMapTest() throws Exception {
-//		StoredMap<UuidKey, Table> sm = runner.getViews()
-//				.getTableMap();
-//		
-//		Iterator<Map.Entry<UuidKey, Table>> it = sm
-//				.entrySet().iterator();
-//				
-//		List<String> names = new ArrayList<String>();
-//		Map.Entry<UuidKey, Table> entry = null;
-//
-//		while (it.hasNext()) {
-//			entry = it.next();
-//			names.add(entry.getValue().getName());
-//		}
-//		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
-//		Collections.sort(names);
-//		logger.info("table names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-	
+
 	@Test
 	public void storedExertionSetTest() throws Exception {
         // get from the database two exertions persisted twice
@@ -196,73 +161,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 		
 		assertEquals(names, ln);
 	}
-	
-//	@Test
-//	public void storedVarSetTest() throws Exception {
-//        // get from the database three sessions persisted with three tasks
-//		List<String> names = runner.returnVarNames();
-//		List<String> ln = list("v1", "v1", "v2", "v2");
-//		Collections.sort(names);
-//		logger.info("names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-	
-//	@Test
-//	public void storedVarMapTest() throws Exception {
-//		StoredMap<UuidKey, Var> sm = runner.getViews()
-//				.getVarMap();
-//		
-//		Iterator<Map.Entry<UuidKey, Var>> it = sm
-//				.entrySet().iterator();
-//				
-//		List<String> names = new ArrayList<String>();
-//		Map.Entry<UuidKey, Var> entry = null;
-//
-//		while (it.hasNext()) {
-//			entry = it.next();
-//			names.add(entry.getValue().getName());
-//		}
-//		List<String> ln = list("v1", "v1", "v2", "v2");
-//		Collections.sort(names);
-//		logger.info("names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-//	
-//	@Test
-//	public void storedVarModelSetTest() throws Exception {
-//        // get from the database three sessions persisted with three tasks
-//		List<String> names = runner.returnVarModelNames();
-//		List<String> ln = list("m1", "m1", "m2", "m2");
-//		Collections.sort(names);
-//		logger.info("names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-//	
-//	@Test
-//	public void storedVarModelMapTest() throws Exception {
-//		StoredMap<UuidKey, VarModel> sm = runner.getViews()
-//				.getVarModelMap();
-//		
-//		Iterator<Map.Entry<UuidKey, VarModel>> it = sm
-//				.entrySet().iterator();
-//				
-//		List<String> names = new ArrayList<String>();
-//		Map.Entry<UuidKey, VarModel> entry = null;
-//
-//		while (it.hasNext()) {
-//			entry = it.next();
-//			names.add(entry.getValue().getName());
-//		}
-//		List<String> ln = list("m1", "m1", "m2", "m2");
-//		Collections.sort(names);
-//		logger.info("names: " + names);
-//		
-//		assertEquals(names, ln);
-//	}
-	
+
 	@Test
 	public void storedUuidObjectSetTest() throws Exception {
         // get from the database three sessions persisted with three tasks

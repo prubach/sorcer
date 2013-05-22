@@ -47,7 +47,11 @@
             <artifactId>rio-platform</artifactId>
     <!--        <scope>provided</scope>-->
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
     <build>
     <plugins>
         <plugin>

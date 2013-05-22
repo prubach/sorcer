@@ -39,9 +39,6 @@ import sorcer.service.ExertionException;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 import sorcer.util.Sorcer;
-//import sorcer.vfe.Var;
-//import sorcer.vfe.evaluator.ExpressionEvaluator;
-//import sorcer.vfe.filter.ListFilter;
 
 /**
  * @author Mike Sobolewski
@@ -73,19 +70,6 @@ public class SignatureTest {
 		Signature s2 = sig("add", AdderImpl.class);
 		//logger.info("provider of s2: " + provider(s2));
 		assertTrue(provider(s2) instanceof  AdderImpl);
-
-//		Signature s4 = sig(groovy("new Date()"));
-//		//logger.info("provider of s4: " + provider(s4));
-//		assertTrue(provider(s4) instanceof  ExpressionEvaluator);
-//		
-//		Signature s5 = sig(new ListFilter(4));
-//		//logger.info("provider of s5: " + provider(s5));
-//		assertTrue(provider(s5) instanceof  ListFilter);
-//		
-//		Signature s6 = sig(var("x3", expression("x3-e", "x1 - x2", vars("x1", "x2"))));
-//		logger.info("provider of s6: " + provider(s6));
-//		assertTrue(provider(s6) instanceof Var);
-
 	}
 	
 	@Ignore

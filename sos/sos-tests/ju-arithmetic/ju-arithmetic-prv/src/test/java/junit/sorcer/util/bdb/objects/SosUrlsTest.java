@@ -34,7 +34,6 @@ import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
