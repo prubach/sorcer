@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Sorcer"
+         xmlns="http://maven.apache.org/DECORATION/1.3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+
+    <bannerLeft>
+        <name><![CDATA[
+          <img src="sorcersoft.com_logo_mini.png"> Service ORiented Computing EnviRonment
+        ]]>
+        </name>
+        <href>http://sorcersoft.github.com/</href>
+	</bannerLeft>
+
+
+    <publishDate position="bottom" format="yyyy-MM-dd" />
+    <version position="bottom" />
+
+    <skin>
+        <groupId>lt.velykis.maven.skins</groupId>
+        <artifactId>reflow-maven-skin</artifactId>
+        <version>1.0.0</version>
+    </skin>
+
+    <custom>
+        <reflowSkin>
+            <brand/>
+            <!-- Make this to 'false' for local development, i.e. file:// URLs -->
+            <protocolRelativeURLs>false</protocolRelativeURLs>
+            <smoothScroll>true</smoothScroll>
+            <navbarInverse>true</navbarInverse>
+            <skinAttribution>false</skinAttribution>
+
+            <theme>bootswatch-spacelab</theme>
+            <!--<theme>default</theme>-->
+            <highlightJs>true</highlightJs>
+            <highlightJsTheme>github</highlightJsTheme>
+
+            <slogan>Federated computing platform centered on a global network and a seamless fusion of virtual services</slogan>
+	      
+	      <!--Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming. Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service. Secondly, a friendly and intuitive service-oriented programming model allows the users to dynamically compose the relevant service federations. These federations range from tens to thousands or even millions of services and execute in the global network with an unprecedented level of reliability.-->
+            <titleTemplate>%2$s | %1$s</titleTemplate>
+            <toc>left</toc>
+            <tocTopMax>6</tocTopMax>
+            <!--<tocTopFlatten>true</tocTopFlatten>-->
+
+            <!-- Include the documentation, developers, examples and contribute in the top navigation (in addition to links) -->
+            <!--<topNav>Documentation|Developers|Examples|Contribute</topNav>-->
+
+            <bottomNav>
+                <column>Download</column>
+                <column>Users</column>
+                <column>Documentation</column>
+                <column>Support</column>
+            </bottomNav>
+
+            <pages>
+                <index prohect="sorcer">
+                    <!-- Override the title -->
+                    <titleTemplate>Service ORiented Computing EnviRonment</titleTemplate>
+                    <!-- no breadcrumbs on the main index page -->
+                    <breadcrumbs>false</breadcrumbs>
+                    <!-- no ToC on the main index page -->
+                    <toc>false</toc>
+                    <markPageHeader>false</markPageHeader>
+                    <sections>
+                       <!-- <carousel /> -->
+                        <thumbs>2</thumbs>
+                        <body />
+                    </sections>
+                </index>
+
+<!--                <contribute>
+                    <breadcrumbs>false</breadcrumbs>
+                </contribute>-->
+
+                <!-- Disable source highlighting for Maven reports -->
+                <source-repository>
+                    <highlightJs>false</highlightJs>
+                </source-repository>
+
+                <issue-tracking>
+                    <highlightJs>false</highlightJs>
+                    <toc>false</toc>
+                </issue-tracking>
+
+-                <license>
+                    <highlightJs>false</highlightJs>
+                    <toc>false</toc>
+                </license>
+
+                <!-- Disable ToC for some Maven reports -->
+                <project-info>
+                    <toc>false</toc>
+                </project-info>
+
+            </pages>
+        </reflowSkin>
+    </custom>
+
+	<body>
+
+        <links>
+            <item name="Home" href="./index.html" />
+<!--
+            <item name="Download" href="./download.html" />
+-->
+        </links>
+
+        <menu name="Download" inherit="top">
+            <item name="Download" href="./download.html"/>
+	        <item name="License" href="./license.html"/>
+        </menu>
+
+        <menu name="Documentation" inherit="top">
+<!--            <item name="Overview" href="./overview.html"/>-->
+            <item name="Getting Started" href="./getting-started.html"/>
+    	    <item name="Troubleshooting" href="./troubleshooting.html"/>
+            <item name="Wiki" href="https://github.com/sorcersoft/sorcer/wiki"/>
+            <!--<item name="Support" href="./support.html"/>-->
+        </menu>
+
+        <menu name="Users" inherit="top">
+          <item name="Creating a Sorcer Service Provider" href="./new-provider.html"/>
+	    </menu>
+	  
+        <menu name="Developers" inherit="top">
+            <item name="Source Repository" href="https://github.com/sorcersoft/sorcer"/>
+    <!--
+                <item name="Conventions" href="./conventions.html"/>
+                <item name="Testing Services" href="./testing.html"/>
+    -->
+            <item name="Issue Tracking" href="./issue-tracking.html"/>
+            <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer" />
+            <item name="API Documentation" href="./documentation.html"/>
+        </menu>
+
+<!--        <menu name="Examples" inherit="top">
+            <item name="Calculator" href="./examples/calculator/index.html"/>
+            <item name="Events" href="./examples/events/index.html"/>
+            <item name="Hospital" href="./examples/hospital/index.html"/>
+            <item name="Spring" href="./examples/springbean/index.html"/>
+            <item name="Tomcat" href="./examples/tomcat/index.html"/>
+            <item name="Workflow" href="./examples/workflow/index.html"/>
+        </menu>-->
+
+        <!--<menu name="Contribute" inherit="top">
+            &lt;!&ndash;<item name="Contributing" href="./contributing.html"/>&ndash;&gt;
+            <item name="Issue Tracking" href="https://github.com/sorcersoft/sorcer/issues"/>
+	        <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer/" />
+            &lt;!&ndash;<item name="Contributions" href="./contributions.html"/>&ndash;&gt;
+        </menu>-->
+
+        <menu name="Support">
+            <item name="Commercial support" href="support.html"/>
+	        <item name="Discussion" href="https://sourceforge.net/p/sorcer/discussion/"/>
+        </menu>
+
+        <menu name="Maven documentation" ref="reports" inherit="bottom"/>
+	</body>
+</project>

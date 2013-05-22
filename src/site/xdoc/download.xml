@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <body>
+        <section>
+            <h2>License and Dependencies</h2>
+            <p>
+                Sorcer is distributed under the <a href="license.html"> Apache License, version 2.0</a>.
+            </p>
+
+            <p>
+                Sorcer distribution contains third-party software libraries that are subject 
+		to their respective licenses. You can find these licenses in the Sorcer 
+		installation folder in the docs/licenses subfolder. For details please consult the 
+		websites of the respective projects before using any of these libraries in your own environment.
+            </p>
+            
+            <h2>Download Sorcer 1.0-M1</h2>
+            <p>
+                Sorcer 1.0-M1 is the first pre-release openly available from this website.
+		
+            </p>
+            <table>
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <th>Type</th>
+                        <th>Link</th>
+                        <th>Size</th>
+                        <th>Signature</th>
+                        <th>Date</th>
+                    </tr>
+                    <tr>
+			<td>Sorcer 1.0-M1 ZIP release</td>
+			<td>zip</td> 
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td>40 MB</td>
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td align="center">05/2013</td>
+                    </tr>
+                    <tr>
+			<td>Sorcer 1.0-M1 Windows setup</td>
+			<td>exe</td> 
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td>40 MB</td>
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td align="center">05/2013</td>
+                    </tr>
+		    <tr>
+			<td>Sorcer 1.0-M1 cross-platform setup</td>
+			<td>jar</td> 
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td>40 MB</td>
+                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td align="center">05/2013</td>
+                    </tr>
+                </tbody>
+            </table>
+	    
+	    <p>
+	      Pick the most suitable distribution for you:	   	    
+	    <ul>
+	      <li>if you're running Windows - use the Windows EXE setup file</li>
+	      <li>on other OSes use the JAR installer. After you've downloaded the file you can try double-clicking it, however, depending on your OS configuration this may not invoke the installer. In that case open a terminal window and run
+
+		<pre>java -jar sorcer-1.0-setup.jar</pre></li>
+  
+		<li>if you prefer a manual install please use the zip file.</li>
+	    </ul>
+	    </p>
+
+	    <p>
+	      Installation on a headless machine
+	      If you only have a console based (headless) access to a machine you can perform the installation using the text-based installer by invoking:
+
+	      <pre>java  -Djava.awt.headless=true -jar sorcer-1.0-setup.jar</pre>
+	    </p>
+	    
+        </section>
+
+    </body>
+</document>
