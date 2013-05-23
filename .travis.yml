@@ -1,8 +1,11 @@
 language: java
+before_script:
+  - unset SORCER_HOME
+  - "export SORCER_HOME=`pwd`"
 script: mvn -Dmaven.test.skip=false test
 jdk:
-  - openjdk6
-  - openjdk7
+#  - openjdk6
+#  - openjdk7
   - oraclejdk7
 # whitelist
 branches:
