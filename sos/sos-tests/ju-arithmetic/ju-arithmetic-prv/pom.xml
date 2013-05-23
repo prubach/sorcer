@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>ju-arithmetic</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<artifactId>ju-arithmetic</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>ju-arithmetic-prv</artifactId>
+	<artifactId>ju-arithmetic-prv</artifactId>
 	<name>SORCER OS :: int tests :: arithmetic :: provider</name>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ju-arithmetic-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.river</groupId>
-            <artifactId>start</artifactId>
-            <version>${v.jini}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
-    <!--        <scope>provided</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-    <!--        <scope>provided</scope>-->
-        </dependency>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-platform</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>ju-arithmetic-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>commons-prv</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.river</groupId>
+			<artifactId>start</artifactId>
+			<version>${v.jini}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.jini</groupId>
+			<artifactId>jsk-lib</artifactId>
+			<version>${v.jini}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.rioproject</groupId>
+			<artifactId>rio-platform</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
-    <build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-                <archive>
-                    <manifest>
-                        <addClasspath>true</addClasspath>
-                        <addExtensions>false</addExtensions>
-                        <classpathPrefix></classpathPrefix>
-                        <classpathLayoutType>custom</classpathLayoutType>
-                        <customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
-                    </manifest>
-                </archive>
-            </configuration>
-        </plugin>
-    </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addExtensions>false</addExtensions>
+							<classpathPrefix></classpathPrefix>
+							<classpathLayoutType>custom</classpathLayoutType>
+							<customClasspathLayout>${artifact.artifactId}.${artifact.extension}</customClasspathLayout>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
