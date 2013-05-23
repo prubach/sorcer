@@ -1,7 +1,8 @@
 language: java
-before_script:
+before_install:
   - unset SORCER_HOME
-  - "export SORCER_HOME=`pwd`"
+  - export SORCER_HOME=`pwd`
+  - echo "SORCER_HOME is $SORCER_HOME"    
 script: mvn -Dmaven.test.skip=false test
 jdk:
 #  - openjdk6
