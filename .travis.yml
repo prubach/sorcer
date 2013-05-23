@@ -3,6 +3,8 @@ before_install:
   - unset SORCER_HOME
   - export SORCER_HOME=`pwd`
   - echo "SORCER_HOME is $SORCER_HOME"    
+before_script:
+  - $SORCER_HOME\bin\sorcer-boot
 script: mvn -Dmaven.test.skip=false test
 jdk:
 #  - openjdk6
