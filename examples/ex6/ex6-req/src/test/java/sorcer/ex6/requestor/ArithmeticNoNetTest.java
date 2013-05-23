@@ -1,10 +1,10 @@
 package sorcer.ex6.requestor;
 
-import junit.sorcer.core.provider.MultiplierImpl;
-import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Test;
 import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
+import sorcer.arithmetic.provider.MultiplierImpl;
+import sorcer.arithmetic.provider.SubtractorImpl;
 import sorcer.core.SorcerConstants;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;

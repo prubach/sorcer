@@ -1,25 +1,6 @@
 package sorcer.ex6.requestor;
 
-import static org.junit.Assert.assertEquals;
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.result;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.value;
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Test;
-
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Arithmetic;
 import sorcer.arithmetic.provider.Multiplier;
@@ -31,6 +12,12 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
+
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static sorcer.eo.operator.*;
 
 /**
  * @author Mike Sobolewski
