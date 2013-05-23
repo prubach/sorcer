@@ -19,13 +19,13 @@
 
 -->
 
-<project name="Worker Requestor" default="run.requestor" basedir=".">
+<project name="Context Work Req" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
 
 	<property name="pom.file" value="${basedir}/../ex3-req/pom.xml" />
-	<property name="ex3-req.arg1" value="sorcer.ex3.runner.CommonContextWorkerReq" />
+	<property name="ex3-req.arg1" value="sorcer.ex3.requestor.ContextWorkReq" />
 	<import file="${basedir}/../ex3-req/req-run.xml" />	
 </project>
 

@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.ex3.runner;
+package sorcer.ex3.requestor;
 
 import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.NetJob;
 import sorcer.service.Signature.Type;
 import sorcer.service.Signature.Direction;
 import sorcer.core.exertion.NetTask;
@@ -27,12 +26,8 @@ import sorcer.core.signature.NetSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
 import sorcer.service.*;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
 
-import java.rmi.RemoteException;
-
-public class CommonContextWorkerReq extends ServiceRequestor {
+public class ContextWorkReq extends ServiceRequestor {
     ServiceContext context = new ServiceContext("common/context");
 	
 	public Exertion getExertion(String... args) throws ExertionException {

@@ -19,14 +19,15 @@
 
 -->
 
-<project name="Worker Requestor" default="run.requestor" basedir=".">
+<project name="Strategy Work Req" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
-
+	
 	<property name="pom.file" value="${basedir}/../ex3-req/pom.xml" />
-	<property name="ex3-req.arg1" value="sorcer.ex3.runner.PipedWorkerReq" />
+	<property name="ex3-req.arg1" value="sorcer.ex3.requestor.StrategyWorkReq" />
 	<import file="${basedir}/../ex3-req/req-run.xml" />	
+
 </project>
 
 

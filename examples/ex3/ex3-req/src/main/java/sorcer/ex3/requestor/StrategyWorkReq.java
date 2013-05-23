@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.ex3.runner;
+package sorcer.ex3.requestor;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
@@ -29,7 +29,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Sorcer;
 
-public class StrategyWorkerReq extends ServiceRequestor {
+public class StrategyWorkReq extends ServiceRequestor {
 
     public Exertion getExertion(String... args) throws ExertionException {
         String requestorName = getProperty("requestor.name");

@@ -132,9 +132,9 @@ public class SorcerDatabaseTest implements SorcerConstants {
 //	@Test
 //	public void storedTableSetTest() throws Exception {
 //		// the second run and the second db population
-//        runner.run();
+//        requestor.run();
 //        // get from the database three tables persisted twice
-//		List<String> names = runner.returnTableNames();
+//		List<String> names = requestor.returnTableNames();
 //		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
 //		Collections.sort(names);
 //		logger.info("table names: " + names);
@@ -144,7 +144,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 //	
 //	@Test
 //	public void storedTableMapTest() throws Exception {
-//		StoredMap<UuidKey, Table> sm = runner.getViews()
+//		StoredMap<UuidKey, Table> sm = requestor.getViews()
 //				.getTableMap();
 //		
 //		Iterator<Map.Entry<UuidKey, Table>> it = sm
@@ -200,7 +200,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 //	@Test
 //	public void storedVarSetTest() throws Exception {
 //        // get from the database three sessions persisted with three tasks
-//		List<String> names = runner.returnVarNames();
+//		List<String> names = requestor.returnVarNames();
 //		List<String> ln = list("v1", "v1", "v2", "v2");
 //		Collections.sort(names);
 //		logger.info("names: " + names);
@@ -210,7 +210,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	
 //	@Test
 //	public void storedVarMapTest() throws Exception {
-//		StoredMap<UuidKey, Var> sm = runner.getViews()
+//		StoredMap<UuidKey, Var> sm = requestor.getViews()
 //				.getVarMap();
 //		
 //		Iterator<Map.Entry<UuidKey, Var>> it = sm
@@ -233,7 +233,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 //	@Test
 //	public void storedVarModelSetTest() throws Exception {
 //        // get from the database three sessions persisted with three tasks
-//		List<String> names = runner.returnVarModelNames();
+//		List<String> names = requestor.returnVarModelNames();
 //		List<String> ln = list("m1", "m1", "m2", "m2");
 //		Collections.sort(names);
 //		logger.info("names: " + names);
@@ -243,7 +243,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 //	
 //	@Test
 //	public void storedVarModelMapTest() throws Exception {
-//		StoredMap<UuidKey, VarModel> sm = runner.getViews()
+//		StoredMap<UuidKey, VarModel> sm = requestor.getViews()
 //				.getVarModelMap();
 //		
 //		Iterator<Map.Entry<UuidKey, VarModel>> it = sm

@@ -113,7 +113,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 		try {
 			result = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
 		} catch (DependencyCollectionException e) {
-			throw new MojoExecutionException("Unable to resolve runner dependencies.", e);
+			throw new MojoExecutionException("Unable to resolve requestor dependencies.", e);
 		}
 
 		final List<String> resultList = new LinkedList<String>();
@@ -164,7 +164,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 			ArtifactResult artifactResult = repositorySystem.resolveArtifact(repositorySystemSession, request);
 			return artifactResult.getArtifact();
 		} catch (ArtifactResolutionException e) {
-			throw new MojoExecutionException("Unable to resolve runner from repository.", e);
+			throw new MojoExecutionException("Unable to resolve requestor from repository.", e);
 		}
 	}
 

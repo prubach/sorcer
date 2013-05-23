@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.ex3.runner;
+package sorcer.ex3.requestor;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
@@ -28,59 +28,32 @@ import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
-public class PipedWorkerReq extends ServiceRequestor {
+public class PipedWorkReq extends ServiceRequestor {
 
     public Exertion getExertion(String... args) throws ExertionException {
         String requestorName = getProperty("requestor.name");
 
         // define requestor data
         try {
-            Work work1 = new Work() {
-                public Context exec(Context cxt) throws InvalidWork, ContextException {
-                    int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                    int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                    cxt.putOutValue("provider/result", arg1 + arg2);
-                    return cxt;
-                }
-            };
-
-            Work work2 = new Work() {
-                public Context exec(Context cxt) throws InvalidWork, ContextException {
-                    int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                    int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                    cxt.putOutValue("provider/result", arg1 * arg2);
-                    return cxt;
-                }
-            };
-
-            Work work3 = new Work() {
-                public Context exec(Context cxt) throws InvalidWork, ContextException {
-                    int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                    int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                    cxt.putOutValue("provider/result", arg1 - arg2);
-                    return cxt;
-                }
-            };
-
             Context context1 = new ServiceContext("work1");
             context1.putValue("requestor/name", requestorName);
             context1.putValue("requestor/operand/1", 20);
             context1.putValue("requestor/operand/2", 80);
-            context1.putValue("requestor/work", work1);
+            context1.putValue("requestor/work", Works.work1);
             context1.putOutValue("provider/result", 0);
 
             Context context2 = new ServiceContext("work2");
             context2.putValue("requestor/name", requestorName);
             context2.putValue("requestor/operand/1", 10);
             context2.putValue("requestor/operand/2", 50);
-            context1.putValue("requestor/work", work2);
+            context1.putValue("requestor/work", Works.work2);
             context2.putOutValue("provider/result", 0);
 
             Context context3 = new ServiceContext("work3");
             context3.putValue("requestor/name", requestorName);
             context3.putInValue("requestor/operand/1", 0);
             context3.putInValue("requestor/operand/2", 0);
-            context1.putValue("requestor/work", work3);
+            context1.putValue("requestor/work", Works.work3);
 
 
             // pass the parameters from one dataContext to the next dataContext

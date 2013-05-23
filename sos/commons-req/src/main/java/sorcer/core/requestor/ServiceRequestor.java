@@ -98,7 +98,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 					.newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.info("Not able to create service runner: " + runnerType);
+			logger.info("Not able to create service requestor: " + runnerType);
 			System.exit(1);
 		}
 		String str = System.getProperty(REQUESTOR_PROPERTIES_FILENAME);
@@ -226,7 +226,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 					System.err
 							.println("Not able to open stream on properties: "
 									+ filename);
-					System.err.println("Service runner class: "
+					System.err.println("Service requestor class: "
 							+ this.getClass());
 					return;
 				}
