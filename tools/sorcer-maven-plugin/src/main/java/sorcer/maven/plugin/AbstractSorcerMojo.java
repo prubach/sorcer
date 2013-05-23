@@ -53,8 +53,6 @@ import org.sonatype.aether.util.filter.DependencyFilterUtils;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
-import com.jcabi.aether.Aether;
-
 /**
  * @author Rafał Krupiński
  */
@@ -82,10 +80,6 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 
 	@Parameter(property = "project.build.testOutputDirectory", readonly = true)
 	protected File testOutputDir;
-
-	protected Aether createAether() {
-		return new Aether(project, repositorySystemSession.getLocalRepository().getBasedir());
-	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -209,7 +203,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	 * @return The list of dependencies
 	 * @throws DependencyResolutionException
 	 *             If can't fetch it
-	 * @todo #51 This catch of NPE is a temprorary measure. I don't know why
+	 * todo aether-#51 This catch of NPE is a temprorary measure. I don't know why
 	 *       Aether throws NPE in case of unresolveable artifact. This is the
 	 *       best I can do at the moment in order to protect clients of the
 	 *       class.

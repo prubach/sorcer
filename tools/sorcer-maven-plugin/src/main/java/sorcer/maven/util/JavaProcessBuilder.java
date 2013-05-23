@@ -17,7 +17,12 @@
 
 package sorcer.maven.util;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,27 +34,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
+import static java.util.Arrays.asList;
 
 /**
  * @author Rafał Krupiński
  */
 public class JavaProcessBuilder {
+	protected Logger log = LoggerFactory.getLogger(JavaProcessBuilder.class);
 	protected Map<String, String> properties;
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
 	protected File workingDir;
 	protected boolean debugger;
-	protected Log log;
 	protected File output;
-
-	public JavaProcessBuilder(Log log) {
-		this.log = log;
-	}
+	protected File sorcerHome= SorcerEnv.getHomeDir();
 
 	public void setProperties(Map<String, String> environment) {
 		this.properties = environment;
@@ -77,9 +76,8 @@ public class JavaProcessBuilder {
 
 	/**
 	 * Set standard and error output
-	 * 
-	 * @param output
-	 *            output file
+	 *
+	 * @param output output file
 	 */
 	public void setOutput(File output) {
 		this.output = output;
@@ -105,6 +103,10 @@ public class JavaProcessBuilder {
 			workingDir = new File(System.getProperty("user.dir"));
 		}
 		procBld.directory(workingDir);
+
+		Map<String, String> env = procBld.environment();
+		env.put("SORCER_HOME",sorcerHome.getPath());
+		env.put("RIO_HOME",new File(sorcerHome,"lib/rio").getPath());
 
 		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
 				.append(StringUtils.join(procBld.command(), " "));
@@ -132,7 +134,7 @@ public class JavaProcessBuilder {
 				if (proc != null) {
 					return new Process2(proc);
 				} else {
-					throw new MojoFailureException("Could not start java process");
+					throw new MojoFailureException("Could not start java process", x);
 				}
 			} catch (IOException e) {
 				throw new MojoFailureException("Could not start java process", e);
@@ -148,9 +150,9 @@ public class JavaProcessBuilder {
 	 */
 	private void redirectIO(ProcessBuilder processBuilder) throws MojoFailureException {
 		if (output != null) {
-			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[] { Boolean.TYPE }, true);
+			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[]{Boolean.TYPE}, true);
 			// processBuilder.redirectErrorStream(true);
-			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[] { File.class }, output);
+			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[]{File.class}, output);
 		} else {
 			invokeIgnoreErrors(processBuilder, "inheritIO", new Class[0]);
 		}

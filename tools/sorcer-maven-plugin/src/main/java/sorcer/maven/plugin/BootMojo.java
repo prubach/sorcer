@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.jini.core.lookup.ServiceRegistrar;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -36,11 +37,14 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 
+import sorcer.core.SorcerConstants;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.tools.webster.Webster;
+import sorcer.util.JavaSystemProperties;
+import sorcer.util.ServiceAccessor;
 
 /**
  * Boot sorcer provider
@@ -94,17 +98,17 @@ public class BootMojo extends AbstractSorcerMojo {
 
 		Map<String, String> properties = new HashMap<String, String>();
 		String sorcerHome = System.getenv("SORCER_HOME");
-		properties.put("java.net.preferIPv4Stack", "true");
-		properties.put("java.rmi.server.useCodebaseOnly", "false");
-		properties.put("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
-		properties.put("sorcer.home", sorcerHome);
-		properties.put("rio.home", System.getenv("RIO_HOME"));
-		properties.put("webster.tmp.dir", new File(sorcerHome, "data").getPath());
-		properties.put("sorcer.env.file", sorcerEnv);
-		properties.put("java.security.policy", new File(testOutputDir, "sorcer.policy").getPath());
-		properties.put("provider.webster.port", "" + reservePort());
+		properties.put(JavaSystemProperties.JAVA_NET_PREFER_IPV4_STACK, "true");
+		properties.put(JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
+		properties.put(JavaSystemProperties.JAVA_PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
+		properties.put(JavaSystemProperties.JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);
+		properties.put(SorcerConstants.RIO_HOME, System.getenv("RIO_HOME"));
+		properties.put(SorcerConstants.WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
+		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnv);
+		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reservePort());
 
-		JavaProcessBuilder builder = new JavaProcessBuilder(getLog());
+		JavaProcessBuilder builder = new JavaProcessBuilder();
 		builder.setMainClass(mainClass);
 		builder.setProperties(properties);
 		builder.setParameters(Arrays.asList(servicesConfig.getPath()));
@@ -112,8 +116,11 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setDebugger(debug);
 		builder.setOutput(logFile);
 
+
 		getLog().info("starting sorcer");
 		putProcess(builder.startProcess());
+
+		ServiceAccessor.getService(null, ServiceRegistrar.class);
 	}
 
 	private int reservePort() {

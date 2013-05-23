@@ -62,7 +62,6 @@ public class SosUrlsTest {
 		ServiceExertion.debug = true;
 	}
 
-	@Test
 	public void storedValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException {
 		URL url1 = dbURL("Test1");
@@ -73,7 +72,6 @@ public class SosUrlsTest {
 		Assert.assertTrue((Double) value(url2) == 21.0);
 	}
 
-	@Test
 	public void updateValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException {
 		SosURL url1 = sosURL("Test1");
@@ -92,5 +90,11 @@ public class SosUrlsTest {
 		set(url2, 25.0);
 		logger.info("url2 value: " + value(url2));
 		Assert.assertTrue(value(url2).equals(25.0));
+	}
+
+	public static void main(String[]args) throws ExertionException, SignatureException, ContextException, IOException {
+		SosUrlsTest test=new SosUrlsTest();
+		test.storedValuesTest();
+		test.updateValuesTest();
 	}
 }
