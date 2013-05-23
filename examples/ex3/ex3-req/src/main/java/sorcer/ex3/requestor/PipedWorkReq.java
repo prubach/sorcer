@@ -22,9 +22,8 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.Work;
 import sorcer.service.*;
+import sorcer.service.Context.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
@@ -40,26 +39,26 @@ public class PipedWorkReq extends ServiceRequestor {
             context1.putValue("requestor/operand/1", 20);
             context1.putValue("requestor/operand/2", 80);
             context1.putValue("requestor/work", Works.work1);
-            context1.putOutValue("provider/result", 0);
+            context1.putOutValue("provider/result", Value.NONE);
 
             Context context2 = new ServiceContext("work2");
             context2.putValue("requestor/name", requestorName);
             context2.putValue("requestor/operand/1", 10);
             context2.putValue("requestor/operand/2", 50);
-            context1.putValue("requestor/work", Works.work2);
-            context2.putOutValue("provider/result", 0);
+            context2.putValue("requestor/work", Works.work2);
+            context2.putOutValue("provider/result", Value.NONE);
 
             Context context3 = new ServiceContext("work3");
             context3.putValue("requestor/name", requestorName);
-            context3.putInValue("requestor/operand/1", 0);
-            context3.putInValue("requestor/operand/2", 0);
-            context1.putValue("requestor/work", Works.work3);
+            context3.putInValue("requestor/operand/1", Value.NONE);
+            context3.putInValue("requestor/operand/2", Value.NONE);
+            context3.putValue("requestor/work", Works.work3);
 
 
             // pass the parameters from one dataContext to the next dataContext
             // piping parameters should be annotated via in, out, or inout paths
-            context1.connect("provider/result", "requestor/operand/1", context3);
-            context2.connect("provider/result", "requestor/operand/2", context3);
+            context1.connect("provider/result", "requestor/operand/2", context3);
+            context2.connect("provider/result", "requestor/operand/1", context3);
 
             // define required signatures
             NetSignature signature1 = new NetSignature("doWork",
@@ -76,10 +75,7 @@ public class PipedWorkReq extends ServiceRequestor {
 
             // define a job
             Job job = new NetJob("piped");
-            job.addExertion(task1);
-            job.addExertion(task2);
-            job.addExertion(task3);
-
+            job.addExertion(task1).addExertion(task2).addExertion(task3);
 
             // define a job control strategy
             // use the catalog to delegate the tasks

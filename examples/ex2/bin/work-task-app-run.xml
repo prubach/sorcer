@@ -22,7 +22,7 @@
 <project name="Worker Requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.class" value="sorcer.ex2.requestor.WorkerTaskApp" />
+	<property name="requestor.class" value="sorcer.ex2.requestor.WorkTaskApp" />
 	<property name="pom.file" value="../ex2-req/pom.xml" />
 
 	<import file="../ex2-req/req-run.xml" />	

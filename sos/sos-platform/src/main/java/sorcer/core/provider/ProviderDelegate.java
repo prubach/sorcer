@@ -802,14 +802,14 @@ public class ProviderDelegate implements SorcerConstants {
 			ContextException {
 		// prepare a default net batch task with the last signature as master
 		// SRV type
-		List<Signature> alls = task.getSignatures();
-		Signature lastSig = alls.get(alls.size() - 1);
-		if (alls.size() > 1 && task.isConcatenated()
-				&& (lastSig instanceof NetSignature)) {
-			for (int i = 0; i < alls.size() - 1; i++) {
-				alls.get(i).setType(Signature.PRE);
-			}
-		}
+//		List<Signature> alls = task.getSignatures();
+//		Signature lastSig = alls.get(alls.size() - 1);
+//		if (alls.size() > 1 && task.isBatch()
+//				&& (lastSig instanceof NetSignature)) {
+//			for (int i = 0; i < alls.size() - 1; i++) {
+//				alls.get(i).setType(Signature.PRE);
+//			}
+//		}
 		task.getControlContext().appendTrace(
 				provider.getProviderName() + " execute: "
 						+ task.getProcessSignature().getSelector() + ":"
@@ -848,18 +848,16 @@ public class ProviderDelegate implements SorcerConstants {
 						task.setContext(cxt);
 						task.setServicer(provider);
 					}
-					// service processing
+					// service sig processing
 					NetSignature tsig = (NetSignature) task
 							.getProcessSignature();
-					tsig.setServicer(provider);
+                    // rest path prefix and return path
+                    if (tsig.getPrefix() != null)
+                        ((ServiceContext)task.getContext()).setPrefix(tsig.getPrefix());
 					if (tsig.getReturnPath() != null)
-						try {
-							((ServiceContext) task.getContext())
+					    ((ServiceContext) task.getContext())
 									.setReturnPath(tsig.getReturnPath());
-						} catch (ContextException e) {
-							e.printStackTrace();
-							throw new ExertionException(e);
-						}
+
 					if (isBeanable(task)) {
 						task = useServiceComponents(task, transaction);
 					} else {
@@ -1038,15 +1036,11 @@ public class ProviderDelegate implements SorcerConstants {
 					break;
 				}
 			}
-		}
+        }
 		if (impl != null) {
 			if (task.getProcessSignature().getReturnPath() != null) {
-				try {
-					((ServiceContext) task.getContext()).setReturnPath(task
-							.getProcessSignature().getReturnPath());
-				} catch (ContextException e) {
-					task.reportException(e);
-				}
+				((ServiceContext) task.getContext()).setReturnPath(task
+					.getProcessSignature().getReturnPath());
 			}
 			// determine args and parameterTpes from the context
 			Class[] argTypes = new Class[] { Context.class };

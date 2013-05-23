@@ -72,6 +72,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 	protected static ServiceRequestor requestor = null;
 	
 	public static void main(String... args) throws Exception {
+        ServiceExertion.debug = true;
         prepareCodebase();
         initialize(args);
         requestor.preprocess(args);
@@ -174,7 +175,11 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 		if (exertion != null) {
 			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
 			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
-			logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
+            if (exertion instanceof Task)
+			    logger.info("<<<<<<<<<< Ouput task context: \n" + exertion.getContext());
+            else if (exertion instanceof Job)
+                logger.info("<<<<<<<<<< Ouput job context: \n"
+                        + ((Job)exertion).getJobContext());
 		}
         // Exit webster
         if (isWebsterInt) {

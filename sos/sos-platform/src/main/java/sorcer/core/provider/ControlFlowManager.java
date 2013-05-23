@@ -848,7 +848,7 @@ public class ControlFlowManager {
 			SignatureException, RemoteException {
 		List<Signature> alls = task.getSignatures();
 		Signature lastSig = alls.get(alls.size()-1);
-		if (alls.size() > 1 &&  task.isConcatenated() && !(lastSig instanceof NetSignature)) {
+		if (alls.size() > 1 &&  task.isBatch() && !(lastSig instanceof NetSignature)) {
 			for (int i = 0; i< alls.size()-1; i++) {
 				alls.get(i).setType(Signature.PRE);
 			}
@@ -869,12 +869,8 @@ public class ControlFlowManager {
 		ts.add(tsig);
 		task.setSignatures(ts);
 		if (tsig.getReturnPath() != null)
-			try {
-				((ServiceContext)task.getDataContext()).setReturnPath(tsig.getReturnPath());
-			} catch (ContextException e) {
-				e.printStackTrace();
-				throw new ExertionException(e);
-			}
+			((ServiceContext)task.getDataContext()).setReturnPath(tsig.getReturnPath());
+
 		task = task.doTask();
 		if (task.getStatus() <= ExecState.FAILED) {
 			task.stopExecTime();

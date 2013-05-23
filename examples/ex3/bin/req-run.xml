@@ -19,7 +19,7 @@
 
 -->
 
-<project default="run.requestor" basedir=".">
+<project default="run.requestor" basedir="../ex3-req">
 
 	<!-- loads system environment variables -->
 	<property environment="env" />
@@ -30,7 +30,8 @@
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex3-req" />
 	<property name="requestor.api" value="ex2-api" />
-	<property name="requestor.version" value="1.0-SNAPSHOT" />
+    <property name="requestor.dl" value="ex3-dl" />
+    <property name="requestor.version" value="1.0-SNAPSHOT" />
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">
@@ -42,6 +43,7 @@
 			<sysproperty key="requester.webster.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="requestor.properties" value="../configs/worker-run.properties" />
+            <sysproperty key="requester.webster.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version} ${requestor.groupId}:${requestor.dl}:${requestor.version}" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			<arg value="${ex3-req.arg1}" />
 			<arg value="${ex3-req.arg2}" />

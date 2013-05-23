@@ -38,54 +38,26 @@ public class StrategyWorkReq extends ServiceRequestor {
         pn2 = Sorcer.getSuffixedName(getProperty("provider.name.2"));
         pn3 = Sorcer.getSuffixedName(getProperty("provider.name.3"));
 
-        // define requestor data
-        Work work1 = new Work() {
-            public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 + arg2);
-                return cxt;
-            }
-        };
-
-        Work work2 = new Work() {
-            public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 * arg2);
-                return cxt;
-            }
-        };
-
-        Work work3 = new Work() {
-            public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 - arg2);
-                return cxt;
-            }
-        };
-
         try {
             Context context1 = new ServiceContext("work1");
             context1.putValue("requestor/name", requestorName);
             context1.putValue("requestor/operand/1", 1);
             context1.putValue("requestor/operand/2", 1);
-            context1.putValue("requestor/work", work1);
+            context1.putValue("requestor/work", Works.work1);
             context1.putValue("to/provider/name", pn1);
 
             Context context2 = new ServiceContext("work2");
             context2.putValue("requestor/name", requestorName);
             context2.putValue("requestor/operand/1", 2);
             context2.putValue("requestor/operand/2", 2);
-            context1.putValue("requestor/work", work2);
+            context2.putValue("requestor/work", Works.work2);
             context2.putValue("to/provider/name", pn2);
 
             Context context3 = new ServiceContext("work3");
             context3.putValue("requestor/name", requestorName);
             context3.putValue("requestor/operand/1", 3);
             context3.putValue("requestor/operand/2", 3);
-            context1.putValue("requestor/work", work3);
+            context3.putValue("requestor/work", Works.work3);
             context3.putValue("to/provider/name", pn3);
 
             // define required signatures

@@ -22,18 +22,16 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import sorcer.core.context.ServiceContext;
+import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WorkerTaskApp {
+public class WorkSingletonApp {
 
 	private static Logger logger = Log.getTestLog();
 
@@ -49,9 +47,11 @@ public class WorkerTaskApp {
 
 		logger.info("Provider name: " + pn);
 
-		Exertion exertion = new WorkerTaskApp().getExertion(pn);
+		Exertion exertion = new WorkSingletonApp().getExertion(pn);
 		Exertion result = exertion.exert();
 		logger.info("Output dataContext: \n" + result.getDataContext());
+		logger.info("Output dataContext: \n"
+				+ result.getExertion("work").getDataContext());
 	}
 
 	private Exertion getExertion(String pn) throws Exception {
@@ -78,6 +78,9 @@ public class WorkerTaskApp {
 
 		Task task = new NetTask("work", signature, context);
 
-		return task;
+		Job job = new NetJob("sigleton");
+		job.addExertion(task);
+
+		return job;
 	}
 }

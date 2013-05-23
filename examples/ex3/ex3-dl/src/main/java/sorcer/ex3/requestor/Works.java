@@ -14,27 +14,30 @@ public class Works implements Serializable {
     static {
         work1 = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer) cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer) cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 + arg2);
+                String p =  cxt.getPrefix();
+                int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
+                int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
+                cxt.putOutValue(p+"provider/result", arg1 + arg2);
                 return cxt;
             }
         };
 
         work2 = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer) cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer) cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 * arg2);
+                String p =  cxt.getPrefix();
+                int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
+                int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
+                cxt.putOutValue(p+"provider/result", arg1 * arg2);
                 return cxt;
             }
         };
 
         work3 = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer) cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer) cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 - arg2);
+                String p =  cxt.getPrefix();
+                int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
+                int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
+                cxt.putOutValue(p+"provider/result", arg1 - arg2);
                 return cxt;
             }
         };

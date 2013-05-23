@@ -117,6 +117,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	
 	protected boolean isRevaluable = false;
 
+    protected String prefix = "";
+
 	/**
 	 * <p>
 	 * Returns <code>true</code> if this context is revaluable, otherwise
@@ -2141,8 +2143,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return this;
 	}
 
-	public ServiceContext setReturnPath(ReturnPath returnPath)
-			throws ContextException {
+	public ServiceContext setReturnPath(ReturnPath returnPath) {
 		this.returnPath = returnPath;
 		return this;
 	}
@@ -2821,7 +2822,18 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return null;
 	}
 
-	/* (non-Javadoc)
+    public String getPrefix() {
+        if (prefix != null && prefix.length() > 0)
+            return prefix + CPS;
+        else
+            return "";
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    /* (non-Javadoc)
 	 * @see sorcer.service.Context#getName()
 	 */
 	@Override
