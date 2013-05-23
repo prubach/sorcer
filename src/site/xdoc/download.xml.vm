@@ -14,9 +14,9 @@
 		websites of the respective projects before using any of these libraries in your own environment.
             </p>
             
-            <h2>Download Sorcer 1.0-M1</h2>
+            <h2>Download Sorcer ${v_sorcer}</h2>
             <p>
-                Sorcer 1.0-M1 is the first pre-release openly available from this website.
+                Sorcer 1.0-${v_sorcer} is the first pre-release openly available from this website.
 		
             </p>
             <table>
@@ -30,27 +30,27 @@
                         <th>Date</th>
                     </tr>
                     <tr>
-			<td>Sorcer 1.0-M1 ZIP release</td>
+			<td>Sorcer ${v_sorcer} ZIP release</td>
 			<td>zip</td> 
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip/download">Download</a></td>
                         <td>40 MB</td>
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
                     <tr>
-			<td>Sorcer 1.0-M1 Windows setup</td>
+			<td>Sorcer ${v_sorcer} Windows setup</td>
 			<td>exe</td> 
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe/download">Download</a></td>
                         <td>40 MB</td>
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
 		    <tr>
-			<td>Sorcer 1.0-M1 cross-platform setup</td>
+			<td>Sorcer ${v_sorcer} cross-platform setup</td>
 			<td>jar</td> 
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">Download</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar/download">Download</a></td>
                         <td>40 MB</td>
-                        <td><a href="https://sourceforge.net/projects/sorcer/files/">MD5</a></td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
                 </tbody>
@@ -62,17 +62,20 @@
 	      <li>if you're running Windows - use the Windows EXE setup file</li>
 	      <li>on other OSes use the JAR installer. After you've downloaded the file you can try double-clicking it, however, depending on your OS configuration this may not invoke the installer. In that case open a terminal window and run
 
-		<pre>java -jar sorcer-1.0-setup.jar</pre></li>
+		<pre>java -jar sorcer-${v_sorcer}-setup.jar</pre></li>
   
 		<li>if you prefer a manual install please use the zip file.</li>
 	    </ul>
 	    </p>
 
 	    <p>
-	      Installation on a headless machine
+        <ul>
+	      <li>Installation on a headless machine
 	      If you only have a console based (headless) access to a machine you can perform the installation using the text-based installer by invoking:
 
-	      <pre>java  -Djava.awt.headless=true -jar sorcer-1.0-setup.jar</pre>
+	      <pre>java  -Djava.awt.headless=true -jar sorcer-${v_sorcer}-setup.jar</pre>
+	      </li>
+	      </ul>
 	    </p>
 	    
         </section>

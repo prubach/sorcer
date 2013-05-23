@@ -57,8 +57,11 @@
             </ol>
         </p>
         <h2 id="Testing_provider">Testing provider</h2>
-        <p>To test your provider start sample requestor (client):
+        <p><ul>
+            <li>To test your provider start sample requestor (client):
+            <pre>ant -f [serviceName]-req/run.xml</pre>
+            </li>
+            </ul>
         </p>
-        <pre>ant -f [serviceName]-req/run.xml</pre>
     </body>
 </document>

@@ -5,7 +5,7 @@ before_install:
   - echo "SORCER_HOME is $SORCER_HOME"    
 before_script:
   - $SORCER_HOME\bin\sorcer-boot
-script: mvn -Dmaven.test.skip=false test
+script: mvn -Djava.net.preferIPv4Stack=true -Dmaven.test.skip=false test
 jdk:
 #  - openjdk6
 #  - openjdk7
