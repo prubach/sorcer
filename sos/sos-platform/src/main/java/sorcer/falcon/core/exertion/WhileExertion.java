@@ -17,7 +17,6 @@
  */
 package sorcer.falcon.core.exertion;
 
-import org.nfunk.jep.JEP;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.exertion.NetJob;
@@ -390,7 +389,7 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 	 * @return Object result from the expression
 	 */
 	protected double evalCondition() {
-		JEP jepParser = new JEP();
+		//JEP jepParser = new JEP();
 		Context context = this.getDataContext();
 		Iterator iter = mapReference.entrySet().iterator();
 		double result = 0;
@@ -410,14 +409,14 @@ public class WhileExertion extends ServiceExertion implements Conditional {
 
 				testLog.finest("***Condition Variable: " + varName
 						+ "  \tpath: " + path + "  \tvalue: " + value);
-				jepParser.addVariable(varName, value);
+				//jepParser.addVariable(varName, value);
 			}
 		}
 
 		testLog.finest("Evaluating Condition: (" + expression + ")");
-		jepParser.parseExpression(expression);
-		result = jepParser.getValue();
-		jepParser = null;
+		//jepParser.parseExpression(expression);
+		//result = jepParser.getValue();
+		//jepParser = null;
 		return result;
 	}
 
