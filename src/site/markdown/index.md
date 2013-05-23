@@ -10,7 +10,7 @@ Please read our [getting started guide] (getting-started.html) to learn how to i
 Inside the Sorcer distribution you will find examples that you can easily build and run to learn more about Sorcer.
 Once you get the basic services running please take a look at the Creating new Sorcer services guide to see how to start developing your own Sorcer services.
 
-## About
+## Research
 If you are interested in reading more about Sorcer, please refer to our project's scientific page at: http://www.sorcersoft.org
 
 ## Sorcersoft.com S.A.
