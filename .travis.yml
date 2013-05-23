@@ -1,0 +1,14 @@
+language: java
+script: mvn -Dmaven.test.skip=false test
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
+# whitelist
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    - pawel.rubach@sorcersoft.com
