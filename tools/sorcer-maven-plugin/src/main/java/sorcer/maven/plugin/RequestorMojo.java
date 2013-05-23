@@ -71,7 +71,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.build.directory}/sorcer.env")
 	protected File sorcerEnvFile;
 
-	@Parameter(defaultValue = "runtime")
+	@Parameter(defaultValue = "test")
 	protected String scope;
 
 	@Parameter(property = "sorcer.requestor.debug")

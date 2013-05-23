@@ -62,11 +62,6 @@
 				<artifactId>sorcer-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<goals>
-							<goal>policy</goal>
-						</goals>
-					</execution>
-					<execution>
 						<id>sorcer-preit</id>
 						<goals>
 							<goal>provider</goal>
@@ -79,7 +74,6 @@
 						</goals>
 						<configuration>
 							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
-							<scope>test</scope>
 							<requestorClasspath>
 								<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
 							</requestorClasspath>

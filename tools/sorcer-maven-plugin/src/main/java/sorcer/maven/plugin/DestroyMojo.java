@@ -37,10 +37,10 @@ public class DestroyMojo extends AbstractSorcerMojo {
 		Process2 process = getProcess();
 		if (process != null) {
 			if (process.running()) {
-				getLog().info("KILL KILL KILL");
+				getLog().info("Killing the process");
 				process.destroy();
 			} else {
-				getLog().warn("Process dead");
+				getLog().warn("Destroy mojo can only be used together with boot mojo");
 			}
 		}
 	}

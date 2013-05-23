@@ -32,6 +32,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.slf4j.impl.StaticLoggerBinder;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -41,6 +42,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
 import sorcer.maven.util.JavaProcessBuilder;
+import sorcer.maven.util.PolicyFileHelper;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
@@ -84,12 +86,18 @@ public class BootMojo extends AbstractSorcerMojo {
 	protected File logFile;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		//allow others to use maven logger
+		StaticLoggerBinder.getSingleton().setLog(getLog());
+
 		getLog().debug("servicesConfig: " + servicesConfig);
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
-		List<Artifact> artifacts;
 
+		//prepare sorcer.policy with grant AllPermission
+		PolicyFileHelper.preparePolicyFile(testOutputDir.getPath());
+
+		List<Artifact> artifacts;
 		try {
 			artifacts = resolveDependencies(new DefaultArtifact(booter + ":" + sorcerVersion), JavaScopes.RUNTIME);
 		} catch (DependencyResolutionException e) {
@@ -116,11 +124,8 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setDebugger(debug);
 		builder.setOutput(logFile);
 
-
 		getLog().info("starting sorcer");
 		putProcess(builder.startProcess());
-
-		ServiceAccessor.getService(null, ServiceRegistrar.class);
 	}
 
 	private int reservePort() {
