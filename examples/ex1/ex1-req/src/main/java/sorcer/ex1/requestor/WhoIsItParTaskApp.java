@@ -26,10 +26,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionCallable;
@@ -73,7 +73,7 @@ public class WhoIsItParTaskApp {
 
 	private Exertion getExertion() throws Exception {
 		String hostname;
-		InetAddress inetAddress = HostUtil.getInetAddress();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		hostname = inetAddress.getHostName();
 
 		Context context = new ServiceContext("Who Is It?");

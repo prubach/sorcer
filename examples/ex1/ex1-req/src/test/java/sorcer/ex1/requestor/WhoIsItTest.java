@@ -20,6 +20,7 @@ package sorcer.ex1.requestor;
 import org.junit.Ignore;
 import org.junit.Test;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
@@ -27,7 +28,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Signature;
@@ -102,7 +102,7 @@ public class WhoIsItTest implements SorcerConstants {
 	@Test
 	public void execBatchTask() throws Exception {
         String hostname, ipAddress;
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         hostname = inetAddress.getHostName();
         ipAddress = inetAddress.getHostAddress();
 
@@ -129,7 +129,7 @@ public class WhoIsItTest implements SorcerConstants {
     @Test
     public void exertBatchTask() throws Exception {
         String hostname, ipAddress, providername;
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         hostname = inetAddress.getHostName();
         ipAddress = inetAddress.getHostAddress();
         providername = null;

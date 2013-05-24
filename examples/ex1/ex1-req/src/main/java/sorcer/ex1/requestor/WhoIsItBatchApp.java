@@ -21,10 +21,10 @@ import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Signature;
@@ -55,7 +55,7 @@ public class WhoIsItBatchApp {
 	
 	public Exertion getExertion(String providername) throws Exception {
 		String hostname, ipAddress;
-		InetAddress inetAddress = HostUtil.getInetAddress();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

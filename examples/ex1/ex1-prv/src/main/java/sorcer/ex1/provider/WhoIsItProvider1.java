@@ -18,14 +18,13 @@
 package sorcer.ex1.provider;
 
 import com.sun.jini.start.LifeCycle;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.WhoIsIt;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 
@@ -48,7 +47,7 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 		String hostname;
 		logger.info("Got dataContext to process: " + context);
 		try {
-			hostname = HostUtil.getInetAddress().getHostName();
+			hostname = SorcerEnv.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");
@@ -66,7 +65,7 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 			ContextException {
 		String ipAddress;
 		try {
-			ipAddress = HostUtil.getInetAddress().getHostAddress();
+			ipAddress = SorcerEnv.getLocalHost().getHostAddress();
 			context.putValue("provider/address", ipAddress);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");
@@ -84,7 +83,7 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 			throws RemoteException, ContextException {
 		String fqname;
 		try {
-			fqname = HostUtil.getInetAddress().getCanonicalHostName();
+			fqname = SorcerEnv.getHostName();
 			context.putValue("provider/fqname", fqname);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");

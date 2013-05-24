@@ -18,12 +18,11 @@
 package sorcer.ex2.provider;
 
 import com.sun.jini.start.LifeCycle;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
-import java.net.InetAddress;
 import java.rmi.RemoteException;
 
 public class WorkerProvider extends ServiceTasker implements Worker {
@@ -31,12 +30,12 @@ public class WorkerProvider extends ServiceTasker implements Worker {
 	private String hostName;
 	
 	public WorkerProvider() throws Exception {
-		hostName = HostUtil.getInetAddress().getHostName();
+		hostName = SorcerEnv.getLocalHost().getHostName();
 	}
 	
 	public WorkerProvider(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-		hostName = HostUtil.getInetAddress().getHostName();
+		hostName = SorcerEnv.getLocalHost().getHostName();
 	}
 
 	public Context sayHi(Context context) throws RemoteException,
