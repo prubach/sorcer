@@ -6,7 +6,7 @@
 
     <bannerLeft>
         <name><![CDATA[
-          <img src="sorcersoft.com_logo_mini.png"> Service ORiented Computing EnviRonment
+          <img src="sorcersoft.com_logo_mini.png"> SORCER
         ]]>
         </name>
         <href>http://sorcersoft.github.com/</href>
@@ -27,6 +27,7 @@
             <brand/>
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
             <protocolRelativeURLs>false</protocolRelativeURLs>
+            <!--<protocolRelativeURLs>true</protocolRelativeURLs>-->
             <smoothScroll>true</smoothScroll>
             <navbarInverse>true</navbarInverse>
             <skinAttribution>false</skinAttribution>
@@ -48,14 +49,14 @@
             <!--<topNav>Documentation|Developers|Examples|Contribute</topNav>-->
 
             <bottomNav>
+                <link>Home</link>
                 <column>Download</column>
-                <column>Users</column>
                 <column>Documentation</column>
                 <column>Support</column>
             </bottomNav>
 
             <pages>
-                <index prohect="sorcer">
+                <index project="sorcer">
                     <!-- Override the title -->
                     <titleTemplate>Service ORiented Computing EnviRonment</titleTemplate>
                     <!-- no breadcrumbs on the main index page -->
@@ -102,37 +103,35 @@
 
         <links>
             <item name="Home" href="./index.html" />
+            <item name="Download" href="./download.html"/>
 <!--
             <item name="Download" href="./download.html" />
 -->
         </links>
 
-        <menu name="Download" inherit="top">
-            <item name="Download" href="./download.html"/>
-	        <item name="License" href="./license.html"/>
+        <menu name="First steps" inherit="top">
+            <item name="Getting Started" href="./getting-started.html"/>
+            <item name="Running provided Sorcer examples" href="./examples.html"/>
+            <item name="Creating a Sorcer Service Provider" href="./new-provider.html"/>
         </menu>
 
+
         <menu name="Documentation" inherit="top">
-<!--            <item name="Overview" href="./overview.html"/>-->
-            <item name="Getting Started" href="./getting-started.html"/>
-    	    <item name="Troubleshooting" href="./troubleshooting.html"/>
+            <item name="Troubleshooting" href="./troubleshooting.html"/>
             <item name="Wiki" href="https://github.com/sorcersoft/sorcer/wiki"/>
             <!--<item name="Support" href="./support.html"/>-->
         </menu>
 
-        <menu name="Users" inherit="top">
-          <item name="Creating a Sorcer Service Provider" href="./new-provider.html"/>
-	    </menu>
-	  
         <menu name="Developers" inherit="top">
             <item name="Source Repository" href="https://github.com/sorcersoft/sorcer"/>
     <!--
                 <item name="Conventions" href="./conventions.html"/>
                 <item name="Testing Services" href="./testing.html"/>
     -->
+            <item name="Continuous Integration" href="./cont-int.html"/>
             <item name="Issue Tracking" href="./issue-tracking.html"/>
             <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer" />
-            <item name="API Documentation" href="./documentation.html"/>
+            <item name="API Documentation" href="./apidocs/index.html"/>
         </menu>
 
 <!--        <menu name="Examples" inherit="top">

@@ -11,12 +11,6 @@
             <li>
                 <a href="http://java.oracle.com">Java JDK 1.6 or newer, preferably Oracle Java JDK 1.7.</a>
             </li>
-            <li>
-                <a href="http://maven.apache.org">Maven 3.0</a>
-            </li>
-            <li>
-                <a href="http://maven.apache.org">Ant 1.7 or newer</a>
-            </li>
         </ul>
         <p>Sorcer is cross-platform, so any OS supporting Java 1.6 or higher should be ok but the current distribution
             was tested on Windows XP/7 32/64bit, Linux (Debian/Ubuntu/Centos) 32/64bit and Mac OS X 10.5.x.
@@ -119,5 +113,9 @@
         </p>
         <pre>alias nsh='rlwrap $SORCER_HOME/bin/nsh'
         </pre>
+        <h2 id="Further_steps">Further steps</h2>
+        If all basic Sorcer services, the Sorcer Service Browser and the Network Shell (nsh) run correctly that means
+        that you have successfuly setup your Sorcer environment. Congratulations! You are ready to try out the provided
+        examples. Please read on our <a href="examples.html">Running provided Sorcer examples</a> guide.
     </body>
 </document>

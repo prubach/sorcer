@@ -25,7 +25,8 @@
 		<v.rio>5.0-M2</v.rio>
 		<v.groovy>2.1.3</v.groovy>
 		<v.sigar>1.6.4</v.sigar>
-
+        <!-- required for site -->
+        <v_sorcer>${v.sorcer}</v_sorcer>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -429,10 +430,10 @@
                             <report>license</report>
                             <report>project-team</report>
                             <report>scm</report>
-                            <report>index</report>
+                            <!--<report>index</report>-->
                         </reports>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <aggregate>false</aggregate>
                         </configuration>
                     </reportSet>
                 </reportSets>
@@ -447,36 +448,37 @@
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.3</version>
 			</plugin>
-		</plugins>
-        <!--        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8</version>
-            <inherited>false</inherited>
-            <configuration>
-                <aggregate>true</aggregate>
-            </configuration>
-            <reportSets>
-                <reportSet>
-                    <id>aggregate</id>
+            <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8</version>
+                    <inherited>false</inherited>
                     <configuration>
-                        <links>
-                            <link>http://docs.oracle.com/javase/7/docs/api/</link>
-                            <link>http://www.rio-project.org/apidocs/</link>
-                            <link>https://river.apache.org/doc/api/</link>
-                        </links>
-                        <detectLinks>true</detectLinks>
-                        <breakiterator>true</breakiterator>
-                        <top><![CDATA[<h2>Sorcer ${project.version} API Documentation</h2>]]></top>
-                        <footer><![CDATA[<i>Copyright &copy; <a href="http://www.sorcersoft.com" target="_blank">Sorcersoft.com S.A.</a>.</i>]]></footer>
-                        <excludePackageNames>edu.emory:sorcer.ex1.*:sorcer.ex2.*:sorcer.ex3.*:sorcer.ex4.*:sorcer.ex5.*</excludePackageNames>
+                        <aggregate>true</aggregate>
                     </configuration>
-                    <reports>
-                        <report>aggregate</report>
-                    </reports>
-                </reportSet>
-            </reportSets>
-        </plugin>-->
+                    <reportSets>
+                        <reportSet>
+                            <id>aggregate</id>
+                            <configuration>
+                                <links>
+                                    <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                                    <link>http://www.rio-project.org/apidocs/</link>
+                                    <link>https://river.apache.org/doc/api/</link>
+                                </links>
+                                <detectLinks>true</detectLinks>
+                                <breakiterator>true</breakiterator>
+                                <top><![CDATA[<h2>Sorcer ${project.version} API Documentation</h2>]]></top>
+                                <footer><![CDATA[<i>Copyright &copy; <a href="http://www.sorcersoft.com" target="_blank">Sorcersoft.com S.A.</a>.</i>]]></footer>
+                                <excludePackageNames>sun.net.*:junit.sorcer:sorcer.ex1:com.example:org.dancres:sorcer.arithmetic:edu.emory:sorcer.ex1.*:sorcer.ex2.*:sorcer.ex3.*:sorcer.ex4.*:sorcer.ex5.*</excludePackageNames>
+                            </configuration>
+                            <reports>
+                                <report>aggregate</report>
+                            </reports>
+                        </reportSet>
+                    </reportSets>
+            </plugin>
+		</plugins>
+
     </reporting>
 
 	<issueManagement>
