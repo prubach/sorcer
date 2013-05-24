@@ -24,6 +24,11 @@
 		<module>first</module>
 	</modules>
 
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <skipTests>${maven.test.skip}</skipTests>
+    </properties>
+
 	<build>
 		<pluginManagement>
 			<plugins>
