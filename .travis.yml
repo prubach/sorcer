@@ -4,9 +4,9 @@ before_install:
   - export SORCER_HOME=`pwd`
   - echo "SORCER_HOME is $SORCER_HOME"    
 before_script:
-  - $SORCER_HOME\bin\sorcer-boot
-script: mvn -Djava.net.preferIPv4Stack=true -Dmaven.test.skip=false test
-jdk:
+  - $SORCER_HOME/bin/sorcer-boot
+script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Djava.net.preferIPv4Stack=true -Dmaven.test.skip=false test
+jdk:            u
 #  - openjdk6
 #  - openjdk7
   - oraclejdk7

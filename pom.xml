@@ -433,7 +433,7 @@
                             <!--<report>index</report>-->
                         </reports>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <aggregate>false</aggregate>
                         </configuration>
                     </reportSet>
                 </reportSets>

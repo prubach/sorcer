@@ -26,8 +26,8 @@
         <reflowSkin>
             <brand/>
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
-            <!--<protocolRelativeURLs>false</protocolRelativeURLs>-->
-            <protocolRelativeURLs>true</protocolRelativeURLs>
+            <protocolRelativeURLs>false</protocolRelativeURLs>
+            <!--<protocolRelativeURLs>true</protocolRelativeURLs>-->
             <smoothScroll>true</smoothScroll>
             <navbarInverse>true</navbarInverse>
             <skinAttribution>false</skinAttribution>
