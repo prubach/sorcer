@@ -63,8 +63,9 @@ public class WhoIsItTest implements SorcerConstants {
 
     @Test
     public void helloObjectTask() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = InetAddress.getLocalHost();
         String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
 
         Context context = new ServiceContext("Who Is It?");
         context.putValue("requestor/message", "Hello Objects!");
@@ -81,9 +82,10 @@ public class WhoIsItTest implements SorcerConstants {
 
     // using requestor/provider message types
     @Test
-    public void hellowNetworkTask() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+    public void helloNetworkTask() throws Exception {
+        InetAddress inetAddress = InetAddress.getLocalHost();
         String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
         String providerName = null;
 
         Context context = new ServiceContext("Who Is It?");

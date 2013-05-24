@@ -17,9 +17,6 @@
  */
 package sorcer.ex1.requestor;
 
-import java.net.InetAddress;
-import java.util.logging.Logger;
-
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -27,16 +24,14 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.net.InetAddress;
+import java.util.logging.Logger;
 
 public class WhoIsItParTaskReq extends ServiceRequestor {
 
