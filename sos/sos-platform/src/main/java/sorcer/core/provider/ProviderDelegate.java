@@ -800,16 +800,16 @@ public class ProviderDelegate implements SorcerConstants {
 	public Task doTask(Task task, Transaction transaction)
 			throws ExertionException, SignatureException, RemoteException,
 			ContextException {
-		// prepare a default net batch task with the last signature as master
-		// SRV type
-//		List<Signature> alls = task.getSignatures();
-//		Signature lastSig = alls.get(alls.size() - 1);
-//		if (alls.size() > 1 && task.isBatch()
-//				&& (lastSig instanceof NetSignature)) {
-//			for (int i = 0; i < alls.size() - 1; i++) {
-//				alls.get(i).setType(Signature.PRE);
-//			}
-//		}
+        // prepare a default net batch task (has all sigs of SRV type)
+        // and make the last signature as master SRV type only.
+        List<Signature> alls = task.getSignatures();
+        Signature lastSig = alls.get(alls.size() - 1);
+        if (alls.size() > 1 && task.isBatch()
+                && (lastSig instanceof NetSignature)) {
+            for (int i = 0; i < alls.size() - 1; i++) {
+                alls.get(i).setType(Signature.PRE);
+            }
+        }
 		task.getControlContext().appendTrace(
 				provider.getProviderName() + " execute: "
 						+ task.getProcessSignature().getSelector() + ":"

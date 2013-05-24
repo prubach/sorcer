@@ -35,15 +35,14 @@ public class ObjectTask extends Task {
 	static final long serialVersionUID = 1793342047789581449L;
 
 	public ObjectTask() { }
-	
-	public ObjectTask(String name) {
-		super(name);
-	}
-	
-	public ObjectTask(String name, Signature signature)
-			throws SignatureException {
-		this(name, null, signature);
-	}
+
+    public ObjectTask(String name, Signature... signatures) {
+        super(name);
+        for (Signature s : signatures) {
+            if (s instanceof ObjectSignature)
+                addSignature(s);
+        }
+    }
 
 	public ObjectTask(String name, String description, Signature signature)
 			throws SignatureException {

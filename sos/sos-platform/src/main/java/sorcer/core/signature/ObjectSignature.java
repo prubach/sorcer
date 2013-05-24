@@ -40,7 +40,7 @@ public class ObjectSignature extends ServiceSignature {
 	private Class<?>[] argTypes;
 
 	public ObjectSignature() {
-
+        execType = Type.SRV;
 	}
 
 	public ObjectSignature(String selector, Object object, Class<?>[] argTypes)

@@ -17,8 +17,6 @@
  */
 package sorcer.ex1.requestor.bean;
 
-import java.net.InetAddress;
-
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
@@ -29,6 +27,8 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
+
+import java.net.InetAddress;
 
 public class WhoIsItBeanReq2 extends ServiceRequestor {
 

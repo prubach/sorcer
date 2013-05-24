@@ -33,6 +33,10 @@ import sorcer.util.StringUtils;
 
 public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 
+    public WhoIsItProvider2() throws RemoteException {
+        super();
+    }
+
 	public WhoIsItProvider2(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
 	}

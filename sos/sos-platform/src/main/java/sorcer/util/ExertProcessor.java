@@ -136,7 +136,7 @@ public class ExertProcessor implements Exerter, Callable {
 			if (entries != null && entries.length > 0) {
 				/*for (Parameter param : entries) {
 					if (param instanceof Deployment && exertion.isProvisionable()) {
-						System.out.println("ZZZZZZZZZZZZZZZ ExertDispatcher>ProvisionManger configuration: " + ((Deployment)param).getConfigs());
+						System.out.println("ExertDispatcher>ProvisionManger configuration: " + ((Deployment)param).getConfigs());
 						provisionManager = new ProvisionManager(exertion, ((Deployment)param).getConfigs());
 						provisionManager.deployServices();
 					}

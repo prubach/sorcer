@@ -20,7 +20,7 @@
 	<modules>
 		<module>ex1-api</module>
 		<module>ex1-prv</module>
-		<module>ex1-req-api</module>
+		<module>ex1-dl</module>
 		<module>ex1-req</module>
 	</modules>
 </project>

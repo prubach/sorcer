@@ -17,19 +17,22 @@
  */
 package sorcer.ex1.provider;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-
+import com.sun.jini.start.LifeCycle;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-
-import com.sun.jini.start.LifeCycle;
 import sorcer.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+
 public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
+
+    public WhoIsItProvider1() throws RemoteException {
+        super();
+    }
 
 	public WhoIsItProvider1(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
