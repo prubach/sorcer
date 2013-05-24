@@ -4,11 +4,23 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.ZipFile;
 
-/**
- * this is copied from apache commons-io
- */
 public class IOUtils {
+
+	public static void closeQuietly(ZipFile closeable) {
+		//stupid java 1.6 doesn't know ZipFile is Closeable
+		try {
+			if (closeable != null) {
+				closeable.close();
+			}
+		} catch (IOException ioe) {
+			// ignore
+		}
+	}
+
+
+	// this is copied from apache commons-io
 	/**
 	 * The default buffer size to use for
 	 * {@link #copyLarge(java.io.InputStream, java.io.OutputStream)}
