@@ -354,7 +354,7 @@ startSos ( ) {
     else
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$BOOT_CLASSPATH" \
-            -Djava.net.preferIPv4Stack=true \
+#            -Djava.net.preferIPv4Stack=true \
             -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos" \
             -Djava.rmi.server.useCodebaseOnly=false \
