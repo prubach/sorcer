@@ -17,17 +17,16 @@
  */
 package sorcer.ex2.requestor;
 
-import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -52,7 +51,7 @@ public class WorkParJobApp {
 	}
 
 	private Exertion getExertion() throws Exception {
-		String hostname = HostUtil.getInetAddress().getHostName();
+		String hostname = SorcerEnv.getLocalHost().getHostName();
 
         Work work1 = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {

@@ -18,9 +18,8 @@
 package sorcer.util;
 
 import sorcer.core.SorcerConstants;
-import sorcer.org.rioproject.net.HostUtil;
+import sorcer.core.SorcerEnv;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
 
@@ -66,7 +65,7 @@ public class EmailCmd implements SorcerConstants, Command {
 
 	private void sendMail() throws UnknownHostException {
 		if (host == null)
-			host = HostUtil.getInetAddress().getHostName();
+			host = SorcerEnv.getLocalHost().getHostName();
 
 		String[] to, cc, bcc, lines;
 		SMTPSession session;

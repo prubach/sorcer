@@ -21,23 +21,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.WorkerProvider;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.Log;
-
-import com.gargoylesoftware.base.testing.TestUtil;
 
 /**
  * @author Mike Sobolewski
@@ -54,7 +48,7 @@ public class WorkerProviderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		hostName = HostUtil.getInetAddress().getHostName();
+		hostName = SorcerEnv.getLocalHost().getHostName();
 		provider = new WorkerProvider();
 
         Work work = new Work() {

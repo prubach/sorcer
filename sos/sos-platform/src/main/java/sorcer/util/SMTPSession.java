@@ -17,11 +17,10 @@
  */
 package sorcer.util;
 
-import sorcer.org.rioproject.net.HostUtil;
+import sorcer.core.SorcerEnv;
 import sun.net.smtp.SmtpClient;
 
 import java.io.PrintStream;
-import java.net.InetAddress;
 
 /**
  * The SMTPSession class allows to send email messages using SmtpClient
@@ -143,7 +142,7 @@ public class SMTPSession {
 			if (!succeed) {
 				try { // try again, this time, to localhost
 					// open smtp connection
-					sendmail = new SmtpClient(HostUtil.getInetAddress()
+					sendmail = new SmtpClient(SorcerEnv.getLocalHost()
 							.getHostName());
 					sendmail.from(sender);
 					sendmail.to(recipient);

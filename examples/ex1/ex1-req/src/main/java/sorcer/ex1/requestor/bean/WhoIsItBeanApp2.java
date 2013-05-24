@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -51,7 +52,7 @@ public class WhoIsItBeanApp2 {
 
 	private Exertion getExertion() throws Exception {
 		String hostname, ipAddress;
-		InetAddress inetAddress = HostUtil.getInetAddress();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

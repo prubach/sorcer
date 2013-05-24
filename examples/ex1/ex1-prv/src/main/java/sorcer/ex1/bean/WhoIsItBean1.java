@@ -17,17 +17,14 @@
  */
 package sorcer.ex1.bean;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
-import sorcer.ex1.provider.ProviderMessage;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
@@ -51,7 +48,7 @@ public class WhoIsItBean1 implements WhoIsIt {
 		String hostname;
         logger.entering(WhoIsItBean2.class.getName(), "getHostName");
 		try {
-			hostname = HostUtil.getInetAddress().getHostName();
+			hostname = SorcerEnv.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
@@ -70,7 +67,7 @@ public class WhoIsItBean1 implements WhoIsIt {
 			ContextException {
 		String ipAddress;
 		try {
-			ipAddress = HostUtil.getInetAddress().getHostAddress();
+			ipAddress = SorcerEnv.getHostAddress();
 			context.putValue("provider/address", ipAddress);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
@@ -91,7 +88,7 @@ public class WhoIsItBean1 implements WhoIsIt {
 			throws RemoteException, ContextException {
 		String fqname;
 		try {
-			fqname = HostUtil.getInetAddress().getCanonicalHostName();
+			fqname = SorcerEnv.getHostName();
 			context.putValue("provider/fqname", fqname);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");

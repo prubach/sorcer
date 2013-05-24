@@ -70,7 +70,6 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -94,7 +93,6 @@ import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
 import com.sun.jini.config.Config;
-//import sorcer.tools.shell.cmds.VarModelCmd;
 
 /**
  * @author Mike Sobolewski
@@ -1263,7 +1261,7 @@ public class NetworkShell implements DiscoveryListener {
 			DirCmd.changeDir(homeDir, false, shellOutput);
 		}
 
-		InetAddress inetAddress = HostUtil.getInetAddress();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		instance.hostName = inetAddress.getHostName();
 		instance.hostAddress = inetAddress.getHostAddress();
 		instance.httpJars = jars;

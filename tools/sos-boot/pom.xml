@@ -28,11 +28,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-util</artifactId>
-            <version>${v.sorcer}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-webster</artifactId>
 			<version>${v.sorcer}</version>
 			<scope>runtime</scope>

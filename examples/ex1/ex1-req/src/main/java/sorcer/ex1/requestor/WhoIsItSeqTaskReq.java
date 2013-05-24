@@ -17,11 +17,11 @@
  */
 package sorcer.ex1.requestor;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.*;
 import sorcer.util.Log;
 
@@ -60,7 +60,7 @@ public class WhoIsItSeqTaskReq extends ServiceRequestor {
 		Task task;
 		InetAddress inetAddress;
 		try {
-			inetAddress = HostUtil.getInetAddress();
+			inetAddress = SorcerEnv.getLocalHost();
 		
 		hostname = inetAddress.getHostName();
 

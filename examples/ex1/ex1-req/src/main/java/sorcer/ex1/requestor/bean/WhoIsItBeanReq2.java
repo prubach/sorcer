@@ -17,12 +17,12 @@
  */
 package sorcer.ex1.requestor.bean;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -45,7 +45,7 @@ public class WhoIsItBeanReq2 extends ServiceRequestor {
 		logger.info("providerName: " + providerName);
 		Task task = null;
 		try {
-			inetAddress = HostUtil.getInetAddress();
+			inetAddress = SorcerEnv.getLocalHost();
 
 			hostname = inetAddress.getHostName();
 			ipAddress = inetAddress.getHostAddress();
