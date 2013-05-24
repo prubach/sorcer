@@ -206,7 +206,7 @@ public class ObjectSignature extends ServiceSignature {
 			else 
 				m = providerType.getMethod(selector);
 
-			if (args != null) {
+            if (args != null) {
 				obj = m.invoke(obj, args);
 			}
 			else if (argTypes != null && argTypes.length == 1 && args == null) {
@@ -216,11 +216,13 @@ public class ObjectSignature extends ServiceSignature {
 				obj = m.invoke(obj);
 			}
 		} catch (Exception e) {
+            e.printStackTrace();
 			try {
 				// check if that is SORCER service bean signature
 				m = providerType.getMethod(selector, Context.class);
-				if (m.getReturnType() == Context.class)
-					return obj;
+				if (m.getReturnType() == Context.class)  {
+                    return obj;
+                }
 				else
 					throw new SignatureException(e);
 			} catch (Exception e1) {

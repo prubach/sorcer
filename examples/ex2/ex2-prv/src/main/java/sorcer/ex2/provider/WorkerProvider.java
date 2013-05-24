@@ -61,8 +61,6 @@ public class WorkerProvider extends ServiceTasker implements Worker {
         Object workToDo = context.getValue(p+"requestor/work");
         if (workToDo != null && (workToDo instanceof Work)) {
             // requestor's work to be done
-
-            System.out.println("ZZZZZZZZZZZZZZZZ workToDo: " + context);
             Context out = ((Work)workToDo).exec(context);
             context.append(out);
         } else {

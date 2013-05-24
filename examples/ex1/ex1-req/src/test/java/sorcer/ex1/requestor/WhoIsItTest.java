@@ -82,7 +82,7 @@ public class WhoIsItTest implements SorcerConstants {
         Exertion result = task.exert();
         logger.info("task context: " + result.getContext());
         assertEquals(result.getContext().getValue("provider/hostname"), hostname);
-        assertEquals(result.getContext().getValue("provider/address"), inetAddress);
+        assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
     }
 
     @Ignore
@@ -114,7 +114,7 @@ public class WhoIsItTest implements SorcerConstants {
 
         Exertion result = task.exert();
         assertEquals(result.getContext().getValue("provider/hostname"), hostname);
-        assertEquals(result.getContext().getValue("provider/address"), inetAddress);
+        assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
     }
 
 }
