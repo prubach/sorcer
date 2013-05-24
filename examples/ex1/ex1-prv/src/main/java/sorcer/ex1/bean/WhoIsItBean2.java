@@ -17,11 +17,6 @@
  */
 package sorcer.ex1.bean;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.ex1.Message;
@@ -31,6 +26,10 @@ import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
+
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
 
 public class WhoIsItBean2 implements WhoIsIt {
 
@@ -61,7 +60,7 @@ public class WhoIsItBean2 implements WhoIsIt {
 			Thread.sleep(2000);
 			context.reportException(new RuntimeException("Slept for 2 sec"));
 			context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
-		
+
 			logger.info("executed getHostName: " + context);
 
 		} catch (UnknownHostException e1) {

@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Who Is It? Bean2" default="run.provider" basedir=".">
+<project name="Run Bean Worker2" default="run.provider" basedir=".">
 
     <!-- set property values here -->
     <property name="provider.class" value="sorcer.core.provider.ServiceTasker" />

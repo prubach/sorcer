@@ -17,10 +17,6 @@
  */
 package sorcer.ex1.requestor.bean;
 
-import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -31,6 +27,10 @@ import sorcer.service.Exertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.net.InetAddress;
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
 
 public class WhoIsItBeanApp2 {
 
@@ -56,8 +56,7 @@ public class WhoIsItBeanApp2 {
 		ipAddress = inetAddress.getHostAddress();
 
 		Context context = new ServiceContext("Who Is It?");
-		context.putValue("requestor/message", new RequestorMessage(
-				"Bean2"));
+		context.putValue("requestor/message", new RequestorMessage("Bean2"));
 		context.putValue("requestor/hostname", hostname);
 		context.putValue("requestor/address", ipAddress);
 

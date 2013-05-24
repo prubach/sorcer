@@ -25,14 +25,15 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
+import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
 import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Signature;
+import sorcer.service.Signature.Type;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
-import sorcer.service.Signature.Type;
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
@@ -59,6 +60,44 @@ public class WhoIsItTest implements SorcerConstants {
                 "org.sorcersoft.sorcer:ex2-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
+
+    @Test
+    public void helloObjectTask() throws Exception {
+        InetAddress inetAddress = HostUtil.getInetAddress();
+        String hostname = inetAddress.getHostName();
+
+        Context context = new ServiceContext("Who Is It?");
+        context.putValue("requestor/message", "Hello Objects!");
+        context.putValue("requestor/hostname", hostname);
+
+        ObjectSignature signature = new ObjectSignature("getHostName",
+                WhoIsItBean1.class);
+
+        Task task = new ObjectTask("Who Is It?", signature, context);
+        Exertion result = task.exert();
+        logger.info("task context: " + result.getContext());
+        assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+    }
+
+    // using requestor/provider message types
+    @Test
+    public void hellowNetworkTask() throws Exception {
+        InetAddress inetAddress = HostUtil.getInetAddress();
+        String hostname = inetAddress.getHostName();
+        String providerName = null;
+
+        Context context = new ServiceContext("Who Is It?");
+        context.putValue("requestor/message", new RequestorMessage("Hello Network!"));
+        context.putValue("requestor/hostname", hostname);
+
+        NetSignature signature = new NetSignature("getHostName",
+                sorcer.ex1.WhoIsIt.class, providerName);
+
+        Task task = new NetTask("Who Is It?", signature, context);
+        Exertion result = task.exert();
+        logger.info("task context: " + result.getContext());
+        //assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+    }
 
 	@Test
 	public void execBatchTask() throws Exception {
