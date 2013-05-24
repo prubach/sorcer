@@ -17,25 +17,22 @@
  */
 package sorcer.ex1.bean;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import sorcer.core.Provider;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
-import sorcer.ex1.provider.ProviderMessage;
 import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
 public class WhoIsItBean1 implements WhoIsIt {
 
 	private ServiceProvider provider;
-    private Logger logger;
+    private Logger logger = Logger.getLogger(WhoIsItBean1.class.getName());
 
     public void init(Provider provider) {
 		this.provider = (ServiceProvider)provider;

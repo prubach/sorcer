@@ -17,10 +17,8 @@
  */
 package sorcer.ex1.requestor;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
@@ -56,8 +54,8 @@ public class WhoIsItTest implements SorcerConstants {
         System.setSecurityManager(new RMISecurityManager());
         Sorcer.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex2-prv",
-                "org.sorcersoft.sorcer:ex2-api"});
+                "org.sorcersoft.sorcer:ex1-prv",
+                "org.sorcersoft.sorcer:ex1-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
 
@@ -78,11 +76,13 @@ public class WhoIsItTest implements SorcerConstants {
         Exertion result = task.exert();
         logger.info("task context: " + result.getContext());
         assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
     }
 
-    // using requestor/provider message types
     @Test
     public void helloNetworkTask() throws Exception {
+        // using requestor/provider message types
+
         InetAddress inetAddress = InetAddress.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
@@ -98,18 +98,18 @@ public class WhoIsItTest implements SorcerConstants {
         Task task = new NetTask("Who Is It?", signature, context);
         Exertion result = task.exert();
         logger.info("task context: " + result.getContext());
-        //assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+        assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
     }
 
 	@Test
 	public void execBatchTask() throws Exception {
-        String hostname, ipAddress;
-        InetAddress inetAddress = SorcerEnv.getLocalHost();
-        hostname = inetAddress.getHostName();
-        ipAddress = inetAddress.getHostAddress();
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
 
         Context context = new ServiceContext("Who Is It?");
-        context.putValue("requestor/message", new RequestorMessage("SORCER"));
+        context.putValue("requestor/message", new RequestorMessage("Hello Objects!"));
         context.putValue("requestor/hostname", hostname);
         context.putValue("requestor/address", ipAddress);
 
@@ -124,20 +124,18 @@ public class WhoIsItTest implements SorcerConstants {
         Exertion result = task.exert();
         logger.info("task context: " + result.getContext());
         assertEquals(result.getContext().getValue("provider/hostname"), hostname);
-        assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
+        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
     }
 
-    @Ignore
     @Test
     public void exertBatchTask() throws Exception {
-        String hostname, ipAddress, providername;
-        InetAddress inetAddress = SorcerEnv.getLocalHost();
-        hostname = inetAddress.getHostName();
-        ipAddress = inetAddress.getHostAddress();
-        providername = null;
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
+        String providername = "*";
 
         Context context = new ServiceContext("Who Is It?");
-        context.putValue("requestor/message", new RequestorMessage("SORCER"));
+        context.putValue("requestor/message", new RequestorMessage("Hello Network!"));
         context.putValue("requestor/hostname", hostname);
         context.putValue("requestor/address", ipAddress);
 
