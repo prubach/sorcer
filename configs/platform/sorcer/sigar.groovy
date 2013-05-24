@@ -1,5 +1,5 @@
 /*
-* Copyright to the original author or authors.
+* Copyright 2013 Rafał Krupiński SorcerSoft.com S.A.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -15,18 +15,16 @@
 */
 
 import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.resolver.Resolver
+import sorcer.boot.util.MavenLibraryHelper
 
 def getPlatformCapabilityConfig() {
-    return new SorcerCapabilityDescriptor("Sigar",
-            "1.6.4",
-            "Hyperic SIGAR",
-            "Hyperic",
-            ["org.sorcersoft.sigar:sigar:1.6.4"],
-            getLib("org.sorcersoft.sigar:sigar:zip:native:1.6.4")
-    )
-}
+    MavenLibraryHelper.installLibFromArtifact("org.sorcersoft.sigar:sigar:zip:native:1.6.4", "lib")
 
-String getLib(String coords) {
-    return new File(new File(Resolver.resolveAbsolute(coords)).getParent(), "lib").getPath();
+    return new SorcerCapabilityDescriptor(
+        "Sigar",
+        "1.6.4",
+        "Hyperic SIGAR",
+        "Hyperic",
+        ["org.sorcersoft.sigar:sigar:1.6.4"]
+    )
 }
