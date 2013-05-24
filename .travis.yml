@@ -6,7 +6,7 @@ before_install:
   - ifconfig
   - cat /etc/hosts
   - hostname
-install: mvn install
+install: mvn -q install
 before_script:
 #  - cp -f $SORCER_HOME/configs/template/sorcer.env_int-tests $SORCER_HOME/configs/sorcer.env
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
@@ -14,7 +14,7 @@ before_script:
   - sleep 10
 script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
 jdk:
-#  - openjdk6
+  - openjdk6
 #  - openjdk7
   - oraclejdk7
 # whitelist
@@ -24,4 +24,4 @@ branches:
 
 notifications:
   email:
-    - pawel.rubach@sorcersoft.com
+    - sorcer-devel@lists.sourceforge.net
