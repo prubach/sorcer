@@ -17,15 +17,14 @@
  */
 package sorcer.arithmetic.requestor;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.codehaus.groovy.control.CompilationFailedException;
-
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ArithmeticNetletReq extends ServiceRequestor {
 
