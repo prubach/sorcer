@@ -6,11 +6,11 @@ before_install:
   - ifconfig
   - cat /etc/hosts
   - hostname
-install: mvn -q install
+install: mvn install
 before_script:
 #  - cp -f $SORCER_HOME/configs/template/sorcer.env_int-tests $SORCER_HOME/configs/sorcer.env
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
-  - $SORCER_HOME/bin/sorcer-boot & #  & sleep 10
+  - $SORCER_HOME/bin/sorcer-boot &
   - sleep 10
 script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
 jdk:
