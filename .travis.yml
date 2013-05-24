@@ -10,9 +10,9 @@ install: mvn -q install
 before_script:
 #  - cp -f $SORCER_HOME/configs/template/sorcer.env_int-tests $SORCER_HOME/configs/sorcer.env
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
-  - $SORCER_HOME/bin/sorcer-boot #  & sleep 10
-script: ls
-#cd $SORCER_HOME/sos/sos-tests/ && mvn -Djava.net.preferIPv4Stack=true -Dmaven.test.skip=false test
+  - $SORCER_HOME/bin/sorcer-boot & #  & sleep 10
+  - sleep 10
+script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
 jdk:
 #  - openjdk6
 #  - openjdk7
