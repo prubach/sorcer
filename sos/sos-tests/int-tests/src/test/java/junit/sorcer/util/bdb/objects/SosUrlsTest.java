@@ -63,7 +63,13 @@ public class SosUrlsTest {
 		ServiceExertion.debug = true;
 	}
 
-	@Test
+    @Test
+    public void sosUrlsTest() throws SignatureException,
+            ExertionException, ContextException, IOException {
+        storedValuesTest();
+        updateValuesTest();
+    }
+
 	public void storedValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException {
 		URL url1 = dbURL("Test1");
@@ -74,7 +80,6 @@ public class SosUrlsTest {
 		Assert.assertTrue((Double) value(url2) == 21.0);
 	}
 
-	@Test
 	public void updateValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException {
 		SosURL url1 = sosURL("Test1");
