@@ -36,6 +36,7 @@ import sorcer.core.signature.ObjectSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
 import sorcer.ex2.provider.WorkerProvider;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -60,7 +61,7 @@ public class WorkerTaskRequestorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		hostname = InetAddress.getLocalHost().getHostName();
+		hostname = HostUtil.getInetAddress().getHostName();
 
         Work work = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {

@@ -32,6 +32,7 @@ import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Signature.ReturnPath;
@@ -315,7 +316,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * @throws java.net.UnknownHostException
 	 */
 	private String getHostname() throws UnknownHostException {
-		return InetAddress.getLocalHost().getHostName();
+		return HostUtil.getInetAddress().getHostName();
 	}
 
 }

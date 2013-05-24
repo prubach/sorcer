@@ -22,6 +22,7 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -47,7 +48,7 @@ public class WhoIsItPullJobReq extends ServiceRequestor {
 		// define requestor data
 		Job job = null;
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			inetAddress = HostUtil.getInetAddress();
 			hostname = inetAddress.getHostName();
 			ipAddress = inetAddress.getHostAddress();
 

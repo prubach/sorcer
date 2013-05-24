@@ -32,6 +32,7 @@ import org.junit.Test;
 import sorcer.core.context.ServiceContext;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.WorkerProvider;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.Log;
@@ -53,7 +54,7 @@ public class WorkerProviderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		hostName = InetAddress.getLocalHost().getHostName();
+		hostName = HostUtil.getInetAddress().getHostName();
 		provider = new WorkerProvider();
 
         Work work = new Work() {

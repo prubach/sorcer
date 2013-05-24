@@ -18,6 +18,7 @@
 package sorcer.core;
 
 import org.apache.commons.io.FileUtils;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;
 
@@ -437,7 +438,7 @@ public class SorcerEnv implements SorcerConstants {
 	 *             if no IP address for the local host could be found.
 	 */
 	public static String getHostAddress() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getHostAddress();
+		return HostUtil.getInetAddress().getHostAddress();
 	}
 
 	/**
@@ -466,7 +467,7 @@ public class SorcerEnv implements SorcerConstants {
 	 *             if no hostname for the local host could be found.
 	 */
 	public static String getHostName() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getCanonicalHostName();
+		return HostUtil.getInetAddress().getCanonicalHostName();
 		// return java.net.InetAddress.getLocalHost().getHostName();
 	}
 

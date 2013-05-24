@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
@@ -50,7 +51,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 		String hostname;
 		logger.info("Got dataContext to process: " + context);
 		try {
-			hostname = InetAddress.getLocalHost().getHostName();
+			hostname = HostUtil.getInetAddress().getHostName();
 			context.putValue("provider/hostname", hostname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message msg = (Message) context.getValue("requestor/message");
@@ -90,7 +91,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			ContextException {
 		String ipAddress;
 		try {
-			ipAddress = InetAddress.getLocalHost().getHostAddress();
+			ipAddress = HostUtil.getInetAddress().getHostAddress();
 			context.putValue("provider/address", ipAddress);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
@@ -129,7 +130,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			throws RemoteException, ContextException {
 		String fqname;
 		try {
-			fqname = InetAddress.getLocalHost().getCanonicalHostName();
+			fqname = HostUtil.getInetAddress().getCanonicalHostName();
 			context.putValue("provider/fqname", fqname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");

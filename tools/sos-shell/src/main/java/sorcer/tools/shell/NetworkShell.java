@@ -70,6 +70,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -1262,7 +1263,7 @@ public class NetworkShell implements DiscoveryListener {
 			DirCmd.changeDir(homeDir, false, shellOutput);
 		}
 
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = HostUtil.getInetAddress();
 		instance.hostName = inetAddress.getHostName();
 		instance.hostAddress = inetAddress.getHostAddress();
 		instance.httpJars = jars;

@@ -27,6 +27,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.*;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
@@ -55,7 +56,7 @@ public class WorkSingletonApp {
 	}
 
 	private Exertion getExertion(String pn) throws Exception {
-		String hostname = InetAddress.getLocalHost().getHostName();
+		String hostname = HostUtil.getInetAddress().getHostName();
 
         Work work = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {

@@ -18,6 +18,7 @@
 package sorcer.tools.webster;
 
 import sorcer.core.SorcerConstants;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.resolver.Resolver;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class InternalWebster {
             debug = true;
 
         String roots;
-        InetAddress ip = InetAddress.getLocalHost();
+        InetAddress ip = HostUtil.getInetAddress();
         String localIPAddress = ip.getHostAddress();
         String sorcerHome = System.getProperty("sorcer.home");
         roots = System.getProperty(WEBSTER_ROOTS);

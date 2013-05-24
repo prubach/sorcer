@@ -26,6 +26,7 @@ import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.provider.WhoIsItProvider1;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Signature;
@@ -62,7 +63,7 @@ public class WhoIsItTest implements SorcerConstants {
 	@Test
 	public void execBatchTask() throws Exception {
         String hostname, ipAddress;
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         hostname = inetAddress.getHostName();
         ipAddress = inetAddress.getHostAddress();
 
@@ -89,7 +90,7 @@ public class WhoIsItTest implements SorcerConstants {
     @Test
     public void exertBatchTask() throws Exception {
         String hostname, ipAddress, providername;
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         hostname = inetAddress.getHostName();
         ipAddress = inetAddress.getHostAddress();
         providername = null;

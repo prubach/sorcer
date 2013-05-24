@@ -24,6 +24,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -45,7 +46,7 @@ public class WhoIsItTaskReq extends ServiceRequestor {
 			providerName = Sorcer.getSuffixedName(args[1]);
 		Task task = null;
 		try {
-			InetAddress inetAddress = InetAddress.getLocalHost();
+			InetAddress inetAddress = HostUtil.getInetAddress();
 			hostname = inetAddress.getHostName();
 
 			Context context = new ServiceContext("Who Is It?");

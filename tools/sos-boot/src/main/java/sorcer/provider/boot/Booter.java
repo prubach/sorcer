@@ -16,6 +16,7 @@
  */
 package sorcer.provider.boot;
 
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 
@@ -186,7 +187,7 @@ public class Booter implements SorcerConstants {
 		if (address==null) 
 			address = System.getProperty("provider.webster");
 		if (address==null)*/
-			return java.net.InetAddress.getLocalHost().getHostAddress();
+			return HostUtil.getInetAddress().getHostAddress();
 		/*else 
 			return address;*/
     }
@@ -239,7 +240,7 @@ public class Booter implements SorcerConstants {
      * host could be found.
      */
     public static String getHostName() throws java.net.UnknownHostException {
-        return java.net.InetAddress.getLocalHost().getHostName();
+        return HostUtil.getInetAddress().getHostName();
     }
     
     /**

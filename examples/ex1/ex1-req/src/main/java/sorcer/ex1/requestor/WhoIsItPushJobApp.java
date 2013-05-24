@@ -26,6 +26,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
@@ -56,7 +57,7 @@ public class WhoIsItPushJobApp {
 
 	public Exertion getExertion(String providerName) throws Exception {
 		String hostname, ipAddress;
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = HostUtil.getInetAddress();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

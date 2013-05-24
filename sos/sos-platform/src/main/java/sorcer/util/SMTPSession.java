@@ -17,6 +17,7 @@
  */
 package sorcer.util;
 
+import sorcer.org.rioproject.net.HostUtil;
 import sun.net.smtp.SmtpClient;
 
 import java.io.PrintStream;
@@ -142,7 +143,7 @@ public class SMTPSession {
 			if (!succeed) {
 				try { // try again, this time, to localhost
 					// open smtp connection
-					sendmail = new SmtpClient(InetAddress.getLocalHost()
+					sendmail = new SmtpClient(HostUtil.getInetAddress()
 							.getHostName());
 					sendmail.from(sender);
 					sendmail.to(recipient);

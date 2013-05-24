@@ -25,6 +25,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Task;
@@ -50,7 +51,7 @@ public class WhoIsItBeanApp2 {
 
 	private Exertion getExertion() throws Exception {
 		String hostname, ipAddress;
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = HostUtil.getInetAddress();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

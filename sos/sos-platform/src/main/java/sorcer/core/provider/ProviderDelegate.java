@@ -62,6 +62,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
@@ -351,7 +352,7 @@ public class ProviderDelegate implements SorcerConstants {
 				&& providerProperties.contains("HOSTNAME")) {
 			try {
 				providerProperties = providerProperties.replace("HOSTNAME",
-						InetAddress.getLocalHost().getHostName());
+						HostUtil.getInetAddress().getHostName());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -419,8 +420,8 @@ public class ProviderDelegate implements SorcerConstants {
 
 	void initSpaceSupport() throws ConfigurationException, RemoteException {
 		try {
-			hostName = InetAddress.getLocalHost().getHostName();
-			hostAddress = InetAddress.getLocalHost().getHostAddress();
+			hostName = HostUtil.getInetAddress().getHostName();
+			hostAddress = HostUtil.getInetAddress().getHostAddress();
 		} catch (UnknownHostException e) {
 			// ignore it
 		}
@@ -2131,12 +2132,12 @@ public class ProviderDelegate implements SorcerConstants {
 		private void fillInProviderHost() {
 			String hostname = null, hostaddress = null;
 			try {
-				hostname = InetAddress.getLocalHost().getHostName();
+				hostname = HostUtil.getInetAddress().getHostName();
 				if (hostname == null) {
 					logger.warning("Could not aquire hostname");
 					hostname = "[unknown]";
 				} else {
-					hostaddress = InetAddress.getLocalHost().getHostAddress();
+					hostaddress = HostUtil.getInetAddress().getHostAddress();
 				}
 			} catch (Throwable t) {
 				// Can be ignored.
@@ -3064,7 +3065,7 @@ public class ProviderDelegate implements SorcerConstants {
 	public String getHostAddress() {
 		if (hostAddress == null)
 			try {
-				hostAddress = InetAddress.getLocalHost().getHostAddress();
+				hostAddress = HostUtil.getInetAddress().getHostAddress();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -3074,7 +3075,7 @@ public class ProviderDelegate implements SorcerConstants {
 	public String getHostName() {
 		if (hostName == null) {
 			try {
-				hostName = InetAddress.getLocalHost().getHostName();
+				hostName = HostUtil.getInetAddress().getHostName();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
