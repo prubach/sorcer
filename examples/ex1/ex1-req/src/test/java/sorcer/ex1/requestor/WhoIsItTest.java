@@ -15,19 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.ex2.requestor;
+package sorcer.ex1.requestor;
 
 import org.junit.Test;
 import sorcer.core.SorcerConstants;
-import sorcer.ex5.provider.AdderImpl;
-import sorcer.ex5.provider.MultiplierImpl;
-import sorcer.ex5.provider.SubtractorImpl;
 import sorcer.util.Sorcer;
 
+import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mike Sobolewski
@@ -36,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 public class WhoIsItTest implements SorcerConstants {
 
 	private final static Logger logger = Logger
-			.getLogger(ObjectArithmeticReqTest.class.getName());
+			.getLogger(WhoIsItTest.class.getName());
 
 	static {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
