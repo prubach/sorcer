@@ -541,8 +541,8 @@ public class SorcerDescriptorUtil {
 
     /**
      * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * {@link sorcer.core.provider.ServiceTasker} with beaned
-     * {@link sorcer.util.ExertProcessor}, called Exerter.
+     * {@link sorcer.provider.ServiceTasker} with beaned
+     * {@link sorcer.util.ExertManager}, called Exerter.
      *
      * @param policy
      *            The security policy file to use

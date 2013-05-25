@@ -30,6 +30,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
             <version>${v.sorcer}</version>
+            <scope>provided</scope>
         </dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
