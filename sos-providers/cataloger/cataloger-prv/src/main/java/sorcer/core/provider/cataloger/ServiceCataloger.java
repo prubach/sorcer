@@ -427,7 +427,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/cataloger-ui.jar");
+			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/sos-exertlet-sui.jar");
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/deploy/cataloger.html");
 
