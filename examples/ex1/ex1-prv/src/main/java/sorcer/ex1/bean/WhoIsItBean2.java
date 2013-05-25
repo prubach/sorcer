@@ -22,7 +22,6 @@ import sorcer.core.provider.ServiceProvider;
 import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
 import sorcer.ex1.provider.ProviderMessage;
-import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
@@ -74,9 +73,10 @@ public class WhoIsItBean2 implements WhoIsIt {
 
 	public Context getHostAddress(Context context) throws RemoteException,
 			ContextException {
-		logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+		logger.entering(WhoIsItBean2.class.getName(), "getHostAddress");
 		try {
-			String ipAddress = HostUtil.getInetAddress().getHostAddress();
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ipAddress = inetAddress.getHostAddress();
 			context.putValue("provider/address", ipAddress);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
@@ -102,10 +102,11 @@ public class WhoIsItBean2 implements WhoIsIt {
 	 */
 	public Context getCanonicalHostName(Context context)
 			throws RemoteException, ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+        logger.entering(WhoIsItBean2.class.getName(), "getCanonicalHostName");
         try {
-			String fqname = HostUtil.getInetAddress().getCanonicalHostName();
-			context.putValue("provider/fqname", fqname);
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String fqname = inetAddress.getCanonicalHostName();
+            context.putValue("provider/fqname", fqname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(rmsg
@@ -123,7 +124,7 @@ public class WhoIsItBean2 implements WhoIsIt {
 	@Override
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+        logger.entering(WhoIsItBean2.class.getName(), "getTimestamp");
         context.putValue("provider/timestamp", StringUtils.getDateTime());
         String rhn = (String) context.getValue("requestor/hostname");
         Message rmsg = (Message) context.getValue("requestor/message");

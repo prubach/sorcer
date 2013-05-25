@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Run WhoIsIt1" default="run.provider" basedir=".">
+<project name="Run Prv WhoIsIt1" default="run.provider" basedir=".">
 
 	<property name="provider.class" value="sorcer.ex1.provider.WhoIsItProvider1" />
 

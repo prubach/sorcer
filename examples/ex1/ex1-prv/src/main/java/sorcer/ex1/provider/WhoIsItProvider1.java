@@ -18,13 +18,13 @@
 package sorcer.ex1.provider;
 
 import com.sun.jini.start.LifeCycle;
-import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 
@@ -44,10 +44,9 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 	@Override
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
-		String hostname;
-		logger.info("Got dataContext to process: " + context);
 		try {
-			hostname = SorcerEnv.getLocalHost().getHostName();
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String hostname = inetAddress.getHostName();
 			context.putValue("provider/hostname", hostname);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");
@@ -63,9 +62,9 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 	@Override
 	public Context getHostAddress(Context context) throws RemoteException,
 			ContextException {
-		String ipAddress;
 		try {
-			ipAddress = SorcerEnv.getLocalHost().getHostAddress();
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ipAddress = inetAddress.getHostAddress();
 			context.putValue("provider/address", ipAddress);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");
@@ -81,10 +80,10 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 	 */
 	public Context getCanonicalHostName(Context context)
 			throws RemoteException, ContextException {
-		String fqname;
 		try {
-			fqname = SorcerEnv.getHostName();
-			context.putValue("provider/fqname", fqname);
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String fqname = inetAddress.getCanonicalHostName();
+            context.putValue("provider/fqname", fqname);
             context.putValue("provider/message", "Hello "
                     + context.getValue("requestor/address") + "!");
 		} catch (UnknownHostException e1) {

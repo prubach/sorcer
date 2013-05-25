@@ -17,19 +17,18 @@
  */
 package sorcer.ex1.provider;
 
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
+import com.sun.jini.start.LifeCycle;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-
-import com.sun.jini.start.LifeCycle;
 import sorcer.util.StringUtils;
+
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
 
 public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 
@@ -48,7 +47,6 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
 		String hostname;
-		logger.info("Got dataContext to process: " + context);
 		try {
 			hostname = SorcerEnv.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
