@@ -33,7 +33,7 @@
 	<property name="service.requestor" value="sorcer.core.requestor.ServiceRequestor" />
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex1-req" />
-	<property name="requestor.api" value="ex1-api" />
+	<property name="requestor.api" value="ex1-dl" />
 	<property name="requestor.client.api" value="ex1-req-api" />
 	<property name="requestor.version" value="1.0-SNAPSHOT" />
 

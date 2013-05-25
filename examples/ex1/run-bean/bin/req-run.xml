@@ -35,7 +35,7 @@
 
 	<!-- requestor codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
-	<property name="j2" value="${webster}/org/sorcersoft/sorcer/ex1-req-api/${v.sorcer}/ex1-req-api-${v.sorcer}.jar" />
+	<property name="j2" value="${webster}/org/sorcersoft/sorcer/ex1-dl/${v.sorcer}/ex1-dl-${v.sorcer}.jar" />
 	<property name="j3" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
 
 	<target name="run.requestor" depends="mvn-init">
