@@ -22,7 +22,7 @@
 
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />
-	<property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/services.config" />
+	<property name="provider.config" value="${basedir}/src/main/resources/config/services.config" />
 	<property name="provider.spawn" value="yes" />
 
     <condition property="common-run" value="${env.SORCER_HOME}/bin/common-run.xml" else="../../../../bin/common-run.xml">

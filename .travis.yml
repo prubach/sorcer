@@ -14,7 +14,7 @@ before_script:
   - sleep 10
 script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
 jdk:
-  - openjdk6
+#  - openjdk6
 #  - openjdk7
   - oraclejdk7
 # whitelist

@@ -37,7 +37,8 @@
             <highlightJs>true</highlightJs>
             <highlightJsTheme>github</highlightJsTheme>
 
-            <slogan>Federated computing platform centered on a global network and a seamless fusion of virtual services</slogan>
+            <slogan>Everything AWAT as a Service (EaaaS)</slogan>
+            <!--<slogan>Federated computing platform centered on a global network and a seamless fusion of virtual services</slogan>-->
 	      
 	      <!--Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming. Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service. Secondly, a friendly and intuitive service-oriented programming model allows the users to dynamically compose the relevant service federations. These federations range from tens to thousands or even millions of services and execute in the global network with an unprecedented level of reliability.-->
             <titleTemplate>%2$s | %1$s</titleTemplate>

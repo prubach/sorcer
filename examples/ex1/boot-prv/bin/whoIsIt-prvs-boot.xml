@@ -18,11 +18,17 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic One Bean" default="boot.provider" basedir=".">
+<!-- 
+Replace "provider.name" with your provider name and specify property value for "provider.class."
+Also you might need to adjust the classpath (provider.classpath) for your provider 
+-->
 
-    <property name="pom.file" value="${basedir}/pom.xml" />
-    <property environment="env" />
-    <property name="provider.config" value="${basedir}/src/main/resources/config/boot-one-bean.config" />
-    <import file="${env.SORCER_HOME}/bin/common-run.xml" />
-
+<project name="SampleService Provider" default="boot.provider" basedir="../../ex1-prv">
+	
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property environment="env" />
+	<property name="provider.config" value="${basedir}/target/classes/config/services.config" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+		
 </project>
+

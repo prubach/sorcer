@@ -216,7 +216,7 @@ public class ObjectSignature extends ServiceSignature {
 				obj = m.invoke(obj);
 			}
 		} catch (Exception e) {
-            e.printStackTrace();
+            logger.throwing(ObjectSignature.class.getName(), "initInstance", e);
 			try {
 				// check if that is SORCER service bean signature
 				m = providerType.getMethod(selector, Context.class);

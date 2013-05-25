@@ -28,7 +28,7 @@ and  "java.util.logging.config.file" for your provider
 	<property environment="env" />
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property name="provider.name" value="whoIsIt" />
-	<property name="provider.config" value="src/main/resources/META-INF/sorcer/services.config" />
+	<property name="provider.config" value="src/main/resources/config/services.config" />
 	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />	
 			      
 	

@@ -39,8 +39,8 @@ import com.sun.jini.start.LifeCycle;
  * @author Rafał Krupiński
  */
 public class ServiceStarter {
-	public static final String CONFIG_RIVER = "META-INF/sorcer/services.config";
-	public static final String CONFIG_RIO = "META-INF/sorcer/services.groovy";
+	public static final String CONFIG_RIVER = "config/services.config";
+	public static final String CONFIG_RIO = "config/services.groovy";
 	private static final String SUFFIX_RIVER = ".config";
 	private static final String SUFFIX_RIO = ".groovy";
 
