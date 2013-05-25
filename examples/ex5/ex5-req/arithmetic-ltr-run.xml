@@ -45,7 +45,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
         <not><isset property="beans.id" /></not>
     </condition>
 
-    <property name="provider.config" value="src/main/resources/META-INF/sorcer/exertlet-prv.config" />
+    <property name="provider.config" value="src/main/resources/config/exertlet-prv.config" />
 
     <condition property="provider.bean" value ="beans" >
         <not><isset property="provider.bean" /></not>

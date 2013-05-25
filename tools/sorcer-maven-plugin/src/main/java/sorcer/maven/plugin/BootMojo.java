@@ -51,7 +51,7 @@ public class BootMojo extends AbstractSorcerMojo {
 	/**
 	 * Location of the services file.
 	 */
-	@Parameter(defaultValue = "${project.build.outputDirectory}/META-INF/sorcer/services.config")
+	@Parameter(defaultValue = "${project.build.outputDirectory}/config/services.config")
 	private File servicesConfig;
 
 	@Parameter(required = true, defaultValue = "sorcer.boot.ServiceStarter")
