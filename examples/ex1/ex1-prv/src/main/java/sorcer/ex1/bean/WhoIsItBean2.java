@@ -27,6 +27,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
@@ -49,8 +50,9 @@ public class WhoIsItBean2 implements WhoIsIt {
 			ContextException {
 		logger.entering(WhoIsItBean2.class.getName(), "getHostName");
 		try {
-            String hostname = HostUtil.getInetAddress().getHostName();
-			context.putValue("provider/hostname", hostname);
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String hostname = inetAddress.getHostName();
+         	context.putValue("provider/hostname", hostname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(rmsg
