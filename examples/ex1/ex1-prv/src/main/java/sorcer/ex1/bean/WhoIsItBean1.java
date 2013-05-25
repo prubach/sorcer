@@ -72,7 +72,8 @@ public class WhoIsItBean1 implements WhoIsIt {
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
 
-            context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
+            if (provider != null)
+                context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
 
             logger.info("executed getHostName: " + context);
 		} catch (UnknownHostException e) {
