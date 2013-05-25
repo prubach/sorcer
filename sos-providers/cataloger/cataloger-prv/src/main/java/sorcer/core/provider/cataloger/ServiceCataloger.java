@@ -66,6 +66,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 import sorcer.service.Service;
 import sorcer.service.Task;
@@ -440,7 +441,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/cataloger-ui.jar");
+			URL uiUrl = new URL(Sorcer.getWebsterUrl() + Resolver.resolveRelative("sos-exertlet-sui"));
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/deploy/cataloger.html");
 
