@@ -18,15 +18,17 @@
     limitations under the License.
 
 -->
+<!-- 
+Replace "provider.name" with your provider name and specify property value for "provider.class."
+Also you might need to adjust the classpath (provider.classpath) for your provider 
+-->
 
-<project name="Who Is It? requestor" default="run.requestor" basedir=".">
-
-	<!-- set property values here -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItTaskReq" />
-
-	<import file="req-run.xml" />
+<project name="Boot WhoIsIt Providers" default="boot.provider" basedir="../../ex1-prv">
 	
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property environment="env" />
+	<property name="provider.config" value="${basedir}/src/main/resources/config/services.config" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+		
 </project>
-
-
 
