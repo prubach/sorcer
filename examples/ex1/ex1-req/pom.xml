@@ -20,13 +20,18 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex1-prv</artifactId>
-            <version>${project.version}</version>
+            <groupId>net.jini.lookup</groupId>
+            <artifactId>serviceui</artifactId>
+            <version>${v.jini}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex1-dl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -38,6 +43,12 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
             <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>commons-prv</artifactId>
+            <version>${v.sorcer}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

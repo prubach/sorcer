@@ -83,7 +83,6 @@ public class WhoIsItTest implements SorcerConstants {
     @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
-
         InetAddress inetAddress = InetAddress.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();

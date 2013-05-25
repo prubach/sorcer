@@ -148,6 +148,58 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Examples -->
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex3-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex4-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!--    rio -->
         <dependency>
             <groupId>org.rioproject</groupId>
