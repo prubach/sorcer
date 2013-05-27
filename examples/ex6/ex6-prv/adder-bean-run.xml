@@ -23,9 +23,9 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Adder Bean Provider" default="run.provider" basedir=".">
+<project name="Boot Adder Bean" default="run.provider" basedir=".">
 	<property name="provider.bean" value="adder" />
-	<property name="provider.class" value="sorcer.core.provider.ServiceProvider" />
+	<property name="provider.class" value="sorcer.core.provider.ServiceTasker" />
 	<import file="prv-run.xml" />  
 </project>
 

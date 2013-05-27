@@ -18,7 +18,7 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic all bean services" default="all-arithmetic" basedir=".">
+<project name="Arithmetic All Prvs" default="all-arithmetic" basedir=".">
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	

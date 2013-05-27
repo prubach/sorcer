@@ -4,7 +4,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Adder Provider by Inheritance"  default="run.provider" basedir=".">
+<project name="Boot Adder Prv"  default="run.provider" basedir=".">
 
         <property name="provider.bean" value="adder-inh" />
         <property name="provider.class" value="sorcer.arithmetic.provider.AdderProvider" />

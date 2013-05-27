@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Multiplier2 Bean Provider" default="run.provider" basedir=".">
+<project name="Run Multiplier2 Bean" default="run.provider" basedir=".">
 	<property name="provider.bean" value="multiplier" />
 	<property name="provider.class" value="sorcer.core.provider.ServiceProvider" />
 	<property name="beans.id" value="2" />
