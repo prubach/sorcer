@@ -17,7 +17,7 @@
         </p>
         <h2 id="Installation">Installation</h2>
         <h3 id="Distribution">Distribution</h3>
-        <p>Go to our<a href="download.html">download page</a>and pick the most suitable distribution:
+        <p>Go to our <a href="download.html">download page</a> and pick the most suitable distribution:
         </p>
         <ul>
             <li>if you're running Windows - use the Windows EXE setup file</li>
@@ -53,33 +53,33 @@
         <h2 id="Files_and_folders_in_the_Sorcer_installation_folder">Files and folders in the Sorcer installation
             folder
         </h2>
-        <p>The Sorcer installation directory (SORCER_HOME) contains the following folders:</p>
+        <p>The Sorcer installation directory (<tt>SORCER_HOME</tt>) contains the following folders:</p>
         <ul>
-            <li>bin - startup scripts</li>
-            <li>configs - configuration files
+            <li><tt>bin</tt> - startup scripts</li>
+            <li><tt>configs</tt> - configuration files
                 <ul>
-                    <li>\ sorcer.env - the main Sorcer environment config file</li>
-                    <li>\ sorcer.logging - Sorcer logging levels config</li>
+                    <li><tt>\ sorcer.env</tt> - the main Sorcer environment config file</li>
+                    <li><tt>\ sorcer.logging</tt> - Sorcer logging levels config</li>
                 </ul>
             </li>
-            <li>docs - documentation and license files</li>
-            <li>examples - examples that demonstrate how to create services in Sorcer
+            <li><tt>docs</tt> - documentation and license files</li>
+            <li><tt>examples</tt> - examples that demonstrate how to create services in Sorcer
                 <ul>
-                    <li>\ prepare-repository.xml - ant script that should be invoked before starting to play with
+                    <li><tt>\ prepare-repository.xml</tt> - ant script that should be invoked before starting to play with
                         examples.
                     </li>
                 </ul>
             </li>
-            <li>lib - directory with all sorcer and third-party jar files</li>
-            <li>logs - empty directory for logs</li>
-            <li>Uninstaller - not available if you've installed Sorcer from a zip file.
+            <li><tt>lib</tt> - directory with all sorcer and third-party jar files</li>
+            <li><tt>logs</tt> - empty directory for logs</li>
+            <li><tt>Uninstaller</tt> - not available if you've installed Sorcer from a zip file.
                 <ul>
-                    <li>\ Uninstaller.jar - application that performs an uninstall of Sorcer</li>
+                    <li><tt>\ Uninstaller.jar</tt> - application that performs an uninstall of Sorcer</li>
                 </ul>
             </li>
         </ul>
         <h2 id="Starting_Sorcer">Starting Sorcer</h2>
-        <p>The SORCER_HOME/bin folder contains startup scripts. For basic commands both OS-dependent shell scripts are
+        <p>The <tt>$SORCER_HOME/bin</tt> folder contains startup scripts. For basic commands both OS-dependent shell scripts are
             provided as well as cross-platform Ant scripts.
         </p>
         <ul>
@@ -87,7 +87,7 @@
                 run:
             </li>
         </ul>
-        <pre>SORCER_HOME/bin/sorcer-boot
+        <pre>$SORCER_HOME/bin/sorcer-boot
         </pre>
         <ul>
             <li>You may also start the codeserver separately by running:</li>
@@ -95,17 +95,17 @@
         <pre>ant -f webster-run.xml
         </pre>
         <p>and then start the basic services without the codeserver by running:</p>
-        <pre>SORCER_HOME/bin/sorcer-boot-no-http
+        <pre>$SORCER_HOME/bin/sorcer-boot-no-http
         </pre>
         <ul>
             <li>To start the Sorcer Service Browser run:</li>
         </ul>
-        <pre>SORCER_HOME/bin/sorcer-browser
+        <pre>$SORCER_HOME/bin/sorcer-browser
         </pre>
         <ul>
             <li>To start the Sorcer Network Shell please run:</li>
         </ul>
-        <pre>SORCER_HOME/bin/nsh
+        <pre>$SORCER_HOME/bin/nsh
         </pre>
         <p>On UNIX you can use the rlwrap utility to enable the history of executed commands etc. You can let the
             Network Shell start with rlwrap, for example, by adding the following alias to your shell's configuration

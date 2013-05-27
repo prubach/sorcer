@@ -27,7 +27,7 @@
             <brand/>
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
             <!--<protocolRelativeURLs>false</protocolRelativeURLs>-->
-            <protocolRelativeURLs>true</protocolRelativeURLs>
+            <protocolRelativeURLs>false</protocolRelativeURLs>
             <smoothScroll>true</smoothScroll>
             <navbarInverse>true</navbarInverse>
             <skinAttribution>false</skinAttribution>
@@ -50,8 +50,7 @@
             <!--<topNav>Documentation|Developers|Examples|Contribute</topNav>-->
 
             <bottomNav>
-                <link>Home</link>
-                <column>Download</column>
+                <column>First steps</column>
                 <column>Documentation</column>
                 <column>Support</column>
             </bottomNav>
