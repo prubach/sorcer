@@ -18,7 +18,7 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic One Bean" default="boot.provider" basedir=".">
+<project name="Boot Arithmetic Bean" default="boot.provider" basedir=".">
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
