@@ -17,6 +17,7 @@
  */
 package sorcer.ex1.requestor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
@@ -96,6 +97,7 @@ public class WhoIsItTest implements SorcerConstants {
         }
     }
 
+    @Ignore
     @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
@@ -148,6 +150,7 @@ public class WhoIsItTest implements SorcerConstants {
         assertEquals(result.getContext().getValue("provider/address"), ipAddress);
     }
 
+    @Ignore
     @Test
     public void exertBatchTask() throws Exception {
         InetAddress inetAddress = InetAddress.getLocalHost();
@@ -178,6 +181,7 @@ public class WhoIsItTest implements SorcerConstants {
         assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
     }
 
+    @Ignore
     @Test
     public void exertJob() throws Exception {
         String providerName1 = Sorcer.getSuffixedName("ABC");
