@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Worker Requestor" default="run.requestor" basedir=".">
+<project name="Netlet Req" default="run.requestor" basedir=".">
 	<!-- system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
