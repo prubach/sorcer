@@ -11,6 +11,7 @@ import java.io.File;
  *
  * @author Rafał Krupiński
  */
+@Ignore
 public class RepositoryArtifactResolverTest {
 	RepositoryArtifactResolver resolver = new RepositoryArtifactResolver(new File(System.getProperty("user.home"), ".m2/repository").getPath());
 
