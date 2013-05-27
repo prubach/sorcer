@@ -19,18 +19,18 @@ package sorcer.ex1.requestor;
 
 import org.junit.Test;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.Signature;
+import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
 import java.net.InetAddress;
@@ -54,10 +54,22 @@ public class WhoIsItTest implements SorcerConstants {
         System.setSecurityManager(new RMISecurityManager());
         Sorcer.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:ex1-dl",
                 "org.sorcersoft.sorcer:ex1-prv",
                 "org.sorcersoft.sorcer:ex1-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
+    }
+
+    @Test
+    public void localhost() throws Exception {
+        InetAddress inetAddress = InetAddress.getLocalHost();
+        String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
+
+        logger.info("inetAddress: " + inetAddress);
+        logger.info("hostname: " + hostname);
+        logger.info("ipAddress: " + ipAddress);
     }
 
     @Test
@@ -164,6 +176,56 @@ public class WhoIsItTest implements SorcerConstants {
         Exertion result = task.exert();
         assertEquals(result.getContext().getValue("provider/hostname"), hostname);
         assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
+    }
+
+    @Test
+    public void exertJob() throws Exception {
+        String providerName1 = Sorcer.getSuffixedName("ABC");
+        String providerName2 = Sorcer.getSuffixedName("XYZ");
+
+        // define requestor data
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
+        String hostname = inetAddress.getHostName();
+        String ipAddress = inetAddress.getHostAddress();
+
+        Context context1 = new ServiceContext("Who is it?");
+        context1.putValue("requestor/message", "Hello " + providerName1);
+        context1.putValue("requestor/hostname", hostname);
+        context1.putValue("requestor/address", ipAddress);
+
+        Context context2 = new ServiceContext("Who is it?");
+        context2.putValue("requestor/message", new RequestorMessage(
+                providerName2));
+        context2.putValue("requestor/hostname", hostname);
+        context2.putValue("requestor/address", ipAddress);
+
+        NetSignature signature1 = new NetSignature("getHostName",
+                sorcer.ex1.WhoIsIt.class, providerName1);
+        NetSignature signature2 = new NetSignature("getHostAddress",
+                sorcer.ex1.WhoIsIt.class, providerName2);
+
+        Task task1 = new NetTask("Who is it1?", signature1, context1);
+        Task task2 = new NetTask("Who is it2?", signature2, context2);
+        Job job = new NetJob("Who are they?");
+        job.addExertion(task1).addExertion(task2);
+
+        ControlContext cc = job.getControlContext();
+        // PUSH or PULL provider access
+        cc.setAccessType(Strategy.Access.PUSH);
+        // Exertion control flow PAR or SEQ
+        cc.setFlowType(Strategy.Flow.PAR);
+
+        Job result = (Job)job.exert();
+
+        logger.info("job context: " + result.getJobContext());
+        logger.info("job exceptions: " + result.getExceptions());
+        logger.info("task 1 trace: " + result.getExertion("Who is it1?").getTrace());
+        logger.info("task 2 trace: " + result.getExertion("Who is it2?").getTrace());
+
+        assertEquals(result.getValue("Who are they?/Who is it1?/provider/message"),
+                "Hello " + ipAddress + "!");
+        assertEquals(""+result.getValue("Who are they?/Who is it2?/provider/message"),
+                "Hi XYZ-DEV!; XYZ-DEV:Hi " + ipAddress + "!");
     }
 
 }

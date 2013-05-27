@@ -22,6 +22,7 @@ import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.WhoIsIt;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.service.ServiceExertion;
 import sorcer.util.StringUtils;
 
 import java.net.InetAddress;
@@ -36,6 +37,7 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 
 	public WhoIsItProvider1(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
+        ServiceExertion.debug = true;
 	}
 
 	/* (non-Javadoc)

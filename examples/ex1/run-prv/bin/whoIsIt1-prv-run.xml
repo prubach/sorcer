@@ -27,7 +27,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 	<property name="provider.class" value="sorcer.ex1.provider.WhoIsItProvider1" />
 
-	<property name="beans.id" value="1" />
+	<property name="provider.id" value="1" />
 
     <import file="prv-run.xml" />
 
