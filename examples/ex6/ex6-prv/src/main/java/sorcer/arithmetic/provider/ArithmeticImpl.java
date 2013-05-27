@@ -17,10 +17,17 @@
  */
 package sorcer.arithmetic.provider;
 
-import java.rmi.RemoteException;
-
+import net.jini.lookup.entry.UIDescriptor;
+import net.jini.lookup.ui.MainUI;
+import sorcer.arithmetic.provider.ui.CalculatorUI;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.ui.serviceui.UIComponentFactory;
+import sorcer.ui.serviceui.UIDescriptorFactory;
+import sorcer.util.Sorcer;
+
+import java.net.URL;
+import java.rmi.RemoteException;
 
 public class ArithmeticImpl implements Arithmetic {
 
@@ -82,4 +89,19 @@ public class ArithmeticImpl implements Arithmetic {
     @Override
     public Context average(Context context) throws RemoteException, ContextException {
         return arithmometer.average(context);    }
+
+
+    public static UIDescriptor getCalculatorDescriptor() {
+        UIDescriptor uiDesc = null;
+        try {
+            uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
+                    new UIComponentFactory(new URL[]{new URL(Sorcer
+                            .getWebsterUrl()
+                            + "/calculator-ui.jar")}, CalculatorUI.class
+                            .getName()));
+        } catch (Exception ex) {
+            // do nothing
+        }
+        return uiDesc;
+    }
 }
