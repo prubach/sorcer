@@ -78,13 +78,15 @@ public class ObjectTask extends Task {
 			}
 			Object result = ((ObjectSignature) getProcessSignature())
 					.initInstance(parameters, paramTypes);
-			if (result instanceof Context) {
-				if (dataContext.getReturnPath() != null)
+
+            if (dataContext.getReturnPath() != null) {
+			    if (result instanceof Context) {
 					dataContext.setReturnValue(((Context) result).getValue(dataContext
 							.getReturnPath().path));
 			} else {
-				dataContext.setReturnValue(result);
-			}
+                    dataContext.setReturnValue(result);
+			    }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 			dataContext.reportException(e);
