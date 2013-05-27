@@ -54,26 +54,26 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
                 "org.sorcersoft.sorcer:ex5-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
-	
+
+    @Test
+    public void exertTaskJob() throws Exception {
+        Job job = getTaskedNetJob();
+        NetJob result = (NetJob)job.exert();
+        logger.info("result context: "  + result.getComponentContext("3tasks/subtract"));
+        logger.info("job context: " + result.getJobContext());
+        assertEquals(result.getValue("3tasks/subtract/result/value"), 400.0);
+    }
+
 	@Test
-	public void exertTaskHierachy() throws Exception {
-		Job job = getJobInJobNetArithmeticJob();
+	public void exertJobComposition() throws Exception {
+		Job job = getJobComposition();
 		Job result = (NetJob) job.exert();
 		logger.info("result context: " + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
 		assertEquals(result.getValue("1job1task/subtract/result/value"), 400.0);
 	}
-	
-	@Test
-	public void exertTaskConcatenation() throws Exception {
-		Job job = getTaskedNetJob();	
-		NetJob result = (NetJob)job.exert();
-		logger.info("result context: "  + result.getComponentContext("3tasks/subtract"));
-		logger.info("job context: " + result.getJobContext());
-		assertEquals(result.getValue("3tasks/subtract/result/value"), 400.0);
-	}
 
-	public static Job getJobInJobNetArithmeticJob() throws Exception {
+	public static Job getJobComposition() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();

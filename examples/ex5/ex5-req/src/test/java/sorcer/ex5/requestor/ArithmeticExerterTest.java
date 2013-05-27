@@ -17,13 +17,7 @@
  */
 package sorcer.ex5.requestor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Test;
-
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
@@ -34,14 +28,19 @@ import sorcer.service.Job;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExertServiceTest implements SorcerConstants {
+public class ArithmeticExerterTest implements SorcerConstants {
 
 	private final static Logger logger = Logger
-			.getLogger(ArithmeticExertServiceTest.class.getName());
+			.getLogger(ArithmeticExerterTest.class.getName());
 
 	static {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
@@ -55,7 +54,7 @@ public class ArithmeticExertServiceTest implements SorcerConstants {
 	
 	@Test
 	public void exertExerter() throws Exception {
-		Job exertion = NetArithmeticReqTest.getJobInJobNetArithmeticJob();
+		Job exertion = NetArithmeticReqTest.getJobComposition();
 		Task task = new NetTask("exert", new NetSignature("exert",
 				Exerter.class),
 				new ServiceContext(exertion));
