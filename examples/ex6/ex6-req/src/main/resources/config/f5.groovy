@@ -1,3 +1,5 @@
+package config
+
 import sorcer.arithmetic.provider.Adder;
 
 Task f5 = task("f5", op("add", Adder.class),
