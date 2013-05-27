@@ -35,6 +35,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<!-- set property values here -->
 	<property name="provider.name" value="ex6-prv" />
 	<property name="provider.api" value="ex6-api" />
+    <property name="provider.groupId" value="org.sorcersoft.sorcer" />
 	<property name="webster" value="${provider.webster.url}" />
 
 	<condition property="provider.bean" value ="beans" >

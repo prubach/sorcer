@@ -22,6 +22,7 @@ import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.RemoteAdder;
 import sorcer.arithmetic.provider.Subtractor;
 import sorcer.core.SorcerConstants;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -57,7 +58,10 @@ public class ArithmeticTester implements SorcerConstants {
 	
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
-		logger.info("running: " + args[0]);
+        // Resolve codebase from requestor.webster.codebase sysproperty specified in ant script to webster urls
+        ServiceRequestor.prepareCodebase();
+        //
+        logger.info("running: " + args[0]);
 		Exertion result = null;
 		ArithmeticTester tester = new ArithmeticTester();
 		if (args[0].equals("f5"))

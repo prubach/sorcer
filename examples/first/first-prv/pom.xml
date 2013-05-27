@@ -35,6 +35,13 @@
 			<version>${v.sorcer}</version>
 		</dependency>
 
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>commons-req</artifactId>
+            <version>${v.sorcer}</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+
 		<!-- CodeBase -->
 		<dependency>
 			<groupId>com.example.sorcer</groupId>

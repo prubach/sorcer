@@ -33,6 +33,7 @@ public class ArithmeticNetletReq extends ServiceRequestor {
 	@Override
 	public Exertion getExertion(String... args) throws ExertionException {
 		try {
+            loadProperties("src/main/resources/config/ex6-exertlet.properties");
 			exertion = (Exertion)evaluate(new File(getProperty("exertion.filename")));
 		} catch (CompilationFailedException e) {
 			e.printStackTrace();

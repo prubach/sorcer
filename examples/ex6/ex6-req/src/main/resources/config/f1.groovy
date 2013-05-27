@@ -1,8 +1,10 @@
 package config
 
-import sorcer.arithmetic.provider.Adder;
-import sorcer.arithmetic.provider.Multiplier;
-import sorcer.arithmetic.provider.Subtractor;
+import sorcer.arithmetic.provider.Adder
+import sorcer.arithmetic.provider.Multiplier
+import sorcer.arithmetic.provider.Subtractor
+import static sorcer.eo.operator.*;
+import sorcer.service.*;
 
 String arg = "arg", result = "result";
 String x1 = "x1", x2 = "x2", y = "y";
