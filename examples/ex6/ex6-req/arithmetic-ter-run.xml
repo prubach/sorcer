@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Arithmetic exertleter" default="run.exertleter" basedir=".">
+<project name="Arithmetic Exertleter" default="run.exertleter" basedir=".">
 
     <!-- system environment variables -->
     <property environment="env" />
