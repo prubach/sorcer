@@ -131,6 +131,7 @@
             <item name="Continuous Integration" href="./cont-int.html"/>
             <item name="Issue Tracking" href="./issue-tracking.html"/>
             <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer" />
+			<item name="Getting the sources" href="getting.html" />
             <item name="API Documentation" href="./apidocs/index.html"/>
         </menu>
 
