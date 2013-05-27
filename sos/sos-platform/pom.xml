@@ -16,10 +16,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>locker</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
+			<groupId>org.sorcersoft.lockmgr</groupId>
+			<artifactId>lockmgr-api</artifactId>
+			<version>${v.lockmgr}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
