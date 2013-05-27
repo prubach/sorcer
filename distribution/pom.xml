@@ -422,9 +422,9 @@
                                 </goals>
                                 <configuration>
                                     <headerType>gui</headerType>
-                                    <icon>src/main/configs/icons/sos.ico</icon>
-                                    <outfile>target/sorcer-${project.version}-setup.exe</outfile>
-                                    <jar>target/sorcer-${project.version}-setup.jar</jar>
+                                    <icon>${project.build.directory}/sorcer-${project.version}/sorcer-${project.version}/configs/icons/sos.ico</icon>
+                                    <outfile>${project.build.directory}/sorcer-${project.version}-setup.exe</outfile>
+                                    <jar>${project.build.directory}/sorcer-${project.version}-setup.jar</jar>
                                     <errTitle>Sorcer</errTitle>
                                     <jre>
                                         <minVersion>1.6.0</minVersion>
