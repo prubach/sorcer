@@ -18,7 +18,7 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic All Providers" default="boot.provider" basedir=".">
+<project name="Arithmetic ex5 All Prvs" default="boot.provider" basedir=".">
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
