@@ -17,21 +17,20 @@
  */
 package sorcer.ex2.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.Log;
+
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mike Sobolewski
@@ -96,7 +95,7 @@ public class WorkerProviderTest {
 	 * Test method for {@link sorcer.ex2.provider.WorkerProvider#doWork(sorcer.service.Context)}.
 	 */
 	@Test
-	public void testDoIt() throws RemoteException, InvalidWork, ContextException {
+	public void testDoWork() throws RemoteException, InvalidWork, ContextException {
 		Context result = provider.doWork(context);
 		//logger.info("result: " + result);
 		assertEquals(result.getValue("provider/result"), 231);
