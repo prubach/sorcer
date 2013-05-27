@@ -54,7 +54,7 @@ public class WhoIsItTest implements SorcerConstants {
         System.setSecurityManager(new RMISecurityManager());
         Sorcer.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex1-dl",
+                "org.sorcersoft.sorcer:ex1-rdl",
                 "org.sorcersoft.sorcer:ex1-prv",
                 "org.sorcersoft.sorcer:ex1-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));

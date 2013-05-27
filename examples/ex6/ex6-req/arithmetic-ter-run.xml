@@ -81,7 +81,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
             <classpath refid="jini.classpath"/>
             <sysproperty key="java.security.manager" value="" />
             <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-            <sysproperty key="java.security.policy" value="src/main/resources/policy/prv.policy" />
+            <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />
             <sysproperty key="sorcer.provider.codebase" value="${provider.codebase}" />
             <sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
             <sysproperty key="sorcer.provider.impl" value="${provider.class}" />

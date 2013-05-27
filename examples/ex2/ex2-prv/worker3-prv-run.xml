@@ -23,13 +23,13 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Run Worker1" default="run.provider" basedir=".">
+<project name="Run Worker3" default="run.provider" basedir=".">
 
 	<property name="provider.name" value="worker" />
 	<property name="provider.class" value="sorcer.ex2.provider.WorkerProvider" />
-	<property name="beans.id" value="1" />
+	<property name="beans.id" value="3" />
 
-	<property name="pom.file" value="../ex2-prv/pom.xml" />
-	<import file="../ex2-prv/prv-run.xml" />
+    <property name="pom.file" value="${basedir}/pom.xml" />
+	<import file="prv-run.xml" />
 
 </project>

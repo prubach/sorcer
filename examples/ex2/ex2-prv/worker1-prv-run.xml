@@ -18,17 +18,18 @@
     limitations under the License.
 
 -->
+<!-- 
+Replace "provider.name" with your provider name and specify property value for "provider.class."
+Also you might need to adjust the classpath (provider.classpath) for your provider 
+-->
 
-<project name="Worker Requestor" default="run.requestor" basedir=".">
+<project name="Run Worker1" default="run.provider" basedir=".">
 
-	<!-- set property values here -->
-	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
+	<property name="provider.name" value="worker" />
+	<property name="provider.class" value="sorcer.ex2.provider.WorkerProvider" />
+	<property name="beans.id" value="1" />
 
-	<property name="pom.file" value="../ex4-req/pom.xml" />
-	<property name="ex4-req.arg1" value="sorcer.ex4.runner.SeqMasterJobRequestor" />
-	<import file="../ex4-req/req-run.xml" />	
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<import file="prv-run.xml" />
 
 </project>
-
-
-

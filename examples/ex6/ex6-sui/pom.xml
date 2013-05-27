@@ -6,32 +6,27 @@
 
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>ex3</artifactId>
+        <artifactId>ex6</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex3-req</artifactId>
-    <name>SORCER examples :: ex3 :: req</name>
+    <artifactId>ex6-sui</artifactId>
+    <name>SORCER examples :: ex6 :: sui</name>
 
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex2-api</artifactId>
+            <artifactId>ex6-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex3-rdl</artifactId>
-            <version>${project.version}</version>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-	    <version>${v.sorcer}</version>
-        </dependency>
-	<dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-req</artifactId>
             <version>${v.sorcer}</version>
         </dependency>
     </dependencies>

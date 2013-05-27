@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -43,6 +44,7 @@ public class WhoIsItParTaskApp {
 
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
 		Sorcer.getEnvProperties();
 		int tally = 3;

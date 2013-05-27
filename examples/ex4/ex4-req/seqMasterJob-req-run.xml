@@ -22,13 +22,11 @@
 <project name="Worker Requestor" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.class" value="sorcer.ex2.requestor.WorkParJobApp" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
 
-    <property name="pom.file" value="../ex2-req/pom.xml" />
-    <import file="../ex2-req/req-run.xml" />
-    <property name="ex2-req.arg1" value="Worker1" />
-	<property name="ex2-req.arg2" value="Worker2" />
-	<property name="ex2-req.arg3" value="Worker3" />
+	<property name="pom.file" value="${basedir}/pom.xml" />
+	<property name="ex4-req.arg1" value="sorcer.ex4.runner.SeqMasterJobRequestor" />
+	<import file="req-run.xml" />
 
 </project>
 

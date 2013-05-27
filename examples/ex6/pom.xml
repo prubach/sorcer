@@ -20,5 +20,6 @@
 		<module>ex6-api</module>
 		<module>ex6-prv</module>
 		<module>ex6-req</module>
+        <module>ex6-sui</module>
 	</modules>
 </project>

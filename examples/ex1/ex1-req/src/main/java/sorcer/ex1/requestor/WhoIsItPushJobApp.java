@@ -26,6 +26,7 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -41,6 +42,7 @@ public class WhoIsItPushJobApp {
 
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
 		Sorcer.getEnvProperties();
 		// get the queried provider name

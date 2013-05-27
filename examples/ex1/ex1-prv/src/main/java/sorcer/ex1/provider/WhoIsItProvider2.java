@@ -51,8 +51,9 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			ContextException {
 		String hostname;
 		try {
-			hostname = SorcerEnv.getLocalHost().getHostName();
-			context.putValue("provider/hostname", hostname);
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            hostname = inetAddress.getHostName();
+            context.putValue("provider/hostname", hostname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message msg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(msg

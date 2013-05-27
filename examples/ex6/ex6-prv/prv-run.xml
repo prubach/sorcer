@@ -34,6 +34,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 	<!-- set property values here -->
 	<property name="provider.name" value="ex6-prv" />
+    <property name="provider.sui" value="ex6-sui" />
 	<property name="provider.api" value="ex6-api" />
     <property name="provider.groupId" value="org.sorcersoft.sorcer" />
 	<property name="webster" value="${provider.webster.url}" />
@@ -54,6 +55,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<path id="project.classpath">
 	    <path refid="compile.classpath"/>  
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${provider.name}/${v.sorcer}/${provider.name}-${v.sorcer}.jar" />
+        <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${provider.sui}/${v.sorcer}/${provider.sui}-${v.sorcer}.jar" />
 	</path>
 	
 	<!-- provider codeabse jars -->
@@ -61,6 +63,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<property name="j2" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
     <property name="j3" value="${webster}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar" />
 	<property name="j4" value="${webster}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
+    <property name="j5" value="${webster}/org/sorcersoft/sorcer/ex6-sui/${v.sorcer}/ex6-sui-${v.sorcer}.jar" />
 
 	<!-- start provider -->
 	<target name="run.provider" depends="mvn-init">
@@ -69,7 +72,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 			<sysproperty key="java.security.manager" value="" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3} ${j4}" />
+			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3} ${j4} ${j5}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
 			<sysproperty key="sorcer.provider.config" value="${basedir}/src/main/resources/config/${provider.bean}${beans.id}-prv.config" />

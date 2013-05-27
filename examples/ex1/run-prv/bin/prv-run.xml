@@ -36,7 +36,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<!-- set property values here -->
 	<property name="provider.name" value="ex1-prv" />
 	<property name="provider.api" value="ex1-api" />
-	<property name="requestor.dl" value="ex1-dl" />
+	<property name="requestor.dl" value="ex1-rdl" />
 	<property name="webster" value="${provider.webster.url}" />
 
 	<condition property="provider.bean" value ="beans" >

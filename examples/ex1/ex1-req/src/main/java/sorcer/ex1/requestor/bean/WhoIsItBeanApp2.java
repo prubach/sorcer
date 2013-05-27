@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
 import sorcer.org.rioproject.net.HostUtil;
@@ -39,6 +40,7 @@ public class WhoIsItBeanApp2 {
 	
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		if (args.length == 1)
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
