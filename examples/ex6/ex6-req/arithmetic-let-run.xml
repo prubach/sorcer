@@ -28,7 +28,9 @@
 	<echo message="WEBSTER: ${provider.webster.url}" />
 
 	<!-- set property values here -->
-	<property name="provider.api" value="ex6-api" />
+	<property name="requestor.api" value="ex6-api" />
+    <property name="requestor.version" value="${v.sorcer}" />
+    <property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="webster" value="${provider.webster.url}" />
 	<property name="requestor.name" value="ex6-req" />
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
@@ -41,9 +43,9 @@
 	</path>
 	
 	<!-- provider codeabse jars -->
-	<property name="j1" value="${webster}/org/sorcersoft/sorcer/${provider.api}/${v.sorcer}/${provider.api}-${v.sorcer}.jar" />
-	<property name="j2" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
-	<property name="j3" value="${webster}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
+	<property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
+	<property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
+	<property name="j3" value="org.sorcersoft.sorcer:commons-prv" />
 
 	<!-- start provider -->
 	<target name="run.requestor" depends="mvn-init">
@@ -51,10 +53,9 @@
 			<arg value="sorcer.arithmetic.requestor.ArithmeticNetletReq" />
 			<classpath refid="run.classpath"/>
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../policy/${requestor.name}.policy" />
-			<sysproperty key="sorcer.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-			<sysproperty key="java.security.policy" value="src/main/resources/policy/${requestor.name}.policy" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		</java>
 	</target>		

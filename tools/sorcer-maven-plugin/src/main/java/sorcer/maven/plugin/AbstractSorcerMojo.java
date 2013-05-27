@@ -65,7 +65,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	public static final String KEY_REQUESTOR = "sorcer.requestor";
 	public static final String KEY_PROVIDER = "sorcer.provider";
 	public static final String KEY_PROCESS = BootMojo.class.getName() + ".process";
-	public static final String KEY_CODEBASE_REQUESTOR = "sorcer.requestor.codebase";
+	//public static final String KEY_CODEBASE_REQUESTOR = "sorcer.requestor.codebase";
 	public static final String KEY_PROVIDER_PATH = "sorcer.provider.path";
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
