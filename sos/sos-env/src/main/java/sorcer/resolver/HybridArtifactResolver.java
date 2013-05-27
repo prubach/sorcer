@@ -22,7 +22,7 @@ import sorcer.util.ArtifactCoordinates;
 import java.io.File;
 
 /**
- * @author Rafał Krupiński
+ * @author Paweł Rubach
  */
 public class HybridArtifactResolver extends AbstractArtifactResolver {
 
@@ -62,4 +62,13 @@ public class HybridArtifactResolver extends AbstractArtifactResolver {
     public String getRepoDir() {
         return repoDir;
     }
+
+	/**
+	 * First try to resolve with simple resolver
+	 */
+	@Override
+	public String resolveSimpleName(String simpleName, String packaging) {
+		String result = flatResolver.resolveSimpleName(simpleName, packaging);
+		return result != null ? result : repoResolver.resolveSimpleName(simpleName, packaging);
+	}
 }

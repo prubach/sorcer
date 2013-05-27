@@ -34,7 +34,7 @@ import java.util.Properties;
  */
 abstract public class AbstractArtifactResolver implements ArtifactResolver {
 
-	final private Logger log = LoggerFactory.getLogger(getClass());
+	final protected Logger log = LoggerFactory.getLogger(getClass());
 
 	// groupId_artifactId -> version
 	protected Map<String, String> versions = new HashMap<String, String>();

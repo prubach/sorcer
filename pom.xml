@@ -491,4 +491,13 @@
 		<connection>scm:git:git://github.com/sorcersoft/sorcer.git</connection>
 		<url>https://github.com/sorcersoft/sorcer</url>
 	</scm>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>distribution</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

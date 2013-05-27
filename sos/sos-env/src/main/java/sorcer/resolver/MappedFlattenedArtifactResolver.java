@@ -18,17 +18,21 @@
 package sorcer.resolver;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.PropertiesLoader;
 
 /**
+ * Artifact resolver compatible with layout used in the Sorcer distribution
+ *
  * @author Rafał Krupiński
  */
 public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
@@ -38,6 +42,8 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	protected Map<String, String> groupDirMap = new HashMap<String, String>();
 
+	protected List<String> roots;
+
 	public MappedFlattenedArtifactResolver(File rootDir) {
 		this.rootDir = rootDir;
 	}
@@ -46,13 +52,18 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 		String resourceName = "META-INF/maven/repolayout.properties";
 		Map<String, String> propertyMap = new PropertiesLoader().loadAsMap(resourceName, Thread.currentThread().getContextClassLoader());
 		groupDirMap.putAll(propertyMap);
+
+		Collection<String> _roots = new HashSet<String>(groupDirMap.values());
+		_roots.add(GROUPDIR_DEFAULT);
+		roots = Collections.unmodifiableList(new ArrayList<String>(_roots));
+
 	}
 
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
-        String relPath = resolveRelative(artifactCoordinates);
-        if (relPath==null) return null;
-        else return new File(rootDir, relPath).getPath();
+		String relPath = resolveRelative(artifactCoordinates);
+		if (relPath == null) return null;
+		else return new File(rootDir, relPath).getPath();
 	}
 
 	@Override
@@ -64,21 +75,51 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 		} else {
 			groupDir = GROUPDIR_DEFAULT;
 		}
-        File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier()!=null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging());
-        File jar = new File(rootDir, relFile.getPath());
-        if (jar.exists())
-            return relFile.getPath();
-        else
-            return null;
+		File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier() != null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging());
+		File jar = new File(rootDir, relFile.getPath());
+		if (jar.exists())
+			return relFile.getPath();
+		else
+			return null;
 	}
 
-    @Override
-    public String getRootDir() {
-        return rootDir.toString();
-    }
+	@Override
+	public String getRootDir() {
+		return rootDir.toString();
+	}
 
-    @Override
-    public String getRepoDir() {
-        return rootDir.toString();
-    }
+	@Override
+	public String getRepoDir() {
+		return rootDir.toString();
+	}
+
+	/**
+	 * Search a file $simpleName.$packaging in all 1st level subdirectories of tooDir
+	 *
+	 * @see RepositoryArtifactResolver#resolveSimpleName(String, String)
+	 *
+	 * @return the first file matching name $simpleName.$packaging or null if none found
+	 */
+	@Override
+	public String resolveSimpleName(String simpleName, String packaging) {
+		String fileName = simpleName + "." + packaging;
+
+		List<File> files = new LinkedList<File>();
+		for (String subDir : roots) {
+			File file = new File(subDir, fileName);
+			if (new File(rootDir, file.getPath()).exists()) {
+				files.add(file);
+			}
+		}
+
+		if (files.isEmpty()) {
+			return null;
+		} else {
+			File result = files.get(0);
+			if (files.size() > 1) {
+				log.warn("Found {} files matching name {}; returning {}", files.size(), fileName, result);
+			}
+			return result.getPath();
+		}
+	}
 }

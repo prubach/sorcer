@@ -200,6 +200,8 @@ lateInit ( ) {
         JAVA_OPTS="$JAVA_OPTS -Xdock:name=$SORCER_APP_NAME -Xdock:icon=$SORCER_HOME/configs/shell/configs/sorcer-dock-rgb.png"
     fi
 
+	JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
+
     # For Cygwin, switch paths to Windows format before running java
     if $cygwin ; then
         SORCER_HOME=`cygpath --mixed "$SORCER_HOME"`
