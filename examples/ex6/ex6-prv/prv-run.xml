@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Running Smart Arithmeric" default="run.provider" basedir=".">
+<project default="run.provider" basedir=".">
 
 	<!-- system environment variables -->
 	<property environment="env" />
@@ -67,7 +67,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	    	<classpath refid="jini.classpath"/>
 			<sysproperty key="java.security.manager" value="" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/arithmetic-beans-prv.policy" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3} ${j4}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />

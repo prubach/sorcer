@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project default="run.provider" basedir=".">
+<project name="Arithmetic Beans Provider" default="run.provider" basedir=".">
 	<import file="prv-run.xml" />
 </project>
 
