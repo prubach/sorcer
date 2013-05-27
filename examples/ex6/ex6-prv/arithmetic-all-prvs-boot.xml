@@ -25,7 +25,7 @@
 	<target name="all-arithmetic">
 	    <!--<java classname="com.sun.jini.start.ServiceStarter" fork="yes"> -->
 	    <java classname="sorcer.boot.ServiceStarter" fork="yes">
-            <arg value="src/main/resources/config/services.config" />
+            <arg value="src/main/resources/config/start-all-prvs.config" />
             <classpath refid="boot.classpath"/>
             <sysproperty key="sorcer.home" value="${sorcer.home}" />
             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />

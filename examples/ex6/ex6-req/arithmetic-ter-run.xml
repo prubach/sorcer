@@ -33,9 +33,9 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
     <echo message="WEBSTER: ${provider.webster.url}" />
 
     <!-- set property values here -->
-    <property name="provider.prv" value="ex5-prv" />
-    <property name="provider.req" value="ex5-req" />
-    <property name="provider.api" value="ex5-api" />
+    <property name="provider.prv" value="ex6-prv" />
+    <property name="provider.req" value="ex6-req" />
+    <property name="provider.api" value="ex6-api" />
     <property name="provider.bean" value="exertlet" />
     <property name="provider.class" value="sorcer.core.provider.ServiceTasker" />
     <property name="provider.name" value="arithmetic" />
@@ -45,7 +45,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
         <not><isset property="beans.id" /></not>
     </condition>
 
-    <property name="provider.config" value="src/main/resources/config/exertlet-prv.config" />
+    <property name="provider.config" value="src/main/resources/config/arithmetic-ter.config" />
 
     <condition property="provider.bean" value ="beans" >
         <not><isset property="provider.bean" /></not>

@@ -31,7 +31,7 @@
 	<property name="provider.api" value="ex6-api" />
 	<property name="webster" value="${provider.webster.url}" />
 	<property name="requestor.name" value="ex6-req" />
-	<property name="requestor.class" value="sorcer.core.requestor.ExertletRunner" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
 
 	
 	<!-- provider classpath -->

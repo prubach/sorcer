@@ -22,7 +22,7 @@
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
-    <property name="provider.config" value="${basedir}/src/main/resources/config/boot-all-providers.config" />
+    <property name="provider.config" value="${basedir}/src/main/resources/config/start-all-prvs.config" />
     <import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 </project>
