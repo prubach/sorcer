@@ -4,7 +4,23 @@ Getting the sources
 ...using IntelliJ Idea
 ----
 
-TBD
+1. Open IntelliJ Idea
+2. If previous project is opened, close it (menu File, Close project)
+3. Click Check out from version control and select git
+
+    ![Checkout project](getting/idea/step3.png)
+
+4. Enter "Git repository URL":
+
+        https://github.com/sorcersoft/sorcer.git
+
+    ![Clone repository](getting/idea/step4.png)
+
+    Click Next.
+
+5. Create directory for idea projects or use an existing one.
+
+    Click clone
 
 ...using (Windows) console
 ----
