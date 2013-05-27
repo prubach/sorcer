@@ -9,15 +9,15 @@ import sorcer.service.*;
 String arg = "arg", result = "result";
 String x1 = "x1", x2 = "x2", y = "y";
 
-Task f3 = task("f3", op("subtract", Subtractor.class),
+Task f3 = task("f3", sig("subtract", Subtractor.class),
    context("subtract", input(path(arg, x1), null), input(path(arg, x2), null),
 	  output(path(result, y), null)));
 
-Task f4 = task("f4", op("multiply", Multiplier.class),
+Task f4 = task("f4", sig("multiply", Multiplier.class),
 		   context("multiply", input(path(arg, x1), 10.0d), input(path(arg, x2), 50.0d),
 			  output(path(result, y), null)));
 
-Task f5 = task("f5", op("add", Adder.class),
+Task f5 = task("f5", sig("add", Adder.class),
    context("add", input(path(arg, x1), 20.0d), input(path(arg, x2), 80.0d),
 	  output(path(result, y), null)));
 
