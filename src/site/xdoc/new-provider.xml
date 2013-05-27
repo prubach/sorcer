@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Getting Started with Sorcer</title>
+        <title>Creating new provider with Maven</title>
         <author email="pawel.rubach@sorcersoft.com">Paweł Rubach</author>
     </properties>
     <body>
