@@ -62,9 +62,6 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	public static final String KEY_CODEBASE = "sorcer.codebase";
 	public static final String KEY_REQUESTOR = "sorcer.requestor";
 	public static final String KEY_PROVIDER = "sorcer.provider";
-	public static final String KEY_PROCESS = BootMojo.class.getName() + ".process";
-	//public static final String KEY_CODEBASE_REQUESTOR = "sorcer.requestor.codebase";
-	public static final String KEY_PROVIDER_PATH = "sorcer.provider.path";
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
 	protected RepositorySystemSession repositorySystemSession;
@@ -107,7 +104,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 		try {
 			result = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
 		} catch (DependencyCollectionException e) {
-			throw new MojoExecutionException("Unable to resolve requestor dependencies.", e);
+			throw new MojoExecutionException("Unable to resolve runner dependencies.", e);
 		}
 
 		final List<String> resultList = new LinkedList<String>();
@@ -158,7 +155,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 			ArtifactResult artifactResult = repositorySystem.resolveArtifact(repositorySystemSession, request);
 			return artifactResult.getArtifact();
 		} catch (ArtifactResolutionException e) {
-			throw new MojoExecutionException("Unable to resolve requestor from repository.", e);
+			throw new MojoExecutionException("Unable to resolve runner from repository.", e);
 		}
 	}
 
@@ -208,13 +205,16 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	 *       best I can do at the moment in order to protect clients of the
 	 *       class.
 	 */
-	@SuppressWarnings("PMD.AvoidCatchingGenericException")
-	private List<Artifact> fetch(RepositorySystemSession session, DependencyRequest dreq)
-			throws DependencyResolutionException {
-		List<Artifact> deps = new LinkedList<Artifact>();
+	private List<Artifact> fetch(final RepositorySystemSession session,
+								 final DependencyRequest dreq) throws DependencyResolutionException {
+		final List<Artifact> deps = new LinkedList<Artifact>();
 		try {
 			Collection<ArtifactResult> results;
-			results = this.repositorySystem.resolveDependencies(session, dreq).getArtifactResults();
+			synchronized (session.getLocalRepository().getBasedir()) {
+				results = this.repositorySystem
+						.resolveDependencies(session, dreq)
+						.getArtifactResults();
+			}
 			for (ArtifactResult res : results) {
 				deps.add(res.getArtifact());
 			}

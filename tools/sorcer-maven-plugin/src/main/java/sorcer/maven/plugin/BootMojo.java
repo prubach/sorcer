@@ -18,12 +18,14 @@
 package sorcer.maven.plugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.jini.core.lookup.ServiceRegistrar;
+import net.jini.discovery.LookupDiscoveryManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -43,6 +45,7 @@ import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.PolicyFileHelper;
+import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
@@ -85,6 +88,9 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.build.directory}/provider.log")
 	protected File logFile;
 
+	@Parameter(property = "basedir")
+	protected File basedir;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//allow others to use maven logger
 		StaticLoggerBinder.getSingleton().setLog(getLog());
@@ -123,9 +129,18 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
 		builder.setDebugger(debug);
 		builder.setOutput(logFile);
+		builder.setWorkingDir(basedir);
 
 		getLog().info("starting sorcer");
-		putProcess(builder.startProcess());
+		Process2 process = builder.startProcess();
+		putProcess(process);
+
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			process.destroy();
+			throw new MojoExecutionException("Interrupted", e);
+		}
 	}
 
 	private int reservePort() {

@@ -21,6 +21,7 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.config.ConfigurationException;
 import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerEnv;
+import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,10 +66,9 @@ public class ServiceStarter {
 
 	private void loadDefaultProperties() {
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
-		setDefaultProperty("org.rioproject.resolver.prune.platform", "false");
-		setDefaultProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos");
-		setDefaultProperty("java.util.logging.config.file", sorcerHome + "/configs/sorcer.logging");
-		setDefaultProperty("sorcer.env.file", sorcerHome + "/configs/sorcer.env");
+		setDefaultProperty(JavaSystemProperties.JAVA_PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
+		setDefaultProperty(JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE, sorcerHome + "/configs/sorcer.logging");
+		setDefaultProperty(SorcerEnv.S_KEY_SORCER_ENV, sorcerHome + "/configs/sorcer.env");
 	}
 
 	private void setDefaultProperty(String key, String value) {

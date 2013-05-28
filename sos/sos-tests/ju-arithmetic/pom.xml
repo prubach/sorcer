@@ -17,4 +17,21 @@
 		<module>ju-arithmetic-api</module>
 		<module>ju-arithmetic-prv</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sorcer-init</id>
+						<goals>
+							<goal>initialize</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

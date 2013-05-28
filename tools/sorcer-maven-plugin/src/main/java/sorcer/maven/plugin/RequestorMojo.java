@@ -17,18 +17,6 @@
 
 package sorcer.maven.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -40,7 +28,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.core.SorcerConstants;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.JavaProcessBuilder;
@@ -48,6 +35,18 @@ import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.provider.boot.Booter;
 import sorcer.util.JavaSystemProperties;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Rafał Krupiński
@@ -62,11 +61,11 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(property = "project.build.directory", readonly = true)
 	protected File targetDir;
 
-	@Parameter(property = "sorcer.requestor.mainClass", required = true)
+	/**
+	 * mainClass must be set ether here or in requestors list
+	 */
+	@Parameter(property = "sorcer.requestor.mainClass")
 	protected String mainClass;
-
-	@Parameter(property = "basedir", readonly = true)
-	protected File baseDir;
 
 	@Parameter(defaultValue = "${project.build.directory}/sorcer.env")
 	protected File sorcerEnvFile;
@@ -83,8 +82,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter
 	protected String[] requestorClasspath = new String[0];
 
-	@Parameter(defaultValue = "${project.build.directory}/requestor.log")
-	protected File logFile;
+	@Parameter(defaultValue = "${project.build.directory}/requestor%s.log")
+	protected String logFile;
 
 	@Parameter
 	protected ClientConfiguration[] requestors;
@@ -98,6 +97,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "10000", property = "client.timeout")
 	protected int timeout;
 
+	@Parameter(defaultValue = "${basedir}")
+	protected File basedir;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (!project.getPackaging().equals("jar")) {
@@ -110,8 +112,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		defaultSystemProps.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
 		defaultSystemProps.put(JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
 
-		Collection<ClientRuntimeConfiguration> configurations = buildClientsList();
-		for (ClientRuntimeConfiguration config : configurations) {
+		List<ClientRuntimeConfiguration> configurations = buildClientsList();
+		for (int i = 0; i < configurations.size(); i++) {
+			ClientRuntimeConfiguration config = configurations.get(i);
 			JavaProcessBuilder builder = config.preconfigureProcess();
 
 			Map<String, String> properties = new HashMap<String, String>();
@@ -119,8 +122,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			properties.putAll(config.getSystemProperties());
 			builder.setProperties(properties);
 
+			builder.setWorkingDir(basedir);
 			builder.setDebugger(debug);
-			builder.setOutput(logFile);
+			builder.setOutput(getLogFile(configurations, i));
 
 			try {
 				getLog().info("Starting requestor process");
@@ -138,7 +142,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-	private Collection<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
+	private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
 		String host = "http://" + Booter.getWebsterHostName() + ":" + TestCycleHelper.getInstance().getWebsterPort();
 		if (requestors == null || requestors.length == 0) {
 			ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(mainClass, buildClasspath(requestorClasspath));
@@ -148,22 +152,34 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			List<ClientRuntimeConfiguration> result = new ArrayList<ClientRuntimeConfiguration>(requestors.length);
 			for (ClientConfiguration requestor : requestors) {
 				String configMainClass = mainClass != null ? mainClass : requestor.mainClass;
-				ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(configMainClass, buildClasspath(requestor.classpath));
-				updateCodebaseAndRoots(config, host, requestor.codebase);
+				String[] userClasspath = requestor.classpath != null ? requestor.classpath : requestorClasspath;
+				ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(configMainClass, buildClasspath(userClasspath));
+
+				String[] userCodebase = requestor.codebase != null ? requestor.codebase : requestorCodebase;
+				updateCodebaseAndRoots(config, host, userCodebase);
+				result.add(config);
 			}
 			return result;
 		}
 	}
 
 	private Collection<String> buildClasspath(String[] userClasspath) throws MojoExecutionException {
-		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userClasspath, JavaScopes.TEST);
+		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userClasspath, scope);
 		Collection<String> classPathList = ArtifactUtil.toString(artifacts);
 		classPathList.add(project.getBuild().getTestOutputDirectory());
 		return classPathList;
 	}
 
+	private File getLogFile(List<ClientRuntimeConfiguration> configurations, int index) {
+		if (configurations.size() == 1) {
+			return new File(String.format(logFile, ""));
+		} else {
+			return new File(String.format(logFile, "" + index));
+		}
+	}
+
 	private void updateCodebaseAndRoots(ClientRuntimeConfiguration config, String websterUrl, String[] userCodebase) throws MojoExecutionException {
-		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userCodebase, JavaScopes.TEST);
+		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userCodebase, scope);
 		List<String> codebase = new LinkedList<String>();
 		try {
 			String repositoryPath = repositorySystemSession.getLocalRepository().getBasedir().getCanonicalPath();

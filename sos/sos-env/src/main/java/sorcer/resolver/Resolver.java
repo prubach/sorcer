@@ -22,7 +22,8 @@ import sorcer.core.SorcerConstants;
 import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,24 +62,29 @@ public class Resolver {
 		return resolveRelative(ArtifactCoordinates.coords(coords)).replace(File.separator, "/");
 	}
 
-	public static String resolveAbsolute(String baseUri, ArtifactCoordinates coords){
-		return URI.create(baseUri).resolve(resolveRelative(coords).replace(File.separator, "/")).toString();
+	public static String resolveAbsolute(URL baseUrl, ArtifactCoordinates coords) {
+		return resolveAbsoluteURL(baseUrl, coords).toExternalForm();
+	}
+
+	public static URL resolveAbsoluteURL(URL baseUrl, ArtifactCoordinates coords) {
+		try {
+			return new URL(baseUrl, resolveRelative(coords).replace(File.separator, "/"));
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * This is helper method for use in *.config files. The resulting string is
 	 * passed to SorcerServiceDescriptor constructor as a codebase string.
 	 *
-	 * FIXME It's the constructors responsibility to prepend URL prefix of the webster. This is a bug and should be fixed.
-	 *
-	 * @param coords
-	 *            array of artifact coordinates
+	 * @param baseUrl URL root of artifacts
+	 * @param coords  array of artifact coordinates
 	 */
-	@SuppressWarnings("unused")
-	public static String resolveCodeBase(ArtifactCoordinates... coords) {
+	public static String resolveCodeBase(URL baseUrl, String... coords) {
 		String[] relatives = new String[coords.length];
 		for (int i = 0; i < coords.length; i++) {
-			relatives[i] = resolver.resolveRelative(coords[i]);
+			relatives[i] = resolveAbsolute(baseUrl, ArtifactCoordinates.coords(coords[i]));
 		}
 		return StringUtils.join(relatives, SorcerConstants.CODEBASE_SEPARATOR);
 	}
@@ -89,6 +95,17 @@ public class Resolver {
 	public static String resolveClassPath(ArtifactCoordinates... artifactCoordinatesList) {
 		List<String> result = new ArrayList<String>(artifactCoordinatesList.length);
 		for (ArtifactCoordinates coords : artifactCoordinatesList) {
+			result.add(resolveAbsolute(coords));
+		}
+		return StringUtils.join(result, File.pathSeparator);
+	}
+
+	/**
+	 * Resolve array of artifact coordinates to ${File.pathSeparator}-separated list of absolute paths
+	 */
+	public static String resolveClassPath(String... artifactCoordinatesList) {
+		List<String> result = new ArrayList<String>(artifactCoordinatesList.length);
+		for (String coords : artifactCoordinatesList) {
 			result.add(resolveAbsolute(coords));
 		}
 		return StringUtils.join(result, File.pathSeparator);

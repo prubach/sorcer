@@ -67,6 +67,51 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.sorcersoft.sorcer</groupId>
+				<artifactId>sorcer-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sorcer-preit</id>
+						<goals>
+							<goal>provider</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>sorcer-it</id>
+						<goals>
+							<goal>run-requestor</goal>
+						</goals>
+						<configuration>
+							<requestorClasspath>
+								<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
+								<requestorClasspath>junit:junit:4.11</requestorClasspath>
+							</requestorClasspath>
+							<requestors>
+								<param>
+									<mainClass>junit.sorcer.core.provider.ArithmeticNetTest</mainClass>
+								</param>
+								<param>
+									<mainClass>junit.sorcer.core.provider.ProviderAccessorTest</mainClass>
+								</param>
+								<param>
+									<mainClass>junit.sorcer.util.bdb.objects.SosUrlsTest</mainClass>
+									<classpath>
+										<entry>junit:junit:4.11</entry>
+										<entry>com.sleepycat:je:${v.sleepycat}</entry>
+									</classpath>
+								</param>
+							</requestors>
+						</configuration>
+					</execution>
+					<execution>
+						<id>sorcer-postit</id>
+						<goals>
+							<goal>destroy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

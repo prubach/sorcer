@@ -28,13 +28,11 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
@@ -63,8 +61,11 @@ public class SosUrlsTest {
 		ServiceExertion.debug = true;
 	}
 
-    @Test
-    public void sosUrlsTest() throws SignatureException,
+	public static void main(String[] args) throws Exception {
+		new SosUrlsTest().sosUrlsTest();
+	}
+
+	public void sosUrlsTest() throws SignatureException,
             ExertionException, ContextException, IOException {
         storedValuesTest();
         updateValuesTest();

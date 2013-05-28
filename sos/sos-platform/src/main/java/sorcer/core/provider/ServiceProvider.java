@@ -935,7 +935,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
         UIDescriptor uiDesc2 = null;
         try {
-            URL uiUrl = new URL(Resolver.resolveAbsolute(Sorcer.getWebsterUrl() + "/", Artifact.sorcer("sos-exertlet-sui")));
+            URL uiUrl = Resolver.resolveAbsoluteURL(new URL(Sorcer.getWebsterUrl() + "/"), Artifact.sorcer("sos-exertlet-sui"));
             URL helpUrl = new URL(Sorcer.getWebsterUrl()
                     + "/exertlet/sos-exertlet-sui.html");
 

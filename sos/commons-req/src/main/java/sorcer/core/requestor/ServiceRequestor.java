@@ -22,7 +22,6 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.tools.webster.InternalWebster;
@@ -296,6 +295,6 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
     private static String resolve(ArtifactCoordinates coords) {
         return isWebsterInt
                 ? Resolver.resolveRelative(coords)
-                : Resolver.resolveAbsolute(Sorcer.getWebsterUrl() + "/", coords);
+                : Resolver.resolveAbsolute(Sorcer.getWebsterUrlURL(), coords);
     }
 }
