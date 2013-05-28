@@ -49,7 +49,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 		System.setSecurityManager(new RMISecurityManager());
         Sorcer.setCodeBaseByArtifacts(new String[] {
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex5-api" });
+                "org.sorcersoft.sorcer:ex6-api" });
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}
