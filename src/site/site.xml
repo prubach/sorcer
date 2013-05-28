@@ -106,9 +106,6 @@
         <links>
             <item name="Home" href="./index.html" />
             <item name="Download" href="./download.html"/>
-<!--
-            <item name="Download" href="./download.html" />
--->
         </links>
 
         <menu name="First steps" inherit="top">
@@ -121,37 +118,19 @@
         <menu name="Documentation" inherit="top">
             <item name="Troubleshooting" href="./troubleshooting.html"/>
             <item name="Wiki" href="https://github.com/sorcersoft/sorcer/wiki"/>
-            <!--<item name="Support" href="./support.html"/>-->
         </menu>
 
         <menu name="Developers" inherit="top">
             <item name="Source Repository" href="https://github.com/sorcersoft/sorcer"/>
+            <item name="Getting the sources" href="getting.html" />
     <!--
                 <item name="Conventions" href="./conventions.html"/>
-                <item name="Testing Services" href="./testing.html"/>
     -->
             <item name="Continuous Integration" href="./cont-int.html"/>
             <item name="Issue Tracking" href="./issue-tracking.html"/>
             <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer" />
-			<item name="Getting the sources" href="getting.html" />
             <item name="API Documentation" href="./apidocs/index.html"/>
         </menu>
-
-<!--        <menu name="Examples" inherit="top">
-            <item name="Calculator" href="./examples/calculator/index.html"/>
-            <item name="Events" href="./examples/events/index.html"/>
-            <item name="Hospital" href="./examples/hospital/index.html"/>
-            <item name="Spring" href="./examples/springbean/index.html"/>
-            <item name="Tomcat" href="./examples/tomcat/index.html"/>
-            <item name="Workflow" href="./examples/workflow/index.html"/>
-        </menu>-->
-
-        <!--<menu name="Contribute" inherit="top">
-            &lt;!&ndash;<item name="Contributing" href="./contributing.html"/>&ndash;&gt;
-            <item name="Issue Tracking" href="https://github.com/sorcersoft/sorcer/issues"/>
-	        <item name="Fork on GitHub" href="https://github.com/sorcersoft/sorcer/" />
-            &lt;!&ndash;<item name="Contributions" href="./contributions.html"/>&ndash;&gt;
-        </menu>-->
 
         <menu name="Support">
             <item name="Commercial support" href="support.html"/>
