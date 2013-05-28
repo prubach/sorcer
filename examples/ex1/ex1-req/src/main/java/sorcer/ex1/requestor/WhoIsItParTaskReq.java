@@ -87,12 +87,11 @@ public class WhoIsItParTaskReq extends ServiceRequestor {
 	}
 
 	public void postprocess() {
-		ServiceExertion.debug = true;
 		logger.info("Output context1: \n"
 				+ exertion.getContext("Who Is It1?"));
 		logger.info("Output context2: \n"
 				+ exertion.getContext("Who Is It2?"));
-		logger.info("Output job: \n" + exertion);
+		logger.info("Output job: \n" + ((Job)exertion).getJobContext());
 	}
 
 }
