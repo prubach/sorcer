@@ -42,12 +42,14 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         context1.putValue("requestor/name", requestorName);
         context1.putValue("requestor/operand/1", 1);
         context1.putValue("requestor/operand/2", 1);
+        context1.putValue("requestor/work", Works.work1);
         context1.putOutValue("provider/result", null);
 
         Context context2 = new ServiceContext("work2");
         context2.putValue("requestor/name", requestorName);
         context2.putValue("requestor/operand/1", 2);
         context2.putValue("requestor/operand/2", 2);
+        context2.putValue("requestor/work", Works.work2);
         context2.putOutValue("provider/result", null);
 
         Context context3 = new ServiceContext("work3");
@@ -55,19 +57,11 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         context3.putInValue("requestor/operand/1", null);
         context3.putInValue("requestor/operand/2", null);
         context3.putInValue("requestor/operand/2", null);
+        context3.putValue("requestor/work", Works.work3);
 
-        Work work4 = new Work() {
-            public Context exec(Context context) throws InvalidWork, ContextException {
-                double arg1 = (Double)context.getValue("requestor/operand/1");
-                double arg2 = (Double)context.getValue("requestor/operand/2");
-                double arg3 = (Double)context.getValue("requestor/operand/3");
-                context.putOutValue("provider/result", (arg1 + arg2 + arg3)/3);
-                return context;
-            }
-        };
         Context context4 = new ServiceContext("work4");
         context4.putValue("requestor/name", requestorName);
-        context4.putInValue("requestor/work", work4);
+        context4.putInValue("requestor/work", Works.work4);
 
         // pass the parameters from one dataContext to the next dataContext
         //mapped parameter should be marked via in, out, or inout paths

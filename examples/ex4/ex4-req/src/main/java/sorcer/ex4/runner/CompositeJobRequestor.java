@@ -40,20 +40,24 @@ public class CompositeJobRequestor extends ServiceRequestor {
 		context1.putValue("requestor/name", requestorName);
 		context1.putValue("requestor/operand/1", 1);
 		context1.putValue("requestor/operand/2", 1);
-		context1.putOutValue("provider/result", 0);
+        context1.putValue("requestor/work", Works.work1);
+        context1.putOutValue("provider/result", Context.Value.NULL);
 		
 		Context context2 = new ServiceContext("work2");
 		context2.putValue("requestor/name", requestorName);
 		context2.putValue("requestor/operand/1", 2);
 		context2.putValue("requestor/operand/2", 2);
-		context2.putOutValue("provider/result", 0);
+        context2.putValue("requestor/work", Works.work3);
+        context2.putOutValue("provider/result", Context.Value.NULL);
 
 		Context context3 = new ServiceContext("work3");
 		context3.putValue("requestor/name", requestorName);
-		context3.putInValue("requestor/operand/1", 0);
-		context3.putInValue("requestor/operand/2", 0);
-		
-		// pass the parameters from one dataContext to the next dataContext
+		context3.putInValue("requestor/operand/1", Context.Value.NULL);
+		context3.putInValue("requestor/operand/2", Context.Value.NULL);
+        context3.putValue("requestor/work", Works.work3);
+
+
+        // pass the parameters from one dataContext to the next dataContext
 		//mapped parameter should be marked via in, out, or inout paths
 	    context1.map("provider/result", "requestor/operand/1", context3);
 	    context2.map("provider/result", "requestor/operand/2", context3);
