@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -53,7 +51,7 @@ import org.sonatype.aether.util.filter.DependencyFilterUtils;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
-import com.jcabi.aether.Aether;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Rafał Krupiński
@@ -82,10 +80,6 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 
 	@Parameter(property = "project.build.testOutputDirectory", readonly = true)
 	protected File testOutputDir;
-
-	protected Aether createAether() {
-		return new Aether(project, repositorySystemSession.getLocalRepository().getBasedir());
-	}
 
 	@Override
 	@SuppressWarnings("unchecked")
