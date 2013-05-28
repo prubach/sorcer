@@ -27,6 +27,7 @@ import sorcer.ex2.provider.Work;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+import sorcer.ex2.requestor.Works;
 
 public class SeqMasterJobRequestor extends ServiceRequestor {
 

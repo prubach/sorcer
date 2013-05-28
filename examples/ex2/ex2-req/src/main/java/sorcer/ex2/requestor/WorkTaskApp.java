@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
@@ -39,6 +40,7 @@ public class WorkTaskApp {
 
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system properties
 		Sorcer.getEnvProperties();
 
@@ -57,21 +59,12 @@ public class WorkTaskApp {
 	private Exertion getExertion(String pn) throws Exception {
 		String hostname = SorcerEnv.getLocalHost().getHostName();
 
-        Work work = new Work() {
-            public Context exec(Context cxt) throws InvalidWork, ContextException {
-                int arg1 = (Integer)cxt.getValue("requestor/operand/1");
-                int arg2 = (Integer)cxt.getValue("requestor/operand/2");
-                cxt.putOutValue("provider/result", arg1 * arg2);
-                return cxt;
-            }
-        };
-
 		Context context = new ServiceContext("work");
 		context.putValue("requstor/name", hostname);
 		context.putValue("requestor/operand/1", 4);
 		context.putValue("requestor/operand/2", 4);
 		context.putValue("to/provider/name", pn);
-        context.putValue("requestor/work", work);
+        context.putValue("requestor/work", Works.work2);
 
         NetSignature signature = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class, pn);

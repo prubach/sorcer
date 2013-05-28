@@ -21,6 +21,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -40,6 +41,7 @@ public class WorkParJobApp {
 
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system properties
 		Sorcer.getEnvProperties();
 
@@ -58,19 +60,19 @@ public class WorkParJobApp {
 		context1.putValue("requstor/name", hostname);
 		context1.putValue("requestor/operand/1", 1);
 		context1.putValue("requestor/operand/2", 1);
-        context1.putValue("requestor/work", RequestorWork.work1);
+        context1.putValue("requestor/work", Works.work1);
 
         Context context2 = new ServiceContext("work2");
 		context2.putValue("requstor/name", hostname);
 		context2.putValue("requestor/operand/1", 2);
 		context2.putValue("requestor/operand/2", 2);
-        context2.putValue("requestor/work", RequestorWork.work2);
+        context2.putValue("requestor/work", Works.work2);
 
         Context context3 = new ServiceContext("work3");
 		context3.putValue("requstor/name", hostname);
 		context3.putValue("requestor/operand/1", 3);
 		context3.putValue("requestor/operand/2", 3);
-        context3.putValue("requestor/work", RequestorWork.work3);
+        context3.putValue("requestor/work", Works.work3);
 
         NetSignature signature1 = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class);

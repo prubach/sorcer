@@ -18,15 +18,15 @@
 package sorcer.ex3.requestor;
 
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Signature.Type;
-import sorcer.service.Signature.Direction;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context.*;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.Work;
-import sorcer.service.*;
+import sorcer.service.Context.Value;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Signature.Type;
+import sorcer.service.Task;
+import sorcer.ex2.requestor.Works;
 
 public class ContextWorkReq extends ServiceRequestor {
     ServiceContext context = new ServiceContext("common/context");

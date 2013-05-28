@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex3-rdl</artifactId>
+            <artifactId>ex2-rdl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

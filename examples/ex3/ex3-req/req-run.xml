@@ -30,7 +30,7 @@
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex3-req" />
 	<property name="requestor.api" value="ex2-api" />
-    <property name="requestor.dl" value="ex3-rdl" />
+    <property name="requestor.dl" value="ex2-rdl" />
     <property name="requestor.version" value="1.0-SNAPSHOT" />
 
 	<target name="run.requestor" depends="mvn-init">

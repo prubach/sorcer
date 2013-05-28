@@ -27,6 +27,7 @@ import sorcer.ex2.provider.Work;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+import sorcer.ex2.requestor.Works;
 
 public class ParMasterJobRequestor extends ServiceRequestor {
 
@@ -96,7 +97,7 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         // use the catalog to delegate the tasks
         job.setAccessType(Access.QOS_PULL);
         // either parallel or sequential
-        job.setFlowType(Flow.PAR    );
+        job.setFlowType(Flow.PAR);
         // time the job execution
         job.setExecTimeRequested(true);
         // job can be monitored

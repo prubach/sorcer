@@ -20,5 +20,6 @@
 		<module>ex2-api</module>
 		<module>ex2-prv</module>
 		<module>ex2-req</module>
+        <module>ex2-rdl</module>
 	</modules>
 </project>

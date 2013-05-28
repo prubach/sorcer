@@ -23,9 +23,10 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.service.Context.*;
+import sorcer.service.Context.Value;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+import sorcer.ex2.requestor.Works;
 
 public class PipedWorkReq extends ServiceRequestor {
 

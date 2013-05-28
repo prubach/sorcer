@@ -1,4 +1,4 @@
-package sorcer.ex3.requestor;
+package sorcer.ex2.requestor;
 
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;

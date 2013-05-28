@@ -22,12 +22,11 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.Work;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Sorcer;
+import sorcer.ex2.requestor.Works;
 
 public class StrategyWorkReq extends ServiceRequestor {
 

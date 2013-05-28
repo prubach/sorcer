@@ -25,6 +25,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
+import sorcer.ex2.requestor.Works;
 
 public class CompositeJobRequestor extends ServiceRequestor {
 

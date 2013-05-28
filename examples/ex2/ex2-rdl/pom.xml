@@ -6,12 +6,12 @@
 
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>ex3</artifactId>
+        <artifactId>ex1</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex3-rdl</artifactId>
-    <name>SORCER examples :: ex3 :: dl</name>
+    <artifactId>ex2-rdl</artifactId>
+    <name>SORCER examples :: ex2 :: rdl</name>
 
     <dependencies>
         <dependency>
@@ -24,11 +24,5 @@
             <artifactId>sos-platform</artifactId>
             <version>${v.sorcer}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-req</artifactId>
-            <version>${v.sorcer}</version>
-        </dependency>
     </dependencies>
-
 </project>

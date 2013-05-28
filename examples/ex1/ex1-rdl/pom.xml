@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>ex1-rdl</artifactId>
-    <name>SORCER examples :: ex1 :: dl</name>
+    <name>SORCER examples :: ex1 :: rdl</name>
 
     <dependencies>
         <dependency>

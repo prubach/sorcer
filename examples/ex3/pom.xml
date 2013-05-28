@@ -17,7 +17,6 @@
 	<url>http://sorcersoft.org/</url>
 
 	<modules>
-        <module>ex3-rdl</module>
         <module>ex3-req</module>
 	</modules>
 </project>
