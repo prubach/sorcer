@@ -350,8 +350,6 @@ startSos ( ) {
         JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
     fi
 
-    CONFIG=$1
-    shift
     # Start the Profiler or the JVM
     if $useprofiler ; then
         runProfiler
@@ -367,7 +365,6 @@ startSos ( ) {
             -Dsorcer.home="$SORCER_HOME" \
             -Dtools.jar="$TOOLS_JAR" \
             $STARTER_MAIN_CLASS \
-            $CONFIG \
             "$@"
     fi
 }

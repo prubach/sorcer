@@ -23,10 +23,13 @@ import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 
+import java.net.URL;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,13 +41,11 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.Subject;
 
 import net.jini.config.ConfigurationProvider;
-import sorcer.boot.AbstractServiceStarter;
-import sorcer.boot.ServiceListPostProcessor;
 
 /**
  * @author Rafał Krupiński
  */
-public class ServiceStarter extends AbstractServiceStarter {
+public class ServiceStarter {
 
 	/**
 	 * Component name for service starter configuration entries
@@ -81,9 +82,6 @@ public class ServiceStarter extends AbstractServiceStarter {
 	 * Array of strong references to transient services
 	 */
 	private ArrayList transient_service_refs;
-
-	private List<ServiceListPostProcessor> postprocessors = new LinkedList<ServiceListPostProcessor>();
-
 
 	/**
 	 * Utility routine that sets a security manager if one isn't already
@@ -253,27 +251,31 @@ public class ServiceStarter extends AbstractServiceStarter {
 	/**
 	 * Workhorse function for both main() entrypoints.
 	 */
-	private Service[] processServiceDescriptors(Configuration config) throws Exception {
-		ServiceDescriptor[] descs = (ServiceDescriptor[])
-				config.getEntry(START_PACKAGE, "serviceDescriptors",
-						ServiceDescriptor[].class, null);
-		if (descs == null || descs.length == 0) {
-			logger.warning("service.config.empty");
-			return new Service[0];
-		}
-		LoginContext loginContext = (LoginContext)
-				config.getEntry(START_PACKAGE, "loginContext",
-						LoginContext.class, null);
-		Service[] results = null;
+	private Service[] processServiceDescriptors(Configuration... configs) throws Exception {
+		List<Service> resultList = new LinkedList<Service>();
 
-		for (ServiceListPostProcessor postProcessor : postprocessors) {
-			descs = postProcessor.postProcess(descs);
+		for (Configuration config : configs) {
+			ServiceDescriptor[] descs = (ServiceDescriptor[])
+					config.getEntry(START_PACKAGE, "serviceDescriptors",
+							ServiceDescriptor[].class, null);
+			if (descs == null || descs.length == 0) {
+				logger.warning("service.config.empty");
+				return new Service[0];
+			}
+			LoginContext loginContext = (LoginContext)
+					config.getEntry(START_PACKAGE, "loginContext",
+							LoginContext.class, null);
+
+			Service[] results;
+			if (loginContext != null) {
+				results = createWithLogin(descs, config, loginContext);
+			} else {
+				results = create(descs, config);
+			}
+			resultList.addAll(Arrays.asList(results));
 		}
 
-		if (loginContext != null)
-			results = createWithLogin(descs, config, loginContext);
-		else
-			results = create(descs, config);
+		Service[] results = resultList.toArray(new Service[resultList.size()]);
 		checkResultFailures(results);
 		maintainNonActivatableReferences(results);
 		return results;
@@ -309,6 +311,34 @@ public class ServiceStarter extends AbstractServiceStarter {
 				"main");
 	}
 
+	/**
+	 * Create a Configuration object from each path in args and create service for each entry.
+	 *
+	 * @param args config file paths
+	 * @throws ConfigurationException
+	 * @return list ofcreated services
+	 */
+	public Service[] startServicesFromPaths(String[] args) throws ConfigurationException {
+		logger.info("Loading from " + Arrays.deepToString(args));
+		Collection<Configuration> configs = new ArrayList<Configuration>(args.length);
+		for (String arg : args) {
+			if (arg == null) continue;
+			URL resource = getClass().getClassLoader().getResource(arg);
+			String options;
+			if (resource == null) {
+				options = arg;
+			} else {
+				options = resource.toExternalForm();
+			}
+			configs.add(ConfigurationProvider.getInstance(new String[]{options}));
+		}
+		try {
+			return processServiceDescriptors(configs.toArray(new Configuration[configs.size()]));
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Error while parsing configuration", e);
+		}
+	}
+
 	public Service[] startServices(String[] args) {
 		ServiceStarter.ensureSecurityManager();
 		try {
@@ -324,13 +354,4 @@ public class ServiceStarter extends AbstractServiceStarter {
 		}
 		return new Service[0];
 	}
-
-	public void addServiceListPostProcessor(ServiceListPostProcessor postProcessor) {
-		postprocessors.add(postProcessor);
-	}
-
-	public void removeServiceListPostProcessor(ServiceListPostProcessor postProcessor) {
-		postprocessors.remove(postProcessor);
-	}
-
 }//end class ServiceStarter
