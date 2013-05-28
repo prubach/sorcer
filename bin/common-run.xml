@@ -246,16 +246,17 @@
             <echo>maven.repo.local=${maven.repo.local}</echo>
             <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
             <artifact:pom file="@{run.pom.file}" id="maven.project"/>
-            <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
+
+            <artifact:dependencies cacheDependencyRefs="true" dependencyRefsBuildFile="target/cached-dependencies-compile.xml" pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
                                    versionsId="dependency.versions">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies pathId="test.classpath" filesetId="test.fileset" useScope="test">
+            <artifact:dependencies cacheDependencyRefs="true" dependencyRefsBuildFile="target/cached-dependencies-test.xml" pathId="test.classpath" filesetId="test.fileset" useScope="test">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+            <artifact:dependencies cacheDependencyRefs="true" dependencyRefsBuildFile="target/cached-dependencies-runtime.xml" pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
@@ -349,28 +350,59 @@
 	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
 		<property name="myclasspath" refid="run-req.classpath" />
 		<echo message="Run Classpath = ${myclasspath}" />
-		<echo>Policy: ${requestor.policy}</echo>	     
+		<echo>Policy: ${requestor.policy}</echo>
 		<ac:if>
             <isset property="requestor.webster.codebase" />
             <ac:then>
 			  	<echo message="Run Codebase = ${requestor.codebase}" />
-				<java classname="${requestor.class}" fork="yes">
-					<classpath refid="run-req.classpath" />
-					<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-					<sysproperty key="java.security.policy" value="${requestor.policy}" />
-					<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                    <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
-                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-				</java>
+                <ac:if>
+                    <isset property="requestor.run.args" />
+                    <ac:then>
+                        <java classname="${requestor.class}" fork="yes">
+                            <classpath refid="run-req.classpath" />
+                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+                            <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                            <arg value="${requestor.run.args}"/>
+                        </java>
+                    </ac:then>
+                    <ac:else>
+                        <java classname="${requestor.class}" fork="yes">
+                            <classpath refid="run-req.classpath" />
+                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+                            <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                        </java>
+                    </ac:else>
+                </ac:if>
 			</ac:then>
 			<ac:else>
-                <java classname="${requestor.class}" fork="yes">
-                    <classpath refid="run-req.classpath" />
-                    <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                    <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-                </java>
+                <ac:if>
+                    <isset property="requestor.run.args" />
+                    <ac:then>
+                        <java classname="${requestor.class}" fork="yes">
+                            <classpath refid="run-req.classpath" />
+                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                            <arg value="${requestor.run.args}"/>
+                        </java>
+                    </ac:then>
+                    <ac:else>
+                        <java classname="${requestor.class}" fork="yes">
+                            <classpath refid="run-req.classpath" />
+                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                        </java>
+                    </ac:else>
+                </ac:if>
             </ac:else>
 		</ac:if>
 	</target>

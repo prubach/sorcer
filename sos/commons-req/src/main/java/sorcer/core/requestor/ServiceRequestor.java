@@ -85,9 +85,9 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 
 		// Initialize system properties: configs/sorcer.env
 		Sorcer.getEnvProperties();
-
 		String runnerType = null;
 		if (args.length == 0) {
+            logger.severe("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
 			System.err
 					.println("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
 			System.exit(1);
@@ -102,6 +102,9 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			logger.info("Not able to create service requestor: " + runnerType);
 			System.exit(1);
 		}
+
+
+
 		String str = System.getProperty(REQUESTOR_PROPERTIES_FILENAME);
 		logger.info(REQUESTOR_PROPERTIES_FILENAME + " = " + str);
 		if (str != null) {

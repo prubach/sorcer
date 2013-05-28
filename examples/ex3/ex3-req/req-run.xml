@@ -40,7 +40,6 @@
 		 	<classpath refid="run-req.classpath"/>
 		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/worker-req.policy" />
-			<sysproperty key="requester.webster.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="requestor.properties" value="${basedir}/src/main/resources/config/worker-run.properties" />
             <sysproperty key="requestor.webster.codebase" value="${requestor.groupId}:${requestor.api}:${requestor.version} ${requestor.groupId}:${requestor.dl}:${requestor.version}" />

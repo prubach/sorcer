@@ -3,6 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>provider-root</artifactId>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <version>${v.sorcer}</version>
+        <relativePath></relativePath>
+    </parent>
+
     <artifactId>examples</artifactId>
     <groupId>org.sorcersoft.sorcer</groupId>
     <version>${v.sorcer}</version>
@@ -12,6 +19,12 @@
     <description>SORCER</description>
     <url>http://sorcersoft.org/</url>
 
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <skipTests>${maven.test.skip}</skipTests>
+    </properties>
+
+
     <modules>
         <module>ex1</module>
         <module>ex2</module>
@@ -20,80 +33,4 @@
         <module>ex5</module>
         <module>ex6</module>
     </modules>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.8.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>gsbase</groupId>
-                <artifactId>gsbase</artifactId>
-                <version>2.0.1</version>
-                <scope>test</scope>
-            </dependency>
-    </dependencies>
-    </dependencyManagement>
-
-    <properties>
-        <v.sorcer>${v.sorcer}</v.sorcer>
-        <v.jini>${v.jini}</v.jini>
-        <v.blitz>${v.blitz}</v.blitz>
-        <v.sleepycat>${v.sleepycat}</v.sleepycat>
-        <v.rio>${v.rio}</v.rio>
-        <v.groovy>${v.groovy}</v.groovy>
-        <v.sigar>${v.sigar}</v.sigar>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <build>
-      <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.0</version>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
-        </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                  <systemPropertyVariables>
-                      <RIO_HOME>${env.SORCER_HOME}/lib/rio</RIO_HOME>
-                      <buildDirectory>${project.build.directory}</buildDirectory>
-                  </systemPropertyVariables>
-              </configuration>
-          </plugin>
-      </plugins>
-    </build>
-    <repositories>
-        <repository>
-            <id>hashnot</id>
-            <url>http://mvn.hashnot.com/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>oracle</id>
-            <url>http://download.oracle.com/maven/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>maven.boundary.com</id>
-            <name>maven.boundary.com-releases</name>
-            <url>http://maven.boundary.com/artifactory/external</url>
-        </repository>
-    </repositories>
-
 </project>

@@ -16,6 +16,9 @@ import java.util.logging.Logger;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.SorcerConstants;
 import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.ContextException;
+import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.Log;
 

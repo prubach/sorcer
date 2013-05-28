@@ -13,16 +13,21 @@ import static sorcer.eo.operator.task;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.requestor.ServiceRequestor;
+import sorcer.service.ExertionException;
+import sorcer.service.ContextException;
+import sorcer.service.SignatureException;
 import sorcer.core.SorcerConstants;
 import sorcer.service.Exertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
 
-public class HelloWorldTester implements SorcerConstants {
+public class HelloWorldTester extends ServiceRequestor {
 
 private static Logger logger = Log.getTestLog();
-	
-	public static void main(String[] args) throws Exception {
+
+    public Exertion getExertion(String... args) throws ExertionException,
+            ContextException, SignatureException {
 		System.setSecurityManager(new RMISecurityManager());
 		logger.info("Starting HelloWorldTester");
 		
@@ -34,6 +39,7 @@ private static Logger logger = Log.getTestLog();
 		
 		logger.info("Got result: " + get(out, "out/value"));
 		logger.info("----------------------------------------------------------------");
-		logger.info("Task t1 trace: " +  trace(out));		
+		logger.info("Task t1 trace: " +  trace(out));
+        return out;
 	}
 }

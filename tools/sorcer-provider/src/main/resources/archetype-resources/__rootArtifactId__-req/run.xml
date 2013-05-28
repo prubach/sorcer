@@ -3,7 +3,8 @@
 	<!-- set property values here -->
 	<property name="requestor.name" value="${rootArtifactId}-req" />
 	<property name="requestor.version" value="${version}" />
-	<property name="requestor.class" value="${package}.${providerInterface}Tester" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
+    <property name="requestor.run.args" value="${package}.${providerInterface}Tester" />
 
 	<property name="requestor.api" value="${rootArtifactId}-api"/>
 	<property name="requestor.groupId" value="${groupId}"/>

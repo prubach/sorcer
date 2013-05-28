@@ -64,6 +64,11 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-${v.sorcer}.pom</destName>
             </file>
+            <file>
+                <source>${basedir}/../tools/provider-root/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>provider-root-${v.sorcer}.pom</destName>
+            </file>
             <!-- Copy the logging configuration file -->
             <file>
                 <source>${basedir}/src/main/configs/sorcer.logging</source>

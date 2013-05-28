@@ -3,7 +3,8 @@
 	<!-- set property values here -->
 	<property name="requestor.name" value="first-req" />
 	<property name="requestor.version" value="1.0-SNAPSHOT" />
-	<property name="requestor.class" value="com.sorcersoft.first.HelloWorldTester" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
+    <property name="requestor.run.args" value="com.sorcersoft.first.HelloWorldTester" />
 
 	<property name="requestor.api" value="first-api"/>
 	<property name="requestor.groupId" value="com.example.sorcer"/>
@@ -15,8 +16,8 @@
 	<echo message="webster: ${provider.webster.url}" />
 
 	<!-- provider codeabse jars -->
-	<property name="j1" value="${provider.webster.url}/com/example/sorcer/first-api/${requestor.version}/first-api-${requestor.version}.jar" />
-	<property name="j2" value="${provider.webster.url}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
-	<property name="requestor.codebase" value="${j1} ${j2}" />
+    <property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
+    <property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
+    <property name="requestor.webster.codebase" value="${j1} ${j2}" />
 </project>
 
