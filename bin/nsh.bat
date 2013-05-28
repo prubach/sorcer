@@ -9,12 +9,10 @@ IF defined SORCER_HOME (
     call %CD%\bin\common-run.bat
   )
 )
-
 rem Use SORCER default if still not found
-IF NOT DEFINED NSH_CONF SET NSH_CONF=%SORCER_HOME%\configs\shell\configs\nsh-start.config
-
+IF NOT DEFINED NSH_CONF SET NSH_CONF="%SORCER_HOME%\configs\shell\configs\nsh-start.config"
 rem Use the user nsh start-config file if exists.
-IF EXIST %HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config SET NSH_CONF=%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config
+IF EXIST "%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config" SET NSH_CONF="%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config"
 
 set STARTER_MAIN_CLASS=sorcer.tools.shell.ShellStarter
 
@@ -36,8 +34,9 @@ rem rem)
 rem echo %CP%
  
 set SHELL_CLASS=sorcer.tools.shell.NetworkShell
-cd %SORCER_HOME%\bin
-CALL java %JAVA_OPTS% -classpath %SHELL_CLASSPATH% -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%\configs\shell\policy\shell.policy  -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home=%SORCER_HOME% -Dnsh.starter.config=%NSH_CONF% %STARTER_MAIN_CLASS% --main %SHELL_CLASS% --config %NSH_CONF% 
+cd "%SORCER_HOME%\bin"
+
+CALL java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy"  -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home="%SORCER_HOME%" -Dnsh.starter.config="%NSH_CONF%" %STARTER_MAIN_CLASS% --main %SHELL_CLASS% --config "%NSH_CONF%"
 rem --classpath "%CP%"
 popd
 

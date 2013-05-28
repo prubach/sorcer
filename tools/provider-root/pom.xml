@@ -77,9 +77,12 @@
             <url>http://mvn.hashnot.com/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
+                <!-- disabled to make the startup of sorcer provider's faster -->
+                <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
         <repository>
@@ -87,6 +90,8 @@
             <url>http://download.oracle.com/maven/</url>
             <releases>
                 <enabled>true</enabled>
+                <!-- disabled to make the startup of sorcer provider's faster -->
+                <updatePolicy>never</updatePolicy>
             </releases>
         </repository>
         <repository>

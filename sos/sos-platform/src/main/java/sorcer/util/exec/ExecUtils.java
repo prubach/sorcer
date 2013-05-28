@@ -42,7 +42,11 @@ public class ExecUtils {
 	 */
 	public static CmdResult execCommand(String cmd) throws IOException,
 			InterruptedException {
-		return execCommand(Runtime.getRuntime().exec(cmd));
+        // A workaround to start commands on Windows in a separate cmd process
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().contains("windows"))
+            cmd = "cmd /c start " + cmd;
+        return execCommand(Runtime.getRuntime().exec(cmd));
 	}
 
 	/**
