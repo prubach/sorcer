@@ -36,7 +36,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<!-- set property values here -->
 	<property name="provider.name" value="ex1-prv" />
 	<property name="provider.api" value="ex1-api" />
-	<property name="provider.client.api" value="ex1-req-api" />	
+	<property name="requestor.dl" value="ex1-rdl" />
 	<property name="webster" value="${provider.webster.url}" />
 
 	<condition property="provider.bean" value ="beans" >
@@ -59,7 +59,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	
 	<!-- provider codeabse jars -->
 	<property name="j1" value="${webster}/org/sorcersoft/sorcer/${provider.api}/${v.sorcer}/${provider.api}-${v.sorcer}.jar" />
-	<property name="j2" value="${webster}/org/sorcersoft/sorcer/${provider.client.api}/${v.sorcer}/${provider.client.api}-${v.sorcer}.jar" />
+	<property name="j2" value="${webster}/org/sorcersoft/sorcer/${requestor.dl}/${v.sorcer}/${requestor.dl}-${v.sorcer}.jar" />
 	<property name="j3" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
 	<property name="j4" value="${webster}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
 	<property name="j5" value="${webster}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar" />

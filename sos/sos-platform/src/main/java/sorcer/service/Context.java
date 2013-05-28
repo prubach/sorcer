@@ -422,6 +422,11 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public T getReturnValue(Parameter... entries) throws ContextException;
 
     /**
+     * Returns the context a path prefix associated with this context, if any.
+     */
+    public String getPrefix();
+
+    /**
      * @param task
      *            The task to set.
      */

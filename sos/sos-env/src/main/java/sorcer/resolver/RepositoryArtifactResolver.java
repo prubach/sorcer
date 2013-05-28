@@ -18,7 +18,13 @@
 package sorcer.resolver;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.util.ArtifactCoordinates;
 
 /**
@@ -37,6 +43,9 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 		return new File(root, resolveRelative(artifactCoordinates)).getAbsolutePath();
 	}
 
+	/**
+	 * path is created as: ${groupId=~s|\.|/|}/${artifactId}/${version}/${artifact}-${version}[-${classifier}].${packaging}
+	 */
 	@Override
 	public String resolveRelative(ArtifactCoordinates artifactCoordinates) {
 		String artifactId = artifactCoordinates.getArtifactId();
@@ -58,13 +67,138 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 
 	}
 
-    @Override
-    public String getRootDir() {
-        return root;
-    }
+	@Override
+	public String getRootDir() {
+		return root;
+	}
 
-    @Override
-    public String getRepoDir() {
-        return root;
-    }
+	@Override
+	public String getRepoDir() {
+		return root;
+	}
+
+	/**
+	 * Find a file with its path matching (the space is used, so it's not an end of comment) ${root}/** /${simpleName}/{1}/${simpleName}-{1}.jar
+	 * <p/>
+	 * This method doesn't support (return) artifacts with classifiers
+	 *
+	 * @param simpleName artifactId for which to guess groupId and version
+	 * @param packaging
+	 * @return path to a jar
+	 */
+	@Override
+	public String resolveSimpleName(String simpleName, String packaging) {
+		List<ArtifactCoordinates> results = new LinkedList<ArtifactCoordinates>();
+		resolveSimpleName(new File(root), null, simpleName, packaging, results);
+		if (results.isEmpty()) {
+			return null;
+		}
+		ArtifactCoordinates result;
+		if (results.size() > 1) {
+			result = refineVersions(results);
+		} else if (results.isEmpty()) {
+			return null;
+		} else {
+			result = results.get(0);
+		}
+		return resolveRelative(result);
+	}
+
+	private ArtifactCoordinates refineVersions(List<ArtifactCoordinates> artifacts) {
+		//first check if any of files is in classpath
+		List<ArtifactCoordinates> cp = new LinkedList<ArtifactCoordinates>();
+		for (ArtifactCoordinates coords : artifacts) {
+			try {
+				if (resolveVersion(coords.getGroupId(), coords.getArtifactId()).equals(coords.getVersion())) {
+					cp.add(coords);
+				}
+			} catch (IllegalArgumentException x) {
+				//ignore
+			}
+		}
+		if (cp.size() == 1) {
+			return cp.get(0);
+		}
+		Collections.sort(artifacts, Collections.reverseOrder());
+		//get last
+		ArtifactCoordinates result = artifacts.get(0);
+		log.warn("Found {} artifacts with artifactId = {}; returning {}", artifacts.size(), result.getArtifactId(), result);
+		return result;
+	}
+
+	protected void resolveSimpleName(File root, String groupId, String artifactId, String packaging, List<ArtifactCoordinates> results) {
+		root.listFiles(new ArtifactDirFilter(groupId, artifactId, packaging, results));
+	}
+
+	protected class ArtifactDirFilter implements FileFilter {
+		private String groupId;
+		private String artifactId;
+		private String packaging;
+		private List<ArtifactCoordinates> results;
+
+
+		public ArtifactDirFilter(String groupId, String artifactId, String packaging, List<ArtifactCoordinates> results) {
+			this.groupId = groupId;
+			this.artifactId = artifactId;
+			this.packaging = packaging;
+			this.results = results;
+		}
+
+		/*
+		 * always return false
+		 */
+		@Override
+		public boolean accept(File file) {
+			if (!file.isDirectory()) {
+				return false;
+			}
+			if (file.getName().equals(artifactId)) {
+				if (findVersion(file, groupId, packaging, results)) {
+					return false;
+				}
+			}
+			String childGroupId = childGroupId(file.getName());
+			resolveSimpleName(file, childGroupId, artifactId, packaging, results);
+
+			return false;
+		}
+
+		String childGroupId(String added) {
+			if (groupId == null) {
+				return added;
+			} else {
+				return groupId + '.' + added;
+			}
+		}
+	}
+
+	protected boolean findVersion(File artifactDir, String groupId, String packaging, List<ArtifactCoordinates> results) {
+		File[] files = artifactDir.listFiles(new ArtifactFilter(groupId, packaging, results));
+		//returned array contains directories, actual files are in the results list
+		return files.length != 0;
+	}
+
+	protected class ArtifactFilter implements FileFilter {
+		private String groupId;
+		private String packaging;
+		private List<ArtifactCoordinates> results;
+
+		public ArtifactFilter(String groupId, String packaging, List<ArtifactCoordinates> results) {
+			this.groupId = groupId;
+			this.packaging = packaging;
+			this.results = results;
+		}
+
+		@Override
+		public boolean accept(File versionDir) {
+			String version = versionDir.getName();
+			String artifactId = versionDir.getParentFile().getName();
+			File artifact = new File(versionDir, artifactId + "-" + version + "." + packaging);
+			if (artifact.exists()) {
+				results.add(new ArtifactCoordinates(groupId, artifactId, packaging, version, null));
+				return true;
+			}
+			return false;
+		}
+	}
 }

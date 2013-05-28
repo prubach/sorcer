@@ -102,12 +102,12 @@ import com.sleepycat.je.DatabaseException;
      * including deadlock retries.  But the best transaction handling mechanism
      * to use depends on the application.
      */
-//		runner.run(new PopulateTableDatabase());
-//		runner.run(new PopulateVarDatabase());
-//		runner.run(new PopulateVarModelsDatabase());
-//		runner.run(new PrintTableDatabase());
-//		runner.run(new PrintVarDatabase());
-//		runner.run(new PrintVarModelDatabase());
+//		requestor.run(new PopulateTableDatabase());
+//		requestor.run(new PopulateVarDatabase());
+//		requestor.run(new PopulateVarModelsDatabase());
+//		requestor.run(new PrintTableDatabase());
+//		requestor.run(new PrintVarDatabase());
+//		requestor.run(new PrintVarModelDatabase());
 /**
      * Populate the Context database in a single transaction.
      */
@@ -240,17 +240,17 @@ public class SorcerDatabaseRunner {
 	public void run() throws Exception {
 		TransactionRunner runner = new TransactionRunner(sdb.getEnvironment());
 		runner.run(new PopulateContextDatabase());
-//		runner.run(new PopulateTableDatabase());
+//		requestor.run(new PopulateTableDatabase());
 		runner.run(new PopulateExertionDatabase());
-//		runner.run(new PopulateVarDatabase());
-//		runner.run(new PopulateVarModelsDatabase());
+//		requestor.run(new PopulateVarDatabase());
+//		requestor.run(new PopulateVarModelsDatabase());
 		runner.run(new PopulateUuidObjectDatabase());
 		
 		runner.run(new PrintContextDatabase());
-//		runner.run(new PrintTableDatabase());
+//		requestor.run(new PrintTableDatabase());
 		runner.run(new PrintExertionDatabase());
-//		runner.run(new PrintVarDatabase());
-//		runner.run(new PrintVarModelDatabase());
+//		requestor.run(new PrintVarDatabase());
+//		requestor.run(new PrintVarModelDatabase());
 		runner.run(new PrintUuidObjectDatabase());
 	}
 

@@ -17,6 +17,7 @@
  */
 package sorcer.ex1.requestor;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
@@ -59,7 +60,7 @@ public class WhoIsItSeqTaskReq extends ServiceRequestor {
 		Task task;
 		InetAddress inetAddress;
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			inetAddress = SorcerEnv.getLocalHost();
 		
 		hostname = inetAddress.getHostName();
 

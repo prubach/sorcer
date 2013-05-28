@@ -21,10 +21,12 @@ import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -40,6 +42,7 @@ public class WhoIsItPushJobApp {
 
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
 		Sorcer.getEnvProperties();
 		// get the queried provider name
@@ -56,7 +59,7 @@ public class WhoIsItPushJobApp {
 
 	public Exertion getExertion(String providerName) throws Exception {
 		String hostname, ipAddress;
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

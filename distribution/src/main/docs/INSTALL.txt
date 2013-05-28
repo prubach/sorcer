@@ -1,2 +1,0 @@
-If you're running a windows guest inside a VirtualBox host you may run into problems executing any Java GUIs. It results from problems with the way Java handles 3D calls. A workaround is to set the following env variable in your system:
-set J2D_D3D=false

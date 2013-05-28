@@ -48,8 +48,16 @@ public interface Signature extends Serializable, Parameter {
 	 * @return name of signature
 	 */
 	public String getSelector();
-	
-	/**
+
+    /**
+     * Returns a fragment of operation of this signature.
+     * It's the part preceeding # in its selector.
+     *
+     * @return fragment of operation
+     */
+    public String getPrefix();
+
+    /**
 	 * Returns a service provider name.
 	 * 
 	 * @return name of service provider
@@ -71,6 +79,8 @@ public interface Signature extends Serializable, Parameter {
 	 * @param path to the return value
 	 */
 	public void setReturnPath(ReturnPath path);
+
+    public void setReturnPath(String path);
 
     /**
      * Assigns a path to the return value with a path and directional attribute.
@@ -135,7 +145,7 @@ public interface Signature extends Serializable, Parameter {
 		public Class<T> type;
 		
 		public ReturnPath() {}
-		
+
 		public ReturnPath(String path, String... argPaths) {
 			this.path = path;
 			if (argPaths != null && argPaths.length > 0) {

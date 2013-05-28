@@ -21,13 +21,13 @@ import static sorcer.eo.operator.revalue;
 import static sorcer.eo.operator.path;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.PositionalContext;
@@ -283,7 +283,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 * @throws UnknownHostException
 	 */
 	private String getHostname() throws UnknownHostException {
-		return InetAddress.getLocalHost().getHostName();
+		return SorcerEnv.getLocalHost().getHostName();
 	}
 
 }

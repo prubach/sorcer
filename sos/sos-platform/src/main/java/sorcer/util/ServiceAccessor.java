@@ -428,12 +428,12 @@ public class ServiceAccessor implements SorcerConstants {
 			logger.info("trying to get service: " + serviceType + ":" + serviceName + "; attempt: "
 					+ tryNo + "...");
 			try {
+				tryNo++;
 				proxy = getService(serviceType, new Entry[] { new Name(
 						serviceName) }, null);
 				if (proxy != null)
 					break;
 
-				tryNo++;
 				Thread.sleep(WAIT_FOR);
 			} catch (Exception e) {
 				logger.throwing("" + ServiceAccessor.class, "getService", e);

@@ -23,11 +23,11 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Run WhoIsIt2" default="run.provider" basedir=".">
+<project name="Run Prv WhoIsIt2" default="run.provider" basedir=".">
 
 	<property name="provider.class" value="sorcer.ex1.provider.WhoIsItProvider2" />
 
-	<property name="beans.id" value="2" />
+	<property name="provider.id" value="2" />
 
     <import file="prv-run.xml" />
 	

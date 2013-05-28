@@ -56,8 +56,8 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 	}
 	
 	@Test
-	public void exertTaskHierachy() throws Exception {
-		Job job = getJobInJobNetArithmeticJob();
+	public void exertJobComposition() throws Exception {
+		Job job = getJobComposition();
 		Job result = (NetJob) job.exert();
 		logger.info("result context: " + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
@@ -65,15 +65,15 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 	}
 	
 	@Test
-	public void exertTaskConcatenation() throws Exception {
-		Job job = getTaskedNetJob();	
+	public void exertTaskJob() throws Exception {
+		Job job = getNetTaskJob();
 		NetJob result = (NetJob)job.exert();
 		logger.info("result context: "  + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
 		assertEquals(result.getValue("3tasks/subtract/result/value"), 400.0);
 	}
 
-	public static Job getJobInJobNetArithmeticJob() throws Exception {
+	public static Job getJobComposition() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
@@ -96,7 +96,7 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 		return job;
 	}
 	
-	public static Job getTaskedNetJob() throws Exception {
+	public static Job getNetTaskJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();

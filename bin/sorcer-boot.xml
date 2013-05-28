@@ -27,11 +27,9 @@
 
 	<target name="SOS+webster">
 		<java classname="sorcer.boot.ServiceStarter" fork="yes">
-			<jvmarg value="-Djava.net.preferIPv4Stack=true" />
-<!--
+			<!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
 			<jvmarg value="-Xdebug"/>
-			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
--->
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 			<classpath refid="boot.classpath"/>
 			<arg value="../configs/sorcer-boot.config" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />

@@ -25,6 +25,7 @@ public class TestCycleHelper {
 
 	protected String provider;
 	protected int websterPort;
+	protected String sorcerEnv;
 
 	/**
 	 * The provider process to kill in DestroyMojo (post-integration-test)
@@ -60,5 +61,13 @@ public class TestCycleHelper {
 
 	public void setWebsterPort(int websterPort) {
 		this.websterPort = websterPort;
+	}
+
+	public String getSorcerEnv() {
+		return sorcerEnv;
+	}
+
+	public void setSorcerEnv(String sorcerEnv) {
+		this.sorcerEnv = sorcerEnv;
 	}
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+
+
+    Copyright 2013 the original author or authors.
+    Copyright 2013 Sorcersoft.com S.A.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project name="Netlet Req" default="run.requestor" basedir=".">
+	<!-- system environment variables -->
+	<property environment="env" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+
+	<echo message="SORCER_HOME: ${sorcer.home}" />
+	<echo message="WEBSTER: ${provider.webster.url}" />
+
+	<!-- set property values here -->
+	<property name="requestor.api" value="ex6-api" />
+    <property name="requestor.version" value="${v.sorcer}" />
+    <property name="requestor.groupId" value="org.sorcersoft.sorcer" />
+	<property name="webster" value="${provider.webster.url}" />
+	<property name="requestor.name" value="ex6-req" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
+
+	
+	<!-- provider classpath -->
+	<path id="run.classpath">
+	    <path refid="runtime.classpath"/>  
+	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${requestor.name}/${v.sorcer}/${requestor.name}-${v.sorcer}.jar" />
+	</path>
+	
+	<!-- provider codeabse jars -->
+	<property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
+	<property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
+	<property name="j3" value="org.sorcersoft.sorcer:commons-prv" />
+
+	<!-- start provider -->
+	<target name="run.requestor" depends="mvn-init">
+		<java classname="${requestor.class}" fork="yes">
+			<arg value="sorcer.arithmetic.requestor.ArithmeticNetletReq" />
+			<classpath refid="run.classpath"/>
+			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
+			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />
+            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+		</java>
+	</target>		
+</project>
+
+
+

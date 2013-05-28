@@ -186,7 +186,7 @@ public class Booter implements SorcerConstants {
 		if (address==null) 
 			address = System.getProperty("provider.webster");
 		if (address==null)*/
-			return java.net.InetAddress.getLocalHost().getHostAddress();
+			return SorcerEnv.getLocalHost().getHostAddress();
 		/*else 
 			return address;*/
     }
@@ -239,7 +239,7 @@ public class Booter implements SorcerConstants {
      * host could be found.
      */
     public static String getHostName() throws java.net.UnknownHostException {
-        return java.net.InetAddress.getLocalHost().getHostName();
+        return SorcerEnv.getLocalHost().getHostName();
     }
     
     /**

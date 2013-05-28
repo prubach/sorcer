@@ -55,7 +55,7 @@
             <defaultValue>false</defaultValue>
         </requiredProperty>
         <requiredProperty key="serviceIcon">
-            <defaultValue>/META-INF/sorcer/sorcer.png</defaultValue>
+            <defaultValue>/config/sorcer.png</defaultValue>
         </requiredProperty>
     </requiredProperties>
 

@@ -1,28 +1,20 @@
 package com.example.sorcer;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.path;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.trace;
+import sorcer.core.requestor.ServiceRequestor;
+import sorcer.service.*;
+import sorcer.util.Log;
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerConstants;
-import sorcer.service.Exertion;
-import sorcer.service.Task;
-import sorcer.util.Log;
+import static sorcer.eo.operator.*;
 
-public class SampleServiceTester implements SorcerConstants {
+public class SampleServiceTester extends ServiceRequestor {
 
 	private static Logger logger = Log.getTestLog();
 
-	public static void main(String[] args) throws Exception {
+	public Exertion getExertion(String... args) throws ExertionException,
+                ContextException, SignatureException {
 		System.setSecurityManager(new RMISecurityManager());
 		logger.info("Starting SampleServiceTester");
 
@@ -35,5 +27,6 @@ public class SampleServiceTester implements SorcerConstants {
 		logger.info("Got result: " + get(out, "out/value"));
 		logger.info("----------------------------------------------------------------");
 		logger.info("Task t1 trace: " + trace(out));
-	}
+        return out;
+    }
 }

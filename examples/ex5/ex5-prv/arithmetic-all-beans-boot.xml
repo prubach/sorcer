@@ -18,11 +18,11 @@
     limitations under the License.
 
 -->
-<project name="Arithmetic All Beans" default="boot.provider" basedir=".">
+<project name="Arithmetic ex5 All Beans" default="boot.provider" basedir=".">
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
-    <property name="provider.config" value="${basedir}/src/main/resources/META-INF/sorcer/boot-all-beans.config" />
+    <property name="provider.config" value="${basedir}/src/main/resources/config/start-all-beans.config" />
     <import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 </project>

@@ -35,6 +35,7 @@ import java.util.zip.ZipFile;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.url.httpmd.HttpmdUtil;
+import sorcer.core.SorcerEnv;
 import sorcer.ssb.tools.plugin.browser.ServiceBrowserUI;
 
 public class CodeServer implements Runnable {
@@ -165,7 +166,7 @@ public class CodeServer implements Runnable {
 
 			_path = getPathForClass(_rootClass);
 
-			InetAddress host = InetAddress.getLocalHost();
+			InetAddress host = SorcerEnv.getLocalHost();
 
 			// System.out.println("ssb.webster="+=System.getProperty("ssb.webster"));
 

@@ -31,12 +31,12 @@
 	
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer" />
 	<property name="requestor.name" value="ex1-req" />
-	<property name="requestor.version" value="1.0-SNAPSHOT" />
+	<property name="requestor.version" value="${v.sorcer}" />
 
 	<!-- requestor codeabse jars -->
-	<property name="j1" value="${webster}/org/sorcersoft/sorcer/ex1-api/${v.sorcer}/ex1-api-${v.sorcer}.jar" />
-	<property name="j2" value="${webster}/org/sorcersoft/sorcer/ex1-req-api/${v.sorcer}/ex1-req-api-${v.sorcer}.jar" />
-	<property name="j3" value="${webster}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
+	<property name="j1" value="${requestor.groupId}:ex1-api:${requestor.version}" />
+    <property name="j2" value="${requestor.groupId}:ex1-rdl:${requestor.version}" />
+	<property name="j3" value="org.sorcersoft.sorcer:sos-platform" />
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">
@@ -49,7 +49,7 @@
 			<sysproperty key="webster.debug" value="true" />-->
 		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
-			<sysproperty key="java.rmi.server.codebase" value="${j1} ${j2} ${j3}" />
+			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 		</java>

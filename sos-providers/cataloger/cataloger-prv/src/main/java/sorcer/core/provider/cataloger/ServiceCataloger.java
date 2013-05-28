@@ -17,32 +17,7 @@
  */
 package sorcer.core.provider.cataloger;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
+import com.sun.jini.start.LifeCycle;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
@@ -66,6 +41,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 import sorcer.service.Service;
 import sorcer.service.Task;
@@ -74,7 +50,20 @@ import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Sorcer;
 import sorcer.util.StringUtils;
 
-import com.sun.jini.start.LifeCycle;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * The facility for maintaining a cache of all SORCER OS :: providers {@link sorcer.service.Service}
@@ -157,7 +146,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			e.printStackTrace();
 		}
 		return null;
-
 	}
 
 	public String[] getGroups() throws RemoteException {
@@ -440,7 +428,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/cataloger-ui.jar");
+			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:sos-exertlet-sui"));
 			URL helpUrl = new URL(Sorcer.getWebsterUrl()
 					+ "/deploy/cataloger.html");
 

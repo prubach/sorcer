@@ -148,7 +148,7 @@ public interface SorcerConstants {
 
 	public static final String J_WEBSTER_END_PORT = "websterEndPort";
 
-    public static final String R_CODEBASE= "requester.webster.codebase";
+    public static final String R_CODEBASE= "requestor.webster.codebase";
 
     public static final String CODEBASE_JARS = "codebase.jars";
 

@@ -29,4 +29,6 @@ public interface ArtifactResolver {
 	String resolveRelative(String artifactCoordinates);
     String getRootDir();
     String getRepoDir();
+
+	String resolveSimpleName(String simpleName, String packaging);
 }

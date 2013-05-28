@@ -43,7 +43,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	  <not><isset property="beans.id" /></not>
 	</condition>
 	
-	<property name="provider.config" value="../configs/${provider.name}${beans.id}-prv.config" />
+	<property name="provider.config" value="${basedir}/src/main/resources/config/${provider.name}${beans.id}-prv.config" />
 	
 	<condition property="provider.bean" value ="beans" >
 	  <not><isset property="provider.bean" /></not>
@@ -77,7 +77,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	    	<classpath refid="jini.classpath"/>
 			<sysproperty key="java.security.manager" value="" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			<sysproperty key="java.security.policy" value="../policy/worker-prv.policy" />
+			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/worker-prv.policy" />
 			<sysproperty key="sorcer.provider.codebase" value="${provider.codebase}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />

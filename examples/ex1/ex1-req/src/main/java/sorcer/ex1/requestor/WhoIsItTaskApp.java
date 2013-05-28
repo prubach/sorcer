@@ -21,8 +21,10 @@ import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -37,6 +39,7 @@ public class WhoIsItTaskApp {
 
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
 		Sorcer.getEnvProperties();
 		Access providerAccess = Access.PUSH;
@@ -51,7 +54,7 @@ public class WhoIsItTaskApp {
 
 	public Exertion getExertion(Access providerAccess) throws Exception {
 		String hostname;
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		hostname = inetAddress.getHostName();
 
 		Context context = new ServiceContext("Who Is It?");

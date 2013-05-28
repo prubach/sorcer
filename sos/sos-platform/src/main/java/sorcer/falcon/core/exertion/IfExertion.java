@@ -17,7 +17,6 @@
  */
 package sorcer.falcon.core.exertion;
 
-import org.nfunk.jep.JEP;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
@@ -268,7 +267,6 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @param contextPath
 	 *            Context path for a given variable name
 	 * @see ServiceContext
-	 * @see JEP
 	 */
 	public void setConditionVariable(String variableName, String contextPath) {
 		mapReference.put(variableName, contextPath);
@@ -282,7 +280,6 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @param expression
 	 *            the boolean expression
 	 * @see {@link WhileExertion#setConditionVariable(String, String)}
-	 * @see JEP
 	 */
 	public void setCondition(String expression) {
 		this.expression = expression;
@@ -295,7 +292,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 	 * @return double result from the expression
 	 */
 	protected double evalCondition() {
-		JEP jepParser = new JEP();
+		//JEP jepParser = new JEP();
 		Context context = this.getDataContext();
 		Iterator iter = mapReference.entrySet().iterator();
 		double result = 0;
@@ -315,14 +312,14 @@ public class IfExertion extends ServiceExertion implements Conditional {
 
 				testLog.finest("***Condition Variable: " + varName
 						+ "  \tpath: " + path + "  \tvalue: " + value);
-				jepParser.addVariable(varName, value);
+				//jepParser.addVariable(varName, value);
 			}
 		}
 
 		testLog.finest("Evaluating Condition: (" + expression + ")");
-		jepParser.parseExpression(expression);
-		result = jepParser.getValue();
-		jepParser = null;
+		//jepParser.parseExpression(expression);
+		//result = jepParser.getValue();
+		//jepParser = null;
 		return result;
 	}
 

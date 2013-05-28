@@ -326,7 +326,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 		}
 	}
 
-	public boolean isConcatenated() {
+	public boolean isBatch() {
 		for (Signature s : signatures) {
 			if (s.getType() != Type.SRV)
 				return false;

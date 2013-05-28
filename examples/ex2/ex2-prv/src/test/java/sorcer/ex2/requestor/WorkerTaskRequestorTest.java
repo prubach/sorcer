@@ -19,8 +19,6 @@ package sorcer.ex2.requestor;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
@@ -30,6 +28,7 @@ import net.jini.core.transaction.TransactionException;
 import org.junit.Before;
 import org.junit.Test;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
@@ -42,8 +41,6 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.util.Log;
-
-import com.gargoylesoftware.base.testing.TestUtil;
 
 /**
  * @author Mike Sobolewski
@@ -60,7 +57,7 @@ public class WorkerTaskRequestorTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		hostname = InetAddress.getLocalHost().getHostName();
+		hostname = SorcerEnv.getLocalHost().getHostName();
 
         Work work = new Work() {
             public Context exec(Context cxt) throws InvalidWork, ContextException {

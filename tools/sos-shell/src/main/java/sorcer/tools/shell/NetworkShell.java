@@ -93,7 +93,6 @@ import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
 import com.sun.jini.config.Config;
-//import sorcer.tools.shell.cmds.VarModelCmd;
 
 /**
  * @author Mike Sobolewski
@@ -1262,7 +1261,7 @@ public class NetworkShell implements DiscoveryListener {
 			DirCmd.changeDir(homeDir, false, shellOutput);
 		}
 
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
 		instance.hostName = inetAddress.getHostName();
 		instance.hostAddress = inetAddress.getHostAddress();
 		instance.httpJars = jars;

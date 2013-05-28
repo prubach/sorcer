@@ -21,6 +21,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-rdl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
 	    <version>${v.sorcer}</version>
         </dependency>

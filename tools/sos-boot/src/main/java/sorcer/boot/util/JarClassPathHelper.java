@@ -18,7 +18,6 @@
 package sorcer.boot.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import java.util.jar.Manifest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 
 /**
@@ -40,31 +38,15 @@ import sorcer.resolver.Resolver;
  */
 public class JarClassPathHelper {
 	final private static Logger log = LoggerFactory.getLogger(JarClassPathHelper.class);
-	
+
 	// short file name (np path) => File with full path
 	private Map<String, File> cache = new HashMap<String, File>();
-	final private static File[] jarRoots;
-
-	static {
-        if (Resolver.isMaven()) {
-            String repo = SorcerEnv.getRepoDir();
-            jarRoots = new File[] {
-                    new File(repo, "org/apache/river"),
-                    new File(repo, "net/jini"),
-                    new File(repo, "org/sorcersoft"),
-                    new File(repo)
-			};
-        } else {
-            jarRoots = new File[] {
-                    new File(Resolver.getRootDir()) };
-        }
-	}
 
 	public Collection<String> getClassPathFromJar(File f) {
-		Set<String>result = new HashSet<String>();
+		Set<String> result = new HashSet<String>();
 		log.debug("Creating jar file path from [{}]", f.getPath());
 		try {
-            JarFile jar = new JarFile(f);
+			JarFile jar = new JarFile(f);
 			Manifest man = jar.getManifest();
 			if (man == null) {
 				return result;
@@ -80,7 +62,7 @@ public class JarClassPathHelper {
 					if (add != null) {
 						result.add(add.getCanonicalPath());
 					} else {
-						log.warn("Could not find {} on the search path",v);
+						log.warn("Could not find {} on the search path", v);
 					}
 				}
 			}
@@ -95,42 +77,8 @@ public class JarClassPathHelper {
 		if (cache.containsKey(name)) {
 			return cache.get(name);
 		}
-		File file = new File(name);
-		if (file.exists()) {
-			return file;
-		}
-		File result = findFile(name, jarRoots);
+		File result = Resolver.resolveSimpleName(name);
 		cache.put(name, result);
 		return result;
 	}
-
-	private static File findFile(String name, File[] roots) {
-		for (File root : roots) {
-			File file = findJar(root, name);
-			if (file != null) {
-				return file;
-			}
-		}
-		return null;
-	}
-
-	private static File findJar(File root, String name) {
-		File result = new File(root, name);
-		if (result.exists()) {
-			return result;
-		}
-		File[] files = root.listFiles(new DirectoryFilter());
-		if (files == null || files.length == 0) {
-			return null;
-		}
-		return findFile(name, files);
-	}
-
-	private static class DirectoryFilter implements FileFilter {
-		@Override
-		public boolean accept(File pathname) {
-			return pathname.isDirectory();
-		}
-	}
-
 }

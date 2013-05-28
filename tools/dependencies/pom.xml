@@ -20,33 +20,7 @@
 		<v.sigar>1.6.4</v.sigar>
 	</properties>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<executableDependency>
-								<groupId>org.sorcersoft.sigar</groupId>
-								<artifactId>sigar-maven</artifactId>
-							</executableDependency>
-							<mainClass>org.sorcersoft.sigar.Zip</mainClass>
-							<arguments>
-								<argument>org.sorcersoft.sigar:sigar:zip:native:${v.sigar}</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
+	<dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
@@ -57,6 +31,12 @@
 			<groupId>org.sorcersoft.sigar</groupId>
 			<artifactId>sigar</artifactId>
 			<version>${v.sigar}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- RIVER -->
 		<dependency>
@@ -161,4 +141,5 @@
 			<version>1.0b3</version>
 		</dependency>
 	</dependencies>
+	</dependencyManagement>
 </project>

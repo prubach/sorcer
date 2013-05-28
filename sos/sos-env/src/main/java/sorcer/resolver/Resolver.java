@@ -19,7 +19,6 @@ package sorcer.resolver;
 
 import org.apache.commons.lang3.StringUtils;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
@@ -71,7 +70,7 @@ public class Resolver {
 	 * passed to SorcerServiceDescriptor constructor as a codebase string.
 	 *
 	 * FIXME It's the constructors responsibility to prepend URL prefix of the webster. This is a bug and should be fixed.
-	 * 
+	 *
 	 * @param coords
 	 *            array of artifact coordinates
 	 */
@@ -95,7 +94,26 @@ public class Resolver {
 		return StringUtils.join(result, File.pathSeparator);
 	}
 
-    public static String getRootDir() {
+	/**
+	 * resolve jar by simple name (with extension). Maven version will use the name as artifactId and guess groupId and version. Flattened version will search for that file in all its roots.
+	 * <p/>
+	 * This is intended as a helper for MANIFEST Main-Class entries
+	 */
+	public static File resolveSimpleName(String simpleName) {
+		int i = simpleName.lastIndexOf('.');
+		String packaging;
+		String artifactId;
+		if (i >= 0) {
+			artifactId = simpleName.substring(0, i);
+			packaging = simpleName.substring(i + 1);
+		} else {
+			artifactId = simpleName;
+			packaging = "jar";
+		}
+		return new File(resolver.getRootDir(), resolver.resolveSimpleName(artifactId, packaging));
+	}
+
+	public static String getRootDir() {
         return resolver.getRootDir();
     }
 

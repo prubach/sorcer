@@ -17,22 +17,18 @@
  */
 package sorcer.arithmetic.requestor;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.control;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.exertion;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
-import static sorcer.eo.operator.name;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.path;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.trace;
+import sorcer.arithmetic.provider.Adder;
+import sorcer.arithmetic.provider.Multiplier;
+import sorcer.arithmetic.provider.RemoteAdder;
+import sorcer.arithmetic.provider.Subtractor;
+import sorcer.core.SorcerConstants;
+import sorcer.core.requestor.ServiceRequestor;
+import sorcer.service.*;
+import sorcer.service.Strategy.Access;
+import sorcer.service.Strategy.Flow;
+import sorcer.service.Strategy.Monitor;
+import sorcer.service.Strategy.Wait;
+import sorcer.util.Log;
 
 import java.rmi.RMISecurityManager;
 import java.util.ArrayList;
@@ -42,23 +38,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
-import sorcer.arithmetic.provider.Adder;
-import sorcer.arithmetic.provider.Multiplier;
-import sorcer.arithmetic.provider.RemoteAdder;
-import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.SorcerConstants;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionCallable;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.SignatureException;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
-import sorcer.service.Strategy.Monitor;
-import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
-import sorcer.util.Log;
+import static sorcer.eo.operator.*;
 
 /**
  * Testing parameter passing between tasks within the same service job. Two
@@ -78,7 +58,10 @@ public class ArithmeticTester implements SorcerConstants {
 	
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
-		logger.info("running: " + args[0]);
+        // Resolve codebase from requestor.webster.codebase sysproperty specified in ant script to webster urls
+        ServiceRequestor.prepareCodebase();
+        //
+        logger.info("running: " + args[0]);
 		Exertion result = null;
 		ArithmeticTester tester = new ArithmeticTester();
 		if (args[0].equals("f5"))

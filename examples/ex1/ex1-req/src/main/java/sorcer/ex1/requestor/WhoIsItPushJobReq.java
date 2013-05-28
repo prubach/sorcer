@@ -20,6 +20,7 @@ package sorcer.ex1.requestor;
 import java.net.InetAddress;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
@@ -44,7 +45,7 @@ public class WhoIsItPushJobReq extends ServiceRequestor {
 
 	public Exertion getExertion(String... args) throws ExertionException {
 		// get the queried provider names and the requested jobber name
-		// arg[0] is the class name of this runner
+		// arg[0] is the class name of this requestor
 		String providerName1 = Sorcer.getSuffixedName(args[1]);
 		String providerName2 = Sorcer.getSuffixedName(args[2]);
 		jobberName = Sorcer.getSuffixedName(args[3]);
@@ -54,7 +55,7 @@ public class WhoIsItPushJobReq extends ServiceRequestor {
 		// define requestor data
 		Job job = null;
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			inetAddress = SorcerEnv.getLocalHost();
 			hostname = inetAddress.getHostName();
 			ipAddress = inetAddress.getHostAddress();
 

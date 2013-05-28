@@ -17,24 +17,23 @@
  */
 package sorcer.arithmetic.requestor;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.codehaus.groovy.control.CompilationFailedException;
-
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.Job;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ArithmeticNetletReq extends ServiceRequestor {
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.requestor.ExertionRunner#getExertion(java.lang.String[])
+	 * @see sorcer.core.requestor.ServiceRequestor#getExertion(java.lang.String[])
 	 */
 	@Override
 	public Exertion getExertion(String... args) throws ExertionException {
 		try {
+            loadProperties("src/main/resources/config/ex6-exertlet.properties");
 			exertion = (Exertion)evaluate(new File(getProperty("exertion.filename")));
 		} catch (CompilationFailedException e) {
 			e.printStackTrace();
@@ -42,10 +41,5 @@ public class ArithmeticNetletReq extends ServiceRequestor {
 			e.printStackTrace();
 		}
 		return exertion;
-	}
-
-	public void postprocess(String... args) {
-		super.postprocess();
-		logger.info("<<<<<<<<<< f5 dataContext: \n" + ((Job)exertion).getExertion("f5").getDataContext());
 	}
 }

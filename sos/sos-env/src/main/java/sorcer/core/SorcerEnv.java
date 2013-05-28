@@ -18,6 +18,7 @@
 package sorcer.core;
 
 import org.apache.commons.io.FileUtils;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;
 
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -437,7 +439,7 @@ public class SorcerEnv implements SorcerConstants {
 	 *             if no IP address for the local host could be found.
 	 */
 	public static String getHostAddress() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getHostAddress();
+		return getLocalHost().getHostAddress();
 	}
 
 	/**
@@ -456,7 +458,7 @@ public class SorcerEnv implements SorcerConstants {
 			throws java.net.UnknownHostException {
 		return java.net.InetAddress.getByName(name).getHostAddress();
 	}
-	
+
 	/**
 	 * Return the local host name
 	 * <code>java.net.InetAddress.getLocalHost().getHostName()</code>
@@ -466,8 +468,12 @@ public class SorcerEnv implements SorcerConstants {
 	 *             if no hostname for the local host could be found.
 	 */
 	public static String getHostName() throws java.net.UnknownHostException {
-		return java.net.InetAddress.getLocalHost().getCanonicalHostName();
+		return getLocalHost().getCanonicalHostName();
 		// return java.net.InetAddress.getLocalHost().getHostName();
+	}
+
+	public static InetAddress getLocalHost() throws UnknownHostException {
+		return HostUtil.getInetAddress();
 	}
 
 	public static String[]getWebsterRoots(){

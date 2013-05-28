@@ -34,6 +34,7 @@ import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
+import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
@@ -61,6 +62,13 @@ public class SosUrlsTest {
 				+ System.getProperty("java.class.path"));
 		ServiceExertion.debug = true;
 	}
+
+    @Test
+    public void sosUrlsTest() throws SignatureException,
+            ExertionException, ContextException, IOException {
+        storedValuesTest();
+        updateValuesTest();
+    }
 
 	public void storedValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException {
@@ -90,11 +98,5 @@ public class SosUrlsTest {
 		set(url2, 25.0);
 		logger.info("url2 value: " + value(url2));
 		Assert.assertTrue(value(url2).equals(25.0));
-	}
-
-	public static void main(String[]args) throws ExertionException, SignatureException, ContextException, IOException {
-		SosUrlsTest test=new SosUrlsTest();
-		test.storedValuesTest();
-		test.updateValuesTest();
 	}
 }

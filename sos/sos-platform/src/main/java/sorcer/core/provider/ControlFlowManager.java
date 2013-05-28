@@ -847,34 +847,31 @@ public class ControlFlowManager {
 	public Task doIntraTask(Task task) throws ExertionException,
 			SignatureException, RemoteException {
 		List<Signature> alls = task.getSignatures();
-		Signature lastSig = alls.get(alls.size()-1);
-		if (alls.size() > 1 &&  task.isConcatenated() && !(lastSig instanceof NetSignature)) {
-			for (int i = 0; i< alls.size()-1; i++) {
+
+        Signature lastSig = alls.get(alls.size()-1);
+		if (alls.size() > 1 &&  task.isBatch() && !(lastSig instanceof NetSignature)) {
+			for (int i = 0; i < alls.size()-1; i++) {
 				alls.get(i).setType(Signature.PRE);
-			}
+            }
 		}
 		
 		task.startExecTime();
 		if (task.getPreprocessSignatures().size() > 0) {
 			Context cxt = preprocess(task);
 			cxt.setExertion(task);
-			task.setContext(cxt);
+            task.setContext(cxt);
 		}
 		// execute service task
 		List<Signature> ts = new ArrayList<Signature>(1);
 		Signature tsig = task.getProcessSignature();
-		((ServiceContext)task.getDataContext()).setCurrentSelector(tsig.getSelector());
+        ((ServiceContext)task.getDataContext()).setCurrentSelector(tsig.getSelector());
 		((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)tsig).getPrefix());
 
 		ts.add(tsig);
 		task.setSignatures(ts);
 		if (tsig.getReturnPath() != null)
-			try {
-				((ServiceContext)task.getDataContext()).setReturnPath(tsig.getReturnPath());
-			} catch (ContextException e) {
-				e.printStackTrace();
-				throw new ExertionException(e);
-			}
+			((ServiceContext)task.getDataContext()).setReturnPath(tsig.getReturnPath());
+
 		task = task.doTask();
 		if (task.getStatus() <= ExecState.FAILED) {
 			task.stopExecTime();

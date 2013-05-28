@@ -35,15 +35,14 @@ public class ObjectTask extends Task {
 	static final long serialVersionUID = 1793342047789581449L;
 
 	public ObjectTask() { }
-	
-	public ObjectTask(String name) {
-		super(name);
-	}
-	
-	public ObjectTask(String name, Signature signature)
-			throws SignatureException {
-		this(name, null, signature);
-	}
+
+    public ObjectTask(String name, Signature... signatures) {
+        super(name);
+        for (Signature s : signatures) {
+            if (s instanceof ObjectSignature)
+                addSignature(s);
+        }
+    }
 
 	public ObjectTask(String name, String description, Signature signature)
 			throws SignatureException {
@@ -79,13 +78,15 @@ public class ObjectTask extends Task {
 			}
 			Object result = ((ObjectSignature) getProcessSignature())
 					.initInstance(parameters, paramTypes);
-			if (result instanceof Context) {
-				if (dataContext.getReturnPath() != null)
+
+            if (dataContext.getReturnPath() != null) {
+			    if (result instanceof Context) {
 					dataContext.setReturnValue(((Context) result).getValue(dataContext
 							.getReturnPath().path));
 			} else {
-				dataContext.setReturnValue(result);
-			}
+                    dataContext.setReturnValue(result);
+			    }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 			dataContext.reportException(e);

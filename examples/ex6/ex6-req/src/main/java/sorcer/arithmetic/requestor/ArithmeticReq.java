@@ -17,28 +17,15 @@
  */
 package sorcer.arithmetic.requestor;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.codehaus.groovy.control.CompilationFailedException;
-
 import sorcer.arithmetic.provider.Adder;
 import sorcer.core.requestor.ServiceRequestor;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
+
+import java.io.File;
+
+import static sorcer.eo.operator.*;
 
 public class ArithmeticReq extends ServiceRequestor {
 

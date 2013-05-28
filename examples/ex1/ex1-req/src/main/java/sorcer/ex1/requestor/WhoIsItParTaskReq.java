@@ -17,26 +17,21 @@
  */
 package sorcer.ex1.requestor;
 
-import java.net.InetAddress;
-import java.util.logging.Logger;
-
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.net.InetAddress;
+import java.util.logging.Logger;
 
 public class WhoIsItParTaskReq extends ServiceRequestor {
 
@@ -44,7 +39,7 @@ public class WhoIsItParTaskReq extends ServiceRequestor {
 
 	public Exertion getExertion(String... args) throws ExertionException {
 		// get the queried provider names and the requested jobber name
-		// arg[0] is the class name of this runner
+		// arg[0] is the class name of this requestor
 		String providerName1 = Sorcer.getSuffixedName(args[1]);
 		String providerName2 = Sorcer.getSuffixedName(args[2]);
 		jobberName = Sorcer.getSuffixedName(args[3]);
@@ -54,7 +49,7 @@ public class WhoIsItParTaskReq extends ServiceRequestor {
 		// define requestor data
 		Job job = null;
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			inetAddress = SorcerEnv.getLocalHost();
 			hostname = inetAddress.getHostName();
 			ipAddress = inetAddress.getHostAddress();
 
@@ -92,12 +87,11 @@ public class WhoIsItParTaskReq extends ServiceRequestor {
 	}
 
 	public void postprocess() {
-		ServiceExertion.debug = true;
 		logger.info("Output context1: \n"
 				+ exertion.getContext("Who Is It1?"));
 		logger.info("Output context2: \n"
 				+ exertion.getContext("Who Is It2?"));
-		logger.info("Output job: \n" + exertion);
+		logger.info("Output job: \n" + ((Job)exertion).getJobContext());
 	}
 
 }

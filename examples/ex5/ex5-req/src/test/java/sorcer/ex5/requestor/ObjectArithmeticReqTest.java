@@ -57,7 +57,7 @@ public class ObjectArithmeticReqTest implements SorcerConstants {
 	}
 
 	@Test
-	public void exertTaskConcatenation() throws Exception {
+	public void exertTaskJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
@@ -82,7 +82,7 @@ public class ObjectArithmeticReqTest implements SorcerConstants {
 	}
 
 	@Test
-	public void exertJobHierachicalComposition() throws Exception {
+	public void exertJobComposition() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
@@ -110,7 +110,7 @@ public class ObjectArithmeticReqTest implements SorcerConstants {
 	}
 	
 	@Test
-	public void exertJobStrategy() throws Exception {
+	public void exertStrategyJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();

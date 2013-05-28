@@ -19,11 +19,10 @@ package sorcer.tools.webster;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
-import sorcer.core.DestroyAdmin;
+import sorcer.core.SorcerEnv;
 
 import java.io.*;
 import java.net.*;
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -393,7 +392,7 @@ public class Webster implements Runnable {
                 bindAddress = System.getProperty("webster.interface");
             }
             if (bindAddress == null)
-                bindAddress = InetAddress.getLocalHost().getHostAddress();
+                bindAddress = SorcerEnv.getLocalHost().getHostAddress();
 
             addr = InetAddress.getByName(bindAddress);
         } catch (UnknownHostException e) {

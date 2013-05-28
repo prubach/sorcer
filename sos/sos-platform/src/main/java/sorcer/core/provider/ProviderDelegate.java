@@ -81,7 +81,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -351,7 +350,7 @@ public class ProviderDelegate implements SorcerConstants {
 				&& providerProperties.contains("HOSTNAME")) {
 			try {
 				providerProperties = providerProperties.replace("HOSTNAME",
-						InetAddress.getLocalHost().getHostName());
+						SorcerEnv.getLocalHost().getHostName());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -419,8 +418,8 @@ public class ProviderDelegate implements SorcerConstants {
 
 	void initSpaceSupport() throws ConfigurationException, RemoteException {
 		try {
-			hostName = InetAddress.getLocalHost().getHostName();
-			hostAddress = InetAddress.getLocalHost().getHostAddress();
+			hostName = SorcerEnv.getLocalHost().getHostName();
+			hostAddress = SorcerEnv.getHostAddress();
 		} catch (UnknownHostException e) {
 			// ignore it
 		}
@@ -800,16 +799,16 @@ public class ProviderDelegate implements SorcerConstants {
 	public Task doTask(Task task, Transaction transaction)
 			throws ExertionException, SignatureException, RemoteException,
 			ContextException {
-		// prepare a default net batch task with the last signature as master
-		// SRV type
-		List<Signature> alls = task.getSignatures();
-		Signature lastSig = alls.get(alls.size() - 1);
-		if (alls.size() > 1 && task.isConcatenated()
-				&& (lastSig instanceof NetSignature)) {
-			for (int i = 0; i < alls.size() - 1; i++) {
-				alls.get(i).setType(Signature.PRE);
-			}
-		}
+        // prepare a default net batch task (has all sigs of SRV type)
+        // and make the last signature as master SRV type only.
+        List<Signature> alls = task.getSignatures();
+        Signature lastSig = alls.get(alls.size() - 1);
+        if (alls.size() > 1 && task.isBatch()
+                && (lastSig instanceof NetSignature)) {
+            for (int i = 0; i < alls.size() - 1; i++) {
+                alls.get(i).setType(Signature.PRE);
+            }
+        }
 		task.getControlContext().appendTrace(
 				provider.getProviderName() + " execute: "
 						+ task.getProcessSignature().getSelector() + ":"
@@ -848,18 +847,16 @@ public class ProviderDelegate implements SorcerConstants {
 						task.setContext(cxt);
 						task.setServicer(provider);
 					}
-					// service processing
+					// service sig processing
 					NetSignature tsig = (NetSignature) task
 							.getProcessSignature();
-					tsig.setServicer(provider);
+                    // rest path prefix and return path
+                    if (tsig.getPrefix() != null)
+                        ((ServiceContext)task.getContext()).setPrefix(tsig.getPrefix());
 					if (tsig.getReturnPath() != null)
-						try {
-							((ServiceContext) task.getContext())
+					    ((ServiceContext) task.getContext())
 									.setReturnPath(tsig.getReturnPath());
-						} catch (ContextException e) {
-							e.printStackTrace();
-							throw new ExertionException(e);
-						}
+
 					if (isBeanable(task)) {
 						task = useServiceComponents(task, transaction);
 					} else {
@@ -1038,15 +1035,11 @@ public class ProviderDelegate implements SorcerConstants {
 					break;
 				}
 			}
-		}
+        }
 		if (impl != null) {
 			if (task.getProcessSignature().getReturnPath() != null) {
-				try {
-					((ServiceContext) task.getContext()).setReturnPath(task
-							.getProcessSignature().getReturnPath());
-				} catch (ContextException e) {
-					task.reportException(e);
-				}
+				((ServiceContext) task.getContext()).setReturnPath(task
+					.getProcessSignature().getReturnPath());
 			}
 			// determine args and parameterTpes from the context
 			Class[] argTypes = new Class[] { Context.class };
@@ -2137,12 +2130,12 @@ public class ProviderDelegate implements SorcerConstants {
 		private void fillInProviderHost() {
 			String hostname = null, hostaddress = null;
 			try {
-				hostname = InetAddress.getLocalHost().getHostName();
+				hostname = SorcerEnv.getLocalHost().getHostName();
 				if (hostname == null) {
 					logger.warning("Could not aquire hostname");
 					hostname = "[unknown]";
 				} else {
-					hostaddress = InetAddress.getLocalHost().getHostAddress();
+					hostaddress = SorcerEnv.getLocalHost().getHostAddress();
 				}
 			} catch (Throwable t) {
 				// Can be ignored.
@@ -3070,7 +3063,7 @@ public class ProviderDelegate implements SorcerConstants {
 	public String getHostAddress() {
 		if (hostAddress == null)
 			try {
-				hostAddress = InetAddress.getLocalHost().getHostAddress();
+				hostAddress = SorcerEnv.getLocalHost().getHostAddress();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -3080,7 +3073,7 @@ public class ProviderDelegate implements SorcerConstants {
 	public String getHostName() {
 		if (hostName == null) {
 			try {
-				hostName = InetAddress.getLocalHost().getHostName();
+				hostName = SorcerEnv.getLocalHost().getHostName();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}

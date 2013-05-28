@@ -30,7 +30,6 @@
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-webster</artifactId>
 			<version>${v.sorcer}</version>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
             <groupId>org.apache.river</groupId>

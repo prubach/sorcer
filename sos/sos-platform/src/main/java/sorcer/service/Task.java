@@ -113,9 +113,14 @@ public class Task extends ServiceExertion {
 		}
 		Constructor<? extends Task> constructor;
 		constructor = taskClass.getConstructor(String.class,
-				signature.getClass(), Context.class);
-		
-		Task task = constructor.newInstance(name, signature, context);
+				Signature.class, Context.class);
+		if (signature.getPrefix() != null)
+            ((ServiceContext)context).setPrefix(signature.getPrefix());
+        if (signature.getReturnPath() != null)
+            ((ServiceContext) context)
+                    .setReturnPath(signature.getReturnPath());
+
+        Task task = constructor.newInstance(name, signature, context);
 
 		return task;
 	}

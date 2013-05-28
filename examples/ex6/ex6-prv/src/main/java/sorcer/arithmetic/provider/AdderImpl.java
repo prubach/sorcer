@@ -35,7 +35,7 @@ import sorcer.util.Sorcer;
 public class AdderImpl implements Adder {
 	private Arithmometer arithmometer = new Arithmometer();
 	private Provider provider;
-	private Logger logger;
+	private Logger logger = Logger.getLogger(AdderImpl.class.getName());
 	
 	public void init(Provider provider) {
 		this.provider = provider;

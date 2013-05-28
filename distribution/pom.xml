@@ -121,9 +121,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>locker</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.sorcersoft.lockmgr</groupId>
+            <artifactId>lockmgr-api</artifactId>
+            <version>${v.lockmgr}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.lockmgr</groupId>
+            <artifactId>lockmgr-service</artifactId>
+            <version>${v.lockmgr}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.lockmgr</groupId>
+            <artifactId>lockmgr-proxy</artifactId>
+            <version>${v.lockmgr}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -145,6 +155,58 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ju-arithmetic-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Examples -->
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex3-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex4-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-req</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -195,22 +257,6 @@
             <version>2.1_3</version>
         </dependency>
 
-
-        <!--        <dependency>
-                    <groupId>org.codehaus.izpack</groupId>
-                    <artifactId>izpack-maven-plugin</artifactId>
-                    <version>${izpack.version}</version>
-                    <scope>compile</scope>
-                </dependency>-->
-
-
-        <!--
-                <dependency>
-                    <groupId>org.codehaus.izpack</groupId>
-                    <artifactId>izpack-standalone-compiler</artifactId>
-                    <version>${izpack.version}</version>
-                </dependency>
-        -->
     </dependencies>
 
     <build>
@@ -329,6 +375,20 @@
                                     </tasks>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>create-checksums</id>
+                                <phase>install</phase>
+                                    <goals>
+                                        <goal>run</goal>
+                                    </goals>
+                                    <configuration>
+                                        <tasks>
+                                            <checksum format="MD5SUM" file="${project.build.directory}/sorcer-${project.version}-setup.jar" forceOverwrite="yes"/>
+                                            <checksum format="MD5SUM" file="${project.build.directory}/sorcer-${project.version}-setup.exe" forceOverwrite="yes"/>
+                                            <checksum format="MD5SUM" file="${project.build.directory}/sorcer-${project.version}.zip" forceOverwrite="yes"/>
+                                        </tasks>
+                                    </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -372,9 +432,9 @@
                                 </goals>
                                 <configuration>
                                     <headerType>gui</headerType>
-                                    <icon>src/main/configs/icons/sos.ico</icon>
-                                    <outfile>target/sorcer-${project.version}-setup.exe</outfile>
-                                    <jar>target/sorcer-${project.version}-setup.jar</jar>
+                                    <icon>${project.build.directory}/sorcer-${project.version}/sorcer-${project.version}/configs/icons/sos.ico</icon>
+                                    <outfile>${project.build.directory}/sorcer-${project.version}-setup.exe</outfile>
+                                    <jar>${project.build.directory}/sorcer-${project.version}-setup.jar</jar>
                                     <errTitle>Sorcer</errTitle>
                                     <jre>
                                         <minVersion>1.6.0</minVersion>

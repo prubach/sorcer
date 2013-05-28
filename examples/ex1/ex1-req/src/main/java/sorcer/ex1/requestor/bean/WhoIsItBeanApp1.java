@@ -17,18 +17,20 @@
  */
 package sorcer.ex1.requestor.bean;
 
-import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.net.InetAddress;
+import java.rmi.RMISecurityManager;
+import java.util.logging.Logger;
 
 public class WhoIsItBeanApp1 {
 
@@ -37,6 +39,7 @@ public class WhoIsItBeanApp1 {
 
 	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareCodebase();
 		if (args.length == 1)
 			providerName = Sorcer.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
@@ -49,7 +52,7 @@ public class WhoIsItBeanApp1 {
 
 	private Exertion getExertion() throws Exception {
         String hostname, ipAddress;
-		InetAddress inetAddress = InetAddress.getLocalHost();
+		InetAddress inetAddress = SorcerEnv.getLocalHost();
         hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
 

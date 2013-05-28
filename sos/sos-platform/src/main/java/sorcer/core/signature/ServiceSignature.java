@@ -443,7 +443,12 @@ import java.util.logging.Logger;
 		this.returnPath = returnPath;
 	}
 
-     @Override
+    @Override
+     public void setReturnPath(String path) {
+        returnPath = new ReturnPath<Object>(path);
+    }
+
+        @Override
      public void setReturnPath(String path, Direction direction) {
         returnPath = new ReturnPath<Object>(path, direction);
      }
