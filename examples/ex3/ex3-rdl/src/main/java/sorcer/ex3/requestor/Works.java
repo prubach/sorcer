@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class Works implements Serializable {
 
-    public static Work work1, work2, work3;
+    public static Work work1, work2, work3, work4;
 
     static {
         work1 = new Work() {
@@ -39,6 +39,16 @@ public class Works implements Serializable {
                 int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
                 cxt.putOutValue(p+"provider/result", arg1 - arg2);
                 return cxt;
+            }
+        };
+
+        work4 = new Work() {
+            public Context exec(Context context) throws InvalidWork, ContextException {
+                double arg1 = (Double)context.getValue("requestor/operand/1");
+                double arg2 = (Double)context.getValue("requestor/operand/2");
+                double arg3 = (Double)context.getValue("requestor/operand/3");
+                context.putOutValue("provider/result", (arg1 + arg2 + arg3)/3);
+                return context;
             }
         };
     }
