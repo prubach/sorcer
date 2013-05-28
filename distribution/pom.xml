@@ -122,10 +122,18 @@
 
         <dependency>
             <groupId>org.sorcersoft.lockmgr</groupId>
-            <artifactId>lockmgr</artifactId>
+            <artifactId>lockmgr-api</artifactId>
             <version>${v.lockmgr}</version>
-			<scope>import</scope>
-			<type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.lockmgr</groupId>
+            <artifactId>lockmgr-service</artifactId>
+            <version>${v.lockmgr}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.lockmgr</groupId>
+            <artifactId>lockmgr-proxy</artifactId>
+            <version>${v.lockmgr}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
