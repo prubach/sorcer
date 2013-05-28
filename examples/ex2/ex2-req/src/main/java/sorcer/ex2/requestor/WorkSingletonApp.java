@@ -17,47 +17,47 @@
  */
 package sorcer.ex2.requestor;
 
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.Work;
-import sorcer.service.*;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.Job;
+import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
+
+import java.rmi.RMISecurityManager;
+import java.util.Arrays;
+import java.util.logging.Logger;
 
 public class WorkSingletonApp {
 
 	private static Logger logger = Log.getTestLog();
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system properties
 		Sorcer.getEnvProperties();
 
-		// get the queried provider name from the command line
-		String pn = null;
-		if (args.length == 1)
-			pn = Sorcer.getSuffixedName(args[0]);
-
-		logger.info("Provider name: " + pn);
-
-		Exertion exertion = new WorkSingletonApp().getExertion(pn);
+		Exertion exertion = new WorkSingletonApp().getExertion(args);
 		Exertion result = exertion.exert();
+
 		logger.info("Output dataContext: \n" + result.getDataContext());
 		logger.info("Output dataContext: \n"
 				+ result.getExertion("work").getDataContext());
 	}
 
-	private Exertion getExertion(String pn) throws Exception {
+	private Exertion getExertion(String... args) throws Exception {
 		String hostname = SorcerEnv.getLocalHost().getHostName();
+        // get the queried provider name from the command line
+        logger.info("arg: " + Arrays.toString(args));
+        String pn = Sorcer.getSuffixedName(args[0]);
+        logger.info("Provider name: " + pn);
 
 		Context context = new ServiceContext("work");
 		context.putValue("requstor/name", hostname);

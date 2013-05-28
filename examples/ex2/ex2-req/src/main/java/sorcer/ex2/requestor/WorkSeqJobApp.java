@@ -31,38 +31,37 @@ import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
 import java.rmi.RMISecurityManager;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class WorkSeqJobApp {
 
 	private static Logger logger = Log.getTestLog();
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String... args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system properties
 		Sorcer.getEnvProperties();
-		
-		// get the queried provider name from the command line
-		String pn1 = Sorcer.getSuffixedName(args[0]);
-		String pn2 = Sorcer.getSuffixedName(args[1]);
-		String pn3 = Sorcer.getSuffixedName(args[2]);
-		
-		logger.info("Provider name1: " + pn1);
-		logger.info("Provider name2: " + pn2);
-		logger.info("Provider name3: " + pn3);
 
 		Exertion result = new WorkSeqJobApp()
-			.getExertion(pn1, pn2, pn3).exert();
+			.getExertion(args).exert();
+
 		// get contexts of component exertions - in this case tasks
 		logger.info("Output context1: \n" + result.getContext("work1"));
 		logger.info("Output context2: \n" + result.getContext("work2"));
 		logger.info("Output context3: \n" + result.getContext("work3"));
 	}
 
-	private Exertion getExertion(String pn1, String pn2, String pn3) throws Exception {
+	private Exertion getExertion(String... args) throws Exception {
 		String hostname = SorcerEnv.getLocalHost().getHostName();
-
+        logger.info("arg: " + Arrays.toString(args));
+        String pn1 = null, pn2 = null, pn3 = null;
+        if (args != null && args.length == 3)  {
+            pn1 = Sorcer.getSuffixedName(args[0]);
+            pn2 = Sorcer.getSuffixedName(args[1]);
+            pn3 = Sorcer.getSuffixedName(args[2]);
+        }
         Context context1 = new ServiceContext("work1");
 		context1.putValue("requstor/name", hostname);
 		context1.putValue("requestor/operand/1", 1);
