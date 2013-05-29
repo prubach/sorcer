@@ -18,8 +18,8 @@
 
 	<dependencies>
         <dependency>
-            <groupId>org.apache.river</groupId>
-            <artifactId>start</artifactId>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>
        	<dependency>

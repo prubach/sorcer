@@ -39,7 +39,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
             <version>${v.sorcer}</version>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
 
 		<!-- CodeBase -->
@@ -84,7 +84,9 @@
 								<configuration>
 									<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
 									<requestorClasspath>
-										<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
+										<param>${project.groupId}:${project.artifactId}:${project.version}</param>
+										<param>org.sorcersoft.sorcer:commons-req:${v.sorcer}</param>
+										<param>net.jini.lookup:serviceui:${v.jini}</param>
 									</requestorClasspath>
 								</configuration>
 							</execution>
