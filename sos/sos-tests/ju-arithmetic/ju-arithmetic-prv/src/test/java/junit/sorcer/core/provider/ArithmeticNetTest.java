@@ -24,6 +24,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
+import sorcer.util.JavaSystemProperties;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 
@@ -46,6 +47,7 @@ import static sorcer.eo.operator.sig;
 import static sorcer.eo.operator.strategy;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
+import static sorcer.util.JavaSystemProperties.JAVA_RMI_SERVER_CODEBASE;
 
 /**
  * @author Mike Sobolewski
@@ -56,15 +58,18 @@ public class ArithmeticNetTest implements SorcerConstants {
 			.getLogger(ArithmeticNetTest.class.getName());
 
 	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[]{
-				"org.sorcersoft.sorcer:sos-platform",
-				"org.sorcersoft.sorcer:ju-arithmetic-api"});
-		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
+		if (System.getProperty("java.security.policy") == null) {
+			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+		}
+		if(System.getProperty(JAVA_RMI_SERVER_CODEBASE)==null){
+			Sorcer.setCodeBaseByArtifacts(new String[]{
+					"org.sorcersoft.sorcer:sos-platform",
+					"org.sorcersoft.sorcer:ju-arithmetic-api"});
+		}
+		System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
 		System.out.println("Webster:" + Sorcer.getWebsterUrl());
-		System.out.println("Codebase:" + System.getProperty("java.rmi.server.codebase"));
+		System.out.println("Codebase:" + System.getProperty(JAVA_RMI_SERVER_CODEBASE));
+		System.setSecurityManager(new RMISecurityManager());
 	}
 
 	public static void waitForServices() throws InterruptedException {

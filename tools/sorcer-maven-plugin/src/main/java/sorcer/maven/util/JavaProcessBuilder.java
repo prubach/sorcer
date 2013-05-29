@@ -18,7 +18,6 @@
 package sorcer.maven.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +82,7 @@ public class JavaProcessBuilder {
 		this.output = output;
 	}
 
-	public Process2 startProcess() throws MojoExecutionException, MojoFailureException {
+	public Process2 startProcess() throws MojoFailureException {
 		ProcessBuilder procBld = new ProcessBuilder().command("java");
 
 		if (debugger) {
@@ -129,7 +128,7 @@ public class JavaProcessBuilder {
 				// if the next call throws exception, then we're probably good -
 				// process hasn't finished yet.
 				int x = proc.exitValue();
-				throw new MojoExecutionException("Process exited with value " + x);
+				throw new IllegalStateException("Process exited with value " + x);
 			} catch (IllegalThreadStateException x) {
 				if (proc != null) {
 					return new Process2(proc);

@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -416,7 +417,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 
 			try {
 				dispatcher = (SpaceTaskDispatcher) ExertionDispatcherFactory
-						.getFactory().createDispatcher((NetTask) task,
+						.getFactory().createDispatcher(task,
 								new HashSet<Context>(), false, myMemberUtil, provider);
 				try {
 					task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: " 
@@ -431,12 +432,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 					Thread.sleep(250);
 				}
 				logger.fine("Dispatcher State: " + dispatcher.getState());
+				result = (NetTask) dispatcher.getExertion();
 			} catch (DispatcherException e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Dispatcher exception", e);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Interrupted", e);
 			}
-			result = (NetTask) dispatcher.getExertion();
 		}
 
 		public Task getTask() {

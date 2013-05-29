@@ -92,16 +92,13 @@
 								</goals>
 								<configuration>
 									<requestorClasspath>
-										<requestorClasspath>org.sorcersoft.sorcer:sos-platform:${v.sorcer}
-										</requestorClasspath>
-										<requestorClasspath>
-											${project.groupId}:${project.artifactId}:${project.version}
-										</requestorClasspath>
-										<requestorClasspath>${project.groupId}:ju-arithmetic-api:${project.version}
-										</requestorClasspath>
-										<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
-										<requestorClasspath>junit:junit:4.11</requestorClasspath>
-										<requestorClasspath>org.slf4j:slf4j-simple:1.7.5</requestorClasspath>
+										<entry>org.sorcersoft.sorcer:sos-platform:${v.sorcer}</entry>
+										<entry>${project.groupId}:${project.artifactId}:${project.version}</entry>
+										<entry>${project.groupId}:ju-arithmetic-api:${project.version}</entry>
+										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
+										<entry>junit:junit:4.11</entry>
+										<entry>org.slf4j:slf4j-simple:1.7.5</entry>
+										<entry>com.sleepycat:je:${v.sleepycat}</entry>
 									</requestorClasspath>
 									<requestors>
 										<param>
@@ -118,10 +115,6 @@
 										</param>
 										<param>
 											<mainClass>junit.sorcer.util.bdb.objects.SosUrlsTest</mainClass>
-											<classpath>
-												<entry>junit:junit:4.11</entry>
-												<entry>com.sleepycat:je:${v.sleepycat}</entry>
-											</classpath>
 										</param>
 									</requestors>
 								</configuration>

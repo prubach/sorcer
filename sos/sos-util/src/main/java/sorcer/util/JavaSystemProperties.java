@@ -13,6 +13,7 @@ public class JavaSystemProperties {
 	public static final String JAVA_UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
 	public static final String JAVA_NET_PREFER_IPV4_STACK = "java.net.preferIPv4Stack";
 	public static final String JAVA_PROTOCOL_HANDLER_PKGS = "java.protocol.handler.pkgs";
+	public static final String CLASS_PATH = "java.class.path";
 
 	public static String getProperty(String key, Map<String, String> properties) {
 		return getProperty(key, null, properties);

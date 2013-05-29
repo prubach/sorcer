@@ -138,6 +138,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				}
 			} catch (InterruptedException e) {
 				throw new MojoExecutionException(e.getMessage(), e);
+			}catch(IllegalStateException x){
+				//fail in DestroyMojo, don't log stack trace, there is nothing interesting
+				getLog().warn(x.getMessage());
+				TestCycleHelper.getInstance().setFail();
 			}
 		}
 	}

@@ -17,9 +17,9 @@
  */
 package sorcer.util.bdb.sdb;
 
-import sorcer.core.Provider;
 import sorcer.core.StorageManagement;
 import sorcer.service.Context;
+import sorcer.service.ContextException;
 import sorcer.util.ProviderLookup;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
@@ -65,27 +65,20 @@ public class SdbConnection extends URLConnection {
 	 */
 	@Override
 	public void connect() throws IOException {
-		Provider provider = (Provider)ProviderLookup.getProvider(providerName, serviceType);
-		store = (StorageManagement)provider;
+		store = (StorageManagement) ProviderLookup.getProvider(providerName, serviceType);
 		connected = true;
 	}
 
 	@Override
 	public Object getContent() throws IOException {
-		Context outContext = null;
+		Context outContext;
 		if (!connected)
 			connect();
 		try {
-			if (store != null)
-				outContext = store.contextRetrieve(context(in(StorageManagement.object_type, storeType),
-						in(StorageManagement.object_uuid, uuid)));
-
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-		try {
+			outContext = store.contextRetrieve(context(in(StorageManagement.object_type, storeType),
+					in(StorageManagement.object_uuid, uuid)));
 			return outContext.getValue(StorageManagement.object_retrieved);
-		} catch (Exception e) {
+		} catch (ContextException e) {
 			throw new IOException(e);
 		}
 	}

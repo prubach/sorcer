@@ -12,7 +12,7 @@ before_script:
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
   - $SORCER_HOME/bin/sorcer-boot &
   - sleep 10
-script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
+script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false -Prun-its test
 jdk:
 #  - openjdk6
 #  - openjdk7

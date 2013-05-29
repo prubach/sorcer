@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.jini.core.lookup.ServiceRegistrar;
-import net.jini.discovery.LookupDiscoveryManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -40,7 +39,9 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 
+import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
 import sorcer.maven.util.JavaProcessBuilder;
@@ -49,7 +50,6 @@ import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.ServiceAccessor;
 
 /**
  * Boot sorcer provider
@@ -81,6 +81,9 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(property = "sorcer.provider.debug")
 	protected boolean debug;
 
+	@Parameter(defaultValue = "true")
+	protected boolean cleanBlitz;
+
 	/**
 	 * Log file to redirect standard and error output to. This only works for
 	 * java 1.7+
@@ -88,14 +91,16 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.build.directory}/provider.log")
 	protected File logFile;
 
-	@Parameter(property = "basedir")
-	protected File basedir;
+	@Parameter(property = "project.build.outputDirectory")
+	protected File workingDir;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//allow others to use maven logger
 		StaticLoggerBinder.getSingleton().setLog(getLog());
 
 		getLog().debug("servicesConfig: " + servicesConfig);
+
+		cleanBlitz();
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
@@ -112,12 +117,15 @@ public class BootMojo extends AbstractSorcerMojo {
 
 		Map<String, String> properties = new HashMap<String, String>();
 		String sorcerHome = System.getenv("SORCER_HOME");
-		properties.put(JavaSystemProperties.JAVA_NET_PREFER_IPV4_STACK, "true");
+		String rioHome = System.getenv("RIO_HOME");
+		if (rioHome == null) {
+			rioHome = sorcerHome + "/lib/rio";
+		}
 		properties.put(JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
 		properties.put(JavaSystemProperties.JAVA_PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
 		properties.put(JavaSystemProperties.JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
 		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);
-		properties.put(SorcerConstants.RIO_HOME, System.getenv("RIO_HOME"));
+		properties.put(SorcerConstants.RIO_HOME, rioHome);
 		properties.put(SorcerConstants.WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
 		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnv);
 		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reservePort());
@@ -125,11 +133,11 @@ public class BootMojo extends AbstractSorcerMojo {
 		JavaProcessBuilder builder = new JavaProcessBuilder();
 		builder.setMainClass(mainClass);
 		builder.setProperties(properties);
-		builder.setParameters(Arrays.asList(servicesConfig.getPath()));
+		builder.setParameters(Arrays.asList(ServiceStarter.SORCER_DEFAULT_CONFIG, servicesConfig.getPath()));
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
 		builder.setDebugger(debug);
 		builder.setOutput(logFile);
-		builder.setWorkingDir(basedir);
+		builder.setWorkingDir(workingDir);
 
 		getLog().info("starting sorcer");
 		Process2 process = builder.startProcess();
@@ -140,6 +148,17 @@ public class BootMojo extends AbstractSorcerMojo {
 		} catch (InterruptedException e) {
 			process.destroy();
 			throw new MojoExecutionException("Interrupted", e);
+		}
+	}
+
+	private void cleanBlitz() {
+		if (!cleanBlitz) return;
+		File dir = new File(SorcerEnv.getHomeDir(), "databases");
+		getLog().info("Cleaning blitz directory (" + dir + ")");
+		try {
+			FileUtils.deleteDirectory(dir);
+		} catch (IOException e) {
+			getLog().info("Could not delete directory", e);
 		}
 	}
 

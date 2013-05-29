@@ -45,40 +45,32 @@ public class SosUrlsTest {
 			.getName());
 
 	static {
-		try {
-			URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-		} catch (Error e) {
-			logger.severe("URL Stream Handler Factory setting failed!");
-		}
-		// System.setProperty("java.protocol.handler.pkgs",
-		// "sorcer.util.bdb.sos");
+		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
 
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
+		if (System.getProperty("java.security.policy") == null) {
+			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+		}
         System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));
 		ServiceExertion.debug = true;
 	}
 
-	public static void main(String[] args) throws Exception {
-		new SosUrlsTest().sosUrlsTest();
-	}
-
 	public void sosUrlsTest() throws SignatureException,
-            ExertionException, ContextException, IOException {
+			ExertionException, ContextException, IOException, InterruptedException {
         storedValuesTest();
         updateValuesTest();
     }
 
 	public void storedValuesTest() throws SignatureException,
-			ExertionException, ContextException, IOException {
+			ExertionException, ContextException, IOException, InterruptedException {
 		URL url1 = dbURL("Test1");
 		URL url2 = dbURL(21.0);
 		logger.info("object URL: " + url1);
 		logger.info("object URL: " + url2);
-		Assert.assertTrue(value(url1).equals("Test1"));
-		Assert.assertTrue((Double) value(url2) == 21.0);
+		Thread.sleep(500);
+		Assert.assertEquals("Test1", value(url1));
+		Assert.assertEquals(21.0, value(url2));
 	}
 
 	public void updateValuesTest() throws SignatureException,
@@ -94,10 +86,14 @@ public class SosUrlsTest {
 
 		set(url1, "Test2");
 		logger.info("url1 value: " + value(url1));
-		Assert.assertTrue(value(url1).equals("Test2"));
+		Assert.assertEquals("Test2", value(url1));
 
 		set(url2, 25.0);
 		logger.info("url2 value: " + value(url2));
-		Assert.assertTrue(value(url2).equals(25.0));
+		Assert.assertEquals(25.0, value(url2));
+	}
+
+	public static void main(String[]args) throws Exception {
+		new SosUrlsTest().sosUrlsTest();
 	}
 }

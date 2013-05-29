@@ -200,7 +200,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	 * @return The list of dependencies
 	 * @throws DependencyResolutionException
 	 *             If can't fetch it
-	 * @todo #51 This catch of NPE is a temprorary measure. I don't know why
+	 * todo jcabi-#51 This catch of NPE is a temprorary measure. I don't know why
 	 *       Aether throws NPE in case of unresolveable artifact. This is the
 	 *       best I can do at the moment in order to protect clients of the
 	 *       class.

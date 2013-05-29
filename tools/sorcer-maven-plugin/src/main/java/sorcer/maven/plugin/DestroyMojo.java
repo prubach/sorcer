@@ -25,6 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import sorcer.maven.util.Process2;
+import sorcer.maven.util.TestCycleHelper;
 
 /**
  * @author Rafał Krupiński
@@ -42,6 +43,9 @@ public class DestroyMojo extends AbstractSorcerMojo {
 			} else {
 				getLog().warn("Destroy mojo can only be used together with boot mojo");
 			}
+		}
+		if(TestCycleHelper.getInstance().isFail()){
+			throw new MojoExecutionException("Build failed (see previous logs)");
 		}
 	}
 }
