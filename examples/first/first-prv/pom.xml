@@ -59,44 +59,49 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sorcer-preit</id>
-						<goals>
-							<goal>provider</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>sorcer-it</id>
-						<goals>
-							<goal>run-requestor</goal>
-						</goals>
-						<configuration>
-							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
-							<requestorClasspath>
-								<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
-							</requestorClasspath>
-						</configuration>
-					</execution>
-					<execution>
-						<id>sorcer-postit</id>
-						<goals>
-							<goal>destroy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+	<profiles>
+		<profile>
+			<id>run-its</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sorcersoft.sorcer</groupId>
+						<artifactId>sorcer-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sorcer-preit</id>
+								<goals>
+									<goal>provider</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>sorcer-it</id>
+								<goals>
+									<goal>run-requestor</goal>
+								</goals>
+								<configuration>
+									<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
+									<requestorClasspath>
+										<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
+									</requestorClasspath>
+								</configuration>
+							</execution>
+							<execution>
+								<id>sorcer-postit</id>
+								<goals>
+									<goal>destroy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
-		<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
+	<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
 <!--
 		<resources>
 			<resource>
@@ -116,5 +121,4 @@
 			</resource>
 		</resources>
 -->
-	</build>
 </project>
