@@ -95,6 +95,14 @@ public class Booter implements SorcerConstants {
         return(buffer.toString());        
     }
 
+	public static String resolveClasspath(String coords){
+		return Resolver.resolveAbsolute(coords);
+	}
+
+	public static String resolveClasspath(String... coords){
+		return Resolver.resolveClassPath(coords);
+	}
+
 	/**
      * Return the codebase for the provided JAR name and port. This method will 
      * first get the IP Address of the machine using 
@@ -164,7 +172,11 @@ public class Booter implements SorcerConstants {
 		return getCodebase(baseUrl, jars);
 	}
 
-	public static String getCodebase(String[] coords) throws UnknownHostException {
+	public static String resolveCodebase(String[] coords) throws UnknownHostException {
+		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+	}
+
+	public static String resolveCodebase(String coords) throws UnknownHostException {
 		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
 	}
 
@@ -194,7 +206,7 @@ public class Booter implements SorcerConstants {
 
 	protected static URL getCodebaseRoot(String schema, String host, int port){
 		try {
-			return new URL(schema, host, port, null);
+			return new URL(schema, host, port, "");
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Could not build base URL", e);
 		}

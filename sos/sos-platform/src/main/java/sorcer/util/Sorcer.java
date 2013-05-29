@@ -406,7 +406,7 @@ public class Sorcer extends SorcerEnv {
 	 */
 	public static URL getWebsterUrlURL() {
 		try {
-			return new URL("http", getWebsterInterface(), getWebsterPort(), null);
+			return new URL("http", getWebsterInterface(), getWebsterPort(), "");
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
