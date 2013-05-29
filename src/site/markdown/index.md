@@ -1,3 +1,37 @@
+#### SORCER Architecture
+
+![SORCER Architecture](carousel/carousel-SOS_EaaaS.png)
+
+SORCER Operating System is a true service-oriented programming environment that
+realizes the concept of Everything Any Where Any Time as a Service (EaaaS).
+
+
+#### Transdisciplinary Service-Oriented Computing
+
+![Transdisciplinary SO Computing](carousel/carousel-SOS_trans.png)
+
+SORCER programming model and scalability allows users to pass the limits of engineering disciplines enabling
+a true transdisciplinary approach.
+
+
+#### SORCER Service Browser
+
+![SORCER Service Browser](carousel/carousel-browser.png)
+
+SORCER uses intelligent zero-configuration discovery-join protocols that find all services available in the user's
+network. The SORCER Service Browser enables users to access these services no matter where they are deployed.
+
+#### Custom Service User Interface
+
+![Custom Service UI](carousel/carousel-browserUI.png)
+
+Services may expose a graphical user interface that may be immiediately accessed using the SORCER Service Browser
+without any installation or configuration.
+
+
+---
+
+
 ## SORCER
 Sorcer is an acronym for Service ORiented Computing EnviRonment. Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services. 
 Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming. 
