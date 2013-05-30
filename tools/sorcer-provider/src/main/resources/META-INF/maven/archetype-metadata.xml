@@ -30,17 +30,17 @@
         <requiredProperty key="version">
             <defaultValue>1.0.0-SNAPSHOT</defaultValue>
         </requiredProperty>
-        <requiredProperty key="providerInterface">
+        <requiredProperty key="serviceName">
             <defaultValue>SampleService</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="providerInterface">
+            <defaultValue>${serviceName}</defaultValue>
         </requiredProperty>
         <requiredProperty key="providerClass">
             <defaultValue>${providerInterface}Impl</defaultValue>
         </requiredProperty>
         <requiredProperty key="projectDescription">
             <defaultValue>Sample Service</defaultValue>
-        </requiredProperty>
-        <requiredProperty key="serviceName">
-            <defaultValue>${providerInterface}</defaultValue>
         </requiredProperty>
         <requiredProperty key="serviceDescription">
             <defaultValue>${projectDescription}</defaultValue>

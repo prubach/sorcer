@@ -27,33 +27,52 @@
             </li>
             <li>Answer questions:</li>
             <ol>
-                <li>groupId: Usually you organisation's reversed domain name, e.g. com.sorcersoft</li>
+                <li>groupId: Usually your organization's reversed domain name, e.g. com.sorcersoft</li>
                 <li>artifactId: Project name and project directory name, e.g. myprovider1</li>
                 <li>package: Java package for your provider classes, by default groupId is used</li>
-                <li>providerClass: Java class name of your provider</li>
-                <li>serviceDescription: Description of your provider. Value will be used in service browser</li>
+                <li>serviceDescription: Description of your provider. The given description can be seen in the Sorcer service browser.</li>
+                <li>providerInterface: Java class name of your provider's interface (service type) that will be exposed to requestors</li>
+                <li>providerClass: Name of class that will implement the provider's interface</li>
                 <li>serviceName: The name of your service</li>
             </ol>
             <li>Confirm properties configuration
-                <p>This is the time to accept or modify all values, including the default ones. If everything is OK,
+                <p>Now you can accept or modify entered inputs, including the default ones. If everything is OK,
                     press Y.
                 </p>
             </li>
-            <li>Import your maven projects to eclipse</li>
-            <li>You may remove the -sui (service UI) project if you're not going to use a graphical user interface in
-                your provider. You may also remove the -proxy project if your provider is going to use a thin client
-                proxy. Don't forget to remove the corresponding &lt;module&gt; entry from pom.xml after you remove the
-                module itself.
+            <li>Import your maven projects to your IDE (IntelliJ Idea or eclipse, for example). Below you can find see
+                how to import your project to IntelliJ idea</li>
+            <li>You can remove the (service UI) artifactId>-sui module unless you are going to create a graphical user
+                interface attached to your provider. You can also remove the &lt;artifactId&gt;-proxy module unless you want
+                to crate a custom provider proxy. Remember to delete the corresponding &lt;module&gt; entry in your provider
+                pom.xml for any removed module from your provider project.
             </li>
+                <li>To build your project in your the top-level directory of your project execute:
+                    <pre>mvn install</pre>
+                </li>
             </ol>
         </p>
+        <h2 id="Importing_provider">Importing project into IntelliJ Idea</h2>
+        <p>
+           To work with Sorcer the free community edition of IntelliJ Idea should be sufficient.
+           <ol>
+               <li>Open IntelliJ Idea</li>
+               <li>Select import project and point the top-level directory of your provider project as in Figure below</li>
+               <img src="new-provider/importToIdea.png"/>
+               <li>In the next steps of the importing wizard you can leave the defaults and continue</li>
+               <li>When the project is imported you can use the "Maven Projects" window to build the project</li>
+           </ol>
+        </p>
+
+
         <h2 id="Starting_provider">Starting provider</h2>
         <p>
             <ol>
-                <li>Start Sorcer</li>
+                <li>Start Sorcer - please refer to our <a href="getting-started.html">Getting Started Guide</a> to see how to do that</li>
                 <li>Start provider (from console in project directory):
                     <pre>ant -f [serviceName]-prv/boot.xml</pre>
                 </li>
+                <li>If you use IntelliJ Idea you can drag and drop the boot.xml script to the "Ant build" window and double-click the "boot.provider" goal</li>
             </ol>
         </p>
         <h2 id="Testing_provider">Testing provider</h2>
@@ -61,6 +80,7 @@
             <li>To test your provider start sample requestor (client):
             <pre>ant -f [serviceName]-req/run.xml</pre>
             </li>
+            <li>If you use IntelliJ Idea you can drag and drop the run.xml script to the "Ant build" window and double-click the "run.requestor" goal</li>
             </ul>
         </p>
     </body>
