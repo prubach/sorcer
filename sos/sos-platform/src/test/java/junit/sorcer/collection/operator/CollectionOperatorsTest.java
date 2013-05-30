@@ -135,7 +135,7 @@ public class CollectionOperatorsTest {
 		assertEquals(list(1.1, 5.0, 1.3, 1.4, 1.5), context.getElements());
 		context.set(1, 20.0);
 		assertEquals(20.0, context.get(1));
-		assertNull(context.add(30.0));
+        assertTrue(context.add(30.0));
 		assertEquals(30.0, context.get(5));
 	}
 	
