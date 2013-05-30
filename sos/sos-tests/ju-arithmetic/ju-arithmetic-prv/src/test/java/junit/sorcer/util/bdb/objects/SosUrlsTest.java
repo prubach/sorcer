@@ -68,7 +68,7 @@ public class SosUrlsTest {
 		URL url2 = dbURL(21.0);
 		logger.info("object URL: " + url1);
 		logger.info("object URL: " + url2);
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		Assert.assertEquals("Test1", value(url1));
 		Assert.assertEquals(21.0, value(url2));
 	}

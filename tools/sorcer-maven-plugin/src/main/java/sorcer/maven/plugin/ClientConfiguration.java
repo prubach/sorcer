@@ -22,6 +22,7 @@ public class ClientConfiguration {
 	public String mainClass;
 	public String[] codebase;
 	public String[] classpath;
+	public String[] arguments;
 
 	public ClientConfiguration() {
 	}

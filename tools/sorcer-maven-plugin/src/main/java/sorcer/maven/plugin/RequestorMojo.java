@@ -28,13 +28,11 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import sorcer.core.SorcerConstants;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.provider.boot.Booter;
-import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +45,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
+import static sorcer.util.JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY;
+import static sorcer.util.JavaSystemProperties.JAVA_SECURITY_POLICY;
+import static sorcer.util.JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE;
 
 /**
  * @author Rafał Krupiński
@@ -107,10 +110,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 
 		Map<String, String> defaultSystemProps = new HashMap<String, String>();
-		defaultSystemProps.put(JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
-		defaultSystemProps.put(JavaSystemProperties.JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
-		defaultSystemProps.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
-		defaultSystemProps.put(JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
+		defaultSystemProps.put(JAVA_UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
+		defaultSystemProps.put(JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+		defaultSystemProps.put(S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
+		defaultSystemProps.put(JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
 
 		List<ClientRuntimeConfiguration> configurations = buildClientsList();
 		for (int i = 0; i < configurations.size(); i++) {
@@ -125,6 +128,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			builder.setWorkingDir(basedir);
 			builder.setDebugger(debug);
 			builder.setOutput(getLogFile(configurations, i));
+			if (config.arguments != null) {
+				builder.setParameters(Arrays.asList(config.arguments));
+			}
 
 			try {
 				getLog().info("Starting requestor process");
@@ -161,6 +167,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 				String[] userCodebase = requestor.codebase != null ? requestor.codebase : requestorCodebase;
 				updateCodebaseAndRoots(config, host, userCodebase);
+				config.arguments = requestor.arguments;
 				result.add(config);
 			}
 			return result;

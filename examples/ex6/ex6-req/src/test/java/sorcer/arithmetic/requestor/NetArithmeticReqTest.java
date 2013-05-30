@@ -61,7 +61,7 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
         NetJob result = (NetJob)job.exert();
         logger.info("result context: "  + result.getComponentContext("3tasks/subtract"));
         logger.info("job context: " + result.getJobContext());
-        assertEquals(result.getValue("3tasks/subtract/result/value"), 400.0);
+		assertEquals(400.0, result.getValue("3tasks/subtract/result/value"));
     }
 
 	@Test
@@ -70,7 +70,7 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 		Job result = (NetJob) job.exert();
 		logger.info("result context: " + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
-		assertEquals(result.getValue("1job1task/subtract/result/value"), 400.0);
+		assertEquals(400.0, result.getValue("1job1task/subtract/result/value"));
 	}
 
 	public static Job getJobComposition() throws Exception {
