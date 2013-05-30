@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -51,8 +53,6 @@ import org.sonatype.aether.util.filter.DependencyFilterUtils;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @author Rafał Krupiński
  */
@@ -62,9 +62,6 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	public static final String KEY_CODEBASE = "sorcer.codebase";
 	public static final String KEY_REQUESTOR = "sorcer.requestor";
 	public static final String KEY_PROVIDER = "sorcer.provider";
-	public static final String KEY_PROCESS = BootMojo.class.getName() + ".process";
-	//public static final String KEY_CODEBASE_REQUESTOR = "sorcer.requestor.codebase";
-	public static final String KEY_PROVIDER_PATH = "sorcer.provider.path";
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
 	protected RepositorySystemSession repositorySystemSession;
@@ -107,7 +104,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 		try {
 			result = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
 		} catch (DependencyCollectionException e) {
-			throw new MojoExecutionException("Unable to resolve requestor dependencies.", e);
+			throw new MojoExecutionException("Unable to resolve runner dependencies.", e);
 		}
 
 		final List<String> resultList = new LinkedList<String>();
@@ -158,7 +155,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 			ArtifactResult artifactResult = repositorySystem.resolveArtifact(repositorySystemSession, request);
 			return artifactResult.getArtifact();
 		} catch (ArtifactResolutionException e) {
-			throw new MojoExecutionException("Unable to resolve requestor from repository.", e);
+			throw new MojoExecutionException("Unable to resolve runner from repository.", e);
 		}
 	}
 
@@ -203,18 +200,21 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 	 * @return The list of dependencies
 	 * @throws DependencyResolutionException
 	 *             If can't fetch it
-	 * @todo #51 This catch of NPE is a temprorary measure. I don't know why
+	 * todo jcabi-#51 This catch of NPE is a temprorary measure. I don't know why
 	 *       Aether throws NPE in case of unresolveable artifact. This is the
 	 *       best I can do at the moment in order to protect clients of the
 	 *       class.
 	 */
-	@SuppressWarnings("PMD.AvoidCatchingGenericException")
-	private List<Artifact> fetch(RepositorySystemSession session, DependencyRequest dreq)
-			throws DependencyResolutionException {
-		List<Artifact> deps = new LinkedList<Artifact>();
+	private List<Artifact> fetch(final RepositorySystemSession session,
+								 final DependencyRequest dreq) throws DependencyResolutionException {
+		final List<Artifact> deps = new LinkedList<Artifact>();
 		try {
 			Collection<ArtifactResult> results;
-			results = this.repositorySystem.resolveDependencies(session, dreq).getArtifactResults();
+			synchronized (session.getLocalRepository().getBasedir()) {
+				results = this.repositorySystem
+						.resolveDependencies(session, dreq)
+						.getArtifactResults();
+			}
 			for (ArtifactResult res : results) {
 				deps.add(res.getArtifact());
 			}

@@ -18,6 +18,7 @@ package sorcer.provider.boot;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,6 +95,14 @@ public class Booter implements SorcerConstants {
         return(buffer.toString());        
     }
 
+	public static String resolveClasspath(String coords){
+		return Resolver.resolveAbsolute(coords);
+	}
+
+	public static String resolveClasspath(String... coords){
+		return Resolver.resolveClassPath(coords);
+	}
+
 	/**
      * Return the codebase for the provided JAR name and port. This method will 
      * first get the IP Address of the machine using 
@@ -139,12 +148,12 @@ public class Booter implements SorcerConstants {
      * @return the codebase for the JAR
      */
     public static String getCodebase(String jar, String address, String port) {
-        return(com.sun.jini.config.ConfigUtil.concat(new Object[] {
-                "http://", 
-                address,  
-                ":", port,
-                "/"+jar}));
-    }
+		try {
+			return new URL(getCodebaseRoot(address, Integer.parseInt(port)), jar).toExternalForm();
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
      * Return the codebase for the provided JAR names, port and address
@@ -155,24 +164,54 @@ public class Booter implements SorcerConstants {
      * @return the codebase for the JAR
      */
     public static String getCodebase(String[] jars, String address, String port) {
-    	int p = new Integer(port);
-    	if (p <= 0)
-    		Booter.port = getPort();
-   
-        StringBuffer buffer = new StringBuffer();
-        for(int i=0; i<jars.length; i++) {
-            if(i>0)
-                buffer.append(" ");
-            buffer.append("http://")
-                .append(address)
-                .append(":")
-                .append(Booter.port)
-                .append("/")
-                .append(jars[i]);
-        }
-        return(buffer.toString());
-    }
-    
+		int p = new Integer(port);
+		if (p <= 0)
+			Booter.port = getPort();
+
+		URL baseUrl = getCodebaseRoot(address, Booter.port);
+		return getCodebase(baseUrl, jars);
+	}
+
+	public static String resolveCodebase(String[] coords) throws UnknownHostException {
+		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+	}
+
+	public static String resolveCodebase(String coords) throws UnknownHostException {
+		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+	}
+
+	private static String getCodebase(URL root, String[] jars) {
+		Collection<String> cb = new ArrayList<String>(jars.length);
+		for (String jar : jars) {
+			cb.add(getCodebase(root, jar).toExternalForm());
+		}
+		return org.apache.commons.lang3.StringUtils.join(cb, SorcerEnv.CODEBASE_SEPARATOR);
+	}
+
+	private static URL getCodebase(URL root, String jar) {
+		try {
+			return new URL(root, jar);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected static URL getCodebaseRoot() throws UnknownHostException {
+		return getCodebaseRoot(getHostAddress(), getWebsterPort());
+	}
+
+	protected static URL getCodebaseRoot(String host, int port) {
+		return getCodebaseRoot("http", host, port);
+	}
+
+	protected static URL getCodebaseRoot(String schema, String host, int port){
+		try {
+			return new URL(schema, host, port, "");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Could not build base URL", e);
+		}
+	}
+
     /**
      * Return the local host address using 
      * <code>java.net.InetAddress.getLocalHost().getHostAddress()</code>
@@ -182,13 +221,7 @@ public class Booter implements SorcerConstants {
      * host could be found.
      */
     public static String getHostAddress() throws java.net.UnknownHostException {
-    	/*String address = System.getProperty("provider.webster.interface");			
-		if (address==null) 
-			address = System.getProperty("provider.webster");
-		if (address==null)*/
-			return SorcerEnv.getLocalHost().getHostAddress();
-		/*else 
-			return address;*/
+		return SorcerEnv.getLocalHost().getHostAddress();
     }
 
     /**

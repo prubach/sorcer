@@ -17,24 +17,17 @@
  */
 package sorcer.maven.plugin;
 
-import com.google.common.collect.Collections2;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.ProjectDependenciesResolver;
-import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.DependencyRequest;
-import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.filter.DependencyFilterUtils;
-import sorcer.maven.util.ArtifactResultTransformer;
 import sorcer.maven.util.ArtifactUtil;
 
 import java.util.ArrayList;
@@ -125,17 +118,4 @@ public class SorcerMojo extends AbstractSorcerMojo {
 		}
 		return result;
 	}
-
-	private Collection<Artifact> getDependencies(Collection<Artifact> artifacts, String scope)
-			throws MojoExecutionException, RepositoryException {
-		CollectRequest collectRequest = new CollectRequest();
-		collectRequest.setDependencies(toDependencies(artifacts, scope));
-		collectRequest.setRepositories(remoteRepos);
-
-		DependencyResult dependencyResult = repoSystem.resolveDependencies(repositorySystemSession, new DependencyRequest(
-				collectRequest, DependencyFilterUtils.classpathFilter(scope)));
-
-		return Collections2.transform(dependencyResult.getArtifactResults(), new ArtifactResultTransformer());
-	}
-
 }

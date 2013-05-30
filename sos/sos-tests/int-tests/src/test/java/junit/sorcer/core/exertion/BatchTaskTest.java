@@ -17,7 +17,6 @@
  */
 package junit.sorcer.core.exertion;
 
-//import com.gargoylesoftware,base,testing,TestUtil;
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
 import static sorcer.eo.operator.context;
@@ -30,7 +29,6 @@ import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.type;
 
 import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
 
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.MultiplierImpl;
@@ -42,17 +40,11 @@ import sorcer.service.Signature;
 import sorcer.service.Signature.Direction;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
-//import static sorcer.vo.operator.expr;
-//import static sorcer.vo.operator.vars;
 
 /**
  * @author Mike Sobolewski
  */
-
 public class BatchTaskTest {
-	private final static Logger logger = Logger.getLogger(TaskTest.class
-			.getName());
-
 	static {
 		System.setProperty("java.util.logging.config.file",
 				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
@@ -64,61 +56,6 @@ public class BatchTaskTest {
 				"org.sorcersoft.sorcer:sos-platform" });
 	}
 
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void batchTask1aTest() throws Exception {
-//		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-//		// testing with getValueEndsWith for vars in the dataContext with prefixed paths
-//		Task batch1 = task(
-//				"batch1",
-//				type(sig(expr("x1 * x2", vars("x1", "x2")), result("x5")), Signature.PRE),
-//				type(sig(expr("x3 + x4", vars("x3","x4")), result("x6")), Signature.PRE),
-//				type(sig(expr("x5 - x6", vars("x5", "x6")), result("result/y")), Signature.SRV),
-//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
-//						in("arg/x3", 20.0), in("arg/x4", 80.0)));
-//		
-//		//logger.info("task t: " + value(batch1));
-//		assertEquals("Wrong value for 400.0", value(batch1), 400.0);
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void batchTask1bTest() throws Exception {
-//		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
-//		// testing with getValueEndsWith for vars in the dataContext with prefixed paths
-//		Task batch1 = task(
-//				"batch1",
-//				sig(expr("x1 * x2", vars("x1", "x2")), result("x5")),
-//				sig(expr("x3 + x4", vars("x3","x4")), result("x6")),
-//				sig(expr("x5 - x6", vars("x5", "x6")), result("result/y")),
-//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
-//						in("arg/x3", 20.0), in("arg/x4", 80.0)));
-//		
-//		//logger.info("task t: " + value(batch1));
-//		assertEquals("Wrong value for 400.0", value(batch1), 400.0);
-//	}
-//	
-//	@Test
-//	public void batchTask2Test() throws Exception {
-//		// PREPROCESS, POSTPROCESS with SERVICE signatures and with evaluator, object tasks
-//		Task batch2 = task(
-//				"batch2",
-//				type(sig(expr("x1 * x2", vars("x1", "x2")), result("x5")), Signature.PRE),
-//				type(sig(expr("x4 + x3", vars("x3","x4")), result("x6")), Signature.PRE),
-//				sig(expr("x5 - x6", vars("x5", "x6")), result("result/y", Direction.IN)),
-//				type(sig("add", AdderImpl.class, result("result/z")), Signature.POST), 
-//				dataContext(in("arg/x1", 10.0), in("arg/x2", 50.0),
-//						in("arg/x3", 20.0), in("arg/x4", 80.0)));
-//		
-//		batch2 = exert(batch2);
-//		//logger.info("task result/y: " + get(batch2, "result/y"));
-//		assertEquals("Wrong value for 400.0", get(batch2, "result/y"), 400.0);
-//
-//		// sums up all inputs and the return value of y: [400.0, 80.0, 20.0, 50.0, 10.0]]
-//		//logger.info("task result/z: " + get(batch2, "result/z"));
-//		assertEquals("Wrong value for 560.0", get(batch2, "result/z"), 560.0);
-//	}
-	
 	@Test
 	public void batchTask3Test() throws Exception {
 		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
@@ -132,7 +69,7 @@ public class BatchTaskTest {
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
-		assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+		assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
 	}
 	
 	
@@ -149,7 +86,7 @@ public class BatchTaskTest {
 		
 		batch3 = exert(batch3);
 		//logger.info("task result/y: " + get(batch3, "result/y"));
-		assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+		assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
 	}
 }
 	

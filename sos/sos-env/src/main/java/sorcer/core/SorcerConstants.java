@@ -1176,6 +1176,8 @@ public interface SorcerConstants {
 
 	String CODEBASE_SEPARATOR = " ";
 	String S_KEY_SORCER_ENV = "sorcer.env.file";
+	String WEBSTER_TMP_DIR = "webster.tmp.dir";
+	String RIO_HOME = "rio.home";
 }
 
 

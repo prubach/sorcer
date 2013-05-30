@@ -20,13 +20,69 @@
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-boot</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.river</groupId>
+					<artifactId>start</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.jini</groupId>
+					<artifactId>jsk-platform</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.rioproject.resolver</groupId>
+					<artifactId>resolver-aether</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.rioproject</groupId>
+					<artifactId>rio-start</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>net.jini.lookup</groupId>
+					<artifactId>serviceui</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-webster</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.river</groupId>
+					<artifactId>start</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-platform</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.river</groupId>
+			<artifactId>reggie</artifactId>
+			<version>${v.jini}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
@@ -43,30 +99,24 @@
 			<version>3.2</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-<!--		<dependency>
 			<groupId>org.sonatype.aether</groupId>
 			<artifactId>aether-util</artifactId>
-		</dependency>-->
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.slf4j-maven-plugin-log</groupId>
+			<artifactId>slf4j-maven-plugin-log</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.1.0.Final</version>
 		</dependency>
 	</dependencies>
 

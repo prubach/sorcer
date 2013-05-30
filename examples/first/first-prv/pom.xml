@@ -39,7 +39,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
             <version>${v.sorcer}</version>
-            <!--<scope>test</scope>-->
+            <scope>test</scope>
         </dependency>
 
 		<!-- CodeBase -->
@@ -50,8 +50,8 @@
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
-					<groupId>org.sorcersoft.sorcer</groupId>
-					<artifactId>locker</artifactId>
+					<groupId>org.sorcersoft.lockmgr</groupId>
+					<artifactId>lockmgr</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.sorcersoft.sorcer</groupId>
@@ -59,52 +59,60 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 	</dependencies>
 
-	<build>
-		<plugins>
-<!--
-			<plugin>
-				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>policy</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>sorcer-preit</id>
-						<goals>
-							<goal>provider</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>sorcer-it</id>
-						<goals>
-							<goal>run-requestor</goal>
-						</goals>
-						<configuration>
-							<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
-							<scope>test</scope>
-							<requestorClasspath>
-								<requestorClasspath>net.jini.lookup:serviceui:${v.jini}</requestorClasspath>
-							</requestorClasspath>
-						</configuration>
-					</execution>
-					<execution>
-						<id>sorcer-postit</id>
-						<goals>
-							<goal>destroy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
--->
-		</plugins>
+	<profiles>
+		<profile>
+			<id>run-its</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sorcersoft.sorcer</groupId>
+						<artifactId>sorcer-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sorcer-preit</id>
+								<goals>
+									<goal>provider</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>sorcer-it</id>
+								<goals>
+									<goal>run-requestor</goal>
+								</goals>
+								<configuration>
+									<requestors>
+										<param>
+											<mainClass>com.example.sorcer.SampleServiceTester</mainClass>
+											<classpath>
+												<param>${project.groupId}:${project.artifactId}:${project.version}</param>
+												<param>${project.groupId}:first-api:${project.version}</param>
+												<param>org.sorcersoft.sorcer:commons-req:${v.sorcer}</param>
+												<param>net.jini.lookup:serviceui:${v.jini}</param>
+											</classpath>
+											<arguments>
+												<param>com.example.sorcer.SampleServiceTester</param>
+											</arguments>
+										</param>
+									</requestors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>sorcer-postit</id>
+								<goals>
+									<goal>destroy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
-		<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
+	<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
+<!--
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -122,5 +130,5 @@
 				</excludes>
 			</resource>
 		</resources>
-	</build>
+-->
 </project>

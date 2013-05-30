@@ -1,17 +1,21 @@
 package com.example.sorcer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.requestor.ServiceRequestor;
-import sorcer.service.*;
-import sorcer.util.Log;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.SignatureException;
+import sorcer.service.Task;
 
 import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
 
 import static sorcer.eo.operator.*;
 
 public class SampleServiceTester extends ServiceRequestor {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(SampleServiceTester.class);
 
 	public Exertion getExertion(String... args) throws ExertionException,
                 ContextException, SignatureException {

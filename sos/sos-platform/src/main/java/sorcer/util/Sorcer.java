@@ -399,6 +399,19 @@ public class Sorcer extends SorcerEnv {
 		return "http://" + getWebsterInterface() + ':' + getWebsterPort();
 	}
 
+	/**
+	 * Returns a URL for the SORCER class server.
+	 *
+	 * @return the current URL for the SORCER class server.
+	 */
+	public static URL getWebsterUrlURL() {
+		try {
+			return new URL("http", getWebsterInterface(), getWebsterPort(), "");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static String getDatabaseStorerUrl() {
 		//return "sos://" + DatabaseStorer.class.getName() + '/' + getActualDatabaseStorerName();
 		return "sos://DatabaseStorer/" + getActualDatabaseStorerName();

@@ -17,7 +17,12 @@
  */
 package sorcer.boot.util;
 
-import static java.lang.System.out;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,15 +30,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import sorcer.core.SorcerEnv;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * @author Rafał Krupiński
@@ -51,14 +47,14 @@ public class ClassPathVerifier {
 		Multimap<String, ClassLoader> classLoaders = Multimaps.invertFrom(classPaths, dest);
 		for (String key : classLoaders.keySet()) {
 			// don't check bootstrap classpath
-			if (SorcerEnv.getRepoDir()==null || !key.contains(SorcerEnv.getRepoDir()))
+			if (SorcerEnv.getRepoDir() == null || !key.contains(SorcerEnv.getRepoDir()))
 				continue;
 			if (classLoaders.get(key).size() > 1) {
-				out.println(key + " is loaded by multiple class loaders:");
+				StringBuilder msg = new StringBuilder(key).append(" is loaded by multiple class loaders:\n");
 				for (ClassLoader kcl : classLoaders.get(key)) {
-					out.println("\t" + kcl);
+					msg.append("\t").append(kcl).append("\n");
 				}
-				out.println();
+				log.info("{}", msg);
 			}
 		}
 	}

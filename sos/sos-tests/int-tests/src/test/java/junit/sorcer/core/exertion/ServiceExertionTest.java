@@ -17,7 +17,6 @@
  */
 package junit.sorcer.core.exertion;
 
-//import com.gargoylesoftware,base,testing,TestUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.list;
@@ -137,82 +136,25 @@ public class ServiceExertionTest {
 		logger.info("value at t3, result/y: " + get(eJob, "t3", "result/y"));
 
 		// absolute path
-		assertEquals("Wrong value for 400.0", get(eJob, "/j1/t3/result/y"), 400.0);
+		assertEquals("Wrong value for 400.0", 400.0, get(eJob, "/j1/t3/result/y"));
 		//local t3 path
-		assertEquals("Wrong value for 400.0", get(eJob, "t3", "result/y"), 400.0);
+		assertEquals("Wrong value for 400.0", 400.0, get(eJob, "t3", "result/y"));
 	}
-	
-//	@Test
-//	public void taskExertVarTest() throws EvaluationException, RemoteException, ExertionException {
-//		// System.setSecurityManager(new RMISecurityManager());
-//		Var<?> var1 = var("var1", evaluator(eTask), exertionFilter(path(result, y)));
-//		assertTrue("Wrong var1 is dependent", var1.isDependent());
-//		
-//		// TestUtil.testSerialization(var1, true);
-//
-//		//logger.info("var1 value = " + value(var1));
-//		assertTrue("Wrong var1 value for 100", value(var1).equals(100.0));
-//
-//		setFilter(var1, exertionFilter(path("arg/x1")));
-//		//logger.info("var1 value = " + value(var1));
-//		assertTrue("Wrong var1 value for 20.0", value(var1).equals(20.0));
-//
-//		setFilter(var1, exertionFilter("arg/x2"));
-//		//logger.info("var1 value = " + value(var1));
-//		assertTrue("Wrong var1 value for 80.0", value(var1).equals(80.0));
-//	}
-
-//	@Test
-//	public void evalTaskVarTest() throws EvaluationException, RemoteException, ExertionException {
-//		// create a var
-//		Var<?> var1 = var("var1", evaluator(eTask), exertionFilter(path(result, y)));
-//			
-//		assertTrue("Wrong var1 is dependent", var1.isDependent());
-//			
-//		//logger.info("var1 value = " + var1.getValue());
-//		assertTrue("Wrong var1 value for 100", value(var1).equals(100.0));
-//			
-//		setFilter(var1, exertionFilter(path("arg/x1")));
-//		//logger.info("var1 value = " + get(var1));
-//		assertTrue("Wrong var1 value for 20.0", value(var1).equals(20.0));
-//
-//		setFilter(var1, exertionFilter("arg/x2"));
-//		//logger.info("var1 value = " + get(var1));
-//		assertTrue("Wrong var1 value for 80.0", value(var1).equals(80.0));
-//	}
-	
-//	@Test
-//	public void evalJobVarTest() throws EvaluationException, RemoteException, ExertionException {
-//		Var<?> var2 = var("var2", evaluator(eJob), exertionFilter("t3", path("result", "y")));
-//			
-//		assertTrue("Wrong var2 is dependent", var2.isDependent());
-//			
-//		//logger.info("var2 value = " + value(var2));
-//		assertTrue("Wrong var2 value for 400.0", value(var2).equals(400.0));
-//
-//		setFilter(var2, exertionFilter("t4", path("arg/x1")));
-//		//logger.info("var2 value = " + get(var2));
-//		assertTrue("Wrong var2 value for 10.0", value(var2).equals(10.0));
-//
-//		setFilter(var2, exertionFilter("t4", "arg/x2"));
-//		//logger.info("var2 value = " + get(var2));
-//		assertTrue("Wrong var2 value for 50.0", value(var2).equals(50.0));
-//	}
 
 	@Test
 	public void accessingComponentExertionsTest() throws EvaluationException,
 			RemoteException, ExertionException {
 		//logger.info("eJob exertions: " + names(exertions(eJob)));
-		assertTrue(names(exertions(eJob)).equals(list("t4", "t5", "j2", "t3", "j1")));
+		assertEquals(names(exertions(eJob)), list("t4", "t5", "j2", "t3", "j1"));
 		
 		//logger.info("t4 exertion: " + exertion(eJob, "t4"));
-		assertTrue(name(exertion(eJob, "j1/j2/t4")).equals("t4"));
+		assertEquals(name(exertion(eJob, "j1/j2/t4")), "t4");
 		
 		//logger.info("j2 exertion: " + exertion(eJob, "j2"));
-		assertTrue(name(exertion(eJob, "j1/j2")).equals("j2"));
+		assertEquals(name(exertion(eJob, "j1/j2")), "j2");
 		
 		//logger.info("j2 exertion names: " + names(exertions(exertion(eJob, "j2"))));
-		assertTrue(names(exertions(exertion(eJob, "j1/j2"))).equals(list("t4", "t5", "j2")));
+		assertEquals(names(exertions(exertion(eJob, "j1/j2"))), list("t4", "t5", "j2"));
 	}
 
 	// a simple task
@@ -222,35 +164,14 @@ public class ServiceExertionTest {
 //		   dataContext("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
 //		      out(path(result, y), null)));
 
-		Task task = task("t1", sig("add", AdderImpl.class), 
+		return task("t1", sig("add", AdderImpl.class),
 				   context("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
 				      out(path(result, y), null)));
-		
-		return task;
 	}
 	
 	// two level job composition
 	private Exertion createJob() throws Exception {
-	
-//		Task t3 = task("t3", sig("subtract", Subtractor.class), 
-//		   dataContext("subtract", in(path(arg, x1), null), in(path(arg, x2), null),
-//		      out(path(result, y), null)));
-//		
-//		Task t4 = task("t4", sig("multiply", Multiplier.class), 
-//				   dataContext("multiply", in(path(arg, x1), 10.0), in(path(arg, x2), 50.0),
-//				      out(path(result, y), null)));
-//		
-//		Task t5 = task("t5", sig("add", Adder.class), 
-//		   dataContext("add", in(path(arg, x1), 20.0), in(path(arg, x2), 80.0),
-//		      out(path(result, y), null)));
-//
-//		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
-//		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-//		Job job = job("j1", job("j2", t4, t5), t3,
-//		   pipe(out(t4, path(result, y)), in(t3, path(arg, x1))),
-//		   pipe(out(t5, path(result, y)), in(t3, path(arg, x2))));
-		
-		Task t3 = task("t3", sig("subtract", SubtractorImpl.class), 
+		Task t3 = task("t3", sig("subtract", SubtractorImpl.class),
 				context("subtract", in(path(arg, x1), null), in(path(arg, x2), null),
 						out(path(result, y), null)));
 
@@ -264,16 +185,13 @@ public class ServiceExertionTest {
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-		Job job = job("j1", sig("execute", ServiceJobber.class),
+		return job("j1", sig("execute", ServiceJobber.class),
 					job("j2", sig("execute", ServiceJobber.class), t4, t5),
 					t3,
 					pipe(out(t4, path(result, y)), in(t3, path(arg, x1))),
 					pipe(out(t5, path(result, y)), in(t3, path(arg, x2))));
-				
-		return job;
 	}
 	
-	//@Ignore
 	@Test
 	public void exertXrtTest() throws Exception {
 		Exertion xrt = createXrt();
@@ -304,13 +222,11 @@ public class ServiceExertionTest {
 
 		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
 		//Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
-		Job job = xrt("j1", sig("execute", ServiceJobber.class),
-					cxt(in("arg/x1", 10.0), out("job/result")), 
+		return xrt("j1", sig("execute", ServiceJobber.class),
+					cxt(in("arg/x1", 10.0), out("job/result")),
 				xrt("j2", sig("execute", ServiceJobber.class), t4, t5),
 				t3,
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
-				
-		return job;
 	}
 }
