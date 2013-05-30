@@ -41,12 +41,6 @@ public class SorcerEnv implements SorcerConstants {
 	 * system properties.
 	 */
 	protected static Properties props;
-	
-	/**
-	 * Default name 'sorcer.env' for a file defining global environment
-	 * properties.
-	 */
-	public static String SORCER_ENV_FILENAME = SorcerConstants.S_ENV_FIENAME;
 
 	/*
 	 * location of the SORCER environment properties file loaded by this
@@ -173,7 +167,7 @@ public class SorcerEnv implements SorcerConstants {
 				loadedEnvFile = envFile;
 				
 			} else {
-				envFile = SORCER_ENV_FILENAME;
+				envFile = SorcerConstants.S_ENV_FIENAME;
 				String envPath = getHomeDir() + "/configs/" + envFile;
 				System.setProperty(S_KEY_SORCER_ENV, envPath);
 				props = loadProperties(envFile);
@@ -530,28 +524,6 @@ public class SorcerEnv implements SorcerConstants {
         SorcerEnv.bootable = bootable;
     }
 
-	/**
-	 * Library versions
-	 */
-	/*public static String getRiverVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_RIVER, "2.2.1");
-	}
-
-	public static String getRioVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_RIO, "5.0-M2");
-	}
-
-	public static String getBlitzVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_BLITZ, "2.1.7");
-	}
-
-	public static String getGroovyVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_GROOVY, "2.1.2");
-	}
-
-	public static String getSleepyCatVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_SLEEPYCAT, "4.1.21");
-	} */
 	public static String getSorcerVersion() {
 		return props.getProperty(SorcerConstants.S_VERSION_SORCER, SORCER_VERSION);
 	}

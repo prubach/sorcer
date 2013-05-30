@@ -252,17 +252,7 @@ public interface SorcerConstants {
 	public static final String S_SERVICE_ACCESSOR_PROVIDER_NAME = "provider.lookup.accessor";
 
 	public static final String S_SORCER_REPO = "sorcer.local.repo.location";
-	
-	public static final String S_VERSION_RIVER = "v.jini";
-	
-	public static final String S_VERSION_BLITZ = "v.blitz";
-	
-	public static final String S_VERSION_RIO = "v.rio";
-		
-	public static final String S_VERSION_GROOVY = "v.groovy";
-	
-	public static final String S_VERSION_SLEEPYCAT = "v.sleepycat";
-	
+
 	public static final String S_VERSION_SORCER = "v.sorcer";
 
 	//public static final String SORCER_HOME = "sorcer.home";

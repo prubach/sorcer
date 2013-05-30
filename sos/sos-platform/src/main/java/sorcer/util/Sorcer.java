@@ -830,11 +830,11 @@ public class Sorcer extends SorcerEnv {
 
 	/**
 	 * Returns the filename of SORCER environment configuration.
-	 * 
+	 *
 	 * @return environment configuration filename
 	 */
 	public static String getEnvFilename() {
-		return SORCER_ENV_FILENAME;
+		return SorcerConstants.S_ENV_FIENAME;
 	}
 
 	/**
@@ -1005,23 +1005,10 @@ public class Sorcer extends SorcerEnv {
 		return Sorcer.getNewScratchDir();
 	}
 
-	/**
-	 * Deletes a direcory and all its files.
-	 * 
-	 * @param dir
-	 *            to be deleted
-	 * @return true if the directory is deleted
-	 * @throws Exception
-	 */
-	public boolean deleteDir(File dir) throws Exception {
-		return IOUtil.deleteDir(dir);
-	}
-
 	private static synchronized String getUniqueId() {
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-HHmmss");
-		Calendar c = Calendar.getInstance();
-		long time = c.getTime().getTime();
+		long time = System.currentTimeMillis();
 
 		String uid = UUID.randomUUID().toString();
 		// return sdf.format(time) + "-" + Long.toHexString(time);

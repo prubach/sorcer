@@ -39,8 +39,8 @@ import sorcer.core.SorcerConstants;
 //import sorcer.core.dataContext.model.VarModel;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
+import sorcer.util.IOUtils;
 import sorcer.util.Sorcer;
-import sorcer.util.IOUtil;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
 //import sorcer.vfe.Var;
@@ -73,7 +73,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, DatabaseException, Exception {
 		dbDir = new File("./tmp/ju-sorcer-db");
-        IOUtil.deleteDir(dbDir);
+        IOUtils.deleteDir(dbDir);
         System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
 		String homeDir = "./tmp/ju-sorcer-db";
@@ -84,7 +84,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	@AfterClass 
 	public static void cleanup() throws Exception {
 		// delete database home directory and close database
-		IOUtil.deleteDir(dbDir);
+		IOUtils.deleteDir(dbDir);
 		if (runner != null) {
             try {
                 // Always attempt to close the database cleanly.

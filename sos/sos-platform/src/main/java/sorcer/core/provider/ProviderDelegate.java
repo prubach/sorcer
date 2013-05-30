@@ -1444,18 +1444,6 @@ public class ProviderDelegate implements SorcerConstants {
 	}
 
 	/**
-	 * Deletes a direcory and all its files.
-	 * 
-	 * @param dir
-	 *            to be deleted
-	 * @return true if the directory is deleted
-	 * @throws Exception
-	 */
-	public boolean deleteDir(File dir) throws Exception {
-        return IOUtil.deleteDir(dir);
-	}
-
-	/**
 	 * Returns the URL of a data HTTP server handling remote scratch files.
 	 * 
 	 * @param scratchFile

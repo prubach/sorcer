@@ -31,11 +31,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import static sorcer.co.operator.*;
 
-//import static sorcer.co.operator.table;
-//import static sorcer.vo.operator.*;
-//import sorcer.co.tuple.FidelityEntry;
-//import sorcer.vfe.util.Table;
-
 /**
  * @author Mike Sobolewski
  */
@@ -49,11 +44,10 @@ public class CollectionOperatorsTest {
 		assertArrayEquals(doubles, new Double[] { 1.1, 2.1, 3.1 }   );
 		
 		Object array = array(array(1.1, 2.1, 3.1),  4.1,  array(11.1, 12.1, 13.1));
-//		logger.info("array " + SorcerUtil.arrayToString(array));
-		
-		assertArrayEquals((Double[])((Object[])array)[0], array(1.1, 2.1, 3.1));
-		assertEquals(((Object[])array)[1], 4.1);
-		assertArrayEquals((Double[])((Object[])array)[2], array(11.1, 12.1, 13.1));
+
+		assertArrayEquals(array(1.1, 2.1, 3.1), (Double[]) ((Object[]) array)[0]);
+		assertEquals(4.1, ((Object[])array)[1]);
+		assertArrayEquals(array(11.1, 12.1, 13.1), (Double[]) ((Object[]) array)[2]);
 	}
 	
 	@SuppressWarnings({ "unchecked" })
@@ -62,10 +56,10 @@ public class CollectionOperatorsTest {
 		List<Object> o_list = list(list(1.1, 2.1, 3.1),  4.1,  list(11.1, 12.1, 13.1));
 		
 		List<Double> d_list = (List<Double>)o_list.get(0);
-		assertEquals(d_list, Arrays.asList(array(1.1, 2.1, 3.1)));
-		assertEquals(o_list.get(0), list(1.1, 2.1, 3.1));
-		assertEquals(o_list.get(1), 4.1);
-		assertEquals(o_list.get(2), list(11.1, 12.1, 13.1));
+		assertEquals(Arrays.asList(array(1.1, 2.1, 3.1)), d_list);
+		assertEquals(list(1.1, 2.1, 3.1), o_list.get(0));
+		assertEquals(4.1, o_list.get(1));
+		assertEquals(list(11.1, 12.1, 13.1), o_list.get(2));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -78,23 +72,23 @@ public class CollectionOperatorsTest {
 		// keys and values of entries
 		String k = key(entry("name", "Mike"));
 		Double v = value(entry("height", 174.0));
-		assertEquals(k, "name");
-		assertTrue(v.equals(174.0));
+		assertEquals("name", k);
+		assertEquals((Object) 174.0, v);
 		
 		// casts are needed for dictionary: Map<Object, Object>
 		k = (String)map1.get("name");
 		v = (Double)map1.get("height");
 		assertEquals(k, "Mike");
-		assertTrue(v.equals(174.0));
+		assertEquals((Object) 174.0, v);
 		
 		// casts are NOT needed for map: Map<K, V>
 		v = map2.get("length");
 		assertTrue(v.equals(248.0));
 		
 		// check map keys
-		assertEquals(map1.keySet(), bag("name", "height"));
+		assertEquals(bag("name", "height"), map1.keySet());
 		// check map values
-		assertArrayEquals(map1.values().toArray(), (array(174.0, "Mike")));
+		assertArrayEquals(array(174.0, "Mike"), map1.values().toArray());
 		
 	}
 	
@@ -102,7 +96,7 @@ public class CollectionOperatorsTest {
 	public void bagOperatorTest() throws EvaluationException {
 		// the bag operator creates instances of java.util.Set
 		Set<Object> set = bag("name", "Mike", "name", "Ray", (Object)entry("height", 174));
-		assertEquals(set.size(), 4);
+		assertEquals(4, set.size());
 		assertEquals(entry("height", 174), entry("height", 174));
 		assertTrue(set.contains(entry("height", 174)));
 	}
@@ -130,19 +124,19 @@ public class CollectionOperatorsTest {
 	public void listContextOperatorTest() throws ContextException {
 		ListContext<Double> context = listContext(1.1, 1.2, 1.3, 1.4, 1.5);
 		//logger.info(" index 1: " + dataContext.get(1));
-		assertEquals(context.get(1), 1.2);
+		assertEquals(1.2, context.get(1));
 		context.putValue(1, 5.0);
-		assertEquals(context.get(1), 5.0);
+		assertEquals(5.0, context.get(1));
 		//logger.info("dataContext path 1: " + dataContext.pathFor(1));
-		assertEquals(context.pathFor(1), "element[1]");
+		assertEquals("element[1]", context.pathFor(1));
 		//logger.info("list dataContext: " + dataContext);
 		//logger.info("elements: " + dataContext.getElements());
 		//dataContext.putValue("element[1]", 10.0);
-		assertEquals(context.getElements(), list(1.1, 5.0, 1.3, 1.4, 1.5));
+		assertEquals(list(1.1, 5.0, 1.3, 1.4, 1.5), context.getElements());
 		context.set(1, 20.0);
 		assertEquals(20.0, context.get(1));
-		assertEquals(context.add(30.0), true);
-		assertEquals(context.get(5), 30.0);
+		assertNull(context.add(30.0));
+		assertEquals(30.0, context.get(5));
 	}
 	
 	

@@ -31,7 +31,6 @@ import sorcer.service.*;
 import sorcer.service.ExecState.Category;
 import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
-import sorcer.util.SorcerUtil;
 import sorcer.util.StringUtils;
 
 import java.io.Serializable;
@@ -118,6 +117,21 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	protected boolean isRevaluable = false;
 
     protected String prefix = "";
+
+	/**
+	 * Makes an arry from the parameter enumeration <code>e</code>.
+	 *
+	 * @param e
+	 *            an enumeration
+	 * @return an arry of objects in the underlying enumeration <code>e</code>
+	 */
+	static public Object[] makeArray(final Enumeration e) {
+		List<Object> objs = new LinkedList<Object>();
+		while (e.hasMoreElements()) {
+			objs.add(e.nextElement());
+		}
+		return objs.toArray();
+	}
 
 	/**
 	 * <p>
@@ -1240,8 +1254,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public Enumeration markedPaths(String association) throws ContextException {
-		String attr, value, key;
-		Hashtable values;
+		String attr, value;
+		Map values;
 		// java 1.4.0 regex
 		// Pattern p;
 		// Matcher m;
@@ -1261,9 +1275,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			values = (Hashtable) getMetacontext().get(attr);
 			if (values != null) { // if there are no attributes set,
 				// values==null;
-				Enumeration e = values.keys();
-				while (e.hasMoreElements()) {
-					key = (String) e.nextElement();
+				for(Object key: values.keySet()){
 					/*
 					 * java 1.4.0 regex p = Pattern.compile(value); m =
 					 * p.matcher((String)values.get(key)); if (m.find())
@@ -1286,11 +1298,10 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 							+ "\" is defined with metapath =\"" + metapath
 							+ "\"");
 				Object[][] paths = new Object[attrs.length][];
-				Enumeration ps;
 				int ii = -1;
 				for (int i = 0; i < attrs.length; i++) {
-					ps = markedPaths(attrs[i] + SorcerConstants.APS + vals[i]);
-					paths[i] = SorcerUtil.makeArray(ps);
+					Enumeration ps = markedPaths(attrs[i] + SorcerConstants.APS + vals[i]);
+					paths[i] = makeArray(ps);
 					if (paths[i] == null) {
 						ii = -1;
 						break; // i.e. no possible match
