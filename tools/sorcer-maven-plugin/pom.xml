@@ -55,12 +55,11 @@
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-webster</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.river</groupId>
-					<artifactId>start</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>commons-prv</artifactId>
+			<version>${v.sorcer}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>

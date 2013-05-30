@@ -132,19 +132,21 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				builder.setParameters(Arrays.asList(config.arguments));
 			}
 
+			Process2 process = null;
 			try {
 				getLog().info("Starting requestor process");
-				Process2 process = builder.startProcess();
+				process = builder.startProcess();
 				if (debug) {
 					process.waitFor();
 					getLog().info("Requestor process has finished");
 				} else {
-					process.waitFor(timeout, true);
-					getLog().warn("Requestor process has been destroyed after " + timeout + "ms.");
+					if (process.waitFor(timeout) == null)
+						getLog().warn("Requestor process has been destroyed");
 				}
 			} catch (InterruptedException e) {
+				process.destroy();
 				throw new MojoExecutionException(e.getMessage(), e);
-			}catch(IllegalStateException x){
+			} catch (IllegalStateException x) {
 				//fail in DestroyMojo, don't log stack trace, there is nothing interesting
 				getLog().warn(x.getMessage());
 				TestCycleHelper.getInstance().setFail();
