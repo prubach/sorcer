@@ -57,8 +57,6 @@ public class Task extends ServiceExertion {
 	protected final static Logger logger = Logger.getLogger(Task.class
 			.getName());
 
-	public final static String argsPath = "method/args";
-
 	// used for tasks with multiple signatures by CatalogSequentialDispatcher
 	private boolean isContinous = false;
 
@@ -106,8 +104,6 @@ public class Task extends ServiceExertion {
 		Class<? extends Task> taskClass = null;
 		if (signature.getClass() == ObjectSignature.class) {
 			taskClass = ObjectTask.class;
-		} else if (signature.getClass() == ObjectSignature.class) {
-			taskClass = ObjectTask.class;
 		} else if (signature.getClass() == NetSignature.class) {
 			taskClass = NetTask.class;
 		}
@@ -120,9 +116,7 @@ public class Task extends ServiceExertion {
             ((ServiceContext) context)
                     .setReturnPath(signature.getReturnPath());
 
-        Task task = constructor.newInstance(name, signature, context);
-
-		return task;
+		return constructor.newInstance(name, signature, context);
 	}
 
 	public Task doTask() throws ExertionException, SignatureException,
@@ -138,10 +132,6 @@ public class Task extends ServiceExertion {
 	public void undoTask() throws ExertionException, SignatureException,
 			RemoteException {
 		throw new ExertionException("Not implemneted by this Task: " + this);
-	}
-
-	public void setIndex(int i) {
-		index = new Integer(i);
 	}
 
 	@Override
@@ -187,7 +177,7 @@ public class Task extends ServiceExertion {
 		if (innerTask != null) {
 			return innerTask.toString();
 		}
-		StringBuffer sb = new StringBuffer(
+		StringBuilder sb = new StringBuilder(
 				"\n=== START PRINTNIG TASK ===\nExertion Description: "
 						+ getClass().getName() + ":" + name);
 		sb.append("\n\tstatus: ").append(getStatus());
@@ -226,7 +216,7 @@ public class Task extends ServiceExertion {
 	}
 
 	public String describe() {
-		StringBuffer sb = new StringBuffer(this.getClass().getName() + ": "
+		StringBuilder sb = new StringBuilder(this.getClass().getName() + ": "
 				+ name);
 		sb.append(" task ID: ").append(getId()).append("\n  process sig: ")
 				.append(getProcessSignature());

@@ -30,8 +30,8 @@ import javax.security.auth.Subject;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import net.jini.id.Uuid;
 import sorcer.co.tuple.Entry;
-import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
@@ -39,8 +39,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.eo.operator;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Signature.Direction;
-import sorcer.service.Signature.ReturnPath;
 
 /**
  * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
@@ -67,11 +65,10 @@ public abstract class Job extends ServiceExertion {
 	 */
 	protected List<Exertion> exertions = new ArrayList<Exertion>();
 
-	public Integer state = new Integer(INITIAL);
+	public Integer state = INITIAL;
 
 	/**
 	 * Constructs a job and sets all default values to it.
-	 * @throws sorcer.service.SignatureException
 	 */
 	public Job() {
 		exertions = new ArrayList<Exertion>();
@@ -84,7 +81,6 @@ public abstract class Job extends ServiceExertion {
 	 * 
 	 * @param name
 	 *            The name of the job.
-	 * @throws sorcer.service.SignatureException
 	 */
 	public Job(String name) {
 		super(name);
@@ -114,7 +110,6 @@ public abstract class Job extends ServiceExertion {
 	 * Initialize it with assigning it a new ControlContext and a defaultMethod
 	 * with serviceType as "sorcer.core.provider.jobber.ServiceJobber" name as
 	 * "service" and providerName "*"
-	 * @throws sorcer.service.SignatureException
 	 */
 	private void init() {
 		NetSignature s = new NetSignature("service", Jobber.class);
@@ -154,7 +149,7 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public long getLsbID() {
-		return (lsbId == null) ? -1 : lsbId.longValue();
+		return (lsbId == null) ? -1 : lsbId;
 	}
 
 	/**
@@ -188,12 +183,12 @@ public abstract class Job extends ServiceExertion {
 			ex.printStackTrace();
 		}
 		if (contextName == null
-				&& controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)) {
+				&& controlContext.getFlowType()== Strategy.Flow.SEQ) {
 			return (size() > 0) ? exertionAt(size() - 1) : null;
 		} else {
 			Exertion master = null;
 			for (int i = 0; i < size(); i++) {
-				if (exertionAt(i).getId().equals(
+				if (exertionAt(i).getContext().getName().equals(
 						contextName)) {
 					master = exertionAt(i);
 					break;
@@ -591,5 +586,13 @@ public abstract class Job extends ServiceExertion {
 			throw new EvaluationException(ex);
 		}
 	}
-	
+
+	@Override
+	public void setSessionId(Uuid id) {
+		super.setSessionId(id);
+		List<Exertion> v = getExertions();
+		for (Exertion aV : v) {
+			((ServiceExertion) aV).setSessionId(id);
+		}
+	}
 }

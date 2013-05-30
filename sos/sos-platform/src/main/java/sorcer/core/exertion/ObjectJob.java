@@ -55,13 +55,12 @@ public class ObjectJob extends Job {
 		if (context != null)
 			this.dataContext = (ServiceContext) context;
 	}
-	
+
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
 		// return (Job) new ServiceJobber().exec(job, txn);
 		Job result = null;
 		try {
-			ObjectSignature os = (ObjectSignature) getProcessSignature();
 			Class[] paramTypes = new Class[] { Exertion.class };
 			Object[] parameters = new Object[] { this };
 			result = (Job)((ObjectSignature) getProcessSignature())
@@ -72,5 +71,13 @@ public class ObjectJob extends Job {
 		}
 		return result;
 	}
-	
+
+	@Override
+	public Object getReturnValue() throws ContextException {
+		if (getContext().getReturnPath() == null) {
+			return getJobContext();
+		} else {
+			return super.getReturnValue();
+		}
+	}
 }

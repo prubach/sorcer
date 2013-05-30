@@ -46,7 +46,7 @@ public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocati
 
     public NetTask(Uuid jobId, int jobState) {
         setParentId(jobId);
-        status = new Integer(jobState);
+        status = jobState;
     }
 
     public NetTask(String name, String description) {
@@ -104,10 +104,6 @@ public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocati
         ((NetSignature) getProcessSignature()).setServicer(provider);
     }
 
-    public Service getServicer() {
-        return ((NetSignature) getProcessSignature()).getServicer();
-    }
-
     public Task doTask(Transaction txn) throws ExertionException,
             SignatureException, RemoteException {
         ExertProcessor esh = new ExertProcessor(this);
@@ -120,7 +116,7 @@ public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocati
 
     public static NetTask getTemplate() {
         NetTask temp = new NetTask();
-        temp.status = new Integer(INITIAL);
+        temp.status = INITIAL;
         temp.priority = null;
         temp.index = null;
         temp.signatures = null;

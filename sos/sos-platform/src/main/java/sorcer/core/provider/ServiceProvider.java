@@ -1,24 +1,8 @@
 /**
  *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009-2013 Sorcersoft.com S.A.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
-s * Copyright 2009 the original author or authors.
- * Copyright 2009 SorcerSoft.org.
- *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -186,8 +170,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	protected ProviderDelegate delegate;
 
-	static final String DEFAULT_PROVIDER_PROPERTY = "provider.properties";
-
 	protected TaskManager threadManager;
 
 	int loopCount = 0;
@@ -332,7 +314,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * all future joins. The attribute sets are also added to all
 	 * currently-joined lookup services.
 	 * 
-	 * @param: attrSets the attribute sets to add
+	 * @param attrSets the attribute sets to add
 	 * @see net.jini.admin.JoinAdmin#addLookupAttributes(net.jini.core.entry.Entry[])
 	 */
 	public void addLookupAttributes(Entry[] attrSets) {
@@ -350,7 +332,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 *            - the templates for matching attribute sets
 	 * @param attrSets
 	 *            the modifications to make to matching sets
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#modifyLookupAttributes(net.jini.core.entry.Entry[],
 	 *      net.jini.core.entry.Entry[])
 	 */
@@ -367,7 +348,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @return an array of groups to join. An empty array means the service
 	 *         joins no groups (as opposed to "all" groups).
 	 * 
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#getLookupGroups()
 	 */
 	public String[] getLookupGroups() {
@@ -380,7 +360,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * 
 	 * @param groups
 	 *            groups to join
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#addLookupGroups(String[])
 	 */
 	public void addLookupGroups(String[] groups) {
@@ -397,25 +376,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		}
 	}
 
-	protected static void checkFileExists(File file) throws IOException {
-		if (!file.exists()) {
-			throw new IOException("***error: the file does not exist: " 
-					+ file.getAbsolutePath());
-		}
-		if (!file.canRead()) {
-			throw new IOException("***error: the file is not readable: " 
-					+ file.getAbsolutePath());
-		} 
-	}
-	
-	
 	/**
 	 * Remove groups from the set to join. Leases are cancelled at lookup
 	 * services that are not members of any of the remaining groups.
 	 * 
 	 * @param groups
 	 *            groups to leave
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#removeLookupGroups(String[])
 	 */
 	public void removeLookupGroups(String[] groups) {
@@ -440,7 +406,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * 
 	 * @param groups
 	 *            groups to join
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#setLookupGroups(String[])
 	 */
 	public void setLookupGroups(String[] groups) {
@@ -462,7 +427,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Get the list of locators of specific lookup services to join.
 	 * 
 	 * @return the list of locators of specific lookup services to join
-	 * @exception java.rmi.RemoteException
 	 * @see net.jini.admin.JoinAdmin#getLookupLocators()
 	 */
 	public LookupLocator[] getLookupLocators() {
@@ -833,12 +797,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			if (!done) {
 				try {
 					unexport(true);
-					return;
 				} catch (Exception e) {
 					logger.log(Level.INFO,
 							"unable to unexport after failure during startup",
 							e);
-					return;
 				}
 			}
 		}
@@ -1349,7 +1311,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			numCalls++;
 			numThreads++;
 			prefix = "adding thread";
-			serviceIdString = new Integer(numCalls).toString();
+			serviceIdString = Integer.toString(numCalls);
 			threadIds.add(serviceIdString);
 		} else {
 			numThreads--;
@@ -1440,16 +1402,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return sidFile;
 	}
 
-	public long getLeastSignificantBits() throws RemoteException {
-		return (delegate.getServiceID() == null) ? -1 : delegate.getServiceID()
-				.getLeastSignificantBits();
-	}
-
-	public long getMostSignificantBits() throws RemoteException {
-		return (delegate.getServiceID() == null) ? -1 : delegate.getServiceID()
-				.getMostSignificantBits();
-	}
-
 	/**
 	 * A provider responsibility is to check a task completeness in paricular
 	 * the relevance of the task's context.
@@ -1489,19 +1441,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @see sorcer.service.Exertion
 	 * @see sorcer.falcon.base.Conditional
 	 * @see sorcer.core.provider.ControlFlowManager
-	 * @throws java.rmi.RemoteException
-	 * @throws sorcer.service.ExertionException
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
 		// create an instance of the ExertionProcessor and call on the
 		// process method, returns an Exertion
-		ControlFlowManager ep = null;
-		if (this instanceof Jobber) {
-			ep = new ControlFlowManager(exertion, delegate, (Jobber) this);
-		} else if (this instanceof Spacer) {
-			ep = new ControlFlowManager(exertion, delegate, (Spacer) this);
-		} else if (exertion instanceof Task && exertion.isMonitorable()) {
+		if (exertion instanceof Task && exertion.isMonitorable()) {
 			if (exertion.isWaitable())
 				return doMonitoredTask(exertion, null);
 			else {
@@ -1524,9 +1469,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				return exertion;
 			}
 		} else {
-			ep = new ControlFlowManager(exertion, delegate);
+			return new ControlFlowManager(exertion, delegate).process(threadManager);
 		}
-		return ep.process(threadManager);
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,
@@ -1761,9 +1705,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Resume if the resume functionality is supported by the provider Else
 	 * start from the begining.
 	 * 
-	 * @throws sorcer.core.UnknownExertionException
-	 *             if the exertion is not executed by this provider.
-	 * 
+	 *
 	 * @throws java.rmi.RemoteException
 	 *             if there is a communication error
 	 * 
@@ -1776,9 +1718,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Step if the step functionality is supported by the provider Else start
 	 * from the begining.
 	 * 
-	 * @throws sorcer.core.UnknownExertionException
-	 *             if the exertion is not executed by this provider.
-	 * 
+	 *
 	 * @throws java.rmi.RemoteException
 	 *             if there is a communication error
 	 * 
@@ -2006,24 +1946,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		MonitoredTaskDispatcher dispatcher = null;
 		try {
 			dispatcher = new MonitoredTaskDispatcher(task, null, false, this);
-			// logger.finer("*** MonitoredTaskDispatcher started with control context ***\n"
-			// + task.getControlContext());
-			// int COUNT = 1000;
-			// int count = COUNT;
 			while (dispatcher.getState() != ExecState.DONE
 					&& dispatcher.getState() != ExecState.FAILED
 					&& dispatcher.getState() != ExecState.SUSPENDED) {
-				// count--;
-				// if (count < 0) {
-				// logger.finer("*** MonitoredTaskDispatcher waiting in state: "
-				// + dispatcher.getState());
-				// count = COUNT;
-				// }
 				Thread.sleep(SLEEP_TIME);
 			}
-			// logger.finer("*** MonitoredTaskDispatcher exit state = "
-			// + dispatcher.getState() + " for ***\n"
-			// + task.getControlContext());
 		} catch (DispatcherException de) {
 			de.printStackTrace();
 		} catch (InterruptedException ie) {

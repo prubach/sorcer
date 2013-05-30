@@ -24,11 +24,8 @@ import net.jini.id.UuidFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
-import sorcer.core.context.ControlContext;
 import sorcer.core.dispatch.JobThread;
-import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 import sorcer.util.Sorcer;
@@ -37,7 +34,9 @@ import sorcer.util.StringUtils;
 import javax.security.auth.Subject;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -69,10 +68,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 			h = new FileHandler(SorcerEnv.getHomeDir()
 					+ "/logs/remote/local-Jobber-" + delegate.getHostName() + "-" + getProviderName()
 					+ ".log", 20000, 8, true);
-			if (h != null) {
-				h.setFormatter(new SimpleFormatter());
-				logger.addHandler(h);
-			}
+			h.setFormatter(new SimpleFormatter());
+			logger.addHandler(h);
 			logger.setUseParentHandlers(false);
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -121,11 +118,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		//logger.info("*********************************************ServiceJobber.exert(), exertion = " + exertion);
-		Exertion ex = doJob(exertion, txn);
-		//logger.info("*********************************************ServiceJobber.exert(), ex = " + ex);
-
-		return ex;
+		return doJob(exertion, txn);
 	}
 
 	public Exertion doJob(Exertion job) {
@@ -273,30 +266,28 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 		if (ex == null || ex.isTask())
 			return;
 		Job job = (Job) ex;
-		Vector recipents = null;
+		List<String> recipents = null;
 		String notifyees = job.getControlContext()
 				.getNotifyList();
 		if (notifyees != null) {
 			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
-			recipents = new Vector(list.length);
-			for (int i = 0; i < list.length; i++)
-				recipents.addElement(list[i]);
+			recipents = new ArrayList<String>(list.length);
+			Collections.addAll(recipents, list);
 		}
 		String to = "", admin = Sorcer.getProperty("sorcer.admin");
 		if (recipents == null) {
 			if (admin != null) {
-				recipents = new Vector();
-				recipents.addElement(admin);
+				recipents = new ArrayList<String>();
+				recipents.add(admin);
 			}
 		} else if (admin != null && !recipents.contains(admin))
-			recipents.addElement(admin);
+			recipents.add(admin);
 
 		if (recipents == null)
 			to = to + "No e-mail notifications will be sent for this job.";
 		else {
 			to = to + "e-mail notification will be sent to\n";
-			for (int i = 0; i < recipents.size(); i++)
-				to = to + "  " + recipents.elementAt(i) + "\n";
+			for (String recipent : recipents) to = to + "  " + recipent + "\n";
 		}
 		String comment = "Your job '" + job.getName()
 				+ "' has been submitted.\n" + to;
@@ -317,13 +308,16 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 	}
 
 	private void prepareToStep(Job job) {
-		Exertion e = null;
 		for (int i = 0; i < job.size(); i++) {
-			e = job.exertionAt(i);
+			Exertion e = job.exertionAt(i);
 			(job.getControlContext()).setReview(e, true);
 			if (e.isJob())
 				prepareToStep((Job) e);
 		}
 	}
 
+	@Override
+	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
+		return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+	}
 }

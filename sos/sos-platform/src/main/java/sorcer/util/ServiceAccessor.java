@@ -113,7 +113,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a SORCER provider
 	 */
-	public final static ServiceItem getServiceItem(String providerName,
+	public static ServiceItem getServiceItem(String providerName,
 			Class serviceType) throws SignatureException {
 		ServiceItem si = null;
 		try {
@@ -139,7 +139,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a SORCER provider
 	 */
-	public final static ServiceItem getServiceItem(Class serviceType) throws SignatureException {
+	public static ServiceItem getServiceItem(Class serviceType) throws SignatureException {
 		ServiceItem si = null;
 		try {
 			Class[] serviceTypes = new Class[] { serviceType };
@@ -282,8 +282,8 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Clients should provide a service filter, usually as an object of an inner
 	 * class. A filter narrows the template matching by applying more precise,
 	 * for example boolean selection as required by the client.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param filter
 	 *            the filter to apply.
 	 * @return a ServiceItem[] matching the filter.
@@ -341,7 +341,6 @@ public class ServiceAccessor implements SorcerConstants {
 		closeLookupCache();
 		ldManager = null;
 		sdManager = null;
-		return;
 	}
 
 	/**
@@ -366,7 +365,6 @@ public class ServiceAccessor implements SorcerConstants {
 			lookupCache.terminate();
 			lookupCache = null;
 		}
-		return;
 	}
 
 	/**
@@ -377,7 +375,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a SORCER provider
 	 */
-	public final static Object getService(Class serviceType,
+	public static <T>T getService(Class<T> serviceType,
 			Entry[] atributes, ServiceItemFilter filter) {
 		return getService(serviceType, atributes, filter, null);
 	}
@@ -391,7 +389,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a SORCER provider
 	 */
-	public final static Object getService(Class serviceType,
+	public static <T> T getService(Class<T> serviceType,
 			Entry[] atributes, ServiceItemFilter filter, String codebase) {
 		if (serviceType == null) {
 			throw new RuntimeException("Missing service type for a ServiceTemplate");
@@ -400,13 +398,11 @@ public class ServiceAccessor implements SorcerConstants {
 //				+ SorcerUtil.arrayToString(atributes) + "\nfilter: " + filter
 //				+ "\ncodebase: " + codebase);
 
-		ServiceTemplate tmpl = tmpl = new ServiceTemplate(null, new Class[] { serviceType }, atributes);
+		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { serviceType }, atributes);
 
-		if (tmpl == null)
-			return null;
 		ServiceItem si = getServiceItem(tmpl, filter, Sorcer.getLookupGroups());
 		if (si != null)
-			return si.service;
+			return (T)si.service;
 		else
 			return null;
 	}
@@ -419,8 +415,8 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param serviceType
 	 * @return a service provider
 	 */
-	public static Object getService(String serviceName, Class serviceType) {
-		Object proxy = null;
+	public static <T> T getService(String serviceName, Class<T> serviceType) {
+		T proxy = null;
 		if (serviceName != null && serviceName.equals(ANY))
 			serviceName = null;
 		int tryNo = 0;
@@ -453,7 +449,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * @param codebase
 	 * @return a service provider
 	 */
-	public final static Object getService(String providerName,
+	public static Object getService(String providerName,
 			Class serviceType, String codebase) {
 		if (providerName != null && providerName.equals(ANY))
 			providerName = null;
@@ -473,8 +469,6 @@ public class ServiceAccessor implements SorcerConstants {
 	public static Object getService(ServiceTemplate template,
 			ServiceItemFilter filter, String[] groups) {
 		ServiceItem si = getServiceItem(template, filter, groups);
-//		logger.info("got service: serviceID=" + si.serviceID + " template="
-//				+ template + " groups=" + Arrays.toString(groups));
 		if (si != null)
 			return si.service;
 		else
@@ -495,12 +489,12 @@ public class ServiceAccessor implements SorcerConstants {
 		logger.finer("ProviderAccessor Locators: " + Arrays.toString(locURLs));
 
 		if (locURLs != null && locURLs.length > 0) {
-			for (int i = 0; i < locURLs.length; i++)
+			for (String locURL : locURLs)
 				try {
-					locators.add(new LookupLocator(locURLs[i]));
+					locators.add(new LookupLocator(locURL));
 				} catch (Throwable t) {
 					Log.getSorcerLog().warning(
-							"Invalid Lookup URL: " + locURLs[i]);
+							"Invalid Lookup URL: " + locURL);
 				}
 		}
 		if (locators.isEmpty())

@@ -104,10 +104,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 			h = new FileHandler(SorcerEnv.getHomeDir()
 					+ "/logs/remote/local-Spacer-" + delegate.getHostName()
 					+ "-" + getProviderName() + ".log", 20000, 8, true);
-			if (h != null) {
-				h.setFormatter(new SimpleFormatter());
-				logger.addHandler(h);
-			}
+			h.setFormatter(new SimpleFormatter());
+			logger.addHandler(h);
 			logger.setUseParentHandlers(false);
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -523,4 +521,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 		 * (ExertionException e) { e.printStackTrace(); }
 		 */
 
+	@Override
+	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
+		return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+	}
 }

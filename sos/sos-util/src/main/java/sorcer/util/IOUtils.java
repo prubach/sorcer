@@ -1,6 +1,7 @@
 package sorcer.util;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +17,17 @@ public class IOUtils {
 			}
 		} catch (IOException ioe) {
 			// ignore
+		}
+	}
+
+	protected static void checkFileExists(File file) throws IOException {
+		if (!file.exists()) {
+			throw new IOException("***error: the file does not exist: "
+					+ file.getAbsolutePath());
+		}
+		if (!file.canRead()) {
+			throw new IOException("***error: the file is not readable: "
+					+ file.getAbsolutePath());
 		}
 	}
 
