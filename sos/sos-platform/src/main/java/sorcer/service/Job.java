@@ -183,7 +183,7 @@ public abstract class Job extends ServiceExertion {
 			ex.printStackTrace();
 		}
 		if (contextName == null
-				&& controlContext.getFlowType()== Strategy.Flow.SEQ) {
+				&& controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)) {
 			return (size() > 0) ? exertionAt(size() - 1) : null;
 		} else {
 			Exertion master = null;
