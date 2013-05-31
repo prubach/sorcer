@@ -255,6 +255,26 @@ public interface SorcerConstants {
 
 	public static final String S_VERSION_SORCER = "v.sorcer";
 
+	/**
+	 * sorcer.env file name (or path)
+	 */
+	String S_KEY_SORCER_ENV = "sorcer.env.file";
+
+	/**
+	 * Webster upload dir
+	 */
+	String S_WEBSTER_TMP_DIR = "webster.tmp.dir";
+
+	/**
+	 * RIO_HOME
+	 */
+	String S_RIO_HOME = "rio.home";
+
+	/**
+	 * Blitz database directory (Sorcer specific)
+	 */
+	String S_BLITZ_HOME = "sorcer.blitz.home";
+
 	//public static final String SORCER_HOME = "sorcer.home";
 
 	// discovery and lookup
@@ -1165,9 +1185,6 @@ public interface SorcerConstants {
 			ACCESS_CLASS = "Access Class";
 
 	String CODEBASE_SEPARATOR = " ";
-	String S_KEY_SORCER_ENV = "sorcer.env.file";
-	String WEBSTER_TMP_DIR = "webster.tmp.dir";
-	String RIO_HOME = "rio.home";
 }
 
 

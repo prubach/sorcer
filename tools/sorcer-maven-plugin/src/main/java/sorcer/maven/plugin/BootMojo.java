@@ -33,7 +33,6 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.EnvFileHelper;
 import sorcer.maven.util.JavaProcessBuilder;
@@ -93,6 +92,9 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(property = "project.build.outputDirectory")
 	protected File workingDir;
 
+	@Parameter(defaultValue = "${project.build.directory}/blitz")
+	protected File blitzHome;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//allow others to use maven logger
 		StaticLoggerBinder.getSingleton().setLog(getLog());
@@ -124,10 +126,11 @@ public class BootMojo extends AbstractSorcerMojo {
 		properties.put(JavaSystemProperties.JAVA_PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
 		properties.put(JavaSystemProperties.JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
 		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);
-		properties.put(SorcerConstants.RIO_HOME, rioHome);
-		properties.put(SorcerConstants.WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
+		properties.put(SorcerConstants.S_RIO_HOME, rioHome);
+		properties.put(SorcerConstants.S_WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
 		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnv);
 		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reservePort());
+		properties.put(SorcerConstants.S_BLITZ_HOME, blitzHome.getPath());
 
 		JavaProcessBuilder builder = new JavaProcessBuilder();
 		builder.setMainClass(mainClass);
@@ -152,10 +155,9 @@ public class BootMojo extends AbstractSorcerMojo {
 
 	private void cleanBlitz() {
 		if (!cleanBlitz) return;
-		File dir = new File(SorcerEnv.getHomeDir(), "databases");
-		getLog().info("Cleaning blitz directory (" + dir + ")");
+		getLog().info("Cleaning blitz directory (" + blitzHome + ")");
 		try {
-			FileUtils.deleteDirectory(dir);
+			FileUtils.deleteDirectory(blitzHome);
 		} catch (IOException e) {
 			getLog().info("Could not delete directory", e);
 		}

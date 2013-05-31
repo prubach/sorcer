@@ -547,14 +547,14 @@ public class ProviderAccessor extends ServiceAccessor implements
 		try {
 			catIsOk = isAlive((Provider) cataloger);
 		} catch (Exception re) {
-			return cataloger = (Cataloger) getService(serviceName,
+			return cataloger = getService(serviceName,
 					Cataloger.class);
 		}
 		try {
 			if (catIsOk) {
 				return cataloger;
 			} else
-				return cataloger = (Cataloger) getService(serviceName,
+				return cataloger = getService(serviceName,
 						Cataloger.class);
 		} catch (Exception e) {
 			logger.throwing(ProviderAccessor.class.getName(), "getProvider", e);
