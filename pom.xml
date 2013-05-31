@@ -451,6 +451,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.3</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/First/**/*.java</exclude>
+                    </excludes>
+                </configuration>
 			</plugin>
             <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

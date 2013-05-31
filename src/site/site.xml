@@ -28,15 +28,19 @@
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
             <!--<protocolRelativeURLs>false</protocolRelativeURLs>-->
             <protocolRelativeURLs>false</protocolRelativeURLs>
+            <!-- theme should be site for local development, otherwise
+            bootswatch-spacelab -->
+            <theme>site</theme>
+            <!--<theme>bootswatch-spacelab</theme>-->
+
             <smoothScroll>true</smoothScroll>
             <navbarInverse>true</navbarInverse>
             <skinAttribution>false</skinAttribution>
 
-            <theme>bootswatch-spacelab</theme>
-            <!--<theme>default</theme>-->
-            <highlightJs>true</highlightJs>
-            <highlightJsTheme>github</highlightJsTheme>
 
+            <!--<highlightJs>true</highlightJs>
+            <highlightJsTheme>github</highlightJsTheme>
+-->
             <slogan><![CDATA[
             Everything <span title="Any Where Any Time">AWAT</span> as a Service (EaaaS)
             ]]></slogan>
