@@ -97,7 +97,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	/**
 	 * Milliseconds to wait before stopping the requestor
 	 */
-	@Parameter(defaultValue = "10000", property = "client.timeout")
+	@Parameter(defaultValue = "60000", property = "client.timeout")
 	protected int timeout;
 
 	@Parameter(defaultValue = "${basedir}")
@@ -134,14 +134,16 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 			Process2 process = null;
 			try {
-				getLog().info("Starting requestor process");
+				getLog().info("Starting client process");
 				process = builder.startProcess();
 				if (debug) {
 					process.waitFor();
-					getLog().info("Requestor process has finished");
+					getLog().info("Client process has finished");
 				} else {
-					if (process.waitFor(timeout) == null)
-						getLog().warn("Requestor process has been destroyed");
+					if (process.waitFor(timeout) == null){
+						getLog().warn("Client process has been destroyed");
+						TestCycleHelper.getInstance().setFail();
+					}
 				}
 			} catch (InterruptedException e) {
 				process.destroy();

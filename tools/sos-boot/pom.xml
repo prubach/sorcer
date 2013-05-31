@@ -50,9 +50,22 @@
 					<groupId>net.jini</groupId>
 					<artifactId>start</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.rioproject.resolver</groupId>
+					<artifactId>resolver-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.rioproject</groupId>
+					<artifactId>rio-platform</artifactId>
+				</exclusion>
 			</exclusions>
-        </dependency>
-        <dependency>
+		</dependency>
+		<dependency>
+			<groupId>edu.emory.mathcs.util</groupId>
+			<artifactId>emory-util-classloader</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <scope>runtime</scope>

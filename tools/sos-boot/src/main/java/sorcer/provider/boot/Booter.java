@@ -79,6 +79,38 @@ public class Booter implements SorcerConstants {
 				"sorcer.provider.boot.BootUtil cannot be instantiated");
 	}
 
+	/**
+	 * API for configs
+	 * resolve classpath from artifact coordinates
+	 */
+	public static String resolveClasspath(String coords){
+		return Resolver.resolveAbsolute(coords);
+	}
+
+	/**
+	 * API for configs
+	 * resolve classpath from artifact coordinates
+	 */
+	public static String resolveClasspath(String... coords){
+		return Resolver.resolveClassPath(coords);
+	}
+
+	/**
+	 * API for configs
+	 * resolve codebase from artifact coordinates
+	 */
+	public static String resolveCodebase(String[] coords) throws UnknownHostException {
+		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+	}
+
+	/**
+	 * API for configs
+	 * resolve codebase from artifact coordinates
+	 */
+	public static String resolveCodebase(String coords) throws UnknownHostException {
+		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+	}
+
     /**
      * Return the classpath for the provided JAR names. 
      * 
@@ -94,14 +126,6 @@ public class Booter implements SorcerConstants {
         }
         return(buffer.toString());        
     }
-
-	public static String resolveClasspath(String coords){
-		return Resolver.resolveAbsolute(coords);
-	}
-
-	public static String resolveClasspath(String... coords){
-		return Resolver.resolveClassPath(coords);
-	}
 
 	/**
      * Return the codebase for the provided JAR name and port. This method will 
@@ -170,14 +194,6 @@ public class Booter implements SorcerConstants {
 
 		URL baseUrl = getCodebaseRoot(address, Booter.port);
 		return getCodebase(baseUrl, jars);
-	}
-
-	public static String resolveCodebase(String[] coords) throws UnknownHostException {
-		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
-	}
-
-	public static String resolveCodebase(String coords) throws UnknownHostException {
-		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
 	}
 
 	private static String getCodebase(URL root, String[] jars) {

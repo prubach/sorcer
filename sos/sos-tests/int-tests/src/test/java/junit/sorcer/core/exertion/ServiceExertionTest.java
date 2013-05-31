@@ -18,7 +18,6 @@
 package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.list;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.cxt;
@@ -95,21 +94,20 @@ public class ServiceExertionTest {
 
 		// exert and them get the value from task's dataContext
 		//logger.info("eTask value @ result/y = " + get(exert(eTask), path(result, y)));
-		assertTrue("Wrong eTask value for 100.0", get(eTask, path(result, y)).equals(100.0));
+		assertEquals(100.0, get(eTask, path(result, y)));
 		
 		//logger.info("eTask value @ arg/x1 = " + exert(eTask, path("arg/x1")));
-		assertTrue("Wrong eTask value for 20.0", get(eTask, path("arg/x1")).equals(20.0));
+		assertEquals(20.0, get(eTask, path("arg/x1")));
 
 		//logger.info("eTask value @  arg/x2 = " + exert(eTask, "arg/x2"));
-		assertTrue("Wrong eTask value for 80.0", get(eTask, "arg/x2").equals(80.0));
+		assertEquals(80.0, get(eTask, "arg/x2"));
 	}
 	
 	@Test
 	public void exertJobTest() throws ExertionException, ContextException {
 		// just get value from job's dataContext
 		logger.info("eJob value @  t3/arg/x2 = " + get(eJob, "j1/t3/arg/x2"));
-		assertTrue("Wrong eJob value for " + Context.Value.NULL, 
-				get(eJob, "/j1/t3/arg/x2").equals(Context.Value.NULL));
+		assertEquals(Context.Value.NULL, get(eJob, "/j1/t3/arg/x2") );
 		
 		// exert and then get the value from job's dataContext
 		eJob = exert(eJob);
@@ -117,19 +115,19 @@ public class ServiceExertionTest {
 
 		logger.info("eJob jobContext: " + jobContext(eJob));
 		//logger.info("eJob value @  j2/t5/arg/x1 = " + get(eJob, "j2/t5/arg/x1"));
-		assertTrue("Wrong eJob value for 20.0", get(eJob, "/j1/j2/t5/arg/x1").equals(20.0));
+		assertEquals(20.0, get(eJob, "/j1/j2/t5/arg/x1"));
 			
 		//logger.info("eJob value @ j2/t4/arg/x1 = " + exert(eJob, path("j1/j2/t4/arg/x1")));
-		assertTrue("Wrong eJob value for 10.0", get(eJob, "/j1/j2/t4/arg/x1").equals(10.0));
+		assertEquals(10.0, get(eJob, "/j1/j2/t4/arg/x1"));
 
 		//logger.info("eJob value @  j1/j2/t5/arg/x2 = " + exert(eJob, "j1/j2/t5/arg/x2"));
-		assertTrue("Wrong eJob value for 80.0", get(eJob, "/j1/j2/t5/arg/x2").equals(80.0));
+		assertEquals(80.0, get(eJob, "/j1/j2/t5/arg/x2"));
 		
 		//logger.info("eJob value @  j2/t5/arg/x1 = " + exert(eJob, "j2/t5/arg/x1"));
-		assertTrue("Wrong eJob value for 20.0", get(eJob, "/j1/j2/t5/arg/x1").equals(20.0));
+		assertEquals(20.0, get(eJob, "/j1/j2/t5/arg/x1"));
 		
 		//logger.info("eJob value @  j2/t4/arg/x2 = " + exert(eJob, "j2/t4/arg/x2"));
-		assertTrue("Wrong eJob value for 50.0", get(eJob, "/j1/j2/t4/arg/x2").equals(50.0));
+		assertEquals(50.0, get(eJob, "/j1/j2/t4/arg/x2"));
 			
 		logger.info("job dataContext: " + jobContext(eJob));
 		logger.info("value at j1/t3/result/y: " + get(eJob, "j1/t3/result/y"));
