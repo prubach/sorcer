@@ -91,7 +91,7 @@ public class Booter implements SorcerConstants {
 	 * API for configs
 	 * resolve classpath from artifact coordinates
 	 */
-	public static String resolveClasspath(String... coords){
+	public static String resolveClasspath(String[] coords){
 		return Resolver.resolveClassPath(coords);
 	}
 
