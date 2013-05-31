@@ -17,6 +17,7 @@
  */
 package sorcer.arithmetic.requestor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
@@ -28,6 +29,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Job;
+import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 
@@ -35,6 +37,8 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static sorcer.co.operator.from;
+import static sorcer.eo.operator.*;
 
 /**
  * @author Mike Sobolewski
@@ -54,6 +58,40 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
                 "org.sorcersoft.sorcer:ex6-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
+
+    @Ignore
+    @Test
+    public void batchTaskTest() throws Exception {
+        // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
+        // shared context with named paths
+        Task batch3 = task("batch3",
+                type(sig("multiply", Multiplier.class, result("subtract/x1", Signature.Direction.IN)), Signature.PRE),
+                type(sig("add", Adder.class, result("subtract/x2", Signature.Direction.IN)), Signature.PRE),
+                sig("subtract", Subtractor.class, result("result/y", from("subtract/x1", "subtract/x2"))),
+                context(in("multiply/x1", 10.0), in("multiply/x2", 50.0),
+                        in("add/x1", 20.0), in("add/x2", 80.0)));
+
+        batch3 = exert(batch3);
+        //logger.info("task result/y: " + get(batch3, "result/y"));
+        assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+    }
+
+    @Ignore
+    @Test
+    public void batchPrefixedTaskTest() throws Exception {
+        // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
+        // shared context with prefixed paths
+        Task batch3 = task("batch3",
+                type(sig("multiply#op1", Multiplier.class, result("op3/x1", Signature.Direction.IN)), Signature.PRE),
+                type(sig("add#op2", Adder.class, result("op3/x2", Signature.Direction.IN)), Signature.PRE),
+                sig("subtract", Subtractor.class, result("result/y", from("op3/x1", "op3/x2"))),
+                context(in("op1/x1", 10.0), in("op1/x2", 50.0),
+                        in("op2/x1", 20.0), in("op2/x2", 80.0)));
+
+        batch3 = exert(batch3);
+        //logger.info("task result/y: " + get(batch3, "result/y"));
+        assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+    }
 
     @Test
     public void exertTaskJob() throws Exception {

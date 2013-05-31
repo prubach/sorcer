@@ -5,7 +5,6 @@ import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
 import sorcer.arithmetic.provider.SubtractorImpl;
-import sorcer.core.SorcerConstants;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Signature;
@@ -67,7 +66,7 @@ public class ArithmeticNoNetTest {
 	}
 	
 	@Test
-	public void batchTask3Test() throws Exception {
+	public void batchTaskTest() throws Exception {
 		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
 		// shared context with named paths
 		Task batch3 = task("batch3",
@@ -84,7 +83,7 @@ public class ArithmeticNoNetTest {
 	
 	
 	@Test
-	public void batchTask4Test() throws Exception {
+	public void batchPrefixedTaskTest() throws Exception {
 		// batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
 		// shared context with prefixed paths
 		Task batch3 = task("batch3",
