@@ -17,35 +17,22 @@
  */
 package junit.sorcer.core.exertion;
 
-//import com.gargoylesoftware,base,testing,TestUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.entry;
-//import static sorcer.co.operator.loop;
 import static sorcer.eo.operator.args;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.exceptions;
 import static sorcer.eo.operator.exert;
 import static sorcer.eo.operator.get;
 import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.name;
-import static sorcer.eo.operator.path;
 import static sorcer.eo.operator.put;
 import static sorcer.eo.operator.result;
-//import static sorcer.eo.operator.selectVars;
 import static sorcer.eo.operator.sig;
 import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.target;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
-//import static sorcer.vo.operator.args;
-//import static sorcer.vo.operator.expression;
-//import static sorcer.vo.operator.groovy;
-//import static sorcer.vo.operator.inputVars;
-//import static sorcer.vo.operator.var;
-//import static sorcer.vo.operator.vars;
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import junit.sorcer.core.provider.AdderImpl;
@@ -54,13 +41,8 @@ import junit.sorcer.core.provider.Multiply;
 import org.junit.Test;
 
 import sorcer.core.context.ServiceContext;
-//import sorcer.core.dataContext.model.FidelityInfo;
-//import sorcer.core.exertion.FilterTask;
 import sorcer.core.exertion.ObjectTask;
-//import sorcer.core.exertion.VarTask;
-//import sorcer.core.signature.FilterSignature;
 import sorcer.core.signature.ObjectSignature;
-//import sorcer.core.signature.VarSignature;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -69,11 +51,6 @@ import sorcer.service.SignatureException;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
-//import sorcer.vfe.Filter;
-//import sorcer.vfe.Var;
-//import sorcer.vfe.filter.ListFilter;
-//import sorcer.vfe.filter.MapKeyFilter;
-//import sorcer.vfe.util.VarList;
 
 /**
  * @author Mike Sobolewski
@@ -82,18 +59,6 @@ import sorcer.service.Task;
 public class TaskTest {
 	private final static Logger logger = Logger.getLogger(TaskTest.class
 			.getName());
-
-	static {
-		ServiceExertion.debug = true;
-		System.setProperty("java.util.logging.config.file",
-				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		//Sorcer.setCodeBaseByArtifacts(new String[] { 
-		//		"org.sorcersoft.sorcer:ju-arithmetic-api", 
-		//		"org.sorcersoft.sorcer:ju-arithmetic-prv" });
-	}
 
 	@Test
 	public void freeArithmeticTaskTest() throws ExertionException, SignatureException, ContextException {
@@ -110,7 +75,7 @@ public class TaskTest {
 				strategy(sig("add", AdderImpl.class), Access.PUSH, Wait.YES));
 		
 		//logger.info("get value: " + val);
-		assertEquals("Wrong value for 100", val, 100.0);
+		assertEquals("Wrong value for 100", 100.0, val);
 	}
 	
 	@Test
@@ -127,7 +92,7 @@ public class TaskTest {
 //		logger.info("exerted: " + task);
 //		print(exceptions(task));
 //		print(trace(task));
-		double val = (Double)value(task);
+		Double val = (Double)value(task);
 
 		
 //		logger.info("get value: " + val);
@@ -137,11 +102,11 @@ public class TaskTest {
 		//assertTrue(trace(task).size() == 1);
 		ServiceExertion.debug = true;
 //		logger.info("exceptions: " + exceptions(task));
-		assertTrue(exceptions(task).size() == 0);
+		assertEquals("Exception list", 0, exceptions(task).size());
 
 		val = (Double)get(task, "result/y");
 		//logger.info("get value: " + val);
-		assertTrue("Wrong value for 100.0", val == 100.0);
+		assertEquals("result/y", (Object) 100d, val);
 		
 		task = exert(task);
 		val = (Double)get(context(task), "result/y");
@@ -226,16 +191,16 @@ public class TaskTest {
 		objTask.setContext(cxt);
 		
 		//logger.info("objTask value: " + value(objTask));
-		assertEquals("Wrong value for 500.0", value(objTask), 500.0);
+		assertEquals("result/y", 500.0, value(objTask));
 		
 		ObjectTask objTask2 = (ObjectTask)task("test", sig("multiply", new Multiply(), double[].class),
-				context(args(new double[] {10.0, 50.0}), result("result/y")));
+				context(args(new Object[]{new double[]{10.0, 50.0}}), result("result/y")));
 		//TODO: Fix this name...
 		//name("t4", objTask2);
 
 
 		//logger.info("objTask2 value: " + value(objTask2));
-		assertEquals("Wrong value for 500.0", value(objTask2), 500.0);
+		assertEquals("result/y", 500.0, value(objTask2));
 	}
 	
 //	@Test
@@ -324,10 +289,10 @@ public class TaskTest {
 	@Test
 	public void t4_TaskTest() throws Exception {
 		Task t4 = task("t4", sig("multiply", new Multiply(), double[].class),
-				context(args(new double[] { 10.0, 50.0 }), result("result/y")));
+				context(args(new Object[]{new double[]{10.0, 50.0}}), result("result/y")));
 
 		//logger.info("t4: " + value(t4));
-		assertEquals("Wrong value for 500.0", value(t4), 500.0);
+		assertEquals("result/y", 500.0, value(t4));
 	}
 
 //	@Test

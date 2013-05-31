@@ -20,12 +20,7 @@ package junit.sorcer.core.signature;
 import static org.junit.Assert.assertTrue;
 import static sorcer.eo.operator.provider;
 import static sorcer.eo.operator.sig;
-//import static sorcer.vo.operator.expression;
-//import static sorcer.vo.operator.groovy;
-//import static sorcer.vo.operator.var;
-//import static sorcer.vo.operator.vars;
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import junit.sorcer.core.provider.Adder;
@@ -38,7 +33,6 @@ import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski
@@ -48,18 +42,6 @@ public class SignatureTest {
 	private final static Logger logger = Logger
 			.getLogger(SignatureTest.class.getName());
 
-	static {
-		System.setProperty("java.util.logging.config.file",
-				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] {
-				"org.sorcersoft.sorcer:ju-arithmetic-api",
-				"org.sorcersoft.sorcer:sos-platform" });
-	}
-	
 	@Test
 	public void providerTest() throws ExertionException, ContextException, SignatureException {
 		
