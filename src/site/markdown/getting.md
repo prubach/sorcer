@@ -22,6 +22,12 @@ Getting the sources
 
     Click clone
 
+6. Before compiling the whole project please set the environment variable SORCER_HOME and point it to the root directory
+ to which you cloned the project.
+ 
+7. You can compile the code from console by running `mvn install`.
+    
+  
 ...using (Windows) console
 ----
 
@@ -63,3 +69,8 @@ Getting the sources
 9. (Leave the defaults) Clik Finish
 
     ![Project name](getting/console/step13.png)
+
+10. Before compiling the whole project please set the environment variable SORCER_HOME and point it to the root directory
+ to which you cloned the project.
+
+11. You can compile the code from console by running `mvn install`.

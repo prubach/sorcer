@@ -27,12 +27,12 @@
             </li>
             <li>Answer questions:</li>
             <ol>
-                <li>groupId: Usually your organization's reversed domain name, e.g. com.sorcersoft</li>
-                <li>artifactId: Project name and project directory name, e.g. myprovider1</li>
-                <li>package: Java package for your provider classes, by default groupId is used</li>
-                <li>serviceDescription: Description of your provider. The given description can be seen in the Sorcer service browser.</li>
-                <li>providerInterface: Java class name of your provider's interface (service type) that will be exposed to requestors</li>
-                <li>providerClass: Name of class that will implement the provider's interface</li>
+                <li>groupId: This will usually be your organization's reversed domain name, e.g. com.sorcersoft</li>
+                <li>artifactId: The project name and the project directory name, e.g. myprovider</li>
+                <li>package: The Java package for your provider classes, by default groupId is used</li>
+                <li>serviceDescription: The description of your provider. The given description can be seen in the Sorcer Service Browser.</li>
+                <li>providerInterface: The Java interface name of your provider (service type) that will be exposed to requestors</li>
+                <li>providerClass: The name of the class that will implement the provider interface</li>
                 <li>serviceName: The name of your service</li>
             </ol>
             <li>Confirm properties configuration
@@ -40,9 +40,9 @@
                     press Y.
                 </p>
             </li>
-            <li>Import your maven projects to your IDE (IntelliJ Idea or eclipse, for example). Below you can find see
+            <li>Import your maven projects to your IDE (IntelliJ Idea or eclipse, for example). Below you can find information on
                 how to import your project to IntelliJ idea</li>
-            <li>You can remove the (service UI) artifactId>-sui module unless you are going to create a graphical user
+            <li>You can remove the (service UI) &lt;artifactId&gt;-sui module unless you are going to create a graphical user
                 interface attached to your provider. You can also remove the &lt;artifactId&gt;-proxy module unless you want
                 to crate a custom provider proxy. Remember to delete the corresponding &lt;module&gt; entry in your provider
                 pom.xml for any removed module from your provider project.
@@ -54,7 +54,7 @@
         </p>
         <h2 id="Importing_provider">Importing project into IntelliJ Idea</h2>
         <p>
-           To work with Sorcer the free community edition of IntelliJ Idea should be sufficient.
+	  To work with Sorcer the free community edition of <a href="http://www.jetbrains.com/idea/">IntelliJ Idea</a> should be sufficient.
            <ol>
                <li>Open IntelliJ Idea</li>
                <li>Select import project and point the top-level directory of your provider project as in Figure below</li>
@@ -70,7 +70,7 @@
             <ol>
                 <li>Start Sorcer - please refer to our <a href="getting-started.html">Getting Started Guide</a> to see how to do that</li>
                 <li>Start provider (from console in project directory):
-                    <pre>ant -f [serviceName]-prv/boot.xml</pre>
+                    <pre>ant -f &lt;serviceName&gt;-prv/boot.xml</pre>
                 </li>
                 <li>If you use IntelliJ Idea you can drag and drop the boot.xml script to the "Ant build" window and double-click the "boot.provider" goal</li>
             </ol>
@@ -78,7 +78,7 @@
         <h2 id="Testing_provider">Testing provider</h2>
         <p><ul>
             <li>To test your provider start sample requestor (client):
-            <pre>ant -f [serviceName]-req/run.xml</pre>
+            <pre>ant -f &lt;serviceName&gt;-req/run.xml</pre>
             </li>
             <li>If you use IntelliJ Idea you can drag and drop the run.xml script to the "Ant build" window and double-click the "run.requestor" goal</li>
             </ul>

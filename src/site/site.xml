@@ -27,11 +27,11 @@
             <brand/>
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
             <!--<protocolRelativeURLs>false</protocolRelativeURLs>-->
-            <protocolRelativeURLs>false</protocolRelativeURLs>
+            <protocolRelativeURLs>true</protocolRelativeURLs>
             <!-- theme should be site for local development, otherwise
             bootswatch-spacelab -->
-            <theme>site</theme>
-            <!--<theme>bootswatch-spacelab</theme>-->
+            <!--<theme>site</theme>-->
+            <theme>bootswatch-spacelab</theme>
 
             <smoothScroll>true</smoothScroll>
             <navbarInverse>true</navbarInverse>
