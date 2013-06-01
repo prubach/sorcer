@@ -16,7 +16,7 @@
             
             <h2>Download Sorcer ${v_sorcer}</h2>
             <p>
-                Sorcer 1.0-${v_sorcer} is the first pre-release openly available from this website.
+                Sorcer ${v_sorcer} is the first pre-release openly available from this website.
 		
             </p>
             <table>
@@ -33,7 +33,7 @@
 			<td>Sorcer ${v_sorcer} ZIP release</td>
 			<td>zip</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip/download">Download</a></td>
-                        <td>33 MB</td>
+                        <td>32 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
@@ -41,7 +41,7 @@
 			<td>Sorcer ${v_sorcer} Windows setup</td>
 			<td>exe</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe/download">Download</a></td>
-                        <td>33 MB</td>
+                        <td>32 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
@@ -49,7 +49,7 @@
 			<td>Sorcer ${v_sorcer} cross-platform setup</td>
 			<td>jar</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar/download">Download</a></td>
-                        <td>33 MB</td>
+                        <td>32 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar.md5/download">MD5</a></td>
                         <td align="center">05/2013</td>
                     </tr>
