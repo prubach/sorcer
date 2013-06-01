@@ -30,7 +30,7 @@ import sorcer.maven.util.TestCycleHelper;
 /**
  * @author Rafał Krupiński
  */
-@Mojo(name = "destroy", aggregator = true, defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
+@Mojo(name = "destroy", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.PER_LOOKUP)
 public class DestroyMojo extends AbstractSorcerMojo {
 
 	@Override

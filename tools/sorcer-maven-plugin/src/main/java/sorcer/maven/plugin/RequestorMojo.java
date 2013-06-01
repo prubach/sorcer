@@ -55,7 +55,7 @@ import static sorcer.util.JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE;
  * @author Rafał Krupiński
  */
 @Execute(phase = LifecyclePhase.PACKAGE)
-@Mojo(name = "run-requestor", aggregator = true, defaultPhase = LifecyclePhase.INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
+@Mojo(name = "run-requestor", defaultPhase = LifecyclePhase.INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.PER_LOOKUP)
 public class RequestorMojo extends AbstractSorcerMojo {
 
 	@Parameter(property = "project.build.outputDirectory", readonly = true)
@@ -100,8 +100,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "60000", property = "client.timeout")
 	protected int timeout;
 
-	@Parameter(defaultValue = "${basedir}")
-	protected File basedir;
+	@Parameter(property = "project.build.outputDirectory")
+	protected File workingDir;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -125,7 +125,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			properties.putAll(config.getSystemProperties());
 			builder.setProperties(properties);
 
-			builder.setWorkingDir(basedir);
+			builder.setWorkingDir(workingDir);
 			builder.setDebugger(debug);
 			builder.setOutput(getLogFile(configurations, i));
 			if (config.arguments != null) {
@@ -136,13 +136,21 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			try {
 				getLog().info("Starting client process");
 				process = builder.startProcess();
+				Integer exitCode;
 				if (debug) {
-					process.waitFor();
+					exitCode = process.waitFor();
+				} else {
+					exitCode = process.waitFor(timeout);
+				}
+
+				if (new Integer(0).equals(exitCode)) {
 					getLog().info("Client process has finished");
 				} else {
-					if (process.waitFor(timeout) == null){
+					TestCycleHelper.getInstance().setFail();
+					if (exitCode == null) {
 						getLog().warn("Client process has been destroyed");
-						TestCycleHelper.getInstance().setFail();
+					} else {
+						getLog().warn("Client process has finished with exit code = " + exitCode);
 					}
 				}
 			} catch (InterruptedException e) {

@@ -20,7 +20,6 @@ package sorcer.core.exertion;
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 
 import java.rmi.RemoteException;
@@ -64,7 +63,7 @@ public class ObjectTask extends Task {
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
 		dataContext.setCurrentSelector(getProcessSignature().getSelector());
-		dataContext.setCurrentPrefix(((ServiceSignature) getProcessSignature()).getPrefix());
+		dataContext.setCurrentPrefix(getProcessSignature().getPrefix());
 		try {
 			if (getProcessSignature().getReturnPath() != null)
 				dataContext.setReturnPath(getProcessSignature().getReturnPath());
