@@ -6,7 +6,7 @@ before_install:
   - ifconfig
   - cat /etc/hosts
   - hostname
-install: mvn -q install
+install: mvn -q -P release install
 before_script:
 #  - cp -f $SORCER_HOME/configs/template/sorcer.env_int-tests $SORCER_HOME/configs/sorcer.env
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
