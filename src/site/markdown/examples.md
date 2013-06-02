@@ -1,6 +1,6 @@
 # Running provided Sorcer examples
 ## Prerequisites
-- [Sorcer platform] (downloads.html)
+- [Sorcer platform] (download.html)
 - [Maven 3.0] (http://maven.apache.org)
 - [Ant 1.7 or newer](http://ant.apache.org)
 

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
+    <properties>
+        <title>Download Sorcer</title>
+        <author email="pawel.rubach@sorcersoft.com">Paweł Rubach</author>
+    </properties>
     <body>
         <section>
             <h2>License and Dependencies</h2>
