@@ -474,6 +474,80 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- This profile is used by Travis for performing integration tests on distribution
+        On Travis it is impossible to run the launch4j plugin to generate EXE, therefore
+        a separate profile is required -->
+        <profile>
+            <id>disttest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>create-staging-area</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <!-- Setup installer -->
+                                        <copy todir="${staging.dir}/izpack">
+                                            <fileset dir="${basedir}/src/izpack">
+                                                <include name="**/*.xml"/>
+                                                <include name="**/*.html"/>
+                                                <include name="**/*.xml_*"/>
+                                                <include name="**/*.txt"/>
+                                            </fileset>
+                                            <filterset>
+                                                <filter token="${v.sorcer}" value="${v.sorcer}"/>
+                                            </filterset>
+                                        </copy>
+                                        <copy todir="${staging.dir}/izpack">
+                                            <fileset dir="${basedir}/src/izpack">
+                                                <include name="**/*.png"/>
+                                            </fileset>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <version>1.0-alpha-5</version>
+
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>izpack</goal>
+                                </goals>
+                                <configuration>
+                                    <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
+                                    <!-- base for relative paths in izpack descriptor -->
+                                    <!--<baseDir>${staging.dir}/izpack</baseDir>-->
+                                    <!--<installFile>${staging.dir}/izpack/install.xml</installFile>-->
+                                    <installerFile>${project.build.directory}/sorcer-${project.version}-setup.jar
+                                    </installerFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.izpack</groupId>
+                                <artifactId>izpack-standalone-compiler</artifactId>
+                                <version>${izpack.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 </project>
