@@ -144,11 +144,11 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				}
 
 				if (new Integer(0).equals(exitCode)) {
-					getLog().info("Client process has finished");
+					getLog().info("Client process has finished successfully");
 				} else {
 					TestCycleHelper.getInstance().setFail();
 					if (exitCode == null) {
-						getLog().warn("Client process has been destroyed");
+						getLog().warn("Client process has been destroyed after reaching a timeout");
 					} else {
 						getLog().warn("Client process has finished with exit code = " + exitCode);
 					}

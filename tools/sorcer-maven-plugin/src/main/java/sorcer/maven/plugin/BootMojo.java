@@ -17,7 +17,6 @@
  */
 package sorcer.maven.plugin;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Execute;
@@ -43,7 +42,6 @@ import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -79,9 +77,6 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(property = "sorcer.provider.debug")
 	protected boolean debug;
 
-	@Parameter(defaultValue = "true")
-	protected boolean cleanBlitz;
-
 	/**
 	 * Log file to redirect standard and error output to. This only works for
 	 * java 1.7+
@@ -95,13 +90,19 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.build.directory}/blitz")
 	protected File blitzHome;
 
+	public enum WaitMode {
+		sleep,
+		getService
+	}
+
+	@Parameter(defaultValue = "sleep")
+	protected WaitMode waitMode;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//allow others to use maven logger
 		StaticLoggerBinder.getSingleton().setLog(getLog());
 
 		getLog().debug("servicesConfig: " + servicesConfig);
-
-		cleanBlitz();
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
@@ -146,20 +147,24 @@ public class BootMojo extends AbstractSorcerMojo {
 		putProcess(process);
 
 		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
+			waitForProvider();
+		} catch (MojoExecutionException e) {
 			process.destroy();
-			throw new MojoExecutionException("Interrupted", e);
+			throw e;
 		}
 	}
 
-	private void cleanBlitz() {
-		if (!cleanBlitz) return;
-		getLog().info("Cleaning blitz directory (" + blitzHome + ")");
-		try {
-			FileUtils.deleteDirectory(blitzHome);
-		} catch (IOException e) {
-			getLog().info("Could not delete directory", e);
+	private void waitForProvider() throws MojoExecutionException {
+		switch (waitMode) {
+			case sleep:
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					throw new MojoExecutionException("Interrupted", e);
+				}
+				break;
+			default:
+				throw new MojoExecutionException("Unsupported waitMode");
 		}
 	}
 
