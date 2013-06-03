@@ -18,7 +18,7 @@ before_script:
 #for now run locally:
 #mvn verify -Dmaven.test.skip=false -Prun-its -pl :first-prv,:ju-arithmetic-prv
 #script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false -Prun-its test
-script: cd $SORCER_HOME/sos/sos-tests/ && mvn -Dmaven.test.skip=false test
+script: cd $SORCER_HOME/../../../../sos/sos-tests/ && mvn -Dmaven.test.skip=false test
 jdk:
 #  - openjdk6
 #  - openjdk7
