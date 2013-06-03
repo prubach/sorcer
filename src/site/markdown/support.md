@@ -5,13 +5,13 @@ Sorcersoft offers a federated computing platform that is service-oriented, relia
 ## Support and tools for Sorcer
 
 Sorcersoft.com S.A. provides:
-- Graphical tools that enable users and service developers to easily create, deploy and use the SORCER platform.
-- Professional training on the SORCER platform, developing services and deploying them in your own environment.
-- Commercial technical support and more!
+
++   Graphical tools that enable users and service developers to easily create, deploy and use the SORCER platform.
++   Professional training on the SORCER platform, developing services and deploying them in your own environment.
++   Commercial technical support and more!
 
 ## Contact
-Should you require any further information please consult our website at: http://www.sorcersoft.com
-or contact us by email: info@sorcersoft.com
+Should you require any further information please contact us by email: info@sorcersoft.com
 
 ## Team
 Professionals with over 20 years of experience in concurrent engineering have established Sorcersoft. A creator of SORCER and the Sorcersoft's co-founder, dr. Mike Sobolewski has contributed to several multi-million dollar projects realized in the U.S.A. and invented solutions that help the aerospace industry; in particular GE Aviation and the U.S. Air Force Research Laboratory to design the next generation of engines and air vehicles. Our team focuses on innovations in globally distributed computing that yields substantial long-term improvements in the ways that people collaborate and share network resources.

@@ -103,7 +103,7 @@ public class Resolver {
 	/**
 	 * Resolve array of artifact coordinates to ${File.pathSeparator}-separated list of absolute paths
 	 */
-	public static String resolveClassPath(String... artifactCoordinatesList) {
+	public static String resolveClassPath(String[] artifactCoordinatesList) {
 		List<String> result = new ArrayList<String>(artifactCoordinatesList.length);
 		for (String coords : artifactCoordinatesList) {
 			result.add(resolveAbsolute(coords));

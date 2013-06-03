@@ -509,5 +509,11 @@
 				<module>distribution</module>
 			</modules>
 		</profile>
-	</profiles>
+        <profile>
+            <id>disttest</id>
+            <modules>
+                <module>distribution</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

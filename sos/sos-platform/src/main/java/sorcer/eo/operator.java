@@ -440,6 +440,10 @@ public class operator {
 		return sig(operation, serviceType, (String) null, type);
 	}
 
+	public static Signature sig(String operation, Class serviceType) throws SignatureException {
+		return sig(operation, serviceType, null, Type.SRV);
+	}
+
 	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type) throws SignatureException {
 		return sig(operation, serviceType, (String) null, type);
