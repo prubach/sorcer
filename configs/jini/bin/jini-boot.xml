@@ -18,7 +18,7 @@
     limitations under the License.
 
 -->
-<project name="Jini booter services" default="jini all" basedir="../../../../../home/pol/experimental/configs/jini/bin">
+<project name="Jini booter services" default="jini all" basedir=".">
 
     <import file="../../common-run.xml" />
 
