@@ -52,6 +52,18 @@
                 </li>
             </ol>
         </p>
+        <h2 id="Using_IDE">Choosing your Integrated Development Environment (IDE)</h2>
+        <p>
+            For the development of Sorcer service providers you can choose any Java IDE that supports Apache Maven 3.x,
+            however, we suggest that you use one of the following ones:
+            <ul>
+                <li>Eclipse 4.x - please refer to <a href="using-eclipse.html">this manual</a> to see how to import a Sorcer Service Provider project
+                into Eclipse.</li>
+                <li>IntelliJ Idea - below you can find a screenshot and a short instruction on how to import a Sorcer
+                Service Provider project into IntelliJ Idea</li>
+            </ul>
+        </p>
+
         <h2 id="Importing_provider">Importing project into IntelliJ Idea</h2>
         <p>
 	  To work with Sorcer the free community edition of <a href="http://www.jetbrains.com/idea/">IntelliJ Idea</a> should be sufficient.
@@ -63,7 +75,6 @@
                <li>When the project is imported you can use the "Maven Projects" window to build the project</li>
            </ol>
         </p>
-
 
         <h2 id="Starting_provider">Starting provider</h2>
         <p>

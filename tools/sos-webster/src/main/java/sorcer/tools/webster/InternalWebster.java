@@ -71,10 +71,8 @@ public class InternalWebster {
         StringBuffer sb = new StringBuffer();
         if (roots == null && websterRoots == null) {
             // defaults Sorcer roots
-            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
             sb.append(";").append(Resolver.getRepoDir()).append(";").append(Resolver.getRootDir());
         } else if (websterRoots != null) {
-            sb.append(sorcerHome).append(fs).append("lib").append(fs).append("river").append(fs).append("lib-dl");
             for (int i=0; i<websterRoots.length; i++) {
                 sb.append(';').append(websterRoots[i]);
             }

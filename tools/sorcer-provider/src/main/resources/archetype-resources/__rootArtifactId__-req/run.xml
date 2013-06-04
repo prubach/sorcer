@@ -15,9 +15,12 @@
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 	<echo message="webster: ${provider.webster.url}" />
 
-	<!-- provider codeabse jars -->
+	<!-- provider codebase jars -->
 	<property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
 	<property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
+
 	<property name="requestor.webster.codebase" value="${j1} ${j2}" />
+    <property name="requestor.internal" value="true" />
+
 </project>
 

@@ -39,7 +39,13 @@
         </p>
         <p>This step may be omitted on Windows as the Windows installer adds the SORCER_HOME variable automatically, it
             is, however, required to logout and log back in after the installation to make sure this change is updated
-            in your environment.
+            in your environment. The installer adds SORCER_HOME to your current user's environment. If you would  like
+            to use SORCER from other accounts please add SORCER_HOME variable to your system environment. You can do that
+            manually in the
+            <tt>Control Panel -> System -> Advanced System Settings -> Environment Settings </tt>
+            On Windows Vista/7/8 you can also run the script below as administrator (start cmd.exe by right clicking
+            it and selecting "Run as Administrator".
+            <pre>setx -m SORCER_HOME "C:\sorcer"</pre>
         </p>
         <p>On UNIX there are many ways to do it depending on your OS and configuration. You can add it</p>
         <ul>
