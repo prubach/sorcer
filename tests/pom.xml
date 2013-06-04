@@ -9,7 +9,7 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>sos-tests</artifactId>
+	<artifactId>tests</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER OS :: int tests</name>
 	<modules>

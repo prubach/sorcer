@@ -33,13 +33,17 @@
 		</encoder>
 	</appender>-->
 
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
 	<logger name="sorcer.boot" level="info"/>
 
-	<logger name="org.rioproject.resolver.aether.util.ConsoleRepositoryListener" level="info">
-		<!--<appender-ref ref="resolver"/>-->
-	</logger>
 
-	<root level="info">
-		<appender-ref ref="STDOUT"/>
-	</root>
+    <!-- rio -->
+	<logger name="org.rioproject.resolver.aether.util.ConsoleRepositoryListener" level="info"/>
+    <logger name="org.rioproject.rmi.ResolvingLoader" level="all"/>
+
+    <!-- river -->
+    <logger name="net.jini.Config" level="warn"/>
 </configuration>
