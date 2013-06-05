@@ -84,7 +84,7 @@ import java.util.logging.Logger;
  *
  */
 @SuppressWarnings("rawtypes")
-public class Sorcer extends SorcerEnv {
+public class Sorcer extends SorcerEnv implements SorcerConstants{
 
 	final static Logger logger = Logger.getLogger(Sorcer.class.getName());
 
@@ -203,10 +203,10 @@ public class Sorcer extends SorcerEnv {
 
 	/**
 	 * Checks which port to use for a SORCER class server.
-	 * 
+	 *
 	 * @return a port number
 	 */
-	public static int getWebsterPort() {		
+	public static int getWebsterPort() {
 		if (port != 0)
 			return port;
 

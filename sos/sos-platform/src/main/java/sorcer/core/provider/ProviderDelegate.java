@@ -2657,7 +2657,7 @@ public class ProviderDelegate implements SorcerConstants {
 			try {
 				exporterInterface = (String) config.getEntry(
 						ServiceProvider.COMPONENT, EXPORTER_INTERFACE,
-						String.class, null);
+						String.class, Sorcer.getHostAddress());
 			} catch (Exception e) {
 				// do nothng
 			}
@@ -2928,10 +2928,14 @@ public class ProviderDelegate implements SorcerConstants {
 			// if partner exported use it as the primary proxy
 			if (partner != null) {
 				if (partnerExporter == null)
-					partnerExporter = new BasicJeriExporter(
-							TcpServerEndpoint.getInstance(0),
-							new BasicILFactory());
-				pp = partnerExporter.export(partner);
+                    try {
+                        partnerExporter = new BasicJeriExporter(
+                                TcpServerEndpoint.getInstance(Sorcer.getHostAddress(), 0),
+                                new BasicILFactory());
+                    } catch (UnknownHostException e) {
+                        throw new ExportException("Could not obtain local address", e);
+                    }
+                pp = partnerExporter.export(partner);
 				if (pp != null) {
 					innerProxy = outerProxy;
 					outerProxy = pp;

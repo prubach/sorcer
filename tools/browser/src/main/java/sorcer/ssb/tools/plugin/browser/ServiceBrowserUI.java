@@ -37,6 +37,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -124,6 +125,7 @@ import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.ui.serviceui.UIFrameFactory;
 
 import com.sun.jini.config.Config;
@@ -393,11 +395,12 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		try {
 			_exporter = (Exporter) Config.getNonNullEntry(_config,
 					CONFIG_MODULE, "listenerExporter", Exporter.class,
-					new BasicJeriExporter(TcpServerEndpoint.getInstance(0),
+					new BasicJeriExporter(TcpServerEndpoint.getInstance(HostUtil.getInetAddress().getHostAddress(), 0),
 							new BasicILFactory()));
 		} catch (ConfigurationException e) {
-		}
-		;
+		} catch (UnknownHostException e) {
+        }
+        ;
 		if (_exporter instanceof BasicJeriExporter)
 			System.out.println("exporter endpoint: "
 					+ ((BasicJeriExporter) _exporter).getServerEndpoint());
@@ -409,7 +412,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		if (_config != null) {
 			initWithConfig();
 		} else {
-			_exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0),
+			_exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(HostUtil.getInetAddress().getHostAddress(), 0),
 					new BasicILFactory());
 		}
 
