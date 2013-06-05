@@ -118,6 +118,7 @@
             <item name="Getting Started" href="./getting-started.html"/>
             <item name="Running provided Sorcer examples" href="./examples.html"/>
             <item name="Creating a Sorcer Service Provider" href="./new-provider.html"/>
+            <item name="Using Eclipse with a Sorcer Service Provider" href="./using-eclipse.html"/>
         </menu>
 
 

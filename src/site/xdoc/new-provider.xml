@@ -14,8 +14,7 @@
             <li>Sorcer distribution</li>
             <li>(before official Sorcer release) Maven settings.xml updated for Sorcer</li>
         </ul>
-        <h2 id="Creating_the_project_.28archetype_version_1.0.0-alfa-3.29">Creating the project (archetype version
-            1.0.0-alfa-3)
+        <h2 id="Creating_the_project_.28archetype_version">Creating the project
         </h2>
         <p>
             <ol>
@@ -55,7 +54,7 @@
         <h2 id="Using_IDE">Choosing your Integrated Development Environment (IDE)</h2>
         <p>
             For the development of Sorcer service providers you can choose any Java IDE that supports Apache Maven 3.x,
-            however, we suggest that you use one of the following ones:
+            however, we suggest that you use one of the following:
             <ul>
                 <li>Eclipse 4.x - please refer to <a href="using-eclipse.html">this manual</a> to see how to import a Sorcer Service Provider project
                 into Eclipse.</li>
