@@ -122,8 +122,8 @@ public class JavaProcessBuilder {
 			try {
 				proc = procBld.start();
 
-				// give it a second to exit on error
-				Thread.sleep(1000);
+				// give it a moment to exit on error
+				Thread.sleep(100);
 
 				// if the next call throws exception, then we're probably good -
 				// process hasn't finished yet.

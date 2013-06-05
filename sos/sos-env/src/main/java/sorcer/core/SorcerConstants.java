@@ -275,6 +275,9 @@ public interface SorcerConstants {
 	 */
 	String S_BLITZ_HOME = "sorcer.blitz.home";
 
+    String S_WEBSTER_ROOT = "webster.root";
+
+
 	//public static final String SORCER_HOME = "sorcer.home";
 
 	// discovery and lookup

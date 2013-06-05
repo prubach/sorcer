@@ -33,6 +33,7 @@ import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.provider.boot.Booter;
+import sorcer.tools.webster.Webster;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,10 +47,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
-import static sorcer.util.JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY;
-import static sorcer.util.JavaSystemProperties.JAVA_SECURITY_POLICY;
-import static sorcer.util.JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE;
+import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.JavaSystemProperties.RMI_SERVER_USE_CODEBASE_ONLY;
+import static sorcer.util.JavaSystemProperties.SECURITY_POLICY;
+import static sorcer.util.JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE;
 
 /**
  * @author Rafał Krupiński
@@ -110,12 +111,15 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 
 		Map<String, String> defaultSystemProps = new HashMap<String, String>();
-		defaultSystemProps.put(JAVA_UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
-		defaultSystemProps.put(JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+		defaultSystemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
+		defaultSystemProps.put(SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
 		defaultSystemProps.put(S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
-		defaultSystemProps.put(JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
+		defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
+        int websterPort = Webster.getAvailablePort();
+        defaultSystemProps.put(P_WEBSTER_PORT, "" + websterPort);
+        defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
-		List<ClientRuntimeConfiguration> configurations = buildClientsList();
+		List<ClientRuntimeConfiguration> configurations = buildClientsList(websterPort);
 		for (int i = 0; i < configurations.size(); i++) {
 			ClientRuntimeConfiguration config = configurations.get(i);
 			JavaProcessBuilder builder = config.preconfigureProcess();
@@ -164,8 +168,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-	private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
-		String host = "http://" + Booter.getWebsterHostName() + ":" + TestCycleHelper.getInstance().getWebsterPort();
+    private List<ClientRuntimeConfiguration> buildClientsList(int websterPort) throws MojoExecutionException {
+		String host = "http://" + Booter.getWebsterHostName() + ":" + websterPort;
 		if (requestors == null || requestors.length == 0) {
 			ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(mainClass, buildClasspath(requestorClasspath));
 			updateCodebaseAndRoots(config, host, requestorCodebase);

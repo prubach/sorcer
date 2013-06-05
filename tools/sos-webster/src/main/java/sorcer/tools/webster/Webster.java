@@ -19,7 +19,9 @@ package sorcer.tools.webster;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.util.JavaSystemProperties;
 
 import java.io.*;
 import java.net.*;
@@ -329,9 +331,9 @@ public class Webster implements Runnable {
      * the user.dir system property
      */
     private void initialize() throws BindException {
-        String root = System.getProperty("webster.root");
+        String root = System.getProperty(SorcerConstants.S_WEBSTER_ROOT);
         if(root == null)
-            root = System.getProperty("user.dir");
+            root = System.getProperty(JavaSystemProperties.USER_DIR);
         initialize(root);
     }
 
@@ -389,7 +391,7 @@ public class Webster implements Runnable {
         InetAddress addr;
         try {
             if(bindAddress == null) {
-                bindAddress = System.getProperty("webster.interface");
+                bindAddress = System.getProperty(SorcerConstants.S_WEBSTER_INTERFACE);
             }
             if (bindAddress == null)
                 bindAddress = SorcerEnv.getLocalHost().getHostAddress();

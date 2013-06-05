@@ -108,7 +108,7 @@ public class InternalWebster {
                     + "default to " + port, e);
         }
 
-        String address = System.getProperty("webster.interface");
+        String address = System.getProperty(SorcerConstants.S_WEBSTER_INTERFACE);
         webster = new Webster(port, roots, address, minThreads, maxThreads, true);
         port = webster.getPort();
         if (logger.isLoggable(Level.FINEST))

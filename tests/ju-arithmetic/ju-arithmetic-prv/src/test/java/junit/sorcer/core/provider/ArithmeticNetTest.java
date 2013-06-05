@@ -24,10 +24,12 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
+import sorcer.tools.webster.InternalWebster;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 
+import java.io.IOException;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
@@ -47,7 +49,7 @@ import static sorcer.eo.operator.sig;
 import static sorcer.eo.operator.strategy;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
-import static sorcer.util.JavaSystemProperties.JAVA_RMI_SERVER_CODEBASE;
+import static sorcer.util.JavaSystemProperties.RMI_SERVER_CODEBASE;
 
 /**
  * @author Mike Sobolewski
@@ -61,14 +63,21 @@ public class ArithmeticNetTest implements SorcerConstants {
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
-		if(System.getProperty(JAVA_RMI_SERVER_CODEBASE)==null){
+		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
 			Sorcer.setCodeBaseByArtifacts(new String[]{
 					"org.sorcersoft.sorcer:sos-platform",
 					"org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
-		System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
+
+        try {
+            InternalWebster.startWebster(System.getProperty(RMI_SERVER_CODEBASE).split(CODEBASE_SEPARATOR), System.getProperty(WEBSTER_ROOTS).split(";"));
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+
+        System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
 		System.out.println("Webster:" + Sorcer.getWebsterUrl());
-		System.out.println("Codebase:" + System.getProperty(JAVA_RMI_SERVER_CODEBASE));
+		System.out.println("Codebase:" + System.getProperty(RMI_SERVER_CODEBASE));
 		System.setSecurityManager(new RMISecurityManager());
 	}
 
