@@ -38,5 +38,6 @@
     <property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
 
 	<property name="requestor.webster.codebase" value="${j1} ${j2}" />
+c
 </project>
 

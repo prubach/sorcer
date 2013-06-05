@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Service Browser" default="jini-browser" basedir="../../../../../home/pol/experimental/configs/jini/bin">
+<project name="Service Browser" default="jini-browser" basedir=".">
 	<!-- system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />

@@ -19,7 +19,7 @@
 
 -->
 
-<project name="JavaSpace service" default="outrigger" basedir="../../../../../home/pol/experimental/configs/jini/bin">
+<project name="JavaSpace service" default="outrigger" basedir=".">
 
 <import file="../../common-run.xml" />
 

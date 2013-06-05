@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Lookup service" default="reggie" basedir="../../../../../home/pol/experimental/configs/jini/bin">
+<project name="Lookup service" default="reggie" basedir=".">
 
     <import file="../../common-run.xml" />
 

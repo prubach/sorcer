@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Transaction Manager" default="mahalo" basedir="../../../../../home/pol/experimental/configs/jini/bin">
+<project name="Transaction Manager" default="mahalo" basedir=".">
 
     <import file="../../common-run.xml" />
 
