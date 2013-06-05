@@ -101,31 +101,12 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 			logger.info("Not able to create service requestor: " + runnerType);
 			System.exit(1);
 		}
-
-
-
 		String str = System.getProperty(REQUESTOR_PROPERTIES_FILENAME);
 		logger.info(REQUESTOR_PROPERTIES_FILENAME + " = " + str);
 		if (str != null) {
 			requestor.loadProperties(str); // search the provider package
 		} else {
 			requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
-		}
-		isWebsterInt = false;
-		String val = System.getProperty(SORCER_WEBSTER_INTERNAL);
-		if (val != null && val.length() != 0) {
-			isWebsterInt = val.equals("true");
-		}
-		if (isWebsterInt) {
-			String roots = System.getProperty(SorcerConstants.WEBSTER_ROOTS);
-			String[] tokens = null;
-			if (roots != null)
-				tokens = toArray(roots);
-			try {
-				InternalWebster.startWebster(codebaseJars, tokens);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -292,6 +273,18 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
                 System.setProperty("java.rmi.server.codebase", codebase.toString());
 
             codebaseJars = toArray(codebase.toString());
+        }
+
+        if (isWebsterInt) {
+            String roots = System.getProperty(SorcerConstants.WEBSTER_ROOTS);
+            String[] tokens = null;
+            if (roots != null)
+                tokens = toArray(roots);
+            try {
+                InternalWebster.startWebster(codebaseJars, tokens);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
