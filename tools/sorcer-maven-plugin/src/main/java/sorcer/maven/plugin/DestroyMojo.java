@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
-import sorcer.maven.util.Process2;
+import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
 /**

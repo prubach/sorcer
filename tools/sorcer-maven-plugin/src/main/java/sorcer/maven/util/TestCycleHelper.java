@@ -17,6 +17,8 @@
 
 package sorcer.maven.util;
 
+import sorcer.util.Process2;
+
 /**
  * @author Rafał Krupiński
  */

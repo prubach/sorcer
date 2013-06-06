@@ -29,8 +29,8 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import sorcer.maven.util.ArtifactUtil;
-import sorcer.maven.util.JavaProcessBuilder;
-import sorcer.maven.util.Process2;
+import sorcer.util.JavaProcessBuilder;
+import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
 import java.io.File;
@@ -137,13 +137,18 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				getLog().info("Starting client process");
 				process = builder.startProcess();
 				Integer exitCode;
-				if (debug) {
-					exitCode = process.waitFor();
-				} else {
-					exitCode = process.waitFor(timeout);
-				}
+                try {
+                    if (debug) {
+                        exitCode = process.waitFor();
+                    } else {
+                        exitCode = process.waitFor(timeout);
+                    }
+                } catch (InterruptedException e) {
+                    process.destroy();
+                    throw new MojoExecutionException(e.getMessage(), e);
+                }
 
-				if (new Integer(0).equals(exitCode)) {
+                if (new Integer(0).equals(exitCode)) {
 					getLog().info("Client process has finished successfully");
 				} else {
 					TestCycleHelper.getInstance().setFail();
@@ -153,15 +158,15 @@ public class RequestorMojo extends AbstractSorcerMojo {
 						getLog().warn("Client process has finished with exit code = " + exitCode);
 					}
 				}
-			} catch (InterruptedException e) {
-				process.destroy();
-				throw new MojoExecutionException(e.getMessage(), e);
 			} catch (IllegalStateException x) {
 				//fail in DestroyMojo, don't log stack trace, there is nothing interesting
 				getLog().warn(x.getMessage());
 				TestCycleHelper.getInstance().setFail();
-			}
-		}
+			} catch (IOException x) {
+                getLog().warn("Could not start client process", x);
+                TestCycleHelper.getInstance().setFail();
+            }
+        }
 	}
 
     private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {

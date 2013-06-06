@@ -51,7 +51,7 @@ import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
 
-import sorcer.maven.util.Process2;
+import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 import sorcer.org.rioproject.net.HostUtil;
 

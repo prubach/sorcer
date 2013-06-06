@@ -3,8 +3,7 @@ package sorcer.maven.plugin;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import sorcer.core.SorcerConstants;
-import sorcer.maven.util.JavaProcessBuilder;
-import sorcer.util.JavaSystemProperties;
+import sorcer.util.JavaProcessBuilder;
 
 import java.util.Arrays;
 import java.util.Collection;

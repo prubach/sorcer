@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package sorcer.maven.util;
+package sorcer.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.MojoFailureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
@@ -47,7 +46,7 @@ public class JavaProcessBuilder {
 	protected File workingDir;
 	protected boolean debugger;
 	protected File output;
-	protected File sorcerHome= SorcerEnv.getHomeDir();
+	protected File sorcerHome = SorcerEnv.getHomeDir();
 
 	public void setProperties(Map<String, String> environment) {
 		this.properties = environment;
@@ -82,7 +81,7 @@ public class JavaProcessBuilder {
 		this.output = output;
 	}
 
-	public Process2 startProcess() throws MojoFailureException {
+	public Process2 startProcess() throws IOException {
 		ProcessBuilder procBld = new ProcessBuilder().command("java");
 
 		if (debugger) {
@@ -119,27 +118,21 @@ public class JavaProcessBuilder {
 
 		Process proc = null;
 		try {
-			try {
-				proc = procBld.start();
+            proc = procBld.start();
 
-				// give it a moment to exit on error
-				Thread.sleep(100);
+            try {
+                // give it a moment to exit on error
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+                //ignore
+            }
 
-				// if the next call throws exception, then we're probably good -
-				// process hasn't finished yet.
-				int x = proc.exitValue();
-				throw new IllegalStateException("Process exited with value " + x);
-			} catch (IllegalThreadStateException x) {
-				if (proc != null) {
-					return new Process2(proc);
-				} else {
-					throw new MojoFailureException("Could not start java process", x);
-				}
-			} catch (IOException e) {
-				throw new MojoFailureException("Could not start java process", e);
-			}
-		} catch (InterruptedException e) {
-			throw new MojoFailureException("Could not start java process", e);
+            // if the next call throws exception, then we're probably good -
+            // process hasn't finished yet.
+            int x = proc.exitValue();
+            throw new IllegalStateException("Process exited with value " + x);
+        } catch (IllegalThreadStateException x) {
+            return new Process2(proc);
 		}
 	}
 
@@ -147,7 +140,7 @@ public class JavaProcessBuilder {
 	 * Redirect output and error to ours IF the method
 	 * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
 	 */
-	private void redirectIO(ProcessBuilder processBuilder) throws MojoFailureException {
+	private void redirectIO(ProcessBuilder processBuilder) {
 		if (output != null) {
 			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[]{Boolean.TYPE}, true);
 			// processBuilder.redirectErrorStream(true);
@@ -157,8 +150,7 @@ public class JavaProcessBuilder {
 		}
 	}
 
-	protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args)
-			throws MojoFailureException {
+	protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) {
 		try {
 			Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
 			return method.invoke(target, args);
@@ -167,9 +159,9 @@ public class JavaProcessBuilder {
 			log.warn(e.getMessage(), e);
 			return null;
 		} catch (InvocationTargetException e) {
-			throw new MojoFailureException(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			throw new MojoFailureException(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

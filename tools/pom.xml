@@ -21,6 +21,7 @@
 		<module>sos-boot</module>
 		<module>sos-shell</module>
 		<module>browser</module>
+        <module>sorcer-launcher</module>
 		<module>sorcer-maven-plugin</module>
 		<module>sorcer-provider</module>
 	<!--	<module>provider-root</module>-->

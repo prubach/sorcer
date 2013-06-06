@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package sorcer.maven.util;
+package sorcer.util;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Rafał Krupiński
@@ -55,10 +54,10 @@ public class Process2 {
 		* Normal waitFor() calls wait() in loop until its internal thread detects process is destroyed, in which case it calls
 		* notifyAll().
 		* We're calling wait() and wait for someone to call notify(). It might be either because process has ended or because our
-		* Notifier has triggered. In the latter case timeout has passed, process hasn't finished and must be destroyed.
+		* NotifyTask has triggered. In the latter case timeout has passed, process hasn't finished and must be destroyed.
 		*/
 		if (timeout > 0) {
-			new Timer().schedule(new Notifier(process), timeout);
+			new Timer().schedule(new NotifyTask(process), timeout);
 			synchronized (process) {
 				//in case vary small value of timeout and notify is called before wait
 				process.wait(timeout);
@@ -78,23 +77,5 @@ public class Process2 {
 
 	public void destroy() {
 		process.destroy();
-	}
-}
-
-/**
- *
- */
-class Notifier extends TimerTask {
-	private final Object monitor;
-
-	Notifier(Object monitor) {
-		this.monitor = monitor;
-	}
-
-	@Override
-	public void run() {
-		synchronized (monitor) {
-			monitor.notify();
-		}
 	}
 }

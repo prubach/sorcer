@@ -29,8 +29,11 @@ import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
 import sorcer.maven.util.*;
 import sorcer.tools.webster.Webster;
+import sorcer.util.JavaProcessBuilder;
+import sorcer.util.Process2;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -137,17 +140,20 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setOutput(logFile);
 		builder.setWorkingDir(workingDir);
 
-		getLog().info("starting sorcer");
-		Process2 process = builder.startProcess();
-		putProcess(process);
+        getLog().info("starting sorcer");
+        Process2 process = null;
+        try {
+            process = builder.startProcess();
+            putProcess(process);
 
-		try {
-			waitForProvider();
-		} catch (MojoExecutionException e) {
-			process.destroy();
-			throw e;
-		}
-	}
+            waitForProvider();
+        } catch (MojoExecutionException e) {
+            process.destroy();
+            throw e;
+        } catch (IOException e) {
+            throw new MojoFailureException("Could not start provider process", e);
+        }
+    }
 
 	private void waitForProvider() throws MojoExecutionException {
 		switch (waitMode) {
@@ -155,7 +161,7 @@ public class BootMojo extends AbstractSorcerMojo {
 				try {
 					Thread.sleep(sleepAfter);
 				} catch (InterruptedException e) {
-					throw new MojoExecutionException("Interrupted", e);
+					//ignore
 				}
 				break;
 			default:
