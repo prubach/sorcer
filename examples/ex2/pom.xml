@@ -22,4 +22,9 @@
 		<module>ex2-req</module>
         <module>ex2-rdl</module>
 	</modules>
+
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+		<skipTests>${maven.test.skip}</skipTests>
+	</properties>
 </project>

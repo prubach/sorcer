@@ -22,4 +22,9 @@
 		<module>ex6-req</module>
         <module>ex6-sui</module>
 	</modules>
+
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+		<skipTests>${maven.test.skip}</skipTests>
+	</properties>
 </project>

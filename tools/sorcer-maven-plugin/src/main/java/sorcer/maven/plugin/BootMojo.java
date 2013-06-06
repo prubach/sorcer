@@ -17,15 +17,9 @@
  */
 package sorcer.maven.plugin;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Execute;
-import org.apache.maven.plugins.annotations.InstantiationStrategy;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
@@ -33,21 +27,16 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
-import sorcer.maven.util.ArtifactUtil;
-import sorcer.maven.util.EnvFileHelper;
-import sorcer.maven.util.JavaProcessBuilder;
-import sorcer.maven.util.PolicyFileHelper;
-import sorcer.maven.util.Process2;
-import sorcer.maven.util.TestCycleHelper;
+import sorcer.maven.util.*;
 import sorcer.tools.webster.Webster;
-import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static sorcer.util.JavaSystemProperties.*;
 
 /**
  * Boot sorcer provider
@@ -79,9 +68,6 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(property = "sorcer.provider.debug")
 	protected boolean debug;
 
-	@Parameter(defaultValue = "true")
-	protected boolean cleanBlitz;
-
 	/**
 	 * Log file to redirect standard and error output to. This only works for
 	 * java 1.7+
@@ -95,13 +81,22 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${project.build.directory}/blitz")
 	protected File blitzHome;
 
+    @Parameter(defaultValue = "10000", property = "service.sleepAfter")
+    protected long sleepAfter;
+
+	public enum WaitMode {
+		sleep,
+		getService
+	}
+
+	@Parameter(defaultValue = "sleep")
+	protected WaitMode waitMode;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		//allow others to use maven logger
 		StaticLoggerBinder.getSingleton().setLog(getLog());
 
 		getLog().debug("servicesConfig: " + servicesConfig);
-
-		cleanBlitz();
 
 		// prepare sorcer.env with updated group
 		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
@@ -122,14 +117,15 @@ public class BootMojo extends AbstractSorcerMojo {
 		if (rioHome == null) {
 			rioHome = sorcerHome + "/lib/rio";
 		}
-		properties.put(JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
-		properties.put(JavaSystemProperties.JAVA_PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
-		properties.put(JavaSystemProperties.JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+		properties.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
+		properties.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
+		properties.put(SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+        properties.put(UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/jini/scripts/services/logging.properties").getPath());
 		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);
 		properties.put(SorcerConstants.S_RIO_HOME, rioHome);
 		properties.put(SorcerConstants.S_WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
 		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnv);
-		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reservePort());
+		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reserveProviderPort());
 		properties.put(SorcerConstants.S_BLITZ_HOME, blitzHome.getPath());
 
 		JavaProcessBuilder builder = new JavaProcessBuilder();
@@ -146,26 +142,31 @@ public class BootMojo extends AbstractSorcerMojo {
 		putProcess(process);
 
 		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
+			waitForProvider();
+		} catch (MojoExecutionException e) {
 			process.destroy();
-			throw new MojoExecutionException("Interrupted", e);
+			throw e;
 		}
 	}
 
-	private void cleanBlitz() {
-		if (!cleanBlitz) return;
-		getLog().info("Cleaning blitz directory (" + blitzHome + ")");
-		try {
-			FileUtils.deleteDirectory(blitzHome);
-		} catch (IOException e) {
-			getLog().info("Could not delete directory", e);
+	private void waitForProvider() throws MojoExecutionException {
+		switch (waitMode) {
+			case sleep:
+				try {
+					Thread.sleep(sleepAfter);
+				} catch (InterruptedException e) {
+					throw new MojoExecutionException("Interrupted", e);
+				}
+				break;
+			default:
+				throw new MojoExecutionException("Unsupported waitMode");
 		}
 	}
 
-	private int reservePort() {
-		int port = Webster.getAvailablePort();
-		TestCycleHelper.getInstance().setWebsterPort(port);
+	protected int reserveProviderPort() {
+        int port = Webster.getAvailablePort();
+        TestCycleHelper.getInstance().setWebsterPort(port);
 		return port;
 	}
+
 }

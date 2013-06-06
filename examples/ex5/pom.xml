@@ -21,4 +21,9 @@
 		<module>ex5-prv</module>
         <module>ex5-req</module>
 	</modules>
+
+	<properties>
+		<maven.test.skip>true</maven.test.skip>
+		<skipTests>${maven.test.skip}</skipTests>
+	</properties>
 </project>

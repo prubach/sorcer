@@ -90,6 +90,21 @@ public class Resolver {
 	}
 
 	/**
+	 * This is helper method for use in *.config files. The resulting string is
+	 * passed to SorcerServiceDescriptor constructor as a codebase string.
+	 *
+	 * @param baseUrl URL root of artifacts
+	 * @param coords  array of artifact coordinates
+	 */
+	public static String resolveCodeBase(URL baseUrl, ArtifactCoordinates... coords) {
+		String[] relatives = new String[coords.length];
+		for (int i = 0; i < coords.length; i++) {
+			relatives[i] = resolveAbsolute(baseUrl, coords[i]);
+		}
+		return StringUtils.join(relatives, SorcerConstants.CODEBASE_SEPARATOR);
+	}
+
+	/**
 	 * Resolve array of artifact coordinates to ${File.pathSeparator}-separated list of absolute paths
 	 */
 	public static String resolveClassPath(ArtifactCoordinates... artifactCoordinatesList) {

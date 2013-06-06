@@ -2,6 +2,7 @@ import net.jini.jeri.*;
 import net.jini.jeri.tcp.*;
 import net.jini.discovery.*;
 import net.jini.core.discovery.*;
+import sorcer.provider.boot.Booter;
 
 sorcer.sbb.browser.SorcerServiceBrowser {
 

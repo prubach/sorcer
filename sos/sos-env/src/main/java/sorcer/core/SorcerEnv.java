@@ -21,18 +21,25 @@ import org.apache.commons.io.FileUtils;
 import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;
+import sorcer.util.ParentFirstProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-public class SorcerEnv implements SorcerConstants {
+import static sorcer.core.SorcerConstants.*;
+
+public class SorcerEnv {
 
 	final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
 	/**
@@ -109,7 +116,7 @@ public class SorcerEnv implements SorcerConstants {
 	 * @return Sorcer Local jar repo location 
 	 */
 	public static String getRepoDir() {
-		String repo = props.getProperty(SorcerConstants.S_SORCER_REPO);
+		String repo = props.getProperty(S_SORCER_REPO);
         if (repo!=null) repo = repo.trim();
 		
 		if (repo != null && !repo.isEmpty()) {
@@ -167,7 +174,7 @@ public class SorcerEnv implements SorcerConstants {
 				loadedEnvFile = envFile;
 				
 			} else {
-				envFile = SorcerConstants.S_ENV_FIENAME;
+				envFile = S_ENV_FIENAME;
 				String envPath = getHomeDir() + "/configs/" + envFile;
 				System.setProperty(S_KEY_SORCER_ENV, envPath);
 				props = loadProperties(envFile);
@@ -525,6 +532,115 @@ public class SorcerEnv implements SorcerConstants {
     }
 
 	public static String getSorcerVersion() {
-		return props.getProperty(SorcerConstants.S_VERSION_SORCER, SORCER_VERSION);
+		return props.getProperty(S_VERSION_SORCER, SORCER_VERSION);
 	}
+
+
+    /***
+     * Helper method adding root to each of the jars, and joining the result with spaces
+     * @param root
+     * @param jars
+     * @return
+     */
+    public static String getCodebase(URL root, String[] jars) {
+        Collection<String> cb = new ArrayList<String>(jars.length);
+        for (String jar : jars) {
+            cb.add(getCodebase(root, jar).toExternalForm());
+        }
+        return org.apache.commons.lang3.StringUtils.join(cb, SorcerConstants.CODEBASE_SEPARATOR);
+    }
+
+    public static URL getCodebase(URL root, String jar) {
+        try {
+            return new URL(root, jar);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static URL getCodebaseRoot() {
+        try {
+            return getCodebaseRoot(getHostAddress(), sorcerEnv.getWebsterPortProperty());
+        } catch (UnknownHostException e) {
+            throw new IllegalStateException("Could not obtain local address", e);
+        }
+    }
+
+    /**
+     * Prepare codebase root URL - URL with only hostname and port
+     * @param address
+     * @param port
+     * @return
+     */
+    public static URL getCodebaseRoot(String address, int port) {
+        try {
+            return new URL("http",address,port,"");
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Could not prepare codebase root URL", e);
+        }
+    }
+
+
+    protected SorcerEnv(){
+        properties = props;
+    }
+
+    //experimental code - SorcerEnv as instantiable class
+
+    private static SorcerEnv sorcerEnv;
+    private Properties properties;
+
+    public SorcerEnv(Properties props){
+        properties = props;
+    }
+
+    static {
+        Properties myProperties = new ParentFirstProperties(System.getProperties());
+        myProperties.putAll(props);
+        sorcerEnv = new SorcerEnv(myProperties);
+        sorcerEnv.overrideFromEnvironment();
+    }
+
+    private void overrideFromEnvironment() {
+        String portStr = System.getenv("SORCER_WEBSTER_PORT");
+        if (portStr != null && !portStr.isEmpty()) {
+            setWebsterPortProperty(Integer.parseInt(portStr));
+        }
+    }
+
+    public static SorcerEnv getEnvironment(){
+        return sorcerEnv;
+    }
+
+    public boolean isWebsterInternal() {
+        return Boolean.parseBoolean(properties.getProperty(SORCER_WEBSTER_INTERNAL, "false"));
+    }
+
+    public void setWebsterInternal(boolean internal){
+        properties.setProperty(SORCER_WEBSTER_INTERNAL, Boolean.toString(internal));
+    }
+
+    public String getRequestorWebsterCodebase(){
+        return properties.getProperty(R_CODEBASE);
+    }
+
+    public void setRequestorWebsterCodebase(String codebase){
+        properties.setProperty(R_CODEBASE, codebase);
+    }
+
+    public int getWebsterPortProperty() {
+        return Integer.parseInt(properties.getProperty(P_WEBSTER_PORT, "0"));
+    }
+
+    public void setWebsterPortProperty(int port){
+        properties.setProperty(P_WEBSTER_PORT, Integer.toString(port));
+    }
+
+    public String getWebsterRootsString(){
+        return properties.getProperty(SorcerConstants.WEBSTER_ROOTS);
+    }
+
+    public void setWebsterRootsString(String roots){
+        properties.setProperty(SorcerConstants.WEBSTER_ROOTS, roots);
+    }
 }

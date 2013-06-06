@@ -36,6 +36,7 @@
 		<module>sos</module>
 		<module>sos-providers</module>
 		<module>tools</module>
+		<module>tests</module>
 		<module>examples</module>
     </modules>
 

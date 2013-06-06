@@ -32,7 +32,6 @@ import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
-import sorcer.provider.boot.Booter;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,16 +45,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
-import static sorcer.util.JavaSystemProperties.JAVA_RMI_SERVER_USE_CODEBASE_ONLY;
-import static sorcer.util.JavaSystemProperties.JAVA_SECURITY_POLICY;
-import static sorcer.util.JavaSystemProperties.JAVA_UTIL_LOGGING_CONFIG_FILE;
+import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.JavaSystemProperties.RMI_SERVER_USE_CODEBASE_ONLY;
+import static sorcer.util.JavaSystemProperties.SECURITY_POLICY;
+import static sorcer.util.JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE;
 
 /**
  * @author Rafał Krupiński
  */
 @Execute(phase = LifecyclePhase.PACKAGE)
-@Mojo(name = "run-requestor", aggregator = true, defaultPhase = LifecyclePhase.INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.SINGLETON)
+@Mojo(name = "run-requestor", defaultPhase = LifecyclePhase.INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.PER_LOOKUP)
 public class RequestorMojo extends AbstractSorcerMojo {
 
 	@Parameter(property = "project.build.outputDirectory", readonly = true)
@@ -100,8 +99,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "60000", property = "client.timeout")
 	protected int timeout;
 
-	@Parameter(defaultValue = "${basedir}")
-	protected File basedir;
+	@Parameter(property = "project.build.outputDirectory")
+	protected File workingDir;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -110,10 +109,11 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 
 		Map<String, String> defaultSystemProps = new HashMap<String, String>();
-		defaultSystemProps.put(JAVA_UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
-		defaultSystemProps.put(JAVA_SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
+		defaultSystemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/sorcer.logging").getPath());
+		defaultSystemProps.put(SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
 		defaultSystemProps.put(S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
-		defaultSystemProps.put(JAVA_RMI_SERVER_USE_CODEBASE_ONLY, "false");
+		defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
+        defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
 		List<ClientRuntimeConfiguration> configurations = buildClientsList();
 		for (int i = 0; i < configurations.size(); i++) {
@@ -125,7 +125,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			properties.putAll(config.getSystemProperties());
 			builder.setProperties(properties);
 
-			builder.setWorkingDir(basedir);
+			builder.setWorkingDir(workingDir);
 			builder.setDebugger(debug);
 			builder.setOutput(getLogFile(configurations, i));
 			if (config.arguments != null) {
@@ -136,13 +136,21 @@ public class RequestorMojo extends AbstractSorcerMojo {
 			try {
 				getLog().info("Starting client process");
 				process = builder.startProcess();
+				Integer exitCode;
 				if (debug) {
-					process.waitFor();
-					getLog().info("Client process has finished");
+					exitCode = process.waitFor();
 				} else {
-					if (process.waitFor(timeout) == null){
-						getLog().warn("Client process has been destroyed");
-						TestCycleHelper.getInstance().setFail();
+					exitCode = process.waitFor(timeout);
+				}
+
+				if (new Integer(0).equals(exitCode)) {
+					getLog().info("Client process has finished successfully");
+				} else {
+					TestCycleHelper.getInstance().setFail();
+					if (exitCode == null) {
+						getLog().warn("Client process has been destroyed after reaching a timeout");
+					} else {
+						getLog().warn("Client process has finished with exit code = " + exitCode);
 					}
 				}
 			} catch (InterruptedException e) {
@@ -156,11 +164,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-	private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
-		String host = "http://" + Booter.getWebsterHostName() + ":" + TestCycleHelper.getInstance().getWebsterPort();
+    private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
 		if (requestors == null || requestors.length == 0) {
 			ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(mainClass, buildClasspath(requestorClasspath));
-			updateCodebaseAndRoots(config, host, requestorCodebase);
+			updateCodebaseAndRoots(config, requestorCodebase);
 			return Arrays.asList(config);
 		} else {
 			List<ClientRuntimeConfiguration> result = new ArrayList<ClientRuntimeConfiguration>(requestors.length);
@@ -170,7 +177,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(configMainClass, buildClasspath(userClasspath));
 
 				String[] userCodebase = requestor.codebase != null ? requestor.codebase : requestorCodebase;
-				updateCodebaseAndRoots(config, host, userCodebase);
+				updateCodebaseAndRoots(config, userCodebase);
 				config.arguments = requestor.arguments;
 				result.add(config);
 			}
@@ -193,7 +200,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-	private void updateCodebaseAndRoots(ClientRuntimeConfiguration config, String websterUrl, String[] userCodebase) throws MojoExecutionException {
+	private void updateCodebaseAndRoots(ClientRuntimeConfiguration config, String[] userCodebase) throws MojoExecutionException {
 		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userCodebase, scope);
 		List<String> codebase = new LinkedList<String>();
 		try {
@@ -204,17 +211,15 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				String artifactPath = artifactFile.getCanonicalPath();
 				if (artifactPath.startsWith(repositoryPath)) {
 					// add jar from repository
-					codebase.add(websterUrl + artifactPath.substring(repositoryPath.length()));
+					codebase.add(artifactPath.substring(repositoryPath.length()));
 				} else {
 					// add jar from target dir
-					codebase.add(websterUrl + '/' + artifactFile.getName());
+					codebase.add(artifactFile.getName());
 					websterRoots.add(artifactFile.getParent());
 				}
 			}
-			// if list of root directories for webster is not empty, we must add the default directory
-			if (!websterRoots.isEmpty()) {
-				websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
-			}
+
+            websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
 			config.setWebsterRoots(websterRoots);
 			config.codebase = codebase.toArray(new String[codebase.size()]);
 		} catch (IOException e) {

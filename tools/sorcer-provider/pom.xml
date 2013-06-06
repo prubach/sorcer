@@ -18,10 +18,6 @@
     <description>SORCER provider archetype</description>
     <url>http://sorcersoft.com/</url>
 
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-	</properties>
-
     <build>
         <extensions>
             <extension>
@@ -36,6 +32,15 @@
                 <plugin>
                     <artifactId>maven-archetype-plugin</artifactId>
                     <version>2.2</version>
+					<executions>
+						<execution>
+							<!-- disable integration tests due to bug ARCHETYPE-413 -->
+							<id>default-integration-test</id>
+							<configuration>
+								<skip>true</skip>
+							</configuration>
+						</execution>
+					</executions>
                 </plugin>
             </plugins>
         </pluginManagement>

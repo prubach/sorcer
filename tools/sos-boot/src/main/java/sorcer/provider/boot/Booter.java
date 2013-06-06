@@ -100,7 +100,7 @@ public class Booter implements SorcerConstants {
 	 * resolve codebase from artifact coordinates
 	 */
 	public static String resolveCodebase(String[] coords) throws UnknownHostException {
-		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coords);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class Booter implements SorcerConstants {
 	 * resolve codebase from artifact coordinates
 	 */
 	public static String resolveCodebase(String coords) throws UnknownHostException {
-		return Resolver.resolveCodeBase(getCodebaseRoot(), coords);
+		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coords);
 	}
 
     /**
@@ -193,30 +193,10 @@ public class Booter implements SorcerConstants {
 			Booter.port = getPort();
 
 		URL baseUrl = getCodebaseRoot(address, Booter.port);
-		return getCodebase(baseUrl, jars);
+		return SorcerEnv.getCodebase(baseUrl, jars);
 	}
 
-	private static String getCodebase(URL root, String[] jars) {
-		Collection<String> cb = new ArrayList<String>(jars.length);
-		for (String jar : jars) {
-			cb.add(getCodebase(root, jar).toExternalForm());
-		}
-		return org.apache.commons.lang3.StringUtils.join(cb, SorcerEnv.CODEBASE_SEPARATOR);
-	}
-
-	private static URL getCodebase(URL root, String jar) {
-		try {
-			return new URL(root, jar);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected static URL getCodebaseRoot() throws UnknownHostException {
-		return getCodebaseRoot(getHostAddress(), getWebsterPort());
-	}
-
-	protected static URL getCodebaseRoot(String host, int port) {
+    protected static URL getCodebaseRoot(String host, int port) {
 		return getCodebaseRoot("http", host, port);
 	}
 
