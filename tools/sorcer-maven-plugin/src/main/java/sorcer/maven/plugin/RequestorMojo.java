@@ -32,8 +32,6 @@ import sorcer.maven.util.ArtifactUtil;
 import sorcer.maven.util.JavaProcessBuilder;
 import sorcer.maven.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
-import sorcer.provider.boot.Booter;
-import sorcer.tools.webster.Webster;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,11 +113,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		defaultSystemProps.put(SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
 		defaultSystemProps.put(S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
 		defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
-        int websterPort = Webster.getAvailablePort();
-        defaultSystemProps.put(P_WEBSTER_PORT, "" + websterPort);
         defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
-		List<ClientRuntimeConfiguration> configurations = buildClientsList(websterPort);
+		List<ClientRuntimeConfiguration> configurations = buildClientsList();
 		for (int i = 0; i < configurations.size(); i++) {
 			ClientRuntimeConfiguration config = configurations.get(i);
 			JavaProcessBuilder builder = config.preconfigureProcess();
@@ -168,11 +164,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-    private List<ClientRuntimeConfiguration> buildClientsList(int websterPort) throws MojoExecutionException {
-		String host = "http://" + Booter.getWebsterHostName() + ":" + websterPort;
+    private List<ClientRuntimeConfiguration> buildClientsList() throws MojoExecutionException {
 		if (requestors == null || requestors.length == 0) {
 			ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(mainClass, buildClasspath(requestorClasspath));
-			updateCodebaseAndRoots(config, host, requestorCodebase);
+			updateCodebaseAndRoots(config, requestorCodebase);
 			return Arrays.asList(config);
 		} else {
 			List<ClientRuntimeConfiguration> result = new ArrayList<ClientRuntimeConfiguration>(requestors.length);
@@ -182,7 +177,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				ClientRuntimeConfiguration config = new ClientRuntimeConfiguration(configMainClass, buildClasspath(userClasspath));
 
 				String[] userCodebase = requestor.codebase != null ? requestor.codebase : requestorCodebase;
-				updateCodebaseAndRoots(config, host, userCodebase);
+				updateCodebaseAndRoots(config, userCodebase);
 				config.arguments = requestor.arguments;
 				result.add(config);
 			}
@@ -205,7 +200,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		}
 	}
 
-	private void updateCodebaseAndRoots(ClientRuntimeConfiguration config, String websterUrl, String[] userCodebase) throws MojoExecutionException {
+	private void updateCodebaseAndRoots(ClientRuntimeConfiguration config, String[] userCodebase) throws MojoExecutionException {
 		Collection<Artifact> artifacts = resolveDependencies(KEY_REQUESTOR, userCodebase, scope);
 		List<String> codebase = new LinkedList<String>();
 		try {
@@ -216,10 +211,10 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				String artifactPath = artifactFile.getCanonicalPath();
 				if (artifactPath.startsWith(repositoryPath)) {
 					// add jar from repository
-					codebase.add(websterUrl + artifactPath.substring(repositoryPath.length()));
+					codebase.add(artifactPath.substring(repositoryPath.length()));
 				} else {
 					// add jar from target dir
-					codebase.add(websterUrl + '/' + artifactFile.getName());
+					codebase.add(artifactFile.getName());
 					websterRoots.add(artifactFile.getParent());
 				}
 			}

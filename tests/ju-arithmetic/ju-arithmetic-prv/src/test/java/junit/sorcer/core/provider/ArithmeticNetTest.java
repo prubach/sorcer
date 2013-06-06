@@ -25,11 +25,11 @@ import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
 import sorcer.tools.webster.InternalWebster;
+import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.Sorcer;
 
-import java.io.IOException;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
@@ -68,12 +68,6 @@ public class ArithmeticNetTest implements SorcerConstants {
 					"org.sorcersoft.sorcer:sos-platform",
 					"org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
-
-        try {
-            InternalWebster.startWebster(System.getProperty(RMI_SERVER_CODEBASE).split(CODEBASE_SEPARATOR), System.getProperty(WEBSTER_ROOTS).split(";"));
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
-        }
 
         System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
 		System.out.println("Webster:" + Sorcer.getWebsterUrl());
@@ -212,16 +206,21 @@ public class ArithmeticNetTest implements SorcerConstants {
 	}
 
 	public static void main(String[] args) throws Exception {
-		waitForServices();
-		ArithmeticNetTest ant = new ArithmeticNetTest();
-		ant.arithmeticProviderExertTest();
-		ant.arithmeticProviderGetTest();
-		ant.arithmeticProviderValueTest();
-		ant.arithmeticSpaceTaskTest();
-		ant.asyncTaskTest();
-		ant.exertJobPullParTest();
-		ant.exertJobPullSeqTest();
-		ant.exertJobPushParTest();
-		ant.exertJobPushSeqTest();
-	}
+        Webster webster = InternalWebster.startRequestorWebsterFromProperties();
+        try {
+            waitForServices();
+            ArithmeticNetTest ant = new ArithmeticNetTest();
+            ant.arithmeticProviderExertTest();
+            ant.arithmeticProviderGetTest();
+            ant.arithmeticProviderValueTest();
+            ant.arithmeticSpaceTaskTest();
+            ant.asyncTaskTest();
+            ant.exertJobPullParTest();
+            ant.exertJobPullSeqTest();
+            ant.exertJobPushParTest();
+            ant.exertJobPushSeqTest();
+        } finally {
+            webster.terminate();
+        }
+    }
 }

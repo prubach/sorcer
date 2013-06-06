@@ -20,6 +20,7 @@ package sorcer.boot;
 import com.sun.jini.start.LifeCycle;
 import net.jini.config.ConfigurationException;
 import sorcer.core.DestroyAdmin;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.util.JavaSystemProperties;
 
@@ -68,7 +69,7 @@ public class ServiceStarter {
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
 		setDefaultProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb.sos");
 		setDefaultProperty(JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE, sorcerHome + "/configs/sorcer.logging");
-		setDefaultProperty(SorcerEnv.S_KEY_SORCER_ENV, sorcerHome + "/configs/sorcer.env");
+		setDefaultProperty(SorcerConstants.S_KEY_SORCER_ENV, sorcerHome + "/configs/sorcer.env");
 	}
 
 	private void setDefaultProperty(String key, String value) {

@@ -47,7 +47,7 @@ public class ClientRuntimeConfiguration extends ClientConfiguration {
 	public Map<String, String> getSystemProperties() {
 		Map<String, String> result = new HashMap<String, String>();
 		if (!ArrayUtils.isEmpty(codebase)) {
-			result.put(JavaSystemProperties.RMI_SERVER_CODEBASE, StringUtils.join(codebase, " "));
+			result.put(SorcerConstants.R_CODEBASE, StringUtils.join(codebase, " "));
 		}
 		if (websterRoots != null && !websterRoots.isEmpty()) {
 			result.put(SorcerConstants.WEBSTER_ROOTS, StringUtils.join(websterRoots, ";"));
