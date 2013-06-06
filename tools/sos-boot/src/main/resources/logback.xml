@@ -42,7 +42,7 @@
 
     <!-- rio -->
 	<logger name="org.rioproject.resolver.aether.util.ConsoleRepositoryListener" level="info"/>
-    <logger name="org.rioproject.rmi.ResolvingLoader" level="all"/>
+    <logger name="org.rioproject.rmi.ResolvingLoader" level="info"/>
 
     <!-- river -->
     <logger name="net.jini.Config" level="warn"/>

@@ -218,10 +218,8 @@ public class RequestorMojo extends AbstractSorcerMojo {
 					websterRoots.add(artifactFile.getParent());
 				}
 			}
-			// if list of root directories for webster is not empty, we must add the default directory
-			if (!websterRoots.isEmpty()) {
-				websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
-			}
+
+            websterRoots.add(repositorySystemSession.getLocalRepository().getBasedir().getPath());
 			config.setWebsterRoots(websterRoots);
 			config.codebase = codebase.toArray(new String[codebase.size()]);
 		} catch (IOException e) {
