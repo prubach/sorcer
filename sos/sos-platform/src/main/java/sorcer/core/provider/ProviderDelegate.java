@@ -720,7 +720,7 @@ public class ProviderDelegate implements SorcerConstants {
 				+ ", spaceTransactional: " + workerTransactional);
 		logger.info("publishedServiceTypes.length = "
 				+ publishedServiceTypes.length);
-		logger.info(GenericUtil.arrayToString(publishedServiceTypes));
+		logger.info(Arrays.toString(publishedServiceTypes));
 
 		// create a pair of taker threads for each published interface
 		SpaceTaker worker = null;
