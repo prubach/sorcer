@@ -22,6 +22,7 @@ import sorcer.org.rioproject.net.HostUtil;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;
 import sorcer.util.ParentFirstProperties;
+import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -547,7 +548,7 @@ public class SorcerEnv {
         for (String jar : jars) {
             cb.add(getCodebase(root, jar).toExternalForm());
         }
-        return org.apache.commons.lang3.StringUtils.join(cb, SorcerConstants.CODEBASE_SEPARATOR);
+        return StringUtils.join(cb, SorcerConstants.CODEBASE_SEPARATOR);
     }
 
     public static URL getCodebase(URL root, String jar) {

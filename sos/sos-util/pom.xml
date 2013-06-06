@@ -12,6 +12,7 @@
 
     <artifactId>sos-util</artifactId>
     <name>SORCER OS :: sos-util</name>
+    <packaging>bundle</packaging>
     <description>This module contain util that don't depend on any other modules (classes may depend only on JDK classes
         or other classes in this module) and are potentially usable outside core Sorcer.
     </description>
@@ -27,8 +28,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>sorcer.util</Export-Package>
-                        <Import-Package>sorcer.util</Import-Package>
+                        <Export-Package>sorcer.util,sorcer.org.rioproject.net</Export-Package>
+                        <Import-Package>sorcer.util,sorcer.org.rioproject.net</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

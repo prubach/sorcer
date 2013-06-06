@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package sorcer.util;
+package sorcer.launcher;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
+import sorcer.util.Process2;
 
 import java.io.File;
 import java.io.IOException;

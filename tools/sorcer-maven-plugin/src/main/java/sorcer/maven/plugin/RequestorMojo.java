@@ -29,7 +29,7 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import sorcer.maven.util.ArtifactUtil;
-import sorcer.util.JavaProcessBuilder;
+import sorcer.launcher.JavaProcessBuilder;
 import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
