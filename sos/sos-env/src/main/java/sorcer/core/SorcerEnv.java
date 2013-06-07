@@ -32,10 +32,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static sorcer.core.SorcerConstants.*;
@@ -74,7 +71,7 @@ public class SorcerEnv {
 		loadBasicEnvironment();
 
 	}
-	
+
 	/**
 	 * Returns the home directory of the Sorcer environment.
 	 * 
@@ -595,18 +592,26 @@ public class SorcerEnv {
         properties = props;
     }
 
+    public SorcerEnv(Map<String, String> props) {
+        properties = new Properties();
+        properties.putAll(props);
+    }
+
     static {
         Properties myProperties = new ParentFirstProperties(System.getProperties());
         myProperties.putAll(props);
         sorcerEnv = new SorcerEnv(myProperties);
-        sorcerEnv.overrideFromEnvironment();
+        sorcerEnv.overrideFromEnvironment(System.getenv());
     }
 
-    private void overrideFromEnvironment() {
-        String portStr = System.getenv("SORCER_WEBSTER_PORT");
+    private void overrideFromEnvironment(Map<String, String> env) {
+        String portStr = env.get(E_WEBSTER_PORT);
         if (portStr != null && !portStr.isEmpty()) {
             setWebsterPortProperty(Integer.parseInt(portStr));
         }
+        String sorcerHome = env.get(SorcerConstants.SORCER_HOME);
+        if(sorcerHome != null)
+            setSorcerHome(sorcerHome);
     }
 
     public static SorcerEnv getEnvironment(){
@@ -643,5 +648,13 @@ public class SorcerEnv {
 
     public void setWebsterRootsString(String roots){
         properties.setProperty(SorcerConstants.WEBSTER_ROOTS, roots);
+    }
+
+    public String getSorcerHome() {
+        return properties.getProperty(SorcerConstants.SORCER_HOME);
+    }
+
+    public void setSorcerHome(String sorcerHome) {
+        properties.setProperty(SorcerConstants.SORCER_HOME, sorcerHome);
     }
 }

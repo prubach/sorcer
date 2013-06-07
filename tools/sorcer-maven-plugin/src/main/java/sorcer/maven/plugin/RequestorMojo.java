@@ -28,8 +28,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
+import sorcer.core.SorcerEnv;
+import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.maven.util.ArtifactUtil;
-import sorcer.launcher.JavaProcessBuilder;
 import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
 
@@ -114,16 +115,19 @@ public class RequestorMojo extends AbstractSorcerMojo {
 		defaultSystemProps.put(S_KEY_SORCER_ENV, sorcerEnvFile.getPath());
 		defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
         defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
+        defaultSystemProps.put(SORCER_HOME, sorcerHome.getPath());
 
 		List<ClientRuntimeConfiguration> configurations = buildClientsList();
 		for (int i = 0; i < configurations.size(); i++) {
 			ClientRuntimeConfiguration config = configurations.get(i);
-			JavaProcessBuilder builder = config.preconfigureProcess();
-
-			Map<String, String> properties = new HashMap<String, String>();
+            Map<String, String> properties = new HashMap<String, String>();
 			properties.putAll(defaultSystemProps);
-			properties.putAll(config.getSystemProperties());
-			builder.setProperties(properties);
+            properties.putAll(config.getSystemProperties());
+
+            SorcerProcessBuilder builder = new SorcerProcessBuilder(new SorcerEnv(properties));
+            config.preconfigureProcess(builder);
+            //not all properties are currently supported by SorcerEnv
+            builder.setProperties(properties);
 
 			builder.setWorkingDir(workingDir);
 			builder.setDebugger(debug);

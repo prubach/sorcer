@@ -27,11 +27,15 @@ public interface SorcerConstants {
 	// SORCER provider property names
 	// P_ATTRIBUTE is a provider property defined in a properties file
 	// J_ATTRIBURE is variable name in Jini configuration file
+    // S_ATTRIBUTE is variable name in System properties
+    // E_ATTRIBUTE is variable name in the system Environment
 	/* service provider genetic properties */
 	public static final String SORCER_VERSION = "1.0-SNAPSHOT";
 	// SORCER global properties defined in sorcer.util.Sorcer.java
 	public static final String SORCER_HOME = "sorcer.home";
-	
+
+	public static final String E_SORCER_HOME = "SORCER_HOME";
+
 	public static final String P_UNDEFINED = "undefined";
 
 	public static final String P_PROVIDER_NAME = "provider.name";
@@ -271,12 +275,18 @@ public interface SorcerConstants {
 	String S_RIO_HOME = "rio.home";
 
 	/**
+	 * RIO_HOME
+	 */
+	String E_RIO_HOME = "RIO_HOME";
+
+    String E_WEBSTER_PORT = "SORCER_WEBSTER_PORT";
+
+	/**
 	 * Blitz database directory (Sorcer specific)
 	 */
 	String S_BLITZ_HOME = "sorcer.blitz.home";
 
     String S_WEBSTER_ROOT = "webster.root";
-
 
 	//public static final String SORCER_HOME = "sorcer.home";
 

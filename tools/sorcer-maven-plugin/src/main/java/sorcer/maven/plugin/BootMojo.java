@@ -27,10 +27,12 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.maven.util.*;
 import sorcer.tools.webster.Webster;
-import sorcer.launcher.JavaProcessBuilder;
 import sorcer.util.Process2;
+import sorcer.util.Sorcer;
 
 import java.io.File;
 import java.io.IOException;
@@ -131,7 +133,7 @@ public class BootMojo extends AbstractSorcerMojo {
 		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reserveProviderPort());
 		properties.put(SorcerConstants.S_BLITZ_HOME, blitzHome.getPath());
 
-		JavaProcessBuilder builder = new JavaProcessBuilder();
+		SorcerProcessBuilder builder = new SorcerProcessBuilder(new SorcerEnv(properties));
 		builder.setMainClass(mainClass);
 		builder.setProperties(properties);
 		builder.setParameters(Arrays.asList(ServiceStarter.SORCER_DEFAULT_CONFIG, servicesConfig.getPath()));

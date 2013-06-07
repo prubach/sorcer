@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import sorcer.core.SorcerConstants;
 import sorcer.launcher.JavaProcessBuilder;
+import sorcer.launcher.SorcerProcessBuilder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,12 +28,9 @@ public class ClientRuntimeConfiguration extends ClientConfiguration {
 		super(mainClass, null, classpath);
 	}
 
-	public JavaProcessBuilder preconfigureProcess() {
-		JavaProcessBuilder builder = new JavaProcessBuilder();
-
+	public void preconfigureProcess(JavaProcessBuilder builder) {
 		builder.setMainClass(mainClass);
 		builder.setClassPath(Arrays.asList(classpath));
-		return builder;
 	}
 
 	public List<String> getWebsterRoots() {

@@ -20,7 +20,6 @@ package sorcer.launcher;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.SorcerEnv;
 import sorcer.util.Process2;
 
 import java.io.File;
@@ -39,17 +38,18 @@ import static java.util.Arrays.asList;
  * @author Rafał Krupiński
  */
 public class JavaProcessBuilder {
-	protected Logger log = LoggerFactory.getLogger(JavaProcessBuilder.class);
-	protected Map<String, String> properties;
+    protected Logger log = LoggerFactory.getLogger(getClass());
+    protected Map<String, String> properties;
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
 	protected File workingDir;
 	protected boolean debugger;
 	protected File output;
-	protected File sorcerHome = SorcerEnv.getHomeDir();
+    protected String command = "java";
+    protected int debugPort = 8000;
 
-	public void setProperties(Map<String, String> environment) {
+    public void setProperties(Map<String, String> environment) {
 		this.properties = environment;
 	}
 
@@ -73,8 +73,16 @@ public class JavaProcessBuilder {
 		this.debugger = debugger;
 	}
 
-	/**
-	 * Set standard and error output
+    public int getDebugPort() {
+        return debugPort;
+    }
+
+    public void setDebugPort(int debugPort) {
+        this.debugPort = debugPort;
+    }
+
+    /**
+     * Set standard and error output
 	 *
 	 * @param output output file
 	 */
@@ -83,11 +91,11 @@ public class JavaProcessBuilder {
 	}
 
 	public Process2 startProcess() throws IOException {
-		ProcessBuilder procBld = new ProcessBuilder().command("java");
+        ProcessBuilder procBld = new ProcessBuilder().command(command);
 
-		if (debugger) {
-			procBld.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=8000"));
-		}
+        if (debugger) {
+            procBld.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
+        }
 
 		procBld.command().addAll(_D(properties));
 		String classPath = StringUtils.join(classPathList, File.pathSeparator);
@@ -104,8 +112,7 @@ public class JavaProcessBuilder {
 		procBld.directory(workingDir);
 
 		Map<String, String> env = procBld.environment();
-		env.put("SORCER_HOME",sorcerHome.getPath());
-		env.put("RIO_HOME",new File(sorcerHome,"lib/rio").getPath());
+        updateEnvironment(env);
 
 		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
 				.append(StringUtils.join(procBld.command(), " "));
@@ -137,7 +144,11 @@ public class JavaProcessBuilder {
 		}
 	}
 
-	/**
+    protected void updateEnvironment(Map<String, String> env) {
+        //do nothing
+    }
+
+    /**
 	 * Redirect output and error to ours IF the method
 	 * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
 	 */

@@ -220,7 +220,7 @@ public class ArithmeticNetTest implements SorcerConstants {
             ant.exertJobPushParTest();
             ant.exertJobPushSeqTest();
         } finally {
-            webster.terminate();
+             webster.terminate();
         }
     }
 }
