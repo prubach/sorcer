@@ -1,8 +1,11 @@
-#!/usr/bin/env nsh -f
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
+
+load mvn://org.sorcersoft.sorcer:ex6-api
 
 import sorcer.arithmetic.provider.Multiplier;
 
 task("f4", sig("multiply", Multiplier.class),
-	dataContext("multiply",
+	context("multiply",
 		input("arg/x1", 10.0d), 
 		input("arg/x2", 50.0d)));

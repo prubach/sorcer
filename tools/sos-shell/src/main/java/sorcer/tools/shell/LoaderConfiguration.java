@@ -16,14 +16,13 @@
 package sorcer.tools.shell;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import sorcer.resolver.Resolver;
+import java.util.logging.Logger;
 
 /**
  * Class used to configure a RootLoader from a stream or by using
@@ -73,14 +72,11 @@ import sorcer.resolver.Resolver;
  */
 public class LoaderConfiguration {
 
-    private static final String MAIN_PREFIX = "main is", LOAD_PREFIX = "load", PROP_PREFIX = "property";
+    private static final String MAIN_PREFIX = "main is", PROP_PREFIX = "property";
     private List classPath = new ArrayList();
     private String main;
     private boolean requireMain;
-    private static final char WILDCARD = '*';
-    private static final String ALL_WILDCARD = "" + WILDCARD + WILDCARD;
-    private static final String MATCH_FILE_NAME = "\\\\E[^/]+?\\\\Q";
-    private static final String MATCH_ALL = "\\\\E.+?\\\\Q";
+    static final Logger logger = Logger.getLogger(LoaderConfiguration.class.getName());
 
     /**
      * creates a new loader configuration
@@ -108,10 +104,9 @@ public class LoaderConfiguration {
 
             if (line.startsWith("#") || line.length() == 0) continue;
 
-            if (line.startsWith(LOAD_PREFIX)) {
-                String loadPath = line.substring(LOAD_PREFIX.length()).trim();
-                loadPath = assignProperties(loadPath);
-                loadFilteredPath(loadPath);
+            if (line.startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
+                String loadPath = line.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
+                loadUrls(LoaderConfigurationHelper.load(loadPath));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);
@@ -123,7 +118,7 @@ public class LoaderConfiguration {
                     throw new IOException("unexpected property format - expecting name=value" + lineNumber + " : " + line);
                 }
                 String propName = params.substring(0, index);
-                String propValue= assignProperties(params.substring(index+1));
+                String propValue= LoaderConfigurationHelper.assignProperties(params.substring(index+1));
                 System.setProperty(propName, propValue);
             } else {
                 throw new IOException("unexpected line in " + lineNumber + " : " + line);
@@ -133,135 +128,26 @@ public class LoaderConfiguration {
         if (requireMain && main == null) throw new IOException("missing main class definition in config file");
     }
 
-    /*
-    * Expands the properties inside the given string to it's values.
-    */
-    private String assignProperties(String str) {
-        int propertyIndexStart = 0, propertyIndexEnd = 0;
-        boolean requireProperty = false;
-        String result = "";
-
-        while (propertyIndexStart < str.length()) {
-            {
-                int i1 = str.indexOf("${", propertyIndexStart);
-                int i2 = str.indexOf("!{", propertyIndexStart);
-                if (i1 == -1) {
-                    propertyIndexStart = i2;
-                } else if (i2 == -1) {
-                    propertyIndexStart = i1;
-                } else {
-                    propertyIndexStart = Math.min(i1, i2);
-                }
-                requireProperty = propertyIndexStart == i2;
-            }
-            if (propertyIndexStart == -1) break;
-            result += str.substring(propertyIndexEnd, propertyIndexStart);
-
-            propertyIndexEnd = str.indexOf("}", propertyIndexStart);
-            if (propertyIndexEnd == -1) break;
-
-            String propertyKey = str.substring(propertyIndexStart + 2, propertyIndexEnd);
-            String propertyValue = null;
-            // Interpret Maven Artifact coordinates
-            if (propertyKey.startsWith("mvn:")) {            	
-            	propertyValue = Resolver.resolveAbsolute(propertyKey.substring(4));
-            }  else {         
-            	propertyValue = System.getProperty(propertyKey);
-            }
-            // assume properties contain paths
-            if (propertyValue == null) {
-                if (requireProperty) {
-                    throw new IllegalArgumentException("Variable " + propertyKey + " in nsh.config references a non-existent System property! Try passing the property to the VM using -D" + propertyKey + "=myValue in JAVA_OPTS");
-                } else {
-                    return null;
-                }
-            }
-            propertyValue = getSlashyPath(propertyValue);
-            propertyValue = correctDoubleSlash(propertyValue,propertyIndexEnd,str);
-            result += propertyValue;
-
-            propertyIndexEnd++;
-            propertyIndexStart = propertyIndexEnd;
-        }
-
-        if (propertyIndexStart == -1 || propertyIndexStart >= str.length()) {
-            result += str.substring(propertyIndexEnd);
-        } else if (propertyIndexEnd == -1) {
-            result += str.substring(propertyIndexStart);
-        }
-
-        return result;
+    /**
+     * Load a possibly filtered path. Filters are defined
+     * by using the * wildcard like in any shell.
+     */
+    private void loadUrls(List<URL> urls) {
+        for (URL url : urls)
+            addUrl(url);
     }
 
 
-    private String correctDoubleSlash(String propertyValue, int propertyIndexEnd, String str) {
-        int index = propertyIndexEnd+1;
-        if ( index<str.length() && str.charAt(index)=='/' && 
-             propertyValue.endsWith("/") &&
-             propertyValue.length()>0)
-        {
-            propertyValue = propertyValue.substring(0,propertyValue.length()-1);
-        } 
-        return propertyValue;
-    }
-
-    /*
+    /**
      * Load a possibly filtered path. Filters are defined
      * by using the * wildcard like in any shell.
      */
     private void loadFilteredPath(String filter) {
-        if (filter == null) return;
-        filter = getSlashyPath(filter);
-        int starIndex = filter.indexOf(WILDCARD);
-        if (starIndex == -1) {
-            addFile(new File(filter));
-            return;
-        }
-        boolean recursive = filter.indexOf(ALL_WILDCARD) != -1;
-
-        if (filter.lastIndexOf('/')<starIndex) {
-            starIndex=filter.lastIndexOf('/')+1;
-        }
-        String startDir = filter.substring(0, starIndex - 1);
-        File root = new File(startDir);
-
-        filter = Pattern.quote(filter);
-        filter = filter.replaceAll("\\" + WILDCARD + "\\" + WILDCARD, MATCH_ALL);
-        filter = filter.replaceAll("\\" + WILDCARD, MATCH_FILE_NAME);
-        Pattern pattern = Pattern.compile(filter);
-
-        final File[] files = root.listFiles();
-        if (files != null) {
-            findMatchingFiles(files, pattern, recursive);
-        }
+        List<URL> filesToLoad = LoaderConfigurationHelper.getFilesFromFilteredPath(filter);
+        for (URL url : filesToLoad)
+            addUrl(url);
     }
 
-    private void findMatchingFiles(File[] files, Pattern pattern, boolean recursive) {
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-            String fileString = getSlashyPath(file.getPath());
-            Matcher m = pattern.matcher(fileString);
-            if (m.matches() && file.isFile()) {
-                addFile(file);
-            }
-            if (file.isDirectory() && recursive) {
-                final File[] dirFiles = file.listFiles();
-                if (dirFiles != null) {
-                    findMatchingFiles(dirFiles, pattern, true);
-                }
-            }
-        }
-    }
-
-    // change path representation to something more system independent.
-    // This solution is based on an absolute path
-    private String getSlashyPath(final String path) {
-        String changedPath = path;
-        if (File.separatorChar != '/')
-            changedPath = changedPath.replace(File.separatorChar, '/');
-
-        return changedPath;
-    }
 
     /*
      * return true if the parent of the path inside the given
@@ -279,6 +165,32 @@ public class LoaderConfiguration {
         int index = filter.lastIndexOf('/');
         if (index == -1) return "";
         return filter.substring(index + 1);
+    }
+
+    /**
+     * Adds a url to the classpath if it exists.
+     *
+     * @param url the url to add
+     */
+    public void addUrl(URL url) {
+        if (url!= null) {
+            if (url.getProtocol().equalsIgnoreCase("http")) {
+                try {
+                    HttpURLConnection huc =  ( HttpURLConnection ) url.openConnection();
+                    huc.setRequestMethod("HEAD");
+                    if (huc.getResponseCode() == HttpURLConnection.HTTP_OK)
+                    classPath.add(url);
+                } catch (ProtocolException e) {
+                    logger.severe("Problem with protocol while loading URL to classpath: " + url.toString() + "\n" + e.getMessage());
+                } catch (IOException e) {
+                    logger.severe("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
+                }
+            } else if (url.getProtocol().equalsIgnoreCase("file") && new File(url.getFile()).exists()) {
+                classPath.add(url);
+            } else {
+                logger.severe("Unsupported protocol to be added to classpath: " + url.toString());
+            }
+        }
     }
 
     /**

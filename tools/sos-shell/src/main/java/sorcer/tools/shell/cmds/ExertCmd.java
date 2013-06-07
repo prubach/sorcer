@@ -17,23 +17,18 @@
  */
 package sorcer.tools.shell.cmds;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.logging.Logger;
-
+import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
+import sorcer.tools.shell.LoaderConfigurationHelper;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class ExertCmd extends ShellCmd {
 
@@ -69,13 +64,6 @@ public class ExertCmd extends ShellCmd {
 	public ExertCmd() {
 		if (staticImports == null) {
 			staticImports = readTextFromJar("static-imports.txt");
-			// System.out.println("get staticImports: " +
-			// staticImports.toString());
-			// ClassLoader rootClassLoader = ShellStarter.getLoader();
-			// URL[] urls = ((URLClassLoader)rootClassLoader).getURLs();
-			// for(int i=0; i< urls.length; i++) {
-			// System.out.println("Root" + urls[i].getFile());
-			// }
 		}
 	}
 
@@ -122,7 +110,8 @@ public class ExertCmd extends ShellCmd {
 			return;
 		}
 		StringBuilder sb = null;
-		if (script != null) {
+        List<String> loadLines = new ArrayList<String>();
+        if (script != null) {
 			sb = new StringBuilder(staticImports.toString());
 			sb.append(script);
 		} else if (scriptFilename != null) {
@@ -134,7 +123,9 @@ public class ExertCmd extends ShellCmd {
 			}
 			sb = new StringBuilder(staticImports.toString());
 			try {
-				sb.append(readFile(scriptFile));
+                Map<String, List<String>> readResult = readFile(scriptFile);
+                loadLines.addAll(readResult.get(readResult.keySet().toArray()[0]));
+				sb.append(readResult.keySet().toArray()[0]);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -143,7 +134,17 @@ public class ExertCmd extends ShellCmd {
 			out.println("Missing exertion input filename!");
 			return;
 		}
-		ScriptThread et = new ScriptThread(sb.toString());
+        // Process "load" and generate a list of URLs for the classloader
+        List<URL> urlsToLoad = new ArrayList<URL>();
+        if (!loadLines.isEmpty()) {
+            for (String jar : loadLines) {
+                    String loadPath = jar.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
+                    urlsToLoad = LoaderConfigurationHelper.load(loadPath);
+            }
+        }
+        //out.println("Loading script, jars to load: " + urlsToLoad.toString());
+
+		ScriptThread et = new ScriptThread(sb.toString(), urlsToLoad.toArray(new URL[] { }));
 		et.start();
 		et.join();
 		Object result = et.getResult();
@@ -199,7 +200,9 @@ public class ExertCmd extends ShellCmd {
 		this.script = script;
 	}
 
-	public static String readFile(File file) throws IOException {
+	public static Map<String, List<String>> readFile(File file) throws IOException {
+        Map<String, List<String>> result = new HashMap<String, List<String>>();
+        List<String> loadLines = new ArrayList<String>();
 		// String lineSep = System.getProperty("line.separator");
 		String lineSep = "\n";
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -212,10 +215,17 @@ public class ExertCmd extends ShellCmd {
 			sb.append(lineSep);
 		}
 		while ((nextLine = br.readLine()) != null) {
-			sb.append(nextLine);
-			sb.append(lineSep);
+            // Check for "load" of jars
+            if (nextLine.trim().startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
+
+                loadLines.add(nextLine.trim());
+            } else {
+                sb.append(nextLine);
+                sb.append(lineSep);
+            }
 		}
-		return sb.toString();
+        result.put(sb.toString(), loadLines);
+		return result;
 	}
 
 	private StringBuilder readTextFromJar(String filename) {
@@ -223,10 +233,10 @@ public class ExertCmd extends ShellCmd {
 		BufferedReader br = null;
 		String line;
 		StringBuilder sb = new StringBuilder();
-		;
 
 		try {
-			is = getClass().getResourceAsStream(filename);
+			is = getClass().getClassLoader().getResourceAsStream(filename);
+            logger.finest("Loading " + filename + " from is: " + is);
 			if (is != null) {
 				br = new BufferedReader(new InputStreamReader(is));
 				while (null != (line = br.readLine())) {

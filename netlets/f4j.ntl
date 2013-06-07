@@ -1,4 +1,8 @@
-#!/usr/bin/env nsh -f
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
+
+load mvn://org.sorcersoft.sorcer:ex6-api
+
 // we can specify the shell we want to interpret our netlet (exertion/model script    d)
 // #!/path/to/shell -f for the non-interactive nsh
 
@@ -10,11 +14,11 @@ import sorcer.core.context.PositionalContext;
 import sorcer.service.Task;
 import sorcer.core.signature.ServiceSignature;
 
-PositionalContext dataContext = new PositionalContext("add");
-dataContext.putInValueAt("arg/x1", 10d, 1);
-dataContext.putInValueAt("arg/x2", 50d, 2);
+PositionalContext context = new PositionalContext("add");
+context.putInValueAt("arg/x1", 10d, 1);
+context.putInValueAt("arg/x2", 50d, 2);
 		
 ServiceSignature method = sig("add", Adder.class);
 Task task = new Task("add", method);
-task.setContext(dataContext);
+task.setContext(context);
 return task;

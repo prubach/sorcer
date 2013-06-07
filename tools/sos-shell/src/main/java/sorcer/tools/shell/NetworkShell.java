@@ -378,7 +378,7 @@ public class NetworkShell implements DiscoveryListener {
 				// evaluate command line expression
 				ExertCmd cmd = (ExertCmd) commandTable.get("exert");
 				// cmd.setScript(instance.getText(args[1]));
-				cmd.setScript(ExertCmd.readFile(huntForTheScriptFile(args[1])));
+				cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).keySet().toArray()[0]);
 				cmd.execute();
 			}
 		}
@@ -1496,9 +1496,9 @@ public class NetworkShell implements DiscoveryListener {
 				"browser", 
 				sorcerHome + "/bin/browser/bin/service-browser-run-spawn.xml",
 				"webster", 
-				sorcerHome + "/bin/webster/bin/webster-run.xml",
+				sorcerHome + "/bin/webster-run.xml",
 				"sorcer", 
-				sorcerHome + "/bin/sorcer-min-boot.xml",
+				sorcerHome + "/bin/sorcer-boot.xml",
 				"sos", 
 				sorcerHome + "/bin/sorcer-boot-spawn.xml",
 				"jobber",
@@ -1520,11 +1520,11 @@ public class NetworkShell implements DiscoveryListener {
 					"browser", 
 					sorcerHome + "/bin/browser/bin/service-browser-run.xml",
 					"webster", 
-					sorcerHome + "/bin/webster/bin/webster-run.xml",
+					sorcerHome + "/bin/webster-run.xml",
 					"sorcer", 
-					sorcerHome + "/bin/sorcer-min-boot.xml",
-					"sos", 
 					sorcerHome + "/bin/sorcer-boot.xml",
+					"sos", 
+					sorcerHome + "/bin/sorcer-boot-spawn.xml",
 					"jobber",
 					sorcerHome + "/bin/sorcer/jobber/bin/jeri-jobber-boot.xml",
 					"spacer",

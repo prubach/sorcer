@@ -1,5 +1,6 @@
-#!/usr/bin/env nsh -f
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
 
-dataContext("multiply",
+context("multiply",
      input(path("arg/x1"), 20.0d), 
      input(path("arg/x2"), 50.0d))

@@ -169,7 +169,7 @@ public class GroovyCmd extends ShellCmd {
 		;
 
 		try {
-			is = getClass().getResourceAsStream(filename);
+			is = getClass().getClassLoader().getResourceAsStream(filename);
 			if (is != null) {
 				br = new BufferedReader(new InputStreamReader(is));
 				while (null != (line = br.readLine())) {

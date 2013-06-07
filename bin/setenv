@@ -1,7 +1,7 @@
 #!/bin/sh
 #/*
 # 
-# Copyright 2005 Sun Microsystems, Inc.
+# Copyright 2013 Sorcersoft.com S.A.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@
 #	$ . setenv.sh
 
 export SORCER_HOME=`pwd`/../
+export PATH=$SORCER_HOME/bin:$PATH
 
 echo "Copy and paste the following command to your shell"
 echo "export SORCER_HOME=$SORCER_HOME"

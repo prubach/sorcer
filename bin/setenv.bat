@@ -28,6 +28,10 @@ IF NOT DEFINED SORCER_HOME (
         )
     )
 )
+IF DEFINED SORCER_HOME (
+    SET PATH=%SORCER_HOME%\bin;%PATH%
+)
+
 rem This script sets the environment needed to run commands in this 
 rem Sorcer distribution.
 rem

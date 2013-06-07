@@ -1,4 +1,7 @@
-#!/usr/bin/env nsh -f
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
+
+load mvn://org.sorcersoft.sorcer:ex6-api
 
 import sorcer.arithmetic.provider.Adder;
 import sorcer.service.Strategy.Monitor
@@ -6,7 +9,7 @@ import sorcer.service.Strategy.Wait
 
 task("f5",
 	sig("add", Adder.class),
-	dataContext("add",
+	context("add",
 		input("arg/x1", 20.0d),
 		input("arg/x2", 80.0d), 
 		output("result/y")),

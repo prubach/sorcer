@@ -1,3 +1,6 @@
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
+
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.MultiplierImpl;
 

@@ -21,7 +21,10 @@ import groovy.lang.GroovyShell;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.logging.Logger;
 
 import net.jini.core.transaction.TransactionException;
 
@@ -29,6 +32,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.tools.shell.RootLoader;
 import sorcer.tools.shell.ShellStarter;
 import sorcer.util.ExertProcessor;
 
@@ -37,13 +41,34 @@ import sorcer.util.ExertProcessor;
 		private File scriptFile;
 		private Object result;
 		private Object target = null;
-		private GroovyShell gShell = new GroovyShell(ShellStarter.getLoader());
+		private GroovyShell gShell;
 
-		public ScriptThread(String script) {
+        private final static Logger logger = Logger.getLogger(ScriptThread.class
+                .getName());
+
+		public ScriptThread(String script, URL[] jarsToAdd) {
+            RootLoader loader = null;
+            if (ShellStarter.getLoader()==null) {
+                loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
+                logger.info("NEW Script classloader URLs: " + printUrls(loader.getURLs()));
+            }
+            else if (ShellStarter.getLoader() instanceof RootLoader) {
+                loader = ((RootLoader)ShellStarter.getLoader());
+                for (URL url : jarsToAdd)
+                    loader.addURL(url);
+                logger.info("Script classloader URLs: " + printUrls(loader.getURLs()));
+            }
+            gShell = new GroovyShell(loader!=null ? loader : ShellStarter.getLoader());
 			this.script = script;
 		}
 
+        public ScriptThread(String script) {
+            this.gShell = new GroovyShell(ShellStarter.getLoader());
+            this.script = script;
+        }
+
 		public ScriptThread(File file) {
+            this.gShell = new GroovyShell(ShellStarter.getLoader());
 			this.scriptFile = file;
 		}
 
@@ -85,4 +110,14 @@ import sorcer.util.ExertProcessor;
 		public Object getTarget() {
 			return target;
 		}
+
+        public String printUrls(URL[] urls) {
+            StringBuilder sb = new StringBuilder("URLs: [");
+            for (URL url : urls) {
+                sb.append("\n").append(url.toString());
+            }
+            sb.append(" ]");
+            return sb.toString();
+        }
+
 	}

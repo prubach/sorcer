@@ -4,9 +4,9 @@ import sorcer.explorer.rs.RosenSuzukiDispatcher;
 import sorcer.vfe.Modeling
 import sorcer.vfe.util.VarInfoList
 import engineering.optimization.conmin.provider.ConminStrategy;
-import sorcer.core.dataContext.model.explore.Exploration
-import sorcer.core.dataContext.model.explore.ExploreContext
-import sorcer.core.dataContext.model.opti.Optimization
+import sorcer.core.context.model.explore.Exploration
+import sorcer.core.context.model.explore.ExploreContext
+import sorcer.core.context.model.opti.Optimization
 
 
 ExploreContext exploreContext = new ExploreContext("Rosen-Suzuki");
