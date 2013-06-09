@@ -21,12 +21,13 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.ex2.requestor.Works;
 import sorcer.service.Context.Value;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.service.Signature;
 import sorcer.service.Signature.Type;
 import sorcer.service.Task;
-import sorcer.ex2.requestor.Works;
 
 public class ContextWorkReq extends ServiceRequestor {
     ServiceContext context = new ServiceContext("common/context");
@@ -72,9 +73,9 @@ public class ContextWorkReq extends ServiceRequestor {
             signature3.setType(Type.POST);
 
 			// define a task
-            Task task = new NetTask("common", signature1, context);
-            task.addSignature(signature2);
-            task.addSignature(signature3);
+            Task task = new NetTask("common",
+                new Signature[] { signature1, signature2, signature3 },
+                context);
 
 		    return task;
         } catch (Exception e) {

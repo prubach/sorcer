@@ -910,20 +910,24 @@ public class ControlFlowManager {
 		return processContinousely(task, task.getPostprocessSignatures());
 	}
 
-	private Context processContinousely(Task task, List<Signature> signatures)
+	public Context processContinousely(Task task, List<Signature> signatures)
 			throws ExertionException {
 		Signature.Type type = signatures.get(0).getType();
 		Task t = null;
-		Context shared = task.getDataContext();
+        ServiceSignature css = null;
+		ServiceContext shared = (ServiceContext)task.getDataContext();
 		for (int i = 0; i < signatures.size(); i++) {
             try {
                 t = task(task.getName() + "-" + i, signatures.get(i), shared);
             } catch (SignatureException e) {
                 throw new  ExertionException(e);
             }
-            signatures.get(i).setType(Signature.SRV);
-			((ServiceContext)task.getDataContext()).setCurrentSelector(signatures.get(i).getSelector());
-			((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
+            css = (ServiceSignature)signatures.get(i);
+            css.setType(Signature.SRV);
+            shared.setCurrentSelector(css.getSelector());
+            shared.setCurrentPrefix(css.getPrefix());
+            if (css.getReturnPath() != null)
+                shared.setReturnPath(css.getReturnPath());
 
 			List<Signature> tmp = new ArrayList<Signature>(1);
 			tmp.add(signatures.get(i));
@@ -932,7 +936,7 @@ public class ControlFlowManager {
 			try {
 				t = t.doTask();
 				signatures.get(i).setType(type);
-				shared = t.getDataContext();
+				shared = (ServiceContext)t.getDataContext();
 				if (t.getStatus() <= ExecState.FAILED) {
 					task.setStatus(ExecState.FAILED);
 					ExertionException ne = new ExertionException(
@@ -941,6 +945,9 @@ public class ControlFlowManager {
 					task.setContext(shared);
 					return shared;
 				}
+                if (css.getReturnPath() != null)  {
+                    shared.setReturnValue(shared.getValue(shared.getReturnPath().path));
+                }
 			} catch (Exception e) {
 				e.printStackTrace();
 				task.setStatus(ExecState.FAILED);

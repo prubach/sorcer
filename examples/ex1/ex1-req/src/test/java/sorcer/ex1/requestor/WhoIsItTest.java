@@ -96,7 +96,6 @@ public class WhoIsItTest implements SorcerConstants {
         }
     }
 
-    @Ignore
     @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types

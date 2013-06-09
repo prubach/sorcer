@@ -88,13 +88,13 @@ public class StrategyWorkReq extends ServiceRequestor {
                 job.setAccessType(Access.PULL);
 
             // Exertion control flow PARALLEL or SEQUENTIAL
-            boolean iSequential = getProperty("provider.control.flow", "SEQUENTIAL").equals("SEQUENTIAL");
-            if (iSequential)
+            boolean isSequential = getProperty("provider.control.flow", "SEQUENTIAL").equals("SEQUENTIAL");
+            if (isSequential)
                 job.setFlowType(Flow.SEQ);
             else
                 job.setFlowType(Flow.PAR);
 
-            logger.info("isPushAccess: " + isPushAccess + " iSequential: " + iSequential);
+            logger.info("*** push: " + isPushAccess + " sequential: " + isSequential);
 
             return job;
         } catch (Exception e) {
