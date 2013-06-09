@@ -64,24 +64,37 @@
             <description>SORCER Platform</description>
             <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
-                <include name="bin/*.bat" os="windows"/>
-                <include name="bin/*.sh" os="unix"/>
                 <include name="bin/sorcer-boot" os="unix"/>
                 <include name="bin/sorcer-boot-no-http" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
                 <include name="bin/nsh" os="unix"/>
+                <include name="bin/setenv" os="unix"/>
                 <include name="bin/uninstall" os="unix"/>
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
                 <include name="lib/**/*"/>
                 <include name="logs/**/*"/>
+                <os family="unix"/>
+                <os family="mac"/>
             </fileset>
+            <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="bin/*.bat" os="windows"/>
+                <include name="bin/*.xml"/>
+                <include name="configs/**/*"/>
+                <include name="docs/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="logs/**/*"/>
+                <os family="windows"/>
+            </fileset>
+
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
         </pack>
         <pack id="examples" name="Sorcer Examples" required="no">
@@ -113,3 +126,4 @@
         </listener>
     </listeners>
 </installation>
+

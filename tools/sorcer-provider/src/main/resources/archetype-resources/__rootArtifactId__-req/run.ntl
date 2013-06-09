@@ -1,6 +1,26 @@
-#!/usr/bin/nsh -f
+#!/bin/sh
+''''exec nsh -f "$0" ${1+"$@"} # '''
 
-import ${package}.${providerInterface}
+//######################################################################################################################
+//
+// This is an example of a SORCER netlet script.
+// Before testing this script please make sure that the 'nsh' (UNIX) or 'nsh.bat' (Windows) file is available in your
+// PATH. If that is not the case please run:
+// - on Windows: %SORCER_HOME%\bin\setenv.bat
+// - on Unix: source $SORCER_HOME/bin/setenv
+//
+// To test this script please start your provider and then run this script:
+// - on Windows execute: nsh -f run.ntl
+// - on Unix you can simply run the script by invoking: ./run.ntl
+//
+//######################################################################################################################
 
-t1 = task("hello", sig("sayHelloWorld", ${providerInterface}.class), dataContext("Hello", input(path("in", "value"), "TESTER"), output(path("out", "value"), null)));
-	
+load mvn://${groupId}:${rootArtifactId}-api:${version}
+
+// When running on a remote host please add @computer:port to point to the codeserver (webster) that serves the
+// ${rootArtifactId}-api.jar file.
+// load mvn://${groupId}:${rootArtifactId}-api:${version}@computer:50001
+
+import ${package}.${providerInterface};
+
+t1 = task("hello1", sig("sayHelloWorld", ${providerInterface}.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));

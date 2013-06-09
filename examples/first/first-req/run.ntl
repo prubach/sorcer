@@ -1,6 +1,20 @@
 #!/bin/sh
 ''''exec nsh -f "$0" ${1+"$@"} # '''
 
+//######################################################################################################################
+//
+// This is an example of a SORCER netlet script.
+// Before testing this script please make sure that the 'nsh' (UNIX) or 'nsh.bat' (Windows) file is available in your
+// PATH. If that is not the case please run:
+// - on Windows: %SORCER_HOME%\bin\setenv.bat
+// - on Unix: source $SORCER_HOME/bin/setenv
+//
+// To test this script please start your provider and then run this script:
+// - on Windows execute: nsh -f run.ntl
+// - on Unix you can simply run the script by invoking: ./run.ntl
+//
+//######################################################################################################################
+
 load mvn://com.example.sorcer:first-api:1.0-SNAPSHOT
 // load file:///home/pol/.m2/repository/com/example/sorcer/first-api/1.0-SNAPSHOT/first-api-1.0-SNAPSHOT.jar
 // load http://lynx:50001/com/example/sorcer/first-api/1.0-SNAPSHOT/first-api-1.0-SNAPSHOT.jar

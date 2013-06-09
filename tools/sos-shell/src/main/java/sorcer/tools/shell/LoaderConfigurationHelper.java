@@ -1,9 +1,7 @@
 package sorcer.tools.shell;
 
-import sorcer.resolver.AbstractArtifactResolver;
-import sorcer.resolver.MappedFlattenedArtifactResolver;
-import sorcer.resolver.RepositoryArtifactResolver;
-import sorcer.resolver.Resolver;
+import sorcer.resolver.*;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.StringUtils;
 
 import java.io.File;
@@ -49,17 +47,22 @@ public class LoaderConfigurationHelper {
             try {
                 if (urlEntries.length > 1) {
                     // Try different resolvers
-                    AbstractArtifactResolver resolv = new RepositoryArtifactResolver(Resolver.getRepoDir());
-                    finalUrl = "http://" + urlEntries[1] + "/" +
-                            resolv.resolveRelative(urlEntries[0]);
-                    if (existRemoteFile(new URL(finalUrl))) {
-                        urlsList.add(new URL(finalUrl));
-                    }
-                    // Try different resolver
-                    else {
-                        resolv = new MappedFlattenedArtifactResolver(new File(Resolver.getRootDir()));
+                    ArtifactResolver resolver = Resolver.getResolver();
+                    if (resolver instanceof HybridArtifactResolver) {
+                        HybridArtifactResolver hResolver = (HybridArtifactResolver)resolver;
                         finalUrl = "http://" + urlEntries[1] + "/" +
-                                resolv.resolveRelative(urlEntries[0]);
+                                hResolver.resolveRepoRelative(ArtifactCoordinates.coords(urlEntries[0]));
+                        if (existRemoteFile(new URL(finalUrl))) {
+                            urlsList.add(new URL(finalUrl));
+                        } else {
+                            finalUrl = "http://" + urlEntries[1] + "/" +
+                                    hResolver.resolveFlatRelative(ArtifactCoordinates.coords(urlEntries[0]));
+                            if (existRemoteFile(new URL(finalUrl)))
+                                urlsList.add(new URL(finalUrl));
+                        }
+                    } else {
+                        finalUrl = "http://" + urlEntries[1] + "/" +
+                                Resolver.resolveRelative(urlEntries[0]);
                         if (existRemoteFile(new URL(finalUrl))) {
                             urlsList.add(new URL(finalUrl));
                         }

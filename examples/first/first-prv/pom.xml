@@ -20,7 +20,12 @@
 			<artifactId>first-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>com.example.sorcer</groupId>
+            <artifactId>first-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-platform</artifactId>
 		</dependency>

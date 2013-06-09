@@ -53,6 +53,19 @@ public class HybridArtifactResolver extends AbstractArtifactResolver {
         return repoResolver.resolveRelative(coords);
 	}
 
+    public String resolveFlatRelative(ArtifactCoordinates coords) {
+        String jar = flatResolver.resolveRelative(coords);
+        if (jar!=null) return jar;
+        return null;
+    }
+
+    public String resolveRepoRelative(ArtifactCoordinates coords) {
+        String jar = repoResolver.resolveRelative(coords);
+        if (jar!=null) return jar;
+        return null;
+    }
+
+
     @Override
     public String getRootDir() {
         return flatRootDir.toString();

@@ -25,10 +25,12 @@
 #
 # Run this script:
 #	$ . setenv.sh
+# or
+# source ./setenv.sh
 
 export SORCER_HOME=`pwd`/../
 export PATH=$SORCER_HOME/bin:$PATH
 
-echo "Copy and paste the following command to your shell"
-echo "export SORCER_HOME=$SORCER_HOME"
+echo "Source the script to prepare your environment using: "
+echo "source ./setenv.sh "
 

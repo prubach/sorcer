@@ -9,3 +9,6 @@ Before starting this provider (development):
     ant -f ${rootArtifactId}-prv/boot.xml
 4) test the service by running its requestor:
     ant -f ${rootArtifactId}-req/run.xml
+5) You can also run the netlet script by invoking:
+    nsh -f run.ntl
+    On UNIX you can also simply run the script ./run.ntl

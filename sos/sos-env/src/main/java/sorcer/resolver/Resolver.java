@@ -157,4 +157,8 @@ public class Resolver {
         return (resolver instanceof RepositoryArtifactResolver);
     }
 
+    public static ArtifactResolver getResolver() {
+        return resolver;
+    }
+
 }
