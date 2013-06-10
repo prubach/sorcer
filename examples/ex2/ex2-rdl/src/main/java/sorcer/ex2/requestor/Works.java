@@ -18,6 +18,9 @@ public class Works implements Serializable {
                 int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
                 int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
                 cxt.putOutValue(p+"provider/result", arg1 + arg2);
+                if (cxt.getReturnPath() != null) {
+                    cxt.setReturnValue(arg1 + arg2);
+                }
                 return cxt;
             }
         };
@@ -28,6 +31,9 @@ public class Works implements Serializable {
                 int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
                 int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
                 cxt.putOutValue(p+"provider/result", arg1 * arg2);
+                if (cxt.getReturnPath() != null) {
+                    cxt.setReturnValue(arg1 * arg2);
+                }
                 return cxt;
             }
         };
