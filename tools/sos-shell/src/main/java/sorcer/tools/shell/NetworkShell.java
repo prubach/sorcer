@@ -214,11 +214,11 @@ public class NetworkShell implements DiscoveryListener {
 		String curToken = null;
 		//System.out.println("nsh main args: " + Arrays.toString(argv));	
 		if (argv.length > 0) {
-			if ((argv.length == 1 && argv[0].startsWith("--"))
+            if ((argv.length == 1 && argv[0].startsWith("--"))
 					|| (argv.length == 2 && (argv[0].equals("-e"))
 							|| argv[0].equals("-f")
 							|| argv[0].equals("-version") || argv[0]
-							.equals("-help"))) {
+							.equals("-help")) || argv.length == 1) {
 				commandLine = false;
 			} else {
 				commandLine = true;
@@ -310,7 +310,15 @@ public class NetworkShell implements DiscoveryListener {
 				if (!in.equals("!!")) {
 					instance.request = in;
 				}
-			} catch (Throwable ex) {
+			} catch (IOException io) {
+                shellOutput.println(io.getMessage());
+                try {
+                    request = shellInput.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            } catch (Throwable ex) {
 				ex.printStackTrace();
 				try {
 					request = shellInput.readLine();
@@ -357,32 +365,46 @@ public class NetworkShell implements DiscoveryListener {
 
 		if (args[0].indexOf("--") == 0) {
 			String path = nishAppMap.get(args[0].substring(2));
-			startApplication(path);
+            if (path!=null)
+                startApplication(path);
+            else
+                shellOutput.println("No such internal command available: " + args[0].substring(2));
 			System.exit(0);
 		}
 		request = arrayToRequest(args);
-		if (args.length == 1) {
-			if (args[0].equals("-version")) {
-				shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
-						+ ", JVM: " + System.getProperty("java.version"));
-			} else if (args[0].equals("-help")) {
-				ShellCmd cmd = (HelpCmd) commandTable.get("help");
-				cmd.execute();
-			}
-		} else if (args.length == 2) {
-			if (args[0].equals("-f")) {
-				// evaluate file
-				ShellCmd cmd = (ShellCmd) commandTable.get("exert");
-				cmd.execute();
-			} else if (args[0].equals("-e")) {
-				// evaluate command line expression
-				ExertCmd cmd = (ExertCmd) commandTable.get("exert");
-				// cmd.setScript(instance.getText(args[1]));
-				cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).keySet().toArray()[0]);
-				cmd.execute();
-			}
-		}
-	}
+        try {
+            if (args.length == 1) {
+                if (args[0].equals("-version")) {
+                    shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
+                            + ", JVM: " + System.getProperty("java.version"));
+                } else if (args[0].equals("-help")) {
+                    ShellCmd cmd = (HelpCmd) commandTable.get("help");
+                    cmd.execute();
+                } else {
+                    // Added reading the file as default first argument
+                    // Check if file exists
+                    ShellCmd cmd = (ShellCmd) commandTable.get("exert");
+                    cmd.execute();
+                }
+            } else if (args.length == 2) {
+                if (args[0].equals("-f")) {
+                    // evaluate file
+                    ShellCmd cmd = (ShellCmd) commandTable.get("exert");
+                    cmd.execute();
+                } else if (args[0].equals("-e")) {
+                    // evaluate command line expression
+                    ExertCmd cmd = (ExertCmd) commandTable.get("exert");
+                    // cmd.setScript(instance.getText(args[1]));
+                    cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).keySet().toArray()[0]);
+                    cmd.execute();
+                }
+            }
+        } catch (IOException io) {
+            shellOutput.println(io.getMessage());
+            // Do nothing since an error message was already printed out by th huntForTheScriptFile method
+        }
+
+    }
 
 	static public void setLookupDiscovery(String... ingroups) {
 		disco = null;
@@ -1374,8 +1396,9 @@ public class NetworkShell implements DiscoveryListener {
 		// specified filename
 		if (!scriptFile.exists()) {
 			scriptFile = new File(scriptFileName);
-			shellOutput.println("No such file: "
-					+ new File(scriptFileName).getCanonicalPath());
+			//shellOutput.println("No such file: "
+			//		+ new File(scriptFileName).getCanonicalPath());
+            throw new IOException("No such file: " + new File(scriptFileName).getCanonicalPath());
 		}
 		return scriptFile;
 	}
@@ -1494,7 +1517,7 @@ public class NetworkShell implements DiscoveryListener {
 		String sorcerHome = System.getenv("SORCER_HOME");
 		String[] apps = new String[] { 
 				"browser", 
-				sorcerHome + "/bin/browser/bin/service-browser-run-spawn.xml",
+				sorcerHome + "/bin/service-browser-run.xml",
 				"webster", 
 				sorcerHome + "/bin/webster-run.xml",
 				"sorcer", 
@@ -1518,7 +1541,7 @@ public class NetworkShell implements DiscoveryListener {
 			
 			String[] nishApps = new String[] { 
 					"browser", 
-					sorcerHome + "/bin/browser/bin/service-browser-run.xml",
+					sorcerHome + "/bin/service-browser-run.xml",
 					"webster", 
 					sorcerHome + "/bin/webster-run.xml",
 					"sorcer", 

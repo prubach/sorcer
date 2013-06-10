@@ -1,4 +1,4 @@
-#!/usr/bin/env nsh -f
+#!/usr/bin/env nsh
 
 import sorcer.explorer.rs.RosenSuzukiDispatcher;
 import sorcer.vfe.Modeling

@@ -1,5 +1,4 @@
-#!/bin/sh
-''''exec nsh -f "$0" ${1+"$@"} # '''
+#!/usr/bin/env nsh
 
 context("multiply",
      input(path("arg/x1"), 20.0d), 

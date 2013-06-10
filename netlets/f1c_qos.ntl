@@ -1,5 +1,4 @@
-#!/bin/sh
-''''exec nsh -f "$0" ${1+"$@"} # '''
+v
 
 load mvn://org.sorcersoft.sorcer:ex6-api
 
