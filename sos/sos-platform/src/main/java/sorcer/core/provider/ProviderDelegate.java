@@ -1848,7 +1848,7 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		servicetask.getDataContext().reportException(
 				new ExertionException(
-						"No valid task for published service types:\n"
+						"Not a valid task for published service types:\n"
 								+ Arrays.toString(publishedServiceTypes)));
 		return false;
 	}

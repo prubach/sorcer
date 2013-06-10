@@ -66,25 +66,13 @@ sorcer.test.level=FINE
 # All other logging purposes
 sorcer.random.level=FINER
 
+sorcer.core.provider.cataloger.ServiceCataloger.level=FINER
+
 # remote logger
 # domain specific provider and dataContext loggers
 private.level=ALL
 # local loggers exposed by the remote logger
 local.level=ALL
-
-#Variable oriented loggers
-#sorcer.vfe.level=OFF
-#sorcer.vfe.Var.level=ALL
-#sorcer.vfe.filter.Filter.level=ALL
-#sorcer.vfe.filter.BasicFileFilter.level=ALL
-#sorcer.vfe.evaluator.level=OFF
-#sorcer.core.dataContext.model.level=OFF
-#sorcer.core.dataContext.model.explore.level=ALL
-#sorcer.core.dataContext.model.opti.level=ALL
-#sorcer.core.dataContext.model.explore.Explorer.level=ALL
-#sorcer.core.dataContext.model.explore.ExploreDispatcher.level=ALL
-#sorcer.core.dataContext.model.explore.ModelManager.level=ALL
-#sorcer.core.dataContext.model.opti.level=ALL
 
 # Other specialized loggers
 sorcer.core.dispatchlevel=ALL

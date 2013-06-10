@@ -20,157 +20,160 @@
 -->
 <project name="SorcerCommon" default="" basedir="." xmlns:ac="http://ant-contrib.sourceforge.net">
 
-	<property name="dospawn" value="false" />
+    <property name="dospawn" value="false"/>
 
-	<property environment="env" />
-	<property name="java.home" value="${env.JAVA_HOME}" />	
-	
-	<dirname property="common-run.loc" file="${ant.file.SorcerCommon}"/>
-	
-	<condition property="sorcer.home" value="${env.SORCER_HOME}" else="${common-run.loc}/../">
-		<isset property="env.SORCER_HOME" />
-	</condition>
+    <property environment="env"/>
+    <property name="java.home" value="${env.JAVA_HOME}"/>
 
-    <property name="lib.dir" value="${sorcer.home}/lib" />
+    <dirname property="common-run.loc" file="${ant.file.SorcerCommon}"/>
+
+    <condition property="sorcer.home" value="${env.SORCER_HOME}" else="${common-run.loc}/../">
+        <isset property="env.SORCER_HOME"/>
+    </condition>
+
+    <property name="lib.dir" value="${sorcer.home}/lib"/>
 
     <available file="${lib.dir}/sorcer/sos-env.jar" property="sorcer.distro"/>
 
     <condition property="rio.home" value="${env.RIO_HOME}" else="${sorcer.home}/lib/rio">
-		<isset property="env.RIO_HOME" />
-	</condition>
-	
-	<exec executable="hostname" outputproperty="hostname" />
-	<echo message="Hostname = ${hostname}" />
-	<echo message="env SORCER_HOME = ${sorcer.home}" />
-	<echo message="env RIO_HOME = ${rio.home}" />
-    <echo message="SORCER distribution = ${sorcer.distro}" />
-
-	<loadproperties srcfile="${sorcer.home}/configs/sorcer.env" />
-	<loadproperties srcfile="${sorcer.home}/configs/versions.properties" />
-
-    <condition property="mvn.repo"  value="${sorcer.local.repo.location}" else="${user.home}/.m2/repository/">
-        <isset property="sorcer.local.repo.location" />
+        <isset property="env.RIO_HOME"/>
     </condition>
 
-	<property name="docs" value="${sorcer.home}/docs/${module.name}" />
-	<property name="sorcer.policy" value="${sorcer.home}/policy" />
-	<property name="sorcer.config" value="${sorcer.home}/configs" />
+    <exec executable="hostname" outputproperty="hostname"/>
+    <echo message="Hostname = ${hostname}"/>
+    <echo message="env SORCER_HOME = ${sorcer.home}"/>
+    <echo message="env RIO_HOME = ${rio.home}"/>
+    <echo message="SORCER distribution = ${sorcer.distro}"/>
 
-	
-	<taskdef resource="net/sf/antcontrib/antlib.xml" uri="http://ant-contrib.sourceforge.net">
-		<classpath>
-			<pathelement location="${mvn.repo}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" />
-            <pathelement location="${lib.dir}/commons/ant-contrib.jar" />
-		</classpath>
-	</taskdef>
+    <loadproperties srcfile="${sorcer.home}/configs/sorcer.env"/>
+    <loadproperties srcfile="${sorcer.home}/configs/versions.properties"/>
 
-	<!-- Properties are IMMUTABLE. Once set it cannot be changed. Here we specify that environment variables take precedence. -->
+    <condition property="mvn.repo" value="${sorcer.local.repo.location}" else="${user.home}/.m2/repository/">
+        <isset property="sorcer.local.repo.location"/>
+    </condition>
 
-	<condition property="localhost" value="${hostname}">
-		<equals arg1="${provider.webster.interface}" arg2="$${localhost}" />
-	</condition>
+    <property name="docs" value="${sorcer.home}/docs/${module.name}"/>
+    <property name="sorcer.policy" value="${sorcer.home}/policy"/>
+    <property name="sorcer.config" value="${sorcer.home}/configs"/>
 
-	<condition property="local.interface" value="${hostname}">
-		<equals arg1="${provider.webster.interface}" arg2="$${localhost}" />
-	</condition>
 
-	<!--SAB -->
-	<condition property="provider.webster.interface.TMP" value="${provider.webster.interface}">
-		<not>
-			<equals arg1="${provider.webster.interface}" arg2="$${localhost}" />
-		</not>
-	</condition>
-	<condition property="provider.webster.interface.TMP" value="${hostname}">
-		<equals arg1="${provider.webster.interface}" arg2="$${localhost}" />
-	</condition>
+    <taskdef resource="net/sf/antcontrib/antlib.xml" uri="http://ant-contrib.sourceforge.net">
+        <classpath>
+            <pathelement location="${mvn.repo}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar"/>
+            <pathelement location="${lib.dir}/commons/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
 
-	<echo message="provider.webster.interface.TMP = ${provider.webster.interface.TMP}" />
+    <!-- Properties are IMMUTABLE. Once set it cannot be changed. Here we specify that environment variables take precedence. -->
 
-	<condition property="provider.webster.url" value="http://${env.SORCER_WEBSTER_INTERFACE}:${env.SORCER_WEBSTER_PORT}">
-		<and>
-			<isset property="env.SORCER_WEBSTER_INTERFACE" />
-			<isset property="env.SORCER_WEBSTER_PORT" />
-		</and>
-	</condition>
+    <condition property="localhost" value="${hostname}">
+        <equals arg1="${provider.webster.interface}" arg2="$${localhost}"/>
+    </condition>
 
-	<condition property="provider.webster.url" value="http://${local.interface}:${provider.webster.port}" else="http://${provider.webster.interface}:${provider.webster.port}">
-		<isset property="local.interface" />
-	</condition>
+    <condition property="local.interface" value="${hostname}">
+        <equals arg1="${provider.webster.interface}" arg2="$${localhost}"/>
+    </condition>
 
-	<echo message="provider.webster.url = ${provider.webster.url}" />
+    <!--SAB -->
+    <condition property="provider.webster.interface.TMP" value="${provider.webster.interface}">
+        <not>
+            <equals arg1="${provider.webster.interface}" arg2="$${localhost}"/>
+        </not>
+    </condition>
+    <condition property="provider.webster.interface.TMP" value="${hostname}">
+        <equals arg1="${provider.webster.interface}" arg2="$${localhost}"/>
+    </condition>
 
-	<condition property="data.server.url" value="http://${env.DATA_SERVER_INTERFACE}:${env.DATA_SERVER_PORT}" else="http://${data.server.interface}:${data.server.port}">
-		<and>
-			<isset property="env.DATA_SERVER_INTERFACE" />
-			<isset property="env.DATA_SERVER_PORT" />
-		</and>
-	</condition>
+    <echo message="provider.webster.interface.TMP = ${provider.webster.interface.TMP}"/>
 
-	<condition property="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy">
-		<not>
-			<isset property="requestor.policy" />
-		</not>
-	</condition>
-	
-	<target name="requestor.policy.check">
-	  <condition property="requestor.policy.exists">
-	    <available file="${requestor.policy}" type="file"/>
-	  </condition>
-	  <ac:if>
-	      <not>
-		<isset property="requestor.policy.exists" />
-	      </not>
-	      <ac:then>
-		<property name="requestor.policy" value="${sorcer.home}/configs/sorcer.policy" />
-		<echo>setting default policy: ${requestor.policy}</echo>
-	   </ac:then>
-	</ac:if>
+    <condition property="provider.webster.url"
+               value="http://${env.SORCER_WEBSTER_INTERFACE}:${env.SORCER_WEBSTER_PORT}">
+        <and>
+            <isset property="env.SORCER_WEBSTER_INTERFACE"/>
+            <isset property="env.SORCER_WEBSTER_PORT"/>
+        </and>
+    </condition>
 
-	</target>
+    <condition property="provider.webster.url" value="http://${local.interface}:${provider.webster.port}"
+               else="http://${provider.webster.interface}:${provider.webster.port}">
+        <isset property="local.interface"/>
+    </condition>
 
-	<condition property="provider.spawn" value="no">
-		<not>
-			<isset property="provider.spawn" />
-		</not>
-	</condition>
+    <echo message="provider.webster.url = ${provider.webster.url}"/>
 
-	<target name="set-hostname">
-		<condition property="hostname" value="${env.HOST}">
-			<os family="unix" />
-		</condition>
-		<condition property="hostname" value="${env.COMPUTERNAME}">
-			<os family="windows" />
-		</condition>
-		<echo message="host = ${hostname}" />
-	</target>
+    <condition property="data.server.url" value="http://${env.DATA_SERVER_INTERFACE}:${env.DATA_SERVER_PORT}"
+               else="http://${data.server.interface}:${data.server.port}">
+        <and>
+            <isset property="env.DATA_SERVER_INTERFACE"/>
+            <isset property="env.DATA_SERVER_PORT"/>
+        </and>
+    </condition>
+
+    <condition property="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy">
+        <not>
+            <isset property="requestor.policy"/>
+        </not>
+    </condition>
+
+    <target name="requestor.policy.check">
+        <condition property="requestor.policy.exists">
+            <available file="${requestor.policy}" type="file"/>
+        </condition>
+        <ac:if>
+            <not>
+                <isset property="requestor.policy.exists"/>
+            </not>
+            <ac:then>
+                <property name="requestor.policy" value="${sorcer.home}/configs/sorcer.policy"/>
+                <echo>setting default policy: ${requestor.policy}</echo>
+            </ac:then>
+        </ac:if>
+
+    </target>
+
+    <condition property="provider.spawn" value="no">
+        <not>
+            <isset property="provider.spawn"/>
+        </not>
+    </condition>
+
+    <target name="set-hostname">
+        <condition property="hostname" value="${env.HOST}">
+            <os family="unix"/>
+        </condition>
+        <condition property="hostname" value="${env.COMPUTERNAME}">
+            <os family="windows"/>
+        </condition>
+        <echo message="host = ${hostname}"/>
+    </target>
 
     <ac:if>
-        <isset property="sorcer.distro" />
+        <isset property="sorcer.distro"/>
         <ac:then>
             <!-- jini start classpath -->
             <path id="jini.classpath">
-                <pathelement location="${lib.dir}/jini/jsk-platform.jar" />
-                <pathelement location="${lib.dir}/jini/jsk-lib.jar" />
-                <pathelement location="${lib.dir}/river/start.jar" />
-                <pathelement location="${lib.dir}/jini-lookup/serviceui.jar" />
-                <pathelement location="${lib.dir}/commons/slf4j-api.jar" />
-                <pathelement location="${lib.dir}/commons/logback-classic.jar" />
-                <pathelement location="${lib.dir}/commons/logback-core.jar" />
+                <pathelement location="${lib.dir}/jini/jsk-platform.jar"/>
+                <pathelement location="${lib.dir}/jini/jsk-lib.jar"/>
+                <pathelement location="${lib.dir}/river/start.jar"/>
+                <pathelement location="${lib.dir}/jini-lookup/serviceui.jar"/>
+                <pathelement location="${lib.dir}/commons/slf4j-api.jar"/>
+                <pathelement location="${lib.dir}/commons/logback-classic.jar"/>
+                <pathelement location="${lib.dir}/commons/logback-core.jar"/>
             </path>
 
             <path id="boot.classpath">
-                <path refid="jini.classpath" />
-                <pathelement location="${lib.dir}/sorcer/sos-boot.jar" />
-                <pathelement location="${lib.dir}/sorcer/sos-env.jar" />
-                <pathelement location="${lib.dir}/sorcer/sos-webster.jar" />
-                <pathelement location="${lib.dir}/sorcer/sos-util.jar" />
-                <pathelement location="${lib.dir}/jini/jsk-resources.jar" />
-                <pathelement location="${lib.dir}/rio/rio-platform.jar" />
-                <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar" />
-                <pathelement location="${lib.dir}/rio/rio-start.jar" />
-                <pathelement location="${lib.dir}/commons/groovy-all.jar" />
-                <pathelement location="${lib.dir}/commons/guava.jar" />
-                <pathelement location="${lib.dir}/commons/commons-lang3.jar" />
+                <path refid="jini.classpath"/>
+                <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
+                <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
+                <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-start.jar"/>
+                <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
+                <pathelement location="${lib.dir}/commons/guava.jar"/>
+                <pathelement location="${lib.dir}/commons/commons-lang3.jar"/>
                 <!--<pathelement location="${lib.dir}/commons/google-collections.jar" />-->
             </path>
             <path id="runtime.classpath">
@@ -182,55 +185,61 @@
         <ac:else>
             <!-- jini start classpath -->
             <path id="jini.classpath">
-                <pathelement location="${mvn.repo}/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/org/apache/river/start/${v.jini}/start-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar" />
-                <pathelement location="${mvn.repo}/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar" />
-                <pathelement location="${mvn.repo}/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar" />
+                <pathelement location="${mvn.repo}/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/org/apache/river/start/${v.jini}/start-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar"/>
+                <pathelement location="${mvn.repo}/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar"/>
+                <pathelement location="${mvn.repo}/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"/>
             </path>
 
             <path id="boot.classpath">
-                <path refid="jini.classpath" />
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar" />
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar" />
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar" />
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar" />
-                <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar" />
-                <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
-                <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />
-                <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar" />
-                <pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar" />
-                <pathelement location="${mvn.repo}/com/google/guava/14.0.1/guava-14.0.1.jar" />
-                <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar" />
-                <pathelement location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar" />
+                <path refid="jini.classpath"/>
+                <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
+                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
+                <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar"/>
+                <pathelement location="${mvn.repo}/com/google/guava/14.0.1/guava-14.0.1.jar"/>
+                <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
+                <pathelement
+                        location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
             </path>
         </ac:else>
     </ac:if>
 
-	
-	<condition property="pom.file" value="pom.xml">
-		<not>
-			<isset property="pom.file" />
-		</not>
-	</condition>
 
-	<target name="mvn-init" >
+    <condition property="pom.file" value="pom.xml">
+        <not>
+            <isset property="pom.file"/>
+        </not>
+    </condition>
+
+    <target name="mvn-init">
         <ac:if>
             <or>
                 <not>
-                    <isset property="sorcer.distro" />
+                    <isset property="sorcer.distro"/>
                 </not>
                 <not>
-                    <isset property="sorcer.distro.in.libs" />
+                    <isset property="sorcer.distro.in.libs"/>
                 </not>
             </or>
             <ac:then>
-                <mvn-init />
+                <mvn-init/>
             </ac:then>
         </ac:if>
-	</target>
+    </target>
 
     <macrodef name="mvn-init" xmlns:artifact="urn:maven-artifact-ant"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:maven-artifact-ant ">
@@ -247,16 +256,22 @@
             <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
             <artifact:pom file="@{run.pom.file}" id="maven.project"/>
 
-            <artifact:dependencies cacheDependencyRefs="false" dependencyRefsBuildFile="target/cached-dependencies-compile.xml" pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
+            <artifact:dependencies cacheDependencyRefs="false"
+                                   dependencyRefsBuildFile="target/cached-dependencies-compile.xml"
+                                   pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
                                    versionsId="dependency.versions">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies cacheDependencyRefs="false" dependencyRefsBuildFile="target/cached-dependencies-test.xml" pathId="test.classpath" filesetId="test.fileset" useScope="test">
+            <artifact:dependencies cacheDependencyRefs="false"
+                                   dependencyRefsBuildFile="target/cached-dependencies-test.xml" pathId="test.classpath"
+                                   filesetId="test.fileset" useScope="test">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies cacheDependencyRefs="false" dependencyRefsBuildFile="target/cached-dependencies-runtime.xml" pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+            <artifact:dependencies cacheDependencyRefs="false"
+                                   dependencyRefsBuildFile="target/cached-dependencies-runtime.xml"
+                                   pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
@@ -286,100 +301,132 @@
         </sequential>
     </macrodef>
 
-	<target name="target.classes.check">
-	  <condition property="target.classes.exists">
-	    <available file="${basedir}/target/classes" type="dir"/>
-	  </condition>
-	</target>
-	
-	<target name="boot.provider" depends="target.classes.check, mvn-init">
-	    <property name="runtime.classpath.string" refid="runtime.classpath" />
-		<echo message="Runtime Classpath = ${runtime.classpath.string}" />
-		
-		<ac:if>
-		  <isset property="provider.config" />		 
-		    <ac:then>
-		      <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
-			      <classpath refid="boot.classpath" />
-			      <arg value="${provider.config}" />
-			      <!--        <jvmarg value="-Xdebug"/>
-			      <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-				  <env key="RIO_HOME" value="${rio.home}" />
-				  <sysproperty key="sorcer.home" value="${sorcer.home}" />
-				  <sysproperty key="RIO_HOME" value="${rio.home}" />
-			      <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-			      <sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-			      <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-			      <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
-                  <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-		      </java>
-		  </ac:then>
-		  <ac:else>
-		    <ac:if>
-		      <isset property="target.classes.exists" />		 
-		      <ac:then>
-			<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
-				<classpath refid="boot.classpath" />
-				<arg value="${basedir}/target/classes" />
-				<env key="RIO_HOME" value="${rio.home}" />
-				<sysproperty key="sorcer.home" value="${sorcer.home}" />
-				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
-                <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-			</java>
-		      </ac:then>
-		      <ac:else>
-			  <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
-				<classpath refid="boot.classpath" />
-				<env key="RIO_HOME" value="${rio.home}" />
-				<sysproperty key="sorcer.home" value="${sorcer.home}" />
-				<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-				<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
-				<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-				<sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}" />
-                 <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-			  </java>
-		      </ac:else>
-		    </ac:if>
-		  </ac:else>
-		</ac:if>
-	</target>
-	
-	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
-		<property name="myclasspath" refid="run-req.classpath" />
-		<echo message="Run Classpath = ${myclasspath}" />
-		<echo>Policy: ${requestor.policy}</echo>
-		<ac:if>
-            <isset property="requestor.webster.codebase" />
+    <target name="target.classes.check">
+        <condition property="target.classes.exists">
+            <available file="${basedir}/target/classes" type="dir"/>
+        </condition>
+    </target>
+
+    <target name="boot.provider" depends="target.classes.check, mvn-init">
+        <property name="runtime.classpath.string" refid="runtime.classpath"/>
+        <echo message="Runtime Classpath = ${runtime.classpath.string}"/>
+        <ac:var name="prv.debug" value="${provider.debug}" />
+
+        <ac:if>
+            <isset property="provider.config"/>
             <ac:then>
-			  	<echo message="Run Codebase = ${requestor.codebase}" />
                 <ac:if>
-                    <isset property="requestor.run.args" />
+                    <equals arg1="${prv.debug}" arg2="true"/>
+                    <ac:then>
+                        <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
+                            <classpath refid="boot.classpath"/>
+                            <arg value="${provider.config}"/>
+                            <jvmarg value="-Xdebug"/>
+                            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
+                            <env key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.home" value="${sorcer.home}"/>
+                            <sysproperty key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.security.policy"
+                                         value="${basedir}/src/main/resources/policy/prv.policy"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
+                        </java>
+                    </ac:then>
+                    <ac:else>
+                        <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
+                            <classpath refid="boot.classpath"/>
+                            <arg value="${provider.config}"/>
+                            <env key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.home" value="${sorcer.home}"/>
+                            <sysproperty key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.security.policy"
+                                         value="${basedir}/src/main/resources/policy/prv.policy"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
+                        </java>
+                    </ac:else>
+                </ac:if>
+            </ac:then>
+            <ac:else>
+                <ac:if>
+                    <isset property="target.classes.exists"/>
+                    <ac:then>
+                        <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
+                            <classpath refid="boot.classpath"/>
+                            <arg value="${basedir}/target/classes"/>
+                            <env key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.home" value="${sorcer.home}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.security.policy"
+                                         value="${basedir}/src/main/resources/policy/prv.policy"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
+                        </java>
+                    </ac:then>
+                    <ac:else>
+                        <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
+                            <classpath refid="boot.classpath"/>
+                            <env key="RIO_HOME" value="${rio.home}"/>
+                            <sysproperty key="sorcer.home" value="${sorcer.home}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.security.policy"
+                                         value="${basedir}/src/main/resources/policy/prv.policy"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
+                        </java>
+                    </ac:else>
+                </ac:if>
+            </ac:else>
+        </ac:if>
+    </target>
+
+    <target name="run.requestor" depends="mvn-init, requestor.policy.check">
+        <property name="myclasspath" refid="run-req.classpath"/>
+        <echo message="Run Classpath = ${myclasspath}"/>
+        <echo>Policy: ${requestor.policy}</echo>
+        <ac:if>
+            <isset property="requestor.webster.codebase"/>
+            <ac:then>
+                <echo message="Run Codebase = ${requestor.codebase}"/>
+                <ac:if>
+                    <isset property="requestor.run.args"/>
                     <ac:then>
                         <ac:if>
-                            <isset property="webster.internal" />
+                            <isset property="webster.internal"/>
                             <ac:then>
                                 <java classname="${requestor.class}" fork="yes">
-                                    <classpath refid="run-req.classpath" />
-                                    <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                                    <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                                    <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
-                                    <sysproperty key="webster.internal" value="${webster.internal}" />
-                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                                    <classpath refid="run-req.classpath"/>
+                                    <sysproperty key="java.util.logging.config.file"
+                                                 value="${sorcer.home}/configs/sorcer.logging"/>
+                                    <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                                    <sysproperty key="requestor.webster.codebase"
+                                                 value="${requestor.webster.codebase}"/>
+                                    <sysproperty key="webster.internal" value="${webster.internal}"/>
+                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                     <arg value="${requestor.run.args}"/>
                                 </java>
                             </ac:then>
                             <ac:else>
                                 <java classname="${requestor.class}" fork="yes">
-                                    <classpath refid="run-req.classpath" />
-                                    <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                                    <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                                    <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
-                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                                    <classpath refid="run-req.classpath"/>
+                                    <sysproperty key="java.util.logging.config.file"
+                                                 value="${sorcer.home}/configs/sorcer.logging"/>
+                                    <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                                    <sysproperty key="requestor.webster.codebase"
+                                                 value="${requestor.webster.codebase}"/>
+                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                     <arg value="${requestor.run.args}"/>
                                 </java>
                             </ac:else>
@@ -387,56 +434,62 @@
                     </ac:then>
                     <ac:else>
                         <ac:if>
-                            <isset property="webster.internal" />
+                            <isset property="webster.internal"/>
                             <ac:then>
                                 <java classname="${requestor.class}" fork="yes">
-                                    <classpath refid="run-req.classpath" />
-                                    <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                                    <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                                    <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
-                                    <sysproperty key="webster.internal" value="${webster.internal}" />
-                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                                    <classpath refid="run-req.classpath"/>
+                                    <sysproperty key="java.util.logging.config.file"
+                                                 value="${sorcer.home}/configs/sorcer.logging"/>
+                                    <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                                    <sysproperty key="requestor.webster.codebase"
+                                                 value="${requestor.webster.codebase}"/>
+                                    <sysproperty key="webster.internal" value="${webster.internal}"/>
+                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                 </java>
                             </ac:then>
                             <ac:else>
                                 <java classname="${requestor.class}" fork="yes">
-                                    <classpath refid="run-req.classpath" />
-                                    <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                                    <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                                    <sysproperty key="requestor.webster.codebase" value="${requestor.webster.codebase}" />
-                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                                    <classpath refid="run-req.classpath"/>
+                                    <sysproperty key="java.util.logging.config.file"
+                                                 value="${sorcer.home}/configs/sorcer.logging"/>
+                                    <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                                    <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                                    <sysproperty key="requestor.webster.codebase"
+                                                 value="${requestor.webster.codebase}"/>
+                                    <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                                 </java>
                             </ac:else>
                         </ac:if>
                     </ac:else>
                 </ac:if>
-			</ac:then>
-			<ac:else>
+            </ac:then>
+            <ac:else>
                 <ac:if>
-                    <isset property="requestor.run.args" />
+                    <isset property="requestor.run.args"/>
                     <ac:then>
                         <java classname="${requestor.class}" fork="yes">
-                            <classpath refid="run-req.classpath" />
-                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                            <classpath refid="run-req.classpath"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                             <arg value="${requestor.run.args}"/>
                         </java>
                     </ac:then>
                     <ac:else>
                         <java classname="${requestor.class}" fork="yes">
-                            <classpath refid="run-req.classpath" />
-                            <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
-                            <sysproperty key="java.security.policy" value="${requestor.policy}" />
-                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
-                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
+                            <classpath refid="run-req.classpath"/>
+                            <sysproperty key="java.util.logging.config.file"
+                                         value="${sorcer.home}/configs/sorcer.logging"/>
+                            <sysproperty key="java.security.policy" value="${requestor.policy}"/>
+                            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
+                            <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
                         </java>
                     </ac:else>
                 </ac:if>
             </ac:else>
-		</ac:if>
-	</target>
+        </ac:if>
+    </target>
 </project>
