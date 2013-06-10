@@ -176,20 +176,20 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public Exertion getMasterExertion() {
-		String contextName = null;
+		Uuid contextId = null;
 		try {
-			contextName = (String) controlContext.getValue(ControlContext.MASTER_EXERTION);
+			//contextName = (String) controlContext.getValue(ControlContext.MASTER_EXERTION);
+            contextId = (Uuid) controlContext.getValue(ControlContext.MASTER_EXERTION);
 		} catch (ContextException ex) {
 			ex.printStackTrace();
 		}
-		if (contextName == null
+		if (contextId == null
 				&& controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)) {
 			return (size() > 0) ? exertionAt(size() - 1) : null;
 		} else {
 			Exertion master = null;
 			for (int i = 0; i < size(); i++) {
-				if (exertionAt(i).getContext().getName().equals(
-						contextName)) {
+				if (exertionAt(i).getId().equals(contextId)) {
 					master = exertionAt(i);
 					break;
 				}

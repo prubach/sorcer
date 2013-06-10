@@ -53,7 +53,7 @@ public class Works implements Serializable {
                 double arg1 = (Double)context.getValue("requestor/operand/1");
                 double arg2 = (Double)context.getValue("requestor/operand/2");
                 double arg3 = (Double)context.getValue("requestor/operand/3");
-                context.putOutValue("provider/result", (arg1 + arg2 + arg3)/3);
+                context.putOutValue("provider/result", new Long(Math.round((arg1 + arg2 + arg3)/3)).intValue());
                 return context;
             }
         };

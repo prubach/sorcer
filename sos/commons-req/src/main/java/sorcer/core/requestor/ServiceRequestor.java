@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -126,14 +127,14 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 				logger.fine("Runner java.rmi.server.codebase: "
 						+ System.getProperty("java.rmi.server.codebase"));
 		} catch (ExertionException e) {
-			logger.throwing("ServiceRequestor", "main", e);
+			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 			System.exit(1);
 		} catch (ContextException e) {
-			logger.throwing("ServiceRequestor", "main", e);
-			System.exit(1);
+			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            System.exit(1);
 		} catch (SignatureException e) {
-			logger.throwing("ServiceRequestor", "main", e);
-			System.exit(1);
+            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            System.exit(1);
 		}
 		if (in != null)
 			requestor.setExertion(in);
@@ -145,12 +146,12 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
 		try {
 			exertion = ((ServiceExertion) exertion).exert(
 					requestor.getTransaction(), requestor.getJobberName());
-		} catch (RemoteException re) {
-			logger.throwing("ServiceRequestor", "main", re);
-		} catch (TransactionException te) {
-			logger.throwing("ServiceRequestor", "main", te);
-		} catch (ExertionException ee) {
-			logger.throwing("ServiceRequestor", "main", ee);
+		} catch (RemoteException e) {
+            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+		} catch (TransactionException e) {
+            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+		} catch (ExertionException e) {
+            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 		}
 	}
 	
