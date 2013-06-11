@@ -779,12 +779,19 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	public Object getReturnValue() throws ContextException {
 		ReturnPath returnPath = getContext().getReturnPath();
 		if (returnPath != null) {
-			if (returnPath.path == null || returnPath.path.equals("self")) 
-				return getContext();
-			else 
-				return getContext().getReturnValue();
+			if (returnPath.path == null || returnPath.path.equals("self"))  {
+                return this;
+            } else  {
+                if (isJob())
+                    return ((Job)this).getJobContext().getReturnValue();
+                else
+                    return getContext().getReturnValue();
+            }
 		} else {
-			return getContext();
+            if (isJob())
+                return ((Job)this).getJobContext();
+            else
+                return getContext();
 		}
 	}
 	
@@ -939,16 +946,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 			} catch (Exception e) {
 				throw new EvaluationException(e);
 			}
-			Object value = ((ServiceExertion)xrt).getReturnValue();
-			if (value != null)
-				return value;
-			else {
-				if (this instanceof Job)
-					value =  ((Job)xrt).getJobContext();
-				else
-					value =  xrt.getContext();
-			}
-			return value;
+			return ((ServiceExertion)xrt).getReturnValue();
 		} catch (ContextException e) {
 			logger.log(Level.WARNING,"Error while getting return value", e);
 			throw new EvaluationException(e);

@@ -54,7 +54,23 @@ public class ArithmeticExertleterTest implements SorcerConstants {
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}
 
-	@Test
+    @Test
+    public void exertExertleter() throws Exception {
+
+        // invoke exertleter with the current contexts
+        NetSignature signature = new NetSignature("getValue", Evaluation.class);
+        Task task = new NetTask("eval", signature);
+        Task result = (Task)task.exert();
+        Context out = (Context)result.getReturnValue();
+
+        logger.info("out context: " + out);
+
+        logger.info("1job1task/subtract/result/value: "
+                + out.getValue("1job1task/subtract/result/value"));
+        assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
+    }
+
+        @Test
 	public void exertArithmeticExertleter() throws Exception {
 
         // invoke exertleter with the current contexts

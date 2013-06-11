@@ -720,7 +720,7 @@ public class ProviderDelegate implements SorcerConstants {
 				+ ", spaceTransactional: " + workerTransactional);
 		logger.info("publishedServiceTypes.length = "
 				+ publishedServiceTypes.length);
-		logger.info(GenericUtil.arrayToString(publishedServiceTypes));
+		logger.info(Arrays.toString(publishedServiceTypes));
 
 		// create a pair of taker threads for each published interface
 		SpaceTaker worker = null;
@@ -908,12 +908,6 @@ public class ProviderDelegate implements SorcerConstants {
 		return processContinousely(task, task.getPostprocessSignatures());
 	}
 
-//	private Context processContinousely(Task task, List<Signature> signatures)
-//			throws ExertionException, SignatureException {
-//        ControlFlowManager cfm = new ControlFlowManager();
-//        return cfm.processContinousely(task, signatures);
-//    }
-
 	private Context processContinousely(Task task, List<Signature> signatures)
 			throws ExertionException, SignatureException {
 		Signature.Type st = signatures.get(0).getType();
@@ -924,7 +918,7 @@ public class ProviderDelegate implements SorcerConstants {
 		Signature ss = null;
 		for (int i = 0; i < signatures.size(); i++) {
 			ss = signatures.get(i);
-            if (ss instanceof NetSignature)
+			if (ss instanceof NetSignature)
 				((NetSignature) ss).setServicer(provider);
 			try {
 				t = Task.newTask(task.getName() + "-" + i, ss,
@@ -932,14 +926,11 @@ public class ProviderDelegate implements SorcerConstants {
 				ss.setType(Signature.SRV);
 				((ServiceContext) task.getContext()).setCurrentSelector(ss
 						.getSelector());
-				((ServiceContext) task.getContext())
-						.setCurrentPrefix(ss.getPrefix());
                 if (ss.getPrefix() != null)
                     ((ServiceContext)task.getContext()).setPrefix(ss.getPrefix());
                 if (ss.getReturnPath() != null)
-                    ((ServiceContext)t.getContext()).setReturnPath(ss.getReturnPath());
-
-                t.setContinous(true);
+                    ((ServiceContext)task.getContext()).setReturnPath(ss.getReturnPath());
+				t.setContinous(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				resetSigantures(signatures, st);
@@ -1081,9 +1072,9 @@ public class ProviderDelegate implements SorcerConstants {
 				task.getContext().setExertion(task);
 				((ServiceContext) task.getContext())
 						.setCurrentSelector(selector);
-				((ServiceContext) task.getContext())
-						.setCurrentPrefix(((ServiceSignature) task
-								.getProcessSignature()).getPrefix());
+                String pf = ((ServiceSignature) task.getProcessSignature()).getPrefix();
+                if (pf != null)
+			    	((ServiceContext) task.getContext()).setCurrentPrefix(pf);
 				
 				Context result = task.getContext();
 				if (isContextual) 
@@ -1092,8 +1083,11 @@ public class ProviderDelegate implements SorcerConstants {
 					result = execParametricBean(m, task, impl);
 
                 Signature.ReturnPath rp = ((ServiceContext)result).getReturnPath();
+                logger.info("Executing service bean method rp: " + rp);
+                logger.info("Executing service bean method result: " + result);
+
                 if (rp != null) {
-                    ((ServiceContext) task.getContext()).setReturnPath(rp.path);
+                    ((ServiceContext)result).setReturnPath(rp.path);
                 }
 				// clear task in the context
 				result.setExertion(null);
@@ -1307,13 +1301,11 @@ public class ProviderDelegate implements SorcerConstants {
 		try {
 			if (cxt.isValid(task.getProcessSignature())) {
 				Signature sig = task.getProcessSignature();
-
 				if (sig.getReturnPath() != null)
 					cxt.setReturnPath(sig.getReturnPath());
-                System.out.println("SSSSSSSSSSSSSSSS sig.getReturnPath: "   + sig.getReturnPath());
 
 				cxt.setCurrentSelector(sig.getSelector());
-				cxt.setCurrentPrefix(sig.getPrefix());
+				cxt.setCurrentPrefix(((ServiceSignature) sig).getPrefix());
 
 				cxt.setExertion(task);
 				task.setServicer(provider);
@@ -1328,12 +1320,12 @@ public class ProviderDelegate implements SorcerConstants {
 						+ provider.getProviderName());
 				task.setContext(cxt);
 				task.setStatus(ExecState.DONE);
-				// clear the exertion and the context
-				cxt.setExertion(null);
-				task.setServicer(null);
 				logger.info("CONTEXT GOING OUT: " + cxt);
                 if (cxt.getReturnPath() != null)
                     cxt.setReturnValue(cxt.getValue(cxt.getReturnPath().path));
+                // clear the exertion and the context
+                cxt.setExertion(null);
+                task.setServicer(null);
 			}
 		} catch (ContextException e) {
 			throw new ExertionException(e);
@@ -1375,12 +1367,9 @@ public class ProviderDelegate implements SorcerConstants {
 			Context result = null;
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
-                if (sc.getReturnPath() != null)
-                    result.setReturnValue(result.getValue(sc.getReturnPath().path));
-                System.out.println("ZZZZZZZZZZZZZZZZZZZZZ return reult: "  + result);
-                System.out.println("ZZZZZZZZZZZZZZZZZZZZZ return path: "  +
-                        result.setReturnValue(result.getValue()));
-                System.out.println("ZZZZZZZZZZZZZZZZZZZZZ return value: " + result.getValue(sc.getReturnPath().path));
+                // Setting Return Values
+                if (result.getReturnPath() != null)
+                    result.setReturnValue(result.getValue(result.getReturnPath().path));
 			} else {
 				((ServiceContext) sc).setReturnValue(execMethod.invoke(
                         provider, args));
@@ -1873,7 +1862,7 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		servicetask.getDataContext().reportException(
 				new ExertionException(
-						"No valid task for published service types:\n"
+						"Not a valid task for published service types:\n"
 								+ Arrays.toString(publishedServiceTypes)));
 		return false;
 	}
@@ -2682,7 +2671,7 @@ public class ProviderDelegate implements SorcerConstants {
 			try {
 				exporterInterface = (String) config.getEntry(
 						ServiceProvider.COMPONENT, EXPORTER_INTERFACE,
-						String.class, null);
+						String.class, Sorcer.getHostAddress());
 			} catch (Exception e) {
 				// do nothng
 			}
@@ -2953,10 +2942,14 @@ public class ProviderDelegate implements SorcerConstants {
 			// if partner exported use it as the primary proxy
 			if (partner != null) {
 				if (partnerExporter == null)
-					partnerExporter = new BasicJeriExporter(
-							TcpServerEndpoint.getInstance(0),
-							new BasicILFactory());
-				pp = partnerExporter.export(partner);
+                    try {
+                        partnerExporter = new BasicJeriExporter(
+                                TcpServerEndpoint.getInstance(Sorcer.getHostAddress(), 0),
+                                new BasicILFactory());
+                    } catch (UnknownHostException e) {
+                        throw new ExportException("Could not obtain local address", e);
+                    }
+                pp = partnerExporter.export(partner);
 				if (pp != null) {
 					innerProxy = outerProxy;
 					outerProxy = pp;
