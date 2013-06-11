@@ -65,6 +65,7 @@ public class SeqMasterJobRequestor extends ServiceRequestor {
         context4.putInValue("requestor/operand/1", null);
         context4.putInValue("requestor/operand/2", null);
         context4.putInValue("requestor/operand/3", null);
+        context4.putOutValue("provider/result", null);
         context4.putValue("requestor/work", Works.work4);
 
 		// pass the parameters from one dataContext to the next dataContext

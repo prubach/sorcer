@@ -41,34 +41,38 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         // define requestors data
         Context context1 = new ServiceContext("work1");
         context1.putValue("requestor/name", requestorName);
-        context1.putValue("requestor/operand/1", 1);
-        context1.putValue("requestor/operand/2", 1);
+        context1.putValue("requestor/operand/1", 20);
+        context1.putValue("requestor/operand/2", 30);
         context1.putValue("requestor/work", Works.work1);
         context1.putOutValue("provider/result", null);
 
         Context context2 = new ServiceContext("work2");
         context2.putValue("requestor/name", requestorName);
-        context2.putValue("requestor/operand/1", 2);
-        context2.putValue("requestor/operand/2", 2);
+        context2.putValue("requestor/operand/1", 10);
+        context2.putValue("requestor/operand/2", 12);
         context2.putValue("requestor/work", Works.work2);
         context2.putOutValue("provider/result", null);
 
         Context context3 = new ServiceContext("work3");
         context3.putValue("requestor/name", requestorName);
-        context3.putInValue("requestor/operand/1", null);
-        context3.putInValue("requestor/operand/2", null);
-        context3.putInValue("requestor/operand/2", null);
+        context3.putInValue("requestor/operand/1", 80);
+        context3.putInValue("requestor/operand/2", 60);
         context3.putValue("requestor/work", Works.work3);
+        context3.putOutValue("provider/result", null);
 
         Context context4 = new ServiceContext("work4");
         context4.putValue("requestor/name", requestorName);
-        context4.putInValue("requestor/work", Works.work4);
+        context4.putInValue("requestor/operand/1", null);
+        context4.putInValue("requestor/operand/2", null);
+        context4.putInValue("requestor/operand/3", null);
+        context4.putOutValue("provider/result", null);
+        context4.putValue("requestor/work", Works.work4);
 
         // pass the parameters from one dataContext to the next dataContext
         //mapped parameter should be marked via in, out, or inout paths
-        context1.map("provider/result", "requestor/operand/1", context3);
-        context2.map("provider/result", "requestor/operand/2", context3);
-        context3.map("provider/result", "requestor/operand/3", context3);
+        context1.map("provider/result", "requestor/operand/1", context4);
+        context2.map("provider/result", "requestor/operand/2", context4);
+        context3.map("provider/result", "requestor/operand/3", context4);
 
         // define required services
         NetSignature signature1 = new NetSignature("doWork",
@@ -91,11 +95,10 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         job.addExertion(task2);
         job.addExertion(task3);
         job.addExertion(task4);
-        job.setMasterExertion(task4);
 
         // define a job control strategy
         // use the catalog to delegate the tasks
-        job.setAccessType(Access.QOS_PULL);
+        job.setAccessType(Access.PULL);
         // either parallel or sequential
         job.setFlowType(Flow.PAR);
         // time the job execution
@@ -103,7 +106,7 @@ public class ParMasterJobRequestor extends ServiceRequestor {
         // job can be monitored
         job.setMonitored(false);
         // wait for results or do it asynchronously
-        job.setMasterExertion(task3);
+        job.setMasterExertion(task4);
 
         return job;
     }

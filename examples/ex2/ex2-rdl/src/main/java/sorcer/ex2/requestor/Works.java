@@ -18,9 +18,6 @@ public class Works implements Serializable {
                 int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
                 int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
                 cxt.putOutValue(p+"provider/result", arg1 + arg2);
-                if (cxt.getReturnPath() != null) {
-                    cxt.setReturnValue(arg1 + arg2);
-                }
                 return cxt;
             }
         };
@@ -31,9 +28,6 @@ public class Works implements Serializable {
                 int arg1 = (Integer) cxt.getValue(p+"requestor/operand/1");
                 int arg2 = (Integer) cxt.getValue(p+"requestor/operand/2");
                 cxt.putOutValue(p+"provider/result", arg1 * arg2);
-                if (cxt.getReturnPath() != null) {
-                    cxt.setReturnValue(arg1 * arg2);
-                }
                 return cxt;
             }
         };
@@ -50,10 +44,10 @@ public class Works implements Serializable {
 
         work4 = new Work() {
             public Context exec(Context context) throws InvalidWork, ContextException {
-                double arg1 = (Double)context.getValue("requestor/operand/1");
-                double arg2 = (Double)context.getValue("requestor/operand/2");
-                double arg3 = (Double)context.getValue("requestor/operand/3");
-                context.putOutValue("provider/result", new Long(Math.round((arg1 + arg2 + arg3)/3)).intValue());
+                int arg1 = (Integer)context.getValue("requestor/operand/1");
+                int arg2 = (Integer)context.getValue("requestor/operand/2");
+                int arg3 = (Integer)context.getValue("requestor/operand/3");
+                context.putOutValue("provider/result", arg1 + arg2 + arg3);
                 return context;
             }
         };

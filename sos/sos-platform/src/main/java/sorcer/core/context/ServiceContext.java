@@ -1894,7 +1894,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 						e2.printStackTrace();
 					}
 				} else if (val instanceof Exertion) {
-					sb.append(((ServiceExertion) val).info());
+                    // Problem when debugging
+					//sb.append(((ServiceExertion) val).info());
 				} else
 					sb.append(val.toString());
 			}

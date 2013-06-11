@@ -1356,6 +1356,20 @@ public class ProviderDelegate implements SorcerConstants {
 			Context result = null;
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
+                // Setting Return Values
+                if (cxt.getReturnPath() != null) {
+                    String outPath = null;
+                    for (Object path : cxt.getOutPaths()) {
+                        if (path.toString().contains(cxt.getPrefix()))
+                            outPath = path.toString();
+                    }
+                    if (outPath==null)
+                        logger.severe("Problem setting Return Value - no Out paths specified in context");
+                    else {
+                        logger.fine("Setting return value to from path: " + outPath + " value: " + cxt.get(outPath).toString());
+                        cxt.setReturnValue(cxt.get(outPath));
+                    }
+                }
 			} else {
 				((ServiceContext) sc).setReturnValue(execMethod.invoke(
                         provider, args));
