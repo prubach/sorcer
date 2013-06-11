@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<project name="SSD" default="Service Deployer" basedir=".">
+	<!-- load system environment variables -->
+	<property environment="env" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+
+    <path id="run.classpath">
+        <pathelement location="${lib.dir}/sorcer/sos-platform.jar" />
+        <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
+        <pathelement location="${lib.dir}/rio/rio-ui.jar" />
+        <pathelement location="${mvn.repo}/org/rioproject/rio-ui/${v.rio}/rio-ui-${v.rio}.jar" />
+    </path>
+
+    <condition property="isMac" value="true">
+        <os family="mac"/>
+    </condition>
+
+    <target name="run" depends="Service Deployer Mac, Service Deployer" />
+
+    <target name="Service Deployer Mac" if="isMac">
+        <java classname="org.rioproject.tools.ui.Main" fork="yes" maxmemory="1g">
+            <jvmarg value="-Xdock:name=Service Deployer" />
+            <jvmarg value="-Xdock:icon=${basedir}/../configs/browser/images/sorcer-dock.png" />
+            <classpath>
+                <path refid="run.classpath"/>
+            </classpath>
+            <sysproperty key="iGrid.home" value="${sorcer.home}" />
+            <sysproperty key="sorcer.home" value="${sorcer.home}" />
+            <sysproperty key="RIO_HOME" value="${rio.home}" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
+            <sysproperty key="java.security.policy" value="${basedir}/../configs/sorcer.policy" />
+        </java>
+    </target>
+
+    <target name="Service Deployer" unless="isMac">
+        <java classname="org.rioproject.tools.ui.Main" fork="yes" maxmemory="1g">
+            <classpath>
+                <path refid="run.classpath"/>
+            </classpath>
+            <sysproperty key="iGrid.home" value="${sorcer.home}" />
+            <sysproperty key="sorcer.home" value="${sorcer.home}" />
+            <sysproperty key="RIO_HOME" value="${rio.home}" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
+            <sysproperty key="java.security.policy" value="${basedir}/../configs/sorcer.policy" />
+        </java>
+    </target>
+
+</project>

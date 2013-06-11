@@ -17,11 +17,20 @@
  */
 package com.example.sorcer;
 
-import java.rmi.RemoteException; 
+import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
+import com.example.sorcer.ui.SampleUI;
+import net.jini.lookup.entry.UIDescriptor;
+import net.jini.lookup.ui.MainUI;
+import sorcer.resolver.Resolver;
 import sorcer.service.Context;
+import sorcer.ui.serviceui.UIComponentFactory;
+import sorcer.ui.serviceui.UIDescriptorFactory;
+import sorcer.util.Artifact;
 import sorcer.util.Log;
+import sorcer.util.Sorcer;
 
 public class SampleServiceImpl implements SampleService {
 
