@@ -67,7 +67,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 
         logger.info("1job1task/subtract/result/value: "
                 + out.getValue("1job1task/subtract/result/value"));
-        assertEquals(out.getValue("1job1task/subtract/result/value"), 400.0);
+        assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
 
 
         // invocation with complete contexts
@@ -91,7 +91,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 //		logger.info("result context: " + out);
 
 		logger.info("1job1task/subtract/result/value: " + out.getValue("1job1task/subtract/result/value"));
-		assertEquals(out.getValue("1job1task/subtract/result/value"), 500.0);
+		assertEquals(500.0, out.getValue("1job1task/subtract/result/value"));
 
 
         // invocation with subcontexts
@@ -113,7 +113,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 //		logger.info("result context: " + out);
 
         logger.info("1job1task/subtract/result/value: " + out.getValue("1job1task/subtract/result/value"));
-        assertEquals(out.getValue("1job1task/subtract/result/value"), 1210.0);
+        assertEquals(1210.0, out.getValue("1job1task/subtract/result/value"));
 
 
         // reset the initial context values
@@ -137,7 +137,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 //		logger.info("result context: " + out);
 
         logger.info("1job1task/subtract/result/value: " + out.getValue("1job1task/subtract/result/value"));
-        assertEquals(out.getValue("1job1task/subtract/result/value"), 400.0);
+        assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
 	}
 
 }

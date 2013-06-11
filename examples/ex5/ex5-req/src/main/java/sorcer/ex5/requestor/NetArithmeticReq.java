@@ -64,7 +64,7 @@ public class NetArithmeticReq implements SorcerConstants {
 		return job;
 	}
 	
-	public static Job createFlatAritheticJob() throws Exception {
+	public static Job createFlatArithmeticJob() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();

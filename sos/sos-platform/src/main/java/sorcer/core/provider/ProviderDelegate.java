@@ -1358,6 +1358,7 @@ public class ProviderDelegate implements SorcerConstants {
 				result = (Context) execMethod.invoke(provider, args);
                 // Setting Return Values
                 if (cxt.getReturnPath() != null) {
+                    logger.info("Setting return value to return path: " + cxt.getReturnPath() + " from outPaths");
                     String outPath = null;
                     for (Object path : cxt.getOutPaths()) {
                         if (path.toString().contains(cxt.getPrefix()))
