@@ -1083,9 +1083,6 @@ public class ProviderDelegate implements SorcerConstants {
 					result = execParametricBean(m, task, impl);
 
                 Signature.ReturnPath rp = ((ServiceContext)result).getReturnPath();
-                logger.info("Executing service bean method rp: " + rp);
-                logger.info("Executing service bean method result: " + result);
-
                 if (rp != null) {
                     ((ServiceContext)result).setReturnPath(rp.path);
                 }
