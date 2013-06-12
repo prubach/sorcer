@@ -1364,9 +1364,26 @@ public class ProviderDelegate implements SorcerConstants {
 			Context result = null;
 			if (isContextual) {
 				result = (Context) execMethod.invoke(provider, args);
-                // Setting Return Values
-                if (result.getReturnPath() != null)
-                    result.setReturnValue(result.getValue(result.getReturnPath().path));
+
+                 // Setting Return Values
+                if (result.getReturnPath() != null) {
+                    Object resultValue = result.getValue(result.getReturnPath().path);
+                    result.setReturnValue(resultValue);
+
+                    // do this only if the result value is null
+                    if (resultValue==null || (resultValue!=null && (resultValue.equals(Context.Value.NULL)))) {
+                        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!! Setting return value to return path: " + result.getReturnPath() + " from outPaths !!!!!!!!!!!!!");
+                        String outPath = null;
+                        for (Object path : ((ServiceContext)result).getOutPaths()) {
+                            if (path.toString().contains(result.getPrefix())) {
+                                outPath = path.toString();
+                                break;
+                            }
+                        }
+                        logger.info("!!!!!!!!!!!!!!!!!!!!!! Setting return value from path: " + outPath + " value: " + result.get(outPath).toString());
+                        result.setReturnValue(result.get(outPath));
+                    }
+                }
 			} else {
 				((ServiceContext) sc).setReturnValue(execMethod.invoke(
                         provider, args));

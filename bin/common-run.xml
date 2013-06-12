@@ -256,22 +256,17 @@
             <artifact:localRepository id="local.repository" path="${maven.repo.local}"/>
             <artifact:pom file="@{run.pom.file}" id="maven.project"/>
 
-            <artifact:dependencies cacheDependencyRefs="false"
-                                   dependencyRefsBuildFile="target/cached-dependencies-compile.xml"
-                                   pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
+            <artifact:dependencies pathId="compile.classpath" filesetId="compile.fileset" useScope="compile"
                                    versionsId="dependency.versions">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies cacheDependencyRefs="false"
-                                   dependencyRefsBuildFile="target/cached-dependencies-test.xml" pathId="test.classpath"
+            <artifact:dependencies pathId="test.classpath"
                                    filesetId="test.fileset" useScope="test">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>
-            <artifact:dependencies cacheDependencyRefs="false"
-                                   dependencyRefsBuildFile="target/cached-dependencies-runtime.xml"
-                                   pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
+            <artifact:dependencies pathId="runtime.classpath" filesetId="runtime.fileset" useScope="runtime">
                 <pom refid="maven.project"/>
                 <localRepository refid="local.repository"/>
             </artifact:dependencies>

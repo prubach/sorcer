@@ -26,6 +26,7 @@ import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
+import sorcer.util.Sorcer;
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -42,16 +43,16 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 			.getLogger(NetArithmeticReqTest.class.getName());
 
 	static {
-/*
+
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
-*/
+
 		System.setSecurityManager(new RMISecurityManager());
-/*
-        Sorcer.setCodeBaseByArtifacts(new String[] {
+
+        Sorcer.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex6-api" });
-*/
+                "org.sorcersoft.sorcer:ex6-api"});
+
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}

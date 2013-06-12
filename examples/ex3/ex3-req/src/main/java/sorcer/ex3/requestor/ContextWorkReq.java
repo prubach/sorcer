@@ -47,19 +47,19 @@ public class ContextWorkReq extends ServiceRequestor {
             context.putValue(p1+"/requestor/operand/1", 20);
 			context.putValue(p1+"/requestor/operand/2", 80);
             context.putValue(p1+"/requestor/work", Works.work1);
-            context.putValue(p1+"/provider/result", Value.NULL);
+            context.putOutValue(p1+"/provider/result", Value.NULL);
 			
 			System.out.println("p2: " + p2);
 			context.putValue(p2+"/requestor/operand/1", 10);
 			context.putValue(p2+"/requestor/operand/2", 50);
             context.putValue(p2+"/requestor/work", Works.work2);
-            context.putValue(p2+"/provider/result", Value.NULL);
+            context.putOutValue(p2+"/provider/result", Value.NULL);
 			
 			System.out.println("p3: " + p3);
             context.putValue(p3+"/requestor/operand/1", Value.NULL);
             context.putValue(p3+"/requestor/operand/2", Value.NULL);
             context.putValue(p3+"/requestor/work", Works.work3);
-            context.putValue(p3+"/provider/result", Value.NULL);
+            context.putOutValue(p3+"/provider/result", Value.NULL);
 
             // define required signatures
 			NetSignature signature1 = new NetSignature("doWork#"+p1,

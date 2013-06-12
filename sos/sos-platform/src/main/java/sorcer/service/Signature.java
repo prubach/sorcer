@@ -129,7 +129,7 @@ public interface Signature extends Serializable, Parameter {
 	public String getCodebase();
 
 	/**
-	 * Assigns a codbase to <code>urls</code> for the code implementing this
+	 * Assigns a codebase to <code>urls</code> for the code implementing this
 	 * signature. The codebase is a space separated string (list) of URls.
 	 * 
 	 * @param urls
