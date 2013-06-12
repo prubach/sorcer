@@ -192,6 +192,8 @@ public class ProviderProxy {
             } catch (Exception e) {
                 logger.info("proxy method: " + m + " for args: " + args);
                 e.printStackTrace();
+                // TODO: Shouldn't it be allowed to throw Exceptions!!!!
+                // throw e;
             }
             return obj;
         }

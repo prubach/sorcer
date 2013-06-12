@@ -23,7 +23,7 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="SampleService Provider" default="boot.provider" basedir=".">
+<project name="Cataloger" default="boot.provider" basedir=".">
 	
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />

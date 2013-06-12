@@ -5,12 +5,12 @@ load mvn://org.sorcersoft.sorcer:ex6-api
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
 
-//task("f4", sig("subtract", Subtractor.class),
-//	context("subtract",
-//		input("arg/x1", 10.0d),
-//		input("arg/x2", 50.0d)));
-
-task("f4", sig("multiply", Multiplier.class),
-	context("multiply",
+task("f4", sig("subtract", Subtractor.class),
+	context("subtract",
 		input("arg/x1", 10.0d),
 		input("arg/x2", 50.0d)));
+
+//task("f4", sig("multiply", Multiplier.class),
+//	context("multiply",
+//		input("arg/x1", 10.0d),
+//		input("arg/x2", 50.0d)));

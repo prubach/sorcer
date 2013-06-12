@@ -219,8 +219,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 
 				// Catalog lookup or use Lookup Service for the particular
 				// service
-				Provider provider = ProviderAccessor.getProvider(
-						sig.getProviderName(), sig.getServiceType(), codebase);
+                // Switched to another method that uses the Cataloger service
+				//Provider provider = ProviderAccessor.getProvider(
+				//		sig.getProviderName(), sig.getServiceType(), codebase);
+                Provider provider = ProviderAccessor.getProvider(
+                        		sig.getProviderName(), sig.getServiceType());
 
 				if (provider == null) {
 					String msg = null;
@@ -259,7 +262,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 					 */
 					logger.finer("\n*** getting result from provider... ***\n");
 					result = (NetTask) provider.service(task, null);
-					result.getControlContext().appendTrace(
+
+					if (result!=null)
+                        result.getControlContext().appendTrace(
 							provider.getProviderName() + " dispatcher: "
 									+ getClass().getName());
 				}

@@ -77,8 +77,8 @@ import java.util.logging.SimpleFormatter;
  * {@link CatalogerInfo}
  * <li>The key of the map is an InterfaceList, the value is the vector
  * of service proxies
- * <li>InterfaceList is a list of interfaces with <code>equals</code>
- * overridden such that for <code>(interfaceList1.equals(interfaceList2)</code>
+ * <li>InterfaceList is a list of interfaces with <code>containsAllInterfaces</code>
+ * overridden such that for <code>(interfaceList1.containsAllInterfaces(interfaceList2)</code>
  * returns <code>true</code> if all elements contained in
  * <code>interfaceList2</code> are contained in <code>interfaceList1</code>.
  * <li><code>get</code> and <code>put</code> method of {@link CatalogerInfo} are
@@ -229,7 +229,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 					+ getProviderName());
 			h = new FileHandler(SorcerEnv.getHomeDir()
                     + "/logs/remote/local-Cataloger-" + delegate.getHostName()
-					+ "-" + getProviderName() + "%g.log", 20000, 8, true);
+					+ "-" + getProviderName() + "%g.log", 2000000, 8, true);
 			if (h != null) {
 				h.setFormatter(new SimpleFormatter());
 				logger.addHandler(h);
@@ -290,6 +290,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			pn = null;
 		try {
 			ServiceItem sItem = cinfo.getServiceItem(serviceTypes, pn);
+            //logger.info("Cataloger lookup: " + Arrays.toString(serviceTypes)
+            //        + " result serviceID: " + sItem.serviceID.toString());
 			if (sItem != null && (sItem.service instanceof Provider))
 				return (Provider) sItem.service;
 		} catch (Throwable t) {
@@ -478,8 +480,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * <p>
 	 * The key the cataloger info is the <code>InterfaceList</code>. This inner
 	 * <code>InterfaceList</code> is an array list of interface names with
-	 * overridden <code>equals</code> such that it follows the following
-	 * semantics: <code>arrayList1.equals(arrayList2</code> iff all interfaces
+	 * overridden <code>containsAllInterfaces</code> such that it follows the following
+	 * semantics: <code>arrayList1.containsAllInterfaces(arrayList2</code> iff all interfaces
 	 * of arrayList2 are contained in arrayList1<br>
 	 * The key value in <code>InterfaceList</code> is the list of service items
 	 * implementing its key interfaces<br>
@@ -518,6 +520,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		private CatalogObservable observable;
 
 		public CatalogerInfo() {
+            super();
 			interfaceIgnoreList = new String[6];
 			interfaceIgnoreList[0] = "sorcer.core.Provider";
 			interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
@@ -546,26 +549,42 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		public Object get(InterfaceList interfaceList) {
 			for (Object keyToGet : keySet()) {
 				InterfaceList list = (InterfaceList) keyToGet;
-				if (list.equals(interfaceList)) {
-					return super.get(list);
+				if (list.containsAllInterfaces(interfaceList)) {
+                    logger.info("Cataloger found matching interface list: " + Arrays.toString(list.toArray()));
+
+					return super.get(keyToGet);
 				}
 			}
 			return null;
 		}
 
+        public Vector getAll(InterfaceList interfaceList) {
+            Vector sItems = new Vector();
+            for (Object keyToGet : keySet()) {
+                InterfaceList list = (InterfaceList) keyToGet;
+                if (list.containsAllInterfaces(interfaceList)) {
+                    logger.info("Cataloger found matching interface list: " + Arrays.toString(list.toArray()));
+
+                    sItems.addAll((Vector) super.get(keyToGet));
+                }
+            }
+            return sItems;
+        }
+
 		public void addServiceItem(ServiceItem sItem) {
 			InterfaceList keyList = new InterfaceList(sItem.service.getClass()
 					.getInterfaces());
-			Vector sItems = (Vector) get(keyList);
-			if (sItems == null)
+            // BELOW is a fix of issue: #36
+			Vector sItems = (Vector) super.get(keyList);
+            // better heuristics
+            // add it to the head assuming the tail's busy
+            if (sItems == null)
 				sItems = new Vector();
-			// better heuristics
-			// add it to the head assuming the tail's busy
-			if (!sItems.contains(sItem)) {
-				sItems.add(0, sItem);
-				super.put(keyList, sItems);
+
+            if (!sItems.contains(sItem)) {
+                sItems.add(0, sItem);
+                super.put(keyList, sItems);
 			}
-			logger.info("adding new service, calling notifiy");
 			observable.tellOfAction("UPDATEDPLEASE");
 		}
 
@@ -577,14 +596,17 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 			for (Enumeration e = keys(); e.hasMoreElements();) {
 				key = (InterfaceList) e.nextElement();
-				if (key.equals(searchInterfaceList)) {
+				if (key.containsAllInterfaces(searchInterfaceList)) {
 					value = (Vector) get(key);
-					if (value.size() == 1)
-						remove(key);
-					else
-						removeFrom(value, sItem);
+                    if (value!=null) {
+                        if (value.size() == 1)
+                            remove(key);
+                        else
+                            removeFrom(value, sItem);
+                    }
 				}
 			}
+            observable.tellOfAction("UPDATEDPLEASE");
 		}
 
 		private void removeFrom(Vector sis, ServiceItem si) {
@@ -636,25 +658,40 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		 * first parameter = String[] of interfaces<br>
 		 * second parameter = providerName if any
 		 * <p>
+         *
 		 * This method provides automatic load balancing by providing the
 		 * serviceItem from the beginning and by removing it and adding to the
 		 * end upon each request.
 		 */
 		public ServiceItem getServiceItem(Class[] interfaces,
 				String providerName) {
-			Vector list = (Vector) get(new InterfaceList(interfaces));
-			logger.info("Cinfo getServiceItem, got: " + list);
+            //
+			Vector list = (Vector) getAll(new InterfaceList(interfaces));
+			logger.fine("Cinfo getServiceItem, got: " + list);
 			if (providerName != null && providerName.equals(ANY))
 				providerName = null;
 			if (list == null)
 				return null;
 
 			ServiceItem sItem;
-			// provide load balancing
+
+			// provide load balancing and check if still alive
 			if (providerName == null || providerName.length() == 0) {
-				sItem = (ServiceItem) list.remove(0);
-				list.add(sItem);
-				return sItem;
+                   // synchronized (list) {
+                        do {
+                           if (list.size()==0) return null;
+                           sItem = (ServiceItem) list.remove(0);
+                           if (sItem!=null) {
+                               if (isAlive(sItem)) {
+                                   list.add(sItem);
+                                   return sItem;
+                               } else {
+                                   // not Alive anymore removing from cataloger
+                                   //removeServiceItem(sItem);
+                               }
+                           }
+                        }  while (sItem!=null);
+                    //}
 			} else {
 				net.jini.core.entry.Entry[] attrs;
 				for (int i = 0; i < list.size(); i++) {
@@ -769,8 +806,11 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			if (si == null)
 				return false;
 			try {
-				((Provider) si.service).getProviderName();
-				return true;
+				String name = ((Provider) si.service).getProviderName();
+                if (name != null)
+				    return true;
+                else
+                    return false;
 			} catch (RemoteException e) {
 				logger.warning("Service ID: " + si.serviceID
 						+ " is not Alive anymore");
@@ -1433,7 +1473,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						add(clazz[i]);
 			}
 
-			public boolean equals(InterfaceList interfaceList) {
+			public boolean containsAllInterfaces(InterfaceList interfaceList) {
 				Set<Class> all = new HashSet<Class>(this);
 				for (int i = 0; i < size(); i++) {
 					all.addAll(Arrays.asList(get(i).getInterfaces()));
@@ -1449,9 +1489,16 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				List<String> serviceList = new ArrayList<String>();
 				for (Class service : interfaceCollection) {
 					serviceList.add(""+service);
-			}
-			return serviceList;
-		}
+                }
+                return serviceList;
+            }
+
+            public boolean equals(InterfaceList otherList) {
+                if (this.containsAllInterfaces(otherList) && otherList.containsAllInterfaces(this))
+                    return true;
+                return false;
+            }
+
 		}// end of InterfaceList
 	}// end of CatalogerInfo
 
