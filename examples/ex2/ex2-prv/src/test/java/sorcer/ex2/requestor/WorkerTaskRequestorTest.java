@@ -17,17 +17,9 @@
  */
 package sorcer.ex2.requestor;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 import net.jini.core.transaction.TransactionException;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ObjectTask;
@@ -35,12 +27,14 @@ import sorcer.core.signature.ObjectSignature;
 import sorcer.ex2.provider.InvalidWork;
 import sorcer.ex2.provider.Work;
 import sorcer.ex2.provider.WorkerProvider;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.util.Log;
+
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mike Sobolewski

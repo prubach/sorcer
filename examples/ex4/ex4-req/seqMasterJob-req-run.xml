@@ -19,7 +19,7 @@
 
 -->
 
-<project name="Worker Requestor" default="run.requestor" basedir=".">
+<project name="Seq Master Req" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />

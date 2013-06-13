@@ -22,12 +22,10 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
-import sorcer.ex2.provider.InvalidWork;
-import sorcer.ex2.provider.Work;
+import sorcer.ex2.requestor.Works;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.ex2.requestor.Works;
 
 public class SeqMasterJobRequestor extends ServiceRequestor {
 
@@ -41,22 +39,22 @@ public class SeqMasterJobRequestor extends ServiceRequestor {
 		// define requestors data
 		Context context1 = new ServiceContext("work1");
 		context1.putValue("requestor/name", requestorName);
-		context1.putValue("requestor/operand/1", 1);
-		context1.putValue("requestor/operand/2", 1);
+		context1.putValue("requestor/operand/1", 20);
+		context1.putValue("requestor/operand/2", 30);
         context1.putValue("requestor/work", Works.work1);
         context1.putOutValue("provider/result", null);
 
 		Context context2 = new ServiceContext("work2");
 		context2.putValue("requestor/name", requestorName);
-		context2.putValue("requestor/operand/1", 2);
-		context2.putValue("requestor/operand/2", 2);
+		context2.putValue("requestor/operand/1", 10);
+		context2.putValue("requestor/operand/2", 12);
         context2.putValue("requestor/work", Works.work2);
         context2.putOutValue("provider/result", null);
 
 		Context context3 = new ServiceContext("work3");
 		context3.putValue("requestor/name", requestorName);
-		context3.putInValue("requestor/operand/1", 8);
-		context3.putInValue("requestor/operand/2", 6);
+		context3.putInValue("requestor/operand/1", 80);
+		context3.putInValue("requestor/operand/2", 60);
         context3.putValue("requestor/work", Works.work3);
         context3.putOutValue("provider/result", null);
 
@@ -92,9 +90,9 @@ public class SeqMasterJobRequestor extends ServiceRequestor {
         // define a job
 		Job job = new NetJob();
 		job.addExertion(task1);
-		job.addExertion(task2);
-		job.addExertion(task3);
         job.addExertion(task4);
+        job.addExertion(task2);
+		job.addExertion(task3);
 
         // define a job control strategy
 		// use the catalog to delegate the tasks

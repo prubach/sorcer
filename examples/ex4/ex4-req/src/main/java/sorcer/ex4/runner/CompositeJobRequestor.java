@@ -48,7 +48,7 @@ public class CompositeJobRequestor extends ServiceRequestor {
 		context2.putValue("requestor/name", requestorName);
 		context2.putValue("requestor/operand/1", 2);
 		context2.putValue("requestor/operand/2", 2);
-        context2.putValue("requestor/work", Works.work3);
+        context2.putValue("requestor/work", Works.work2);
         context2.putOutValue("provider/result", Context.Value.NULL);
 
 		Context context3 = new ServiceContext("work3");
