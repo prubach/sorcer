@@ -108,7 +108,8 @@ public class Booter implements SorcerConstants {
 	 * resolve codebase from artifact coordinates
 	 */
 	public static String resolveCodebase(String coords) throws UnknownHostException {
-		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coords);
+        String[] coordsEntries = coords.split(" ");
+		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coordsEntries);
 	}
 
     /**

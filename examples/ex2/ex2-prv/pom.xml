@@ -23,6 +23,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-boot</artifactId>
             <version>${v.sorcer}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
