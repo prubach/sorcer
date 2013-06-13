@@ -1,12 +1,13 @@
 #!/usr/bin/env nsh
 
-load mvn://org.sorcersoft.sorcer:ex6-api
-
+codebase mvn://org.sorcersoft.sorcer:ex6-api
 
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
 import sorcer.service.Task
+
+println "Codebase: " + System.getProperty("java.rmi.server.codebase");
 
 // Service Composition f1(f2(f4, f5), f3)
 

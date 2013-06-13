@@ -141,7 +141,7 @@ public class NetworkShell implements DiscoveryListener {
 
 	static final int MAX_MATCHES = 5;
 
-	static final String CUR_VERSION = "1.2";
+	static final String CUR_VERSION = "1.3";
 
 	static final String BUILTIN_QUIT_COMMAND = "quit,exit,bye";
 	
@@ -361,7 +361,7 @@ public class NetworkShell implements DiscoveryListener {
 	static private void execNoninteractiveCommand(String args[])
 			throws Throwable {
 		// check for external commands
-		System.out.println("nonintercative nsh: " + Arrays.toString(args));
+		System.out.println("noninteractive nsh: " + Arrays.toString(args));
 
 		if (args[0].indexOf("--") == 0) {
 			String path = nishAppMap.get(args[0].substring(2));
@@ -395,7 +395,7 @@ public class NetworkShell implements DiscoveryListener {
                     // evaluate command line expression
                     ExertCmd cmd = (ExertCmd) commandTable.get("exert");
                     // cmd.setScript(instance.getText(args[1]));
-                    cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).keySet().toArray()[0]);
+                    cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).result);
                     cmd.execute();
                 }
             }
@@ -1074,8 +1074,11 @@ public class NetworkShell implements DiscoveryListener {
 	}
 
 	public static String getWebsterUrl() {
-		return "http://" + instance.webster.getAddress() + ":"
+        if (instance!=null && instance.webster!=null)
+		    return "http://" + instance.webster.getAddress() + ":"
 				+ instance.webster.getPort();
+        else
+            return null;
 	}
 	
 	private void listCommands() {

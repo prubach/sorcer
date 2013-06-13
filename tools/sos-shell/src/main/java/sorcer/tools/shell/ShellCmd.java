@@ -17,9 +17,6 @@
  */
 package sorcer.tools.shell;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
@@ -27,7 +24,11 @@ import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
 import sorcer.tools.shell.cmds.DiscoCmd;
+import sorcer.tools.webster.Webster;
 import sorcer.util.ServiceAccessor;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 @SuppressWarnings("rawtypes")
 abstract public class ShellCmd {

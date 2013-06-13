@@ -66,7 +66,11 @@ public class Resolver {
 		return resolveAbsoluteURL(baseUrl, coords).toExternalForm();
 	}
 
-	public static URL resolveAbsoluteURL(URL baseUrl, ArtifactCoordinates coords) {
+    public static String resolveAbsolute(URL baseUrl, String coords) {
+        return resolveAbsoluteURL(baseUrl, ArtifactCoordinates.coords(coords)).toExternalForm();
+    }
+
+    public static URL resolveAbsoluteURL(URL baseUrl, ArtifactCoordinates coords) {
 		try {
 			return new URL(baseUrl, resolveRelative(coords).replace(File.separator, "/"));
 		} catch (MalformedURLException e) {

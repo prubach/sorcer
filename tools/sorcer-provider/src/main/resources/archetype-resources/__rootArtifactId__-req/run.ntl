@@ -14,11 +14,21 @@
 //
 //######################################################################################################################
 
-load mvn://${groupId}:${rootArtifactId}-api:${version}
+codebase mvn://${groupId}:${rootArtifactId}-api:${version}
 
-// When running on a remote host please add @computer:port to point to the codeserver (webster) that serves the
-// ${rootArtifactId}-api.jar file.
-// load mvn://${groupId}:${rootArtifactId}-api:${version}@computer:50001
+// If you want to run the codebase from an external codeserver please add @computer:port to point to the
+// codeserver (webster) that serves the ${rootArtifactId}-api.jar file.
+//
+//      codebase mvn://${groupId}:${rootArtifactId}-api:${version}@computer:50001
+//
+// You can also use a fixed direct URL, for example:
+//
+//      codebase http://computer:50001/lib/${rootArtifactId}-api.jar
+//
+// It is also possible to load local jar files using the "load" command (see below for an example) but those will not become part of the codebase so other
+// providers may complain about missing classes:
+//
+//      load file:///opt/sorcer/lib/*.jar
 
 import ${package}.${providerInterface};
 

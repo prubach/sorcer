@@ -1,6 +1,6 @@
 #!/usr/bin/env nsh
 
-load mvn://org.sorcersoft.sorcer:ex1-api
+codebase mvn://org.sorcersoft.sorcer:ex1-api
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ServiceTask;

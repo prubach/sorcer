@@ -21,6 +21,7 @@ import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
+import sorcer.org.rioproject.net.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 
@@ -193,7 +194,7 @@ public class Sorcer extends SorcerEnv implements SorcerConstants{
 		}
 
 		try {
-			hn = getHostName();
+			hn = HostUtil.getInetAddress().getHostAddress();
 		} catch (UnknownHostException e) {
 			logger.severe("Cannot determine the webster hostname.");
 		}

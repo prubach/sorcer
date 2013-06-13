@@ -2,10 +2,13 @@ package sorcer.tools.shell;
 
 import sorcer.resolver.*;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.JavaSystemProperties;
+import sorcer.util.Sorcer;
 import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -30,6 +33,7 @@ public class LoaderConfigurationHelper {
     private static final String MATCH_FILE_NAME = "\\\\E[^/]+?\\\\Q";
     private static final String MATCH_ALL = "\\\\E.+?\\\\Q";
     public static final String LOAD_PREFIX = "load";
+    public static final String CODEBASE_PREFIX = "codebase";
     static final Logger logger = Logger.getLogger(LoaderConfigurationHelper.class.getName());
 
 
@@ -84,6 +88,87 @@ public class LoaderConfigurationHelper {
             }
         }
         return urlsList;
+    }
+
+    public static String parseCodebase(URL websterUrl, String str) {
+        if ((!str.startsWith("mvn://")) &&  (!str.startsWith("http://"))) {
+            logger.severe("Codebase can only be specified using mvn:// or http://");
+            return null;
+        }
+        if (str.startsWith("mvn://")) {
+            String url = str.substring(6);
+            // Check if URL specifies as artifact on a remote webster
+            String[] urlEntries = url.split("@");
+            String finalUrl = null;
+            try {
+                if (urlEntries.length > 1) {
+                    // Try different resolvers
+                    ArtifactResolver resolver = Resolver.getResolver();
+                    if (resolver instanceof HybridArtifactResolver) {
+                        HybridArtifactResolver hResolver = (HybridArtifactResolver)resolver;
+                        finalUrl = "http://" + urlEntries[1] + "/" +
+                                hResolver.resolveRepoRelative(ArtifactCoordinates.coords(urlEntries[0]));
+                        if (existRemoteFile(new URL(finalUrl))) {
+                            return new URL(finalUrl).toString();
+                        } else {
+                            finalUrl = "http://" + urlEntries[1] + "/" +
+                                    hResolver.resolveFlatRelative(ArtifactCoordinates.coords(urlEntries[0]));
+                            if (existRemoteFile(new URL(finalUrl)))
+                                return new URL(finalUrl).toString();
+                        }
+                    } else {
+                        finalUrl = "http://" + urlEntries[1] + "/" +
+                                Resolver.resolveRelative(urlEntries[0]);
+                        if (existRemoteFile(new URL(finalUrl))) {
+                            return new URL(finalUrl).toString();
+                        }
+                    }
+                } else if (websterUrl!=null) {
+                    finalUrl = Resolver.resolveAbsolute(websterUrl, urlEntries[0]);
+                    if (existRemoteFile(new URL(finalUrl)))
+                        return new URL(finalUrl).toString();
+                }
+            } catch (MalformedURLException e) {
+                logger.severe("Problem creating URL: " + finalUrl);
+            }
+        }
+        if (str.startsWith("http://")) {
+                return str;
+        }
+        return null;
+    }
+
+
+    public static List<URL> setCodebase(List<String> codebaseLines, PrintStream out) {
+        String curCodebase = System.getProperty(JavaSystemProperties.RMI_SERVER_CODEBASE);
+        StringBuilder codebaseSb = new StringBuilder();
+        if (curCodebase!=null) codebaseSb.append(curCodebase);
+        List<URL> codebaseUrls = new ArrayList<URL>();
+        URL websterUrl = null;
+        try {
+            if (NetworkShell.getWebsterUrl()!=null)
+                websterUrl = new URL(NetworkShell.getWebsterUrl());
+        } catch (MalformedURLException me) {
+        }
+        for (String codebaseStr : codebaseLines) {
+            codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
+            if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://"))) {
+                out.println("Codebase can only be specified using mvn:// or http://");
+                return null;
+            }
+
+            String parsedCodebase = LoaderConfigurationHelper.parseCodebase(websterUrl, codebaseStr);
+            try {
+                codebaseUrls.add(new URL(parsedCodebase));
+            } catch (MalformedURLException me) {
+
+            }
+
+            if (parsedCodebase!=null)
+                codebaseSb.append(" ").append(parsedCodebase);
+        }
+        System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebaseSb.toString());
+        return codebaseUrls;
     }
 
     /*

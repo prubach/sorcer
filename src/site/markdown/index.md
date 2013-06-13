@@ -3,7 +3,7 @@
 ![SORCER Architecture](carousel/carousel-SOS_EaaaS.png)
 
 SORCER Operating System is a true service-oriented programming environment that
-realizes the concept of Everything Any Where Any Time as a Service (EaaaS).
+realizes the concept of Everything Anytime Anywhere (AWAT) as a Service (EaaaS).
 
 
 #### Transdisciplinary Service-Oriented Computing

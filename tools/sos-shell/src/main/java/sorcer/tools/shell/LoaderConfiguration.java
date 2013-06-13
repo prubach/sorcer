@@ -107,6 +107,12 @@ public class LoaderConfiguration {
             if (line.startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
                 String loadPath = line.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
                 loadUrls(LoaderConfigurationHelper.load(loadPath));
+            } else if (line.startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
+                // Webster is not yet started so this will work only if we use jars from external websters
+                // specified using: http://.... or mvn://... @address:port
+                List<String> codebasePaths = new ArrayList<String>();
+                codebasePaths.add(line);
+                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, System.out));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);

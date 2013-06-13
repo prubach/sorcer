@@ -558,6 +558,7 @@ public class SorcerEnv {
 
     public static URL getCodebaseRoot() {
         try {
+            // TODO: allow to override hostAddress from sorcer.env
             return getCodebaseRoot(getHostAddress(), sorcerEnv.getWebsterPortProperty());
         } catch (UnknownHostException e) {
             throw new IllegalStateException("Could not obtain local address", e);

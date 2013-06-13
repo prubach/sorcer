@@ -1,6 +1,6 @@
 #!/usr/bin/env nsh
 
-load mvn://org.sorcersoft.sorcer:ex6-api
+codebase mvn://org.sorcersoft.sorcer:ex6-api
 
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;

@@ -24,8 +24,10 @@ import sorcer.service.ServiceExertion;
 import sorcer.tools.shell.LoaderConfigurationHelper;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.JavaSystemProperties;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
@@ -111,6 +113,7 @@ public class ExertCmd extends ShellCmd {
 		}
 		StringBuilder sb = null;
         List<String> loadLines = new ArrayList<String>();
+        List<String> codebaseLines = new ArrayList<String>();
         if (script != null) {
 			sb = new StringBuilder(staticImports.toString());
 			sb.append(script);
@@ -123,9 +126,10 @@ public class ExertCmd extends ShellCmd {
 			}
 			sb = new StringBuilder(staticImports.toString());
 			try {
-                Map<String, List<String>> readResult = readFile(scriptFile);
-                loadLines.addAll(readResult.get(readResult.keySet().toArray()[0]));
-				sb.append(readResult.keySet().toArray()[0]);
+                NetletFileParser readResult = readFile(scriptFile);
+                loadLines = readResult.loadLines;
+                codebaseLines = readResult.codebaseLines;
+				sb.append(readResult.result);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -142,9 +146,10 @@ public class ExertCmd extends ShellCmd {
                     urlsToLoad = LoaderConfigurationHelper.load(loadPath);
             }
         }
-        //out.println("Loading script, jars to load: " + urlsToLoad.toString());
+        // Process "codebase" and set codebase variable
+        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, out));
 
-		ScriptThread et = new ScriptThread(sb.toString(), urlsToLoad.toArray(new URL[] { }));
+        ScriptThread et = new ScriptThread(sb.toString(), urlsToLoad.toArray(new URL[] { }), out);
 		et.start();
 		et.join();
 		Object result = et.getResult();
@@ -192,6 +197,8 @@ public class ExertCmd extends ShellCmd {
 		}
 	}
 
+
+
 	public String getScript() {
 		return script;
 	}
@@ -200,9 +207,24 @@ public class ExertCmd extends ShellCmd {
 		this.script = script;
 	}
 
-	public static Map<String, List<String>> readFile(File file) throws IOException {
+    public static class NetletFileParser {
+        public String result;
+        public List<String> loadLines;
+        public List<String> codebaseLines;
+
+        public NetletFileParser(String result, List<String> loadLines, List<String> codebaseLines ) {
+            this.result = result;
+            this.loadLines = loadLines;
+            this.codebaseLines = codebaseLines;
+        }
+
+    }
+
+
+	public static NetletFileParser readFile(File file) throws IOException {
         Map<String, List<String>> result = new HashMap<String, List<String>>();
         List<String> loadLines = new ArrayList<String>();
+        List<String> codebaseLines = new ArrayList<String>();
 		// String lineSep = System.getProperty("line.separator");
 		String lineSep = "\n";
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -217,15 +239,15 @@ public class ExertCmd extends ShellCmd {
 		while ((nextLine = br.readLine()) != null) {
             // Check for "load" of jars
             if (nextLine.trim().startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
-
                 loadLines.add(nextLine.trim());
+            } else if (nextLine.trim().startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
+                codebaseLines.add(nextLine.trim());
             } else {
                 sb.append(nextLine);
                 sb.append(lineSep);
             }
 		}
-        result.put(sb.toString(), loadLines);
-		return result;
+        return new NetletFileParser(sb.toString(), loadLines, codebaseLines);
 	}
 
 	private StringBuilder readTextFromJar(String filename) {

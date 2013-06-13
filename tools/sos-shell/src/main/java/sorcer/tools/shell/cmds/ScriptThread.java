@@ -18,25 +18,22 @@
 package sorcer.tools.shell.cmds;
 
 import groovy.lang.GroovyShell;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.logging.Logger;
-
 import net.jini.core.transaction.TransactionException;
-
 import org.codehaus.groovy.control.CompilationFailedException;
-
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.RootLoader;
 import sorcer.tools.shell.ShellStarter;
 import sorcer.util.ExertProcessor;
 
-	public class ScriptThread extends Thread {
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
+public class ScriptThread extends Thread {
 		private String script;
 		private File scriptFile;
 		private Object result;
@@ -46,17 +43,17 @@ import sorcer.util.ExertProcessor;
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
-		public ScriptThread(String script, URL[] jarsToAdd) {
+		public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
             RootLoader loader = null;
             if (ShellStarter.getLoader()==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
-                logger.info("NEW Script classloader URLs: " + printUrls(loader.getURLs()));
+                out.println("New Script classloader: " + printUrls(loader.getURLs()));
             }
             else if (ShellStarter.getLoader() instanceof RootLoader) {
                 loader = ((RootLoader)ShellStarter.getLoader());
                 for (URL url : jarsToAdd)
                     loader.addURL(url);
-                logger.info("Script classloader URLs: " + printUrls(loader.getURLs()));
+                out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
             }
             gShell = new GroovyShell(loader!=null ? loader : ShellStarter.getLoader());
 			this.script = script;

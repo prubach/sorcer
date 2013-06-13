@@ -26,6 +26,7 @@ import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Artifact;
+import sorcer.util.JavaSystemProperties;
 import sorcer.util.Sorcer;
 
 import java.io.File;
@@ -271,7 +272,7 @@ abstract public class ServiceRequestor implements Requestor, SorcerConstants {
             if (isWebsterInt)
                 System.setProperty(SorcerConstants.CODEBASE_JARS, codebase.toString());
             else
-                System.setProperty("java.rmi.server.codebase", codebase.toString());
+                System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase.toString());
 
             codebaseJars = toArray(codebase.toString());
         }
