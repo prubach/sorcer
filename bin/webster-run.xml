@@ -47,7 +47,8 @@
 			<sysproperty key="java.security.policy" value="${sorcer.policy}" />
 			<sysproperty key="webster.root" value="${mvn.repo};${lib.dir};${sorcer.home}/lib/river/lib;${sorcer.home}/lib/river/lib-dl" />
 			<sysproperty key="webster.port" value="${provider.webster.port}" />
-			<sysproperty key="webster.interface" value="${provider.webster}" />
+            <!-- Specify only if you need to bind it with a specific interface, leave commented for auto-detection -->
+			<!--<sysproperty key="webster.interface" value="${provider.webster}" />-->
 			<sysproperty key="webster.debug" value="true" />
 			<!-- Configuration for remote requestor/provider data access -->
 <!--			<sysproperty key="data.server" value="10.131.5.90" />

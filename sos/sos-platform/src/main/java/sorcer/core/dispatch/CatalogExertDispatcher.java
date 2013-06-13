@@ -155,15 +155,13 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 	private Exertion execConditional(Exertion exertion)
 			throws ExertionException {
 
-		String codebase = exertion.getProcessSignature()
-				.getCodebase();
 		String providerName = exertion
 				.getProcessSignature().getProviderName();
 		Class serviceType = exertion.getProcessSignature()
 				.getServiceType();
 
 		Service provider = ProviderAccessor.getProvider(providerName,
-				serviceType, codebase);
+				serviceType);
 
 		try {
 			return provider.service(exertion, null);
@@ -214,7 +212,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			} else {
 				NetSignature sig = (NetSignature) task.getProcessSignature();
 				// retrieve the codebase from the ServiceTask's ServiceMethod
-				String codebase = sig.getCodebase();
 				// logger.finest("task codebase: " + codebase);
 
 				// Catalog lookup or use Lookup Service for the particular
@@ -222,22 +219,23 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
                 // Switched to another method that uses the Cataloger service
 				//Provider provider = ProviderAccessor.getProvider(
 				//		sig.getProviderName(), sig.getServiceType(), codebase);
-                Provider provider = ProviderAccessor.getProvider(
-                        		sig.getProviderName(), sig.getServiceType());
+                Service service = Accessor.getServicer(sig);
+                //Provider provider = ProviderAccessor.getProvider(
+                //       		sig.getProviderName(), sig.getServiceType());
 
-				if (provider == null) {
+				if (service== null) {
 					String msg = null;
 					// get the PROCESS Method and grab provider name + interface
 					msg = "No Provider Available\n" + "Provider Name:      "
 							+ sig.getProviderName() + "\n"
-							+ "Provider Interface: " + sig.getServiceType()
-							+ "\n" + "Codbase: " + codebase;
+							+ "Provider Interface: " + sig.getServiceType();
+							//+ "\n" + "Codebase: " + codebase;
 
 					logger.info(msg);
 					throw new ExertionException(msg, task);
 				} else {
 					// setTaskProvider(task, provider.getProviderName());
-					task.setServicer(provider);
+					task.setServicer(service);
 					// client security
 					/*
 					ClientSubject cs = null;
@@ -261,11 +259,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 					 * (RemoteServiceTask)provider.service(task); }
 					 */
 					logger.finer("\n*** getting result from provider... ***\n");
-					result = (NetTask) provider.service(task, null);
+					result = (NetTask) service.service(task, null);
 
 					if (result!=null)
                         result.getControlContext().appendTrace(
-							provider.getProviderName() + " dispatcher: "
+                                ((Provider)service).getProviderName() + " dispatcher: "
 									+ getClass().getName());
 				}
 			}
@@ -287,6 +285,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 					null, new Class[] { Jobber.class }, null);
 			ServiceItem[] jobbers = ServiceAccessor.getServiceItems(st, null,
 					Sorcer.getLookupGroups());
+
 			/*
 			 * check if there is any available jobber in the network and
 			 * delegate the inner job to the available Jobber. In the future, a

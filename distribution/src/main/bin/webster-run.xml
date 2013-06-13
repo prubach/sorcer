@@ -48,7 +48,8 @@
 			<sysproperty key="java.security.policy" value="${sorcer.policy}/sorcer.policy" />
 			<sysproperty key="webster.root" value="${mvn.repo};${sorcer.home}/lib/" />
 			<sysproperty key="webster.port" value="${provider.webster.port}" />
-			<sysproperty key="webster.interface" value="${provider.webster}" />
+            <!-- Specify only if you need to bind it with a specific interface, leave commented for auto-detection -->
+			<!--<sysproperty key="webster.interface" value="${provider.webster}" />-->
 			<sysproperty key="webster.debug" value="true" />
 		</java>
 	</target>

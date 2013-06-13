@@ -1371,7 +1371,7 @@ public class ProviderDelegate implements SorcerConstants {
                     result.setReturnValue(resultValue);
 
                     // do this only if the result value is null
-                    if (resultValue==null || (resultValue!=null && (resultValue.equals(Context.Value.NULL)))) {
+                    /*if (resultValue==null || (resultValue!=null && (resultValue.equals(Context.Value.NULL)))) {
                         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!! Setting return value to return path: " + result.getReturnPath() + " from outPaths !!!!!!!!!!!!!");
                         String outPath = null;
                         for (Object path : ((ServiceContext)result).getOutPaths()) {
@@ -1382,7 +1382,7 @@ public class ProviderDelegate implements SorcerConstants {
                         }
                         logger.info("!!!!!!!!!!!!!!!!!!!!!! Setting return value from path: " + outPath + " value: " + result.get(outPath).toString());
                         result.setReturnValue(result.get(outPath));
-                    }
+                    } */
                 }
 			} else {
 				((ServiceContext) sc).setReturnValue(execMethod.invoke(
