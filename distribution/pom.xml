@@ -160,6 +160,21 @@
         <!-- Examples -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex0-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex0-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex0-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex1-prv</artifactId>
             <version>${project.version}</version>
         </dependency>

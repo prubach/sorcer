@@ -26,7 +26,8 @@
 	
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property name="ex4-req.arg1" value="sorcer.ex4.runner.ParMasterJobRequestor" />
-	<import file="req-run.xml" />
+    <property name="webster.internal" value="true"/>
+    <import file="req-run.xml" />
 
 </project>
 

@@ -43,7 +43,8 @@
 		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />
 			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2}" />
-			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
+            <sysproperty key="webster.internal" value="true"/>
+            <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
 			<arg value="${ex6-req.arg1}" />
 			<arg value="${ex6-req.arg2}" />

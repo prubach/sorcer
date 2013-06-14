@@ -12,12 +12,12 @@
 // - on Unix you can simply run the script by invoking: ./run.ntl
 //
 //
-codebase mvn://org.sorcersoft.sorcer:ex0-api:1.0.0-SNAPSHOT
+codebase mvn://org.sorcersoft.sorcer:ex0-api:1.0-SNAPSHOT
 
 // If you want to run the codebase from an external codeserver please add @computer:port to point to the
 // codeserver (webster) that serves the ex0-api.jar file.
 //
-//      codebase mvn://org.sorcersoft.sorcer:ex0-api:1.0.0-SNAPSHOT@computer:50001
+//      codebase mvn://org.sorcersoft.sorcer:ex0-api:1.0-SNAPSHOT@computer:50001
 //
 // You can also use a fixed direct URL, for example:
 //

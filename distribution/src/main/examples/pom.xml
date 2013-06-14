@@ -26,6 +26,7 @@
 
 
     <modules>
+        <module>ex0</module>
         <module>ex1</module>
         <module>ex2</module>
         <module>ex3</module>

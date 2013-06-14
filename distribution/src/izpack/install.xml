@@ -103,6 +103,9 @@
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
                 <include name="**/*"/>
             </fileset>
+            <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>
         </pack>
     </packs>
     <!--<natives>-->
