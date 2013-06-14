@@ -66,7 +66,7 @@ public class HelloWorldImplUI extends JPanel {
     public static UIDescriptor getUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:ex0-sui:1.0-SNAPSHOT"));
+            URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:ex0-sui"));
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIComponentFactory(new URL[] {uiUrl}, HelloWorldImplUI.class.getName()));
         } catch (Exception ex) {
