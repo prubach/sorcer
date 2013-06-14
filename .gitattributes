@@ -1,0 +1,32 @@
+# Default to linux endings
+* text eol=lf
+
+# OS specific files
+###################
+
+*.sh eol=lf
+*.bat eol=crlf
+
+# Config and Sorcer files
+#########################
+*.xml eol=crlf
+*.ntl eol=crlf
+*.config eol=lf
+
+# Binary files
+##############
+
+# Image files
+*.png binary
+*.jpg binary
+*.gif binary
+*.bmp binary
+
+# Audio files
+*.wav binary
+*.mp3 binary
+*.ogg binary
+
+# Other binary files
+*.xls binary
+*.xlsx binary
