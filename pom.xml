@@ -19,6 +19,7 @@
 
 	<properties>
 		<v.sorcer>${project.version}</v.sorcer>
+		<v.sorcer_release>1.0-M1</v.sorcer_release>
 		<v.jini>2.2.1</v.jini>
 		<v.blitz>2.1.7</v.blitz>
 		<v.sleepycat>4.1.21</v.sleepycat>
@@ -346,7 +347,6 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
-                    <arguments>-DrelVersion=${releaseVersion} -DdevVersion=${developmentVersion}</arguments>
                     <completionGoals>antrun:run</completionGoals>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
@@ -363,9 +363,9 @@
                         <id>default-cli</id>
                         <configuration>
                             <target>
-                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${devVersion} to: ${relVersion}"/>
-                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${devVersion}" value="v.sorcer=${relVersion}"/>
-                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${devVersion}";' value='SORCER_VERSION = "${relVersion}";'/>
+                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${project.version} to: ${v.sorcer_release}"/>
+                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${project.version}" value="v.sorcer=${v.sorcer_release}"/>
+                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${project.version}";' value='SORCER_VERSION = "${v.sorcer_release}";'/>
                             </target>
                         </configuration>
                         <goals>
