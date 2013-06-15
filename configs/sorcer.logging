@@ -65,8 +65,7 @@ sorcer.core.provider.ServiceProvider.level=FINE
 sorcer.test.level=FINE
 # All other logging purposes
 sorcer.random.level=FINER
-
-sorcer.core.provider.cataloger.ServiceCataloger.level=FINEST
+sorcer.core.provider.cataloger.ServiceCataloger.level=INFO
 
 # remote logger
 # domain specific provider and dataContext loggers
