@@ -58,7 +58,7 @@ Getting the sources
 
     ![Select profiles](getting/console/step10.png)
 
-9. Make sure org.sorcersoft.sorcer:sorcer:1.0-SNAPSHOT is selected
+9. Make sure org.sorcersoft.sorcer:sorcer:version is selected
 
     ![Select modules](getting/console/step11.png)
 

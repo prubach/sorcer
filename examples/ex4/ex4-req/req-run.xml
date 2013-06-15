@@ -31,7 +31,7 @@
 	<property name="requestor.name" value="ex4-req" />
 	<property name="requestor.api" value="ex2-api" />
     <property name="requestor.dl" value="ex2-rdl" />
-	<property name="requestor.version" value="1.0-SNAPSHOT" />
+	<property name="requestor.version" value="${v.sorcer}" />
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">

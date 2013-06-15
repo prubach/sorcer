@@ -346,10 +346,30 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
+                    <completionGoals>antrun:run</completionGoals>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
-		    <releaseProfiles>release</releaseProfiles>
-		    <goals></goals>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals></goals>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <target>
+                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${developmentVersion} to: ${releaseVersion}"/>
+                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${developmentVersion}" value="v.sorcer=${releaseVersion}"/>
+                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${developmentVersion}";' value='SORCER_VERSION = "${releaseVersion}";'/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
