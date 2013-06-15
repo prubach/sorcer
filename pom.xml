@@ -347,6 +347,7 @@
                 <version>2.4.1</version>
                 <configuration>
                     <completionGoals>antrun:run</completionGoals>
+                    <arguments>-DreleaseVersion=${releaseVersion} -DdevelopmentVersion=${developmentVersion}</arguments>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
                     <goals></goals>
