@@ -30,3 +30,5 @@
 # Other binary files
 *.xls binary
 *.xlsx binary
+*.jar
+*.zip
