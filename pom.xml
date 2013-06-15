@@ -28,7 +28,7 @@
 		<v.lockmgr>0.2.sorcer2</v.lockmgr>
 
         <!-- required for site -->
-        <v_sorcer>${v.sorcer}</v_sorcer>
+        <v_sorcer>1.0-SNAPSHOT</v_sorcer>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
