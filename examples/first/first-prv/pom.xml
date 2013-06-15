@@ -32,18 +32,18 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>commons-prv</artifactId>
-			<version>${v.sorcer}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-env</artifactId>
-			<version>${v.sorcer}</version>
+			<version>${project.version}</version>
 		</dependency>
 
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -93,7 +93,7 @@
 											<classpath>
 												<param>${project.groupId}:${project.artifactId}:${project.version}</param>
 												<param>${project.groupId}:first-api:${project.version}</param>
-												<param>org.sorcersoft.sorcer:commons-req:${v.sorcer}</param>
+												<param>org.sorcersoft.sorcer:commons-req:${project.version}</param>
 												<param>net.jini.lookup:serviceui:${v.jini}</param>
 											</classpath>
 											<arguments>

@@ -6,13 +6,13 @@
     <parent>
         <artifactId>provider-root</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>${v.sorcer}</version>
+        <version>${project.version}</version>
         <relativePath></relativePath>
     </parent>
 
     <artifactId>examples</artifactId>
     <groupId>org.sorcersoft.sorcer</groupId>
-    <version>${v.sorcer}</version>
+    <version>${project.version}</version>
 
     <packaging>pom</packaging>
     <name>SORCER examples</name>

@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
@@ -98,8 +98,8 @@
 								</goals>
 								<configuration>
 									<requestorClasspath>
-										<entry>org.sorcersoft.sorcer:sos-platform:${v.sorcer}</entry>
-										<entry>org.sorcersoft.sorcer:commons-req:${v.sorcer}</entry>
+										<entry>org.sorcersoft.sorcer:sos-platform:${project.version}</entry>
+										<entry>org.sorcersoft.sorcer:commons-req:${project.version}</entry>
 										<entry>${project.groupId}:${project.artifactId}:${project.version}</entry>
 										<!--<entry>${project.groupId}:ju-arithmetic-api:${project.version}</entry>-->
 										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
@@ -112,8 +112,8 @@
 											<mainClass>junit.sorcer.core.provider.ArithmeticNetTest</mainClass>
 											<codebase>
 												<!--<param>${project.groupId}:${project.artifactId}:${project.version}</param>-->
-												<param>org.sorcersoft.sorcer:sos-platform:${v.sorcer}</param>
-												<param>org.sorcersoft.sorcer:ju-arithmetic-api:${v.sorcer}</param>
+												<param>org.sorcersoft.sorcer:sos-platform:${project.version}</param>
+												<param>org.sorcersoft.sorcer:ju-arithmetic-api:${project.version}</param>
 											</codebase>
 										</param>
 										<param>

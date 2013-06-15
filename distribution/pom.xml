@@ -378,7 +378,7 @@
                                                 <include name="**/*.txt"/>
                                             </fileset>
                                             <filterset>
-                                                <filter token="${v.sorcer}" value="${v.sorcer}"/>
+                                                <filter token="${project.version}" value="${project.version}"/>
                                             </filterset>
                                         </copy>
                                         <copy todir="${staging.dir}/izpack">
@@ -518,7 +518,7 @@
                                                 <include name="**/*.txt"/>
                                             </fileset>
                                             <filterset>
-                                                <filter token="${v.sorcer}" value="${v.sorcer}"/>
+                                                <filter token="${project.version}" value="${project.version}"/>
                                             </filterset>
                                         </copy>
                                         <copy todir="${staging.dir}/izpack">

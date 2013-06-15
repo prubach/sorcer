@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
 			<groupId>org.apache.commons</groupId>

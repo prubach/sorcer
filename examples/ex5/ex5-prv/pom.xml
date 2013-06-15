@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.river</groupId>

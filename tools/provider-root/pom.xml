@@ -54,7 +54,7 @@
                 <plugin>
                     <groupId>org.sorcersoft.sorcer</groupId>
                     <artifactId>sorcer-maven-plugin</artifactId>
-                    <version>${v.sorcer}</version>
+                    <version>${project.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>

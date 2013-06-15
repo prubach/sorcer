@@ -139,7 +139,7 @@
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
 				<artifactId>sos-platform</artifactId>
-				<version>${v.sorcer}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.rioproject</groupId>
@@ -194,7 +194,7 @@
 				<plugin>
 					<groupId>org.sorcersoft.sorcer</groupId>
 					<artifactId>sorcer-maven-plugin</artifactId>
-					<version>${v.sorcer}</version>
+					<version>${project.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

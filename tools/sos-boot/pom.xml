@@ -24,12 +24,12 @@
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-env</artifactId>
-            <version>${v.sorcer}</version>
+            <version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-webster</artifactId>
-			<version>${v.sorcer}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
             <groupId>org.apache.river</groupId>

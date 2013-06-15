@@ -33,7 +33,7 @@
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
 				<artifactId>sorcer-api</artifactId>
-				<version>${v.sorcer}</version>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
