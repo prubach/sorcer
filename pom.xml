@@ -346,8 +346,8 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
+                    <arguments>-DrelVersion=${releaseVersion} -DdevVersion=${developmentVersion}</arguments>
                     <completionGoals>antrun:run</completionGoals>
-                    <arguments>-DreleaseVersion=${releaseVersion} -DdevelopmentVersion=${developmentVersion}</arguments>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
                     <goals></goals>
@@ -356,14 +356,16 @@
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
+                        <inherited>false</inherited>
                         <id>default-cli</id>
                         <configuration>
                             <target>
-                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${developmentVersion} to: ${releaseVersion}"/>
-                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${developmentVersion}" value="v.sorcer=${releaseVersion}"/>
-                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${developmentVersion}";' value='SORCER_VERSION = "${releaseVersion}";'/>
+                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${devVersion} to: ${relVersion}"/>
+                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${devVersion}" value="v.sorcer=${relVersion}"/>
+                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${devVersion}";' value='SORCER_VERSION = "${relVersion}";'/>
                             </target>
                         </configuration>
                         <goals>
