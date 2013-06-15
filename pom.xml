@@ -347,6 +347,8 @@
                 <version>2.4.1</version>
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
+		    <releaseProfiles>release</releaseProfiles>
+		    <goals></goals>
                 </configuration>
             </plugin>
             <plugin>
