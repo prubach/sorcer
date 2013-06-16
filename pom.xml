@@ -1,13 +1,11 @@
-<project
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>sorcer</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER Project</name>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0-M1</version>
 	<description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services.
         Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming.
         Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service.
@@ -350,7 +348,7 @@
                     <completionGoals>antrun:run</completionGoals>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
-                    <goals></goals>
+                    <goals />
                 </configuration>
             </plugin>
             <plugin>
@@ -363,9 +361,9 @@
                         <id>default-cli</id>
                         <configuration>
                             <target>
-                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${project.version} to: ${v.sorcer_release}"/>
-                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${project.version}" value="v.sorcer=${v.sorcer_release}"/>
-                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token='SORCER_VERSION = "${project.version}";' value='SORCER_VERSION = "${v.sorcer_release}";'/>
+                                <echo message="Replacing version in versions.properties and SorcerConstants.java from: ${project.version} to: ${v.sorcer_release}" />
+                                <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${project.version}" value="v.sorcer=${v.sorcer_release}" />
+                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token="SORCER_VERSION = &quot;${project.version}&quot;;" value="SORCER_VERSION = &quot;${v.sorcer_release}&quot;;" />
                             </target>
                         </configuration>
                         <goals>
@@ -538,7 +536,8 @@
 		<developerConnection>scm:git:git@github.com:sorcersoft/sorcer.git</developerConnection>
 		<connection>scm:git:git://github.com/sorcersoft/sorcer.git</connection>
 		<url>https://github.com/sorcersoft/sorcer</url>
-	</scm>
+	  <tag>sorcer-1.0-M1</tag>
+  </scm>
 
 	<profiles>
 		<profile>
