@@ -2,7 +2,6 @@
 <project name ="HelloWorld Requestor" default="run.requestor" basedir=".">
 	<!-- set property values here -->
 	<property name="requestor.name" value="ex0-req" />
-	<property name="requestor.version" value="${v.sorcer}" />
 	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
     <property name="requestor.run.args" value="sorcer.ex0.HelloWorldTester" />
 
@@ -13,6 +12,7 @@
 	<!-- loads system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+    <property name="requestor.version" value="${v.sorcer}" />
 	<echo message="webster: ${provider.webster.url}" />
 
 	<!-- provider codebase jars -->
