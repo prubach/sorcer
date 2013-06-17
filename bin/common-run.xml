@@ -168,6 +168,7 @@
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>
+		        <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
@@ -205,6 +206,7 @@
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
+		        <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar"/>

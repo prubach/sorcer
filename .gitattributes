@@ -10,7 +10,7 @@
 # Config and Sorcer files
 #########################
 *.xml eol=crlf
-*.ntl eol=crlf
+*.ntl eol=lf
 *.config eol=lf
 
 # Binary files

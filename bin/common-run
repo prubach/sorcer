@@ -277,6 +277,7 @@ $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
 $LIB_DIR/jini/jsk-resources.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
+$LIB_DIR/rio/rio-logging-support.jar:\
 $LIB_DIR/rio/rio-start.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/rio/start.jar:\
@@ -309,6 +310,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
@@ -331,6 +333,12 @@ $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.j
     else
         WEBSTER_URL=http://$WEBSTER_INTERFACE:$WEBSTER_PORT
     fi
+    
+    # Turn on debugging if DEBUG is set in env
+    if [ -n "$DEBUG" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
+    fi
+
 }
 
 startSos ( ) {
@@ -344,11 +352,6 @@ startSos ( ) {
     echo "##############################################################################"
     echo " "
     # echo $BOOT_CLASSPATH
-
-    # Turn on debugging if DEBUG is set in env
-    if [ -n "$DEBUG" ]; then
-        JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
-    fi
 
     # Start the Profiler or the JVM
     if $useprofiler ; then
@@ -371,11 +374,6 @@ startSos ( ) {
 
 
 startShell ( ) {
-    # Turn on debugging if DEBUG is set in env
-    if [ -n "$DEBUG" ]; then
-        JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
-    fi
-
 	if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
         # Distro version
         LIB_DIR=$SORCER_HOME/lib
@@ -385,14 +383,13 @@ $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-platform.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
-$LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/slf4j-api.jar:\
 $LIB_DIR/commons/logback-core.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
-$LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/jini/jsk-platform.jar:\
-$LIB_DIR/jini/jsk-lib.jar"
+$LIB_DIR/jini/jsk-lib.jar:\
+$LIB_DIR/jini-lookup/serviceui.jar"
     else        
       	# MVN version
       	SHELL_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
@@ -401,14 +398,13 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
-$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
-$MVN_REPO//ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar:\
+$MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar:\
 $MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
-$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
     fi
 
     CLASS=$1

@@ -143,7 +143,7 @@
                 <exclude>sorcer.logging</exclude>
                 <exclude>versions.properties</exclude>
                 <exclude>browser/pom.xml</exclude>
-                <exclude>shell/configs/nsh-start.config</exclude>
+                <exclude>shell/policy/shell.policy_old</exclude>
                 <exclude>template/**</exclude>
                 <exclude>shellEnv</exclude>
                 <exclude>logback.xml</exclude>
