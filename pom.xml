@@ -28,6 +28,7 @@
 
         <!-- required for site -->
         <v_sorcer>${project.version}</v_sorcer>
+        <v_sorcer_release>${v.sorcer_release}</v_sorcer_release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 

@@ -106,6 +106,9 @@
             <includes>
                 <include>prepare-repository.xml</include>
             </includes>
+            <excludes>
+                <exclude>**/target/**/*</exclude>
+            </excludes>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
@@ -115,6 +118,7 @@
                 <include>**/*</include>
             </includes>
             <excludes>
+               <exclude>**/target/**/*</exclude>
                <exclude>prepare-repository.xml</exclude>
             </excludes>
             <filtered>true</filtered>

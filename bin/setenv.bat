@@ -29,7 +29,7 @@ IF NOT DEFINED SORCER_HOME (
     )
 )
 IF DEFINED SORCER_HOME (
-    SET PATH=%SORCER_HOME%\bin;%PATH%
+    SET "PATH=%SORCER_HOME%\bin;%PATH%"
 )
 
 rem This script sets the environment needed to run commands in this 
@@ -63,6 +63,6 @@ echo ##      ant -f script.xml
 echo ##
 echo ##############################################################################
 echo .
-call cmd
+call %windir%\System32\cmd.exe
 popd
 
