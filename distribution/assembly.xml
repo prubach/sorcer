@@ -179,6 +179,8 @@
             </includes>
             <excludes>
                 <exclude>webster-run.xml</exclude>
+                <exclude>sbin_old_scripts.zip</exclude>
+                <exclude>service-deployer.xml</exclude>
                 <exclude>nsh</exclude>
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>
