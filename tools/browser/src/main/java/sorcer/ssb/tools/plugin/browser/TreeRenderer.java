@@ -175,7 +175,7 @@ public class TreeRenderer extends DefaultTreeCellRenderer {
 			_fieldIcon = new ImageIcon(cl.getResource("rt-images/field.png"));
 			_sidIcon = new ImageIcon(cl.getResource("rt-images/sid.png"));
 			_frameIcon = new ImageIcon(cl.getResource("rt-images/incax.gif"));
-			_hostIcon = new ImageIcon(cl.getResource("rt-images/host.png"));
+			_hostIcon = new ImageIcon(cl.getResource("rt-images/browser.png"));
 			_startedIcon = new ImageIcon(cl
 					.getResource("rt-images/started.png"));
 			_stoppedIcon = new ImageIcon(cl
