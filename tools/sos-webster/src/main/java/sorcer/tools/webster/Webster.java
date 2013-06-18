@@ -27,7 +27,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -469,7 +471,15 @@ public class Webster implements Runnable {
             logger.fine("Webster listening on port : " + port);
         }
         try {
-            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads);
+            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads, new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable runnable) {
+                    Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            });
+
             if (debug)
                 System.out.println("Webster minThreads [" + minThreads + "], "
                         + "maxThreads [" + maxThreads + "]");
@@ -499,8 +509,10 @@ public class Webster implements Runnable {
         if (isDaemon)  {
             runner.setDaemon(true);
         }
+        Runtime.getRuntime().addShutdownHook(new ShutdownWebster(this.pool));
         runner.start();
     }
+
 
     /**
      * Get the roots Webster is serving
@@ -1250,5 +1262,32 @@ public class Webster implements Runnable {
      */
     public static Webster getWebster() {
         return webster;
+    }
+
+
+    class ShutdownWebster extends Thread {
+
+        ThreadPoolExecutor pool;
+
+        ShutdownWebster(ThreadPoolExecutor pool) {
+            this.pool = pool;
+        }
+
+        public void run() {
+            pool.shutdown(); // Disable new tasks from being submitted
+            try {
+                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
+                    pool.shutdownNow(); // Cancel currently executing tasks
+                    // Wait a while for tasks to respond to being cancelled
+                    if (!pool.awaitTermination(10, TimeUnit.SECONDS))
+                        System.err.println("Pool did not terminate");
+                }
+            } catch (InterruptedException ie) {
+                // (Re-)Cancel if current thread also interrupted
+                pool.shutdownNow();
+                // Preserve interrupt status
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
