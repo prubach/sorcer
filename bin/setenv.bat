@@ -29,7 +29,7 @@ IF NOT DEFINED SORCER_HOME (
     )
 )
 IF DEFINED SORCER_HOME (
-    SET PATH=%SORCER_HOME%\bin;%PATH%
+    SET "PATH=%SORCER_HOME%\bin;%PATH%"
 )
 
 rem This script sets the environment needed to run commands in this 
@@ -48,18 +48,21 @@ echo ##   SORCER_HOME: %SORCER_HOME%
 echo ##
 echo ##   To build and run examples you have to have the following tools installed:
 echo ##
+echo ##   - Java Full JDK (http://java.oracle.com)
 echo ##   - Apache Maven (http://maven.apache.org)
 echo ##   - Apache Ant (http://ant.apache.org)
 echo ##
-echo ##   When you have them installed and available in your PATH please:
+echo ##   When you have them installed and available in your PATH:
 echo ##   1. Before building examples for the first time please run:
-echo ##      ant -f prepare-repository.xml
+echo ##      prepare-repository.bat
 echo ##   2. Then run: mvn install to build the examples.
 echo ##   3. If all builds succeed you are ready to go.
 echo ##      Please look for xml ant scripts to start providers and requestors.
+echo ##   4. You can start them by running:
+echo ##      ant -f script.xml
 echo ##
 echo ##############################################################################
 echo .
-call cmd
+call %windir%\System32\cmd.exe
 popd
 

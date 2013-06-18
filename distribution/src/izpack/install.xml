@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <installation version="1.0">
     <info>
-        <appname>SORCER</appname>
+        <appname>Sorcer</appname>
         <appversion>${v.sorcer}</appversion>
         <authors>
             <author email="michael.sobolewski@sorcersoft.com" name="Michael Sobolewski"/>
             <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
             <author email="rafal.krupinski@sorcersoft.com" name="Rafa&#x142; Krupi&#x144;ski"/>
         </authors>
-        <url>http://sorcersoft.github.com/</url>
+        <url>http://www.sorcersoft.com/</url>
         <uninstaller name="Uninstaller.jar" write="yes"/>
         <javaversion>1.6</javaversion>
-        <requiresjdk>no</requiresjdk>
+        <requiresjdk>yes</requiresjdk>
         <writeinstallationinformation>yes</writeinstallationinformation>
-       <!-- <pack200/>-->
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
     </info>
     <guiprefs height="540" resizable="no" width="700">
         <modifier key="useFlags" value="yes"/>
@@ -102,6 +102,19 @@
             <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}/examples"
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
                 <include name="**/*"/>
+                <exclude name="**/target/**/*"/>
+                <exclude name="README.txt"/>
+                <exclude name="setenv"/>
+                <exclude name="prepare-repository.xml"/>
+                <os family="windows"/>
+            </fileset>
+            <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}/examples"
+                     targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
+                <include name="**/*"/>
+                <exclude name="**/target/**/*"/>
+                <exclude name="prepare-repository.bat"/>
+                <os family="unix"/>
+                <os family="mac"/>
             </fileset>
             <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
@@ -111,7 +124,8 @@
     <!--<natives>-->
         <native name="ShellLink.dll" type="izpack"/>
         <native name="ShellLink_x64.dll" type="izpack"/>
-    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <native type="3rdparty" name="COIOSHelper_x64.dll" stage="both"/>
         <os family="windows"/>
     </native>
 

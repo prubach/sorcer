@@ -20,7 +20,23 @@
               programGroup="yes" startMenu="no" startup="no"
               target="$INSTALL_PATH/bin/nsh" terminal="true"
               type="Application" workingDirectory="$INSTALL_PATH"
-              iconFile="$INSTALL_PATH/configs/icons/konsole.png"/>
+              iconFile="$INSTALL_PATH/configs/icons/nsh.png"/>
+    <shortcut KdeUsername="root" applications="yes"
+              description="Sorcer Examples README" desktop="yes"
+              encoding="UTF-8" initialState="normal" name="Sorcer Examples README"
+              programGroup="yes" startMenu="no" startup="no"
+              url="file://$INSTALL_PATH/examples/README.txt"
+              type="Link"
+              iconFile="$INSTALL_PATH/configs/icons/examples.png">
+              <createForPack name="Sorcer Examples"/>
+    </shortcut>
+    <shortcut KdeUsername="root" applications="yes"
+              description="Sorcer Examples Terminal" desktop="yes"
+              encoding="UTF-8" initialState="noShow" name="Sorcer Examples Terminal"
+              programGroup="yes" startMenu="no" startup="no"
+              target="xterm" terminal="false"
+              type="Application" workingDirectory="$INSTALL_PATH/examples"
+              iconFile="$INSTALL_PATH/configs/icons/examples.png"/>
     <shortcut KdeUsername="root" applications="yes"
               description="Uninstalls Sorcer" desktop="no"
               encoding="UTF-8" initialState="normal" name="Uninstall Sorcer"

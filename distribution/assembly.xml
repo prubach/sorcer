@@ -106,6 +106,9 @@
             <includes>
                 <include>prepare-repository.xml</include>
             </includes>
+            <excludes>
+                <exclude>**/target/**/*</exclude>
+            </excludes>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
@@ -115,6 +118,7 @@
                 <include>**/*</include>
             </includes>
             <excludes>
+               <exclude>**/target/**/*</exclude>
                <exclude>prepare-repository.xml</exclude>
             </excludes>
             <filtered>true</filtered>
@@ -143,7 +147,7 @@
                 <exclude>sorcer.logging</exclude>
                 <exclude>versions.properties</exclude>
                 <exclude>browser/pom.xml</exclude>
-                <exclude>shell/configs/nsh-start.config</exclude>
+                <exclude>shell/policy/shell.policy_old</exclude>
                 <exclude>template/**</exclude>
                 <exclude>shellEnv</exclude>
                 <exclude>logback.xml</exclude>
@@ -179,6 +183,8 @@
             </includes>
             <excludes>
                 <exclude>webster-run.xml</exclude>
+                <exclude>sbin_old_scripts.zip</exclude>
+                <exclude>service-deployer.xml</exclude>
                 <exclude>nsh</exclude>
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>

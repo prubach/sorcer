@@ -18,9 +18,9 @@
 		websites of the respective projects before using any of these libraries in your own environment.
             </p>
             
-            <h2>Download Sorcer ${v_sorcer}</h2>
+            <h2>Download Sorcer ${v_sorcer_release}</h2>
             <p>
-                Sorcer ${v_sorcer} is the first pre-release openly available from this website.
+                Sorcer ${v_sorcer_release} is the first stable release available.
 		
             </p>
             <table>
@@ -34,28 +34,28 @@
                         <th>Date</th>
                     </tr>
                     <tr>
-			<td>Sorcer ${v_sorcer} ZIP release</td>
+			<td>Sorcer ${v_sorcer_release} ZIP release</td>
 			<td>zip</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip/download">Download</a></td>
-                        <td>32 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}.zip.md5/download">MD5</a></td>
-                        <td align="center">05/2013</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}.zip/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}.zip.md5/download">MD5</a></td>
+                        <td align="center">18/06/2013</td>
                     </tr>
                     <tr>
-			<td>Sorcer ${v_sorcer} Windows setup</td>
+			<td>Sorcer ${v_sorcer_release} Windows setup</td>
 			<td>exe</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe/download">Download</a></td>
-                        <td>32 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">05/2013</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}-setup.exe/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}-setup.exe.md5/download">MD5</a></td>
+                        <td align="center">18/06/2013</td>
                     </tr>
 		    <tr>
-			<td>Sorcer ${v_sorcer} cross-platform setup</td>
+			<td>Sorcer ${v_sorcer_release} cross-platform setup</td>
 			<td>jar</td> 
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar/download">Download</a></td>
-                        <td>32 MB</td>
-                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer}-setup.jar.md5/download">MD5</a></td>
-                        <td align="center">05/2013</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}-setup.jar/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sorcer_release}-setup.jar.md5/download">MD5</a></td>
+                        <td align="center">18/06/2013</td>
                     </tr>
                 </tbody>
             </table>
@@ -81,7 +81,13 @@
 	      </li>
 	      </ul>
 	    </p>
-	    
+
+	     <h2>Sorcer ${v_sorcer}</h2>
+	                <p>
+                        If you would like to test a more feature rich but less stable version, please check our current SNAPSHOT release: Sorcer ${v_sorcer}
+                        This release is available directly from our SourceForge download site:
+                        <a href="http://sourceforge.net/projects/sorcer/files/">http://sourceforge.net/projects/sorcer/files/</a>
+                    </p>
         </section>
 
     </body>

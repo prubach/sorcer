@@ -44,8 +44,9 @@
 			<arg value="${run.arg2}" />
 			<arg value="${run.arg3}" />
 		 	<classpath refid="run-req.classpath"/>
+           <!-- <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />
-			<sysproperty key="webster.internal" value="true" />
 			<!--<sysproperty key="webster.debug" value="true" />-->
 		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />
