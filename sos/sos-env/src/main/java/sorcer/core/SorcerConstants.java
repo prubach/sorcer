@@ -30,7 +30,7 @@ public interface SorcerConstants {
     // S_ATTRIBUTE is variable name in System properties
     // E_ATTRIBUTE is variable name in the system Environment
 	/* service provider genetic properties */
-	public static final String SORCER_VERSION = "1.0-M1";
+	public static final String SORCER_VERSION = "1.0-M2-SNAPSHOT";
 	// SORCER global properties defined in sorcer.util.Sorcer.java
 	public static final String SORCER_HOME = "sorcer.home";
 

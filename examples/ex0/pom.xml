@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M1</version>
+        <version>1.0-M2-SNAPSHOT</version>
         <artifactId>examples</artifactId>
     </parent>
 
 	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>ex0</artifactId>
-	<version>1.0-M1</version>
+	<version>1.0-M2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SORCER :: ex0</name>
 	<description>HelloWorld Service</description>
