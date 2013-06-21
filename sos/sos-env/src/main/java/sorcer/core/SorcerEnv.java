@@ -534,6 +534,10 @@ public class SorcerEnv {
 	}
 
 
+    public static String getRioVersion() {
+        return props.getProperty(S_VERSION_RIO, RIO_VERSION);
+    }
+
     /***
      * Helper method adding root to each of the jars, and joining the result with spaces
      * @param root

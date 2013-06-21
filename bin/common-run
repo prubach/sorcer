@@ -288,7 +288,7 @@ $LIB_DIR/commons/commons-lang3.jar"
       # MVN version
       V_SORCER=$(getVersion v.sorcer)
       if [ -z "V_SORCER" ] ; then
-        V_SORCER="1.0-SNAPSHOT"
+        V_SORCER="1.0-M2-SNAPSHOT"
       fi
       V_RIO=$(getVersion v.rio)
       V_JINI=$(getVersion v.jini)
@@ -314,8 +314,8 @@ $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.j
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
-$MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"
+$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:"
+#$MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"
 
     fi
 
@@ -339,6 +339,29 @@ $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.j
         JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
     fi
 
+}
+
+createSorcerRioCp ( ) {
+if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+      # Distro version
+      SORCER_RIO_CP="$LIB_DIR/sorcer/sos-env.jar:\
+$LIB_DIR/sorcer/sos-util.jar:\
+$LIB_DIR/sorcer/sos-boot.jar:\
+$LIB_DIR/sorcer/sos-webster.jar:\
+$LIB_DIR/commons/guava.jar:\
+$LIB_DIR/commons/commons-lang3.jar"
+    else
+      # MVN version
+      SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"
+    fi
+
+    echo $SORCER_RIO_CP
 }
 
 startSos ( ) {
@@ -374,6 +397,10 @@ startSos ( ) {
 
 
 startShell ( ) {
+SR_CP=$(createSorcerRioCp)
+echo "SORCER RIO CP:"$SR_CP
+
+
 	if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
         # Distro version
         LIB_DIR=$SORCER_HOME/lib
