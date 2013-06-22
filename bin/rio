@@ -43,14 +43,14 @@ fi
 
 # Set local variables
 if [ -z "$RIO_HOME" ] ; then
-  RIO_HOME="$scriptDir/.."
+  RIO_HOME="$scriptDir/../lib/rio"
 fi
 
 # Convert to absolute path
 RIO_HOME=`cd "$RIO_HOME" && pwd`
 
-RIO_LIB=$RIO_HOME/lib/rio/lib
-RIO_LIB_DL=$RIO_HOME/lib/rio/lib-dl
+RIO_LIB=$RIO_HOME/lib/
+RIO_LIB_DL=$RIO_HOME/lib-dl
 
 # Check for JAVA_HOME
 if [ -z "$JAVA_HOME" ] ; then
@@ -62,12 +62,12 @@ fi
 # Function to find a file
 getStarterConfig() {
     service="$1"
-    if [ -f "$RIO_HOME/configs/rio/start-$service.groovy" ] ; then
-	    starterConfig="$RIO_HOME/configs/rio/start-$service.groovy"
+    if [ -f "$RIO_HOME/../../configs/rio/start-$service.groovy" ] ; then
+	    starterConfig="$RIO_HOME/../../configs/rio/start-$service.groovy"
     elif [ -f "$service" ] ; then
         starterConfig="$service"
     else
-	    echo "Cannot locate expected service starter file [start-$service.groovy] in [$RIO_HOME/configs/rio], exiting"
+	    echo "Cannot locate expected service starter file [start-$service.groovy] in [$RIO_HOME/../../configs/rio], exiting"
 	    exit 1
     fi
 }
@@ -118,7 +118,7 @@ SOS_CLASSPATH=$(createSorcerRioCp)
 
 
 # Build the classpath for SLF4J Logging
-for file in $RIO_HOME/lib/rio/lib/logging/*.jar; do
+for file in $RIO_HOME/lib/logging/*.jar; do
     case $file in
         *logback*)
             logger="logback";;
@@ -130,9 +130,9 @@ done
 SLF4J_CLASSPATH=`echo $SLF4J_CLASSPATH | cut -c2-`
 
 if [ "$logger" = "logback" ]; then
-    loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/configs/rio/logging/logback.groovy`"
+    loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/rio/logging/logback.groovy`"
 else
-    loggingConfig="-Djava.util.logging.config.file=`toNative $RIO_HOME/configs/rio/logging/rio-logging.properties`"
+    loggingConfig="-Djava.util.logging.config.file=`toNative $RIO_HOME/../../configs/rio/logging/rio-logging.properties`"
 fi
 
 #DEBUG=-Dorg.rioproject.tools.webster.debug
@@ -211,19 +211,19 @@ if [ "$start" = "1" ]; then
 
     ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
         -XX:+HeapDumpOnOutOfMemoryError \
-        -XX:OnOutOfMemoryError="$RIO_HOME/bin/rio restart %p $service" \
-        -XX:HeapDumpPath=$RIO_HOME/logs \
+        -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
+        -XX:HeapDumpPath=$RIO_HOME/../../logs \
         $classpath $agentpath $libpath $RIO_OPTS \
-        -Djava.security.policy=$RIO_HOME/configs/rio/rio.policy \
+        -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
         -Djava.protocol.handler.pkgs=org.rioproject.url \
         $loggingConfig \
         -Dorg.rioproject.service=$service \
         -Djava.rmi.server.useCodebaseOnly=false \
         -DRIO_HOME=$RIO_HOME \
-        -DRIO_LOG_DIR=$RIO_HOME/logs/ \
+        -DRIO_LOG_DIR=$RIO_HOME/../../logs/ \
         -Drio.script.mainClass="$launchTarget" \
         $USER_OPTS \
-        $NETWORK $DEBUG $launchTarget $starterConfig $command_line
+        $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line
 elif [ "$project" = "1" ] ;then
     echo "Create project"
     mvn archetype:generate \
@@ -234,18 +234,18 @@ elif [ "$project" = "1" ] ;then
 else
     # Set system properties
     PROPS="-DRIO_HOME=$RIO_HOME"
-    #cliExt="$RIO_HOME/config/rio-cli.groovy"
-    cliExt="$RIO_HOME/configs/rio/tools.groovy"
+    #cliExt="$RIO_HOME/../../configs/rio/rio-cli.groovy"
+    cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
     classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH`"
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
-        -Djava.security.policy=$RIO_HOME/configs/rio/rio.policy \
+        -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
         -Djava.protocol.handler.pkgs=org.rioproject.url \
         -Djava.rmi.server.useCodebaseOnly=false \
         $loggingConfig \
         $PROPS \
         $NETWORK \
-        $DEBUG \
+        $JAVA_OPTS \
         $USER_OPTS \
         $launchTarget $cliExt $command_line
 fi

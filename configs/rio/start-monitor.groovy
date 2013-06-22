@@ -27,28 +27,30 @@ import org.rioproject.resolver.maven2.Repository
 
 @Component('org.rioproject.start')
 class StartMonitorConfig {
+    String rioHome = System.getProperty('RIO_HOME')
+    String platformDir = rioHome+'/../../configs/platform/sorcer/'
+    //String platformDir = rioHome+'/../../configs/rio/platform'
 
     String[] getMonitorConfigArgs(String rioHome) {
-        def configArgs = [rioHome+'/configs/rio/common.groovy', rioHome+'/configs/rio/monitor.groovy']
+        def configArgs = [rioHome+'/../../configs/rio/common.groovy', rioHome+'/../../configs/rio/monitor.groovy']
         return configArgs as String[]
     }
 
     String[] getLookupConfigArgs(String rioHome) {
-        def configArgs = [rioHome+'/configs/rio/common.groovy', rioHome+'/configs/rio/reggie.groovy']
+        def configArgs = [rioHome+'/../../configs/rio/common.groovy', rioHome+'/../../configs/rio/reggie.groovy']
         return configArgs as String[]
     }
 
     ServiceDescriptor[] getServiceDescriptors() {
         RioServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
-        String rioHome = System.getProperty('RIO_HOME')
-
-        def websterRoots = [rioHome+'/lib/rio/lib-dl', ';',
-                            rioHome+'/lib/rio/lib',    ';',
+    s
+        def websterRoots = [rioHome+'/lib-dl', ';',
+                            rioHome+'/lib',    ';',
                             rioHome+'/deploy', ';',
                             m2Repo]
 
-        String policyFile = rioHome+'/configs/rio/rio.policy'
+        String policyFile = rioHome+'/../../configs/rio/rio.policy'
 
         def serviceDescriptors = [
             RioServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),

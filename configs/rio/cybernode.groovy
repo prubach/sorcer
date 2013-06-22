@@ -23,6 +23,7 @@ import org.rioproject.resources.client.JiniClient
 
 import net.jini.core.discovery.LookupLocator
 import org.rioproject.config.Constants
+import sorcer.core.SorcerEnv
 
 /*
  * Declare Cybernode properties
@@ -36,8 +37,9 @@ class CybernodeConfig {
     //long provisionerLeaseDuration = 1000*60
 
     String[] getInitialLookupGroups() {
-        def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
-                      System.getProperty('user.name'))]
+        //def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
+        //             System.getProperty('user.name'))]
+        def groups = SorcerEnv.getLookupGroups();
         return groups as String[]
     }
 

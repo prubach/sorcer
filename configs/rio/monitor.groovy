@@ -39,6 +39,7 @@ import org.rioproject.entry.UIDescriptorFactory
 import org.rioproject.RioVersion
 import net.jini.lookup.ui.MainUI
 import org.rioproject.serviceui.UIFrameFactory
+import sorcer.core.SorcerEnv
 
 /*
 * Declare Provision Monitor properties
@@ -50,8 +51,9 @@ class MonitorConfig {
     String jmxName = 'org.rioproject.monitor:type=Monitor'
 
     String[] getInitialLookupGroups() {
-        def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
-                      System.getProperty('user.name'))]
+        //def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
+        //              System.getProperty('user.name'))]
+        def groups = SorcerEnv.getLookupGroups();
         return groups as String[]
     }
 

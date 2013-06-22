@@ -46,6 +46,8 @@ public final class RioServiceDescriptorUtil {
     private static int port = 0;
     static final String BASE_COMPONENT = "org.rioproject";
     static final String PORT_RANGE = BASE_COMPONENT+".portRange";
+
+    static final String rioLib = File.separator + "lib";
     /**
      * System property to set and check to determine address to bind to or
      * address bound to
@@ -132,7 +134,7 @@ public final class RioServiceDescriptorUtil {
         String rioHome = System.getProperty("RIO_HOME");
         if(rioHome==null)
             throw new RuntimeException("RIO_HOME property not declared");
-        String webster = rioHome+File.separator+"lib"+ File.separator+"rio"+ File.separator+"lib"+ File.separator+createVersionedJar("webster");
+        String webster = rioHome + rioLib + File.separator+createVersionedJar("webster");
         return(getWebster(policy, sPort, roots, debug, webster));
 
     }
@@ -226,7 +228,7 @@ public final class RioServiceDescriptorUtil {
             jarList.add(createVersionedJar("rio-test"));
         }
         StringBuilder classPath = new StringBuilder();
-        classPath.append(makePath(rioHome+File.separator+"lib" + File.separator+"rio"+ File.separator+"lib", jarList.toArray(new String[jarList.size()])));
+        classPath.append(makePath(rioHome + rioLib , jarList.toArray(new String[jarList.size()])));
         return classPath.toString();
     }
 
@@ -268,7 +270,7 @@ public final class RioServiceDescriptorUtil {
             jarList.add(createVersionedJar("rio-test"));
         }
         StringBuilder classPath = new StringBuilder();
-        classPath.append(makePath(rioHome+File.separator+"lib" + File.separator+"rio"+ File.separator+"lib", jarList.toArray(new String[jarList.size()])));
+        classPath.append(makePath(rioHome + rioLib, jarList.toArray(new String[jarList.size()])));
         String implClass = "org.rioproject.monitor.ProvisionMonitorImpl";
         String monitorCodebase = "artifact:org.rioproject.monitor/monitor-proxy/"+ RioVersion.VERSION;
 
@@ -293,8 +295,8 @@ public final class RioServiceDescriptorUtil {
         String rioHome = System.getProperty("RIO_HOME");
         if(rioHome == null)
             throw new RuntimeException("RIO_HOME property not declared");
-        String reggieClasspath = FileHelper.find(new File(rioHome, "lib/rio/lib"), "reggie").getPath();
-        File reggieDL = FileHelper.find(new File(rioHome+ File.separator+"lib"+ File.separator+"rio", "lib-dl"), "reggie-dl");
+        String reggieClasspath = FileHelper.find(new File(rioHome + rioLib), "reggie").getPath();
+        File reggieDL = FileHelper.find(new File(rioHome, "lib-dl"), "reggie-dl");
         String reggieCodebase = "artifact:org.apache.river/reggie-dl/"+ FileHelper.getJarVersion(reggieDL.getName());
         String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
         return (new RioServiceDescriptor(reggieCodebase, policy, reggieClasspath, implClass, lookupConfig));

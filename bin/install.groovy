@@ -56,7 +56,7 @@ if (rioHome == null || rioHome.length() == 0) {
     System.exit(2)
 }
 
-if(!new File(rioHome, "lib/rio/lib").exists()) {
+if(!new File(rioHome, "lib").exists()) {
     System.err.println("Invalid location of Rio: "+rioHome)
     System.exit(2)
 }
@@ -71,26 +71,26 @@ def getJar(File dir, String name) {
     return jar
 }
 StringBuilder classPath = new StringBuilder()
-File rioLib= new File(rioHome, "lib/rio/lib")
+File rioLib= new File(rioHome, "lib")
 classPath.append(getJar(rioLib, "groovy-all").path)
 classPath.append(File.pathSeparator)
 classPath.append(getJar(rioLib, "rio-start").path)
 classPath.append(File.pathSeparator)
-File resolverLibs = new File(rioHome, "lib/rio/lib/resolver")
+File resolverLibs = new File(rioHome, "lib/resolver")
 for(File f: resolverLibs.listFiles()) {
     classPath.append(File.pathSeparator)
     classPath.append(f.path)
 }
 
-File loggingLibDir = new File(rioHome, "lib/rio/lib/logging")
+File loggingLibDir = new File(rioHome, "lib/logging")
 loggingLibDir.eachFile() { file ->
     classPath.append(File.pathSeparator).append(loggingLibDir.path+'/'+file.name)
 }
-classPath.append(File.pathSeparator).append(new File(rioHome, "configs/rio/logging/"))
+classPath.append(File.pathSeparator).append(new File(rioHome, "../../configs/rio/logging/"))
 
 StringBuffer out = new StringBuffer()
 long installDate = System.currentTimeMillis()
-String install = "${java.toString()} -Djava.security.policy=${rioHome}/configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
+String install = "${java.toString()} -Djava.security.policy=${rioHome}/../../configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
 Process process = install.execute()
 process.consumeProcessOutputStream(out)
 process.consumeProcessErrorStream(out)

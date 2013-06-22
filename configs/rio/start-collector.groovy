@@ -28,7 +28,7 @@ import org.rioproject.start.RioServiceDescriptor
 class StartCollectorConfig {
 
     String[] getConfigArgs(String rioHome) {
-        def configArgs = [rioHome+'/configs/rio/common.groovy', rioHome+'/configs/rio/collector.groovy']
+        def configArgs = [rioHome+'/../../configs/rio/common.groovy', rioHome+'/../../configs/rio/collector.groovy']
         return configArgs as String[]
     }
 
@@ -36,10 +36,10 @@ class StartCollectorConfig {
         RioServiceDescriptorUtil.checkForLoopback()
         String rioHome = System.getProperty('RIO_HOME')
 
-        String policyFile = rioHome+'/configs/rio/rio.policy'
+        String policyFile = rioHome+'/../../configs/rio/rio.policy'
 
         StringBuilder pathBuilder = new StringBuilder()
-        pathBuilder.append(rioHome).append(File.separator).append("lib").append(File.separator).append("rio").append(File.separator).append("lib").append(File.separator).append("event-collector-service.jar")
+        pathBuilder.append(rioHome).append(File.separator).append("lib").append(File.separator).append("event-collector-service.jar")
 
         def serviceDescriptors = [
                 new RioServiceDescriptor("artifact:org.rioproject.event-collector/event-collector-proxy/5.0-M3",

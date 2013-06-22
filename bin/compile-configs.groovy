@@ -42,21 +42,21 @@ if (rioHome == null || rioHome.length() == 0) {
     System.exit(2)
 }
 
-if(!new File(rioHome, "lib/rio/lib").exists()) {
+if(!new File(rioHome, "lib").exists()) {
     System.err.println("Invalid location of Rio: "+rioHome)
     System.exit(2)
 }
 
 
 StringBuilder classPath = new StringBuilder()
-File rioLib = new File(rioHome, "lib/rio/lib")
+File rioLib = new File(rioHome, "lib")
 
 for(File f: rioLib.listFiles()) {
     classPath.append(File.pathSeparator)
     classPath.append(f.path)
 }
 
-File configDir = new File(rioHome, "configs/rio/")
+File configDir = new File(rioHome, "../../configs/rio/")
 for(File config : configDir.listFiles()) {	
 	if(config.isDirectory())
 	    continue
@@ -65,7 +65,7 @@ for(File config : configDir.listFiles()) {
     if(config.name.startsWith("start")) {
         continue
     } else {
-        targetDir = "${rioHome}/configs/rio/compiled/${config.name.substring(0, config.name.indexOf("."))}"
+        targetDir = "${rioHome}/../../configs/rio/compiled/${config.name.substring(0, config.name.indexOf("."))}"
     }
     String groovyc = "groovyc -d ${targetDir} -classpath ${classPath.toString()} ${config.path}"
     Process process = groovyc.execute()

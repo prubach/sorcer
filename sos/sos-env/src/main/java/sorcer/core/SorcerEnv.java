@@ -662,4 +662,37 @@ public class SorcerEnv {
     public void setSorcerHome(String sorcerHome) {
         properties.setProperty(SorcerConstants.SORCER_HOME, sorcerHome);
     }
+
+    /**
+     * Returns the Jini Lookup Service groups for this environment.
+     *
+     * @return an array of group names
+     */
+    public static String[] getLookupGroups() {
+        String[] ALL_GROUPS = null; // Jini ALL_GROUPS
+        String groups = props.getProperty(P_GROUPS);
+        if (groups == null || groups.length() == 0)
+            return ALL_GROUPS;
+        String[] providerGroups = toArray(groups);
+        return providerGroups;
+    }
+
+    /**
+     * Convert a comma, space, and '|' delimited String to array of Strings
+     *
+     * @param arg
+     *            The String to convert
+     *
+     * @return An array of Strings
+     */
+    public static String[] toArray(String arg) {
+        StringTokenizer token = new StringTokenizer(arg, " ," + APS);
+        String[] array = new String[token.countTokens()];
+        int i = 0;
+        while (token.hasMoreTokens()) {
+            array[i] = token.nextToken();
+            i++;
+        }
+        return (array);
+    }
 }

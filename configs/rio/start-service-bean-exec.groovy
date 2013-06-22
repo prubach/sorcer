@@ -29,14 +29,14 @@ class StartServiceBeanExecConfig {
 
     String[] getConfigArgs(String rioHome) {
         RioServiceDescriptorUtil.checkForLoopback()
-        File common = new File(rioHome + '/configs/rio/compiled/common')
-        File cybernode = new File(rioHome + '/configs/rio/compiled/cybernode')
-        File computeResource = new File(rioHome + '/configs/rio/compiled/compute_resource')
+        File common = new File(rioHome + '/../../configs/rio/compiled/common')
+        File cybernode = new File(rioHome + '/../../configs/rio/compiled/cybernode')
+        File computeResource = new File(rioHome + '/../../configs/rio/compiled/compute_resource')
 
         def configArgs = []
-        configArgs.addAll(FileHelper.getIfExists(common, rioHome + '/configs/rio/common.groovy'))
-        configArgs.addAll(FileHelper.getIfExists(cybernode, rioHome + '/configs/rio/forked_service.groovy'))
-        configArgs.addAll(FileHelper.getIfExists(computeResource, rioHome + '/configs/rio/compute_resource.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(common, rioHome + '/../../configs/rio/common.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(cybernode, rioHome + '/../../configs/rio/forked_service.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(computeResource, rioHome + '/../../configs/rio/compute_resource.groovy'))
         return configArgs as String[]
     }
 
@@ -45,7 +45,7 @@ class StartServiceBeanExecConfig {
         String codebase = RioServiceDescriptorUtil.getCybernodeCodebase()
         String classpath = RioServiceDescriptorUtil.getCybernodeClasspath()
         
-        String policyFile = rioHome + '/configs/rio/rio.policy'
+        String policyFile = rioHome + '/../../configs/rio/rio.policy'
         def configArgs = getConfigArgs(rioHome)
 
         def serviceDescriptors = [

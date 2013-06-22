@@ -19,6 +19,7 @@ import net.jini.export.Exporter
 import org.rioproject.net.HostUtil
 import net.jini.core.discovery.LookupLocator
 import org.rioproject.resources.client.JiniClient
+import sorcer.core.SorcerEnv
 
 /*
  * Configuration for an Event Collector
@@ -30,8 +31,9 @@ class EventCollectorConfig {
     String jmxName = 'org.rioproject.eventcollector:type=Event Collector'
 
     String[] getInitialLookupGroups() {
-        def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
-                                         System.getProperty('user.name'))]
+        //def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
+        //                                 System.getProperty('user.name'))]
+        def groups = SorcerEnv.getLookupGroups();
         return groups as String[]
     }
 

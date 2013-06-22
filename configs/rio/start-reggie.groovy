@@ -26,13 +26,16 @@ import com.sun.jini.start.ServiceDescriptor;
 @Component('org.rioproject.start')
 class StartReggieConfig {
 
+    String rioHome = System.getProperty('RIO_HOME')
+    String platformDir = rioHome+'/../../configs/platform/sorcer/'
+    //String platformDir = rioHome+'/../../configs/rio/platform'
+
     ServiceDescriptor[] getServiceDescriptors() {
         RioServiceDescriptorUtil.checkForLoopback()
-        String rioHome = System.getProperty('RIO_HOME')
-        def websterRoots = [rioHome+'/lib/rio/lib-dl', ';', rioHome+'/lib/rio/lib']
+        def websterRoots = [rioHome+'/lib-dl', ';', rioHome+'/lib/']
 
-        String policyFile = rioHome+'/configs/rio/rio.policy'
-        def reggieConfig = [rioHome+'/configs/rio/common.groovy', rioHome+'/configs/rio/reggie.groovy']
+        String policyFile = rioHome+'/../../configs/rio/rio.policy'
+        def reggieConfig = [rioHome+'/../../configs/rio/common.groovy', rioHome+'/../../configs/rio/reggie.groovy']
 
         def serviceDescriptors = [
             RioServiceDescriptorUtil.getWebster(policyFile, '10000', websterRoots as String[]),

@@ -64,7 +64,7 @@ def getLogLocationAndName() {
 def getWatchLogDir() {
     String watchLogDir = System.getProperty("RIO_WATCH_LOG_DIR")
     if(watchLogDir==null) {
-        watchLogDir = checkEndsWithFileSeparator(System.getProperty("RIO_HOME"))+"logs"
+        watchLogDir = checkEndsWithFileSeparator(System.getProperty("RIO_HOME"))+"../../logs"
     }
     return checkEndsWithFileSeparator(watchLogDir)
 }

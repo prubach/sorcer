@@ -26,28 +26,29 @@ import org.rioproject.resolver.maven2.Repository
 
 @Component('org.rioproject.start')
 class StartCybernodeConfig {
+    String rioHome = System.getProperty('RIO_HOME')
+    String platformDir = rioHome+'/../../configs/platform/sorcer/'
 
     String[] getConfigArgs(String rioHome) {
         RioServiceDescriptorUtil.checkForLoopback()
-        File common = new File(rioHome + '/configs/rio/compiled/common')
-        File cybernode = new File(rioHome + '/configs/rio/compiled/cybernode')
-        File computeResource = new File(rioHome + '/configs/rio/compiled/compute_resource')
+        File common = new File(rioHome + '/../../configs/rio/compiled/common')
+        File cybernode = new File(rioHome + '/../../configs/rio/compiled/cybernode')
+        File computeResource = new File(rioHome + '/../../configs/rio/compiled/compute_resource')
 
         def configArgs = []
-        configArgs.addAll(FileHelper.getIfExists(common, rioHome + '/configs/rio/common.groovy'))
-        configArgs.addAll(FileHelper.getIfExists(cybernode, rioHome + '/configs/rio/cybernode.groovy'))
-        configArgs.addAll(FileHelper.getIfExists(computeResource, rioHome + '/configs/rio/compute_resource.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(common, rioHome + '/../../configs/rio/common.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(cybernode, rioHome + '/../../configs/rio/cybernode.groovy'))
+        configArgs.addAll(FileHelper.getIfExists(computeResource, rioHome + '/../../configs/rio/compute_resource.groovy'))
         return configArgs as String[]
     }
 
     ServiceDescriptor[] getServiceDescriptors() {
         String m2Repo = Repository.getLocalRepository().absolutePath
-        String rioHome = System.getProperty('RIO_HOME')
-        def websterRoots = [rioHome + '/lib/rio/lib', ';',
-                rioHome + '/lib/rio/lib-dl', ';',
+        def websterRoots = [rioHome + '/lib/', ';',
+                rioHome + '/lib-dl', ';',
                 m2Repo]
 
-        String policyFile = rioHome + '/configs/rio/rio.policy'
+        String policyFile = rioHome + '/../../configs/rio/rio.policy'
 
         def serviceDescriptors = [
                 RioServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),

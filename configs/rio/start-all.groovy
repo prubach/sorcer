@@ -25,24 +25,26 @@ import org.rioproject.resolver.maven2.Repository
 
 @Component('org.rioproject.start')
 class StartAllConfig {
+    String rioHome = System.getProperty('RIO_HOME')
+    String platformDir = rioHome+'/../../configs/platform/sorcer/'
+
     ServiceDescriptor[] getServiceDescriptors() {
         RioServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
-        String rioHome = System.getProperty('RIO_HOME')
 
-        def websterRoots = [rioHome+'/lib/rio/lib-dl', ';',
-                            rioHome+'/lib/rio/lib',    ';',
-                            rioHome+'/deploy', ';',
+        def websterRoots = [rioHome+'/lib-dl', ';',
+                            rioHome+'/lib',    ';',
+                            rioHome+'/../../deploy', ';',
                             m2Repo]
 
-        String policyFile = rioHome+'/configs/rio/rio.policy'
-        def monitorConfigs = [rioHome+'/configs/rio/common.groovy',
-                              rioHome+'/configs/rio/monitor.groovy']
-        def reggieConfigs = [rioHome+'/configs/rio/common.groovy',
-                             rioHome+'/configs/rio/reggie.groovy']
-        def cybernodeConfigs = [rioHome+'/configs/rio/common.groovy',
-                                rioHome+'/configs/rio/cybernode.groovy',
-                                rioHome+'/configs/rio/compute_resource.groovy']
+        String policyFile = rioHome+'/../../configs/rio/rio.policy'
+        def monitorConfigs = [rioHome+'/../../configs/rio/common.groovy',
+                              rioHome+'/../../configs/rio/monitor.groovy']
+        def reggieConfigs = [rioHome+'/../../configs/rio/common.groovy',
+                             rioHome+'/../../configs/rio/reggie.groovy']
+        def cybernodeConfigs = [rioHome+'/../../configs/rio/common.groovy',
+                                rioHome+'/../../configs/rio/cybernode.groovy',
+                                rioHome+'/../../configs/rio/compute_resource.groovy']
 
         def serviceDescriptors = [
             RioServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
