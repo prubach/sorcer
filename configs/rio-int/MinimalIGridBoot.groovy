@@ -6,25 +6,21 @@
  */
 import org.rioproject.config.Constants
 import org.rioproject.config.Constants
+import sorcer.core.SorcerEnv;
 
-def getNameSuffix() {
-    return System.getProperty("user.name").substring(0, 3).toUpperCase();
-}
 
-def appendJars(def dlJars) {
-    def commonDLJars = ["sorcer-prv-dl.jar", "jsk-dl.jar", "rio-api.jar", "serviceui.jar", "jmx-lookup.jar"]
-    dlJars.addAll(commonDLJars)
-    return dlJars as String[]
+String[] getInitialMemberGroups() {
+    def groups = SorcerEnv.getLookupGroups();
+    return groups as String[]
 }
 
 def getSorcerHome() {
-    String sorcerHome = System.getProperty("SORCER_HOME", System.getenv("SORCER_HOME"))
-    return sorcerHome
+    return sorcerHome = SorcerEnv.getHomeDir();
 }
 
-/*def getActualSpaceName() {
+def getActualSpaceName() {
 	return SorcerEnv.getActualSpaceName();
-} */
+}
 
 def String getCodebase() {
     return 'http://'+InetAddress.getLocalHost().getHostAddress()+":9010"
@@ -32,7 +28,7 @@ def String getCodebase() {
 
 //deployment(name: "Sorcer iGrid") {
 deployment(name: 'Sorcer') { //getActualSpaceName()) {
-    groups System.getProperty("sorcer.groups", System.getProperty('user.name'))
+    groups getInitialMemberGroups();
 
     codebase getCodebase()
 
@@ -45,15 +41,18 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     artifact id:'je', "com.sleepycat:je:4.1.21"
     artifact id:'serviceui', "net.jini.lookup:serviceui:2.2.1"
     artifact id:'jsk-platform', "net.jini:jsk-platform:2.2.1"
+    artifact id:'jsk-lib', "net.jini:jsk-lib:2.2.1"
     artifact id:'outrigger-dl', "org.apache.river:outrigger-dl:2.2.1"
-
-    artifact id:'commons-prv', "org.sorcersoft.sorcer:commons-prv:1.0-M2-SNAPSHOT"
-    artifact id:'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:1.0-M2-SNAPSHOT"
 
     artifact id:'sos-platform', "org.sorcersoft.sorcer:sos-platform:1.0-M2-SNAPSHOT"
     artifact id:'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:1.0-M2-SNAPSHOT"
 
-
+    artifact id:'commons-prv', "org.sorcersoft.sorcer:commons-prv:1.0-M2-SNAPSHOT"
+    artifact id:'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:1.0-M2-SNAPSHOT"
+    artifact id:'spacer-prv', "org.sorcersoft.sorcer:jobber-prv:1.0-M2-SNAPSHOT"
+    artifact id:'logger-prv', "org.sorcersoft.sorcer:logger-prv:1.0-M2-SNAPSHOT"
+    artifact id:'logger-sui', "org.sorcersoft.sorcer:logger-sui:1.0-M2-SNAPSHOT"
+    artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:1.0-M2-SNAPSHOT"
 
 
     service(name:'Mahalo') {
@@ -68,10 +67,10 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         maintain 1
     }
 
- /*   service(name: "Blitz Space") {
+    service(name: "Blitz Space") {
         interfaces {
             classes 'net.jini.space.JavaSpace05'
-            artifact ref:'blitz-dl', 'blitzui'
+            artifact ref:'blitz-dl', 'blitz-dl', 'blitzui'
         }
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
             artifact ref:'blitz', 'blitzui','je','serviceui','jsk-platform','outrigger-dl'
@@ -79,7 +78,7 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         configuration file: "${getSorcerHome()}/configs/blitz/configs/blitz.config"
         maintain 1
     }
-   */
+
     service(name: "Jobber") {
         interfaces {
             classes 'sorcer.service.Jobber'
@@ -92,13 +91,13 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         maintain 1
     }
 
-/*    service(name: "Spacer") {
+    service(name: "Spacer") {
         interfaces {
             classes 'sorcer.service.Spacer'
-            resources appendJars(["spacer-dl.jar"])
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
-            resources "spacer.jar", "sorcer-prv.jar", "monitor-api.jar"
+            artifact ref:'commons-prv', 'spacer-prv'
         }
         configuration file: "${getSorcerHome()}/configs/sos-providers/spacer.config"
         maintain 1
@@ -107,36 +106,60 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     service(name: "Cataloger") {
         interfaces {
             classes 'sorcer.core.Cataloger'
-            resources appendJars(["cataloger-dl.jar", "exertlet-ui.jar",])
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
-            resources "cataloger.jar", "sorcer-prv.jar"
+            artifact ref:'commons-prv', 'cataloger-prv'
         }
         configuration file: "${getSorcerHome()}/configs/sos-providers/cataloger.config"
         maintain 1
     }
 
-    service(name: "Logger") {
+    /*service(name: "Logger") {
         interfaces {
             classes 'sorcer.core.provider.logger.RemoteLogger'
-            resources appendJars(["logger-dl.jar"])
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui', 'logger-sui'
         }
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
-            resources "logger.jar", "sorcer-prv.jar"
+            artifact ref:'commons-prv', 'logger-prv', 'logger-sui'
         }
-        configuration file: "${getIGridHome()}/configs/sos-providers/logger.config"
+        configuration file: "${getSorcerHome()}/configs/sos-providers/logger.config"
         maintain 1
     }
 
     service(name: "ExertMonitor") {
         interfaces {
             classes 'sorcer.core.provider.exertmonitor.MonitoringManagement'
-            resources appendJars(["exertmonitor-dl.jar", "exertlet-ui.jar"])
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
-            resources 'exertmonitor.jar', "sorcer-prv.jar"
+            artifact ref:'commons-prv', 'exertmonitor-prv', 'je'
         }
         configuration file: "${getSorcerHome()}/configs/sos-providers/exertmonitor.config"
+        maintain 1
+    }
+      */
+/*    service(name: "DatabaseStorer") {
+        interfaces {
+            classes 'sorcer.core.provider.dbp.DatabaseProvider'
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
+        }
+        implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
+            artifact ref:'commons-prv', 'dbp-prv', 'je'
+        }
+        configuration file: "${getSorcerHome()}/configs/sos-providers/dbp.config"
+        maintain 1
+    }
+ */
+  /*  service(name: "Exerter") {
+        interfaces {
+            classes 'sorcer.core.provider.ServiceTasker'
+            artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
+        }
+        implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
+            artifact ref:'commons-prv'
+        }
+        configuration file: "${getSorcerHome()}/configs/sos-providers/exerter.config"
         maintain 1
     }*/
 }

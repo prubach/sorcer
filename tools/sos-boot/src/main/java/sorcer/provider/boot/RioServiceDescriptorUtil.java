@@ -26,6 +26,7 @@ import org.rioproject.util.PortUtil;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.org.rioproject.net.HostUtil;
+import sorcer.resolver.Resolver;
 
 import java.io.File;
 import java.io.IOException;
@@ -271,6 +272,8 @@ public final class RioServiceDescriptorUtil {
         }
         StringBuilder classPath = new StringBuilder();
         classPath.append(makePath(rioHome + rioLib, jarList.toArray(new String[jarList.size()])));
+        // Added to enable starting of Sorcer services
+        classPath.append(File.pathSeparator).append(Resolver.resolveAbsolute("org.dancres.blitz:blitz"));
         String implClass = "org.rioproject.monitor.ProvisionMonitorImpl";
         String monitorCodebase = "artifact:org.rioproject.monitor/monitor-proxy/"+ RioVersion.VERSION;
 

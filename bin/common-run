@@ -292,6 +292,7 @@ $LIB_DIR/commons/commons-lang3.jar"
       fi
       V_RIO=$(getVersion v.rio)
       V_JINI=$(getVersion v.jini)
+      V_BLITZ=$(getVersion v.blitz)
       V_GROOVY=$(getVersion v.groovy)
 
       JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
@@ -349,7 +350,11 @@ $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
 $LIB_DIR/commons/guava.jar:\
-$LIB_DIR/commons/commons-lang3.jar"
+$LIB_DIR/commons/blitz.jar:\
+$LIB_DIR/commons/commons-lang3.jar:\
+$LIB_DIR/jini/jsk-lib.jar:\
+$LIB_DIR/jini-lookup/serviceui.jar"
+
     else
       # MVN version
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
@@ -358,7 +363,10 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"
+$MVN_REPO/org/dancres/blitz/blitz/$V_BLITZ/blitz-$V_BLITZ.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
     fi
 
     echo $SORCER_RIO_CP

@@ -39,11 +39,21 @@ else
     path_to_jar="$RIO_HOME/lib/rio-ui-$rioVersion.jar"
 fi
 
+##############################
+# Sorcer basic jars added to classpath
+. "$scriptDir/common-run"
+SOS_CLASSPATH=$(createSorcerRioCp)
+RIOUI_CLASSPATH=$SOS_CLASSPATH:$path_to_jar
+MAIN_CLASS=org.rioproject.tools.ui.Main
+
+echo "RIO-UI CP:"$RIOUI_CLASSPATH
+##############################
+
 # Check for running on OS/X
 opSys=`uname -s`
 if [ $opSys = "Darwin" ] ; then
-    java -DRIO_HOME=$RIO_HOME -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url -Xdock:name="Rio" -jar $path_to_jar $*
+    java -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url -Xdock:name="Rio" $MAIN_CLASS $*
 else
-    java -DRIO_HOME=$RIO_HOME -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url -jar $path_to_jar  $*
+    java -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url $MAIN_CLASS $*
 fi
 
