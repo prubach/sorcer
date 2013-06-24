@@ -72,11 +72,11 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, DatabaseException, Exception {
-		dbDir = new File("./tmp/ju-sorcer-db");
+		dbDir = new File("tmp/ju-sorcer-db");
         IOUtils.deleteDir(dbDir);
         System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
-		String homeDir = "./tmp/ju-sorcer-db";
+		String homeDir = "tmp/ju-sorcer-db";
 		runner = new SorcerDatabaseRunner(homeDir);
         runner.run();
 	}
