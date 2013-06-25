@@ -46,7 +46,6 @@ import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
-import sorcer.util.bdb.sdb.SdbOperations;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 public class DataStorageCmd extends ShellCmd {
@@ -202,7 +201,7 @@ public class DataStorageCmd extends ShellCmd {
 			Context cxt = null;
 			 try {
 				 try {
-                     SdbOperations.store("dupa");
+                     operator.store("dupa");
                  } catch (ExertionException e1) {
 					e1.printStackTrace();
 				} catch (SignatureException e1) {
@@ -219,7 +218,7 @@ public class DataStorageCmd extends ShellCmd {
 				}
 				out.println("XXXXXXXXXXXXX dataContext: " + cxt);
 				try {
-                    SdbOperations.store("dupa");
+                    operator.store("dupa");
                     List<String>  records = operator.list(Store.object);
 					out.println("XXXXXXXXXXXXX records; " + records);
 				} catch (ExertionException e) {

@@ -20,6 +20,7 @@ package sorcer.eo;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
+import net.jini.id.Uuid;
 import sorcer.co.tuple.*;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
@@ -528,8 +529,8 @@ public class operator {
 				if (target.getRef() == null) {
 					url.setTarget(store(value));
 				} else {
-					SdbUtil.update(target, value);
-				}
+                    update(SdbUtil.getUuid(target), value);
+                }
 			} catch (Exception e) {
 				throw new EvaluationException(e);
 			}
@@ -777,7 +778,60 @@ public class operator {
 		return new InoutEntry(path, value, index);
 	}
 
-	private static class Pipe {
+    public static URL deleteURL(URL url) throws ExertionException,
+			SignatureException, ContextException {
+		String serviceTypeName = SdbUtil.getServiceType(url);
+		String storageName = SdbUtil.getProviderName(url);
+		Task objectStoreTask;
+		try {
+			objectStoreTask = task(
+					"delete",
+					sig("contextDelete", Class.forName(serviceTypeName),
+							storageName),
+					ContextFactory.context("delete",
+                            in(StorageManagement.object_deleted, url),
+                            result(StorageManagement.object_url)));
+		} catch (ClassNotFoundException e) {
+			throw new SignatureException("No such service type: "
+					+ serviceTypeName, e);
+		}
+		return (URL) value(objectStoreTask);
+	}
+
+    public static URL deleteObject(Object object) throws ExertionException,
+            SignatureException, ContextException {
+        String storageName = Sorcer.getActualName(Sorcer
+                .getDatabaseStorerName());
+        Task objectStoreTask = task(
+                "delete",
+                sig("contextDelete", DatabaseStorer.class, storageName),
+                ContextFactory.context("delete", in(StorageManagement.object_deleted, object),
+                        result(StorageManagement.object_url)));
+        return (URL) value(objectStoreTask);
+    }
+
+    @SuppressWarnings("unchecked")
+    static public List<String> list(URL url, Store storeType)
+            throws ExertionException, SignatureException, ContextException {
+        Store type = storeType;
+        String providerName = SdbUtil.getProviderName(url);
+        if (providerName == null)
+            providerName = Sorcer.getActualDatabaseStorerName();
+
+        if (type == null) {
+            type = SdbUtil.getStoreType(url);
+            if (type == null) {
+                type = Store.object;
+            }
+        }
+        Task listTask = task("list",
+                sig("contextList", DatabaseStorer.class, providerName),
+                SdbUtil.getListContext(type));
+
+        return (List<String>) Evaluator.value(listTask);
+    }
+
+    private static class Pipe {
 		String inPath;
 		String outPath;
 		Exertion in;
@@ -853,13 +907,32 @@ public class operator {
 
 	public static URL update(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.update(object);
-	}
+        if (!(object instanceof Identifiable)
+                || !(((Identifiable) object).getId() instanceof Uuid)) {
+            throw new ContextException("Object is not Uuid Identifiable: "
+                    + object);
+        }
+        return update((Uuid) ((Identifiable) object).getId(), object);
+    }
 
-	public static List<String> list(URL url) throws ExertionException,
+    static public URL update(Uuid storeUuid, Object value)
+            throws ExertionException, SignatureException, ContextException {
+        Task objectUpdateTask = task(
+                "update",
+                sig("contextUpdate", DatabaseStorer.class,
+                        Sorcer.getActualDatabaseStorerName()),
+                SdbUtil.getUpdateContext(value, storeUuid));
+
+        objectUpdateTask = exert(objectUpdateTask);
+        return (URL) get(ContextFactory.context(objectUpdateTask),
+                StorageManagement.object_url);
+    }
+
+    public static List<String> list(URL url) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.list(url);
-	}
+        return list(url, null);
+
+    }
 
     @SuppressWarnings("unchecked")
     static public List<String> list(Store storeType) throws ExertionException,
@@ -876,8 +949,12 @@ public class operator {
 
     public static URL delete(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.delete(object);
-	}
+        if (object instanceof URL) {
+            return deleteURL((URL) object);
+        } else {
+            return deleteObject(object);
+        }
+    }
 
 	public static int clear(Store type) throws ExertionException,
 			SignatureException, ContextException {

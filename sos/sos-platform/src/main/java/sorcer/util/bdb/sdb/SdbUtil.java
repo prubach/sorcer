@@ -83,7 +83,7 @@ public class SdbUtil {
     /**
 	 * Returns a dataContext to be used with
 	 * {@link StorageManagement#contextUpdate(Context)}
-	 * 
+	 *
 	 * @param object
 	 *            to be updated
 	 * @param uuid
@@ -106,41 +106,6 @@ public class SdbUtil {
 		cxt.putInValue(StorageManagement.store_type, storeType);
 		cxt.setReturnPath(StorageManagement.store_content_list);
 		return cxt;
-	}
-
-	static public URL update(Object value) throws ExertionException,
-			SignatureException, ContextException {
-		if (!(value instanceof Identifiable)
-				|| !(((Identifiable) value).getId() instanceof Uuid)) {
-			throw new ContextException("Object is not Uuid Identifiable: "
-					+ value);
-		}
-		return SdbOperations.update((Uuid) ((Identifiable) value).getId(), value);
-	}
-
-	static public URL update(URL storedURL, Object value)
-			throws ExertionException, SignatureException, ContextException {
-		return SdbOperations.update(getUuid(storedURL), value);
-	}
-
-    public static URL delete(Object object) throws ExertionException,
-			SignatureException, ContextException {
-		if (object instanceof URL) {
-			return SdbOperations.deleteURL((URL) object);
-		} else {
-			return SdbOperations.deleteObject(object);
-		}
-	}
-
-    static public Object retrieve(URL url) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbOperations.retrieve(SdbUtil.getUuid(url), getStoreType(url));
-	}
-
-    static public List<String> list(URL url) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbOperations.list(url, null);
-
 	}
 
 }
