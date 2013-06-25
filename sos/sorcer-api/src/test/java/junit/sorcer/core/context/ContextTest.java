@@ -31,12 +31,6 @@ import static sorcer.co.operator.entry;
 import static sorcer.co.operator.map;
 import static sorcer.eo.operator.*;
 
-//import static sorcer.vo.operator.evaluators;
-//import static sorcer.vo.operator.expr;
-//import static sorcer.vo.operator.name;
-//import static sorcer.vo.operator.var;
-//import static sorcer.vo.operator.vars;
-
 /**
  * @author Mike Sobolewski
  */
@@ -55,35 +49,35 @@ public class ContextTest {
 
 		Context<?> cxt = context(in("k1", 1.0), in("k2", 2.0), in("k3", 3.0), out("k4", 4.0));
 		logger.info("in/out dataContext: " + cxt);
-		assertEquals(get(cxt, "k1"), 1.0);
-		assertEquals(get(cxt, "k2"), 2.0);
-		assertEquals(get(cxt, "k3"), 3.0);
-		assertEquals(get(cxt, "k4"), 4.0);
-		assertEquals(get(cxt, 1), 1.0);
-		assertEquals(get(cxt, 2), 2.0);
-		assertEquals(get(cxt, 3), 3.0);
-		assertEquals(get(cxt, 4), 4.0);
+		assertEquals(1.0, get(cxt, "k1"));
+		assertEquals(2.0, get(cxt, "k2"));
+		assertEquals(3.0, get(cxt, "k3"));
+		assertEquals(4.0, get(cxt, "k4"));
+		assertEquals(1.0, get(cxt, 1));
+		assertEquals(2.0, get(cxt, 2));
+		assertEquals(3.0, get(cxt, 3));
+		assertEquals(4.0, get(cxt, 4));
 		
-//		assertEquals(((PositionalContext)cxt).getTally(), 4);
+//		assertEquals(4, ((PositionalContext)cxt).getTally());
 //		//logger.info("tally: " + ((PositionalContext)cxt).getTally());
 //		put(cxt, entry("k4", var("x1", 50.0)));
 //		logger.info("tally after k4: " + ((PositionalContext)cxt).getTally());
-//		assertEquals(((PositionalContext)cxt).getTally(), 4);
+//		assertEquals(4, ((PositionalContext)cxt).getTally());
 //		logger.info("value k4: " + get(cxt, "k4"));
-//		assertEquals(revalue(cxt, "k4"), 50.0);
+//		assertEquals(50.0, revalue(cxt, "k4"));
 //		assertEquals(name(get(cxt, "k4")), "x1");
 		
 //		put(cxt, entry("k5", var("x2", 100.0)));
 //		logger.info("tally after k5: " + ((PositionalContext)cxt).getTally());
-//		assertEquals(((PositionalContext)cxt).getTally(), 5);
+//		assertEquals(5, ((PositionalContext)cxt).getTally());
 //		logger.info("value k5: " + get(cxt, "k5"));
-//		assertEquals(revalue(cxt, "k5"), 100.0);
+//		assertEquals(100.0, revalue(cxt, "k5"));
 	
 		cxt = context(entry("k1", 1.0), entry("k2", 2.0), entry("k3", 3.0));
 		logger.info("dataContext cxt:  " + cxt.getClass());
 		//logger.info("entry dataContext cxt:  " + cxt);
-		assertEquals(get(cxt, "k2"), 2.0);
-		assertEquals(get(cxt, "k3"), 3.0);
+		assertEquals(2.0, get(cxt, "k2"));
+		assertEquals(3.0, get(cxt, "k3"));
 	}
 	
 //	@Test
@@ -92,7 +86,7 @@ public class ContextTest {
 //				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))));
 //		revaluable(cxt);
 //		//logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//		assertEquals(value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)), 500.0);
+//		assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
 //	}
 	
 //	@Test
@@ -103,7 +97,7 @@ public class ContextTest {
 //		logger.info("cxt: " + cxt);
 //
 //		//logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//		assertEquals(value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)), 500.0);
+//		assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
 //	}
 	
 //	@Test
@@ -118,7 +112,7 @@ public class ContextTest {
 //		logger.info("cxt value:  " + value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
 //		
 //		// No path for the evaluation is specified in the dataContext cxt
-//		assertEquals(value(cxt, entry("x1", 10.0), entry("x2", 50.0)), 500.0);
+//		assertEquals(500.0, value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
 //	}
 	
 //	@Test
@@ -132,6 +126,6 @@ public class ContextTest {
 ////		logger.info("x21: " + value(var("x21", cxt0)));
 //		
 //		//logger.info("cxt value:  " + value(cxt, entry("x1", var("x11", cxt0)), entry("x2", var("x21", cxt0))));
-//		assertEquals(value(cxt, entry("x1", var("x11", cxt0)), entry("x2", var("x21", cxt0))), 500.0);
+//		assertEquals(500.0, value(cxt, entry("x1", var("x11", cxt0)), entry("x2", var("x21", cxt0))));
 //	}
 }
