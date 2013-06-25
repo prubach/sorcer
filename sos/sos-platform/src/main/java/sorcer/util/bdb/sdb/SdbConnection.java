@@ -17,6 +17,7 @@
  */
 package sorcer.util.bdb.sdb;
 
+import sorcer.co.tuple.InEntry;
 import sorcer.core.StorageManagement;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -28,8 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.in;
+import static sorcer.service.ContextFactory.context;
 
 /**
  * @author Mike Sobolewski
@@ -81,5 +81,9 @@ public class SdbConnection extends URLConnection {
 		} catch (ContextException e) {
 			throw new IOException(e);
 		}
+	}
+
+    private static <T>InEntry<T> in(String path, T value) {
+        return new InEntry<T>(path, value, 0);
 	}
 }

@@ -37,7 +37,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static sorcer.eo.operator.task;
+import static sorcer.service.TaskFactory.task;
 
 /**
  * @author Mike Sobolewski

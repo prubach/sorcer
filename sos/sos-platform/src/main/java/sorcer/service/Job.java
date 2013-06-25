@@ -36,9 +36,9 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
-import sorcer.eo.operator;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
+import sorcer.util.StringUtils;
 
 /**
  * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
@@ -465,7 +465,7 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public Object getJobValue(String path) throws ContextException {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];
@@ -508,7 +508,7 @@ public abstract class Job extends ServiceExertion {
 	}
 	
 	public Object putJobValue(String path, Object value) throws ContextException {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];
@@ -550,7 +550,7 @@ public abstract class Job extends ServiceExertion {
 	}
 	
 	public Exertion getComponentExertion(String path) {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];

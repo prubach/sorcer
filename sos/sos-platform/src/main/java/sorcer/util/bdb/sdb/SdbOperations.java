@@ -34,6 +34,7 @@ import java.net.URL;
 import java.util.List;
 
 import static sorcer.eo.operator.*;
+import static sorcer.service.ContextFactory.context;
 
 /**
  * SdbOperations are methods extracted from SdbUtil and use sorcer.oe.operator methods. Some other methods from SdbUtil

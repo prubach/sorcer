@@ -96,7 +96,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
-import static sorcer.eo.operator.sig;
+import static sorcer.service.SignatureFactory.sig;
 
 /**
  * The provider delegate implements most of the intialization and configuration

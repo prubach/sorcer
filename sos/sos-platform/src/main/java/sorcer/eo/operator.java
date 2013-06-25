@@ -20,10 +20,7 @@ package sorcer.eo;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
-import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.IndexedTriplet;
-import sorcer.co.tuple.Path;
-import sorcer.co.tuple.Tuple2;
+import sorcer.co.tuple.*;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.StorageManagement;
@@ -52,14 +49,14 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
+
+import static sorcer.util.UnknownName.getUnknown;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {
-
-	private static int count = 0;
 
 	private static final Logger logger = Logger.getLogger(operator.class
 			.getName());
@@ -153,13 +150,9 @@ public class operator {
 		return exertion.getExertion(childName).getControlContext();
 	}
 
-	public static <T extends Object> Context cxt(T... entries)
+	public static <T> Context cxt(T... entries)
 			throws ContextException {
 		return context(entries);
-	}
-
-	public static Context jCxt(Job job) throws ContextException {
-		return job.getJobContext();
 	}
 
 	public static Context jobContext(Exertion job) throws ContextException {
@@ -170,164 +163,10 @@ public class operator {
 		return new DataEntry(Context.DSD_PATH, data);
 	}
 
-	public static <T extends Object> Context context(T... entries)
+	public static <T> Context context(T... entries)
 			throws ContextException {
-		if (entries[0] instanceof Exertion) {
-			Exertion xrt = (Exertion) entries[0];
-			if (entries.length >= 2 && entries[1] instanceof String)
-				xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
-			return xrt.getDataContext();
-		} else if (entries[0] instanceof String
-				&& entries[1] instanceof Exertion) {
-			return ((Job) entries[1]).getComponentExertion((String) entries[0])
-					.getDataContext();
-		}
-		String name = getUnknown();
-		List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
-		// List<inEntry> inEntries = new ArrayList<inEntry>();
-		// List<outEntry> outEntries = new ArrayList<outEntry>();
-		// List<entry> cxtEntries = new ArrayList<entry>();
-		List<Context.Type> types = new ArrayList<Context.Type>();
-		Complement subject = null;
-		ReturnPath returnPath = null;
-		Args cxtArgs = null;
-		ParameterTypes parameterTypes = null;
-		target target = null;
-		for (T o : entries) {
-			if (o instanceof Complement) {
-				subject = (Complement) o;
-			} else if (o instanceof Args
-					&& ((Args) o).args.getClass().isArray()) {
-				cxtArgs = (Args) o;
-			} else if (o instanceof ParameterTypes
-					&& ((ParameterTypes) o).parameterTypes.getClass().isArray()) {
-				parameterTypes = (ParameterTypes) o;
-			} else if (o instanceof target) {
-				target = (target) o;
-			} else if (o instanceof Tuple2) {
-				entryList.add((Tuple2) o);
-			} else if (o instanceof ReturnPath) {
-				returnPath = (ReturnPath) o;
-			} else if (o instanceof Context.Type) {
-				types.add((Context.Type) o);
-			} else if (o instanceof String) {
-				name = (String) o;
-			}
-		}
-		Context cxt = null;
-		if (types.contains(Context.Type.ARRAY)) {
-			if (subject != null)
-				cxt = new ArrayContext(name, subject.path(), subject.value());
-			else
-				cxt = new ArrayContext(name);
-		} else if (types.contains(Context.Type.LIST)) {
-			if (subject != null)
-				cxt = new ListContext(name, subject.path(), subject.value());
-			else
-				cxt = new ListContext(name);
-		} else if (types.contains(Context.Type.SHARED)
-				&& types.contains(Context.Type.INDEXED)) {
-			cxt = new SharedIndexedContext(name);
-		} else if (types.contains(Context.Type.SHARED)) {
-			cxt = new SharedAssociativeContext(name);
-		} else if (types.contains(Context.Type.ASSOCIATIVE)) {
-			if (subject != null)
-				cxt = new ServiceContext(name, subject.path(), subject.value());
-			else
-				cxt = new ServiceContext(name);
-		} else {
-			if (subject != null) {
-				cxt = new PositionalContext(name, subject.path(),
-						subject.value());
-			} else {
-				cxt = new PositionalContext(name);
-			}
-		}
-		if (cxt instanceof PositionalContext) {
-			PositionalContext pcxt = (PositionalContext) cxt;
-			if (entryList.size() > 0) {
-				for (int i = 0; i < entryList.size(); i++) {
-					if (entryList.get(i) instanceof InEntry) {
-						pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
-								((InEntry) entryList.get(i)).value(), i + 1);
-					} else if (entryList.get(i) instanceof OutEntry) {
-						pcxt.putOutValueAt(
-								((OutEntry) entryList.get(i)).path(),
-								((OutEntry) entryList.get(i)).value(), i + 1);
-					} else if (entryList.get(i) instanceof InoutEntry) {
-						pcxt.putInoutValueAt(
-								((InoutEntry) entryList.get(i)).path(),
-								((InoutEntry) entryList.get(i)).value(), i + 1);
-					} else if (entryList.get(i) instanceof Entry) {
-						pcxt.putValueAt(((Entry) entryList.get(i)).path(),
-								((Entry) entryList.get(i)).value(), i + 1);
-					} else if (entryList.get(i) instanceof DataEntry) {
-						pcxt.putValueAt(Context.DSD_PATH,
-								((DataEntry) entryList.get(i)).value(), i + 1);
-					} else if (entryList.get(i) instanceof Tuple2) {
-						pcxt.putValueAt(
-								entryList.get(i)._1,
-								entryList.get(i)._2,
-								i + 1);
-					}
-				}
-			}
-		} else {
-			if (entryList.size() > 0) {
-				for (int i = 0; i < entryList.size(); i++) {
-					if (entryList.get(i) instanceof InEntry) {
-						cxt.putInValue(((Entry) entryList.get(i)).path(),
-								((Entry) entryList.get(i)).value());
-					} else if (entryList.get(i) instanceof OutEntry) {
-						cxt.putOutValue(((Entry) entryList.get(i)).path(),
-								((Entry) entryList.get(i)).value());
-					} else if (entryList.get(i) instanceof InoutEntry) {
-						cxt.putInoutValue(((Entry) entryList.get(i)).path(),
-								((Entry) entryList.get(i)).value());
-					} else if (entryList.get(i) instanceof Entry) {
-						cxt.putValue(((Entry) entryList.get(i)).path(),
-								((Entry) entryList.get(i)).value());
-					} else if (entryList.get(i) instanceof DataEntry) {
-						cxt.putValue(Context.DSD_PATH,
-								((Entry) entryList.get(i)).value());
-					} else if (entryList.get(i) instanceof Tuple2) {
-						cxt.putValue(
-								entryList.get(i)._1,
-								entryList.get(i)._2);
-					}
-				}
-			}
-		}
-
-		if (returnPath != null)
-			((ServiceContext) cxt).setReturnPath(returnPath);
-		if (cxtArgs != null) {
-			if (cxtArgs.path() != null) {
-				((ServiceContext) cxt).setArgsPath(cxtArgs.path());
-			} else {
-				((ServiceContext) cxt).setArgsPath(Context.PARAMETER_VALUES);
-			}
-			((ServiceContext) cxt).setArgs(cxtArgs.args);
-		}
-		if (parameterTypes != null) {
-			if (parameterTypes.path() != null) {
-				((ServiceContext) cxt).setParameterTypesPath(parameterTypes
-						.path());
-			} else {
-				((ServiceContext) cxt)
-						.setParameterTypesPath(Context.PARAMETER_TYPES);
-			}
-			((ServiceContext) cxt)
-					.setParameterTypes(parameterTypes.parameterTypes);
-		}
-		if (target != null) {
-			if (target.path() != null) {
-				((ServiceContext) cxt).setTargetPath(target.path());
-			}
-			((ServiceContext) cxt).setTarget(target.target);
-		}
-		return cxt;
-	}
+        return ContextFactory.context(entries);
+    }
 
 	public static List<String> names(List<? extends Identifiable> list) {
 		List<String> names = new ArrayList<String>(list.size());
@@ -354,8 +193,7 @@ public class operator {
 
 	public static List<Entry> attributes(Entry... entries) {
 		List<Entry> el = new ArrayList<Entry>(entries.length);
-		for (Entry e : entries)
-			el.add(e);
+        Collections.addAll(el, entries);
 		return el;
 	}
 
@@ -406,26 +244,8 @@ public class operator {
 	public static Signature sig(String operation, Class<?> serviceType,
 			String providerName, Object... parameters)
 			throws SignatureException {
-		Signature sig = null;
-		List<Object> typeList = Arrays.asList(parameters);
-		if (serviceType.isInterface()) {
-			sig = new NetSignature(operation, serviceType, providerName);
-		} else {
-			sig = new ObjectSignature(operation, serviceType);
-		}
-		// default Operation type = SERVICE
-		sig.setType(Type.SRV);
-		if (parameters.length > 0) {
-			for (Object o : parameters) {
-				if (o instanceof Type) {
-					sig.setType((Type) o);
-				} else if (o instanceof ReturnPath) {
-					sig.setReturnPath((ReturnPath) o);
-				}
-			}
-		}
-		return sig;
-	}
+        return SignatureFactory.sig(operation, serviceType, providerName, parameters);
+    }
 
 	public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
@@ -438,16 +258,16 @@ public class operator {
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			Type type) throws SignatureException {
-		return sig(operation, serviceType, (String) null, type);
+		return sig(operation, serviceType, null, type);
 	}
 
 	public static Signature sig(String operation, Class serviceType) throws SignatureException {
-		return sig(operation, serviceType, null, Type.SRV);
+		return SignatureFactory.sig(operation, serviceType);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type) throws SignatureException {
-		return sig(operation, serviceType, (String) null, type);
+		return sig(operation, serviceType, null, type);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
@@ -466,7 +286,7 @@ public class operator {
 
 	public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
 			throws SignatureException {
-		Signature sig = null;
+		Signature sig;
 		if (serviceType.isInterface()) {
 			sig = new NetSignature("service", serviceType);
 		} else if (Executor.class.isAssignableFrom(serviceType)) {
@@ -533,12 +353,7 @@ public class operator {
 
     public static Task task(String name, Signature signature, Context context)
             throws SignatureException {
-        if (signature instanceof NetSignature) {
-            return new NetTask(name, signature, context);
-        } else if (signature instanceof ObjectSignature) {
-            return new ObjectTask(name, signature, context);
-        } else
-            return new Task(name, signature, context);
+        return TaskFactory.task(name, signature, context);
     }
 
 	public static <T> Task batch(String name, T... elems)
@@ -630,19 +445,19 @@ public class operator {
 		return task;
 	}
 
-	public static <T extends Object, E extends Exertion> E srv(String name,
+	public static <T, E extends Exertion> E srv(String name,
 			T... elems) throws ExertionException, ContextException,
 			SignatureException {
 		return (E) exertion(name, elems);
 	}
 
-	public static <T extends Object, E extends Exertion> E xrt(String name,
+	public static <T, E extends Exertion> E xrt(String name,
 			T... elems) throws ExertionException, ContextException,
 			SignatureException {
 		return (E) exertion(name, elems);
 	}
 
-	public static <T extends Object, E extends Exertion> E exertion(
+	public static <T, E extends Exertion> E exertion(
 			String name, T... elems) throws ExertionException,
 			ContextException, SignatureException {
 		List<Exertion> exertions = new ArrayList<Exertion>();
@@ -974,8 +789,6 @@ public class operator {
 				result = esh.exert(transaction, null, entries);
 			} catch (Exception e) {
 				e.printStackTrace();
-				if (result != null)
-					((ServiceExertion) result).reportException(e);
 			}
 			return (T) result;
 		} catch (Exception e) {
@@ -1104,86 +917,11 @@ public class operator {
 		return new InoutEntry(path, value, index);
 	}
 
-	private static String getUnknown() {
-		return "unknown" + count++;
-	}
-
-    public static class OutEntry<T> extends IndexedTriplet implements Parameter {
-		private static final long serialVersionUID = 1L;
-		public boolean flag;
-
-		OutEntry(String path, T value, boolean flag) {
-			T v = value;
-			if (v == null)
-				v = (T) Context.Value.NULL;
-
-			this._1 = path;
-			this._2 = v;
-			this.flag = flag;
-		}
-
-		OutEntry(String path, T value, int index) {
-			T v = value;
-			if (v == null)
-				v = (T) Context.Value.NULL;
-
-			this._1 = path;
-			this._2 = v;
-			this.index = index;
-		}
-
-		OutEntry(String path, Object fidelity) {
-			this._1 = path;
-			this._3 = fidelity;
-		}
-	}
-
-	public static class Range extends Tuple2<Integer, Integer> implements
-			Parameter {
-		private static final long serialVersionUID = 1L;
-		public Integer[] range;
-
-		public Range(Integer from, Integer to) {
-			this._1 = from;
-			this._2 = to;
-		}
-
-		public Range(Integer[] range) {
-			this.range = range;
-		}
-
-		public Integer[] range() {
-			return range;
-		}
-
-		public int from() {
-			return _1;
-		}
-
-		public int to() {
-			return _2;
-		}
-
-		public String toString() {
-			if (range != null)
-				return Arrays.toString(range);
-			else
-				return "[" + _1 + "-" + _2 + "]";
-		}
-	}
-
 	private static class Pipe {
 		String inPath;
 		String outPath;
 		Exertion in;
 		Exertion out;
-
-		Pipe(Exertion out, String outPath, Exertion in, String inPath) {
-			this.out = out;
-			this.outPath = outPath;
-			this.in = in;
-			this.inPath = inPath;
-		}
 
 		Pipe(OutEndPoint outEndPoint, InEndPoint inEndPoint) {
 			this.out = outEndPoint.out;
@@ -1329,155 +1067,12 @@ public class operator {
 		return new target(object);
 	}
 
-	public static class target extends Path {
-		private static final long serialVersionUID = 1L;
-		Object target;
-
-		target(Object target) {
-			this.target = target;
-		}
-
-		target(String path, Object target) {
-			this.target = target;
-			this._1 = path;
-		}
-
-		@Override
-		public String toString() {
-			return "target: " + target;
-		}
-	}
-
-	public static class result extends Path implements Parameter {
-		private static final long serialVersionUID = 1L;
-		Class returnType;
-
-		result(String path) {
-			this._1 = path;
-		}
-
-		result(String path, Class returnType) {
-			this._1 = path;
-			this.returnType = returnType;
-		}
-
-		@Override
-		public String toString() {
-			return "return path: " + _1;
-		}
-	}
-
 	public static ParameterTypes parameterTypes(Class... parameterTypes) {
 		return new ParameterTypes(parameterTypes);
 	}
 
-	public static class ParameterTypes extends Path {
-		private static final long serialVersionUID = 1L;
-		Class[] parameterTypes;
-
-		public ParameterTypes(Class... parameterTypes) {
-			this.parameterTypes = parameterTypes;
-		}
-
-		public ParameterTypes(String path, Class... parameterTypes) {
-			this.parameterTypes = parameterTypes;
-			this._1 = path;
-		}
-
-		@Override
-		public String toString() {
-			return "parameterTypes: " + Arrays.toString(parameterTypes);
-		}
-	}
-
-	public static Args parameterValues(Object... args) {
-		return new Args(args);
-	}
-
 	public static Args args(Object... args) {
 		return new Args(args);
-	}
-
-	public static class Args extends Path {
-		private static final long serialVersionUID = 1L;
-
-		Object[] args;
-
-		public Args(Object... args) {
-			this.args = args;
-		}
-
-		public Args(String path, Object... args) {
-			this.args = args;
-			this._1 = path;
-		}
-
-		@Override
-		public String toString() {
-			return "args: " + Arrays.toString(args);
-		}
-	}
-
-	public static class InoutEntry<T> extends IndexedTriplet implements
-			Parameter {
-		private static final long serialVersionUID = 1L;
-
-		InoutEntry(String path, T value, int index) {
-			T v = value;
-			if (v == null)
-				v = (T) Context.Value.NULL;
-
-			this._1 = path;
-			this._2 = v;
-			this.index = index;
-		}
-
-		InoutEntry(String path, Object fidelity) {
-			this._1 = path;
-			this._3 = fidelity;
-		}
-	}
-
-	public static class DataEntry<T2> extends Tuple2<String, T2> {
-		private static final long serialVersionUID = 1L;
-
-		DataEntry(String path, T2 value) {
-			T2 v = value;
-			if (v == null)
-				v = (T2) Context.Value.NULL;
-
-			this._1 = path;
-			this._2 = v;
-		}
-	}
-
-	public static class InEntry<T> extends IndexedTriplet implements Parameter {
-		private static final long serialVersionUID = 1L;
-
-		InEntry(String path, T value, int index) {
-			T v = value;
-			if (v == null)
-				v = (T) Context.Value.NULL;
-
-			this._1 = path;
-			this._2 = v;
-			this.index = index;
-		}
-
-		InEntry(String path, Object fidelity) {
-			this._1 = path;
-			this._3 = fidelity;
-		}
-	}
-
-	public static class Complement<T1, T2> extends Entry<T1, T2> implements
-			Parameter {
-		private static final long serialVersionUID = 1L;
-
-		Complement(T1 path, T2 value) {
-			this._1 = path;
-			this._2 = value;
-		}
 	}
 
 	public static List<Service> providers(Signature signature)
@@ -1565,17 +1160,6 @@ public class operator {
 	public static Object instance(ObjectSignature signature, Context context)
 			throws SignatureException {
 		return signature.build(context);
-	}
-
-	public static String[] pathToArray(String arg) {
-		StringTokenizer token = new StringTokenizer(arg, SorcerConstants.CPS);
-		String[] array = new String[token.countTokens()];
-		int i = 0;
-		while (token.hasMoreTokens()) {
-			array[i] = token.nextToken();
-			i++;
-		}
-		return (array);
 	}
 
 }
