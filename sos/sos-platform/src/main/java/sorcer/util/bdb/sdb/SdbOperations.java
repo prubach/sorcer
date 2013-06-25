@@ -24,6 +24,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.DatabaseStorer;
 import sorcer.service.DataspaceStorer;
+import sorcer.service.Evaluator;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
@@ -140,7 +141,7 @@ public class SdbOperations {
                 sig("contextList", DatabaseStorer.class, providerName),
                 SdbUtil.getListContext(type));
 
-        return (List<String>) value(listTask);
+        return (List<String>) Evaluator.value(listTask);
     }
 
 }

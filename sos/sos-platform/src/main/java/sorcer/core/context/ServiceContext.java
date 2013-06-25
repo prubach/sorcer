@@ -41,7 +41,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import static sorcer.eo.operator.value;
+import static sorcer.service.Evaluator.value;
 
 /**
  * Implements the base-level service context interface {@link sorcer.service.Context}.
@@ -501,65 +501,42 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public void setVersion(float version) {
 		this.version = version;
 	}
-	
+
 	public T getReturnValue(Parameter... entries) throws ContextException {
+        return doGetReturnValue(returnPath, entries);
+    }
+
+    public T doGetReturnValue(ReturnPath<T> path, Parameter... entries) throws ContextException {
 		T val = null;
-		if (returnPath != null) {
+		if (path != null) {
 			try {
-				if (returnPath.path == null || returnPath.path.equals("self")) {
+				if (path.path == null || path.path.equals("self")) {
 					return (T)this;
-				} else if (returnPath.type != null) {
-					val = returnPath.type.cast(getValue(returnPath.path));
+				} else if (path.type != null) {
+					val = path.type.cast(getValue(path.path));
 				} else {
-					val = (T) getValue0(returnPath.path);
+					val = (T) getValue0(path.path);
 				}
 			} catch (Exception e) {
 				throw new ContextException(e);
 			}
 		}
-		if (isRevaluable && val instanceof Evaluation) {
-			try {
-				val = ((Evaluation<T>) val).getValue(entries);
-			} catch (Exception e) {
-				throw new ContextException(e);
-			}
-		} else if (val instanceof Evaluation && isRevaluable) {
-			val = value((Evaluation<T>) val, entries);
-		} else if ((val instanceof Revaluation)
-				&& ((Revaluation) val).isRevaluable()) {
-			val = value((Evaluation<T>) val, entries);
-		}
-		return val;
+        if (isValuationAndRevaluable(val) || isRevaluationRevaluable(val)) {
+            val = value((Evaluation<T>) val, entries);
+        }
+        return val;
 	}
-		
-	public T getReturnJobValue(Parameter... entries) throws ContextException {
-		T val = null;
-		if (returnJobPath != null) {
-			try {
-				if (returnJobPath.path == null || returnJobPath.path.equals("self")) {
-					return (T)this;
-				} else if (returnJobPath.type != null) {
-					val = returnJobPath.type.cast(getValue(returnJobPath.path));
-				} else {
-					val = (T) getValue0(returnJobPath.path);
-				}
-			} catch (Exception e) {
-				throw new ContextException(e);
-			}
-		}
-		if (isRevaluable && val instanceof Evaluation) {
-			try {
-				val = ((Evaluation<T>) val).getValue(entries);
-			} catch (Exception e) {
-				throw new ContextException(e);
-			}
-		} else if (val instanceof Evaluation && isRevaluable) {
-			val = value((Evaluation<T>) val, entries);
-		} else if ((val instanceof Revaluation)
-				&& ((Revaluation) val).isRevaluable()) {
-			val = value((Evaluation<T>) val, entries);
-		}
-		return val;
+
+    private boolean isRevaluationRevaluable(T val) {
+        return (val instanceof Revaluation) && ((Revaluation)val).isRevaluable();
+    }
+
+    private boolean isValuationAndRevaluable(T val) {
+        return (isRevaluable && val instanceof Evaluation);
+    }
+
+    public T getReturnJobValue(Parameter... entries) throws ContextException {
+		return doGetReturnValue(returnJobPath, entries);
 	}
 		
 	/**

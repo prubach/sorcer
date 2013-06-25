@@ -36,7 +36,6 @@ import sorcer.service.Signature.Direction;
 import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.*;
-import sorcer.util.ExertProcessor;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
@@ -347,8 +346,7 @@ public class operator {
 
 	public static ObjectTask task(ObjectSignature signature)
 			throws SignatureException {
-		return new ObjectTask(signature.getSelector(),
-				signature);
+		return TaskFactory.task(signature);
 	}
 
     public static Task task(String name, Signature signature, Context context)
@@ -368,82 +366,8 @@ public class operator {
 
 	public static <T> Task task(String name, T... elems)
 			throws ExertionException {
-		Context context = null;
-		List<Signature> ops = new ArrayList<Signature>();
-		String tname;
-		if (name == null || name.length() == 0)
-			tname = getUnknown();
-		else
-			tname = name;
-		Task task = null;
-		Access access = null;
-		Flow flow = null;
-		ControlContext cc = null;
-		for (Object o : elems) {
-			if (o instanceof ControlContext) {
-				cc = (ControlContext) o;
-			} else if (o instanceof Context) {
-				context = (Context) o;
-			} else if (o instanceof Signature) {
-				ops.add((Signature) o);
-			} else if (o instanceof String) {
-				tname = (String) o;
-			} else if (o instanceof Access) {
-				access = (Access) o;
-			} else if (o instanceof Flow) {
-				flow = (Flow) o;
-			}
-		}
-		Signature ss = null;
-		if (ops.size() == 1) {
-			ss = ops.get(0);
-		} else if (ops.size() > 1) {
-			for (Signature s : ops) {
-				if (s.getType() == Signature.SRV) {
-					ss = s;
-					break;
-				}
-			}
-		}
-		if (ss != null) {
-			if (ss instanceof NetSignature) {
-                try {
-                    task = new NetTask(tname, ss);
-                } catch (SignatureException e) {
-                    throw new ExertionException(e);
-                }
-			} else if (ss instanceof ObjectSignature) {
-				try {
-					task = task((ObjectSignature) ss);
-				} catch (SignatureException e) {
-					throw new ExertionException(e);
-				}
-				task.setName(tname);
-			} else if (ss instanceof ServiceSignature) {
-				task = new Task(tname, ss);
-			}
-			ops.remove(ss);
-		}
-		for (Signature signature : ops) {
-			task.addSignature(signature);
-		}
-
-		if (context == null) {
-			context = new ServiceContext();
-		}
-		task.setContext(context);
-
-		if (access != null) {
-			task.setAccess(access);
-		}
-		if (flow != null) {
-			task.setFlow(flow);
-		}
-		if (cc != null) {
-			task.updateStrategy(cc);
-		}
-		return task;
-	}
+        return TaskFactory.task(name, elems);
+    }
 
 	public static <T, E extends Exertion> E srv(String name,
 			T... elems) throws ExertionException, ContextException,
@@ -612,21 +536,23 @@ public class operator {
 		}
 		return url;
 	}
-	
-	public static <T> T value(Evaluation<T> evaluation, Parameter... entries)
+
+    public static <T> T value(Exertion evaluation, Parameter... entries) throws EvaluationException {
+        try {
+            synchronized (evaluation) {
+                return (T) exec(evaluation, entries);
+            }
+        } catch (EvaluationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
+    }
+
+    public static <T> T value(Evaluation<T> evaluation, Parameter... entries)
 			throws EvaluationException {
-		try {
-			synchronized (evaluation) {
-				if (evaluation instanceof Exertion) {
-					return (T) exec((Exertion) evaluation, entries);
-				} else {
-					return evaluation.getValue(entries);
-				}
-			}
-		} catch (Exception e) {
-			throw new EvaluationException(e);
-		}
-	}
+        return Evaluator.value(evaluation, entries);
+    }
 
 	public static <T> T value(Evaluation<T> evaluation, String evalSelector,
 			Parameter... entries) throws EvaluationException {
@@ -674,6 +600,7 @@ public class operator {
 
 	public static Object exec(Context context, Parameter... entries)
 			throws ExertionException, ContextException {
+        //TODO it appears it's unused
 		try {
 			context.substitute(entries);
 		} catch (RemoteException e) {
@@ -689,63 +616,7 @@ public class operator {
 
 	public static Object exec(Exertion exertion, Parameter... entries)
 			throws ExertionException, ContextException {
-		Exertion xrt;
-		try {
-			if (exertion.getClass() == Task.class) {
-				if (((Task) exertion).getInnerTask() != null)
-					xrt = exert(((Task) exertion).getInnerTask(), null, entries);
-				else
-					xrt = exertOpenTask(exertion, entries);
-			} else {
-				xrt = exert(exertion, null, entries);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException(e);
-		}
-		ReturnPath returnPath = xrt.getDataContext().getReturnPath();
-		if (returnPath != null) {
-			if (xrt instanceof Task) {
-				return xrt.getDataContext().getValue(returnPath.path);
-			} else if (xrt instanceof Job) {
-				return ((Job) xrt).getValue(returnPath.path);
-			}
-		} else {
-			if (xrt instanceof Task) {
-				return xrt.getDataContext();
-			} else if (xrt instanceof Job) {
-				return ((Job) xrt).getJobContext();
-			}
-		}
-		throw new ExertionException("No return path in the exertion: "
-				+ xrt.getName());
-	}
-
-	public static Exertion exertOpenTask(Exertion exertion,
-			Parameter... entries) throws ExertionException {
-		Exertion closedTask = null;
-		List<Parameter> params = Arrays.asList(entries);
-		List<Object> items = new ArrayList<Object>();
-		for (Parameter param : params) {
-			if (param instanceof ControlContext
-					&& ((ControlContext) param).getSignatures().size() > 0) {
-				List<Signature> sigs = ((ControlContext) param).getSignatures();
-				ControlContext cc = (ControlContext) param;
-				cc.setSignatures(null);
-				Context tc = exertion.getDataContext();
-				items.add(tc);
-				items.add(cc);
-				items.addAll(sigs);
-				closedTask = task(exertion.getName(), items.toArray());
-			}
-		}
-		try {
-			closedTask = closedTask.exert(entries);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException(e);
-		}
-		return closedTask;
+        return ExertionExecutor.exec(exertion, entries);
 	}
 
 	public static Object get(Exertion xrt, String path)
@@ -782,18 +653,7 @@ public class operator {
 	public static <T extends Exertion> T exert(T input,
 			Transaction transaction, Parameter... entries)
 			throws ExertionException {
-		try {
-			ExertProcessor esh = new ExertProcessor(input);
-			Exertion result = null;
-			try {
-				result = esh.exert(transaction, null, entries);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return (T) result;
-		} catch (Exception e) {
-			throw new ExertionException(e);
-		}
+        return ExertionExecutor.exert(input, transaction, entries);
 	}
 
 	public static OutEntry output(Object value) {
