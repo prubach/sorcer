@@ -26,6 +26,7 @@ import sorcer.co.tuple.Path;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.StorageManagement;
 import sorcer.core.context.*;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.exertion.*;
@@ -786,7 +787,7 @@ public class operator {
 		if (target != null && value != null) {
 			try {
 				if (target.getRef() == null) {
-					url.setTarget(SdbUtil.store(value));
+					url.setTarget(store(value));
 				} else {
 					SdbUtil.update(target, value);
 				}
@@ -1107,7 +1108,7 @@ public class operator {
 		return "unknown" + count++;
 	}
 
-	public static class OutEntry<T> extends IndexedTriplet implements Parameter {
+    public static class OutEntry<T> extends IndexedTriplet implements Parameter {
 		private static final long serialVersionUID = 1L;
 		public boolean flag;
 
@@ -1233,13 +1234,20 @@ public class operator {
 
 	public static SosURL sosURL(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.sosStore(object);
-	}
+        return new SosURL(store(object));
+    }
 
 	public static URL store(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.store(object);
-	}
+        String storageName = Sorcer.getActualName(Sorcer
+                .getDatabaseStorerName());
+        Task objectStoreTask = task(
+                "store",
+                sig("contextStore", DatabaseStorer.class, storageName),
+                context("store", in(StorageManagement.object_stored, object),
+                        result("result, stored/object/url")));
+        return (URL) value(objectStoreTask);
+    }
 
 	public static Object retrieve(URL url) throws IOException {
 		return url.getContent();
@@ -1255,25 +1263,47 @@ public class operator {
 		return SdbUtil.list(url);
 	}
 
-	public static List<String> list(Store store) throws ExertionException,
-			SignatureException, ContextException {
-		return SdbUtil.list(store);
-	}
+    @SuppressWarnings("unchecked")
+    static public List<String> list(Store storeType) throws ExertionException,
+            SignatureException, ContextException {
+        String storageName = Sorcer.getActualName(Sorcer
+                .getDatabaseStorerName());
 
-	public static URL delete(Object object) throws ExertionException,
+        Task listTask = task("contextList",
+                sig("contextList", DatabaseStorer.class, storageName),
+                SdbUtil.getListContext(storeType));
+
+        return (List<String>) value(listTask);
+    }
+
+    public static URL delete(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		return SdbUtil.delete(object);
 	}
 
 	public static int clear(Store type) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.clear(type);
-	}
+        String storageName = Sorcer.getActualName(Sorcer
+                .getDatabaseStorerName());
+        Task objectStoreTask = task(
+                "clear",
+                sig("contextClear", DatabaseStorer.class, storageName),
+                context("clear", in(StorageManagement.store_type, type),
+                        result(StorageManagement.store_size)));
+        return (Integer) value(objectStoreTask);
+    }
 
 	public static int size(Store type) throws ExertionException,
 			SignatureException, ContextException {
-		return SdbUtil.size(type);
-	}
+        String storageName = Sorcer.getActualName(Sorcer
+                .getDatabaseStorerName());
+        Task objectStoreTask = task(
+                "size",
+                sig("contextSize", DatabaseStorer.class, storageName),
+                context("size", in(StorageManagement.store_type, type),
+                        result(StorageManagement.store_size)));
+        return (Integer) value(objectStoreTask);
+    }
 
 	private static class InEndPoint {
 		String inPath;
@@ -1546,17 +1576,6 @@ public class operator {
 			i++;
 		}
 		return (array);
-	}
-
-	public static String toPath(String[] array) {
-		if (array.length > 0) {
-			StringBuilder sb = new StringBuilder(array[0]);
-			for (int i = 1; i < array.length; i++) {
-				sb.append(SorcerConstants.CPS).append(array[i]);
-			}
-			return sb.toString();
-		} else
-			return null;
 	}
 
 }

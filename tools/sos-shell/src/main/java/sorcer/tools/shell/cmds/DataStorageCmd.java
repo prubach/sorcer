@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 package sorcer.tools.shell.cmds;
-import static sorcer.eo.operator.list;
-import static sorcer.eo.operator.store;
 
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -34,6 +32,7 @@ import net.jini.id.Uuid;
 import sorcer.core.Provider;
 import sorcer.core.StorageManagement;
 import sorcer.core.monitor.MonitorUIManagement;
+import sorcer.eo.operator;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -47,6 +46,7 @@ import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.sdb.SdbOperations;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 public class DataStorageCmd extends ShellCmd {
@@ -202,8 +202,8 @@ public class DataStorageCmd extends ShellCmd {
 			Context cxt = null;
 			 try {
 				 try {
-					store("dupa");
-				} catch (ExertionException e1) {
+                     SdbOperations.store("dupa");
+                 } catch (ExertionException e1) {
 					e1.printStackTrace();
 				} catch (SignatureException e1) {
 					e1.printStackTrace();
@@ -219,8 +219,8 @@ public class DataStorageCmd extends ShellCmd {
 				}
 				out.println("XXXXXXXXXXXXX dataContext: " + cxt);
 				try {
-					store("dupa");
-					List<String>  records = list(Store.object);
+                    SdbOperations.store("dupa");
+                    List<String>  records = operator.list(Store.object);
 					out.println("XXXXXXXXXXXXX records; " + records);
 				} catch (ExertionException e) {
 					// TODO Auto-generated catch block

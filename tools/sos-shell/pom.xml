@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-util</artifactId>
+            <artifactId>sos-env</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

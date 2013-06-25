@@ -26,9 +26,6 @@ import java.util.Map;
 import net.jini.id.Uuid;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ArrayContext;
-import sorcer.core.context.ContextLink;
-import sorcer.core.context.ServiceContext;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.ReturnPath;
 
@@ -36,12 +33,12 @@ import sorcer.service.Signature.ReturnPath;
  * Service context classes that implement this interface provide SORCER generic
  * metacomputing data structures for storage, retrieval, and propagation of
  * heterogeneous information across all SORCER service providers. Two generic
- * implementations are provided: {@link ServiceContext} and
+ * implementations are provided: {@link sorcer.core.context.ServiceContext} and
  * {@link sorcer.core.context.PositionalContext}. Usually the former is used by
  * service requestors and the latter with more functionality is used by service
  * providers. The ServiceContextImpl class implements the ProviderContext
  * interface that extends ServiceContext. An example of a specific service context
- * is illustrated by {@link ArrayContext}.
+ * is illustrated by {@link sorcer.core.context.ArrayContext}.
  * <p/>
  * A service context is a tree-like structure with two types of nodes. Leaf
  * nodes are called data (value) nodes and the remaining nodes are called
@@ -565,7 +562,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
             throws ContextException;
 
     /**
-     * Removes the {@link ContextLink} object pointed to by path. If object is
+     * Removes the {@link sorcer.core.context.ContextLink} object pointed to by path. If object is
      * not a context link, a ContextException will be thrown.
      *
      * @throws ContextException
@@ -785,7 +782,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * general can be different. To examine metapaths in linked contexts, call
      * getLocalMetapath operating on the <code>ServiceContext</code> that is
      * linked (which can be obtained, for example, from the getContext method of
-     * {@link ContextLink} objects. Returns <code>null</code> if not defined.
+     * {@link sorcer.core.context.ContextLink} objects. Returns <code>null</code> if not defined.
      *
      * Metapaths are set using {@link #getLocalMetapath}
      *
@@ -794,7 +791,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      *
      * @return the metapath or <code>null</code> if not defined
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      * @see #setAttribute
      * @see #getAttributes
      */
@@ -810,7 +807,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Enumeration<?> contextPaths() throws ContextException;
 
@@ -836,49 +833,49 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
     /**
      * Returns an {@link Enumeration} of the locations of the first-level
-     * {@link ContextLink} objects in this context. The enumeration does not
+     * {@link sorcer.core.context.ContextLink} objects in this context. The enumeration does not
      * include ContextLink objects that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Enumeration<?> localLinkPaths() throws ContextException;
 
     /**
      * Returns an {@link Enumeration} of the locations of the
-     * {@link ContextLink} objects in this context. The enumeration includes
+     * {@link sorcer.core.context.ContextLink} objects in this context. The enumeration includes
      * ContextLink objects that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Enumeration<?> linkPaths() throws ContextException;
 
     /**
-     * Returns an {@link Enumeration} of all the {@link ContextLink} objects in
+     * Returns an {@link Enumeration} of all the {@link sorcer.core.context.ContextLink} objects in
      * this context including any ContextLinks that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Enumeration<?> links() throws ContextException;
 
     /**
-     * Returns an {@link Enumeration} of the top-level {@link ContextLink}
+     * Returns an {@link Enumeration} of the top-level {@link sorcer.core.context.ContextLink}
      * objects in this context. Does not include ContextLinks that reside in
      * linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Enumeration<?> localLinks() throws ContextException;
 
     /**
-     * Returns the {@link ContextLink} object that resides at path in the
+     * Returns the {@link sorcer.core.context.ContextLink} object that resides at path in the
      * context. This method is necessary since ContextLink objects are otherwise
      * transparent. For example, getValue(path) returns a value in the linked
      * context, not the LinkedContext object.
@@ -888,7 +885,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>ContextLink</code> if a ContextLink object resides at path;
      *         <code>null</code> otherwise.
      * @throws ContextException
-     * @see ContextLink
+     * @see sorcer.core.context.ContextLink
      */
     public Link getLink(String path) throws ContextException;
 
@@ -964,7 +961,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
     /**
      * Removes a context node from the context. If the designated path points to
-     * a {@link ContextLink} object, a {@link ContextException} will be thrown.
+     * a {@link sorcer.core.context.ContextLink} object, a {@link ContextException} will be thrown.
      * Use {@link #removeLink} to remove link contexts.
      *
      * @see #removeLink

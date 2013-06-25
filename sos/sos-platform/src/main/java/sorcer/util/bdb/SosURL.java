@@ -18,6 +18,7 @@
 package sorcer.util.bdb;
 
 import sorcer.service.EvaluationException;
+import sorcer.util.bdb.sdb.SdbOperations;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 import java.io.IOException;
@@ -59,18 +60,4 @@ public class SosURL {
 		return target.toString();
 	}
 
-	public void setValue(Object value) throws EvaluationException,
-			RemoteException {
-		if (target != null && value != null) {
-			try {
-				if (target.getRef() == null) {
-					target = SdbUtil.store(value);
-				} else {
-					SdbUtil.update(target, value);
-				}
-			} catch (Exception e) {
-				throw new EvaluationException(e);
-			}
-		}
-	}
 }
