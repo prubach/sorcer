@@ -26,9 +26,9 @@ import java.util.Map;
 import net.jini.id.Uuid;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ArrayContext;
-import sorcer.core.context.ContextLink;
-import sorcer.core.context.ServiceContext;
+//import sorcer.core.context.ArrayContext;
+//import sorcer.core.context.ContextLink;
+//import sorcer.core.context.ServiceContext;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.ReturnPath;
 

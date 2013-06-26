@@ -1,4 +1,3 @@
-
 /**
  * Deployment configuration for the minimum IGrid
  *
@@ -7,6 +6,7 @@
 import org.rioproject.config.Constants
 import org.rioproject.config.Constants
 import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
 
 
 String[] getInitialMemberGroups() {
@@ -38,7 +38,7 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     artifact id:'blitz', "org.dancres.blitz:blitz:2.1.7"
     artifact id:'blitz-dl', "org.dancres.blitz:blitz-dl:2.1.7"
     artifact id:'blitzui', "org.dancres.blitz:blitzui:2.1.7"
-    artifact id:'je', "com.sleepycat:je:4.1.21"
+    artifact id:'sleepycat', "com.sleepycat:je:4.1.21"
     artifact id:'serviceui', "net.jini.lookup:serviceui:2.2.1"
     artifact id:'jsk-platform', "net.jini:jsk-platform:2.2.1"
     artifact id:'jsk-lib', "net.jini:jsk-lib:2.2.1"
@@ -54,32 +54,40 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     artifact id:'logger-sui', "org.sorcersoft.sorcer:logger-sui:1.0-M2-SNAPSHOT"
     artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:1.0-M2-SNAPSHOT"
 
+    resources id:'blitz-cdb', Resolver.resolveRelative("org.dancres.blitz:blitz-dl"), Resolver.resolveRelative("org.dancres.blitz:blitzui")
 
-    service(name:'Mahalo') {
-        interfaces {
-            classes 'net.jini.core.transaction.server.TransactionManager'
-            artifact ref:'mahalo-dl'
-        }
-        implementation(class: 'com.sun.jini.mahalo.TransientMahaloImpl') {
-            artifact ref:'mahalo'
-        }
-        configuration file: "${getSorcerHome()}/configs/jini/configs/mahalo.config"
-        maintain 1
-    }
 
-    service(name: "Blitz Space") {
+    /*service(name:'Mahalo') {
+         interfaces {
+             classes 'net.jini.core.transaction.server.TransactionManager'
+             artifact ref:'mahalo-dl'
+         }
+         implementation(class: 'com.sun.jini.mahalo.TransientMahaloImpl') {
+             artifact ref:'mahalo'
+         }
+         configuration file: "${getSorcerHome()}/configs/jini/configs/mahalo.config"
+         maintain 1
+     }*/
+
+    service(name: "BlitzSpace") {
         interfaces {
             classes 'net.jini.space.JavaSpace05'
-            artifact ref:'blitz-dl', 'blitz-dl', 'blitzui'
+            resources ref:'blitz-dl'
+            artifact ref:'blitzui'
         }
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
-            artifact ref:'blitz', 'blitzui','je','serviceui','jsk-platform','outrigger-dl'
+            artifact ref:'blitz'
+            artifact ref:'blitzui'
+            artifact ref:'serviceui'
+            artifact ref:'jsk-platform'
+            artifact ref:'outrigger-dl'
+            artifact ref:'sleepycat'
         }
         configuration file: "${getSorcerHome()}/configs/blitz/configs/blitz.config"
         maintain 1
     }
 
-    service(name: "Jobber") {
+    /*service(name: "Jobber") {
         interfaces {
             classes 'sorcer.service.Jobber'
             artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
@@ -89,9 +97,9 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         }
         configuration file: "${getSorcerHome()}/configs/sos-providers/jobber.config"
         maintain 1
-    }
+    } */
 
-    service(name: "Spacer") {
+  /*  service(name: "Spacer") {
         interfaces {
             classes 'sorcer.service.Spacer'
             artifact ref:'sos-platform', 'sos-exertlet-sui', 'serviceui'
@@ -114,7 +122,7 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         configuration file: "${getSorcerHome()}/configs/sos-providers/cataloger.config"
         maintain 1
     }
-
+    */
     /*service(name: "Logger") {
         interfaces {
             classes 'sorcer.core.provider.logger.RemoteLogger'

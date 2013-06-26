@@ -363,7 +363,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
-$MVN_REPO/org/dancres/blitz/blitz/$V_BLITZ/blitz-$V_BLITZ.jar:\
+#$MVN_REPO/org/dancres/blitz/blitz/$V_BLITZ/blitz-$V_BLITZ.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
