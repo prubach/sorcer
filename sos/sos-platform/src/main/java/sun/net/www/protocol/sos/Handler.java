@@ -15,7 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util.bdb.sdb;
+package sun.net.www.protocol.sos;
+
+import sorcer.util.bdb.sdb.SdbConnection;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,21 +28,6 @@ import java.net.URLStreamHandler;
  * @author Mike Sobolewski
  */
 public class Handler extends URLStreamHandler {
-
-/*	public static void register() {
-		final String packageName = Handler.class.getPackage().getName();
-		final String pkg = packageName.substring(0,
-				packageName.lastIndexOf('.'));
-		final String protocolPathProp = "java.protocol.handler.pkgs";
-
-		String uriHandlers = System.getProperty(protocolPathProp, "");
-		if (uriHandlers.indexOf(pkg) == -1) {
-			if (uriHandlers.length() != 0)
-				uriHandlers += "|";
-			uriHandlers += pkg;
-			System.setProperty(protocolPathProp, uriHandlers);
-		}
-	}*/
     
 	/* (non-Javadoc)
 	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)

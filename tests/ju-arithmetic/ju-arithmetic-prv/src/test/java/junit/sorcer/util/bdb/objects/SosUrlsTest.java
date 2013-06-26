@@ -34,7 +34,6 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.bdb.SosURL;
-import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
 /**
  * @author Mike Sobolewski
@@ -45,8 +44,6 @@ public class SosUrlsTest {
 			.getName());
 
 	static {
-		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}

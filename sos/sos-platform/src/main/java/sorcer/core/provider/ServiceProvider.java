@@ -62,7 +62,6 @@ import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.*;
-import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -158,14 +157,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     /** Logger for logging information about this instance */
     protected static final Logger logger = Logger.getLogger(PROVIDER);
 
-	static {
-        try {
-            URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-        } catch (Error e) {
-            logger.severe("URL Stream Handler Factory setting failed!");
-        }
-	}
-	
 	public static final String COMPONENT = ServiceProvider.class.getName();
 
 	protected ProviderDelegate delegate;
