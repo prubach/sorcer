@@ -1910,12 +1910,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		}
 	}
 	
-	public void initSpaceSupport() throws RemoteException,
-			ConfigurationException {
-		delegate.spaceEnabled(true);
-		delegate.initSpaceSupport();
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
