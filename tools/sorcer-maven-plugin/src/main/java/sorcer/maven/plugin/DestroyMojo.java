@@ -22,6 +22,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.InstantiationStrategy;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 import sorcer.util.Process2;
@@ -33,8 +34,18 @@ import sorcer.maven.util.TestCycleHelper;
 @Mojo(name = "destroy", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.PER_LOOKUP)
 public class DestroyMojo extends AbstractSorcerMojo {
 
+    @Parameter(property = "destroy.wait")
+    protected long sleep;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+        if (sleep > 0) {
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException e) {
+
+            }
+        }
 		Process2 process = getProcess();
 		if (process != null) {
 			if (process.running()) {

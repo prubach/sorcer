@@ -25,6 +25,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.slf4j.impl.StaticLoggerBinder;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -58,12 +59,6 @@ import static sorcer.util.JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE;
 @Mojo(name = "run-requestor", defaultPhase = LifecyclePhase.INTEGRATION_TEST, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, instantiationStrategy = InstantiationStrategy.PER_LOOKUP)
 public class RequestorMojo extends AbstractSorcerMojo {
 
-	@Parameter(property = "project.build.outputDirectory", readonly = true)
-	protected File outputDir;
-
-	@Parameter(property = "project.build.directory", readonly = true)
-	protected File targetDir;
-
 	/**
 	 * mainClass must be set ether here or in requestors list
 	 */
@@ -78,6 +73,9 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 	@Parameter(property = "sorcer.requestor.debug")
 	protected boolean debug;
+
+	@Parameter(property = "sorcer.provider.debug")
+	protected boolean serverDebug;
 
 	@Parameter
 	protected String[] requestorCodebase = new String[0];
@@ -105,6 +103,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+        StaticLoggerBinder.getSingleton().setLog(getLog());
 		if (!project.getPackaging().equals("jar")) {
 			getLog().warn("Plugin misconfigured: running on a project of packaging other than jar");
 		}
@@ -136,13 +135,13 @@ public class RequestorMojo extends AbstractSorcerMojo {
 				builder.setParameters(Arrays.asList(config.arguments));
 			}
 
-			Process2 process = null;
+			Process2 process;
 			try {
 				getLog().info("Starting client process");
 				process = builder.startProcess();
 				Integer exitCode;
                 try {
-                    if (debug) {
+                    if (debug || serverDebug) {
                         exitCode = process.waitFor();
                     } else {
                         exitCode = process.waitFor(timeout);

@@ -91,6 +91,9 @@ public class JavaProcessBuilder {
 	}
 
 	public Process2 startProcess() throws IOException {
+        if (mainClass == null || mainClass.trim().isEmpty()) {
+            throw new IllegalStateException("mainClass must be set");
+        }
         ProcessBuilder procBld = new ProcessBuilder().command(command);
 
         if (debugger) {
