@@ -45,7 +45,7 @@ import sorcer.service.SignatureException;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.bdb.objects.ObjectInfo;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 public class DataStorageCmd extends ShellCmd {

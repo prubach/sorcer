@@ -1,6 +1,7 @@
+package sorcer.util.bdb.objects;
 /**
  *
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sun.net.www.protocol.sos;
 
-import sorcer.util.bdb.sdb.SdbConnection;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
 
 /**
- * @author Mike Sobolewski
+ * Extracted from SorcerDatabaseViews
+ *
+ * @author Rafał Krupiński
  */
-public class Handler extends URLStreamHandler {
-    
-	/* (non-Javadoc)
-	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)
-	 */
-	@Override
-	protected URLConnection openConnection(URL url) throws IOException {
-	        return new SdbConnection(url);
-	}
+public enum Store {
+    context, exertion, var, varmodel, table, object, all;
 
+    public static Store getStoreType(String storeName) {
+        for (Store s : values()) {
+            if (storeName.equals("" + s))
+                return s;
+        }
+        return null;
+    }
 }

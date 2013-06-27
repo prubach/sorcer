@@ -15,7 +15,13 @@
         or other classes in this module) and are potentially usable outside core Sorcer.
     </description>
 
-    <!-- Please do not add any dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- Please do not add any dependencies -->
+    </dependencies>
 
     <build>
         <plugins>
@@ -27,7 +33,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>sorcer.util,sorcer.org.rioproject.net</Export-Package>
-                        <Import-Package>sorcer.util,sorcer.org.rioproject.net</Import-Package>
+                        <Import-Package>sorcer.util,sorcer.org.rioproject.net,org.slf4j;version=1.7</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

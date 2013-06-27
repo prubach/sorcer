@@ -40,7 +40,7 @@ import sorcer.service.Strategy.*;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.SosURL;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 import java.io.IOException;
@@ -898,7 +898,7 @@ public class operator {
                 sig("contextStore", DatabaseStorer.class, storageName),
                 context("store", in(StorageManagement.object_stored, object),
                         result("result, stored/object/url")));
-        return (URL) value(objectStoreTask);
+        return value(objectStoreTask);
     }
 
 	public static Object retrieve(URL url) throws IOException {

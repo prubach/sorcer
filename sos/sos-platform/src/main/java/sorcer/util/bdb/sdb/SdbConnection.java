@@ -22,8 +22,7 @@ import sorcer.core.StorageManagement;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.ProviderLookup;
-import sorcer.util.bdb.objects.SorcerDatabaseViews;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,7 +55,7 @@ public class SdbConnection extends URLConnection {
 		providerName = getURL().getPath().substring(1);
 		String reference = getURL().getRef();
 		int index = reference.indexOf('=');
-		storeType = SorcerDatabaseViews.getStoreType(reference.substring(0, index));
+		storeType = Store.getStoreType(reference.substring(0, index));
 		uuid = reference.substring(index + 1);
 	}
 

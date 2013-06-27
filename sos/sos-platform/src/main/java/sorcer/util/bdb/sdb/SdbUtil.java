@@ -22,11 +22,9 @@ import net.jini.id.UuidFactory;
 import sorcer.core.StorageManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.*;
-import sorcer.util.bdb.objects.SorcerDatabaseViews;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 
 import java.net.URL;
-import java.util.List;
 
 /**
  * @author Mike Sobolewski
@@ -46,7 +44,7 @@ public class SdbUtil {
 	public static Store getStoreType(URL url) {
 		String urlRef = url.getRef();
 		int index = urlRef.indexOf('=');
-		return SorcerDatabaseViews.getStoreType(urlRef.substring(0, index));
+		return Store.getStoreType(urlRef.substring(0, index));
 	}
 
 	public static String getProviderName(URL url) {

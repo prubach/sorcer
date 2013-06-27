@@ -38,7 +38,7 @@ import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.util.bdb.objects.SorcerDatabase;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
 import sorcer.util.bdb.sdb.SdbUtil;
@@ -47,13 +47,14 @@ import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
 import com.sun.jini.start.LifeCycle;
+import sorcer.util.bdb.sdb.Handler;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DatabaseProvider extends ServiceProvider implements DatabaseStorer {
 
-	/*static {
+	static {
 		Handler.register();
-	}*/
+	}
 
 	private SorcerDatabase db;
 

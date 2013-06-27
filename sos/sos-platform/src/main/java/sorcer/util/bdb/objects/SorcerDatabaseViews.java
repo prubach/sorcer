@@ -50,11 +50,8 @@ public class SorcerDatabaseViews {
 //	private StoredMap varMap;
 //	private StoredMap varModelMap;
 	private StoredMap uuidObjectMap;
-	
-	public enum Store {
-		context, exertion, var, varmodel, table, object, all
-	}
-	/**
+
+    /**
 	 * Create the data bindings and collection views.
 	 */
 	public SorcerDatabaseViews(SorcerDatabase db) {
@@ -373,13 +370,5 @@ public class SorcerDatabaseViews {
 		public Object objectToKey(Object object) {
 			return new UuidKey(((UuidObject) object).getId());
 		}
-	}
-	
-	public static Store getStoreType(String storeName) {
-		for (Store s : Store.values()) {
-			if (storeName.equals(""+s))
-				return s;
-		}
-		return null;
 	}
 }
