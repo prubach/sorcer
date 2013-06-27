@@ -73,7 +73,7 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 
         batch3 = exert(batch3);
         //logger.info("task result/y: " + get(batch3, "result/y"));
-        assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+        assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
     }
 
     @Ignore
@@ -90,7 +90,7 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
 
         batch3 = exert(batch3);
         //logger.info("task result/y: " + get(batch3, "result/y"));
-        assertEquals("Wrong value for 400.0", get(batch3, "result/y"), 400.0);
+        assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
     }
 
     @Test

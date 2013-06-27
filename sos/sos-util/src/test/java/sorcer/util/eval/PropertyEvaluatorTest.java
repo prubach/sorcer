@@ -68,6 +68,7 @@ public class PropertyEvaluatorTest {
         assertEquals("replacedValue",data.get("self"));
         assertEquals("other value: <replacedValue>", data.get("partial"));
         assertEquals("other value: <replacedValue> and <replacedValue>", data.get("multi"));
+
         assertEquals("${selfreferencing}", data.get("selfreferencing"));
         assertEquals("${nothere}", data.get("missing"));
         assertEquals("${invalid", data.get("invalid"));
