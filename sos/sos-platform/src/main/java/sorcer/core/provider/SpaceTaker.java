@@ -41,7 +41,8 @@ import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
+import sorcer.service.txmgr.TransactionManagerAccessor;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutorService;
@@ -174,7 +175,7 @@ public class SpaceTaker extends Thread implements LeaseListener,
 		while (keepGoing) {
 			ExertionEnvelop ee = null;
 			try {
-				space = ProviderAccessor.getSpace(data.spaceName,
+				space = SpaceAccessor.getSpace(data.spaceName,
 						data.spaceGroup);
 				if (space == null) {
 					logger.severe("########### SpaceTaker DID NOT get JavaSpace...");
@@ -261,7 +262,7 @@ public class SpaceTaker extends Thread implements LeaseListener,
 			leaseManager = new LeaseRenewalManager();
 		}
 		try {
-			TransactionManager tManager = ProviderAccessor
+			TransactionManager tManager = TransactionManagerAccessor
 					.getTransactionManager();
 			if (tManager == null) {
 				return null;

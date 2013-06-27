@@ -38,7 +38,9 @@ import sorcer.service.SignatureException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -87,8 +89,10 @@ public class ServiceAccessor implements SorcerConstants {
 
 	private static int MAX_MATCHES = Sorcer.getLookupMaxMatches();
 
-		
-	
+    protected Map<String, Object> cache = new HashMap<String, Object>();
+
+    protected ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
+
 	/**
 	 * lookup cache parameters, should be set by clients of this utility class.
 	 * lookup cache used at the cache creation time
@@ -435,7 +439,7 @@ public class ServiceAccessor implements SorcerConstants {
 				logger.throwing("" + ServiceAccessor.class, "getService", e);
 			}
 		}
-		logger.info("got LUS service: " + serviceType + ":" + serviceName + "\n" + proxy);
+		logger.info("got LUS service [type=" + serviceType + " name=" + serviceName + "]: " + proxy);
 
 		return proxy;
 	}
@@ -632,5 +636,25 @@ public class ServiceAccessor implements SorcerConstants {
 	public static void terminateDiscovery() {
 		sdManager.terminate();
 		sdManager = null;
+	}
+
+    /**
+     * Test if provider is still replying.
+     *
+     * @param provider
+     * @return true if a provider is alive, otherwise false
+     * @throws java.rmi.RemoteException
+     */
+    public static boolean isAlive(Provider provider)
+            throws RemoteException {
+        if (provider == null)
+            return false;
+        try {
+            provider.getProviderName();
+            return true;
+        } catch (RemoteException e) {
+            ProviderAccessor.logger.throwing(ProviderAccessor.class.getName(), "isAlive", e);
+            throw e;
+        }
 	}
 }

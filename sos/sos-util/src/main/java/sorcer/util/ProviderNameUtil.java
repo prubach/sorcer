@@ -7,10 +7,11 @@ import java.util.Map;
  * @author Rafał Krupiński
  */
 public class ProviderNameUtil {
-	private Map<String, String> names = new HashMap<String, String>();
-	{
-		names = new PropertiesLoader().loadAsMap(ProviderNameUtil.class);
-	}
+    protected Map<String, String> names = new HashMap<String, String>();
+
+    {
+        names = new PropertiesLoader().loadAsMap(getClass());
+    }
 
 	public String getName(Class<?> providerType) {
 		return names.get(providerType.getName());

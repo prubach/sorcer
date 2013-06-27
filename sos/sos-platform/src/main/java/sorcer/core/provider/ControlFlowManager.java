@@ -30,6 +30,8 @@ import sorcer.falcon.core.exertion.IfExertion;
 import sorcer.falcon.core.exertion.WhileExertion;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
+import sorcer.service.jobber.JobberAccessor;
+import sorcer.service.spacer.SpacerAccessor;
 import sorcer.util.AccessorException;
 import sorcer.util.ProviderAccessor;
 
@@ -238,10 +240,10 @@ public class ControlFlowManager {
 					Spacer spacerService = null;
 					try {
 						if (spacerName != null) {
-							spacerService = ProviderAccessor.getSpacer(spacerName);
+							spacerService = SpacerAccessor.getSpacer(spacerName);
 						}
 						else {
-							spacerService = ProviderAccessor.getSpacer();
+							spacerService = SpacerAccessor.getSpacer();
 						}
 						logger.info("Got Spacer: " + spacerService);
 						return spacerService.service(xrt, null);
@@ -263,9 +265,9 @@ public class ControlFlowManager {
 					Jobber jobberService = null;
 					try {
 						if (jobberName != null)
-							jobberService = ProviderAccessor.getJobber(jobberName);
+							jobberService = JobberAccessor.getJobber(jobberName);
 						else
-							jobberService = ProviderAccessor.getJobber();
+							jobberService = JobberAccessor.getJobber();
 						logger.info("Got Jobber: " + jobber);
 						return jobberService.service(xrt, null);
 					} catch (AccessorException ae) {

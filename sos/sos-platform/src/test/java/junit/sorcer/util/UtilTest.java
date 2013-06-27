@@ -28,7 +28,7 @@ import org.junit.Test;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
 import sorcer.util.ServiceAccessor;
 import sorcer.util.Sorcer;
 
@@ -80,7 +80,7 @@ public class UtilTest {
 	@Test
 	public void getSpaceTest() throws ExertionException, ContextException,
 			SignatureException {
-		logger.info("exert space:\n" + ProviderAccessor.getSpace());
+		logger.info("exert space:\n" + SpaceAccessor.getSpace());
 		
 		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { JavaSpace05.class }, new Entry[] { new Name(Sorcer.getActualSpaceName())});
 		ServiceItem si = ServiceAccessor.getServiceItem(tmpl, null, new String[] { Sorcer.getSpaceGroup() });

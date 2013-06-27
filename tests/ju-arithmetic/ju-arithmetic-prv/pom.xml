@@ -43,10 +43,6 @@
 			<artifactId>jsk-lib</artifactId>
 			<version>${v.jini}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.rioproject</groupId>
-			<artifactId>rio-platform</artifactId>
-		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
@@ -110,10 +106,11 @@
 										<entry>com.sleepycat:je:${v.sleepycat}</entry>
 									</requestorClasspath>
 									<requestors>
+<!--
 										<param>
 											<mainClass>junit.sorcer.core.provider.ArithmeticNetTest</mainClass>
 											<codebase>
-												<!--<param>${project.groupId}:${project.artifactId}:${project.version}</param>-->
+												&lt;!&ndash;<param>${project.groupId}:${project.artifactId}:${project.version}</param>&ndash;&gt;
 												<param>org.sorcersoft.sorcer:sos-platform:${project.version}</param>
 												<param>org.sorcersoft.sorcer:ju-arithmetic-api:${project.version}</param>
 											</codebase>
@@ -121,9 +118,10 @@
 										<param>
 											<mainClass>junit.sorcer.core.provider.ProviderAccessorTest</mainClass>
 										</param>
-										<param>
+-->
+										<requestor>
 											<mainClass>junit.sorcer.util.bdb.objects.SosUrlsTest</mainClass>
-										</param>
+										</requestor>
 									</requestors>
 								</configuration>
 							</execution>

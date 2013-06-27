@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-import net.jini.core.transaction.server.TransactionManager;
 
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
@@ -56,6 +55,7 @@ import sorcer.service.SignatureException;
 import sorcer.service.Spacer;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Task;
+import sorcer.service.txmgr.TransactionManagerAccessor;
 
 /**
  * @author Mike Sobolewski
@@ -270,8 +270,7 @@ public class ExertProcessor implements Exerter, Callable {
 			locker = (MutualExclusion) ProviderLookup
 					.getService(MutualExclusion.class);
 		}
-		TransactionManager transactionManager = ProviderAccessor
-				.getTransactionManager();
+		TransactionManagerAccessor.getTransactionManager();
 		Transaction txn = null;
 
 		LockResult lr = locker.getLock(""

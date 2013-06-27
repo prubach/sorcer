@@ -21,16 +21,13 @@ import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
-import net.jini.core.transaction.server.TransactionManager;
-import net.jini.event.EventMailbox;
-import net.jini.lookup.entry.Name;
-import net.jini.space.JavaSpace;
-import net.jini.space.JavaSpace05;
 import sorcer.core.*;
 import sorcer.service.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -64,20 +61,9 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
 	protected static Cataloger cataloger;
 
-	// to verify by name without call in the provider
-	protected static String catalogerName;
+    protected static ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
 
-	protected static Jobber jobber;
-
-	protected static Spacer spacer;
-
-	protected static FileStorer fileStorer;
-
-	protected static Caller caller;
-
-	protected static TransactionManager transactionMgr;
-
-	protected static JavaSpace05 javaSpace;
+    protected static Map<Class, Object> cache = new HashMap<Class, Object>();
 
 	protected ProviderAccessor() {
 		// Nothing to do, uses the singleton design pattern
@@ -91,13 +77,6 @@ public class ProviderAccessor extends ServiceAccessor implements
 		if (accessor == null)
 			accessor = new ProviderAccessor();
 		ProviderAccessor.lookupGroups = Sorcer.getLookupGroups();
-		return accessor;
-	}
-
-	public static ProviderAccessor getAccessor(String[] lookupGroups) {
-		if (accessor == null)
-			accessor = new ProviderAccessor(lookupGroups);
-		
 		return accessor;
 	}
 
@@ -120,7 +99,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider matching a registered serviceID,
 	 * serviceTypes, attribute set, and Jini groups.
-	 * 
+	 *
 	 * @param serviceID
 	 *            a service provider ID
 	 * @param serviceTypes
@@ -140,7 +119,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 
 	/**
 	 * Returns a SORCER service provider registered with serviceID.
-	 * 
+	 *
 	 * @param serviceID
 	 *            a service provider ID
 	 * @return a SORCER provider service
@@ -152,7 +131,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider registered with the most significant
 	 * and the least significant bits.
-	 * 
+	 *
 	 * @param mostSig
 	 *            most significant bits
 	 * @param leastSig
@@ -168,7 +147,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * Returns a SORCER service provider with the specified name and service
 	 * type, using a Cataloger if available, otherwise using Jini lookup
 	 * services.
-	 * 
+	 *
 	 * @param providerName
 	 *            the name of service provider
 	 * @param serviceType
@@ -189,7 +168,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 					//servicer = (Service)cataloger.lookupItem(providerName, serviceType).service;
 					if (servicer != null)
 						break;
-						
+
 					Thread.sleep(WAIT_FOR);
 					tryNo++;
 				}
@@ -209,7 +188,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider with the specified signature, using a
 	 * Cataloger if available, otherwise using Jini lookup services.
-	 * 
+	 *
 	 * @param signature
 	 *            the signature of service provider
 	 * @return a SORCER provider service
@@ -222,7 +201,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER Provider with the specified name, service type, and a
 	 * codebase where the interface class can be downloaded from.
-	 * 
+	 *
 	 * @param providerName
 	 *            The name of the provider to search for
 	 * @param serviceType
@@ -231,7 +210,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 *            The location where to download the class from
 	 * @return a SORCER Provider
 	 */
-	public final static Provider getProvider(String providerName,
+	public static Provider getProvider(String providerName,
 			Class serviceType, String codebase) {
 		return (Provider) getService(providerName, serviceType, codebase);
 	}
@@ -239,12 +218,12 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider with the specified service ID using a
 	 * Cataloger if available, otherwise using Jini lookup services.
-	 * 
+	 *
 	 * @param serviceID
 	 *            serviceID of the desired service
 	 * @return a SORCER provider service
 	 */
-	public final static Provider getProvider(ServiceID serviceID) {
+	public static Provider getProvider(ServiceID serviceID) {
 		try {
 			cataloger = getCataloger();
 			if (cataloger != null)
@@ -260,18 +239,18 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider with the specified service type, using
 	 * a Cataloger if available, otherwise using Jini lookup services.
-	 * 
+	 *
 	 * @param serviceType
 	 *            a provider service type (interface)
 	 * @return a SORCER provider service
 	 */
-	public final static Provider getProvider(Class serviceType) {
+	public static Provider getProvider(Class serviceType) {
 		return getProvider(null, serviceType);
 	}
 
 	/**
 	 * Returns a SORCER service provider matching a given attributes.
-	 * 
+	 *
 	 * @param attributes
 	 *            attribute set to match
 	 * @return a SORCER provider
@@ -283,7 +262,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	/**
 	 * Returns a SORCER service provider matching a given list of implemented
 	 * service types (interfaces).
-	 * 
+	 *
 	 * @param serviceTypes
 	 *            a set of service types to match
 	 * @return a SORCER provider
@@ -293,268 +272,35 @@ public class ProviderAccessor extends ServiceAccessor implements
 	}
 
 	/**
-	 * Returns a JINI ServiceItem containing the SORCER service provider with
-	 * the specified providerName and serviceType using Cataloger if available,
-	 * otherwise using Jini lookup services.
-	 * 
-	 * @param providerName
-	 *            , serviceType serviceID of the desired service
-	 * @return JINI ServiceItem
-	 */
-
-	public final static ServiceItem getCatalogServiceItem(String providerName, Class serviceType) {
-		try {
-			cataloger = getCataloger();
-			if (cataloger != null)
-				return cataloger.lookupItem(providerName, serviceType);
-			else
-				return getServiceItem(providerName, serviceType);
-		} catch (Exception ex) {
-			logger.throwing(ProviderAccessor.class.getName(), "getProvider", ex);
-			return null;
-		}
-	}
-
-	/**
-	 * Returns any SORCER Jobber service provider.
-	 * 
-	 * @return a SORCER Jobber provider
-	 * @throws AccessorException
-	 */
-	public static Jobber getJobber() throws AccessorException {
-		return getJobber(null);
-	}
-
-	/**
-	 * Returns any SORCER Spacer service provider.
-	 * 
-	 * @return a SORCER Spacer provider
-	 * @throws AccessorException
-	 */
-	public static Spacer getSpacer() throws AccessorException {
-		return getSpacer(null);
-	}
-
-	/**
-	 * Returns a SORCER Jobber service provider using Jini lookup and discovery.
-	 * 
-	 * @param name
-	 *            the name of a Jobber service provider
-	 * @return a Jobber proxy
-	 */
-	public final static Jobber getJobber(String name) {
-		String jobberName = (name == null) ? Sorcer.getProperty(S_JOBBER_NAME)
-				: name;
-		try {
-			if (isAlive((Provider) jobber)) {
-				logger.info(">>>returned cached Jobber ("
-						+ ((Provider) jobber).getProviderID() + ") by "
-						+ ProviderAccessor.class.getName());
-			} else {
-				jobber = (Jobber) getProvider(jobberName, Jobber.class);
-			}
-			return jobber;
-		} catch (Exception e) {
-			logger.throwing(ProviderAccessor.class.getName(), "getJobber", e);
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a SORCER Spacer service provider using Jini lookup and discovery.
-	 * 
-	 * @param name
-	 *            the name of a spacer service provider
-	 * @return a Spacer proxy
-	 */
-	public static Spacer getSpacer(String name) {
-		String spacerName = (name == null) ? Sorcer.getProperty(S_SPACER_NAME)
-				: name;
-		try {
-			if (isAlive((Provider) spacer)) {
-				logger.info(">>>returned cached Spacer ("
-						+ ((Provider) spacer).getProviderID() + ") by "
-						+ ProviderAccessor.class.getName());
-			} else {
-				spacer = (Spacer) getProvider(spacerName, Spacer.class);
-			}
-			return spacer;
-		} catch (Exception e) {
-			logger.throwing(ProviderAccessor.class.getName(), "getSpacer", e);
-			return null;
-		}
-	}
-
-	public static Provider getNotifierProvider() throws ClassNotFoundException {
-		Class[] svcTypes = new Class[] { Class
-				.forName("sorcer.service.SorcerNotifierProtocol") };
-		return (Provider) getService(null, svcTypes, null, getLookupGroups());
-	}
-
-	public static EventMailbox getEventMailbox() throws ClassNotFoundException {
-		Class[] svcTypes = new Class[] { Class
-				.forName("net.jini.event.EventMailbox") };
-		return (EventMailbox) getService(null, svcTypes, null, getLookupGroups());
-	}
-
-	/**
-	 * Returns a database file store service provider.
-	 * 
-	 * @return - a SORCER FileStorer service provider
-	 */
-	public final static FileStorer getFileStorer() {
-		try {
-			if (!ProviderAccessor.isAlive((Provider) fileStorer))
-				fileStorer = (FileStorer) getService(null,
-						new Class[] { Class
-								.forName("sorcer.service.FileStorer") }, null,
-						getLookupGroups());
-			return (FileStorer) fileStorer;
-		} catch (Exception e) {
-			// Just Report and exit
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a Jobber server using Jini discovery.
-	 * 
-	 * @return a SORCER Caller service provider
-	 */
-	public final static Caller getCaller() {
-		try {
-			if (!ProviderAccessor.isAlive((Provider) caller))
-				caller = (Caller) getService(null,
-						new Class[] { Class.forName("sorcer.service.Caller") },
-						null, getLookupGroups());
-
-			return caller;
-		} catch (Exception e) {
-			// Just Report and exit
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a Jini transaction manager service.
-	 * 
-	 * @return Jini transaction manager
-	 */
-	public static TransactionManager getTransactionManager() {
-		try {
-			if (transactionMgr == null)
-				return getNewTransactionManger();
-			transactionMgr.getState(-1);
-			return (TransactionManager) transactionMgr;
-		} catch (net.jini.core.transaction.UnknownTransactionException ute) {
-			return (TransactionManager) transactionMgr;
-		} catch (Exception e) {
-			try {
-				transactionMgr = getNewTransactionManger();
-				return transactionMgr;
-			} catch (Exception ex) {
-				logger.throwing(ProviderAccessor.class.getName(),
-						"getTransactionManager", ex);
-				return null;
-			}
-		}
-	}
-
-	private static TransactionManager getNewTransactionManger() {
-		transactionMgr = (TransactionManager) getService(null,
-				new Class[] { TransactionManager.class }, null, getLookupGroups());
-
-		return (TransactionManager) transactionMgr;
-	}
-
-	/**
-	 * Returns a JavaSpace service with a given name.
-	 * 
-	 * @return JavaSpace proxy
-	 */
-	public static JavaSpace05 getSpace(String spaceName) {
-		return getSpace(spaceName, Sorcer.getSpaceGroup());
-	}
-
-	/**
-	 * Returns a JavaSpace service with a given name and group.
-	 * 
-	 * @return JavaSpace proxy
-	 */
-	public static JavaSpace05 getSpace(String spaceName, String spaceGroup) {
-		// first test if our cached JavaSpace is alive
-		// and if it's the case then return it,
-		// otherwise get a new JavSpace proxy
-		Entry[] attrs = null;
-		if (spaceName != null) {
-			attrs = new Entry[] { new Name(spaceName) };
-		}
-		String sg = spaceGroup;
-		if (spaceGroup == null) {
-			sg = getSpaceGroup();
-		}
-		try {
-			if (javaSpace == null) {
-//				logger.info("getting Exertion Space name: " 
-//						+ (attrs == null ? null : attrs[0]) + " group: " + sg);
-				javaSpace = (JavaSpace05) getService(null,
-						new Class[] { JavaSpace05.class }, attrs,
-						new String[] { sg });
-			} else {
-				javaSpace.readIfExists(new Name("_SORCER_"), null,
-						JavaSpace.NO_WAIT);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			javaSpace = (JavaSpace05) getService(null,
-					new Class[] { JavaSpace05.class }, attrs,
-					new String[] { sg });
-		}
-		return javaSpace;
-	}
-
-	/**
-	 * Returns a Jini JavaSpace service.
-	 * 
-	 * @return Jini JavaSpace
-	 */
-	public static JavaSpace05 getSpace() {
-		return getSpace(Sorcer.getActualSpaceName());
-	}
-
-	/**
 	 * Returns a SORCER Cataloger Service.
-	 * 
+	 *
 	 * This method searches for either a JINI or a RMI Cataloger service.
-	 * 
+	 *
 	 * @return a Cataloger service proxy
 	 * @throws AccessorException
-	 * @see Cataloger
+     * @see sorcer.core.Cataloger
 	 */
 	public static Cataloger getCataloger() throws AccessorException {
-		return getCataloger(Sorcer.getActualCatalogerName()) ;
+        return getCataloger(providerNameUtil.getName(Cataloger.class)) ;
 	}
 
 	/**
 	 * Returns a SORCER Cataloger service provider using JINI discovery.
-	 * 
+	 *
 	 * @return a SORCER Cataloger
 	 */
-	public final static Cataloger getCataloger(String serviceName) {
-		boolean catIsOk = false;
-		try {
-			catIsOk = isAlive((Provider) cataloger);
-		} catch (Exception re) {
-			return cataloger = getService(serviceName,
-					Cataloger.class);
+    public static Cataloger getCataloger(String serviceName) {
+        boolean catIsOk;
+        try {
+            catIsOk = isAlive((Provider) cataloger);
+        } catch (Exception re) {
+			catIsOk = false;
 		}
 		try {
 			if (catIsOk) {
 				return cataloger;
 			} else
-				return cataloger = getService(serviceName,
+                return cataloger = ServiceAccessor.getService(serviceName,
 						Cataloger.class);
 		} catch (Exception e) {
 			logger.throwing(ProviderAccessor.class.getName(), "getProvider", e);
@@ -562,11 +308,10 @@ public class ProviderAccessor extends ServiceAccessor implements
 		}
 	}
 
-
 	/**
 	 * Returns a SORCER service using a cached Cataloger instance by this
 	 * ProviderAccessor.
-	 * 
+	 *
 	 * @param primaryInterface
 	 *            - service type of requested provider
 	 * @return a requested service or null if a Catloger is not available
@@ -585,7 +330,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * allows for SORCER requestors and providers to avoid continuous usage of
 	 * lookup discovery for each needed service that is delegated to a SORCER
 	 * Cataloger service.
-	 * 
+	 *
 	 * @param providerName
 	 *            - a name of requested service
 	 * @param primaryInterface
@@ -602,8 +347,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 				return cataloger.lookup(providerName, primaryInterface);
 			else {
 				// try to get a new cataloger and lookup again
-				cataloger = (Cataloger) getService(
-						Sorcer.getProperty(S_CATALOGER_NAME), Cataloger.class);
+				cataloger = getService(providerNameUtil.getName(Cataloger.class), Cataloger.class);
 				if (cataloger != null) {
 					logger.info("Got service provider from Cataloger");
 					return cataloger.lookup(providerName, primaryInterface);
@@ -617,26 +361,6 @@ public class ProviderAccessor extends ServiceAccessor implements
 		} catch (RemoteException ex) {
 			logger.throwing(ProviderAccessor.class.getName(), "lookup", ex);
 			return null;
-		}
-	}
-
-	/**
-	 * Test if provider is still replying.
-	 * 
-	 * @param provider
-	 * @return true if a provider is alive, otherwise false
-	 * @throws RemoteException
-	 */
-	protected final static boolean isAlive(Provider provider)
-			throws RemoteException {
-		if (provider == null)
-			return false;
-		try {
-			provider.getProviderName();
-			return true;
-		} catch (RemoteException e) {
-			logger.throwing(ProviderAccessor.class.getName(), "isAlive", e);
-			throw e;
 		}
 	}
 

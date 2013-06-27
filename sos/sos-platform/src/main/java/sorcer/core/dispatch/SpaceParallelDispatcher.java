@@ -22,7 +22,7 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.*;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
 
 import java.util.Set;
 
@@ -52,7 +52,7 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 		} catch (Exception re) {
 			re.printStackTrace();
 			logger.severe("Space not reachable....resetting space");
-			space = ProviderAccessor.getSpace();
+			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				xrt.setStatus(FAILED);
 				throw new ExertionException("NO exertion space available!");

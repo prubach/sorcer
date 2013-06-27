@@ -67,6 +67,9 @@ import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
 import sorcer.service.*;
+import sorcer.service.notifier.NotifierAccessor;
+import sorcer.service.space.SpaceAccessor;
+import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
 
 import javax.security.auth.Subject;
@@ -375,7 +378,7 @@ public class ProviderDelegate implements SorcerConstants {
 		if (!spaceEnabled){
 			return;
 		}
-		space = ProviderAccessor.getSpace(spaceName, spaceGroup);
+		space = SpaceAccessor.getSpace(spaceName, spaceGroup);
 		if (space == null) {
 			int ctr = 0;
 			while (space == null && ctr++ < TRY_NUMBER) {
@@ -386,7 +389,7 @@ public class ProviderDelegate implements SorcerConstants {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				space = ProviderAccessor.getSpace(spaceName, spaceGroup);
+				space = SpaceAccessor.getSpace(spaceName, spaceGroup);
 			}
 			if (space != null) {
 				logger.info("got space = " + space);
@@ -395,7 +398,7 @@ public class ProviderDelegate implements SorcerConstants {
 			}
 		}
 		if (workerTransactional)
-			tManager = ProviderAccessor.getTransactionManager();
+			tManager = TransactionManagerAccessor.getTransactionManager();
 
 		try {
 			startSpaceTakers();
@@ -1703,7 +1706,7 @@ public class ProviderDelegate implements SorcerConstants {
 		try {
 
 			MsgRef mr;
-			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) ProviderAccessor
+			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) NotifierAccessor
 					.getNotifierProvider();
 
 			mr = new MsgRef(task.getId(), notificationType,

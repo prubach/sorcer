@@ -29,7 +29,7 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
 import sorcer.service.*;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.Set;
@@ -49,7 +49,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
                                 boolean isSpawned, LokiMemberUtil memUtil, Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider);
 		
-		space = ProviderAccessor.getSpace();
+		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
@@ -83,7 +83,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
 	}
 
 	protected void addPoison(Exertion exertion) {
-		space = ProviderAccessor.getSpace();
+		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			return;
 		}
@@ -136,7 +136,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
 	protected void writeEnvelop(Exertion exertion) throws 
 			ExertionException, SignatureException, RemoteException {
 		// setSubject before exertion is dropped
-		space = ProviderAccessor.getSpace();
+		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
@@ -157,7 +157,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
 
 	protected ExertionEnvelop takeEnvelop(Entry template)
 			throws ExertionException {
-		space = ProviderAccessor.getSpace();
+		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
@@ -292,7 +292,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			logger.severe("Space died....resetting space");
-			space = ProviderAccessor.getSpace();
+			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				throw new ExertionException("NO exertion space available!");
 			}
