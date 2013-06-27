@@ -20,7 +20,6 @@ package sorcer.util;
 import java.io.File;
 import java.lang.reflect.Field;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,7 @@ public class LibraryPathHelper {
 		}
 
 		String systemLibPath = System.getProperty(KEY_LIB_PATH);
-		if (StringUtils.isEmpty(systemLibPath)) {
+        if (systemLibPath == null || systemLibPath.isEmpty()) {
 			systemLibPath = libraryPath;
 		} else {
 			systemLibPath += File.pathSeparator + libraryPath;

@@ -86,8 +86,6 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
-import java.security.AccessControlContext;
-import java.security.AccessController;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -800,7 +798,7 @@ public class ProviderDelegate implements SorcerConstants {
 									.setReturnPath(tsig.getReturnPath());
 
 					if (isBeanable(task)) {
-						task = useServiceComponents(task, transaction);
+						task = useServiceComponents(task);
 					} else {
 						logger.info("going to execTask(); transaction = "
 								+ transaction);
@@ -936,8 +934,7 @@ public class ProviderDelegate implements SorcerConstants {
 		Class serviceType = task.getProcessSignature().getServiceType();
 		Iterator i = serviceComponents.entrySet().iterator();
 		Map.Entry next;
-		Object impl = null;
-		while (i.hasNext()) {
+        while (i.hasNext()) {
 			next = (Map.Entry) i.next();
 			logger.fine("mach serviceType: " + serviceType + " against: "
 					+ next.getKey());
@@ -957,7 +954,7 @@ public class ProviderDelegate implements SorcerConstants {
 		return false;
 	}
 
-	private Task useServiceComponents(Task task, Transaction transaction)
+	private Task useServiceComponents(Task task)
 			throws RemoteException, ContextException {
 		String selector = task.getProcessSignature().getSelector();
 		Class serviceType = task.getProcessSignature().getServiceType();
@@ -1122,7 +1119,7 @@ public class ProviderDelegate implements SorcerConstants {
 		}
 		visited.add(serviceID);
 		if (serviceComponents != null) {
-			NetTask result = (NetTask) useServiceComponents((Task) task, null);
+			NetTask result = (NetTask) useServiceComponents((Task) task);
 			logger.info("forwardTask executed by a service bean: " + result);
 			if (result != null) {
 				visited.remove(serviceID);
@@ -1439,7 +1436,7 @@ public class ProviderDelegate implements SorcerConstants {
 			}
 
 			// add the service context of this provider to provider attributes
-			AccessControlContext context = AccessController.getContext();
+			// AccessControlContext context = AccessController.getContext();
 		} catch (Exception ex) {
             logger.warning(StringUtils.stackTraceToString(ex));
 		}
@@ -1596,25 +1593,6 @@ public class ProviderDelegate implements SorcerConstants {
 		logger.info("Setting service ID:" + serviceID);
 		serverUuid = UuidFactory.create(serviceID.getMostSignificantBits(),
 				serviceID.getLeastSignificantBits());
-	}
-
-    private void addType(Class type, Set typeSet, boolean withSupertypes) {
-		if (type == null)
-			return;
-		String typeName = type.getName();
-		if (typeSet.contains(typeName))
-			return;
-
-		typeSet.add(typeName);
-		if (!withSupertypes)
-			return;
-
-        addType(type.getSuperclass(), typeSet, withSupertypes);
-
-		Class[] stypes = type.getInterfaces();
-		for (int i = 0; i < stypes.length; i++) {
-			addType(stypes[i], typeSet, withSupertypes);
-		}
 	}
 
     public void destroy() throws RemoteException {
@@ -1879,10 +1857,7 @@ public class ProviderDelegate implements SorcerConstants {
 		/** Our data directory */
 		protected String dataDir = null;
 
-		/** Our data directory size in bytes */
-		protected long dataLimit = 0;
-
-		/**
+        /**
 		 * initializes this config object (loads all information).
 		 * 
 		 * @param exitOnEmptyName, propsFilename

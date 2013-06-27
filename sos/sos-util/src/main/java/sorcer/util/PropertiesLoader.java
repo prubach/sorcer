@@ -41,9 +41,7 @@ public class PropertiesLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, String> toMap(Properties properties) {
-		Map<String, String> result = new HashMap<String, String>();
-		result.putAll((Map) properties);
-		return result;
+	public static Map<String, String> toMap(Properties properties) {
+        return (Map)properties;
 	}
 }
