@@ -64,7 +64,7 @@ public class SpaceAccessor extends ServiceAccessor{
         }
         String sg = spaceGroup;
         if (spaceGroup == null) {
-            sg = ServiceAccessor.getSpaceGroup();
+            sg = Sorcer.getSpaceGroup();
         }
         try {
             if (javaSpace == null) {

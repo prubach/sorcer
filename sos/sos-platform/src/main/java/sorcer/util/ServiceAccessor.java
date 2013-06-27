@@ -113,8 +113,8 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service item containing a service matching providerName and
 	 * serviceType using Jini lookup service.
 	 * 
-	 * @param providerName
-	 * @param serviceType
+	 * @param providerName name of the requested provider
+	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
 	public static ServiceItem getServiceItem(String providerName,
@@ -140,7 +140,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service item containing a service matching only the
 	 * serviceType. It uses Jini lookup service.
 	 * 
-	 * @param serviceType
+	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
 	public static ServiceItem getServiceItem(Class serviceType) throws SignatureException {
@@ -303,7 +303,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Creates a service lookup and discovery manager with a provided service
 	 * template, lookup cache filter, and list of jini groups.
 	 * 
-	 * @param groups
+	 * @param groups River group names
 	 * @throws IOException
 	 */
 	protected static void openDiscoveryManagement(String[] groups)
@@ -375,8 +375,8 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service matching serviceType, service attributes (entries), and
 	 * passes a provided filter.
 	 * 
-	 * @param atributes
-	 * @param serviceType
+	 * @param atributes   attributes of the requested provider
+	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
 	public static <T>T getService(Class<T> serviceType,
@@ -388,11 +388,12 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service matching serviceType, service attributes (entries),
 	 * passes a provided filter, and uses a given codebase for downloadable
 	 * classes.
-	 * 
-	 * @param atributes
-	 * @param serviceType
+	 *
+     * @param atributes   attributes of the requested provider
+     * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
+    @SuppressWarnings("unchecked")
 	public static <T> T getService(Class<T> serviceType,
 			Entry[] atributes, ServiceItemFilter filter, String codebase) {
 		if (serviceType == null) {
@@ -414,9 +415,9 @@ public class ServiceAccessor implements SorcerConstants {
 	/**
 	 * Returns a service matching serviceName and serviceType using Jini lookup
 	 * service.
-	 * 
-	 * @param serviceName
-	 * @param serviceType
+	 *
+     * @param serviceName name of the requested provider
+     * @param serviceType type of the requested provider
 	 * @return a service provider
 	 */
 	public static <T> T getService(String serviceName, Class<T> serviceType) {
@@ -448,9 +449,9 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service matching the given serviceType, provider Name, and
 	 * codebase where to get the interface class from.
 	 * 
-	 * @param providerName
-	 * @param serviceType
-	 * @param codebase
+	 * @param providerName name of the requestod provider
+	 * @param serviceType type of the requested provider
+	 * @param codebase     codebase to load the provider class from
 	 * @return a service provider
 	 */
 	public static Object getService(String providerName,
@@ -465,9 +466,9 @@ public class ServiceAccessor implements SorcerConstants {
 	 * Returns a service matching a given template filter, and Jini lookup
 	 * service.
 	 * 
-	 * @param template
-	 * @param filter
-	 * @param groups
+	 * @param template service template
+	 * @param filter   service filter
+	 * @param groups   River groups list
 	 * @return a service provider
 	 */
 	public static Object getService(ServiceTemplate template,
@@ -522,28 +523,11 @@ public class ServiceAccessor implements SorcerConstants {
 	}
 
 	/**
-	 * Returns a space group as defined in the SORCER environment.
-	 * 
-	 * @return a list of group names
-	 * @see Sorcer
-	 */
-	protected static String getSpaceGroup() {
-		return Sorcer.getSpaceGroup();
-	}
-
-	/**
-	 * @return Returns the filter.
-	 */
-	public static ServiceItemFilter getCacheFilter() {
-		return cacheFilter;
-	}
-
-	/**
 	 * @param filter
 	 *            The filter to set.
 	 */
 	public static void setFilter(ServiceItemFilter filter) {
-		ServiceAccessor.cacheFilter = filter;
+		cacheFilter = filter;
 	}
 
 	/**
@@ -641,7 +625,7 @@ public class ServiceAccessor implements SorcerConstants {
     /**
      * Test if provider is still replying.
      *
-     * @param provider
+     * @param provider the provider to check
      * @return true if a provider is alive, otherwise false
      * @throws java.rmi.RemoteException
      */
