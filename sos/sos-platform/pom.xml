@@ -18,7 +18,12 @@
 			<artifactId>lockmgr-api</artifactId>
 			<version>${v.lockmgr}</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>dbp-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-env</artifactId>
 			<version>${project.version}</version>
