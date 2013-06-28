@@ -40,6 +40,8 @@ import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.StringUtils;
 
+import static sorcer.core.SorcerConstants.CPS;
+
 /**
  * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
  * instances with its own service {@link sorcer.service.Context} and a collection of service

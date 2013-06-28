@@ -25,12 +25,13 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
-import sorcer.core.SorcerConstants;
 import sorcer.service.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
+
+import static sorcer.core.SorcerConstants.ANY;
 
 /**
  * A class which supports a simple Jini multicast lookup. It doesn't register

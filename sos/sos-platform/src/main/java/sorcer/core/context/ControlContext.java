@@ -31,6 +31,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static sorcer.core.SorcerConstants.*;
+
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class ControlContext extends ServiceContext implements Strategy {
 

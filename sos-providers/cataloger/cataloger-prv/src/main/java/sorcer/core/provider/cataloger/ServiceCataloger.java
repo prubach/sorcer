@@ -65,6 +65,8 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import static sorcer.core.SorcerConstants.*;
+
 /**
  * The facility for maintaining a cache of all SORCER OS :: providers {@link sorcer.service.Service}
  * s as specified by

@@ -41,6 +41,8 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import static sorcer.core.SorcerConstants.MAIL_SEP;
+
 /**
  * ServiceJobber - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using directly (PUSH) service providers.

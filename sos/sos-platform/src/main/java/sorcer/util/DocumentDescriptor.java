@@ -25,6 +25,10 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
+import static sorcer.core.SorcerConstants.MODIFIED;
+import static sorcer.core.SorcerConstants.PUBLIC;
+import static sorcer.core.SorcerConstants.SEP;
+
 public class DocumentDescriptor implements Serializable {
 
 	// String defaultWarningDate = "SysDate + 7"; //7 days ahead

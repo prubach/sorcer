@@ -26,6 +26,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
 
+import static sorcer.core.SorcerConstants.*;
+
 public class ServletProtocol extends ProxyProtocol {
 	protected String controllerURL, previousUrlStr, dispatcherURL;
 	// controllerURL =
