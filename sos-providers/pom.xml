@@ -19,7 +19,6 @@
 		<module>logger</module>
 		<module>exertmonitor</module>
 		<module>dbp</module>
-		<module>dsp</module>
         <module>exerter</module>
     </modules>
 	
