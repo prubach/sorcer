@@ -21,7 +21,6 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.dispatch.JobThread;
@@ -47,7 +46,7 @@ import java.util.logging.SimpleFormatter;
  * coordination for executing exertions using directly (PUSH) service providers.
  * 
  */
-public class ServiceJobber extends ServiceProvider implements Jobber, Executor, SorcerConstants {
+public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	private Logger logger = Logger.getLogger(ServiceJobber.class.getName());
 
 	public ServiceJobber() throws RemoteException {
@@ -106,8 +105,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException();
+			throw new ExertionException(e);
 		}
 	}
 

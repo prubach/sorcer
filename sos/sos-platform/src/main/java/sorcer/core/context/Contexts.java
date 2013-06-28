@@ -29,6 +29,10 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import static sorcer.core.SorcerConstants.APS;
+import static sorcer.core.SorcerConstants.CPS;
+import static sorcer.core.SorcerConstants.SEP;
+
 /**
  * The Contexts class provides utility services to ServiceContext that are
  * required by requestors such as the the SORCER graphical user interface and
@@ -36,7 +40,7 @@ import java.util.regex.Pattern;
  * 
  * @version $Revision: 1.5 $, $Date: 2007/08/15 22:11:10 $
  */
-public class Contexts implements SorcerConstants {
+public class Contexts {
 
 	private static Logger logger = Logger.getLogger(Contexts.class.getName());
 	
@@ -368,7 +372,7 @@ public class Contexts implements SorcerConstants {
 		if (cp.startsWith(Context.DA_IN)) {
 			cp0 = Context.DA_INOUT + cp.substring(Context.DA_IN.length());
 			fromContext.mark(toPath, Context.CONTEXT_PARAMETER
-					+ SorcerConstants.APS + cp0);
+					+ APS + cp0);
 		} else if (cp.startsWith(Context.DA_OUT)) {
 			// do nothing for now
 		} else {
@@ -381,9 +385,9 @@ public class Contexts implements SorcerConstants {
 
 	public static String getFormattedOut(Context sc, boolean isHTML) {
 		// return context with outpaths
-		String inoutAssoc = Context.DIRECTION + SorcerConstants.APS
+		String inoutAssoc = Context.DIRECTION + APS
 				+ Context.DA_INOUT + APS;
-		String outAssoc = Context.DIRECTION + SorcerConstants.APS
+		String outAssoc = Context.DIRECTION + APS
 				+ Context.DA_OUT + APS;
 		String[] outPaths = null, inoutPaths = null;
 		try {
@@ -975,11 +979,11 @@ public class Contexts implements SorcerConstants {
 		StringBuffer sb = new StringBuffer();
 		sb
 				.append(Context.CONTEXT_PARAMETER)
-				.append(SorcerConstants.APS)
+				.append(APS)
 				.append(attribute)
-				.append(SorcerConstants.APS)
+				.append(APS)
 				.append(value)
-				.append(SorcerConstants.APS)
+				.append(APS)
 				.append(
 						contextID == null ? SorcerConstants.NULL
 								: contextID);
@@ -1013,7 +1017,7 @@ public class Contexts implements SorcerConstants {
 							((ServiceContext) subcntxt).keys(), true);
 					while (el.hasMoreElements()) {
 						path = (String) el.nextElement();
-						String str = key1 + SorcerConstants.CPS + path;
+						String str = key1 + CPS + path;
 						keys.addElement(str);
 					}
 					keys.removeElement(key1);
@@ -1048,7 +1052,7 @@ public class Contexts implements SorcerConstants {
 						((ServiceContext) subcntxt).keys());
 				while (el.hasMoreElements()) {
 					path = (String) el.nextElement();
-					String str = key1 + SorcerConstants.CPS + path;
+					String str = key1 + CPS + path;
 					keys.addElement(str);
 				}
 				keys.removeElement(key1);
@@ -1080,7 +1084,7 @@ public class Contexts implements SorcerConstants {
 			String metapath = cntxt.getLocalMetapath(attribute);
 			if (metapath != null) {
 				String[] attrs = StringUtils.tokenize(metapath,
-						SorcerConstants.APS);
+						APS);
 				String[][] paths = new String[attrs.length][];
 				int ii = -1;
 				for (int i = 0; i < attrs.length; i++) {
@@ -1144,7 +1148,7 @@ public class Contexts implements SorcerConstants {
 					.getLinkedContext(link), attribute);
 			if (keysInLink != null)
 				for (int i = 0; i < keysInLink.length; i++)
-					keys.addElement(linkPath + SorcerConstants.CPS
+					keys.addElement(linkPath + CPS
 							+ keysInLink[i]);
 		}
 		String[] keysArray = new String[keys.size()];
@@ -1193,8 +1197,8 @@ public class Contexts implements SorcerConstants {
 			String metapath = cntxt.getLocalMetapath(attr);
 			if (metapath != null) {
 				String[] attrs = StringUtils.tokenize(metapath,
-						SorcerConstants.APS);
-				String[] vals = StringUtils.tokenize(value, SorcerConstants.APS);
+						APS);
+				String[] vals = StringUtils.tokenize(value, APS);
 				if (attrs.length != vals.length)
 					throw new ContextException("Invalid association: \""
 							+ association + "\"  metaattribute \"" + attr
@@ -1204,7 +1208,7 @@ public class Contexts implements SorcerConstants {
 				int ii = -1;
 				for (int i = 0; i < attrs.length; i++) {
 					paths[i] = getMarkedPaths(cntxt, attrs[i]
-							+ SorcerConstants.APS + vals[i]);
+							+ APS + vals[i]);
 					if (paths[i] == null) {
 						ii = -1;
 						break; // i.e. no possible match
@@ -1264,7 +1268,7 @@ public class Contexts implements SorcerConstants {
 					.getLinkedContext(link), association);
 			if (keysInLink != null)
 				for (int i = 0; i < keysInLink.length; i++)
-					keys.addElement(linkPath + SorcerConstants.CPS
+					keys.addElement(linkPath + CPS
 							+ keysInLink[i]);
 		}
 		String[] keysArray = new String[keys.size()];

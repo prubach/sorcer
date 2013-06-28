@@ -18,14 +18,12 @@
 package sorcer.core.dispatch;
 
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
 
 import java.util.Set;
 
-public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
-		SorcerConstants {
+public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 
 	public SWIFSequentialDispatcher(Job job, Set<Context> sharedContext,
 			boolean isSpawned, Provider provider) throws Throwable {
@@ -44,7 +42,7 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 	public void collectResults() throws ExertionException, SignatureException {
 		logger
 				.info("sorcer.core.dispatch.SWIFSequentialDispatcher::collectResults");
-		ServiceExertion exertion = null;
+		ServiceExertion exertion;
 		// RemoteExertion result = null;
 		for (int i = 0; i < inputXrts.size(); i++) {
 			exertion = (ServiceExertion) inputXrts.elementAt(i);

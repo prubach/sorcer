@@ -17,7 +17,7 @@
  */
 package sorcer.util.ui;
 
-import sorcer.core.SorcerConstants;
+import static sorcer.core.SorcerConstants.*;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.Crypt;
 import sorcer.util.DataReader;
@@ -26,7 +26,7 @@ import java.awt.*;
 import java.util.Observer;
 import java.util.Properties;
 
-public class LauncherModel extends Model implements SorcerConstants {
+public class LauncherModel extends Model {
 	public static boolean isDebugged = false;
 	private String appDefaultsFile;
 	protected SorcerPrincipal principal = new SorcerPrincipal();

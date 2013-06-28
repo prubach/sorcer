@@ -57,7 +57,7 @@ import java.util.logging.Logger;
 
 @SuppressWarnings("rawtypes")
 abstract public class ExertDispatcher implements Dispatcher,
-		SorcerConstants, ExecState {
+		ExecState {
 	protected final static Logger logger = Log.getDispatchLog();
 
 	protected ServiceExertion xrt;
@@ -379,7 +379,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		Vector recipients = null;
 		String notifyees = parent.getControlContext().getNotifyList(inTask);
 		if (notifyees != null) {
-			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, SorcerConstants.MAIL_SEP);
 			recipients = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipients.addElement(list[i]);

@@ -18,7 +18,6 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.exertion.ObjectTask;
@@ -40,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ObjectArithmeticReqTest implements SorcerConstants {
+public class ObjectArithmeticReqTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ObjectArithmeticReqTest.class.getName());

@@ -32,7 +32,7 @@ import sorcer.util.StringUtils;
  * 
  */
 @SuppressWarnings("rawtypes")
-public class ContextLink implements SorcerConstants, Link {
+public class ContextLink implements Link {
 
 	private static final long serialVersionUID = -7115324059076651991L;
 
@@ -112,7 +112,7 @@ public class ContextLink implements SorcerConstants, Link {
 	 * public String rootName() { return SorcerUtil.firstToken(offset, CPS); }
 	 */
 	public String getName() {
-		String result = name == null ? StringUtils.firstToken(offset, CPS) : name;
+		String result = name == null ? StringUtils.firstToken(offset, SorcerConstants.CPS) : name;
 		if (result.equals(""))
 			result = linkedContext.getSubjectPath(); // assuming we have the context...
 		return result;

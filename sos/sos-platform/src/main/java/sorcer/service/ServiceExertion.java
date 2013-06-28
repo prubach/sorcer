@@ -22,7 +22,6 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
@@ -43,8 +42,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static sorcer.core.SorcerConstants.*;
+
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Service, Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
+public abstract class ServiceExertion implements Service, Exertion, Revaluation, ExecState, Serializable {
 
 	protected final static Logger logger = Logger
 			.getLogger(ServiceExertion.class.getName());

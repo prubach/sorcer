@@ -28,7 +28,6 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.Monitorable;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
@@ -45,8 +44,7 @@ import java.rmi.RemoteException;
 import java.util.Set;
 import java.util.logging.Level;
 
-public abstract class MonitoredExertDispatcher extends ExertDispatcher
-		implements SorcerConstants {
+public abstract class MonitoredExertDispatcher extends ExertDispatcher {
 
 	public static MonitorSessionManagement sessionMonitor;
 

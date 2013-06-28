@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -57,8 +56,7 @@ import sorcer.util.Sorcer;
 
 import com.sun.jini.start.LifeCycle;
 
-public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger,
-		SorcerConstants {
+public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger {
 	// The list of all known loggers.
 	private static List<LoggingConfig> knownLoggers;
 	// The logger for this application

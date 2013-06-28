@@ -17,7 +17,6 @@
  */
 package sorcer.ex5.requestor;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
@@ -36,7 +35,7 @@ import java.util.logging.Logger;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class NetArithmeticReq implements SorcerConstants {
+public class NetArithmeticReq {
 
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReq.class.getName());

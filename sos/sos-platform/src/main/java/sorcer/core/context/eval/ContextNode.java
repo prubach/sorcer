@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  * called "data items" that can be used as arguments to a setters (setItemValue)
  * and getter (getItemValue) in externally persisted data.
  */
-public class ContextNode implements Serializable, SorcerConstants {
+public class ContextNode implements Serializable {
 
 	// this class logger
 	private static Logger logger = Log.getSorcerCoreLog();
@@ -1239,7 +1239,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 
 		StringBuffer sb;
 		String msg = "(Ensure node has proper read/write permissions and that path is correct...\nURL must point into "
-				+ Sorcer.getProperty(DOC_ROOT_DIR)
+				+ Sorcer.getProperty(SorcerConstants.DOC_ROOT_DIR)
 				+ "): \nFile: "
 				+ dataFile.getAbsolutePath();
 
@@ -1259,8 +1259,8 @@ public class ContextNode implements Serializable, SorcerConstants {
 	private File getFileWithPathAdjustment(URL myURL) {
 
 		String dataRootDir, dataDir, filePath;
-		dataRootDir = Sorcer.getProperty(DOC_ROOT_DIR);
-		dataDir = Sorcer.getProperty(P_DATA_DIR);
+		dataRootDir = Sorcer.getProperty(SorcerConstants.DOC_ROOT_DIR);
+		dataDir = Sorcer.getProperty(SorcerConstants.P_DATA_DIR);
 		filePath = myURL.getPath();
 		char sep = filePath.charAt(0);
 		if (sep != File.separatorChar)

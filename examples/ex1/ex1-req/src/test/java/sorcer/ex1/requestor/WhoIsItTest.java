@@ -19,7 +19,6 @@ package sorcer.ex1.requestor;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
@@ -43,7 +42,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class WhoIsItTest implements SorcerConstants {
+public class WhoIsItTest {
 
 	private final static Logger logger = Logger
 			.getLogger(WhoIsItTest.class.getName());

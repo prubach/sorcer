@@ -17,7 +17,6 @@
  */
 package sorcer.util;
 
-import sorcer.core.SorcerConstants;
 import sorcer.security.util.ACLConvertor;
 import sorcer.security.util.SorcerPrincipal;
 
@@ -26,7 +25,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class DocumentDescriptor implements SorcerConstants, Serializable {
+public class DocumentDescriptor implements Serializable {
 
 	// String defaultWarningDate = "SysDate + 7"; //7 days ahead
 	// String defaultGoodUntil = "ADD_MONTHS(SysDate, 12)"; //12 months ahead

@@ -26,7 +26,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
@@ -35,7 +34,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ReturnPath;
 
-public class Arithmometer implements Serializable, SorcerConstants {
+public class Arithmometer implements Serializable {
 	
 	public static final String ADD = "add";
 

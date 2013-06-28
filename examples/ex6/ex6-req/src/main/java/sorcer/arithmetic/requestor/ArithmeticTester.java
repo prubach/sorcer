@@ -21,7 +21,6 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.RemoteAdder;
 import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.SorcerConstants;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -52,7 +51,7 @@ import static sorcer.eo.operator.*;
  * @author Mike Sobolewski
  */
 
-public class ArithmeticTester implements SorcerConstants {
+public class ArithmeticTester {
 
 	private static Logger logger = Log.getTestLog();
 	

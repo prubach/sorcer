@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class NetArithmeticReq implements SorcerConstants {
+public class NetArithmeticReq {
 
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReq.class.getName());

@@ -58,7 +58,7 @@ import static sorcer.util.ArtifactCoordinates.coords;
  * @author M. W. Sobolewski
  * @see SorcerConstants
  */
-abstract public class ServiceRequestor implements Requestor, SorcerConstants {
+abstract public class ServiceRequestor implements Requestor {
 	/** Logger for logging information about this instance */
 	protected static final Logger logger = Logger
 			.getLogger(ServiceRequestor.class.getName());

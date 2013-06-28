@@ -26,7 +26,6 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
-import sorcer.core.SorcerConstants;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
  * multicast discovery
  */
 
-public class ProviderLocator implements DynamicAccessor, SorcerConstants {
+public class ProviderLocator implements DynamicAccessor {
 
 	static final long WAIT_FOR = Sorcer.getLookupWaitTime();
 

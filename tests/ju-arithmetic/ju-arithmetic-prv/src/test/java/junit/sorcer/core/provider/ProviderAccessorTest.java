@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerConstants;
 import sorcer.service.Jobber;
 import sorcer.service.Service;
 import sorcer.util.ProviderAccessor;
@@ -34,7 +33,7 @@ import sorcer.util.Stopwatch;
  * @author Mike Sobolewski
  */
 
-public class ProviderAccessorTest implements SorcerConstants {
+public class ProviderAccessorTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ProviderAccessorTest.class.getName());

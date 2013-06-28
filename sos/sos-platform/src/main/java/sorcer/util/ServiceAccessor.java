@@ -67,7 +67,7 @@ import java.util.logging.Logger;
  * 
  * @author Mike Sobolewski
  */
-public class ServiceAccessor implements SorcerConstants {
+public class ServiceAccessor {
 
 	static Logger logger = Log.getProviderLog();
 
@@ -422,7 +422,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 */
 	public static <T> T getService(String serviceName, Class<T> serviceType) {
 		T proxy = null;
-		if (serviceName != null && serviceName.equals(ANY))
+		if (serviceName != null && serviceName.equals(SorcerConstants.ANY))
 			serviceName = null;
 		int tryNo = 0;
 		while (tryNo < LUS_REAPEAT) {
@@ -456,7 +456,7 @@ public class ServiceAccessor implements SorcerConstants {
 	 */
 	public static Object getService(String providerName,
 			Class serviceType, String codebase) {
-		if (providerName != null && providerName.equals(ANY))
+		if (providerName != null && providerName.equals(SorcerConstants.ANY))
 			providerName = null;
 		return getService(serviceType, new Entry[] { new Name(providerName) },
 				null, codebase);
@@ -593,7 +593,7 @@ public class ServiceAccessor implements SorcerConstants {
 		if (providerName != null && providerName.length() != 0)
 			name = providerName;
 		else
-			name = P_UNDEFINED;
+			name = SorcerConstants.P_UNDEFINED;
 
 		if (serviceTypes == null)
 			types = new Class[] { Provider.class };

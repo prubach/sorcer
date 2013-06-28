@@ -49,8 +49,7 @@ import java.util.List;
  *<li>the description of the i-th element: by ovd(i) and the setter ovd(i, description);<br>
  * implicit path: array/out/[i]/description
  */
-public class ArrayContext extends ServiceContext implements IndexedContext,
-		SorcerConstants {
+public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	private static final long serialVersionUID = 108375572414579267L;
 

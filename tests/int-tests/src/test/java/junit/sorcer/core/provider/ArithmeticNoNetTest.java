@@ -41,7 +41,6 @@ import java.util.logging.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
@@ -54,7 +53,7 @@ import sorcer.util.Sorcer;
  * @author Mike Sobolewski
  */
 
-public class ArithmeticNoNetTest implements SorcerConstants {
+public class ArithmeticNoNetTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNoNetTest.class.getName());

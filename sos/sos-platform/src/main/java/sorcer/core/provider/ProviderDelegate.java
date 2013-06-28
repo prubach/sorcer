@@ -98,13 +98,14 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import static sorcer.service.SignatureFactory.sig;
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * The provider delegate implements most of the intialization and configuration
  * of service providers by dependency injection.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ProviderDelegate implements SorcerConstants {
+public class ProviderDelegate {
 
 	static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
 

@@ -30,7 +30,7 @@ import sorcer.service.Strategy.Flow;
 
 import java.util.*;
 
-public class Jobs implements SorcerConstants {
+public class Jobs {
 
 	private Jobs() {
 		// Utility class

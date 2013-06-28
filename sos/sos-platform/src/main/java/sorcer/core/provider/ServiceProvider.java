@@ -148,7 +148,7 @@ import java.util.logging.Logger;
 public class ServiceProvider implements Identifiable, Provider, ServiceIDListener,
 		ReferentUuid, AdministratableProvider, ProxyAccessor, ServerProxyTrust,
 		RemoteMethodControl, LifeCycle, Partner, Partnership,
-		RemoteContextManagement, SorcerConstants {
+		RemoteContextManagement {
 	// RemoteMethodControl is needed to enable Proxy Constraints
 
     /** Logger and configuration component name for service provider. */
@@ -717,7 +717,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			// delegate.getJiniConfig(), PROVIDER, "lookupLocators",
 			// String[].class, new String[] {});
 			String[] lookupLocators = new String[] {};
-			String locators = delegate.getProviderConfig().getProperty(P_LOCATORS);
+			String locators = delegate.getProviderConfig().getProperty(SorcerConstants.P_LOCATORS);
 			if (locators != null && locators.length() > 0) {
 				lookupLocators = locators.split("[ ,]");
 			}

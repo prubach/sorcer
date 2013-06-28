@@ -18,7 +18,6 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -37,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExerterTest implements SorcerConstants {
+public class ArithmeticExerterTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticExerterTest.class.getName());

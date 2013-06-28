@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-    public class ServiceSignature implements Signature, SorcerConstants {
+    public class ServiceSignature implements Signature {
 
 	static final long serialVersionUID = -8527094638557595398L;
 
@@ -60,7 +60,7 @@ import java.util.logging.Logger;
 	// can
 	// be picked up by workers with template null/serviceType that are not named
 	// "providerName"
-	protected String providerName = ANY;
+	protected String providerName = SorcerConstants.ANY;
 
 	private ServiceID serviceID;
 
@@ -86,7 +86,7 @@ import java.util.logging.Logger;
 	 * when a method implementation is provided 'order' indicates whether a
 	 * method is tried first (SELF) or the provider is called first (PROVIDER)
 	 */
-	private int order = SELF;
+	private int order = SorcerConstants.SELF;
 
 	/**
 	 * URL for a mobile agent: an inserted custom method executed by service
@@ -102,7 +102,7 @@ import java.util.logging.Logger;
 	private String portalURL;
 
 	public ServiceSignature() {
-		providerName = ANY;
+		providerName = SorcerConstants.ANY;
 	}
 
 	public ServiceSignature(String selector) {
@@ -152,11 +152,11 @@ import java.util.logging.Logger;
 	}
 
 	public boolean isSelfFirst() {
-		return order == SELF;
+		return order == SorcerConstants.SELF;
 	}
 
 	public boolean isProviderFist() {
-		return order == PROVIDER;
+		return order == SorcerConstants.PROVIDER;
 	}
 
 	public String getAgentCodebase() {

@@ -22,7 +22,6 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
@@ -36,8 +35,7 @@ import sorcer.util.Sorcer;
 import java.rmi.RemoteException;
 import java.util.Set;
 
-abstract public class CatalogExertDispatcher extends ExertDispatcher
-		implements SorcerConstants {
+abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
 	private final static int SLEEP_TIME = 20;
 	

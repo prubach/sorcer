@@ -42,14 +42,14 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import static sorcer.service.Evaluator.value;
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * Implements the base-level service context interface {@link sorcer.service.Context}.
  */
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ServiceContext<T> extends Hashtable<String, Object> implements
-		Context<T>, Identifiable, Revaluation, AssociativeContext, Serializable,
-		SorcerConstants {
+		Context<T>, Identifiable, Revaluation, AssociativeContext, Serializable {
 
 	private static final long serialVersionUID = 3311956866023311727L;
 

@@ -17,7 +17,6 @@
  */
 package junit.sorcer.core.provider;
 
-import sorcer.core.SorcerConstants;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -55,7 +54,7 @@ import static sorcer.util.JavaSystemProperties.RMI_SERVER_CODEBASE;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ArithmeticNetTest implements SorcerConstants {
+public class ArithmeticNetTest {
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNetTest.class.getName());
 

@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("rawtypes")
 public class ProviderAccessor extends ServiceAccessor implements
-		DynamicAccessor, SorcerConstants {
+		DynamicAccessor {
 
 	static Logger logger = Logger.getLogger(ProviderAccessor.class.getName());
 
@@ -156,7 +156,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
 	public static Provider getProvider(String providerName, Class serviceType) {
 		Provider servicer = null;
-		if (providerName != null && providerName.equals(ANY))
+		if (providerName != null && providerName.equals(SorcerConstants.ANY))
 			providerName = null;
 		try {
 			//servicer = (Service)ProviderLookup.getService(providerName, serviceType);

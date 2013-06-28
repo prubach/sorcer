@@ -37,8 +37,7 @@ import java.util.logging.Logger;
  * with any ServiceRegistrars it simply interrogates each one that's discovered
  * for a ServiceItem associated with the passed type/signature of a provider.
  */
-public class ProviderLookup implements DiscoveryListener, DynamicAccessor,
-		SorcerConstants {
+public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	private ServiceTemplate template;
 
 	private LookupDiscovery discoverer;

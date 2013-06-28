@@ -22,7 +22,6 @@ import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
@@ -35,8 +34,7 @@ import java.rmi.RemoteException;
 import java.util.Set;
 
 @SuppressWarnings("rawtypes")
-abstract public class SpaceExertDispatcher extends ExertDispatcher
-		implements SorcerConstants {
+abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	protected JavaSpace05 space;
 	protected int doneExertionIndex = 0;
 	protected LokiMemberUtil myMemberUtil;
