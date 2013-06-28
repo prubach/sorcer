@@ -18,7 +18,7 @@
 package sorcer.core.context.eval;
 
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ServiceContext;
+import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.util.GenericUtil;
 import sorcer.util.Log;
@@ -49,7 +49,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 
 	private String name;
 
-	private String da = ServiceContext.DA_IN;
+	private String da = Context.DA_IN;
 
 	private String mimetype;
 
@@ -139,18 +139,18 @@ public class ContextNode implements Serializable, SorcerConstants {
 	}
 
 	public boolean isIn() {
-		return da.equals(ServiceContext.DA_IN);
+		return da.equals(Context.DA_IN);
 	}
 
 	public boolean isOut() {
-		return da.equals(ServiceContext.DA_OUT);
+		return da.equals(Context.DA_OUT);
 	}
 
 	public boolean isInout() {
-		return da.equals(ServiceContext.DA_INOUT);
+		return da.equals(Context.DA_INOUT);
 	}
 
-	public InputStream openStream() throws IOException, MalformedURLException,
+	public InputStream openStream() throws IOException,
 			ContextNodeException {
 		URL myURL = getURL();
 		URLConnection myConnect = myURL.openConnection();
@@ -196,7 +196,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 					"IO Type = ").append(da).append(", Transient = ").append(
 					isTransient() ? "True" : "False").append(")");
 		else
-			result.append(name).append(ServiceContext.EMPTY_LEAF);
+			result.append(name).append(Context.EMPTY_LEAF);
 
 		return result.toString();
 	}
@@ -212,7 +212,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 					.append("IO Type : ").append(da);
 		else
 			result.append("Name : ").append(name).append(
-					ServiceContext.EMPTY_LEAF);
+					Context.EMPTY_LEAF);
 		return result.toString();
 	}
 
@@ -221,7 +221,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 		if (!isEmpty())
 			return name;
 		else
-			return name + ServiceContext.EMPTY_LEAF;
+			return name + Context.EMPTY_LEAF;
 	}
 
 	public String toStringDeep(String tab) {
@@ -1298,7 +1298,7 @@ public class ContextNode implements Serializable, SorcerConstants {
 	public boolean isEmpty() {
 		if (data instanceof String) {
 			String strValue = data.toString();
-			if (strValue.equals(ServiceContext.EMPTY_LEAF))
+			if (strValue.equals(Context.EMPTY_LEAF))
 				return true;
 		}
 		return false;

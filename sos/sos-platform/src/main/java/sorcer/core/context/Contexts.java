@@ -1259,7 +1259,7 @@ public class Contexts implements SorcerConstants {
 		String keysInLink[], linkPath;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) ((ServiceContext) cntxt).get(linkPath);
+			link = (ContextLink) cntxt.get(linkPath);
 			keysInLink = getMarkedPaths(((ServiceContext) cntxt)
 					.getLinkedContext(link), association);
 			if (keysInLink != null)
@@ -1332,7 +1332,7 @@ public class Contexts implements SorcerConstants {
 		if (e2 != null)
 			while (e2.hasMoreElements()) {
 				linkPath = (String) e2.nextElement();
-				link = (ContextLink) ((ServiceContext) context).get(linkPath);
+				link = (ContextLink) context.get(linkPath);
 				Enumeration associations = getAssociations(((ServiceContext) context)
 						.getLinkedContext(link));
 				if (associations != null)

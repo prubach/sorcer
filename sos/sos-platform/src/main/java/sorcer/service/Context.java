@@ -1106,4 +1106,5 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     final static String TARGET = "context/target";
     final static String RETURN = "context/result";
 
+    boolean isShared();
 }

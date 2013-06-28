@@ -189,9 +189,6 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	public static ContextAccessor cntxtAccessor;
 
-	/** EMPTY LEAF NODE ie. node with no data and not empty string */
-	public final static String EMPTY_LEAF = ":Empty";
-
 	// this class logger
 	protected static Logger logger = Logger.getLogger(ServiceContext.class
 			.getName());
@@ -593,7 +590,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns an enumeration of all paths marking input data nodes.
-	 * 
+	 *
 	 * @return enumeration of marked input paths
 	 * @throws sorcer.service.ContextException
 	 */
@@ -614,7 +611,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns a enumeration of all paths marking output data nodes.
-	 * 
+	 *
 	 * @return enumeration of marked output paths
 	 * @throws sorcer.service.ContextException
 	 */
@@ -764,6 +761,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * 
 	 * @return the isShared
 	 */
+	@Override
 	public boolean isShared() {
 		return isShared;
 	}
@@ -1476,7 +1474,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns a list of all paths marked as data input.
-	 * 
+	 *
 	 * @return list of all paths marked as input
 	 * @throws sorcer.service.ContextException
 	 */

@@ -20,10 +20,8 @@ package sorcer.core.dispatch;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
-import sorcer.core.exertion.NetJob;
 import sorcer.service.*;
 
-import java.rmi.RemoteException;
 import java.util.Set;
 
 public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
@@ -76,14 +74,6 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher implements
 			state = DONE;
 
 		dispatchers.remove(xrt.getId());
-	}
-
-	public NetJob resumeJob() throws RemoteException {
-		return null;
-	}
-
-	public NetJob stepJob() throws RemoteException {
-		return null;
 	}
 
 	public void setStatus(ServiceExertion ex, int status) {

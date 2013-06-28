@@ -17,30 +17,42 @@
  */
 package sorcer.core.dispatch;
 
-import net.jini.core.event.RemoteEvent;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.*;
+import sorcer.core.Dispatcher;
+import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.misc.MsgRef;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
-import sorcer.service.*;
-import sorcer.util.*;
+import sorcer.service.Context;
+import sorcer.service.ExecState;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
+import sorcer.service.Task;
+import sorcer.util.Log;
+import sorcer.util.Sorcer;
+import sorcer.util.StringUtils;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
 
 import javax.security.auth.Subject;
-import java.io.File;
 import java.lang.reflect.Array;
-import java.rmi.RemoteException;
 import java.rmi.server.UID;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 @SuppressWarnings("rawtypes")
@@ -73,8 +85,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 
 	protected Provider provider;
 
-	protected static Cataloger catalog; // The SORCER catalog
-
 	protected static Hashtable<Uuid, ExertDispatcher> dispatchers
 		= new Hashtable<Uuid, ExertDispatcher>();
 
@@ -104,7 +114,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 	public ExertDispatcher(Exertion exertion, Set<Context> sharedContexts,
                            boolean isSpawned, Provider provider) throws Throwable {
 		ServiceExertion sxrt = (ServiceExertion)exertion;
-		this.xrt = (ServiceExertion)sxrt;
+		this.xrt = sxrt;
 		this.subject = sxrt.getSubject();
 		this.sharedContexts = sharedContexts;
 		this.isSpawned = isSpawned;
@@ -206,7 +216,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 			throws ExertionException, SignatureException {
 		String url = ((NetSignature) task.getProcessSignature())
 				.getPortalURL();
-		if (url.indexOf("servlet") < 0 && url.endsWith("/"))
+		if (!url.contains("servlet") && url.endsWith("/"))
 			url = url + "servlet/dispatcher";
 		else
 			url = url + "/servlet/dispatcher";
@@ -218,7 +228,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		ProxyProtocol protocol = new ServletProtocol(url, false);
 		NetTask result = (NetTask) ((ServletProtocol) protocol)
 				.doTask(task);
-		if (result == null || !(result instanceof ServiceExertion)) {
+		if (result == null) {
 			throw new SignatureException(
 					"Portal task execution failed at URL '" + url + "'");
 		}
@@ -232,14 +242,14 @@ abstract public class ExertDispatcher implements Dispatcher,
 
 	// Recursively collect shared contexts for inner jobs
 	protected void collectSharedContexts(Exertion ex) {
-		for (Exertion innerEx: ex.getExertions()) { 
-			if (!innerEx.isJob()) 
+		for (Exertion innerEx: ex.getExertions()) {
+			if (!innerEx.isJob())
 				collectOutputs(innerEx);
 			else
 				collectSharedContexts(innerEx);
 		}
 	}
-	
+
 	protected void collectOutputs(Exertion ex) {
 		List<Context> contexts = Jobs.getTaskContexts(ex);
 		for (int i = 0; i < contexts.size(); i++) {
@@ -296,7 +306,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 								Array.set(args, argIndex, fromContext.getValue(fromPath));
 							} else {
 								// the parameter array is empty
-								Object[] newArgs = null;
+								Object[] newArgs;
 								newArgs = new Object[] { fromContext.getValue(fromPath) };
 								toContext.putValue(newToPath, newArgs);
 							}
@@ -330,7 +340,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 		// try to get the dataContext with particular id.
 		// If not found, then find a dataContext with particular path.
 		Context hc;
-		if (ServiceContext.EMPTY_LEAF.equals(path) || "".equals(path))
+		if (Context.EMPTY_LEAF.equals(path) || "".equals(path))
 			return null;
 		if (id != null && id.length() > 0) {
 			Iterator<Context> it = sharedContexts.iterator();
@@ -351,48 +361,17 @@ abstract public class ExertDispatcher implements Dispatcher,
 		return null;
 	}
 
-	public void sendMail(String message, String to) {
-		String[] msg = new String[MSIZE];
-		msg[MTO] = to;
-		String admin = Sorcer.getProperty("sorcer.admin");
-		if (admin == null)
-			admin = "nobody@sorcer.cs.ttu.edu";
-		msg[MFROM] = admin;
-		msg[MSUBJECT] = "SORCER notification";
-		msg[MTEXT] = message;
-		Command mail = new EmailCmd(String.valueOf(SEND_MAIL), Sorcer
-				.getProperty("smtp.host"));
-		mail.setArgs(null, msg);
-		mail.doIt();
-	}
-
-	public static void sendMailWithSubject(String message, String subject,
-			String to) {
-		String[] msg = new String[MSIZE];
-		msg[MTO] = to;
-		String admin = Sorcer.getProperty("sorcer.admin");
-		if (admin == null)
-			admin = "nobody@sorcer.cs.ttu.edu";
-		msg[MFROM] = admin;
-		msg[MSUBJECT] = "SORCER notification: " + subject;
-		msg[MTEXT] = message;
-		Command mail = new EmailCmd(String.valueOf(SEND_MAIL), Sorcer
-				.getProperty("smtp.host"));
-		mail.setArgs(null, msg);
-		mail.doIt();
-	}
-
 	public void notifyExertionExecution(Exertion inex, Exertion outex) {
 		notifyExertionExecution(xrt, inex, outex);
 	}
 	
 	public void notifyExertionExecution(Exertion parent, Exertion inex, Exertion outex) {
-		if (inex instanceof Conditional && outex instanceof Conditional) {
-			// do nothing for now
-		} else if (inex.isTask()
-				&& outex.isTask())
-			notifyTaskExecution(parent, (ServiceExertion) inex, (ServiceExertion) outex);
-	}
+        if (!(inex instanceof Conditional && outex instanceof Conditional)) {
+            if (inex.isTask()
+                    && outex.isTask())
+                notifyTaskExecution(parent, (ServiceExertion) inex, (ServiceExertion) outex);
+        }
+    }
 
 	private void notifyTaskExecution(Exertion parent, ServiceExertion inTask,
 			ServiceExertion outTask) {
@@ -445,31 +424,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 		// sendMailWithSubject(sb.toString(), outTask.getName(), to);
 	}
 
-	protected String getDataURL(String filename) {
-		String dataURL = Sorcer.getProperty("sorcer.dataURL");
-		dataURL.replace('/', File.separatorChar);
-		if (!dataURL.endsWith(File.separator))
-			dataURL += File.separator;
-		return dataURL + filename;
-	}
-
-	protected String getDataFilename(String filename) {
-		if (filename.charAt(0) == File.separatorChar)
-			return filename;
-
-		String baseDir = Sorcer.getProperty("sorcer.baseDir");
-		String dataDir = Sorcer.getProperty("sorcer.dataDir");
-		baseDir.replace('/', File.separatorChar);
-		dataDir.replace('/', File.separatorChar);
-		if (!baseDir.endsWith(File.separator)) {
-			baseDir += File.separator;
-		}
-		if (!dataDir.endsWith(File.separator)) {
-			dataDir += File.separator;
-		}
-		return baseDir + dataDir + filename;
-	}
-
 	public boolean isMonitorable() {
 		return isMonitored;
 	}
@@ -481,100 +435,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 	 * ctxs[0].putValue(OUT_PATH_PROVIDER, providerPath);
 	 * ctxs[0].putValue(providerPath, name); }
 	 */
-
-	protected void notifyFailure(String msg, ServiceExertion t, long seqNum) {
-		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
-		String msgID = null;
-		String UserID = null;
-
-		long dummy = 0;/* dummy eventID value for the remote event */
-
-		/* persist the message to the DB and get back the MsgId */
-		// msgID = cs.storeMessage(msg, String jobID, t.taskID,
-		// NOTIFY_FAILEDURE);
-		MsgRef mr = null;// new MsgRef(t.taskID, this.job.getID(), msgID ,
-		// UserID, NOTIFY_FAILEDURE);
-		RemoteEvent re = new RemoteEvent(mr, dummy, seqNum, null);
-	}
-
-	protected void notifyException(String msg, ServiceExertion t, long seqNum) {
-		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
-		String msgID = null;
-		String UserID = null;
-
-		long dummy = 0;/* dummy eventID value for the remote event */
-
-		/* persist the message to the DB and get back the MsgId */
-		// msgID = cs.storeMessage(msg, String jobID, t.taskID,
-		// NOTIFY_EXCEPTION);
-		MsgRef mr = null;// new MsgRef(t.taskID, this.job.getID(), msgID ,
-		// UserID, NOTIFY_EXCEPTION);
-		RemoteEvent re = new RemoteEvent(mr, dummy, seqNum, null);
-	}
-
-	protected void notifyInformation(String msg, ServiceExertion t, long seqNum) {
-		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
-		String msgID = null;
-		String UserID = null;
-
-		long dummy = 0;/* dummy eventID value for the remote event */
-
-		/* persist the message to the DB and get back the MsgId */
-		// msgID = cs.storeMessage(msg, String jobID, t.taskID,
-		// NOTIFY_INFORMATION);
-		MsgRef mr = null;// new MsgRef(t.taskID, this.job.getID(), msgID ,
-		// UserID, NOTIFY_INFORMATION);
-		RemoteEvent re = new RemoteEvent(mr, dummy, seqNum, null);
-	}
-
-	protected void notifyWarning(String msg, ServiceExertion t, long seqNum) {
-		// CacheServer cs = (CacheServer) ServiceProviderAccessor.getCache();
-		String msgID = null;
-		String UserID = null;
-		long dummy = 0;/* dummy eventID value for the remote event */
-
-		/* persist the message to the DB and get back the MsgId */
-		// msgID = cs.storeMessage(msg, String jobID, t.taskID, NOTIFY_WARNING);
-		MsgRef mr = null;// new MsgRef(t.taskID, this.job.getID(), msgID ,
-		// UserID, NOTIFY_WARNING);
-		RemoteEvent re = new RemoteEvent(mr, dummy, seqNum, null);
-	}
-
-	/**
-	 * Create GApp server proxy
-	 */
-	public ProxyProtocol createProtocol(String url) {
-		ProxyProtocol protocol;
-		String type = System.getProperty("portal.server");
-		if (type != null)
-			protocol = new ServletProtocol(type, false);
-		else
-			protocol = new ServletProtocol(url, false);
-
-		return protocol;
-	}
-
-	public NetJob stopJob() throws RemoteException {
-
-		// job.setStatus(HALTED);
-		// for (int i=0;i<runningExertionIDs.size();i++) {
-		// dispatcher = getDispatcher((String)runningExertionIDs.elementAt(i));
-		// if (dispatcher!=null)
-		// dispatcher.stopJob();
-		// }
-		return (NetJob)xrt;
-	}
-
-	public NetJob suspendJob() throws RemoteException {
-		ExertDispatcher dispatcher = null;
-		// job.setStatus(SUSPENDED);
-		// for (int i=0;i<runningExertionIDs.size();i++) {
-		// dispatcher = getDispatcher((String)runningExertionIDs.elementAt(i));
-		// if (dispatcher!=null)
-		// dispatcher.suspendJob();
-		// }
-		return (NetJob)xrt;
-	}
 
 	protected boolean isInterupted(Exertion ex) throws ExertionException,
 			SignatureException {
@@ -602,76 +462,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 		return false;
 	}
 
-	public NetJob resumeJob() throws RemoteException, ExertionException {
-		return null;
-	}
-
-	public NetJob stepJob() throws RemoteException, ExertionException {
-		return null;
-	}
-
-	// All these codes needs to be revisited
-	private void setExertionFlags(Exertion ex) {
-		ServiceExertion exi = (ServiceExertion) ex;
-		if (exi.isJob()) {
-			for (int j = 0; j < ((Job) ex).size(); j++) {
-				setExertionFlags(((Job) ex).exertionAt(j));
-			}
-		}
-	}
-
-	protected Cataloger getCatalog() {
-		try {
-			if (catalog == null)
-				catalog = ProviderAccessor.getCataloger();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return catalog;
-	}
-
-	public static void sendCheckPointEmail(ServiceExertion task, NetJob job) {
-		// notify o MASTER task completion
-		Vector recipents = null;
-		String notifyees = job.getControlContext().getNotifyList(task);
-		if (notifyees != null) {
-			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
-			recipents = new Vector(list.length);
-			for (int i = 0; i < list.length; i++)
-				recipents.addElement(list[i]);
-		}
-
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
-		if (recipents == null) {
-			if (admin != null) {
-				recipents = new Vector();
-				recipents.addElement(admin);
-			}
-		} else if (admin != null && !recipents.contains(admin))
-			recipents.addElement(admin);
-
-		if (recipents == null || recipents.size() == 0)
-			return;
-
-		StringBuffer sb;
-
-		sb = new StringBuffer("CHECKPOINT: SORCER Task ");
-
-		sb.append(task.getName()).append("\n\nDescription:\n").append(
-				task.getDescription()).append("\n" + task.contextToString());
-
-		for (int i = 0; i < recipents.size() - 1; i++)
-			to = to + recipents.elementAt(i) + ",";
-
-		to = to + recipents.lastElement();
-
-		if (to == null)
-			to = Sorcer.getProperty("sorcer.admin");
-
-		// sendMailWithSubject(sb.toString(), "Checkpoint, "+task.getName(),
-		// to);
-	}
-
 	protected void reconcileInputExertions(Exertion ex) {
 		ServiceExertion ext = (ServiceExertion)ex;
 		if (ext.getStatus() == DONE) {
@@ -683,27 +473,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
 					reconcileInputExertions(((Job) ex).exertionAt(i));
-			}
-		}
-	}
-
-	protected void prepareJob() throws ExertionException {
-		Jobs.removeExceptions((Job)xrt);
-		if (xrt != null
-				&& ((xrt.getStatus() == SUSPENDED)
-						|| (xrt.getStatus() == INITIAL) || (xrt.getStatus() <= ERROR))) {
-			ServiceExertion ft = null;
-			for (int i = 0; i < ((Job)xrt).size() - 1; i++) {
-				if (((Job)xrt).exertionAt(i).isTask()) {
-					ft = (ServiceExertion) ((Job)xrt).exertionAt(i);
-					if (ft.getStatus() != DONE
-							&& xrt.getControlContext().isReview(ft)
-							&& (ft != ((Job)xrt).getMasterExertion())) {
-						((ServiceExertion) ((Job)xrt).exertionAt(i + 1))
-								.setStatus(SUSPENDED);
-						return;
-					}
-				}
 			}
 		}
 	}

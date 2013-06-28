@@ -44,7 +44,7 @@ import static sorcer.util.UnknownName.getUnknown;
  * @author Rafał Krupiński
  */
 public class ContextFactory {
-    public static <T extends Object> Context context(T... entries)
+    public static <T> Context context(T... entries)
             throws ContextException {
         if (entries[0] instanceof Exertion) {
             Exertion xrt = (Exertion) entries[0];
@@ -58,9 +58,6 @@ public class ContextFactory {
         }
         String name = getUnknown();
         List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
-        // List<inEntry> inEntries = new ArrayList<inEntry>();
-        // List<outEntry> outEntries = new ArrayList<outEntry>();
-        // List<entry> cxtEntries = new ArrayList<entry>();
         List<Context.Type> types = new ArrayList<Context.Type>();
         Complement subject = null;
         ReturnPath returnPath = null;

@@ -153,7 +153,7 @@ public class ContextLink implements SorcerConstants, Link {
 		}
 
 		if (((Context) result[0]).getValue((String) result[1]) == null) {
-			if (Contexts.checkIfPathBeginsWith((ServiceContext) result[0],
+			if (Contexts.checkIfPathBeginsWith((Context) result[0],
 					(String) result[1])) {
 				if (!isSameContext(result[0], result[1])) {
 					this.offset = offset;

@@ -134,7 +134,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 			putValue(pathFor(i), o);
 			i++;
 		}
-		return addAll(index, c);
+		return elements.addAll(index, c);
 	}
 
 	/* (non-Javadoc)
@@ -169,7 +169,7 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	 * @see java.util.List#lastIndexOf(java.lang.Object)
 	 */
 	public int lastIndexOf(Object o) {
-		return lastIndexOf(o);
+		return elements.lastIndexOf(o);
 	}
 
 	/* (non-Javadoc)
