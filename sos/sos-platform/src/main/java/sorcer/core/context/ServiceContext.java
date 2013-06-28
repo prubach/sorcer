@@ -29,8 +29,8 @@ import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
 import sorcer.service.ExecState.Category;
-import sorcer.service.Signature.Direction;
-import sorcer.service.Signature.ReturnPath;
+import sorcer.service.Direction;
+import sorcer.service.ReturnPath;
 import sorcer.util.StringUtils;
 
 import java.io.Serializable;
@@ -2595,7 +2595,6 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * 
 	 * @see sorcer.service.Context#getProvider()
 	 */
-	@Override
 	public Provider getProvider() {
 		if (exertion != null)
 			return (Provider) ((NetSignature) exertion.getProcessSignature())

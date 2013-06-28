@@ -37,7 +37,7 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Test;
 
 import sorcer.service.Signature;
-import sorcer.service.Signature.Direction;
+import sorcer.service.Direction;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 

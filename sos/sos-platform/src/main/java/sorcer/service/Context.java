@@ -24,10 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.jini.id.Uuid;
-import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Signature.ReturnPath;
 
 /**
  * Service context classes that implement this interface provide SORCER generic
@@ -401,13 +399,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return Exertion
      */
     public Exertion getExertion();
-
-    /**
-     * Returns the service provider associated with this context
-     *
-     * @return Provider
-     */
-    public Provider getProvider();
 
     /**
      * Returns the path of the return value associated with this context

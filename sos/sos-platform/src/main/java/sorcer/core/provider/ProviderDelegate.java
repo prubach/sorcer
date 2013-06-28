@@ -1020,7 +1020,7 @@ public class ProviderDelegate implements SorcerConstants {
 				else
 					result = execParametricBean(m, task, impl);
 
-                Signature.ReturnPath rp = result.getReturnPath();
+                ReturnPath rp = result.getReturnPath();
                 if (rp != null) {
                     ((ServiceContext)result).setReturnPath(rp.path);
                 }

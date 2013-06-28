@@ -30,7 +30,6 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -45,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
+public abstract class ServiceExertion implements Service, Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
 
 	protected final static Logger logger = Logger
 			.getLogger(ServiceExertion.class.getName());

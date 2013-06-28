@@ -63,7 +63,7 @@ public class ContextFactory {
         // List<entry> cxtEntries = new ArrayList<entry>();
         List<Context.Type> types = new ArrayList<Context.Type>();
         Complement subject = null;
-        Signature.ReturnPath returnPath = null;
+        ReturnPath returnPath = null;
         Args cxtArgs = null;
         ParameterTypes parameterTypes = null;
         target target = null;
@@ -80,8 +80,8 @@ public class ContextFactory {
                 target = (target) o;
             } else if (o instanceof Tuple2) {
                 entryList.add((Tuple2) o);
-            } else if (o instanceof Signature.ReturnPath) {
-                returnPath = (Signature.ReturnPath) o;
+            } else if (o instanceof ReturnPath) {
+                returnPath = (ReturnPath) o;
             } else if (o instanceof Context.Type) {
                 types.add((Context.Type) o);
             } else if (o instanceof String) {

@@ -28,6 +28,7 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
+import sorcer.service.Direction;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Task;
@@ -65,8 +66,8 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
         // shared context with named paths
         Task batch3 = task("batch3",
-                type(sig("multiply", Multiplier.class, result("subtract/x1", Signature.Direction.IN)), Signature.PRE),
-                type(sig("add", Adder.class, result("subtract/x2", Signature.Direction.IN)), Signature.PRE),
+                type(sig("multiply", Multiplier.class, result("subtract/x1", Direction.IN)), Signature.PRE),
+                type(sig("add", Adder.class, result("subtract/x2", Direction.IN)), Signature.PRE),
                 sig("subtract", Subtractor.class, result("result/y", from("subtract/x1", "subtract/x2"))),
                 context(in("multiply/x1", 10.0), in("multiply/x2", 50.0),
                         in("add/x1", 20.0), in("add/x2", 80.0)));
@@ -82,8 +83,8 @@ public class NetArithmeticReqTest  implements SorcerConstants  {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
         // shared context with prefixed paths
         Task batch3 = task("batch3",
-                type(sig("multiply#op1", Multiplier.class, result("op3/x1", Signature.Direction.IN)), Signature.PRE),
-                type(sig("add#op2", Adder.class, result("op3/x2", Signature.Direction.IN)), Signature.PRE),
+                type(sig("multiply#op1", Multiplier.class, result("op3/x1", Direction.IN)), Signature.PRE),
+                type(sig("add#op2", Adder.class, result("op3/x2", Direction.IN)), Signature.PRE),
                 sig("subtract", Subtractor.class, result("result/y", from("op3/x1", "op3/x2"))),
                 context(in("op1/x1", 10.0), in("op1/x2", 50.0),
                         in("op2/x1", 20.0), in("op2/x2", 80.0)));

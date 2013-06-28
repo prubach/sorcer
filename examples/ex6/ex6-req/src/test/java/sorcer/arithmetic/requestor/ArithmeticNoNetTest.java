@@ -8,7 +8,7 @@ import sorcer.arithmetic.provider.SubtractorImpl;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Signature;
-import sorcer.service.Signature.Direction;
+import sorcer.service.Direction;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;

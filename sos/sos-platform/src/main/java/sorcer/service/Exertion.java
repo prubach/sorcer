@@ -70,7 +70,7 @@ import java.util.List;
  * @see sorcer.service.AsyncExertion
  * @author Mike Sobolewski
  */
-public interface Exertion extends  Service, Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
+public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.
@@ -274,5 +274,5 @@ public interface Exertion extends  Service, Evaluation<Object>, Invocation<Objec
 	 * The exertion format for thick exertions (with RMI and Jini classes)
 	 */
 	public static final int STANDARD = 1;
-	
+
 }

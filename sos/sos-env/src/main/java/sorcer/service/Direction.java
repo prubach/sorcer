@@ -1,6 +1,7 @@
+package sorcer.service;
 /**
  *
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,30 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.service;
+
 
 /**
- * If an Evaluation that is Revaluation isRevaluable then it returns the
- * revaluated value, otherwise returns the evaluated value (
+ * Extracted from sorcer.service.Signature
  *
- * @return if isEvaluable true, otherwise false
+ * @author Mike Sobolewski
  */
-public interface Revaluation {
-
-	/**
-	 * Returns true if this dataContext is revaluable, otherwise false
-	 * 
-	 * @return true if this dataContext is revaluable
-	 */
-	public boolean isRevaluable();
-
-	/**
-	 * <p>
-	 * Assign revaluability of this dataContext.
-	 * </p>
-	 * 
-	 * @param isRevaluable
-	 */
-	public void setRevaluable(boolean isRevaluable);
-
+public enum Direction {
+    IN, OUT, INOUT
 }

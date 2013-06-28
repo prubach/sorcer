@@ -17,16 +17,17 @@
  */
 package sorcer.security.util;
 
-import sorcer.core.SorcerConstants;
 import sorcer.util.StringUtils;
 
 import java.io.Serializable;
 import java.security.Principal;
 
+import static sorcer.core.SorcerConstants.*;
+
 /**
  * Implementation of the Principal interface.
  */
-public class SorcerPrincipal implements Principal, Serializable, SorcerConstants {
+public class SorcerPrincipal implements Principal, Serializable {
 	
 	private static final long serialVersionUID = -6417359314884744112L;
 

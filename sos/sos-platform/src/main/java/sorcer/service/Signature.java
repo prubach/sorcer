@@ -18,7 +18,6 @@
 package sorcer.service;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * A service <code>Signature</code> is an indirect behavioral feature of
@@ -136,46 +135,7 @@ public interface Signature extends Serializable, Parameter {
 	 *            a list of space separated URLS
 	 */
 	public void setCodebase(String urls);
-	
-	public static class ReturnPath<T> implements Serializable, Parameter {
-		static final long serialVersionUID = 6158097800741638834L;
-		public String path;
-		public Direction direction;
-		public String[] argPaths;
-		public Class<T> type;
-		
-		public ReturnPath() {}
 
-		public ReturnPath(String path, String... argPaths) {
-			this.path = path;
-			if (argPaths != null && argPaths.length > 0) {
-				this.argPaths = argPaths;
-				direction = Direction.OUT;
-			}
-		}
-		
-		public ReturnPath(String path, Direction direction, String...  argPaths) {
-			this.path = path;
-			this.argPaths = argPaths;
-			this.direction = direction;
-		}
-		
-		public ReturnPath(String path, Direction direction, Class<T> returnType, String...  argPaths) {
-			this.path = path;
-			this.direction = direction;
-			this.argPaths = argPaths;
-			type = returnType;
-		}
-		
-		public String toString() {
-			String params = "";
-			if (argPaths != null) 
-				 params = " argPaths: " + Arrays.toString(argPaths);
-			return path + (direction != null ? " direction: " + direction : "") 
-				+ params;
-		}
-	}
-	
 	/**
 	 * There are four types of {@link Signature} operations that can be
 	 * associated with signatures: <code>PREPROCESS</code>, <code>PROCESS</code>
@@ -187,8 +147,6 @@ public interface Signature extends Serializable, Parameter {
 	public enum Type {
 		SRV, PRE, POST, APD
 	}
-	
-	public enum Direction { IN, OUT, INOUT };
 
 	static final Type SRV = Type.SRV; 
 	static final Type PRE = Type.PRE;

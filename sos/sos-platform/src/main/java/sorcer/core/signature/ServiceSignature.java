@@ -19,8 +19,10 @@ package sorcer.core.signature;
 
 import net.jini.core.lookup.ServiceID;
 import sorcer.core.SorcerConstants;
+import sorcer.service.Direction;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.service.ReturnPath;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.util.Log;

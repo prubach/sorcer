@@ -33,7 +33,6 @@ import net.jini.lease.LeaseRenewalManager;
 import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
@@ -51,15 +50,12 @@ import java.util.logging.Logger;
 
 /**
  * This is a class creates a JavaSpace taker that extends the {@link Thread}
- * class and implements the interfaces {@link LeaseListener} and
- * {@link SorcerConstants}
- * 
+ * class and implements the interface {@link LeaseListener}
+ *
  * @see Thread
  * @see LeaseListener
- * @see SorcerConstants
  */
-public class SpaceTaker extends Thread implements LeaseListener,
-		SorcerConstants {
+public class SpaceTaker extends Thread implements LeaseListener {
 	static protected final String LOKI_ONLY = "CreatorsPublicKey";
 
 	static Logger logger = Logger.getLogger(SpaceTaker.class.getName());

@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static sorcer.service.Signature.ReturnPath;
-
 /**
  * @author Rafał Krupiński
  */

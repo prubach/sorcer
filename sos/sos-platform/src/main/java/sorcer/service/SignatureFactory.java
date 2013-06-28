@@ -43,8 +43,8 @@ public class SignatureFactory {
             for (Object o : parameters) {
                 if (o instanceof Signature.Type) {
                     sig.setType((Signature.Type) o);
-                } else if (o instanceof Signature.ReturnPath) {
-                    sig.setReturnPath((Signature.ReturnPath) o);
+                } else if (o instanceof ReturnPath) {
+                    sig.setReturnPath((ReturnPath) o);
                 }
             }
         }

@@ -34,7 +34,7 @@ import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.Signature.ReturnPath;
+import sorcer.service.ReturnPath;
 
 public class Arithmometer implements Serializable, SorcerConstants {
 	

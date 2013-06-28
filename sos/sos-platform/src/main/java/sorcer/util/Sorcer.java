@@ -20,7 +20,6 @@ package sorcer.util;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.org.rioproject.net.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.service.Context;
@@ -55,7 +54,7 @@ import java.util.logging.Logger;
  * The priorities for loading properties are as follows:
  * <ol>
  * <li>First, SORCER environment properties (sorcer.env) are read by the
- * {@link ServiceProvider}
+ * {@link sorcer.core.provider.ServiceProvider}
  * <li>Second, provider configuration defined in Jini configuration file is
  * loaded and it can override any relevant settings in the existing Sorcer
  * object. Provider specific configuration is collected in ProviderConfig
@@ -65,7 +64,7 @@ import java.util.logging.Logger;
  * can override relevant sorcer.env properties. While a collection of Jini
  * configuration properties is predefined, in the provider properties file,
  * custom properties can be defined and accessed via
- * {@link ServiceProvider#getProperty(String key)}.
+ * {@link sorcer.core.provider.ServiceProvider#getProperty(String key)}.
  * <li>Finally, JVM system properties (<code>sorcer.env.file</code>), if
  * specified, can override settings in the existing Env object.
  * </ol>
