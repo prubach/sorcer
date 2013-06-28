@@ -34,12 +34,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sleepycat</groupId>
-			<artifactId>je</artifactId>
-			<version>${v.sleepycat}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<scope>provided</scope>
