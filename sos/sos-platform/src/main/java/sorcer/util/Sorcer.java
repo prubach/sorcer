@@ -416,12 +416,7 @@ public class Sorcer extends SorcerEnv implements SorcerConstants{
 		//return "sos://" + DatabaseStorer.class.getName() + '/' + getActualDatabaseStorerName();
 		return "sos://DatabaseStorer/" + getActualDatabaseStorerName();
 	}
-	
-	public static String getDataspaceStorerUrl() {
-		return "sos://DataspaceStorer/" + getActualDatabaseStorerName();
-		//return "sos://" + DataspaceStorer.class.getName() + '/' + getActualSpacerName();
-	}
-	
+
 	/**
 	 * Returns a URL for the SORCER data server.
 	 * 

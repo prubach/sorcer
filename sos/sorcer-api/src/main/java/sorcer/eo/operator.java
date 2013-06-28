@@ -875,10 +875,6 @@ public class operator {
 		return new URL(Sorcer.getDatabaseStorerUrl());
 	}
 
-	public static URL dsURL() throws MalformedURLException {
-		return new URL(Sorcer.getDataspaceStorerUrl());
-	}
-
 	public static URL dbURL(Object object) throws ExertionException,
 			SignatureException, ContextException {
 		return store(object);
