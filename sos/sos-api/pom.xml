@@ -9,7 +9,7 @@
         <version>1.0-M2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sorcer-api</artifactId>
+    <artifactId>sos-api</artifactId>
     <name>SORCER :: API</name>
     <description>Hi-level API for SORCER</description>
 

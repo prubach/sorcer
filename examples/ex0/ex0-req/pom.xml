@@ -18,7 +18,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sorcer-api</artifactId>
+			<artifactId>sos-api</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
