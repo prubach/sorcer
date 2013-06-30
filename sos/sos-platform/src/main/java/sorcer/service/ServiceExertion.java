@@ -22,7 +22,6 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.context.ContextLink;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
@@ -204,8 +203,8 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 					List<Exertion> exts = getAllExertions();
 					for (Exertion e : exts) {
 						Object link = context.getLink(e.getName());
-						if (link instanceof ContextLink) {
-							e.getContext().append(((ContextLink)link).getContext());
+						if (link != null) {
+							e.getContext().append(((Link)link).getContext());
 						}
 					}
 

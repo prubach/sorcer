@@ -242,9 +242,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
 			obj = cntxt.getValue(path);
-			if (obj instanceof ContextLink
-					&& ((ContextLink) obj).isFetched())
-				updateLinkedContext((ContextLink) obj);
+			if (obj instanceof Link
+					&& ((Link) obj).isFetched())
+				updateLinkedContext((Link) obj);
 			if (obj == null)
 				put(path, Value.NULL);
 			else
@@ -544,11 +544,11 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	public Object getValue0(String path) throws ContextException {
 		Object result;
 		result = get(path);
-		if (result instanceof ContextLink) {
-			String offset = ((ContextLink) result).getOffset();
+		if (result instanceof Link) {
+			String offset = ((Link) result).getOffset();
 			Context linkedCntxt = null;
 			try {
-				linkedCntxt = ((ContextLink) result).getContext(principal);
+				linkedCntxt = ((Link) result).getContext(principal);
 			} catch (Exception ex) {
 				throw new ContextException(ex);
 			}
@@ -2289,12 +2289,12 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return true;
 	}
 
-	protected Context getLinkedContext(ContextLink link)
+	protected Context getLinkedContext(Link link)
 			throws ContextException {
 		return updateLinkedContext(link);
 	}
 
-	protected Context updateLinkedContext(ContextLink link)
+	protected Context updateLinkedContext(Link link)
 			throws ContextException {
 		// return the linked context, converting it to a ServiceContextImpl if
 		// necessary

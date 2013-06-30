@@ -998,15 +998,14 @@ public class Contexts {
 			ServiceContext contextTree, Enumeration e, boolean linkStop)
 					throws ContextException {
 		Vector keys = new Vector();
-		String key, path;
-		ContextLink link;
+		String path;
+		Link link;
 		Context subcntxt;
-		int index;
 		SorcerPrincipal principal = contextTree.getPrincipal();
 		while (e.hasMoreElements()) {
 			String key1 = (String) e.nextElement();
-			if ((contextTree.getValue(key1) instanceof ContextLink)) {
-				link = (ContextLink) contextTree.getValue(key1);
+			if ((contextTree.getValue(key1) instanceof Link)) {
+				link = (Link) contextTree.getValue(key1);
 				if (!linkStop) {
 					// get subcontext for recursion
 					subcntxt = link.getContext(principal).getSubcontext(
@@ -1035,15 +1034,14 @@ public class Contexts {
 	public static Enumeration getPathsWithoutLinkedPaths(
 			ServiceContext contextTree, Enumeration e) throws ContextException {
 		Vector keys = new Vector();
-		String key, path;
-		ContextLink link;
+		String path;
+		Link link;
 		Context subcntxt;
-		int index;
 		SorcerPrincipal principal = contextTree.getPrincipal();
 		while (e.hasMoreElements()) {
 			String key1 = (String) e.nextElement();
-			if ((contextTree.getValue(key1) instanceof ContextLink)) {
-				link = (ContextLink) contextTree.getValue(key1);
+			if ((contextTree.getValue(key1) instanceof Link)) {
+				link = (Link) contextTree.getValue(key1);
 				subcntxt = link.getContext(principal).getSubcontext(
 						link.getOffset().trim());
 				// getSubcontext cuts above, which is what we want
@@ -1139,11 +1137,11 @@ public class Contexts {
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = cntxt.localLinkPaths();
-		ContextLink link;
+		Link link;
 		String keysInLink[], linkPath;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) cntxt.get(linkPath);
+			link = (Link) cntxt.get(linkPath);
 			keysInLink = getPathsWithAttribute(((ServiceContext) cntxt)
 					.getLinkedContext(link), attribute);
 			if (keysInLink != null)
@@ -1259,11 +1257,11 @@ public class Contexts {
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = cntxt.localLinkPaths();
-		ContextLink link;
+		Link link;
 		String keysInLink[], linkPath;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) cntxt.get(linkPath);
+			link = (Link) cntxt.get(linkPath);
 			keysInLink = getMarkedPaths(((ServiceContext) cntxt)
 					.getLinkedContext(link), association);
 			if (keysInLink != null)
@@ -1331,12 +1329,12 @@ public class Contexts {
 		// the top-level context; check first level links,
 		// which in turn will check their links, etc., etc.
 		Enumeration e2 = context.localLinkPaths();
-		ContextLink link;
+		Link link;
 		String linkPath, assoc;
 		if (e2 != null)
 			while (e2.hasMoreElements()) {
 				linkPath = (String) e2.nextElement();
-				link = (ContextLink) context.get(linkPath);
+				link = (Link) context.get(linkPath);
 				Enumeration associations = getAssociations(((ServiceContext) context)
 						.getLinkedContext(link));
 				if (associations != null)

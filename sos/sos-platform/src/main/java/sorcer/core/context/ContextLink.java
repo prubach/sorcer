@@ -201,6 +201,7 @@ public class ContextLink implements Link {
 	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} for this principal if not
 	 * fetched yet.
 	 */
+	@Override
 	public Context getContext() throws ContextException {
 		if (linkPrincipal != null)
 			return getContext(linkPrincipal);
@@ -211,6 +212,7 @@ public class ContextLink implements Link {
 	/**
 	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} is given for authorization.
 	 */
+	@Override
 	public Context getContext(SorcerPrincipal principal)
 			throws ContextException {
 		if (!fetched) {

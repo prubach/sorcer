@@ -35,6 +35,8 @@
 
 package sorcer.service;
 
+import sorcer.security.util.SorcerPrincipal;
+
 import java.io.Serializable;
 
 /**
@@ -116,4 +118,8 @@ public interface Link extends Serializable {
 	 */
 	public void isFetched(boolean state);
 
+    Context getContext(SorcerPrincipal principal)
+            throws ContextException;
+
+    Context getContext() throws ContextException;
 }
