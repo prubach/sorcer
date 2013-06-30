@@ -23,9 +23,7 @@ import sorcer.service.Direction;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ReturnPath;
-import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
-import sorcer.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +38,7 @@ import java.util.logging.Logger;
 	static final long serialVersionUID = -8527094638557595398L;
 
 	/** our logger. */
-	protected final static Logger logger = Log.getSorcerLog();
+	protected final static Logger logger = Logger.getLogger("sorcer.core");
 
 	protected String name;
 
@@ -68,7 +66,7 @@ import java.util.logging.Logger;
 
 	protected String group = "";
 
-	protected ServiceExertion exertion;
+	protected Exertion exertion;
 
 	/** preprocess, process, postprocess, append dataContext */
 	protected Type execType = Type.SRV;
@@ -116,7 +114,7 @@ import java.util.logging.Logger;
 	}
 
 	public void setExertion(Exertion exertion) throws ExertionException {
-		this.exertion = (ServiceExertion) exertion;
+		this.exertion = exertion;
 	}
 
 	public Exertion getExertion() {

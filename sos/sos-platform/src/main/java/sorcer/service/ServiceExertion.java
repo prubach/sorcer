@@ -22,6 +22,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
@@ -101,10 +102,8 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	//protected List<Signature> signatures;
 	
 	protected ServiceContext dataContext;
-	
-	public static boolean debug = false;
-	
-	private static String defaultName = "xrt-";
+
+    private static String defaultName = "xrt-";
 		
 	// sequence number for unnamed Exertion instances
 	public static int count = 0;
@@ -821,7 +820,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	}
 	
 	public String toString() {
-		if (debug)
+		if (SorcerEnv.debug)
 			return describe();
 		
 		StringBuilder info = new StringBuilder().append(
@@ -999,7 +998,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	}
 	
 	public String describe() {
-		if (!debug)
+		if (!SorcerEnv.debug)
 			return info();
 		
 		String stdoutSep = "================================================================================\n";

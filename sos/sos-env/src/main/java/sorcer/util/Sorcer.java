@@ -17,7 +17,6 @@
  */
 package sorcer.util;
 
-import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.org.rioproject.net.HostUtil;
@@ -1214,31 +1213,7 @@ public class Sorcer extends SorcerEnv implements SorcerConstants{
 		return (array);
 	}
 
-	public static void destroy(String providerName, Class serviceType) {
-		Provider prv = (Provider) ProviderLookup.getService(providerName,
-				serviceType);
-		if (prv != null)
-			try {
-				prv.destroy();
-			} catch (Throwable t) {
-				// a dead provider will be not responding anymore
-				//t.printStackTrace();
-			}
-	}
-
-	public static void destroyNode(String providerName, Class serviceType) {
-		Provider prv = (Provider) ProviderLookup.getService(providerName,
-				serviceType);
-		if (prv != null)
-			try {
-				prv.destroyNode();
-			} catch (Throwable t) {
-				// a dead provider will be not responding anymore
-				//t.printStackTrace();
-			}
-	}
-
-	public static String getNameSuffix() {
+    public static String getNameSuffix() {
 		String suffix = props.getProperty(S_NAME_SUFFIX);
 		if (suffix == null )
 			suffix = getDefaultNameSuffix(3);

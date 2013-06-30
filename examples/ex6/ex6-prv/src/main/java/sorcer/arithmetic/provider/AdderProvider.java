@@ -21,10 +21,13 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.arithmetic.provider.ui.CalculatorUI;
+import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.dbp.DatabaseProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.service.ExecState;
 import sorcer.service.MonitorException;
+import sorcer.service.ServiceExertion;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.util.Sorcer;
@@ -47,7 +50,8 @@ public class AdderProvider extends DatabaseProvider implements RemoteAdder {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		out.checkpoint();
+        ((ServiceExertion)context.getExertion()).getMonitorSession().changed(out, ExecState.Category.UPDATED);
+
 		
 //		Logger remoteLogger =  provider.getRemoteLogger();
 //		remoteLogger.info("remote logging; add result: " + out);

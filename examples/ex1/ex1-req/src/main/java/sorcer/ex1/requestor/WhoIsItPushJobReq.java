@@ -31,8 +31,6 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -93,7 +91,7 @@ public class WhoIsItPushJobReq extends ServiceRequestor {
 	}
 
 	public void postprocess() {
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		logger.info("Output context1: \n"
 				+ exertion.getContext("Who Is It1?"));
 		logger.info("Output context2: \n"

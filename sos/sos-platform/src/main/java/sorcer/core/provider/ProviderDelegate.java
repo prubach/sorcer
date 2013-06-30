@@ -343,28 +343,6 @@ public class ProviderDelegate {
 			logger.info("*** published services: "
 					+ Arrays.toString(publishedServiceTypes));
 		}
-
-		initDynamicServiceAccessor();
-	}
-
-	private void initDynamicServiceAccessor() {
-		try {
-			String val = Sorcer.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME);
-			if (val != null && val.equals(ProviderLookup.class.getName())) {
-				ProviderLookup.init();
-			} else if (val != null
-					&& val.equals(ProviderLocator.class.getName())) {
-				ProviderLocator.init();
-			} else if (val != null
-					&& val.equals(ProviderAccessor.class.getName())) {
-				ProviderAccessor.init();
-			} else if (val != null
-					&& val.equals(ProviderAccessor.class.getName())) {
-				ProviderAccessor.init();
-			}
-		} catch (AccessorException e) {
-			e.printStackTrace();
-		}
 	}
 
 	void initSpaceSupport() throws ConfigurationException, RemoteException {

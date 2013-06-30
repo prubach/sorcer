@@ -61,10 +61,6 @@ public class ProviderLocator implements DynamicAccessor {
 	private Object _lock = new Object();
 	private ServiceTemplate _template;
 
-	public static void init() {
-		Accessor.setAccessor(new ProviderLocator());
-	}
-
 	/**
 	 * Locates a service via Unicast discovery
 	 * 

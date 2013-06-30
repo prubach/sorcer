@@ -19,7 +19,7 @@ package sorcer.service;
 
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.SorcerConstants;
-import sorcer.util.*;
+import sorcer.core.SorcerEnv;
 
 import java.util.logging.Logger;
 
@@ -32,30 +32,32 @@ import java.util.logging.Logger;
  */
 public class Accessor {
 	
-	protected final static Logger logger = Log.getTestLog();
-	
-	/**
+	protected final static Logger logger = Logger.getLogger("sorcer.core");
+
+    /**
 	 * A factory returning instances of {@link Service}s.
 	 */
 	private static DynamicAccessor accessor;
 
-	public final static String providerName = Sorcer.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME);
-	
-	static {
-		try {
-			logger.fine("* SORCER DynamicAccessor provider: " + providerName);
-			if (providerName == null)
-				ProviderLookup.init();
-			else if (providerName.equals(ProviderAccessor.class.getName()))
-				ProviderAccessor.init();
-		} catch (AccessorException e) {
-			System.err.println("No service accessor available for: " + providerName);
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-	
-	/**
+    static {
+        initialize(SorcerEnv.getProperties().getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
+    }
+
+    public static void initialize(String providerType) {
+        try {
+            logger.fine("* SORCER DynamicAccessor provider: " + providerType);
+            Class type = Class.forName(providerType);
+            accessor = (DynamicAccessor) type.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("No service accessor available for: " + providerType,e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("No service accessor available for: " + providerType,e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("No service accessor available for: " + providerType,e);
+        }
+    }
+
+    /**
 	 * Returns a servicer matching its {@link Signature} using the particular
 	 * factory <code>accessor</code> of this service accessor facility.
 	 * 
@@ -84,20 +86,8 @@ public class Accessor {
 		return accessor.getServiceItem(signature);
 	}
 
-	
-	/**
-	 * Assigns the provider of service accessor (factory) that implements
-	 * {@link DynamicAccessor}.
-	 * 
-	 * @param provider
-	 *            the servicer accessor
-	 */
-	public static void setAccessor(DynamicAccessor provider) {
-		accessor = provider;
-	}
-	
-	
-	/**
+
+    /**
 	 * Returns the current servicer accessor.
 	 * 
 	 * @return the servicer accessor

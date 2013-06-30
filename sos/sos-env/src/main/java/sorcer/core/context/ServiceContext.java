@@ -20,7 +20,6 @@ package sorcer.core.context;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.Persister;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.eval.ContextNode;
@@ -28,7 +27,6 @@ import sorcer.core.context.eval.ContextNodeException;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.service.ExecState.Category;
 import sorcer.service.Direction;
 import sorcer.service.ReturnPath;
 import sorcer.util.StringUtils;
@@ -173,7 +171,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	protected Hashtable metacontext;
 
 	/** The exertion that uses this context */
-	protected ServiceExertion exertion;
+	protected Exertion exertion;
 
 	protected String currentSelector;
 
@@ -270,7 +268,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		domainName = cntxt.getDomainName();
 		subdomainName = cntxt.getSubdomainName();
 		version = cntxt.getVersion();
-		exertion = (ServiceExertion) cntxt.getExertion();
+		exertion = (Exertion) cntxt.getExertion();
 		principal = cntxt.getPrincipal();
 		isPersistantTaskAssociated = ((ServiceContext) cntxt).isPersistantTaskAssociated;
 	}
@@ -411,8 +409,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public void setExertion(Exertion exertion) {
-		if (exertion == null || exertion instanceof Exertion)
-			this.exertion = (ServiceExertion) exertion;
+        this.exertion = exertion;
 	}
 
 	public void setProject(String projectName) {
@@ -561,8 +558,8 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			int len;
 			while (e.hasMoreElements()) {
 				linkPath = (String) e.nextElement();
-				ContextLink link = null;
-				link = (ContextLink) get(linkPath);
+				Link link = null;
+				link = (Link) get(linkPath);
 				String offset = link.getOffset();
 				int index = offset.lastIndexOf(CPS);
 				String extendedLinkPath = linkPath;
@@ -2605,20 +2602,17 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		try {
 			for (Parameter e : entries) {
 				if (e instanceof Tuple2) {
+                    Tuple2 t = (Tuple2) e;
 					Object val = null;
 					
-					if (((Tuple2) e)._2 instanceof Evaluation)
-						val = ((Evaluation) ((Tuple2) e)._2).getValue();
+					if (t._2 instanceof Evaluation)
+						val = ((Evaluation) t).getValue();
 					else
-						val = ((Tuple2) e)._2;
+						val = t._2;
 			
-					if (((Tuple2) e)._1 instanceof String) {
-						if (getAsis((String) ((Tuple2) e)._1) instanceof Persister) {
-							((Persister) getAsis((String) ((Tuple2) e)._1))
-									.setValue(val);
-						} else {
-							putValue((String) ((Tuple2) e)._1, val);
-						}
+					if (t._1 instanceof String) {
+                        String s1 = (String) t._1;
+                        putValue(s1, val);
 					}
 				}
 			}
@@ -2674,42 +2668,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		return super.get(path);
 	}
 
-	/**
-	 * Record this context as updated if the related exertion is monitored.
-	 * 
-	 * @throws java.rmi.RemoteException
-	 * @throws sorcer.service.MonitorException
-	 */
-	public void checkpoint() throws ContextException {
-		ServiceExertion mxrt = (ServiceExertion) getExertion();
-		if (mxrt != null && mxrt.isMonitorable()
-				&& mxrt.getMonitorSession() != null) {
-			try {
-				putValue("context/checkpoint/time", StringUtils.getDateTime());
-				mxrt.getMonitorSession().changed(this, Category.UPDATED);
-			} catch (Exception e) {
-				throw new ContextException(e);
-			}
-		}
-	}
-
-	/**
-	 * Record this context acording to the corresponding aspect if the related
-	 * exertion is monitored.
-	 * 
-	 * @throws java.rmi.RemoteException
-	 * @throws sorcer.service.MonitorException
-	 */
-	public void changed(Category aspect) throws RemoteException,
-			MonitorException {
-		ServiceExertion mxrt = (ServiceExertion) getExertion();
-		if (mxrt != null && mxrt.isMonitorable()
-				&& mxrt.getMonitorSession() != null) {
-			mxrt.getMonitorSession().changed(this, aspect);
-		}
-	}
-
-	public Object getAsis(String path) throws ContextException {
+    public Object getAsis(String path) throws ContextException {
 		Object val;
 		synchronized (this) {
 			if (isRevaluable == true) {
@@ -2760,10 +2719,10 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			} else {
 				obj = (T) getValue0(path);
 				if (obj instanceof Evaluation && isRevaluable) {
-					obj = value((Evaluation<T>) obj, entries);
+					obj = Evaluator.value((Evaluation<T>) obj, entries);
 				} else if ((obj instanceof Revaluation)
 						&& ((Revaluation) obj).isRevaluable()) {
-					obj = value((Evaluation<T>) obj, entries);
+					obj = Evaluator.value((Evaluation<T>) obj, entries);
 				}
 			}
 		} catch (ContextException e) {

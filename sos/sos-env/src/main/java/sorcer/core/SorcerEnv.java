@@ -40,7 +40,8 @@ import static sorcer.core.SorcerConstants.*;
 public class SorcerEnv {
 
 	final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
-	/**
+    public static boolean debug = false;
+    /**
 	 * Collects all the properties from sorcer.env, related properties from a
 	 * provider properties file, provider Jini configuration file, and JVM
 	 * system properties.

@@ -15,11 +15,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.service;
+package sorcer.util;
 
-/**
- * @author Rafał Krupiński
- */
-public interface MonitoredExertion extends Exertion{
-    MonitoringSession getMonitorSession();
+import net.jini.io.MarshalledInstance;
+
+import java.io.IOException;
+import java.rmi.MarshalledObject;
+
+public class ObjectCloner {
+
+	public static Object clone(Object o) {
+		try {
+			return new MarshalledObject<Object>(o).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+    public static Object cloneAnnotated(Object o) {
+		try {
+			return new MarshalledInstance(o).get(false);
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return null;
+	}
+
 }

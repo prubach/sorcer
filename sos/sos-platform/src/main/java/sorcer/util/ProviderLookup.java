@@ -53,10 +53,6 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	private int tries = 0;
 
-	public static void init() {
-		Accessor.setAccessor(new ProviderLookup());
-	}
-
 	public ProviderLookup() {
 		// do noting
 	}

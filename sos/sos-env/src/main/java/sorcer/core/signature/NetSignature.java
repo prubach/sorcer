@@ -20,7 +20,6 @@ package sorcer.core.signature;
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Name;
 import sorcer.core.Provider;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 
 import java.lang.reflect.Method;
@@ -71,13 +70,13 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			Type methodType) throws SignatureException {
+			Signature.Type methodType) throws SignatureException {
 		this(selector, serviceType);
 		this.execType = methodType;
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			List<Entry> attributes, Type methodType)
+			List<Entry> attributes, Signature.Type methodType)
 			throws SignatureException {
 		this(selector, serviceType);
 		this.execType = methodType;
@@ -85,14 +84,14 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			String providerName, Type methodType) {
+			String providerName, Signature.Type methodType) {
 		this.serviceType = serviceType;
 		if (providerName == null || providerName.length() == 0)
 			this.providerName = ANY;
 		else
 			this.providerName = providerName;
 		if (methodType == null)
-			execType = Type.SRV;
+			execType = Signature.Type.SRV;
 		else
 			execType = methodType;
 		
@@ -100,8 +99,7 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public void setExertion(Exertion exertion) throws ExertionException {
-		if (exertion instanceof ServiceExertion)
-			this.exertion = (ServiceExertion)exertion;
+        this.exertion = exertion;
 	}
 
 	public Exertion getExertion() {
@@ -283,13 +281,15 @@ public class NetSignature extends ObjectSignature {
 //		return m;
 //	}
 
+/*
 	public Exertion invokeMethod(Exertion ex) throws RemoteException,
 			ExertionException {
 		// If customized method provided by Mobile Agent
 		Method m = getSubstituteMethod(new Class[] { Exertion.class });
 		try {
-			if (m != null)
-				return (Exertion) m.invoke(this, new Object[] { ex });
+			if (m != null) {
+                return (Exertion) m.invoke(this, ex);
+            }
 
 			if (((ServiceProvider) provider).isValidMethod(selector)) {
 				return (Exertion) ((ServiceProvider) provider).getDelegate()
@@ -333,7 +333,8 @@ public class NetSignature extends ObjectSignature {
 			throw new ExertionException(e);
 		}
 	}
-	
+*/
+
 	public boolean isSelectable() {
 		if (selector == null && serviceType == null) {
 			return false;

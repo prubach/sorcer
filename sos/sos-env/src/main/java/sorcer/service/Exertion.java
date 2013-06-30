@@ -275,4 +275,7 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
 	 */
 	public static final int STANDARD = 1;
 
+    int getIndex();
+
+    void setIndex(int i);
 }

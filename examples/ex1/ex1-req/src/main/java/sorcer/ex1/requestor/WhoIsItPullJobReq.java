@@ -85,7 +85,7 @@ public class WhoIsItPullJobReq extends ServiceRequestor {
 	}
 
 	public void postprocess() {
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		logger.info("Output context1: \n"
 				+ exertion.getContext("Who Is It1?"));
 		logger.info("Output context2: \n"

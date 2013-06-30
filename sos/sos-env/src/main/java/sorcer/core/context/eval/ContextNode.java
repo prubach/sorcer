@@ -18,10 +18,10 @@
 package sorcer.core.context.eval;
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.util.GenericUtil;
-import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
 import java.io.*;
@@ -41,11 +41,9 @@ import java.util.logging.Logger;
 public class ContextNode implements Serializable {
 
 	// this class logger
-	private static Logger logger = Log.getSorcerCoreLog();
+	private static Logger logger = Logger.getLogger("sorcer.core");
 
-	private static Logger tesLog = Log.getTestLog();
-
-	private static final long serialVersionUID = 3597662074450280684L;
+    private static final long serialVersionUID = 3597662074450280684L;
 
 	private String name;
 
@@ -260,25 +258,7 @@ public class ContextNode implements Serializable {
 		return new URL(urlValue);
 	}
 
-	public String getHttpUrl() throws ContextNodeException,
-			MalformedURLException {
-		if (!isURL())
-			throw new ContextNodeException(
-					"ContextNode does not contain a URL string or URL object.");
-		String urlStr = null;
-		String urlValue = data.toString();
-		if (urlValue.startsWith("/") || urlValue.charAt(1) == ':') {
-			String dir = ""+Sorcer.getDataDir();
-			int index = urlValue.indexOf(dir);
-			if (index >= 0) {
-				urlValue = urlValue.substring(index + dir.length());
-				urlValue = Sorcer.getDataServerUrl() + '/' + urlValue;
-			}
-		}
-		return urlValue;
-	}
-
-	public boolean isHttp() {
+    public boolean isHttp() {
 		String urlValue = data.toString();
 		if (urlValue.startsWith("http://"))
 			return true;
@@ -1239,7 +1219,7 @@ public class ContextNode implements Serializable {
 
 		StringBuffer sb;
 		String msg = "(Ensure node has proper read/write permissions and that path is correct...\nURL must point into "
-				+ Sorcer.getProperty(SorcerConstants.DOC_ROOT_DIR)
+				+ SorcerEnv.getProperties().getProperty(SorcerConstants.DOC_ROOT_DIR)
 				+ "): \nFile: "
 				+ dataFile.getAbsolutePath();
 
@@ -1259,8 +1239,8 @@ public class ContextNode implements Serializable {
 	private File getFileWithPathAdjustment(URL myURL) {
 
 		String dataRootDir, dataDir, filePath;
-		dataRootDir = Sorcer.getProperty(SorcerConstants.DOC_ROOT_DIR);
-		dataDir = Sorcer.getProperty(SorcerConstants.P_DATA_DIR);
+		dataRootDir = SorcerEnv.getProperties().getProperty(SorcerConstants.DOC_ROOT_DIR);
+		dataDir = SorcerEnv.getProperties().getProperty(SorcerConstants.P_DATA_DIR);
 		filePath = myURL.getPath();
 		char sep = filePath.charAt(0);
 		if (sep != File.separatorChar)

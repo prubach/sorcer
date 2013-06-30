@@ -29,9 +29,9 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 
+import sorcer.core.SorcerEnv;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.sdb.Handler;
@@ -52,7 +52,7 @@ public class SosUrlsTest {
         System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 	}
 
 	public void sosUrlsTest() throws SignatureException,

@@ -84,15 +84,12 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * Initializes the cache of frequently used SORCER services. That includes a
 	 * Cataloger, Jobber, and Spacer used by this ProviderAccessor.
 	 * 
-	 * @throws AccessorException
 	 */
-	public static void init() throws AccessorException {
-		// initialize a generic servicer accessing facility
-		Accessor.setAccessor(ProviderAccessor.getAccessor());
+	static {
 		try {
 			openDiscoveryManagement(lookupGroups);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 

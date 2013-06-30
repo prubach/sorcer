@@ -22,6 +22,7 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.tools.webster.InternalWebster;
@@ -73,7 +74,7 @@ abstract public class ServiceRequestor implements Requestor {
 	protected static ServiceRequestor requestor = null;
 	
 	public static void main(String... args) throws Exception {
-        ServiceExertion.debug = true;
+        SorcerEnv.debug = true;
         prepareCodebase();
         initialize(args);
         requestor.preprocess(args);

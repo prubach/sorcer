@@ -17,9 +17,8 @@
  */
 package sorcer.core.context;
 
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.core.SorcerEnv;
 import sorcer.service.*;
-import sorcer.util.Log;
 import sorcer.util.Stopwatch;
 
 import java.io.PrintWriter;
@@ -153,7 +152,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	private Stopwatch stopwatch;
 
 	// this class logger
-	private static Logger logger = Log.getSorcerCoreLog();
+	private static Logger logger = Logger.getLogger("sorcer.core");
 
 	public ControlContext() {
 		super(CONTROL_CONTEXT, CONTROL_CONTEXT);
@@ -178,7 +177,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public ControlContext(Exertion exertion) {
 		this();
-		this.exertion = (ServiceExertion) exertion;
+		this.exertion = exertion;
 		subjectValue = exertion.getName();
 		// make it visible via the path EXERTION
 		try {
@@ -190,7 +189,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	}
 
 	public void setMasterExertion(Exertion e) {
-		put(MASTER_EXERTION, ((ServiceExertion) e).getId());
+		put(MASTER_EXERTION, e.getId());
 		// for(int i = 0; i< job.size(); i++)
 		// addAttributeValue(job.exertionAt(i), IO, DA_IN);
 		// Set exertion e as out Exertion.
@@ -311,14 +310,6 @@ public class ControlContext extends ServiceContext implements Strategy {
 		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
 	
-	public MonitoringManagement getMonitor() {
-		return (MonitoringManagement) get(EXERTION_MONITORING);
-	}
-
-	public void setMonitor(MonitoringManagement monitor) {
-		put(EXERTION_MONITORING, monitor);
-	}
-
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)
 				|| Access.PUSH.equals(access) || Access.QOS_PUSH.equals(access)
@@ -488,17 +479,16 @@ public class ControlContext extends ServiceContext implements Strategy {
 	}
 
 	public void registerExertion(Exertion ex) {
-		if (ex instanceof Job)
+		if (ex instanceof ComplexExertion)
 			put(ex.getControlContext().getName(), ex.getId());
 		else {
 			put(ex.getContext().getName(), ex.getId());
 		}
-		setPriority(ex, MAX_PRIORITY
-				- ((ServiceExertion) ex).getIndex());
+		setPriority(ex, MAX_PRIORITY - ex.getIndex());
 		setExecTimeRequested(ex, true);
 	}
 
-	public void deregisterExertion(Job job, Exertion exertion) {
+	public void deregisterExertion(ComplexExertion job, Exertion exertion) {
 		String path = exertion.getContext().getName();
 		// String datafileid = (String)getPathIds().get(path);
 
@@ -523,9 +513,9 @@ public class ControlContext extends ServiceContext implements Strategy {
 		// ((Hashtable)getMetacontext().get((String)e.nextElement())).remove(path
 		// );
 
-		for (int i = ((ServiceExertion) exertion).getIndex(); i < job.size(); i++) {
+		for (int i = exertion.getIndex(); i < job.size(); i++) {
 			String oldPath = job.exertionAt(i).getContext().getName();
-			((ServiceExertion) job.exertionAt(i)).setIndex(i);
+			job.exertionAt(i).setIndex(i);
 			put(job.exertionAt(i).getContext().getName(), remove(oldPath));
 			Hashtable map;
 			Hashtable imc = getMetacontext();
@@ -587,31 +577,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 		}
 	}
 
-	public void updateExertionName(Exertion exertion) {
-		String key, oldPath = null;
-		Enumeration e = keys();
-		while (e.hasMoreElements()) {
-			key = (String) e.nextElement();
-			if (key.endsWith("[" + ((ServiceExertion) exertion).getIndex()
-					+ "]" + ID)) {
-				oldPath = key;
-				break;
-			}
-		}
-		String newPath = exertion.getContext().getName();
-		Hashtable map;
-		Hashtable imc = getMetacontext();
-		e = ((Hashtable) imc.get(CONTEXT_ATTRIBUTES)).keys();
-		while (e.hasMoreElements()) {
-			key = (String) e.nextElement();
-			map = (Hashtable) imc.get(key);
-			if (map != null && map.size() > 0 && map.containsKey(oldPath))
-				map.put(newPath, map.remove(oldPath));
-		}
-	}
-
-	public void appendTrace(String info) {
-		if (ServiceExertion.debug)
+    public void appendTrace(String info) {
+		if (SorcerEnv.debug)
 			traceList.add(info);
 	}
 
@@ -715,7 +682,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.toString());
-		if (ServiceExertion.debug) {
+		if (SorcerEnv.debug) {
 			sb.append("\nControl Context Exceptions: \n");
 			sb.append(describeExceptions());
 		}
