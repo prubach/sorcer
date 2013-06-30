@@ -36,7 +36,7 @@ public class ProviderID implements Comparable<Object> {
 	public int compareTo(Object arg) {
 		if (arg instanceof ProviderID) {
 			long l1 = serviceID.getMostSignificantBits();
-			long l2 = ((ServiceID) arg).getMostSignificantBits();
+			long l2 = ((ProviderID) arg).serviceID.getMostSignificantBits();
 			if ((l1 - l2) == 0) {
 				return 0;
 			} else if ((l1 - l2) > 0) {
