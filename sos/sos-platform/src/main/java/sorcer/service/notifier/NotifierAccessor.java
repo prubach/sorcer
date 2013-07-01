@@ -25,9 +25,9 @@ import sorcer.util.ProviderAccessor;
 /**
  * @author Rafał Krupiński
  */
-public class NotifierAccessor extends ProviderAccessor {
+public class NotifierAccessor {
     public static Provider getNotifierProvider() throws ClassNotFoundException {
-        return (Provider) getService(null, new Class[]{SorcerNotifierProtocol.class}, null, getLookupGroups());
+        return (Provider) ProviderAccessor.getService(null, new Class[]{SorcerNotifierProtocol.class}, null, ProviderAccessor.getLookupGroups());
     }
 
 }

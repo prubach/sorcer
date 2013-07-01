@@ -65,22 +65,11 @@ public class ProviderAccessor extends ServiceAccessor implements
 
     protected static Map<Class, Object> cache = new HashMap<Class, Object>();
 
-	protected ProviderAccessor() {
+	public ProviderAccessor() {
 		// Nothing to do, uses the singleton design pattern
 	}
 
-	protected ProviderAccessor(String[] lookupGroups) {
-		ProviderAccessor.lookupGroups = lookupGroups;
-	}
-
-	public static ProviderAccessor getAccessor() {
-		if (accessor == null)
-			accessor = new ProviderAccessor();
-		ProviderAccessor.lookupGroups = Sorcer.getLookupGroups();
-		return accessor;
-	}
-
-	/**
+    /**
 	 * Initializes the cache of frequently used SORCER services. That includes a
 	 * Cataloger, Jobber, and Spacer used by this ProviderAccessor.
 	 * 
