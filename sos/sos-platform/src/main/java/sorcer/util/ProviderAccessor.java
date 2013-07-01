@@ -53,9 +53,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 
 	static Logger logger = Logger.getLogger(ProviderAccessor.class.getName());
 
-	protected static ProviderAccessor accessor;
-
-	/**
+    /**
 	 * Used for local caching to speed up getting frequently needed service
 	 * providers. Calls to discover JavaSpace takes a lot of time.
 	 */
@@ -76,7 +74,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
 	static {
 		try {
-			openDiscoveryManagement(lookupGroups);
+			openDiscoveryManagement(SorcerEnv.getLookupGroups());
 		} catch (IOException e) {
 			throw new ExceptionInInitializerError(e);
 		}
@@ -111,7 +109,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @return a SORCER provider service
 	 */
 	public static Object getService(ServiceID serviceID) {
-		return getService(serviceID, null, null, getLookupGroups());
+		return getService(serviceID, null, null, SorcerEnv.getLookupGroups());
 	}
 
 	/**
@@ -126,7 +124,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
 	public static Object getService(long mostSig, long leastSig) {
 		ServiceID serviceID = new ServiceID(mostSig, leastSig);
-		return getService(serviceID, null, null, getLookupGroups());
+		return getService(serviceID, null, null, SorcerEnv.getLookupGroups());
 	}
 
 	/**
@@ -140,10 +138,16 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 *            a provider service type (interface)
 	 * @return a SORCER provider service
 	 */
-	public static Provider getProvider(String providerName, Class serviceType) {
+	public Provider getProvider(String providerName, Class<?> serviceType) {
 		Provider servicer = null;
-		if (providerName != null && providerName.equals(SorcerConstants.ANY))
-			providerName = null;
+		if (providerName != null) {
+            if (providerName.equals(SorcerConstants.ANY))
+                providerName = null;
+            if(SorcerConstants.NAME_DEFAULT.equals(providerName)){
+                providerName = providerNameUtil.getName(serviceType);
+            }
+        }
+
 		try {
 			//servicer = (Service)ProviderLookup.getService(providerName, serviceType);
 			cataloger = getCataloger();
@@ -170,19 +174,6 @@ public class ProviderAccessor extends ServiceAccessor implements
 		return servicer;
 	}
 
-
-	/**
-	 * Returns a SORCER service provider with the specified signature, using a
-	 * Cataloger if available, otherwise using Jini lookup services.
-	 *
-	 * @param signature
-	 *            the signature of service provider
-	 * @return a SORCER provider service
-	 */
-	public static Provider getProvider(Signature signature) {
-		return ProviderAccessor.getProvider(signature.getProviderName(),
-				signature.getServiceType());
-	}
 
 	/**
 	 * Returns a SORCER Provider with the specified name, service type, and a
@@ -231,7 +222,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @return a SORCER provider service
 	 */
 	public static Provider getProvider(Class serviceType) {
-		return getProvider(null, serviceType);
+		return (Provider) Accessor.getProvider(null, serviceType);
 	}
 
 	/**
@@ -242,7 +233,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @return a SORCER provider
 	 */
 	public static Provider getProvider(Entry[] attributes) {
-		return (Provider) getService(null, null, attributes, getLookupGroups());
+		return (Provider) getService(null, null, attributes, SorcerEnv.getLookupGroups());
 	}
 
 	/**
@@ -254,7 +245,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @return a SORCER provider
 	 */
 	public static Provider getProvider(Class[] serviceTypes) {
-		return (Provider) getService(null, serviceTypes, null, getLookupGroups());
+		return (Provider) getService(null, serviceTypes, null, SorcerEnv.getLookupGroups());
 	}
 
 	/**
@@ -279,7 +270,7 @@ public class ProviderAccessor extends ServiceAccessor implements
         boolean catIsOk;
         try {
             catIsOk = isAlive((Provider) cataloger);
-        } catch (Exception re) {
+        } catch (Exception ignored) {
 			catIsOk = false;
 		}
 		try {

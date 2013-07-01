@@ -70,7 +70,7 @@ public interface Signature extends Serializable, Parameter {
 	 * 
 	 * @return name of service interface
 	 */
-	public Class<?> getServiceType();
+	public Class<Service> getServiceType();
 
 	/**
 	 * Assigns a path to the return value by this signature.

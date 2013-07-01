@@ -1200,6 +1200,8 @@ public interface SorcerConstants {
 			ACCESS_CLASS = "Access Class";
 
 	String CODEBASE_SEPARATOR = " ";
+
+    String NAME_DEFAULT="___SORCER_NAME_DEFAULT___";
 }
 
 

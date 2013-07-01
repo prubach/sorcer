@@ -21,10 +21,11 @@ package sorcer.util;
 import net.jini.core.transaction.server.TransactionManager;
 import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
+import sorcer.core.SorcerNotifierProtocol;
+import sorcer.service.Accessor;
 import sorcer.service.Jobber;
 import sorcer.service.Spacer;
 import sorcer.service.jobber.JobberAccessor;
-import sorcer.service.notifier.NotifierAccessor;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.service.spacer.SpacerAccessor;
 import sorcer.service.txmgr.TransactionManagerAccessor;
@@ -77,7 +78,7 @@ public class SorcerProviderAccessor extends ServiceAccessor{
     }
 
     public static Provider getNotifierProvider() throws ClassNotFoundException {
-        return NotifierAccessor.getNotifierProvider();
+        return Accessor.getProvider(null, SorcerNotifierProtocol.class);
     }
 
     /**

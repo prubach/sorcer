@@ -25,7 +25,7 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
-import sorcer.core.SorcerConstants;
+import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.service.*;
 
@@ -81,7 +81,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 *            a provider service type (interface)
 	 * @return a service provider
 	 */
-	public final static Object getService(Class serviceType) {
+	public static Object getService(Class serviceType) {
 		return getService(null, serviceType);
 	}
 
@@ -96,7 +96,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 * 
 	 * @return a service provider
 	 */
-	public final static Object getService(String providerName,
+	public static Object getService(String providerName,
 			Class serviceType) {
 		ProviderLookup lookup = new ProviderLookup(providerName, serviceType);
 		return lookup.getService();
@@ -112,7 +112,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Service getProvider(String providerName,
+	public static Service getProvider(String providerName,
 			String serviceType) {
 		return (Service) getService(providerName, serviceType);
 	}
@@ -127,7 +127,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 * 
 	 * @return a service provider
 	 */
-	public final static Object getService(String providerName,
+	public static Object getService(String providerName,
 			String serviceType) {
 		Class type;
 		try {
@@ -148,17 +148,8 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 *            a provider service type (interface)
 	 * @return a SORCER service provider
 	 */
-	public final static Service getProvider(String serviceType) {
+	public static Service getProvider(String serviceType) {
 		return getProvider(null, serviceType);
-	}
-
-	/**
-	 * @param serviceInterface
-	 *            the class of the type of service you are looking for. Class is
-	 *            usually an interface class.
-	 */
-	ProviderLookup(Class serviceInterface) {
-		this(null, serviceInterface);
 	}
 
 	ProviderLookup(String providerName, Class serviceInterface) {
@@ -196,7 +187,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 		synchronized (this) {
 			if (discoverer == null) {
 				try {
-					discoverer = new LookupDiscovery(getGroups());
+					discoverer = new LookupDiscovery(SorcerEnv.getLookupGroups());
 					// discoverer = new
 					// LookupDiscovery(LookupDiscovery.ALL_GROUPS);
 					//logger.finer("service lookup for groups: " + Arrays.toString(getGroups()));
@@ -300,17 +291,6 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	}
 
 	/**
-	 * Returns a list of groups as defined in the SORCER environment
-	 * configuration, the sorcer.env file.
-	 * 
-	 * @return a list of group names
-	 * @see Sorcer
-	 */
-	protected static String[] getGroups() {
-		return SorcerEnv.getLookupGroups();
-	}
-
-	/**
 	 * Added for compatibility with DynamicAccessor. This method is implemented
 	 * in { @link sorcer.util.ProviderAccessor } and { @link
 	 * sorcer.servme.QosProviderAccessor }
@@ -318,6 +298,11 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	public ServiceItem getServiceItem(Signature signature)
 			throws SignatureException {
 		throw new SignatureException("Not implemented by this service accessor");
+	}
+
+    @Override
+    public Provider getProvider(String name, Class<?> type) {
+        return (Provider) getProvider(name, type.getName());
 	}
 
 }

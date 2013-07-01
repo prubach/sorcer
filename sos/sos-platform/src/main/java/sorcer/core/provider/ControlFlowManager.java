@@ -33,7 +33,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.jobber.JobberAccessor;
 import sorcer.service.spacer.SpacerAccessor;
 import sorcer.util.AccessorException;
-import sorcer.util.ProviderAccessor;
+import sorcer.util.ServiceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -422,11 +422,10 @@ public class ControlFlowManager {
 				logger
 						.info("Task is not valid for this provider, forwarding task.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = ((NetSignature) method)
-						.getServiceType();
-				String codebase = ((NetSignature) method).getCodebase();
-                Service provider = ProviderAccessor.getProvider(null,
-						providerType, codebase);
+				Class providerType = method.getServiceType();
+				String codebase = method.getCodebase();
+                Service provider = (Service) ServiceAccessor.getService(null,
+                        providerType, codebase);
 				return provider.service(exertion, null);
 			}
 		} catch (Exception e) {
@@ -475,11 +474,10 @@ public class ControlFlowManager {
 			} else {
 				logger.info("Forwarding Job to SORCER-Jobber.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = ((NetSignature) method)
-						.getServiceType();
-				String codebase = ((NetSignature) method).getCodebase();
-				Service provider = ProviderAccessor.getProvider(null,
-						providerType, codebase);
+				Class providerType = method.getServiceType();
+				String codebase = method.getCodebase();
+				Service provider = (Service) ServiceAccessor.getService(null,
+                        providerType, codebase);
 				return provider.service(exertion, null);
 			}
 		} catch (Exception e) {
@@ -641,11 +639,10 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = ((NetSignature) method)
-						.getServiceType();
-				String codebase = ((NetSignature) method).getCodebase();
-				Service provider = ProviderAccessor.getProvider(null,
-						providerType, codebase);
+				Class providerType = method.getServiceType();
+				String codebase = method.getCodebase();
+				Service provider = (Service) ServiceAccessor.getService(null,
+                        providerType, codebase);
 
 				return provider.service(exertion, null);
 			}
@@ -682,10 +679,9 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = ((NetSignature) method)
-						.getServiceType();
-				String codebase = ((NetSignature) method).getCodebase();
-				Service provider = ProviderAccessor.getProvider(null,
+				Class providerType = method.getServiceType();
+				String codebase = method.getCodebase();
+				Service provider = (Service) ServiceAccessor.getService(null,
 						providerType, codebase);
 				return provider.service(exertion, null);
 			}

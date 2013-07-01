@@ -26,15 +26,14 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
+import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
 /**
  * ProviderLoactor is a simple wrapper class over Jini's LookupDiscover. It
@@ -46,20 +45,8 @@ public class ProviderLocator implements DynamicAccessor {
 
 	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
-	static final int MAX_TRIES = 5;
-
-	static final private Logger logger = Log.getTestLog();
-
-	private int tries = 0;
-
-	static {
-		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new RMISecurityManager());
-		}
-	}
-
 	private Object _proxy;
-	private Object _lock = new Object();
+	private final Object _lock = new Object();
 	private ServiceTemplate _template;
 
 	/**
@@ -98,7 +85,7 @@ public class ProviderLocator implements DynamicAccessor {
 	 * @throws ClassNotFoundException
 	 */
 	public static Object getService(String lusHost, Class serviceClass,
-			String serviceName) throws java.net.MalformedURLException,
+			String serviceName) throws
 			java.io.IOException, ClassNotFoundException {
 
 		Class[] types = new Class[] { serviceClass };
@@ -243,9 +230,20 @@ public class ProviderLocator implements DynamicAccessor {
 		throw new SignatureException("Not implemented by this service accessor");
 	}
 
+    @Override
+    public Provider getProvider(String name, Class<?> type) {
+        try {
+            return (Provider) getService(type, name, Long.MAX_VALUE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
 	 */
 	@Override

@@ -303,7 +303,7 @@ public class SorcerEnv {
 		// set the document root for HTTP server either for provider or
 		// requestor
 
-		String rootDir = null, dataDir = null;
+		String rootDir, dataDir;
 		rootDir = properties.getProperty(P_DATA_ROOT_DIR);
 		dataDir = properties.getProperty(P_DATA_DIR);
 		if (rootDir != null && dataDir != null) {
@@ -773,7 +773,7 @@ public class SorcerEnv {
      * node types specify application types of data nodes in service contexts.
      * It is analogous to MIME types in SORCER. Each type has a format
      * 'cnt/application/format/modifiers' or in the association format
-     * 'cnt|application|format|modifiers' when used with {@link Context}.
+     * 'cnt|application|format|modifiers' when used with {@link sorcer.service.Context}.
      *
      * @param filename
      *            name of file containing service dataContext node type definitions.
@@ -967,29 +967,10 @@ public class SorcerEnv {
      */
     public static String[] getLookupGroups() {
         String[] ALL_GROUPS = null; // Jini ALL_GROUPS
-        String groups = sorcerEnv.getProperty(P_GROUPS);
+        String groups = getProperty(P_GROUPS);
         if (groups == null || groups.length() == 0)
             return ALL_GROUPS;
-        String[] providerGroups = toArray(groups);
-        return providerGroups;
-    }
-
-    /**
-     * Gets a system Cataloger name for this environment.
-     *
-     * @return a name of the system Cataloger
-     */
-    public static String getCatalogerName() {
-        return sorcerEnv.getProperty(P_CATALOGER_NAME, "Cataloger");
-    }
-
-    /**
-     * Returns an the actual Cataloger name, eventually suffixed, to use with this environment.
-     *
-     * @return a Cataloger actual name
-     */
-    public static String getActualCatalogerName() {
-        return getActualName(getCatalogerName());
+        return toArray(groups);
     }
 
     /**
@@ -998,7 +979,7 @@ public class SorcerEnv {
      * @return a of space group name
      */
     public static String getSpaceGroup() {
-        return sorcerEnv.getProperty(P_SPACE_GROUP, getLookupGroups()[0]);
+        return getProperty(P_SPACE_GROUP, getLookupGroups()[0]);
     }
 
     /**
@@ -1008,7 +989,7 @@ public class SorcerEnv {
      */
 
     public static String getSpaceName() {
-        return sorcerEnv.getProperty(P_SPACE_NAME, "Exert Space");
+        return getProperty(P_SPACE_NAME, "Exert Space");
     }
 
     /**
@@ -1026,7 +1007,7 @@ public class SorcerEnv {
      * @return true if cached to file
      */
     public static boolean getPersisterType() {
-        if ((sorcerEnv.getProperty(S_PERSISTER_IS_DB_TYPE)).equals("true"))
+        if ((getProperty(S_PERSISTER_IS_DB_TYPE)).equals("true"))
             return true;
         else
             return false;
@@ -1038,15 +1019,11 @@ public class SorcerEnv {
      * @return a name of ExertMonitor provider
      */
     public static String getExertMonitorName() {
-        return sorcerEnv.getProperty(EXERT_MONITOR_NAME, "Exert Monitor");
-    }
-
-    public static String getActualExertMonitorName() {
-        return getActualName(getExertMonitorName());
+        return getProperty(EXERT_MONITOR_NAME, "Exert Monitor");
     }
 
     public static String getDatabaseStorerName() {
-        return sorcerEnv.getProperty(DATABASE_STORER_NAME, "Database Storage");
+        return getProperty(DATABASE_STORER_NAME, "Database Storage");
     }
 
     public static String getActualDatabaseStorerName() {
@@ -1054,7 +1031,7 @@ public class SorcerEnv {
     }
 
     public static String getDataspaceStorerName() {
-        return sorcerEnv.getProperty(DATASPACE_STORER_NAME, "Dataspace Storage");
+        return getProperty(DATASPACE_STORER_NAME, "Dataspace Storage");
     }
 
     public static String getActualDataspaceStorerName() {
@@ -1739,7 +1716,7 @@ public class SorcerEnv {
 
 
     public static String getRepoDir() {
-        return sorcerEnv.getEnvProperties().getProperty(S_SORCER_REPO);
+        return getEnvProperties().getProperty(S_SORCER_REPO);
     }
 
     public static Properties loadProperties(InputStream inputStream)

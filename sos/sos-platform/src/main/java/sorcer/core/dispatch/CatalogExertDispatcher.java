@@ -29,7 +29,6 @@ import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
 import sorcer.service.*;
-import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
 
 
@@ -66,7 +65,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		try {
 			exertion.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
-		} catch (RemoteException e) {
+		} catch (RemoteException ignored) {
 			// ignore it, local call		
 		}
 		logger.finest("preExecExertions>>>...UPDATING INPUTS...");
@@ -122,7 +121,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 	protected void postExecExertion(Exertion ex, Exertion result)
 			throws SignatureException, ExertionException {
 		ServiceExertion ser = (ServiceExertion) result;
-		((Job)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+		((Job)xrt).setExertionAt(result, ex.getIndex());
 		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
 			ser.setStatus(DONE);
 			if (xrt.getControlContext().isNodeReferencePreserved())
@@ -135,7 +134,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				}
 			// update all outputs from sharedcontext only for tasks. For jobs,
 			// spawned dispatcher does it.
-			if (((ServiceExertion) result).isTask()) {
+			if (result.isTask()) {
 				collectOutputs(result);
 			}
 			notifyExertionExecution(ex, result);
@@ -149,17 +148,16 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 	 *            Exertion
 	 * @return Exertion
 	 * @throws ExertionException
-	 * @throws SignatureException
 	 */
 	private Exertion execConditional(Exertion exertion)
 			throws ExertionException {
 
 		String providerName = exertion
 				.getProcessSignature().getProviderName();
-		Class serviceType = exertion.getProcessSignature()
+		Class<Service> serviceType = exertion.getProcessSignature()
 				.getServiceType();
 
-		Service provider = ProviderAccessor.getProvider(providerName,
+		Service provider = Accessor.getProvider(providerName,
 				serviceType);
 
 		try {
@@ -192,7 +190,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
 	protected Task execServiceTask(Task task) throws ExertionException,
 			SignatureException {
-		Task result = null;
+		Task result;
 		String url = ((NetSignature) task.getProcessSignature()).getPortalURL();
 		try {
 			if (url != null && url.length() != 0) {
@@ -223,7 +221,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                 //       		sig.getProviderName(), sig.getServiceType());
 
 				if (service== null) {
-					String msg = null;
+					String msg;
 					// get the PROCESS Method and grab provider name + interface
 					msg = "No Provider Available\n" + "Provider Name:      "
 							+ sig.getProviderName() + "\n"
@@ -280,7 +278,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			ClassNotFoundException, ExertionException, RemoteException {
 
 		try {
-			ServiceTemplate st = ProviderAccessor.getServiceTemplate(null,
+			ServiceTemplate st = ServiceAccessor.getServiceTemplate(null,
 					null, new Class[] { Jobber.class }, null);
 			ServiceItem[] jobbers = ServiceAccessor.getServiceItems(st, null,
 					SorcerEnv.getLookupGroups());
@@ -347,13 +345,10 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
 		private Exertion result;
 
-		private ExertDispatcher dispatcher;
-
-		public ExertionThread(ServiceExertion exertion,
+        public ExertionThread(ServiceExertion exertion,
 				ExertDispatcher dispatcher) {
 			ex = exertion;
-			this.dispatcher = dispatcher;
-			if (isMonitored)
+            if (isMonitored)
 				dispatchers.put(xrt.getId(), dispatcher);
 		}
 

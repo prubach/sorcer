@@ -21,7 +21,7 @@ package sorcer.service.txmgr;
 import net.jini.core.transaction.server.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.Accessor;
 import sorcer.util.ServiceAccessor;
 
 /**
@@ -64,8 +64,7 @@ public class TransactionManagerAccessor extends ServiceAccessor{
     }
 
     private TransactionManager doGetNewTransactionManger() {
-        TransactionManager transactionMgr = (TransactionManager) ProviderAccessor.getService(null,
-                new Class[]{TransactionManager.class}, null, getLookupGroups());
+        TransactionManager transactionMgr = Accessor.getProvider(null, TransactionManager.class);
         cache.put(TransactionManager.class.getName(), transactionMgr);
         return transactionMgr;
     }

@@ -18,6 +18,7 @@
 package sorcer.service;
 
 import net.jini.core.lookup.ServiceItem;
+import sorcer.core.Provider;
 
 /**
  * The creational factory interface used by the {@link Accessor}
@@ -45,4 +46,5 @@ public interface DynamicAccessor {
 	 */
 	ServiceItem getServiceItem(Signature signature) throws SignatureException;
 
+    Provider getProvider(String name, Class<?> type);
 }

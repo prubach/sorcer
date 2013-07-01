@@ -21,9 +21,9 @@ package sorcer.service.spacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.Provider;
+import sorcer.service.Accessor;
 import sorcer.service.Spacer;
 import sorcer.util.AccessorException;
-import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
 
 /**
@@ -61,9 +61,9 @@ public class SpacerAccessor extends ServiceAccessor {
             if (isAlive((Provider) spacer)) {
                 log.info(">>>returned cached Spacer ("
                         + ((Provider) spacer).getProviderID() + ") by "
-                        + ProviderAccessor.class.getName());
+                        + Accessor.getAccessor().getClass().getName());
             } else {
-                spacer = (Spacer) ProviderAccessor.getProvider(spacerName, Spacer.class);
+                spacer = Accessor.getProvider(spacerName, Spacer.class);
                 cache.put(Spacer.class.getName(), spacer);
             }
             return spacer;

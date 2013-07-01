@@ -67,7 +67,6 @@ import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
 import sorcer.service.*;
-import sorcer.service.notifier.NotifierAccessor;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
@@ -315,7 +314,6 @@ public class ProviderDelegate {
 		// This allows us to specify different properties for different hosts
 		// using a shared mounted filesystem
 		restore();
-		String str;
 		// set provider's ID persistance flag if defined in provider's
 		// properties
 		idPersistent = SorcerEnv.getProperty(P_SERVICE_ID_PERSISTENT, "false")
@@ -1084,7 +1082,7 @@ public class ProviderDelegate {
 		String prvName = task.getProcessSignature().getProviderName();
 		NetSignature fm = (NetSignature) task.getProcessSignature();
 		ServiceID serviceID = fm.getServiceID();
-		Class prvType = fm.getServiceType();
+		Class<Service> prvType = (Class<Service>) fm.getServiceType();
 		logger.info("ProviderDelegate#forwardTask \nprvType: " + prvType
 				+ "\nprvName = " + prvName);
 
@@ -1111,9 +1109,9 @@ public class ProviderDelegate {
 		if (serviceID != null)
 			recipient = ProviderAccessor.getProvider(serviceID);
 		else if (prvType != null && prvName != null) {
-			recipient = ProviderAccessor.getProvider(prvName, prvType);
+			recipient = Accessor.getProvider(prvName, prvType);
 		} else if (prvType != null) {
-			recipient = ProviderAccessor.getProvider(prvType);
+			recipient = Accessor.getProvider(null, prvType);
 		}
 		if (recipient == null) {
 			visited.remove(serviceID);
@@ -1660,24 +1658,19 @@ public class ProviderDelegate {
 			return;
 		logger.info(getClass().getName() + "::notify() START message:"
 				+ message);
-		try {
 
-			MsgRef mr;
-			SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) NotifierAccessor
-					.getNotifierProvider();
+        MsgRef mr;
+        SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) Accessor.getProvider(null, SorcerNotifierProtocol.class);
 
-			mr = new MsgRef(task.getId(), notificationType,
-					config.getProviderName(), message,
-					((ServiceExertion) task).getSessionId());
-			// Util.debug(this, "::notify() RUNTIME SESSION ID:" +
-			// task.getRuntimeSessionID());
-			RemoteEvent re = new RemoteEvent(mr, eventID++, seqNum++, null);
-			logger.info(getClass().getName() + "::notify() END.");
-			notifier.notify(re);
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-		}
-	}
+        mr = new MsgRef(task.getId(), notificationType,
+                config.getProviderName(), message,
+                ((ServiceExertion) task).getSessionId());
+        // Util.debug(this, "::notify() RUNTIME SESSION ID:" +
+        // task.getRuntimeSessionID());
+        RemoteEvent re = new RemoteEvent(mr, eventID++, seqNum++, null);
+        logger.info(getClass().getName() + "::notify() END.");
+        notifier.notify(re);
+    }
 
 	public void notifyException(Exertion task, String message, Exception e,
 			boolean fullStackTrace) throws RemoteException {
@@ -2622,7 +2615,7 @@ public class ProviderDelegate {
 				}
 			} else {
 				// if partner discovered use it as the inner proxy
-				innerProxy = (Remote) ProviderAccessor.getProvider(partnerName,
+				innerProxy = (Remote) Accessor.getProvider(partnerName,
 						partnerType);
 			}
 		} else {

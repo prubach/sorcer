@@ -29,7 +29,6 @@ import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.Monitorable;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
@@ -38,7 +37,7 @@ import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
 import sorcer.core.provider.exertmonitor.MonitoringManagement;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.util.ProviderAccessor;
+import sorcer.util.ServiceAccessor;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -56,17 +55,13 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 	public static final long DEFAULT_TIMEOUT_PERIOD = 1 * 1000 * 60L;
 
-	protected int doneExertionIndex = 0;
-
-	public MonitoredExertDispatcher(Exertion exertion,
+    public MonitoredExertDispatcher(Exertion exertion,
                                     Set<Context> sharedContext, boolean isSpawned, Provider provider)
 			throws Throwable {
 		super(exertion, sharedContext, isSpawned, provider);
 				
 		if (sessionMonitor == null)
-			sessionMonitor = (MonitoringManagement) ProviderAccessor
-					.getProvider(SorcerEnv.getActualName(SorcerEnv.getExertMonitorName()),
-							MonitoringManagement.class);
+			sessionMonitor = Accessor.getProvider(SorcerConstants.NAME_DEFAULT, MonitoringManagement.class);
 		if (lrm == null)
 			lrm = new LeaseRenewalManager();
 
@@ -123,7 +118,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 	protected void postExecExertion(Exertion result) throws ExertionException {
 		ServiceExertion sxrt = (ServiceExertion)result;
 		if (sxrt instanceof NetJob )
-			((NetJob)xrt).setExertionAt(result, ((ServiceExertion) result).getIndex());
+			((NetJob)xrt).setExertionAt(result, result.getIndex());
 		else
 			xrt = sxrt;
 		
@@ -175,13 +170,13 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 		ExertDispatcher.logger.log(Level.INFO, "start executing task");
 		try {
-			Service provider = ProviderAccessor.getProvider(task
-					.getProcessSignature().getProviderName(), task
-					.getServiceType());
+			Service provider = (Service) ServiceAccessor.getService(task
+                    .getProcessSignature().getProviderName(), task
+                    .getServiceType());
 			ExertDispatcher.logger.log(Level.INFO, "got a provider:" + provider);
 
 			if (provider == null) {
-				String msg = null;
+				String msg;
 				// get the PROCESS Method and grab provider name + interface
 				NetSignature method = (NetSignature) task
 						.getProcessSignature();
@@ -231,15 +226,11 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 		}
 
-		public ResultListener(String type) {
-
-		}
-
 		public void notify(RemoteEvent re) throws RemoteException {
 			try {
 				logger.log(Level.INFO, "Recieved Remote event from the exert monitor:\n"
 						+ re);
-				if (!(((MonitorEvent) re).getExertion() instanceof Exertion))
+				if (((MonitorEvent) re).getExertion() == null)
 					postExecExertion(((MonitorEvent) re)
 							.getExertion());
 			} catch (Exception e) {

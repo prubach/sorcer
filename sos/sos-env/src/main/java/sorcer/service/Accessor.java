@@ -95,4 +95,8 @@ public class Accessor {
 	public static DynamicAccessor getAccessor() {
 		return accessor;
 	}
+
+    public static <T> T getProvider(String name, Class<T> type){
+        return (T) getAccessor().getProvider(name, type);
+    }
 }

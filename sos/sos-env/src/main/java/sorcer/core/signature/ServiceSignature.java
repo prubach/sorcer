@@ -23,6 +23,7 @@ import sorcer.service.Direction;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ReturnPath;
+import sorcer.service.Service;
 import sorcer.service.Signature;
 
 import java.lang.reflect.Constructor;
@@ -121,8 +122,8 @@ import java.util.logging.Logger;
 		return exertion;
 	}
 
-	public Class<?> getServiceType() {
-		return serviceType;
+	public Class<Service> getServiceType() {
+		return (Class<Service>) serviceType;
 	}
 
 	public void setServiceType(Class<?> serviceType) {

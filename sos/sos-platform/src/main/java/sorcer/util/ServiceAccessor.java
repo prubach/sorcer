@@ -84,8 +84,6 @@ public class ServiceAccessor {
 
 	private static LookupCache lookupCache = null;
 
-	protected static String[] lookupGroups = SorcerEnv.getLookupGroups();
-	
 	private static int MIN_MATCHES = SorcerEnv.getLookupMinMatches();
 
 	private static int MAX_MATCHES = SorcerEnv.getLookupMaxMatches();
@@ -217,7 +215,7 @@ public class ServiceAccessor {
 	public static ServiceItem getServiceItem(ServiceItemFilter filter) {
 		ServiceItem si = null;
 		try {
-			openDiscoveryManagement(getLookupGroups());
+            openDiscoveryManagement(SorcerEnv.getLookupGroups());
 			if (lookupCache != null)
 				si = lookupCache.lookup(filter);
 			// The item may not be in the cache if the lookup cache was just
@@ -511,19 +509,6 @@ public class ServiceAccessor {
 	}
 
 	/**
-	 * Returns a list of groups as defined in the SORCER environment.
-	 * 
-	 * @return a list of group names
-	 * @see Sorcer
-	 */
-	public  static String[] getGroups() {
-		if (lookupGroups == null)
-			return SorcerEnv.getLookupGroups();
-		else
-			return lookupGroups;
-	}
-
-	/**
 	 * @param filter
 	 *            The filter to set.
 	 */
@@ -569,19 +554,11 @@ public class ServiceAccessor {
 	public static LookupCache getAndEnableLookupCache() {
 		ServiceAccessor.cacheEnabled = true;
 		try {
-			openDiscoveryManagement(getLookupGroups());
+            openDiscoveryManagement(SorcerEnv.getLookupGroups());
 		} catch (IOException e) {
 			logger.warning(e.getMessage());
 		}
 		return lookupCache;
-	}
-
-	public static String[] getLookupGroups() {
-		return lookupGroups;
-	}
-
-	public static void setLookupGroups(String[] lookupGroups) {
-		ServiceAccessor.lookupGroups = lookupGroups;
 	}
 
 	public static ServiceTemplate getServiceTemplate(ServiceID serviceID,
@@ -638,7 +615,7 @@ public class ServiceAccessor {
             provider.getProviderName();
             return true;
         } catch (RemoteException e) {
-            ProviderAccessor.logger.throwing(ProviderAccessor.class.getName(), "isAlive", e);
+            logger.throwing(ProviderAccessor.class.getName(), "isAlive", e);
             throw e;
         }
 	}

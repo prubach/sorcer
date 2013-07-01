@@ -92,6 +92,6 @@ public class SpaceAccessor extends ServiceAccessor{
         return instance.doGetSpace();
     }
     public JavaSpace05 doGetSpace() {
-        return getSpace(providerNameUtil.getName(JavaSpace05.class));
+        return doGetSpace(providerNameUtil.getName(JavaSpace05.class), SorcerEnv.getSpaceGroup());
     }
 }
