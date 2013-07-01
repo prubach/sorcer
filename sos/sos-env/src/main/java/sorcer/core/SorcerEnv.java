@@ -304,8 +304,8 @@ public class SorcerEnv {
 		// requestor
 
 		String rootDir, dataDir;
-		rootDir = properties.getProperty(P_DATA_ROOT_DIR);
-		dataDir = properties.getProperty(P_DATA_DIR);
+		rootDir = props.getProperty(P_DATA_ROOT_DIR);
+		dataDir = props.getProperty(P_DATA_DIR);
 		if (rootDir != null && dataDir != null) {
 			System.setProperty(DOC_ROOT_DIR, rootDir + File.separator + dataDir);
 		} else {
@@ -327,14 +327,14 @@ public class SorcerEnv {
 		}
 
 		String httpInterface = null, httpPort = null;
-		httpInterface = properties.getProperty(P_DATA_SERVER_INTERFACE);
-		httpPort = properties.getProperty(P_DATA_SERVER_PORT);
+		httpInterface = props.getProperty(P_DATA_SERVER_INTERFACE);
+		httpPort = props.getProperty(P_DATA_SERVER_PORT);
 		if (httpInterface != null) {
 			System.setProperty(DATA_SERVER_INTERFACE, httpInterface);
 			System.setProperty(DATA_SERVER_PORT, httpPort);
 		} else {
-			httpInterface = properties.getProperty(R_DATA_SERVER_INTERFACE);
-			httpPort = properties.getProperty(R_DATA_SERVER_PORT);
+			httpInterface = props.getProperty(R_DATA_SERVER_INTERFACE);
+			httpPort = props.getProperty(R_DATA_SERVER_PORT);
 			if (httpInterface != null) {
 				System.setProperty(DATA_SERVER_INTERFACE, httpInterface);
 				System.setProperty(DATA_SERVER_PORT, httpPort);
@@ -347,26 +347,26 @@ public class SorcerEnv {
 	 * provider.webster.interface, provider.webster.port) with those defined as
 	 * JVM system properties.
 	 * 
-	 * @param properties
+	 * @param props
 	 * @throws ConfigurationException
 	 */
-	private void update(Properties properties)
+	private void update(Properties props)
 			throws ConfigurationException {
-		Enumeration<?> e = properties.propertyNames();
+		Enumeration<?> e = props.propertyNames();
 		String key, value, evalue = null;
 		String pattern = "${" + "localhost" + "}";
 //		String userDirPattern = "${user.home}";
 		// first substitute for this localhost
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
-			value = properties.getProperty(key);
+			value = props.getProperty(key);
 			if (value.equals(pattern)) {
 				try {
 					value = getHostAddress();
 				} catch (UnknownHostException ex) {
 					ex.printStackTrace();
 				}
-				properties.put(key, value);
+                props.put(key, value);
 			}
 	/*		if (value.equals(userDirPattern)) {
 				value = System.getProperty("user.home");				
@@ -374,23 +374,23 @@ public class SorcerEnv {
 			}*/
 		}
 		// now substitute other entries accordingly 
-		e = properties.propertyNames();
+		e = props.propertyNames();
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
-			value = properties.getProperty(key);
-			evalue = expandStringProperties(value, true);
+			value = props.getProperty(key);
+			evalue = expandStringProperties(value, true, props);
 			// try SORCER env properties
 			if (evalue == null)
-				evalue = expandStringProperties(value, false);
+				evalue = expandStringProperties(value, false, props);
 			if (evalue != null)
-				properties.put(key, evalue);
+                props.put(key, evalue);
 			if (value.equals(pattern)) {
 				try {
 					evalue = getHostAddress();
 				} catch (UnknownHostException e1) {
 					e1.printStackTrace();
 				}
-				properties.put(key, evalue);
+                props.put(key, evalue);
 			}
 		}
     }
@@ -400,7 +400,7 @@ public class SorcerEnv {
 	 * treats ${/} as ${file.separator}.
 	 */
 	public static String expandStringProperties(String value,
-			boolean isSystemProperty) throws ConfigurationException {
+			boolean isSystemProperty, Properties props) throws ConfigurationException {
 		int p = value.indexOf("${", 0);
 		if (p == -1) {
 			return value;
@@ -435,7 +435,7 @@ public class SorcerEnv {
 									.getenv(prop);
 						}
 					} else {
-						val = prop.length() == 0 ? null : sorcerEnv.getEnvProperties()
+						val = prop.length() == 0 ? null : props
 								.getProperty(prop);
 					}
 					if (val != null) {
@@ -469,14 +469,15 @@ public class SorcerEnv {
 	 *             if no IP address for the local host could be found.
 	 */
 	public static String getHostAddress() throws java.net.UnknownHostException {
-        String hostAddr = getEnvProperties().getProperty(S_SORCER_LOCAL_HOSTADDR);
+        /*String hostAddr = sorcerEnv.getProperty(S_SORCER_LOCAL_HOSTADDR);
         if (hostAddr!=null && hostAddr.length()>0)
             return hostAddr;
         else {
             hostAddr = getLocalHost().getHostAddress();
-            getEnvProperties().setProperty(S_SORCER_LOCAL_HOSTADDR, hostAddr);
+            setProperty(S_SORCER_LOCAL_HOSTADDR, hostAddr);
             return hostAddr;
-        }
+        } */
+        return getLocalHost().getHostAddress();
 	}
 
 	/**
@@ -596,7 +597,7 @@ public class SorcerEnv {
     }
 
     public static String getWebsterInterface() {
-        return sorcerEnv.getWebsterInterface();
+        return sorcerEnv.getProperty(P_WEBSTER_INTERFACE);
     }
 
     /**
@@ -604,7 +605,7 @@ public class SorcerEnv {
      *
      * @return a webster host name.
      */
-    public String prepareWebsterInterface() {
+    public String prepareWebsterInterface(Properties props) {
         String hn = System.getenv("SORCER_WEBSTER_INTERFACE");
 
         if (hn != null && hn.length() > 0) {
@@ -616,7 +617,7 @@ public class SorcerEnv {
             return hn;
         }
 
-        hn = properties.getProperty(P_WEBSTER_INTERFACE);
+        hn = props.getProperty(P_WEBSTER_INTERFACE);
         if (hn != null && hn.length() > 0) {
             return hn;
         }
@@ -1120,6 +1121,17 @@ public class SorcerEnv {
      */
     public static String getProperty(String property) {
         return getEnvProperties().getProperty(property);
+    }
+
+    /**
+     * Sets the value of a certain property.
+     *
+     * @param key
+     * @param value
+     *
+     */
+    public static void setProperty(String key, String value) {
+        getEnvProperties().setProperty(key, value);
     }
 
     /**
