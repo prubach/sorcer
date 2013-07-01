@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  * 
  * @see ServiceAccessor
  */
-@SuppressWarnings("rawtypes")
+
 public class ProviderAccessor extends ServiceAccessor implements
 		DynamicAccessor {
 
@@ -254,10 +254,9 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * This method searches for either a JINI or a RMI Cataloger service.
 	 *
 	 * @return a Cataloger service proxy
-	 * @throws AccessorException
      * @see sorcer.core.Cataloger
 	 */
-	public static Cataloger getCataloger() throws AccessorException {
+	private static Cataloger getCataloger() {
         return getCataloger(providerNameUtil.getName(Cataloger.class)) ;
 	}
 
@@ -293,10 +292,9 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 *            - service type of requested provider
 	 * @return a requested service or null if a Catloger is not available
 	 * @throws RemoteException
-	 * @throws AccessorException
 	 */
 	public static Provider lookup(Class primaryInterface)
-			throws RemoteException, AccessorException {
+			throws RemoteException {
 		return lookup(null, primaryInterface);
 	}
 
@@ -313,10 +311,8 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @param primaryInterface
 	 *            - service type of requested provider
 	 * @return a requested service or null if a Cataloger is not available
-	 * @throws AccessorException
 	 */
-	public static Provider lookup(String providerName, Class primaryInterface)
-			throws AccessorException {
+	public static Provider lookup(String providerName, Class primaryInterface) {
 		try {
 			// check if the cataloger is alive then return a reqested service
 			// provider

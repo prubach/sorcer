@@ -12,6 +12,8 @@ import sorcer.resolver.Resolver;
 import sorcer.util.LibraryPathHelper;
 
 /**
+ * Extend PlatformCapabilityConfig with ability to alter system library path and setting classpath with maven artifact coordinates.
+ *
  * @author Rafał Krupiński
  */
 public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {

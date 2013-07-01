@@ -62,7 +62,7 @@ public class ProviderLocator implements DynamicAccessor {
 	 * @return The proxy to the discovered service
 	 */
 	public static Object getService(String lusHost, Class serviceClass)
-			throws java.net.MalformedURLException, java.io.IOException,
+			throws java.io.IOException,
 			ClassNotFoundException {
 
 		LookupLocator loc = new LookupLocator("jini://" + lusHost);
@@ -257,17 +257,15 @@ public class ProviderLocator implements DynamicAccessor {
 			if (((NetSignature)signature).isUnicast()) {
 				String[] locators = SorcerEnv.getLookupLocators();
 				for (String locator : locators) {
-					proxy = (Service) ProviderLocator.getService(locator,
-							signature.getServiceType(), signature
-									.getProviderName());
+					proxy = getService(locator,
+                            signature.getServiceType(), signature
+                            .getProviderName());
 					if (proxy != null && proxy instanceof Service)
 						break;
-					else
-						continue;
-				}
+                }
 			} else {
-				proxy = ProviderLocator.getService(signature.getServiceType(),
-						signature.getProviderName(), WAIT_FOR);
+				proxy = getService(signature.getServiceType(),
+                        signature.getProviderName(), WAIT_FOR);
 			}
 		} catch (Exception ioe) {
 			throw new SignatureException(ioe);

@@ -51,10 +51,12 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	static final int MAX_TRIES = 5;
 
-	static final private Logger logger = Log.getTestLog();
+	static final private Logger logger = Logger.getLogger(ProviderLookup.class.getName());
 
 	private int tries = 0;
 
+    //instantiated by reflection
+    @SuppressWarnings("unused")
 	public ProviderLookup() {
 		// do noting
 	}
@@ -267,7 +269,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 		ServiceRegistrar[] regs = event.getRegistrars();
 		for (int i = 0; i < regs.length; i++) {
 			ServiceRegistrar reg = regs[i];
-			Object foundProxy = null;
+			Object foundProxy;
 			try {
 				foundProxy = reg.lookup(template);
 				if (foundProxy != null) {

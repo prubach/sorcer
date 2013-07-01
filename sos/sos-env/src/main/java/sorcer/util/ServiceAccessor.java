@@ -70,7 +70,7 @@ import java.util.logging.Logger;
  */
 public class ServiceAccessor {
 
-	static Logger logger = Log.getProviderLog();
+	static Logger logger = Logger.getLogger(ServiceAccessor.class.getName());
 
 	static private boolean cacheEnabled = SorcerEnv.isLookupCacheEnabled();
 
@@ -320,7 +320,7 @@ public class ServiceAccessor {
 				sdManager = new ServiceDiscoveryManager(ldManager,
 						new LeaseRenewalManager());
 			} catch (Throwable t) {
-				Log.getSorcerLog().throwing(ServiceAccessor.class.getName(),
+				logger.throwing(ServiceAccessor.class.getName(),
 						"openDiscoveryManagement", t);
 			}
 		}
@@ -497,7 +497,7 @@ public class ServiceAccessor {
 				try {
 					locators.add(new LookupLocator(locURL));
 				} catch (Throwable t) {
-					Log.getSorcerLog().warning(
+					logger.warning(
 							"Invalid Lookup URL: " + locURL);
 				}
 		}
