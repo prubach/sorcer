@@ -27,6 +27,7 @@ jdk:
 branches:
   only:
     - master
+    - develop
 
 notifications:
   email:
