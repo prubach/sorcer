@@ -155,15 +155,15 @@ public class SorcerEnv {
 	/** 
 	 * @return Set Sorcer Local jar repo location
 	 */
-	public void setRepoDir() {
-		String repo = properties.getProperty(S_SORCER_REPO);
+	public void setRepoDir(Properties props) {
+		String repo = props.getProperty(S_SORCER_REPO);
         if (repo!=null) repo = repo.trim();
 		
 		if (repo != null && !repo.isEmpty()) {
 			try {
 				File repoDir = new File(repo);
 				if (repoDir.exists() && repoDir.isDirectory())
-					properties.put(S_SORCER_REPO, repo);
+                    props.put(S_SORCER_REPO, repo);
 			} catch (Throwable t) {
 				logger.throwing(
 						SorcerEnv.class.getName(),
@@ -175,10 +175,10 @@ public class SorcerEnv {
 			try {
 				File repoDir = new File(System.getProperty("user.home")+"/.m2/repository");
                 if (repoDir.exists() && repoDir.isDirectory())
-                    properties.put(S_SORCER_REPO, repoDir.getAbsolutePath());
+                    props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 else {
                     FileUtils.forceMkdir(repoDir);
-                    properties.put(S_SORCER_REPO, repoDir.getAbsolutePath());
+                    props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 }
             } catch (Throwable t) {
 				logger.throwing(
@@ -217,8 +217,8 @@ public class SorcerEnv {
 				envFile = S_ENV_FIENAME;
 				String envPath = getSorcerHome() + "/configs/" + envFile;
 				System.setProperty(S_KEY_SORCER_ENV, envPath);
-                properties = loadProperties(envFile);
-				update(properties);
+                properties.putAll(loadProperties(envFile));
+                update(properties);
 				envFrom = "(Sorcer resource)";
 			}
 			logger.fine("SORCER env properties:\n"
@@ -244,10 +244,10 @@ public class SorcerEnv {
                     + CONTEXT_DATA_FORMATS);
 
             logger.finer("* Sorcer provider accessor:"
-                    + sorcerEnv.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
+                    + properties.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
             // Repo directory - setting
-            setRepoDir();
-            prepareWebsterInterface();
+            setRepoDir(properties);
+            prepareWebsterInterface(properties);
         } catch (Throwable t) {
 			logger.throwing(
 					SorcerEnv.class.getName(),
@@ -266,7 +266,7 @@ public class SorcerEnv {
 	 */
 	public Properties loadProperties(String filename)
 			throws ConfigurationException {
-		Properties properties = new Properties();
+		Properties props = new Properties();
 		try {
 			// Try in user home directory first
 			properties.load((new FileInputStream(new File(filename))));
@@ -275,14 +275,14 @@ public class SorcerEnv {
 		} catch (Exception e) {
 			try {
 				// try to look for sorcer.env in SORCER_HOME/configs
-				properties.load((new FileInputStream(new File(System.getenv(E_SORCER_HOME)+"/configs/" + filename))));
+                props.load((new FileInputStream(new File(System.getenv(E_SORCER_HOME)+"/configs/" + filename))));
 				logger.fine("loaded properties from: " + System.getenv(E_SORCER_HOME) +"/configs/" + filename);
 			} catch (Exception ee) {
 				try {
 					// No file give, try as resource sorcer/util/sorcer.env
 					InputStream stream = SorcerEnv.class.getResourceAsStream(filename);
 					if (stream != null)
-						properties.load(stream);
+                        props.load(stream);
 					else
 						logger.severe("could not load properties as Sorcer resource file>"
 								+ filename + "<" );
@@ -291,14 +291,14 @@ public class SorcerEnv {
 				}
 			}
 		}
-		reconcileProperties(properties);
-        return properties;
+		reconcileProperties(props);
+        return props;
 	}
 
-	private void reconcileProperties(Properties properties)
+	private void reconcileProperties(Properties props)
 			throws ConfigurationException {
 
-		update(properties);
+		update(props);
 
 		// set the document root for HTTP server either for provider or
 		// requestor
@@ -309,18 +309,18 @@ public class SorcerEnv {
 		if (rootDir != null && dataDir != null) {
 			System.setProperty(DOC_ROOT_DIR, rootDir + File.separator + dataDir);
 		} else {
-			rootDir = properties.getProperty(R_DATA_ROOT_DIR);
-			dataDir = properties.getProperty(R_DATA_DIR);
+			rootDir = props.getProperty(R_DATA_ROOT_DIR);
+			dataDir = props.getProperty(R_DATA_DIR);
 			if (rootDir != null && dataDir != null) {
 				System.setProperty(DOC_ROOT_DIR, rootDir + File.separator
 						+ dataDir);
 			}
 		}
-		dataDir = properties.getProperty(P_SCRATCH_DIR);
+		dataDir = props.getProperty(P_SCRATCH_DIR);
 		if (dataDir != null) {
 			System.setProperty(SCRATCH_DIR, dataDir);
 		} else {
-			dataDir = properties.getProperty(R_SCRATCH_DIR);
+			dataDir = props.getProperty(R_SCRATCH_DIR);
 			if (dataDir != null) {
 				System.setProperty(SCRATCH_DIR, dataDir);
 			}
