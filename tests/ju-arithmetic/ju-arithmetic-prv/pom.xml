@@ -96,10 +96,10 @@
 								</goals>
 								<configuration>
 									<requestorClasspath>
-										<entry>org.sorcersoft.sorcer:sos-platform:${project.version}</entry>
-										<entry>org.sorcersoft.sorcer:commons-req:${project.version}</entry>
+										<entry>${project.groupId}:sos-platform:${project.version}</entry>
+										<entry>${project.groupId}:commons-req:${project.version}</entry>
 										<entry>${project.groupId}:${project.artifactId}:${project.version}</entry>
-										<!--<entry>${project.groupId}:ju-arithmetic-api:${project.version}</entry>-->
+                                        <entry>${project.groupId}:dbp-api:${project.version}</entry>
 										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
 										<entry>junit:junit:4.11</entry>
 										<entry>org.slf4j:slf4j-simple:1.7.5</entry>
