@@ -30,7 +30,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItTaskReq extends ServiceRequestor {
 
@@ -41,7 +41,7 @@ public class WhoIsItTaskReq extends ServiceRequestor {
 		String providerName = null;
 		// define requestor data
 		if (args.length == 2)
-			providerName = Sorcer.getSuffixedName(args[1]);
+			providerName = SorcerEnv.getSuffixedName(args[1]);
 		Task task = null;
 		try {
 			InetAddress inetAddress = SorcerEnv.getLocalHost();

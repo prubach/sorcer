@@ -17,6 +17,7 @@
  */
 package sorcer.ex3.requestor;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
@@ -25,7 +26,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.util.Sorcer;
+
 import sorcer.ex2.requestor.Works;
 
 public class StrategyWorkReq extends ServiceRequestor {
@@ -33,9 +34,9 @@ public class StrategyWorkReq extends ServiceRequestor {
     public Exertion getExertion(String... args) throws ExertionException {
         String requestorName = getProperty("requestor.name");
         String pn1, pn2, pn3;
-        pn1 = Sorcer.getSuffixedName(getProperty("provider.name.1"));
-        pn2 = Sorcer.getSuffixedName(getProperty("provider.name.2"));
-        pn3 = Sorcer.getSuffixedName(getProperty("provider.name.3"));
+        pn1 = SorcerEnv.getSuffixedName(getProperty("provider.name.1"));
+        pn2 = SorcerEnv.getSuffixedName(getProperty("provider.name.2"));
+        pn3 = SorcerEnv.getSuffixedName(getProperty("provider.name.3"));
 
         try {
             Context context1 = new ServiceContext("work1");

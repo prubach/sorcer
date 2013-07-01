@@ -318,17 +318,17 @@ public class ProviderDelegate {
 		String str;
 		// set provider's ID persistance flag if defined in provider's
 		// properties
-		idPersistent = Sorcer.getProperty(P_SERVICE_ID_PERSISTENT, "false")
+		idPersistent = SorcerEnv.getProperty(P_SERVICE_ID_PERSISTENT, "false")
 				.equals("true");
 		// set provider join groups if defined in provider's properties
-		groupsToDiscover = Sorcer.getLookupGroups();
+		groupsToDiscover = SorcerEnv.getLookupGroups();
 		logger.info("ServiceProvider:groups to discover="
                 + StringUtils.arrayToString(groupsToDiscover));
 		// set provider space group if defined in provider's properties
-		spaceGroup = config.getProperty(J_SPACE_GROUP, Sorcer.getSpaceGroup());
+		spaceGroup = config.getProperty(J_SPACE_GROUP, SorcerEnv.getSpaceGroup());
 		// set provider space name if defined in provider's properties
 		spaceName = config.getProperty(J_SPACE_NAME,
-				Sorcer.getActualSpaceName());
+                SorcerEnv.getActualSpaceName());
 
 		Class[] serviceTypes = new Class[0];
 		try {
@@ -1289,11 +1289,11 @@ public class ProviderDelegate {
 	 * @return a scratch directory
 	 */
 	public File getScratchDir() {
-		return Sorcer.getNewScratchDir();
+		return SorcerEnv.getNewScratchDir();
 	}
 
 	public File getScratchDir(String scratchDirNamePrefix) {
-		return Sorcer.getNewScratchDir(scratchDirNamePrefix);
+		return SorcerEnv.getNewScratchDir(scratchDirNamePrefix);
 	}
 
 	// adds scratch dir to dataContext
@@ -1319,11 +1319,11 @@ public class ProviderDelegate {
 
 		Contexts.putOutValue(context, SCRATCH_DIR_KEY,
 				scratchDir.getAbsolutePath(),
-				Sorcer.getProperty("engineering.provider.scratchdir"));
+				SorcerEnv.getProperty("engineering.provider.scratchdir"));
 
 		Contexts.putOutValue(context, SCRATCH_URL_KEY,
 				getScratchURL(scratchDir),
-				Sorcer.getProperty("engineering.provider.scratchurl"));
+                SorcerEnv.getProperty("engineering.provider.scratchurl"));
 
 		return scratchDir;
 	}
@@ -1337,7 +1337,7 @@ public class ProviderDelegate {
 	 * @throws java.net.MalformedURLException
 	 */
 	public URL getScratchURL(File scratchFile) throws MalformedURLException {
-		return Sorcer.getScratchURL(scratchFile);
+		return SorcerEnv.getScratchURL(scratchFile);
 	}
 
 	/**
@@ -1372,7 +1372,7 @@ public class ProviderDelegate {
 		for (Entry entry : attributes)
 			allAttributes.add(entry);
 		allAttributes.add(config.getProviderProperties());
-		allAttributes.add(Sorcer.getProperties());
+		allAttributes.add(SorcerEnv.getProperties());
 		return allAttributes;
 	}
 
@@ -1526,9 +1526,9 @@ public class ProviderDelegate {
 		if (idPersistent) {
 			try {
 				// ObjectLogger.setResourceClass(this.getClass());
-				this.setServerUuid((ServiceID) ObjectLogger.restore(Sorcer
+				this.setServerUuid((ServiceID) ObjectLogger.restore(SorcerEnv
 						.getProperty(S_SERVICE_ID_FILENAME,
-								Sorcer.getServiceIdFilename())));
+                                SorcerEnv.getServiceIdFilename())));
 			} catch (Exception e) { // first time if exception caught
 				e.printStackTrace();
             }
@@ -1823,7 +1823,7 @@ public class ProviderDelegate {
 	 * the configuration settings for all SORCER service providers. It uses the
 	 * provider properties file and/or Jini configuration file. The global
 	 * environment properties are copied from this configuration to the
-	 * {@link sorcer.util.Sorcer} properties.
+	 * {@link sorcer.core.SorcerEnv} properties.
 	 */
 	public class DeploymentConfiguration {
 
@@ -1906,8 +1906,8 @@ public class ProviderDelegate {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String rootDir = Sorcer.getProperty(DOC_ROOT_DIR);
-			String appDir = Sorcer.getProperty(P_DATA_DIR);
+			String rootDir = SorcerEnv.getProperty(DOC_ROOT_DIR);
+			String appDir = SorcerEnv.getProperty(P_DATA_DIR);
 
 			if (rootDir == null || appDir == null)
 				return;
@@ -2018,11 +2018,11 @@ public class ProviderDelegate {
 					is = new FileInputStream(new File(filename));
 				}
 
-                props = Sorcer.loadProperties(is);
+                props = SorcerEnv.loadProperties(is);
 
                 // copy loaded provider's properties to global Env
                 // properties
-                Sorcer.updateFromProperties(props);
+                SorcerEnv.updateFromProperties(props);
             } catch (Exception ex) {
 				logger.warning("Not able to load provider's file properties"
 						+ filename);
@@ -2048,7 +2048,7 @@ public class ProviderDelegate {
 			if (val != null)
 				return val;
 			else
-				return Sorcer.getProperty(key);
+				return SorcerEnv.getProperty(key);
 		}
 
 		public String getProperty(String property, String defaultValue) {
@@ -2078,7 +2078,7 @@ public class ProviderDelegate {
 				setProviderName(val);
 
 			String nameSuffixed;
-			boolean globalNameSuffixed = Sorcer.nameSuffixed();
+			boolean globalNameSuffixed = SorcerEnv.nameSuffixed();
 			try {
 				nameSuffixed = (String) config.getEntry(
 						ServiceProvider.PROVIDER, "nameSuffixed", String.class,
@@ -2087,12 +2087,12 @@ public class ProviderDelegate {
 				nameSuffixed = "";
 			}
 			// check for the specified suffix by the user
-			String suffix = Sorcer.getNameSuffix();
+			String suffix = SorcerEnv.getNameSuffix();
 
 			String suffixedName = null;
 			if (nameSuffixed.length() == 0) {
 				if (suffix == null)
-					suffixedName = Sorcer.getSuffixedName(val);
+					suffixedName = SorcerEnv.getSuffixedName(val);
 				else
 					suffixedName = val + "-" + suffix;
 			} else if (!nameSuffixed.equals("true")
@@ -2231,7 +2231,7 @@ public class ProviderDelegate {
 
 			// if not defined in provider deployment file use from sorcer.env
 			if ((val == null) || (val.length() == 0))
-				val = Sorcer.getProperty(P_LOCATORS);
+				val = SorcerEnv.getProperty(P_LOCATORS);
 
 			if ((val != null) && (val.length() > 0))
 				props.put(P_LOCATORS, val);
@@ -2246,9 +2246,9 @@ public class ProviderDelegate {
 				props.put(P_ICON_NAME, val);
 
 			// update and log Sorcer properties
-			Sorcer.updateFromProperties(props);
-			Sorcer.updateFromProperties(System.getProperties());
-			Properties envProps = Sorcer.getEnvProperties();
+            SorcerEnv.updateFromProperties(props);
+            SorcerEnv.updateFromProperties(System.getProperties());
+			Properties envProps = SorcerEnv.getEnvProperties();
 			logger.finer("All SORCER updated properties: " + envProps);
 		}
 	}
@@ -2391,18 +2391,18 @@ public class ProviderDelegate {
 	 */
 	private void getExporters(Configuration config) {
 		try {
-			String exporterInterface = Sorcer.getProperty(P_EXPORTER_INTERFACE);
+			String exporterInterface = SorcerEnv.getProperty(P_EXPORTER_INTERFACE);
 			try {
 				exporterInterface = (String) config.getEntry(
 						ServiceProvider.COMPONENT, EXPORTER_INTERFACE,
-						String.class, Sorcer.getHostAddress());
+						String.class, SorcerEnv.getHostAddress());
 			} catch (Exception e) {
 				// do nothng
 			}
 			logger.info(">>>>> exporterInterface: " + exporterInterface);
 
 			int exporterPort = 0;
-			String port = Sorcer.getProperty(P_EXPORTER_PORT);
+			String port = SorcerEnv.getProperty(P_EXPORTER_PORT);
 			if (port != null)
 				exporterPort = Integer.parseInt(port);
 			try {
@@ -2630,7 +2630,7 @@ public class ProviderDelegate {
             if (partnerExporter == null)
                 try {
                     partnerExporter = new BasicJeriExporter(
-                            TcpServerEndpoint.getInstance(Sorcer.getHostAddress(), 0),
+                            TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
                             new BasicILFactory());
                 } catch (UnknownHostException e) {
                     throw new ExportException("Could not obtain local address", e);

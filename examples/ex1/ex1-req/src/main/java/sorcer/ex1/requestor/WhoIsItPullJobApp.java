@@ -34,7 +34,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItPullJobApp {
 
@@ -44,12 +44,12 @@ public class WhoIsItPullJobApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		SorcerEnv.debug = true;
 		// get the queried provider name
-		String providerName1 = Sorcer.getSuffixedName(args[0]);
-		String providerName2 = Sorcer.getSuffixedName(args[1]);
-		String spacerName = Sorcer.getSuffixedName(args[2]);
+		String providerName1 = SorcerEnv.getSuffixedName(args[0]);
+		String providerName2 = SorcerEnv.getSuffixedName(args[1]);
+		String spacerName = SorcerEnv.getSuffixedName(args[2]);
 		
 		logger.info("Who is \"" + providerName1 + "\"?");
 		logger.info("Who is \"" + providerName2 + "\"?");

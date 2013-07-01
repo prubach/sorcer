@@ -30,6 +30,7 @@ import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 //import sorcer.core.dispatch.ProvisionManager;
 import sorcer.core.exertion.NetJob;
@@ -195,7 +196,7 @@ public class ExertProcessor implements Exerter, Callable {
 			// handle signatures for PULL tasks
 			if (!exertion.isJob()
 					&& exertion.getControlContext().getAccessType() == Access.PULL) {
-				signature = new NetSignature("service", Spacer.class, Sorcer.getActualSpacerName());
+				signature = new NetSignature("service", Spacer.class, SorcerEnv.getActualSpacerName());
 			}
 			try {
 				provider = Accessor.getServicer(signature);

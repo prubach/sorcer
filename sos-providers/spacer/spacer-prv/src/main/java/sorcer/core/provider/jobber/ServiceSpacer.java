@@ -57,7 +57,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.service.Spacer;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import com.sun.jini.start.LifeCycle;
@@ -304,7 +304,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor {
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);
 		}
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
+		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
 		if (recipents == null) {
 			if (admin != null) {
 				recipents = new Vector();

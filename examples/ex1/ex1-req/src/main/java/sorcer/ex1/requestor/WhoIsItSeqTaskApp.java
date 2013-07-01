@@ -31,7 +31,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItSeqTaskApp {
 
@@ -41,7 +41,7 @@ public class WhoIsItSeqTaskApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		
 		int tally = 3;
 		if (args.length == 2)

@@ -26,6 +26,7 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
+import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
 
 public class ProviderLocator implements DynamicAccessor {
 
-	static final long WAIT_FOR = Sorcer.getLookupWaitTime();
+	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
 	static final int MAX_TRIES = 5;
 
@@ -227,7 +228,7 @@ public class ProviderLocator implements DynamicAccessor {
 	 * @see Sorcer
 	 */
 	protected static String[] getGroups() {
-		return Sorcer.getLookupGroups();
+		return SorcerEnv.getLookupGroups();
 	}
 
 	/*
@@ -256,7 +257,7 @@ public class ProviderLocator implements DynamicAccessor {
 		Object proxy = null;
 		try {
 			if (((NetSignature)signature).isUnicast()) {
-				String[] locators = Sorcer.getLookupLocators();
+				String[] locators = SorcerEnv.getLookupLocators();
 				for (String locator : locators) {
 					proxy = (Service) ProviderLocator.getService(locator,
 							signature.getServiceType(), signature

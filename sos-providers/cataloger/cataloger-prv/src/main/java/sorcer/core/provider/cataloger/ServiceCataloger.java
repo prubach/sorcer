@@ -47,7 +47,7 @@ import sorcer.service.Service;
 import sorcer.service.Task;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import java.io.IOException;
@@ -152,13 +152,13 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 	public String[] getGroups() throws RemoteException {
 		String gs = getProperty(P_GROUPS);
-		String[] groups = (gs == null) ? Sorcer.getLookupGroups() : StringUtils
+		String[] groups = (gs == null) ? SorcerEnv.getLookupGroups() : StringUtils
 				.tokenize(gs, ",");
 		return groups;
 	}
 
 	public ServiceTemplate getTemplate() throws RemoteException {
-		String templateMatch = Sorcer.getProperty(P_TEMPLATE_MATCH,
+		String templateMatch = SorcerEnv.getProperty(P_TEMPLATE_MATCH,
 				"" + Service.class);
 		logger.info(P_TEMPLATE_MATCH + ": " + templateMatch);
 		ServiceTemplate template;
@@ -198,12 +198,12 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			}
 
 			String gs = getProperty(P_GROUPS);
-			String[] groups = (gs == null) ? Sorcer.getLookupGroups() : StringUtils
+			String[] groups = (gs == null) ? SorcerEnv.getLookupGroups() : StringUtils
 					.tokenize(gs, ",");			
 			lookupMgr = new ServiceDiscoveryManager(new LookupDiscoveryManager(
 					groups, specificLocators, null), null);
 
-			String templateMatch = Sorcer.getProperty(P_TEMPLATE_MATCH,
+			String templateMatch = SorcerEnv.getProperty(P_TEMPLATE_MATCH,
 					Service.class.getName());
 			ServiceTemplate template = new ServiceTemplate(null,
 					new Class[] { Class.forName(templateMatch) }, null);
@@ -432,8 +432,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:sos-exertlet-sui"));
-			URL helpUrl = new URL(Sorcer.getWebsterUrl()
+			URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:sos-exertlet-sui"));
+			URL helpUrl = new URL(SorcerEnv.getWebsterUrl()
 					+ "/deploy/cataloger.html");
 
 			// URL exportUrl, String className, String name, String helpFilename

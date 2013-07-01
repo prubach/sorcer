@@ -27,7 +27,7 @@ import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 import java.net.InetAddress;
 import java.util.logging.Logger;
@@ -39,9 +39,9 @@ public class WhoIsItPullJobReq extends ServiceRequestor {
 	public Exertion getExertion(String... args) throws ExertionException {
 		// get the queried provider names and the requested jobber name
 		// arg[0] is the class name of this requestor
-		String providerName1 = Sorcer.getSuffixedName(args[1]);
-		String providerName2 = Sorcer.getSuffixedName(args[2]);
-		jobberName = Sorcer.getSuffixedName(args[3]);
+		String providerName1 = SorcerEnv.getSuffixedName(args[1]);
+		String providerName2 = SorcerEnv.getSuffixedName(args[2]);
+		jobberName = SorcerEnv.getSuffixedName(args[3]);
 		String hostname = null;
 		String ipAddress = null;
 		InetAddress inetAddress = null;

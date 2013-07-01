@@ -23,6 +23,7 @@ import sorcer.co.tuple.Tuple2;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
@@ -39,7 +40,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 import sorcer.util.dbac.ProxyProtocol;
 import sorcer.util.dbac.ServletProtocol;
@@ -385,7 +386,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 				recipients.addElement(list[i]);
 		}
 
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
+		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
 		if (recipients == null) {
 			if (admin != null) {
 				recipients = new Vector();

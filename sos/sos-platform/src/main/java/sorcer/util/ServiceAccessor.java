@@ -32,6 +32,7 @@ import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.service.SignatureException;
 
@@ -71,9 +72,9 @@ public class ServiceAccessor {
 
 	static Logger logger = Log.getProviderLog();
 
-	static private boolean cacheEnabled = Sorcer.isLookupCacheEnabled();
+	static private boolean cacheEnabled = SorcerEnv.isLookupCacheEnabled();
 
-	static long WAIT_FOR = Sorcer.getLookupWaitTime();
+	static long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
 	final static int LUS_REAPEAT = 3;
 
@@ -83,11 +84,11 @@ public class ServiceAccessor {
 
 	private static LookupCache lookupCache = null;
 
-	protected static String[] lookupGroups = Sorcer.getLookupGroups();
+	protected static String[] lookupGroups = SorcerEnv.getLookupGroups();
 	
-	private static int MIN_MATCHES = Sorcer.getLookupMinMatches();
+	private static int MIN_MATCHES = SorcerEnv.getLookupMinMatches();
 
-	private static int MAX_MATCHES = Sorcer.getLookupMaxMatches();
+	private static int MAX_MATCHES = SorcerEnv.getLookupMaxMatches();
 
     protected Map<String, Object> cache = new HashMap<String, Object>();
 
@@ -405,7 +406,7 @@ public class ServiceAccessor {
 
 		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { serviceType }, atributes);
 
-		ServiceItem si = getServiceItem(tmpl, filter, Sorcer.getLookupGroups());
+		ServiceItem si = getServiceItem(tmpl, filter, SorcerEnv.getLookupGroups());
 		if (si != null)
 			return (T)si.service;
 		else
@@ -490,7 +491,7 @@ public class ServiceAccessor {
 	 */
 	private static LookupLocator[] getLookupLocators() {
 		List<LookupLocator> locators = new Vector<LookupLocator>();
-		String[] locURLs = Sorcer.getLookupLocators();
+		String[] locURLs = SorcerEnv.getLookupLocators();
 		logger.finer("ProviderAccessor Locators: " + Arrays.toString(locURLs));
 
 		if (locURLs != null && locURLs.length > 0) {
@@ -517,7 +518,7 @@ public class ServiceAccessor {
 	 */
 	public  static String[] getGroups() {
 		if (lookupGroups == null)
-			return Sorcer.getLookupGroups();
+			return SorcerEnv.getLookupGroups();
 		else
 			return lookupGroups;
 	}

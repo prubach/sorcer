@@ -3,7 +3,7 @@ package sorcer.tools.shell;
 import sorcer.resolver.*;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import java.io.File;

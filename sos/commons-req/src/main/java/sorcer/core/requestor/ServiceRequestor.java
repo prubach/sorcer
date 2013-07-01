@@ -28,7 +28,7 @@ import sorcer.service.*;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.util.Artifact;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.Sorcer;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,7 +86,7 @@ abstract public class ServiceRequestor implements Requestor {
 		System.setSecurityManager(new RMISecurityManager());
 
 		// Initialize system properties: configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		String runnerType = null;
 		if (args.length == 0) {
             logger.severe("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
@@ -251,7 +251,7 @@ abstract public class ServiceRequestor implements Requestor {
 
     public static void prepareCodebase() {
         // Initialize system properties: configs/sorcer.env
-        Sorcer.getEnvProperties();
+        SorcerEnv.getEnvProperties();
         String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
         if (val != null && val.length() != 0) {
             isWebsterInt = val.equals("true");
@@ -294,6 +294,6 @@ abstract public class ServiceRequestor implements Requestor {
     private static String resolve(ArtifactCoordinates coords) {
         return isWebsterInt
                 ? Resolver.resolveRelative(coords)
-                : Resolver.resolveAbsolute(Sorcer.getWebsterUrlURL(), coords);
+                : Resolver.resolveAbsolute(SorcerEnv.getWebsterUrlURL(), coords);
     }
 }

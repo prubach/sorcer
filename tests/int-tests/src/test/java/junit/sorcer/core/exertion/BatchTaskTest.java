@@ -36,10 +36,11 @@ import junit.sorcer.core.provider.SubtractorImpl;
 
 import org.junit.Test;
 
+import sorcer.core.SorcerEnv;
 import sorcer.service.Signature;
 import sorcer.service.Direction;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 /**
  * @author Mike Sobolewski
@@ -51,9 +52,9 @@ public class BatchTaskTest {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] { 
-				"org.sorcersoft.sorcer:ju-arithmetic-api", 
-				"org.sorcersoft.sorcer:sos-platform" });
+		SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:ju-arithmetic-api",
+                "org.sorcersoft.sorcer:sos-platform"});
 	}
 
 	@Test

@@ -24,6 +24,7 @@ import net.jini.id.Uuid;
 import sorcer.co.tuple.*;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.StorageManagement;
 import sorcer.core.context.*;
 import sorcer.core.context.ControlContext.ThrowableTrace;
@@ -38,7 +39,7 @@ import sorcer.service.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.*;
 import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
+
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.SdbUtil;
@@ -800,7 +801,7 @@ public class operator {
 
     public static URL deleteObject(Object object) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = Sorcer.getActualName(Sorcer
+        String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
         Task objectStoreTask = task(
                 "delete",
@@ -816,7 +817,7 @@ public class operator {
         Store type = storeType;
         String providerName = SdbUtil.getProviderName(url);
         if (providerName == null)
-            providerName = Sorcer.getActualDatabaseStorerName();
+            providerName = SorcerEnv.getActualDatabaseStorerName();
 
         if (type == null) {
             type = SdbUtil.getStoreType(url);
@@ -872,7 +873,11 @@ public class operator {
 	}
 
 	public static URL dbURL() throws MalformedURLException {
-		return new URL(Sorcer.getDatabaseStorerUrl());
+		return new URL(SorcerEnv.getDatabaseStorerUrl());
+	}
+
+	public static URL dsURL() throws MalformedURLException {
+		return new URL(SorcerEnv.getDataspaceStorerUrl());
 	}
 
 	public static URL dbURL(Object object) throws ExertionException,
@@ -887,7 +892,7 @@ public class operator {
 
 	public static URL store(Object object) throws ExertionException,
 			SignatureException, ContextException {
-        String storageName = Sorcer.getActualName(Sorcer
+        String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
         Task objectStoreTask = task(
                 "store",
@@ -916,7 +921,7 @@ public class operator {
         Task objectUpdateTask = task(
                 "update",
                 sig("contextUpdate", DatabaseStorer.class,
-                        Sorcer.getActualDatabaseStorerName()),
+                        SorcerEnv.getActualDatabaseStorerName()),
                 SdbUtil.getUpdateContext(value, storeUuid));
 
         objectUpdateTask = exert(objectUpdateTask);
@@ -933,7 +938,7 @@ public class operator {
     @SuppressWarnings("unchecked")
     static public List<String> list(Store storeType) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = Sorcer.getActualName(Sorcer
+        String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
 
         Task listTask = task("contextList",
@@ -954,7 +959,7 @@ public class operator {
 
 	public static int clear(Store type) throws ExertionException,
 			SignatureException, ContextException {
-        String storageName = Sorcer.getActualName(Sorcer
+        String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
         Task objectStoreTask = task(
                 "clear",
@@ -966,7 +971,7 @@ public class operator {
 
 	public static int size(Store type) throws ExertionException,
 			SignatureException, ContextException {
-        String storageName = Sorcer.getActualName(Sorcer
+        String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
         Task objectStoreTask = task(
                 "size",
@@ -1013,7 +1018,7 @@ public class operator {
 		ServiceTemplate st = new ServiceTemplate(null,
 				new Class[] { signature.getServiceType() }, null);
 		ServiceItem[] sis = ServiceAccessor.getServiceItems(st, null,
-				Sorcer.getLookupGroups());
+				SorcerEnv.getLookupGroups());
 		if (sis == null)
 			throw new SignatureException("No available providers of type: "
 					+ signature.getServiceType().getName());

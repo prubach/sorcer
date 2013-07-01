@@ -17,6 +17,8 @@
  */
 package junit.sorcer.core.provider;
 
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -27,7 +29,7 @@ import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.ProviderAccessor;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -63,13 +65,13 @@ public class ArithmeticNetTest {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
 		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
-			Sorcer.setCodeBaseByArtifacts(new String[]{
-					"org.sorcersoft.sorcer:sos-platform",
-					"org.sorcersoft.sorcer:ju-arithmetic-api"});
+			SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                    "org.sorcersoft.sorcer:sos-platform",
+                    "org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
 
         System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
-		System.out.println("Webster:" + Sorcer.getWebsterUrl());
+		System.out.println("Webster:" + SorcerEnv.getWebsterUrl());
 		System.out.println("Codebase:" + System.getProperty(RMI_SERVER_CODEBASE));
 		System.setSecurityManager(new RMISecurityManager());
 	}

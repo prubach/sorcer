@@ -413,8 +413,8 @@ public class NetworkShell implements DiscoveryListener {
 			disco.addDiscoveryListener(instance);
 			if (ingroups == null || ingroups.length == 0) {
 				// System.out.println("SORCER groups: " +
-				// Arrays.toString(Sorcer.getGroups()));
-				// disco.setGroups(Sorcer.getGroups());
+				// Arrays.toString(SorcerEnv.getGroups()));
+				// disco.setGroups(SorcerEnv.getGroups());
 				// disco.setGroups(LookupDiscovery.ALL_GROUPS);
 				disco.setGroups(LookupDiscovery.ALL_GROUPS);
 			} else {

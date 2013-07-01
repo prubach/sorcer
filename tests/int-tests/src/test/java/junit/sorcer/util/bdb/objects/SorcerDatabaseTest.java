@@ -35,12 +35,17 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sorcer.core.SorcerConstants;
+//import sorcer.core.dataContext.model.VarModel;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.IOUtils;
-import sorcer.util.Sorcer;
+
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
+//import sorcer.vfe.Var;
+//import sorcer.vfe.util.Table;
 
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.je.DatabaseException;
@@ -58,7 +63,7 @@ public class SorcerDatabaseTest {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] {
+		SorcerEnv.setCodeBaseByArtifacts(new String[] {
 				"org.sorcersoft.sorcer:sos-platform",
 				"org.sorcersoft.sorcer:ju-arithmetic-api" });
 	}

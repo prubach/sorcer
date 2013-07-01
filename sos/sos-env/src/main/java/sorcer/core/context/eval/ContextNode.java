@@ -22,7 +22,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.util.GenericUtil;
-import sorcer.util.Sorcer;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -1220,6 +1219,7 @@ public class ContextNode implements Serializable {
 		StringBuffer sb;
 		String msg = "(Ensure node has proper read/write permissions and that path is correct...\nURL must point into "
 				+ SorcerEnv.getProperties().getProperty(SorcerConstants.DOC_ROOT_DIR)
+				+ SorcerEnv.getProperty(SorcerConstants.DOC_ROOT_DIR)
 				+ "): \nFile: "
 				+ dataFile.getAbsolutePath();
 
@@ -1321,7 +1321,7 @@ public class ContextNode implements Serializable {
 				File localFile = new File(dir, fileName);
 				download(localFile);
 				// download(new File(dir, fileName));
-				setData(Sorcer.getScratchURL(new File(dir, fileName)));
+				setData(SorcerEnv.getScratchURL(new File(dir, fileName)));
 				logger.info("set dataContext node URL to: " + getData());
 				StringBuffer cmd = new StringBuffer("chmod +777 ")
 						.append(localFile);
@@ -1337,7 +1337,7 @@ public class ContextNode implements Serializable {
 	}
 
 	public void getLocalFileCopy() {
-		getLocalFileCopyIn(""+Sorcer.getDataDir());
+		getLocalFileCopyIn(""+SorcerEnv.getDataDir());
 	}
 
 	public Object getValue() {

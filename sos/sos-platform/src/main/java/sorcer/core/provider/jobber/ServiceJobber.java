@@ -27,7 +27,7 @@ import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
@@ -274,7 +274,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 			recipents = new ArrayList<String>(list.length);
 			Collections.addAll(recipents, list);
 		}
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
+		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
 		if (recipents == null) {
 			if (admin != null) {
 				recipents = new ArrayList<String>();

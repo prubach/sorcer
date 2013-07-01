@@ -21,6 +21,7 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.arithmetic.provider.ui.CalculatorUI;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.dbp.DatabaseProvider;
 import sorcer.service.Context;
@@ -30,7 +31,7 @@ import sorcer.service.MonitorException;
 import sorcer.service.ServiceExertion;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.util.Sorcer;
+
 
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -67,7 +68,7 @@ public class AdderProvider extends DatabaseProvider implements RemoteAdder {
 		UIDescriptor uiDesc = null;
 		try {
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(Sorcer
+					new UIComponentFactory(new URL[] { new URL(SorcerEnv
 							.getWebsterUrl()
 							+ "/calculator-ui.jar") }, CalculatorUI.class
 							.getName()));

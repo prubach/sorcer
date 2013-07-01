@@ -22,6 +22,7 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
@@ -30,7 +31,7 @@ import sorcer.falcon.base.Conditional;
 import sorcer.service.*;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RemoteException;
 import java.util.Set;
@@ -282,7 +283,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			ServiceTemplate st = ProviderAccessor.getServiceTemplate(null,
 					null, new Class[] { Jobber.class }, null);
 			ServiceItem[] jobbers = ServiceAccessor.getServiceItems(st, null,
-					Sorcer.getLookupGroups());
+					SorcerEnv.getLookupGroups());
 
 			/*
 			 * check if there is any available jobber in the network and

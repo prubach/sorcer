@@ -28,6 +28,8 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.Monitorable;
 import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
@@ -37,14 +39,14 @@ import sorcer.core.provider.exertmonitor.MonitoringManagement;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 import sorcer.util.ProviderAccessor;
-import sorcer.util.Sorcer;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Set;
 import java.util.logging.Level;
 
-public abstract class MonitoredExertDispatcher extends ExertDispatcher {
+public abstract class MonitoredExertDispatcher extends ExertDispatcher
+		implements SorcerConstants {
 
 	public static MonitorSessionManagement sessionMonitor;
 
@@ -63,7 +65,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher {
 				
 		if (sessionMonitor == null)
 			sessionMonitor = (MonitoringManagement) ProviderAccessor
-					.getProvider(Sorcer.getActualName(Sorcer.getExertMonitorName()), 
+					.getProvider(SorcerEnv.getActualName(SorcerEnv.getExertMonitorName()),
 							MonitoringManagement.class);
 		if (lrm == null)
 			lrm = new LeaseRenewalManager();

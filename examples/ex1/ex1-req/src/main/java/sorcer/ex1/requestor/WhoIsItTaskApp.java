@@ -31,7 +31,7 @@ import sorcer.service.Exertion;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItTaskApp {
 
@@ -41,7 +41,7 @@ public class WhoIsItTaskApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		Access providerAccess = Access.PUSH;
 		if (args.length == 1) {
 			if (!args[0].equals(Access.PUSH))

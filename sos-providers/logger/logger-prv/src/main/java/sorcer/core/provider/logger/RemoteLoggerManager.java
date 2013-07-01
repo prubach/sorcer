@@ -52,7 +52,7 @@ import sorcer.core.provider.ServiceProvider;
 import sorcer.core.provider.logger.ui.LoggerFrameUI;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.Sorcer;
+
 
 import com.sun.jini.start.LifeCycle;
 
@@ -268,8 +268,8 @@ public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger
 	public UIDescriptor getMainUIDescriptor() {
 		UIDescriptor uiDesc = null;
 		try {
-			URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/logger-sui.jar");
-			URL helpUrl = new URL(Sorcer.getWebsterUrl() + "/logger.html");
+			URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/logger-sui.jar");
+			URL helpUrl = new URL(SorcerEnv.getWebsterUrl() + "/logger.html");
 		
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
 					new UIFrameFactory(new URL[] { uiUrl },

@@ -19,6 +19,7 @@ package sorcer.util;
 
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 
 /**
  * @author Rafał Krupiński
@@ -33,7 +34,7 @@ public class SorcerProviderNameUtil extends ProviderNameUtil {
     }
 
     protected void overrideFromProps(String type, String key) {
-        String override = Sorcer.getProperty(key);
+        String override = SorcerEnv.getProperty(key);
         if (override == null) return;
         names.put(type, override);
     }
@@ -41,8 +42,8 @@ public class SorcerProviderNameUtil extends ProviderNameUtil {
     @Override
     public String getName(Class<?> providerType) {
         String name = super.getName(providerType);
-        if (Sorcer.nameSuffixed()) {
-            name = Sorcer.getSuffixedName(name);
+        if (SorcerEnv.nameSuffixed()) {
+            name = SorcerEnv.getSuffixedName(name);
         }
         return name;
     }

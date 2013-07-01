@@ -25,12 +25,13 @@ import net.jini.space.JavaSpace05;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import sorcer.core.SorcerEnv;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
+
 
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class UtilTest {
 			SignatureException {
 		try {
 			assertNotNull(System.getenv("SORCER_HOME"));
-			logger.info("SORCER_HOME: " + Sorcer.getHomeDir());
+			logger.info("SORCER_HOME: " + SorcerEnv.getHomeDir());
 		} catch (AssertionError ae) {
 			logger.severe("SORCER_HOME must be set and point to the Sorcer root directory!!!");
 		}		
@@ -61,19 +62,19 @@ public class UtilTest {
 	public void spaceSuffixTest() throws ExertionException, ContextException,
 			SignatureException {
 
-		/*logger.info("space name: " + Sorcer.getSpaceName());
-		logger.info("group space name: " + Sorcer.getSpaceGroup());
+		/*logger.info("space name: " + SorcerEnv.getSpaceName());
+		logger.info("group space name: " + SorcerEnv.getSpaceGroup());
 		
 		logger.info("suffixed space name: "
-				+ Sorcer.getSuffixedName(Sorcer.getSpaceName()));
+				+ SorcerEnv.getSuffixedName(SorcerEnv.getSpaceName()));
 		logger.info("actual space name: " +
-				Sorcer.getActualSpaceName());*/
+				SorcerEnv.getActualSpaceName());*/
 		
 		
-		assertEquals(Sorcer.getSuffixedName(Sorcer.getSpaceName()),
-				Sorcer.getSpaceName() + "-" + Sorcer.getNameSuffix());
+		assertEquals(SorcerEnv.getSuffixedName(SorcerEnv.getSpaceName()),
+				SorcerEnv.getSpaceName() + "-" + SorcerEnv.getNameSuffix());
 
-		assertEquals(Sorcer.getSuffixedName(Sorcer.getSpaceName()), Sorcer.getActualSpaceName());
+		assertEquals(SorcerEnv.getSuffixedName(SorcerEnv.getSpaceName()), SorcerEnv.getActualSpaceName());
 	}
 
 	@Ignore
@@ -82,10 +83,10 @@ public class UtilTest {
 			SignatureException {
 		logger.info("exert space:\n" + SpaceAccessor.getSpace());
 		
-		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { JavaSpace05.class }, new Entry[] { new Name(Sorcer.getActualSpaceName())});
-		ServiceItem si = ServiceAccessor.getServiceItem(tmpl, null, new String[] { Sorcer.getSpaceGroup() });
+		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { JavaSpace05.class }, new Entry[] { new Name(SorcerEnv.getActualSpaceName())});
+		ServiceItem si = ServiceAccessor.getServiceItem(tmpl, null, new String[] { SorcerEnv.getSpaceGroup() });
 		logger.info("got service: serviceID=" + si.serviceID + " template="
-				+ tmpl + " groups=" + Sorcer.getSpaceGroup());
+				+ tmpl + " groups=" + SorcerEnv.getSpaceGroup());
 	}
 		
 }

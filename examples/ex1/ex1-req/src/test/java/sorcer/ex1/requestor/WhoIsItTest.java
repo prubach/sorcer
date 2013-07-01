@@ -30,7 +30,7 @@ import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.util.Sorcer;
+
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
@@ -51,7 +51,7 @@ public class WhoIsItTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        Sorcer.setCodeBaseByArtifacts(new String[]{
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex1-rdl",
                 "org.sorcersoft.sorcer:ex1-prv",
@@ -181,8 +181,8 @@ public class WhoIsItTest {
     @Ignore
     @Test
     public void exertJob() throws Exception {
-        String providerName1 = Sorcer.getSuffixedName("ABC");
-        String providerName2 = Sorcer.getSuffixedName("XYZ");
+        String providerName1 = SorcerEnv.getSuffixedName("ABC");
+        String providerName2 = SorcerEnv.getSuffixedName("XYZ");
 
         // define requestor data
         InetAddress inetAddress = InetAddress.getLocalHost();

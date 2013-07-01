@@ -24,9 +24,10 @@ import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
+
 
 /**
  * @author Rafał Krupiński
@@ -41,7 +42,7 @@ public class SpaceAccessor extends ServiceAccessor{
      * @return JavaSpace proxy
      */
     public static JavaSpace05 getSpace(String spaceName) {
-        return getSpace(spaceName, Sorcer.getSpaceGroup());
+        return getSpace(spaceName, SorcerEnv.getSpaceGroup());
     }
 
     /**
@@ -64,7 +65,7 @@ public class SpaceAccessor extends ServiceAccessor{
         }
         String sg = spaceGroup;
         if (spaceGroup == null) {
-            sg = Sorcer.getSpaceGroup();
+            sg = SorcerEnv.getSpaceGroup();
         }
         try {
             if (javaSpace == null) {

@@ -12,7 +12,7 @@
     <name>SORCER OS :: sos-util</name>
     <packaging>bundle</packaging>
     <description>This module contain util that don't depend on any other modules (classes may depend only on JDK classes
-        or other classes in this module) and are potentially usable outside core Sorcer.
+        or other classes in this module) and are potentially usable outside core SorcerEnv.
     </description>
 
     <dependencies>

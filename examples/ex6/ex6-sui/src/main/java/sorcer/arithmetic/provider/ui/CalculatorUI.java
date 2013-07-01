@@ -33,11 +33,12 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.util.Sorcer;
+
 
 public class CalculatorUI extends JPanel implements ActionListener {
 
@@ -672,7 +673,7 @@ public class CalculatorUI extends JPanel implements ActionListener {
 		UIDescriptor uiDesc = null;
 		try {
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(Sorcer
+					new UIComponentFactory(new URL[] { new URL(SorcerEnv
 							.getWebsterUrl()
 							+ "/calculator-ui.jar") }, CalculatorUI.class
 							.getName()));

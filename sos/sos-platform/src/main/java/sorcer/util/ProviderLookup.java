@@ -25,6 +25,8 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.entry.Name;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.service.*;
 
 import java.io.IOException;
@@ -45,7 +47,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	private Object proxy;
 
-	static final long WAIT_FOR = Sorcer.getLookupWaitTime();
+	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
 	static final int MAX_TRIES = 5;
 
@@ -305,7 +307,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 * @see Sorcer
 	 */
 	protected static String[] getGroups() {
-		return Sorcer.getLookupGroups();
+		return SorcerEnv.getLookupGroups();
 	}
 
 	/**

@@ -30,7 +30,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class WorkParJobApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system properties
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 
 		Exertion result = new WorkParJobApp()
 			.getExertion().exert();
@@ -60,9 +60,9 @@ public class WorkParJobApp {
         logger.info("arg: " + Arrays.toString(args));
         String pn1 = null, pn2 = null, pn3 = null;
         if (args != null && args.length == 3)  {
-            pn1 = Sorcer.getSuffixedName(args[0]);
-            pn2 = Sorcer.getSuffixedName(args[1]);
-            pn3 = Sorcer.getSuffixedName(args[2]);
+            pn1 = SorcerEnv.getSuffixedName(args[0]);
+            pn2 = SorcerEnv.getSuffixedName(args[1]);
+            pn3 = SorcerEnv.getSuffixedName(args[2]);
         }
 
 		Context context1 = new ServiceContext("work1");
