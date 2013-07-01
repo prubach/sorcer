@@ -19,6 +19,7 @@ package sorcer.ex1.requestor;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;

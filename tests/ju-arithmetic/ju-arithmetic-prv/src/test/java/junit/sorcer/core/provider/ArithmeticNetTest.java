@@ -18,6 +18,7 @@
 package junit.sorcer.core.provider;
 
 import sorcer.core.SorcerEnv;
+import sorcer.service.Accessor;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -27,7 +28,6 @@ import sorcer.service.Task;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.ServiceAccessor;
 
 
 import java.rmi.RMISecurityManager;
@@ -78,7 +78,7 @@ public class ArithmeticNetTest {
 	public static void waitForServices() throws InterruptedException {
 		int tries = 0;
 		while (tries < 8) {
-			Object subtractor = ServiceAccessor.getService(null, Subtractor.class);
+			Object subtractor = Accessor.getProvider(null, Subtractor.class);
 			if (subtractor != null)
 				return;
 			Thread.sleep(1000);

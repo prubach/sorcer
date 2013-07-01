@@ -18,6 +18,7 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.exertion.ObjectTask;

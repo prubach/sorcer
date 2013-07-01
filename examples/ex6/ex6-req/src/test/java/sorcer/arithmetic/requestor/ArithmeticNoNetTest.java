@@ -5,6 +5,7 @@ import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
 import sorcer.arithmetic.provider.SubtractorImpl;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Signature;

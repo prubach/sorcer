@@ -18,6 +18,7 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -45,9 +46,9 @@ public class ArithmeticExerterTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[] {
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex5-api" });
+                "org.sorcersoft.sorcer:ex5-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
 	}
 	
