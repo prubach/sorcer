@@ -11,6 +11,7 @@
     <name>SORCER OS :: providers :: cataloger</name>
     <packaging>pom</packaging>
     <modules>
+        <module>cataloger-api</module>
         <module>cataloger-prv</module>
     </modules>
 
