@@ -93,39 +93,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <configuration>
-                    <includeProjectDependencies>true</includeProjectDependencies>
-                    <includePluginDependencies>false</includePluginDependencies>
-                    <executable>java</executable>
-                    <executableDependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>sos-boot</artifactId>
-                    </executableDependency>
-
-                    <arguments>
-<!--
-                        <argument>-Xdebug</argument>
-                        <argument>-Xrunjdwp:transport=dt_socket,server=y,address=8000</argument>
--->
-                        <argument>-Dsorcer.home=${env.SORCER_HOME}</argument>
-                        <argument>-Drio.home=${env.RIO_HOME}</argument>
-                        <argument>-Dsorcer.env.file=${env.SORCER_HOME}/configs/sorcer.env</argument>
-                        <argument>-Dwebster.tmp.dir=${env.SORCER_HOME}</argument>
-
-                        <argument>-Djava.util.logging.config.file=${env.SORCER_HOME}/configs/sorcer.logging</argument>
-                        <argument>-Djava.security.policy=configs/sorcer.policy</argument>
-						<argument>-classpath</argument>
-                        <classpath />
-                        <argument>sorcer.boot.ServiceStarter</argument>
-                        <argument>${config}</argument>
-                    </arguments>
-
-                    <workingDirectory>${project.root}</workingDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
