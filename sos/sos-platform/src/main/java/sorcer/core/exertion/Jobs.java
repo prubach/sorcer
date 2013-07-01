@@ -20,7 +20,7 @@ package sorcer.core.exertion;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.Contexts;
+import sorcer.core.context.ContextUtil;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.falcon.base.Conditional;
@@ -29,6 +29,9 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
 import java.util.*;
+
+import static sorcer.core.context.ControlContext.EXERTION_ACCESS;
+import static sorcer.core.context.ControlContext.EXERTION_FLOW;
 
 public class Jobs {
 
@@ -39,77 +42,77 @@ public class Jobs {
 	public static boolean isCatalogSingleton(Job job) {
 		ControlContext cc = job.getControlContext();
 		return job.size() == 1
-				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
+				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isQosCatalogSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.QOS_PUSH.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
+				&& Access.QOS_PUSH.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isQosCatalogParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.QOS_PUSH.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
+				&& Access.QOS_PUSH.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isCatalogParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
+				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isCatalogSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
+				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isSWIFSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.SWIF.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
+				&& Access.SWIF.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isSpaceSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
+				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isQosSpaceSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.QOS_PULL.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
+				&& Access.QOS_PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isSpaceParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
+				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isQosSpaceParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
-				&& Access.QOS_PULL.equals(cc.get(cc.EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
+				&& Access.QOS_PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 	
 	public static boolean isSpaceSingleton(Job job) {
 		ControlContext cc = job.getControlContext();
 		return job.size() == 1
-				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
+				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 
 	public static boolean isParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW));
+		return Flow.PAR.equals(cc.get(EXERTION_FLOW));
 	}
 
 	public static boolean isSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW));
+		return Flow.SEQ.equals(cc.get(EXERTION_FLOW));
 	}
 
 	public static boolean isMonitorable(Job job) {
@@ -212,7 +215,7 @@ public class Jobs {
 
 	public static void preserveNodeReferences(Context refContext,
 			Context resContext) throws ContextException {
-		Contexts.copyContextNodesFrom(resContext, refContext);
+		ContextUtil.copyContextNodesFrom(resContext, refContext);
 	}
 
 	public static void replaceNullIDs(Exertion ex) {
@@ -264,8 +267,8 @@ public class Jobs {
 		eenv.providerName = ex.getProcessSignature().getProviderName();
 		eenv.exertion = ex;
 		eenv.exertionID = ex.getId();
-		eenv.isJob = new Boolean(ex.isJob());
-		eenv.state = new Integer(ExecState.INITIAL);
+		eenv.isJob = ex.isJob();
+		eenv.state = ExecState.INITIAL;
 		return eenv;
 	}
 
