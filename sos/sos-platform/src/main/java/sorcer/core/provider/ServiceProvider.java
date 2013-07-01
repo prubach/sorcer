@@ -57,7 +57,6 @@ import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.tools.webster.Webster;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
@@ -1754,9 +1753,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
         if (tally == 0) {
             ProviderAccessor.terminateDiscovery();
-            if (Webster.getWebster() != null) {
-                Webster.getWebster().terminate();
-            }
             // option for service nodes size > 1
             // allows for discarding cpmplementarory, not SORCER services
             if (SorcerEnv.isBootable() && size > 1)
