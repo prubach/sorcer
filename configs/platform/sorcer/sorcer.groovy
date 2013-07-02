@@ -7,6 +7,7 @@ def getPlatformCapabilityConfig() {
     cap.version = SORCER_VERSION
     cap.manufacturer = "SorcerSoft.com"
     cap.setClasspath([
+            'org.sorcersoft.sorcer:sos-api',
             'org.sorcersoft.sorcer:sos-platform',
             'org.sorcersoft.sorcer:commons-prv'
     ])

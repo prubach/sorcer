@@ -379,7 +379,7 @@ startShell ( ) {
         LIB_DIR=$SORCER_HOME/lib
         SHELL_CLASSPATH="$LIB_DIR/sorcer/sos-shell.jar:\
 $LIB_DIR/sorcer/sos-env.jar:\
-$LIB_DIR/sorcer/sos-boot.jar:\
+#$LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-platform.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
@@ -395,7 +395,7 @@ $LIB_DIR/jini-lookup/serviceui.jar"
       	SHELL_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+#$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\

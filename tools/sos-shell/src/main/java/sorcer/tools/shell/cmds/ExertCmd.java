@@ -21,14 +21,9 @@ import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
-import sorcer.tools.shell.LoaderConfigurationHelper;
-import sorcer.tools.shell.NetworkShell;
-import sorcer.tools.shell.ShellCmd;
-import sorcer.util.JavaSystemProperties;
+import sorcer.tools.shell.*;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -41,7 +36,7 @@ public class ExertCmd extends ShellCmd {
 
 		COMMAND_USAGE = "exert [-cc] [[-s | --s | --m] <output filename>] <input filename>";
 
-		COMMAND_HELP = "Manage and execute the federation of services specified by the <input filename>;" 
+		COMMAND_HELP = "Manage and execute the federation of services specified by the <input filename>;"
 				+ "\n  -cc   print the executed exertion with control dataContext"
 				+ "\n  -s   save the command output in a file"
 				+ "\n  --s   serialize the command output in a file"
@@ -50,6 +45,8 @@ public class ExertCmd extends ShellCmd {
 
 	private final static Logger logger = Logger.getLogger(ExertCmd.class
 			.getName());
+
+    private ScriptExerter scriptExerter;
 
 	private String input;
 
@@ -61,19 +58,20 @@ public class ExertCmd extends ShellCmd {
 
 	private String script;
 
+    private Object result;
+
+    private Object target;
+
 	private static StringBuilder staticImports;
 
 	public ExertCmd() {
-		if (staticImports == null) {
-			staticImports = readTextFromJar("static-imports.txt");
-		}
+        out = NetworkShell.getShellOutputStream();
+        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader());
 	}
 
 	public void execute() throws Throwable {
 		NetworkShell shell = NetworkShell.getInstance();
-		BufferedReader br = NetworkShell.getShellInputStream();
-		out = NetworkShell.getShellOutputStream();
-		input = shell.getCmd();
+        input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");
 
@@ -98,7 +96,7 @@ public class ExertCmd extends ShellCmd {
 				// evaluate text
 				else if (nextToken.equals("-t")) {
 					if (script == null || script.length() == 0) {
-						throw new NullPointerException("Must have not empty sctipt");
+						throw new NullPointerException("Must have not empty script");
 					}
 				}
 				// evaluate file script
@@ -112,11 +110,8 @@ public class ExertCmd extends ShellCmd {
 			return;
 		}
 		StringBuilder sb = null;
-        List<String> loadLines = new ArrayList<String>();
-        List<String> codebaseLines = new ArrayList<String>();
         if (script != null) {
-			sb = new StringBuilder(staticImports.toString());
-			sb.append(script);
+            scriptExerter.readScriptWithHeaders(script);
 		} else if (scriptFilename != null) {
 			if ((new File(scriptFilename)).isAbsolute()) {
 				scriptFile = NetworkShell.huntForTheScriptFile(scriptFilename);
@@ -124,36 +119,18 @@ public class ExertCmd extends ShellCmd {
 				scriptFile = NetworkShell.huntForTheScriptFile("" + d
 						+ File.separator + scriptFilename);
 			}
-			sb = new StringBuilder(staticImports.toString());
 			try {
-                NetletFileParser readResult = readFile(scriptFile);
-                loadLines = readResult.loadLines;
-                codebaseLines = readResult.codebaseLines;
-				sb.append(readResult.result);
+                scriptExerter.readFile(scriptFile);
 			} catch (IOException e) {
-				e.printStackTrace();
+				out.append("File: " + scriptFile.getAbsolutePath() + " could not be found or read: " + e.getMessage());
 			}
-			//System.out.println(">>> executing script: \n" + sb.toString());
 		} else {
 			out.println("Missing exertion input filename!");
 			return;
 		}
-        // Process "load" and generate a list of URLs for the classloader
-        List<URL> urlsToLoad = new ArrayList<URL>();
-        if (!loadLines.isEmpty()) {
-            for (String jar : loadLines) {
-                    String loadPath = jar.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
-                    urlsToLoad = LoaderConfigurationHelper.load(loadPath);
-            }
-        }
-        // Process "codebase" and set codebase variable
-        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, out));
-
-        ScriptThread et = new ScriptThread(sb.toString(), urlsToLoad.toArray(new URL[] { }), out);
-		et.start();
-		et.join();
-		Object result = et.getResult();
-		// System.out.println(">>>>>>>>>>> result: " + result);
+        Object target = scriptExerter.parse();
+        Object result = scriptExerter.execute();
+        // System.out.println(">>>>>>>>>>> result: " + result);
 		if (result != null) {
 			if (!(result instanceof Exertion)) {
 				out.println("\n---> EVALUATION RESULT --->");
@@ -184,10 +161,10 @@ public class ExertCmd extends ShellCmd {
 				out.println(xrt.getControlContext());
 			}
 		} else {
-			if (et.getTarget() != null) {
+			if (target != null) {
 				out.println("\n--- Failed to excute exertion ---");
-				out.println(((ServiceExertion) et.getTarget()).describe());
-				out.println(((ServiceExertion) et.getTarget()).getDataContext());
+				out.println(((ServiceExertion) target).describe());
+				out.println(((ServiceExertion) target).getDataContext());
 				if (!commandLine) {
 					out.println("Script failed: " + scriptFilename);
 					out.println(script);
@@ -196,8 +173,6 @@ public class ExertCmd extends ShellCmd {
 			// System.out.println(">>> executing script: \n" + sb.toString());
 		}
 	}
-
-
 
 	public String getScript() {
 		return script;

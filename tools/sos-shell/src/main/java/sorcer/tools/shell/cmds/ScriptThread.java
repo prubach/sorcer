@@ -43,48 +43,62 @@ public class ScriptThread extends Thread {
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
-		public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
+        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out) {
             RootLoader loader = null;
-            if (ShellStarter.getLoader()==null) {
+            if (classLoader==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
-                out.println("New Script classloader: " + printUrls(loader.getURLs()));
+                if (out!=null) out.println("New Script classloader: " + printUrls(loader.getURLs()));
             }
-            else if (ShellStarter.getLoader() instanceof RootLoader) {
-                loader = ((RootLoader)ShellStarter.getLoader());
+            else if (classLoader instanceof RootLoader) {
+                loader = ((RootLoader)classLoader);
                 for (URL url : jarsToAdd)
                     loader.addURL(url);
-                out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
+                if (out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
             }
-            gShell = new GroovyShell(loader!=null ? loader : ShellStarter.getLoader());
+            gShell = new GroovyShell(loader!=null ? loader : classLoader);
 			this.script = script;
+            this.parseScript();
 		}
+
+        public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
+            this(script, jarsToAdd, null, out);
+        }
+
+        public ScriptThread(String script, URL[] jarsToAdd) {
+            this(script, jarsToAdd, null, null);
+        }
 
         public ScriptThread(String script) {
             this.gShell = new GroovyShell(ShellStarter.getLoader());
             this.script = script;
+            this.parseScript();
         }
 
 		public ScriptThread(File file) {
             this.gShell = new GroovyShell(ShellStarter.getLoader());
 			this.scriptFile = file;
+            this.parseScript();
 		}
 
+        public void parseScript() {
+            synchronized (gShell) {
+                if (script != null) {
+                    target = gShell.evaluate(script);
+                }
+                else {
+                    try {
+                        target = gShell.evaluate(scriptFile);
+                    } catch (CompilationFailedException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
 		public void run() {
-			synchronized (gShell) {
-				if (script != null) {
-					target = gShell.evaluate(script);
-				}
-				else {
-					try {
-						target = gShell.evaluate(scriptFile);
-					} catch (CompilationFailedException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			if (target instanceof Exertion) {
+			if (target!=null && target instanceof Exertion) {
 				ExertProcessor esh = new ExertProcessor((Exertion) target);
 				try {
 					result = esh.exert();
