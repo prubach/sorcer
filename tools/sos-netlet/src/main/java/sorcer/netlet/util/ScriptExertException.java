@@ -1,4 +1,4 @@
-package sorcer.tools.shell.cmds;
+package sorcer.netlet.util;
 
 /**
  * SORCER class

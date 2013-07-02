@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.tools.shell.cmds;
+package sorcer.netlet.util;
 
 import groovy.lang.GroovyShell;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.tools.shell.RootLoader;
-import sorcer.tools.shell.ShellStarter;
 import sorcer.util.ExertProcessor;
 
 import java.io.File;
@@ -39,11 +37,13 @@ public class ScriptThread extends Thread {
 		private Object result;
 		private Object target = null;
 		private GroovyShell gShell;
+        private ClassLoader classLoader;
 
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
         public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out) {
+            this.classLoader = classLoader;
             RootLoader loader = null;
             if (classLoader==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
@@ -68,14 +68,14 @@ public class ScriptThread extends Thread {
             this(script, jarsToAdd, null, null);
         }
 
-        public ScriptThread(String script) {
-            this.gShell = new GroovyShell(ShellStarter.getLoader());
+        public ScriptThread(String script, ClassLoader classLoader) {
+            this.gShell = new GroovyShell(classLoader);
             this.script = script;
             this.parseScript();
         }
 
-		public ScriptThread(File file) {
-            this.gShell = new GroovyShell(ShellStarter.getLoader());
+		public ScriptThread(File file, ClassLoader classLoader) {
+            this.gShell = new GroovyShell(classLoader);
 			this.scriptFile = file;
             this.parseScript();
 		}

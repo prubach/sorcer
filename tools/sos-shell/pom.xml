@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-api</artifactId>
+            <artifactId>sos-netlet</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -29,10 +29,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-webster</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
         </dependency>
     </dependencies>
     <build>

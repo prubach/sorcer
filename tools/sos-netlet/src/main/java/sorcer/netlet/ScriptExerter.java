@@ -1,7 +1,8 @@
-package sorcer.tools.shell;
+package sorcer.netlet;
 
-import sorcer.tools.shell.cmds.ScriptExertException;
-import sorcer.tools.shell.cmds.ScriptThread;
+import sorcer.netlet.util.LoaderConfigurationHelper;
+import sorcer.netlet.util.ScriptExertException;
+import sorcer.netlet.util.ScriptThread;
 
 import java.io.*;
 import java.net.URL;
@@ -49,30 +50,33 @@ public class ScriptExerter {
 
     private ScriptThread scriptThread;
 
+    private String websterStrUrl;
+
     public ScriptExerter() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    public ScriptExerter(PrintStream out, ClassLoader classLoader) {
+    public ScriptExerter(PrintStream out, ClassLoader classLoader, String websterStrUrl) {
         this.out = out;
         this.classLoader = classLoader;
+        this.websterStrUrl = websterStrUrl;
         if (staticImports == null) {
             staticImports = readTextFromJar("static-imports.txt");
         }
     }
 
     public ScriptExerter(File scriptFile) throws IOException {
-        this(scriptFile, null, null);
+        this(scriptFile, null, null, null);
     }
 
-    public ScriptExerter(File scriptFile, PrintStream out, ClassLoader classLoader) throws IOException {
-        this(out, classLoader);
+    public ScriptExerter(File scriptFile, PrintStream out, ClassLoader classLoader, String websterStrUrl) throws IOException {
+        this(out, classLoader, websterStrUrl);
         this.scriptFile = scriptFile;
         readFile(scriptFile);
     }
 
-    public ScriptExerter(String script, PrintStream out, ClassLoader classLoader) throws IOException {
-        this(out, classLoader);
+    public ScriptExerter(String script, PrintStream out, ClassLoader classLoader, String websterStrUrl) throws IOException {
+        this(out, classLoader, websterStrUrl);
         readScriptWithHeaders(script);
     }
 
@@ -97,7 +101,7 @@ public class ScriptExerter {
             }
         }
         // Process "codebase" and set codebase variable
-        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, out));
+        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
 
         scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[] { }),  classLoader, out);
         this.target = scriptThread.getTarget();

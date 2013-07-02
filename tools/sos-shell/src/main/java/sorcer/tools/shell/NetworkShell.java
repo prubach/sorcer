@@ -70,6 +70,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.netlet.ScriptExerter;
 import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -394,8 +395,7 @@ public class NetworkShell implements DiscoveryListener {
                 } else if (args[0].equals("-e")) {
                     // evaluate command line expression
                     ExertCmd cmd = (ExertCmd) commandTable.get("exert");
-                    // cmd.setScript(instance.getText(args[1]));
-                    cmd.setScript((String)ExertCmd.readFile(huntForTheScriptFile(args[1])).result);
+                    cmd.setScriptFile(huntForTheScriptFile(args[1]));
                     cmd.execute();
                 }
             }

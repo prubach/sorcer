@@ -1,10 +1,8 @@
-package sorcer.tools.shell;
+package sorcer.netlet.util;
 
 import sorcer.resolver.*;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.JavaSystemProperties;
-
-import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -139,15 +137,15 @@ public class LoaderConfigurationHelper {
     }
 
 
-    public static List<URL> setCodebase(List<String> codebaseLines, PrintStream out) {
+    public static List<URL> setCodebase(List<String> codebaseLines, String websterStrUrl, PrintStream out) {
         String curCodebase = System.getProperty(JavaSystemProperties.RMI_SERVER_CODEBASE);
         StringBuilder codebaseSb = new StringBuilder();
         if (curCodebase!=null) codebaseSb.append(curCodebase);
         List<URL> codebaseUrls = new ArrayList<URL>();
         URL websterUrl = null;
         try {
-            if (NetworkShell.getWebsterUrl()!=null)
-                websterUrl = new URL(NetworkShell.getWebsterUrl());
+            if (websterStrUrl!=null)
+                websterUrl = new URL(websterStrUrl);
         } catch (MalformedURLException me) {
         }
         for (String codebaseStr : codebaseLines) {

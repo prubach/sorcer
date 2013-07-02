@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.tools.shell;
+package sorcer.netlet.util;
 
 import java.net.URL;
 import java.net.URLClassLoader;

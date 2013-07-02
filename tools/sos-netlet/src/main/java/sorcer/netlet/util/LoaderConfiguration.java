@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.tools.shell;
+package sorcer.netlet.util;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -89,7 +89,7 @@ public class LoaderConfiguration {
      * configures this loader with a stream
      *
      * @param is stream used to read the configuration
-     * @throws IOException if reading or parsing the contents of the stream fails
+     * @throws java.io.IOException if reading or parsing the contents of the stream fails
      */
     public void configure(InputStream is) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -112,7 +112,7 @@ public class LoaderConfiguration {
                 // specified using: http://.... or mvn://... @address:port
                 List<String> codebasePaths = new ArrayList<String>();
                 codebasePaths.add(line);
-                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, System.out));
+                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, null, System.out));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);
@@ -124,7 +124,7 @@ public class LoaderConfiguration {
                     throw new IOException("unexpected property format - expecting name=value" + lineNumber + " : " + line);
                 }
                 String propName = params.substring(0, index);
-                String propValue= LoaderConfigurationHelper.assignProperties(params.substring(index+1));
+                String propValue= LoaderConfigurationHelper.assignProperties(params.substring(index + 1));
                 System.setProperty(propName, propValue);
             } else {
                 throw new IOException("unexpected line in " + lineNumber + " : " + line);

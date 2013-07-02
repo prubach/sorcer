@@ -18,6 +18,7 @@
 package sorcer.tools.shell.cmds;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.netlet.ScriptExerter;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
@@ -58,23 +59,18 @@ public class ExertCmd extends ShellCmd {
 
 	private String script;
 
-    private Object result;
-
-    private Object target;
-
-	private static StringBuilder staticImports;
+    private NetworkShell shell;
 
 	public ExertCmd() {
-        out = NetworkShell.getShellOutputStream();
-        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader());
 	}
 
 	public void execute() throws Throwable {
-		NetworkShell shell = NetworkShell.getInstance();
+        out = NetworkShell.getShellOutputStream();
+        shell = NetworkShell.getInstance();
+        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl());
         input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");
-
 		File d = NetworkShell.getInstance().getCurrentDir();
 		String nextToken = null;
 		String scriptFilename = null;
@@ -182,78 +178,11 @@ public class ExertCmd extends ShellCmd {
 		this.script = script;
 	}
 
-    public static class NetletFileParser {
-        public String result;
-        public List<String> loadLines;
-        public List<String> codebaseLines;
-
-        public NetletFileParser(String result, List<String> loadLines, List<String> codebaseLines ) {
-            this.result = result;
-            this.loadLines = loadLines;
-            this.codebaseLines = codebaseLines;
-        }
-
+    public File getScriptFile() {
+        return scriptFile;
     }
 
-
-	public static NetletFileParser readFile(File file) throws IOException {
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
-        List<String> loadLines = new ArrayList<String>();
-        List<String> codebaseLines = new ArrayList<String>();
-		// String lineSep = System.getProperty("line.separator");
-		String lineSep = "\n";
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String nextLine = "";
-		StringBuffer sb = new StringBuffer();
-		nextLine = br.readLine();
-		// skip shebang line
-		if (nextLine.indexOf("#!") < 0) {
-			sb.append(nextLine);
-			sb.append(lineSep);
-		}
-		while ((nextLine = br.readLine()) != null) {
-            // Check for "load" of jars
-            if (nextLine.trim().startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
-                loadLines.add(nextLine.trim());
-            } else if (nextLine.trim().startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
-                codebaseLines.add(nextLine.trim());
-            } else {
-                sb.append(nextLine);
-                sb.append(lineSep);
-            }
-		}
-        return new NetletFileParser(sb.toString(), loadLines, codebaseLines);
-	}
-
-	private StringBuilder readTextFromJar(String filename) {
-		InputStream is = null;
-		BufferedReader br = null;
-		String line;
-		StringBuilder sb = new StringBuilder();
-
-		try {
-			is = getClass().getClassLoader().getResourceAsStream(filename);
-            logger.finest("Loading " + filename + " from is: " + is);
-			if (is != null) {
-				br = new BufferedReader(new InputStreamReader(is));
-				while (null != (line = br.readLine())) {
-					sb.append(line);
-					sb.append("\n");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-				if (is != null)
-					is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return sb;
-	}
-
+    public void setScriptFile(File scriptFile) {
+        this.scriptFile = scriptFile;
+    }
 }
