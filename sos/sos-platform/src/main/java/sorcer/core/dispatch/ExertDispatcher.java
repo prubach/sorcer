@@ -77,7 +77,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 	protected boolean isSpawned;
 
 	// All dispatchers spawned by this one.
-	protected Vector runningExertionIDs = new Vector();
+	protected Vector<Uuid> runningExertionIDs = new Vector<Uuid>();
 
 	// subject for whom this dispatcher is running.
 	// make sure subject is set before and after any object goes out and comes

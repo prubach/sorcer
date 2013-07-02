@@ -290,12 +290,13 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			 * dispatching inner jobs. Currently, it only does round robin.
 			 */
 			for (int i = 0; i < jobbers.length; i++) {
-				if (jobbers[i] != null) {
+                ServiceItem jobberSInte = jobbers[i];
+                if (jobberSInte != null) {
 					if (!provider.getProviderID().equals(
-							jobbers[i].serviceID)) {
+							jobberSInte.serviceID)) {
 						logger.finest("\n***Jobber: " + i + " ServiceID: "
-								+ jobbers[i].serviceID);
-						Provider rjobber = (Provider) jobbers[i].service;
+								+ jobberSInte.serviceID);
+						Provider rjobber = (Provider) jobberSInte.service;
 
 						return (Job) rjobber.service(job, null);
 					}
