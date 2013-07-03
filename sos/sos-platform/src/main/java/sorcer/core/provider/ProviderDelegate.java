@@ -1107,11 +1107,11 @@ public class ProviderDelegate {
 			}
 		}
 		if (serviceID != null)
-			recipient = ProviderAccessor.getProvider(serviceID);
+			recipient = (Service) Accessor.getService(serviceID);
 		else if (prvType != null && prvName != null) {
-			recipient = Accessor.getProvider(prvName, prvType);
+			recipient = Accessor.getService(prvName, prvType);
 		} else if (prvType != null) {
-			recipient = Accessor.getProvider(null, prvType);
+			recipient = Accessor.getService(null, prvType);
 		}
 		if (recipient == null) {
 			visited.remove(serviceID);
@@ -1660,7 +1660,7 @@ public class ProviderDelegate {
 				+ message);
 
         MsgRef mr;
-        SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) Accessor.getProvider(null, SorcerNotifierProtocol.class);
+        SorcerNotifierProtocol notifier = (SorcerNotifierProtocol) Accessor.getService(null, SorcerNotifierProtocol.class);
 
         mr = new MsgRef(task.getId(), notificationType,
                 config.getProviderName(), message,
@@ -2615,8 +2615,8 @@ public class ProviderDelegate {
 				}
 			} else {
 				// if partner discovered use it as the inner proxy
-				innerProxy = (Remote) Accessor.getProvider(partnerName,
-						partnerType);
+				innerProxy = (Remote) Accessor.getService(partnerName,
+                        partnerType);
 			}
 		} else {
 			// if partner exported use it as the primary proxy

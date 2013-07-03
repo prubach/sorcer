@@ -22,9 +22,10 @@ import static org.junit.Assert.assertNotNull;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
+import sorcer.service.Accessor;
 import sorcer.service.Jobber;
 import sorcer.service.Service;
-import sorcer.util.ProviderAccessor;
 import sorcer.util.ProviderLocator;
 import sorcer.util.ProviderLookup;
 import sorcer.util.Stopwatch;
@@ -35,7 +36,8 @@ import sorcer.util.Stopwatch;
 
 public class ProviderAccessorTest {
 
-	private final static Logger logger = Logger
+    public static final net.jini.core.lookup.ServiceTemplate jobberTemplate = Accessor.getServiceTemplate(null, null, new Class[]{Jobber.class}, null);
+    private final static Logger logger = Logger
 			.getLogger(ProviderAccessorTest.class.getName());
 
 	static {
@@ -46,7 +48,7 @@ public class ProviderAccessorTest {
 
 	public void providerAcessorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = ProviderAccessor.getProvider(Jobber.class);
+		Service provider = Accessor.getService(Jobber.class);
 		//logger.info("ProviderAccessor provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
@@ -55,8 +57,8 @@ public class ProviderAccessorTest {
 
 	public void providerLookupTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = (Service) ProviderLookup.getService(Jobber.class);
-		//logger.info("ProviderLookup provider: " + provider);
+        Service provider = (Service) new ProviderLookup().getServiceItems(jobberTemplate, 1, 1, null, SorcerEnv.getLookupGroups())[0].service;
+        //logger.info("ProviderLookup provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
 
@@ -64,8 +66,8 @@ public class ProviderAccessorTest {
 
 	public void providerLookatorTest() throws Exception {
 		long startTime = System.currentTimeMillis();
-		Service provider = (Service) ProviderLocator.getService(Jobber.class, 10000);
-		//logger.info("ProviderLocator provider: " + provider);
+        Service provider = (Service) new ProviderLocator().getServiceItems(jobberTemplate, 1, 1, null, SorcerEnv.getLookupGroups())[0].service;
+        //logger.info("ProviderLocator provider: " + provider);
 		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
 		assertNotNull(provider);
 

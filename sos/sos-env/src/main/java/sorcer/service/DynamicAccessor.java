@@ -18,7 +18,8 @@
 package sorcer.service;
 
 import net.jini.core.lookup.ServiceItem;
-import sorcer.core.Provider;
+import net.jini.core.lookup.ServiceTemplate;
+import net.jini.lookup.ServiceItemFilter;
 
 /**
  * The creational factory interface used by the {@link Accessor}
@@ -26,25 +27,5 @@ import sorcer.core.Provider;
  */
 public interface DynamicAccessor {
 
-	/**
-	 * Returns a servicer matching its {@link Signature}.
-	 * 
-	 * @param signature
-	 *            the signature of requested servicer
-	 * @return the requested {@link Service}
-	 * @throws SignatureException 
-	 */
-	Service getServicer(Signature signature) throws SignatureException;
-	
-	/**
-	 * Returns a service item containing the servicer matching its {@link Signature}.
-	 * 
-	 * @param signature
-	 *            the signature of requested servicer
-	 * @return the requested {@link Service}
-	 * @throws sorcer.service.SignatureException
-	 */
-	ServiceItem getServiceItem(Signature signature) throws SignatureException;
-
-    Provider getProvider(String name, Class<?> type);
+    ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups);
 }

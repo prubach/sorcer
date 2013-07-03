@@ -26,23 +26,25 @@ import net.jini.discovery.DiscoveryManagement;
 import net.jini.discovery.LookupDiscoveryManager;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.LookupCache;
-import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
-import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.service.DynamicAccessor;
+import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -68,7 +70,7 @@ import java.util.logging.Logger;
  * 
  * @author Mike Sobolewski
  */
-public class ServiceAccessor {
+public class ServiceAccessor implements DynamicAccessor {
 
 	static Logger logger = Logger.getLogger(ServiceAccessor.class.getName());
 
@@ -78,9 +80,9 @@ public class ServiceAccessor {
 
 	final static int LUS_REAPEAT = 3;
 
-	private static DiscoveryManagement ldManager = null;
+	private DiscoveryManagement ldManager = null;
 
-	private static ServiceDiscoveryManager sdManager = null;
+	private ServiceDiscoveryManager sdManager = null;
 
 	private static LookupCache lookupCache = null;
 
@@ -92,21 +94,9 @@ public class ServiceAccessor {
 
     protected ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
 
-	/**
-	 * lookup cache parameters, should be set by clients of this utility class.
-	 * lookup cache used at the cache creation time
-	 */
-	private static ServiceItemFilter cacheFilter;
-
-	/** lookup cache template used at the cache creation time. */
-	private static ServiceTemplate cacheTemplate;
-
-	/** can used at the cache creation time or added any time later. */
-	private static ServiceDiscoveryListener cacheListener;
-
-	protected ServiceAccessor() {
-		// do nothing
-	}
+    protected ServiceAccessor() {
+        openDiscoveryManagement(SorcerEnv.getLookupGroups());
+    }
 
 	/**
 	 * Returns a service item containing a service matching providerName and
@@ -116,8 +106,8 @@ public class ServiceAccessor {
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
-	public static ServiceItem getServiceItem(String providerName,
-			Class serviceType) throws SignatureException {
+	public ServiceItem getServiceItem(String providerName,
+			Class serviceType) {
 		ServiceItem si = null;
 		try {
 			Class[] serviceTypes = new Class[] { serviceType };
@@ -142,7 +132,7 @@ public class ServiceAccessor {
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
-	public static ServiceItem getServiceItem(Class serviceType) throws SignatureException {
+	protected ServiceItem getServiceItem(Class serviceType) throws SignatureException {
 		ServiceItem si = null;
 		try {
 			Class[] serviceTypes = new Class[] { serviceType };
@@ -180,7 +170,7 @@ public class ServiceAccessor {
 	 * @return a ServiceItem that matches the template and filter or null if
 	 *         none is found.
 	 */
-	public static ServiceItem getServiceItem(ServiceTemplate template,
+	public ServiceItem getServiceItem(ServiceTemplate template,
 			ServiceItemFilter filter, String[] groups) {
 		ServiceItem si = null;
 		try {
@@ -207,12 +197,12 @@ public class ServiceAccessor {
 	 * Clients should provide a service filter, usually as an object of an inner
 	 * class. A filter narrows the template matching by applying more precise,
 	 * for example boolean selection as required by the client.
-	 * 
+	 *
 	 * @param filter
 	 *            the filter to apply.
 	 * @return a ServiceItem matching the filter.
 	 */
-	public static ServiceItem getServiceItem(ServiceItemFilter filter) {
+	public ServiceItem getServiceItem(ServiceItemFilter filter) {
 		ServiceItem si = null;
 		try {
             openDiscoveryManagement(SorcerEnv.getLookupGroups());
@@ -256,7 +246,7 @@ public class ServiceAccessor {
 	 *            lookup groups to search in.
 	 * @return a ServiceItem[] that matches the template and filter.
 	 */
-	public static ServiceItem[] getServiceItems(ServiceTemplate template,
+	public ServiceItem[] getServiceItems(ServiceTemplate template,
 			ServiceItemFilter filter, String[] groups) {
 		ServiceItem sis[] = null;
 		try {
@@ -291,7 +281,7 @@ public class ServiceAccessor {
 	 *            the filter to apply.
 	 * @return a ServiceItem[] matching the filter.
 	 */
-	public static ServiceItem[] getServiceItems(ServiceItemFilter filter) {
+	public ServiceItem[] getServiceItems(ServiceItemFilter filter) {
 		ServiceItem sis[] = null;
 		if (lookupCache != null)
 			sis = lookupCache.lookup(filter, MAX_MATCHES);
@@ -303,10 +293,8 @@ public class ServiceAccessor {
 	 * template, lookup cache filter, and list of jini groups.
 	 * 
 	 * @param groups River group names
-	 * @throws IOException
 	 */
-	protected static void openDiscoveryManagement(String[] groups)
-			throws IOException {
+	protected void openDiscoveryManagement(String[] groups) {
 		if (sdManager == null) {
 			LookupLocator[] locators = getLookupLocators();
 			try {
@@ -331,7 +319,7 @@ public class ServiceAccessor {
 	/**
 	 * Terminates lookup discovery and service discovery mangers.
 	 */
-	private static void closeDiscoveryManagement() {
+	private void closeDiscoveryManagement() {
 		if (cacheEnabled) {
 			return;
 		}
@@ -349,11 +337,11 @@ public class ServiceAccessor {
 	/**
 	 * Creates a lookup cache for the existing service discovery manager
 	 */
-	private static void openCache() {
+	private void openCache() {
 		if (cacheEnabled && lookupCache == null) {
 			try {
-				lookupCache = sdManager.createLookupCache(cacheTemplate,
-						cacheFilter, cacheListener);
+				lookupCache = sdManager.createLookupCache(null,
+						null, null);
 			} catch (RemoteException e) {
 				closeLookupCache();
 			}
@@ -363,7 +351,7 @@ public class ServiceAccessor {
 	/**
 	 * Terminates a lookup cache used by this ServiceAccessor.
 	 */
-	private static void closeLookupCache() {
+	private void closeLookupCache() {
 		if (lookupCache != null) {
 			lookupCache.terminate();
 			lookupCache = null;
@@ -374,37 +362,19 @@ public class ServiceAccessor {
 	 * Returns a service matching serviceType, service attributes (entries), and
 	 * passes a provided filter.
 	 * 
-	 * @param atributes   attributes of the requested provider
+	 * @param attributes   attributes of the requested provider
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
-	public static <T>T getService(Class<T> serviceType,
-			Entry[] atributes, ServiceItemFilter filter) {
-		return getService(serviceType, atributes, filter, null);
-	}
-
-	/**
-	 * Returns a service matching serviceType, service attributes (entries),
-	 * passes a provided filter, and uses a given codebase for downloadable
-	 * classes.
-	 *
-     * @param atributes   attributes of the requested provider
-     * @param serviceType type of the requested provider
-	 * @return a SORCER provider
-	 */
     @SuppressWarnings("unchecked")
-	public static <T> T getService(Class<T> serviceType,
-			Entry[] atributes, ServiceItemFilter filter, String codebase) {
+	public <T>T getService(Class<T> serviceType, Entry[] attributes, ServiceItemFilter filter) {
 		if (serviceType == null) {
 			throw new RuntimeException("Missing service type for a ServiceTemplate");
 		}
-//		logger.info("serviceType: " + serviceType + "\nattributes: "
-//				+ SorcerUtil.arrayToString(atributes) + "\nfilter: " + filter
-//				+ "\ncodebase: " + codebase);
 
-		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { serviceType }, atributes);
+		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { serviceType }, attributes);
 
-		ServiceItem si = getServiceItem(tmpl, filter, SorcerEnv.getLookupGroups());
+		ServiceItem si = getServiceItem(tmpl, filter);
 		if (si != null)
 			return (T)si.service;
 		else
@@ -419,7 +389,7 @@ public class ServiceAccessor {
      * @param serviceType type of the requested provider
 	 * @return a service provider
 	 */
-	public static <T> T getService(String serviceName, Class<T> serviceType) {
+	public <T> T getService(String serviceName, Class<T> serviceType) {
 		T proxy = null;
 		if (serviceName != null && serviceName.equals(SorcerConstants.ANY))
 			serviceName = null;
@@ -445,23 +415,6 @@ public class ServiceAccessor {
 	}
 
 	/**
-	 * Returns a service matching the given serviceType, provider Name, and
-	 * codebase where to get the interface class from.
-	 * 
-	 * @param providerName name of the requestod provider
-	 * @param serviceType type of the requested provider
-	 * @param codebase     codebase to load the provider class from
-	 * @return a service provider
-	 */
-	public static Object getService(String providerName,
-			Class serviceType, String codebase) {
-		if (providerName != null && providerName.equals(SorcerConstants.ANY))
-			providerName = null;
-		return getService(serviceType, new Entry[] { new Name(providerName) },
-				null, codebase);
-	}
-
-	/**
 	 * Returns a service matching a given template filter, and Jini lookup
 	 * service.
 	 * 
@@ -470,14 +423,16 @@ public class ServiceAccessor {
 	 * @param groups   River groups list
 	 * @return a service provider
 	 */
-	public static Object getService(ServiceTemplate template,
+	public Object getService(ServiceTemplate template,
 			ServiceItemFilter filter, String[] groups) {
-		ServiceItem si = getServiceItem(template, filter, groups);
-		if (si != null)
-			return si.service;
-		else
-			return null;
-	}
+        ServiceItem si;
+        if (groups == null) {
+            return getServiceItem(template, filter);
+        } else {
+            si = getServiceItem(template, filter, SorcerEnv.getLookupGroups());
+        }
+        return si == null ? null : si.service;
+    }
 
 	/**
 	 * Returns a list of lookup locators with the URLs defined in the SORCER
@@ -487,136 +442,118 @@ public class ServiceAccessor {
 	 * 
 	 * @return a list of locators for unicast lookup discovery
 	 */
-	private static LookupLocator[] getLookupLocators() {
-		List<LookupLocator> locators = new Vector<LookupLocator>();
+	private LookupLocator[] getLookupLocators() {
 		String[] locURLs = SorcerEnv.getLookupLocators();
-		logger.finer("ProviderAccessor Locators: " + Arrays.toString(locURLs));
+        if (locURLs == null || locURLs.length == 0) {
+            return null;
+        }
+        List<LookupLocator> locators = new ArrayList<LookupLocator>(locURLs.length);
+        logger.finer("ProviderAccessor Locators: " + Arrays.toString(locURLs));
 
-		if (locURLs != null && locURLs.length > 0) {
-			for (String locURL : locURLs)
-				try {
-					locators.add(new LookupLocator(locURL));
-				} catch (Throwable t) {
-					logger.warning(
-							"Invalid Lookup URL: " + locURL);
-				}
-		}
+		for (String locURL : locURLs)
+			try {
+				locators.add(new LookupLocator(locURL));
+			} catch (Throwable t) {
+				logger.warning(
+						"Invalid Lookup URL: " + locURL);
+			}
+
 		if (locators.isEmpty())
 			return null;
-		LookupLocator[] la = new LookupLocator[locators.size()];
-		locators.toArray(la);
-		return la;
+        return locators.toArray(new LookupLocator[locators.size()]);
 	}
 
-	/**
-	 * @param filter
-	 *            The filter to set.
-	 */
-	public static void setFilter(ServiceItemFilter filter) {
-		cacheFilter = filter;
-	}
-
-	/**
-	 * @return Returns the listener.
-	 */
-	public static ServiceDiscoveryListener getCacheListener() {
-		return cacheListener;
-	}
-
-	/**
-	 * @param listener
-	 *            The listener to set.
-	 */
-	public static void setCacheListener(ServiceDiscoveryListener listener) {
-		ServiceAccessor.cacheListener = cacheListener;
-	}
-
-	/**
-	 * @return Returns the template.
-	 */
-	public static ServiceTemplate getCacheTemplate() {
-		return cacheTemplate;
-	}
-
-	/**
-	 * @param template
-	 *            The template to set.
-	 */
-	public static void setCacheTemplate(ServiceTemplate template) {
-		ServiceAccessor.cacheTemplate = template;
-	}
-
-	/**
-	 * Makes sure the lookup cache is enabled and returns a reference to it.
-	 * 
-	 * @return the lookup cache.
-	 */
-	public static LookupCache getAndEnableLookupCache() {
-		ServiceAccessor.cacheEnabled = true;
-		try {
-            openDiscoveryManagement(SorcerEnv.getLookupGroups());
-		} catch (IOException e) {
-			logger.warning(e.getMessage());
-		}
-		return lookupCache;
-	}
-
-	public static ServiceTemplate getServiceTemplate(ServiceID serviceID,
-			String providerName, Class[] serviceTypes,
-			String[] publishedServiceTypes) {
-		Class[] types;
-		String name;
-		Entry[] attributes;
-
-		if (providerName != null && providerName.length() != 0)
-			name = providerName;
-		else
-			name = SorcerConstants.P_UNDEFINED;
-
-		if (serviceTypes == null)
-			types = new Class[] { Provider.class };
-		else
-			types = serviceTypes;
-
-		SorcerServiceInfo st = new SorcerServiceInfo();
-		st.providerName = name;
-
-		if (publishedServiceTypes != null)
-			st.publishedServices = publishedServiceTypes;
-
-		attributes = new Entry[] { st };
-
-		logger.info("getServiceTemplate >> \n serviceID: " + serviceID
-				+ "\nproviderName: " + providerName + "\nserviceTypes: "
-				+ StringUtils.arrayToString(serviceTypes)
-				+ "\npublishedServiceTypes: "
-				+ StringUtils.arrayToString(publishedServiceTypes));
-
-		return new ServiceTemplate(serviceID, types, attributes);
-	}
-	
-	public static void terminateDiscovery() {
+    public void terminateDiscovery() {
 		sdManager.terminate();
 		sdManager = null;
 	}
 
+    public ServiceItem getServiceItem(Signature signature) {
+        return getServiceItem(signature.getProviderName(),
+                signature.getServiceType());
+    }
+
     /**
-     * Test if provider is still replying.
+     * Returns a SORCER service provider registered with serviceID.
      *
-     * @param provider the provider to check
-     * @return true if a provider is alive, otherwise false
-     * @throws java.rmi.RemoteException
+     * @param serviceID
+     *            a service provider ID
+     * @return a SORCER provider service
      */
-    public static boolean isAlive(Provider provider)
-            throws RemoteException {
-        if (provider == null)
-            return false;
+    public Object getService(ServiceID serviceID) {
+        return getService(serviceID, null, null, SorcerEnv.getLookupGroups());
+    }
+
+    /**
+     * Returns a SORCER service provider matching a registered serviceID,
+     * serviceTypes, attribute set, and Jini groups.
+     *
+     * @param serviceID
+     *            a service provider ID
+     * @param serviceTypes
+     *            service types to match
+     * @param attrSets
+     *            a list of attributes describing the requested service
+     * @param groups
+     *            Jini lookup service groups
+     * @return a SORCER provider service
+     */
+    public Object getService(ServiceID serviceID, Class[] serviceTypes,
+                             Entry[] attrSets, String[] groups) {
+        ServiceTemplate st = new ServiceTemplate(serviceID, serviceTypes,
+                attrSets);
+        return getService(st, null, groups);
+    }
+
+    public ServiceItem getServiceItem(ServiceTemplate template, ServiceItemFilter filter) {
         try {
-            provider.getProviderName();
-            return true;
+            return sdManager.lookup(template, filter, WAIT_FOR);
+        } catch (InterruptedException e) {
+            return null;
         } catch (RemoteException e) {
-            logger.throwing(ProviderAccessor.class.getName(), "isAlive", e);
-            throw e;
+            return null;
         }
-	}
+    }
+
+    public ServiceItem[] getServiceItems(ServiceTemplate template, ServiceItemFilter filter) {
+        try {
+            return sdManager.lookup(template, MIN_MATCHES, MAX_MATCHES, filter, WAIT_FOR);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,"Error while getting service", e);
+            return null;
+        }
+    }
+
+    public Object getService(ServiceTemplate template, ServiceItemFilter filter) {
+        ServiceItem serviceItem = getServiceItem(template, filter);
+        return serviceItem == null ? null : serviceItem.service;
+    }
+
+    public Object getService(ServiceID serviceID, Class[] serviceTypes, Entry[] attrSets) {
+        ServiceTemplate st = new ServiceTemplate(serviceID, serviceTypes,
+                attrSets);
+        return getService(st, null);
+    }
+
+    @Override
+    public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
+        if (groups != null) {
+            Set<String> defaultGroups = new HashSet<String>(Arrays.asList(SorcerEnv.getLookupGroups()));
+            Set<String> userGroups = new HashSet<String>(Arrays.asList(groups));
+            if (!defaultGroups.equals(userGroups)) {
+                throw new IllegalArgumentException("User requested River group other than default, this is currently unsupported");
+            }
+        }
+        try {
+            return sdManager.lookup(template, minMatches, maxMatches, filter, WAIT_FOR);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE,"Error while getting service", e);
+            return null;
+        }
+    }
+
 }

@@ -24,6 +24,7 @@ import sorcer.core.Provider;
 import sorcer.service.Accessor;
 import sorcer.service.Spacer;
 import sorcer.util.AccessorException;
+import sorcer.util.Providers;
 import sorcer.util.ServiceAccessor;
 
 /**
@@ -58,12 +59,12 @@ public class SpacerAccessor extends ServiceAccessor {
                 : name;
         Spacer spacer = (Spacer) cache.get(Spacer.class.getName());
         try {
-            if (isAlive((Provider) spacer)) {
+            if (Providers.isAlive((Provider) spacer)) {
                 log.info(">>>returned cached Spacer ("
                         + ((Provider) spacer).getProviderID() + ") by "
-                        + Accessor.getAccessor().getClass().getName());
+                        + Accessor.getAccessorType());
             } else {
-                spacer = Accessor.getProvider(spacerName, Spacer.class);
+                spacer = Accessor.getService(spacerName, Spacer.class);
                 cache.put(Spacer.class.getName(), spacer);
             }
             return spacer;

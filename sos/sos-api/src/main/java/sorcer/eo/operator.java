@@ -34,11 +34,8 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
-import sorcer.service.Direction;
-import sorcer.service.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.*;
-import sorcer.util.ServiceAccessor;
 
 import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.objects.Store;
@@ -1017,8 +1014,7 @@ public class operator {
 			throws SignatureException {
 		ServiceTemplate st = new ServiceTemplate(null,
 				new Class[] { signature.getServiceType() }, null);
-		ServiceItem[] sis = ServiceAccessor.getServiceItems(st, null,
-				SorcerEnv.getLookupGroups());
+		ServiceItem[] sis = Accessor.getServiceItems(st, null);
 		if (sis == null)
 			throw new SignatureException("No available providers of type: "
 					+ signature.getServiceType().getName());
@@ -1050,7 +1046,7 @@ public class operator {
 			if (signature instanceof NetSignature) {
 				provider = ((NetSignature) signature).getServicer();
 				if (provider == null) {
-					provider = Accessor.getServicer(signature);
+					provider = (Service) Accessor.getService(signature);
 					((NetSignature) signature).setServicer(provider);
 				}
 			} else if (signature instanceof ObjectSignature) {

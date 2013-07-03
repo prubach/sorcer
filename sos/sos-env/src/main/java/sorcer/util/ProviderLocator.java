@@ -25,6 +25,7 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
+import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
 import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
@@ -180,7 +181,12 @@ public class ProviderLocator implements DynamicAccessor {
 
 	}
 
-	class Listener implements DiscoveryListener {
+    @Override
+    public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
+        return new ServiceItem[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    class Listener implements DiscoveryListener {
 		// invoked when a LUS is discovered
 		public void discovered(DiscoveryEvent ev) {
 			ServiceRegistrar[] reg = ev.getRegistrars();
@@ -224,13 +230,11 @@ public class ProviderLocator implements DynamicAccessor {
 	 * @see
 	 * sorcer.service.DynamicAccessor#getServiceItem(sorcer.service.Signature)
 	 */
-	@Override
 	public ServiceItem getServiceItem(Signature signature)
 			throws SignatureException {
 		throw new SignatureException("Not implemented by this service accessor");
 	}
 
-    @Override
     public Provider getProvider(String name, Class<?> type) {
         try {
             return (Provider) getService(type, name, Long.MAX_VALUE);
@@ -244,9 +248,8 @@ public class ProviderLocator implements DynamicAccessor {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
+	 * @see sorcer.service.DynamicAccessor#getService(sorcer.service.Signature)
 	 */
-	@Override
 	public Service getServicer(Signature signature) throws SignatureException {
 		return getService(signature);
 	}

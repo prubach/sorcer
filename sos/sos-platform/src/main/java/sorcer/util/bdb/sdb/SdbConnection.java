@@ -19,9 +19,9 @@ package sorcer.util.bdb.sdb;
 
 import sorcer.co.tuple.InEntry;
 import sorcer.core.StorageManagement;
+import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.util.ProviderLookup;
 import sorcer.util.bdb.objects.Store;
 
 import java.io.IOException;
@@ -64,8 +64,12 @@ public class SdbConnection extends URLConnection {
 	 */
 	@Override
 	public void connect() throws IOException {
-		store = (StorageManagement) ProviderLookup.getProvider(providerName, serviceType);
-		connected = true;
+        try {
+            store = (StorageManagement) Accessor.getService(providerName, Class.forName(serviceType));
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Could not access StorageManagement implementation " + serviceType, e);
+        }
+        connected = true;
 	}
 
 	@Override

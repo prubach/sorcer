@@ -33,7 +33,6 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.jobber.JobberAccessor;
 import sorcer.service.spacer.SpacerAccessor;
 import sorcer.util.AccessorException;
-import sorcer.util.ServiceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -237,7 +236,7 @@ public class ControlFlowManager {
 
 				if (spacer == null) {
 					String spacerName = xrt.getRendezvousName();
-					Spacer spacerService = null;
+					Spacer spacerService;
 					try {
 						if (spacerName != null) {
 							spacerService = SpacerAccessor.getSpacer(spacerName);
@@ -262,7 +261,7 @@ public class ControlFlowManager {
 				if (jobber == null) {
 					// return delegate.doJob(job);
 					String jobberName = xrt.getRendezvousName();
-					Jobber jobberService = null;
+					Jobber jobberService;
 					try {
 						if (jobberName != null)
 							jobberService = JobberAccessor.getJobber(jobberName);
@@ -323,7 +322,7 @@ public class ControlFlowManager {
 	 */
 	protected Exertion doWhileExertion(Exertion exertion) {
 		Exertion inner = ((WhileExertion) exertion).getDoExertion();
-		Exertion tmp = null;
+		Exertion tmp;
 		Map<String, Object> whileState = new HashMap<String, Object>();
 		Map<String, Object> ifState = new HashMap<String, Object>();
 		long firstWhileIteration = 0;
@@ -338,7 +337,7 @@ public class ControlFlowManager {
 						((WhileExertion) exertion).adjustConditionVariables();
 					}
 
-					tmp = doWhileExertion((WhileExertion) inner);
+					tmp = doWhileExertion(inner);
 					((WhileExertion) exertion).setDoExertion(tmp);
 					firstWhileIteration++;
 				}
@@ -422,10 +421,7 @@ public class ControlFlowManager {
 				logger
 						.info("Task is not valid for this provider, forwarding task.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method.getServiceType();
-				String codebase = method.getCodebase();
-                Service provider = (Service) ServiceAccessor.getService(null,
-                        providerType, codebase);
+                Service provider = Accessor.getService(method.getServiceType());
 				return provider.service(exertion, null);
 			}
 		} catch (Exception e) {
@@ -444,7 +440,7 @@ public class ControlFlowManager {
 	 */
 	protected Exertion doWhileJob(Exertion exertion) {
 		Map<String, Object> state = new HashMap<String, Object>();
-		Job temp = null;
+		Job temp;
 		long jobIteration = 0;
 
 		try {
@@ -474,10 +470,7 @@ public class ControlFlowManager {
 			} else {
 				logger.info("Forwarding Job to SORCER-Jobber.");
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method.getServiceType();
-				String codebase = method.getCodebase();
-				Service provider = (Service) ServiceAccessor.getService(null,
-                        providerType, codebase);
+                Service provider = Accessor.getService(method.getServiceType());
 				return provider.service(exertion, null);
 			}
 		} catch (Exception e) {
@@ -597,13 +590,11 @@ public class ControlFlowManager {
 		}
 
 		else if (innerIf instanceof Task) {
-			Exertion remoteResult = this.doIfTask(exertion);
-			return remoteResult;
+            return this.doIfTask(exertion);
 		}
 
 		else if (innerIf instanceof Job) {
-			Exertion remoteResult = this.doIfJob(exertion);
-			return remoteResult;
+            return this.doIfJob(exertion);
 		}
 
 		else {
@@ -639,10 +630,7 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method.getServiceType();
-				String codebase = method.getCodebase();
-				Service provider = (Service) ServiceAccessor.getService(null,
-                        providerType, codebase);
+                Service provider = Accessor.getService(method.getServiceType());
 
 				return provider.service(exertion, null);
 			}
@@ -679,10 +667,7 @@ public class ControlFlowManager {
 				return exertion;
 			} else {
 				Signature method = exertion.getProcessSignature();
-				Class providerType = method.getServiceType();
-				String codebase = method.getCodebase();
-				Service provider = (Service) ServiceAccessor.getService(null,
-						providerType, codebase);
+                Service provider = Accessor.getService(method.getServiceType());
 				return provider.service(exertion, null);
 			}
 		} catch (Exception e) {
@@ -703,11 +688,11 @@ public class ControlFlowManager {
 	public static void saveState(Map<String, Object> mapBackUp, Context context) {
 		try {
 			Enumeration e = context.contextPaths();
-			String path = null;
+			String path;
 
 			while (e.hasMoreElements()) {
-				path = new String((String) e.nextElement());
-				mapBackUp.put(path, ((ServiceContext) context).get(path));
+				path = (String) e.nextElement();
+				mapBackUp.put(path, context.get(path));
 			}
 		} catch (ContextException ce) {
 			logger.info("problem saving state of the ServiceContext " + ce);
@@ -730,7 +715,7 @@ public class ControlFlowManager {
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			String path = (String) entry.getKey();
-			Object value = (Object) entry.getValue();
+			Object value = entry.getValue();
 
 			try {
 				context.putValue(path, value);
@@ -751,10 +736,10 @@ public class ControlFlowManager {
 	public static void copyContext(Context fromContext, Context toContext) {
 		try {
 			Enumeration e = fromContext.contextPaths();
-			String path = null;
+			String path;
 
 			while (e.hasMoreElements()) {
-				path = new String((String) e.nextElement());
+				path = (String) e.nextElement();
 				toContext.putValue(path, fromContext.getValue(path));
 			}
 		} catch (ContextException ce) {
@@ -799,9 +784,9 @@ public class ControlFlowManager {
 	 *            Either a task or job
 	 */
 	public void resetExertionStatus(Exertion exertion) {
-		if (((ServiceExertion) exertion).isTask()) {
+		if (exertion.isTask()) {
 			((Task) exertion).setStatus(ExecState.INITIAL);
-		} else if (((ServiceExertion) exertion).isJob()) {
+		} else if (exertion.isJob()) {
 			for (int i = 0; i < ((Job) exertion).size(); i++) {
 				this.resetExertionStatus(((Job) exertion).exertionAt(i));
 			}
@@ -822,9 +807,9 @@ public class ControlFlowManager {
 			try {
 				if (xrt instanceof Conditional) {
 					result = doConditional(xrt);
-				} else if (((ServiceExertion) xrt).isJob()) {
+				} else if (xrt.isJob()) {
 					result = doRendezvousExertion((Job) xrt);
-				} else if (((ServiceExertion) xrt).isTask()) {
+				} else if (xrt.isTask()) {
 					result = doTask((Task) xrt);
 				}
 				stopped = true;
@@ -863,7 +848,7 @@ public class ControlFlowManager {
 		List<Signature> ts = new ArrayList<Signature>(1);
 		Signature tsig = task.getProcessSignature();
         ((ServiceContext)task.getDataContext()).setCurrentSelector(tsig.getSelector());
-		((ServiceContext)task.getDataContext()).setCurrentPrefix(((ServiceSignature)tsig).getPrefix());
+		((ServiceContext)task.getDataContext()).setCurrentPrefix(tsig.getPrefix());
 
 		ts.add(tsig);
 		task.setSignatures(ts);
@@ -911,8 +896,8 @@ public class ControlFlowManager {
 	public Context processContinousely(Task task, List<Signature> signatures)
 			throws ExertionException {
 		Signature.Type type = signatures.get(0).getType();
-		Task t = null;
-        ServiceSignature css = null;
+		Task t;
+        ServiceSignature css;
 		ServiceContext shared = (ServiceContext)task.getDataContext();
 		for (int i = 0; i < signatures.size(); i++) {
             try {
