@@ -28,5 +28,10 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-api</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
