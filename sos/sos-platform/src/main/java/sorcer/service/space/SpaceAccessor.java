@@ -25,7 +25,7 @@ import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.Accessor;
 import sorcer.util.ServiceAccessor;
 
 
@@ -69,7 +69,7 @@ public class SpaceAccessor extends ServiceAccessor{
         }
         try {
             if (javaSpace == null) {
-                javaSpace = (JavaSpace05) ProviderAccessor.getService(null,
+                javaSpace = (JavaSpace05) Accessor.getService(null,
                         new Class[]{JavaSpace05.class}, attrs,
                         new String[]{sg});
                 cache.put(JavaSpace05.class.getName(), javaSpace);

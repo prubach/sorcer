@@ -19,18 +19,23 @@ package sorcer.util;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
+import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
-import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.service.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static sorcer.core.SorcerConstants.ANY;
@@ -64,7 +69,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	/*
 	 * Returns a @link{Service} with the given signtures.
 	 * 
-	 * @see sorcer.service.DynamicAccessor#getServicer(sorcer.service.Signature)
+	 * @see sorcer.service.DynamicAccessor#getService(sorcer.service.Signature)
 	 */
 	public Service getServicer(Signature signature) {
 		return getService(signature);
@@ -302,9 +307,124 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 		throw new SignatureException("Not implemented by this service accessor");
 	}
 
-    @Override
-    public Provider getProvider(String name, Class<?> type) {
-        return (Provider) getProvider(name, type.getName());
+    public <T> T getProvider (String name, Class<T> type) {
+        ProviderLookup lookup = new ProviderLookup(name, type);
+        return (T) lookup.getService();
 	}
 
+    public Object getService(ServiceTemplate template, ServiceItemFilter filter) {
+        LookupDiscovery lookupDiscovery = null;
+        try {
+            lookupDiscovery = new LookupDiscovery(SorcerEnv.getLookupGroups());
+            Listener resultListener = new Listener(template, 1, SorcerEnv.getLookupMaxMatches(), filter);
+            lookupDiscovery.addDiscoveryListener(resultListener);
+            return resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
+        } catch (IOException ignored) {
+            return null;
+        } catch (InterruptedException ignored) {
+            return null;
+        } finally {
+            if (lookupDiscovery != null) {
+                lookupDiscovery.terminate();
+            }
+        }
+    }
+
+    @Override
+    public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
+        LookupDiscovery lookupDiscovery = null;
+        try {
+            lookupDiscovery = new LookupDiscovery(SorcerEnv.getLookupGroups());
+            Listener resultListener = new Listener(template, minMatches, maxMatches, filter);
+            lookupDiscovery.addDiscoveryListener(resultListener);
+            List<ServiceItem> serviceItems = resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
+            return serviceItems.toArray(new ServiceItem[serviceItems.size()]);
+        } catch (IOException ignored) {
+            return null;
+        } catch (InterruptedException ignored) {
+            return null;
+        } finally {
+            if (lookupDiscovery != null) {
+                lookupDiscovery.terminate();
+            }
+        }
+    }
+}
+
+class Listener implements DiscoveryListener, Future<List<ServiceItem>>{
+    private ServiceTemplate template;
+    private ServiceItemFilter filter;
+    private int minResults;
+    private int maxResults;
+    final private List<ServiceItem> result = new LinkedList<ServiceItem>();
+    private boolean canceled;
+    private boolean done;
+
+    Listener(ServiceTemplate template, int minResults, int maxResults, ServiceItemFilter filter) {
+        this.template = template;
+        this.minResults = minResults;
+        this.maxResults = maxResults;
+        this.filter = filter;
+    }
+
+    @Override
+    public void discovered(DiscoveryEvent e) {
+        ServiceRegistrar[] registrars = e.getRegistrars();
+        for (ServiceRegistrar registrar : registrars) {
+            if (canceled || done) return;
+            try {
+                ServiceMatches serviceMatches = registrar.lookup(template, maxResults);
+                for (ServiceItem item : serviceMatches.items) {
+                    if (filter != null && filter.check(item)) {
+                        synchronized (result) {
+                            result.add(item);
+                            done = result.size() >= minResults;
+
+                        }
+                    }
+                }
+            } catch (RemoteException ignored) {
+
+            }
+        }
+    }
+
+    @Override
+    public synchronized void discarded(DiscoveryEvent e) {
+        //ignored
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        //cancel if not done
+        return !done || (canceled = true);
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return canceled;
+    }
+
+    @Override
+    public boolean isDone() {
+        return done;
+    }
+
+    @Override
+    public synchronized List<ServiceItem> get() throws InterruptedException {
+        synchronized (result){
+            if (!result.isEmpty()) return result;
+        }
+        wait();
+        return result;
+    }
+
+    @Override
+    public synchronized List<ServiceItem> get(long timeout, TimeUnit unit) throws InterruptedException {
+        synchronized (result){
+            if (!result.isEmpty()) return result;
+        }
+        wait(unit.toMillis(timeout));
+        return result;
+    }
 }

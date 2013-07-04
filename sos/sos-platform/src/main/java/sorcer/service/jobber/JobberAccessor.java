@@ -24,6 +24,7 @@ import sorcer.core.Provider;
 import sorcer.service.Accessor;
 import sorcer.service.Jobber;
 import sorcer.util.AccessorException;
+import sorcer.util.Providers;
 import sorcer.util.ServiceAccessor;
 
 /**
@@ -65,12 +66,12 @@ public class JobberAccessor extends ServiceAccessor {
         Jobber jobber = (Jobber) cache.get(Jobber.class.getName());
 
         try {
-            if (ServiceAccessor.isAlive((Provider) jobber)) {
+            if (Providers.isAlive((Provider) jobber)) {
                 log.info(">>>returned cached Jobber ("
                         + ((Provider) jobber).getProviderID() + ") by "
-                        + Accessor.getAccessor().getClass());
+                        + Accessor.getAccessorType());
             } else {
-                jobber = Accessor.getProvider(jobberName, Jobber.class);
+                jobber = Accessor.getService(jobberName, Jobber.class);
                 cache.put(Jobber.class.getName(), jobber);
             }
             return jobber;

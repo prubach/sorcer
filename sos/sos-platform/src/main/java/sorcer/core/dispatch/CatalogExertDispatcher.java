@@ -18,19 +18,16 @@
 package sorcer.core.dispatch;
 
 import net.jini.core.lookup.ServiceItem;
-import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
-import sorcer.core.SorcerEnv;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
+import sorcer.river.Filters;
 import sorcer.service.*;
-import sorcer.util.ServiceAccessor;
-
 
 import java.rmi.RemoteException;
 import java.util.Set;
@@ -152,13 +149,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 	private Exertion execConditional(Exertion exertion)
 			throws ExertionException {
 
-		String providerName = exertion
-				.getProcessSignature().getProviderName();
-		Class<Service> serviceType = exertion.getProcessSignature()
-				.getServiceType();
-
-		Service provider = Accessor.getProvider(providerName,
-				serviceType);
+        Service provider = (Service) Accessor.getService(exertion.getProcessSignature());
 
 		try {
 			return provider.service(exertion, null);
@@ -214,10 +205,10 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				// Catalog lookup or use Lookup Service for the particular
 				// service
                 // Switched to another method that uses the Cataloger service
-				//Provider provider = ProviderAccessor.getProvider(
+				//Provider provider = ProviderAccessor.getService(
 				//		sig.getProviderName(), sig.getServiceType(), codebase);
-                Service service = Accessor.getServicer(sig);
-                //Provider provider = ProviderAccessor.getProvider(
+                Service service = (Service) Accessor.getService(sig);
+                //Provider provider = ProviderAccessor.getService(
                 //       		sig.getProviderName(), sig.getServiceType());
 
 				if (service== null) {
@@ -278,10 +269,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			ClassNotFoundException, ExertionException, RemoteException {
 
 		try {
-			ServiceTemplate st = ServiceAccessor.getServiceTemplate(null,
-					null, new Class[] { Jobber.class }, null);
-			ServiceItem[] jobbers = ServiceAccessor.getServiceItems(st, null,
-					SorcerEnv.getLookupGroups());
+            ServiceItem[] jobbers = Accessor.getServiceItems(Jobber.class, Filters.not(Filters.serviceId(provider.getProviderID())));
 
 			/*
 			 * check if there is any available jobber in the network and
@@ -292,22 +280,18 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			for (int i = 0; i < jobbers.length; i++) {
                 ServiceItem jobberSInte = jobbers[i];
                 if (jobberSInte != null) {
-					if (!provider.getProviderID().equals(
-							jobberSInte.serviceID)) {
-						logger.finest("\n***Jobber: " + i + " ServiceID: "
-								+ jobberSInte.serviceID);
-						Provider rjobber = (Provider) jobberSInte.service;
+                    logger.finest("Jobber: " + i + " ServiceID: " + jobberSInte.serviceID);
+                    Provider rjobber = (Provider) jobberSInte.service;
 
-						return (Job) rjobber.service(job, null);
-					}
-				}
+                    return (Job) rjobber.service(job, null);
+                }
 			}
 
 			/*
 			 * Create a new dispatcher thread for the inner job, if no available
 			 * Jobber is found in the network
 			 */
-			Dispatcher dispatcher = null;
+			Dispatcher dispatcher;
 			runningExertionIDs.addElement(job.getId());
 
 			// create a new instance of a dispatcher

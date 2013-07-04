@@ -33,7 +33,7 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
 /**
  * @author Rafał Krupiński
  */
-public class SorcerProviderAccessor extends ServiceAccessor{
+public class SorcerProviderAccessor {
 
     /**
      * Returns any SORCER Jobber service provider.
@@ -78,7 +78,7 @@ public class SorcerProviderAccessor extends ServiceAccessor{
     }
 
     public static Provider getNotifierProvider() throws ClassNotFoundException {
-        return Accessor.getProvider(null, SorcerNotifierProtocol.class);
+        return Accessor.getService(null, SorcerNotifierProtocol.class);
     }
 
     /**

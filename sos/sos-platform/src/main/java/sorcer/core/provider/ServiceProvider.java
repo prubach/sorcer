@@ -1752,7 +1752,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         }
 
         if (tally == 0) {
-            ProviderAccessor.terminateDiscovery();
+            //ProviderAccessor.terminateDiscovery();
             // option for service nodes size > 1
             // allows for discarding cpmplementarory, not SORCER services
             if (SorcerEnv.isBootable() && size > 1)

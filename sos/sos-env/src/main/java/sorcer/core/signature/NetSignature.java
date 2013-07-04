@@ -134,12 +134,7 @@ public class NetSignature extends ObjectSignature {
 		} catch (RemoteException e) {
 			// provider is dead; get new one
 			//e.printStackTrace();
-			provider = null;
-			try {
-				provider = (Provider)Accessor.getServicer(this);
-			} catch (SignatureException e1) {
-				provider = null;
-			}
+            provider = (Provider)Accessor.getService(this);
 		}
 		
 		return provider;

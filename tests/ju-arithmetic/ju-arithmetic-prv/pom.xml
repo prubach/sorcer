@@ -102,7 +102,7 @@
                                         <entry>${project.groupId}:dbp-api:${project.version}</entry>
 										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
 										<entry>junit:junit:4.11</entry>
-										<entry>org.slf4j:slf4j-simple:1.7.5</entry>
+										<entry>org.slf4j:slf4j-simple:${v.slf4j}</entry>
 										<entry>com.sleepycat:je:${v.sleepycat}</entry>
 									</requestorClasspath>
 									<requestors>

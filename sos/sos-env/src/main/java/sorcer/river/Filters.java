@@ -22,15 +22,53 @@ import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.ServiceItemFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Basic set of simple {@link ServiceItemFilter}s
  *
  * @author Rafał Krupiński
  */
 public class Filters {
-    private static ServiceItemFilter trueFilter = new TrueFilter();
+    private static ServiceItemFilter trueFilter = new AnyFilter();
 
-    public static ServiceItemFilter trueFilter() {
+    private Filters() {
+        //static only class
+    }
+
+    /**
+     * Find first matching {@link ServiceItem}
+     *
+     * @param items  {@link ServiceItem}s to look in
+     * @param filter {@link ServiceItemFilter} to match
+     * @return first item matching the filter
+     */
+    public static ServiceItem firstMatching(ServiceItem[] items, ServiceItemFilter filter) {
+        for (ServiceItem item : items) {
+            if (filter.check(item)) return item;
+        }
+        return null;
+    }
+
+    /**
+     * Find and return all matching service items
+     * @param items  {@link ServiceItem}s to look in
+     * @param filter {@link ServiceItemFilter} to match
+     * @return array of items matching the filter
+     */
+    public static ServiceItem[] matching(ServiceItem[] items, ServiceItemFilter filter) {
+        List<ServiceItem> result = new ArrayList<ServiceItem>(items.length);
+        for (ServiceItem item : items) {
+            if (filter.check(item)) result.add(item);
+        }
+        return result.toArray(new ServiceItem[result.size()]);
+    }
+
+    /**
+     * @return filter that matches any ServiceItem
+     */
+    public static ServiceItemFilter any() {
         return trueFilter;
     }
 
@@ -54,7 +92,7 @@ public class Filters {
     }
 }
 
-class TrueFilter implements ServiceItemFilter {
+class AnyFilter implements ServiceItemFilter {
     @Override
     public boolean check(ServiceItem item) {
         return true;

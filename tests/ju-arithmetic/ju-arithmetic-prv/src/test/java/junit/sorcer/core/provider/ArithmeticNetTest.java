@@ -78,7 +78,7 @@ public class ArithmeticNetTest {
 	public static void waitForServices() throws InterruptedException {
 		int tries = 0;
 		while (tries < 8) {
-			Object subtractor = Accessor.getProvider(null, Subtractor.class);
+			Subtractor subtractor = Accessor.getService(Subtractor.class);
 			if (subtractor != null)
 				return;
 			Thread.sleep(1000);

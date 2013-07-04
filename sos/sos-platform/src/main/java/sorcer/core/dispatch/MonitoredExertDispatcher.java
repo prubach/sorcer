@@ -37,7 +37,6 @@ import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
 import sorcer.core.provider.exertmonitor.MonitoringManagement;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.util.ServiceAccessor;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -61,7 +60,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 		super(exertion, sharedContext, isSpawned, provider);
 				
 		if (sessionMonitor == null)
-			sessionMonitor = Accessor.getProvider(SorcerConstants.NAME_DEFAULT, MonitoringManagement.class);
+			sessionMonitor = Accessor.getService(SorcerConstants.NAME_DEFAULT, MonitoringManagement.class);
 		if (lrm == null)
 			lrm = new LeaseRenewalManager();
 
@@ -170,7 +169,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
 		ExertDispatcher.logger.log(Level.INFO, "start executing task");
 		try {
-			Service provider = (Service) ServiceAccessor.getService(task
+			Service provider = (Service) Accessor.getService(task
                     .getProcessSignature().getProviderName(), task
                     .getServiceType());
 			ExertDispatcher.logger.log(Level.INFO, "got a provider:" + provider);
