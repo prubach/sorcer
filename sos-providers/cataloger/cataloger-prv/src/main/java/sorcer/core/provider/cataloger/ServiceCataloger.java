@@ -30,8 +30,6 @@ import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.entry.Name;
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
 import sorcer.core.AdministratableProvider;
 import sorcer.core.Cataloger;
 import sorcer.core.Provider;
@@ -41,12 +39,9 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
-import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 import sorcer.service.Service;
 import sorcer.service.Task;
-import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.ui.serviceui.UIFrameFactory;
 
 import sorcer.util.StringUtils;
 
@@ -56,7 +51,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -413,50 +407,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		return new ServiceContext();
 
 	}
-
-	/**
-	 * Returns a service UI descriptor for a Cataloger UI. The interface
-	 * presents provider's interfaces of discovered services along with
-	 * associated contexts per defined interface or individual interface method.
-	 * 
-	 * @see sorcer.core.provider.ServiceProvider#getMainUIDescriptor
-	 */
-	public UIDescriptor getMainUIDescriptor() {
-		UIDescriptor uiDesc = null;
-		try {
-			URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:sos-exertlet-sui"));
-			URL helpUrl = new URL(SorcerEnv.getWebsterUrl()
-					+ "/deploy/cataloger.html");
-
-			// URL exportUrl, String className, String name, String helpFilename
-			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                    new UIFrameFactory(new URL[] { uiUrl },
-							"sorcer.core.provider.cataloger.ui.CatalogerUI", "Catalog Browser",
-							helpUrl));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return uiDesc;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sorcer.core.provider.ServiceProvider#getUIDescriptor()
-	 */
-	// public static UIDescriptor getUIDescriptor() {
-	// UIDescriptor uiDesc = null;
-	// try {
-	// uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-	// (JFrameFactory) new UIFrameFactory(new URL[] { new URL(Sorcer
-	// .getWebsterUrl()
-	// + "/cataloger-ui.jar") }, CatalogerUI.class
-	// .getName()));
-	// } catch (Exception ex) {
-	// ex.printStackTrace();
-	// }
-	// return uiDesc;
-	// }
 
 	public Context getContexts(Class serviceType, String method)
 			throws RemoteException {

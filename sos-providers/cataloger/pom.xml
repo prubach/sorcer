@@ -13,6 +13,7 @@
     <modules>
         <module>cataloger-api</module>
         <module>cataloger-prv</module>
+        <module>cataloger-sui</module>
     </modules>
 
 
