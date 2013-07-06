@@ -90,12 +90,12 @@ public class SorcerEnv {
     }
 
     protected SorcerEnv() {
-        loadBasicEnvironment();
-        overrideFromEnvironment(System.getenv());
     }
 
     static {
         sorcerEnv = new SorcerEnv();
+        sorcerEnv.loadBasicEnvironment();
+        sorcerEnv.overrideFromEnvironment(System.getenv());
     }
 
     /**
@@ -1385,11 +1385,7 @@ public class SorcerEnv {
             String cdtFrom = "(default)";
 
             if (envFile != null) {
-                properties.load(new FileInputStream(envFile));
-                envFrom = "(system property)";
-                update(properties);
-                loadedEnvFile = envFile;
-
+                load(envFile, "(system property)");
             } else {
                 envFile = S_ENV_FIENAME;
                 String envPath = getSorcerHome() + "/configs/" + envFile;
@@ -1432,6 +1428,13 @@ public class SorcerEnv {
                     "Unable to find/load SORCER environment configuration files",
                     t);
         }
+    }
+
+    private void load(String envFile, String sourceDesc) throws IOException, ConfigurationException {
+        properties.load(new FileInputStream(envFile));
+        envFrom = sourceDesc;
+        update(properties);
+        loadedEnvFile = envFile;
     }
 
     // STATIC
@@ -1722,5 +1725,28 @@ public class SorcerEnv {
         properties.setProperty(SorcerConstants.SORCER_HOME, sorcerHome);
     }
 
+    /**
+     * copy all entries from provided map to SorcerEnv properties
+     */
+    public void  load(Map<String, String> props){
+        properties.putAll(props);
+    }
 
+    public static SorcerEnv load(String fileName){
+        SorcerEnv result = new SorcerEnv();
+
+        try {
+            result.load(fileName,"user file");
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not load config from "+fileName);
+        } catch (ConfigurationException e) {
+            throw new IllegalArgumentException("Could not load config from "+fileName);
+        }
+        sorcerEnv.overrideFromEnvironment(System.getenv());
+        return result;
+    }
+
+    public static void setSorcerEnv(SorcerEnv sorcerEnv){
+        SorcerEnv.sorcerEnv = sorcerEnv;
+    }
 }

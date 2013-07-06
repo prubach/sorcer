@@ -84,7 +84,7 @@
 						<artifactId>sorcer-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>sorcer-preit</id>
+								<id>default-cli</id>
 								<goals>
 									<goal>provider</goal>
 								</goals>
@@ -101,7 +101,7 @@
 										<entry>${project.groupId}:${project.artifactId}:${project.version}</entry>
                                         <entry>${project.groupId}:dbp-api:${project.version}</entry>
 										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
-										<entry>junit:junit:4.11</entry>
+										<entry>junit:junit:${v.junit}</entry>
 										<entry>org.slf4j:slf4j-simple:${v.slf4j}</entry>
 										<entry>com.sleepycat:je:${v.sleepycat}</entry>
 									</requestorClasspath>

@@ -22,6 +22,7 @@ import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.ServiceItemFilter;
+import net.jini.lookup.entry.Name;
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
@@ -31,9 +32,10 @@ import sorcer.util.ProviderNameUtil;
 import sorcer.util.SorcerProviderNameUtil;
 import sorcer.util.StringUtils;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static sorcer.core.SorcerConstants.P_UNDEFINED;
+import static sorcer.core.SorcerConstants.ANY;
 
 /**
  * A service accessing facility that allows to find dynamically a network
@@ -90,10 +92,10 @@ public class Accessor {
         String name;
         Entry[] attributes;
 
-        if (providerName != null && providerName.length() != 0)
+        if (providerName != null && !providerName.isEmpty() && !ANY.equals(providerName))
             name = providerName;
         else
-            name = P_UNDEFINED;
+            name = null;
 
         if (serviceTypes == null)
             types = new Class[] { Provider.class };
@@ -181,7 +183,7 @@ public class Accessor {
     }
 
     public static ServiceItem[] getServiceItems(Class type, ServiceItemFilter filter){
-        ServiceTemplate serviceTemplate = getServiceTemplate(null, P_UNDEFINED, new Class[]{type}, null);
+        ServiceTemplate serviceTemplate = getServiceTemplate(null, null, new Class[]{type}, null);
         return getServiceItems(serviceTemplate, filter);
     }
 
@@ -205,7 +207,26 @@ public class Accessor {
     }
 
     public static ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups){
+        checkNullName(template);
         return accessor.getServiceItems(template, minMatches, maxMatches, filter, groups);
+    }
+
+    private static void checkNullName(ServiceTemplate template) {
+        for (Entry attr : template.attributeSetTemplates) {
+            if (attr instanceof Name) {
+                Name name = (Name) attr;
+                if (ANY.equals(name.name)) {
+                    name.name = null;
+                    logger.log(Level.WARNING, "Requested service with name '*'", new IllegalArgumentException());
+                }
+            } else if (attr instanceof SorcerServiceInfo) {
+                SorcerServiceInfo info = (SorcerServiceInfo) attr;
+                if (ANY.equals(info.providerName)) {
+                    info.providerName = null;
+                    logger.log(Level.WARNING, "Requested service with name '*'", new IllegalArgumentException());
+                }
+            }
+        }
     }
 
 }

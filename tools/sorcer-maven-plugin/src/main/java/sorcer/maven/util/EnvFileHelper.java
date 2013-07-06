@@ -47,6 +47,7 @@ public class EnvFileHelper {
 			props.load(inputStream);
 			String id = getRandomString();
 			props.setProperty("provider.groups", id);
+			props.setProperty("provider.space.group", id);
 
 			File propFile = new File(projectOutDir, "sorcer.env");
 			outProps = new FileOutputStream(propFile);

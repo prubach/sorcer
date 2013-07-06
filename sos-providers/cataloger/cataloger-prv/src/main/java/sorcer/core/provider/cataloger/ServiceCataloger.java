@@ -19,6 +19,7 @@ package sorcer.core.provider.cataloger;
 
 import com.sun.jini.start.LifeCycle;
 import net.jini.core.discovery.LookupLocator;
+import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
@@ -280,7 +281,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public Provider lookup(String providerName, Class... serviceTypes)
 			throws RemoteException {
 		String pn = providerName;
-		if (providerName != null && providerName.equals(ANY))
+		if (ANY.equals(providerName))
 			pn = null;
 		try {
 			ServiceItem sItem = cinfo.getServiceItem(serviceTypes, pn);
@@ -649,7 +650,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             //
 			Vector list = getAll(new InterfaceList(interfaces));
 			logger.fine("Cinfo getServiceItem, got: " + list);
-			if (providerName != null && providerName.equals(ANY))
+			if (ANY.equals(providerName))
 				providerName = null;
 			if (list == null)
 				return null;
@@ -1408,7 +1409,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * 
 	 * @param tmpl
 	 *            - the template to match
-	 * @param maxMatches
+	 * @param maxMatches limit number of matches
 	 * @return a ServiceMatches instance that contains at most maxMatches items
 	 *         matching the template, plus the total number of items that match
 	 *         the template. The return value is never null, and the returned
@@ -1417,8 +1418,31 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 */
 	public ServiceMatches lookup(ServiceTemplate tmpl, int maxMatches)
 			throws RemoteException {
-		// TODO
-		return null;
-	}
+        List<ServiceItem> result = new LinkedList<ServiceItem>();
+        for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : (Set<Map.Entry>) cinfo.entrySet()) {
+            List<ServiceItem> serviceItems = entry.getValue();
+            SRVITEM:
+            for (ServiceItem serviceItem : serviceItems) {
+                if (tmpl.serviceID != null && tmpl.serviceID.equals(serviceItem.serviceID)) {
+                    result.add(serviceItem);
+                    //serviceID is unique, stop on first matching service
+                    break;
+                }
+
+                CatalogerInfo.InterfaceList interfaceList = entry.getKey();
+                if (interfaceList.containsAll(Arrays.asList(tmpl.serviceTypes))) {
+                    List<Entry> sItemEntryList = Arrays.asList(serviceItem.attributeSets);
+                    for (Entry attr : tmpl.attributeSetTemplates) {
+                        if (!sItemEntryList.contains(attr)) {
+                            continue SRVITEM;
+                        }
+                    }
+                    result.add(serviceItem);
+                    if (result.size() >= maxMatches) break;
+                }
+            }
+        }
+        return new ServiceMatches(result.toArray(new ServiceItem[result.size()]), result.size());
+    }
 
 }

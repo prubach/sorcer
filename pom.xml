@@ -16,6 +16,8 @@
 	<inceptionYear>2013</inceptionYear>
 
 	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<v.sorcer>${project.version}</v.sorcer>
         <!-- required for site -->
         <v_sorcer>${project.version}</v_sorcer>
@@ -28,8 +30,8 @@
 		<v.sigar>1.6.4</v.sigar>
 		<v.lockmgr>0.2.sorcer2</v.lockmgr>
         <v.slf4j>1.7.5</v.slf4j>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+        <v.junit>4.11</v.junit>
+    </properties>
 
 	<modules>
 		<module>sos</module>
@@ -158,7 +160,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>${v.junit}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

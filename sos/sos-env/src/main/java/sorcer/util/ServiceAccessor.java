@@ -65,9 +65,9 @@ import java.util.logging.Logger;
  * for frequently used SORCER infrastructure services. ProviderAccessor normally
  * uses Cataloger if available, otherwise uses Jini lookup services as
  * implemented by the ServiceAccessor.
- * 
+ *
  * @see sorcer.util.ProviderAccessor
- * 
+ *
  * @author Mike Sobolewski
  */
 public class ServiceAccessor implements DynamicAccessor {
@@ -94,14 +94,14 @@ public class ServiceAccessor implements DynamicAccessor {
 
     protected ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
 
-    protected ServiceAccessor() {
+    public ServiceAccessor() {
         openDiscoveryManagement(SorcerEnv.getLookupGroups());
     }
 
 	/**
 	 * Returns a service item containing a service matching providerName and
 	 * serviceType using Jini lookup service.
-	 * 
+	 *
 	 * @param providerName name of the requested provider
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
@@ -124,11 +124,11 @@ public class ServiceAccessor implements DynamicAccessor {
 		}
 		return si;
 	}
-	
+
 	/**
 	 * Returns a service item containing a service matching only the
 	 * serviceType. It uses Jini lookup service.
-	 * 
+	 *
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
 	 */
@@ -160,7 +160,7 @@ public class ServiceAccessor implements DynamicAccessor {
 	 * applying more precise, for example boolean selection as required by the
 	 * client. No lookup cache is used by this <code>getServiceItem</code>
 	 * method.
-	 * 
+	 *
 	 * @param template
 	 *            template to match remotely.
 	 * @param filter
@@ -236,8 +236,8 @@ public class ServiceAccessor implements DynamicAccessor {
 	 * as an object of an inner class. A filter narrows the template matching by
 	 * applying more precise, for example boolean selection as required by the
 	 * client.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param template
 	 *            template to match remotely.
 	 * @param filter
@@ -291,7 +291,7 @@ public class ServiceAccessor implements DynamicAccessor {
 	/**
 	 * Creates a service lookup and discovery manager with a provided service
 	 * template, lookup cache filter, and list of jini groups.
-	 * 
+	 *
 	 * @param groups River group names
 	 */
 	protected void openDiscoveryManagement(String[] groups) {
@@ -361,7 +361,7 @@ public class ServiceAccessor implements DynamicAccessor {
 	/**
 	 * Returns a service matching serviceType, service attributes (entries), and
 	 * passes a provided filter.
-	 * 
+	 *
 	 * @param attributes   attributes of the requested provider
 	 * @param serviceType type of the requested provider
 	 * @return a SORCER provider
@@ -417,7 +417,7 @@ public class ServiceAccessor implements DynamicAccessor {
 	/**
 	 * Returns a service matching a given template filter, and Jini lookup
 	 * service.
-	 * 
+	 *
 	 * @param template service template
 	 * @param filter   service filter
 	 * @param groups   River groups list
@@ -437,9 +437,9 @@ public class ServiceAccessor implements DynamicAccessor {
 	/**
 	 * Returns a list of lookup locators with the URLs defined in the SORCER
 	 * environment
-	 * 
+	 *
 	 * @see sorcer.util.Sorcer
-	 * 
+	 *
 	 * @return a list of locators for unicast lookup discovery
 	 */
 	private LookupLocator[] getLookupLocators() {
@@ -516,14 +516,7 @@ public class ServiceAccessor implements DynamicAccessor {
     }
 
     public ServiceItem[] getServiceItems(ServiceTemplate template, ServiceItemFilter filter) {
-        try {
-            return sdManager.lookup(template, MIN_MATCHES, MAX_MATCHES, filter, WAIT_FOR);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error while getting service", e);
-            return null;
-        }
+        return doGetServiceItems(template, MIN_MATCHES, MAX_MATCHES, filter);
     }
 
     public Object getService(ServiceTemplate template, ServiceItemFilter filter) {
@@ -546,6 +539,21 @@ public class ServiceAccessor implements DynamicAccessor {
                 throw new IllegalArgumentException("User requested River group other than default, this is currently unsupported");
             }
         }
+        for (int tryNo = 0; tryNo < LUS_REAPEAT; tryNo++) {
+            ServiceItem[] result = doGetServiceItems(template, minMatches, maxMatches, filter);
+            if (result != null && result.length > 0)
+                return result;
+
+            try {
+                Thread.sleep(ServiceAccessor.WAIT_FOR);
+            } catch (InterruptedException ignored) {
+                //ignore
+            }
+        }
+        return new ServiceItem[0];
+    }
+
+    private ServiceItem[] doGetServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter) {
         try {
             return sdManager.lookup(template, minMatches, maxMatches, filter, WAIT_FOR);
         } catch (RuntimeException e) {

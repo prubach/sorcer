@@ -26,10 +26,12 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.boot.ServiceStarter;
+import sorcer.core.Cataloger;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.maven.util.*;
+import sorcer.service.Accessor;
 import sorcer.tools.webster.Webster;
 import sorcer.util.Process2;
 
@@ -53,7 +55,7 @@ public class BootMojo extends AbstractSorcerMojo {
 	 * Location of the services file.
 	 */
 	@Parameter(defaultValue = "${project.build.outputDirectory}/config/services.config")
-	private File servicesConfig;
+	protected File servicesConfig;
 
 	@Parameter(required = true, defaultValue = "sorcer.boot.ServiceStarter")
 	protected String mainClass;
@@ -70,7 +72,7 @@ public class BootMojo extends AbstractSorcerMojo {
 	@Parameter(defaultValue = "${providerName}-prv")
 	protected String provider;
 
-	@Parameter(property = "sorcer.provider.debug")
+	@Parameter(property = "server.debug")
 	protected boolean debug;
 
 	/**
@@ -94,7 +96,7 @@ public class BootMojo extends AbstractSorcerMojo {
 		getService
 	}
 
-	@Parameter(defaultValue = "sleep")
+	@Parameter(defaultValue = "sleep", property = "server.waitMode")
 	protected WaitMode waitMode;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -104,7 +106,7 @@ public class BootMojo extends AbstractSorcerMojo {
 		getLog().debug("servicesConfig: " + servicesConfig);
 
 		// prepare sorcer.env with updated group
-		String sorcerEnv = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
+		String sorcerEnvPath = EnvFileHelper.prepareEnvFile(projectOutputDir.getPath());
 
 		//prepare sorcer.policy with grant AllPermission
 		PolicyFileHelper.preparePolicyFile(testOutputDir.getPath());
@@ -129,12 +131,17 @@ public class BootMojo extends AbstractSorcerMojo {
 		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);
 		properties.put(SorcerConstants.S_RIO_HOME, rioHome);
 		properties.put(SorcerConstants.S_WEBSTER_TMP_DIR, new File(sorcerHome, "data").getPath());
-		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnv);
+		properties.put(SorcerConstants.S_KEY_SORCER_ENV, sorcerEnvPath);
 		properties.put(SorcerConstants.P_WEBSTER_PORT, "" + reserveProviderPort());
 		properties.put(SorcerConstants.S_BLITZ_HOME, blitzHome.getPath());
 
-		SorcerProcessBuilder builder = new SorcerProcessBuilder(new SorcerEnv(properties));
-		builder.setMainClass(mainClass);
+        SorcerEnv env = SorcerEnv.load(sorcerEnvPath);
+        env.load(properties);
+        SorcerEnv.setSorcerEnv(env);
+
+		SorcerProcessBuilder builder = new SorcerProcessBuilder(env);
+
+        builder.setMainClass(mainClass);
 		builder.setProperties(properties);
 		builder.setParameters(Arrays.asList(ServiceStarter.SORCER_DEFAULT_CONFIG, servicesConfig.getPath()));
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
@@ -160,13 +167,19 @@ public class BootMojo extends AbstractSorcerMojo {
 	private void waitForProvider() throws MojoExecutionException {
 		switch (waitMode) {
 			case sleep:
-				try {
+                getLog().info("Waiting for the provider for " + sleepAfter + "ms.");
+                try {
 					Thread.sleep(sleepAfter);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 					//ignore
 				}
 				break;
-			default:
+            case getService:
+                getLog().info("Waiting for the provider until a service is available");
+                Cataloger service = Accessor.getService(Cataloger.class);
+                getLog().info("Service = " + service);
+                break;
+            default:
 				throw new MojoExecutionException("Unsupported waitMode");
 		}
 	}

@@ -20,6 +20,7 @@ package sorcer.util;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.DiscoveryEvent;
@@ -27,7 +28,8 @@ import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
-import sorcer.core.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
@@ -35,6 +37,9 @@ import sorcer.service.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ProviderLoactor is a simple wrapper class over Jini's LookupDiscover. It
@@ -43,8 +48,8 @@ import java.rmi.RemoteException;
  */
 
 public class ProviderLocator implements DynamicAccessor {
-
-	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
+    final private static Logger log = LoggerFactory.getLogger(ProviderLocator.class);
+    static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
 	private Object _proxy;
 	private final Object _lock = new Object();
@@ -183,7 +188,49 @@ public class ProviderLocator implements DynamicAccessor {
 
     @Override
     public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
-        return new ServiceItem[0];  //To change body of implemented methods use File | Settings | File Templates.
+        String[] locators = SorcerEnv.getLookupLocators();
+        List<ServiceItem> result = new ArrayList<ServiceItem>();
+        for (String locator : locators) {
+            try {
+                LookupLocator loc = new LookupLocator("jini://" + locator);
+                ServiceRegistrar reggie = loc.getRegistrar();
+                ServiceMatches matches = reggie.lookup(template, maxMatches);
+                result.addAll(Arrays.asList(matches.items));
+                if (result.size() >= maxMatches) break;
+            } catch (MalformedURLException e) {
+                log.warn("Malformed URL", e);
+            } catch (ClassNotFoundException e) {
+                log.warn("Malformed URL", e);
+            } catch (RemoteException e) {
+                log.debug("Remote exception", e);
+            } catch (IOException e) {
+                log.debug("Communication error", e);
+            }
+        }
+        if (result.size() < minMatches) {
+            //TODO this is exactly the same as ProviderLookup. Consider extending that class
+            LookupDiscovery disco = null;
+            try {
+                disco = new LookupDiscovery(groups);
+                //SorcerDiscoveryListener listener = new SorcerDiscoveryListener(template, minMatches, maxMatches, filter);
+                //disco.addDiscoveryListener(listener);
+                //result.addAll(listener.get(WAIT_FOR, TimeUnit.MILLISECONDS));
+                Thread.sleep(WAIT_FOR);
+                for (ServiceRegistrar registrar : disco.getRegistrars()) {
+                    ServiceMatches matches = registrar.lookup(template, maxMatches);
+                    result.addAll(Arrays.asList(matches.items));
+                    if (result.size() >= maxMatches) break;
+                }
+            } catch (IOException e) {
+                log.debug("Communication error", e);
+            } catch (InterruptedException ignored) {
+                //ignored
+            } finally {
+                disco.terminate();
+            }
+        }
+
+        return result.toArray(new ServiceItem[result.size()]);
     }
 
     class Listener implements DiscoveryListener {
@@ -233,16 +280,6 @@ public class ProviderLocator implements DynamicAccessor {
 	public ServiceItem getServiceItem(Signature signature)
 			throws SignatureException {
 		throw new SignatureException("Not implemented by this service accessor");
-	}
-
-    public Provider getProvider(String name, Class<?> type) {
-        try {
-            return (Provider) getService(type, name, Long.MAX_VALUE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 	}
 
 	/*

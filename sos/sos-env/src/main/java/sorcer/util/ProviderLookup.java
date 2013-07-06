@@ -32,6 +32,7 @@ import sorcer.service.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -316,7 +317,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
         LookupDiscovery lookupDiscovery = null;
         try {
             lookupDiscovery = new LookupDiscovery(SorcerEnv.getLookupGroups());
-            Listener resultListener = new Listener(template, 1, SorcerEnv.getLookupMaxMatches(), filter);
+            SorcerDiscoveryListener resultListener = new SorcerDiscoveryListener(template, 1, SorcerEnv.getLookupMaxMatches(), filter);
             lookupDiscovery.addDiscoveryListener(resultListener);
             return resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
         } catch (IOException ignored) {
@@ -334,15 +335,20 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
     public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
         LookupDiscovery lookupDiscovery = null;
         try {
-            lookupDiscovery = new LookupDiscovery(SorcerEnv.getLookupGroups());
-            Listener resultListener = new Listener(template, minMatches, maxMatches, filter);
-            lookupDiscovery.addDiscoveryListener(resultListener);
-            List<ServiceItem> serviceItems = resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
+            lookupDiscovery = new LookupDiscovery(groups);
+            //SorcerDiscoveryListener resultListener = new SorcerDiscoveryListener(template, minMatches, maxMatches, filter);
+            //lookupDiscovery.addDiscoveryListener(resultListener);
+            //List<ServiceItem> serviceItems = resultListener.get(WAIT_FOR, TimeUnit.MILLISECONDS);
+            Thread.sleep(WAIT_FOR*MAX_TRIES);
+            List<ServiceItem>serviceItems=new LinkedList<ServiceItem>();
+            for (ServiceRegistrar registrar : lookupDiscovery.getRegistrars()) {
+                serviceItems.addAll(Arrays.asList(registrar.lookup(template, maxMatches).items));
+            }
             return serviceItems.toArray(new ServiceItem[serviceItems.size()]);
         } catch (IOException ignored) {
-            return null;
+            return new ServiceItem[0];
         } catch (InterruptedException ignored) {
-            return null;
+            return new ServiceItem[0];
         } finally {
             if (lookupDiscovery != null) {
                 lookupDiscovery.terminate();
@@ -351,7 +357,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
     }
 }
 
-class Listener implements DiscoveryListener, Future<List<ServiceItem>>{
+class SorcerDiscoveryListener implements DiscoveryListener, Future<List<ServiceItem>>{
     private ServiceTemplate template;
     private ServiceItemFilter filter;
     private int minResults;
@@ -360,7 +366,7 @@ class Listener implements DiscoveryListener, Future<List<ServiceItem>>{
     private boolean canceled;
     private boolean done;
 
-    Listener(ServiceTemplate template, int minResults, int maxResults, ServiceItemFilter filter) {
+    SorcerDiscoveryListener(ServiceTemplate template, int minResults, int maxResults, ServiceItemFilter filter) {
         this.template = template;
         this.minResults = minResults;
         this.maxResults = maxResults;
