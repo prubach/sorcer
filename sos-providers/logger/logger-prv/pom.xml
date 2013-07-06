@@ -21,16 +21,6 @@
             <artifactId>sos-platform</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>logger-sui</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

@@ -24,7 +24,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -43,16 +42,8 @@ import java.util.regex.PatternSyntaxException;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
-import net.jini.lookup.ui.factory.JFrameFactory;
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.core.provider.logger.ui.LoggerFrameUI;
-import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.ui.serviceui.UIFrameFactory;
-
 
 import com.sun.jini.start.LifeCycle;
 
@@ -254,35 +245,6 @@ public class RemoteLoggerManager extends ServiceProvider implements RemoteLogger
 //		}
 	}
 
-	/**
-	 * Returns a service UI descriptor for LoggerManagerUI. The service
-	 * UI allows for viewing remote logs of selected providers.
-	 * 
-	 * @see sorcer.core.Provider#getMainUIDescriptor()
-	 */
-	/*
-	 * (non-Java doc)
-	 * 
-	 * @see sorcer.core.provider.ServiceProvider#getMainUIDescriptor()
-	 */
-	public UIDescriptor getMainUIDescriptor() {
-		UIDescriptor uiDesc = null;
-		try {
-			URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/logger-sui.jar");
-			URL helpUrl = new URL(SorcerEnv.getWebsterUrl() + "/logger.html");
-		
-			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIFrameFactory(new URL[] { uiUrl },
-							LoggerFrameUI.class
-							.getName(),
-							"Log Viewer",
-							helpUrl));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return uiDesc;
-	}
-	
 	public String getLogComments(String filename) {
 		Pattern p = null;
 		try {
