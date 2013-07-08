@@ -26,6 +26,7 @@ import sorcer.resolver.Resolver;
 import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
+import sorcer.util.Artifact;
 
 
 import javax.swing.*;
@@ -85,7 +86,7 @@ public class SampleUI extends JPanel {
     public static UIDescriptor getUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative("com.example.sorcer:first-sui:1.0-SNAPSHOT"));
+            URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative(Artifact.sorcer("first-sui")));
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIComponentFactory(new URL[] {uiUrl}, SampleUI.class.getName()));
         } catch (Exception ex) {
