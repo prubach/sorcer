@@ -21,7 +21,7 @@
 
 <project name="SSB" default="run" basedir=".">
 	
-	<property name="pom.file" value="${basedir}/../configs/browser/pom.xml" />
+	<property name="pom.file" value="${basedir}/../tools/browser/pom.xml" />
 	<!-- load system environment variables -->
     <property name="sorcer.distro.in.libs" value="true" />
     <property environment="env" />
