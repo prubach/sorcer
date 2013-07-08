@@ -288,7 +288,7 @@ $LIB_DIR/commons/commons-lang3.jar"
       # MVN version
       V_SORCER=$(getVersion v.sorcer)
       if [ -z "V_SORCER" ] ; then
-        V_SORCER="1.0-SNAPSHOT"
+        V_SORCER="1.0-M2-SNAPSHOT"
       fi
       V_RIO=$(getVersion v.rio)
       V_JINI=$(getVersion v.jini)
