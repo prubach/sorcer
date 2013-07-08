@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,6 +116,13 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	private static JarClassPathHelper classPathHelper = new JarClassPathHelper();
     private static Activator activator = new Activator();
     private static boolean platformLoaded = false;
+
+    private static AtomicInteger allDescriptors = new AtomicInteger(0);
+    private static AtomicInteger startedServices = new AtomicInteger(0);
+
+    {
+        allDescriptors.incrementAndGet();
+    }
 
     /**
 	 * Object returned by
@@ -299,6 +307,15 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * @see com.sun.jini.start.ServiceDescriptor#create
 	 */
 	public Object create(Configuration config) throws Exception {
+        try{
+            return docreate(config);
+        }finally {
+            int i = startedServices.incrementAndGet();
+            logger.info("Started "+i+'/'+allDescriptors.get()+" services");
+        }
+    }
+
+	private Object docreate(Configuration config) throws Exception {
 		ensureSecurityManager();
 		Object proxy = null;
 
