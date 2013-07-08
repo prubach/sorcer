@@ -62,13 +62,12 @@ public class ArithmeticExerterTest {
 		// logger.info("result: " + result);
 		// logger.info("return value: " + result.getReturnValue());
 	
-		Context out = (Context) result.getContext();
+		Context out = result.getContext();
 //		logger.info("out context: " + out);
-		logger.info("1job1task/subtract/result/value: "
+        String valueKey = "1job1task/subtract/result/value";
+        logger.info("1job1task/subtract/result/value: "
 				+ out.getValue(
-						"1job1task/subtract/result/value"));
-		assertEquals(
-				out.getValue("1job1task/subtract/result/value"),
-				400.0);
+                valueKey));
+        assertEquals(valueKey, 400.0, out.getValue(valueKey));
 	}
 }
