@@ -206,6 +206,7 @@ public class Accessor {
 
     public static ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups){
         checkNullName(template);
+        if (filter == null) filter = Filters.any();
         return accessor.getServiceItems(template, minMatches, maxMatches, filter, groups);
     }
 

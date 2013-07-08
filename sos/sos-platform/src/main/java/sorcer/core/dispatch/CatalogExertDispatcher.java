@@ -22,6 +22,7 @@ import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.exertion.Jobs;
+import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
@@ -277,6 +278,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			 * efficient load balancing algorithm should be implemented for
 			 * dispatching inner jobs. Currently, it only does round robin.
 			 */
+            if(job instanceof NetJob){
 			for (int i = 0; i < jobbers.length; i++) {
                 ServiceItem jobberSInte = jobbers[i];
                 if (jobberSInte != null) {
@@ -286,26 +288,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     return (Job) rjobber.service(job, null);
                 }
 			}
+            }
 
-			/*
-			 * Create a new dispatcher thread for the inner job, if no available
-			 * Jobber is found in the network
-			 */
-			Dispatcher dispatcher;
-			runningExertionIDs.addElement(job.getId());
-
-			// create a new instance of a dispatcher
-			dispatcher = ExertionDispatcherFactory.getFactory()
-					.createDispatcher(job, sharedContexts, true, provider);
-			// wait until serviceJob is done by dispatcher
-			while (dispatcher.getState() != DONE
-					&& dispatcher.getState() != FAILED) {
-				Thread.sleep(SLEEP_TIME);
-			}
-			Job out = (Job) dispatcher.getExertion();
-			out.getControlContext().appendTrace(provider.getProviderName() 
-					+ " dispatcher: " + getClass().getName());
-			return out;
+            return execJobLocally(job);
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			throw re;
@@ -324,7 +309,29 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		}
 	}
 
-	protected class ExertionThread extends Thread {
+    /*
+     * Create a new dispatcher thread for the inner job, if no available
+     * Jobber is found in the network
+     */
+    private Job execJobLocally(Job job) throws DispatcherException, InterruptedException, RemoteException {
+        Dispatcher dispatcher;
+        runningExertionIDs.addElement(job.getId());
+
+        // create a new instance of a dispatcher
+        dispatcher = ExertionDispatcherFactory.getFactory()
+                .createDispatcher(job, sharedContexts, true, provider);
+        // wait until serviceJob is done by dispatcher
+        while (dispatcher.getState() != DONE
+                && dispatcher.getState() != FAILED) {
+            Thread.sleep(SLEEP_TIME);
+        }
+        Job out = (Job) dispatcher.getExertion();
+        out.getControlContext().appendTrace(provider.getProviderName()
+                + " dispatcher: " + getClass().getName());
+        return out;
+    }
+
+    protected class ExertionThread extends Thread {
 
 		private Exertion ex;
 

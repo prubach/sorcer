@@ -43,7 +43,7 @@ public class TransactionManagerAccessor extends ServiceAccessor{
         TransactionManager transactionMgr= (TransactionManager) cache.get(TransactionManager.class.getName());
         try {
             if (transactionMgr == null)
-                return getNewTransactionManger();
+                return doGetNewTransactionManger();
             transactionMgr.getState(-1);
             return transactionMgr;
         } catch (net.jini.core.transaction.UnknownTransactionException ute) {
