@@ -32,6 +32,8 @@ import sorcer.util.ProviderNameUtil;
 import sorcer.util.SorcerProviderNameUtil;
 import sorcer.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,26 +91,22 @@ public class Accessor {
             String providerName, Class[] serviceTypes,
             String[] publishedServiceTypes) {
         Class[] types;
-        String name;
-        Entry[] attributes;
+        List<Entry> attributes = new ArrayList<Entry>(2);
 
         if (providerName != null && !providerName.isEmpty() && !ANY.equals(providerName))
-            name = providerName;
-        else
-            name = null;
+            attributes.add(new Name(providerName));
 
-        if (serviceTypes == null)
-            types = new Class[] { Provider.class };
-        else
-            types = serviceTypes;
-
-        SorcerServiceInfo st = new SorcerServiceInfo();
-        st.providerName = name;
-
-        if (publishedServiceTypes != null)
+        if (publishedServiceTypes != null) {
+            SorcerServiceInfo st = new SorcerServiceInfo();
             st.publishedServices = publishedServiceTypes;
+            attributes.add(st);
+        }
 
-        attributes = new Entry[] { st };
+        if (serviceTypes == null) {
+            types = new Class[] { Provider.class };
+        } else {
+            types = serviceTypes;
+        }
 
         logger.info("getServiceTemplate >> \n serviceID: " + serviceID
                 + "\nproviderName: " + providerName + "\nserviceTypes: "
@@ -116,7 +114,7 @@ public class Accessor {
                 + "\npublishedServiceTypes: "
                 + StringUtils.arrayToString(publishedServiceTypes));
 
-        return new ServiceTemplate(serviceID, types, attributes);
+        return new ServiceTemplate(serviceID, types, attributes.toArray(new Entry[attributes.size()]));
     }
 
     private static String overrideName(String providerName, Class serviceType) {
