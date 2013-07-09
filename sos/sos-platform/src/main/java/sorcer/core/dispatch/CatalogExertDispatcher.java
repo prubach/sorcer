@@ -270,7 +270,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			ClassNotFoundException, ExertionException, RemoteException {
 
 		try {
-            ServiceItem[] jobbers = Accessor.getServiceItems(Jobber.class, Filters.not(Filters.serviceId(provider.getProviderID())));
 
 			/*
 			 * check if there is any available jobber in the network and
@@ -278,16 +277,17 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			 * efficient load balancing algorithm should be implemented for
 			 * dispatching inner jobs. Currently, it only does round robin.
 			 */
-            if(job instanceof NetJob){
-			for (int i = 0; i < jobbers.length; i++) {
-                ServiceItem jobberSInte = jobbers[i];
-                if (jobberSInte != null) {
-                    logger.finest("Jobber: " + i + " ServiceID: " + jobberSInte.serviceID);
-                    Provider rjobber = (Provider) jobberSInte.service;
+            if (job instanceof NetJob) {
+                ServiceItem[] jobbers = Accessor.getServiceItems(Jobber.class, Filters.not(Filters.serviceId(provider.getProviderID())));
+                for (int i = 0; i < jobbers.length; i++) {
+                    ServiceItem jobberSInte = jobbers[i];
+                    if (jobberSInte != null) {
+                        logger.finest("Jobber: " + i + " ServiceID: " + jobberSInte.serviceID);
+                        Provider rjobber = (Provider) jobberSInte.service;
 
-                    return (Job) rjobber.service(job, null);
+                        return (Job) rjobber.service(job, null);
+                    }
                 }
-			}
             }
 
             return execJobLocally(job);

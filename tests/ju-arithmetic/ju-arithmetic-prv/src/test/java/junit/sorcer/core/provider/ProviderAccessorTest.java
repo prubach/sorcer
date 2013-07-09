@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.SorcerEnv;
+import sorcer.river.Filters;
 import sorcer.service.Accessor;
 import sorcer.service.DynamicAccessor;
 import sorcer.service.Jobber;
@@ -65,7 +66,7 @@ public class ProviderAccessorTest {
 
     public void checkAccessor(DynamicAccessor accessor){
         long startTime = System.currentTimeMillis();
-        ServiceItem[] serviceItems = accessor.getServiceItems(jobberTemplate, 1, 1, null, SorcerEnv.getLookupGroups());
+        ServiceItem[] serviceItems = accessor.getServiceItems(jobberTemplate, 1, 1, Filters.any(), SorcerEnv.getLookupGroups());
         assertTrue(serviceItems.length > 0);
         Service provider = (Service) serviceItems[0].service;
         //logger.info("ProviderLocator provider: " + provider);

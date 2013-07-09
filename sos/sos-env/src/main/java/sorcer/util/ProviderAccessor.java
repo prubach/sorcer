@@ -210,7 +210,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 			if (catIsOk) {
 				return cataloger;
 			} else {
-                ServiceItem[] serviceItems = getServiceItems(Accessor.getServiceTemplate(null, serviceName, new Class[]{Cataloger.class}, null), 1, 1, null, SorcerEnv.getLookupGroups());
+                ServiceItem[] serviceItems = getServiceItems(Accessor.getServiceTemplate(null, serviceName, new Class[]{Cataloger.class}, null), 1, 1, Filters.any(), SorcerEnv.getLookupGroups());
                 return cataloger = serviceItems.length == 0 ? null : (Cataloger) serviceItems[0].service;
             }
 		} catch (Exception e) {
@@ -260,6 +260,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 
     @Override
     public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
+        assert filter != null;
         if(!Arrays.asList(template.serviceTypes).contains(Cataloger.class)){
             Cataloger cataloger = getCataloger();
             if (cataloger != null) {
