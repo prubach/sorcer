@@ -1932,14 +1932,15 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					&& dispatcher.getState() != ExecState.SUSPENDED) {
 				Thread.sleep(SLEEP_TIME);
 			}
+            return dispatcher.getExertion();
 		} catch (DispatcherException de) {
-			de.printStackTrace();
+            task.getControlContext().addException(de);
 		} catch (InterruptedException ie) {
-			ie.printStackTrace();
+            task.getControlContext().addException(ie);
 		} catch (Throwable e) {
-			e.printStackTrace();
+            task.getControlContext().addException(e);
 		}
-		return dispatcher.getExertion();
+        return task;
 	}
 	
 }
