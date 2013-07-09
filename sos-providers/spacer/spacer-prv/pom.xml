@@ -16,6 +16,16 @@
 
 	<dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sorcer-api</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sos-env</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>

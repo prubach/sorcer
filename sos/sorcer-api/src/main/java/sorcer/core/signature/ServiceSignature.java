@@ -390,24 +390,24 @@ import java.util.logging.Logger;
 
 	public static int getTypeCd(Type type) {
 		if (type == Type.PRE)
-			return PREPROCESS_CD;
+			return Signature.PREPROCESS_CD;
 		else if (type == Type.SRV)
-			return PROCESS_CD;
+			return Signature.PROCESS_CD;
 		else if (type == Type.POST)
-			return POSTPROCESS_CD;
+			return Signature.POSTPROCESS_CD;
 		else if (type == Type.APD)
-			return APPEND_CD;
+			return Signature.APPEND_CD;
 		return 0;
 	}
 
 	public static Signature.Type getType(int code) {
-		if (code == PREPROCESS_CD)
+		if (code == Signature.PREPROCESS_CD)
 			return Type.PRE;
-		else if (code == PROCESS_CD)
+		else if (code == Signature.PROCESS_CD)
 			return Type.SRV;
-		else if (code == POSTPROCESS_CD)
+		else if (code == Signature.POSTPROCESS_CD)
 			return Type.POST;
-		else if (code == APPEND_CD)
+		else if (code == Signature.APPEND_CD)
 			return Type.APD;
 		return null;
 	}

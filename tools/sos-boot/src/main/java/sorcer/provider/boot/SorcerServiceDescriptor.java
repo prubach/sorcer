@@ -427,10 +427,10 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			}
 			if (logger.isLoggable(Level.FINEST))
 				logger.log(Level.FINEST, "Proxy =  {0}", proxy);
-			currentThread.setContextClassLoader(currentClassLoader);
 			// TODO - factor in code integrity for MO
-			proxy = (new MarshalledObject(proxy)).get();
-		} finally {
+            proxy = (new MarshalledObject(proxy)).get();
+            currentThread.setContextClassLoader(currentClassLoader);
+        } finally {
 			currentThread.setContextClassLoader(currentClassLoader);
 		}
 		return (new Created(impl, proxy));
