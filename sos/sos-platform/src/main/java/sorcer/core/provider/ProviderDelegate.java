@@ -1418,37 +1418,6 @@ public class ProviderDelegate {
             logger.warning(StringUtils.stackTraceToString(ex));
 		}
 
-		// This construct may look strange. But it ensures that this class loads
-		// if rio is not in the classpath
-		//
-		// The code is equivalent to
-		// ApplianceInfo a = new ApplicaneInfo();
-		// a.initialize();
-		// attrVec.add(a);
-		try {
-			Class c;
-			c = this.getClass().getClassLoader()
-					.loadClass("org.jini.rio.entry.ApplianceInfo");
-			Object appInfo = c.newInstance();
-			Method m = c.getMethod("initialize", new Class[] {});
-			m.invoke(appInfo, (Object[]) null);
-			attrVec.add((Entry) appInfo);
-		} catch (ClassNotFoundException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (InstantiationException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (IllegalAccessException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (SecurityException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (NoSuchMethodException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (IllegalArgumentException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		} catch (InvocationTargetException e) {
-			// This happens if RIO classes are not in classpath. Ignore
-		}
-
 		attrVec.addAll(extraLookupAttributes);
 
 		return attrVec.toArray(new Entry[attrVec.size()]);
