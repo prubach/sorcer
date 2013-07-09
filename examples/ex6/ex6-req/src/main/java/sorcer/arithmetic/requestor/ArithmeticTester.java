@@ -21,6 +21,7 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.RemoteAdder;
 import sorcer.arithmetic.provider.Subtractor;
+import sorcer.core.context.ControlContext;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -289,9 +290,16 @@ private Exertion f1SEQpull() throws Exception {
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
-		System.out.println("Execution time: " + (end-start) + " ms.");
+        if (out.getExceptions().size()>0) {
+            logger.severe("exceptions: ");
+            for (ControlContext.ThrowableTrace e : out.getExceptions()) {
+                logger.severe(e.message + "\n" + e.stackTrace);
+            }
+        }
+        System.out.println("Execution time: " + (end-start) + " ms.");
 		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
+
 
 		return out;
 	}
