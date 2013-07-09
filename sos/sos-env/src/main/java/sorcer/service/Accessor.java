@@ -125,6 +125,7 @@ public class Accessor {
 
     @SuppressWarnings("unchecked")
     public static <T> T getService(String serviceName, Class<T> serviceType){
+        serviceName = overrideName(serviceName, serviceType);
         ServiceTemplate serviceTemplate = getServiceTemplate(null, serviceName, new Class[]{serviceType}, null);
         return (T) getService(serviceTemplate, Filters.any());
     }

@@ -47,7 +47,6 @@ import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.RemoteContextManagement;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.provider.proxy.Outer;
 import sorcer.core.provider.proxy.Partner;
@@ -1933,11 +1932,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				Thread.sleep(SLEEP_TIME);
 			}
             return dispatcher.getExertion();
-		} catch (DispatcherException de) {
-            task.getControlContext().addException(de);
-		} catch (InterruptedException ie) {
-            task.getControlContext().addException(ie);
-		} catch (Throwable e) {
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE,"Error while dispatching task", e);
             task.getControlContext().addException(e);
 		}
         return task;
