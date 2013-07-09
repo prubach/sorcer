@@ -119,6 +119,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
     private static AtomicInteger allDescriptors = new AtomicInteger(0);
     private static AtomicInteger startedServices = new AtomicInteger(0);
+    private static AtomicInteger erredServices = new AtomicInteger(0);
 
     {
         allDescriptors.incrementAndGet();
@@ -307,11 +308,14 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * @see com.sun.jini.start.ServiceDescriptor#create
 	 */
 	public Object create(Configuration config) throws Exception {
-        try{
+        try {
             return docreate(config);
-        }finally {
+        } catch (Exception x) {
+            erredServices.incrementAndGet();
+            throw x;
+        } finally {
             int i = startedServices.incrementAndGet();
-            logger.info("Started "+i+'/'+allDescriptors.get()+" services");
+            logger.info("Started " + i + '/' + allDescriptors.get() + " services; " + erredServices.get() + " errors");
         }
     }
 
