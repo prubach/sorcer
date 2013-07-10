@@ -278,4 +278,6 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
     int getIndex();
 
     void setIndex(int i);
+
+    MonitoringSession getMonitorSession();
 }

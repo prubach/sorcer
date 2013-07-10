@@ -27,8 +27,6 @@ import sorcer.core.context.eval.ContextNodeException;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.service.Direction;
-import sorcer.service.ReturnPath;
 import sorcer.util.StringUtils;
 
 import java.io.Serializable;
@@ -39,8 +37,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import static sorcer.service.Evaluator.value;
-import static sorcer.core.SorcerConstants.*;
+import static sorcer.service.ExecState.Category;
 
 /**
  * Implements the base-level service context interface {@link sorcer.service.Context}.
@@ -69,7 +66,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	// or use the default one: Context.ARGS
 	//protected String argsPath = Context.ARGS;
 	protected String argsPath;
-	
+
 	protected String parameterTypesPath;
 
 	protected String targetPath = Context.TARGET;
@@ -111,7 +108,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	protected String domainName;
 
 	protected String subdomainName;
-	
+
 	protected boolean isRevaluable = false;
 
     protected String prefix = "";
@@ -138,7 +135,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * context that implement the {@link sorcer.service.Evaluation} interface are evaluated for
 	 * its requested evaluated values.
 	 * </p>
-	 * 
+	 *
 	 * @return the <code>true</code> if this context is revaluable.
 	 */
 	public boolean isRevaluable() {
@@ -149,7 +146,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * <p>
 	 * Assign revaluability of this context.
 	 * </p>
-	 * 
+	 *
 	 * @param isRevaluable
 	 */
 	public void setRevaluable(boolean isRevaluable) {
@@ -192,9 +189,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			.getName());
 
 	/**
-	 * Default constructor for the ServiceContext class. The constructor calls the method init, 
-	 * defines the the service context name sets the root name to a blank string creates a new 
-	 * hash tables for path identifications, delPath, and linked paths. The constructor creates the 
+	 * Default constructor for the ServiceContext class. The constructor calls the method init,
+	 * defines the the service context name sets the root name to a blank string creates a new
+	 * hash tables for path identifications, delPath, and linked paths. The constructor creates the
 	 * context identification number via the UUID factory generate method.
 	 */
 	public ServiceContext() {
@@ -532,10 +529,10 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
     public T getReturnJobValue(Parameter... entries) throws ContextException {
 		return doGetReturnValue(returnJobPath, entries);
 	}
-		
+
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @throws
 	 */
 	public Object getValue0(String path) throws ContextException {
@@ -741,7 +738,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.base.ServiceContext#map(java.lang.String, java.lang.String,
 	 * sorcer.base.ServiceContext)
 	 */
@@ -755,7 +752,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	 * <p>
 	 * Contexts with mapped paths {@link #map} are indicated by the shared flag.
 	 * </p>
-	 * 
+	 *
 	 * @return the isShared
 	 */
 	@Override
@@ -803,7 +800,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		if (offset == null)
 			throw new ContextException(
 					"Failed to create ContextLink:  offset is null");
-		
+
 		String extendedLinkPath = path;
 		if (offset.length() > 0)
 			extendedLinkPath = path + SorcerConstants.CPS + offset;
@@ -842,7 +839,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			throws ContextException {
 		return putLink("", path, cntxt, "");
 	}
-	
+
 	public Object putLink(String name, String path, String id, String offset)
 			throws ContextException {
 		// insert link to the most recent version context with
@@ -1069,7 +1066,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 			while (e.hasMoreElements()) {
 				link = (ContextLink) e.nextElement();
 				result = getLinkedContext(link).isSingletonAttribute(
-						attributeName);
+                        attributeName);
 				if (result)
 					break;
 			}
@@ -1388,7 +1385,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#isValid(sorcer.service.Signature)
 	 */
 	public boolean isValid(Signature signature) throws ContextException {
@@ -1433,7 +1430,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				// getSubcontext cuts above, which is what we want
 				Enumeration el = subcntxt.contextPaths();
 				while (el.hasMoreElements()) {
-					path = (String) el.nextElement();						
+					path = (String) el.nextElement();
 					keys.addElement(key + SorcerConstants.CPS +path);
 				}
 			}
@@ -1481,7 +1478,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns a list of all paths marked as data output.
-	 * 
+	 *
 	 * @return list of all paths marked as data output
 	 * @throws sorcer.service.ContextException
 	 */
@@ -1491,7 +1488,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns a list of input context values marked as data input.
-	 * 
+	 *
 	 * @return a list of input values of this context
 	 * @throws sorcer.service.ContextException
 	 * @throws sorcer.service.ContextException
@@ -1510,9 +1507,9 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/**
 	 * Returns a list of output context values marked as data input.
-	 * 
+	 *
 	 * @throws sorcer.service.ContextException
-	 * 
+	 *
 	 * @return list of output values of this context
 	 * @throws sorcer.service.ContextException
 	 */
@@ -1832,7 +1829,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		int count = 0;
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
-			val = get(path);					
+			val = get(path);
 			if (!(val instanceof ContextLink)) {
 				if (count >= 1)
 					sb.append(cr);
@@ -1881,7 +1878,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		}
 		if (withMetacontext)
 			sb.append("metacontext: " + metacontext);
-		
+
 		// sb.append(cr);
 		// sb.append(cr);
 		if (cr.equals("<br>"))
@@ -2008,7 +2005,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#pipe(java.lang.String, java.lang.String,
 	 * sorcer.service.Context)
 	 */
@@ -2050,7 +2047,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public ServiceContext setArgs(Object... args) throws ContextException {
-		if (argsPath == null) 
+		if (argsPath == null)
 			argsPath = Context.PARAMETER_VALUES;
 		putInValue(argsPath, args);
 		return this;
@@ -2074,12 +2071,12 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public ServiceContext setParameterTypes(Class... types) throws ContextException {
-		if (parameterTypesPath == null) 
+		if (parameterTypesPath == null)
 			parameterTypesPath = Context.PARAMETER_TYPES;
 		putValue(parameterTypesPath, types);
 		return this;
 	}
-	
+
 	public String getParameterTypesPath() {
 		return parameterTypesPath;
 	}
@@ -2089,7 +2086,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		parameterTypesPath = targetPath;
 		return this;
 	}
-	
+
 	public Object getTarget() throws ContextException {
 		try {
 			return getValue(targetPath);
@@ -2121,7 +2118,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		this.returnPath = new ReturnPath();
 		return this;
 	}
-	
+
 	public ServiceContext setReturnPath(String path) throws ContextException {
 		this.returnPath = new ReturnPath(path);
 		return this;
@@ -2159,7 +2156,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		this.returnJobPath = new ReturnPath();
 		return this;
 	}
-	
+
 	public ServiceContext setReturnJobPath(String path) throws ContextException {
 		this.returnJobPath = new ReturnPath(path);
 		return this;
@@ -2189,7 +2186,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 		return value;
 	}
-	
+
 	public Object putInoutValue(String path, Object value)
 			throws ContextException {
 		putValue(path, value);
@@ -2256,7 +2253,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 	}
 
 	public boolean isLinked() {
-		Set entries = entrySet(); 
+		Set entries = entrySet();
 		Iterator i = entries.iterator();
 		while (i.hasNext()) {
 			Map.Entry e = (Map.Entry)i.next();
@@ -2577,7 +2574,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#appendTrace(java.lang.String)
 	 */
 	@Override
@@ -2587,7 +2584,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#getProvider()
 	 */
 	public Provider getProvider() {
@@ -2604,12 +2601,12 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 				if (e instanceof Tuple2) {
                     Tuple2 t = (Tuple2) e;
 					Object val = null;
-					
+
 					if (t._2 instanceof Evaluation)
 						val = ((Evaluation) t).getValue();
 					else
 						val = t._2;
-			
+
 					if (t._1 instanceof String) {
                         String s1 = (String) t._1;
                         putValue(s1, val);
@@ -2625,7 +2622,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#getMarkedValues(java.lang.String)
 	 */
 	@Override
@@ -2646,7 +2643,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#setMetacontext(java.util.Hashtable)
 	 */
 	@Override
@@ -2660,13 +2657,48 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Context#get(java.lang.String)
 	 */
 	@Override
 	public Object get(String path) {
 		return super.get(path);
 	}
+
+    /**
+     * Record this context as updated if the related exertion is monitored.
+     *
+     * @throws java.rmi.RemoteException
+     * @throws sorcer.service.MonitorException
+     */
+    public void checkpoint() throws ContextException {
+        Exertion mxrt = getExertion();
+        if (mxrt != null && mxrt.isMonitorable()
+                && mxrt.getMonitorSession() != null) {
+            try {
+                putValue("context/checkpoint/time", StringUtils.getDateTime());
+                mxrt.getMonitorSession().changed(this, Category.UPDATED);
+            } catch (Exception e) {
+                throw new ContextException(e);
+            }
+        }
+    }
+
+    /**
+     * Record this context acording to the corresponding aspect if the related
+     * exertion is monitored.
+     *
+     * @throws java.rmi.RemoteException
+     * @throws sorcer.service.MonitorException
+     */
+    public void changed(Category aspect) throws RemoteException,
+            MonitorException {
+        Exertion mxrt = getExertion();
+        if (mxrt != null && mxrt.isMonitorable()
+                && mxrt.getMonitorSession() != null) {
+            mxrt.getMonitorSession().changed(this, aspect);
+        }
+    }
 
     public Object getAsis(String path) throws ContextException {
 		Object val;
@@ -2693,7 +2725,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Evaluation#getValue(sorcer.core.context.Path.Entry[])
 	 */
 	@Override
@@ -2731,7 +2763,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 		}
 		return (T) obj;
 	}
-	
+
 	public String getCurrentSelector() {
 		return currentSelector;
 	}
@@ -2750,7 +2782,7 @@ public class ServiceContext<T> extends Hashtable<String, Object> implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Evaluation#getAsIs()
 	 */
 	@Override

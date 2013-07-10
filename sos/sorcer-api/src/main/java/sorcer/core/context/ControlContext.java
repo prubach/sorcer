@@ -18,6 +18,7 @@
 package sorcer.core.context;
 
 import sorcer.core.SorcerEnv;
+import sorcer.core.provider.exertmonitor.MonitoringManagement;
 import sorcer.service.*;
 import sorcer.util.Stopwatch;
 
@@ -52,7 +53,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public final static String EXERTION_FLOW = "exertion" + CPS + "flow";
 
 	public final static String EXERTION_PROVISIONABLE = "exertion" + CPS + "provisionable";
-		
+
 	// exertion monitor state
 	public final static String EXERTION_MONITORABLE = "exertion" + CPS + "monitorable";
 
@@ -65,7 +66,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	// a rendezovous provider is either Jobber or Spacer
 	public final static String RENDEZVOUS_NAME = "rendezvous" + CPS + "name";
-	
+
 	public final static String NOTIFY_EXEC = "notify" + CPS + "execution" + CPS
 			+ "to:";
 
@@ -129,7 +130,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public final static String EXERTION_MONITORING = "exertion/monitor/enabled";
 
 	public final static String EXERTION_WAITABLE = "exertion/waitable";
-	
+
 	public final static String EXERTION_WAITED_FROM = "exertion/waited/from";
 
 	public final static String NOTIFICATION_MANAGEMENT = "exertion/notifications/enabled";
@@ -143,11 +144,11 @@ public class ControlContext extends ServiceContext implements Strategy {
 	private List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
 
 	private List<Signature> signatures = new ArrayList<Signature>();
-	
+
 	private List<String> traceList = new ArrayList<String>();
 
 	private Object mutexId;
-	
+
 	// for getting execution time
 	private Stopwatch stopwatch;
 
@@ -249,12 +250,12 @@ public class ControlContext extends ServiceContext implements Strategy {
 	}
 
 	public void isWait(Wait value) {
-		if (Wait.YES.equals(value) || Wait.TRUE.equals(value)) 
+		if (Wait.YES.equals(value) || Wait.TRUE.equals(value))
 				put(EXERTION_WAITABLE, true);
 		else if (Wait.NO.equals(value) || Wait.FALSE.equals(value))
 			put(EXERTION_WAITABLE, false);
 	}
-	
+
 	public void setNotifierEnabled(boolean state) {
 		put(NOTIFICATION_MANAGEMENT, new Boolean(state));
 	}
@@ -270,7 +271,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public boolean isNodeReferencePreserved() {
 		return Boolean.TRUE.equals(get(NODE_REFERENCE_PRESERVED));
 	}
-	
+
 	public Flow getFlowType() {
 		return (Flow) get(EXERTION_FLOW);
 	}
@@ -279,37 +280,45 @@ public class ControlContext extends ServiceContext implements Strategy {
 		if (Flow.PAR.equals(type) || Flow.SEQ.equals(type))
 			put(EXERTION_FLOW, type);
 	}
-	
+
 	public boolean isMonitorable() {
 		return Boolean.TRUE.equals(get(EXERTION_MONITORABLE));
 	}
 
 	public void isMonitorable(Monitor value) {
-		if (Monitor.YES.equals(value) || Monitor.TRUE.equals(value)) 
+		if (Monitor.YES.equals(value) || Monitor.TRUE.equals(value))
 				put(EXERTION_MONITORABLE, true);
 		else if (Monitor.NO.equals(value) || Monitor.FALSE.equals(value))
 			put(EXERTION_MONITORABLE, false);
 	}
-	
+
 	public void setMonitorable(boolean state) {
 		put(EXERTION_MONITORABLE, new Boolean(state));
 	}
-	
+
 	public void isProvisionable(Provision value) {
-		if (Provision.YES.equals(value) || Provision.TRUE.equals(value)) 
+		if (Provision.YES.equals(value) || Provision.TRUE.equals(value))
 				put(EXERTION_PROVISIONABLE, true);
 		else if (Provision.NO.equals(value) || Provision.FALSE.equals(value))
 			put(EXERTION_PROVISIONABLE, false);
 	}
-	
+
 	public void setProvisionable(boolean state) {
 		put(EXERTION_PROVISIONABLE, new Boolean(state));
 	}
-	
+
 	public boolean isProvisionable() {
 		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
-	
+
+    public MonitoringManagement getMonitor() {
+        return (MonitoringManagement) get(EXERTION_MONITORING);
+    }
+
+    public void setMonitor(MonitoringManagement monitor) {
+        put(EXERTION_MONITORING, monitor);
+    }
+
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)
 				|| Access.PUSH.equals(access) || Access.QOS_PUSH.equals(access)
@@ -360,7 +369,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		else
 			put(RENDEZVOUS_NAME, rendezvous);
 	}
-	
+
 	public String getRendezvousName() {
 		return (String) get(RENDEZVOUS_NAME);
 	}
@@ -577,6 +586,29 @@ public class ControlContext extends ServiceContext implements Strategy {
 		}
 	}
 
+    public void updateExertionName(Exertion exertion) {
+        String key, oldPath = null;
+        Enumeration e = keys();
+        while (e.hasMoreElements()) {
+            key = (String) e.nextElement();
+            if (key.endsWith("[" + exertion.getIndex()
+                    + "]" + ID)) {
+                oldPath = key;
+                break;
+            }
+        }
+        String newPath = exertion.getContext().getName();
+        Hashtable map;
+        Hashtable imc = getMetacontext();
+        e = ((Hashtable) imc.get(CONTEXT_ATTRIBUTES)).keys();
+        while (e.hasMoreElements()) {
+            key = (String) e.nextElement();
+            map = (Hashtable) imc.get(key);
+            if (map != null && map.size() > 0 && map.containsKey(oldPath))
+                map.put(newPath, map.remove(oldPath));
+		}
+	}
+
     public void appendTrace(String info) {
 		if (SorcerEnv.debug)
 			traceList.add(info);
@@ -585,7 +617,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public void addException(ThrowableTrace et) {
 		exceptions.add(et);
 	}
-	
+
 	public void addException(Throwable t) {
 		exceptions.add(new ThrowableTrace(t));
 	}
@@ -613,7 +645,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		public Throwable getThrowable() {
 			return throwable;
 		}
-		
+
 		public String toString() {
 			String info = message != null ? message : throwable.getMessage();
 			if (throwable != null)
@@ -621,16 +653,16 @@ public class ControlContext extends ServiceContext implements Strategy {
 			else
 				return info;
 		}
-		
+
 		public String describe() {
 			return stackTrace;
 		}
 	}
-	
+
 	public List<ThrowableTrace> getExceptions() {
 		return exceptions;
 	}
-	
+
 	public static String getStackTrace(Throwable t) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw, true);
@@ -678,7 +710,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public void setMutexId(Object mutexId) {
 		this.mutexId = mutexId;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.toString());
