@@ -32,6 +32,15 @@
     </condition>
 
     <property name="lib.dir" value="${sorcer.home}/lib"/>
+    <!-- AFRL Compatibility - library locations used in distribution -->
+    <property name="sorcer.lib" value="${sorcer.home}/lib/sorcer"/>
+    <property name="jini.lib" value="${sorcer.home}/lib/jini"/>
+    <property name="jini-lookup.lib" value="${sorcer.home}/lib/jini-lookup"/>
+    <property name="river.lib" value="${sorcer.home}/lib/river"/>
+    <property name="rio.lib" value="${sorcer.home}/lib/rio"/>
+    <property name="common.lib" value="${sorcer.home}/lib/commons"/>
+    <property name="iGrid.home" value="${sorcer.home}"/>
+    <!-- / -->
 
     <available file="${lib.dir}/sorcer/sos-env.jar" property="sorcer.distro"/>
 
@@ -164,6 +173,7 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
@@ -200,6 +210,7 @@
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar"/>
+                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement

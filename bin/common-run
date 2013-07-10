@@ -272,6 +272,7 @@ $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
   BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $LIB_DIR/sorcer/sos-env.jar:\
+$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
@@ -305,6 +306,7 @@ $MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"
      BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\

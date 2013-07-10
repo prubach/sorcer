@@ -189,11 +189,12 @@
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
+                <exclude>common-build.xml</exclude>
             </excludes>
             <filtered>false</filtered>
             <fileMode>0644</fileMode>
         </fileSet>
-            <!-- bin files -->
+
         <fileSet>
             <directory>${basedir}/../bin</directory>
             <outputDirectory>/bin</outputDirectory>
@@ -235,6 +236,16 @@
                 <include>**/*</include>
             </includes>
             <filtered>true</filtered>
+        </fileSet>
+
+        <!-- lib files - compatibility with old ant build-->
+        <fileSet>
+           <directory>${basedir}/src/main/lib</directory>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
         </fileSet>
 
         <!-- Hyperic -->

@@ -88,7 +88,11 @@ public class Resolver {
 	public static String resolveCodeBase(URL baseUrl, String... coords) {
 		String[] relatives = new String[coords.length];
 		for (int i = 0; i < coords.length; i++) {
-			relatives[i] = resolveAbsolute(baseUrl, ArtifactCoordinates.coords(coords[i]));
+            // For compatibility do not resolve against artifacts if coords is a url to a jar
+            if (coords[i].contains("http"))
+                relatives[i] = coords[i];
+            else
+			    relatives[i] = resolveAbsolute(baseUrl, ArtifactCoordinates.coords(coords[i]));
 		}
 		return StringUtils.join(relatives, SorcerConstants.CODEBASE_SEPARATOR);
 	}
