@@ -277,6 +277,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			 * efficient load balancing algorithm should be implemented for
 			 * dispatching inner jobs. Currently, it only does round robin.
 			 */
+/*
+            // this didn't work before we fixed searching the providers.
             if (job instanceof NetJob) {
                 ServiceItem[] jobbers = Accessor.getServiceItems(Jobber.class, Filters.not(Filters.serviceId(provider.getProviderID())));
                 for (int i = 0; i < jobbers.length; i++) {
@@ -289,23 +291,28 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     }
                 }
             }
+*/
 
             return execJobLocally(job);
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			throw re;
+/*
 		} catch (ExertionException ee) {
 			ee.printStackTrace();
 			throw ee;
+*/
 		} catch (DispatcherException de) {
 			de.printStackTrace();
 			throw de;
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 			throw ie;
+/*
 		} catch (TransactionException te) {
 			te.printStackTrace();
 			throw new ExertionException("transaction failure", te);
+*/
 		}
 	}
 
