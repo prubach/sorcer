@@ -92,6 +92,7 @@
             </includes>
             <excludes>
                 <exclude>pom.xml</exclude>
+                <exclude>test-examples.sh</exclude>
                 <exclude>*.iml</exclude>
                 <exclude>**/*.iml</exclude>
                 <exclude>**/*/*.iml</exclude>
