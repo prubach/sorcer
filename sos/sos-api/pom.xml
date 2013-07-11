@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>sos</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>sos</artifactId>
         <version>1.0-M2-SNAPSHOT</version>
     </parent>
 
     <artifactId>sos-api</artifactId>
-    <name>SORCER :: API</name>
+    <name>SORCER OS :: API</name>
     <description>Hi-level API for SORCER</description>
 
     <dependencies>

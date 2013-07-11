@@ -22,12 +22,13 @@ import sorcer.util.Process2;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 
 /**
+ * Sorcer-specific process builder
+ *
  * @author Rafał Krupiński
  */
 public class SorcerProcessBuilder extends JavaProcessBuilder {
@@ -37,16 +38,10 @@ public class SorcerProcessBuilder extends JavaProcessBuilder {
         sorcerHome = env.getSorcerHome();
     }
 
-/*    @Override
-    public Process2 startProcess() throws IOException {
-    //...
-        return super.startProcess();
-    }*/
-
     @Override
-    protected void updateEnvironment(Map<String, String> env) {
-        super.updateEnvironment(env);
-        env.put(E_SORCER_HOME, sorcerHome);
-        env.put(E_RIO_HOME, new File(sorcerHome, "lib/rio").getPath());
+    public Process2 startProcess() throws IOException {
+        environment.put(E_SORCER_HOME, sorcerHome);
+        environment.put(E_RIO_HOME, new File(sorcerHome, "lib/rio").getPath());
+        return super.startProcess();
     }
 }

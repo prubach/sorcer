@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>sorcer-api</artifactId>
+    <name>SORCER :: API</name>
+    <description>Low level API for SORCER</description>
+
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -22,13 +25,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
-<!--
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
-        </dependency>
--->
         <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>
