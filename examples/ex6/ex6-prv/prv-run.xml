@@ -60,8 +60,8 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	
 	<!-- provider codeabse jars -->
     <property name="j1" value="org.sorcersoft.sorcer:${provider.api}" />
-    <property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
-    <property name="j3" value="org.sorcersoft.sorcer:sos-env" />
+    <property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
+    <property name="j3" value="org.sorcersoft.sorcer:sos-platform" />
     <property name="j4" value="org.sorcersoft.sorcer:ex6-sui" />
 
 	<!-- start provider -->

@@ -380,6 +380,7 @@ startShell ( ) {
         # Distro version
         LIB_DIR=$SORCER_HOME/lib
         SHELL_CLASSPATH="$LIB_DIR/sorcer/sos-shell.jar:\
+$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-env.jar:\
 $LIB_DIR/sorcer/sos-netlet.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
@@ -395,6 +396,7 @@ $LIB_DIR/jini-lookup/serviceui.jar"
     else        
       	# MVN version
       	SHELL_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
