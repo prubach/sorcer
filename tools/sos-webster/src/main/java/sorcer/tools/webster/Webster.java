@@ -552,6 +552,7 @@ public class Webster implements Runnable {
         if(websterRoot.length > 1) {
             for(int j = 0; j < websterRoot.length; j++) {
                 websterRoot[j] = tok.nextToken();
+                websterRoot[j] = websterRoot[j].replace(";", "");
                 if(debug)
                     System.out.println("Root " + j + " = " + websterRoot[j]);
                 if(logger.isLoggable(Level.FINE))
@@ -559,6 +560,7 @@ public class Webster implements Runnable {
             }
         } else {
             websterRoot[0] = roots;
+            websterRoot[0] = websterRoot[0].replace(";", "");
             if(debug)
                 System.out.println("Root  = " + websterRoot[0]);
             if(logger.isLoggable(Level.FINE))

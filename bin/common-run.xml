@@ -329,10 +329,8 @@
                         <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
                             <classpath refid="boot.classpath"/>
                             <arg value="${provider.config}"/>
-<!--
                             <jvmarg value="-Xdebug"/>
                             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
--->
                             <env key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
