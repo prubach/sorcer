@@ -8,7 +8,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-platform</artifactId>
+			<artifactId>sorcer-api</artifactId>
             <version>${v.sorcer}</version>
 		</dependency>
 	</dependencies>

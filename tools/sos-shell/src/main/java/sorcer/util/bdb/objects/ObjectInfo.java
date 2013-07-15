@@ -22,7 +22,6 @@ import java.security.Principal;
 import java.util.Date;
 
 import net.jini.id.Uuid;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
 
 
 /**

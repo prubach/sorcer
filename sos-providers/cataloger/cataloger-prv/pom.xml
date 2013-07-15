@@ -12,16 +12,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cataloger-api</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>
 		<dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-exertlet-sui</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>

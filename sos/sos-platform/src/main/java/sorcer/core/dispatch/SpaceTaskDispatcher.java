@@ -23,7 +23,7 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 	public SpaceTaskDispatcher(NetTask task, Set<Context> sharedContexts,
 			boolean isSpawned, LokiMemberUtil myMemberUtil) throws Throwable {
 		if (space == null)
-			space = ProviderAccessor.getSpace();
+			space = SpaceAccessor.getSpace();
 		// logger.info(this, "using space=" + Env.getSpaceName());
 		xrt = task;
 		subject = task.getSubject();
@@ -72,7 +72,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			logger.severe("Space not reachable... resetting space");
-			space = ProviderAccessor.getSpace();
+			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				xrt.setStatus(FAILED);
 				throw new ExertionException("NO exertion space available!");

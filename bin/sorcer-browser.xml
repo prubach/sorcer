@@ -21,7 +21,7 @@
 
 <project name="SSB" default="run" basedir=".">
 	
-	<property name="pom.file" value="${basedir}/../configs/browser/pom.xml" />
+	<property name="pom.file" value="${basedir}/../tools/browser/pom.xml" />
 	<!-- load system environment variables -->
     <property name="sorcer.distro.in.libs" value="true" />
     <property environment="env" />
@@ -70,6 +70,10 @@
             </classpath>
             <env key="RIO_HOME" value="${rio.home}" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+            <!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
+            <jvmarg value="-Xdebug"/>
+            <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
             <sysproperty key="ssb.logLen" value="300" />

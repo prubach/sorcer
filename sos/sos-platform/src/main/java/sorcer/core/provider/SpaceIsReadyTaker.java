@@ -19,7 +19,7 @@ package sorcer.core.provider;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.util.ProviderAccessor;
+import sorcer.service.space.SpaceAccessor;
 
 import java.util.concurrent.ExecutorService;
 
@@ -43,7 +43,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 				+ isTransactional + ", lease = " + transactionLeaseTimeout + ", timeOut: " + spaceTimeout);
 		while (keepGoing) {
 			try {
-				space = ProviderAccessor.getSpace(data.spaceName, data.spaceGroup);
+				space = SpaceAccessor.getSpace(data.spaceName, data.spaceGroup);
 				if (space == null) {
 					Thread.sleep(spaceTimeout / 6);
 					continue;

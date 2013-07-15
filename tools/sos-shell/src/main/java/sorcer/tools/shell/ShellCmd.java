@@ -23,9 +23,8 @@ import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
+import sorcer.service.Accessor;
 import sorcer.tools.shell.cmds.DiscoCmd;
-import sorcer.tools.webster.Webster;
-import sorcer.util.ServiceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -117,14 +116,14 @@ abstract public class ShellCmd {
 	public static ServiceItem[] serviceLookup(
 			Class[] serviceTypes) throws RemoteException {
 		ServiceTemplate st = new ServiceTemplate(null, serviceTypes, null);
-		ServiceItem[] serviceItems = ServiceAccessor.getServiceItems(st, null,
-				NetworkShell.getGroups());
+		ServiceItem[] serviceItems = Accessor.getServiceItems(st, null,
+                NetworkShell.getGroups());
 		return serviceItems;
 	}
 	
 	static ServiceItem[] serviceLookup(Class[] serviceTypes, String[] groups) {
 		ServiceTemplate st = new ServiceTemplate(null, serviceTypes, null);
-		ServiceItem[] serviceItems = ServiceAccessor.getServiceItems(st, null,
+		ServiceItem[] serviceItems = Accessor.getServiceItems(st, null,
 				groups);
 		return serviceItems;
 	}

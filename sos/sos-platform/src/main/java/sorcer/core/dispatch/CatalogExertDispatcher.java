@@ -18,26 +18,22 @@
 package sorcer.core.dispatch;
 
 import net.jini.core.lookup.ServiceItem;
-import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
+import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.falcon.base.Conditional;
+import sorcer.river.Filters;
 import sorcer.service.*;
-import sorcer.util.ProviderAccessor;
-import sorcer.util.ServiceAccessor;
-import sorcer.util.Sorcer;
 
 import java.rmi.RemoteException;
 import java.util.Set;
 
-abstract public class CatalogExertDispatcher extends ExertDispatcher
-		implements SorcerConstants {
+abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
 	private final static int SLEEP_TIME = 20;
 	
@@ -67,7 +63,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 		try {
 			exertion.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
-		} catch (RemoteException e) {
+		} catch (RemoteException ignored) {
 			// ignore it, local call		
 		}
 		logger.finest("preExecExertions>>>...UPDATING INPUTS...");
@@ -123,7 +119,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 	protected void postExecExertion(Exertion ex, Exertion result)
 			throws SignatureException, ExertionException {
 		ServiceExertion ser = (ServiceExertion) result;
-		((Job)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+		((Job)xrt).setExertionAt(result, ex.getIndex());
 		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
 			ser.setStatus(DONE);
 			if (xrt.getControlContext().isNodeReferencePreserved())
@@ -136,7 +132,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 				}
 			// update all outputs from sharedcontext only for tasks. For jobs,
 			// spawned dispatcher does it.
-			if (((ServiceExertion) result).isTask()) {
+			if (result.isTask()) {
 				collectOutputs(result);
 			}
 			notifyExertionExecution(ex, result);
@@ -150,18 +146,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 	 *            Exertion
 	 * @return Exertion
 	 * @throws ExertionException
-	 * @throws SignatureException
 	 */
 	private Exertion execConditional(Exertion exertion)
 			throws ExertionException {
 
-		String providerName = exertion
-				.getProcessSignature().getProviderName();
-		Class serviceType = exertion.getProcessSignature()
-				.getServiceType();
-
-		Service provider = ProviderAccessor.getProvider(providerName,
-				serviceType);
+        Service provider = (Service) Accessor.getService(exertion.getProcessSignature());
 
 		try {
 			return provider.service(exertion, null);
@@ -193,7 +182,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 
 	protected Task execServiceTask(Task task) throws ExertionException,
 			SignatureException {
-		Task result = null;
+		Task result;
 		String url = ((NetSignature) task.getProcessSignature()).getPortalURL();
 		try {
 			if (url != null && url.length() != 0) {
@@ -217,14 +206,14 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 				// Catalog lookup or use Lookup Service for the particular
 				// service
                 // Switched to another method that uses the Cataloger service
-				//Provider provider = ProviderAccessor.getProvider(
+				//Provider provider = ProviderAccessor.getService(
 				//		sig.getProviderName(), sig.getServiceType(), codebase);
-                Service service = Accessor.getServicer(sig);
-                //Provider provider = ProviderAccessor.getProvider(
+                Service service = (Service) Accessor.getService(sig);
+                //Provider provider = ProviderAccessor.getService(
                 //       		sig.getProviderName(), sig.getServiceType());
 
 				if (service== null) {
-					String msg = null;
+					String msg;
 					// get the PROCESS Method and grab provider name + interface
 					msg = "No Provider Available\n" + "Provider Name:      "
 							+ sig.getProviderName() + "\n"
@@ -281,10 +270,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			ClassNotFoundException, ExertionException, RemoteException {
 
 		try {
-			ServiceTemplate st = ProviderAccessor.getServiceTemplate(null,
-					null, new Class[] { Jobber.class }, null);
-			ServiceItem[] jobbers = ServiceAccessor.getServiceItems(st, null,
-					Sorcer.getLookupGroups());
 
 			/*
 			 * check if there is any available jobber in the network and
@@ -292,69 +277,77 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher
 			 * efficient load balancing algorithm should be implemented for
 			 * dispatching inner jobs. Currently, it only does round robin.
 			 */
-			for (int i = 0; i < jobbers.length; i++) {
-				if (jobbers[i] != null) {
-					if (!provider.getProviderID().equals(
-							jobbers[i].serviceID)) {
-						logger.finest("\n***Jobber: " + i + " ServiceID: "
-								+ jobbers[i].serviceID);
-						Provider rjobber = (Provider) jobbers[i].service;
+/*
+            // this didn't work before we fixed searching the providers.
+            if (job instanceof NetJob) {
+                ServiceItem[] jobbers = Accessor.getServiceItems(Jobber.class, Filters.not(Filters.serviceId(provider.getProviderID())));
+                for (int i = 0; i < jobbers.length; i++) {
+                    ServiceItem jobberSInte = jobbers[i];
+                    if (jobberSInte != null) {
+                        logger.finest("Jobber: " + i + " ServiceID: " + jobberSInte.serviceID);
+                        Provider rjobber = (Provider) jobberSInte.service;
 
-						return (Job) rjobber.service(job, null);
-					}
-				}
-			}
+                        return (Job) rjobber.service(job, null);
+                    }
+                }
+            }
+*/
 
-			/*
-			 * Create a new dispatcher thread for the inner job, if no available
-			 * Jobber is found in the network
-			 */
-			Dispatcher dispatcher = null;
-			runningExertionIDs.addElement(job.getId());
-
-			// create a new instance of a dispatcher
-			dispatcher = ExertionDispatcherFactory.getFactory()
-					.createDispatcher(job, sharedContexts, true, provider);
-			// wait until serviceJob is done by dispatcher
-			while (dispatcher.getState() != DONE
-					&& dispatcher.getState() != FAILED) {
-				Thread.sleep(SLEEP_TIME);
-			}
-			Job out = (Job) dispatcher.getExertion();
-			out.getControlContext().appendTrace(provider.getProviderName() 
-					+ " dispatcher: " + getClass().getName());
-			return out;
+            return execJobLocally(job);
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			throw re;
+/*
 		} catch (ExertionException ee) {
 			ee.printStackTrace();
 			throw ee;
+*/
 		} catch (DispatcherException de) {
 			de.printStackTrace();
 			throw de;
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 			throw ie;
+/*
 		} catch (TransactionException te) {
 			te.printStackTrace();
 			throw new ExertionException("transaction failure", te);
+*/
 		}
 	}
 
-	protected class ExertionThread extends Thread {
+    /*
+     * Create a new dispatcher thread for the inner job, if no available
+     * Jobber is found in the network
+     */
+    private Job execJobLocally(Job job) throws DispatcherException, InterruptedException, RemoteException {
+        Dispatcher dispatcher;
+        runningExertionIDs.addElement(job.getId());
+
+        // create a new instance of a dispatcher
+        dispatcher = ExertionDispatcherFactory.getFactory()
+                .createDispatcher(job, sharedContexts, true, provider);
+        // wait until serviceJob is done by dispatcher
+        while (dispatcher.getState() != DONE
+                && dispatcher.getState() != FAILED) {
+            Thread.sleep(SLEEP_TIME);
+        }
+        Job out = (Job) dispatcher.getExertion();
+        out.getControlContext().appendTrace(provider.getProviderName()
+                + " dispatcher: " + getClass().getName());
+        return out;
+    }
+
+    protected class ExertionThread extends Thread {
 
 		private Exertion ex;
 
 		private Exertion result;
 
-		private ExertDispatcher dispatcher;
-
-		public ExertionThread(ServiceExertion exertion,
+        public ExertionThread(ServiceExertion exertion,
 				ExertDispatcher dispatcher) {
 			ex = exertion;
-			this.dispatcher = dispatcher;
-			if (isMonitored)
+            if (isMonitored)
 				dispatchers.put(xrt.getId(), dispatcher);
 		}
 

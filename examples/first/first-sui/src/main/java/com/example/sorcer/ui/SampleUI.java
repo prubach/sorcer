@@ -21,11 +21,13 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.util.Sorcer;
+import sorcer.util.Artifact;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +86,7 @@ public class SampleUI extends JPanel {
     public static UIDescriptor getUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("com.example.sorcer:first-sui:1.0-SNAPSHOT"));
+            URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative(Artifact.sorcer("first-sui")));
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIComponentFactory(new URL[] {uiUrl}, SampleUI.class.getName()));
         } catch (Exception ex) {

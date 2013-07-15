@@ -27,7 +27,7 @@ import java.util.*;
  * with the dataContext root <code>List</code>;
  */
 @SuppressWarnings({ "serial", "unchecked" })
-public class ListContext<T extends Object> extends ServiceContext implements IndexedContext {
+public class ListContext<T> extends ServiceContext implements IndexedContext {
 	List<T> elements = new ArrayList<T>();
 	
 	public ListContext() {
@@ -128,7 +128,7 @@ public class ListContext<T extends Object> extends ServiceContext implements Ind
 			putValue(pathFor(i), o);
 			i++;
 		}
-		return addAll(index, c);
+		return elements.addAll(index, c);
 	}
 
 	/* (non-Javadoc)
@@ -163,7 +163,7 @@ public class ListContext<T extends Object> extends ServiceContext implements Ind
 	 * @see java.util.List#lastIndexOf(java.lang.Object)
 	 */
 	public int lastIndexOf(Object o) {
-		return lastIndexOf(o);
+		return elements.lastIndexOf(o);
 	}
 
 	/* (non-Javadoc)
@@ -196,7 +196,7 @@ public class ListContext<T extends Object> extends ServiceContext implements Ind
 		for (Object o : c) {
 			i = elements.indexOf(o);
 		}
-		return removeAll(c);
+		return elements.removeAll(c);
 	}
 
 	/* (non-Javadoc)

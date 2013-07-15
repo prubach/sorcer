@@ -32,8 +32,7 @@ import javax.xml.rpc.Service;
 import java.rmi.RemoteException;
 import java.util.Set;
 
-abstract public class SWIFExertDispatcher extends ExertDispatcher
-		implements SorcerConstants {
+abstract public class SWIFExertDispatcher extends ExertDispatcher {
 
 	public SWIFExertDispatcher(Job job, Set<Context> sharedContext,
                                boolean isSpawned, Provider provider) throws Throwable {
@@ -191,7 +190,7 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher
 
 			String result = (String) rpcCall.invoke(params);
 
-			Contexts.putOutValue(ctx, OUT_VALUE + 0, result);
+			Contexts.putOutValue(ctx, SorcerConstants.OUT_VALUE + 0, result);
 
 		} catch (ServiceException se) {
 			System.err.println("Service Exception");

@@ -30,7 +30,7 @@ import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.util.Artifact;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class SampleServiceImpl implements SampleService {
 

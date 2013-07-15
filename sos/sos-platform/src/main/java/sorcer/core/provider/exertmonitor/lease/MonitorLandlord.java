@@ -29,7 +29,7 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-import sorcer.util.Sorcer;
+import sorcer.core.SorcerEnv;
 
 import java.net.UnknownHostException;
 import java.rmi.Remote;
@@ -89,7 +89,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
     public void export() throws ExportException {
         BasicJeriExporter exporter = null;
         try {
-            exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Sorcer.getHostAddress(), 0),
+            exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
                                        new BasicILFactory());
         } catch (UnknownHostException e) {
             throw new ExportException("Could not obtain local address", e);

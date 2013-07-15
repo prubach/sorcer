@@ -40,6 +40,7 @@ import static java.util.Arrays.asList;
 public class JavaProcessBuilder {
     protected Logger log = LoggerFactory.getLogger(getClass());
     protected Map<String, String> properties;
+    protected Map<String, String> environment = System.getenv();
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
@@ -90,7 +91,18 @@ public class JavaProcessBuilder {
 		this.output = output;
 	}
 
+    public Map<String, String> getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Map<String, String> environment) {
+        this.environment = environment;
+    }
+
 	public Process2 startProcess() throws IOException {
+        if (mainClass == null || mainClass.trim().isEmpty()) {
+            throw new IllegalStateException("mainClass must be set");
+        }
         ProcessBuilder procBld = new ProcessBuilder().command(command);
 
         if (debugger) {
@@ -111,8 +123,11 @@ public class JavaProcessBuilder {
 		}
 		procBld.directory(workingDir);
 
-		Map<String, String> env = procBld.environment();
-        updateEnvironment(env);
+        Map<String, String> procEnv = procBld.environment();
+        if(!procEnv.equals(environment)){
+            procEnv.clear();
+            procEnv.putAll(environment);
+        }
 
 		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
 				.append(StringUtils.join(procBld.command(), " "));
@@ -139,13 +154,9 @@ public class JavaProcessBuilder {
             // process hasn't finished yet.
             int x = proc.exitValue();
             throw new IllegalStateException("Process exited with value " + x);
-        } catch (IllegalThreadStateException x) {
+        } catch (IllegalThreadStateException ignored) {
             return new Process2(proc);
 		}
-	}
-
-    protected void updateEnvironment(Map<String, String> env) {
-        //do nothing
     }
 
     /**

@@ -41,7 +41,7 @@ These federations range from tens to thousands or even millions of services and 
 
 ## Getting started
 Please read our [getting started guide] (getting-started.html) to learn how to install and run the Sorcer platform or go directly to our [download] (download.html) page.
-Inside the Sorcer distribution you will find examples that you can easily build and run to learn more about Sorcer.
+Inside the Sorcer distribution you will find examples that you can easily build and run to learn more about SorcerEnv.
 Once you get the basic services running please take a look at the Creating new Sorcer services guide to see how to start developing your own Sorcer services.
 
 ## About Sorcer Research

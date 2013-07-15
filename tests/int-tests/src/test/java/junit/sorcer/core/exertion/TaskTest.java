@@ -40,13 +40,13 @@ import junit.sorcer.core.provider.Multiply;
 
 import org.junit.Test;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Wait;
@@ -81,7 +81,7 @@ public class TaskTest {
 	@Test
 	public void arithmeticTaskTest() throws ExertionException, SignatureException, ContextException {
 		//to test tracing of execution enable ServiceExertion.debug 
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		
 		Task task = task("add",
 				sig("add", AdderImpl.class),
@@ -100,7 +100,7 @@ public class TaskTest {
 		//logger.info("exec trace: " + trace(task));
 		//logger.info("trace  size: " + trace(task).size());
 		//assertTrue(trace(task).size() == 1);
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 //		logger.info("exceptions: " + exceptions(task));
 		assertEquals("Exception list", 0, exceptions(task).size());
 
@@ -182,7 +182,7 @@ public class TaskTest {
 
 	@Test
 	public void exertObjectTaskTest() throws Exception {
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		ObjectTask objTask = new ObjectTask("t4", new ObjectSignature("multiply", Multiply.class, double[].class));
 		ServiceContext cxt = new ServiceContext();
 		Object arg = new double[] { 10.0, 50.0 };

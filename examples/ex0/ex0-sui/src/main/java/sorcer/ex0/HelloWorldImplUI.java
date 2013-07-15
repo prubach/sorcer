@@ -4,11 +4,12 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.Service;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.util.Sorcer;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +67,7 @@ public class HelloWorldImplUI extends JPanel {
     public static UIDescriptor getUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = new URL(Sorcer.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:ex0-sui"));
+            URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative("org.sorcersoft.sorcer:ex0-sui"));
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIComponentFactory(new URL[] {uiUrl}, HelloWorldImplUI.class.getName()));
         } catch (Exception ex) {

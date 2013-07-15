@@ -83,7 +83,7 @@ public class IfExertion extends ServiceExertion implements Conditional {
 		ifContext = new ServiceContext("IfContext");
 		try {
 			ifContext.setAttribute("exertionDone"); // currently not used
-			ifContext.putValue("exertion/done", ServiceContext.EMPTY_LEAF);
+			ifContext.putValue("exertion/done", Context.EMPTY_LEAF);
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}

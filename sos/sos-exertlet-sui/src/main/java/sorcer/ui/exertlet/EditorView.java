@@ -59,8 +59,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.RemoteContextManagement;
 import sorcer.core.provider.cataloger.ui.BrowserModel;
+import sorcer.netlet.ScriptExerter;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -105,6 +107,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 	private GroovyShell shell;
 	private BrowserModel model;
 	private static StringBuilder staticImports;
+    private ScriptExerter scriptExerter;
 
 	public EditorView(String url, boolean withLocator) {
 		this(url, withLocator, false);
@@ -133,6 +136,8 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		if (input != null)
 			this.source = input;
 		boolean isURL = false;
+        //
+        scriptExerter = new ScriptExerter(null, this.getClass().getClassLoader(), SorcerEnv.getWebsterUrl().toString());
 		
 		if (input != null && input.length() > 0 && input.startsWith("jar:")) {
 			isURL = true;
@@ -370,7 +375,22 @@ public class EditorView extends JPanel implements HyperlinkListener {
 						sb.append("\n");
 					}
 					logger.finer(">>> executing script: " + sb.toString());
-					runExertionScript(sb.toString());
+                    try {
+                        scriptExerter.readScriptWithHeaders(sb.toString());
+                        scriptExerter.parse();
+                        Object result = scriptExerter.execute();
+                        if (result instanceof Exertion)
+                            processExerion((Exertion) result);
+                        else if (result != null) {
+                            openOutPanel(result.toString());
+                        }
+                    } catch (IOException io) {
+                        logger.severe("Caught exception while executing script: " + io.getMessage());
+                        openOutPanel(StringUtils.stackTraceToString(io));
+                    } catch (Throwable th) {
+                        openOutPanel(StringUtils.stackTraceToString(th));
+                        logger.severe("Caught exception while executing script: " + th.getMessage());
+                    }
 				}
 				return;
 			} else if (SAVE_LABEL.equals(command)) {
@@ -438,13 +458,6 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				}
 			}
 		}
-	}
-
-	private ExertionThread runExertionScript(String script) {
-		String gScript = script;
-		ExertionThread eThread = new ExertionThread(gScript);
-		eThread.start();
-		return eThread;
 	}
 
 	private ExertionThread runTaskScript(String script) {

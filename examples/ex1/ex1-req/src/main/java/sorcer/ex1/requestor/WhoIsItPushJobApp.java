@@ -34,7 +34,7 @@ import sorcer.service.Job;
 import sorcer.service.Task;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItPushJobApp {
 
@@ -44,9 +44,9 @@ public class WhoIsItPushJobApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		// get the queried provider name
-		String providerName = Sorcer.getSuffixedName(args[0]);
+		String providerName = SorcerEnv.getSuffixedName(args[0]);
 		logger.info("Who is \"" + providerName + "\"?");
 
 		Exertion result = new WhoIsItPushJobApp().getExertion(providerName)

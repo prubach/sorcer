@@ -29,12 +29,12 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 
+import sorcer.core.SorcerEnv;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.util.bdb.SosURL;
-import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
+import sorcer.util.bdb.sdb.Handler;
 
 /**
  * @author Mike Sobolewski
@@ -45,15 +45,14 @@ public class SosUrlsTest {
 			.getName());
 
 	static {
-		URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-
+        Handler.register();
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
         System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 	}
 
 	public void sosUrlsTest() throws SignatureException,

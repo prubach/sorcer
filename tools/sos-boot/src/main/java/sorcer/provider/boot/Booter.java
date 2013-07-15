@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * Provides static convenience methods for use in configuration files. This class cannot
@@ -38,7 +39,7 @@ import java.util.logging.Logger;
  *
  * @author Dennis Reedy, adopted for SORCER by Mike Sobolewski
  */
-public class Booter implements SorcerConstants {
+public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
 	private static Logger logger = Logger.getLogger(COMPONENT);
 	

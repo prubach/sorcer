@@ -72,3 +72,17 @@ green {
 <blockquote>
   <p class="basicText"><code>get(<span class="blue"><span class="light-blue">out</span></span>, "f1/f3/result/y3");</code></p>
 </blockquote>
+<p class="basicText">To use classes that come from external providers in your code you can add a codebase declaration to specify
+    the jar files to be loaded from external http servers (websters). You can specify the codebase as:
+</p>
+<p class="basicText">
+    <span class="green"><span class="light-green"><code>codebase http://host:port/file.jar</code></span></span>
+    - a remote jar file using a direct URL or  <br>
+    <span class="green"><span class="light-green"><code>codebase mvn://groupId:Artifact:[version]@host:port</code></span></span>
+    - a jar file on a remote maven repository
+    <span class="green"><span class="light-green"><code>codebase mvn://groupId:Artifact:[version]</code></span></span>
+    - a jar file on a local maven repository served by a local webster - you can use this annotation only if your environment settings (sorcer.env config file or system environment variables) points to a running webster.
+</p>
+
+
+

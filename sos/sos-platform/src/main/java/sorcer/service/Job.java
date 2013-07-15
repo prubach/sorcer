@@ -36,9 +36,11 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
-import sorcer.eo.operator;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
+import sorcer.util.StringUtils;
+
+import static sorcer.core.SorcerConstants.CPS;
 
 /**
  * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
@@ -53,7 +55,7 @@ import sorcer.security.util.SorcerPrincipal;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public abstract class Job extends ServiceExertion {
+public abstract class Job extends ServiceExertion implements ComplexExertion{
 
 	private static final long serialVersionUID = -6161435179772214884L;
 
@@ -132,7 +134,8 @@ public abstract class Job extends ServiceExertion {
 		return true;
 	}
 	
-	public boolean hasChild(String childName) {
+	@Override
+    public boolean hasChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return true;
@@ -140,7 +143,8 @@ public abstract class Job extends ServiceExertion {
 		return false;
 	}
 
-	public Exertion getChild(String childName) {
+	@Override
+    public Exertion getChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return ext;
@@ -157,11 +161,13 @@ public abstract class Job extends ServiceExertion {
 	 * 
 	 * @return the number of exertions in this Job.
 	 */
-	public int size() {
+	@Override
+    public int size() {
 		return exertions.size();
 	}
 
-	public int indexOf(Exertion ex) {
+	@Override
+    public int indexOf(Exertion ex) {
 		return exertions.indexOf(ex);
 	}
 
@@ -171,7 +177,8 @@ public abstract class Job extends ServiceExertion {
 	 * discarded.
 	 * <p>
 	 */
-	public void setExertionAt(Exertion ex, int i) {
+	@Override
+    public void setExertionAt(Exertion ex, int i) {
 		exertions.set(i, ex);
 	}
 
@@ -209,7 +216,8 @@ public abstract class Job extends ServiceExertion {
 		return method;
 	}
 	
-	public Job addExertion(Exertion ex) {
+	@Override
+    public Job addExertion(Exertion ex) {
 		exertions.add(ex);
 		// default Jobber signature
 //		if (exertions.size()==2)
@@ -220,7 +228,8 @@ public abstract class Job extends ServiceExertion {
 		return this;
 	}
 
-	public void addExertions(List<Exertion> exertions) {
+	@Override
+    public void addExertions(List<Exertion> exertions) {
 		if (this.exertions != null)
 			this.exertions.addAll(exertions);
 		else {
@@ -229,25 +238,29 @@ public abstract class Job extends ServiceExertion {
 		}
 	}
 
-	public void setExertions(List<Exertion> exertions) {
+	@Override
+    public void setExertions(List<Exertion> exertions) {
 		this.exertions = exertions;
 
 	}
 
-	public Job addExertion(Exertion exertion, int priority) {
+	@Override
+    public Job addExertion(Exertion exertion, int priority) {
 		addExertion(exertion);
 		controlContext.setPriority(exertion, priority);
 		return this;
 	}
 
-	public Exertion removeExertion(Exertion exertion) {
+	@Override
+    public Exertion removeExertion(Exertion exertion) {
 		// int index = ((ExertionImpl)exertion).getIndex();
 		exertions.remove(exertion);
 		controlContext.deregisterExertion(this, exertion);
 		return exertion;
 	}
 
-	public void removeExertionAt(int index) {
+	@Override
+    public void removeExertionAt(int index) {
 		removeExertion(exertionAt(index));
 	}
 
@@ -262,8 +275,9 @@ public abstract class Job extends ServiceExertion {
 	 *                if the <tt>index</tt> is negative or not less than the
 	 *                current size of this <tt>Job</tt> object.
 	 */
-	public Exertion exertionAt(int index) {
-		return (Exertion) exertions.get(index);
+	@Override
+    public Exertion exertionAt(int index) {
+		return exertions.get(index);
 	}
 
 	public abstract Job doJob(Transaction txn) throws ExertionException,
@@ -377,11 +391,13 @@ public abstract class Job extends ServiceExertion {
 	 * 
 	 * @return all component exertions
 	 */
-	public List<Exertion> getExertions() {
+	@Override
+    public List<Exertion> getExertions() {
 		return exertions;
 	}
 
-	public List<Exertion> getExertions(List<Exertion> exs) {
+	@Override
+    public List<Exertion> getExertions(List<Exertion> exs) {
 		for (Exertion e : exertions)
 			((ServiceExertion) e).getExertions(exs);
 		exs.add(this);
@@ -417,11 +433,7 @@ public abstract class Job extends ServiceExertion {
 		return true;
 	}
 
-	public Exertion getExertion(int index) {
-		return exertions.get(index);
-	}
-	
-	public Context getJobContext() {
+    public Context getJobContext() {
 		ServiceContext cxt = new ServiceContext(name);
 		cxt.setSubject("job/data/context", name);
 		
@@ -465,7 +477,7 @@ public abstract class Job extends ServiceExertion {
 	}
 
 	public Object getJobValue(String path) throws ContextException {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];
@@ -508,7 +520,7 @@ public abstract class Job extends ServiceExertion {
 	}
 	
 	public Object putJobValue(String path, Object value) throws ContextException {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];
@@ -550,7 +562,7 @@ public abstract class Job extends ServiceExertion {
 	}
 	
 	public Exertion getComponentExertion(String path) {
-		String[] attributes = operator.pathToArray(path);
+        String[] attributes = StringUtils.tokenizerSplit(path, CPS);
 		// remove the leading attribute of the current exertion
 		if (attributes[0].equals(getName())) {
 			String[] attributes1 = new String[attributes.length - 1];

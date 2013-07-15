@@ -44,15 +44,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<plugins>
-			<!--
-						<plugin>
-							<groupId>org.sorcersoft.sorcer</groupId>
-							<artifactId>sorcer-maven-plugin</artifactId>
-						</plugin>
-			-->
-		</plugins>
-
 		<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
 		<resources>
 			<resource>

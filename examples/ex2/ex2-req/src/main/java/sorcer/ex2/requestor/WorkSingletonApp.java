@@ -28,7 +28,7 @@ import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class WorkSingletonApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system properties
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 
 		Exertion exertion = new WorkSingletonApp().getExertion(args);
 		Exertion result = exertion.exert();
@@ -56,7 +56,7 @@ public class WorkSingletonApp {
 		String hostname = SorcerEnv.getLocalHost().getHostName();
         // get the queried provider name from the command line
         logger.info("arg: " + Arrays.toString(args));
-        String pn = Sorcer.getSuffixedName(args[0]);
+        String pn = SorcerEnv.getSuffixedName(args[0]);
         logger.info("Provider name: " + pn);
 
 		Context context = new ServiceContext("work");

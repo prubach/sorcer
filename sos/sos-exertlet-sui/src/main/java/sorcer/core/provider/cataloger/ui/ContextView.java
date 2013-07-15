@@ -48,7 +48,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.eval.ContextNode;
@@ -65,8 +64,7 @@ import sorcer.service.ContextException;
  * These operations include Add Path, Add Data Node, Remove Item, Clear Context,
  * Load Other, Delete Context, Save Context, Save As, and Exert Task.
  */
-public class ContextView extends JPanel implements Observer, ActionListener,
-		SorcerConstants {
+public class ContextView extends JPanel implements Observer, ActionListener {
 
 	/**
 	 * id used for serialization

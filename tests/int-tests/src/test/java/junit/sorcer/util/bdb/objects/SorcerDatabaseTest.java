@@ -37,10 +37,11 @@ import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
 //import sorcer.core.dataContext.model.VarModel;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.IOUtils;
-import sorcer.util.Sorcer;
+
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
 //import sorcer.vfe.Var;
@@ -53,7 +54,7 @@ import com.sleepycat.je.DatabaseException;
  * @author Mike Sobolewski
  */
 
-public class SorcerDatabaseTest implements SorcerConstants {
+public class SorcerDatabaseTest {
 
 	private final static Logger logger = Logger
 			.getLogger(SorcerDatabaseTest.class.getName());
@@ -62,7 +63,7 @@ public class SorcerDatabaseTest implements SorcerConstants {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] {
+		SorcerEnv.setCodeBaseByArtifacts(new String[] {
 				"org.sorcersoft.sorcer:sos-platform",
 				"org.sorcersoft.sorcer:ju-arithmetic-api" });
 	}
@@ -72,11 +73,11 @@ public class SorcerDatabaseTest implements SorcerConstants {
 	
 	@BeforeClass 
 	public static void setUpOnce() throws IOException, DatabaseException, Exception {
-		dbDir = new File("./tmp/ju-sorcer-db");
+		dbDir = new File("tmp/ju-sorcer-db");
         IOUtils.deleteDir(dbDir);
         System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
 		dbDir.mkdirs();
-		String homeDir = "./tmp/ju-sorcer-db";
+		String homeDir = "tmp/ju-sorcer-db";
 		runner = new SorcerDatabaseRunner(homeDir);
         runner.run();
 	}

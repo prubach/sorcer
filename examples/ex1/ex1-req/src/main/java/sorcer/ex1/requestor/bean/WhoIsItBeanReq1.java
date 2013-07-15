@@ -29,7 +29,7 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItBeanReq1 extends ServiceRequestor {
 
@@ -38,7 +38,7 @@ public class WhoIsItBeanReq1 extends ServiceRequestor {
         InetAddress inetAddress = null;
 		String providerName = null;
 		if (args.length == 2)
-			providerName = Sorcer.getSuffixedName(args[1]);
+			providerName = SorcerEnv.getSuffixedName(args[1]);
 		logger.info("providerName: " + providerName);
 		// define requestor data
 		Task task = null;

@@ -31,13 +31,11 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItPushJobReq extends ServiceRequestor {
 
@@ -46,9 +44,9 @@ public class WhoIsItPushJobReq extends ServiceRequestor {
 	public Exertion getExertion(String... args) throws ExertionException {
 		// get the queried provider names and the requested jobber name
 		// arg[0] is the class name of this requestor
-		String providerName1 = Sorcer.getSuffixedName(args[1]);
-		String providerName2 = Sorcer.getSuffixedName(args[2]);
-		jobberName = Sorcer.getSuffixedName(args[3]);
+		String providerName1 = SorcerEnv.getSuffixedName(args[1]);
+		String providerName2 = SorcerEnv.getSuffixedName(args[2]);
+		jobberName = SorcerEnv.getSuffixedName(args[3]);
 		String hostname = null;
 		String ipAddress = null;
 		InetAddress inetAddress = null;
@@ -93,7 +91,7 @@ public class WhoIsItPushJobReq extends ServiceRequestor {
 	}
 
 	public void postprocess() {
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		logger.info("Output context1: \n"
 				+ exertion.getContext("Who Is It1?"));
 		logger.info("Output context2: \n"

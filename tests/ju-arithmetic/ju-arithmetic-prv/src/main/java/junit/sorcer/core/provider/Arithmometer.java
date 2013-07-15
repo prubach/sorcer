@@ -26,17 +26,15 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.PositionalContext;
-import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.Signature.ReturnPath;
+import sorcer.service.ReturnPath;
 
-public class Arithmometer implements Serializable, SorcerConstants {
+public class Arithmometer implements Serializable {
 	
 	public static final String ADD = "add";
 
@@ -130,11 +128,8 @@ public class Arithmometer implements Serializable, SorcerConstants {
 	 *            service dataContext
 	 * @param selector
 	 *            a name of arithmetic operation
-	 * @return
 	 * @throws RemoteException
 	 * @throws ContextException 
-	 * @throws ContextException
-	 * @throws UnknownHostException
 	 */
 	private Context calculateFromArrayContext(Context context, String selector)
 			throws RemoteException, ContextException {
@@ -230,7 +225,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 				for (int i = 1; i < inputs.size(); i++)
 					result += (Double)revalue(inputs.get(i));
 			} else if (selector.equals(SUBTRACT)) {
-				ReturnPath<?> rp = ((ServiceContext<?>) context).getReturnPath();
+				ReturnPath<?> rp = context.getReturnPath();
 				if (rp != null && rp.argPaths != null && rp.argPaths.length > 0) {
 					result = (Double) revalue(cxt.getValue(rp.argPaths[0]));
 					result -= (Double) revalue(cxt.getValue(rp.argPaths[1]));
@@ -256,7 +251,7 @@ public class Arithmometer implements Serializable, SorcerConstants {
 
 			String outputMessage = "calculated by " + getHostname();
 			if (context.getReturnPath() != null) {
-				((ServiceContext)context).setReturnValue(result);
+				context.setReturnValue(result);
 			}
 			else if (outpaths.size() == 1) {
 				// put the result in the existing output path

@@ -17,7 +17,6 @@
  */
 package sorcer.util.dbac;
 
-import sorcer.core.SorcerConstants;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.Protocol;
 import sorcer.util.ProtocolStream;
@@ -28,6 +27,8 @@ import sorcer.util.ui.Launcher;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Logger;
+
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * The ProxyProtocol class implements generic Protocol interface to
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
  * accordingly to your requirements, or implement own protocol subclass
  * <p>
  */
-abstract public class ProxyProtocol implements Protocol, SorcerConstants {
+abstract public class ProxyProtocol implements Protocol {
 	private static Logger logger = Logger.getLogger(ProxyProtocol.class
 			.getName());
 	public ProtocolStream stream;

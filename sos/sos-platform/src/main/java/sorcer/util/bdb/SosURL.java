@@ -17,13 +17,8 @@
  */
 package sorcer.util.bdb;
 
-import sorcer.service.EvaluationException;
-import sorcer.util.bdb.sdb.SdbUtil;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 /**
@@ -35,11 +30,7 @@ public class SosURL {
 
 	private URL target;
 
-	public SosURL(String url) throws MalformedURLException {
-		target = new URL(url);
-	}
-
-	public SosURL(URL url) {
+    public SosURL(URL url) {
 		target = url;
 	}
 
@@ -59,18 +50,4 @@ public class SosURL {
 		return target.toString();
 	}
 
-	public void setValue(Object value) throws EvaluationException,
-			RemoteException {
-		if (target != null && value != null) {
-			try {
-				if (target.getRef() == null) {
-					target = SdbUtil.store(value);
-				} else {
-					SdbUtil.update(target, value);
-				}
-			} catch (Exception e) {
-				throw new EvaluationException(e);
-			}
-		}
-	}
 }

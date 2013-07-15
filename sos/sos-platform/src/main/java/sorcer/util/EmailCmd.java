@@ -17,18 +17,19 @@
  */
 package sorcer.util;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
+
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * EmailCmd is a psedofactory for all email commands. It implements commands
  * SEND_MAIL
  */
 
-public class EmailCmd implements SorcerConstants, Command {
+public class EmailCmd implements Command {
 	protected String cmdName;
 	protected String[] args;
 	public Object invoker;

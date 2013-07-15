@@ -20,5 +20,7 @@
         <module>sos-exertlet-sui</module>
         <module>commons-req</module>
         <module>commons-prv</module>
-     </modules>
+        <module>sos-api</module>
+        <module>sorcer-api</module>
+    </modules>
 </project>

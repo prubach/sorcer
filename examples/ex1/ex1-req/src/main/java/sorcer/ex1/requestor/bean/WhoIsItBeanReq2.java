@@ -27,7 +27,7 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 import java.net.InetAddress;
 
@@ -41,7 +41,7 @@ public class WhoIsItBeanReq2 extends ServiceRequestor {
 		NetSignature signature = null;
 		// define requestor data
 		if (args.length == 2)
-			providerName = Sorcer.getSuffixedName(args[1]);
+			providerName = SorcerEnv.getSuffixedName(args[1]);
 		logger.info("providerName: " + providerName);
 		Task task = null;
 		try {

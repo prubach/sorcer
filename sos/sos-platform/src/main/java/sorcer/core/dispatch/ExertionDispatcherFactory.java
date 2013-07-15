@@ -78,7 +78,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 		try {
 			if (!exertion.isJob()) {
 				logger.info("Running Space Task Dispatcher...");
-				return dispatcher = new SpaceTaskDispatcher((NetTask)exertion,
+				return new SpaceTaskDispatcher((NetTask)exertion,
 						sharedContexts, isSpawned, myMemberUtil);
 			}
 				

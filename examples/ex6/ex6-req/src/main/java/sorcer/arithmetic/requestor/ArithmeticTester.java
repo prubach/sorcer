@@ -21,7 +21,7 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.RemoteAdder;
 import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.SorcerConstants;
+import sorcer.core.context.ControlContext;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static sorcer.eo.operator.*;
@@ -52,7 +53,7 @@ import static sorcer.eo.operator.*;
  * @author Mike Sobolewski
  */
 
-public class ArithmeticTester implements SorcerConstants {
+public class ArithmeticTester {
 
 	private static Logger logger = Log.getTestLog();
 	
@@ -290,9 +291,13 @@ private Exertion f1SEQpull() throws Exception {
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
-		System.out.println("Execution time: " + (end-start) + " ms.");
+        for (ControlContext.ThrowableTrace e : out.getExceptions()) {
+            logger.log(Level.SEVERE, "Exertion error", e);
+        }
+        System.out.println("Execution time: " + (end-start) + " ms.");
 		logger.info("task f5 dataContext: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
+
 
 		return out;
 	}

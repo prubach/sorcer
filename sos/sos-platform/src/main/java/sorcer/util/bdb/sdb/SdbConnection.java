@@ -17,19 +17,18 @@
  */
 package sorcer.util.bdb.sdb;
 
+import sorcer.co.tuple.InEntry;
 import sorcer.core.StorageManagement;
+import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.util.ProviderLookup;
-import sorcer.util.bdb.objects.SorcerDatabaseViews;
-import sorcer.util.bdb.objects.SorcerDatabaseViews.Store;
+import sorcer.util.bdb.objects.Store;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.in;
+import static sorcer.service.ContextFactory.context;
 
 /**
  * @author Mike Sobolewski
@@ -56,7 +55,7 @@ public class SdbConnection extends URLConnection {
 		providerName = getURL().getPath().substring(1);
 		String reference = getURL().getRef();
 		int index = reference.indexOf('=');
-		storeType = SorcerDatabaseViews.getStoreType(reference.substring(0, index));
+		storeType = Store.getStoreType(reference.substring(0, index));
 		uuid = reference.substring(index + 1);
 	}
 
@@ -65,8 +64,12 @@ public class SdbConnection extends URLConnection {
 	 */
 	@Override
 	public void connect() throws IOException {
-		store = (StorageManagement) ProviderLookup.getProvider(providerName, serviceType);
-		connected = true;
+        try {
+            store = (StorageManagement) Accessor.getService(providerName, Class.forName(serviceType));
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Could not access StorageManagement implementation " + serviceType, e);
+        }
+        connected = true;
 	}
 
 	@Override
@@ -81,5 +84,9 @@ public class SdbConnection extends URLConnection {
 		} catch (ContextException e) {
 			throw new IOException(e);
 		}
+	}
+
+    private static <T>InEntry<T> in(String path, T value) {
+        return new InEntry<T>(path, value, 0);
 	}
 }

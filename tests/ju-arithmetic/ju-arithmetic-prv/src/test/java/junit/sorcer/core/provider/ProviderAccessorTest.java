@@ -18,11 +18,17 @@
 package junit.sorcer.core.provider;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static sorcer.core.SorcerConstants.ANY;
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerConstants;
+import net.jini.core.lookup.ServiceItem;
+import sorcer.core.SorcerEnv;
+import sorcer.river.Filters;
+import sorcer.service.Accessor;
+import sorcer.service.DynamicAccessor;
 import sorcer.service.Jobber;
 import sorcer.service.Service;
 import sorcer.util.ProviderAccessor;
@@ -34,9 +40,10 @@ import sorcer.util.Stopwatch;
  * @author Mike Sobolewski
  */
 
-public class ProviderAccessorTest implements SorcerConstants {
+public class ProviderAccessorTest {
 
-	private final static Logger logger = Logger
+    public static final net.jini.core.lookup.ServiceTemplate jobberTemplate = Accessor.getServiceTemplate(null, ANY, new Class[]{Jobber.class}, null);
+    private final static Logger logger = Logger
 			.getLogger(ProviderAccessorTest.class.getName());
 
 	static {
@@ -45,37 +52,32 @@ public class ProviderAccessorTest implements SorcerConstants {
 		System.setSecurityManager(new RMISecurityManager());
 	}
 
-	public void providerAcessorTest() throws Exception {
-		long startTime = System.currentTimeMillis();
-		Service provider = ProviderAccessor.getProvider(Jobber.class);
-		//logger.info("ProviderAccessor provider: " + provider);
-		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
-		assertNotNull(provider);
-
+	public void providerAccessorTest() throws Exception {
+        checkAccessor(new ProviderAccessor());
 	}
 
 	public void providerLookupTest() throws Exception {
-		long startTime = System.currentTimeMillis();
-		Service provider = (Service) ProviderLookup.getService(Jobber.class);
-		//logger.info("ProviderLookup provider: " + provider);
-		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
-		assertNotNull(provider);
-
+        checkAccessor(new ProviderLookup());
 	}
 
-	public void providerLookatorTest() throws Exception {
-		long startTime = System.currentTimeMillis();
-		Service provider = (Service) ProviderLocator.getService(Jobber.class, 10000);
-		//logger.info("ProviderLocator provider: " + provider);
-		logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
-		assertNotNull(provider);
-
+	public void providerLocatorTest() throws Exception {
+        checkAccessor(new ProviderLocator());
 	}
+
+    public void checkAccessor(DynamicAccessor accessor){
+        long startTime = System.currentTimeMillis();
+        ServiceItem[] serviceItems = accessor.getServiceItems(jobberTemplate, 1, 1, Filters.any(), SorcerEnv.getLookupGroups());
+        assertTrue(serviceItems.length > 0);
+        Service provider = (Service) serviceItems[0].service;
+        //logger.info("ProviderLocator provider: " + provider);
+        logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
+        assertNotNull(provider);
+    }
 
 	public static void main(String[] args) throws Exception {
 		ProviderAccessorTest test = new ProviderAccessorTest();
-		test.providerAcessorTest();
-		test.providerLookatorTest();
+		test.providerAccessorTest();
+        test.providerLocatorTest();
 		test.providerLookupTest();
 	}
 }

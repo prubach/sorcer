@@ -27,9 +27,9 @@ import java.util.StringTokenizer;
 
 import sorcer.core.Cataloger;
 import sorcer.core.Provider;
+import sorcer.service.Accessor;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
-import sorcer.util.ProviderLookup;
 
 /**
  * Handles directory commands
@@ -169,9 +169,9 @@ public class DirCmd extends ShellCmd {
 	}
 
 	private void listCatalog() {
-		Cataloger cataloger = (Cataloger)ProviderLookup.getService(Cataloger.class);
+		Cataloger cataloger = Accessor.getService(Cataloger.class);
 		if (cataloger != null) {
-			String[] providers = new String[0];
+			String[] providers;
 			try {
 				providers = cataloger.getProviderList();
 			out.println("Providers in the " + ((Provider)cataloger).getProviderName() + ": ");
@@ -185,7 +185,7 @@ public class DirCmd extends ShellCmd {
 	}
 	
 	private void catalogInfo() {
-		Cataloger cataloger = (Cataloger)ProviderLookup.getService(Cataloger.class);
+		Cataloger cataloger = Accessor.getService(Cataloger.class);
 		if (cataloger != null) {
 			try {
 			out.println(((Provider)cataloger).getProviderName() + " Contents");

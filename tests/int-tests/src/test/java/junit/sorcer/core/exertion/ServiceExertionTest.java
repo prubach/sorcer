@@ -48,6 +48,7 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -55,9 +56,8 @@ import sorcer.service.EvaluationException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 /**
  * @author Mike Sobolewski
@@ -73,12 +73,12 @@ public class ServiceExertionTest {
 	private String x1 = "x1", x2 = "x2", y = "y";
 	
 	static {
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] { 
-				"org.sorcersoft.sorcer:ju-arithmetic-api", 
-				"org.sorcersoft.sorcer:sos-platform" });
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:ju-arithmetic-api",
+                "org.sorcersoft.sorcer:sos-platform"});
 	}
 	
 	@Before

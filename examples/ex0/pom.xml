@@ -8,15 +8,13 @@
         <artifactId>examples</artifactId>
     </parent>
 
-	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>ex0</artifactId>
-	<version>1.0-M2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SORCER :: ex0</name>
 	<description>HelloWorld Service</description>
 
 	<properties>
-		<v.sorcer>1.0-SNAPSHOT</v.sorcer>
+		<v.sorcer>1.0-M2-SNAPSHOT</v.sorcer>
 	</properties>
 
 	<modules>
@@ -30,8 +28,8 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sorcer-api</artifactId>
-				<version>${project.version}</version>
+				<artifactId>sos-api</artifactId>
+				<version>${v.sorcer}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

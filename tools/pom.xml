@@ -17,6 +17,7 @@
 	<modules>
 		<module>sos-webster</module>
 		<module>sos-boot</module>
+        <module>sos-netlet</module>
 		<module>sos-shell</module>
 		<module>browser</module>
         <module>sorcer-launcher</module>

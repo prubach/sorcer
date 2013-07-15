@@ -28,9 +28,9 @@ import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Name;
+import sorcer.river.Filters;
 
 import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 
 
 public class ServiceDiscoveryHelper{
@@ -81,12 +81,7 @@ public class ServiceDiscoveryHelper{
             System.setSecurityManager(new RMISecurityManager());
         }
         //Example of how to use ServiceDisovery Manager
-        ServiceItemFilter sif=new ServiceItemFilter(){
-            public boolean check(ServiceItem item){
-                System.out.println("check() "+item.service);
-                return true;
-            }
-        };
+        ServiceItemFilter sif = Filters.any();
         //ServiceDiscoveryListener is called by the ServiceDiscoveryManager
         ServiceDiscoveryListener sdl=new ServiceDiscoveryListener(){
             public void serviceAdded(ServiceDiscoveryEvent event) {

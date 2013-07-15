@@ -17,7 +17,8 @@
  */
 package junit.sorcer.core.provider;
 
-import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.service.Accessor;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -27,8 +28,7 @@ import sorcer.service.Task;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.ProviderAccessor;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -55,7 +55,7 @@ import static sorcer.util.JavaSystemProperties.RMI_SERVER_CODEBASE;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ArithmeticNetTest implements SorcerConstants {
+public class ArithmeticNetTest {
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNetTest.class.getName());
 
@@ -64,13 +64,13 @@ public class ArithmeticNetTest implements SorcerConstants {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
 		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
-			Sorcer.setCodeBaseByArtifacts(new String[]{
-					"org.sorcersoft.sorcer:sos-platform",
-					"org.sorcersoft.sorcer:ju-arithmetic-api"});
+			SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                    "org.sorcersoft.sorcer:sos-platform",
+                    "org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
 
         System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
-		System.out.println("Webster:" + Sorcer.getWebsterUrl());
+		System.out.println("Webster:" + SorcerEnv.getWebsterUrl());
 		System.out.println("Codebase:" + System.getProperty(RMI_SERVER_CODEBASE));
 		System.setSecurityManager(new RMISecurityManager());
 	}
@@ -78,7 +78,7 @@ public class ArithmeticNetTest implements SorcerConstants {
 	public static void waitForServices() throws InterruptedException {
 		int tries = 0;
 		while (tries < 8) {
-			Object subtractor = ProviderAccessor.getService(null, Subtractor.class);
+			Subtractor subtractor = Accessor.getService(Subtractor.class);
 			if (subtractor != null)
 				return;
 			Thread.sleep(1000);

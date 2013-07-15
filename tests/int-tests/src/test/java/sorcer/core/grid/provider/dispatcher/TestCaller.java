@@ -23,8 +23,9 @@ import net.jini.discovery.LookupDiscovery;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Service;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 
@@ -37,7 +38,7 @@ public class TestCaller {
 
     public TestCaller() {
         try {
-            LookupDiscovery disco = new LookupDiscovery(Sorcer.getLookupGroups());
+            LookupDiscovery disco = new LookupDiscovery(SorcerEnv.getLookupGroups());
             sdm = new ServiceDiscoveryManager(disco, new LeaseRenewalManager());
             lCache1 = sdm.createLookupCache(new ServiceTemplate(null, new Class[]{Service.class}, null),
                     null, null);

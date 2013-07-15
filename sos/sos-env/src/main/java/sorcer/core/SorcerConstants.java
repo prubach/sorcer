@@ -34,6 +34,7 @@ public interface SorcerConstants {
     // Rio default version
     public static final String RIO_VERSION = "5.0-M3";
 	// SORCER global properties defined in sorcer.util.Sorcer.java
+	// SORCER global properties defined in sorcer.util.SorcerEnv.java
 	public static final String SORCER_HOME = "sorcer.home";
 
 	public static final String E_SORCER_HOME = "SORCER_HOME";
@@ -262,6 +263,8 @@ public interface SorcerConstants {
 	public static final String S_VERSION_SORCER = "v.sorcer";
 
     public static final String S_VERSION_RIO = "v.rio";
+
+    public static final String S_SORCER_LOCAL_HOSTADDR= "sorcer.local.hostaddress";
 
 	/**
 	 * sorcer.env file name (or path)
@@ -1202,6 +1205,8 @@ public interface SorcerConstants {
 			ACCESS_CLASS = "Access Class";
 
 	String CODEBASE_SEPARATOR = " ";
+
+    String NAME_DEFAULT="___SORCER_NAME_DEFAULT___";
 }
 
 
