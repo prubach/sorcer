@@ -15,6 +15,8 @@
  */
 package sorcer.netlet.util;
 
+import sorcer.core.SorcerEnv;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -110,9 +112,10 @@ public class LoaderConfiguration {
             } else if (line.startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
                 // Webster is not yet started so this will work only if we use jars from external websters
                 // specified using: http://.... or mvn://... @address:port
+                // or if the environment points to a running system webster
                 List<String> codebasePaths = new ArrayList<String>();
                 codebasePaths.add(line);
-                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, null, System.out));
+                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, SorcerEnv.getWebsterUrl().toString(), System.out));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);

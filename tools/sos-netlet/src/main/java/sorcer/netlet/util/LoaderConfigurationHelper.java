@@ -151,7 +151,8 @@ public class LoaderConfigurationHelper {
         for (String codebaseStr : codebaseLines) {
             codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
             if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://"))) {
-                out.println("Codebase can only be specified using mvn:// or http://");
+                if (out!=null) out.println("Codebase can only be specified using mvn:// or http://");
+                else logger.severe("Codebase can only be specified using mvn:// or http://");
                 return null;
             }
 

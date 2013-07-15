@@ -88,7 +88,7 @@ public class ScriptExerter {
             result = scriptThread.getResult();
             return result;
         }
-        throw new ScriptExertException("You must first call parse() before calling execut() ");
+        throw new ScriptExertException("You must first call parse() before calling execute() ");
     }
 
     public Object parse() throws Throwable {

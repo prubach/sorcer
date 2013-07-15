@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
@@ -50,9 +51,12 @@ public class ScriptThread extends Thread {
                 if (out!=null) out.println("New Script classloader: " + printUrls(loader.getURLs()));
             }
             else if (classLoader instanceof RootLoader) {
-                loader = ((RootLoader)classLoader);
+                loader = (RootLoader)classLoader;
                 for (URL url : jarsToAdd)
                     loader.addURL(url);
+                if (out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
+            } else if (classLoader instanceof URLClassLoader) {
+                loader = new RootLoader(jarsToAdd, classLoader);
                 if (out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
             }
             gShell = new GroovyShell(loader!=null ? loader : classLoader);
