@@ -1601,7 +1601,7 @@ public class SorcerEnv {
         }
 
         try {
-            hn = HostUtil.getInetAddress().getHostAddress();
+            hn = getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             logger.severe("Cannot determine the webster hostname.");
         }
