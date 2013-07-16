@@ -39,12 +39,11 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>sorcer.util,sorcer.org.rioproject.net</Export-Package>
-                        <Import-Package>sorcer.util,sorcer.org.rioproject.net,org.slf4j;version=1.7</Import-Package>
+                        <Export-Package>sorcer.util</Export-Package>
+                        <Import-Package>sorcer.util,org.slf4j;version=1.7</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
