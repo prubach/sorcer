@@ -3,12 +3,12 @@
     <parent>
         <artifactId>tools</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M1</version>
+        <version>1.0-M2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sorcer-launcher</artifactId>
-    <name>SORCER Tools :: Launcher</name>
+    <name>SORCER tools :: launcher</name>
     <packaging>bundle</packaging>
     <description>Helper classes for launching Sorcer server (provider) and client (requestor) processes; to be used by other Sorcer tools. Do not confuse it with sos-boot which contains classes internal to the server process, i.e. the main class for server (ServiceStarter) or with ServiceRequestor helper 'main' class for clients.</description>
 

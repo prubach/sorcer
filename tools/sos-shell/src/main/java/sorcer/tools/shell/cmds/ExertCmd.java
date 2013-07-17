@@ -18,17 +18,13 @@
 package sorcer.tools.shell.cmds;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.netlet.ScriptExerter;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
-import sorcer.tools.shell.LoaderConfigurationHelper;
-import sorcer.tools.shell.NetworkShell;
-import sorcer.tools.shell.ShellCmd;
-import sorcer.util.JavaSystemProperties;
+import sorcer.tools.shell.*;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -41,7 +37,7 @@ public class ExertCmd extends ShellCmd {
 
 		COMMAND_USAGE = "exert [-cc] [[-s | --s | --m] <output filename>] <input filename>";
 
-		COMMAND_HELP = "Manage and execute the federation of services specified by the <input filename>;" 
+		COMMAND_HELP = "Manage and execute the federation of services specified by the <input filename>;"
 				+ "\n  -cc   print the executed exertion with control dataContext"
 				+ "\n  -s   save the command output in a file"
 				+ "\n  --s   serialize the command output in a file"
@@ -50,6 +46,8 @@ public class ExertCmd extends ShellCmd {
 
 	private final static Logger logger = Logger.getLogger(ExertCmd.class
 			.getName());
+
+    private ScriptExerter scriptExerter;
 
 	private String input;
 
@@ -61,22 +59,18 @@ public class ExertCmd extends ShellCmd {
 
 	private String script;
 
-	private static StringBuilder staticImports;
+    private NetworkShell shell;
 
 	public ExertCmd() {
-		if (staticImports == null) {
-			staticImports = readTextFromJar("static-imports.txt");
-		}
 	}
 
 	public void execute() throws Throwable {
-		NetworkShell shell = NetworkShell.getInstance();
-		BufferedReader br = NetworkShell.getShellInputStream();
-		out = NetworkShell.getShellOutputStream();
-		input = shell.getCmd();
+        out = NetworkShell.getShellOutputStream();
+        shell = NetworkShell.getInstance();
+        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl());
+        input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");
-
 		File d = NetworkShell.getInstance().getCurrentDir();
 		String nextToken = null;
 		String scriptFilename = null;
@@ -98,7 +92,7 @@ public class ExertCmd extends ShellCmd {
 				// evaluate text
 				else if (nextToken.equals("-t")) {
 					if (script == null || script.length() == 0) {
-						throw new NullPointerException("Must have not empty sctipt");
+						throw new NullPointerException("Must have not empty script");
 					}
 				}
 				// evaluate file script
@@ -112,11 +106,8 @@ public class ExertCmd extends ShellCmd {
 			return;
 		}
 		StringBuilder sb = null;
-        List<String> loadLines = new ArrayList<String>();
-        List<String> codebaseLines = new ArrayList<String>();
         if (script != null) {
-			sb = new StringBuilder(staticImports.toString());
-			sb.append(script);
+            scriptExerter.readScriptWithHeaders(script);
 		} else if (scriptFilename != null) {
 			if ((new File(scriptFilename)).isAbsolute()) {
 				scriptFile = NetworkShell.huntForTheScriptFile(scriptFilename);
@@ -124,36 +115,18 @@ public class ExertCmd extends ShellCmd {
 				scriptFile = NetworkShell.huntForTheScriptFile("" + d
 						+ File.separator + scriptFilename);
 			}
-			sb = new StringBuilder(staticImports.toString());
 			try {
-                NetletFileParser readResult = readFile(scriptFile);
-                loadLines = readResult.loadLines;
-                codebaseLines = readResult.codebaseLines;
-				sb.append(readResult.result);
+                scriptExerter.readFile(scriptFile);
 			} catch (IOException e) {
-				e.printStackTrace();
+				out.append("File: " + scriptFile.getAbsolutePath() + " could not be found or read: " + e.getMessage());
 			}
-			//System.out.println(">>> executing script: \n" + sb.toString());
 		} else {
 			out.println("Missing exertion input filename!");
 			return;
 		}
-        // Process "load" and generate a list of URLs for the classloader
-        List<URL> urlsToLoad = new ArrayList<URL>();
-        if (!loadLines.isEmpty()) {
-            for (String jar : loadLines) {
-                    String loadPath = jar.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
-                    urlsToLoad = LoaderConfigurationHelper.load(loadPath);
-            }
-        }
-        // Process "codebase" and set codebase variable
-        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, out));
-
-        ScriptThread et = new ScriptThread(sb.toString(), urlsToLoad.toArray(new URL[] { }), out);
-		et.start();
-		et.join();
-		Object result = et.getResult();
-		// System.out.println(">>>>>>>>>>> result: " + result);
+        Object target = scriptExerter.parse();
+        Object result = scriptExerter.execute();
+        // System.out.println(">>>>>>>>>>> result: " + result);
 		if (result != null) {
 			if (!(result instanceof Exertion)) {
 				out.println("\n---> EVALUATION RESULT --->");
@@ -184,10 +157,10 @@ public class ExertCmd extends ShellCmd {
 				out.println(xrt.getControlContext());
 			}
 		} else {
-			if (et.getTarget() != null) {
+			if (target != null) {
 				out.println("\n--- Failed to excute exertion ---");
-				out.println(((ServiceExertion) et.getTarget()).describe());
-				out.println(((ServiceExertion) et.getTarget()).getDataContext());
+				out.println(((ServiceExertion) target).describe());
+				out.println(((ServiceExertion) target).getDataContext());
 				if (!commandLine) {
 					out.println("Script failed: " + scriptFilename);
 					out.println(script);
@@ -197,8 +170,6 @@ public class ExertCmd extends ShellCmd {
 		}
 	}
 
-
-
 	public String getScript() {
 		return script;
 	}
@@ -207,78 +178,11 @@ public class ExertCmd extends ShellCmd {
 		this.script = script;
 	}
 
-    public static class NetletFileParser {
-        public String result;
-        public List<String> loadLines;
-        public List<String> codebaseLines;
-
-        public NetletFileParser(String result, List<String> loadLines, List<String> codebaseLines ) {
-            this.result = result;
-            this.loadLines = loadLines;
-            this.codebaseLines = codebaseLines;
-        }
-
+    public File getScriptFile() {
+        return scriptFile;
     }
 
-
-	public static NetletFileParser readFile(File file) throws IOException {
-        Map<String, List<String>> result = new HashMap<String, List<String>>();
-        List<String> loadLines = new ArrayList<String>();
-        List<String> codebaseLines = new ArrayList<String>();
-		// String lineSep = System.getProperty("line.separator");
-		String lineSep = "\n";
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String nextLine = "";
-		StringBuffer sb = new StringBuffer();
-		nextLine = br.readLine();
-		// skip shebang line
-		if (nextLine.indexOf("#!") < 0) {
-			sb.append(nextLine);
-			sb.append(lineSep);
-		}
-		while ((nextLine = br.readLine()) != null) {
-            // Check for "load" of jars
-            if (nextLine.trim().startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
-                loadLines.add(nextLine.trim());
-            } else if (nextLine.trim().startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
-                codebaseLines.add(nextLine.trim());
-            } else {
-                sb.append(nextLine);
-                sb.append(lineSep);
-            }
-		}
-        return new NetletFileParser(sb.toString(), loadLines, codebaseLines);
-	}
-
-	private StringBuilder readTextFromJar(String filename) {
-		InputStream is = null;
-		BufferedReader br = null;
-		String line;
-		StringBuilder sb = new StringBuilder();
-
-		try {
-			is = getClass().getClassLoader().getResourceAsStream(filename);
-            logger.finest("Loading " + filename + " from is: " + is);
-			if (is != null) {
-				br = new BufferedReader(new InputStreamReader(is));
-				while (null != (line = br.readLine())) {
-					sb.append(line);
-					sb.append("\n");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-				if (is != null)
-					is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return sb;
-	}
-
+    public void setScriptFile(File scriptFile) {
+        this.scriptFile = scriptFile;
+    }
 }

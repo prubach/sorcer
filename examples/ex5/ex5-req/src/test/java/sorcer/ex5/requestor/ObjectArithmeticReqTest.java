@@ -18,7 +18,7 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
-import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.exertion.ObjectTask;
@@ -29,7 +29,7 @@ import sorcer.ex5.provider.SubtractorImpl;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ObjectArithmeticReqTest implements SorcerConstants {
+public class ObjectArithmeticReqTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ObjectArithmeticReqTest.class.getName());
@@ -49,7 +49,7 @@ public class ObjectArithmeticReqTest implements SorcerConstants {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        Sorcer.setCodeBaseByArtifacts(new String[]{
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex5-prv",
                 "org.sorcersoft.sorcer:ex5-api"});

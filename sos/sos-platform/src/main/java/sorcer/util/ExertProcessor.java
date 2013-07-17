@@ -24,15 +24,14 @@ import java.util.logging.Logger;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-import net.jini.core.transaction.server.TransactionManager;
 
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
 import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext.ThrowableTrace;
-//import sorcer.core.dispatch.ProvisionManager;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
@@ -56,6 +55,7 @@ import sorcer.service.SignatureException;
 import sorcer.service.Spacer;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Task;
+import sorcer.service.txmgr.TransactionManagerAccessor;
 
 /**
  * @author Mike Sobolewski
@@ -185,7 +185,7 @@ public class ExertProcessor implements Exerter, Callable {
 				signature.setProviderName(providerName);
 			}
 			logger.finer("* Exertion shell's servicer accessor: "
-					+ Accessor.getAccessor());
+					+ Accessor.getAccessorType());
 			provider = ((NetSignature) signature).getServicer();
 		} catch (SignatureException e) {
 			e.printStackTrace();
@@ -195,21 +195,12 @@ public class ExertProcessor implements Exerter, Callable {
 			// handle signatures for PULL tasks
 			if (!exertion.isJob()
 					&& exertion.getControlContext().getAccessType() == Access.PULL) {
-				signature = new NetSignature("service", Spacer.class, Sorcer.getActualSpacerName());
+				signature = new NetSignature("service", Spacer.class, SorcerEnv.getActualSpacerName());
 			}
-			try {
-				provider = Accessor.getServicer(signature);
-			} catch (SignatureException e) {
-				exertion.getControlContext().addException(
-						"no provider avaialable", e);
-				exertion.getControlContext().appendTrace(
-						"xrt shell:" + exertion.getName());
-				exertion.setStatus(ExecState.FAILED);
-				throw new ExertionException("exerting failed ", e);
-			}
-		}
-		 //Provider tasker = ProviderLookup.getProvider(exertion.getProcessSignature());
-		// provider = ProviderAccessor.getProvider(null, signature
+            provider = (Service) Accessor.getService(signature);
+        }
+		 //Provider tasker = ProviderLookup.getService(exertion.getProcessSignature());
+		// provider = ProviderAccessor.getService(null, signature
 		// .getServiceType());
 		if (provider == null) {
 			logger.warning("* Provider not available for: " + signature);
@@ -267,11 +258,9 @@ public class ExertProcessor implements Exerter, Callable {
 			TransactionException, ExertionException {
 		ServiceID mutexId = provider.getProviderID();
 		if (locker == null) {
-			locker = (MutualExclusion) ProviderLookup
-					.getService(MutualExclusion.class);
+			locker = Accessor.getService(MutualExclusion.class);
 		}
-		TransactionManager transactionManager = ProviderAccessor
-				.getTransactionManager();
+		TransactionManagerAccessor.getTransactionManager();
 		Transaction txn = null;
 
 		LockResult lr = locker.getLock(""

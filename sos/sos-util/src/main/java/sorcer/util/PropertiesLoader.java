@@ -1,5 +1,6 @@
 package sorcer.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -11,7 +12,8 @@ import java.util.Properties;
  */
 public class PropertiesLoader {
 	public Map<String, String> loadAsMap(Class c) {
-		return loadAsMap(c.getName() + ".properties", c.getClassLoader());
+        String name = c.getName();
+        return loadAsMap(name.replace('.', File.separatorChar) + ".properties", c.getClassLoader());
 	}
 
 	public Map<String, String> loadAsMap(String path, ClassLoader cl) {
@@ -39,9 +41,7 @@ public class PropertiesLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, String> toMap(Properties properties) {
-		Map<String, String> result = new HashMap<String, String>();
-		result.putAll((Map) properties);
-		return result;
+	public static Map<String, String> toMap(Properties properties) {
+        return (Map)properties;
 	}
 }

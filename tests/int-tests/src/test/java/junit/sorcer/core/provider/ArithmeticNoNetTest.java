@@ -42,19 +42,20 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 /**
  * @author Mike Sobolewski
  */
 
-public class ArithmeticNoNetTest implements SorcerConstants {
+public class ArithmeticNoNetTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNoNetTest.class.getName());
@@ -63,9 +64,9 @@ public class ArithmeticNoNetTest implements SorcerConstants {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-		Sorcer.setCodeBaseByArtifacts(new String[] { 
-				"org.sorcersoft.sorcer:sos-platform", 
-				"org.sorcersoft.sorcer:ju-arithmetic-api" }); 
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:ju-arithmetic-api"});
 	}
 	
 	@Test

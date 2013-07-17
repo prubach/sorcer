@@ -30,8 +30,8 @@ public interface SorcerConstants {
     // S_ATTRIBUTE is variable name in System properties
     // E_ATTRIBUTE is variable name in the system Environment
 	/* service provider genetic properties */
-	public static final String SORCER_VERSION = "1.0-M1";
-	// SORCER global properties defined in sorcer.util.Sorcer.java
+	public static final String SORCER_VERSION = "1.0-M2-SNAPSHOT";
+	// SORCER global properties defined in sorcer.util.SorcerEnv.java
 	public static final String SORCER_HOME = "sorcer.home";
 
 	public static final String E_SORCER_HOME = "SORCER_HOME";
@@ -258,6 +258,8 @@ public interface SorcerConstants {
 	public static final String S_SORCER_REPO = "sorcer.local.repo.location";
 
 	public static final String S_VERSION_SORCER = "v.sorcer";
+
+    public static final String S_SORCER_LOCAL_HOSTADDR= "sorcer.local.hostaddress";
 
 	/**
 	 * sorcer.env file name (or path)
@@ -1198,6 +1200,8 @@ public interface SorcerConstants {
 			ACCESS_CLASS = "Access Class";
 
 	String CODEBASE_SEPARATOR = " ";
+
+    String NAME_DEFAULT="___SORCER_NAME_DEFAULT___";
 }
 
 

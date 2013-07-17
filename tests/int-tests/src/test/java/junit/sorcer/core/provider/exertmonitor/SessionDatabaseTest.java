@@ -33,7 +33,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.provider.exertmonitor.IMonitorSession;
 import sorcer.util.IOUtils;
 import sorcer.util.bdb.objects.UuidKey;
@@ -44,7 +43,7 @@ import com.sleepycat.collections.StoredMap;
  * @author Mike Sobolewski
  */
 
-public class SessionDatabaseTest implements SorcerConstants {
+public class SessionDatabaseTest {
 
 	private final static Logger logger = Logger
 			.getLogger(SessionDatabaseTest.class.getName());

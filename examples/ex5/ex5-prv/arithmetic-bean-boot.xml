@@ -22,7 +22,7 @@
 
     <property name="pom.file" value="${basedir}/pom.xml" />
     <property environment="env" />
-    <property name="provider.config" value="${basedir}/src/main/resources/config/start-bean.config" />
+    <property name="provider.config" value="${basedir}/src/main/resources/config/start-one-bean.config" />
     <import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
 </project>

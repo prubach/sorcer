@@ -17,7 +17,7 @@
  */
 package sorcer.core.provider.logger;
 
-import sorcer.util.ProviderLookup;
+import sorcer.service.Accessor;
 
 import java.rmi.RemoteException;
 import java.util.logging.Handler;
@@ -54,8 +54,7 @@ public class RemoteHandler extends Handler {
 			savedCcl = t.getContextClassLoader();
 			t.setContextClassLoader(ccl);
 
-			RemoteLogger logger = (RemoteLogger) ProviderLookup.getProvider(
-					providerName, RemoteLogger.class.getName());
+			RemoteLogger logger = Accessor.getService(providerName, RemoteLogger.class);
 			
 			if (isLoggable(record) && logger != null)
 				logger.publish(record);

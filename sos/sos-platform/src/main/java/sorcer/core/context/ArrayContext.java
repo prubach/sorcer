@@ -23,6 +23,8 @@ import sorcer.service.ContextException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sorcer.core.SorcerConstants.CPS;
+
 /**
  * The Array dataContext has an array like access to a service dataContext. Accessing
  * and setting dataContext values is done via integer indices. Implicit dataContext paths
@@ -49,8 +51,7 @@ import java.util.List;
  *<li>the description of the i-th element: by ovd(i) and the setter ovd(i, description);<br>
  * implicit path: array/out/[i]/description
  */
-public class ArrayContext extends ServiceContext implements IndexedContext,
-		SorcerConstants {
+public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	private static final long serialVersionUID = 108375572414579267L;
 

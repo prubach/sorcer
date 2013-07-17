@@ -18,6 +18,7 @@
 package sorcer.arithmetic.requestor;
 
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
@@ -26,7 +27,7 @@ import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExertleterTest implements SorcerConstants {
+public class ArithmeticExertleterTest {
 
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReqTest.class.getName());
@@ -49,7 +50,7 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 
 		System.setSecurityManager(new RMISecurityManager());
 
-        Sorcer.setCodeBaseByArtifacts(new String[]{
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex6-api"});
 

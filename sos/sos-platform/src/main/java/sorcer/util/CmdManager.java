@@ -26,10 +26,10 @@ import sorcer.core.SorcerConstants;
  * doIt commands.
  */
 
-public class CmdManager implements Command, Runnable, SorcerConstants {
+public class CmdManager implements Command, Runnable {
 	private Command command = null;
 	public boolean isSelectCmd = true, isDo = true;
-	public String selectedCmdName = NONE, loginCmd = SYS_LOGIN;
+	public String selectedCmdName = SorcerConstants.NONE, loginCmd = SorcerConstants.SYS_LOGIN;
 	public CmdFactory provider = null;
 	private Invoker invoker;
 

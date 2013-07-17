@@ -1,0 +1,460 @@
+/**
+ *
+ * Copyright 2013 the original author or authors.
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package sorcer.core.signature;
+
+import net.jini.core.lookup.ServiceID;
+import sorcer.core.SorcerConstants;
+import sorcer.service.Direction;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.ReturnPath;
+import sorcer.service.Service;
+import sorcer.service.Signature;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
+
+    public class ServiceSignature implements Signature {
+
+	static final long serialVersionUID = -8527094638557595398L;
+
+	/** our logger. */
+	protected final static Logger logger = Logger.getLogger("sorcer.core");
+
+	protected String name;
+
+	/** the name of operation */
+	protected String selector;
+
+	protected String prefix;
+
+	protected String ownerID;
+
+	protected ReturnPath<?> returnPath;
+
+	// Must initialize to ANY to have correct JavaSpace workers behavior
+	// to have exertions with providerName/serviceType specified going to
+	// providers
+	// named "providerName". Otherwise, exertions with providerName/serviceType
+	// can
+	// be picked up by workers with template null/serviceType that are not named
+	// "providerName"
+	protected String providerName = SorcerConstants.ANY;
+
+	private ServiceID serviceID;
+
+	protected Class<?> serviceType;
+
+	protected String group = "";
+
+	protected Exertion exertion;
+
+	/** preprocess, process, postprocess, append dataContext */
+	protected Type execType = Type.SRV;
+
+	/** indicates whether this method is being processed by the exert method */
+	protected boolean isActive = true;
+
+	/**
+	 * a dataContext template to define the dataContext appended from a provider
+	 * identified by this method
+	 */
+	private String[] contextTemplateIDs;
+
+	/**
+	 * when a method implementation is provided 'order' indicates whether a
+	 * method is tried first (SELF) or the provider is called first (PROVIDER)
+	 */
+	private int order = SorcerConstants.SELF;
+
+	/**
+	 * URL for a mobile agent: an inserted custom method executed by service
+	 * providers
+	 */
+	private String agentCodebase;
+
+	/** codebase for downloaded classes */
+	private String codebase = System.getProperty("java.rmi.server.codebase");
+
+	private String agentClass;
+
+	private String portalURL;
+
+	public ServiceSignature() {
+		providerName = SorcerConstants.ANY;
+	}
+
+	public ServiceSignature(String selector) {
+		this.selector = selector;
+		name = selector;
+	}
+
+	public ServiceSignature(String name, String selector) {
+		this.name = name;
+		this.selector = selector;
+	}
+
+	public void setExertion(Exertion exertion) throws ExertionException {
+		this.exertion = exertion;
+	}
+
+	public Exertion getExertion() {
+		return exertion;
+	}
+
+	public Class<Service> getServiceType() {
+		return (Class<Service>) serviceType;
+	}
+
+	public void setServiceType(Class<?> serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getSelector() {
+		return selector;
+	}
+
+	public String getProviderName() {
+		return providerName;
+	}
+
+	public void setProviderName(String name) {
+		providerName = name;
+	}
+
+	public void setOwnerId(String oid) {
+		ownerID = oid;
+	}
+
+	public String getOwnerID() {
+		return ownerID;
+	}
+
+	public boolean isSelfFirst() {
+		return order == SorcerConstants.SELF;
+	}
+
+	public boolean isProviderFist() {
+		return order == SorcerConstants.PROVIDER;
+	}
+
+	public String getAgentCodebase() {
+		return agentCodebase;
+	}
+
+	public void setAgentCodebase(String codebase) {
+		agentCodebase = codebase;
+	}
+
+	public String getAgentClass() {
+		return agentClass;
+	}
+
+	public void setAgentClass(String className) {
+		agentClass = className;
+	}
+
+	public String getPortalURL() {
+		return portalURL;
+	}
+
+	public void setPortalURL(String url) {
+		portalURL = url;
+	}
+
+	public static <T> T newSignature(T signature) throws SecurityException,
+			NoSuchMethodException, IllegalArgumentException,
+			InstantiationException, IllegalAccessException,
+			InvocationTargetException {
+		Constructor<? extends Object> constructor;
+		Class<? extends Object> sigClass = signature.getClass();
+		constructor = sigClass.getConstructor(signature.getClass());
+		Object sig = constructor.newInstance(signature);
+
+		return (T) sig;
+	}
+
+	public Signature copySignature(Signature m) {
+		ServiceSignature method = (ServiceSignature) m;
+		providerName = method.providerName;
+		serviceType = method.serviceType;
+		portalURL = method.portalURL;
+		codebase = method.codebase;
+		agentCodebase = method.agentCodebase;
+		agentClass = method.agentClass;
+		execType = method.execType;
+		isActive = method.isActive;
+		group = method.group;
+		contextTemplateIDs = method.contextTemplateIDs;
+		exertion = method.exertion;
+		order = method.order;
+		setSelector(method.selector);
+
+		return this;
+	}
+
+	public Type getType() {
+		return execType;
+	}
+
+	public Signature setType(Type type) {
+		execType = type;
+        return this;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void isActive(boolean state) {
+		isActive = state;
+	}
+
+	public String[] getContextTemplateIDs() {
+		return contextTemplateIDs;
+	}
+
+	/** Temporary adjustment for backward compatibility */
+	public String getContextTemplateID() {
+		return (contextTemplateIDs == null) ? null : contextTemplateIDs[0];
+	}
+
+	public void addContextTemplateID(String id) {
+		String[] newContextTemplateIDs;
+		if (contextTemplateIDs == null) {
+			newContextTemplateIDs = new String[1];
+			newContextTemplateIDs[0] = id;
+		} else {
+			newContextTemplateIDs = new String[contextTemplateIDs.length + 1];
+			int i;
+			for (i = 0; i < contextTemplateIDs.length; i++)
+				newContextTemplateIDs[i] = contextTemplateIDs[i];
+			newContextTemplateIDs[i] = id;
+		}
+		contextTemplateIDs = newContextTemplateIDs;
+		// selfModified();
+	}
+
+	public void removeContextTemplateID(String id) {
+		if (contextTemplateIDs == null)
+			return;
+		List<String> v = new ArrayList<String>();
+		for (int i = 0; i < contextTemplateIDs.length; i++)
+			v.add(contextTemplateIDs[i]);
+		v.remove(id);
+		if (contextTemplateIDs.length != v.size()) {
+			contextTemplateIDs = new String[v.size()];
+			v.toArray(contextTemplateIDs);
+			// selfModified();
+		}
+	}
+
+	public void setSelector(String selector) {
+		if (selector != null) {
+			if (selector.indexOf("#") > 0) {
+				StringTokenizer token = new StringTokenizer(selector, "#");
+				this.selector = token.nextToken();
+				prefix = token.nextToken();
+			} else if (selector.equals("new")) {
+				this.selector = null;
+			} else {
+				this.selector = selector;
+			}
+		} else {
+			this.selector = null;
+		}
+	}
+
+	public boolean isSelectable() {
+		if (selector == null && serviceType == null) {
+			return false;
+		}
+		Method[] methods = serviceType.getMethods();
+		for (Method m : methods) {
+			if (m.getName().equals(selector)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean hasContextTemplate() {
+		if (contextTemplateIDs != null)
+			return true;
+		else
+			return false;
+	}
+
+	public boolean isProcessType() {
+		return execType == Type.SRV;
+	}
+
+	public boolean isPreprocessType() {
+		return execType == Type.PRE;
+	}
+
+	public boolean isPostprocessType() {
+		return execType == Type.POST;
+	}
+
+	public boolean isAppendType() {
+		return execType == Type.APD;
+	}
+
+	public String toString() {
+		return this.getClass() + ":" + providerName + ";" + execType + ";"
+				+ isActive + ";" + serviceType + ";"
+				+ (prefix != null ? "#" + selector : "") + ";" + returnPath;
+	}
+
+	public ServiceID getServiceID() {
+		return serviceID;
+	}
+
+	public void setServiceID(ServiceID id) {
+		serviceID = id;
+	}
+
+	public boolean equals(ServiceSignature method) {
+		return (method != null) ? toString().equals(method.toString()) : false;
+	}
+
+	public int hashCode() {
+		return toString().hashCode();
+	}
+
+	public String getCodebase() {
+		return codebase;
+	}
+
+	public void setCodebase(String codebase) {
+		this.codebase = codebase;
+	}
+
+	/**
+	 * Returns a method provided by the requestor itself to substitute the
+	 * existing provider'smethod. The implementation of this requestor's method
+	 * overrides the existing implementation of the provider if one exists.Thus
+	 * a new functionality is inserted into the executing provider if the
+	 * alternative inserted method is acceptable (valid).
+	 */
+	public Method getSubstituteMethod(Class<?>[] argTypes) {
+		Method m = null;
+		try {
+			Class<?> clazz = getSubstituteClass();
+			if (clazz == null)
+				return null;
+			m = clazz.getMethod(selector, argTypes);
+		} catch (NoSuchMethodException nsme) {
+			nsme.printStackTrace();
+			// logger.info("The method: \"" + selector
+			// + "\" doesn't exist in requestor's signature code");
+		}
+		return m;
+	}
+
+	private Class<?> getSubstituteClass() {
+		// should be implemented by subclasses
+		return null;
+	}
+	
+	public static Class<?> getClass(String serviceName) {
+		Class<?> serviceType = null;
+		try {
+			serviceType = Class.forName(serviceName);
+		} catch (ClassNotFoundException e) {
+			System.err.println("Can not load type: " + serviceName);
+		}
+		return serviceType;
+	}
+
+	public static int getTypeCd(Type type) {
+		if (type == Type.PRE)
+			return Signature.PREPROCESS_CD;
+		else if (type == Type.SRV)
+			return Signature.PROCESS_CD;
+		else if (type == Type.POST)
+			return Signature.POSTPROCESS_CD;
+		else if (type == Type.APD)
+			return Signature.APPEND_CD;
+		return 0;
+	}
+
+	public static Signature.Type getType(int code) {
+		if (code == Signature.PREPROCESS_CD)
+			return Type.PRE;
+		else if (code == Signature.PROCESS_CD)
+			return Type.SRV;
+		else if (code == Signature.POSTPROCESS_CD)
+			return Type.POST;
+		else if (code == Signature.APPEND_CD)
+			return Type.APD;
+		return null;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isService() {
+		return serviceType.isInterface();
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public void setReturnPath(ReturnPath returnPath) {
+		this.returnPath = returnPath;
+	}
+
+    @Override
+     public void setReturnPath(String path) {
+        returnPath = new ReturnPath<Object>(path);
+    }
+
+        @Override
+     public void setReturnPath(String path, Direction direction) {
+        returnPath = new ReturnPath<Object>(path, direction);
+     }
+
+     public ReturnPath getReturnPath() {
+	    return returnPath;
+	}
+}

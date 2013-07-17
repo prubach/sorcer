@@ -17,30 +17,20 @@
  */
 package sorcer.util.bdb.sdb;
 
+import sorcer.protocol.ProtocolHandlerRegistry;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
 /**
+ * Note that it's impossible to load this handler with the default package-based mechanism, since it only allows to load
+ * classes that are on the system classpath.
+ *
  * @author Mike Sobolewski
  */
 public class Handler extends URLStreamHandler {
-
-/*	public static void register() {
-		final String packageName = Handler.class.getPackage().getName();
-		final String pkg = packageName.substring(0,
-				packageName.lastIndexOf('.'));
-		final String protocolPathProp = "java.protocol.handler.pkgs";
-
-		String uriHandlers = System.getProperty(protocolPathProp, "");
-		if (uriHandlers.indexOf(pkg) == -1) {
-			if (uriHandlers.length() != 0)
-				uriHandlers += "|";
-			uriHandlers += pkg;
-			System.setProperty(protocolPathProp, uriHandlers);
-		}
-	}*/
     
 	/* (non-Javadoc)
 	 * @see java.net.URLStreamHandler#openConnection(java.net.URL)
@@ -50,4 +40,7 @@ public class Handler extends URLStreamHandler {
 	        return new SdbConnection(url);
 	}
 
+    public static void register() {
+        ProtocolHandlerRegistry.get().register("sos", Handler.class);
+    }
 }

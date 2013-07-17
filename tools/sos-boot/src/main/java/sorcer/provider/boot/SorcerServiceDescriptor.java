@@ -25,12 +25,13 @@ import java.rmi.RMISecurityManager;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Policy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,6 +54,7 @@ import com.sun.jini.start.ServiceProxyAccessor;
 import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.config.PlatformLoader;
 
+import sorcer.boot.load.Activator;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.core.SorcerEnv;
@@ -112,8 +114,18 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	private static Policy initialGlobalPolicy = null;
 
 	private static JarClassPathHelper classPathHelper = new JarClassPathHelper();
+    private static Activator activator = new Activator();
+    private static boolean platformLoaded = false;
 
-	/**
+    private static AtomicInteger allDescriptors = new AtomicInteger(0);
+    private static AtomicInteger startedServices = new AtomicInteger(0);
+    private static AtomicInteger erredServices = new AtomicInteger(0);
+
+    {
+        allDescriptors.incrementAndGet();
+    }
+
+    /**
 	 * Object returned by
 	 * {@link SorcerServiceDescriptor#create(net.jini.config.Configuration)
 	 * SorcerServiceDescriptor.create()} method that returns the proxy and
@@ -296,6 +308,18 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * @see com.sun.jini.start.ServiceDescriptor#create
 	 */
 	public Object create(Configuration config) throws Exception {
+        try {
+            return docreate(config);
+        } catch (Exception x) {
+            erredServices.incrementAndGet();
+            throw x;
+        } finally {
+            int i = startedServices.incrementAndGet();
+            logger.info("Started " + i + '/' + allDescriptors.get() + " services; " + erredServices.get() + " errors");
+        }
+    }
+
+	private Object docreate(Configuration config) throws Exception {
 		ensureSecurityManager();
 		Object proxy = null;
 
@@ -314,45 +338,12 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 		CommonClassLoader commonCL = CommonClassLoader.getInstance();
 		// Don't load Platform Class Loader when it was already loaded before
-		if (commonCL.getURLs().length==0) {
-			
-			PlatformLoader platformLoader = new PlatformLoader();
-			List<URL> urlList = new ArrayList<URL>();
+        if (!platformLoaded) {
+            loadPlatform(config, defaultDir, commonCL);
+            platformLoaded = true;
+        }
 
-			String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
-					String.class, defaultDir);
-			logger.finer("Platform dir: " + platformDir);
-			PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir);
-	
-			logger.finer("Capabilities: " + Arrays.toString(caps));
-			for (PlatformCapabilityConfig cap : caps) {
-				if (cap.getCommon()) {
-					URL[] urls = cap.getClasspathURLs();
-					urlList.addAll(Arrays.asList(urls));
-				}
-			}
-	
-			URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
-	
-			/*
-			 * if(commonJARs.length==0) throw new
-			 * RuntimeException("No commonJARs have been defined");
-			 */
-			if (logger.isLoggable(Level.FINEST)) {
-				StringBuffer buffer = new StringBuffer();
-				for (int i = 0; i < commonJARs.length; i++) {
-					if (i > 0)
-						buffer.append("\n");
-					buffer.append(commonJARs[i].toExternalForm());
-				}
-				logger.finest("commonJARs=\n" + buffer.toString());
-			}
-	
-			commonCL.addCommonJARs(commonJARs);
-		}
-		
-		
-		final Thread currentThread = Thread.currentThread();
+        Thread currentThread = Thread.currentThread();
 		ClassLoader currentClassLoader = currentThread.getContextClassLoader();
 
 
@@ -436,13 +427,62 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			}
 			if (logger.isLoggable(Level.FINEST))
 				logger.log(Level.FINEST, "Proxy =  {0}", proxy);
-			currentThread.setContextClassLoader(currentClassLoader);
 			// TODO - factor in code integrity for MO
-			proxy = (new MarshalledObject(proxy)).get();
-		} finally {
+            proxy = (new MarshalledObject(proxy)).get();
+            currentThread.setContextClassLoader(currentClassLoader);
+        } finally {
 			currentThread.setContextClassLoader(currentClassLoader);
 		}
 		return (new Created(impl, proxy));
+	}
+
+    private void loadPlatform(Configuration config, String defaultDir, CommonClassLoader commonCL) throws Exception {
+        PlatformLoader platformLoader = new PlatformLoader();
+        List<URL> urlList = new LinkedList<URL>();
+
+        String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
+                String.class, defaultDir);
+        logger.finer("Platform dir: " + platformDir);
+        PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir);
+
+        logger.finer("Capabilities: " + Arrays.toString(caps));
+        for (PlatformCapabilityConfig cap : caps) {
+            if (cap.getCommon()) {
+                URL[] urls = cap.getClasspathURLs();
+                urlList.addAll(Arrays.asList(urls));
+            }
+        }
+
+        URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
+
+			/*
+			 * if(commonJARs.length==0) throw new
+			 * RuntimeException("No commonJARs have been defined");
+			 */
+        if (logger.isLoggable(Level.FINEST)) {
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < commonJARs.length; i++) {
+                if (i > 0)
+                    buffer.append("\n");
+                buffer.append(commonJARs[i].toExternalForm());
+            }
+            logger.finest("commonJARs=\n" + buffer.toString());
+        }
+
+        commonCL.addCommonJARs(commonJARs);
+
+        activate(commonCL, commonJARs);
+    }
+
+    private void activate(CommonClassLoader commonCL, URL[] commonJARs) throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader contextClassLoader = thread.getContextClassLoader();
+        try{
+            thread.setContextClassLoader(commonCL);
+            activator.activate(commonJARs);
+        }finally {
+            thread.setContextClassLoader(contextClassLoader);
+        }
 	}
 
 	/*

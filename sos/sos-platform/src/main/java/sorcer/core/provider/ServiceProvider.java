@@ -47,7 +47,6 @@ import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.RemoteContextManagement;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.provider.proxy.Outer;
 import sorcer.core.provider.proxy.Partner;
@@ -57,12 +56,10 @@ import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
-import sorcer.tools.webster.Webster;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.*;
-import sorcer.util.bdb.sdb.SdbURLStreamHandlerFactory;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -149,7 +146,7 @@ import java.util.logging.Logger;
 public class ServiceProvider implements Identifiable, Provider, ServiceIDListener,
 		ReferentUuid, AdministratableProvider, ProxyAccessor, ServerProxyTrust,
 		RemoteMethodControl, LifeCycle, Partner, Partnership,
-		RemoteContextManagement, SorcerConstants {
+		RemoteContextManagement {
 	// RemoteMethodControl is needed to enable Proxy Constraints
 
     /** Logger and configuration component name for service provider. */
@@ -158,14 +155,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     /** Logger for logging information about this instance */
     protected static final Logger logger = Logger.getLogger(PROVIDER);
 
-	static {
-        try {
-            URL.setURLStreamHandlerFactory(new SdbURLStreamHandlerFactory());
-        } catch (Error e) {
-            logger.severe("URL Stream Handler Factory setting failed!");
-        }
-	}
-	
 	public static final String COMPONENT = ServiceProvider.class.getName();
 
 	protected ProviderDelegate delegate;
@@ -218,7 +207,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		tally = tally + 1;
 		size = tally;
 		// load Sorcer environment properties via static initializer
-		Sorcer.getProperties();
+		SorcerEnv.getProperties();
 		serviceClassLoader = Thread.currentThread().getContextClassLoader();
 		final Configuration config = ConfigurationProvider.getInstance(args, serviceClassLoader);
 		delegate.setJiniConfig(config);
@@ -726,7 +715,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			// delegate.getJiniConfig(), PROVIDER, "lookupLocators",
 			// String[].class, new String[] {});
 			String[] lookupLocators = new String[] {};
-			String locators = delegate.getProviderConfig().getProperty(P_LOCATORS);
+			String locators = delegate.getProviderConfig().getProperty(SorcerConstants.P_LOCATORS);
 			if (locators != null && locators.length() > 0) {
 				lookupLocators = locators.split("[ ,]");
 			}
@@ -771,7 +760,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			}
 			// Make sure to turn off multicast discovery if requested
 			String[] groups;
-			if (Sorcer.isMulticastEnabled()) {
+			if (SorcerEnv.isMulticastEnabled()) {
 				if (lookupGroups != null && lookupGroups.length > 0)
 					groups = lookupGroups;
 				else
@@ -866,7 +855,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		try {
 			descriptor = UIDescriptorFactory.getUIDescriptor(
 					MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(Sorcer
+					new UIComponentFactory(new URL[] { new URL(SorcerEnv
 							.getWebsterUrl() + "/provider-ui.jar") },
 							ProviderUI.class.getName()));
 		} catch (Exception ex) {
@@ -897,8 +886,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
         UIDescriptor uiDesc2 = null;
         try {
-            URL uiUrl = Resolver.resolveAbsoluteURL(new URL(Sorcer.getWebsterUrl() + "/"), Artifact.sorcer("sos-exertlet-sui"));
-            URL helpUrl = new URL(Sorcer.getWebsterUrl()
+            URL uiUrl = Resolver.resolveAbsoluteURL(new URL(SorcerEnv.getWebsterUrl() + "/"), Artifact.sorcer("sos-exertlet-sui"));
+            URL helpUrl = new URL(SorcerEnv.getWebsterUrl()
                     + "/exertlet/sos-exertlet-sui.html");
 
             // URL exportUrl, String className, String name, String helpFilename
@@ -1393,7 +1382,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		String packagePath = this.getClass().getName();
 		packagePath = packagePath.substring(0, packagePath.lastIndexOf("."))
 				.replace('.', File.separatorChar);
-		String sidFile = new StringBuffer(Sorcer.getWebsterUrl())
+		String sidFile = new StringBuffer(SorcerEnv.getWebsterUrl())
 				.append(File.separatorChar)
 				.append(packagePath)
 				.append(packagePath.substring(packagePath
@@ -1762,13 +1751,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         }
 
         if (tally == 0) {
-            ProviderAccessor.terminateDiscovery();
-            if (Webster.getWebster() != null) {
-                Webster.getWebster().terminate();
-            }
+            //ProviderAccessor.terminateDiscovery();
             // option for service nodes size > 1
             // allows for discarding cpmplementarory, not SORCER services
-            if (Sorcer.isBootable() && size > 1)
+            if (SorcerEnv.isBootable() && size > 1)
                 System.exit(0);
         }
         // stop KeepAwake thread
@@ -1798,7 +1784,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	}
 
 	public void updatePolicy(Policy policy) throws RemoteException {
-		if (Sorcer.getProperty("sorcer.policer.mandatory").equals("true")) {
+		if (SorcerEnv.getProperty("sorcer.policer.mandatory").equals("true")) {
 			Policy.setPolicy(policy);
 		} else {
 			logger.info("sorcer.policer.mandatory property in sorcer.env is false");
@@ -1919,12 +1905,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		}
 	}
 	
-	public void initSpaceSupport() throws RemoteException,
-			ConfigurationException {
-		delegate.spaceEnabled(true);
-		delegate.initSpaceSupport();
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1951,14 +1931,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					&& dispatcher.getState() != ExecState.SUSPENDED) {
 				Thread.sleep(SLEEP_TIME);
 			}
-		} catch (DispatcherException de) {
-			de.printStackTrace();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		} catch (Throwable e) {
-			e.printStackTrace();
+            return dispatcher.getExertion();
+        } catch (Throwable e) {
+            logger.log(Level.SEVERE,"Error while dispatching task", e);
+            task.getControlContext().addException(e);
 		}
-		return dispatcher.getExertion();
+        return task;
 	}
 	
 }

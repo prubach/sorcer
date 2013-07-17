@@ -19,8 +19,8 @@ package sorcer.core.context;
 
 import net.jini.space.JavaSpace05;
 import sorcer.service.ContextException;
+import sorcer.service.space.SpaceAccessor;
 import sorcer.space.array.DistribArray05;
-import sorcer.util.ProviderAccessor;
 
 import java.rmi.RemoteException;
 
@@ -37,7 +37,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	public SharedAssociativeContext(String spaceName) {
 		super();
 		this.spaceName = spaceName;
-		JavaSpace05 space = ProviderAccessor.getSpace(spaceName);
+		JavaSpace05 space = SpaceAccessor.getSpace(spaceName);
 		spaceElements = new DistribArray05(space, "" + contextId);
 	}
 	
@@ -98,7 +98,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 	
 	private void setSpace() {
-		JavaSpace05 space = ProviderAccessor.getSpace(spaceName);
+		JavaSpace05 space = SpaceAccessor.getSpace(spaceName);
 		spaceElements.setSpace(space);
 	}
 

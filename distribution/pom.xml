@@ -7,7 +7,7 @@
     <parent>
         <artifactId>sorcer</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M1</version>
+        <version>1.0-M2-SNAPSHOT</version>
     </parent>
     <artifactId>distribution</artifactId>
     <name>SORCER distribution</name>
@@ -60,11 +60,6 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>dbp-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>dsp-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -26,7 +26,7 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
@@ -41,7 +41,7 @@ public class WhoIsItBeanApp1 {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		if (args.length == 1)
-			providerName = Sorcer.getSuffixedName(args[0]);
+			providerName = SorcerEnv.getSuffixedName(args[0]);
 		logger.info("providerName: " + providerName);
 
 		Exertion result = new WhoIsItBeanApp1().getExertion().exert();

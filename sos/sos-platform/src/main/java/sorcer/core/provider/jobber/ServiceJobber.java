@@ -21,14 +21,13 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
@@ -42,12 +41,14 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import static sorcer.core.SorcerConstants.MAIL_SEP;
+
 /**
  * ServiceJobber - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using directly (PUSH) service providers.
  * 
  */
-public class ServiceJobber extends ServiceProvider implements Jobber, Executor, SorcerConstants {
+public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	private Logger logger = Logger.getLogger(ServiceJobber.class.getName());
 
 	public ServiceJobber() throws RemoteException {
@@ -106,8 +107,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 
 		} 
 		catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException();
+			throw new ExertionException(e);
 		}
 	}
 
@@ -274,7 +274,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor, 
 			recipents = new ArrayList<String>(list.length);
 			Collections.addAll(recipents, list);
 		}
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
+		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
 		if (recipents == null) {
 			if (admin != null) {
 				recipents = new ArrayList<String>();

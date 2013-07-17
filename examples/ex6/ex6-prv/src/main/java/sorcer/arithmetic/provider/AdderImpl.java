@@ -25,12 +25,13 @@ import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.arithmetic.provider.ui.CalculatorUI;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.MonitorException;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.util.Sorcer;
+
 
 public class AdderImpl implements Adder {
 	private Arithmometer arithmometer = new Arithmometer();
@@ -73,7 +74,7 @@ public class AdderImpl implements Adder {
 		UIDescriptor uiDesc = null;
 		try {
 			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(Sorcer
+					new UIComponentFactory(new URL[] { new URL(SorcerEnv
 							.getWebsterUrl()
 							+ "/calculator-ui.jar") }, CalculatorUI.class
 							.getName()));

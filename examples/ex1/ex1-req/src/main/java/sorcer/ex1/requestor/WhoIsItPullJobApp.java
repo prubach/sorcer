@@ -30,12 +30,11 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 public class WhoIsItPullJobApp {
 
@@ -45,12 +44,12 @@ public class WhoIsItPullJobApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
-		ServiceExertion.debug = true;
+		SorcerEnv.getEnvProperties();
+		SorcerEnv.debug = true;
 		// get the queried provider name
-		String providerName1 = Sorcer.getSuffixedName(args[0]);
-		String providerName2 = Sorcer.getSuffixedName(args[1]);
-		String spacerName = Sorcer.getSuffixedName(args[2]);
+		String providerName1 = SorcerEnv.getSuffixedName(args[0]);
+		String providerName2 = SorcerEnv.getSuffixedName(args[1]);
+		String spacerName = SorcerEnv.getSuffixedName(args[2]);
 		
 		logger.info("Who is \"" + providerName1 + "\"?");
 		logger.info("Who is \"" + providerName2 + "\"?");
@@ -58,7 +57,7 @@ public class WhoIsItPullJobApp {
 		NetJob ex = (NetJob)new WhoIsItPullJobApp().getExertion(providerName1, providerName2);
 		Exertion result = ex.exert(null, spacerName);
 		
-		ServiceExertion.debug = true;
+		SorcerEnv.debug = true;
 		logger.info("Job exceptions job: \n" + result.getExceptions());
 		logger.info("Output job: \n" + result);
 		logger.info("Output context1: \n" + result.getContext("Who Is It1?"));

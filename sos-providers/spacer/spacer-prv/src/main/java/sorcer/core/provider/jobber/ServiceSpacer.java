@@ -57,7 +57,7 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
 import sorcer.service.Spacer;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 import sorcer.util.StringUtils;
 
 import com.sun.jini.start.LifeCycle;
@@ -68,7 +68,7 @@ import com.sun.jini.start.LifeCycle;
  * exertions to be executed.
  * 
  */
-public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
+public class ServiceSpacer extends ServiceProvider implements Spacer, Executor {
 	private static Logger logger;
 	private LokiMemberUtil myMemberUtil;
 
@@ -299,12 +299,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 		Vector recipents = null;
 		String notifyees = ((ControlContext) job.getDataContext()).getNotifyList();
 		if (notifyees != null) {
-			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
+			String[] list = StringUtils.tokenize(notifyees, SorcerConstants.MAIL_SEP);
 			recipents = new Vector(list.length);
 			for (int i = 0; i < list.length; i++)
 				recipents.addElement(list[i]);
 		}
-		String to = "", admin = Sorcer.getProperty("sorcer.admin");
+		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
 		if (recipents == null) {
 			if (admin != null) {
 				recipents = new Vector();

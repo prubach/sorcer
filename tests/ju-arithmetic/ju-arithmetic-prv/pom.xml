@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>ju-arithmetic</artifactId>
-		<version>1.0-M1</version>
+		<version>1.0-M2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ju-arithmetic-prv</artifactId>
@@ -14,8 +14,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sos-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-platform</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sos-env</artifactId>
+            <version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
@@ -38,10 +47,6 @@
 			<groupId>net.jini</groupId>
 			<artifactId>jsk-lib</artifactId>
 			<version>${v.jini}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.rioproject</groupId>
-			<artifactId>rio-platform</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -84,7 +89,7 @@
 						<artifactId>sorcer-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>sorcer-preit</id>
+								<id>default-cli</id>
 								<goals>
 									<goal>provider</goal>
 								</goals>
@@ -96,13 +101,13 @@
 								</goals>
 								<configuration>
 									<requestorClasspath>
-										<entry>org.sorcersoft.sorcer:sos-platform:${project.version}</entry>
-										<entry>org.sorcersoft.sorcer:commons-req:${project.version}</entry>
+										<entry>${project.groupId}:sos-platform:${project.version}</entry>
+										<entry>${project.groupId}:commons-req:${project.version}</entry>
 										<entry>${project.groupId}:${project.artifactId}:${project.version}</entry>
-										<!--<entry>${project.groupId}:ju-arithmetic-api:${project.version}</entry>-->
+                                        <entry>${project.groupId}:dbp-api:${project.version}</entry>
 										<entry>net.jini.lookup:serviceui:${v.jini}</entry>
-										<entry>junit:junit:4.11</entry>
-										<entry>org.slf4j:slf4j-simple:1.7.5</entry>
+										<entry>junit:junit:${v.junit}</entry>
+										<entry>org.slf4j:slf4j-simple:${v.slf4j}</entry>
 										<entry>com.sleepycat:je:${v.sleepycat}</entry>
 									</requestorClasspath>
 									<requestors>
@@ -117,9 +122,9 @@
 										<param>
 											<mainClass>junit.sorcer.core.provider.ProviderAccessorTest</mainClass>
 										</param>
-										<param>
+										<requestor>
 											<mainClass>junit.sorcer.util.bdb.objects.SosUrlsTest</mainClass>
-										</param>
+										</requestor>
 									</requestors>
 								</configuration>
 							</execution>

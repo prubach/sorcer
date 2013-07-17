@@ -17,7 +17,6 @@
  */
 package sorcer.util.dbac;
 
-import sorcer.core.SorcerConstants;
 import sorcer.util.DataProtocolStream;
 import sorcer.util.Protocol;
 import sorcer.util.StringUtils;
@@ -34,8 +33,7 @@ import java.net.Socket;
  * ACLs, and logging.
  * <p>
  */
-public class SocketProtocol extends ProxyProtocol implements Protocol,
-		SorcerConstants {
+public class SocketProtocol extends ProxyProtocol implements Protocol {
 	public Socket serverSocket;
 	String serverName;
 	int serverPort;

@@ -18,15 +18,13 @@
 package sorcer.core.dispatch;
 
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
 
 import java.rmi.RemoteException;
 import java.util.Set;
 
-public class CatalogSequentialDispatcher extends CatalogExertDispatcher
-		implements SorcerConstants {
+public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	public CatalogSequentialDispatcher(Job job, Set<Context> sharedContext,
 			boolean isSpawned, Provider provider) throws Throwable {

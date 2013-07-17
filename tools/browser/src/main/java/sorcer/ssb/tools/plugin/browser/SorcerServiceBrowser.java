@@ -46,7 +46,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.ssb.jini.studio.StudioTheme;
 import sorcer.ssb.osx.OSXApplication;
-import sorcer.util.Sorcer;
+
 
 public class SorcerServiceBrowser {
 
@@ -92,9 +92,9 @@ public class SorcerServiceBrowser {
 				}
 			});
 			// Initialize system properties: configs/sorcer.env
-//			Sorcer.getEnvProperties();
+//			SorcerEnv.getEnvProperties();
 //			ServiceBrowserUI._logger.info("Provider accessor: " 
-//					+ Sorcer.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
+//					+ SorcerEnv.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
 //			
 			ABOUT = TITLE;
 			isPlugin = pluginStart;
@@ -169,7 +169,7 @@ public class SorcerServiceBrowser {
 			 * } });
 			 */
 			ABOUT += "\n(c)2009-2010 SORCERsoft.org";
-			boolean useCodeServer = "true".equals(System.getProperty(Sorcer.SORCER_CODE_SERVER_INTERNAL));
+			boolean useCodeServer = "true".equals(System.getProperty(SorcerConstants.SORCER_CODE_SERVER_INTERNAL));
 			if (!StartSorcerBrowser.isWebsterInt && useCodeServer) {
 				CodeServer.autoStart(tr.getClass(), ServiceBrowserConfig.getConfiguration());
 			}

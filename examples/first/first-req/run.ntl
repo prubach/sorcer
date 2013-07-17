@@ -15,7 +15,7 @@
 //
 //######################################################################################################################
 
-load mvn://com.example.sorcer:first-api:1.0-SNAPSHOT
+load mvn://com.example.sorcer:first-api:1.0-M2-SNAPSHOT
 // load file:///home/pol/.m2/repository/com/example/sorcer/first-api/1.0-SNAPSHOT/first-api-1.0-SNAPSHOT.jar
 // load http://lynx:50001/com/example/sorcer/first-api/1.0-SNAPSHOT/first-api-1.0-SNAPSHOT.jar
 // load mvn://com.example.sorcer:first-api:1.0-SNAPSHOT@lynx:50001

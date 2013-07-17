@@ -18,7 +18,7 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
-import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
@@ -27,7 +27,7 @@ import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
+
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-public class ArithmeticExertleterTest implements SorcerConstants {
+public class ArithmeticExertleterTest {
 
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReqTest.class.getName());
@@ -47,9 +47,9 @@ public class ArithmeticExertleterTest implements SorcerConstants {
 		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
-        Sorcer.setCodeBaseByArtifacts(new String[] {
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sos-platform",
-                "org.sorcersoft.sorcer:ex5-api" });
+                "org.sorcersoft.sorcer:ex5-api"});
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}

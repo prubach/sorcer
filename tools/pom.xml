@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>sorcer</artifactId>
-		<version>1.0-M1</version>
+		<version>1.0-M2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tools</artifactId>
@@ -17,6 +17,7 @@
 	<modules>
 		<module>sos-webster</module>
 		<module>sos-boot</module>
+        <module>sos-netlet</module>
 		<module>sos-shell</module>
 		<module>browser</module>
         <module>sorcer-launcher</module>

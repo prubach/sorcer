@@ -23,6 +23,8 @@ import sorcer.service.ContextException;
 import java.util.Arrays;
 import java.util.List;
 
+import static sorcer.core.SorcerConstants.APS;
+
 /**
  * @author Mike Sobolewski
  *

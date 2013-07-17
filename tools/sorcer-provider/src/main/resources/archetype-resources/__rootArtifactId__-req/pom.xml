@@ -14,7 +14,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-platform</artifactId>
+			<artifactId>sos-api</artifactId>
             <version>${v.sorcer}</version>
 		</dependency>
         <dependency>

@@ -4,13 +4,13 @@
 	<parent>
 		<artifactId>tools</artifactId>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>1.0-M1</version>
+		<version>1.0-M2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sorcer-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 
-	<name>SORCER tools :: Maven plugin</name>
+	<name>SORCER tools :: maven plugin</name>
 
 	<url>http://sorcersoft.org</url>
 

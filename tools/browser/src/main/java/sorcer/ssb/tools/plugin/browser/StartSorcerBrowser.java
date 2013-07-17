@@ -29,7 +29,7 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
 import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.tools.webster.InternalWebster;
-import sorcer.util.Sorcer;
+
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 
@@ -40,9 +40,9 @@ public class StartSorcerBrowser {
 		System.setSecurityManager(new RMISecurityManager());
 
 		// Initialize system properties: configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		ServiceBrowserUI._logger.info("Provider accessor: " 
-				+ Sorcer.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
+				+ SorcerEnv.getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
 		
 		String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
 		if (val != null && val.length() != 0) {

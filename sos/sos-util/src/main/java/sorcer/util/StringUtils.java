@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 public class StringUtils {
@@ -91,6 +92,17 @@ public class StringUtils {
 		tokens.copyInto(returnTokens);
 		return returnTokens;
 	}
+
+    public static String[]tokenizerSplit(String string, String delimiter){
+        StringTokenizer token = new StringTokenizer(string, delimiter);
+        String[] array = new String[token.countTokens()];
+        int i = 0;
+        while (token.hasMoreTokens()) {
+            array[i] = token.nextToken();
+            i++;
+        }
+        return (array);
+    }
 
     public static String firstToken(String str, String delim) {
 		String out = "";

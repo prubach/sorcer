@@ -22,15 +22,13 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.SorcerConstants;
-import sorcer.core.context.ContextLink;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Signature.ReturnPath;
 import sorcer.service.Signature.Type;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -44,8 +42,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static sorcer.core.SorcerConstants.*;
+
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, SorcerConstants, ExecState, Serializable {
+public abstract class ServiceExertion implements Service, Exertion, Revaluation, ExecState, Serializable {
 
 	protected final static Logger logger = Logger
 			.getLogger(ServiceExertion.class.getName());
@@ -102,10 +102,8 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	//protected List<Signature> signatures;
 	
 	protected ServiceContext dataContext;
-	
-	public static boolean debug = false;
-	
-	private static String defaultName = "xrt-";
+
+    private static String defaultName = "xrt-";
 		
 	// sequence number for unnamed Exertion instances
 	public static int count = 0;
@@ -204,8 +202,8 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 					List<Exertion> exts = getAllExertions();
 					for (Exertion e : exts) {
 						Object link = context.getLink(e.getName());
-						if (link instanceof ContextLink) {
-							e.getContext().append(((ContextLink)link).getContext());
+						if (link != null) {
+							e.getContext().append(((Link)link).getContext());
 						}
 					}
 
@@ -822,7 +820,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	}
 	
 	public String toString() {
-		if (debug)
+		if (SorcerEnv.debug)
 			return describe();
 		
 		StringBuilder info = new StringBuilder().append(
@@ -916,6 +914,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	 * 
 	 * @return the monitorSession
 	 */
+	@Override
 	public MonitoringSession getMonitorSession() {
 		return monitorSession;
 	}
@@ -1000,7 +999,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, SorcerCo
 	}
 	
 	public String describe() {
-		if (!debug)
+		if (!SorcerEnv.debug)
 			return info();
 		
 		String stdoutSep = "================================================================================\n";

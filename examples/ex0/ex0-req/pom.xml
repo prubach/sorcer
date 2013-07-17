@@ -4,7 +4,7 @@
 	<parent>
     <artifactId>ex0</artifactId>
     <groupId>org.sorcersoft.sorcer</groupId>
-    <version>1.0-M1</version>
+    <version>1.0-M2-SNAPSHOT</version>
   </parent>
 
 	<artifactId>ex0-req</artifactId>
@@ -18,8 +18,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-platform</artifactId>
-            <version>${project.version}</version>
+			<artifactId>sos-api</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

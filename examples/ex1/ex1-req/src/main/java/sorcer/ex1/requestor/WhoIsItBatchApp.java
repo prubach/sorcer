@@ -28,7 +28,7 @@ import sorcer.service.Signature;
 import sorcer.service.Signature.Type;
 import sorcer.service.Task;
 import sorcer.util.Log;
-import sorcer.util.Sorcer;
+
 
 import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
@@ -42,9 +42,9 @@ public class WhoIsItBatchApp {
 		System.setSecurityManager(new RMISecurityManager());
         ServiceRequestor.prepareCodebase();
 		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
+		SorcerEnv.getEnvProperties();
 		// get the queried provider name
-		String providerName = Sorcer.getSuffixedName(args[0]);
+		String providerName = SorcerEnv.getSuffixedName(args[0]);
 		logger.info("Who is provider \"" + providerName + "\"?");
 		
 		
