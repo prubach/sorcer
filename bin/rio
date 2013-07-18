@@ -49,7 +49,7 @@ fi
 # Convert to absolute path
 RIO_HOME=`cd "$RIO_HOME" && pwd`
 
-RIO_LIB=$RIO_HOME/lib/
+RIO_LIB=$RIO_HOME/lib
 RIO_LIB_DL=$RIO_HOME/lib-dl
 
 # Check for JAVA_HOME
@@ -128,6 +128,7 @@ for file in $RIO_HOME/lib/logging/*.jar; do
     SLF4J_CLASSPATH="$SLF4J_CLASSPATH:$file"
 done
 SLF4J_CLASSPATH=`echo $SLF4J_CLASSPATH | cut -c2-`
+#echo "slf4j":$SLF4J_CLASSPATH
 
 if [ "$logger" = "logback" ]; then
     loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/rio/logging/logback.groovy`"
@@ -185,7 +186,10 @@ if [ "$start" = "1" ]; then
         fi
         USER_OPTS="-DRIO_NATIVE_DIR=$RIO_NATIVE_DIR $USER_OPTS"
     fi
+    ##
     classpath="-cp `toNative $RIO_LIB/rio-start-$rioVersion.jar:$JAVA_HOME/lib/tools.jar:$RIO_LIB/groovy-all-$groovyVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
+
+#    echo "classpath to native:"$classpath
     agentpath="-javaagent:`toNative $RIO_LIB/rio-start-$rioVersion.jar`"
     launchTarget=org.rioproject.start.ServiceStarter
     if [ -z "$1" ] ; then
@@ -238,6 +242,7 @@ else
     cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
     classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH`"
+#    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
         -Djava.protocol.handler.pkgs=org.rioproject.url \

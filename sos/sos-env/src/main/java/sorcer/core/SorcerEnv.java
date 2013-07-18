@@ -1401,7 +1401,7 @@ public class SorcerEnv {
                 envFrom = "(Sorcer resource)";
             }
             logger.fine("SORCER env properties:\n"
-                    + GenericUtil.getPropertiesString(sorcerEnvProps));
+                    + GenericUtil.getPropertiesString(properties));
 
             cntFile = System.getProperty("sorcer.formats.file");
 

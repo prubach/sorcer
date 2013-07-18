@@ -37,7 +37,7 @@
         <pathelement location="${mvn.repo}/org/rioproject/monitor/monitor-api/${v.rio}/monitor-api-${v.rio}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/cybernode/cybernode-api/${v.rio}/cybernode-api-${v.rio}.jar" />
         <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/${v.jini}/jmx-lookup-${v.jini}.jar" />
-        <pathelement location="${mvn.repo}/org/dancres/blitz/blitz/${v.blitz}/blitz-${v.blitz}.jar" />
+        <pathelement location="${mvn.repo}/org/dancres/blitz/blitz-proxy/${v.blitz}/blitz-proxy-${v.blitz}.jar" />
 	</path>
 
     <condition property="isMac" value="true">
@@ -73,7 +73,6 @@
             <!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
             <sysproperty key="ssb.logLen" value="300" />

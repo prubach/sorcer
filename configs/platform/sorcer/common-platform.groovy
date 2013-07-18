@@ -15,6 +15,8 @@
 */
 
 import org.rioproject.config.PlatformCapabilityConfig
+import sorcer.provider.boot.SorcerCapabilityDescriptor
+
 
 /**
  * Declare common platform jars
@@ -23,18 +25,27 @@ class CommonPlatformConfig {
 
     def getPlatformCapabilityConfigs() {
         def configs = []
-        String libDir = System.getProperty("RIO_HOME")+File.separator+"lib"+File.separator
 
-        configs << new PlatformCapabilityConfig("Commons Compress",
-                                                "1.0",
-                                                "Apache Commons Compress",
-                                                "Apache Software Foundation",
-                                                libDir+"commons-compress-1.0.jar")
-        configs << new PlatformCapabilityConfig("Sigar",
-                                                "1.6.2",
-                                                "Hyperic SIGAR",
-                                                "Hyperic",
-                                                libDir+"hyperic"+File.separator+"sigar.jar")
+        configs << new SorcerCapabilityDescriptor(
+                "Commons Compress",
+                "1.5",
+                "Apache Commons Compress",
+                "Apache Software Foundation",
+                ["org.apache.commons:commons-compress:1.5"]
+        )
+        //String libDir = System.getProperty("RIO_HOME")+File.separator+"lib"+File.separator
+
+
+        //configs << new PlatformCapabilityConfig("Commons Compress",
+        //                                       "1.0",
+        //                                        "Apache Commons Compress",
+        //                                        "Apache Software Foundation",
+        //                                        libDir+"commons-compress-1.0.jar")
+        //configs << new PlatformCapabilityConfig("Sigar",
+        //                                        "1.6.2",
+        //                                        "Hyperic SIGAR",
+        //                                        "Hyperic",
+        //                                        libDir+"hyperic"+File.separator+"sigar.jar")
         return configs
     }
     

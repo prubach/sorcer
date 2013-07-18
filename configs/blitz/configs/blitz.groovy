@@ -14,15 +14,21 @@ import org.dancres.blitz.stats.Switch
 import org.rioproject.config.Component
 import org.rioproject.entry.UIDescriptorFactory
 import org.rioproject.serviceui.UIFrameFactory
+import sorcer.core.SorcerConstants
+import sorcer.core.SorcerEnv
+
 
 @Component('org.dancres.blitz')
 class BlitzConfig {
     boolean syncNotifyOnWrite = true;
     boolean ignoreLogConfig = true
 
-    String name = "Space";
-    String persistDir = "${System.getProperty("user.dir")}/target/blitz/data"
-    String logDir = "${System.getProperty("user.dir")}/target/blitz/log";
+    String name = SorcerEnv.getActualSpaceName();
+    String[] initialGroups = SorcerEnv.getLookupGroups();
+
+    String persistDir = System.getProperty(SorcerConstants.S_BLITZ_HOME, "${System.getProperty("sorcer.home")}/databases");
+    String logDir = System.getProperty(SorcerConstants.S_BLITZ_HOME, "${System.getProperty("sorcer.home")}/logs");
+    //String logDir = "${System.getProperty("user.dir")}/target/blitz/log";
 
     int maxWriteThreads = 1
     int desiredPendingWrites = 256
@@ -39,7 +45,7 @@ class BlitzConfig {
     }
 
     long entryLeaseBound = 0;
-    int notifyLeaseBound = 0;
+    long notifyLeaseBound = 0;
     long leaseReapInterval = 0;
     int maxOidAllocators = 512;
     int eventgenSaveInterval = 500;
@@ -78,7 +84,7 @@ class BlitzConfig {
 
     Entry[] getInitialAttrs() {
         String uiClass = 'org.dancres.blitz.tools.dash.DashBoardFrame'
-        URL url = new URL("artifact:org.dancres.blitz:blitz-ui:2.1.7")
+        URL url = new URL("artifact:org.dancres.blitz:blitz-ui:2.2.0")
         def entry = [UIDescriptorFactory.getUIDescriptor(MainUI.ROLE, new UIFrameFactory(url, uiClass))]
         return entry as Entry[]
     }

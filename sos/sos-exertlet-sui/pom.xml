@@ -14,6 +14,16 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jini.lookup</groupId>
+            <artifactId>serviceui</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>

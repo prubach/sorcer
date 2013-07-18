@@ -7,8 +7,8 @@ def getPlatformCapabilityConfig() {
     cap.manufacturer = "Apache.org"
     cap.setClasspath([
             'net.jini:jsk-dl'
-             /*'net.jini.lookup:serviceui',*/
-/*            'net.jini:jsk-lib',
+            /* 'net.jini.lookup:serviceui',
+            'net.jini:jsk-lib',
             'net.jini:jsk-platform'*/
     ])
 
