@@ -30,8 +30,10 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.MissingResourceException;
@@ -254,14 +256,22 @@ public class ServiceStarter {
 	private Service[] processServiceDescriptors(Configuration... configs) throws Exception {
 		List<Service> resultList = new LinkedList<Service>();
 
+        Map<Configuration, ServiceDescriptor[]>serviceDescriptors = new HashMap<Configuration, ServiceDescriptor[]>();
 		for (Configuration config : configs) {
 			ServiceDescriptor[] descs = (ServiceDescriptor[])
 					config.getEntry(START_PACKAGE, "serviceDescriptors",
 							ServiceDescriptor[].class, null);
 			if (descs == null || descs.length == 0) {
 				logger.warning("service.config.empty");
-				return new Service[0];
+				continue;
 			}
+            serviceDescriptors.put(config, descs);
+        }
+
+        for (Map.Entry<Configuration, ServiceDescriptor[]> e : serviceDescriptors.entrySet()) {
+            Configuration config = e.getKey();
+            ServiceDescriptor[] descs = e.getValue();
+
 			LoginContext loginContext = (LoginContext)
 					config.getEntry(START_PACKAGE, "loginContext",
 							LoginContext.class, null);
