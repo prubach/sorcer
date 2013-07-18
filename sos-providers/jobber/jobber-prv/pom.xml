@@ -30,6 +30,11 @@
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
         </dependency>
+            <dependency>
+                <groupId>net.jini</groupId>
+                <artifactId>jsk-dl</artifactId>
+                <version>${v.jini}</version>
+            </dependency>
     </dependencies>
 
 </project>

@@ -1,10 +1,8 @@
 /**
- * Deployment configuration for the minimum IGrid
+ * Deployment configuration for the minimum Sorcer
  *
  * @author Dennis Reedy
  */
-import org.rioproject.config.Constants
-import org.rioproject.config.Constants
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 
@@ -18,16 +16,11 @@ def getSorcerHome() {
     return sorcerHome = SorcerEnv.getHomeDir();
 }
 
-def getActualSpaceName() {
-	return SorcerEnv.getActualSpaceName();
-}
-
 def String getCodebase() {
     return 'http://'+SorcerEnv.getLocalHost().getHostAddress()+":9010"
 }
 
-//deployment(name: "Sorcer iGrid") {
-deployment(name: 'Sorcer') { //getActualSpaceName()) {
+deployment(name: 'Sorcer') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
@@ -44,16 +37,8 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:1.0-M2-SNAPSHOT"
     artifact id:'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:1.0-M2-SNAPSHOT"
 
-    // Blitz modularized
     artifact id: 'blitz-dl', 'org.dancres.blitz:blitz-proxy:2.2.0'
     artifact id: 'blitz-impl', 'org.dancres.blitz:blitz-service:2.2.0'
-
-    resources id:'blitz-cdb', Resolver.resolveRelative("org.dancres.blitz:blitz-common:2.2.0"), Resolver.resolveRelative("org.dancres.blitz:blitz-proxy:2.2.0"), Resolver.resolveRelative("org.dancres.blitz:blitz-ui:2.2.0"), Resolver.resolveRelative("org.apache.river:outrigger")
-    resources id:'blitz-clp', Resolver.resolveRelative("org.dancres.blitz:blitz-common:2.2.0"), Resolver.resolveRelative("org.dancres.blitz:blitz-proxy:2.2.0"), Resolver.resolveRelative("com.sleepycat:je:4.1.21"), Resolver.resolveRelative("org.dancres.blitz:blitz-ui:2.2.0"), Resolver.resolveRelative("org.dancres.blitz:blitz-service:2.2.0"), Resolver.resolveRelative("org.apache.river:outrigger-dl")
-
-//    resources id:'blitz-cdb', Resolver.resolveRelative("org.dancres.blitz:blitz-dl:2.1.7"), Resolver.resolveRelative("org.dancres.blitz:blitzui:2.1.7"), Resolver.resolveRelative("org.apache.river:outrigger")
-//    resources id:'blitz-clp', Resolver.resolveRelative("com.sleepycat:je:4.1.21"), Resolver.resolveRelative("org.dancres.blitz:blitzui:2.1.7"), Resolver.resolveRelative("org.dancres.blitz:blitz:2.1.7"), Resolver.resolveRelative("org.apache.river:outrigger-dl")
-
 
     service(name:'Mahalo') {
          interfaces {
@@ -70,12 +55,10 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
     service(name: "BlitzSpace") {
         interfaces {
             classes 'net.jini.space.JavaSpace05'
-            //artifact ref:'blitz-dl'
-            resources ref:'blitz-cdb'
+            artifact ref:'blitz-dl'
         }
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
-            //artifact ref:'blitz-impl'
-            resources ref:'blitz-clp'
+            artifact ref:'blitz-impl'
         }
         configuration file: "${getSorcerHome()}/configs/blitz/configs/blitz.config"
         maintain 1
@@ -105,7 +88,7 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         maintain 1
     }
 
-  /*    service(name: "Cataloger") {
+      service(name: "Cataloger") {
         interfaces {
             classes 'sorcer.core.Cataloger'
             artifact ref: 'cataloger-sui'
@@ -163,5 +146,5 @@ deployment(name: 'Sorcer') { //getActualSpaceName()) {
         }
         configuration file: "${getSorcerHome()}/configs/sos-providers/exerter.config"
         maintain 1
-    }*/
+    }
 }

@@ -14,8 +14,8 @@
 * limitations under the License.
 */
 
-import sorcer.provider.boot.SorcerCapabilityDescriptor
-import sorcer.boot.util.MavenLibraryHelper
+import sorcer.rio.util.SorcerCapabilityDescriptor
+import sorcer.rio.util.MavenLibraryHelper
 
 def getPlatformCapabilityConfig() {
     MavenLibraryHelper.installLibFromArtifact("org.sorcersoft.sigar:sigar:zip:native:1.6.4", "lib")

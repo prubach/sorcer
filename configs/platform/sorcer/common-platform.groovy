@@ -15,7 +15,7 @@
 */
 
 import org.rioproject.config.PlatformCapabilityConfig
-import sorcer.provider.boot.SorcerCapabilityDescriptor
+import sorcer.rio.util.SorcerCapabilityDescriptor
 
 
 /**

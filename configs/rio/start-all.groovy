@@ -18,7 +18,8 @@
  * This configuration is used to start a ProvisionMonitor, Cybernode, Webster and a Lookup Service
  */
 
-import sorcer.provider.boot.RioServiceDescriptorUtil
+//import sorcer.provider.boot.RioServiceDescriptorUtil
+import org.rioproject.util.ServiceDescriptorUtil
 import org.rioproject.config.Component
 import com.sun.jini.start.ServiceDescriptor
 import org.rioproject.resolver.maven2.Repository
@@ -29,7 +30,7 @@ class StartAllConfig {
     String platformDir = rioHome+'/../../configs/platform/sorcer/'
 
     ServiceDescriptor[] getServiceDescriptors() {
-        RioServiceDescriptorUtil.checkForLoopback()
+        ServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
 
         def websterRoots = [rioHome+'/lib-dl', ';',
@@ -47,10 +48,10 @@ class StartAllConfig {
                                 rioHome+'/../../configs/rio/compute_resource.groovy']
 
         def serviceDescriptors = [
-            RioServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
-            RioServiceDescriptorUtil.getLookup(policyFile, reggieConfigs as String[]),
-            RioServiceDescriptorUtil.getMonitor(policyFile, monitorConfigs as String[]),
-            RioServiceDescriptorUtil.getCybernode(policyFile, cybernodeConfigs as String[])
+            ServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
+            ServiceDescriptorUtil.getLookup(policyFile, reggieConfigs as String[]),
+            ServiceDescriptorUtil.getMonitor(policyFile, monitorConfigs as String[]),
+            ServiceDescriptorUtil.getCybernode(policyFile, cybernodeConfigs as String[])
         ]
 
         return (ServiceDescriptor[])serviceDescriptors

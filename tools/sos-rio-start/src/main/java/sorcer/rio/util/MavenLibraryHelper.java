@@ -1,4 +1,4 @@
-package sorcer.boot.util;
+package sorcer.rio.util;
 
 import sorcer.util.Zip;
 import sorcer.resolver.Resolver;
@@ -17,7 +17,7 @@ public class MavenLibraryHelper {
 	 * Unzip an artifact and add a directory to java.library.path
 	 *
 	 * @param coords Maven artifact coordinates of zip file containing libs
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 */
 	public static void installLibFromArtifact(String coords) throws IOException {
 		installLibFromArtifact(coords, null);

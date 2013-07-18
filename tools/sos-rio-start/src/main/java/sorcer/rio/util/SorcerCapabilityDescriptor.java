@@ -1,4 +1,4 @@
-package sorcer.provider.boot;
+package sorcer.rio.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.config.PlatformCapabilityConfig;

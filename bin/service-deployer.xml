@@ -6,8 +6,7 @@
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 
     <path id="run.classpath">
-        <pathelement location="${lib.dir}/sorcer/sos-platform.jar" />
-        <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar" />
+        <path refid="boot.classpath"/>
         <pathelement location="${lib.dir}/rio/rio-ui.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/rio-ui/${v.rio}/rio-ui-${v.rio}.jar" />
     </path>

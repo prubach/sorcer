@@ -1,4 +1,4 @@
-import sorcer.provider.boot.SorcerCapabilityDescriptor
+import sorcer.rio.util.SorcerCapabilityDescriptor
 
 def getPlatformCapabilityConfig() {
     def cap = new SorcerCapabilityDescriptor()

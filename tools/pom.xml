@@ -19,6 +19,7 @@
 		<module>sos-boot</module>
         <module>sos-netlet</module>
 		<module>sos-shell</module>
+        <module>sos-rio-start</module>
 		<module>browser</module>
         <module>sorcer-launcher</module>
 		<module>sorcer-maven-plugin</module>

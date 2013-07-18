@@ -1,4 +1,4 @@
-import sorcer.provider.boot.SorcerCapabilityDescriptor
+import sorcer.rio.util.SorcerCapabilityDescriptor
 import static sorcer.core.SorcerConstants.SORCER_VERSION
 
 def getPlatformCapabilityConfig() {

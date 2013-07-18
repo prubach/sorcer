@@ -87,7 +87,7 @@ public final class RioServiceDescriptorUtil {
      * webster using an anonymous port. The <tt>webster-${rio-version}.jar</tt> file will be
      * loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws RuntimeException If the <tt>RIO_HOME</tt> system property is not
      * set
      */
@@ -106,7 +106,7 @@ public final class RioServiceDescriptorUtil {
      * webster using a specified port. The <tt>webster-${rio-version}.jar</tt> file will be
      * loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws RuntimeException If the <tt>RIO_HOME</tt> system property is not
      * set
      */
@@ -126,7 +126,7 @@ public final class RioServiceDescriptorUtil {
      * webster using a specified port. The <tt>webster-${rio-version}.jar</tt> file will be
      * loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      */
     public static ServiceDescriptor getWebster(final String policy,
                                                final String sPort,
@@ -153,7 +153,7 @@ public final class RioServiceDescriptorUtil {
      * webster using a specified port. The <tt>webster-${rio-version}.jar</tt> file will be
      * loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws IllegalArgumentException If the <tt>RIO_HOME</tt> system property is not set
      */
     public static ServiceDescriptor getWebster(final String policy,
@@ -207,7 +207,7 @@ public final class RioServiceDescriptorUtil {
      * the Cybernode using an anonymous port. The <tt>cybernode-service-${rio-version}.jar</tt> file
      * will be loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws RuntimeException If the <tt>RIO_HOME</tt> system property is not
      * set
      */
@@ -256,7 +256,7 @@ public final class RioServiceDescriptorUtil {
      * the Monitor using an anonymous port. The <tt>monitor-service-${rio-version}.jar</tt> file will
      * be loaded from <tt>RIO_HOME/lib</tt>
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws RuntimeException If the <tt>RIO_HOME</tt> system property is not
      * set
      */
@@ -290,7 +290,7 @@ public final class RioServiceDescriptorUtil {
      * be loaded from <tt>RIO_HOME/lib</tt>
      * @param lookupConfig The configuration options Reggie will use
      *
-     * @throws IOException If there are problems getting the anonymous port
+     * @throws java.io.IOException If there are problems getting the anonymous port
      * @throws RuntimeException If the <tt>RIO_HOME</tt> system property is not
      * set
      */
@@ -308,7 +308,7 @@ public final class RioServiceDescriptorUtil {
     /**
      * Check if the default InetAddress to use is a loopback address
      *
-     * @throws UnknownHostException If the host cannot be resolved
+     * @throws java.net.UnknownHostException If the host cannot be resolved
      */
     public static void checkForLoopback() throws UnknownHostException {
         InetAddress address = HostUtil.getInetAddressFromProperty(RMI_HOST_ADDRESS);
