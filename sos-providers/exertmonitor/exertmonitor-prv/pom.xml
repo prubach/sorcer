@@ -19,7 +19,8 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
-        </dependency>		<dependency>
+        </dependency>
+        <dependency>
 		    <groupId>com.sleepycat</groupId>
 		    <artifactId>je</artifactId>
 		    <version>${v.sleepycat}</version>
