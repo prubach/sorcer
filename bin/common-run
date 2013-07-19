@@ -281,7 +281,7 @@ $LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/rio/rio-logging-support.jar:\
 $LIB_DIR/rio/rio-start.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
-$LIB_DIR/rio/start.jar:\
+#$LIB_DIR/rio/start.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/commons/google-collections.jar:\

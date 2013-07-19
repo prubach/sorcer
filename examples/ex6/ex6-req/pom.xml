@@ -20,8 +20,12 @@
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-platform</artifactId>
-            <version>${v.rio}</version>
         </dependency>
+        <!--        <dependency>
+                    <groupId>org.rioproject</groupId>
+                    <artifactId>rio-platform</artifactId>
+                    <version>${v.rio}</version>
+                </dependency>-->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex6-api</artifactId>
