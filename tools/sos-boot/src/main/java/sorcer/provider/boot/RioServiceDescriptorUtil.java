@@ -273,7 +273,7 @@ public final class RioServiceDescriptorUtil {
         StringBuilder classPath = new StringBuilder();
         classPath.append(makePath(rioHome + rioLib, jarList.toArray(new String[jarList.size()])));
         // Added to enable starting of Sorcer services
-        classPath.append(File.pathSeparator).append(Resolver.resolveAbsolute("org.dancres.blitz:blitz-proxy"));
+        classPath.append(File.pathSeparator).append(Resolver.resolveAbsolute("org.sorcersoft.blitz:blitz-proxy"));
         String implClass = "org.rioproject.monitor.ProvisionMonitorImpl";
         String monitorCodebase = "artifact:org.rioproject.monitor/monitor-proxy/"+ RioVersion.VERSION;
 

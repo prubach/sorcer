@@ -140,17 +140,17 @@
                 </dependency>
         -->
         <dependency>
-            <groupId>org.dancres.blitz</groupId>
+            <groupId>org.sorcersoft.blitz</groupId>
             <artifactId>blitz-service</artifactId>
             <version>${v.blitz}</version>
         </dependency>
         <dependency>
-            <groupId>org.dancres.blitz</groupId>
+            <groupId>org.sorcersoft.blitz</groupId>
             <artifactId>blitz-proxy</artifactId>
             <version>${v.blitz}</version>
         </dependency>
         <dependency>
-            <groupId>org.dancres.blitz</groupId>
+            <groupId>org.sorcersoft.blitz</groupId>
             <artifactId>blitz-ui</artifactId>
             <version>${v.blitz}</version>
         </dependency>
