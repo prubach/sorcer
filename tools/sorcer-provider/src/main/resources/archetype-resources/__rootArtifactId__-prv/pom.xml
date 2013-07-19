@@ -19,12 +19,23 @@
 			<artifactId>commons-prv</artifactId>
 			<version>${v.sorcer}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-		<!-- CodeBase -->
+        <!-- CodeBase -->
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>${rootArtifactId}-proxy</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
+
+        <!-- tests -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
+    </dependencies>
 </project>

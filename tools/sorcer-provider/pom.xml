@@ -12,7 +12,6 @@
 	<packaging>maven-archetype</packaging>
     <name>SORCER tools :: sorcer provider archetype</name>
     <description>SORCER provider archetype</description>
-    <url>http://sorcersoft.com/</url>
 
     <build>
         <extensions>
