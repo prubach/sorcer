@@ -1,26 +1,26 @@
 package ${package};
 
-import java.rmi.RemoteException; 
-import java.util.logging.Logger;
+import java.rmi.RemoteException;
 
 import sorcer.service.Context;
-import sorcer.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ${providerClass} implements ${providerInterface} {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(${providerClass}.class);
 	
 	public Context sayHelloWorld(Context context) throws RemoteException {
 		try {
-			logger.info("${providerInterface} Provider got a message: " + context);
+			logger.info("${providerInterface} Provider got a message: {}", context);
 			String input = (String) context.getValue("in/value");
-			logger.info("${providerInterface} Input = " + input);
+			logger.info("${providerInterface} Input = {}", input);
 			String output = "Hello there - " + input;
 			context.putOutValue("out/value", output);
-			logger.info("${providerInterface} Provider sent a message" + context);
+			logger.info("${providerInterface} Provider sent a message\n{}", context);
 		} catch (Exception e) {
-			logger.severe("${providerInterface} Provider - problem interpreting message: " + context);
+			logger.error("${providerInterface} Provider - problem interpreting message: " + context, e);
 		}
-		return context;		
+		return context;
 	}
 }

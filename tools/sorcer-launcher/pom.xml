@@ -21,6 +21,14 @@
                 <configuration>
                     <instructions>
                         <Export-Package>sorcer.launcher</Export-Package>
+                        <Import-Package>
+                        	sorcer.launcher;version=1.0.0.M2-SNAPSHOT,
+                        	sorcer.core;version=1.0.0.M2-SNAPSHOT,
+                        	sorcer.util;version=1.0.0.M2-SNAPSHOT,
+                        	sorcer.service;version=1.0.0.M2-SNAPSHOT,
+                        	org.slf4j;version="[1.6,2)",
+                        	org.apache.commons.lang3;version=3.1
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
