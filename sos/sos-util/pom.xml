@@ -11,8 +11,8 @@
     <artifactId>sos-util</artifactId>
     <name>SORCER OS :: sos-util</name>
     <packaging>bundle</packaging>
-    <description>This module contain util that don't depend on any other modules (classes may depend only on JDK classes
-        or other classes in this module) and are potentially usable outside core SorcerEnv.
+    <description>This module contain utils that don't depend on any other modules (classes may depend only on JDK classes
+        or other classes in this module) and are potentially usable outside core Sorcer.
     </description>
 
     <dependencies>
@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>sorcer.util</Export-Package>
-                        <Import-Package>sorcer.util,org.slf4j;version=1.7</Import-Package>
+                        <Import-Package>sorcer.util,org.slf4j;version=${v.slf4j}</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
