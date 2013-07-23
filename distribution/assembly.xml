@@ -69,10 +69,46 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>provider-root-${v.sorcer}.pom</destName>
             </file>
+            <!-- top-level poms for examples -->
             <file>
                 <source>${basedir}/../tools/sorcer-provider/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sorcer-provider-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex0/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex0-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex1/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex1-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex2/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex2-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex3/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex3-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex4/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex4-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex5/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex5-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex6/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex6-${v.sorcer}.pom</destName>
             </file>
             <!-- Copy the logging configuration file -->
             <file>
