@@ -26,7 +26,24 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>sorcer.core,sorcer.service</Export-Package>
+                        <Export-Package>
+                        	sorcer.core;-split-package=merge-last,
+                        	sorcer.service
+                       	</Export-Package>
+                        <Private-Package>
+                            sorcer.org.rioproject.*,
+                            sorcer.resolver,
+                            sorcer.security.*,
+                            sorcer.util;-split-package=merge-last,
+                            sorcer.installer
+                        </Private-Package>
+                        <Import-Package>
+                            sorcer.core;version=${project.version},
+                            sorcer.service;version=${project.version},
+                            org.apache.commons.io;version=2.4,
+                            org.apache.commons.lang3;version=3.1,
+                            org.slf4j
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
