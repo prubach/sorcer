@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>examples</artifactId>
-		<version>1.0-M2-SNAPSHOT</version>
+		<version>1.0-M2</version>
 	</parent>
 
 	<groupId>com.example.sorcer</groupId>
 	<artifactId>first</artifactId>
-	<version>1.0-M2-SNAPSHOT</version>
+	<version>1.0-M2</version>
 	<packaging>pom</packaging>
 	<name>SORCER :: first</name>
 	<description>Sample Service</description>

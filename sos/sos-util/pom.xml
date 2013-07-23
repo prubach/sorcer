@@ -5,7 +5,7 @@
     <parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>sos</artifactId>
-        <version>1.0-M2-SNAPSHOT</version>
+        <version>1.0-M2</version>
     </parent>
 
     <artifactId>sos-util</artifactId>

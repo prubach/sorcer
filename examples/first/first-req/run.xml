@@ -21,7 +21,7 @@
 <project default="run.requestor" basedir=".">
 	<!-- set property values here -->
 	<property name="requestor.name" value="first-req" />
-	<property name="requestor.version" value="1.0-M2-SNAPSHOT" />
+	<property name="requestor.version" value="1.0-M2" />
 	<property name="requestor.class" value="com.example.sorcer.SampleServiceTester" />
 
 	<property name="requestor.api" value="first-api"/>
