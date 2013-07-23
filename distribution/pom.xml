@@ -84,6 +84,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>cataloger-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>spacer-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
