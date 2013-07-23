@@ -39,10 +39,12 @@
 
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${requestor.class}" fork="yes">
+
 <!--
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
 -->
+
 		 	<classpath refid="run-req.classpath"/>
             <env key="RIO_HOME" value="${rio.home}"/>
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />

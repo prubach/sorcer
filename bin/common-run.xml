@@ -172,11 +172,13 @@
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
+                <path refid="rio-resolver.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-rio-start.jar"/>
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>
 		        <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
@@ -192,6 +194,15 @@
 
             <path id="requstor.classpath">
             </path>
+
+            <path id="rio-resolver.classpath">
+                <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-api.jar"/>
+                <pathelement location="${lib.dir}/rio/resolver-api.jar"/>
+                <pathelement location="${lib.dir}/jini/jsk-dl.jar"/>
+                <pathelement location="${lib.dir}/jini-lookup/jmx-lookup.jar"/>
+            </path>
+
         </ac:then>
         <ac:else>
             <!-- jini start classpath -->
@@ -203,14 +214,11 @@
                 <pathelement location="${mvn.repo}/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar"/>
                 <pathelement location="${mvn.repo}/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar"/>
                 <pathelement location="${mvn.repo}/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"/>
-                <!--<pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
-                <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
-                <pathelement
-                        location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>-->
             </path>
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
+                <path refid="rio-resolver.classpath"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar"/>
@@ -219,6 +227,8 @@
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/sos-rio-start/${v.sorcer}/sos-rio-start-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
 		        <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
@@ -231,6 +241,15 @@
                 <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
                 <pathelement
                         location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
+            </path>
+            <path id="rio-resolver.classpath">
+                <pathelement location="${mvn.repo}/net/jini/jsk-dl/${v.jini}/jsk-dl-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/${v.jini}/jmx-lookup-${v.jini}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
             </path>
         </ac:else>
     </ac:if>
@@ -299,12 +318,14 @@
                         <path refid="runtime.classpath"/>
                         <path refid="requestor.classpath"/>
                         <path refid="jini.classpath"/>
+                        <path refid="rio-resolver.classpath"/>
                     </path>
                 </ac:then>
                 <ac:else>
                     <path id="run-req.classpath">
                         <path refid="runtime.classpath"/>
                         <path refid="jini.classpath"/>
+                        <path refid="rio-resolver.classpath"/>
                     </path>
                 </ac:else>
             </ac:if>
@@ -422,7 +443,15 @@
                             <ac:then>
                                 <java classname="${requestor.class}" fork="yes">
                                     <classpath refid="run-req.classpath"/>
+
+
+                                    <jvmarg value="-Xdebug"/>
+                                    <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
+
+
+
                                     <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+                                    <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
@@ -438,6 +467,7 @@
                                 <java classname="${requestor.class}" fork="yes">
                                     <classpath refid="run-req.classpath"/>
                                     <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+                                    <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
@@ -457,6 +487,7 @@
                                 <java classname="${requestor.class}" fork="yes">
                                     <classpath refid="run-req.classpath"/>
                                     <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+                                    <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
@@ -471,6 +502,7 @@
                                 <java classname="${requestor.class}" fork="yes">
                                     <classpath refid="run-req.classpath"/>
                                     <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+                                    <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
@@ -491,6 +523,7 @@
                         <java classname="${requestor.class}" fork="yes">
                             <classpath refid="run-req.classpath"/>
                             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+                            <sysproperty key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="java.util.logging.config.file"
                                          value="${sorcer.home}/configs/sorcer.logging"/>
                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
@@ -502,6 +535,7 @@
                     <ac:else>
                         <java classname="${requestor.class}" fork="yes">
                             <classpath refid="run-req.classpath"/>
+                            <sysproperty key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
                             <sysproperty key="java.util.logging.config.file"
                                          value="${sorcer.home}/configs/sorcer.logging"/>
