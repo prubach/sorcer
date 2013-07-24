@@ -63,6 +63,13 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <site>
+            <id>hashnot</id>
+            <url>file://${siteDeployDir}</url>
+        </site>
+    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
