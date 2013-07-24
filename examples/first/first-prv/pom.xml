@@ -6,7 +6,7 @@
 	<parent>
     <artifactId>first</artifactId>
     <groupId>com.example.sorcer</groupId>
-    <version>1.0-M2</version>
+    <version>1.0-M3-SNAPSHOT</version>
   </parent>
 
 	<artifactId>first-prv</artifactId>

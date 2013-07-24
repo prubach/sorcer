@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>dbp</artifactId>
-        <version>1.0-M2</version>
+        <version>1.0-M3-SNAPSHOT</version>
     </parent>
 
     <artifactId>dbp-api</artifactId>
