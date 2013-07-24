@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>spacer</artifactId>
-		<version>1.0-M2</version>
+		<version>1.0-M3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>spacer-prv</artifactId>
