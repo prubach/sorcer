@@ -13,7 +13,7 @@ import java.util.Properties;
 public class PropertiesLoader {
 	public Map<String, String> loadAsMap(Class c) {
         String name = c.getName();
-        return loadAsMap(name.replace('.', File.separatorChar) + ".properties", c.getClassLoader());
+        return loadAsMap(name.replace('.', '/') + ".properties", c.getClassLoader());
 	}
 
 	public Map<String, String> loadAsMap(String path, ClassLoader cl) {
