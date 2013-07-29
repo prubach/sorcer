@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>sorcer</artifactId>
-		<version>1.0-M2-SNAPSHOT</version>
+		<version>1.0-M3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tools</artifactId>
@@ -24,7 +24,7 @@
         <module>sorcer-launcher</module>
 		<module>sorcer-maven-plugin</module>
 		<module>sorcer-provider</module>
-	<!--	<module>provider-root</module>-->
+		<module>provider-root</module>
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
 	</modules>

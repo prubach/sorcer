@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>sos</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M2-SNAPSHOT</version>
+        <version>1.0-M3-SNAPSHOT</version>
     </parent>
 
     <artifactId>sos-env</artifactId>
@@ -26,7 +26,24 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>sorcer.core,sorcer.service</Export-Package>
+                        <Export-Package>
+                        	sorcer.core;-split-package=merge-last,
+                        	sorcer.service
+                       	</Export-Package>
+                        <Private-Package>
+                            sorcer.org.rioproject.*,
+                            sorcer.resolver,
+                            sorcer.security.*,
+                            sorcer.util;-split-package=merge-last,
+                            sorcer.installer
+                        </Private-Package>
+                        <Import-Package>
+                            sorcer.core;version=${project.version},
+                            sorcer.service;version=${project.version},
+                            org.apache.commons.io;version=2.4,
+                            org.apache.commons.lang3;version=3.1,
+                            org.slf4j
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -38,15 +55,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-platform</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
         </dependency>
         <dependency>
 			<groupId>org.apache.commons</groupId>

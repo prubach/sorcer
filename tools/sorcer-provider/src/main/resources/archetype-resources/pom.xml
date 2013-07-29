@@ -6,8 +6,8 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>provider-root</artifactId>
-		<version>1.0-M1</version>
-        <relativePath></relativePath>
+		<version>1.0-M3-SNAPSHOT</version>
+        <relativePath/>
 	</parent>
 
 	<groupId>${groupId}</groupId>
@@ -18,7 +18,7 @@
 	<description>${serviceDescription}</description>
 
 	<properties>
-		<v.sorcer>1.0-M1</v.sorcer>
+		<v.sorcer>1.0-M3-SNAPSHOT</v.sorcer>
 	</properties>
 
 	<modules>

@@ -26,6 +26,8 @@ public class ScriptExerter {
 
     private final static String LINE_SEP = "\n";
 
+    private final static String SHELL_LINE = "#!";
+
     private String input;
 
     private PrintStream out;
@@ -118,7 +120,7 @@ public class ScriptExerter {
         StringBuffer sb = new StringBuffer();
         sb.append(staticImports.toString());
         nextLine = br.readLine();
-        if (nextLine.indexOf("#!") < 0) {
+        if (nextLine.indexOf(SHELL_LINE) < 0) {
             sb.append(nextLine).append(LINE_SEP);
         }
         while ((nextLine = br.readLine()) != null) {
@@ -143,7 +145,7 @@ public class ScriptExerter {
                 this.loadLines.add(line.trim());
             } else if (line.trim().startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
                 this.codebaseLines.add(line.trim());
-            } else {
+            } else if (!line.startsWith(SHELL_LINE)){
                 sb.append(line);
                 sb.append(LINE_SEP);
             }

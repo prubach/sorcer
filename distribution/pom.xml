@@ -7,7 +7,7 @@
     <parent>
         <artifactId>sorcer</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M2-SNAPSHOT</version>
+        <version>1.0-M3-SNAPSHOT</version>
     </parent>
     <artifactId>distribution</artifactId>
     <name>SORCER distribution</name>
@@ -80,6 +80,11 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>logger-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>cataloger-sui</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

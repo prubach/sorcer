@@ -1073,7 +1073,7 @@ public class SorcerEnv {
     /**
      * @return Set Sorcer Local jar repo location
      */
-    public void setRepoDir(Properties props) {
+    public Properties setRepoDir(Properties props) {
         String repo = props.getProperty(S_SORCER_REPO);
         if (repo != null) repo = repo.trim();
 
@@ -1089,6 +1089,7 @@ public class SorcerEnv {
                         t);
             }
         } else {
+
             // Fall back to default location in user's home/.m2
             try {
                 File repoDir = new File(System.getProperty("user.home") + "/.m2/repository");
@@ -1098,6 +1099,7 @@ public class SorcerEnv {
                     FileUtils.forceMkdir(repoDir);
                     props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 }
+                logger.fine("Setting Repo Dir default location: " + repoDir.getAbsolutePath());
             } catch (Throwable t) {
                 logger.throwing(
                         SorcerEnv.class.getName(),
@@ -1105,6 +1107,7 @@ public class SorcerEnv {
                         t);
             }
         }
+        return props;
     }
 
     public static Properties loadProperties(InputStream inputStream)
@@ -1425,7 +1428,7 @@ public class SorcerEnv {
             logger.finer("* Sorcer provider accessor:"
                     + properties.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
             // Repo directory - setting
-            setRepoDir(properties);
+            properties = setRepoDir(properties);
             prepareWebsterInterface(properties);
         } catch (Throwable t) {
             logger.throwing(
@@ -1606,7 +1609,7 @@ public class SorcerEnv {
         }
 
         try {
-            hn = HostUtil.getInetAddress().getHostAddress();
+            hn = getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             logger.severe("Cannot determine the webster hostname.");
         }

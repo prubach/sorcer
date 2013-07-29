@@ -1,24 +1,17 @@
 package ${package};
 
 import net.jini.core.lookup.ServiceItem;
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.Provider;
-import sorcer.resolver.Resolver;
 import sorcer.service.Service;
-import sorcer.ui.serviceui.UIComponentFactory;
-import sorcer.ui.serviceui.UIDescriptorFactory;
-
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.util.logging.Logger;
 
 public class ${providerClass}UI extends JPanel {
 
-	private final static Logger logger = Logger.getLogger(${providerClass}UI.class
-			.getName());
+	private final static Logger logger = LoggerFactory.getLogger(${providerClass}UI.class);
 
 	private ServiceItem item;
     // This variable gives access to the provider who invoked this UI.
@@ -29,8 +22,7 @@ public class ${providerClass}UI extends JPanel {
 		getAccessibleContext().setAccessibleName("${providerInterface} UI");
 		try {
 			item = (ServiceItem) obj;
-			logger.info("service class: " + item.service.getClass().getName()
-					+ "\nservice object: " + item.service);
+			logger.info("service class: {} service object: {}", item.service.getClass(), item.service);
 
 			if (item.service instanceof Provider) {
 				provider = (Provider) item.service;
@@ -55,23 +47,4 @@ public class ${providerClass}UI extends JPanel {
         add(label4);
 		validate();
 	}
-
-    /**
-     * Returns a service UI descriptor of this service. Usually this method is
-     * used as an entry in provider configuration files when smart proxies are
-     * deployed with a standard off the shelf {@link sorcer.core.provider.ServiceProvider}.
-     *
-     * @return service UI descriptor
-     */
-    public static UIDescriptor getUIDescriptor() {
-        UIDescriptor uiDesc = null;
-        try {
-            URL uiUrl = new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.resolveRelative("${groupId}:${rootArtifactId}-sui:${version}"));
-            uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                    new UIComponentFactory(new URL[] {uiUrl}, ${providerClass}UI.class.getName()));
-        } catch (Exception ex) {
-            logger.severe("${providerClass}UI, Problem loading SUI: " +  ex.getMessage());
-        }
-        return uiDesc;
-    }
 }

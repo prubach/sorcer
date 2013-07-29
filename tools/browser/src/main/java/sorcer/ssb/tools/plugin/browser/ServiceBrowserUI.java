@@ -125,7 +125,7 @@ import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
-import sorcer.org.rioproject.net.HostUtil;
+import sorcer.core.SorcerEnv;
 import sorcer.ui.serviceui.UIFrameFactory;
 
 import com.sun.jini.config.Config;
@@ -395,7 +395,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		try {
 			_exporter = (Exporter) Config.getNonNullEntry(_config,
 					CONFIG_MODULE, "listenerExporter", Exporter.class,
-					new BasicJeriExporter(TcpServerEndpoint.getInstance(HostUtil.getInetAddress().getHostAddress(), 0),
+					new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getLocalHost().getHostAddress(), 0),
 							new BasicILFactory()));
 		} catch (ConfigurationException e) {
 		} catch (UnknownHostException e) {
@@ -412,7 +412,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		if (_config != null) {
 			initWithConfig();
 		} else {
-			_exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(HostUtil.getInetAddress().getHostAddress(), 0),
+			_exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getLocalHost().getHostAddress(), 0),
 					new BasicILFactory());
 		}
 

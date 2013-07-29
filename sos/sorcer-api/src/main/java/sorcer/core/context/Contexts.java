@@ -575,20 +575,19 @@ public class Contexts {
 	 * @return list of all paths marked as input
 	 * @throws sorcer.service.ContextException
 	 */
-	public static List getInPaths(Context cntxt) throws ContextException {
+	public static List<String> getInPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
 		String inAssoc = Context.DIRECTION + APS + Context.DA_IN;
 		String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
 		String[] inPaths = Contexts.getMarkedPaths(cntxt, inAssoc);
 		String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
-		List list = new ArrayList();
+        int cap = (inPaths == null ? 0 : inPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
+        List<String> list = new ArrayList<String>(cap);
 
 		if (inPaths != null)
-			for (int i = 0; i < inPaths.length; i++)
-				list.add(inPaths[i]);
+            Collections.addAll(list, inPaths);
 		if (inoutPaths != null)
-			for (int i = 0; i < inoutPaths.length; i++)
-				list.add(inoutPaths[i]);
+            Collections.addAll(list, inoutPaths);
 		return list;
 	}
 
@@ -639,20 +638,19 @@ public class Contexts {
 	 * @return list of all paths marked as data output
 	 * @throws sorcer.service.ContextException
 	 */
-	public static List getOutPaths(Context cntxt) throws ContextException {
+	public static List<String> getOutPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
 		String outAssoc = Context.DIRECTION + APS + Context.DA_OUT;
 		String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
 		String[] outPaths = Contexts.getMarkedPaths(cntxt, outAssoc);
 		String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
-		List list = new ArrayList();
+        int cap = (outPaths == null ? 0 : outPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
+		List<String> list = new ArrayList<String>(cap);
 
 		if (outPaths != null)
-			for (int i = 0; i < outPaths.length; i++)
-				list.add(outPaths[i]);
+            Collections.addAll(list, outPaths);
 		if (inoutPaths != null)
-			for (int i = 0; i < inoutPaths.length; i++)
-				list.add(inoutPaths[i]);
+            Collections.addAll(list, inoutPaths);
 		return list;
 	}
 

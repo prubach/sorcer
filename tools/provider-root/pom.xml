@@ -8,7 +8,7 @@
     <artifactId>provider-root</artifactId>
     <packaging>pom</packaging>
     <name>SORCER Provider Root</name>
-    <version>1.0-M2-SNAPSHOT</version>
+    <version>1.0-M3-SNAPSHOT</version>
     <description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services.
         Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming.
         Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service.
@@ -50,8 +50,25 @@
                 <artifactId>sos-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${v.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${v.slf4j}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <site>
+            <id>hashnot</id>
+            <url>file://${siteDeployDir}</url>
+        </site>
+    </distributionManagement>
 
     <build>
         <pluginManagement>

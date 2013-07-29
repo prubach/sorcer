@@ -17,10 +17,9 @@
 		installation folder in the docs/licenses subfolder. For details please consult the 
 		websites of the respective projects before using any of these libraries in your own environment.
             </p>
-            
             <h2>Download Sorcer ${v_sos_release}</h2>
             <p>
-                Sorcer ${v_sos_release} is the first stable release available.
+                Sorcer ${v_sos_release} is the latest stable release available.
 		
             </p>
             <table>
@@ -37,24 +36,63 @@
 			<td>Sorcer ${v_sos_release} ZIP release</td>
 			<td>zip</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip/download">Download</a></td>
-                        <td>37 MB</td>
+                        <td>40 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip.md5/download">MD5</a></td>
-                        <td align="center">18/06/2013</td>
+                        <td align="center">24/07/2013</td>
                     </tr>
                     <tr>
 			<td>Sorcer ${v_sos_release} Windows setup</td>
 			<td>exe</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe/download">Download</a></td>
-                        <td>37 MB</td>
+                        <td>40 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">18/06/2013</td>
+                        <td align="center">24/07/2013</td>
                     </tr>
 		    <tr>
 			<td>Sorcer ${v_sos_release} cross-platform setup</td>
 			<td>jar</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar/download">Download</a></td>
-                        <td>37 MB</td>
+                        <td>40 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar.md5/download">MD5</a></td>
+                        <td align="center">24/07/2013</td>
+                    </tr>
+                </tbody>
+            </table>
+	    
+            
+            <h2>Download Sorcer 1.0-M1 - previous stable version</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <th>Type</th>
+                        <th>Link</th>
+                        <th>Size</th>
+                        <th>Signature</th>
+                        <th>Date</th>
+                    </tr>
+                    <tr>
+			<td>Sorcer 1.0-M1 ZIP release</td>
+			<td>zip</td> 
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1.zip/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1.zip.md5/download">MD5</a></td>
+                        <td align="center">18/06/2013</td>
+                    </tr>
+                    <tr>
+			<td>Sorcer 1.0-M1 Windows setup</td>
+			<td>exe</td> 
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1-setup.exe/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1-setup.exe.md5/download">MD5</a></td>
+                        <td align="center">18/06/2013</td>
+                    </tr>
+		    <tr>
+			<td>Sorcer 1.0-M1 cross-platform setup</td>
+			<td>jar</td> 
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1-setup.jar/download">Download</a></td>
+                        <td>37 MB</td>
+                        <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-1.0-M1/sorcer-1.0-M1-setup.jar.md5/download">MD5</a></td>
                         <td align="center">18/06/2013</td>
                     </tr>
                 </tbody>

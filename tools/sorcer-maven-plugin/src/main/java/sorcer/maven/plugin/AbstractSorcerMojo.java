@@ -51,9 +51,9 @@ import org.sonatype.aether.resolution.DependencyResult;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.filter.DependencyFilterUtils;
 
+import sorcer.core.SorcerEnv;
 import sorcer.util.Process2;
 import sorcer.maven.util.TestCycleHelper;
-import sorcer.org.rioproject.net.HostUtil;
 
 /**
  * @author Rafał Krupiński
@@ -82,7 +82,7 @@ public abstract class AbstractSorcerMojo extends AbstractMojo {
 
     protected static String getInetAddress() throws MojoExecutionException {
         try {
-            return HostUtil.getInetAddress().getHostAddress();
+            return SorcerEnv.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             throw new MojoExecutionException("Could not obtain local address", e);
         }
