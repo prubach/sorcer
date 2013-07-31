@@ -22,10 +22,10 @@
 rioVersion=5.0-M3
 
 scriptDir="`dirname $0`"
-if [ -z "$RIO_HOME" ] ; then
+if [ "${RIO_HOME}defined" = defined ] ; then
     if [ "$scriptDir" = "bin" ] ; then
         RIO_HOME="$scriptDir/../lib/rio"
-        path_to_jar="/lib/rio-ui-$rioVersion.jar"
+        path_to_jar="${RIO_HOME}/lib/rio-ui-$rioVersion.jar"
     else
         if [ "$scriptDir" = "." ] ; then
             RIO_HOME="$scriptDir/../lib/rio"
