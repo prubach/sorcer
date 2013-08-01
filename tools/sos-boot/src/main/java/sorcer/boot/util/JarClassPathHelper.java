@@ -68,7 +68,7 @@ public class JarClassPathHelper {
 			}
 			return result;
 		} catch (IOException e) {
-			throw new IllegalArgumentException("Error while reading classpath", e);
+			throw new IllegalArgumentException("Error while reading classpath from " + f, e);
 		}
 	}
 
