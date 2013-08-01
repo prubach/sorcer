@@ -5,7 +5,7 @@ def getPlatformCapabilityConfig() {
     cap.name = "Rio"
     cap.version = "5.0-M3"
     cap.platformClass = "org.rioproject.system.capability.software.RioSupport"
-    cap.setClasspath([/*'org.rioproject:rio-platform',*/ 'org.rioproject:rio-api'])
+    cap.setClasspath(['org.rioproject:rio-lib', 'org.rioproject:rio-api'])
 
     return cap;
 }

@@ -145,7 +145,7 @@ else
 fi
 
 if [ -z "$JAVA_MEM_OPTIONS" ] ; then
-    JAVA_MEM_OPTIONS="-Xms8m -Xmx256m"
+    JAVA_MEM_OPTIONS="-Xms8m -Xmx512m"
 fi
 
 if [ -z "$JAVA_RMI_OPTIONS" ] ; then

@@ -36,6 +36,7 @@ deployment(name: 'Sorcer') {
     artifact id:'logger-sui', "org.sorcersoft.sorcer:logger-sui:1.0-M3-SNAPSHOT"
     artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:1.0-M3-SNAPSHOT"
     artifact id:'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:1.0-M3-SNAPSHOT"
+    artifact id:'commons-prv', "org.sorcersoft.sorcer:commons-prv:1.0-M3-SNAPSHOT"
 
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
     artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'

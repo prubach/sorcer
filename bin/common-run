@@ -272,7 +272,7 @@ $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
   BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $LIB_DIR/sorcer/sos-env.jar:\
-$LIB_DIR/sorcer/sorcer-api.jar:\
+#$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
@@ -355,7 +355,9 @@ if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
       SORCER_RIO_CP="$LIB_DIR/sorcer/sos-env.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-rio-start.jar:\
+$LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/commons/commons-lang3.jar:\
+$LIB_DIR/commons/guava.jar:\
 $LIB_DIR/jini/jsk-dl.jar"
 
     else
@@ -363,7 +365,9 @@ $LIB_DIR/jini/jsk-dl.jar"
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/com/google/guava/guava/14.0.1/guava-14.0.1.jar:\
 $MVN_REPO/net/jini/jsk-dl/$V_JINI/jsk-dl-$V_JINI.jar"
     fi
 

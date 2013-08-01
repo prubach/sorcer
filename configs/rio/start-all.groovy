@@ -18,7 +18,6 @@
  * This configuration is used to start a ProvisionMonitor, Cybernode, Webster and a Lookup Service
  */
 
-//import sorcer.provider.boot.RioServiceDescriptorUtil
 import org.rioproject.util.ServiceDescriptorUtil
 import org.rioproject.config.Component
 import com.sun.jini.start.ServiceDescriptor
@@ -26,26 +25,25 @@ import org.rioproject.resolver.maven2.Repository
 
 @Component('org.rioproject.start')
 class StartAllConfig {
-    String rioHome = System.getProperty('RIO_HOME')
-    String platformDir = rioHome+'/../../configs/platform/sorcer/'
+    String home = System.getenv("SORCER_HOME")
 
     ServiceDescriptor[] getServiceDescriptors() {
         ServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
 
-        def websterRoots = [rioHome+'/lib-dl', ';',
-                            rioHome+'/lib',    ';',
-                            rioHome+'/../../deploy', ';',
+        def websterRoots = [home+'/lib/rio/lib-dl', ';',
+                            home+'/lib/rio/lib',    ';',
+                            home+'/deploy', ';',
                             m2Repo]
 
-        String policyFile = rioHome+'/../../configs/rio/rio.policy'
-        def monitorConfigs = [rioHome+'/../../configs/rio/common.groovy',
-                              rioHome+'/../../configs/rio/monitor.groovy']
-        def reggieConfigs = [rioHome+'/../../configs/rio/common.groovy',
-                             rioHome+'/../../configs/rio/reggie.groovy']
-        def cybernodeConfigs = [rioHome+'/../../configs/rio/common.groovy',
-                                rioHome+'/../../configs/rio/cybernode.groovy',
-                                rioHome+'/../../configs/rio/compute_resource.groovy']
+        String policyFile = home+'/configs/rio/rio.policy'
+        def monitorConfigs = [home+'/configs/rio/common.groovy',
+                              home+'/configs/rio/monitor.groovy']
+        def reggieConfigs = [home+'/configs/rio/common.groovy',
+                             home+'/configs/rio/reggie.groovy']
+        def cybernodeConfigs = [home+'/configs/rio/common.groovy',
+                                home+'/configs/rio/cybernode.groovy',
+                                home+'/configs/rio/compute_resource.groovy']
 
         def serviceDescriptors = [
             ServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
