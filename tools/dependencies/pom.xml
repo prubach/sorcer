@@ -165,5 +165,15 @@
             <artifactId>rio-ui</artifactId>
             <version>${v.rio}</version>
         </dependency>
+        <dependency>
+            <groupId>org.rioproject.monitor</groupId>
+            <artifactId>monitor-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.cybernode</groupId>
+            <artifactId>cybernode-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
     </dependencies>
 </project>
