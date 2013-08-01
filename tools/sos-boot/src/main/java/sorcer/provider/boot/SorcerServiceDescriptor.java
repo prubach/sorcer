@@ -323,8 +323,12 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		ensureSecurityManager();
 		Object proxy = null;
 
-		/* Warn user of inaccessible codebase(s) */
-		HTTPDStatus.httpdWarning(getCodebase());
+        {
+        /* Warn user of inaccessible codebase(s) */
+            String codebase = getCodebase();
+            if (codebase != null && codebase.startsWith("http"))
+                HTTPDStatus.httpdWarning(codebase);
+        }
 
 		/* Set common JARs to the CommonClassLoader */
 		String defaultDir = null;
