@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-api</artifactId>
+            <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -26,15 +26,16 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-util</artifactId>
-			<version>${project.version}</version>
-		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-netlet</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
 		<dependency>
