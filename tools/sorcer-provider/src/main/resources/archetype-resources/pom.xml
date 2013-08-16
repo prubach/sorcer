@@ -25,6 +25,8 @@
 		<module>${rootArtifactId}-api</module>
 		<module>${rootArtifactId}-prv</module>
 		<module>${rootArtifactId}-req</module>
+
+        <!-- optional modules -->
 		<module>${rootArtifactId}-proxy</module>
 		<module>${rootArtifactId}-sui</module>
 	</modules>

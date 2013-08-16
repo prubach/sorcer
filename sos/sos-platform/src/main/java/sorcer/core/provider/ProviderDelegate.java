@@ -2473,7 +2473,8 @@ public class ProviderDelegate {
 			}
 		} catch (Exception ex) {
 			// ignore missing exporters and use default configurations for exporters
-		}
+            logger.log(Level.WARNING, "Error while configuring exporters", ex);
+        }
 	}
 
 	/**
@@ -2541,9 +2542,11 @@ public class ProviderDelegate {
 			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, provider);
-		} catch (Exception e) {
+        } catch (NoSuchMethodException ignored) {
 			logger.log(Level.INFO, "No 'init' method for this service bean: "
 					+ serviceBean.getClass().getName());
+        } catch (Exception e) {
+            throw new RuntimeException("Error in init method", e);
 		}
 		exports.put(serviceBean, this);
 		logger.fine(">>>>>>>>>>> exported service bean: \n" + serviceBean

@@ -17,7 +17,6 @@
  */
 package sorcer.core.dispatch;
 
-import sorcer.core.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
 import sorcer.core.exertion.Jobs;
@@ -38,7 +37,6 @@ import java.util.logging.Logger;
 public class ExertionDispatcherFactory implements DispatcherFactory {
 
 	private static ExertionDispatcherFactory factory;
-	public static Cataloger catalog; // The service catalog object
 	private final static Logger logger = Logger
 			.getLogger(ExertionDispatcherFactory.class.getName());
 
