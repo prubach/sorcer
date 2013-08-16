@@ -40,6 +40,6 @@ public class MavenLibraryHelper {
 			Zip.unzip(artifactFile, target);
 		}
 
-		LibraryPathHelper.updateLibraryPath(libraryDir.getPath());
+		LibraryPathHelper.getLibraryPath().add(libraryDir.getPath());
 	}
 }

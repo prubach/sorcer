@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Extend PlatformCapabilityConfig with ability to alter system library path and setting classpath with maven artifact coordinates.
@@ -19,6 +20,8 @@ public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
 
 	private static final String COORDS_SEPARATOR = ":";
 
+    protected static Set<String> libraryPath = LibraryPathHelper.getLibraryPath();
+
 	public SorcerCapabilityDescriptor() {
 	}
 
@@ -28,13 +31,9 @@ public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
 	}
 
 	public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
-                                      Collection<String> classpath, String libraryPath) {
+                                      Collection<String> classpath, String libraryPathElem) {
 		this(name, version, description, manufacturer, classpath);
-		setLibraryPath(libraryPath);
-	}
-
-	public void setLibraryPath(String libraryPath) {
-		LibraryPathHelper.updateLibraryPath(libraryPath);
+        libraryPath.add(libraryPathElem);
 	}
 
 	public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
