@@ -11,7 +11,9 @@ import static sorcer.eo.operator.trace;
 import static sorcer.eo.operator.task;
 
 import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.SorcerConstants;
@@ -20,14 +22,13 @@ import sorcer.service.ExertionException;
 import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
-import sorcer.util.Log;
 
 public class ${providerInterface}Tester extends ServiceRequestor {
 
-private static Logger logger = Log.getTestLog();
+    private static Logger logger = LoggerFactory.getLogger(${providerInterface}Tester.class);
 
-public Exertion getExertion(String... args) throws ExertionException,
-        ContextException, SignatureException {
+    public Exertion getExertion(String... args) throws ExertionException,
+            ContextException, SignatureException {
 		System.setSecurityManager(new RMISecurityManager());
 		logger.info("Starting ${providerInterface}Tester");
 		
