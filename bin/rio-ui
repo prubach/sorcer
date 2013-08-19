@@ -19,7 +19,7 @@
 # Launches the Rio UI
 #
 
-rioVersion=5.0-M3
+rioVersion=5.0-M4_sorcer1
 
 scriptDir="`dirname $0`"
 if [ "${RIO_HOME}defined" = defined ] ; then
