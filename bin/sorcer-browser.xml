@@ -34,8 +34,6 @@
         <pathelement location="${lib.dir}/sorcer/browser.jar" />
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar" />
-        <pathelement location="${mvn.repo}/org/rioproject/monitor/monitor-api/${v.rio}/monitor-api-${v.rio}.jar" />
-        <pathelement location="${mvn.repo}/org/rioproject/cybernode/cybernode-api/${v.rio}/cybernode-api-${v.rio}.jar" />
         <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/${v.jini}/jmx-lookup-${v.jini}.jar" />
 	</path>
 
@@ -55,6 +53,7 @@
 			</classpath>
             <env key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
 			<sysproperty key="ssb.logLen" value="300" />
@@ -69,6 +68,7 @@
             </classpath>
             <env key="RIO_HOME" value="${rio.home}" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
             <!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->

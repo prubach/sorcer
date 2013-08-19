@@ -281,6 +281,7 @@ $LIB_DIR/jini/jsk-resources.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/rio/rio-logging-support.jar:\
 $LIB_DIR/rio/rio-start.jar:\
+#$LIB_DIR/rio/rio-api.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
 #$LIB_DIR/rio/start.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
@@ -318,6 +319,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
+#$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\

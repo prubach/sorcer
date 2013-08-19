@@ -166,6 +166,11 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>org.rioproject.monitor</groupId>
             <artifactId>monitor-service</artifactId>
             <version>${v.rio}</version>
