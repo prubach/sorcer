@@ -46,6 +46,7 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -55,7 +56,7 @@ import java.util.logging.Logger;
  * @see Thread
  * @see LeaseListener
  */
-public class SpaceTaker extends Thread implements LeaseListener {
+public class SpaceTaker implements Runnable, LeaseListener {
 	static protected final String LOKI_ONLY = "CreatorsPublicKey";
 
 	static Logger logger = Logger.getLogger(SpaceTaker.class.getName());
@@ -91,7 +92,7 @@ public class SpaceTaker extends Thread implements LeaseListener {
 		public boolean noQueue;
 
 		public SpaceTakerData() {
-		};
+		}
 
 		public SpaceTakerData(ExertionEnvelop entry, LokiMemberUtil member,
 				Provider provider, String spaceName, String spaceGroup,
@@ -114,7 +115,6 @@ public class SpaceTaker extends Thread implements LeaseListener {
 	 * Default constructor. Set the worker thread as a Daemon thread
 	 */
 	public SpaceTaker() {
-		setDaemon(true);
 	}
 
 	/**
@@ -181,40 +181,24 @@ public class SpaceTaker extends Thread implements LeaseListener {
 				// logger.log(Level.INFO, "worker space template envelop = "
 				// + data.entry.describe() + "\n service provider = "
 				// + provider);
-				if (data.noQueue) {
-					if (((ThreadPoolExecutor) pool).getActiveCount() != ((ThreadPoolExecutor) pool)
-							.getCorePoolSize()) {
-						if (isTransactional) {
-							txnCreated = createTransaction();
-							if (txnCreated == null) {
-								logger.severe("########### SpaceTaker DID NOT get transaction...");
-								Thread.sleep(spaceTimeout / 6);
-								continue;
-							}
-							ee = (ExertionEnvelop) space.take(data.entry,
-									txnCreated.transaction, spaceTimeout);
-						} else {
-							ee = (ExertionEnvelop) space.take(data.entry,
-									null, spaceTimeout);
-						}
-					} else {
-						continue;
-					}
-				} else {
-					if (isTransactional) {
-						txnCreated = createTransaction();
-						if (txnCreated == null) {
-							logger.severe("########### SpaceTaker DID NOT get transaction...");
-							Thread.sleep(spaceTimeout / 6);
-							continue;
-						}
-						ee = (ExertionEnvelop) space.take(data.entry,
-								txnCreated.transaction, spaceTimeout);
-					} else {
-						ee = (ExertionEnvelop) space.take(data.entry,
-							null, spaceTimeout);
-					}
-				}
+				if (data.noQueue && (((ThreadPoolExecutor) pool).getActiveCount() == ((ThreadPoolExecutor) pool)
+                            .getCorePoolSize())) {
+                    continue;
+                }
+
+                Transaction transaction = null;
+                if (isTransactional) {
+                    txnCreated = createTransaction();
+                    if (txnCreated == null) {
+                        logger.severe("########### SpaceTaker DID NOT get transaction...");
+                        Thread.sleep(spaceTimeout / 6);
+                        continue;
+                    }
+                    transaction = txnCreated.transaction;
+                }
+                ee = (ExertionEnvelop) space.take(data.entry,
+                        transaction, spaceTimeout);
+
 				// after 'take' timeout abort transaction and sleep for a while
 				// before 'taking' the next exertion
 				if (ee == null) {
@@ -241,14 +225,9 @@ public class SpaceTaker extends Thread implements LeaseListener {
 				// // if (ee.exertionID.equals(LOKI_ONLY)) {
 				// initDataMember(ee);
 				// }
-				if (isTransactional)
-					pool.execute(new SpaceWorker(ee, txnCreated));
-				else
-					pool.execute(new SpaceWorker(ee, null));	
-							} catch (Exception ex) {
-				logger.info("END LOOP SPACE TAKER EXCEPTION");
-				ex.printStackTrace();
-				continue;
+                pool.execute(new SpaceWorker(ee, txnCreated));
+            } catch (Exception ex) {
+				logger.log(Level.INFO, "END LOOP SPACE TAKER EXCEPTION", ex);
 			}
 		}
 	}
