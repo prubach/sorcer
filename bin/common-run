@@ -396,6 +396,7 @@ startSos ( ) {
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$BOOT_CLASSPATH" \
             -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
+            -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
@@ -424,7 +425,7 @@ $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-platform.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
-$LIB_DIR/rio/resolver-api.jar:\
+$LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/slf4j-api.jar:\
 $LIB_DIR/commons/logback-core.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
@@ -461,6 +462,7 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$SHELL_CLASSPATH" \
             -Djava.security.policy="$SORCER_HOME"/configs/shell/policy/shell.policy \
+            -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dscript.name="$SCRIPT_PATH" \

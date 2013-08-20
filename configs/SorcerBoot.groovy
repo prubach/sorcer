@@ -1,7 +1,7 @@
 /**
  * Deployment configuration for the minimum Sorcer
  *
- * @author Dennis Reedy
+ * @author Pawel Rubach based on Dennis Reedy's example
  */
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
@@ -16,6 +16,11 @@ def getSorcerHome() {
     return sorcerHome = SorcerEnv.getHomeDir();
 }
 
+def getSorcerVersion() {
+    return sorcerVersion = SorcerEnv.getSorcerVersion();
+}
+
+
 def String getCodebase() {
     return 'http://'+SorcerEnv.getLocalHost().getHostAddress()+":9010"
 }
@@ -27,16 +32,16 @@ deployment(name: 'Sorcer') {
 
     artifact id:'mahalo', 'org.apache.river:mahalo:2.2.1'
     artifact id:'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.1'
-    artifact id:'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:1.0-M3-SNAPSHOT"
-    artifact id:'cataloger-prv', "org.sorcersoft.sorcer:cataloger-prv:1.0-M3-SNAPSHOT"
-    artifact id:'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:1.0-M3-SNAPSHOT"
-    artifact id:'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:1.0-M3-SNAPSHOT"
-    artifact id:'spacer-prv', "org.sorcersoft.sorcer:spacer-prv:1.0-M3-SNAPSHOT"
-    artifact id:'logger-prv', "org.sorcersoft.sorcer:logger-prv:1.0-M3-SNAPSHOT"
-    artifact id:'logger-sui', "org.sorcersoft.sorcer:logger-sui:1.0-M3-SNAPSHOT"
-    artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:1.0-M3-SNAPSHOT"
-    artifact id:'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:1.0-M3-SNAPSHOT"
-    artifact id:'commons-prv', "org.sorcersoft.sorcer:commons-prv:1.0-M3-SNAPSHOT"
+    artifact id:'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:"+getSorcerVersion()
+    artifact id:'cataloger-prv', "org.sorcersoft.sorcer:cataloger-prv:"+getSorcerVersion()
+    artifact id:'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:"+getSorcerVersion()
+    artifact id:'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:"+getSorcerVersion()
+    artifact id:'spacer-prv', "org.sorcersoft.sorcer:spacer-prv:"+getSorcerVersion()
+    artifact id:'logger-prv', "org.sorcersoft.sorcer:logger-prv:"+getSorcerVersion()
+    artifact id:'logger-sui', "org.sorcersoft.sorcer:logger-sui:"+getSorcerVersion()
+    artifact id:'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:"+getSorcerVersion()
+    artifact id:'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:"+getSorcerVersion()
+    artifact id:'commons-prv', "org.sorcersoft.sorcer:commons-prv:"+getSorcerVersion()
 
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
     artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'

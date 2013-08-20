@@ -14,6 +14,10 @@ def getSorcerHome() {
     return sorcerHome = SorcerEnv.getHomeDir();
 }
 
+def getSorcerVersion() {
+    return sorcerVersion = SorcerEnv.getSorcerVersion();
+}
+
 def String getCodebase() {
     return 'http://'+SorcerEnv.getLocalHost().getHostAddress()+":9010"
 }
@@ -24,8 +28,8 @@ deployment(name: 'ex6-provider') {
 
     codebase getCodebase()
 
-    artifact id:'ex6-api', 'org.sorcersoft.sorcer:ex6-api:1.0-M3-SNAPSHOT'
-    artifact id:'ex6-prv', 'org.sorcersoft.sorcer:ex6-prv:1.0-M3-SNAPSHOT'
+    artifact id:'ex6-api', 'org.sorcersoft.sorcer:ex6-api:'+getSorcerVersion()
+    artifact id:'ex6-prv', 'org.sorcersoft.sorcer:ex6-prv:'+getSorcerVersion()
 
     service(name:'ex6-prv') {
          interfaces {

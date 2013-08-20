@@ -97,7 +97,7 @@ process.consumeProcessErrorStream(out)
 process.waitFor()
 
 if(out.length()>0) {
-    File logDir = new File(rioHome+File.separator+"logs")
+    File logDir = new File(rioHome+File.separator+".."+File.separator+".."+File.separator+"logs")
     if(!logDir.exists())
         logDir.mkdirs()
     File installerLog = new File(logDir, "rio_install.log")

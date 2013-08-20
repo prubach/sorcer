@@ -227,6 +227,11 @@
                 <exclude>sorcer-boot</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
+                <exclude>rio</exclude>
+                <exclude>rio-ui</exclude>
+                <exclude>startall</exclude>
+                <exclude>monitor</exclude>
+                <exclude>cybernode</exclude>
             </excludes>
             <filtered>false</filtered>
             <fileMode>0644</fileMode>
@@ -240,6 +245,11 @@
                 <include>setenv</include>
                 <include>sorcer-boot</include>
                 <include>sorcer-boot-no-http</include>
+                <include>rio</include>
+                <include>rio-ui</include>
+                <include>startall</include>
+                <include>monitor</include>
+                <include>cybernode</include>
             </includes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>
@@ -248,6 +258,21 @@
         <fileSet>
             <directory>${basedir}/src/main/bin</directory>
             <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>sorcer-browser</include>
+                <include>uninstall</include>
+            </includes>
+            <filtered>false</filtered>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>${basedir}/src/main/bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <excludes>
+                <exclude>sorcer-browser</exclude>
+                <exclude>uninstall</exclude>
+            </excludes>
             <includes>
                 <include>**/*</include>
             </includes>
@@ -315,6 +340,9 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+                <exclude>logs/*</exclude>
+            </excludes>
             <filtered>false</filtered>
         </fileSet>
 

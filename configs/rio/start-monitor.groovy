@@ -21,7 +21,7 @@
 
 import org.rioproject.config.Component
 
-import sorcer.provider.boot.RioServiceDescriptorUtil;
+import org.rioproject.util.ServiceDescriptorUtil
 import com.sun.jini.start.ServiceDescriptor
 import org.rioproject.resolver.maven2.Repository
 
@@ -42,9 +42,9 @@ class StartMonitorConfig {
     }
 
     ServiceDescriptor[] getServiceDescriptors() {
-        RioServiceDescriptorUtil.checkForLoopback()
+        ServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
-    s
+
         def websterRoots = [rioHome+'/lib-dl', ';',
                             rioHome+'/lib',    ';',
                             rioHome+'/deploy', ';',
@@ -53,9 +53,9 @@ class StartMonitorConfig {
         String policyFile = rioHome+'/../../configs/rio/rio.policy'
 
         def serviceDescriptors = [
-            RioServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),
-            RioServiceDescriptorUtil.getLookup(policyFile, getLookupConfigArgs(rioHome)),
-            RioServiceDescriptorUtil.getMonitor(policyFile, getMonitorConfigArgs(rioHome))
+            ServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),
+            ServiceDescriptorUtil.getLookup(policyFile, getLookupConfigArgs(rioHome)),
+            ServiceDescriptorUtil.getMonitor(policyFile, getMonitorConfigArgs(rioHome))
         ]
 
         return (ServiceDescriptor[])serviceDescriptors

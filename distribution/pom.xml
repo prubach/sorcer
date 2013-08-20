@@ -50,6 +50,11 @@
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-rio-start</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- sos-providers -->
         <dependency>

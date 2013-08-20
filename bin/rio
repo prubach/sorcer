@@ -216,7 +216,7 @@ if [ "$start" = "1" ]; then
     ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
         -XX:+HeapDumpOnOutOfMemoryError \
         -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
-        -XX:HeapDumpPath=$RIO_HOME/../../logs \
+        -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
         $classpath $agentpath $libpath $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
         -Djava.protocol.handler.pkgs=org.rioproject.url \

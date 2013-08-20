@@ -20,7 +20,7 @@
 
 import com.sun.jini.start.ServiceDescriptor
 import org.rioproject.util.FileHelper
-import sorcer.provider.boot.RioServiceDescriptorUtil
+import org.rioproject.util.ServiceDescriptorUtil
 import org.rioproject.config.Component
 import org.rioproject.resolver.maven2.Repository
 
@@ -30,7 +30,7 @@ class StartCybernodeConfig {
     String platformDir = rioHome+'/../../configs/platform/sorcer/'
 
     String[] getConfigArgs(String rioHome) {
-        RioServiceDescriptorUtil.checkForLoopback()
+        ServiceDescriptorUtil.checkForLoopback()
         File common = new File(rioHome + '/../../configs/rio/compiled/common')
         File cybernode = new File(rioHome + '/../../configs/rio/compiled/cybernode')
         File computeResource = new File(rioHome + '/../../configs/rio/compiled/compute_resource')
@@ -51,8 +51,8 @@ class StartCybernodeConfig {
         String policyFile = rioHome + '/../../configs/rio/rio.policy'
 
         def serviceDescriptors = [
-                RioServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),
-                RioServiceDescriptorUtil.getCybernode(policyFile, getConfigArgs(rioHome))
+                ServiceDescriptorUtil.getWebster(policyFile, '0', websterRoots as String[]),
+                ServiceDescriptorUtil.getCybernode(policyFile, getConfigArgs(rioHome))
         ]
         return (ServiceDescriptor[]) serviceDescriptors
     }
