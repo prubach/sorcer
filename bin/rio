@@ -238,10 +238,9 @@ elif [ "$project" = "1" ] ;then
 else
     # Set system properties
     PROPS="-DRIO_HOME=$RIO_HOME"
-    #cliExt="$RIO_HOME/../../configs/rio/rio-cli.groovy"
     cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
-    classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH`"
+    classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
 #    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
