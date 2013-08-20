@@ -23,10 +23,6 @@ done
 
 DIRNAME=`dirname "$PRG"`
 
-. "$DIRNAME/common-run"
-
-
-STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-
-startSos $SORCER_HOME/configs/sorcer-boot.config "$@"
-
+$DIRNAME/rio start all &
+sleep .5s
+$DIRNAME/rio deploy $DIRNAME/../configs/rio-int/SorcerBoot.groovy

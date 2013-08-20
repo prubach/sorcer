@@ -18,9 +18,18 @@
  * This configuration is used to configure Rio tools (UI & CLI)
  */
 
-import org.rioproject.config.Component
+import org.rioproject.config.Component;
+import org.rioproject.tools.cli.CLI.OptionHandlerDesc;
 
 @Component('net.jini.discovery.LookupDiscovery')
 class ClientDiscoveryConfig {
     long multicastAnnouncementInterval=5000
+}
+
+@Component('org.rioproject.tools.cli')
+class RioCliConfig {
+    OptionHandlerDesc[] addOptionHandlers = [
+            new OptionHandlerDesc("start", "sorcer.rio.cli.StartOptionHandler"),
+            new OptionHandlerDesc("props", "sorcer.rio.cli.PropertiesOptionHandler")
+    ];
 }

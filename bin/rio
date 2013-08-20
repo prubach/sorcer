@@ -219,7 +219,7 @@ if [ "$start" = "1" ]; then
         -XX:HeapDumpPath=$RIO_HOME/../../logs \
         $classpath $agentpath $libpath $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-        -Djava.protocol.handler.pkgs=org.rioproject.url \
+        '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         $loggingConfig \
         -Dorg.rioproject.service=$service \
         -Djava.rmi.server.useCodebaseOnly=false \
@@ -241,11 +241,11 @@ else
     #cliExt="$RIO_HOME/../../configs/rio/rio-cli.groovy"
     cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
-    classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH`"
+    classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
 #    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-        -Djava.protocol.handler.pkgs=org.rioproject.url \
+        '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         -Djava.rmi.server.useCodebaseOnly=false \
         $loggingConfig \
         $PROPS \

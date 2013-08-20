@@ -4,7 +4,6 @@
  * @author Dennis Reedy
  */
 import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
 
 
 String[] getInitialMemberGroups() {
