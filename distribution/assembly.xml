@@ -308,6 +308,15 @@
             <filtered>false</filtered>
         </fileSet>
 
+        <!-- Rio home distribution -->
+        <fileSet>
+	    <directory>${basedir}/../lib/rio/</directory>
+	    <outputDirectory>/lib/rio/</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+        </fileSet>
 
     </fileSets>
 
