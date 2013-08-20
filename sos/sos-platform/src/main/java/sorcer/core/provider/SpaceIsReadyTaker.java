@@ -27,7 +27,6 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 	
 
 	public SpaceIsReadyTaker() {
-		setDaemon(true);
 	}
 
 	public SpaceIsReadyTaker(SpaceTakerData data, ExecutorService pool) {
@@ -95,7 +94,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 				}
 				// check is the exertion execution is abandoned (poisoned) by
 				// the requestor
-				if (isAbandoned(ee.exertion) == true) {
+				if (isAbandoned(ee.exertion)) {
 					if (txnCreated != null) {
 						txnCreated.transaction.commit();
 					}

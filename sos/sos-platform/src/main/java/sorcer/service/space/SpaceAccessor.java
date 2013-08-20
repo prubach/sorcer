@@ -59,6 +59,17 @@ public class SpaceAccessor extends ServiceAccessor{
         // and if it's the case then return it,
         // otherwise get a new JavSpace proxy
         JavaSpace05 javaSpace = (JavaSpace05) cache.get(JavaSpace05.class.getName());
+        if (javaSpace != null) {
+            try {
+                javaSpace.readIfExists(new Name("_SORCER_"), null,
+                        JavaSpace.NO_WAIT);
+                return javaSpace;
+            } catch (Exception e) {
+                log.error("error", e);
+                cache.remove(JavaSpace05.class.getName());
+            }
+        }
+
         Entry[] attrs = null;
         if (spaceName != null) {
             attrs = new Entry[] { new Name(spaceName) };
@@ -67,19 +78,10 @@ public class SpaceAccessor extends ServiceAccessor{
         if (spaceGroup == null) {
             sg = SorcerEnv.getSpaceGroup();
         }
-        try {
-            if (javaSpace == null) {
-                javaSpace = (JavaSpace05) Accessor.getService(null,
-                        new Class[]{JavaSpace05.class}, attrs,
-                        new String[]{sg});
-                cache.put(JavaSpace05.class.getName(), javaSpace);
-            } else {
-                javaSpace.readIfExists(new Name("_SORCER_"), null,
-                        JavaSpace.NO_WAIT);
-            }
-        } catch (Exception e) {
-            log.error("error", e);
-        }
+        javaSpace = (JavaSpace05) Accessor.getService(null,
+                new Class[]{JavaSpace05.class}, attrs,
+                new String[]{sg});
+        cache.put(JavaSpace05.class.getName(), javaSpace);
         return javaSpace;
     }
 
