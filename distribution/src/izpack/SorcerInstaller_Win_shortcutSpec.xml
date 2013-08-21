@@ -22,6 +22,14 @@
         target="$INSTALL_PATH/bin/setenv.bat" workingDirectory="$INSTALL_PATH/examples">
         <createForPack name="Sorcer Examples"/>
     </shortcut>
+    <shortcut applications="no" description="Start Rio provisioning platform"
+              desktop="yes"
+              name="Start Rio" programGroup="yes"
+              startMenu="no" startup="no" target="$INSTALL_PATH/bin/rio-boot.cmd" workingDirectory="$INSTALL_PATH"/>
+    <shortcut applications="no" description="Start Rio pltaform UI "
+              desktop="yes"
+              name="Start Rio UI" programGroup="yes"
+              startMenu="no" startup="no" target="$INSTALL_PATH/bin/rio-ui.cmd" workingDirectory="$INSTALL_PATH"/>
     <shortcut
 		name="Uninstall Sorcer"
 		target="$INSTALL_PATH\Uninstaller\uninstaller.jar"
@@ -34,4 +42,5 @@
 		startup="no"
 		iconFile="%SystemRoot%\system32\SHELL32.dll"
 		iconIndex="31"/>
+
 </shortcuts>

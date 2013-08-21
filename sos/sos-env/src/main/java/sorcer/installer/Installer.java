@@ -40,7 +40,10 @@ public class Installer {
     protected Map<String, String> groupDirMap = new HashMap<String, String>();
     protected Map<String, String> versionsMap = new HashMap<String, String>();
 
+    private static String MARKER_FILENAME="sorcer_jars_installed.tmp";
+
     private static String repoDir;
+    int errorCount = 0;
 
     protected static final Logger logger = Logger.getLogger(Installer.class.getName());
 
@@ -100,6 +103,7 @@ public class Installer {
 
             if (dir == null || version == null || !new File(Resolver.getRootDir() + "/" + dir).exists()) {
                 logger.severe("Problem installing jars for groupId: " + group + " directory or version not specified: " + dir + " " + version);
+                errorCount++;
                 continue;
             }
             File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
@@ -120,6 +124,7 @@ public class Installer {
                             artifactDir + "/" + fileNoExt + "-" + version + ".pom");
                     FileUtils.copyFile(jar, new File(artifactDir, fileNoExt + "-" + version + ".jar"));
                 } catch (IOException io) {
+                    errorCount++;
                     logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
                 }
             }
@@ -142,11 +147,15 @@ public class Installer {
         String group = "org.sorcersoft.sorcer";
         for (File jar : jars) {
                 String fileNoExt = jar.getName().replace("-" + SorcerEnv.getSorcerVersion() + ".pom", "");
+
+                // parsing pom to get group...
+
                 String artifactDir = Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/" + fileNoExt + "/" + SorcerEnv.getSorcerVersion();
                 try {
                     FileUtils.forceMkdir(new File(artifactDir));
                     FileUtils.copyFile(jar, new File(artifactDir, jar.getName()));
                 } catch (IOException io) {
+                    errorCount++;
                     logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
                 }
         }
@@ -157,6 +166,18 @@ public class Installer {
         installer.install();
         installer.installPoms();
     }
+
+    private void createMarker() {
+        if (errorCount==0) {
+            String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME;
+            File f = new File(markerFile);
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+            }
+        }
+    }
+
 
     protected void close(Closeable inputStream) {
         if (inputStream != null) {

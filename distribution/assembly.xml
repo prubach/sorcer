@@ -50,14 +50,89 @@
                 <destName>dbp-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/dbp/dbp-api/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>dbp-api-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/dbp/dbp-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>dbp-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/cataloger/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>cataloger-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/cataloger/cataloger-api/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>cataloger-api-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/cataloger/cataloger-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>cataloger-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/cataloger/cataloger-sui/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>cataloger-sui-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/exerter/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exerter-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/exerter/exerter-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exerter-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/jobber/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jobber-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/jobber/jobber-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jobber-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/logger/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logger-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/logger/logger-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logger-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/logger/logger-sui/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logger-sui-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/spacer/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>spacer-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/spacer/spacer-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>spacer-prv-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/exertmonitor/exertmonitor-prv/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertmonitor-prv-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos/pom.xml</source>
@@ -110,6 +185,27 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex6-${v.sorcer}.pom</destName>
             </file>
+            <!-- Other libs -->
+<!--            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-common/${v.blitz}/blitz-common-${v.blitz}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>blitz-common-${v.blitz}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-proxy/${v.blitz}/blitz-proxy-${v.blitz}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>blitz-proxy-${v.blitz}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-service/${v.blitz}/blitz-service-${v.blitz}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>blitz-service-${v.blitz}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-ui/${v.blitz}/blitz-ui-${v.blitz}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>blitz-ui-${v.blitz}.pom</destName>
+            </file> -->
             <!-- Copy the logging configuration file -->
             <file>
                 <source>${basedir}/src/main/configs/sorcer.logging</source>
@@ -229,9 +325,7 @@
                 <exclude>common-build.xml</exclude>
                 <exclude>rio</exclude>
                 <exclude>rio-ui</exclude>
-                <exclude>startall</exclude>
-                <exclude>monitor</exclude>
-                <exclude>cybernode</exclude>
+                <exclude>rio-boot</exclude>
             </excludes>
             <filtered>false</filtered>
             <fileMode>0644</fileMode>
@@ -247,9 +341,7 @@
                 <include>sorcer-boot-no-http</include>
                 <include>rio</include>
                 <include>rio-ui</include>
-                <include>startall</include>
-                <include>monitor</include>
-                <include>cybernode</include>
+                <include>rio-boot</include>
             </includes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>
@@ -357,6 +449,7 @@
                 <exclude>net.jini.lookup:*</exclude>
                 <exclude>org.apache.river:*</exclude>
                 <exclude>org.sorcersoft.sorcer:*</exclude>
+                <exclude>org.sorcersoft.blitz:*</exclude>
                 <exclude>org.sorcersoft.sigar:*</exclude>
                 <exclude>org.rioproject.resolver:*</exclude>
                 <exclude>org.rioproject:*</exclude>
@@ -397,6 +490,16 @@
                 <include>net.jini.lookup:*</include>
             </includes>
             <outputDirectory>lib/${net.jini.lookup}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <!-- Blitz libs -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>org.sorcersoft.blitz:*</include>
+            </includes>
+            <outputDirectory>lib/${org.sorcersoft.blitz}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 

@@ -71,6 +71,9 @@
                 <include name="bin/nsh" os="unix"/>
                 <include name="bin/setenv" os="unix"/>
                 <include name="bin/uninstall" os="unix"/>
+                <include name="bin/rio" os="unix"/>
+                <include name="bin/rio-boot" os="unix"/>
+                <include name="bin/rio-ui" os="unix"/>
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
@@ -82,6 +85,7 @@
             <fileset dir="../../sorcer-${v.sorcer}/sorcer-${v.sorcer}" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="bin/*.bat" os="windows"/>
+                <include name="bin/*.cmd" os="windows"/>
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
@@ -96,6 +100,9 @@
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
         </pack>
         <pack id="examples" name="Sorcer Examples" required="no">
             <description>Sorcer Examples</description>

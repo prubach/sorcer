@@ -16,6 +16,11 @@ def getSorcerHome() {
     return sorcerHome = SorcerEnv.getHomeDir();
 }
 
+def fs() {
+    return File.separator;
+}
+
+
 def getSorcerVersion() {
     return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
@@ -54,7 +59,7 @@ deployment(name: 'Sorcer') {
          implementation(class: 'com.sun.jini.mahalo.TransientMahaloImpl') {
              artifact ref:'mahalo'
          }
-         configuration file: "${getSorcerHome()}/configs/jini/configs/mahalo.config"
+         configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}jini${fs()}configs${fs()}mahalo.config"
          maintain 1
      }
 
@@ -66,7 +71,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
             artifact ref:'blitz-impl'
         }
-        configuration file: "${getSorcerHome()}/configs/blitz/configs/blitz.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}blitz${fs()}configs${fs()}blitz.config"
         maintain 1
     }
 
@@ -78,7 +83,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
             artifact ref: 'jobber-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/jobber.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}jobber.config"
         maintain 1
     }
 
@@ -90,7 +95,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
             artifact ref: 'spacer-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/spacer.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}spacer.config"
         maintain 1
     }
 
@@ -102,7 +107,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
             artifact ref: 'cataloger-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/cataloger.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}cataloger.config"
         maintain 1
     }
 
@@ -114,7 +119,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
             artifact ref: 'logger-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/logger.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}logger.config"
         maintain 1
     }
 
@@ -126,7 +131,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
             artifact ref: 'exertmonitor-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/exertmonitor.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}exertmonitor.config"
         maintain 1
     }
 
@@ -138,7 +143,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.dbp.DatabaseProvider') {
             artifact ref: 'dbp-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/dbp.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}dbp.config"
         maintain 1
     }
 
@@ -150,7 +155,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
             artifact ref: 'commons-prv'
         }
-        configuration file: "${getSorcerHome()}/configs/sos-providers/exerter.config"
+        configuration file: ""+getSorcerHome()+"${fs()}configs${fs()}sos-providers${fs()}exerter.config"
         maintain 1
     }
 }

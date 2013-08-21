@@ -90,8 +90,13 @@ classPath.append(File.pathSeparator).append(new File(rioHome, "../../configs/rio
 
 StringBuffer out = new StringBuffer()
 long installDate = System.currentTimeMillis()
-String install = "${java.toString()} -Djava.security.policy=${rioHome}/../../configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
-Process process = install.execute()
+
+ProcessBuilder procBld = new ProcessBuilder("${java.toString()}", "-Djava.security.policy=${rioHome}/../../configs/rio/rio.policy", "-DRIO_HOME=$rioHome", "-cp", "${classPath.toString()}", "org.rioproject.install.Installer")
+//String install = "${java.toString()} -Djava.security.policy=${rioHome}/../../configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
+//System.out.println(install)
+//Process process = install.execute()
+
+Process process = procBld.start()
 process.consumeProcessOutputStream(out)
 process.consumeProcessErrorStream(out)
 process.waitFor()

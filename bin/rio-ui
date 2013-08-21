@@ -46,7 +46,7 @@ SOS_CLASSPATH=$(createSorcerRioCp)
 RIOUI_CLASSPATH=$SOS_CLASSPATH:$path_to_jar
 MAIN_CLASS=org.rioproject.tools.ui.Main
 
-echo "RIO-UI CP:"$RIOUI_CLASSPATH
+#echo "RIO-UI CP:"$RIOUI_CLASSPATH
 ##############################
 
 # Check for running on OS/X
