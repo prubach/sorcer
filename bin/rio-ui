@@ -19,7 +19,7 @@
 # Launches the Rio UI
 #
 
-rioVersion=5.0-M4_sorcer1
+rioVersion=5.0-M4_sorcer2
 
 scriptDir="`dirname $0`"
 if [ "${RIO_HOME}defined" = defined ] ; then
@@ -27,13 +27,13 @@ if [ "${RIO_HOME}defined" = defined ] ; then
         RIO_HOME="$scriptDir/../lib/rio"
         path_to_jar="${RIO_HOME}/lib/rio-ui-$rioVersion.jar"
     else
-        if [ "$scriptDir" = "." ] ; then
+        #if [ "$scriptDir" = "." ] ; then
             RIO_HOME="$scriptDir/../lib/rio"
             path_to_jar="$RIO_HOME/lib/rio-ui-$rioVersion.jar"
-        else
-            echo "Dont know how to start Rio UI from [$scriptDir]"
-            exit 1
-        fi
+        #else
+        #    echo "Dont know how to start Rio UI from [$scriptDir]"
+        #    exit 1
+        #fi
     fi
 else
     path_to_jar="$RIO_HOME/lib/rio-ui-$rioVersion.jar"

@@ -151,6 +151,11 @@
                 <destName>sorcer-provider-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/src/main/examples/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>examples-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../examples/ex0/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex0-${v.sorcer}.pom</destName>
@@ -186,26 +191,11 @@
                 <destName>ex6-${v.sorcer}.pom</destName>
             </file>
             <!-- Other libs -->
-<!--            <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-common/${v.blitz}/blitz-common-${v.blitz}.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>blitz-common-${v.blitz}.pom</destName>
-            </file>
             <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-proxy/${v.blitz}/blitz-proxy-${v.blitz}.pom</source>
+                <source>${user.home}/.m2/repository/org/dancres/main/${v.blitz}/main-${v.blitz}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
-                <destName>blitz-proxy-${v.blitz}.pom</destName>
+                <destName>main-${v.blitz}.pom</destName>
             </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-service/${v.blitz}/blitz-service-${v.blitz}.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>blitz-service-${v.blitz}.pom</destName>
-            </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/blitz/blitz-ui/${v.blitz}/blitz-ui-${v.blitz}.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>blitz-ui-${v.blitz}.pom</destName>
-            </file> -->
             <!-- Copy the logging configuration file -->
             <file>
                 <source>${basedir}/src/main/configs/sorcer.logging</source>
@@ -533,9 +523,6 @@
             <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.classifier}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
-
-
-
 
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>

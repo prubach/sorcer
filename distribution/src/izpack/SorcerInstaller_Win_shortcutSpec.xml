@@ -23,11 +23,11 @@
         <createForPack name="Sorcer Examples"/>
     </shortcut>
     <shortcut applications="no" description="Start Rio provisioning platform"
-              desktop="yes"
+              desktop="yes" iconFile="$INSTALL_PATH/configs/icons/rio.ico"
               name="Start Rio" programGroup="yes"
               startMenu="no" startup="no" target="$INSTALL_PATH/bin/rio-boot.cmd" workingDirectory="$INSTALL_PATH"/>
     <shortcut applications="no" description="Start Rio pltaform UI "
-              desktop="yes"
+              desktop="yes" iconFile="$INSTALL_PATH/configs/icons/rio.ico"
               name="Start Rio UI" programGroup="yes"
               startMenu="no" startup="no" target="$INSTALL_PATH/bin/rio-ui.cmd" workingDirectory="$INSTALL_PATH"/>
     <shortcut

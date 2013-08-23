@@ -4,15 +4,24 @@ EX_DIR=$SORCER_HOME/examples
 LOG_DIR=/tmp/logs/
 
 stopSorcer ( ) {
-  for p in `jps | grep ServiceStarter | cut -d " " -f 1`; do 
+if [ "$USE_RIO" == "1" ]; then
+  $SORCER_HOME/bin/rio undeploy $SORCER_HOME/configs/SorcerBoot.groovy
+fi
+  for p in `jps | grep ServiceStarter | cut -d " " -f 1`; do
     kill $p > /dev/null
-  done  
+  done
 }
 
 startSorcer ( ) {
-  #$SORCER_HOME/bin/sorcer-boot > $1 &
-  ant -f $SORCER_HOME/bin/sorcer-boot.xml > $1 &  
+if [ "$USE_RIO" == "1" ]; then
+  $SORCER_HOME/bin/rio-boot > $1 &
   sleep 8
+  $SORCER_HOME/bin/rio deploy $SORCER_HOME/configs/SorcerBoot.groovy
+else
+  #$SORCER_HOME/bin/sorcer-boot > $1 &
+  ant -f $SORCER_HOME/bin/sorcer-boot.xml > $1 &
+fi
+sleep 8
 }
 
 restartSorcer ( ) {
@@ -36,8 +45,12 @@ ex0 ( ) {
   EX=ex0
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log
-  cd $EX_DIR/$EX/$EX-prv/
-  ant -f boot.xml > $LOG_DIR/$EX/ex0-prv-run.log &
+  if [ "$1" == "rio" ]; then
+    $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex0/ex0-prv/Ex0Boot.groovy
+  else
+    cd $EX_DIR/$EX/$EX-prv/
+    ant -f boot.xml > $LOG_DIR/$EX/ex0-prv-run.log &
+  fi
   sleep 8
   cd $EX_DIR/$EX/$EX-req/
   ant -f run.xml > $LOG_DIR/$EX/req.log
@@ -151,8 +164,13 @@ ex6 ( ) {
   EX=ex6
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log
-  cd $EX_DIR/$EX/$EX-prv/
-  ant -f arithmetic-$TYPE.xml > $LOG_DIR/$EX/$TYPE-arithmetic.log &
+
+  if [ "$1" == "rio" ]; then
+    $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex6/ex6-prv/Ex6Boot.groovy
+  else
+      cd $EX_DIR/$EX/$EX-prv/
+      ant -f arithmetic-$TYPE.xml > $LOG_DIR/$EX/$TYPE-arithmetic.log &
+  fi
   cd $EX_DIR/$EX/$EX-req/
   ant -f arithmetic-ter-run.xml > $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &
   sleep 8
@@ -174,18 +192,25 @@ if [ "$1" == "exc" ]; then
   exit
 fi
 
+if [ "$1" == "rio" ]; then
+  USE_RIO=1
+fi
+
 cleanLogs
 ex0
-ex1
-ex2
-ex3
-ex4
-ex5 all-beans-boot
-ex5 all-prv-boot
-ex5 bean-boot
-ex6 all-beans-boot
-ex6 all-prvs-run
-ex6 prv-boot
+ex0 rio
+#ex1
+#ex2
+#ex3
+#ex4
+#ex5 all-beans-boot
+#ex5 all-prv-boot
+#ex5 bean-boot
+#ex6 all-beans-boot
+#ex6 all-prvs-run
+#ex6 prv-boot
+
+ex6 rio
 
 stopSorcer
 showExceptions
