@@ -115,13 +115,16 @@ installRioToLocalRepository() {
 . "$scriptDir/common-run"
 SOS_CLASSPATH=$(createSorcerRioCp)
 
-# Run Sorcer Installer to install sorcer jars to local repo
-# Check if marker file exists - if so installer has already been run, ignore
-if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
-    echo "Sorcer jars already installed.";
-else
-    SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar
-    ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
+# Installer is only needed in Distribution
+if [ -f "$LIB_DIR/sorcer/sos-env.jar" ]; then
+    # Run Sorcer Installer to install sorcer jars to local repo
+    # Check if marker file exists - if so installer has already been run, ignore
+    if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
+        echo "Sorcer jars already installed.";
+    else
+        SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar
+        ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
+    fi
 fi
 ##############################
 

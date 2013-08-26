@@ -31,6 +31,10 @@
 export SORCER_HOME=`pwd`/../
 export PATH=$SORCER_HOME/bin:$PATH
 
+if [ ! -z `which rlwrap` ]; then
+    alias nsh='rlwrap $SORCER_HOME/bin/nsh'
+fi
+
 echo "******************************************************************************"
 echo "**                       SORCER Examples"
 echo "**   SORCER_HOME: $SORCER_HOME"

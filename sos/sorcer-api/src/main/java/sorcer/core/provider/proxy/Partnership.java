@@ -40,7 +40,7 @@ public interface Partnership {
 	 * 
 	 * @param inner
 	 *            an inner proxy object
-	 * @throws ProviderException
+	 * @throws sorcer.core.provider.ProviderException
 	 */
 	public void setInner(Object inner) throws ProviderException;
 

@@ -398,6 +398,7 @@ startSos ( ) {
             -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
             -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
+            -Dlogback.configurationFile="$SORCER_HOME"/configs/rio/logging/logback.groovy \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -Dprogram.name="$PROGNAME" \
@@ -411,8 +412,7 @@ startSos ( ) {
 
 startShell ( ) {
 SR_CP=$(createSorcerRioCp)
-echo "SORCER RIO CP:"$SR_CP
-
+#echo "SORCER RIO CP:"$SR_CP
 
 	if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
         # Distro version
@@ -464,6 +464,7 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
             -Djava.security.policy="$SORCER_HOME"/configs/shell/policy/shell.policy \
             -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
+            -Dlogback.configurationFile="$SORCER_HOME"/configs/rio/logging/logback.groovy \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \

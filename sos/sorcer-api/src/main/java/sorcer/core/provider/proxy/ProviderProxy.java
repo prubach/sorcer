@@ -23,7 +23,6 @@ import net.jini.id.Uuid;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 
 import net.jini.admin.Administrable;
-import sorcer.util.Log;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -56,7 +55,7 @@ public class ProviderProxy {
 
     static final long serialVersionUID = -242006752320266252L;
 
-    protected final static Logger logger = Log.getTestLog();
+    protected final static Logger logger = Logger.getLogger(ProviderProxy.class.getName());
 
 	/**
 	 * Public static factory method that creates and returns an instance of
