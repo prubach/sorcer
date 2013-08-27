@@ -232,7 +232,7 @@ if [ "$start" = "1" ]; then
         -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
         $classpath $agentpath $libpath $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-        -Djava.protocol.handler.pkgs=org.rioproject.url \
+        '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         $loggingConfig \
         -Dorg.rioproject.service=$service \
         -Djava.rmi.server.useCodebaseOnly=false \
@@ -257,7 +257,7 @@ else
 #    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-        -Djava.protocol.handler.pkgs=org.rioproject.url \
+        '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
         -Djava.rmi.server.useCodebaseOnly=false \
         $loggingConfig \
         $PROPS \

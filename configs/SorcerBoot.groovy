@@ -4,7 +4,6 @@
  * @author Pawel Rubach based on Dennis Reedy's example
  */
 import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
 
 
 String[] getInitialMemberGroups() {

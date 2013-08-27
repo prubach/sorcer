@@ -15,6 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>org.rioproject</groupId>
+            <artifactId>rio-cli</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
             <version>${v.rio}</version>
             <exclusions>
