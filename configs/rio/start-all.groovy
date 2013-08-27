@@ -34,6 +34,7 @@ class StartAllConfig {
         def websterRoots = [home+'/lib/rio/lib-dl', ';',
                             home+'/lib/rio/lib',    ';',
                             home+'/deploy', ';',
+                            home+'/lib', ';',
                             m2Repo]
 
         String policyFile = home+'/configs/rio/rio.policy'

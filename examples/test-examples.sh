@@ -8,7 +8,6 @@ stopSorcer ( ) {
     kill -9 $p > /dev/null
     if [ "$USE_RIO" == "1" ]; then
         if [ -f $SORCER_HOME/logs/all-$p.log ]; then
-            echo "jest log"
             mv $SORCER_HOME/logs/all-$p.log $1/
         fi
     fi
@@ -49,7 +48,7 @@ cleanLogs ( ) {
 ex0 ( ) {
   EX=ex0
   mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
+  restartSorcer $LOG_DIR/$EX/socer-$EX$1.log $LOG_DIR/$EX/
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex0/ex0-prv/Ex0Boot.groovy
   else
@@ -203,18 +202,22 @@ fi
 
 cleanLogs
 ex0
-ex0 rio
-#ex1
-#ex2
+if [ "$1" == "rio" ]; then
+  ex0 rio
+fi
+ex1
+ex2
 ex3
-#ex4
-#ex5 all-beans-boot
-#ex5 all-prv-boot
-#ex5 bean-boot
-#ex6 all-beans-boot
-#ex6 all-prvs-run
-#ex6 prv-boot
-#ex6 rio
+ex4
+ex5 all-beans-boot
+ex5 all-prv-boot
+ex5 bean-boot
+ex6 all-beans-boot
+ex6 all-prvs-run
+ex6 prv-boot
+if [ "$1" == "rio" ]; then
+  ex6 rio
+fi
 
 stopSorcer
 showExceptions
