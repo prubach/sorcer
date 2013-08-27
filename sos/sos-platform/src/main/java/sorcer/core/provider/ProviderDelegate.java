@@ -2458,9 +2458,11 @@ public class ProviderDelegate {
 
 				partnerExporter = (Exporter) Config.getNonNullEntry(config,
 						ServiceProvider.COMPONENT, SERVER_EXPORTER,
-						Exporter.class,
-                        new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
-                                new BasicILFactory()));
+						Exporter.class);
+
+
+                        //new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
+                        //        new BasicILFactory()));
 				if (partnerExporter == null) {
 					logger.warning("NO provider inner exporter defined!!!");
 				} else {
