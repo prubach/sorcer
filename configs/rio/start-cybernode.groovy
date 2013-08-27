@@ -27,7 +27,8 @@ import org.rioproject.resolver.maven2.Repository
 @Component('org.rioproject.start')
 class StartCybernodeConfig {
     String rioHome = System.getProperty('RIO_HOME')
-    String platformDir = rioHome+'/../../configs/platform/sorcer/'
+    //String platformDir = rioHome+'/../../configs/platform/sorcer/'
+    String platformDir = rioHome+'/config/platform/'
 
     String[] getConfigArgs(String rioHome) {
         ServiceDescriptorUtil.checkForLoopback()

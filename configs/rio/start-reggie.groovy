@@ -27,8 +27,8 @@ import com.sun.jini.start.ServiceDescriptor;
 class StartReggieConfig {
 
     String rioHome = System.getProperty('RIO_HOME')
-    String platformDir = rioHome+'/../../configs/platform/sorcer/'
-    //String platformDir = rioHome+'/../../configs/rio/platform'
+    String platformDir = rioHome+'/config/platform/'
+    //String platformDir = rioHome+'/../../configs/platform/sorcer/'
 
     ServiceDescriptor[] getServiceDescriptors() {
         RioServiceDescriptorUtil.checkForLoopback()

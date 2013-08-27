@@ -26,10 +26,16 @@ class ClientDiscoveryConfig {
     long multicastAnnouncementInterval=5000
 }
 
-@Component('org.rioproject.tools.cli')
+/*@Component('org.rioproject.tools.cli')
 class RioCliConfig {
     OptionHandlerDesc[] addOptionHandlers = [
-            new OptionHandlerDesc("start", "sorcer.rio.cli.StartOptionHandler"),
+            new OptionHandlerDesc("boot", "sorcer.rio.cli.StartOptionHandler"),
             new OptionHandlerDesc("props", "sorcer.rio.cli.PropertiesOptionHandler")
     ];
 }
+
+@Component('org.rioproject.start')
+class PropsInit {
+    String[] systemProperties = [ "java.protocol.handler.pkgs", "net.jini.url|org.rioproject.url" ];
+}
+*/

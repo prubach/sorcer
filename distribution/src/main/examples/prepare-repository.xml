@@ -40,6 +40,7 @@
                 <pathelement location="${lib.dir}/commons/slf4j-simple.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-io.jar"/>
                 <pathelement location="${lib.dir}/commons/xercesImpl.jar"/>
+                <pathelement location="${lib.dir}/commons/xml-apis.jar"/>
             </classpath>
         </java>
     </target>

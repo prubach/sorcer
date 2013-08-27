@@ -28,9 +28,6 @@ class ReggieConfig {
     //int initialUnicastDiscoveryPort = 10500
 
     String[] getInitialMemberGroups() {
-        //def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,
-        //                                 System.getProperty('user.name'))]
-
         def groups = SorcerEnv.getLookupGroups();
         return groups as String[]
     }

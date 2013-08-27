@@ -47,6 +47,6 @@ public class StartOptionHandler implements OptionHandler {
 
     @Override
     public String getUsage() {
-        return "start <config file>";
+        return "boot <config file>";
     }
 }

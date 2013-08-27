@@ -122,7 +122,7 @@ if [ -f "$LIB_DIR/sorcer/sos-env.jar" ]; then
     if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
         echo "Sorcer jars already installed.";
     else
-        SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar
+        SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
         ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
     fi
 fi
@@ -253,11 +253,12 @@ else
     PROPS="-DRIO_HOME=$RIO_HOME"
     cliExt="$RIO_HOME/../../configs/rio/tools.groovy"
     launchTarget=org.rioproject.tools.cli.CLI
+    #classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$RIO_LIB/rio-start-$rioVersion.jar:$RIO_LIB/rio-platform-$rioVersion.jar:$JAVA_HOME/lib/tools.jar:$RIO_LIB/groovy-all-$groovyVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
     classpath="-cp `toNative $RIO_LIB/rio-cli-$rioVersion.jar:$SLF4J_CLASSPATH:$SOS_CLASSPATH`"
 #    echo "RioCP:"$classpath
     "$JAVACMD" $classpath $JAVA_MEM_OPTIONS  $RIO_OPTS \
         -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-        '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
+        '-Djava.protocol.handler.pkgs=net.jini.url' \
         -Djava.rmi.server.useCodebaseOnly=false \
         $loggingConfig \
         $PROPS \

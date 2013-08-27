@@ -32,7 +32,7 @@ The structure of the documents are as follows:
         <classpath>Path separator (: or ;) delimited listing of directories and/or jars</classpath>
         <path>The location on the file system where the capability is installed</path>
         <native>Any native libraries that need to be loaded</native>
-        <costmodel>The resource cost model class name</costmodel>
+        <costmodel>ExerThe resource cost model class name</costmodel>
     </capability>
 </platform>
 

@@ -38,13 +38,11 @@ public class ScriptThread extends Thread {
 		private Object result;
 		private Object target = null;
 		private GroovyShell gShell;
-        private ClassLoader classLoader;
 
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
         public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out) {
-            this.classLoader = classLoader;
             RootLoader loader = null;
             if (classLoader==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
