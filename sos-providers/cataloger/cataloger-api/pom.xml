@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>cataloger-api</artifactId>
+    <name>SORCER OS :: providers :: cataloger ::  api</name>
 
     <dependencies>
         <dependency>

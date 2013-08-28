@@ -1754,8 +1754,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             //ProviderAccessor.terminateDiscovery();
             // option for service nodes size > 1
             // allows for discarding cpmplementarory, not SORCER services
-            if (SorcerEnv.isBootable() && size > 1)
-                System.exit(0);
+
+            // Commented to disable shutting down the whole RIO
+
+            //if (SorcerEnv.isBootable() && size > 1)
+            //    System.exit(0);
         }
         // stop KeepAwake thread
         running = false;

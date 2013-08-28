@@ -1,0 +1,11 @@
+import sorcer.rio.util.SorcerCapabilityDescriptor
+
+def getPlatformCapabilityConfig() {
+    def cap = new SorcerCapabilityDescriptor()
+    cap.name = "Berkeley DB JE"
+    cap.version = "4.1.21"
+    cap.manufacturer = "Oracle"
+    cap.setClasspath('com.sleepycat:je')
+
+    return cap;
+}

@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>dbp-api</artifactId>
+    <name>SORCER OS :: providers :: dbp :: api</name>
 
     <dependencies>
         <dependency>

@@ -509,8 +509,8 @@ public class NetworkShell implements DiscoveryListener {
 
 		if (!commandLine) {
 			String logDirPath = System.getProperty(COMPONENT + "logDir",
-					sorcerHome + File.separator + "bin" + File.separator
-							+ "shell" + File.separator + "logs");
+					sorcerHome + File.separator + "logs" + File.separator
+							+ "shell");
 		
 			File logDir = new File(logDirPath);
 			if (!logDir.exists()) {
@@ -521,7 +521,7 @@ public class NetworkShell implements DiscoveryListener {
 			}
 
 			shellLog = new File(logDir, "nsh.log");
-			System.out.println("Created the nsh shel log file: " + shellLog.getAbsolutePath());
+			System.out.println("Created the nsh shell log file: " + shellLog.getAbsolutePath());
 			if (shellLog.exists()) {
 				shellLog.delete();
 			}

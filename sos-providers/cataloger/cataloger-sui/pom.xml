@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>cataloger-sui</artifactId>
+    <name>SORCER OS :: providers :: cataloger ::  sui</name>
 
     <dependencies>
         <dependency>

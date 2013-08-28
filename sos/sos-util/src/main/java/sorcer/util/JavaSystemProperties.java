@@ -18,6 +18,7 @@ public class JavaSystemProperties {
     public static final String PROTOCOL_HANDLER_PKGS = "java.protocol.handler.pkgs";
     public static final String CLASS_PATH = "java.class.path";
     public static final String USER_DIR = "user.dir";
+    public static final String LIBRARY_PATH = "java.library.path";
 
     /**
      * Get the property from map or from system properties.

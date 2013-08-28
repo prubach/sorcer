@@ -43,11 +43,6 @@
             <artifactId>rio-start</artifactId>
 			<version>${v.rio}</version>
 			<exclusions>
-				<!-- use org.apache.river:start:${v.jini} instead -->
-				<exclusion>
-					<groupId>net.jini</groupId>
-					<artifactId>start</artifactId>
-				</exclusion>
 				<exclusion>
 					<groupId>org.rioproject.resolver</groupId>
 					<artifactId>resolver-api</artifactId>

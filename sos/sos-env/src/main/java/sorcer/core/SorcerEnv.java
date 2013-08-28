@@ -382,6 +382,11 @@ public class SorcerEnv {
         return toArray(groups);
     }
 
+    public static String getRioVersion() {
+        return sorcerEnv.getProperty(S_VERSION_RIO, RIO_VERSION);
+    }
+
+    /***
     /**
      * Gets an exertion space group name to use with this environment.
      *

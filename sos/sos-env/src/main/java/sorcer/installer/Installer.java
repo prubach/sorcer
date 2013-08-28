@@ -18,16 +18,29 @@
 package sorcer.installer;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
+import sorcer.util.Artifact;
+import sorcer.util.ArtifactCoordinates;
+import sorcer.util.PropertiesLoader;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -40,11 +53,30 @@ public class Installer {
     protected Map<String, String> groupDirMap = new HashMap<String, String>();
     protected Map<String, String> versionsMap = new HashMap<String, String>();
 
+    private static String MARKER_FILENAME="sorcer_jars_installed.tmp";
+
+    private static String COMMONS_LIBS="commons";
+
     private static String repoDir;
+    int errorCount = 0;
 
     protected static final Logger logger = Logger.getLogger(Installer.class.getName());
 
     {
+        try {
+            String fileName;
+            File tempDir = new File(System.getProperty("java.io.tmpdir"));
+            if (SorcerEnv.getHomeDir()!=null)
+                fileName = SorcerEnv.getHomeDir() + File.separator + "logs" + File.separator + "sos_jar_install.log";
+            else
+                fileName = tempDir.getAbsolutePath() + File.separator + "logs" + File.separator + "sos_jar_install.log";
+            FileHandler fh = new FileHandler();
+            fh.setFormatter(new SimpleFormatter());
+            logger.addHandler(fh);
+            logger.setLevel(Level.ALL);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
         try {
             repoDir = Resolver.getRepoDir();
             if (repoDir == null)                          {
@@ -100,6 +132,7 @@ public class Installer {
 
             if (dir == null || version == null || !new File(Resolver.getRootDir() + "/" + dir).exists()) {
                 logger.severe("Problem installing jars for groupId: " + group + " directory or version not specified: " + dir + " " + version);
+                errorCount++;
                 continue;
             }
             File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
@@ -120,10 +153,55 @@ public class Installer {
                             artifactDir + "/" + fileNoExt + "-" + version + ".pom");
                     FileUtils.copyFile(jar, new File(artifactDir, fileNoExt + "-" + version + ".jar"));
                 } catch (IOException io) {
+                    errorCount++;
                     logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
                 }
             }
         }
+        // install commons
+        File[] jars = new File(Resolver.getRootDir() + "/" + COMMONS_LIBS).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                if (pathname.getName().endsWith("jar"))
+                    return true;
+                return false;
+            }
+        });
+
+        for (File jar : jars) {
+            ArtifactCoordinates ac = getArtifactCoordinatesFromJar(jar);
+            if (ac!=null && ac.getGroupId()!=null && ac.getArtifactId()!=null && ac.getVersion()!=null) {
+                String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
+                try {
+                    FileUtils.forceMkdir(new File(artifactDir));
+                    extractZipFile(jar, "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml",
+                            artifactDir + "/" + ac.getArtifactId() + "-" + ac.getVersion() + ".pom");
+                    FileUtils.copyFile(jar, new File(artifactDir, ac.getArtifactId() + "-" + ac.getVersion() + ".jar"));
+                    logger.info("Installed jar and pom file: " + artifactDir + File.separator + ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
+                } catch (IOException io) {
+                    errorCount++;
+                    logger.severe("Problem installing jar: " + ac.getArtifactId() + " to: " + artifactDir + "\n" + io.getMessage());
+                }
+            }
+        }
+    }
+
+
+    public ArtifactCoordinates getArtifactCoordinatesFromJar(File jar) {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        String fileName = tempDir.getAbsolutePath() + File.separator+ "pom-" + System.currentTimeMillis() + ".properties";
+        extractPomPropFile(jar, fileName);
+        Properties properties = new Properties();
+        ArtifactCoordinates ac = null;
+        try {
+            properties.load(new FileInputStream(fileName));
+            ac = new ArtifactCoordinates(properties.getProperty("groupId"), properties.getProperty("artifactId"), "jar", properties.getProperty("version"), null);
+        } catch (FileNotFoundException e) {
+            logger.fine("Could not find pom.properties in file: " + jar.toString() + "\n" + e.getMessage());
+        } catch (IOException e) {
+            logger.fine("Could not find pom.properties in file: " + jar.toString() + "\n" + e.getMessage());
+        }
+        return ac;
     }
 
 
@@ -141,13 +219,17 @@ public class Installer {
         });
         String group = "org.sorcersoft.sorcer";
         for (File jar : jars) {
-                String fileNoExt = jar.getName().replace("-" + SorcerEnv.getSorcerVersion() + ".pom", "");
-                String artifactDir = Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/" + fileNoExt + "/" + SorcerEnv.getSorcerVersion();
-                try {
-                    FileUtils.forceMkdir(new File(artifactDir));
-                    FileUtils.copyFile(jar, new File(artifactDir, jar.getName()));
-                } catch (IOException io) {
-                    logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
+                ArtifactCoordinates ac = getArtifactCoordsFromPom(jar.getAbsolutePath());
+                if (ac!=null) {
+                    String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
+                    try {
+                        FileUtils.forceMkdir(new File(artifactDir));
+                        FileUtils.copyFile(jar, new File(artifactDir, jar.getName()));
+                        logger.info("Installed pom file: " + artifactDir + File.separator + jar.getName());
+                    } catch (IOException io) {
+                        errorCount++;
+                        logger.severe("Problem installing pom file: " + jar.getAbsolutePath() + " to: " + artifactDir);
+                    }
                 }
         }
     }
@@ -156,7 +238,92 @@ public class Installer {
         Installer installer = new Installer();
         installer.install();
         installer.installPoms();
+        installer.createMarker();
     }
+
+    public ArtifactCoordinates getArtifactCoordsFromPom(String fileName) {
+        DocumentBuilderFactory domFactory =
+                DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
+        DocumentBuilder builder = null;
+        String groupId = null;
+        String artifactId = null;
+        String version = null;
+        String packaging = null;
+        try {
+            builder = domFactory.newDocumentBuilder();
+            Document doc = builder.parse(fileName);
+            XPath xpath = XPathFactory.newInstance().newXPath();
+            Map<String, String> namespaces = new HashMap<String, String>();
+            namespaces.put("pom", "http://maven.apache.org/POM/4.0.0");
+            xpath.setNamespaceContext(
+                    new NamespaceContextImpl("http://maven.apache.org/POM/4.0.0",
+                            namespaces));
+            XPathExpression expr = xpath.compile("/pom:project/pom:groupId");
+            Object result = expr.evaluate(doc, XPathConstants.NODESET);
+            NodeList nodes = (NodeList) result;
+            if (nodes.getLength()>0)
+                groupId = nodes.item(0).getTextContent();
+            else {
+                expr = xpath.compile("/pom:project/pom:parent/pom:groupId");
+                result = expr.evaluate(doc, XPathConstants.NODESET);
+                nodes = (NodeList) result;
+                if (nodes.getLength()>0)
+                    groupId = nodes.item(0).getTextContent();
+            }
+
+            expr = xpath.compile("/pom:project/pom:artifactId");
+            result = expr.evaluate(doc, XPathConstants.NODESET);
+            nodes = (NodeList) result;
+            artifactId = nodes.item(0).getTextContent();
+
+            expr = xpath.compile("/pom:project/pom:version");
+            result = expr.evaluate(doc, XPathConstants.NODESET);
+            nodes = (NodeList) result;
+            if (nodes.getLength()>0)
+                version = nodes.item(0).getTextContent();
+            else {
+                expr = xpath.compile("/pom:project/pom:parent/pom:version");
+                result = expr.evaluate(doc, XPathConstants.NODESET);
+                nodes = (NodeList) result;
+                if (nodes.getLength()>0)
+                    version = nodes.item(0).getTextContent();
+            }
+            expr = xpath.compile("/pom:project/pom:packaging");
+            result = expr.evaluate(doc, XPathConstants.NODESET);
+            nodes = (NodeList) result;
+            if (nodes.getLength()>0)
+                packaging = nodes.item(0).getTextContent();
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        } catch (SAXException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        }
+
+        return new ArtifactCoordinates(groupId, artifactId, packaging, version, null);
+    }
+
+    private void createMarker() {
+        if (errorCount==0) {
+            String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME;
+            File f = new File(markerFile);
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+            }
+        }
+        logger.info("Installer finished with " + errorCount + " errors");
+    }
+
 
     protected void close(Closeable inputStream) {
         if (inputStream != null) {
@@ -201,4 +368,39 @@ public class Installer {
             e.printStackTrace();
         }
     }
+
+    public static void extractPomPropFile(File zipFileSrc, String targetFilePath) {
+        try {
+            ZipFile zipFile = new ZipFile(zipFileSrc);
+            Enumeration<? extends ZipEntry> e = zipFile.entries();
+
+            while (e.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) e.nextElement();
+                // if the entry is not directory and matches relative file then extract it
+                if (!entry.isDirectory() && entry.getName().contains("META-INF/maven/") && entry.getName().contains("pom.properties")) {
+                    InputStream bis = new BufferedInputStream(
+                            zipFile.getInputStream(entry));
+
+                    // write the inputStream to a FileOutputStream
+                    OutputStream outputStream =
+                            new FileOutputStream(new File(targetFilePath));
+
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+
+                    while ((read = bis.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+                    bis.close();
+                    outputStream.close();
+                } else {
+                    continue;
+                }
+            }
+        } catch (IOException e) {
+            logger.severe("IOError :" + e);
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -113,3 +113,4 @@ sorcer.util.level=INFO
 #net.jini.security.policy.level=FINER
 #net.jini.jeri.level=FINER
 
+org.rioproject.resolver.level=INFO

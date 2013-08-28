@@ -31,5 +31,10 @@
 			<artifactId>sos-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cataloger-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -29,7 +29,7 @@ DIRNAME=`dirname "$PRG"`
 STARTER_MAIN_CLASS=sorcer.ssb.SorcerServiceBrowser
 CONFIG=$SORCER_HOME/configs/browser/configs/ssb.config
 
-BROWSER_CLASSPATH=$JINI_CLASSPATH:$LIB_DIR/sorcer/browser.jar:$LIB_DIR/sorcer/sorcer-api.jar;$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/sorcer/sos-platform.jar:$LIB_DIR/sorcer/sos-webster.jar:$LIB_DIR/rio-resolver/resolver-api.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/logback-core.jar:$LIB_DIR/commons/logback-classic.jar:$LIB_DIR/rio/rio-platform.jar:$LIB_DIR/commons/groovy-all.jar:$LIB_DIR/commons/jsc-admin.jar
+BROWSER_CLASSPATH=$JINI_CLASSPATH:$LIB_DIR/sorcer/browser.jar:$LIB_DIR/sorcer/sorcer-api.jar:$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/sorcer/sos-platform.jar:$LIB_DIR/sorcer/sos-webster.jar:$LIB_DIR/rio-resolver/resolver-api.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/logback-core.jar:$LIB_DIR/commons/logback-classic.jar:$LIB_DIR/rio/rio-api.jar:$LIB_DIR/rio/rio-platform.jar:$LIB_DIR/commons/groovy-all.jar:$LIB_DIR/commons/jsc-admin.jar
 
 echo "##############################################################################"
 echo "##                       SORCER OS Booter"
@@ -39,7 +39,6 @@ echo "##   Webster URL: $WEBSTER_URL"
 echo "##"
 echo "##############################################################################"
 echo " "
-# echo $BOOT_CLASSPATH
 
 # Start the Profiler or the JVM
 if $useprofiler ; then
@@ -51,7 +50,8 @@ else
         -Dssb.logFile="$SORCER_HOME"/configs/browser/logs/browser.log \
         -Dssb.logLen=300 \
         -Djava.security.policy="$SORCER_HOME"/configs/browser/policy/ssb.policy \
-        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos" \
+        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
+        -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
         -Djava.rmi.server.useCodebaseOnly=false \
         -Dwebster.tmp.dir="$SORCER_HOME"/databases \
         -Dprogram.name="$PROGNAME" \

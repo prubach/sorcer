@@ -2464,9 +2464,7 @@ public class ProviderDelegate {
 
 				partnerExporter = (Exporter) Config.getNonNullEntry(config,
 						ServiceProvider.COMPONENT, SERVER_EXPORTER,
-						Exporter.class,
-                        new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
-                                new BasicILFactory()));
+						Exporter.class);
 				if (partnerExporter == null) {
 					logger.warning("NO provider inner exporter defined!!!");
 				} else {
@@ -2475,8 +2473,7 @@ public class ProviderDelegate {
 			}
 		} catch (Exception ex) {
 			// ignore missing exporters and use default configurations for exporters
-            logger.log(Level.WARNING, "Error while configuring exporters", ex);
-        }
+		}
 	}
 
 	/**
@@ -2544,11 +2541,9 @@ public class ProviderDelegate {
 			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, provider);
-        } catch (NoSuchMethodException ignored) {
+		} catch (Exception e) {
 			logger.log(Level.INFO, "No 'init' method for this service bean: "
 					+ serviceBean.getClass().getName());
-        } catch (Exception e) {
-            throw new RuntimeException("Error in init method", e);
 		}
 		exports.put(serviceBean, this);
 		logger.fine(">>>>>>>>>>> exported service bean: \n" + serviceBean

@@ -323,8 +323,12 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		ensureSecurityManager();
 		Object proxy = null;
 
-		/* Warn user of inaccessible codebase(s) */
-		HTTPDStatus.httpdWarning(getCodebase());
+        {
+        /* Warn user of inaccessible codebase(s) */
+            String codebase = getCodebase();
+            if (codebase != null && codebase.startsWith("http"))
+                HTTPDStatus.httpdWarning(codebase);
+        }
 
 		/* Set common JARs to the CommonClassLoader */
 		String defaultDir = null;
@@ -333,7 +337,9 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 		if (sorcerHome == null) {
 			logger.info("'sorcer.home' not defined, no default platformDir");
 		} else {
-			defaultDir = sorcerHome+fs+"configs"+fs+"platform"+fs+"sorcer";
+            defaultDir = sorcerHome+fs+"configs"+fs+"platform"+fs+"sorcer";
+            if (!new File(defaultDir).exists())
+                defaultDir = sorcerHome+fs+"lib"+fs+"rio"+fs+"config"+fs+"platform";
 		}
 
 		CommonClassLoader commonCL = CommonClassLoader.getInstance();
