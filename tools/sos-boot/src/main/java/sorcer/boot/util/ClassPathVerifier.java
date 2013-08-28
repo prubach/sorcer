@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Check class loaders for repeating class path entries; log a warning if found.
+ *
  * @author Rafał Krupiński
  */
 public class ClassPathVerifier {
@@ -50,11 +53,12 @@ public class ClassPathVerifier {
 			if (SorcerEnv.getRepoDir() == null || !key.contains(SorcerEnv.getRepoDir()))
 				continue;
 			if (classLoaders.get(key).size() > 1) {
-				StringBuilder msg = new StringBuilder(key).append(" is loaded by multiple class loaders:\n");
+                String name = new File(key).getName();
+				StringBuilder msg = new StringBuilder(name).append(" is loaded by multiple class loaders:\n");
 				for (ClassLoader kcl : classLoaders.get(key)) {
 					msg.append("\t").append(kcl).append("\n");
 				}
-				log.info("{}", msg);
+				log.warn("{}", msg);
 			}
 		}
 	}
