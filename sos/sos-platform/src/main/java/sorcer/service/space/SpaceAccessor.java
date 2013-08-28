@@ -65,7 +65,7 @@ public class SpaceAccessor extends ServiceAccessor{
                         JavaSpace.NO_WAIT);
                 return javaSpace;
             } catch (Exception e) {
-                log.error("error", e);
+                //log.error("error", e.getMessage());
                 cache.remove(JavaSpace05.class.getName());
             }
         }
@@ -81,8 +81,17 @@ public class SpaceAccessor extends ServiceAccessor{
         javaSpace = (JavaSpace05) Accessor.getService(null,
                 new Class[]{JavaSpace05.class}, attrs,
                 new String[]{sg});
-        cache.put(JavaSpace05.class.getName(), javaSpace);
-        return javaSpace;
+        try {
+            javaSpace.readIfExists(new Name("_SORCER_"), null,
+                    JavaSpace.NO_WAIT);
+            cache.put(JavaSpace05.class.getName(), javaSpace);
+            log.info("JavaSpace is back!");
+            return javaSpace;
+        } catch (Exception e) {
+            log.error("Problem connecting to JavaSpace");
+            cache.remove(JavaSpace05.class.getName());
+            return null;
+        }
     }
 
     /**

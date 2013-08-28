@@ -175,7 +175,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 						data.spaceGroup);
 				if (space == null) {
 					logger.severe("########### SpaceTaker DID NOT get JavaSpace...");
-					Thread.sleep(spaceTimeout / 6);
+					Thread.sleep(spaceTimeout / 2);
 					continue;
 				}
 				// logger.log(Level.INFO, "worker space template envelop = "
@@ -227,8 +227,8 @@ public class SpaceTaker implements Runnable, LeaseListener {
 				// }
                 pool.execute(new SpaceWorker(ee, txnCreated));
             } catch (Exception ex) {
-				logger.log(Level.INFO, "END LOOP SPACE TAKER EXCEPTION", ex);
-			}
+				logger.log(Level.FINEST, "END LOOP SPACE TAKER EXCEPTION", ex);
+            }
 		}
 	}
 
