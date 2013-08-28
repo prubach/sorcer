@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="SSD" default="Service Deployer" basedir=".">
+<project name="SSD" default="Rio Service Deployer" basedir=".">
 	<!-- load system environment variables -->
 	<property environment="env" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
