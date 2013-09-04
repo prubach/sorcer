@@ -30,7 +30,7 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public class ExertionExecutor {
-    public static Object exec(Exertion exertion, Parameter... entries)
+    public static Object exec(Exertion exertion, Arg... entries)
             throws ExertionException, ContextException {
         Exertion xrt;
         try {
@@ -65,7 +65,7 @@ public class ExertionExecutor {
     }
 
     public static <T extends Exertion> T exert(T input,
-                                               Transaction transaction, Parameter... entries)
+                                               Transaction transaction, Arg... entries)
             throws ExertionException {
         try {
             ExertProcessor esh = new ExertProcessor(input);
@@ -82,11 +82,11 @@ public class ExertionExecutor {
     }
 
     public static Exertion exertOpenTask(Exertion exertion,
-                                         Parameter... entries) throws ExertionException {
+                                         Arg... entries) throws ExertionException {
         Exertion closedTask = null;
-        List<Parameter> params = Arrays.asList(entries);
+        List<Arg> params = Arrays.asList(entries);
         List<Object> items = new ArrayList<Object>();
-        for (Parameter param : params) {
+        for (Arg param : params) {
             if (param instanceof ControlContext
                     && ((ControlContext) param).getSignatures().size() > 0) {
                 List<Signature> sigs = ((ControlContext) param).getSignatures();

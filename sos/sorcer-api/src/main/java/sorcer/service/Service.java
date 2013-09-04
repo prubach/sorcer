@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
 
 import java.rmi.RemoteException;
@@ -24,7 +25,7 @@ import net.jini.core.transaction.TransactionException;
 
 /**
  * An top-level common interface for all service peers in
- * SORCER. Each servicer accepts a request for {@link sorcer.service.Exertion} to
+ * SORCER. Each service accepts a request for {@link Exertion} to
  * exert the federation of collaborating services.
  * 
  * @author Mike Sobolewski
@@ -42,17 +43,13 @@ public interface Service {
 	 * @param txn
 	 *            The transaction (if any) under which to provide service.
 	 * @return a resulting exertion
-	 * @throws net.jini.core.transaction.TransactionException
+	 * @throws TransactionException
 	 *             if a transaction error occurs
-	 * @throws sorcer.service.ExertionException
+	 * @throws ExertionException
 	 *             if an exertion invocation failed for any reason
-	 * @throws java.rmi.RemoteException
+	 * @throws RemoteException
 	 */
-    public Exertion service(Exertion exertion, Transaction txn)
-            throws TransactionException, ExertionException, RemoteException;
-
-
-    public Exertion service(Exertion exertion)
-            throws TransactionException, ExertionException, RemoteException;
+	public Exertion service(Exertion exertion, Transaction txn)
+			throws TransactionException, ExertionException, RemoteException;
 
 }

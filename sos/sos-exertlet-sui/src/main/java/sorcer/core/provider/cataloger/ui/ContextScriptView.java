@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import sorcer.core.Provider;
+import sorcer.service.Context;
 import sorcer.ui.exertlet.EditorView;
 
 /**

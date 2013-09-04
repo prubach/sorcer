@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.requestor;
 
 import net.jini.core.transaction.Transaction;
@@ -23,23 +23,17 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 
-/**
- * The interface for a common behavior of service requestors.
- *
- * @author M. W. Sobolewski
- * /
+public interface Requestor {
 
- */public interface Requestor {
+    public Exertion getExertion(String... args) throws ExertionException,
+            ContextException, SignatureException;
 
-	public Exertion getExertion(String... args) throws ExertionException,
-			ContextException, SignatureException;
+    public Transaction getTransaction();
 
-	public Transaction getTransaction();
+    public void preprocess(String... args);
 
-	public void preprocess(String... args);
+    public void process(String... args) throws Exception;
 
-	public void process(String... args) throws ExertionException;
-	
-	public void postprocess(String... args);
+    public void postprocess(String... args);
 
 }

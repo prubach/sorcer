@@ -20,6 +20,7 @@ package sorcer.co.tuple;
 import java.io.Serializable;
 
 public class Tuple4<T1, T2, T3, T4>  implements Serializable {
+	private static final long serialVersionUID = -2522656851869504341L;
 	public T1 _1 = null;
 	public T2 _2 = null;
 	public T3 _3 = null;

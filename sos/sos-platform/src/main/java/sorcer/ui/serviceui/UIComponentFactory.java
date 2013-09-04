@@ -72,7 +72,6 @@ public class UIComponentFactory implements JComponentFactory, Serializable {
 		this.isFrame = isFrame;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public JComponent getJComponent(Object roleObject) {
 		if (!(roleObject instanceof ServiceItem)) {
 			throw new IllegalArgumentException("ServiceItem required");
@@ -120,12 +119,12 @@ public class UIComponentFactory implements JComponentFactory, Serializable {
 					}
 				});
 			}
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(
-					"Unable to instantiate ServiceUI:"
-							+ className + ":"
-							+ e.getClass().getName() + ":"
+					"Unable to instantiate ServiceUI :"
+							+ e.getClass().getName() + ": "
 							+ e.getLocalizedMessage());
 		}
 		if (frame == null)

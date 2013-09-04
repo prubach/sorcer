@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.List;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -25,16 +30,12 @@ import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.List;
-
 /**
  * An exertion is a federated service command (statement) communicated by a requestor -
  * {@link Service#service}, to a service provider {@link Service}. It is a
  * form of service-oriented message with an enclosed service
  * {@link sorcer.service.Context} and a collection of service
- * {@link sorcer.service.Signature}s. The service dataContext specifies service data
+ * {@link sorcer.service.Signature}s. The service context specifies service data
  * to be processed by the service providers matching exertion's signatures. An
  * exertion's signature can carry own implementation when its type is associated
  * with a provided codebase.<br>
@@ -43,14 +44,14 @@ import java.util.List;
  * separate from the actions that service providers carry out. Exertions are
  * also completely separate from each other and do not know what other exertions
  * do. However, they can pass parameters via contexts by mapping
- * {@link Context#map} expected input dataContext values in terms of expected output
+ * {@link Context#map} expected input context values in terms of expected output
  * values calculated by other exertion. The operation {@link Exertion#exert} of
  * this interface provides for execution of desired actions enclosed in
  * exertions, thus keeping the knowledge of what to do inside of the exertions,
  * instead of having another parts of SO program to make these decisions. When
  * an exertion is invoked then the exertion redirects control to a dynamically
- * bound {@link Service} matching the exertion's signature of
- * type Operate <code>PROCESS</code>. <br>
+ * bound {@link sorcer.service.Service} matching the exertion's signature of
+ * type {@link Operator.Type} <code>PROCESS</code>. <br>
  * The <code>Exertion</code> interface also provides for the Composite design
  * pattern and defines a common elementary behavior for all exertions of
  * {@link sorcer.service.Task} type and control flow exertions (for branching
@@ -61,7 +62,7 @@ import java.util.List;
  * programming statements and {@link sorcer.service.Job}s analogous to
  * procedures in conventional procedural programming. <br>
  * Control flow exertions allow for branching and looping operations by
- * {@link Service}s executing exertions. A job combined from
+ * {@link sorcer.service.Service}s executing exertions. A job combined from
  * tasks and other jobs along with relevant control flow exertions is a
  * service-oriented procedure that can federate its execution with multiple
  * service providers bound dynamically in runtime as determined by
@@ -70,7 +71,8 @@ import java.util.List;
  * @see sorcer.service.AsyncExertion
  * @author Mike Sobolewski
  */
-public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
+@SuppressWarnings("rawtypes")
+public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocation<Object>, Serializable, Identifiable {
 
 	/**
 	 * Returns a name of this exertion.
@@ -107,18 +109,39 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
 	 * @return a service dataContext
 	 * @see #getSignatures
 	 */
-    public Context getContext();
-    // synonym, the same as  getContext();
     public Context getDataContext();
 
-    /**
-     * Returns a service context (service data) of the component exertion.
-     *
-     * @return a service context
-     * @see #getSignatures
-     */
-    public Context getContext(String componentExertionName);
-
+	/**
+	 * Returns a composite data context (service data for all component
+	 * exertions) of this exertion to be processed by all exertion's signatures.
+	 * 
+	 * @return a service context
+	 */
+	public Context getContext();
+	
+	/**
+	 * Returns a value associated with a path (key) in this exertion's context.
+	 * 
+	 * @return a referenced by a path object
+	 */
+	public Object getValue(String path, Arg... args) throws ContextException;
+		
+	/**
+	 * Returns a return value associated with a return path in this exertion's context.
+	 * 
+	 * @return a referenced by a return path object
+	 */
+	public Object getReturnValue(Arg... entries) throws ContextException,
+			RemoteException;
+	
+	/**
+	 * Returns a service context (service data) of the component exertion.
+	 * 
+	 * @return a service context
+	 * @see #getSignatures
+	 */
+	public Context getContext(String componentExertionName);
+	
 	public List<String> getTrace();
 	
 	/**
@@ -183,11 +206,12 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
 	 *             if a transaction error occurs
 	 * @throws ExertionException
 	 *             if processing this exertion causes an error
+	 * @see #setService
 	 */
-	public <T extends Exertion> T exert(Transaction txn, Parameter... entries) throws TransactionException,
+	public <T extends Exertion> T exert(Transaction txn, Arg... entries) throws TransactionException,
 			ExertionException, RemoteException;
 
-	public Exertion exert(Parameter... entries) throws TransactionException, ExertionException,
+	public Exertion exert(Arg... entries) throws TransactionException, ExertionException,
 			RemoteException;
 	
 	/**
@@ -257,7 +281,7 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
     public boolean isCmd();
 
 	/**
-	 * Return true if this exertion is atop an acyclic graph in which no node
+	 * Returns true if this exertion is atop an acyclic graph in which no node
 	 * has two parents (two references to it).
 	 * 
 	 * @return true if this exertion is atop an acyclic graph in which no node
@@ -265,6 +289,11 @@ public interface Exertion extends Evaluation<Object>, Invocation<Object>, Serial
 	 */
 	public boolean isTree();
 		
+	/**
+	 * Returns true if this exertion is a branching or looping exertion.
+	 */
+	public boolean isConditional();
+	
 	/**
 	 * The exertion format for thin exertions (no RMI and Jini classes)
 	 */

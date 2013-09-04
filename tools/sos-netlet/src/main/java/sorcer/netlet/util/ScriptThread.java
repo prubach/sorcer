@@ -89,7 +89,14 @@ public class ScriptThread extends Thread {
                 if (script != null) {
                     target = gShell.evaluate(script);
                 }
-                else {
+            }
+        }
+
+		public void run() {
+            synchronized (gShell) {
+                if (script != null) {
+                    target = gShell.evaluate(script);
+                } else {
                     try {
                         target = gShell.evaluate(scriptFile);
                     } catch (CompilationFailedException e) {
@@ -99,23 +106,33 @@ public class ScriptThread extends Thread {
                     }
                 }
             }
-        }
-
-		public void run() {
-			if (target!=null && target instanceof Exertion) {
-				ExertProcessor esh = new ExertProcessor((Exertion) target);
-				try {
-					result = esh.exert();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				} catch (TransactionException e) {
-					e.printStackTrace();
-				} catch (ExertionException e) {
-					e.printStackTrace();
-				}
-			} else {
-				result = target;
-			}
+            if (target instanceof Exertion) {
+                ExertProcessor esh = new ExertProcessor((Exertion) target);
+                try {
+                    if (((Exertion) target).isProvisionable()) {
+//                        String configFile = (String) NetworkShell
+//                                .getConfiguration().getEntry(
+//                                        "sorcer.tools.shell.NetworkShell",
+//                                        "exertionDeploymentConfig", String.class,
+//                                        null);
+//                        if (configFile != null)
+//                            result = esh.exert(new Deployment(configFile));
+//                        else
+                            result = esh.exert();
+                    } else
+                        result = esh.exert();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (TransactionException e) {
+                    e.printStackTrace();
+                } catch (ExertionException e) {
+                    e.printStackTrace();
+//                } catch (ConfigurationException e) {
+//                    e.printStackTrace();
+                }
+            } else {
+                result = target;
+            }
 		}
 
 		public Object getResult() {

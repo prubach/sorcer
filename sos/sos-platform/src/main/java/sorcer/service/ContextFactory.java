@@ -18,22 +18,13 @@ package sorcer.service;
  */
 
 
-import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.Tuple2;
+import sorcer.co.tuple.*;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.ListContext;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.SharedAssociativeContext;
 import sorcer.core.context.SharedIndexedContext;
-import sorcer.co.tuple.Complement;
-import sorcer.co.tuple.Args;
-import sorcer.co.tuple.ParameterTypes;
-import sorcer.co.tuple.target;
-import sorcer.co.tuple.InEntry;
-import sorcer.co.tuple.OutEntry;
-import sorcer.co.tuple.InoutEntry;
-import sorcer.co.tuple.DataEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +32,7 @@ import java.util.List;
 import static sorcer.util.UnknownName.getUnknown;
 
 /**
- * @author Rafał Krupiński
+ * Extracted from oe.operator by Rafał Krupiński
  */
 public class ContextFactory {
     public static <T> Context context(T... entries)
@@ -51,16 +42,20 @@ public class ContextFactory {
             if (entries.length >= 2 && entries[1] instanceof String)
                 xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
             return xrt.getDataContext();
-        } else if (entries[0] instanceof String
-                && entries[1] instanceof Exertion) {
+		} else if (entries[0] instanceof String) {
+			if (entries.length == 1)
+				return new PositionalContext((String)entries[0]);
+			else if (entries[1] instanceof Exertion) {
             return ((Job) entries[1]).getComponentExertion((String) entries[0])
                     .getDataContext();
-        }
+        	}
+		}
         String name = getUnknown();
         List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
         List<Context.Type> types = new ArrayList<Context.Type>();
         Complement subject = null;
         ReturnPath returnPath = null;
+		ExecPath execPath = null;
         Args cxtArgs = null;
         ParameterTypes parameterTypes = null;
         target target = null;
@@ -75,10 +70,12 @@ public class ContextFactory {
                 parameterTypes = (ParameterTypes) o;
             } else if (o instanceof target) {
                 target = (target) o;
+			} else if (o instanceof ReturnPath) {
+				returnPath = (ReturnPath) o;
+			} else if (o instanceof ExecPath) {
+				execPath = (ExecPath) o;
             } else if (o instanceof Tuple2) {
                 entryList.add((Tuple2) o);
-            } else if (o instanceof ReturnPath) {
-                returnPath = (ReturnPath) o;
             } else if (o instanceof Context.Type) {
                 types.add((Context.Type) o);
             } else if (o instanceof String) {
@@ -116,62 +113,16 @@ public class ContextFactory {
         }
         if (cxt instanceof PositionalContext) {
             PositionalContext pcxt = (PositionalContext) cxt;
-            if (entryList.size() > 0) {
-                for (int i = 0; i < entryList.size(); i++) {
-                    if (entryList.get(i) instanceof InEntry) {
-                        pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
-                                ((InEntry) entryList.get(i)).value(), i + 1);
-                    } else if (entryList.get(i) instanceof OutEntry) {
-                        pcxt.putOutValueAt(
-                                ((OutEntry) entryList.get(i)).path(),
-                                ((OutEntry) entryList.get(i)).value(), i + 1);
-                    } else if (entryList.get(i) instanceof InoutEntry) {
-                        pcxt.putInoutValueAt(
-                                ((InoutEntry) entryList.get(i)).path(),
-                                ((InoutEntry) entryList.get(i)).value(), i + 1);
-                    } else if (entryList.get(i) instanceof Entry) {
-                        pcxt.putValueAt(((Entry) entryList.get(i)).path(),
-                                ((Entry) entryList.get(i)).value(), i + 1);
-                    } else if (entryList.get(i) instanceof DataEntry) {
-                        pcxt.putValueAt(Context.DSD_PATH,
-                                ((DataEntry) entryList.get(i)).value(), i + 1);
-                    } else if (entryList.get(i) instanceof Tuple2) {
-                        pcxt.putValueAt(
-                                entryList.get(i)._1,
-                                entryList.get(i)._2,
-                                i + 1);
+			if (entryList.size() > 0)
+				popultePositionalContext(pcxt, entryList);
+		} else {
+				if (entryList.size() > 0)
+				populteContext(cxt, entryList);
                     }
-                }
-            }
-        } else {
-            if (entryList.size() > 0) {
-                for (int i = 0; i < entryList.size(); i++) {
-                    if (entryList.get(i) instanceof InEntry) {
-                        cxt.putInValue(((Entry) entryList.get(i)).path(),
-                                ((Entry) entryList.get(i)).value());
-                    } else if (entryList.get(i) instanceof OutEntry) {
-                        cxt.putOutValue(((Entry) entryList.get(i)).path(),
-                                ((Entry) entryList.get(i)).value());
-                    } else if (entryList.get(i) instanceof InoutEntry) {
-                        cxt.putInoutValue(((Entry) entryList.get(i)).path(),
-                                ((Entry) entryList.get(i)).value());
-                    } else if (entryList.get(i) instanceof Entry) {
-                        cxt.putValue(((Entry) entryList.get(i)).path(),
-                                ((Entry) entryList.get(i)).value());
-                    } else if (entryList.get(i) instanceof DataEntry) {
-                        cxt.putValue(Context.DSD_PATH,
-                                ((Entry) entryList.get(i)).value());
-                    } else if (entryList.get(i) instanceof Tuple2) {
-                        cxt.putValue(
-                                entryList.get(i)._1,
-                                entryList.get(i)._2);
-                    }
-                }
-            }
-        }
-
         if (returnPath != null)
             ((ServiceContext) cxt).setReturnPath(returnPath);
+		if (execPath != null)
+			((ServiceContext) cxt).setExecPath(execPath);
         if (cxtArgs != null) {
             if (cxtArgs.path() != null) {
                 ((ServiceContext) cxt).setArgsPath(cxtArgs.path());
@@ -198,6 +149,110 @@ public class ContextFactory {
             ((ServiceContext) cxt).setTarget(target.target);
         }
         return cxt;
+    }
+
+    private static void popultePositionalContext(PositionalContext pcxt, List<Tuple2<String, ?>> entryList)
+            throws ContextException {
+        for (int i = 0; i < entryList.size(); i++) {
+            if (entryList.get(i) instanceof InEntry) {
+                if (((InEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    pcxt.putInValueAt(
+                            ((InEntry) entryList.get(i)).path(),
+                            ((InEntry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof OutEntry) {
+                if (((OutEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    pcxt.putOutValueAt(
+                            ((OutEntry) entryList.get(i)).path(),
+                            ((OutEntry) entryList.get(i)).value(),
+                            i + 1);
+                }
+            } else if (entryList.get(i) instanceof InoutEntry) {
+                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    pcxt.putInoutValueAt(
+                            ((InoutEntry) entryList.get(i)).path(),
+                            ((InoutEntry) entryList.get(i)).value(),
+                            i + 1);
+                }
+            } else if (entryList.get(i) instanceof Entry) {
+                if (((Entry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    pcxt.putValueAt(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof DataEntry) {
+                pcxt.putValueAt(Context.DSD_PATH,
+                        ((DataEntry) entryList.get(i)).value(), i + 1);
+            } else if (entryList.get(i) instanceof Tuple2) {
+                {
+                    if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
+                        throw new UnsupportedOperationException();
+                    } else {
+                        pcxt.putValueAt(
+                                (String) ((Tuple2<String, ?>) entryList
+                                        .get(i))._1,
+                                ((Tuple2<String, ?>) entryList.get(i))._2,
+                                i + 1);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void populteContext(Context cxt, List<Tuple2<String, ?>> entryList) throws ContextException {
+        for (int i = 0; i < entryList.size(); i++) {
+            if (entryList.get(i) instanceof InEntry) {
+                if (((InEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    cxt.putInValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof OutEntry) {
+                if (((OutEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    cxt.putOutValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof InoutEntry) {
+                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    cxt.putInoutValue(
+                            ((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof Entry) {
+                if (((Entry) entryList.get(i)).isPersistant) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    cxt.putValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof DataEntry) {
+                cxt.putValue(Context.DSD_PATH,
+                        ((Entry) entryList.get(i)).value());
+            } else if (entryList.get(i) instanceof Tuple2) {
+                {
+                    if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
+                        throw new UnsupportedOperationException();
+                    } else {
+                        cxt.putValue(
+                                (String) ((Tuple2<String, ?>) entryList
+                                        .get(i))._1,
+                                ((Tuple2<String, ?>) entryList.get(i))._2);
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util.bdb.objects;
+
+import java.io.Serializable;
+import java.security.Principal;
+import java.util.Date;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.SecureIdentifiable;
 
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.Date;
-
 /**
- * A UuidObject serves as the Uuid/Object pair for multiple stored entities.
+ * A UuidObject serves as the Uuid/Object pair for persisted entities.
  *
  * @author Mike Sobolewski
  */
@@ -47,17 +48,18 @@ public class UuidObject implements SecureIdentifiable, Serializable {
 
 	private Date dateCreated;
 
-	public UuidObject(Object object, Uuid id) {
-		this.id = id;
-        this.object = object;
-	}
-	  
 	public UuidObject(Object object) {
 		this(object, "");
+	}
+	  
+	public UuidObject(Uuid uuid, Object object) {
+		this(object, "");
+		id = uuid;
 	}
 	
     public UuidObject(Object object, String descrition) {
     	id = UuidFactory.generate();
+    	name = ""+object;
         this.object = object;
         principal = new SorcerPrincipal(System.getProperty("user.name"));
 		principal.setId(principal.getName());

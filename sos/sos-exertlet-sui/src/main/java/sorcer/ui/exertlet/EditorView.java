@@ -66,9 +66,7 @@ import sorcer.netlet.ScriptExerter;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Task;
 import sorcer.ui.util.JIconButton;
 import sorcer.ui.util.WindowUtilities;
 import sorcer.util.StringUtils;
@@ -91,7 +89,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 	private JTextField urlField;
 	private JEditorPane editPane;
 	private EditorView delegate;
-	private String source = "";
+	private String source;
 	private JTabbedPane tabbedPane;
 	private EditorView editor;
 	private static String EDIT_LABEL = "Edit...";
@@ -133,13 +131,13 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		this.model = model;
 		WindowUtilities.setNativeLookAndFeel();
 		setLayout(new BorderLayout());
-		if (input != null)
-			this.source = input;
+		this.source = input;
 		boolean isURL = false;
-        //
         scriptExerter = new ScriptExerter(null, this.getClass().getClassLoader(), SorcerEnv.getWebsterUrl().toString());
-		
-		if (input != null && input.length() > 0 && input.startsWith("jar:")) {
+		if (input != null
+				&& input.length() > 0
+				&& (input.startsWith("http:") || input.startsWith("file:") || input
+						.startsWith("jar:"))) {
 			isURL = true;
 		}
 
@@ -356,8 +354,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				openFile();
 				return;
 			} else if (EDIT_LABEL.equals(command)) {
-				// openEditor(urlField.getText());
-				openEditor(editPane.getText());
+				openEditor(urlField.getText());
 				return;
 			} else if (EXERT_LABEL.equals(command)) {
 				String script = editPane.getText();
@@ -504,7 +501,8 @@ public class EditorView extends JPanel implements HyperlinkListener {
 
 	private void processExerion(Exertion exertion) {
 		String codebase = System.getProperty("java.rmi.server.codebase");
-		//logger.finer("Using exertlet codebase: " + codebase);
+		logger.finer("Using exertlet codebase: " + codebase);
+		
 		if (((ServiceExertion) exertion).getStatus() == ExecState.DONE) {
 			// logger.finer(">>> done by Groovy Shell");
 			showResults(exertion);
@@ -523,8 +521,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				}
 			}
 			if (!done) {
-				logger.info(">> done by exerting: " + exertion.getName());
-				System.out.println(">> done by exerting: " + exertion.getName());
+				logger.finer(">> executing by exert: " + exertion.getName());
 				// inspect class loader tree
 //				com.sun.jini.start.ClassLoaderUtil
 //						.displayContextClassLoaderTree();
@@ -556,20 +553,12 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		}
 		if (exertion.getExceptions().size() > 0) {
 			openOutPanel(exertion.getExceptions().toString());
-		} else {
-			StringBuilder sb = new StringBuilder();
-			if (exertion instanceof Task)
-				sb.append(exertion.getDataContext().toString());
-			else
-				sb.append(((Job) exertion).getJobContext().toString());
+		}
+		else {
+			StringBuilder sb = new StringBuilder(exertion.getContext().toString());
 			if (debug) {
-				sb.append("\n\n\n");
-				if (exertion instanceof Task)
-					sb.append(exertion.getControlContext()
-							.toString());
-				else
-					sb.append(((Job) exertion).getControlInfo()
-							.toString());
+				sb.append("\n");
+				sb.append(((ServiceExertion)exertion).getControlInfo().toString());
 			}
 			openOutPanel(sb.toString());
 		}
@@ -744,7 +733,6 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		BufferedReader br = null;
 		String line;
 		StringBuilder sb = new StringBuilder();
-		;
 
 		try {
 			is = getClass().getResourceAsStream(filename);

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,42 +15,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.co.tuple;
 
-import sorcer.service.Context;
-import sorcer.service.Parameter;
+import java.rmi.RemoteException;
 
-public class Entry<T1, T2> extends Tuple2<T1, T2> implements Parameter {
+import sorcer.service.Arg;
+import sorcer.service.Context;
+import sorcer.service.Evaluation;
+import sorcer.service.EvaluationException;
+
+@SuppressWarnings("unchecked")
+public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T> {
+    private static final long serialVersionUID = 5168783170981015779L;
 
 	public int index;
 	
 	public Entry() {
 	};
 
-	public Entry(T1 path, T2 value, int index) {
-		T2 v = value;
+	public Entry(String path, T value) {
+		T v = value;
 		if (v == null)
-			v = (T2)Context.Value.NULL;
+			v = (T)Context.none;
+
+		_1 = path;
+		this._2 = v;
+	}
+	
+	public Entry(String path, T value, int index) {
+		T v = value;
+		if (v == null)
+			v = (T)Context.none;
 
 		_1 = path;
 		this._2 = v;
 		this.index = index;
 	}
 
-	public T1 key() {
-		return _1;
+	public int index() {
+		return index;
 	}
 
-	public T2 value() {
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#asis()
+	 */
+	@Override
+	public T asis() throws EvaluationException, RemoteException {
 		return _2;
 	}
 
-	public int idex() {
-		return index;
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Arg[])
+	 */
+	@Override
+	public T getValue(Arg... entries) throws EvaluationException,
+			RemoteException {
+		return _2;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Arg[])
+	 */
+	@Override
+	public Evaluation<T> substitute(Arg... entries)
+			throws EvaluationException, RemoteException {
+		for (Arg a : entries) {
+			if (a.getName().equals(getName()) && a instanceof Entry) {
+				_2 = ((Entry<T>)a).value();
+			}
+		}
+		return this;
 	}
 	
 	@Override
 	public String toString() {
-		return _1 + ":" + _2 + ":" + index;
+		return "[" + _1 + ":" + _2 + ":" + index + "]";
 	}
 }

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util;
+
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
@@ -28,18 +38,12 @@ import net.jini.discovery.LookupDiscovery;
 import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
 import sorcer.core.SorcerEnv;
-import sorcer.service.*;
+import sorcer.service.DynamicAccessor;
+import sorcer.service.Service;
+import sorcer.service.Signature;
+import sorcer.service.SignatureException;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import static sorcer.core.SorcerConstants.ANY;
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * A class which supports a simple Jini multicast lookup. It doesn't register
@@ -53,7 +57,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	private Object proxy;
 
-	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
+	static final long WAIT_FOR = Sorcer.getLookupWaitTime();
 
 	static final int MAX_TRIES = 5;
 
@@ -181,7 +185,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 	 * @return proxy for the service type you requested - could be an rmi stub
 	 *         or a smart proxy.
 	 */
-	Object getService() {
+	private Object getService() {
 		proxy = lookupProxy();
 		if (proxy != null) {
 			terminate();
@@ -357,7 +361,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
     }
 }
 
-class SorcerDiscoveryListener implements DiscoveryListener, Future<List<ServiceItem>>{
+class SorcerDiscoveryListener implements DiscoveryListener, Future<List<ServiceItem>> {
     private ServiceTemplate template;
     private ServiceItemFilter filter;
     private int minResults;

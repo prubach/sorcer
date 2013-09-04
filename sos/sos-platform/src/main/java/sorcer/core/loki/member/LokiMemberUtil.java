@@ -17,6 +17,24 @@
  */
 package sorcer.core.loki.member;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.rmi.MarshalledObject;
+import java.rmi.RemoteException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyAgreement;
+
 import net.jini.core.lease.Lease;
 import net.jini.core.transaction.Transaction;
 import net.jini.id.Uuid;
@@ -35,19 +53,6 @@ import sorcer.service.Accessor;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.space.SpaceAccessor;
-
-import javax.crypto.Cipher;
-import javax.crypto.KeyAgreement;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.rmi.MarshalledObject;
-import java.rmi.RemoteException;
-import java.security.*;
-import java.sql.Timestamp;
-import java.util.Vector;
-import java.util.logging.Logger;
 
 /**
  * @author Daniel Kerr

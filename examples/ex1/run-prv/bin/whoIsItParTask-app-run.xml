@@ -22,7 +22,7 @@
 <project name="Who Is It? par task" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItParTaskApp" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItParallelTaskRequestor" />
 
 	<property name="run.arg1" value="5" />
 

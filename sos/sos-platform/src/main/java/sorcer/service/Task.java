@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.service;
 
-import net.jini.core.transaction.Transaction;
-import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.NetTask;
-import sorcer.core.exertion.ObjectTask;
-import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ObjectSignature;
+package sorcer.service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import net.jini.core.transaction.Transaction;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.exertion.NetTask;
+import sorcer.core.exertion.ObjectTask;
+import sorcer.core.provider.ControlFlowManager;
+import sorcer.core.signature.NetSignature;
+import sorcer.core.signature.ObjectSignature;
 
 /**
  * A <code>Task</code> is an elementary service-oriented message
@@ -56,6 +57,8 @@ public class Task extends ServiceExertion {
 	/** our logger */
 	protected final static Logger logger = Logger.getLogger(Task.class
 			.getName());
+
+	public final static String argsPath = "method/args";
 
 	// used for tasks with multiple signatures by CatalogSequentialDispatcher
 	private boolean isContinous = false;
@@ -104,6 +107,8 @@ public class Task extends ServiceExertion {
 		Class<? extends Task> taskClass = null;
 		if (signature.getClass() == ObjectSignature.class) {
 			taskClass = ObjectTask.class;
+		} else if (signature.getClass() == ObjectSignature.class) {
+			taskClass = ObjectTask.class;
 		} else if (signature.getClass() == NetSignature.class) {
 			taskClass = NetTask.class;
 		}
@@ -132,6 +137,10 @@ public class Task extends ServiceExertion {
 	public void undoTask() throws ExertionException, SignatureException,
 			RemoteException {
 		throw new ExertionException("Not implemneted by this Task: " + this);
+	}
+
+	public void setIndex(int i) {
+		index = new Integer(i);
 	}
 
 	@Override
@@ -192,7 +201,8 @@ public class Task extends ServiceExertion {
 		sb.append(getAccessClass()).append(
 				// ", isExportControlled=" + isExportControlled()).append(
 				", providerName: ");
-		sb.append(getProcessSignature().getProviderName());
+		if (getProcessSignature() != null)
+			sb.append(getProcessSignature().getProviderName());
 		sb.append(", principal: ").append(getPrincipal());
 		sb.append(", serviceType: ").append(getServiceType());
 		sb.append(", selector: ").append(getSelector());
@@ -233,7 +243,7 @@ public class Task extends ServiceExertion {
 	 * @param visited
 	 *            ignored
 	 * @return true; elementary exertions are always "trees"
-	 * @see sorcer.service.Exertion#isTree()
+	 * @see Exertion#isTree()
 	 */
 	public boolean isTree(Set visited) {
 		visited.add(this);
@@ -337,7 +347,19 @@ public class Task extends ServiceExertion {
 	protected Task doBatchTask(Transaction txn) throws RemoteException,
 			ExertionException, SignatureException {
 		ControlFlowManager ep = new ControlFlowManager();
-		return ep.doIntraTask(this);
+		return ep.doBatchTask(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see sorcer.service.Mappable#getValue(java.lang.String, sorcer.service.Arg[])
+	 */
+	@Override
+	public Object getValue(String path, Arg... args) throws ContextException {
+		if (path.startsWith("super")) {
+			return parent.getContext().getValue(path.substring(6));
+		} else {
+			return dataContext.getValue(path, args);
+		}
+	}
+	
 }

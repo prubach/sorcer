@@ -2,6 +2,7 @@
 
 //codebase mvn://org.sorcersoft.sorcer:ex6-api
 load mvn://org.sorcersoft.sorcer:ex6-api:1.0-M3-SNAPSHOT
+load mvn://org.sorcersoft.sorcer:sorcer-api:1.0-M3-SNAPSHOT
 
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
@@ -24,7 +25,7 @@ Task f3 = task("f3", sig("subtract", Subtractor.class),
 	context("subtract", input(path("arg/x5"), null), input(path("arg/x6"), null),
 		output(path("result/y3"), null)));
 
-job("f1", job("f2", f4, f5), f3,
+job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), f3,
 	pipe(out(f4, path("result/y1")), input(f3, path("arg/x5"))),
 	pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))));
 	

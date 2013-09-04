@@ -88,6 +88,8 @@ public interface SorcerConstants {
 	
 	public static final String J_SINGLE_TRHREADED_MODEL = "singleThreadModel";
 
+	public static final String J_PROVIDER_IS_PROVISINABLE = "isProvisionable";
+	
 	public static final String P_CONTEXT_LOGGER = "sorcer.service.context";
 
 	public static final String PRIVATE_CONTEXT_LOGGER = "private.context";
@@ -140,15 +142,19 @@ public interface SorcerConstants {
 
 	public static final String P_WEBSTER_PORT = "provider.webster.port";
 
-	public static final String S_WEBSTER_PORT = "system.webster.port";
+	public static final String S_WEBSTER_PORT = "webster.port";
 
 	public static final String J_WEBSTER_PORT = "websterPort";
 
 	public static final String P_WEBSTER_START_PORT = "provider.webster.start.port";
 
+	public static final String S_WEBSTER_START_PORT = "webster.start.port";
+
 	public static final String J_WEBSTER_START_PORT = "websterStartPort";
 
 	public static final String P_WEBSTER_END_PORT = "provider.webster.end.port";
+	
+	public static final String S_WEBSTER_END_PORT = "webster.end.port";
 
 	public static final String J_WEBSTER_END_PORT = "websterEndPort";
 
@@ -246,6 +252,8 @@ public interface SorcerConstants {
 	public static final String S_PERSISTER_NAME = "sorcer.persister.service";
 
 	public static final String S_JOBBER_NAME = "sorcer.jobber.name";
+
+	public static final String S_EXERTER_NAME = "sorcer.exerter.name";
 
 	public static final String S_SPACER_NAME = "sorcer.spacer.name";
 
@@ -762,8 +770,6 @@ public interface SorcerConstants {
 	// "AdministrableAutonomicProvisioner";
 
 	static public long WAIT_TIME_FOR_PROVISIONER = 9000L;
-
-	static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
 
 	// various role names
 	public static final String ANONYMOUS = "anonymous";

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,30 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core;
 
 // Imported Java classes
-
-import net.jini.config.Configuration;
-import net.jini.config.ConfigurationException;
-import net.jini.core.entry.Entry;
-import net.jini.core.lookup.ServiceID;
-import sorcer.service.*;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.security.Policy;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
+import net.jini.core.entry.Entry;
+import net.jini.core.lookup.ServiceID;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.MonitorException;
+import sorcer.service.Service;
+import sorcer.service.Signature;
 
 /**
  * This is an interface that defines how a provider interacts with other code 
- * the through the methods that are exposed. It extends {@link sorcer.service.Service},
- * {@link sorcer.core.Monitorable}, and {@link java.rmi.Remote}.
- * @see sorcer.service.Service
- * @see sorcer.core.Monitorable
- * @see java.rmi.Remote
+ * the through the methods that are exposed. It extends {@link Service},
+ * {@link Monitorable}, and {@link Remote}.
+ * @see Service
+ * @see Monitorable
+ * @see Remote
  */
 public interface Provider extends Service, Monitorable, Remote {
 
@@ -112,8 +116,8 @@ public interface Provider extends Service, Monitorable, Remote {
 	 * Updates the monitor with the current context.
 	 * 
 	 * @param ctx
-	 * @throws java.rmi.RemoteException
-	 * @throws sorcer.service.ExertionException
+	 * @throws RemoteException
+	 * @throws ExertionException
 	 */
 	public void changed(Context<?> ctx, Object aspect) throws RemoteException, MonitorException;
 
@@ -124,7 +128,7 @@ public interface Provider extends Service, Monitorable, Remote {
 	 * /** Returns a proxy of this provider to be used by its requestors.
 	 * 
 	 * @return a provider proxy
-	 * @throws java.rmi.RemoteException
+	 * @throws RemoteException
 	 */
 	public Object getProxy() throws RemoteException;
 

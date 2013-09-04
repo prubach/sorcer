@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.co.tuple;
 
-import sorcer.service.Parameter;
+import sorcer.service.Arg;
 import sorcer.service.Strategy;
 
-public class StrategyEntry extends Path<Strategy> implements Parameter {
-	
+public class StrategyEntry extends Path<Strategy> implements Arg {
+	private static final long serialVersionUID = -5033590792138379782L;
 	public StrategyEntry(String path, Strategy strategy) {
 		_1 = path;
 		_2 = strategy;
 	};
 	
 	public Strategy strategy() {
-		return _2;
+		return (Strategy)_2;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Arg#getName()
+	 */
+	@Override
+	public String getName() {
+		return ""+_1;
 	}
 }

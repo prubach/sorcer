@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -32,14 +41,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.*;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import sorcer.service.DynamicAccessor;
+import sorcer.service.Service;
+import sorcer.service.Signature;
+import sorcer.service.SignatureException;
 
 /**
  * ProviderLoactor is a simple wrapper class over Jini's LookupDiscover. It
@@ -48,8 +53,12 @@ import java.util.List;
  */
 
 public class ProviderLocator implements DynamicAccessor {
+
+	static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
+
+	static final int MAX_TRIES = 5;
+
     final private static Logger log = LoggerFactory.getLogger(ProviderLocator.class);
-    static final long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
 	private Object _proxy;
 	private final Object _lock = new Object();

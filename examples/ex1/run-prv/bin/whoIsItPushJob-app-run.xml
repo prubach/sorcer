@@ -22,7 +22,7 @@
 <project name="Who Is It? push job" default="run.requestor" basedir=".">
 
 	<!-- set property values -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItPushJobApp" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.WhoIsItPushJobRequestor" />
 
 	<property name="run.arg1" value="XYZ" />
 

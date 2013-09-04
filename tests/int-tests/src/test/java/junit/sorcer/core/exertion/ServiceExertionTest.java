@@ -107,7 +107,7 @@ public class ServiceExertionTest {
 	public void exertJobTest() throws ExertionException, ContextException {
 		// just get value from job's dataContext
 		logger.info("eJob value @  t3/arg/x2 = " + get(eJob, "j1/t3/arg/x2"));
-		assertEquals(Context.Value.NULL, get(eJob, "/j1/t3/arg/x2") );
+		assertEquals(Context.none, get(eJob, "/j1/t3/arg/x2") );
 		
 		// exert and then get the value from job's dataContext
 		eJob = exert(eJob);

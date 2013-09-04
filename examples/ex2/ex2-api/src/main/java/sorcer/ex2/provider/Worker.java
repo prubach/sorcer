@@ -23,7 +23,6 @@ import java.rmi.RemoteException;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
-
 public interface Worker extends Remote {
 
 	Context sayHi(Context context) throws RemoteException, ContextException;

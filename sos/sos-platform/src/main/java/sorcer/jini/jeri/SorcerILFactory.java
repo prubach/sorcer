@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.jini.jeri;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.rmi.Remote;
+import java.rmi.server.ExportException;
+import java.security.Permission;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -27,17 +40,7 @@ import net.jini.security.proxytrust.ProxyTrust;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import sorcer.core.context.ContextManagement;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Service;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.rmi.Remote;
-import java.rmi.server.ExportException;
-import java.security.Permission;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * A SorcerILFactory can be used with object interfaces as its services. Those
@@ -53,7 +56,7 @@ import java.util.logging.Logger;
  * {@link sorcer.core.provider.ServiceProvider} or
  * {@link sorcer.core.provider.bean.ProviderBean}.
  */
-
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SorcerILFactory extends BasicILFactory {
 	protected final Logger logger = Logger.getLogger(BasicILFactory.class
 			.getName());
@@ -71,19 +74,19 @@ public class SorcerILFactory extends BasicILFactory {
     public SorcerILFactory() {
     	super();
     }
-    
+
 	/**
 	 * Creates a <code>SorcerILFactory</code> instance with no server
-	 * constraints, no permission class, and a <code>null</code> class loader.   
+	 * constraints, no permission class, and a <code>null</code> class loader.
 	 * 
 	 * @param services
 	 *            the object to be exposed as a service by the dispatcher of
 	 *            this ILFactory
 	 * 
 	 */
-	public SorcerILFactory(Map serviceBeanMap, ClassLoader loader) {
+	public SorcerILFactory(Map serviceBeans, ClassLoader loader) {
 		super(null, null, loader);
-		this.serviceBeanMap = serviceBeanMap;
+		serviceBeanMap = serviceBeans;
 	}
 
 	/**
@@ -104,10 +107,10 @@ public class SorcerILFactory extends BasicILFactory {
 	 *             {@link Method}parameter and has no declared exceptions
 	 */
 	public SorcerILFactory(MethodConstraints serverConstraints,
-			Class permissionClass,Map serviceBeanMap)
+			Class permissionClass, Map serviceBeans)
 			throws IllegalArgumentException {
 		super(serverConstraints, permissionClass, null);
-		this.serviceBeanMap = serviceBeanMap;
+		serviceBeanMap = serviceBeans;
 	}
 
 	/**
@@ -140,7 +143,7 @@ public class SorcerILFactory extends BasicILFactory {
 			Class permissionClass, ClassLoader loader, Map serviceBeans)
 			throws IllegalArgumentException {
 		super(serverConstraints, permissionClass, loader);
-		this.serviceBeanMap = serviceBeanMap;
+		serviceBeanMap = serviceBeans;
 	}
 
 	/**
@@ -217,7 +220,7 @@ public class SorcerILFactory extends BasicILFactory {
 		}
 
 		protected Object invoke(Remote impl, Method method, Object[] args,
-				Collection context) throws Throwable {			
+				Collection context) throws Throwable {
 			if (impl == null || args == null || context == null)
 				throw new NullPointerException();
 
@@ -237,31 +240,20 @@ public class SorcerILFactory extends BasicILFactory {
 
 				return ((ServerProxyTrust) impl).getProxyVerifier();
 			}
-			// handle dataContext management by the containing provider
-			try {
-				if (decl == ContextManagement.class) {
-					Object obj = method.invoke(impl, args);
-					return obj;
-				}
-				// Check if the invocation is to be made on provider's service beans
-				Object service = serviceBeanMap.get(method.getDeclaringClass());
-				if (service != null) {
-					Object obj = method.invoke(service, args);
-					return obj;
-				} else {
-					if (method.getName().equals("service")
-							&& decl == Service.class) {
-						((ServiceProvider) impl).setServiceComponents(serviceBeanMap);
-					}
-					Object obj = method.invoke(impl, args);
-					return obj;
-				}
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-				throw e.getTargetException();
+			Object obj = null;
+			// handle context management by the containing provider
+			if (decl == ContextManagement.class) {
+				obj = method.invoke((ContextManagement) impl, args);
+				return obj;
 			}
+			// Check if the invocation is to be made on provider's service beans
+			Object service = serviceBeanMap.get(method.getDeclaringClass());
+			if (service != null) {
+				obj = method.invoke(service, args);
+			} else {
+				obj = method.invoke(impl, args);
+			}
+			return obj;
 		}
-
 	}
-
 }

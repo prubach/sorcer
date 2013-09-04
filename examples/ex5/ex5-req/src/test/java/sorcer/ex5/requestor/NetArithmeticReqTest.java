@@ -114,6 +114,7 @@ public class NetArithmeticReqTest {
 		task1.getContext().connect("out/value", "arg2/value", task3.getContext());
 		
 		return job;
+
 	}
 	private static Task getAddTask() throws Exception {
 		Context context = new PositionalContext("add");

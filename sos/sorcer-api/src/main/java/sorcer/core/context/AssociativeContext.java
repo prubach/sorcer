@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
 package sorcer.core.context;
 
 import sorcer.service.ContextException;
-import sorcer.service.Parameter;
+import sorcer.service.Arg;
 
 /**
  * @author Mike Sobolewski
  *
  */
-public interface AssociativeContext {
+public interface AssociativeContext<T> {
 
-	public Object putValue(String path, Object value) throws ContextException;
+	public T putValue(String path, T value) throws ContextException;
 
-	public Object getValue(String path, Parameter... parameters) throws ContextException;
+	public T getValue(String path, Arg... parameters) throws ContextException;
 }

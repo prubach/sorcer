@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.exertion;
+
+import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.service.*;
-
-import java.rmi.RemoteException;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.Signature;
+import sorcer.service.SignatureException;
 
 /**
  * The SORCER object job extending the basic job implementation {@link Job}.
@@ -67,17 +73,10 @@ public class ObjectJob extends Job {
 					.initInstance(parameters, paramTypes);
 		} catch (Exception e) {
 			e.printStackTrace();
-			dataContext.reportException(e);
+			if (controlContext != null)
+				controlContext.addException(e);
 		}
 		return result;
 	}
 
-	@Override
-	public Object getReturnValue() throws ContextException {
-		if (getContext().getReturnPath() == null) {
-			return getJobContext();
-		} else {
-			return super.getReturnValue();
-		}
-	}
 }

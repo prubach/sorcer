@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.dispatch;
 
-import sorcer.core.Provider;
-import sorcer.core.exertion.Jobs;
-import sorcer.service.*;
+package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
 import java.util.Set;
 
+import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
+import sorcer.core.exertion.Jobs;
+import sorcer.service.Context;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
+import sorcer.service.Task;
+
 public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
-	public CatalogSequentialDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider);
+	@SuppressWarnings("rawtypes")
+	public CatalogSequentialDispatcher(Job job, 
+            Set<Context> sharedContext,
+            boolean isSpawned, 
+            Provider provider,
+            ProvisionManager provisionManager) throws Throwable {
+		super(job, sharedContext, isSpawned, provider, provisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,
@@ -39,9 +50,28 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 	}
 
 	public void collectResults() throws ExertionException, SignatureException {
-		ServiceExertion se = null;
-		xrt.startExecTime();
 		try {
+			ExertionException fe = null;
+			String pn = null;
+			if (inputXrts == null || inputXrts.size() == 0) {
+				xrt.setStatus(FAILED);
+				state = FAILED;
+				try {
+					pn = provider.getProviderName();
+					if (pn == null) 
+						pn = provider.getClass().getName();
+					fe = new ExertionException(pn
+							+ " received invalid job: "  + xrt.getName(), xrt);
+				} catch (RemoteException e) {
+					// ignore it, local call
+				}
+				xrt.reportException(fe);
+				dispatchers.remove(xrt.getId());
+				throw fe;
+			}
+
+			ServiceExertion se = null;
+			xrt.startExecTime();
 			for (int i = 0; i < inputXrts.size(); i++) {
 				se = (ServiceExertion) inputXrts.elementAt(i);
 				// Provider is expecting exertion to be in dataContext
@@ -59,14 +89,12 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 				if (se.getStatus() <= FAILED) {
 					xrt.setStatus(FAILED);
 					state = FAILED;
-					ExertionException fe = null;
 					try {
-						String pn = provider.getProviderName();
+						pn = provider.getProviderName();
 						if (pn == null) 
 							pn = provider.getClass().getName();
-						
 						fe = new ExertionException(pn
-								+ " received failed task", se);
+								+ " received failed task: " + se.getName(), se);
 					} catch (RemoteException e) {
 						// ignore it, local call
 					}

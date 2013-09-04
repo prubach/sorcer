@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,18 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.exertion;
+
+import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.*;
+import sorcer.service.Evaluation;
+import sorcer.service.ExertionException;
+import sorcer.service.Invocation;
+import sorcer.service.Job;
+import sorcer.service.Jobber;
+import sorcer.service.ServiceExertion;
 import sorcer.service.Signature.Type;
+import sorcer.service.SignatureException;
 import sorcer.util.ExertProcessor;
-
-import java.rmi.RemoteException;
 
 public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 

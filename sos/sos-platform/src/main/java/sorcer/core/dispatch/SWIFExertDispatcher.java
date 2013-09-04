@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,268 +15,283 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.rmi.RemoteException;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+import javax.xml.rpc.Call;
+import javax.xml.rpc.ParameterMode;
+import javax.xml.rpc.Service;
+import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.ServiceFactory;
 
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.context.Contexts;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.service.*;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
 
-import javax.xml.namespace.QName;
-import javax.xml.rpc.*;
-import javax.xml.rpc.Service;
-import java.rmi.RemoteException;
-import java.util.Set;
+import static sorcer.core.SorcerConstants.*;
 
 abstract public class SWIFExertDispatcher extends ExertDispatcher {
 
-	public SWIFExertDispatcher(Job job, Set<Context> sharedContext,
-                               boolean isSpawned, Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider);
-		DispatchThread gthread = new DispatchThread();
-		gthread.start();
-		try {
-			gthread.join();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			state = FAILED;
-		}
-	}
+    public SWIFExertDispatcher(Job job,
+                               Set<Context> sharedContext,
+                               boolean isSpawned,
+                               Provider provider,
+                               ProvisionManager provisionManager) {
+        super(job, sharedContext, isSpawned, provider, provisionManager);
+        DispatchThread gthread = new DispatchThread();
+        gthread.start();
+        try {
+            gthread.join();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+            state = FAILED;
+        }
+    }
 
-	protected void preExecExertion(Exertion exertion) throws ExertionException,
-			SignatureException {
-		// If Job, new dispatcher will update inputs for it's Exertion
-		logger.info("__________UPDATING INPUTS_______________");
-		// in catalog dispatchers, if it is job, then new dispatcher is spawned
-		// and the
-		// shared contexts are passed.So the new dispatcher will update inputs
-		// of tasks inside
-		// the jobExertion But in space, all inputs to a new job are to be
-		// updated before
-		// dropping.
-		if (((ServiceExertion) exertion).isTask()) {
-				updateInputs(exertion);
-		}
-		((ServiceExertion) exertion).startExecTime();
-		((ServiceExertion) exertion).setStatus(RUNNING);
-	}
+    protected void preExecExertion(Exertion exertion) throws ExertionException,
+            SignatureException {
+        // If Job, new dispatcher will update inputs for it's Exertion
+        logger.info("__________UPDATING INPUTS_______________");
+        // in catalog dispatchers, if it is job, then new dispatcher is spawned
+        // and the
+        // shared contexts are passed.So the new dispatcher will update inputs
+        // of tasks inside
+        // the jobExertion But in space, all inputs to a new job are to be
+        // updated before
+        // dropping.
+        if (((ServiceExertion) exertion).isTask()) {
+            updateInputs(exertion);
+        }
+        ((ServiceExertion) exertion).startExecTime();
+        ((ServiceExertion) exertion).setStatus(RUNNING);
+    }
 
-	// Parallel
-	protected ExertionThread runExertion(ServiceExertion ex) {
-		ExertionThread eThread = new ExertionThread(ex, this);
-		eThread.start();
-		return eThread;
-	}
+    // Parallel
+    protected ExertionThread runExertion(ServiceExertion ex) {
+        ExertionThread eThread = new ExertionThread(ex, this);
+        eThread.start();
+        return eThread;
+    }
 
-	// Sequential
-	protected ServiceExertion execExertion(Exertion ex)
-			throws SignatureException, ExertionException {
-		ServiceExertion exi = (ServiceExertion) ex;
-		// set subject before task goes out.
-		exi.setSubject(subject);
-		preExecExertion(ex);
-		Exertion result = null;
-		try {
+    // Sequential
+    protected ServiceExertion execExertion(Exertion ex)
+            throws SignatureException, ExertionException {
+        ServiceExertion exi = (ServiceExertion) ex;
+        // set subject before task goes out.
+        exi.setSubject(subject);
+        preExecExertion(ex);
+        Exertion result = null;
+        try {
 			result = (exi.isTask()) ? execTask((NetTask) ex)
 					: execJob((NetJob) ex);
-		} catch (Exception e) {
-			exi.reportException(e);
+        } catch (Exception e) {
+            exi.reportException(e);
 			result = exi;
-			((ServiceExertion) result).setStatus(FAILED);
-		}
-		// set subject after result is recieved.
-		((ServiceExertion) result).setSubject(subject);
+            ((ServiceExertion) result).setStatus(FAILED);
+        }
+        // set subject after result is recieved.
+        ((ServiceExertion) result).setSubject(subject);
 		postExecExertion(exi, result);
-		return (ServiceExertion) result;
-	}
+        return (ServiceExertion) result;
+    }
 
-	protected void postExecExertion(Exertion ex, Exertion result)
-			throws SignatureException, ExertionException {
-		((ServiceExertion) result).stopExecTime();
-		ServiceExertion ser = (ServiceExertion) result;
-		((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
-		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
-			ser.setStatus(DONE);
-			if ((xrt.getControlContext()).isNodeReferencePreserved())
-				try {
-					Jobs.preserveNodeReferences(ex, result);
-				} catch (ContextException ce) {
-					ce.printStackTrace();
-					throw new ExertionException("ContextException caught: "
-							+ ce.getMessage());
-				}
-			// update all outputs to sharedcontext only for tasks.For jobs,
-			// spawned dispatcher does it.
-			if (((ServiceExertion) result).isTask()) {
-				collectOutputs(result);
-			}
-			notifyExertionExecution(ex, result);
-		}
-	}
+    protected void postExecExertion(Exertion ex, Exertion result)
+            throws SignatureException, ExertionException {
+        ((ServiceExertion) result).stopExecTime();
+        ServiceExertion ser = (ServiceExertion) result;
+        ((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+        if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
+            ser.setStatus(DONE);
+            if ((xrt.getControlContext()).isNodeReferencePreserved())
+                try {
+                    Jobs.preserveNodeReferences(ex, result);
+                } catch (ContextException ce) {
+                    ce.printStackTrace();
+                    throw new ExertionException("ContextException caught: "
+                            + ce.getMessage());
+                }
+            // update all outputs to sharedcontext only for tasks.For jobs,
+            // spawned dispatcher does it.
+            if (((ServiceExertion) result).isTask()) {
+                collectOutputs(result);
+            }
+            notifyExertionExecution(ex, result);
+        }
+    }
 
-	// Made private so that other classes just calls execExertion and not
-	// execTask
-	private NetTask execTask(NetTask task) throws ExertionException,
-			SignatureException {
+    // Made private so that other classes just calls execExertion and not
+    // execTask
+    private NetTask execTask(NetTask task) throws ExertionException,
+            SignatureException {
 
-		String QNameService = null;
-		String QNamePort = null;
+        String QNameService = null;
+        String QNamePort = null;
 
-		String BODY_NAMESPACE_VALUE = null;
-		String ENCODING_STYLE_PROPERTY = null;
-		String NS_XSD = null;
-		String URI_ENCODING = null;
-		String TARGET_ENDPOINT_ADDRESS = null;
-		String IN_TYPE = null;
-		String RETURN_TYPE = null;
-		String METHOD_NAME = null;
-		String INPUT_PARAM = null;
+        String BODY_NAMESPACE_VALUE = null;
+        String ENCODING_STYLE_PROPERTY = null;
+        String NS_XSD = null;
+        String URI_ENCODING = null;
+        String TARGET_ENDPOINT_ADDRESS = null;
+        String IN_TYPE = null;
+        String RETURN_TYPE = null;
+        String METHOD_NAME = null;
+        String INPUT_PARAM = null;
 
-		try {
+        try {
 			Context ctx = task.getDataContext();
-			QNameService = (String) ctx.getValue("QNameService");
-			QNamePort = (String) ctx.getValue("QNamePort");
+            QNameService = (String) ctx.getValue("QNameService");
+            QNamePort = (String) ctx.getValue("QNamePort");
 
-			BODY_NAMESPACE_VALUE = (String) ctx
-					.getValue("BODY_NAMESPACE_VALUE");
-			ENCODING_STYLE_PROPERTY = (String) ctx
-					.getValue("ENCODING_STYLE_PROPERTY");
-			NS_XSD = (String) ctx.getValue("NS_XSD");
-			URI_ENCODING = (String) ctx.getValue("URI_ENCODING");
-			TARGET_ENDPOINT_ADDRESS = (String) ctx
-					.getValue("TARGET_ENDPOINT_ADDRESS");
-			IN_TYPE = (String) ctx.getValue("IN_TYPE");
-			RETURN_TYPE = (String) ctx.getValue("RETURN_TYPE");
-			METHOD_NAME = (String) ctx.getValue("METHOD_NAME");
-			INPUT_PARAM = (String) ctx.getValue("INPUT_PARAM");
-			try {
-				task.getControlContext().appendTrace(provider.getProviderName() 
-						+ " dispatcher: " + getClass().getName());
-			} catch (RemoteException e) {
-				// ignore it, local call
-			}
-			QName name = new QName(QNameService);
+            BODY_NAMESPACE_VALUE = (String) ctx
+                    .getValue("BODY_NAMESPACE_VALUE");
+            ENCODING_STYLE_PROPERTY = (String) ctx
+                    .getValue("ENCODING_STYLE_PROPERTY");
+            NS_XSD = (String) ctx.getValue("NS_XSD");
+            URI_ENCODING = (String) ctx.getValue("URI_ENCODING");
+            TARGET_ENDPOINT_ADDRESS = (String) ctx
+                    .getValue("TARGET_ENDPOINT_ADDRESS");
+            IN_TYPE = (String) ctx.getValue("IN_TYPE");
+            RETURN_TYPE = (String) ctx.getValue("RETURN_TYPE");
+            METHOD_NAME = (String) ctx.getValue("METHOD_NAME");
+            INPUT_PARAM = (String) ctx.getValue("INPUT_PARAM");
+            try {
+                task.getControlContext().appendTrace(provider.getProviderName()
+                        + " dispatcher: " + getClass().getName());
+            } catch (RemoteException e) {
+                // ignore it, local call
+            }
+            QName name = new QName(QNameService);
 
-			ServiceFactory factory = ServiceFactory.newInstance();
-			Service service = factory.createService(new QName(QNameService));
+            ServiceFactory factory = ServiceFactory.newInstance();
+            Service service = factory.createService(new QName(QNameService));
 
-			QName port = new QName(QNamePort);
+            QName port = new QName(QNamePort);
 
-			Call rpcCall = service.createCall(port);
+            Call rpcCall = service.createCall(port);
 
-			rpcCall.setTargetEndpointAddress(TARGET_ENDPOINT_ADDRESS);
+            rpcCall.setTargetEndpointAddress(TARGET_ENDPOINT_ADDRESS);
 
-			rpcCall
-					.setProperty(Call.SOAPACTION_USE_PROPERTY,
-							new Boolean(true));
-			rpcCall.setProperty(Call.SOAPACTION_URI_PROPERTY, "");
-			rpcCall.setProperty(ENCODING_STYLE_PROPERTY, URI_ENCODING);
-			rpcCall.setProperty(Call.OPERATION_STYLE_PROPERTY, "rpc");
+            rpcCall
+                    .setProperty(Call.SOAPACTION_USE_PROPERTY,
+                            new Boolean(true));
+            rpcCall.setProperty(Call.SOAPACTION_URI_PROPERTY, "");
+            rpcCall.setProperty(ENCODING_STYLE_PROPERTY, URI_ENCODING);
+            rpcCall.setProperty(Call.OPERATION_STYLE_PROPERTY, "rpc");
 
-			QName QNAME_RETURN_TYPE = new QName(NS_XSD, RETURN_TYPE);
-			rpcCall.setReturnType(QNAME_RETURN_TYPE);
+            QName QNAME_RETURN_TYPE = new QName(NS_XSD, RETURN_TYPE);
+            rpcCall.setReturnType(QNAME_RETURN_TYPE);
 
-			rpcCall.setOperationName(new QName(BODY_NAMESPACE_VALUE,
-					METHOD_NAME));
+            rpcCall.setOperationName(new QName(BODY_NAMESPACE_VALUE,
+                    METHOD_NAME));
 
-			QName QNAME_IN_TYPE = new QName(NS_XSD, IN_TYPE);
-			rpcCall.addParameter("arg0", QNAME_IN_TYPE, ParameterMode.IN);
+            QName QNAME_IN_TYPE = new QName(NS_XSD, IN_TYPE);
+            rpcCall.addParameter("arg0", QNAME_IN_TYPE, ParameterMode.IN);
 
-			String[] params = { INPUT_PARAM };
+            String[] params = { INPUT_PARAM };
 
-			String result = (String) rpcCall.invoke(params);
+            String result = (String) rpcCall.invoke(params);
 
-			Contexts.putOutValue(ctx, SorcerConstants.OUT_VALUE + 0, result);
+            Contexts.putOutValue(ctx, OUT_VALUE + 0, result);
 
-		} catch (ServiceException se) {
-			System.err.println("Service Exception");
-		} catch (ContextException ce) {
-			System.err.println("Context Exception");
-		} catch (RemoteException re) {
-			re.printStackTrace();
-			System.err.println("dispatcher execution failed for task: " + task);
-			throw new ExertionException("Remote Exception while executing task");
-		} catch (Exception tme) { // (ExertionMethodException tme) {
-			tme.printStackTrace();
-			System.err.println("dispatcher execution failed for method: "
-					+ task.getProcessSignature());
-		}
+        } catch (ServiceException se) {
+            System.err.println("Service Exception");
+        } catch (ContextException ce) {
+            System.err.println("Context Exception");
+        } catch (RemoteException re) {
+            re.printStackTrace();
+            System.err.println("dispatcher execution failed for task: " + task);
+            throw new ExertionException("Remote Exception while executing task");
+        } catch (Exception tme) { // (ExertionMethodException tme) {
+            tme.printStackTrace();
+            System.err.println("dispatcher execution failed for method: "
+                    + task.getProcessSignature());
+        }
 
-		return task;
-	}
+        return task;
+    }
 
-	// Made private so that other classes just calls execExertion and not
-	// execJob
-	private NetJob execJob(NetJob serviceJob)
-			throws DispatcherException, InterruptedException {
-		Dispatcher dispatcher = null;
-		runningExertionIDs.addElement(serviceJob.getId());
-		try {
-			dispatcher = ExertionDispatcherFactory.getFactory()
-					.createDispatcher(serviceJob, sharedContexts, true, provider);
-			// Util.debug(this, "execJob:got dispatcher=" + dispatcher,
-			// "dispatch");
+    // Made private so that other classes just calls execExertion and not
+    // execJob
+    private NetJob execJob(NetJob serviceJob)
+            throws DispatcherException, InterruptedException {
+        Dispatcher dispatcher = null;
+        runningExertionIDs.addElement(serviceJob.getId());
+        try {
+            dispatcher = ExertionDispatcherFactory.getFactory()
+                    .createDispatcher(serviceJob, sharedContexts, true, provider);
+            // Util.debug(this, "execJob:got dispatcher=" + dispatcher,
+            // "dispatch");
 
-			// wait until serviceJob is done by dispatcher
-			while (dispatcher.getState() != DONE
-					&& dispatcher.getState() != FAILED) {
-				Thread.sleep(250);
-			}
-			return (NetJob) dispatcher.getExertion();
-		} catch (DispatcherException de) {
-			de.printStackTrace();
-			throw de;
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			throw ie;
-		}
-	}
+            // wait until serviceJob is done by dispatcher
+            while (dispatcher.getState() != DONE
+                    && dispatcher.getState() != FAILED) {
+                Thread.sleep(250);
+            }
+            return (NetJob) dispatcher.getExertion();
+        } catch (DispatcherException de) {
+            de.printStackTrace();
+            throw de;
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+            throw ie;
+        }
+    }
 
-	private NetTask execScript(NetTask task) throws SignatureException {
-		return null;
-	}
+    private NetTask execScript(NetTask task) throws SignatureException {
+        return null;
+    }
 
-	protected class ExertionThread extends Thread {
-		private ServiceExertion ex;
+    protected class ExertionThread extends Thread {
+        private ServiceExertion ex;
 
-		private ServiceExertion result;
+        private ServiceExertion result;
 
-		private ExertDispatcher dispatcher;
+        private ExertDispatcher dispatcher;
 
-		public ExertionThread(ServiceExertion exertion,
-				ExertDispatcher dispatcher) {
-			ex = exertion;
-			this.dispatcher = dispatcher;
-			if (isMonitored)
-				dispatchers.put(xrt.getId(), dispatcher);
-		}
+        public ExertionThread(ServiceExertion exertion,
+                              ExertDispatcher dispatcher) {
+            ex = exertion;
+            this.dispatcher = dispatcher;
+            if (isMonitored)
+                dispatchers.put(xrt.getId(), dispatcher);
+        }
 
-		public void run() {
-			try {
-				result = execExertion(ex);
-			} catch (ExertionException ee) {
-				ee.printStackTrace();
-				result = ex;
+        public void run() {
+            try {
+                result = execExertion(ex);
+            } catch (ExertionException ee) {
+                ee.printStackTrace();
+                result = ex;
 				result.setStatus(FAILED);
-			} catch (SignatureException eme) {
-				eme.printStackTrace();
-				result = ex;
+            } catch (SignatureException eme) {
+                eme.printStackTrace();
+                result = ex;
 				result.setStatus(FAILED);
-			}
-		}
+            }
+        }
 
-		public ServiceExertion getExertion() {
-			return ex;
-		}
+        public ServiceExertion getExertion() {
+            return ex;
+        }
 
-		public ServiceExertion getResult() {
-			return result;
-		}
+        public ServiceExertion getResult() {
+            return result;
+        }
 
-	}
+    }
 
 }

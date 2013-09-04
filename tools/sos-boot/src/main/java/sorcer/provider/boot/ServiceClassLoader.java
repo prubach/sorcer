@@ -1,6 +1,7 @@
 /*
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
+ * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,10 +118,10 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
      * {@link sorcer.provider.boot.ClassAnnotator}
      */
     public URL[] getURLs() {
-        if (annotator!=null)
-            return(annotator.getURLs());
-        else
-            return null;
+    	if (annotator != null)
+    		return(annotator.getURLs());
+    	else
+    		return null;
     }
     
     /**
@@ -169,10 +170,10 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
      * @see net.jini.loader.ClassAnnotation#getClassAnnotation
      */
     public String getClassAnnotation() {
-        if (annotator!=null)
-            return (annotator.getClassAnnotation());
-        else
-            return "";
+    	if (annotator != null)
+    		return (annotator.getClassAnnotation());
+    	else 
+    		return null;
     }
     
     /**

@@ -1,7 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2008 the original author or authors.
+ * Copyright 2005 Sun Microsystems, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +16,9 @@
  */
 package sorcer.tools.webster;
 
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.Artifact;
-import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,20 +30,40 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static sorcer.core.SorcerConstants.CODEBASE_JARS;
+import static sorcer.core.SorcerConstants.S_WEBSTER_INTERFACE;
+import static sorcer.util.JavaSystemProperties.RMI_SERVER_CODEBASE;
+
 /**
  * Helper class for starting an Internal Webster
  *
- * @author Dennis Reedy, adapted for SORCER by Mike Sobolewski
+ * @author Dennis Reedy and Mike Sobolewski
  */
 public class InternalWebster {
-    private static Logger logger = Logger.getLogger("sorcer.tools.webster");
+    private static Logger logger = Logger.getLogger(InternalWebster.class.getName());
     private static boolean debug = false;
-    public static final String WEBSTER_ROOTS = "webster.roots";
-    private static Webster webster;
+    public static final String WEBSTER_ROOTS = "sorcer.webster.roots";
 
     /**
      * Start an internal webster, setting the webster root to the location of
-     * SORCER lib-dl directories, and appending exportJars as the export jars
+     * SORCER lib-dl directories, and appending exportJars as the codebase jars
+     * for the JVM.
+     *
+     * @param exportJars
+     *            The jars to set for the codebase
+     *
+     * @return The port Webster has been started on
+     *
+     * @throws IOException
+     *             If there are errors creating Webster
+     */
+    public static Webster startWebster(String... exportJars) throws IOException {
+        return startWebster(exportJars, null);
+    }
+
+    /**
+     * Start an internal webster, setting the webster root to the location of
+     * SORCER lib-dl directories, and appending exportJars as the codebase jars
      * for the JVM.
      *
      * @param exportJars
@@ -59,9 +76,9 @@ public class InternalWebster {
      */
     public static Webster startWebster(String[] exportJars, String[] websterRoots) throws IOException {
         String codebase = System.getProperty("java.rmi.server.codebase");
-        if (codebase != null)
-            throw new RuntimeException("Codebase is alredy specified: "
-                    + codebase);
+//		if (codebase != null)
+//			throw new RuntimeException("Codebase is alredy specified: "
+//					+ codebase);
 
         String d = System.getProperty("webster.debug");
         if (d != null && d.equals("true"))
@@ -84,7 +101,7 @@ public class InternalWebster {
         }
         roots = sb.toString();
 
-        String sMinThreads = System.getProperty("webster.minThreads",
+        String sMinThreads = System.getProperty("sorcer.webster.minThreads",
                 "1");
         int minThreads = 1;
         try {
@@ -111,8 +128,8 @@ public class InternalWebster {
                     + "default to " + port, e);
         }
 
-        String address = System.getProperty(SorcerConstants.S_WEBSTER_INTERFACE);
-        webster = new Webster(port, roots, address, minThreads, maxThreads, true);
+        String address = System.getProperty(S_WEBSTER_INTERFACE);
+        Webster webster = new Webster(port, roots, address, minThreads, maxThreads, true);
         port = webster.getPort();
         if (logger.isLoggable(Level.FINEST))
             logger.finest("Webster MinThreads=" + minThreads + ", "
@@ -126,7 +143,7 @@ public class InternalWebster {
         if (exportJars != null)
             jars = exportJars;
         else {
-            jarsList = System.getProperty(SorcerConstants.CODEBASE_JARS);
+            jarsList = System.getProperty(CODEBASE_JARS);
             if (jarsList == null || jarsList.length() == 0)
                 throw new RuntimeException(
                         "No jar files available for the webster codebase");
@@ -146,6 +163,7 @@ public class InternalWebster {
         System.setProperty("java.rmi.server.codebase", codebase);
         if (logger.isLoggable(Level.FINE))
             logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
+
         return webster;
     }
 
@@ -154,10 +172,11 @@ public class InternalWebster {
         String userCodebase = env.getRequestorWebsterCodebase();
 
         String roots = env.getWebsterRootsString();
+        Webster webster = null;
         try {
-            Webster webster = new Webster(roots, true);
+            webster = new Webster(roots, true);
 
-            URL root = SorcerEnv.getCodebaseRoot(SorcerEnv.getHostAddress(), Webster.getPort());
+            URL root = SorcerEnv.getCodebaseRoot(SorcerEnv.getHostAddress(), webster.getPort());
             String codebase;
             if (userCodebase == null || userCodebase.isEmpty()) {
                 codebase = Resolver.resolveCodeBase(root, Artifact.getSosEnv(), Artifact.getSosPlatform());
@@ -165,10 +184,10 @@ public class InternalWebster {
                 String[] jars = userCodebase.split(" ");
                 codebase = SorcerEnv.getCodebase(root, jars);
             }
-            System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase);
+            System.setProperty(RMI_SERVER_CODEBASE, codebase);
             return webster;
         } catch (BindException e) {
-            throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + Webster.getPort(), e);
+            throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + webster.getPort(), e);
         } catch (UnknownHostException e) {
             throw new IllegalStateException("Could not obtain local address", e);
         }
@@ -185,19 +204,12 @@ public class InternalWebster {
         return (array);
     }
 
-    public static void stopWebster() {
-        if (webster != null)
-            webster.terminate();
-    }
-
     public static void main(String[] args) {
         try {
-            String home = System.getenv("user.home");
-            startWebster(new String[] { "sorcer/sos-platform.jar" }, new String[] { home + "/.m2/repository/", home + "/lib/" });
+            startWebster(new String[] { "sorcer-prv-dl.jar" });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
 }
-

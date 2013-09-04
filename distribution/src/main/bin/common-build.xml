@@ -37,7 +37,7 @@ A "src" property should be set and point to the directory containing the module'
 <!--project xmlns:artifact="antlib:org.apache.maven.artifact.ant"-->
 	<property environment="env" />
 	<property name="sorcer.home" value="${env.SORCER_HOME}" />
-	<property name="iGrid.home" value="${sorcer.home}" />
+	<property name="sorcer.home" value="${sorcer.home}" />
 	<property name="java.home" value="${env.JAVA_HOME}" />
 	<property name="jini.home" value="${env.JINI_HOME}" />
 	<!--property name="rio.home" value="${env.RIO_HOME}" /-->
@@ -61,8 +61,8 @@ A "src" property should be set and point to the directory containing the module'
 	<property name="sorcer-dl.lib" value="${lib}/sorcer" />
 	<property name="sorcer-ext.lib" value="${lib}/sorcer" />
 	<property name="support.lib" value="${lib}/buildsupport" />
-	<property name="classes" value="${iGrid.home}/classes" />
-	<property name="docs" value="${iGrid.home}/docs" />
+	<property name="classes" value="${sorcer.home}/classes" />
+	<property name="docs" value="${sorcer.home}/docs" />
 	<property name="servlet.api" value="${common.lib}/servlet-api.jar" />
 	<property name="stax.home" value="${env.STAX_HOME}" />
 	<property name="sorcer.trunk" value="." />
@@ -220,21 +220,21 @@ A "src" property should be set and point to the directory containing the module'
 	</target>
 
 	<target name="copy-run-files" description="Copies the files needed to run this module to iGrid/bin">
-		<mkdir dir="${iGrid.home}/bin/${module.name}/configs" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/bin" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/policy" />
-		<mkdir dir="${iGrid.home}/bin/${module.name}/opstrings" />
-		<copy todir="${iGrid.home}/bin/${module.name}/configs">
+		<mkdir dir="${sorcer.home}/bin/${module.name}/configs" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/bin" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/policy" />
+		<mkdir dir="${sorcer.home}/bin/${module.name}/opstrings" />
+		<copy todir="${sorcer.home}/bin/${module.name}/configs">
 			<fileset dir="configs">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<copy todir="${iGrid.home}/bin/${module.name}/bin">
+		<copy todir="${sorcer.home}/bin/${module.name}/bin">
 			<fileset dir="bin">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<copy todir="${iGrid.home}/bin/${module.name}/policy">
+		<copy todir="${sorcer.home}/bin/${module.name}/policy">
 			<fileset dir="policy">
 				<include name="*" />
 			</fileset>
@@ -242,9 +242,9 @@ A "src" property should be set and point to the directory containing the module'
 		<!-- This filterset command lets you use tokens in your opstrings that 
 		     get replaced by the matching values set in your sorcer.env.
 		     Example: @provider.webster.interface@ will be replaced with the webster host interface
-		     @provider.webster.port@ with the appropriate port. 
+		     @provider.webster.port@ with the appropriate port.
 		     Overwrite has to be true for the filtering to work properly! -->
-		<copy todir="${iGrid.home}/bin/${module.name}/opstrings" overwrite="true">
+		<copy todir="${sorcer.home}/bin/${module.name}/opstrings" overwrite="true">
 			<filterset begintoken="@" endtoken="@">
 				<filtersfile file="${iGrid.config}/sorcer.env" />
 			</filterset>
@@ -391,12 +391,12 @@ A "src" property should be set and point to the directory containing the module'
 	</target>
 
 	<target name="copy-config-files">
-		<mkdir dir="${iGrid.home}/classes/sorcer/util" />
-		<copy file="${iGrid.home}/configs/sorcer.env" todir="${iGrid.home}/classes/sorcer/util" />
-		<copy file="${iGrid.home}/configs/data.formats" todir="${iGrid.home}/classes/sorcer/util" />
-<!--		<copy file="${iGrid.home}/modules/sorcer/html/netlets.html" todir="${iGrid.home}/classes/sorcer/ui/exertlet" />
-		<copy file="${iGrid.home}/modules/sorcer/html/icon-info16.png" todir="${iGrid.home}/classes/sorcer/ui/exertlet"	 />
-		<copy file="${iGrid.home}/configs/static-imports.txt" todir="${iGrid.home}/classes/sorcer/ui/exertlet" />-->
+		<mkdir dir="${sorcer.home}/classes/sorcer/util" />
+		<copy file="${sorcer.home}/configs/sorcer.env" todir="${sorcer.home}/classes/sorcer/util" />
+		<copy file="${sorcer.home}/configs/data.formats" todir="${sorcer.home}/classes/sorcer/util" />
+<!--		<copy file="${sorcer.home}/modules/sorcer/html/netlets.html" todir="${sorcer.home}/classes/sorcer/ui/exertlet" />
+		<copy file="${sorcer.home}/modules/sorcer/html/icon-info16.png" todir="${sorcer.home}/classes/sorcer/ui/exertlet"	 />
+		<copy file="${sorcer.home}/configs/static-imports.txt" todir="${sorcer.home}/classes/sorcer/ui/exertlet" />-->
 	</target>
 
 	<target name="precompile">

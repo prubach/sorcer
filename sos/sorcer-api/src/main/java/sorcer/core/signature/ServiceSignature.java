@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.signature;
 
-import net.jini.core.lookup.ServiceID;
-import sorcer.core.SorcerConstants;
-import sorcer.service.Direction;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ReturnPath;
-import sorcer.service.Service;
-import sorcer.service.Signature;
+package sorcer.core.signature;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +26,16 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-    public class ServiceSignature implements Signature {
+import net.jini.core.lookup.ServiceID;
+import sorcer.service.Direction;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.ReturnPath;
+import sorcer.service.Signature;
+
+import static sorcer.core.SorcerConstants.*;
+
+public class ServiceSignature implements Signature {
 
 	static final long serialVersionUID = -8527094638557595398L;
 
@@ -59,7 +60,7 @@ import java.util.logging.Logger;
 	// can
 	// be picked up by workers with template null/serviceType that are not named
 	// "providerName"
-	protected String providerName = SorcerConstants.ANY;
+	protected String providerName = ANY;
 
 	private ServiceID serviceID;
 
@@ -85,7 +86,7 @@ import java.util.logging.Logger;
 	 * when a method implementation is provided 'order' indicates whether a
 	 * method is tried first (SELF) or the provider is called first (PROVIDER)
 	 */
-	private int order = SorcerConstants.SELF;
+	private int order = SELF;
 
 	/**
 	 * URL for a mobile agent: an inserted custom method executed by service
@@ -101,7 +102,7 @@ import java.util.logging.Logger;
 	private String portalURL;
 
 	public ServiceSignature() {
-		providerName = SorcerConstants.ANY;
+		providerName = ANY;
 	}
 
 	public ServiceSignature(String selector) {
@@ -122,8 +123,8 @@ import java.util.logging.Logger;
 		return exertion;
 	}
 
-	public Class<Service> getServiceType() {
-		return (Class<Service>) serviceType;
+	public Class<?> getServiceType() {
+		return serviceType;
 	}
 
 	public void setServiceType(Class<?> serviceType) {
@@ -151,11 +152,11 @@ import java.util.logging.Logger;
 	}
 
 	public boolean isSelfFirst() {
-		return order == SorcerConstants.SELF;
+		return order == SELF;
 	}
 
 	public boolean isProviderFist() {
-		return order == SorcerConstants.PROVIDER;
+		return order == PROVIDER;
 	}
 
 	public String getAgentCodebase() {
@@ -390,24 +391,24 @@ import java.util.logging.Logger;
 
 	public static int getTypeCd(Type type) {
 		if (type == Type.PRE)
-			return Signature.PREPROCESS_CD;
+			return PREPROCESS_CD;
 		else if (type == Type.SRV)
-			return Signature.PROCESS_CD;
+			return PROCESS_CD;
 		else if (type == Type.POST)
-			return Signature.POSTPROCESS_CD;
+			return POSTPROCESS_CD;
 		else if (type == Type.APD)
-			return Signature.APPEND_CD;
+			return APPEND_CD;
 		return 0;
 	}
 
 	public static Signature.Type getType(int code) {
-		if (code == Signature.PREPROCESS_CD)
+		if (code == PREPROCESS_CD)
 			return Type.PRE;
-		else if (code == Signature.PROCESS_CD)
+		else if (code == PROCESS_CD)
 			return Type.SRV;
-		else if (code == Signature.POSTPROCESS_CD)
+		else if (code == POSTPROCESS_CD)
 			return Type.POST;
-		else if (code == Signature.APPEND_CD)
+		else if (code == APPEND_CD)
 			return Type.APD;
 		return null;
 	}

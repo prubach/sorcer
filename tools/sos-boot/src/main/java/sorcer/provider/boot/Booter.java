@@ -1,6 +1,7 @@
 /*
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
+ * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +28,11 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +42,7 @@ import static sorcer.core.SorcerConstants.*;
  * Provides static convenience methods for use in configuration files. This class cannot
  * be instantiated.
  *
- * @author Dennis Reedy, adopted for SORCER by Mike Sobolewski
+ * @author Dennis Reedy and Mike Sobolewski
  */
 public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
@@ -532,49 +537,12 @@ public class Booter {
 		return props.getProperty(property, defaultValue);
 	}
 
-	
-	/**
-	 * Returns the hostname of a SORCER class server.
-	 * 
-	 * @return a webster host name.
-	 */
-	public static String getWebsterHostName() {
-		String hn = System.getenv("SORCER_WEBSTER");
-		if (hn != null && hn.length() > 0) {
-			logger.finer("webster hostname as 'SORCER_WEBSTER': " + hn);
-			return hn;
-		}
-
-		hn = System.getProperty(P_WEBSTER_INTERFACE);
-		if (hn != null && hn.length() > 0) {
-			logger.finer("webster hostname as System 'provider.webster': " + hn);
-			return hn;
-		}
-
-		hn = props.getProperty(P_WEBSTER_INTERFACE);
-		if (hn != null && hn.length() > 0) {
-			logger.finer("webster hostname as Env 'provider.webster': " + hn);
-			return hn;
-		}
-
-		try {
-			hn = Booter.getHostName();
-			logger.finer("webster hostname as the local host value: " + hn);
-		} catch (UnknownHostException e) {
-			logger.severe("Cannot determine the webster hostname.");
-		}
-
-		return hn;
-	}
-
-	
 	/**
 	 * Return the interface of a SORCER class server.
 	 * @return a webster network interface address
 	 */
-	public static String getWebsterInterface() 
-	{
-		String intf = System.getenv("SORCER_WEBSTER_INTERFACE");
+	public static String getWebsterInterface()  {
+		String intf = System.getenv("WEBSTER_INTERFACE");
 
 		if (intf  != null && intf.length() > 0) {
 			logger.finer("webster interface as the system environment value: "+ intf);
@@ -612,22 +580,21 @@ public class Booter {
 	 * @return a port number
 	 */
 	public static int getWebsterPort() {
-		String wp = System.getenv("SORCER_WEBSTER_PORT");
+		String wp = System.getenv("WEBSTER_PORT");
 		if (wp != null && wp.length() > 0) {
-			logger.finer("webster port as 'SORCER_WEBSTER_PORT': " + wp);
+//			logger.info("webster port as 'WEBSTER_PORT': " + wp);
 			return new Integer(wp);
 		}
 
-		wp = System.getProperty(P_WEBSTER_PORT);
+		wp = System.getProperty(S_WEBSTER_PORT);
 		if (wp != null && wp.length() > 0) {
-			logger.finer("webster port as System 'webster.port': "
-					+ wp);
+//			logger.info("webster port as System 'webster.port': " + wp);
 			return new Integer(wp);
 		}
 
 		wp = props.getProperty(P_WEBSTER_PORT);
 		if (wp != null && wp.length() > 0) {
-			logger.finer("webster port as Env 'webster.port': " + wp);
+//			logger.finer("webster port as in sorcer.env 'provider.webster.port': " + wp);
 			return new Integer(wp);
 		}
 
@@ -640,13 +607,13 @@ public class Booter {
 	 * @return a port number
 	 */
 	public static int getWebsterStartPort() {
-		String hp = System.getenv("SORCER_WEBSTER_START_PORT");
+		String hp = System.getenv("WEBSTER_START_PORT");
 
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
 		}
 
-		hp = System.getProperty(P_WEBSTER_START_PORT);
+		hp = System.getProperty(S_WEBSTER_START_PORT);
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
 		}
@@ -665,13 +632,13 @@ public class Booter {
 	 * @return a port number
 	 */
 	public static int getWebsterEndPort() {
-		String hp = System.getenv("SORCER_WEBSTER_END_PORT");
+		String hp = System.getenv("WEBSTER_END_PORT");
 
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
 		}
 
-		hp = System.getProperty(P_WEBSTER_END_PORT);
+		hp = System.getProperty(S_WEBSTER_END_PORT);
 		if (hp != null && hp.length() > 0) {
 			return new Integer(hp);
 		}
@@ -701,12 +668,11 @@ public class Booter {
 		if (port == 0) {
 			try {
 				port = Booter.getAnonymousPort();
-				System.setProperty("provider.webster.port", "" + port);
+				System.setProperty("webster.port", "" + port);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		logger.fine("Booter current port: " + port);
 		return port;
 	}
 	 
@@ -724,6 +690,4 @@ public class Booter {
         socket.close();
         return port;
     }
-    
-	
 }

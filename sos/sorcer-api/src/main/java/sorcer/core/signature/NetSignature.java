@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.signature;
 
-import net.jini.core.entry.Entry;
-import net.jini.lookup.entry.Name;
-import sorcer.core.Provider;
-import sorcer.service.*;
+package sorcer.core.signature;
 
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
+
+import net.jini.core.entry.Entry;
+import net.jini.lookup.entry.Name;
+import sorcer.core.Provider;
+import sorcer.service.Accessor;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Service;
+import sorcer.service.SignatureException;
 
 import static sorcer.core.SorcerConstants.ANY;
 
@@ -60,6 +65,10 @@ public class NetSignature extends ObjectSignature {
 				.getProviderName());
 	}
 	
+	public NetSignature(Class<?> serviceType) {
+		this("none", serviceType, ANY);
+	}
+	
 	public NetSignature(String selector, Class<?> serviceType) {
 		this(selector, serviceType, ANY);
 	}
@@ -70,13 +79,13 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			Signature.Type methodType) throws SignatureException {
+			Type methodType) throws SignatureException {
 		this(selector, serviceType);
 		this.execType = methodType;
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			List<Entry> attributes, Signature.Type methodType)
+			List<Entry> attributes, Type methodType)
 			throws SignatureException {
 		this(selector, serviceType);
 		this.execType = methodType;
@@ -84,14 +93,14 @@ public class NetSignature extends ObjectSignature {
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
-			String providerName, Signature.Type methodType) {
+			String providerName, Type methodType) {
 		this.serviceType = serviceType;
 		if (providerName == null || providerName.length() == 0)
 			this.providerName = ANY;
 		else
 			this.providerName = providerName;
 		if (methodType == null)
-			execType = Signature.Type.SRV;
+			execType = Type.SRV;
 		else
 			execType = methodType;
 		
@@ -126,7 +135,7 @@ public class NetSignature extends ObjectSignature {
 		attributes.addAll(attributes);
 	}
 
-	public Service getServicer() {
+	public Service getService() {
 		if (provider == null) return provider;
 		try {
 			// ping provider to see if alive
@@ -135,12 +144,12 @@ public class NetSignature extends ObjectSignature {
 			// provider is dead; get new one
 			//e.printStackTrace();
             provider = (Provider)Accessor.getService(this);
-		}
+        }
 		
 		return provider;
 	}
 
-	public void setServicer(Service provider) {
+	public void setService(Service provider) {
 		this.provider = (Provider)provider;
 	}
 

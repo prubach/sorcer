@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.util.Set;
 
 import sorcer.core.Provider;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.*;
-
-import java.util.Set;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Task;
 
 public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 
@@ -62,21 +66,21 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 					+ " dispatcher: " + getClass().getName());
 //			logger.finer("\n*** got result: ***\n" + result);
 
-			if (result.getStatus() <= ExecState.FAILED) {
-				xrt.setStatus(ExecState.FAILED);
-				state = ExecState.FAILED;
+			if (result.getStatus() <= FAILED) {
+				xrt.setStatus(FAILED);
+				state = FAILED;
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						ExecState.Category.FAILED);
+						Category.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
 				result.reportException(fe);
 				throw fe;
 			} else {
 				notifyExertionExecution(xrt, result);
-				state = ExecState.DONE;
-				xrt.setStatus(ExecState.DONE);
+				state = DONE;
+				xrt.setStatus(DONE);
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						ExecState.Category.DONE);
+						Category.DONE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

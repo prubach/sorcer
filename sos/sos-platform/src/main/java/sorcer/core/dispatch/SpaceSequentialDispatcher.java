@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,24 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 import sorcer.core.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.service.*;
+import sorcer.service.Context;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
-
-import java.rmi.RemoteException;
-import java.util.Set;
 
 public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 
-	@SuppressWarnings("rawtypes")
-	public SpaceSequentialDispatcher(Job job, Set<Context> sharedContexts,
-			boolean isSpawned, LokiMemberUtil myMemberUtil, Provider provider) throws Throwable {
-		super(job, sharedContexts, isSpawned, myMemberUtil, provider);
+	public SpaceSequentialDispatcher(Job job, 
+            Set<Context> sharedContexts,
+            boolean isSpawned, 
+            LokiMemberUtil myMemberUtil, 
+            Provider provider,
+            ProvisionManager provisionManager) throws ExertionException  {
+		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

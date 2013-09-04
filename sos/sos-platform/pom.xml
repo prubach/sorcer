@@ -24,6 +24,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>logger-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-env</artifactId>
 			<version>${project.version}</version>
@@ -38,7 +43,22 @@
 			<artifactId>sos-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-lib</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.monitor</groupId>
+            <artifactId>monitor-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<scope>provided</scope>

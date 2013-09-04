@@ -160,7 +160,7 @@ public class Arithmometer implements Serializable {
             List<String> outpaths = cxt.getOutPaths();
             logger.info("outpaths: \n" + outpaths);
 
-            double result;
+            double result = 0.0d;
             if (selector.equals(ADD)) {
                 result = 0;
                 for (Double value : inputs)
@@ -241,7 +241,7 @@ public class Arithmometer implements Serializable {
             List<String> outpaths = cxt.getOutPaths();
             //logger.info("outpaths: \n" + outpaths);
 
-            double result;
+            double result = 0.0d;
             if (selector.equals(ADD)) {
                 result = (Double)revalue(inputs.get(0));
                 for (int i = 1; i < inputs.size(); i++)

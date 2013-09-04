@@ -17,14 +17,17 @@
  */
 package sorcer.core.dispatch;
 
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.jini.config.ConfigurationException;
 import sorcer.core.Dispatcher;
 import sorcer.core.Provider;
+import sorcer.core.provider.ServiceProvider;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;
 import sorcer.service.Job;
-
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
 public class JobThread extends Thread {
 	private final static Logger logger = Logger.getLogger(JobThread.class
@@ -48,25 +51,40 @@ public class JobThread extends Thread {
 				+ job.getControlContext());
 		Dispatcher dispatcher = null;
 		try {
-			dispatcher = ExertionDispatcherFactory.getFactory()
-					.createDispatcher(job, provider);
+			String exertionDeploymentConfig = null;
+			if (job.isProvisionable()) {
+				try {
+					exertionDeploymentConfig = 
+							(String)((ServiceProvider)provider).getProviderConfiguration().getEntry("sorcer.core.provider.ServiceProvider",
+									"exertionDeploymentConfig", 
+									String.class, 
+									null);
+				} catch (ConfigurationException e1) {
+					logger.log(Level.WARNING, "Unable to read property from configuration", e1);
+				}
+			}
+			if (exertionDeploymentConfig != null)
+				dispatcher = ExertionDispatcherFactory.getFactory().createDispatcher((Job) job, provider, exertionDeploymentConfig);
+			else
+				dispatcher = ExertionDispatcherFactory.getFactory().createDispatcher((Job) job, provider);
+							
 			try {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());
 			} catch (RemoteException e) {
 				// ignore it, locall call
 			}
-			// int COUNT = 1000;
-			// int count = COUNT;
+			 int COUNT = 1000;
+			 int count = COUNT;
 			while (dispatcher.getState() != ExecState.DONE
 					&& dispatcher.getState() != ExecState.FAILED
 					&& dispatcher.getState() != ExecState.SUSPENDED) {
-				// count--;
-				// if (count < 0) {
-				// logger.finer("*** Jobber's Exertion Dispatcher waiting in state: "
-				// + dispatcher.getState());
-				// count = COUNT;
-				// }
+				 count--;
+				 if (count < 0) {
+				 logger.finer("*** Jobber's Exertion Dispatcher waiting in state: "
+				 + dispatcher.getState());
+				 count = COUNT;
+				 }
 				Thread.sleep(SLEEP_TIME);
 			}
 			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatcher.getState()

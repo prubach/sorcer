@@ -17,19 +17,15 @@ package sorcer.co.tuple;
  * limitations under the License.
  */
 
-
-import sorcer.service.Parameter;
-
 /**
  * Extracted from operator
  *
  * @author Rafał Krupiński
  */
-public class Complement<T1, T2> extends Entry<T1, T2> implements
-        Parameter {
+public class Complement<T2> extends Entry<T2> {
     private static final long serialVersionUID = 1L;
 
-    public Complement(T1 path, T2 value) {
+    public Complement(String path, T2 value) {
         this._1 = path;
         this._2 = value;
     }

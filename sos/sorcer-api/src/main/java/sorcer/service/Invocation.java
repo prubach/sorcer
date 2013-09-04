@@ -1,8 +1,7 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ * Copyright 2013 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
 
 import java.rmi.RemoteException;
@@ -23,14 +23,14 @@ import java.rmi.RemoteException;
  * The Invocation interface defines context driven invocations on a service context
  * containing its parameters (paths) and arguments (values). The requested
  * invocation is specified by the array of contexts.
- * 
+ *
  * The semantics for how parameters can be declared and how the arguments get
  * passed to the parameters of callable unit are defined by the language, but
  * the details of how this is represented in any particular computing system
  * depend on the calling conventions of that system. A context-driven computing
  * system defines callable unit called invokers used within a scope of service
  * contexts, data structures defined in SORCER.
- * 
+ *
  * A service context is dictionary (associative array) composed of a collection
  * of (key, value) pairs, such that each possible key appears at most once in
  * the collection. Keys are considered as parameters and values as arguments of
@@ -46,16 +46,24 @@ import java.rmi.RemoteException;
  * calculated by corresponding invokers. Thus, requesting a value for a path in
  * a context is a computation defined by a invoker composition within the scope
  * of the context.
- * 
+ *
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
 public interface Invocation<T> {
 
-	public T invoke(Parameter... entries) throws RemoteException,
-		EvaluationException;
-	
-	public T invoke(Context context, Parameter... entries) throws RemoteException,
-			EvaluationException;
-	
+    public T invoke(Arg... entries) throws RemoteException,
+            InvocationException;
+
+    public T invoke(Context context, Arg... entries)
+            throws RemoteException, InvocationException;
+
+//	/**
+//	 * @param path
+//	 * @param defaultValue
+//	 * @return
+//	 * @throws ContextException
+//	 */
+//	T getValue(String path, T defaultValue) throws ContextException;
+
 }

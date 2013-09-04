@@ -18,7 +18,7 @@
 package sorcer.core;
 
 /**
- * Any interaction with the MonitorableServicer might result in this exception
+ * Any interaction with the MonitorableService might result in this exception
  * due to the following reason: unauthorized control of the running job/task.
  */
 

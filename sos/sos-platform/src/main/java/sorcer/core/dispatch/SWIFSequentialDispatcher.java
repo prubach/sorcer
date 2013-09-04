@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 import sorcer.core.Provider;
 import sorcer.core.exertion.Jobs;
-import sorcer.service.*;
-
-import java.util.Set;
+import sorcer.core.exertion.NetJob;
+import sorcer.service.Context;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
 
 public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 
-	public SWIFSequentialDispatcher(Job job, Set<Context> sharedContext,
-			boolean isSpawned, Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider);
+	public SWIFSequentialDispatcher(Job job, 
+            Set<Context> sharedContext,
+            boolean isSpawned, 
+            Provider provider,
+            ProvisionManager provisionManager) throws Throwable {
+		super(job, sharedContext, isSpawned, provider, provisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,
@@ -72,6 +82,14 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 			state = DONE;
 
 		dispatchers.remove(xrt.getId());
+	}
+
+	public NetJob resumeJob() throws RemoteException {
+		return null;
+	}
+
+	public NetJob stepJob() throws RemoteException {
+		return null;
 	}
 
 	public void setStatus(ServiceExertion ex, int status) {

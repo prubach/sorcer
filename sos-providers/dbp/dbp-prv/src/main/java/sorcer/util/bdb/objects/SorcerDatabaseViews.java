@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util.bdb.objects;
+
+import java.io.IOException;
+
+import net.jini.id.Uuid;
+import sorcer.core.provider.ProviderRuntime;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ServiceExertion;
 
 import com.sleepycat.bind.EntityBinding;
 import com.sleepycat.bind.EntryBinding;
@@ -26,13 +35,6 @@ import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredSortedMap;
 import com.sleepycat.collections.StoredValueSet;
-import net.jini.id.Uuid;
-import sorcer.core.provider.ProviderRuntime;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ServiceExertion;
-
-import java.io.IOException;
 
 /**
  * ExertionDatabaseViews defines the data bindings and collection views for the
@@ -370,5 +372,13 @@ public class SorcerDatabaseViews {
 		public Object objectToKey(Object object) {
 			return new UuidKey(((UuidObject) object).getId());
 		}
+	}
+	
+	public static Store getStoreType(String storeName) {
+		for (Store s : Store.values()) {
+			if (storeName.equals(""+s))
+				return s;
+		}
+		return null;
 	}
 }

@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.exertion;
+
+import java.rmi.RemoteException;
+import java.util.Arrays;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.*;
+import sorcer.service.Context;
+import sorcer.service.Evaluation;
+import sorcer.service.ExertionException;
+import sorcer.service.Invocation;
+import sorcer.service.Service;
+import sorcer.service.Signature;
+import sorcer.service.SignatureException;
+import sorcer.service.Task;
 import sorcer.util.ExertProcessor;
-
-import java.rmi.RemoteException;
-import java.util.Arrays;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.
  *
  * @author Mike Sobolewski
  */
-public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocation<Object> {
+public class NetTask extends ObjectTask implements Evaluation<Object>, Invocation<Object> {
 
     private static final long serialVersionUID = -6741189881780105534L;
 
@@ -69,6 +76,11 @@ public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocati
         this(name, null, signature, context);
     }
 
+    public NetTask(Signature signature, Context context)
+            throws SignatureException {
+        this(null, null, signature, context);
+    }
+
     public NetTask(String name, String description, Signature signature,
                    Context context) throws SignatureException {
         this(name, description);
@@ -100,8 +112,12 @@ public class NetTask extends ObjectTask  implements Evaluation<Object>, Invocati
         this.signatures.addAll(Arrays.asList(signatures));
     }
 
-    public void setServicer(Service provider) {
-        ((NetSignature) getProcessSignature()).setServicer(provider);
+    public void setService(Service provider) {
+        ((NetSignature) getProcessSignature()).setService(provider);
+    }
+
+    public Service getService() {
+        return ((NetSignature) getProcessSignature()).getService();
     }
 
     public Task doTask(Transaction txn) throws ExertionException,

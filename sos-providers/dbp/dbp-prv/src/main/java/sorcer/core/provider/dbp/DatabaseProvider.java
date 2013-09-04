@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.provider.dbp;
 
 import java.io.File;
@@ -41,13 +42,13 @@ import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
+import sorcer.util.bdb.sdb.Handler;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
 import com.sun.jini.start.LifeCycle;
-import sorcer.util.bdb.sdb.Handler;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class DatabaseProvider extends ServiceProvider implements DatabaseStorer {
@@ -88,17 +89,22 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		return pt.getUuid();	
 	}
 	
-	public Uuid update(Object object) throws InvalidObjectException {
-		if (object instanceof Identifiable) {
-			UpdateThread ut = new UpdateThread(object);
+	public Uuid update(Uuid uuid, Object object) throws InvalidObjectException {
+		Object uuidObject = object;
+		if (!(object instanceof Identifiable)) {
+			uuidObject = new UuidObject(uuid, object);
+		}
+			UpdateThread ut = new UpdateThread(uuid, uuidObject);
 			ut.start();
 			return ut.getUuid();
-		} else
-			throw new RuntimeException("Not indentifiable object: " + object);
 	}
 	
 	public Uuid update(URL url, Object object) throws InvalidObjectException {
-		UpdateThread ut = new UpdateThread(url, object);
+		Object uuidObject = object;
+		if (!(object instanceof Identifiable)) {
+			uuidObject = new UuidObject(SdbUtil.getUuid(url), object);
+		}
+		UpdateThread ut = new UpdateThread(url, uuidObject);
 		ut.start();
 		return ut.getUuid();
 	}
@@ -154,20 +160,14 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		Object object;
 		Uuid uuid;
 
-		public UpdateThread(Object object) throws InvalidObjectException {
+		public UpdateThread(Uuid uuid, Object object) throws InvalidObjectException {
+			this.uuid = uuid;
 			this.object = object;
-			if (!(object instanceof Identifiable)) {
-				throw new InvalidObjectException("Identifiable object is required: " + object);
-			}
-			uuid = (Uuid)((Identifiable)object).getId();
 		}
 
 		public UpdateThread(URL url, Object object) throws InvalidObjectException {
 			this.object = object;
 			this.uuid = SdbUtil.getUuid(url);
-			if (!(object instanceof Identifiable)) {
-				throw new InvalidObjectException("Identifiable object is required: " + object);
-			}
 		}
 		
 		public void run() {
@@ -296,7 +296,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 			} else if (id instanceof Uuid) {
 				uuid = (Uuid)id;
 			} else {
-				throw new ContextException("Wrong retrieve object Uuid: " + id);
+				throw new ContextException("No valid stored object Uuid: " + id);
 			}
 				
 		Object obj = retrieve(uuid, storeType);
@@ -324,10 +324,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		} else {
 			throw new ContextException("Wrong update object Uuid: " + id);
 		}
-		if (object instanceof Identifiable) 
-			uuid = update(object);
-		else 
-			uuid = update(new UuidObject(object, uuid));
+		uuid = update(uuid, object);
 		Store type = getStoreType(object);
 		URL sdbUrl = getDatabaseURL(type, uuid);
 		if (context.getReturnPath() != null)
@@ -383,7 +380,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		return size;
 	}
 	
-	protected void setupDatabase() throws DatabaseException {
+	protected void setupDatabase() throws DatabaseException, RemoteException {
 		Configuration config = delegate.getDeploymentConfig();
 		String dbHome = null;
 		try {
@@ -391,11 +388,11 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 					DB_HOME, String.class);
 		} catch (Exception e) {
 			// do nothing, default value is used
-			// e.printStackTrace();
 		}
 		logger.info("dbHome: " + dbHome);
 		if (dbHome == null || dbHome.length() == 0) {
 			logger.info("No provider's database created");
+			destroy();
 			return;
 		}
 
@@ -406,7 +403,8 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 			if (!done) {
 				logger.severe("Not able to create session database home: "
 						+ dbHomeFile.getAbsolutePath());
-				System.exit(-1);
+				destroy();
+				return;
 			}
 		}
 		System.out.println("Opening provider's BDBJE in: "
@@ -418,7 +416,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.core.DestroyAdmin#destroy()
+	 * @see sorcer.base.Provider#destroy()
 	 */
 	@Override
 	public void destroy() throws RemoteException {

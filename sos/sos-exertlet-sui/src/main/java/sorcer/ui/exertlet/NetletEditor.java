@@ -83,7 +83,7 @@ public class NetletEditor extends JPanel {
     }
 
     private JPanel createHelpPanel(URL url) {
-		inViewer = new EditorView(url == null ? "" : ""+ url, false);
+		inViewer = new EditorView("" + url, false);
 		return inViewer;
 	}
     

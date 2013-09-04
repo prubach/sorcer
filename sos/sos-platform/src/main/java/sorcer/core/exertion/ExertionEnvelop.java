@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.exertion;
+
+import javax.security.auth.Subject;
 
 import net.jini.core.entry.Entry;
 import net.jini.id.Uuid;
@@ -24,8 +27,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.ExecState;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
-
-import javax.security.auth.Subject;
 
 public class ExertionEnvelop implements Entry {
 

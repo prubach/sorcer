@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.jini.lookup.entry;
+
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import net.jini.core.lookup.ServiceID;
 import net.jini.lookup.entry.ServiceType;
-
-import java.awt.*;
 
 /**
  * Human-oriented information about the "type" of a SORCER service. This is not
@@ -33,7 +35,7 @@ import java.awt.*;
  */
 public class SorcerServiceInfo extends ServiceType {
 
-	private static final long serialVersionUID = 12L;
+	private static final long serialVersionUID = 13L;
 
 	public SorcerServiceInfo() {
 		
@@ -54,7 +56,7 @@ public class SorcerServiceInfo extends ServiceType {
 			String userName) {
 		this(providerName, hostAddress, iconName);
 		this.shortDescription = shortDescription;
-		this.userDir = userDir;
+		this.serviceHome = userDir;
 		this.userName = userName;
 
 	}
@@ -67,14 +69,14 @@ public class SorcerServiceInfo extends ServiceType {
 	public String providerName;
 
 	/**
-	 * The short service description that is presented to users.
-	 */
-	public String shortDescription;
-
-	/**
 	 * The list of published interfaces used by space workers.
 	 */
 	public String[] publishedServices;
+
+	/**
+	 * The short service description that is presented to users.
+	 */
+	public String shortDescription;
 
 	/**
 	 * If true, then matching is done for the interface only for space computing,
@@ -125,11 +127,6 @@ public class SorcerServiceInfo extends ServiceType {
 	public String hostAddress;
 
 	/**
-	 * The current directory, user directory.
-	 */
-	public String userDir;
-
-	/**
 	 * The user name (login).
 	 */
 	public String userName;
@@ -140,9 +137,9 @@ public class SorcerServiceInfo extends ServiceType {
 	public String startDate;
 
 	/**
-	 * The data store URL or host:port used by this service.
+	 * The home directory of the runtime service provider.
 	 */
-	public String repository;
+	public String serviceHome;
 
 	/**
 	 * An icon file name associated with this service.

@@ -64,6 +64,9 @@ public class SorcerEnv {
      * Default name 'servid.per' for a file storing a service registration ID.
      */
     private static String serviceIdFilename = "servid.per";
+
+	static String SCRATCH_DIR_ORIG;
+
     /**
      * Port for a code sever (webster)
      */
@@ -83,6 +86,8 @@ public class SorcerEnv {
      */
     private boolean bootable = false;
 
+	static int subDirCounter = 0;
+	
 
     public SorcerEnv(Map<String, String> props) {
         this();
@@ -215,7 +220,7 @@ public class SorcerEnv {
      * @return wait duration
      */
     public static Long getLookupWaitTime() {
-        return Long.parseLong(getProperty(LOOKUP_WAIT, "500"));
+        return Long.parseLong(getProperty(LOOKUP_WAIT, "1000"));
     }
 
     /**
@@ -337,8 +342,7 @@ public class SorcerEnv {
 
         wp = getProperty(DATA_SERVER_PORT);
         if (wp != null && wp.length() > 0) {
-            System.out
-                    .println("data server port as Sorcer 'data.server.port': "
+            logger.info("data server port as Sorcer 'data.server.port': "
                             + wp);
             return new Integer(wp);
         }
@@ -791,7 +795,7 @@ public class SorcerEnv {
         return getNewScratchDir();
     }
 
-    private static synchronized String getUniqueId() {
+    public static synchronized String getUniqueId() {
         // SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
         SimpleDateFormat sdf = new SimpleDateFormat("dd-HHmmss");
         long time = System.currentTimeMillis();
@@ -824,7 +828,29 @@ public class SorcerEnv {
             scratchDir = new File(tempdir.getParentFile(), scratchDirNamePrefix
                     + tempdir.getName());
         }
-        scratchDir.mkdirs();
+		
+		// check to see number of dirs in parent directory (32000 is problem in 
+		// linux)
+		File parentDir = scratchDir.getParentFile();
+		String[] subDirs = parentDir.list(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+				 return new File(dir, name).isDirectory();
+			}												
+		});
+		logger.info("subDirs = " + subDirs);
+		if (subDirs != null) {
+			logger.info("number of subdirectories = " + subDirs.length);
+			if (subDirs.length > 10000) {
+				logger.info("number of subdirectories is > 10,000; setting sys prop...");
+				System.setProperty(SCRATCH_DIR, SCRATCH_DIR_ORIG + subDirCounter++);
+				logger.info("DONE setting sys prop.");
+			}
+		}
+		//logger.info("scratchDir = " + scratchDir);
+		boolean madeDirs = scratchDir.mkdirs();
+		//logger.info("madeDirs = " + madeDirs);
+		//logger.info("can read? " + scratchDir.canRead());
+
         return scratchDir;
     }
 
@@ -844,26 +870,24 @@ public class SorcerEnv {
         String dataUrl = getDataServerUrl();
         String path = scratchFile.getAbsolutePath();
 
-        String scratchDir = System.getProperty(SCRATCH_DIR);
-        logger.info("before scratchDir = " + scratchDir);
+        //String scratchDir = System.getProperty(SCRATCH_DIR);
 
-        File scratchDirFile = new File(scratchDir);
-        scratchDir = scratchDirFile.getPath();
-        logger.info("after scratchDir = " + scratchDir);
+        //File scratchDirFile = new File(scratchDir);
+        //scratchDir = scratchDirFile.getPath();
 
-        int index = path.indexOf(scratchDir);
+        //int index = path.indexOf(scratchDir);
 
         logger.info("dataUrl = " + dataUrl);
-        logger.info("path = " + path);
-        logger.info("scratchDir = " + scratchDir);
+        logger.info("scratchFile = " + scratchFile.getAbsolutePath());
+        //logger.info("scratchDir = " + scratchDir);
 
         logger.info("DOC_ROOT_DIR = " + System.getProperty(DOC_ROOT_DIR));
         logger.info("substring = "
                 + path.substring(System.getProperty(DOC_ROOT_DIR).length() + 1));
-        if (index < 0) {
-            throw new MalformedURLException("Scratch file: " + path
-                    + " is not in: " + scratchDir);
-        }
+        //if (index < 0) {
+        //    throw new MalformedURLException("Scratch file: " + path
+        //            + " is not in: " + scratchDir);
+        //}
         String url = dataUrl + File.separator
                 + path.substring(System.getProperty(DOC_ROOT_DIR).length() + 1);
         url = url.replaceAll("\\\\+", "/");
@@ -1016,8 +1040,14 @@ public class SorcerEnv {
     }
 
     public static String getActualName(String name) {
-        if (nameSuffixed())
-            return getSuffixedName(name);
+		if (nameSuffixed()) {
+			String suffix = sorcerEnv.properties.getProperty(S_NAME_SUFFIX,
+					getDefaultNameSuffix(3));
+			if (name.indexOf(suffix) > 0)
+				return name;
+			else
+				return name + "-" + suffix;
+		}
         return name;
     }
 
@@ -1523,6 +1553,9 @@ public class SorcerEnv {
                 System.setProperty(DATA_SERVER_PORT, httpPort);
             }
         }
+		
+		SCRATCH_DIR_ORIG = System.getProperty(SCRATCH_DIR);
+
     }
 
     /**

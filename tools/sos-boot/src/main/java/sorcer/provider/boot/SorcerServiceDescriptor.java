@@ -1,6 +1,7 @@
 /*
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
+ * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,10 +51,8 @@ import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceDescriptor;
 import com.sun.jini.start.ServiceProxyAccessor;
-
 import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.config.PlatformLoader;
-
 import sorcer.boot.load.Activator;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.JarClassPathHelper;
@@ -76,20 +75,20 @@ import sorcer.core.SorcerEnv;
  * <P>
  * Services need to implement the following "non-activatable constructor":
  * <blockquote>
- *
+ * 
  * <pre>
  * &lt;impl&gt;(String[] args, LifeCycle lc)
  * </pre>
- *
+ * 
  * </blockquote>
- *
+ * 
  * where,
  * <UL>
  * <LI>args - are the service configuration arguments
  * <LI>lc - is the hosting environment's {@link LifeCycle} reference.
  * </UL>
- *
- * @author Dennis Reedy
+ * 
+ * @author Dennis Reedy, updated for SORCER by M. Sobolewski
  */
 public class SorcerServiceDescriptor implements ServiceDescriptor {
 	static String COMPONENT = "sorcer.provider.boot";
@@ -139,7 +138,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 		/**
 		 * Constructs an instance of this class.
-		 *
+		 * 
 		 * @param impl
 		 *            reference to the implementation of the created service
 		 * @param proxy
@@ -178,28 +177,23 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 			String classpath, String implClassName, String address,
 			// Optional Args
 			LifeCycle lifeCycle, String... serverConfigArgs) {
-		if (policy == null || classpath == null
-				|| implClassName == null)
-			throw new NullPointerException("Policy, classpath, and "
-					+ "implementation cannot be null");
-
-        if (descCodebase!=null) {
-            if (descCodebase.indexOf("http://") < 0) {
-                String[] jars = Booter.toArray(descCodebase);
-                try {
-                    if (address == null)
-                        this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
-                    else
-                        this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
-
-                } catch (UnknownHostException e) {
-                    logger.severe("Cannot get hostname for: " + codebase);
-                }
-            }
-            else
-                this.codebase = descCodebase;
-        }
-		logger.info("SORCER booter codebase: " + codebase);
+//		if (descCodebase == null || policy == null || classpath == null
+//				|| implClassName == null)
+//			throw new NullPointerException("Codebase, policy, classpath, and "
+//					+ "implementation cannot be null");
+		if (descCodebase != null && descCodebase.indexOf("http://") < 0) {
+			String[] jars = Booter.toArray(descCodebase);
+			try {
+				if (address == null)
+					this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
+				else
+					this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
+			} catch (UnknownHostException e) {
+				logger.severe("Cannot get hostanme for: " + codebase);
+			}
+		}
+		else
+			this.codebase = descCodebase;
 		this.policy = policy;
 		this.classpath = setClasspath(classpath);
 		this.implClassName = implClassName;
@@ -218,7 +212,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 	 * Create a SorcerServiceDescriptor. Equivalent to calling the other
 	 * overloaded constructor with <code>null</code> for the
 	 * <code>LifeCycle</code> reference.
-	 *
+	 * 
 	 * @param codebase
 	 *            location where clients can download required service-related
 	 *            classes (for example, stubs, proxies, etc.). Codebase
@@ -243,7 +237,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
 
 	/**
 	 * Codebase accessor method.
-	 *
+	 * 
 	 * @return The codebase string associated with this service descriptor.
 	 */
 	public String getCodebase() {

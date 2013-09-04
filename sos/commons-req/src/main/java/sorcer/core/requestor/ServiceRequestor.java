@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.requestor;
-
-import groovy.lang.GroovyShell;
-import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
-import org.codehaus.groovy.control.CompilationFailedException;
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
-import sorcer.service.*;
-import sorcer.tools.webster.InternalWebster;
-import sorcer.util.Artifact;
-import sorcer.util.JavaSystemProperties;
-
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,136 +29,139 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import groovy.lang.GroovyShell;
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
+import org.codehaus.groovy.control.CompilationFailedException;
+import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
+import sorcer.tools.webster.InternalWebster;
+import sorcer.tools.webster.Webster;
+import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.JavaSystemProperties;
 
 import static sorcer.util.ArtifactCoordinates.coords;
 
-/**
- * The abstract class with the methods that define the initialization and
- * behavior of a service requestor. This class uses {@link sorcer.core.SorcerConstants} and
- * requires subclasses to implement {@link sorcer.core.requestor.Requestor#getExertion method. The
- * main method of the class initializes requestor properties and calls methods
- * of the {@link sorcer.core.requestor.Requestor} interface accordingly. It attempts to create a new
- * instance of the requestor defined by a subclass extending
- * {@link sorcer.core.requestor.ServiceRequestor}. If an internal class server (webster) is needed
- * then it attempts to start it with given class root paths that define the
- * codebase of the underlying service requestor.
- * 
- * @author M. W. Sobolewski
- * @see SorcerConstants
- */
 abstract public class ServiceRequestor implements Requestor {
-	/** Logger for logging information about this instance */
-	protected static final Logger logger = Logger
-			.getLogger(ServiceRequestor.class.getName());
+    /** Logger for logging information about this instance */
+    protected static final Logger logger = Logger
+            .getLogger(ServiceRequestor.class.getName());
+    private Webster webster;
 
-	final static String REQUESTOR_PROPERTIES_FILENAME = "requestor.properties";
-	protected Properties props;
-	protected Exertion exertion;
-	protected String jobberName;
+    protected Properties props;
+    protected Exertion exertion;
+    protected String jobberName;
 	protected GroovyShell shell;
     protected static String[] codebaseJars;
     protected static boolean isWebsterInt = false;
-	protected static ServiceRequestor requestor = null;
-	
-	public static void main(String... args) throws Exception {
+    protected static ServiceRequestor requestor = null;
+    final static String REQUESTOR_PROPERTIES_FILENAME = "requestor.properties";
+
+    public static void main(String... args) throws Exception {
         SorcerEnv.debug = true;
-        prepareCodebase();
+        Webster myWebster = prepareCodebase();
         initialize(args);
+        requestor.webster = myWebster;
         requestor.preprocess(args);
-		requestor.process(args);
+        requestor.process(args);
 		requestor.postprocess(args);
-	}
+    }
 
 	public static void initialize(String... args) {
-		System.setSecurityManager(new RMISecurityManager());
+        System.setSecurityManager(new RMISecurityManager());
 
-		// Initialize system properties: configs/sorcer.env
+        // Initialize system properties: configs/sorcer.env
 		SorcerEnv.getEnvProperties();
-		String runnerType = null;
-		if (args.length == 0) {
-            logger.severe("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
-			System.err
+        String runnerType = null;
+        if (args.length == 0) {
+            System.err
 					.println("Usage: Java sorcer.core.requestor.ServiceRequestor  <runnerType>");
-			System.exit(1);
-		} else {
-			runnerType = args[0];
-		}
-		try {
-			requestor = (ServiceRequestor) Class.forName(runnerType)
-					.newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
+            System.exit(1);
+        } else {
+            runnerType = args[0];
+        }
+        try {
+            requestor = (ServiceRequestor) Class.forName(runnerType)
+                    .newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
 			logger.info("Not able to create service requestor: " + runnerType);
-			System.exit(1);
-		}
-		String str = System.getProperty(REQUESTOR_PROPERTIES_FILENAME);
-		logger.info(REQUESTOR_PROPERTIES_FILENAME + " = " + str);
-		if (str != null) {
-			requestor.loadProperties(str); // search the provider package
-		} else {
-			requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
-		}
-	}
+            System.exit(1);
+        }
+        String str = System.getProperty(REQUESTOR_PROPERTIES_FILENAME);
+        logger.info(REQUESTOR_PROPERTIES_FILENAME + " = " + str);
+        if (str != null) {
+            requestor.loadProperties(str); // search the provider package
+        } else {
+            requestor.loadProperties(REQUESTOR_PROPERTIES_FILENAME);
+        }
+        }
 
-	public void setExertion(Exertion exertion) {
-		this.exertion = exertion;
-	}
+    public void setExertion(Exertion exertion) {
+        this.exertion = exertion;
+    }
 
-	public String getJobberName() {
-		return jobberName;
-	}
+    abstract public Exertion getExertion(String... args)
+            throws ExertionException, ContextException, SignatureException;
 
-	public void preprocess(String... args) {
-		Exertion in = null;
-		try {
-			in = requestor.getExertion(args);
-			if (logger.isLoggable(Level.FINE))
-				logger.fine("Runner java.rmi.server.codebase: "
-						+ System.getProperty("java.rmi.server.codebase"));
-		} catch (ExertionException e) {
-			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
-			System.exit(1);
-		} catch (ContextException e) {
+    public String getJobberName() {
+        return jobberName;
+    }
+
+    public void preprocess(String... args) {
+        Exertion in = null;
+        try {
+            in = requestor.getExertion(args);
+            if (logger.isLoggable(Level.FINE))
+                logger.fine("Runner java.rmi.server.codebase: "
+                        + System.getProperty("java.rmi.server.codebase"));
+        } catch (ExertionException e) {
 			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
             System.exit(1);
-		} catch (SignatureException e) {
+        } catch (ContextException e) {
+			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            System.exit(1);
+        } catch (SignatureException e) {
             logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
             System.exit(1);
-		}
-		if (in != null)
-			requestor.setExertion(in);
-		if (exertion != null)
-			logger.info(">>>>>>>>>> Input context: \n" + exertion.getContext());
-	}
+        }
+        if (in != null)
+            requestor.setExertion(in);
+        if (exertion != null)
+            logger.info(">>>>>>>>>> Input context: \n" + exertion.getContext());
+    }
 
-	public void process(String... args) throws ExertionException {
-		try {
-			exertion = ((ServiceExertion) exertion).exert(
-					requestor.getTransaction(), requestor.getJobberName());
+	public void process(String... args) throws Exception {
+        try {
+            exertion = ((ServiceExertion) exertion).exert(
+                    requestor.getTransaction(), requestor.getJobberName());
 		} catch (RemoteException e) {
             logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 		} catch (TransactionException e) {
             logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 		} catch (ExertionException e) {
             logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
-		}
-	}
-	
-	public void postprocess(String... args) {
-		if (exertion != null) {
-			logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
-			logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
-            if (exertion instanceof Task)
-			    logger.info("<<<<<<<<<< Ouput task context: \n" + exertion.getContext());
-            else if (exertion instanceof Job)
-                logger.info("<<<<<<<<<< Ouput job context: \n"
-                        + ((Job)exertion).getJobContext());
-		}
-        // Exit webster
-        if (isWebsterInt) {
-            InternalWebster.stopWebster();
         }
+    }
+
+    public void postprocess(String... args) {
+        if (exertion != null) {
+            logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
+            logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
+            logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
+        }
+        // Exit webster
+        if (isWebsterInt && webster != null) {
+            webster.terminate();
+    }
 	}
 
 	public Object evaluate(File scriptFile) throws CompilationFailedException,
@@ -178,78 +169,78 @@ abstract public class ServiceRequestor implements Requestor {
 		shell = new GroovyShell();
 		return shell.evaluate(scriptFile);
 	}
-	
-	public Transaction getTransaction() {
-		return null;
+
+    public Transaction getTransaction() {
+        return null;
+    }
+
+    /**
+     * Loads service requestor properties from a <code>filename</code> file. By
+     * default a service requestor loads its properties from
+     * <code>requestor.properties</code> file located in the requestor's
+     * package. Also, a service requestor properties file name can be specified
+     * as a system property when starting the requestor with
+     * <code>-DrequestorProperties=&ltfilename&gt<code>. In this case the requestor loads
+     * properties from <code>filename</code> file. Properties are accessible
+     * calling the <code>
+     * getProperty(String)</code> method.
+     *
+     * @param filename
+     *            the properties file name see #getProperty
+     */
+    public void loadProperties(String filename) {
+        logger.info("loading requestor properties:" + filename);
+        String propsFile = System.getProperty("requestor.properties.file");
+
+        try {
+            if (propsFile != null) {
+                props.load(new FileInputStream(propsFile));
+            } else {
+                // check the class resource
+                InputStream is = this.getClass().getResourceAsStream(filename);
+                // check local resource
+                if (is == null)
+                    is = (InputStream) (new FileInputStream(filename));
+                if (is != null) {
+                    props = new Properties();
+                    props.load(is);
+                } else {
+                    System.err
+                            .println("Not able to open stream on properties: "
+                                    + filename);
+                    System.err.println("Service runner class: "
+                            + this.getClass());
+                    return;
+                }
+            }
+        } catch (IOException ioe) {
+            logger.info("Not able to load requestor properties");
+            // ioe.printStackTrace();
+        }
+
+    }
+
+    public String getProperty(String key) {
+        return props.getProperty(key);
+    }
+
+    public String getProperty(String property, String defaultValue) {
+        return props.getProperty(property, defaultValue);
+    }
+
+    private static String[] toArray(String arg) {
+        StringTokenizer token = new StringTokenizer(arg, " ,;");
+        String[] array = new String[token.countTokens()];
+        int i = 0;
+        while (token.hasMoreTokens()) {
+            array[i] = token.nextToken();
+            i++;
+        }
+        return (array);
 	}
 
-	/**
-	 * Loads service requestor properties from a <code>filename</code> file. By
-	 * default a service requestor loads its properties from
-	 * <code>requestor.properties</code> file located in the requestor's
-	 * package. Also, a service requestor properties file name can be specified
-	 * as a system property when starting the requestor with
-	 * <code>-DrequestorProperties=&ltfilename&gt<code>. In this case the requestor loads 
-	 * properties from <code>filename</code> file. Properties are accessible
-	 * calling the <code>
-	 * getProperty(String)</code> method.
-	 * 
-	 * @param filename
-	 *            the properties file name see #getProperty
-	 */
-	public void loadProperties(String filename) {
-		logger.info("loading requestor properties:" + filename);
-		String propsFile = System.getProperty("requestor.properties.file");
 
-		try {
-			if (propsFile != null) {
-				props.load(new FileInputStream(propsFile));
-			} else {
-				// check the class resource
-				InputStream is = this.getClass().getResourceAsStream(filename);
-				// check local resource
-				if (is == null)
-					is = new FileInputStream(filename);
-				if (is != null) {
-					props = new Properties();
-					props.load(is);
-				} else {
-					System.err
-							.println("Not able to open stream on properties: "
-									+ filename);
-					System.err.println("Service requestor class: "
-							+ this.getClass());
-					return;
-				}
-			}
-		} catch (IOException ioe) {
-			logger.info("Not able to load requestor properties");
-			// ioe.printStackTrace();
-		}
-
-	}
-
-	public String getProperty(String key) {
-		return props.getProperty(key);
-	}
-
-	public String getProperty(String property, String defaultValue) {
-		return props.getProperty(property, defaultValue);
-	}
-
-	private static String[] toArray(String arg) {
-		StringTokenizer token = new StringTokenizer(arg, " ,;");
-		String[] array = new String[token.countTokens()];
-		int i = 0;
-		while (token.hasMoreTokens()) {
-			array[i] = token.nextToken();
-			i++;
-		}
-		return (array);
-	}
-
-
-    public static void prepareCodebase() {
+    public static Webster prepareCodebase() {
         // Initialize system properties: configs/sorcer.env
         SorcerEnv.getEnvProperties();
         String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
@@ -284,11 +275,13 @@ abstract public class ServiceRequestor implements Requestor {
             if (roots != null)
                 tokens = toArray(roots);
             try {
-                InternalWebster.startWebster(codebaseJars, tokens);
+                return InternalWebster.startWebster(codebaseJars, tokens);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
+        return null;
     }
 
     private static String resolve(ArtifactCoordinates coords) {

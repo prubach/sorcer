@@ -17,47 +17,37 @@
  */
 package sorcer.ex1.bean;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
+import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
+import sorcer.ex1.provider.ProviderMessage;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
-
 public class WhoIsItBean1 implements WhoIsIt {
 
 	private ServiceProvider provider;
-    private Logger logger = Logger.getLogger(WhoIsItBean1.class.getName());
-
-    public void init(Provider provider) {
+	
+	public void init(Provider provider) {
 		this.provider = (ServiceProvider)provider;
-        try {
-            logger = provider.getLogger();
-        } catch (RemoteException e) {
-            // ignore it, local call
-        }
 	}
 	
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+		String hostname;
 		try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String hostname = inetAddress.getHostName();
-            context.putValue("provider/hostname", hostname);
+			hostname = SorcerEnv.getHostName();
+			context.putValue("provider/hostname", hostname);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
-
-            context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
-
-            logger.info("executed getHostName: " + context);
-
-        } catch (UnknownHostException e) {
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 		return context;
@@ -65,18 +55,12 @@ public class WhoIsItBean1 implements WhoIsIt {
 
 	public Context getHostAddress(Context context) throws RemoteException,
 			ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getHostAddress");
-        try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
-            context.putValue("provider/address", ipAddress);
+		String ipAddress;
+		try {
+			ipAddress = SorcerEnv.getHostAddress();
+			context.putValue("provider/address", ipAddress);
 			context.putValue("provider/message", "Hello "
 					+ context.getValue("requestor/address") + "!");
-
-            if (provider != null)
-                context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
-
-            logger.info("executed getHostName: " + context);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -88,13 +72,14 @@ public class WhoIsItBean1 implements WhoIsIt {
 	 */
 	public Context getCanonicalHostName(Context context)
 			throws RemoteException, ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getCanonicalHostName");
-        try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String fqname = inetAddress.getCanonicalHostName();
+		String fqname;
+		try {
+			fqname = SorcerEnv.getLocalHost().getCanonicalHostName();
 			context.putValue("provider/fqname", fqname);
-            context.putValue("provider/message", "Hello "
-                    + context.getValue("requestor/address") + "!");
+			String rhn = (String) context.getValue("requestor/hostname");
+			Message rmsg = (Message) context.getValue("requestor/message");
+			context.putValue("provider/message", new ProviderMessage(rmsg
+					.getMessage(), provider.getProviderName(), rhn));
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -108,10 +93,7 @@ public class WhoIsItBean1 implements WhoIsIt {
 	@Override
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
-        logger.entering(WhoIsItBean2.class.getName(), "getTimestamp");
         context.putValue("provider/timestamp", StringUtils.getDateTime());
-        context.putValue("provider/message", "Hello "
-                + context.getValue("requestor/address") + "!");
 		return context;
 	}
 }

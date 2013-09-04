@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.context;
 
 import net.jini.id.Uuid;
@@ -77,7 +78,7 @@ public class ContextLink implements Link {
 	/**
 	 * Add a context link given the context and offset. Public access to this
 	 * method is probably temporary, as the preferred constructor is
-	 * {@link ContextLink(String, sorcer.security.util.SorcerPrincipal, String)}, since that method
+	 * {@link #contextLink(String, SorcerPrincipal, String)}, since that method
 	 * requires the context has already been persisted.
 	 * 
 	 */
@@ -198,7 +199,7 @@ public class ContextLink implements Link {
 	}
 
 	/**
-	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} for this principal if not
+	 * Return the context. The {@link SorcerPrincipal} for this principal if not
 	 * fetched yet.
 	 */
 	@Override
@@ -210,7 +211,7 @@ public class ContextLink implements Link {
 	}
 	
 	/**
-	 * Return the context. The {@link sorcer.security.util.SorcerPrincipal} is given for authorization.
+	 * Return the context. The {@link SorcerPrincipal} is given for authorization.
 	 */
 	@Override
 	public Context getContext(SorcerPrincipal principal)

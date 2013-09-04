@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.context;
 
-import sorcer.core.SorcerEnv;
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
-import sorcer.service.*;
-import sorcer.util.Stopwatch;
+package sorcer.core.context;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -30,6 +26,16 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
+
+import sorcer.core.SorcerEnv;
+import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.service.ComplexExertion;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.Signature;
+import sorcer.service.Strategy;
+import sorcer.util.Stopwatch;
 
 import static sorcer.core.SorcerConstants.*;
 

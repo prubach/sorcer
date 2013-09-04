@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.signature;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
 import sorcer.util.ObjectCloner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 public class ObjectSignature extends ServiceSignature {
 
-	//static final long serialVersionUID = 8042346568722803852L;
+	static final long serialVersionUID = 8042346568722803852L;
 
 	Class<?> providerType;
 
@@ -216,7 +217,6 @@ public class ObjectSignature extends ServiceSignature {
 				obj = m.invoke(obj);
 			}
 		} catch (Exception e) {
-            logger.throwing(ObjectSignature.class.getName(), "initInstance", e);
 			try {
 				// check if that is SORCER service bean signature
 				m = providerType.getMethod(selector, Context.class);

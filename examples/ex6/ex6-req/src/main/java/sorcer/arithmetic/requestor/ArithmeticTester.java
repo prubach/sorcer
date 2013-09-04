@@ -1,34 +1,23 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package sorcer.arithmetic.requestor;
 
-import sorcer.arithmetic.provider.Adder;
-import sorcer.arithmetic.provider.Multiplier;
-import sorcer.arithmetic.provider.RemoteAdder;
-import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.context.ControlContext;
-import sorcer.core.requestor.ServiceRequestor;
-import sorcer.service.*;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
-import sorcer.service.Strategy.Monitor;
-import sorcer.service.Strategy.Wait;
-import sorcer.util.Log;
+import static sorcer.eo.operator.context;
+import static sorcer.eo.operator.control;
+import static sorcer.eo.operator.exert;
+import static sorcer.eo.operator.exertion;
+import static sorcer.eo.operator.get;
+import static sorcer.eo.operator.in;
+import static sorcer.eo.operator.input;
+import static sorcer.eo.operator.job;
+import static sorcer.eo.operator.jobContext;
+import static sorcer.eo.operator.name;
+import static sorcer.eo.operator.out;
+import static sorcer.eo.operator.output;
+import static sorcer.eo.operator.path;
+import static sorcer.eo.operator.pipe;
+import static sorcer.eo.operator.sig;
+import static sorcer.eo.operator.strategy;
+import static sorcer.eo.operator.task;
+import static sorcer.eo.operator.trace;
 
 import java.rmi.RMISecurityManager;
 import java.util.ArrayList;
@@ -36,10 +25,29 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static sorcer.eo.operator.*;
+import sorcer.arithmetic.provider.Adder;
+import sorcer.arithmetic.provider.Multiplier;
+import sorcer.arithmetic.provider.RemoteAdder;
+import sorcer.arithmetic.provider.Subtractor;
+import sorcer.core.SorcerConstants;
+import sorcer.core.requestor.ServiceRequestor;
+import sorcer.service.Accessor;
+import sorcer.service.ContextException;
+import sorcer.service.Exerter;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionCallable;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.SignatureException;
+import sorcer.service.Strategy.Access;
+import sorcer.service.Strategy.Flow;
+import sorcer.service.Strategy.Monitor;
+import sorcer.service.Strategy.Provision;
+import sorcer.service.Strategy.Wait;
+import sorcer.service.Task;
+import sorcer.util.Log;
 
 /**
  * Testing parameter passing between tasks within the same service job. Two
@@ -53,7 +61,7 @@ import static sorcer.eo.operator.*;
  * @author Mike Sobolewski
  */
 
-public class ArithmeticTester {
+public class ArithmeticTester implements SorcerConstants {
 
 	private static Logger logger = Log.getTestLog();
 	
@@ -62,7 +70,7 @@ public class ArithmeticTester {
         // Resolve codebase from requestor.webster.codebase sysproperty specified in ant script to webster urls
         ServiceRequestor.prepareCodebase();
         //
-        logger.info("running: " + args[0]);
+		logger.info("running: " + args[0]);
 		Exertion result = null;
 		ArithmeticTester tester = new ArithmeticTester();
 		if (args[0].equals("f5"))
@@ -75,6 +83,8 @@ public class ArithmeticTester {
 			result = tester.f5a();
 		else if (args[0].equals("f5pull"))
 			result = tester.f5pull();
+		else if (args[0].equals("f1"))
+			result = tester.f1();
 		else if (args[0].equals("f1a"))
 			result = tester.f1a();
 		else if (args[0].equals("f1b"))
@@ -89,9 +99,11 @@ public class ArithmeticTester {
 			result = tester.f5xS(args[1]);
 		else if (args[0].equals("f5xP"))
 			result = tester.f5xP(args[1], args[2]);
+		else if (args[0].equals("f5exerter"))
+			result = tester.f5exerter();
 		
 //		logger.info(">>>>>>>>>>>>> exceptions: " + exceptions(result));
-//		logger.info(">>>>>>>>>>>>> result dataContext: " + dataContext(result));
+//		logger.info(">>>>>>>>>>>>> result context: " + context(result));
 	}
 	
 	// two level composition
@@ -113,13 +125,49 @@ public class ArithmeticTester {
 
 		// Service Composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
 		//Job f1= job("f1", job("f2", f4, f5, strategy(Flow.PARALLEL, Access.PULL)), f3,
-		Job f1= job("f1", job("f2", f3, f4), f5,
+		Job f1= job("f1", job("f2", f3, f4), f5, strategy(Provision.NO),
 		   pipe(out(f3, path(result, y)), in(f5, path(arg, x1))),
 		   pipe(out(f4, path(result, y)), in(f5, path(arg, x2))));
 
 		Exertion out = exert(f1);
-		logger.info("job f1 dataContext: " + jobContext(out));
-		logger.info("job f1/f5/result/y: " + get(out, "f1/f5/result/y"));
+		if (out != null) {
+			logger.info("job f1 context: " + jobContext(out));
+			logger.info("job f1/f5/result/y: " + get(out, "f1/f5/result/y"));
+		} else {
+			logger.info("job execution failed");
+		}
+		
+		return out;
+	}
+	
+	// two level composition
+	private Exertion f1() throws Exception {
+		
+		Task f4 = task("f4", sig("multiply", Multiplier.class),
+				context("multiply", input("arg/x1", 10.0d), input("arg/x2", 50.0d),
+						out("result/y1", null)));
+
+		Task f5 = task("f5", sig("add", Adder.class),
+				context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
+						output("result/y2", null)));
+
+		Task f3 = task("f3", sig("subtract", Subtractor.class),
+				context("subtract", input("arg/x5", null), input("arg/x6", null),
+						output("result/y3", null)));
+
+		//job("f1", job("f2", f4, f5), f3,		
+		//job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), f3,
+		Job f1 = job("f1", job("f2", f4, f5), f3, strategy(Provision.NO),
+				pipe(out(f4, "result/y1"), in(f3, "arg/x5")),
+				pipe(out(f5, "result/y2"), in(f3, "arg/x6")));
+
+		Exertion out = exert(f1);
+		if (out != null) {
+			logger.info("job f1 context: " + jobContext(out));
+			logger.info("job f1/f3/result/y3: " + get(out, "f1/f3/result/y3"));
+		} else {
+			logger.info("job execution failed");
+		}
 		
 		return out;
 	}
@@ -147,7 +195,7 @@ public class ArithmeticTester {
 		   pipe(out(f5, path(result, y)), in(f3, path(arg, x2))));
 
 		Exertion out = exert(f1);
-		logger.info("job f1 dataContext: " + jobContext(out));
+		logger.info("job f1 context: " + jobContext(out));
 		logger.info("job f1 f1/f3/result/y: " + get(out, path("f1", "f3", result, y)));
 		
 		return out;
@@ -177,7 +225,7 @@ public class ArithmeticTester {
 
 		Exertion out = exert(f1);
 
-		logger.info("job f1 dataContext: " + jobContext(out));
+		logger.info("job f1 context: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 
 		return out;
@@ -211,8 +259,8 @@ public class ArithmeticTester {
 		System.out.println("Execution time: " + (end-start) + " ms.");
 		
 		logger.info("out name: " + name(out));
-		logger.info("job f1 dataContext: " + context(out));
-		logger.info("job f1 job dataContext: " + jobContext(out));
+		logger.info("job f1 context: " + context(out));
+		logger.info("job f1 job context: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 		logger.info("task f4 trace: " + trace(exertion(out, "f1/f2/f4")));
 		logger.info("task f5 trace: " + trace(exertion(out, "f1/f2/f5")));
@@ -249,8 +297,8 @@ private Exertion f1SEQpull() throws Exception {
 		System.out.println("Execution time: " + (end-start) + " ms.");
 		
 		logger.info("out name: " + name(out));
-		logger.info("job f1 dataContext: " + context(out));
-		logger.info("job f1 job dataContext: " + jobContext(out));
+		logger.info("job f1 context: " + context(out));
+		logger.info("job f1 job context: " + jobContext(out));
 		logger.info("job f1 f3/result/y3: " + get(out, path("f1/f3/result/y3")));
 		logger.info("task f4 trace: " + trace(exertion(out, "f1/f2/f4")));
 		logger.info("task f5 trace: " + trace(exertion(out, "f1/f2/f5")));
@@ -266,19 +314,47 @@ private Exertion f1SEQpull() throws Exception {
 				sig("add", Adder.class),
 				context("add", in("arg/x1", 20.0),
 						in("arg/x2", 80.0), out("result/y", null)),
-				strategy(Monitor.NO, Wait.YES));
+				strategy(Monitor.NO, Wait.YES, Provision.YES));
 		
 		Exertion out = null;
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 dataContext: " + context(out));
+		logger.info("task f5 context: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
 	}
 
+	private Exertion f5exerter() throws Exception {
+		Task f5 = task(
+				"f5",
+				sig("add", Adder.class),
+				context("add", in("arg/x1", 20.0),
+						in("arg/x2", 80.0), out("result/y", null)),
+				strategy(Monitor.NO, Wait.YES));
+		
+		Exertion out = null;
+		long start = System.currentTimeMillis();
+		Exerter exerter = Accessor.getService(Exerter.class);
+		logger.info("got exerter: " + exerter);
+
+		out = exerter.exert(f5);
+		long end = System.currentTimeMillis();
+		
+		if (out.getExceptions().size() > 0) {
+			System.out.println("Execeptins: " + out.getExceptions());
+			return out;
+		}
+			
+		System.out.println("Execution time by exerter: " + (end-start) + " ms.");
+		logger.info("task f5 context: " + context(out));
+		logger.info("task f5 result/y: " + get(context(out), "result/y"));
+
+		return out;
+	}
+	
 	private Exertion f5m() throws Exception {
 		Task f5 = task(
 				"f5",
@@ -291,13 +367,9 @@ private Exertion f1SEQpull() throws Exception {
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
-        for (ControlContext.ThrowableTrace e : out.getExceptions()) {
-            logger.log(Level.SEVERE, "Exertion error", e);
-        }
-        System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 dataContext: " + context(out));
+		System.out.println("Execution time: " + (end-start) + " ms.");
+		logger.info("task f5 context: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
-
 
 		return out;
 	}
@@ -310,14 +382,14 @@ private Exertion f1SEQpull() throws Exception {
 				sig("add", RemoteAdder.class),
 				context("add", in("arg/x1", 20.0),
 						in("arg/x2", 80.0), out("result/y", null)),
-				strategy(Monitor.YES, Wait.NO));
+				strategy(Monitor.YES, Wait.YES));
 		
 		Exertion out = null;
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 dataContext: " + context(out));
+		logger.info("task f5 context: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -337,7 +409,7 @@ private Exertion f1SEQpull() throws Exception {
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 dataContext: " + context(out));
+		logger.info("task f5 context: " + context(out));
 		logger.info("task f5 control: " + control(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
@@ -353,14 +425,14 @@ private Exertion f1SEQpull() throws Exception {
 						in("arg/x2", 80.0), out("result/y", null)),
 				strategy(Monitor.YES, Wait.NO));
 		
-		logger.info("task f5 control dataContext: " + control(f5));
+		logger.info("task f5 control context: " + control(f5));
 		
 		Exertion out = null;
 		long start = System.currentTimeMillis();
 		out = exert(f5);
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
-		logger.info("task f5 dataContext: " + context(out));
+		logger.info("task f5 context: " + context(out));
 		logger.info("task f5 result/y: " + get(context(out), "result/y"));
 
 		return out;
@@ -379,9 +451,9 @@ private Exertion f1SEQpull() throws Exception {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < to; i++) {
 			f5.setName("f5-" + i);
-			f5.getDataContext().setName("f5-" + i);
+			f5.getContext().setName("f5-" + i);
 			out = exert(f5);
-			System.out.println("out dataContext: " + name(f5) + "\n" + context(out));
+			System.out.println("out context: " + name(f5) + "\n" + context(out));
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
@@ -422,7 +494,7 @@ private Exertion f1SEQpull() throws Exception {
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end - start) + " ms.");
-		logger.info("got last dataContext #" + tally + "\n" + fList.get(tally-1).get().getDataContext());
+		logger.info("got last context #" + tally + "\n" + fList.get(tally-1).get().getContext());
 		logger.info("run in parallel: " + tally);
 		return fList.get(tally-1).get();
 	}

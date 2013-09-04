@@ -75,7 +75,7 @@ the specific child CL that is the current context of the request.<br>
 <span style="font-weight: bold;">Service-nCL</span> - Contains the
 service specific implementation classes.<br>
 Classpath: serviceImpl.jar<br>
-Codebase: "serviceX-dl.jar rio-dl.jar jsk-lib-dl.jar"<br>
+Codebase: "serviceX-dl.jar rio-api.jar jsk-lib-dl.jar"<br>
 
  @author Dennis Reedy
  */

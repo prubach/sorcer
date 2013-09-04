@@ -1,6 +1,6 @@
-/**
- *
+/*
  * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2009-2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,38 @@
  */
 package sorcer.core.provider;
 
-import com.sun.jini.config.Config;
-import com.sun.jini.start.LifeCycle;
-import com.sun.jini.thread.TaskManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.security.Permission;
+import java.security.Policy;
+import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -41,8 +70,12 @@ import net.jini.lookup.ui.MainUI;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-import sorcer.core.*;
+import sorcer.core.AccessDeniedException;
+import sorcer.core.AdministratableProvider;
 import sorcer.core.Provider;
+import sorcer.core.SorcerEnv;
+import sorcer.core.UEID;
+import sorcer.core.UnknownExertionException;
 import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.RemoteContextManagement;
@@ -51,51 +84,42 @@ import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.provider.proxy.Outer;
 import sorcer.core.provider.proxy.Partner;
 import sorcer.core.provider.proxy.Partnership;
-import sorcer.core.provider.ui.ProviderUI;
 import sorcer.resolver.Resolver;
 import sorcer.service.*;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.*;
+import sorcer.util.Artifact;
+import sorcer.util.ObjectLogger;
 
-import javax.security.auth.Subject;
-import javax.security.auth.login.LoginContext;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.security.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import com.sun.jini.config.Config;
+import com.sun.jini.start.LifeCycle;
+import com.sun.jini.thread.TaskManager;
+import sorcer.util.StringUtils;
+
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency
  * injection defined by a Jini 2 configuration, proxy management, and own
  * service discovery management for registering its proxies. In the simplest
  * case, the provider exports and registers its own (outer) proxy with the
- * primary method {@link sorcer.service.Service#service(Exertion, Transaction)}. The functionality of an
+ * primary method {@link Service#service(Exertion, Transaction)}. The functionality of an
  * outer proxy can be extended by its inner server functionality with its Remote
- * inner proxy. In this case, the outer proxies have to implement {@link sorcer.core.provider.proxy.Outer}
+ * inner proxy. In this case, the outer proxies have to implement {@link sorcer.core.proxy.Outer}
  * interface and each outer proxy is registered with the inner proxy allocated
  * with {@link Outer#getInner} invoked on the outer proxy. Obviously an outer
  * proxy can implement own interfaces with the help of its embedded inner proxy
  * that in turn can consit of multiple own inner proxies as needed. This class
- * implements the {@link sorcer.core.provider.proxy.Outer} interface, so can extend its functionality by
+ * implements the {@link sorcer.core.proxy.Outer} interface, so can extend its functionality by
  * inner proxying.
  * <p>
  * A smart proxy can be defined in the provider's Jini configuration by the
  * <code>smartProxy</code> entry. This proxy does not represent directly any
  * exported server, it is registered with lookup services as is. However, the
- * smart proxy (implementing {@link sorcer.core.provider.proxy.Outer} interface) can extend its
+ * smart proxy (implementing {@link sorcer.core.proxy.Outer} interface) can extend its
  * functionality by setting the providers outer proxy as its inner proxy. Thus,
- * smart proxies that implement{@link sorcer.core.provider.proxy.Outer}, called <i>semismart</i> contain
+ * smart proxies that implement{@link sorcer.core.proxy.Outer}, called <i>semismart</i> contain
  * this provider's proxy as its inner proxy. Smart proxies that do not extend
  * its functionality via its inner proxy are called fat proxies. Fat proxies do
  * not make remote calls back to their providers and the providers just maintain
@@ -117,7 +141,7 @@ import java.util.logging.Logger;
  * exporter is defined then server proxy becomes the inner proxy of this
  * provider's proxy (outer proxy). Thus, exported servers use outer proxies
  * while not exported user inner proxies of this provider. In this context, a
- * smart proxy implementing {@link sorcer.core.provider.proxy.Outer} interface can get the outer proxy and
+ * smart proxy implementing {@link sorcer.core.proxy.Outer} interface can get the outer proxy and
  * its inner proxy composed in either direction provider/server proxy
  * relationship.
  * <p>
@@ -139,8 +163,8 @@ import java.util.logging.Logger;
  * @see net.jini.core.constraint.RemoteMethodControl
  * @see com.sun.jini.start.LifeCycle
  * @see Partner
- * @see sorcer.core.provider.proxy.Partnership
- * @see sorcer.core.context.RemoteContextManagement
+ * @see sorcer.core.proxy.Partnership
+ * @see sorcer.core.RemoteContextManagement
  * @see sorcer.core.SorcerConstants
  */
 public class ServiceProvider implements Identifiable, Provider, ServiceIDListener,
@@ -158,6 +182,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	public static final String COMPONENT = ServiceProvider.class.getName();
 
 	protected ProviderDelegate delegate;
+
+	static final String DEFAULT_PROVIDER_PROPERTY = "provider.properties";
 
 	protected TaskManager threadManager;
 
@@ -178,7 +204,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	/** Object to notify when this service is destroyed, or null. */
 	private LifeCycle lifeCycle;
-	
+
 	// all providers in the same shared JVM
 	private static List<ServiceProvider> providers = new ArrayList<ServiceProvider>();
 
@@ -349,6 +375,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * 
 	 * @param groups
 	 *            groups to join
+	 * @exception RemoteException
 	 * @see net.jini.admin.JoinAdmin#addLookupGroups(String[])
 	 */
 	public void addLookupGroups(String[] groups) {
@@ -428,7 +455,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * 
 	 * @param locators
 	 *            locators of specific lookup services to join
-	 * @exception java.rmi.RemoteException
+	 * @exception RemoteException
 	 * @see net.jini.admin.JoinAdmin#addLookupLocators(net.jini.core.discovery.LookupLocator[])
 	 */
 	public void addLookupLocators(LookupLocator[] locators)
@@ -450,7 +477,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * 
 	 * @param locators
 	 *            locators of specific lookup services to leave
-	 * @exception java.rmi.RemoteException
+	 * @exception RemoteException
 	 * @see net.jini.admin.JoinAdmin#removeLookupLocators(net.jini.core.discovery.LookupLocator[])
 	 */
 	public void removeLookupLocators(LookupLocator[] locators)
@@ -539,7 +566,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Implements the <code>ServiceProxyAccessor</code> interface.
 	 * 
 	 * @return a proxy object reference
-	 * @exception java.rmi.RemoteException
+	 * @exception RemoteException
 	 */
 	public Object getServiceProxy() throws RemoteException {
 		return getProxy();
@@ -553,7 +580,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * outer proxy of this provider is returned.
 	 * 
 	 * @return a proxy, or null
-	 * @see Provider#getProxy()
+	 * @see sorcer.base.Provider#getProxy()
 	 */
 	public Object getProxy() {
 		return delegate.getProxy();
@@ -715,7 +742,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			// delegate.getJiniConfig(), PROVIDER, "lookupLocators",
 			// String[].class, new String[] {});
 			String[] lookupLocators = new String[] {};
-			String locators = delegate.getProviderConfig().getProperty(SorcerConstants.P_LOCATORS);
+			String locators = delegate.getProviderConfig().getProperty(P_LOCATORS);
 			if (locators != null && locators.length() > 0) {
 				lookupLocators = locators.split("[ ,]");
 			}
@@ -857,7 +884,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					MainUI.ROLE,
 					new UIComponentFactory(new URL[] { new URL(SorcerEnv
 							.getWebsterUrl() + "/provider-ui.jar") },
-							ProviderUI.class.getName()));
+							"sorcer.core.provider.ui.ProviderUI"));
 		} catch (Exception ex) {
 			logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
 		}
@@ -899,12 +926,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             ex.printStackTrace();
         }
 
-        //return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc1, uiDesc2 };
         return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc2 };
 	}
 
 	/**
-	 * Returnes an appended list of enrties that includes UI descriptors of this
+	 * Returns an appended list of entries that includes UI descriptors of this
 	 * provider.
 	 * 
 	 * @param serviceAttributes
@@ -1268,7 +1294,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	public void setAccessorGroups(String[] accessorGroups) {
 		this.accessorGroups = accessorGroups;
 	}
-		
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1339,7 +1365,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * persist the service ID.
 	 * <p>
 	 * TODO: This functionality is similar / identical / linked to
-	 * {@link sorcer.core.provider.ProviderDelegate#restore()}. Investigate.
+	 * {@link ProviderDelegate#restore()}. Investigate.
 	 * 
 	 * @param sid
 	 *            The assigned ServiceID
@@ -1391,6 +1417,16 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return sidFile;
 	}
 
+	public long getLeastSignificantBits() throws RemoteException {
+		return (delegate.getServiceID() == null) ? -1 : delegate.getServiceID()
+				.getLeastSignificantBits();
+	}
+
+	public long getMostSignificantBits() throws RemoteException {
+		return (delegate.getServiceID() == null) ? -1 : delegate.getServiceID()
+				.getMostSignificantBits();
+	}
+
 	/**
 	 * A provider responsibility is to check a task completeness in paricular
 	 * the relevance of the task's context.
@@ -1428,14 +1464,19 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @return Exertion
 	 * @throws sorcer.service.ExertionException
 	 * @see sorcer.service.Exertion
-	 * @see sorcer.falcon.base.Conditional
+	 * @see sorcer.service.Conditional
 	 * @see sorcer.core.provider.ControlFlowManager
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
 		// create an instance of the ExertionProcessor and call on the
 		// process method, returns an Exertion
-		if (exertion instanceof Task && exertion.isMonitorable()) {
+		ControlFlowManager ep = null;
+		if (this instanceof Jobber) {
+			ep = new ControlFlowManager(exertion, delegate, (Jobber) this);
+		} else if (this instanceof Spacer) {
+			ep = new ControlFlowManager(exertion, delegate, (Spacer) this);
+		} else if (exertion instanceof Task && exertion.isMonitorable()) {
 			if (exertion.isWaitable())
 				return doMonitoredTask(exertion, null);
 			else {
@@ -1458,8 +1499,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				return exertion;
 			}
 		} else {
-			return new ControlFlowManager(exertion, delegate).process(threadManager);
+			ep = new ControlFlowManager(exertion, delegate);
 		}
+		return ep.process(threadManager);
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,
@@ -1677,10 +1719,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * called, the monitorables must suspend immediatly and return the suspended
 	 * state of the context.
 	 * 
-	 * @throws sorcer.core.UnknownExertionException
+	 * @throws UnknownExertionException
 	 *             if the exertion is not executed by this provider.
 	 * 
-	 * @throws java.rmi.RemoteException
+	 * @throws RemoteException
 	 *             if there is a communication error
 	 * 
 	 */
@@ -1720,8 +1762,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Calls the delegate to update the monitor with the current context.
 	 * 
 	 * @param context
-	 * @throws sorcer.service.MonitorException
-	 * @throws java.rmi.RemoteException
+	 * @throws MonitorException
+	 * @throws RemoteException
 	 */
 	public void changed(Context<?> context, Object aspect) throws RemoteException,
 			MonitorException {
@@ -1905,6 +1947,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		}
 	}
 	
+	public void initSpaceSupport() throws RemoteException,
+			ConfigurationException {
+		delegate.spaceEnabled(true);
+		delegate.initSpaceSupport();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1931,12 +1979,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					&& dispatcher.getState() != ExecState.SUSPENDED) {
 				Thread.sleep(SLEEP_TIME);
 			}
-            return dispatcher.getExertion();
         } catch (Throwable e) {
             logger.log(Level.SEVERE,"Error while dispatching task", e);
             task.getControlContext().addException(e);
 		}
-        return task;
+		return dispatcher.getExertion();
 	}
 	
 }

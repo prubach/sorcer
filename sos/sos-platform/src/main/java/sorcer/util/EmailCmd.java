@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util;
 
 import sorcer.core.SorcerEnv;
@@ -29,10 +30,10 @@ import static sorcer.core.SorcerConstants.*;
  * SEND_MAIL
  */
 
-public class EmailCmd implements Command {
+public class EmailCmd {
 	protected String cmdName;
 	protected String[] args;
-	public Object invoker;
+//	public Object invoker;
 	protected ResultSet result;
 	protected static String host = null;
 
@@ -51,7 +52,6 @@ public class EmailCmd implements Command {
 	 * database. The arguments in the array are as defined in gapp.GApp.
 	 */
 	public void setArgs(Object target, Object[] args) {
-		invoker = target;
 		this.args = (String[]) args;
 	}
 
@@ -127,14 +127,6 @@ public class EmailCmd implements Command {
 			return;
 		}
 		System.out.println("EmailCmd:result=" + result);
-	}
-
-	public void setInvoker(Invoker invoker) {
-		this.invoker = invoker;
-	}
-
-	public Invoker getInvoker() {
-		return (Invoker) invoker;
 	}
 
 	public void undoIt() {

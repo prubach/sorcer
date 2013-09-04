@@ -33,5 +33,7 @@ public interface DispatcherFactory {
      * @param job The SORCER job that will be used to perform a collection 
      * of SERVICE tasks.
      */
-    public Dispatcher createDispatcher(Job job, Provider provider) throws DispatcherException;
+	 public Dispatcher createDispatcher(Job job, Provider provider) throws DispatcherException;
+	    
+	 public Dispatcher createDispatcher(Job job, Provider provider, String... config) throws DispatcherException;
 }

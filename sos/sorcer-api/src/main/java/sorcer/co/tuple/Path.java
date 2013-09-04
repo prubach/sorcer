@@ -19,7 +19,9 @@ package sorcer.co.tuple;
 
 
 public class Path<T2> extends Tuple2<String, T2> {
-
+	
+	private static final long serialVersionUID = -3968682348032416823L;
+	
 	public Path() { }
 
 	public Path(String path) {

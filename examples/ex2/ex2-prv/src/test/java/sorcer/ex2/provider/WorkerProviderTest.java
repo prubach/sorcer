@@ -15,25 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.ex2.provider;
-
-import org.junit.Before;
-import org.junit.Test;
-import sorcer.core.SorcerEnv;
-import sorcer.core.context.ServiceContext;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.util.Log;
-
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetAddress;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import sorcer.core.context.ServiceContext;
+import sorcer.ex2.provider.InvalidWork;
+import sorcer.ex2.provider.WorkerProvider;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.util.Log;
+
+import com.gargoylesoftware.base.testing.TestUtil;
+
 /**
  * @author Mike Sobolewski
+ *
  */
 public class WorkerProviderTest {
 	private static Logger logger = Log.getTestLog();
@@ -47,7 +55,7 @@ public class WorkerProviderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		hostName = SorcerEnv.getLocalHost().getHostName();
+		hostName = SorcerEnv.getHostName();
 		provider = new WorkerProvider();
 
         Work work = new Work() {
@@ -58,13 +66,22 @@ public class WorkerProviderTest {
                 return cxt;
             }
         };
-
-		context = new ServiceContext("work");
-		context.putValue("requestor/name", hostName);
-		context.putValue("requestor/operand/1", 11);
-		context.putValue("requestor/operand/2", 21);
+        context = new ServiceContext("work");
+        context.putValue("requestor/name", hostName);
+        context.putValue("requestor/operand/1", 11);
+        context.putValue("requestor/operand/2", 21);
         context.putValue("requestor/work", work);
         context.putValue("to/provider/name", "Testing Provider");
+	}
+
+	@Test
+	public void contextTest() throws IOException,
+			IllegalAccessException, InvocationTargetException {
+		// test serialization of the provider's context
+		TestUtil.testSerialization(context, true);
+		
+		// test serialization of the provider's context
+		//TestUtil.testClone(context, true);
 	}
 
 	/**
@@ -75,8 +92,8 @@ public class WorkerProviderTest {
 	public void testSayHi() throws ContextException, IOException {
 		Context result = provider.sayHi(context);
 		//logger.info("result: " + result);
-		// test serialization of the returned dataContext
-		//TestUtil.testSerialization(result, true);
+		// test serialization of the returned context
+		TestUtil.testSerialization(result, true);
 		assertTrue(result.getValue("provider/message").equals("Hi " + hostName + "!"));
 	}
 
@@ -95,7 +112,7 @@ public class WorkerProviderTest {
 	 * Test method for {@link sorcer.ex2.provider.WorkerProvider#doWork(sorcer.service.Context)}.
 	 */
 	@Test
-	public void testDoWork() throws RemoteException, InvalidWork, ContextException {
+	public void testDoIt() throws RemoteException, InvalidWork, ContextException {
 		Context result = provider.doWork(context);
 		//logger.info("result: " + result);
 		assertEquals(result.getValue("provider/result"), 231);

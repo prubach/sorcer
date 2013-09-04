@@ -363,7 +363,7 @@ startSos ( ) {
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$BOOT_CLASSPATH" \
             -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
-            -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos" \
+            -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -Dprogram.name="$PROGNAME" \
