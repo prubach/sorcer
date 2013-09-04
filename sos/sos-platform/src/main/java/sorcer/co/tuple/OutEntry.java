@@ -18,40 +18,37 @@ package sorcer.co.tuple;
  */
 
 
+import sorcer.service.Arg;
 import sorcer.service.Context;
-import sorcer.service.Parameter;
+
+import java.net.URL;
 
 /**
  * Extracted from operator
  *
  * @author Rafał Krupiński
  */
-public class OutEntry<T> extends IndexedTriplet implements Parameter {
+public class OutEntry<T> extends IndexedTriplet implements Arg {
     private static final long serialVersionUID = 1L;
-    public boolean flag;
-
-    public OutEntry(String path, T value, boolean flag) {
-        T v = value;
-        if (v == null)
-            v = (T) Context.Value.NULL;
-
-        this._1 = path;
-        this._2 = v;
-        this.flag = flag;
-    }
 
     public OutEntry(String path, T value, int index) {
         T v = value;
         if (v == null)
-            v = (T) Context.Value.NULL;
+            v = (T) Context.none;
 
         this._1 = path;
         this._2 = v;
         this.index = index;
     }
 
-    public OutEntry(String path, Object fidelity) {
-        this._1 = path;
-        this._3 = fidelity;
+    public OutEntry(String path, T value, boolean isPersistant, int index) {
+        this(path, value, index);
+        this.isPersistant = isPersistant;
+    }
+
+    public OutEntry(String path, T value, boolean isPersistant, URL url, int index) {
+        this(path, value, index);
+        this.isPersistant = isPersistant;
+        datastoreURL = url;
     }
 }

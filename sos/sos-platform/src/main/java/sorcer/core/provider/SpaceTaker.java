@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,22 @@
 package sorcer.core.provider;
 
 // Imported classes
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Logger;
 
 import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lease.UnknownLeaseException;
+import net.jini.core.transaction.CannotAbortException;
+import net.jini.core.transaction.CannotCommitException;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionFactory;
+import net.jini.core.transaction.UnknownTransactionException;
 import net.jini.core.transaction.server.TransactionManager;
 import net.jini.lease.LeaseListener;
 import net.jini.lease.LeaseRenewalEvent;
@@ -42,12 +50,6 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.service.txmgr.TransactionManagerAccessor;
-
-import java.rmi.RemoteException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This is a class creates a JavaSpace taker that extends the {@link Thread}
@@ -81,6 +83,21 @@ public class SpaceTaker implements Runnable, LeaseListener {
 
 	// controls the loop of this space worker
 	protected volatile boolean keepGoing = true;
+
+	public static void doLog(String msg, String threadId, Transaction.Created txn) {
+		String newMsg = "\nspace taker log; thread id = " + threadId + "\n"
+				+ msg;
+
+		if (txn != null) {
+			long expTime = txn.lease.getExpiration();
+			long expDuration = expTime - System.currentTimeMillis();
+			newMsg = newMsg + "\n\ttxn = " + txn;
+			newMsg = newMsg + "\n\tlease = " + txn.lease;
+			newMsg = newMsg + "\n\texpires in [s] = " + expDuration / 1000;
+		}
+		logger.info(newMsg);
+
+	}
 
 	public static class SpaceTakerData {
 		public ExertionEnvelop entry;
@@ -163,76 +180,171 @@ public class SpaceTaker implements Runnable, LeaseListener {
 		return st;
 	}
 
+	
+	// fields for taker thread metrics
+	//
+	private int numThreadsTaker = 0;
+	private ArrayList<String> threadIdsTaker = new ArrayList<String>();
+	private int numCallsTaker = 0;
+
+	protected synchronized String doThreadMonitorTaker(String threadIdString) {
+		
+		String prefix;
+		if (threadIdString == null) {
+			numCallsTaker++;
+			numThreadsTaker++;
+			prefix = "adding taker thread";
+			//threadIdString = new Integer(numCallsTaker).toString();
+			threadIdString = this.toString();
+			threadIdsTaker.add(threadIdString);
+		} else {
+			numThreadsTaker--;
+			prefix = "subtracting taker thread";
+			threadIdsTaker.remove(threadIdString);
+		}
+		
+		logger.info("\n\n***TAKER THREAD: " + prefix + ": total calls = " + numCallsTaker
+				+ "\n***" + prefix + ": number of threads running = "
+				+ numThreadsTaker + "\n***" + prefix + ": thread ids running = "
+				+ threadIdsTaker 
+				+ "\nthis = " + this);
+
+		return threadIdString;
+	}
+	
+	protected static void abortTransaction(Transaction.Created txn) throws UnknownLeaseException, UnknownTransactionException, CannotAbortException, RemoteException {
+		leaseManager.remove(txn.lease);
+		txn.transaction.abort();
+	}
+
+	protected static void commitTransaction(Transaction.Created txn) throws UnknownLeaseException, UnknownTransactionException, CannotCommitException, RemoteException  {
+		leaseManager.remove(txn.lease);
+		txn.transaction.commit();
+	}
+	
+	// fields for worker thread metrics
+	//
+	private int numThreadsWorker = 0;
+	private ArrayList<String> threadIdsWorker = new ArrayList<String>();
+	private int numCallsWorker = 0;	
+	
+	protected synchronized String doThreadMonitorWorker(String threadIdString) {
+		String prefix;
+		if (threadIdString == null) {
+			numCallsWorker++;
+			numThreadsWorker++;
+			prefix = "adding worker thread";
+			//threadIdString = new Integer(numCallsWorker).toString();
+			threadIdString = this.toString();
+			threadIdsWorker.add(threadIdString);
+		} else {
+			numThreadsWorker--;
+			prefix = "subtracting worker thread";
+			threadIdsWorker.remove(threadIdString);
+		}
+		logger.info("\n\n***WORKER THREAD: " + prefix + ": total calls = " + numCallsWorker
+				+ "\n***" + prefix + ": number of threads running = "
+				+ numThreadsWorker + "\n***" + prefix + ": thread ids running = "
+				+ threadIdsWorker
+				+ "\nthis = " + this);
+
+		return threadIdString;
+	}
+	
 	public void run() {
-		logger.finer("** running... isTransactional: " + isTransactional
-				+ ", transactionLeaseTimeout: " + transactionLeaseTimeout
-				+ ", spaceTimeout: " + spaceTimeout);
+
+		String threadId = doThreadMonitorTaker(null);
+
+//		doLog("\trun()\n\tisTransactional: " + isTransactional
+//				+ "\n\ttransactionLeaseTimeout: " + transactionLeaseTimeout
+//				+ "\n\tspaceTimeout: " + spaceTimeout + "\n\tdata.noQueue = "
+//				+ data.noQueue, threadId, null);
+
 		Transaction.Created txnCreated = null;
+
 		while (keepGoing) {
 			ExertionEnvelop ee = null;
 			try {
 				space = SpaceAccessor.getSpace(data.spaceName,
-						data.spaceGroup);
+                        data.spaceGroup);
+
 				if (space == null) {
-					logger.severe("########### SpaceTaker DID NOT get JavaSpace...");
-					Thread.sleep(spaceTimeout / 2);
+//					doLog("\t***warning: space taker did not get SPACE.",
+//							threadId, null);
+					Thread.sleep(spaceTimeout / 6);
 					continue;
 				}
-				// logger.log(Level.INFO, "worker space template envelop = "
-				// + data.entry.describe() + "\n service provider = "
-				// + provider);
-				if (data.noQueue && (((ThreadPoolExecutor) pool).getActiveCount() == ((ThreadPoolExecutor) pool)
-                            .getCorePoolSize())) {
-                    continue;
-                }
 
-                Transaction transaction = null;
-                if (isTransactional) {
-                    txnCreated = createTransaction();
-                    if (txnCreated == null) {
-                        logger.severe("########### SpaceTaker DID NOT get transaction...");
-                        Thread.sleep(spaceTimeout / 6);
-                        continue;
-                    }
-                    transaction = txnCreated.transaction;
-                }
-                ee = (ExertionEnvelop) space.take(data.entry,
-                        transaction, spaceTimeout);
-
+				if (data.noQueue) {
+					if (((ThreadPoolExecutor) pool).getActiveCount() != ((ThreadPoolExecutor) pool)
+							.getCorePoolSize()) {
+						if (isTransactional) {
+							txnCreated = createTransaction(threadId);
+							if (txnCreated == null) {
+//								doLog("\t***warning: space taker did not get TRANSACTION.",
+//										threadId, null);
+								Thread.sleep(spaceTimeout / 6);
+								continue;
+							}
+							ee = (ExertionEnvelop) space.take(data.entry,
+									txnCreated.transaction, spaceTimeout);
+						} else {
+							ee = (ExertionEnvelop) space.take(data.entry, null,
+									spaceTimeout);
+						}
+					} else {
+						continue;
+					}
+				} else {
+					if (isTransactional) {
+						txnCreated = createTransaction(threadId);
+						if (txnCreated == null) {
+							doLog("\t***warning: space taker did not get TRANSACTION.",
+									threadId, null);
+							Thread.sleep(spaceTimeout / 6);
+							continue;
+						}
+						ee = (ExertionEnvelop) space.take(data.entry,
+								txnCreated.transaction, spaceTimeout);
+					} else {
+						ee = (ExertionEnvelop) space.take(data.entry, null,
+								spaceTimeout);
+					}
+				}
+				
 				// after 'take' timeout abort transaction and sleep for a while
 				// before 'taking' the next exertion
 				if (ee == null) {
 					if (txnCreated != null) {
-						txnCreated.transaction.abort();
-						leaseManager.remove(txnCreated.lease);
+
+						//doLog("\taborting txn...", threadId, txnCreated);
+						abortTransaction(txnCreated);
+						//doLog("\tDONE aborting txn.", threadId, txnCreated);
+						
 						Thread.sleep(spaceTimeout / 2);
 					}
+					
 					txnCreated = null;
 					continue;
 				}
-				// check is the exertion execution is abandoned (poisoned) by
-				// the requestor
-				// if (isAbandoned(ee.exertion) == true) {
-				// if (txn != null) {
-				// txn.commit();
-				// removeLease(txn);
-				// }
-				// txn = null;
-				// continue;
-				// }
-				// if (((ServiceProvider)
-				// data.provider).isSpaceSecurityEnabled()) {
-				// // if (ee.exertionID.equals(LOKI_ONLY)) {
-				// initDataMember(ee);
-				// }
-                pool.execute(new SpaceWorker(ee, txnCreated));
-            } catch (Exception ex) {
-				logger.log(Level.FINEST, "END LOOP SPACE TAKER EXCEPTION", ex);
-            }
+
+				pool.execute(new SpaceWorker(ee, txnCreated));
+			} catch (Exception ex) {
+				//logger.info("END LOOP SPACE TAKER EXCEPTION");
+				//ex.printStackTrace();
+				continue;
+			}
 		}
+		
+		// remove thread monitor
+		doThreadMonitorTaker(threadId);
 	}
 
 	synchronized public Transaction.Created createTransaction() {
+		return createTransaction(null);
+	}
+	
+	synchronized public Transaction.Created createTransaction(String threadId) {
 		if (leaseManager == null) {
 			leaseManager = new LeaseRenewalManager();
 		}
@@ -244,8 +356,11 @@ public class SpaceTaker implements Runnable, LeaseListener {
 			}
 			Transaction.Created created = TransactionFactory.create(tManager,
 					transactionLeaseTimeout);
-			leaseManager.renewFor(created.lease,
-					Lease.FOREVER, transactionLeaseTimeout, this);
+
+//			doLog("\tcreated transaction", threadId, created);
+
+			leaseManager.renewFor(created.lease, Lease.FOREVER, transactionLeaseTimeout, this);
+
 			return created;
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -294,59 +409,106 @@ public class SpaceTaker implements Runnable, LeaseListener {
 	 */
 	@Override
 	public void notify(LeaseRenewalEvent e) {
-		logger.severe("########### space transaction lost its lease: "
-				+ e.getLease());
+		// Do nothing. It happens when a space providers is destroyed
+//		logger.severe("########### space transaction lost its lease: "
+//				+ e.getLease());
 	}
 
 	class SpaceWorker implements Runnable {
 		private ExertionEnvelop ee;
 		private Transaction.Created txnCreated;
 		
+
 		SpaceWorker(ExertionEnvelop envelope,
 				Transaction.Created workerTxnCreated)
 				throws UnknownLeaseException {
 			ee = envelope;
 			if (workerTxnCreated != null) {
 				txnCreated = workerTxnCreated;
-//				leaseManager.setExpiration(txnCreated.lease,
-//						System.currentTimeMillis() + transactionLeaseTimeout);
+				// leaseManager.setExpiration(txnCreated.lease,
+				// System.currentTimeMillis() + transactionLeaseTimeout);
 			}
 		}
 
 		public void run() {
-			try {
-				if (txnCreated != null)
-					logger.info("SpaceWorker >>> transaction: " + txnCreated.transaction);
-				Entry result = doEnvelope(ee, 
-						(txnCreated == null) ? null : txnCreated.transaction);
-				if (result != null) {
-					logger.info("SpaceWorker >>> Putting result to space---"
-							+ ((ExertionEnvelop) result).describe());
+
+			String threadId = doThreadMonitorWorker(null);
+
+			//if (txnCreated != null)
+//			doLog("\tcalling doEnvelope()...", threadId, txnCreated);
+			Entry result = doEnvelope(ee, (txnCreated == null) ? null
+					: txnCreated.transaction, threadId, txnCreated);
+//			doLog("\tDONE calling doEnvelope(); result = " + result, threadId, txnCreated);
+
+			if (result != null) {
+
+//				doLog("\tcalling space.write()...", threadId, txnCreated);
+				
+				try {
 					space.write(result, null, Lease.FOREVER);
-					if (txnCreated != null) {
-						txnCreated.transaction.commit();
+				} catch (Exception e) {
+//					doLog("\t***error: calling space.write().", threadId,
+//							txnCreated);
+					e.printStackTrace();
+					try {
+						abortTransaction(txnCreated);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						doThreadMonitorWorker(threadId);
+						return;
 					}
-				} else {
-					if (txnCreated != null) {
-						txnCreated.transaction.abort();
+					doThreadMonitorWorker(threadId);
+					return;
+				}
+				
+//				doLog("\tDONE calling space.write().", threadId, txnCreated);
+
+				if (txnCreated != null) {
+					try {
+						commitTransaction(txnCreated);
+					} catch (Exception e) {
+						e.printStackTrace();
+						doThreadMonitorWorker(threadId);
+						return;
 					}
 				}
-			} catch (Throwable e) {
-				e.printStackTrace();
+
+			} else {
+				
+//				doLog("\t***error: doEnvelope returned null.", threadId,
+//						txnCreated);
+				if (txnCreated != null) {
+					try {
+						abortTransaction(txnCreated);
+					} catch (Exception e) {
+						e.printStackTrace();
+						doThreadMonitorWorker(threadId);
+						return;
+					}
+				}
 			}
-			try {
-				if (txnCreated != null)
-					leaseManager.remove(txnCreated.lease);
-			} catch (UnknownLeaseException e) {
-				// do nothing
-				e.printStackTrace();
-			}
+			doThreadMonitorWorker(threadId);
 		}
 
-		public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction) {
+		public void doLog(String msg, String threadId, Transaction.Created txn) {
+			String newMsg = "\n\tspace worker log; thread id = " + threadId + "\n"
+					+ msg;
+
+			if (txn != null) {
+				long expTime = txn.lease.getExpiration();
+				long expDuration = expTime - System.currentTimeMillis();
+				newMsg = newMsg + "\n\t\ttxn = " + txn;
+				newMsg = newMsg + "\n\t\tlease = " + txn.lease;
+				newMsg = newMsg + "\n\t\texpires in [s] = " + expDuration / 1000;
+			}
+			logger.info(newMsg);
+
+		}
+
+		public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction, String threadId, Transaction.Created txn) {
 			ServiceExertion se = null, out = null;
 			try {
-				logger.info("\n----SpaceWorker>>execute invoked");
+				//logger.info("\n----SpaceWorker>>execute invoked");
 				ee.exertion.getControlContext().appendTrace(
 						"taken by: " + data.provider.getProviderName() + ":"
 								+ data.provider.getProviderID());
@@ -378,17 +540,13 @@ public class SpaceTaker implements Runnable, LeaseListener {
 					ee.state = ExecState.FAILED;
 					((ServiceExertion) ee.exertion).setStatus(ExecState.FAILED);
 				} else if (th instanceof Error) {
-						ee.state = ExecState.ERROR;
-						((ServiceExertion) ee.exertion).setStatus(ExecState.ERROR);
+					ee.state = ExecState.ERROR;
+					((ServiceExertion) ee.exertion).setStatus(ExecState.ERROR);
 				}
 				((ServiceExertion) ee.exertion).reportException(th);
 			}
 			return ee;
 		}
-	}
-
-	public void setKeepGoing(boolean keepGoing) {
-		this.keepGoing = keepGoing;
 	}
 
 }

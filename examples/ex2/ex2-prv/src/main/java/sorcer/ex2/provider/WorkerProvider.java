@@ -56,16 +56,14 @@ public class WorkerProvider extends ServiceTasker implements Worker {
 
 	public Context doWork(Context context) throws InvalidWork, RemoteException,
 			ContextException {
-        String p = context.getPrefix();
-		context.putValue(p+"provider/host/name", hostName);
-        Object workToDo = context.getValue(p+"requestor/work");
+        context.putValue("provider/host/name", hostName);
+        Object workToDo = context.getValue("requestor/work");
         if (workToDo != null && (workToDo instanceof Work)) {
             // requestor's work to be done
             Context out = ((Work)workToDo).exec(context);
             context.append(out);
         } else {
-            throw new InvalidWork("No Work found to do at path: '"
-                    + context.getPrefix() + "requestor/work'!");
+            throw new InvalidWork("No Work found to do at path requestor/work'!");
         }
 		String reply = "Done work by: "
                 + (getProviderName() == null ? getClass() : getProviderName());

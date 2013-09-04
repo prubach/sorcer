@@ -1,9 +1,7 @@
-package sorcer.service;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,21 +15,26 @@ package sorcer.service;
  * limitations under the License.
  */
 
+package sorcer.service;
+
+import java.rmi.RemoteException;
+
 
 /**
- * @author Rafał Krupiński
+ * A functionality required by all evaluators in SORCER.
+ *
+ * @author Mike Sobolewski
  */
-public class Evaluator {
-    public static <T> T value(Evaluation<T> evaluation, Parameter... entries)
-            throws EvaluationException {
-        try {
-            synchronized (evaluation) {
-                return evaluation.getValue(entries);
-            }
-        } catch (EvaluationException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EvaluationException(e);
-        }
-    }
+public interface  Evaluator <T> extends Evaluation<T> {
+
+
+    /**
+     * Returns the current value of this evaluation.
+     *
+     * @return the current value of this evaluation
+     * @throws EvaluationException
+     * @throws RemoteException
+     */
+    public T evaluate(Arg... entries) throws EvaluationException, RemoteException;
+
 }

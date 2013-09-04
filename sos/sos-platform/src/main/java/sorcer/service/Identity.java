@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,59 +16,75 @@
  */
 package sorcer.service;
 
+import java.io.Serializable;
+
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 
-import java.io.Serializable;
-
 /**
  * Abstract Java class Identity 
+ *
  */
+@SuppressWarnings("serial")
 public abstract class Identity implements Serializable, Identifiable {
 
-	protected Uuid id;
+    protected Uuid id;
 
-	protected String name;
+    protected String name;
 
-	/**
-	 *  Identity - Class constructor
-	 */
-	public Identity() {
-		id = UuidFactory.generate();
-	}
-	
-	/**
-	 * getId - Returns id
-	 * @return Uuid
-	 */
-	public Uuid getId() {
-		return id;
-	}
+    //Value used for default finite difference calculations
+    protected Object characteristicValue;
 
-	/**
-	 * Assign a unique identifier
-	 */
-	public void setId(Uuid uuid) {
-		 this.id = uuid;;
-	}
-	
-	/**
-	 * getName - Returns name
-	 * @return String
-	 */
-	public String getName() {
-		return name;
-	}
+    protected boolean hasCharacteristicValue = false;
 
-	/**
-	 * setName - Method that allows setting of the name of a Identity Object
-	 * @param name -Name of the Identity Object
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     *  Identity - Class constructor
+     */
+    public Identity() {
+        id = UuidFactory.generate();
+    }
 
-	public String toString() {
-		return "name: " + name +  ", id: " + id;
-	}
+    /**
+     * getId - Returns id
+     * @return Uuid
+     */
+    public Uuid getId() {
+        return id;
+    }
+
+    /**
+     * Assign a unique identifier
+     */
+    public void setId(Uuid uuid) {
+        this.id = uuid;;
+    }
+
+    /**
+     * getName - Returns name
+     * @return String
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * setName - Method that allows setting of the name of a Identity Object
+     * @param name -Name of the Identity Object
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Object getCharacteristicValue() {
+        return characteristicValue;
+    }
+
+    public void setCharacteristicValue(Object characteristicValue) {
+        this.characteristicValue = characteristicValue;
+        hasCharacteristicValue = true;
+    }
+
+    public String toString() {
+        return "name: " + name +  ", id: " + id;
+    }
 }

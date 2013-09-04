@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,29 +15,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
 
 import java.io.Serializable;
+import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import net.jini.id.Uuid;
+import sorcer.co.tuple.ExecPath;
+import sorcer.core.Provider;
 import sorcer.core.SorcerConstants;
+import sorcer.core.context.ContextLink;
+import sorcer.core.context.ServiceContext;
 import sorcer.security.util.SorcerPrincipal;
 
 /**
  * Service context classes that implement this interface provide SORCER generic
  * metacomputing data structures for storage, retrieval, and propagation of
  * heterogeneous information across all SORCER service providers. Two generic
- * implementations are provided: {@link sorcer.core.context.ServiceContext} and
+ * implementations are provided: {@link ServiceContext} and
  * {@link sorcer.core.context.PositionalContext}. Usually the former is used by
  * service requestors and the latter with more functionality is used by service
  * providers. The ServiceContextImpl class implements the ProviderContext
- * interface that extends ServiceContext. An example of a specific service context
- * is illustrated by {@link sorcer.core.context.ArrayContext}.
- * <p/>
+ * interface that extends ServiceContext. An example of a specific service
+ * context is illustrated by {@link ArrayContext}.
+ * <p>
  * A service context is a tree-like structure with two types of nodes. Leaf
  * nodes are called data (value) nodes and the remaining nodes are called
  * context attribute nodes. Context attributes define a namespace for the data
@@ -47,16 +54,16 @@ import sorcer.security.util.SorcerPrincipal;
  * hierarchical attribute of data contained in the leaf node. A data node can
  * contain any Java object; in particular a generic {@see ContextNode} is
  * available.
- * <p/>
+ * <p>
  * Context paths can be marked with attributes set by using the method
  * {@link #setAttribute(String)}, which allow for efficient search of related
  * data by service providers (service context clients). The search issue becomes
  * critical when a namespace in the context may change or when data nodes
  * contain remote references, for example a URL. It is usually assumed that
  * provider-enforced data associations are more stable than user-oriented paths.
- * Each direct service invocation {@link Service#service}
- * requires data in the ServiceContext format.
- * <p/>
+ * Each direct service invocation {@link Service#service} requires data in the
+ * ServiceContext format.
+ * <p>
  * Service contexts are defined by this common interface with efficient
  * service-oriented APIs. However, there are some similarities with XML
  * terminology. The root element in XML contains all other XML elements.
@@ -69,11 +76,13 @@ import sorcer.security.util.SorcerPrincipal;
  * more meta-attribute meaning than XML attributes. While context attributes
  * provide a name space for direct access to data nodes via
  * {@link Context#getValue}, data attributes specify the data node for indirect
- * efficient retrieval (search) by service providers. *
+ * efficient retrieval (search) by service providers. 
+ *
+ * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
-        Identifiable {
+public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>, Invocation<T>,
+        Revaluation, Identifiable {
 
     /** context parameter (cp) */
     final static String CONTEXT_PARAMETER = "cp";
@@ -142,7 +151,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
     final static String SERVICE_CONTEXT = "cxt";
 
-    final static String SERVICE_MODEL = "Service Model";
+    final static String PAR_MODEL = "Par Model";
 
     /** EMPTY LEAF NODE i.e. node with no data and not empty string */
     final static String EMPTY_LEAF = ":Empty";
@@ -166,13 +175,20 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
             + SorcerConstants.CPS + "data";
 
     /**
-     * An object to specify no context data.
+     * An object to specify no context value.
      */
-    final static Object NO_DATA = new Object() {
-        public String toString() {
-            return "ServiceContext.NO_DATA";
+    public static class none implements Serializable {
+        private static final long serialVersionUID = -6152257095701812950L;
+
+        private none() {
+
         }
-    };
+
+        public String toString() {
+            return "none";
+        }
+    }
+    final static Object none = new none();
 
     /**
      * Returns a name of this service context.
@@ -189,20 +205,20 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      */
     public void setName(String name);
 
-//	/**
-//	 * Returns a name of the root context node.
-//	 *
-//	 * @return name of the root context node
-//	 */
-//	public String getRootName();
-//
-//	/**
-//	 * Assigns a root name for this service context.
-//	 *
-//	 * @param rootName
-//	 *            name of the root context node
-//	 */
-//	public void setRootName(String rootName);
+    // /**
+    // * Returns a name of the root context node.
+    // *
+    // * @return name of the root context node
+    // */
+    // public String getRootName();
+    //
+    // /**
+    // * Assigns a root name for this service context.
+    // *
+    // * @param rootName
+    // * name of the root context node
+    // */
+    // public void setRootName(String rootName);
 
     /**
      */
@@ -391,7 +407,8 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @param metacontext
      *            The metacontext to set.
      */
-    public void setMetacontext(Hashtable<String, Map<String, String>> metacontext);
+    public void setMetacontext(
+            Hashtable<String, Map<String, String>> metacontext);
 
     /**
      * Returns the exertion associated with this context.
@@ -401,18 +418,28 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public Exertion getExertion();
 
     /**
+     * Returns the service provider associated with this context
+     *
+     * @return Provider
+     */
+    public Provider getProvider();
+
+    /**
      * Returns the path of the return value associated with this context
      *
      * @return The context path
      */
     public ReturnPath<T> getReturnPath();
 
-    public T getReturnValue(Parameter... entries) throws ContextException;
+    public T getReturnValue(Arg... entries) throws ContextException,
+            RemoteException;
 
     /**
-     * Returns the context a path prefix associated with this context, if any.
+     * Returns the path of the executor associated with this context
+     *
+     * @return The context path
      */
-    public String getPrefix();
+    public ExecPath getExecPath();
 
     /**
      * @param task
@@ -468,36 +495,15 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return this context value
      * @throws ContextException
      */
-    public Object get(String path);
+    public T get(String path);
 
-    /**
-     * Returns an evaluated value of the key object. If the key's direct object
-     * implements the Evaluation interface then it returns getValue() of that
-     * key object, otherwise it returns the key object.
-     *
-     * @param path
-     *            the attribute-based key
-     * @return this context value
-     * @throws ContextException
-     */
-    public T getValue(String path, Parameter... entries)
-            throws ContextException;
+    public T asis(String path) throws ContextException;
 
-    /**
-     * Returns an evaluated value of the key object if key exists, otherwise it
-     * return the defaultValue.
-     *
-     * @param path
-     *            the attribute-based key
-     * @return this context value
-     * @throws ContextException
-     */
-    public Object getValue(String path, Object defaultValue)
-            throws ContextException;
+    public void setReturnValue(Object value) throws ContextException;
 
-    public Object setReturnValue(Object value) throws ContextException;
+    public URL getURL(String path) throws ContextException;
 
-    public Object putValue(String path, Object value) throws ContextException;
+    public Object addValue(Identifiable value) throws ContextException;
 
     public Object putValue(String path, Object value, String association)
             throws ContextException;
@@ -553,7 +559,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
             throws ContextException;
 
     /**
-     * Removes the {@link sorcer.core.context.ContextLink} object pointed to by path. If object is
+     * Removes the {@link ContextLink} object pointed to by path. If object is
      * not a context link, a ContextException will be thrown.
      *
      * @throws ContextException
@@ -595,8 +601,8 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * that search relations are more stable than user friendly context paths.
      *
      * Tuple attributes and relations must first be registered with the context
-     * with (addAttribute}, addProperty, and addRelation)
-     * before they are used in contexts.
+     * with (addAttribute}, addProperty, and addRelation) before they are used
+     * in contexts.
      *
      * @param path
      *            the location in the context namespace
@@ -773,7 +779,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * general can be different. To examine metapaths in linked contexts, call
      * getLocalMetapath operating on the <code>ServiceContext</code> that is
      * linked (which can be obtained, for example, from the getContext method of
-     * {@link sorcer.core.context.ContextLink} objects. Returns <code>null</code> if not defined.
+     * {@link ContextLink} objects. Returns <code>null</code> if not defined.
      *
      * Metapaths are set using {@link #getLocalMetapath}
      *
@@ -782,7 +788,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      *
      * @return the metapath or <code>null</code> if not defined
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      * @see #setAttribute
      * @see #getAttributes
      */
@@ -798,7 +804,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Enumeration<?> contextPaths() throws ContextException;
 
@@ -824,49 +830,62 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
     /**
      * Returns an {@link Enumeration} of the locations of the first-level
-     * {@link sorcer.core.context.ContextLink} objects in this context. The enumeration does not
+     * {@link ContextLink} objects in this context. The enumeration does not
      * include ContextLink objects that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Enumeration<?> localLinkPaths() throws ContextException;
 
     /**
      * Returns an {@link Enumeration} of the locations of the
-     * {@link sorcer.core.context.ContextLink} objects in this context. The enumeration includes
+     * {@link ContextLink} objects in this context. The enumeration includes
      * ContextLink objects that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Enumeration<?> linkPaths() throws ContextException;
 
     /**
-     * Returns an {@link Enumeration} of all the {@link sorcer.core.context.ContextLink} objects in
+     * Returns an {@link Enumeration} of all the {@link ContextLink} objects in
      * this context including any ContextLinks that reside in linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Enumeration<?> links() throws ContextException;
 
     /**
-     * Returns an {@link Enumeration} of the top-level {@link sorcer.core.context.ContextLink}
+     * Returns an {@link Enumeration} of the top-level {@link ContextLink}
      * objects in this context. Does not include ContextLinks that reside in
      * linked contexts.
      *
      * @return <code>Enumeration</code>
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Enumeration<?> localLinks() throws ContextException;
 
     /**
-     * Returns the {@link sorcer.core.context.ContextLink} object that resides at path in the
+     * Links the argument <code>context</code> to this context at a given path
+     * with its offset path. The last attribute of the path is the root of the
+     * linked subcontext of the <code>context</code>.
+     *
+     * @param context
+     * @param atPath
+     * @param offset
+     * @throws ContextException
+     */
+    public Object link(Context context, String atPath, String offset)
+            throws ContextException;
+
+    /**
+     * Returns the {@link ContextLink} object that resides at path in the
      * context. This method is necessary since ContextLink objects are otherwise
      * transparent. For example, getValue(path) returns a value in the linked
      * context, not the LinkedContext object.
@@ -876,7 +895,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * @return <code>ContextLink</code> if a ContextLink object resides at path;
      *         <code>null</code> otherwise.
      * @throws ContextException
-     * @see sorcer.core.context.ContextLink
+     * @see ContextLink
      */
     public Link getLink(String path) throws ContextException;
 
@@ -884,41 +903,41 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
      * Allocates a value in the context with the directional attribute set to
      * DA_IN.
      */
-    public Object putInValue(String path, Object value) throws ContextException;
+    public T putInValue(String path, T value) throws ContextException;
 
     /**
      * Allocates a value in the context with the directional attribute set to
      * DA_OUT.
      */
-    public Object putOutValue(String path, Object value)
+    public T putOutValue(String path, T value)
             throws ContextException;
 
     /**
      * Allocates a value in the context with the directional attribute set to
      * DA_INOUT.
      */
-    public Object putInoutValue(String path, Object value)
+    public T putInoutValue(String path, T value)
             throws ContextException;
 
     /**
      * Allocates a value in the context with the directional attribute set to
      * DA_IN.
      */
-    public Object putInValue(String path, Object value, String association)
+    public T putInValue(String path, T value, String association)
             throws ContextException;
 
     /**
      * Allocates a value in the context with the directional attribute set to
      * DA_OUT.
      */
-    public Object putOutValue(String path, Object value, String association)
+    public T putOutValue(String path, T value, String association)
             throws ContextException;
 
     /**
      * Allocates a value in the context with the directional attribute set to
      * DA_INOUT.
      */
-    public Object putInoutValue(String path, Object value, String association)
+    public T putInoutValue(String path, T value, String association)
             throws ContextException;
 
     /**
@@ -952,7 +971,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
 
     /**
      * Removes a context node from the context. If the designated path points to
-     * a {@link sorcer.core.context.ContextLink} object, a {@link ContextException} will be thrown.
+     * a {@link ContextLink} object, a {@link ContextException} will be thrown.
      * Use {@link #removeLink} to remove link contexts.
      *
      * @see #removeLink
@@ -1016,8 +1035,7 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Returns all singleton attributes for the context. Descends into linked
      * contexts to retrieve underlying singleton attributes (see
-     * {@link #getAttributes} which does not look in linked
-     * contexts).
+     * {@link #getAttributes} which does not look in linked contexts).
      *
      * @return Enumeration of meta attributes (all of type <code>String</code>)
      * @throws ContextException
@@ -1057,7 +1075,8 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Returns all meta attributes for the context. Descends into linked
      * contexts to retrieve underlying meta attributes (see
-     * {@link #localCompositeAttributes} which does not look in linked contexts).
+     * {@link #localCompositeAttributes} which does not look in linked
+     * contexts).
      *
      * @return Enumeration of meta attributes (all of type <code>String</code>)
      * @throws ContextException
@@ -1068,8 +1087,8 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     /**
      * Returns all attributes (singleton and meta) for the context. Descends
      * into linked contexts to retrieve underlying attributes (see
-     * {@link #localCompositeAttributes} or {@link #getAttributes}
-     * which do not look in linked contexts).
+     * {@link #localCompositeAttributes} or {@link #getAttributes} which do not
+     * look in linked contexts).
      *
      * @return Enumeration of attributes (all of type <code>String</code>)
      * @throws ContextException
@@ -1089,13 +1108,6 @@ public interface Context<T> extends Serializable, Evaluation<T>, Revaluation,
     public Object getData();
 
     public int size();
-
-    public enum Value {
-        NULL, NONE, ALL, FREE
-    }
-
-    public final Value ALL = Value.ALL;
-    public final Value NONE = Value.NONE;
 
     public enum Type {
         ASSOCIATIVE, SHARED, POSITIONAL, LIST, INDEXED, ARRAY

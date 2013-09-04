@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,35 +24,35 @@ import sorcer.core.provider.ProviderException;
  * extend their functionalty via calls on partners. This interface complements
  * {@link Outer} interface for setting inner and admin proxies, while
  * {@link Outer} defines partnership accessors.
- * 
+ *
  * @author Mike Sobolewski
  */
 public interface Partnership {
 
-	/**
-	 * Sets an inner Remote proxy for this proxy. The inner proxy usually is
-	 * exported by the service provider setting the inner proxy. The outer proxy
-	 * can invoke methods on its inner proxy to extend its functionality
-	 * accordingly.
-	 * <p>
-	 * This function may be called multiple times for each inner proxy. In this
-	 * case, the implementor should check the instance type of inner.
-	 * 
-	 * @param inner
-	 *            an inner proxy object
-	 * @throws sorcer.core.provider.ProviderException
-	 */
-	public void setInner(Object inner) throws ProviderException;
+    /**
+     * Sets an inner Remote proxy for this proxy. The inner proxy usually is
+     * exported by the service provider setting the inner proxy. The outer proxy
+     * can invoke methods on its inner proxy to extend its functionality
+     * accordingly.
+     * <p>
+     * This function may be called multiple times for each inner proxy. In this
+     * case, the implementor should check the instance type of inner.
+     *
+     * @param inner
+     *            an inner proxy object
+     * @throws ProviderException
+     */
+    public void setInner(Object inner) throws ProviderException;
 
-	/**
-	 * Returns the inner proxy of this provider. Inner proxies can be provided
-	 * by the registering provider of this proxy or by third party providers.
-	 * This proxy extends its local functionality by invoking remote methods on
-	 * its inner proxy.
-	 * 
-	 * @return an inner proxy of thos proxy
-	 * @throws ProviderException
-	 */
+    /**
+     * Returns the inner proxy of this provider. Inner proxies can be provided
+     * by the registering provider of this proxy or by third party providers.
+     * This proxy extends its local functionality by invoking remote methods on
+     * its inner proxy.
+     *
+     * @return an inner proxy of thos proxy
+     * @throws ProviderException
+     */
 
-	public void setAdmin(Object admin) throws ProviderException;
+    public void setAdmin(Object admin) throws ProviderException;
 }

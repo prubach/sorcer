@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.util.bdb.objects;
+
+import java.io.File;
+
+import sorcer.core.provider.ProviderRuntime;
+import sorcer.service.ServiceExertion;
 
 import com.sleepycat.bind.serial.ClassCatalog;
 import com.sleepycat.bind.serial.StoredClassCatalog;
 import com.sleepycat.bind.serial.TupleSerialKeyCreator;
 import com.sleepycat.bind.tuple.TupleInput;
 import com.sleepycat.bind.tuple.TupleOutput;
-import com.sleepycat.je.*;
-import sorcer.core.provider.ProviderRuntime;
-import sorcer.service.ServiceExertion;
-
-import java.io.File;
+import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
+import com.sleepycat.je.DatabaseException;
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.ForeignKeyDeleteAction;
+import com.sleepycat.je.SecondaryConfig;
+import com.sleepycat.je.SecondaryDatabase;
 
 /**
  * SorcerDatabase defines the storage containers, indices and foreign keys for

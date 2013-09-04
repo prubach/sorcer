@@ -18,8 +18,11 @@ package sorcer.service;
  */
 
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
+
+import static sorcer.service.Signature.Type;
 
 /**
  * Methods for creating Signature objects; extracted from sorcer.eo.operator.
@@ -33,16 +36,16 @@ public class SignatureFactory {
             throws SignatureException {
         Signature sig;
         if (serviceType.isInterface()) {
-            sig = new NetSignature(operation, serviceType, providerName);
+			sig = new NetSignature(operation, serviceType, SorcerEnv.getActualName(providerName));
         } else {
             sig = new ObjectSignature(operation, serviceType);
         }
         // default Operation type = SERVICE
-        sig.setType(Signature.Type.SRV);
+		sig.setType(Type.SRV);
         if (parameters.length > 0) {
             for (Object o : parameters) {
-                if (o instanceof Signature.Type) {
-                    sig.setType((Signature.Type) o);
+				if (o instanceof Type) {
+					sig.setType((Type) o);
                 } else if (o instanceof ReturnPath) {
                     sig.setReturnPath((ReturnPath) o);
                 }
@@ -52,7 +55,7 @@ public class SignatureFactory {
     }
 
     public static Signature sig(String operation, Class serviceType) throws SignatureException {
-        return sig(operation, serviceType, null, Signature.Type.SRV);
+        return sig(operation, serviceType, null, Type.SRV);
     }
 
 }

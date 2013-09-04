@@ -1,25 +1,8 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/* 
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ * Copyright 2013 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,6 +31,7 @@ import java.io.Serializable;
  * 
  * @author Mike Sobolewski
  */
+@SuppressWarnings("rawtypes")
 public interface Link extends Serializable {
 
 	/**
@@ -91,6 +75,11 @@ public interface Link extends Serializable {
 	public void setContext(Context ctxt);
 
 	/**
+	 * Returns the context associated with this link.
+	 */
+	public Context getContext() throws ContextException;
+	
+	/**
 	 * Returns true if the linked dataContext associated with this link is enclosed
 	 * into the link, otherwise false.
 	 * 
@@ -120,6 +109,4 @@ public interface Link extends Serializable {
 
     Context getContext(SorcerPrincipal principal)
             throws ContextException;
-
-    Context getContext() throws ContextException;
 }

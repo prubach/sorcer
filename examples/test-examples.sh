@@ -63,7 +63,7 @@ ex0 ( ) {
 
 ex1 ( ) {
   ## ex1 run-bean
-  # Enabling tests on this module will generate RuntimeExceptions that are 
+  # Enabling tests on this module will generate RuntimeExceptions thatT are
   # thrown on purpose by the second provider (whoIsIt2...)
   EX=ex1
   mkdir $LOG_DIR/$EX
@@ -113,10 +113,9 @@ ex2 ( ) {
   ant -f worker3-prv-run.xml > $LOG_DIR/$EX/worker3-prv-run.log &
   sleep 5
   cd $EX_DIR/$EX/$EX-req/
-  ant -f work-task-app-run.xml > $LOG_DIR/$EX/req.log
-  ant -f work-singleton-app-run.xml >> $LOG_DIR/$EX/req.log
-  ant -f work-seqJob-app-run.xml >> $LOG_DIR/$EX/req.log
-  ant -f work-parJob-app-run.xml >> $LOG_DIR/$EX/req.log
+  ant -f worker-task-app-run.xml > $LOG_DIR/$EX/req.log
+  ant -f worker-singleton-app-run.xml >> $LOG_DIR/$EX/req.log
+  ant -f worker-job-app-run.xml >> $LOG_DIR/$EX/req.log
 }
 
 
@@ -130,9 +129,9 @@ ex3 ( ) {
   ant -f worker3-prv-run.xml > $LOG_DIR/$EX/worker3-prv-run.log &
   sleep 8
   cd $EX_DIR/$EX/$EX-req/
-  ant -f context-work-req-run.xml > $LOG_DIR/$EX/req.log
-  ant -f piped-work-req-run.xml >> $LOG_DIR/$EX/req.log
-  ant -f strategy-work-req-run.xml >> $LOG_DIR/$EX/req.log
+  ant -f context-worker-req-run.xml > $LOG_DIR/$EX/req.log
+  ant -f piped-worker-req-run.xml >> $LOG_DIR/$EX/req.log
+  ant -f strategy-worker-req-run.xml >> $LOG_DIR/$EX/req.log
 }
 
 ex4 ( ) {
@@ -145,9 +144,9 @@ ex4 ( ) {
   ant -f worker3-prv-run.xml > $LOG_DIR/$EX/worker3-prv-run.log &
   sleep 8
   cd $EX_DIR/$EX/$EX-req/
-  ant -f compositeJobRequestor-req-run.xml > $LOG_DIR/$EX/req.log
-  ant -f parMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
-  ant -f seqMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log  
+  ant -f seqJob-req-run.xml > $LOG_DIR/$EX/req.log
+  ant -f parPullMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
+  ant -f seqPushMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
 }
 
 ex5 ( ) {

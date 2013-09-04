@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +15,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.Provider;
+import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
-import sorcer.service.*;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.ExecState;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
-
-import java.rmi.RemoteException;
-import java.util.Set;
 
 @SuppressWarnings("rawtypes")
 abstract public class SpaceExertDispatcher extends ExertDispatcher {
@@ -43,9 +52,13 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		//do nothing
 	}
 	
-	public SpaceExertDispatcher(Job job, Set<Context> sharedContext,
-                                boolean isSpawned, LokiMemberUtil memUtil, Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider);
+	public SpaceExertDispatcher(Job job,
+            Set<Context> sharedContext,
+            boolean isSpawned,
+            LokiMemberUtil memUtil,
+            Provider provider,
+            ProvisionManager provisionManager) throws ExertionException {
+		super(job, sharedContext, isSpawned, provider, provisionManager);
 		
 		space = SpaceAccessor.getSpace();
 		if (space == null) {
@@ -75,8 +88,9 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	}
 
 	public SpaceExertDispatcher(Job job, Set<Context> sharedContext,
-                                boolean isSpawned, Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider);
+            boolean isSpawned,
+            Provider provider) throws Throwable {
+		super(job, sharedContext, isSpawned, provider, null);
 
 	}
 
@@ -117,7 +131,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		notifyAll();
 	}
 
-	// abstract in ExertDispatcher
+	// abstract in ExertionDispatcher
 	protected void preExecExertion(Exertion exertion) throws ExertionException,
 			SignatureException {
 //		try {

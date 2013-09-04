@@ -202,7 +202,7 @@ public class ProviderAccessor extends ServiceAccessor implements
     protected Cataloger getCataloger(String serviceName) {
         boolean catIsOk;
         try {
-            catIsOk = Providers.isAlive((Provider) cataloger);
+            catIsOk = Accessor.isAlive((Provider) cataloger);
         } catch (Exception ignored) {
 			catIsOk = false;
 		}
@@ -237,7 +237,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 		try {
 			// check if the cataloger is alive then return a reqested service
 			// provider
-			if (Providers.isAlive((Provider) cataloger))
+			if (Accessor.isAlive((Provider) cataloger))
 				return cataloger.lookup(providerName, primaryInterface);
 			else {
 				// try to get a new cataloger and lookup again

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,27 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.context;
 
-import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.*;
-import sorcer.util.StringUtils;
-
-import java.util.*;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import static sorcer.core.SorcerConstants.APS;
-import static sorcer.core.SorcerConstants.CPS;
-import static sorcer.core.SorcerConstants.SEP;
+import net.jini.id.Uuid;
+import sorcer.core.SorcerConstants;
+import sorcer.core.context.eval.ContextNode;
+import sorcer.security.util.SorcerPrincipal;
+import sorcer.service.ComplexExertion;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
+import sorcer.service.Link;
+import sorcer.util.StringUtils;
+
+import static sorcer.core.SorcerConstants.*;
 
 /**
  * The Contexts class provides utility services to ServiceContext that are
  * required by requestors such as the the SORCER graphical user interface and
  * and any complex SORCER requestor or service provider.
- * 
- * @version $Revision: 1.5 $, $Date: 2007/08/15 22:11:10 $
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Contexts {
 
 	private static Logger logger = Logger.getLogger(Contexts.class.getName());
@@ -126,6 +140,8 @@ public class Contexts {
 	 * @param subpath
 	 *            the match string
 	 * @return a Vector of context values maching a path
+	 * @see #getStartsWithPaths
+	 * @see #getSortedStartsWithValues
 	 */
 	public static List getValuesStartsWith(Context context, String subpath)
 			throws ContextException {
@@ -216,7 +232,7 @@ public class Contexts {
 	 * @param subpath
 	 *            the match string
 	 * @return a Vector of matching paths
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static ArrayList getKeysStartsWith(Context context, String subpath)
 			throws ContextException {
@@ -239,6 +255,39 @@ public class Contexts {
 			return ids;
 		} else
 			return null;
+	}
+
+	public static void copyNodes(Context fromCntxt, Context toCntxt)
+			throws ContextException {
+		Enumeration enu = ((Hashtable) fromCntxt).keys();
+		String key;
+		Object val;
+		try {
+			while (enu.hasMoreElements()) {
+				key = (String) enu.nextElement();
+				val = toCntxt.getValue(key);
+
+				if (val instanceof ContextNode) {
+					// Util.debug(this, "old DataNode data =
+					// "+((DataNode)val).getData());
+					// Util.debug(this, "new DataNode data =
+					// "+((DataNode)fromCntxt.getValue(key)).getData());
+					((ContextNode) val).copy((ContextNode) fromCntxt
+							.getValue(key));
+					// Util.debug(this, "old DataNode data =
+					// "+((DataNode)val).getData());
+				} else if (!(key.equals(SORCER_VARIABLES_PATH))) {
+					toCntxt.putValue(key, fromCntxt.getValue(key));
+				}
+			}
+		} catch (MalformedURLException me) {
+			throw new ContextException("Caught MalformedURLException", me);
+		}
+
+		// remove sorcer variables from new context
+		// these objects are new objects and collide with old
+		// object IDs in original context
+		((Hashtable) toCntxt).remove(SORCER_VARIABLES_PATH);
 	}
 
     public static boolean containsContextVariables(Context cntxt) {
@@ -271,27 +320,6 @@ public class Contexts {
 					+ "There are no ContextVariables in " + "this context.");
 		}
 	}
-
-	// public static void restoreDependencies(Context cntxt)
-	// throws ContextException {
-	// if (containsContextVariables(cntxt)) {
-	// Hashtable h = null;
-	// h = getContextVariableMap(cntxt);
-	// Enumeration vals = h.elements();
-	//
-	// while (vals.hasMoreElements()) {
-	// Object obj = vals.nextElement();
-	// if (obj instanceof Observer) {
-	// try {
-	// ((Observer) obj).restoreDependencies();
-	// } catch (ObserverException e) {
-	// throw new ContextException(
-	// "A ServiceObserverException " + "was thrown", e);
-	// }
-	// }
-	// }
-	// }
-	// }
 
 	public static void deleteContextVariables(Context cntxt) {
 		if (containsContextVariables(cntxt)) {
@@ -335,7 +363,7 @@ public class Contexts {
 		if (cp.startsWith(Context.DA_IN)) {
 			cp0 = Context.DA_INOUT + cp.substring(Context.DA_IN.length());
 			fromContext.mark(toPath, Context.CONTEXT_PARAMETER
-					+ APS + cp0);
+					+ SorcerConstants.APS + cp0);
 		} else if (cp.startsWith(Context.DA_OUT)) {
 			// do nothing for now
 		} else {
@@ -348,9 +376,9 @@ public class Contexts {
 
 	public static String getFormattedOut(Context sc, boolean isHTML) {
 		// return context with outpaths
-		String inoutAssoc = Context.DIRECTION + APS
+		String inoutAssoc = Context.DIRECTION + SorcerConstants.APS
 				+ Context.DA_INOUT + APS;
-		String outAssoc = Context.DIRECTION + APS
+		String outAssoc = Context.DIRECTION + SorcerConstants.APS
 				+ Context.DA_OUT + APS;
 		String[] outPaths = null, inoutPaths = null;
 		try {
@@ -511,6 +539,126 @@ public class Contexts {
 				+ APS);
 		return value;
 	}
+	
+	public static ContextNode[] getContextNodes(Context context)
+			throws ContextException {
+		Enumeration e = context.contextPaths();
+		java.util.Set nodes = new HashSet();
+		Object obj = null;
+		while (e.hasMoreElements()) {
+			obj = e.nextElement();
+			if (obj != null && obj instanceof ContextNode)
+				nodes.add(obj);
+		}
+		ContextNode[] nodeArray = new ContextNode[nodes.size()];
+		nodes.toArray(nodeArray);
+		return nodeArray;
+	}
+
+	/**
+	 * Returns all context nodes recursively in this context and all its emebded
+	 * contexts, tasks, and jobs.
+	 * 
+	 * @param context
+	 *            a servcie context
+	 * @return a list -f {@link ContextNodes}.
+	 * @throws ContextException
+	 */
+	public static ContextNode[] getAllContextNodes(Context context)
+			throws ContextException {
+		List allNodes = null;
+		List additional = null;
+		try {
+			allNodes = Arrays.asList(getContextNodes(context));
+			for (Object obj : allNodes) {
+				if (((ContextNode) obj).getData() instanceof Context) {
+					additional = Arrays
+							.asList(getAllContextNodes((Context) obj));
+					if (additional.size() > 0)
+						allNodes.addAll(additional);
+				}
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		ContextNode[] result = new ContextNode[allNodes.size()];
+
+		allNodes.toArray(result);
+		return result;
+	}
+
+	public static ContextNode[] getTaskContextNodes(Exertion task)
+			throws ContextException {
+		List allNodes = new ArrayList();
+		List additional = null;
+
+		additional = Arrays.asList(getAllContextNodes(task.getContext()));
+		if (additional.size() > 0)
+			allNodes.addAll(additional);
+		ContextNode[] result = new ContextNode[allNodes.size()];
+
+		allNodes.toArray(result);
+		return result;
+	}
+
+	public static ContextNode[] getTaskContextNodes(ComplexExertion job)
+			throws ContextException {
+		List allNodes = new ArrayList();
+		List additional = null;
+
+		List<Exertion> exertions = ((ComplexExertion) job).getExertions();
+		for (Object exertion : exertions) {
+			if (exertion instanceof Exertion) {
+				additional = Arrays
+						.asList(getTaskContextNodes((Exertion) exertion));
+				if (additional.size() > 0)
+					allNodes.addAll(additional);
+			} else if (exertion instanceof ComplexExertion) {
+				additional = Arrays.asList(getTaskContextNodes((ComplexExertion) exertion));
+				if (additional.size() > 0)
+					allNodes.addAll(additional);
+			}
+		}
+		ContextNode[] result = new ContextNode[allNodes.size()];
+
+		allNodes.toArray(result);
+		return result;
+	}
+
+	public static ContextNode[] getContextNodesWithAttribute(Context sc,
+			String attribute) throws ContextException {
+		String[] paths = getPathsWithAttribute(sc, attribute);
+		java.util.Set nodes = new HashSet();
+		Object obj = null;
+		for (int i = 0; i < paths.length; i++) {
+			obj = sc.getValue(paths[i]);
+			if (obj != null && obj instanceof ContextNode)
+				nodes.add(obj);
+		}
+		ContextNode[] nodeArray = new ContextNode[nodes.size()];
+		nodes.toArray(nodeArray);
+		return nodeArray;
+	}
+
+	public static ContextNode[] getMarkedConextNodes(Context sc,
+			String association) throws ContextException {
+		String[] paths = getMarkedPaths(sc, association);
+		java.util.Set nodes = new HashSet();
+		Object obj = null;
+		for (int i = 0; i < paths.length; i++) {
+			obj = sc.getValue(paths[i]);
+			if (obj != null && obj instanceof ContextNode)
+				nodes.add(obj);
+		}
+		ContextNode[] nodeArray = new ContextNode[nodes.size()];
+		nodes.toArray(nodeArray);
+		return nodeArray;
+	}
+
+	public static ContextNode getMarkedConextNode(Context sc, String association)
+			throws ContextException {
+		return getMarkedConextNodes(sc, association)[0];
+	}
 
     public static Object[] getMarkedValues(Context sc, String association)
 			throws ContextException {
@@ -545,7 +693,7 @@ public class Contexts {
 	 * @param context
 	 *            a service context
 	 * @return an enumeration of matches for the given regular expression
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public List getPaths(String regex, Context context)
 			throws ContextException {
@@ -573,7 +721,7 @@ public class Contexts {
 	 * @param cntxt
 	 *            a service context
 	 * @return list of all paths marked as input
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static List<String> getInPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
@@ -636,7 +784,7 @@ public class Contexts {
 	 * @param cntxt
 	 *            a service context
 	 * @return list of all paths marked as data output
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static List<String> getOutPaths(Context cntxt) throws ContextException {
 		// get all the in and inout paths
@@ -689,7 +837,7 @@ public class Contexts {
 	 * @param cntxt
 	 *            a service context
 	 * @return map of all paths marked as data input
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static Hashtable getInPathsMap(Context cntxt)
 			throws ContextException {
@@ -718,7 +866,7 @@ public class Contexts {
 	 * @param cntxt
 	 *            a service context
 	 * @return map of all path marked as output with corresponding associations
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static Hashtable getOutPathsMap(Context cntxt)
 			throws ContextException {
@@ -738,6 +886,16 @@ public class Contexts {
 				inpaths.put(inoutPaths[i], cntxt.getMetaattributeValue(
 						inoutPaths[i], Context.CONTEXT_PARAMETER));
 		return inpaths;
+	}
+
+	public static void copyContextNodesFrom(Context toContext,
+			Context fromContext) throws ContextException {
+		// copy all sorcerNodes from fromContext to this context.
+		for (Enumeration e = fromContext.contextPaths(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			if (fromContext.getValue(key) instanceof ContextNode)
+				toContext.putValue(key, fromContext.getValue(key));
+		}
 	}
 
     public static Hashtable getContextParameterMap(Context sc) {
@@ -793,6 +951,30 @@ public class Contexts {
 	public static String getContextParameterDirection(String contextParameter) {
 		return (contextParameter == null) ? null : StringUtils.firstToken(
 				contextParameter, SEP);
+	}
+
+	public static Object putDirectionalValue(Context context, String path,
+			Object node, String attribute, String value)
+			throws ContextException {
+		Uuid contextID = context.getId();
+		if (value == null)
+			value = SorcerConstants.NULL;
+		StringBuffer sb = new StringBuffer();
+		sb
+				.append(Context.CONTEXT_PARAMETER)
+				.append(SorcerConstants.APS)
+				.append(attribute)
+				.append(SorcerConstants.APS)
+				.append(value)
+				.append(SorcerConstants.APS)
+				.append(
+						contextID == null ? SorcerConstants.NULL
+								: contextID);
+
+		if (node instanceof ContextNode)
+			((ContextNode) node).setDA(attribute);
+
+		return context.putValue(path, value, sb.toString());
 	}
 
     public static Enumeration getPathsWithoutLinkedPaths(
@@ -1106,7 +1288,7 @@ public class Contexts {
 	 * @param context
 	 *            a servcie context
 	 * @return Enumeration of associations (of type <code>String</code>)
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static Enumeration getAssociations(Context context)
 			throws ContextException {
@@ -1157,7 +1339,7 @@ public class Contexts {
 	 * @param key
 	 *            the location in the context
 	 * @return Enumeration of associations (of type <code>String</code>)
-	 * @throws sorcer.service.ContextException
+	 * @throws ContextException
 	 */
 	public static Enumeration getAssociations(Context context, String key)
 			throws ContextException {
@@ -1197,4 +1379,53 @@ public class Contexts {
 			return null;
 	}
 
+	public static boolean containsContextNodeWithMetaAssoc(Context context,
+			String metaAssoc) throws ContextException {
+		String attr, value, key;
+		Hashtable values;
+		attr = metaAssoc.substring(0, metaAssoc.indexOf(APS));
+		value = metaAssoc.substring(metaAssoc.indexOf(APS) + 1);
+		System.out.println("attr, value" + attr + "," + value);
+		if (!context.isMetaattribute(attr))
+			return false;
+		values = (Hashtable) context.getMetacontext().get(attr);
+		System.out.println("values" + values);
+		Enumeration e = values.keys();
+		while (e.hasMoreElements()) {
+			key = (String) e.nextElement();
+			if (values.get(key).equals(value))
+				if (((ServiceContext) context).get(key) instanceof ContextNode)
+					return true;
+		}
+		return false;
+	}
+
+	public static String[] getContextNodePathsWithAssoc(Context context,
+			String association) throws ContextException {
+		Vector contextNodes = new Vector();
+		String[] paths = getMarkedPaths(context, association);
+		if (paths == null)
+			return (String[]) null;
+		for (int i = 0; i < paths.length; i++)
+			if (context.getValue(paths[i]) instanceof ContextNode)
+				contextNodes.addElement(paths[i]);
+		String[] contextNodePaths = new String[contextNodes.size()];
+		contextNodes.copyInto(contextNodePaths);
+		return contextNodePaths;
+	}
+
+	public static String[] getContextNodePaths(Context context)
+			throws ContextException {
+		String path;
+		Vector contextNodes = new Vector();
+		Enumeration e = context.contextPaths();
+		while (e.hasMoreElements()) {
+			path = (String) e.nextElement();
+			if (context.getValue(path) instanceof ContextNode)
+				contextNodes.addElement(path);
+		}
+		String[] contextNodePaths = new String[contextNodes.size()];
+		contextNodes.copyInto(contextNodePaths);
+		return contextNodePaths;
+	}
 }

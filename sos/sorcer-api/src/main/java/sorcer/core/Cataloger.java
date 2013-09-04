@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.Map;
 
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.lookup.ServiceID;
@@ -23,10 +28,6 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceTemplate;
 import sorcer.service.Context;
-
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.HashMap;
 
 /**
  * Defines the interface for the SORCER catalog service. It is implemented by
@@ -121,7 +122,7 @@ public interface Cataloger extends Remote {
 			throws RemoteException;
 
 	/**
-	 * Returns a hash map with a key as service interface (those interfaces
+	 * Returns a map with a key as service interface (those interfaces
 	 * which are placed under package sorcer.provider or sorcer.core.provider)
 	 * and its value is a list of interface's method names.
 	 * 
@@ -129,7 +130,7 @@ public interface Cataloger extends Remote {
 	 *         method names.
 	 * @throws RemoteException
 	 */
-	public HashMap getProviderMethods() throws RemoteException;
+	public Map<String, String> getProviderMethods() throws RemoteException;
 
 	/**
 	 * Returns a String array of the providers currently on the network.

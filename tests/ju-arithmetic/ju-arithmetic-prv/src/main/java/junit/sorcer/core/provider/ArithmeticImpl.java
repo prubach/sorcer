@@ -23,6 +23,8 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 
 public class ArithmeticImpl implements Arithmetic {
+
+//public class ArithmeticImpl implements Arithmetic, Adder {
 	
 	private Arithmometer arithmometer = new Arithmometer();
 

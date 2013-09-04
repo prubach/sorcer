@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,6 @@
  */
 package sorcer.core.provider.proxy;
 
-import net.jini.core.constraint.RemoteMethodControl;
-import net.jini.id.ReferentUuid;
-import net.jini.id.Uuid;
-import net.jini.security.proxytrust.SingletonProxyTrustIterator;
-
-import net.jini.admin.Administrable;
-
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -32,8 +25,17 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.jini.admin.Administrable;
+import net.jini.core.constraint.RemoteMethodControl;
+import net.jini.id.ReferentUuid;
+import net.jini.id.Uuid;
+import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+import sorcer.util.Log;
 
 /**
  * The Service provider should wrap up the smart proxy/stub. The
@@ -44,68 +46,68 @@ import java.util.logging.Logger;
  * 
  * Functionality of Jini2.0 Security implemented by this ProviderProxy Ability to
  * set and get client constraints Ability to getProxyTrustIterator
- * 
+ *
  * Functionality of ReferentUuid The unique identifier assigned to the current
  * instance of this proxy class by the lookup discovery service. This ID is used
  * to determine equality between proxies.
  */
 
 @SuppressWarnings("rawtypes")
-public class ProviderProxy {
+public class ProviderProxy implements Serializable {
 
     static final long serialVersionUID = -242006752320266252L;
 
     protected final static Logger logger = Logger.getLogger(ProviderProxy.class.getName());
 
-	/**
-	 * Public static factory method that creates and returns an instance of
-	 * <code>java.lang.reflect.Proxy</code>. This proxy will implement the
-	 * semantics of ReferentUuid and jini2.0 security semantics if the server
-	 * passed onto the createServiceProxy method will implement
-	 * RemoteMethodControl.
-	 * 
-	 * @param proxy
-	 *            reference to the server object through which communication
-	 *            occurs between the client-side and server-side of the
-	 *            associated service.
-	 * @param proxyID
-	 *            the unique identifier assigned by the service to each instance
-	 *            of this proxy
-	 * 
-	 * @return an instance of <code>java.lang.reflect.Proxy</code> that
-	 *         implements <code>RemoteMethodControl</code> if the given
-	 *         <code>server</code> does.
-	 */
-	public static Object wrapServiceProxy(Object proxy, Uuid proxyID) {
+    /**
+     * Public static factory method that creates and returns an instance of
+     * <code>java.lang.reflect.Proxy</code>. This proxy will implement the
+     * semantics of ReferentUuid and jini2.0 security semantics if the server
+     * passed onto the createServiceProxy method will implement
+     * RemoteMethodControl.
+     *
+     * @param proxy
+     *            reference to the server object through which communication
+     *            occurs between the client-side and server-side of the
+     *            associated service.
+     * @param proxyID
+     *            the unique identifier assigned by the service to each instance
+     *            of this proxy
+     *
+     * @return an instance of <code>java.lang.reflect.Proxy</code> that
+     *         implements <code>RemoteMethodControl</code> if the given
+     *         <code>server</code> does.
+     */
+    public static Object wrapServiceProxy(Object proxy, Uuid proxyID) {
 
-		if (proxy == null)
-			throw new NullPointerException("Cannot have a server which is null");
+        if (proxy == null)
+            throw new NullPointerException("Cannot have a server which is null");
 
-		ReferentUuidInvocationHandler handler =
+        ReferentUuidInvocationHandler handler =
                 (proxy instanceof RemoteMethodControl) ?
                         new ConstrainableInvocationHandler(proxy, proxyID) :
                         new ReferentUuidInvocationHandler(proxy, proxyID);
 
         return Proxy.newProxyInstance(proxy.getClass().getClassLoader(),
-                                      handler.getInterfaces(proxy),
-                                      handler);
+                handler.getInterfaces(proxy),
+                handler);
     }
 
-	// -------------------------------ReferentUuidInvocationHandler------------------------------
-	private static class ReferentUuidInvocationHandler implements InvocationHandler, Serializable {
+    // -------------------------------ReferentUuidInvocationHandler------------------------------
+    private static class ReferentUuidInvocationHandler implements InvocationHandler, Serializable {
         private static final long serialVersionUID = 242006752320266247L;
-		protected final Object proxy;
-		protected final Uuid proxyID;
+        protected final Object proxy;
+        protected final Uuid proxyID;
 
-		public ReferentUuidInvocationHandler(Object proxy, Uuid proxyID) {
-			this.proxy = proxy;
-			this.proxyID = proxyID;
-		}
+        public ReferentUuidInvocationHandler(Object proxy, Uuid proxyID) {
+            this.proxy = proxy;
+            this.proxyID = proxyID;
+        }
 
-		public Class[] getInterfaces(Object proxy, Class... additionalInterfaces) {
-			Class[] interfaces = proxy.getClass().getInterfaces();
+        public Class[] getInterfaces(Object proxy, Class... additionalInterfaces) {
+            Class[] interfaces = proxy.getClass().getInterfaces();
             List<Class> list = new ArrayList<Class>();
-			for (Class c : interfaces) {
+            for (Class c : interfaces) {
                 if(!list.contains(c))
                     list.add(c);
             }
@@ -133,36 +135,36 @@ public class ProviderProxy {
         }
 
         private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-			s.defaultReadObject();
+            s.defaultReadObject();
 			/* Verify server */
-			if (proxy == null) {
-				throw new InvalidObjectException("ServerProxy.readObject "
-						+ "failure - server " + "field is null");
-			}// endif
+            if (proxy == null) {
+                throw new InvalidObjectException("ServerProxy.readObject "
+                        + "failure - server " + "field is null");
+            }// endif
 			/* Verify proxyID */
-			if (proxyID == null) {
-				throw new InvalidObjectException("ServerProxy.readObject "
-						+ "failure - proxyID " + "field is null");
-			}// endif
-		}// end readObject
+            if (proxyID == null) {
+                throw new InvalidObjectException("ServerProxy.readObject "
+                        + "failure - proxyID " + "field is null");
+            }// endif
+        }// end readObject
 
-		private void readObjectNoData() throws InvalidObjectException {
-			throw new InvalidObjectException(
-					"no data found when attempting to "
-							+ "deserialize FiddlerProxy instance");
-		}// end readObjectNoData
+        private void readObjectNoData() throws InvalidObjectException {
+            throw new InvalidObjectException(
+                    "no data found when attempting to "
+                            + "deserialize FiddlerProxy instance");
+        }// end readObjectNoData
 
-	}
+    }
 
-	private static class ConstrainableInvocationHandler extends ReferentUuidInvocationHandler {
+    private static class ConstrainableInvocationHandler extends ReferentUuidInvocationHandler {
 
-		public ConstrainableInvocationHandler(Object server, Uuid proxyID) {
-			super(server, proxyID);
-		}
+        public ConstrainableInvocationHandler(Object server, Uuid proxyID) {
+            super(server, proxyID);
+        }
 
-		public Class[] getInterfaces(Object server) {
-			return super.getInterfaces(server, RemoteMethodControl.class);
-		}
+        public Class[] getInterfaces(Object server) {
+            return super.getInterfaces(server, RemoteMethodControl.class);
+        }
 
         public Object invoke(Object server, Method m, Object[] args) throws Throwable {
             String selector = m.getName();
@@ -173,7 +175,7 @@ public class ProviderProxy {
             } else  if ("hashCode".equals(selector)) {
                 return proxyID.hashCode();
             } else if ("equals".equals(selector) && args.length == 1) {
-                return !(args.length != 1 || !(args[0] instanceof ReferentUuid)) && proxyID.equals(((ReferentUuid) args[0]).getReferentUuid());
+                return args[0] instanceof ReferentUuid && proxyID.equals(((ReferentUuid) args[0]).getReferentUuid());
             } else if ("toString".equals(selector)) {
                 return "refID=" + proxyID + " : proxy=" + proxy;
             } else if ("getConstraints".equals(selector)) {
@@ -189,33 +191,32 @@ public class ProviderProxy {
             try {
                 obj  = m.invoke(proxy, args);
             } catch (Exception e) {
-                logger.info("proxy method: " + m + " for args: " + args);
-                e.printStackTrace();
-                // TODO: Shouldn't it be allowed to throw Exceptions!!!!
-                // throw e;
+                logger.log(Level.WARNING, "proxy method: " + m + " for args: "
+                        + Arrays.toString(args), e.getMessage());
+                //e.printStackTrace();
             }
             return obj;
         }
 
-		private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
-			s.defaultReadObject();
+        private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+            s.defaultReadObject();
 			/* Verify server */
-			if (proxy == null) {
-				throw new InvalidObjectException("ServerProxy.readObject "
-						+ "failure - server " + "field is null");
-			}// endif
+            if (proxy == null) {
+                throw new InvalidObjectException("ServerProxy.readObject "
+                        + "failure - server " + "field is null");
+            }// endif
 			/* Verify proxyID */
-			if (proxyID == null) {
-				throw new InvalidObjectException("ServerProxy.readObject "
-						+ "failure - proxyID " + "field is null");
-			}// endif
-		}// end readObject
+            if (proxyID == null) {
+                throw new InvalidObjectException("ServerProxy.readObject "
+                        + "failure - proxyID " + "field is null");
+            }// endif
+        }// end readObject
 
-		private void readObjectNoData() throws InvalidObjectException {
-			throw new InvalidObjectException(
-					"no data found when attempting to "
-							+ "deserialize FiddlerProxy instance");
-		}// end readObjectNoData
-	}
+        private void readObjectNoData() throws InvalidObjectException {
+            throw new InvalidObjectException(
+                    "no data found when attempting to "
+                            + "deserialize FiddlerProxy instance");
+        }// end readObjectNoData
+    }
 
 }

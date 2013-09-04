@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
 
 import java.rmi.RemoteException;
@@ -43,9 +44,9 @@ import sorcer.util.StringUtils;
 import static sorcer.core.SorcerConstants.CPS;
 
 /**
- * A job is a composite service-oriented message comprised of {@link sorcer.service.Exertion}
- * instances with its own service {@link sorcer.service.Context} and a collection of service
- * {@link sorcer.service.Signature}s. The job's signature is usually referring to a
+ * A job is a composite service-oriented message comprised of {@link Exertion}
+ * instances with its own service {@link Context} and a collection of service
+ * {@link Signature}s. The job's signature is usually referring to a
  * {@link Jobber} and the job's context describes the composition
  * of component exertions as defined by the Interpreter programming pattern.
  * 
@@ -183,6 +184,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	}
 
 	public Exertion getMasterExertion() {
+        // Changes below fix master exertions 03.09.2013 PR
 		Uuid contextId = null;
 		try {
 			//contextName = (String) controlContext.getValue(ControlContext.MASTER_EXERTION);
@@ -419,7 +421,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	 * @param visited
 	 *            a set of visited exertions
 	 * @return true if this <code>Job</code> composite is a tree
-	 * @see sorcer.service.Exertion#isTree()
+	 * @see Exertion#isTree()
 	 */
 	public boolean isTree(Set visited) {
 		visited.add(this);
@@ -433,7 +435,15 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return true;
 	}
 
-    public Context getJobContext() {
+	public Exertion getExertion(int index) {
+		return exertions.get(index);
+	}
+	
+	public Context getContext() {
+		 return getJobContext();
+	}
+	
+	public Context getJobContext() {
 		ServiceContext cxt = new ServiceContext(name);
 		cxt.setSubject("job/data/context", name);
 		
@@ -503,12 +513,20 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 
 		return exti.getContext().getValue(contextPath);
 	}
-
-	public Object getValue(String path) throws ContextException {
-		if (path.indexOf(name) >= 0)
-			return getJobValue(path);
-		else
-			return super.getValue(path);
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Mappable#getValue(java.lang.String, sorcer.service.Arg[])
+	 */
+	@Override
+	public Object getValue(String path, Arg... args) throws ContextException {
+		if (path.startsWith("super")) {
+			return parent.getContext().getValue(path.substring(6), args);
+		} else {
+			if (path.indexOf(name) >= 0)
+				return getJobValue(path);
+			else
+				return dataContext.getValue(path, args);
+		}
 	}
 	
 	public Object putValue(String path, Object value) throws ContextException {
@@ -547,8 +565,27 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return value;
 	}
 	
-	public Object getJobReturnValue() throws ContextException {
-		return ((ServiceContext)getJobContext()).getReturnJobValue();
+	public ReturnPath getReturnJobPath() {
+		return dataContext.getReturnJobPath();
+	}
+	
+	@Override
+	public Object getReturnValue(Arg... entries) throws ContextException,
+			RemoteException {
+		ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
+		Object obj = null;
+		if (rp != null) {
+			if (rp.path == null || rp.path.equals("self")) {
+				return this;
+			} else if (rp.type != null) {
+				obj = rp.type.cast(getValue(rp.path));
+			} else {
+				obj = getValue(rp.path);
+			}
+		} else {
+			obj = getJobContext();
+		}
+		return obj;
 	}
 	
 	public Context getComponentContext(String path) {

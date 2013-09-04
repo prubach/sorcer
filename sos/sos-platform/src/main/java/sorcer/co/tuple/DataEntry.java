@@ -31,7 +31,7 @@ public class DataEntry<T2> extends Tuple2<String, T2> {
     public DataEntry(String path, T2 value) {
         T2 v = value;
         if (v == null)
-            v = (T2) Context.Value.NULL;
+            v = (T2) Context.none;
 
         this._1 = path;
         this._2 = v;

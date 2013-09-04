@@ -17,9 +17,9 @@
  */
 package sorcer.ex1.requestor;
 
-import sorcer.ex1.Message;
-
 import java.io.Serializable;
+
+import sorcer.ex1.Message;
 
 public class RequestorMessage implements Message, Serializable {
 

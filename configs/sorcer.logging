@@ -79,8 +79,8 @@ sorcer.core.dispatchlevel=ALL
 #sorcer.core.dataContext.level=ALL
 #sorcer.jini.jeri.SorcerILFactory.level=ALL
 #org.sadun.text.ffp.level=OFF
-sorcer.ui.tools.level=FINER
-sorcer.util.level=ALL
+#sorcer.ui.tools.level=FINER
+#sorcer.util.level=ALL
 
 # JavaSpace logging
 #com.sun.jini.outrigger.level=FINER
@@ -90,12 +90,12 @@ sorcer.util.level=ALL
 #com.sun.jini.reggie.level=FINER
 
 # Additional loggers
-#net.jini.loader.pref.PreferredClassProvider.level = ALL
-#net.jini.jeri.tcp.client.level = FINEST
-#net.jini.jeri.BasicInvocationHandler.level = FINEST
-#net.jini.jeri.connection.ConnectionManager.level = FINEST
-#net.jini.lookup.ServiceDiscoveryManager.level = FINEST
-#net.jini.lookup.JoinManager = FINEST
+#net.jini.loader.pref.PreferredClassProvider.level=ALL
+#net.jini.jeri.tcp.client.level=FINEST
+#net.jini.jeri.BasicInvocationHandler.level=FINEST
+#net.jini.jeri.connection.ConnectionManager.level=FINEST
+#net.jini.lookup.ServiceDiscoveryManager.level=FINEST
+#net.jini.lookup.JoinManager=FINEST
 #net.jini.jrmp.JrmpExporter.level=FINER
 #net.jini.discovery.LookupDiscovery.level=FINER
 #com.sun.jini.start.service.starter.level=FINER

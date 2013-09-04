@@ -29,6 +29,8 @@ import sorcer.core.signature.ServiceSignature;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sorcer.service.Strategy.Access;
+import static sorcer.service.Strategy.Flow;
 import static sorcer.util.UnknownName.getUnknown;
 
 /**
@@ -57,8 +59,8 @@ public class TaskFactory {
         else
             tname = name;
         Task task = null;
-        Strategy.Access access = null;
-        Strategy.Flow flow = null;
+		Access access = null;
+		Flow flow = null;
         ControlContext cc = null;
         for (Object o : elems) {
             if (o instanceof ControlContext) {
@@ -69,10 +71,10 @@ public class TaskFactory {
                 ops.add((Signature) o);
             } else if (o instanceof String) {
                 tname = (String) o;
-            } else if (o instanceof Strategy.Access) {
-                access = (Strategy.Access) o;
-            } else if (o instanceof Strategy.Flow) {
-                flow = (Strategy.Flow) o;
+			} else if (o instanceof Access) {
+				access = (Access) o;
+			} else if (o instanceof Flow) {
+				flow = (Flow) o;
             }
         }
         Signature ss = null;
@@ -89,7 +91,7 @@ public class TaskFactory {
         if (ss != null) {
             if (ss instanceof NetSignature) {
                 try {
-                    task = new NetTask(tname, ss);
+					task = new NetTask(tname, (NetSignature) ss);
                 } catch (SignatureException e) {
                     throw new ExertionException(e);
                 }

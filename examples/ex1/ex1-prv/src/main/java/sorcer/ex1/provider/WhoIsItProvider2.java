@@ -17,7 +17,10 @@
  */
 package sorcer.ex1.provider;
 
-import com.sun.jini.start.LifeCycle;
+import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.util.logging.Logger;
+
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.ex1.Message;
@@ -26,20 +29,12 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.StringUtils;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import com.sun.jini.start.LifeCycle;
 
 public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 
-    public WhoIsItProvider2() throws RemoteException {
-        super();
-    }
-
 	public WhoIsItProvider2(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-        SorcerEnv.debug = true;
 	}
 
 	/* (non-Javadoc)
@@ -50,9 +45,8 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			ContextException {
 		String hostname;
 		try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            hostname = inetAddress.getHostName();
-            context.putValue("provider/hostname", hostname);
+			hostname = SorcerEnv.getHostName();
+			context.putValue("provider/hostname", hostname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message msg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(msg
@@ -72,7 +66,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			
 			Logger rl = getRemoteLogger();
 			if (rl != null)
-				rl.info(">>>>>>>>>>>> out dataContext: " + context);
+				rl.info(">>>>>>>>>>>> out context: " + context);
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -89,9 +83,9 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	@Override
 	public Context getHostAddress(Context context) throws RemoteException,
 			ContextException {
+		String ipAddress;
 		try {
-            InetAddress inetAddress = SorcerEnv.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
+			ipAddress = SorcerEnv.getLocalHost().getHostAddress();
 			context.putValue("provider/address", ipAddress);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
@@ -112,7 +106,7 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 			
 			Logger rl = getRemoteLogger();
 			if (rl != null)
-				rl.info(">>>>>>>>>>>> out dataContext: " + context);
+				rl.info(">>>>>>>>>>>> out context: " + context);
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
@@ -128,9 +122,9 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	 */
 	public Context getCanonicalHostName(Context context)
 			throws RemoteException, ContextException {
+		String fqname;
 		try {
-            InetAddress inetAddress = SorcerEnv.getLocalHost();
-            String fqname = inetAddress.getCanonicalHostName();
+			fqname = SorcerEnv.getLocalHost().getCanonicalHostName();
 			context.putValue("provider/fqname", fqname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
@@ -151,11 +145,6 @@ public class WhoIsItProvider2 extends ServiceTasker implements WhoIsIt {
 	public Context getTimestamp(Context context) throws RemoteException,
 			ContextException {
 		context.putValue("provider/timestamp", StringUtils.getDateTime());
-        String rhn = (String) context.getValue("requestor/hostname");
-        Message rmsg = (Message) context.getValue("requestor/message");
-        context.putValue("provider/message",
-                new ProviderMessage(rmsg.getMessage(), getProviderName(),
-                        rhn));
 		return context;
 	}
 }

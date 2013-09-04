@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.dispatch;
+
+import java.rmi.RemoteException;
+import java.util.Set;
 
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
@@ -25,18 +29,15 @@ import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
 
-import java.rmi.RemoteException;
-import java.util.Set;
-
 public class SpaceTaskDispatcher extends SpaceExertDispatcher {
-	
-	@SuppressWarnings("rawtypes")
-	public SpaceTaskDispatcher(NetTask task, Set<Context> sharedContexts,
-			boolean isSpawned, LokiMemberUtil myMemberUtil) throws Throwable {
-		if (space == null)
-			space = SpaceAccessor.getSpace();
-		// logger.info(this, "using space=" + Env.getSpaceName());
-		xrt = task;
+
+	public SpaceTaskDispatcher(final NetTask task, 
+            final Set<Context> sharedContexts,
+            final boolean isSpawned, 
+            final LokiMemberUtil myMemberUtil,
+            final ProvisionManager provisionManager) throws ExertionException, SignatureException {
+
+		this.xrt = task;
 		subject = task.getSubject();
 		this.sharedContexts = sharedContexts;
 		this.isSpawned = isSpawned;

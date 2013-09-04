@@ -22,7 +22,7 @@
 <project name="Who Is It? bean app1" default="run.requestor" basedir=".">
 
 	<!-- set property values here -->
-	<property name="requestor.class" value="sorcer.ex1.requestor.bean.WhoIsItBeanApp1" />
+	<property name="requestor.class" value="sorcer.ex1.requestor.bean.WhoIsItBeanRequestor1" />
 	<property name="run.arg1" value="Bean1-WhoIsIt?" />
 	<import file="req-run.xml" />	
 

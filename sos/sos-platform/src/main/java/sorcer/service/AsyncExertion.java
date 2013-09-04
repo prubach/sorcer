@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
+
+import java.util.Set;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-
-import java.util.Set;
 
 /**
  * An asynchronus exertion is a service-oriented indirect message with an
@@ -52,7 +53,7 @@ public interface AsyncExertion extends Exertion {
 	 * @throws ExertionException
 	 *             is an exertion invocation failed for any reason
 	 * @see Exertion#exert
-	 * @see Exertion#setServicer
+	 * @see Exertion#setService
 	 */
 	public Exertion request(Transaction txn) throws TransactionException,
 			InterruptedException, ExertionException;

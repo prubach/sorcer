@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.context;
 
-import sorcer.service.Context;
-
 import java.rmi.RemoteException;
+
+import sorcer.service.Context;
 
 /**
  * Context Management provides methods for managing contexts over the network.
@@ -29,7 +30,7 @@ import java.rmi.RemoteException;
 public class ContextManagementAdapter implements ContextManagement {
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#currentContextList(java.lang.String)
+	 * @see sorcer.core.context.ContextManagement#currentContextList(java.lang.String)
 	 */
 	@Override
 	public String[] currentContextList(String interfaceName)
@@ -38,7 +39,7 @@ public class ContextManagementAdapter implements ContextManagement {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#deleteContext(java.lang.String, java.lang.String)
+	 * @see sorcer.core.context.ContextManagement#deleteContext(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean deleteContext(String interfaceName, String methodName)
@@ -47,7 +48,7 @@ public class ContextManagementAdapter implements ContextManagement {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#getDataContext()
+	 * @see sorcer.core.context.ContextManagement#getContext()
 	 */
 	@Override
 	public Context getContext() throws RemoteException {
@@ -63,7 +64,7 @@ public class ContextManagementAdapter implements ContextManagement {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#getMethodContext(java.lang.String, java.lang.String)
+	 * @see sorcer.core.context.ContextManagement#getMethodContext(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Context getMethodContext(String interfaceName, String methodName)
@@ -72,7 +73,7 @@ public class ContextManagementAdapter implements ContextManagement {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#saveMethodContext(java.lang.String, java.lang.String, sorcer.service.Context)
+	 * @see sorcer.core.context.ContextManagement#saveMethodContext(java.lang.String, java.lang.String, sorcer.service.Context)
 	 */
 	@Override
 	public boolean saveMethodContext(String interfaceName, String methodName,
@@ -81,7 +82,7 @@ public class ContextManagementAdapter implements ContextManagement {
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.ContextManagement#getMethodContextScript(java.lang.String, java.lang.String)
+	 * @see sorcer.core.context.ContextManagement#getMethodContextScript(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public String getMethodContextScript(String interfaceName, String methodName)

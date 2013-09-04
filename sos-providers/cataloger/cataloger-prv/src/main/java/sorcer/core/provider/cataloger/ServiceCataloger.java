@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,21 @@
  */
 package sorcer.core.provider.cataloger;
 
-import com.sun.jini.start.LifeCycle;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -34,6 +48,7 @@ import sorcer.core.AdministratableProvider;
 import sorcer.core.Cataloger;
 import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.ContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
@@ -43,21 +58,8 @@ import sorcer.service.Context;
 import sorcer.service.Service;
 import sorcer.service.Task;
 
+import com.sun.jini.start.LifeCycle;
 import sorcer.util.StringUtils;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import static sorcer.core.SorcerConstants.*;
 
@@ -71,10 +73,10 @@ import static sorcer.core.SorcerConstants.*;
  * <li>It uses <code>ServiceDiscoveryManager</code> with lookup cache.<br>
  * <li>It uses an internal hash map for storing services called
  * {@link CatalogerInfo}
- * <li>The key of the map is an InterfaceList, the value is the vector
- * of service proxies
- * <li>InterfaceList is a list of interfaces with <code>containsAllInterfaces</code>
- * overridden such that for <code>(interfaceList1.containsAllInterfaces(interfaceList2)</code>
+ * <li>The key of the map is an {@link InterfaceList}, the value is the list
+ * of service proxies (<code>ServiceItem<code>s)
+ * <li>{@link InterfaceList} is a list of interfaces with <code>equals</code>
+ * overridden such that for <code>(interfaceList1.equals(interfaceList2)</code>
  * returns <code>true</code> if all elements contained in
  * <code>interfaceList2</code> are contained in <code>interfaceList1</code>.
  * <li><code>get</code> and <code>put</code> method of {@link CatalogerInfo} are
@@ -94,16 +96,16 @@ import static sorcer.core.SorcerConstants.*;
  * not only returns the serviceItem with the following specs, but also removes
  * and adds the sericeItem to the end of the list to provide load-balancing
  * 
- * <li>synchronized <code>getServiceItem(ServiceID serviceID)</code> returns a
+ * <li> synchronized <code>getServiceItem(ServiceID serviceID)</code> returns a
  * service with a serviceID, with the same load-balancing feature mentioned
  * above
  * 
- * <li>)<code>getServiceMethods())</code> returns a hash map with the key as a
+ * <li> <code>getServiceMethods())</code> returns a hash map with the key as a
  * service interface (those interfaces package name starting with
  * <code>sorcer.</code>) and its value is a list of interface's method names.
  * 
- * <li>)<code>getMethodContext(providerName, methodName))</code> returns the
- * template dataContext with which the provider is registered. This template dataContext
+ * <li> <code>getMethodContext(providerName, methodName))</code> returns the
+ * template context with which the provider is registered. This template context
  * is pulled out of the service attribute (Entry): {@link SorcerServiceInfo}.
  * </ol>
  */
@@ -132,9 +134,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			if (locators != null && locators.length > 0) {
 				specificLocators = new LookupLocator[locators.length];
 				for (int i = 0; i < specificLocators.length; i++) {
-
 					specificLocators[i] = new LookupLocator(locators[i]);
-
 				}
 			}
 			return specificLocators;
@@ -145,7 +145,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	}
 
 	public String[] getGroups() throws RemoteException {
-		return SorcerEnv.getLookupGroups();
+		String gs = getProperty(P_GROUPS);
+		String[] groups = (gs == null) ? SorcerEnv.getLookupGroups() : StringUtils
+				.tokenize(gs, ",");
+		return groups;
 	}
 
 	public ServiceTemplate getTemplate() throws RemoteException {
@@ -206,8 +209,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 			logger.info("-----------------------------");
 			logger.info("Matching services that are: " + templateMatch);
-			logger.info(P_GROUPS + ": " +  Arrays.toString(groups));
-			logger.info(P_LOCATORS + ": " +  Arrays.toString(specificLocators));
+			logger.info(P_GROUPS + ": " + Arrays.toString(groups));
+			logger.info(P_LOCATORS + ": " + Arrays.toString(specificLocators));
 			logger.info("------------------------------");
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -224,7 +227,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 					+ getProviderName());
 			h = new FileHandler(SorcerEnv.getHomeDir()
                     + "/logs/remote/local-Cataloger-" + delegate.getHostName()
-					+ "-" + getProviderName() + "%g.log", 2000000, 8, true);
+					+ "-" + getProviderName() + ".log", 2000000, 8, true);
             h.setFormatter(new SimpleFormatter());
             logger.addHandler(h);
 			logger.setUseParentHandlers(false);
@@ -257,7 +260,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * @throws RemoteException
 	 */
 	public Provider lookup(Class... serviceTypes) throws RemoteException {
-		return 	lookup(null, serviceTypes);
+		return lookup(null, serviceTypes);
 
 	}
 
@@ -279,8 +282,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			pn = null;
 		try {
 			ServiceItem sItem = cinfo.getServiceItem(serviceTypes, pn);
-            //logger.info("Cataloger lookup: " + Arrays.toString(serviceTypes)
-            //        + " result serviceID: " + sItem.serviceID.toString());
 			if (sItem != null && (sItem.service instanceof Provider))
 				return (Provider) sItem.service;
 		} catch (Throwable t) {
@@ -305,28 +306,42 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				: null;
 	}
 
-	public HashMap getProviderMethods() throws RemoteException {
-		if (cinfo == null) {
-			logger.info("Inside Null Get Provider Methods");
+	public Map<String, String> getProviderMethods() throws RemoteException {
+		if (cinfo == null)
 			return new HashMap();
-		} else {
-			logger.info("Not null Provider Methods");
-		}
-		logger.info("Outside Get Provider Methods");
-		return cinfo.getProviderMethods();
+		else
+			return cinfo.getProviderMethods();
 	}
 
+	/** Returns the list of available providers in this catalog.
+	 * 
+	 * @return
+	 * @throws RemoteException
+	 */
 	public String[] getProviderList() throws RemoteException {
-		if (cinfo == null)
+		Collection<List<ServiceItem>> c = cinfo.values();
+		if (c == null)
 			return new String[0];
 
-		return cinfo.getProviderList();
+		List<String> names = new ArrayList<String>();
+		for (List<ServiceItem> l : c) {
+			for (ServiceItem si : l) {
+				Entry[] attributes = si.attributeSets;
+				for (Entry a : attributes) {
+					if (a instanceof Name) {
+						names.add(((Name) a).name);
+						break;
+					}
+				}
+			}
+		}
+		String[] pns = new String[names.size()];
+		return names.toArray(pns);
 	}
 
 	public String[] getInterfaceList(String providerName)
 			throws RemoteException {
 		if (cinfo == null) {
-			logger.info("Inside Null Get Interface List");
 			return new String[0];
 		}
 		return cinfo.getInterfaceList(providerName);
@@ -335,7 +350,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public String[] getMethodsList(String providerName, String interfaceName)
 			throws RemoteException {
 		if (cinfo == null) {
-			logger.info("Inside Null Get Methods List");
 			return new String[0];
 		}
 		return cinfo.getMethodsList(providerName, interfaceName);
@@ -344,7 +358,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public Boolean deleteContext(String providerName, String interfaceName,
 			String methodName) throws RemoteException {
 		if (cinfo == null) {
-			logger.info("Inside Null Get Methods List");
 			return false;
 		}
 		return cinfo.deleteContext(providerName, interfaceName, methodName);
@@ -353,7 +366,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public String[] getSavedContextList(String providerName,
 			String interfaceName) throws RemoteException {
 		if (cinfo == null) {
-			logger.info("Inside Null Get Methods List");
 			return new String[0];
 		}
 		return cinfo.getSavedContextList(providerName, interfaceName);
@@ -362,16 +374,14 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public Context getContext(String providerName, String interfaceName,
 			String methodName) throws RemoteException {
 		if (cinfo == null) {
-			logger.info("Inside Null Get Context");
 			return null;
 		}
 		try {
             return cinfo.getContext(providerName, interfaceName,
                     methodName);
 		} catch (Exception e) {
-			logger.info("IRFAILED " + e.getMessage());
+			logger.log(Level.SEVERE, "IRFAILED", e);
 		}
-		logger.info("after cinfo get proxy");
 		return null;
 
 	}
@@ -405,13 +415,12 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			e.printStackTrace();
 		}
 		return new ServiceContext();
-
 	}
 
 	public Context getContexts(Class serviceType, String method)
 			throws RemoteException {
 		logger.info("interfaceName=" + serviceType + " method=" + method);
-		return cinfo.getContext(serviceType);
+		return cinfo.getContext(serviceType, method);
 	}
 
 	public String getServiceInfo() throws RemoteException {
@@ -419,36 +428,37 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	}
 
 	/**
-	 * A customized &quot;sorcer provider&quot; aware hash map of the cataloger
+	 * A customized &quot;sorcer provider&quot; aware a map of the cataloger
 	 * info.
 	 * <p>
-	 * The key the cataloger info is the <code>InterfaceList</code>. This inner
-	 * <code>InterfaceList</code> is an array list of interface names with
-	 * overridden <code>containsAllInterfaces</code> such that it follows the following
-	 * semantics: <code>arrayList1.containsAllInterfaces(arrayList2</code> iff all interfaces
-	 * of arrayList2 are contained in arrayList1<br>
+	 * The key of the cataloger info is the <code>InterfaceList</code>. This
+	 * inner <code>InterfaceList</code> is an array list of interface names with
+	 * overridden <code>equals</code> such that it follows the following
+	 * semantics: <code>arrayList1.equals(arrayList2</code> iff all interfaces
+	 * of arrayList2 are contained in arrayList1.<br>
 	 * The key value in <code>InterfaceList</code> is the list of service items
-	 * implementing its key interfaces<br>
-	 * Methods <code>get</code> and <code>put</code> are overridden to do
-	 * nothing.
+	 * implementing its key interfaces. Methods <code>get</code> and
+	 * <code>put</code> are overridden to do nothing.
 	 * <p>
-	 * <code>addServiceItem(SeviceItem)</code>: adds an entry to this hash map
-	 * such that the are key is the <code>InterfaceList</code> describing this
-	 * service. value is the serviceItem itself.
+	 * The method <code>addServiceItem(SeviceItem)</code> adds an entry to this map
+	 * such that the key is the <code>InterfaceList</code> describing this
+	 * service, the value is the serviceItem itself.
 	 * <p>
-	 * <code>getServiceItem(String[] interfaces, String providerName)</code>:
+	 * The method <code>getServiceItem(String[] interfaces, String providerName)</code>
 	 * not only returns the serviceItem with the following specs, but also
 	 * removes and adds the sericeItem to the end of the list to provide
 	 * load-balancing
 	 * <p>
-	 * <code>getServiceItem(ServiceID serviceID)</code> returns a service with a
+	 * The method <code>getServiceItem(ServiceID serviceID)</code> returns a service with a
 	 * given serviceID
 	 * <p>
-	 * <code>getProviderMethods</code> return a hask map of provider and
-	 * <code>serviceMethods</code>
+	 * The method <code>getProviderMethods</code> return a map of provider's
+	 * <code>service methods</code>
 	 */
-	protected static class CatalogerInfo extends ConcurrentHashMap implements Serializable {
+	protected static class CatalogerInfo extends ConcurrentHashMap<CatalogerInfo.InterfaceList, List<ServiceItem>> implements
+			Serializable {
 		private static final long serialVersionUID = 1L;
+		Cataloger cataloger = null;
 
 		private class CatalogObservable extends Observable {
 			public void tellOfAction(String action) {
@@ -463,7 +473,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		private CatalogObservable observable;
 
 		public CatalogerInfo() {
-            super();
+			super();
 			interfaceIgnoreList = new String[6];
 			interfaceIgnoreList[0] = "sorcer.core.Provider";
 			interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
@@ -472,15 +482,23 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			interfaceIgnoreList[4] = "net.jini.security.proxytrust.TrustEquivalence";
 			interfaceIgnoreList[5] = "sorcer.service.RemoteTasker";
 			observable = new CatalogObservable();
-
 		}
 
-		public Object put(Object key, Object value) {
+		public void setCataloger(Cataloger cataloger) {
+			this.cataloger = cataloger;
+		}
+
+		public void addObserver(Observer observer) {
+			// lookupMgr.setGUIBrowser(model);
+			observable.addObserver(observer);
+		}
+		
+		public List<ServiceItem> put(InterfaceList key, List<ServiceItem> value) {
 			return null;
 		}
 
-		public Object get(InterfaceList interfaceList) {
-			for (Object keyToGet : keySet()) {
+		public List<ServiceItem> get(InterfaceList interfaceList) {
+			for (InterfaceList keyToGet : keySet()) {
 				InterfaceList list = (InterfaceList) keyToGet;
 				if (list.containsAllInterfaces(interfaceList)) {
                     logger.info("Cataloger found matching interface list: " + Arrays.toString(list.toArray()));
@@ -491,33 +509,31 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			return null;
 		}
 
-        public Vector getAll(InterfaceList interfaceList) {
-            Vector sItems = new Vector();
-            for (Object keyToGet : keySet()) {
-                InterfaceList list = (InterfaceList) keyToGet;
-                if (list.containsAllInterfaces(interfaceList)) {
-                    logger.info("Cataloger found matching interface list: " + Arrays.toString(list.toArray()));
-
-                    sItems.addAll((Vector) super.get(keyToGet));
-                }
-            }
-            return sItems;
-        }
+		public List<ServiceItem> getAll(InterfaceList interfaceList) {
+			List<ServiceItem> sItems = new ArrayList<ServiceItem>();
+			for (InterfaceList keyToGet : keySet()) {
+				InterfaceList list = keyToGet;
+				if (list.containsAllInterfaces(interfaceList)) {
+					logger.info("Cataloger found matching interface list: " + list);
+					sItems.addAll(super.get(keyToGet));
+				}
+			}
+			return sItems;
+		}
 
 		public void addServiceItem(ServiceItem sItem) {
 			InterfaceList keyList = new InterfaceList(sItem.service.getClass()
 					.getInterfaces());
-            // BELOW is a fix of issue: #36
-			Vector sItems = (Vector) super.get(keyList);
-            // better heuristics
-            // add it to the head assuming the tail's busy
-            if (sItems == null)
+			List<ServiceItem> sItems = super.get(keyList);
+			if (sItems == null)
 				sItems = new Vector();
-
-            if (!sItems.contains(sItem)) {
-                sItems.add(0, sItem);
-                super.put(keyList, sItems);
+			// better heuristics
+			// add it to the head assuming the tail's busy
+			if (!sItems.contains(sItem)) {
+				sItems.add(0, sItem);
+				super.put(keyList, sItems);
 			}
+			logger.info("adding new service, calling notifiy");
 			observable.tellOfAction("UPDATEDPLEASE");
 		}
 
@@ -525,61 +541,61 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			InterfaceList searchInterfaceList = new InterfaceList(sItem.service
 					.getClass().getInterfaces());
 			InterfaceList key;
-			Vector value;
+			List<ServiceItem> value;
 
 			for (Enumeration e = keys(); e.hasMoreElements();) {
 				key = (InterfaceList) e.nextElement();
 				if (key.containsAllInterfaces(searchInterfaceList)) {
-					value = (Vector) get(key);
-                    if (value!=null) {
-                        if (value.size() == 1)
-                            remove(key);
-                        else
-                            removeFrom(value, sItem);
-                    }
+					value = get(key);
+					if (value != null) {
+						if (value.size() == 1)
+							remove(key);
+						else
+							removeFrom(value, sItem);
+					}
 				}
 			}
-            observable.tellOfAction("UPDATEDPLEASE");
+			observable.tellOfAction("UPDATEDPLEASE");
 		}
 
-		private void removeFrom(Vector sis, ServiceItem si) {
+		private void removeFrom(List<ServiceItem> sis, ServiceItem si) {
 			if (si.service == null)
 				return;
 			for (int i = 0; i < sis.size(); i++)
-				if (si.service.equals(((ServiceItem) sis.elementAt(i)).service)) {
-					sis.removeElementAt(i);
+				if (si.service.equals(((ServiceItem) sis.get(i)).service)) {
+					sis.remove(i);
 					return;
 				}
 		}
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			Set set = keySet();
 			InterfaceList key;
-			Vector sItems;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
+			List<ServiceItem> sItems;
+			Iterator<InterfaceList> it = keySet().iterator();
+			while (it.hasNext()) {
+				key = it.next();
+				sItems = get(key);
 				sb.append("\n");
-
-                if (sItems != null && sItems.size() > 0 && sItems.elementAt(0) != null) {
-					if (((ServiceItem) sItems.elementAt(0)).attributeSets[0] instanceof Name)
-						sb.append(((Name) (((ServiceItem) sItems.elementAt(0)).attributeSets[0])).name);
+				if (sItems != null && sItems.size() > 0
+						&& sItems.get(0) != null) {
+					if (sItems.get(0).attributeSets[0] instanceof Name)
+						sb.append(((Name) (sItems.get(0).attributeSets[0])).name);
 					else
-						sb.append(((ServiceItem) sItems.elementAt(0)).attributeSets[0]);
+						sb.append(sItems.get(0).attributeSets[0]);
+
 					for (int i = 1; i < sItems.size(); i++) {
-						if (((ServiceItem) sItems.elementAt(i)).attributeSets[0] instanceof Name)
+						if (sItems.get(i).attributeSets[0] instanceof Name)
 							sb.append(",")
-									.append(((Name) (((ServiceItem) sItems
-											.elementAt(i)).attributeSets[0])).name);
+									.append(((Name) (sItems
+											.get(i).attributeSets[0])).name);
 						else
 							sb.append(",")
-									.append(((ServiceItem) sItems.elementAt(i)).attributeSets[0]);
+									.append(((ServiceItem) sItems.get(i)).attributeSets[0]);
 					}
+					sb.append("==>\n");
+					sb.append(key);
 				}
-				sb.append("==>\n");
-				sb.append(key);
-
 			}
 			return sb.toString();
 		}
@@ -590,45 +606,44 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		 * first parameter = String[] of interfaces<br>
 		 * second parameter = providerName if any
 		 * <p>
-         *
 		 * This method provides automatic load balancing by providing the
 		 * serviceItem from the beginning and by removing it and adding to the
 		 * end upon each request.
 		 */
 		public ServiceItem getServiceItem(Class[] interfaces,
 				String providerName) {
-            //
-			Vector list = getAll(new InterfaceList(interfaces));
-			logger.fine("Cinfo getServiceItem, got: " + list);
-			if (ANY.equals(providerName))
+			List<ServiceItem> list = getAll(new InterfaceList(interfaces));
+			logger.info("Cinfo getServiceItem, got: " + list);
+			if (providerName != null && providerName.equals(ANY))
 				providerName = null;
 			if (list == null)
 				return null;
 
 			ServiceItem sItem;
-
 			// provide load balancing and check if still alive
 			if (providerName == null || providerName.length() == 0) {
-                   // synchronized (list) {
-                        do {
-                           if (list.size()==0) return null;
-                           sItem = (ServiceItem) list.remove(0);
-                           if (sItem!=null) {
-                               if (isAlive(sItem)) {
-                                   list.add(sItem);
-                                   return sItem;
-                               }
-                           }
-                        }  while (sItem!=null);
-                    //}
+				do {
+					if (list.size() == 0)
+						return null;
+					sItem = list.remove(0);
+					if (sItem != null) {
+						if (isAlive(sItem)) {
+							list.add(sItem);
+							return sItem;
+						} else {
+							// not Alive anymore removing from cataloger
+							// removeServiceItem(sItem);
+						}
+					}
+				} while (sItem != null);
 			} else {
 				net.jini.core.entry.Entry[] attrs;
 				for (int i = 0; i < list.size(); i++) {
-					attrs = ((ServiceItem) list.elementAt(i)).attributeSets;
+					attrs = list.get(i).attributeSets;
 					for (net.jini.core.entry.Entry et : attrs) {
-						if (et instanceof Name 
-								&& providerName.equals(((Name)et).name)) {
-							sItem = (ServiceItem) list.remove(i);
+						if (et instanceof Name
+								&& providerName.equals(((Name) et).name)) {
+							sItem = list.remove(i);
 							list.add(sItem);
 							return sItem;
 						}
@@ -643,21 +658,78 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		// we need to iterate through each and every one of the list and get the
 		// service
 		public ServiceItem getServiceItem(ServiceID serviceID) {
-			Collection c = values();
-			Vector sItems;
+			Collection<List<ServiceItem>> c = values();
+			if (c == null)
+				return null;
+			List<ServiceItem> sItems;
 			ServiceItem sItem;
-            for (Object aC : c) {
-                sItems = (Vector) aC;
+			for (Iterator<List<ServiceItem>> it = c.iterator(); it.hasNext();) {
+				sItems = it.next();
 				for (int i = 0; i < sItems.size(); i++) {
 					if (serviceID
-							.equals(((ServiceItem) sItems.elementAt(i)).serviceID)) {
-						sItem = (ServiceItem) sItems.remove(i);
+							.equals((sItems.get(i)).serviceID)) {
+						sItem = sItems.remove(i);
 						sItems.add(sItem);
 						return sItem;
 					}
 				}
 			}
 			return null;
+		}
+
+		public ServiceItem[] getServiceItems(Class[] interfaces,
+				String providerName, int maxItems) {
+			// if maxItems is less or 0 then get all possible ServiceItems
+			if (maxItems <= 0)
+				maxItems = Integer.MAX_VALUE;
+			if (providerName != null && providerName.equals(ANY))
+				providerName = null;
+			// logger.fine("Looking for interfaces: " + interfaces);
+			List<ServiceItem> list = get(new InterfaceList(interfaces));
+			// logger.fine("Got list: " + list.toString());
+			if (list == null)
+				return null;
+
+			ServiceItem sItem;
+			// provide load balancing
+			if (providerName == null || "".equals(providerName)) {
+				sItem = list.remove(0);
+				list.add(sItem);
+				ArrayList<ServiceItem> arItems = new ArrayList<ServiceItem>();
+				Iterator<ServiceItem> it = list.iterator();
+				while (it.hasNext() && arItems.size() < maxItems) {
+					// Check if provider is still alive
+					ServiceItem si = it.next();
+					if (isAlive(si) && (!arItems.contains(si)))
+						arItems.add(si);
+				}
+				ServiceItem[] sitems = new ServiceItem[arItems.size()];
+				for (int i = 0; i < arItems.size(); i++) {
+					sitems[i] = arItems.get(i);
+				}
+				return sitems;
+			} else {
+				net.jini.core.entry.Entry[] attrs;
+				List<ServiceItem> slist = new ArrayList<ServiceItem>();
+				Iterator<ServiceItem> it = list.iterator();
+				ServiceItem si = null;
+				while (it.hasNext() && slist.size() < maxItems) {
+					si = it.next();
+					attrs = si.attributeSets;
+					if (attrs != null && attrs.length > 0
+							&& (attrs[0] instanceof Name)
+							&& providerName.equals(((Name) attrs[0]).name)) {
+						if (isAlive(si) && (!slist.contains(si))) {
+							slist.add(si);
+						}
+					}
+				}
+				ServiceItem[] sitems = new ServiceItem[slist.size()];
+				for (int i = 0; i < slist.size(); i++) {
+					sitems[i] = slist.get(i);
+				}
+				return sitems;
+			}
 		}
 
 		/**
@@ -680,24 +752,21 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			}
 		}
 
-		public HashMap getProviderMethods() throws RemoteException {
+		public Map<String, String> getProviderMethods() throws RemoteException {
 			logger.info("Inside GetProviderMethods");
 			observable.tellOfAction("UPDATEDPLEASEPM");
-			HashMap map = new HashMap();
-			Collection c = values();
-			Vector sItems;
-
+			Map<String, String> map = new HashMap<String, String>();
+			Collection<List<ServiceItem>> c = values();
 			Type[] clazz;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
-            for (Object aC : c) {
-                sItems = (Vector) aC;
+			for (List<ServiceItem> sItems : c) {
 				// get the first service proxy
-				service = ((ServiceItem) sItems.get(0)).service;
+				service = sItems.get(0).service;
 				// get proxy interfaces
 				clazz = service.getClass().getInterfaces();
-				attributes = ((ServiceItem) sItems.get(0)).attributeSets;
+				attributes = sItems.get(0).attributeSets;
 				for (int i = 0; i < attributes.length; i++) {
 					if (service instanceof Proxy) {
 						if (attributes[i] instanceof Name) {
@@ -711,7 +780,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				if (service instanceof Service) {
 					if (map.get(serviceName) == null) {
 						map.put(serviceName, StringUtils.arrayToString(clazz)
-								+ ";;" + StringUtils.arrayToString(attributes)); // getInterfaceList(clazz,sorcerTypes));
+								+ ";;" + StringUtils.arrayToString(attributes));
 					}
 				}
 			}
@@ -720,96 +789,28 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		/**
-		 * Get provider list is a method to get a hashmap with the list of
-		 * providers and their service id.
+		 * Returns the list of providers for a given provider name.
 		 * 
-		 * @throws RemoteException
-		 */
-		public String[] getProviderList() throws RemoteException {
-			logger.info("Inside GetProviderList");
-			Vector<String> toReturn = new Vector<String>();
-			Collection c = values();
-			Vector sItems;
-			Object service;
-			String serviceName = null;
-			net.jini.core.entry.Entry[] attributes;
-			Set set = keySet();
-			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
-				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
-					// logger.info(">>>>>>>>> attributes: "+ service);
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
-					for (int i = 0; i < attributes.length; i++) {
-						if (service instanceof Provider) {
-							if (attributes[i] instanceof Name) {
-								serviceName = ((Name) attributes[i]).name;
-								break;
-							}
-						} else
-							serviceName = service.getClass().getName();
-					}
-					// list only interfaces of the Service type in package name
-					if (service instanceof Service) {
-						if (!toReturn.contains(serviceName)) {
-							toReturn.add(serviceName);
-							// map.put(serviceName,Util.arrayToString(clazz)+";;"+Util.arrayToString(attributes)
-							// ); // getInterfaceList(clazz,sorcerTypes)); //
-						}
-					}
-				}
-			}
-			// logger.info("getProviderList>>toReturn:\n" +
-			// toReturn.toString());
-
-			/*
-			 * Set set = keySet(); InterfaceList key; Vector sItems; //
-			 * ServiceItem sItem; for (Iterator it = set.iterator();
-			 * it.hasNext();) { key = (InterfaceList) it.next(); sItems =
-			 * (Vector) get(key); //sb.append(key).append("==>\n{"); String
-			 * name= for (int i = 0; i < sItems.size(); i++) { if
-			 * (((ServiceItem) sItems.elementAt(i)).attributeSets[0] instanceof
-			 * Name) name=(Name) (((ServiceItem)
-			 * sItems.elementAt(i)).attributeSets[0]).name; else
-			 * name=((ServiceItem) sItems.elementAt(i)).attributeSets[0]; }
-			 * sb.append("}\n"); }
-			 */
-			return toReturn.toArray(new String[toReturn.size()]);
-		}
-
-		/**
-		 * Get provider list is a method to get a hashmap with the list of
-		 * providers and their service id.
-		 * 
+		 * @return
 		 * @throws RemoteException
 		 */
 		public String[] getInterfaceList(String providerName)
 				throws RemoteException {
-			logger.info("Inside GetIntefaceList");
-			Collection c = values();
+			Collection<List<ServiceItem>> c = cinfo.values();
 			if (c == null) {
-				logger.info("Values is Null");
 				return new String[0];
 			}
-			Vector sItems;
-
 			Type[] interfaceList;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
-			Set set = keySet();
-			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			Set<InterfaceList> set = keySet();
+			for (InterfaceList key : set) {
+				List<ServiceItem> sItems = get(key);
 				for (int k = 0; k < sItems.size(); k++) {
-					service = ((ServiceItem) sItems.get(k)).service;
+					service = sItems.get(k).service;
 					// logger.info(".........  attributes: "+ service);
-					attributes = ((ServiceItem) sItems.get(k)).attributeSets;
+					attributes = sItems.get(k).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -826,7 +827,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						int count = 0;
 						for (int i = 0; i < interfaceList.length; i++) {
 							// logger.info("interface "+interfaceList[i].toString());
-
 							String currentInterface = interfaceList[i]
 									.toString().substring(10); // remove the
 							// interface
@@ -847,11 +847,9 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						count = 0;
 						for (int i = 0; i < interfaceList.length; i++) {
 							// logger.info("interface "+interfaceList[i].toString());
-
 							String currentInterface = interfaceList[i]
 									.toString().substring(10); // remove the
-							// interface
-							// part!
+							// interface part!
 							boolean onList = false;
 							for (int j = 0; j < interfaceIgnoreList.length; j++) {
 								if (currentInterface
@@ -877,13 +875,14 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		 * Get provider list is a method to get a hashmap with the list of
 		 * providers and their service id.
 		 * 
+		 * @return
 		 * @throws RemoteException
 		 */
 		public String[] getMethodsList(String providerName, String interfaceName)
 				throws RemoteException {
 			logger.info("Inside Get Methods List");
-			Collection c = values();
-			Vector sItems;
+			Collection<List<ServiceItem>> c = values();
+			List<ServiceItem> sItems;
 
 			Class[] interfaceList;
 			Object service;
@@ -891,15 +890,11 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			net.jini.core.entry.Entry[] attributes;
 			logger.info("Provider Name " + providerName + " interface name "
 					+ interfaceName);
-			Set set = keySet();
-			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			for (InterfaceList key : keySet()) {
+				sItems = get(key);
 				for (int k = 0; k < sItems.size(); k++) {
-					service = ((ServiceItem) sItems.get(k)).service;
-					attributes = ((ServiceItem) sItems.get(k)).attributeSets;
+					service = sItems.get(k).service;
+					attributes = sItems.get(k).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -909,10 +904,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						} else
 							serviceName = service.getClass().getName();
 					}
-                    if (serviceName != null && serviceName.equals(providerName)) {
-
+					if (serviceName.equals(providerName)) {
 						interfaceList = service.getClass().getInterfaces();
-
 						for (int i = 0; i < interfaceList.length; i++) {
 							if (interfaceList[i].toString().equals(
 									interfaceName)) {
@@ -937,35 +930,34 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		/**
-		 * Get provider list is a method to get a hashmap with the list of
+		 * Get provider list is a method to get a map with the list of
 		 * providers and their service id.
 		 * 
+		 * @return
 		 * @throws RemoteException
 		 */
 		public Context getContext(String providerName, String interfaceName,
 				String methodName) throws RemoteException {
 			logger.info("Inside Provider");
-			Collection c = values();
+			Collection<List<ServiceItem>> c = values();
 			if (c == null) {
 				logger.info("Values is Null");
 				return null;
 			}
-			Vector sItems;
+			List<ServiceItem> sItems;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
 			logger.info("Provider Name " + providerName + " interface name "
 					+ interfaceName);
-			Set set = keySet();
 			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			for (Iterator<InterfaceList> it = keySet().iterator(); it.hasNext();) {
+				key = it.next();
+				sItems = get(key);
 				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
+					service = sItems.get(j).service;
 					// >>>>>>>>>>>> attributes: "+ service);
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
+					attributes = sItems.get(j).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -976,11 +968,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-
-                        if (service instanceof Provider) {
+                        if (service instanceof ContextManagement) {
 							logger.info("service is a provider!");
 							try {
-								ServiceProvider temp = (ServiceProvider) service;
+								ContextManagement temp = (ContextManagement) service;
                                 return temp.getMethodContext(
                                         interfaceName, methodName);
 							} catch (Exception e) {
@@ -997,26 +988,22 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		public Boolean saveContext(String providerName, String interfaceName,
 				String methodName, Context theContext) throws RemoteException {
 			logger.info("Inside save dataContext");
-			Collection c = values();
+			Collection<List<ServiceItem>> c = values();
 			if (c == null) {
-				logger.info("Values is Null");
 				return null;
 			}
-			Vector sItems;
+			List<ServiceItem> sItems;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
-			logger.info("Provider Name " + providerName + " interface name "
-					+ interfaceName);
-			Set set = keySet();
 			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
+			for (Iterator<InterfaceList> it = keySet().iterator(); it.hasNext();) {
+				key = it.next();
+				sItems = get(key);
 				// sItems = (Vector) it.next();
 				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
+					service = sItems.get(j).service;
+					attributes = sItems.get(j).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -1027,7 +1014,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-
                         if (service instanceof Provider) {
 							logger.info("service is a provider!");
 							try {
@@ -1049,26 +1035,22 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		public Boolean deleteContext(String providerName, String interfaceName,
 				String methodName) {
 			logger.info("Inside delete dataContext");
-			Collection c = values();
+			Collection<List<ServiceItem>> c = values();
 			if (c == null) {
 				logger.info("Values is Null");
 				return false;
 			}
-			Vector sItems;
+			List<ServiceItem> sItems;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
-			logger.info("Provider Name " + providerName + " interface name "
-					+ interfaceName);
-			Set set = keySet();
 			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			for (Iterator<InterfaceList> it = keySet().iterator(); it.hasNext();) {
+				key = it.next();
+				sItems = get(key);
 				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
+					service = sItems.get(j).service;
+					attributes = sItems.get(j).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -1079,8 +1061,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-
-                        if (service instanceof Provider) {
+						if (service instanceof Provider) {
 							logger.info("service is a provider!");
 							try {
 								ServiceProvider temp = (ServiceProvider) service;
@@ -1102,24 +1083,21 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			logger.info("Inside get dataContext list");
 			Collection c = values();
 			if (c == null) {
-				logger.info("Values is Null");
 				return new String[0];
 			}
-			Vector sItems;
+			List<ServiceItem> sItems;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
 			logger.info("Provider Name " + providerName + " interface name "
 					+ interfaceName);
-			Set set = keySet();
 			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			for (Iterator<InterfaceList> it = keySet().iterator(); it.hasNext();) {
+				key = it.next();
+				sItems = get(key);
 				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
+					service = sItems.get(j).service;
+					attributes = sItems.get(j).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -1130,8 +1108,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-
-                        if (service instanceof Provider) {
+						if (service instanceof Provider) {
 							logger.info("service is a provider!");
 							try {
 								ServiceProvider temp = (ServiceProvider) service;
@@ -1149,27 +1126,21 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public Context exertService(String providerName, Class serviceType,
 				String methodName, Context theContext) throws RemoteException {
-			logger.info("Inside save dataContext");
-			Collection c = values();
+			Collection<List<ServiceItem>> c = values();
 			if (c == null) {
-				logger.info("Values is Null");
 				return null;
 			}
-			Vector sItems;
+			List<ServiceItem> sItems;
 			Object service;
 			String serviceName = null;
 			net.jini.core.entry.Entry[] attributes;
-			logger.info("Provider Name " + providerName + " interface name "
-					+ serviceType);
-			Set set = keySet();
 			InterfaceList key;
-            for (Object aSet : set) {
-                key = (InterfaceList) aSet;
-				sItems = (Vector) get(key);
-				// sItems = (Vector) it.next();
+			for (Iterator<InterfaceList> it = keySet().iterator(); it.hasNext();) {
+				key = it.next();
+				sItems = get(key);
 				for (int j = 0; j < sItems.size(); j++) {
-					service = ((ServiceItem) sItems.get(j)).service;
-					attributes = ((ServiceItem) sItems.get(j)).attributeSets;
+					service = sItems.get(j).service;
+					attributes = sItems.get(j).attributeSets;
 					for (int i = 0; i < attributes.length; i++) {
 						if (service instanceof Proxy) {
 							if (attributes[i] instanceof Name) {
@@ -1180,19 +1151,18 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-
-                        if (service instanceof Provider) {
+						if (service instanceof sorcer.core.Provider) {
 							logger.info("service is a provider!");
 							try {
-                                Provider temp = (Provider) service;
+								sorcer.core.Provider temp = (sorcer.core.Provider) service;
 								NetSignature method = new NetSignature(
 										methodName, serviceType);
 								Task task = new NetTask(serviceType
 										+ methodName, method);
 								task.setContext(theContext);
-                                NetTask task2 = (NetTask) temp
+								NetTask task2 = (NetTask) ((Service) temp)
 										.service(task, null);
-								return task2.getDataContext();
+								return task2.getContext();
 							} catch (Exception e) {
 								logger.info("error converting to provider"
 										+ e.getMessage());
@@ -1204,30 +1174,93 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			return null;
 		}
 
-        protected Context getContext(Class serviceType) {
-			InterfaceList iList = new InterfaceList(
-					new Class[] { serviceType });
-			logger.info("Going to serch hashmap for the interfaceList=" + iList
-					+ "\n catalogetMap=" + super.toString() + "\n");
-			Vector v = (Vector) get(iList);
-			logger.info("Got the following result v=" + v + "\n");
+		private List<String> getSelectorList(Class serviceType) {
+			Method[] methods = serviceType.getMethods();
+			List<String> selectors = new ArrayList<String>(methods.length);
+			for (int k = 0; k < methods.length; k++)
+				selectors.add(methods[k].getName());
+			return selectors;
+		}
+
+		/**
+		 * Returns a list of selectors of <code>serviceType</code> along with
+		 * hash tables per each interface. The hash table key is an interface
+		 * name and the value is a list of all interface selectors.
+		 * 
+		 * @param serviceType
+		 * @return list of selectors of serviceType and its superinterface hash
+		 *         tables
+		 */
+		private List<String> getInterfaceList(Class serviceType) {
+			Type type;
+			Type[] clazz = serviceType.getGenericInterfaces();
+			if (clazz.length == 0) {
+				return getSelectorList(serviceType);
+			}
+			ArrayList ilist = new ArrayList();
+			ilist.addAll(getSelectorList(serviceType));
+			Map<String, List<String>> imap;
+			for (int j = 0; j < clazz.length; j++) {
+				type = clazz[j];
+				imap = new HashMap();
+				imap.put(((Class) type).getName(),
+						getInterfaceList((Class) type));
+				ilist.add(imap);
+			}
+			return ilist;
+		}
+
+		/**
+		 * Returns a list of maps per each interface in the array clazz
+		 * such that they are registered by the service provider as sorcerTypes.
+		 * The hash table key is an interface name and the value is a list of
+		 * all interface selectors.
+		 * 
+		 * @param clazz
+		 *            the list of all types
+		 * @param sorcerTypes
+		 *            the registered types by a service provider
+		 * @return the list of superinterface hash tables
+		 */
+		private List<Map<String, List<String>>> getInterfaceList(Type[] clazz, List<String> sorcerTypes) {
+			Type serviceType;
+			ArrayList ilist = new ArrayList();
+			Map<String, List<String>> imap;
+			for (int j = 0; j < clazz.length; j++) {
+				serviceType = clazz[j];
+				if (sorcerTypes != null
+						&& sorcerTypes
+								.contains(((Class)serviceType).getName())) {
+					imap = new HashMap<String, List<String>>();
+					imap.put(((Class)serviceType).getName(),
+							getSelectorList((Class)serviceType));
+					ilist.add(imap);
+				}
+			}
+			return ilist;
+		}
+
+		public Context getContext(Class serviceType, String method) {
+			InterfaceList iList = new InterfaceList(new Class[] { serviceType });
+			List<ServiceItem> v = get(iList);
 			if (v == null || v.size() == 0)
 				return null;
-			net.jini.core.entry.Entry[] attributeSets = ((ServiceItem) v
-					.elementAt(0)).attributeSets;
-            for (int i = 0; i < attributeSets.length; i++)
+			net.jini.core.entry.Entry[] attributeSets = v.get(0).attributeSets;
+			SorcerServiceInfo socSrvType = null;
+			for (int i = 0; i < attributeSets.length; i++)
 				if (attributeSets[i] instanceof SorcerServiceInfo) {
-                    break;
+					socSrvType = (SorcerServiceInfo) attributeSets[i];
+					break;
 				}
-//			 return (socSrvType != null) ? socSrvType.getMethodContext(method)
-//			 : null;
+			// return (socSrvType != null) ? socSrvType.getMethodContext(method)
+			// : null;
 			return null;
 		}
 
 		/**
 		 * See above CatalogerInfo for comments.
 		 */
-		private static class InterfaceList extends ArrayList<Class> {
+		public static class InterfaceList extends ArrayList<Class> {
 			private static final long serialVersionUID = 1L;
 
 			public InterfaceList(Class[] clazz) {
@@ -1241,29 +1274,23 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				for (int i = 0; i < size(); i++) {
 					all.addAll(Arrays.asList(get(i).getInterfaces()));
 				}
-				if (getServiceList(all).containsAll(getServiceList(interfaceList))) {
-					return true;
-				} else {
-					return false;
-				}
+				return getServiceList(all).containsAll(
+						getServiceList(interfaceList));
 			}
 
-			private List<String> getServiceList(Collection<Class> interfaceCollection) {
+			private List<String> getServiceList(
+					Collection<Class> interfaceCollection) {
 				List<String> serviceList = new ArrayList<String>();
 				for (Class service : interfaceCollection) {
-					serviceList.add(""+service);
-                }
-                return serviceList;
-            }
+					serviceList.add("" + service);
+				}
+				return serviceList;
+			}
 
-            public boolean equals(Object otherList) {
-                return otherList != null && (otherList == this || otherList instanceof InterfaceList && equals((InterfaceList) otherList));
-            }
-
-            public boolean equals(InterfaceList otherList) {
-                return this.containsAllInterfaces(otherList) && otherList.containsAllInterfaces(this);
-            }
-
+			public boolean equals(InterfaceList otherList) {
+				return this.containsAllInterfaces(otherList)
+						&& otherList.containsAllInterfaces(this);
+			}
 		}// end of InterfaceList
 	}// end of CatalogerInfo
 
@@ -1359,7 +1386,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * 
 	 * @param tmpl
 	 *            - the template to match
-	 * @param maxMatches limit number of matches
+	 * @param maxMatches
 	 * @return a ServiceMatches instance that contains at most maxMatches items
 	 *         matching the template, plus the total number of items that match
 	 *         the template. The return value is never null, and the returned
@@ -1369,7 +1396,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public ServiceMatches lookup(ServiceTemplate tmpl, int maxMatches)
 			throws RemoteException {
         List<ServiceItem> result = new LinkedList<ServiceItem>();
-        for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : (Set<Map.Entry>) cinfo.entrySet()) {
+        for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : cinfo.entrySet()) {
             List<ServiceItem> serviceItems = entry.getValue();
             SRVITEM:
             for (ServiceItem serviceItem : serviceItems) {
@@ -1394,5 +1421,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
         }
         return new ServiceMatches(result.toArray(new ServiceItem[result.size()]), result.size());
     }
+	public String returnString() throws RemoteException {
+		return getClass().getName() + ":" + getProviderName();
+	}
 
 }

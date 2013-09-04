@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.service;
 
-import sorcer.core.context.ControlContext.ThrowableTrace;
+package sorcer.service;
 
 import java.util.List;
 
-public interface Strategy extends Parameter {
+import sorcer.core.context.ControlContext.ThrowableTrace;
+
+public interface Strategy extends Arg {
 
 	/**
 	 * There are three flow types of {@link Flow}s that can be associated

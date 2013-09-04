@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
 
 import java.io.Serializable;
@@ -39,7 +40,7 @@ import java.io.Serializable;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public interface Signature extends Serializable, Parameter {
+public interface Signature extends Serializable, Arg {
 
 	/**
 	 * Returns an operation name of this signature.
@@ -47,7 +48,7 @@ public interface Signature extends Serializable, Parameter {
 	 * @return name of signature
 	 */
 	public String getSelector();
-
+	
     /**
      * Returns a fragment of operation of this signature.
      * It's the part preceeding # in its selector.
@@ -55,8 +56,7 @@ public interface Signature extends Serializable, Parameter {
      * @return fragment of operation
      */
     public String getPrefix();
-
-    /**
+	/**
 	 * Returns a service provider name.
 	 * 
 	 * @return name of service provider
@@ -70,7 +70,7 @@ public interface Signature extends Serializable, Parameter {
 	 * 
 	 * @return name of service interface
 	 */
-	public Class<Service> getServiceType();
+	public Class<?> getServiceType();
 
 	/**
 	 * Assigns a path to the return value by this signature.

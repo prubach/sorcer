@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
+
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.security.auth.Subject;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -30,22 +46,16 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
-import sorcer.service.Strategy.Access;
-import sorcer.service.Strategy.Flow;
 import sorcer.util.ExertProcessor;
 
-import javax.security.auth.Subject;
-import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.security.Principal;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.service.Strategy.Access;
+import static sorcer.service.Strategy.Flow;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Service, Exertion, Revaluation, ExecState, Serializable {
+public abstract class ServiceExertion implements Exertion, Revaluation, ExecState, Serializable {
+
+	static final long serialVersionUID = -3907402419486719293L;
 
 	protected final static Logger logger = Logger
 			.getLogger(ServiceExertion.class.getName());
@@ -53,7 +63,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	protected Uuid exertionId;
 
 	protected String runtimeId;
-	
+
 	protected Uuid parentId;
 
 	protected Exertion parent;
@@ -75,7 +85,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	protected Uuid sessionId;
 
 	protected MonitoringSession monitorSession;
-	
+
 	/** position of Exertion in a job */
 	protected Integer index;
 
@@ -90,7 +100,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	protected String accessClass;
 
 	protected Boolean isExportControlled;
-	
+
 	protected Integer scopeCode;
 
 	/** execution status: INITIAL|DONE|RUNNING|SUSPENDED|HALTED */
@@ -99,35 +109,37 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	protected Integer priority;
 
 	protected List<Signature> signatures = new ArrayList<Signature>();
-	//protected List<Signature> signatures;
-	
+	// protected List<Signature> signatures;
+
 	protected ServiceContext dataContext;
 
     private static String defaultName = "xrt-";
-		
+
 	// sequence number for unnamed Exertion instances
 	public static int count = 0;
-	
+
 	/**
 	 * A form of service context that describes the control strategy of this
 	 * exertion.
 	 */
 	protected ControlContext controlContext;
 
+	protected List<Setter> setters;
+
 	protected SorcerPrincipal principal;
-	
+
 	protected boolean isRevaluable = false;
-	
+
 	public ServiceExertion() {
 		this(defaultName + count++);
 	}
-	
+
 	public ServiceExertion(String name) {
 		init(name);
 	}
-	
+
 	protected void init(String name) {
-		if (name == null || name .length()==0)
+		if (name == null || name.length() == 0)
 			this.name = defaultName + count++;
 		else
 			this.name = name;
@@ -144,7 +156,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		principal = new SorcerPrincipal(System.getProperty("user.name"));
 		principal.setId(principal.getName());
 		setSubject(principal);
-		
+
 		Calendar c = new GregorianCalendar();
 		c.roll(Calendar.YEAR, true);
 		goodUntilDate = Integer.toString(c.get(Calendar.MONTH)) + "/"
@@ -155,7 +167,6 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	/* (non-Javadoc)
 	 * @see sorcer.service.Service#service(sorcer.service.Exertion)
 	 */
-	@Override
 	public Exertion service(Exertion exertion) throws TransactionException,
 			ExertionException, RemoteException {
 		if (exertion == null)
@@ -164,8 +175,11 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 			return exertion.exert();
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Service#service(sorcer.service.Exertion,
+	 * net.jini.core.transaction.Transaction)
 	 */
 	@Override
 	public Exertion service(Exertion exertion, Transaction txn)
@@ -176,29 +190,54 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 			return exertion.exert(txn);
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invoker#invoke(sorcer.service.Parameter[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Invoker#invoke(sorcer.service.Arg[])
 	 */
 	@Override
-	public Object invoke(Parameter... entries) throws RemoteException,
-			EvaluationException {
+	public Object invoke(Arg... entries) throws RemoteException,
+			InvocationException {
+		ReturnPath rp = null;
+		for (Arg a : entries) {
+			if (a instanceof ReturnPath) {
+				rp = (ReturnPath) a;
+				break;
+			}
+		}
 		try {
-			return exert(entries);
+			Object obj = null;
+			Exertion xrt = exert(entries);
+			Context cxt = xrt.getContext();
+			if (rp != null) {
+				if (rp.path == null)
+					obj = cxt;
+				else if (rp.path.equals("self"))
+					obj = xrt;
+				else
+					obj = xrt.getContext().getValue(rp.path);
+			} else {
+				obj = xrt.getReturnValue();
+			}
+			return obj;
 		} catch (Exception e) {
-			throw new EvaluationException(e);
-		} 
+			throw new InvocationException(e);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invoker#invoke(sorcer.service.Context, sorcer.service.Parameter[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Invoker#invoke(sorcer.service.Context,
+	 * sorcer.service.Arg[])
 	 */
 	@Override
-	public Object invoke(Context context, Parameter... entries)
-			throws RemoteException, EvaluationException {
-		substitute(entries);
+	public Object invoke(Context context, Arg... entries)
+			throws RemoteException, InvocationException {
 		try {
+			substitute(entries);
 			if (context != null) {
-				if (((ServiceContext)context).isLinked()) {
+				if (((ServiceContext) context).isLinked()) {
 					List<Exertion> exts = getAllExertions();
 					for (Exertion e : exts) {
 						Object link = context.getLink(e.getName());
@@ -207,21 +246,25 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 						}
 					}
 
-				} else {
-					dataContext.append(context);
 				}
+				// else {
+				// dataContext.append(context);
+				// }
 			}
-			return exert();
+			return invoke(entries);
 		} catch (Exception e) {
-			throw new EvaluationException(e);
-		} 
+			throw new InvocationException(e);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction, sorcer.core.context.Path.Entry[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Exertion#exert(net.jini.core.transaction.Transaction,
+	 * sorcer.servie.Arg[])
 	 */
 	@Override
-	public <T extends Exertion> T exert(Transaction txn, Parameter... entries)
+	public <T extends Exertion> T exert(Transaction txn, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
 		ExertProcessor ed = new ExertProcessor(this);
 		Exertion result = null;
@@ -229,15 +272,19 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 			result = ed.exert(txn, null, entries);
 		} catch (Exception e) {
 			logger.log(Level.WARNING,"Error while exerting", e);
+			if (result != null)
+				((ServiceExertion) result).reportException(e);
 		}
-		return (T)result;
+		return (T) result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Exertion#exert(sorcer.core.context.Path.Entry[])
 	 */
 	@Override
-	public Exertion exert(Parameter... entries) throws TransactionException,
+	public Exertion exert(Arg... entries) throws TransactionException,
 			ExertionException, RemoteException {
 		try {
 			substitute(entries);
@@ -249,7 +296,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		return esh.exert(entries);
 	}
 
-	public Exertion exert(Transaction txn, String providerName, Parameter... entries)
+	public Exertion exert(Transaction txn, String providerName, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
 		try {
 			substitute(entries);
@@ -260,7 +307,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		ExertProcessor esh = new ExertProcessor(this);
 		return esh.exert(txn, providerName);
 	}
-	
+
 	private void setSubject(Principal principal) {
 		if (principal == null)
 			return;
@@ -268,7 +315,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		principals.add(principal);
 		subject = new Subject(true, principals, new HashSet(), new HashSet());
 	}
-	
+
 	public SorcerPrincipal getSorcerPrincipal() {
 		if (subject == null)
 			return null;
@@ -292,7 +339,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		if (p != null)
 			p.setId(id);
 	}
-	
+
 	public void removeSignature(int index) {
 		signatures.remove(index);
 	}
@@ -322,7 +369,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		return true;
 	}
-	
+
 	public void setSignatures(List<Signature> signatures) {
 		this.signatures = signatures;
 	}
@@ -335,9 +382,15 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		this.signatures.add(signature);
 	}
-	
-	public void setServicer(Service provider) {
-		((NetSignature)getProcessSignature()).setServicer(provider);
+
+	public void setService(Service provider) {
+		NetSignature ps = (NetSignature) getProcessSignature();
+		ps.setService(provider);
+	}
+
+	public Service getService() {
+		NetSignature ps = (NetSignature) getProcessSignature();
+		return ps.getService();
 	}
 
 	public Flow getFlowType() {
@@ -490,7 +543,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public String getRendezvousName() {
 		return controlContext.getRendezvousName();
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -510,19 +563,19 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public boolean isMonitorable() {
 		return controlContext.isMonitorable();
 	}
-	
+
 	public boolean isProvisionable() {
 		return controlContext.isProvisionable();
 	}
-	
+
 	public void setMonitored(boolean state) {
 		controlContext.setMonitorable(state);
 	}
-	
+
 	public boolean isWaitable() {
 		return controlContext.isWaitable();
 	}
-	
+
 	public void setWait(boolean state) {
 		controlContext.setWaitable(state);
 	}
@@ -561,12 +614,12 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		dataContext.setExertion(this);
 		return this;
 	}
-	
+
 	public ServiceExertion setControlContext(ControlContext context) {
 		controlContext = context;
 		return this;
 	}
-	
+
 	public ServiceExertion updateStrategy(ControlContext context) {
 		controlContext.setAccessType(context.getAccessType());
 		controlContext.setFlowType(context.getFlowType());
@@ -576,7 +629,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		controlContext.setSignatures(context.getSignatures());
 		return this;
 	}
-	
+
 	public void setPriority(int p) {
 		priority = p;
 	}
@@ -610,7 +663,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		return sl;
 	}
-	
+
 	/**
 	 * Appends a signature <code>signature</code> for this exertion.
 	 * 
@@ -662,7 +715,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public void setParent(Exertion parent) {
 		this.parent = parent;
 	}
-	
+
 	public String contextToString() {
 		return "";
 	}
@@ -671,23 +724,33 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		return controlContext.getExceptions().size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Exertion#getTrace()
 	 */
 	@Override
 	public List<String> getTrace() {
 		return controlContext.getTrace();
 	}
-	
+
 	/** {@inheritDoc} */
 	public boolean isTree() {
 		return isTree(new HashSet());
 	}
 
+	public Context getDataContext() {
+		return dataContext;
+	}
+
+	public ControlContext getControlContext() {
+		return controlContext;
+	}
+
 	public Context getContext() {
 		return dataContext;
 	}
-	
+
 	public Context getContext(String componentExertionName) {
 		Exertion component = getExertion(componentExertionName);
 		if (component != null)
@@ -695,7 +758,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		else
 			return null;
 	}
-	
+
 	public Context getControlContext(String componentExertionName) {
 		Exertion component = getExertion(componentExertionName);
 		if (component != null)
@@ -703,19 +766,11 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		else
 			return null;
 	}
-	
-	public Context getDataContext() {
-		return dataContext;
-	}
-	
-	public ControlContext getControlContext() {
-		return controlContext;
-	}
-	
+
 	public Context getControlInfo() {
 		return controlContext;
 	}
-	
+
 	public void startExecTime() {
 		if (controlContext.isExecTimeRequested())
 			controlContext.startExecTime();
@@ -727,12 +782,13 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	}
 
 	public String getExecTime() {
-		if (controlContext.isExecTimeRequested() && controlContext.getStopwatch() != null)
+		if (controlContext.isExecTimeRequested()
+				&& controlContext.getStopwatch() != null)
 			return controlContext.getExecTime();
 		else
 			return "";
 	}
-		
+
 	public void setExecTimeRequested(boolean state) {
 		controlContext.setExecTimeRequested(state);
 	}
@@ -742,9 +798,9 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	}
 
 	abstract public Context linkContext(Context context, String path) throws ContextException;
-	
+
 	abstract public Context linkControlContext(Context context, String path) throws ContextException;
-	
+
 	/*
 	 * Subclasses implement this to support the isTree() algorithm.
 	 */
@@ -753,14 +809,15 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public void reportException(Throwable t) {
 		controlContext.addException(t);
 	}
-	
+
 	public void addException(ThrowableTrace et) {
 		controlContext.addException(et);
 	}
-	
-	public ServiceExertion substitute(Parameter... entries) throws EvaluationException {
+
+	public ServiceExertion substitute(Arg... entries)
+			throws EvaluationException {
 		if (entries != null && entries.length > 0) {
-			for (Parameter e : entries) {
+			for (Arg e : entries) {
 				if (e instanceof Tuple2) {
 					try {
 						putValue((String) ((Tuple2) e)._1, ((Tuple2) e)._2);
@@ -773,26 +830,35 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		return this;
 	}
-	
-	public Object getReturnValue() throws ContextException {
-		ReturnPath returnPath = getContext().getReturnPath();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Exertion#getReturnValue(sorcer.service.Arg[])
+	 */
+	public Object getReturnValue(Arg... entries) throws ContextException,
+			RemoteException {
+		ReturnPath returnPath = getDataContext().getReturnPath();
 		if (returnPath != null) {
-			if (returnPath.path == null || returnPath.path.equals("self"))  {
-                return this;
-            } else  {
-                if (isJob())
-                    return ((Job)this).getJobContext().getReturnValue();
-                else
-                    return getContext().getReturnValue();
-            }
+			if (returnPath.path == null || returnPath.path.equals("self"))
+				return getContext();
+			else
+				return getValue(returnPath.path, entries);
 		} else {
-            if (isJob())
-                return ((Job)this).getJobContext();
-            else
-                return getContext();
+			return getContext();
 		}
 	}
-	
+
+	public List<Setter> getPersisters() {
+		return setters;
+	}
+
+	public void addPersister(Setter persister) {
+		if (setters == null)
+			setters = new ArrayList<Setter>();
+		setters.add(persister);
+	}
+
 	// no control context
 	public String info() {
 		StringBuilder info = new StringBuilder().append(
@@ -806,8 +872,10 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		return info.toString();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Evaluation#isEvaluable()
 	 */
 	@Override
@@ -818,7 +886,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public void setRevaluable(boolean isRevaluable) {
 		this.isRevaluable = isRevaluable;
 	}
-	
+
 	public String toString() {
 		if (SorcerEnv.debug)
 			return describe();
@@ -841,7 +909,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		getExertions(exs);
 		return exs;
 	}
-	
+
 	abstract public List<Exertion> getExertions(List<Exertion> exs);
 
 	public void updateValue(Object value) throws ContextException {
@@ -857,8 +925,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public Exertion getExertion(String componentExertionName) {
 		if (name.equals(componentExertionName)) {
 			return this;
-		}
-		else {
+		} else {
 			List<Exertion> exertions = getAllExertions();
 			for (Exertion e : exertions) {
 				if (e.getName().equals(componentExertionName)) {
@@ -868,7 +935,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 			return null;
 		}
 	}
-	
+
 	public String state() {
 		return controlContext.getRendezvousName();
 	}
@@ -888,7 +955,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 					&& !getProcessSignature().getServiceType()
 							.isAssignableFrom(Spacer.class)) {
 				sig.setServiceType(Spacer.class);
-				((NetSignature)sig).setSelector("service");
+				((NetSignature) sig).setSelector("service");
 				sig.setProviderName(ANY);
 				sig.setType(Type.SRV);
 				getControlContext().setAccessType(access);
@@ -906,7 +973,7 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		}
 		return sig;
 	}
-	
+
 	/**
 	 * <p>
 	 * Returns the monitor session of this exertion.
@@ -930,29 +997,44 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 	public void setMonitorSession(MonitoringSession monitorSession) {
 		this.monitorSession = monitorSession;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Evaluation#getValue()
 	 */
-	@Override
-	public Object getValue(Parameter... entries) throws EvaluationException,
+	public Object getValue(Arg... entries) throws EvaluationException,
 			RemoteException {
-		Exertion xrt;
+		Context cxt = null;
 		try {
 			substitute(entries);
-			try {
-				xrt = exert();
-			} catch (Exception e) {
-				throw new EvaluationException(e);
+			Exertion evaluatedExertion = exert();
+			ReturnPath returnPath = evaluatedExertion.getDataContext()
+					.getReturnPath();
+			if (evaluatedExertion instanceof Job) {
+				cxt = ((Job) evaluatedExertion).getJobContext();
+			} else {
+				cxt = evaluatedExertion.getContext();
 			}
-			return ((ServiceExertion)xrt).getReturnValue();
-		} catch (ContextException e) {
-			logger.log(Level.WARNING,"Error while getting return value", e);
-			throw new EvaluationException(e);
+
+			if (returnPath != null) {
+				if (returnPath.path == null)
+					return cxt;
+				else if (returnPath.path.equals("self"))
+					return this;
+				else
+					return cxt.getReturnValue();
+
+			}
+		} catch (Exception e) {
+			throw new InvocationException(e);
 		}
+		return cxt;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Evaluation#getAsIs()
 	 */
 	@Override
@@ -960,18 +1042,29 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 		return getValue();
 	}
 
-	public Object getValue(String path) throws ContextException {
-		if (path.startsWith("super")) {
-			return parent.getContext().getValue(path.substring(6));
-		} else
-			return dataContext.getValue(path);
+	public Object asis(String path) throws ContextException {
+		Context cxt = null;
+		if (isJob()) {
+			cxt = ((Job) this).getJobContext();
+		} else {
+			cxt = dataContext;
+		}
+		return cxt.get(path);
 	}
 
 	public Object putValue(String path, Object value) throws ContextException {
-		return dataContext.putValue(path, value);
+		Context cxt = null;
+		if (isJob()) {
+			cxt = ((Job) this).getJobContext();
+		} else {
+			cxt = dataContext;
+		}
+		return cxt.putValue(path, value);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Exertion#getExceptions()
 	 */
 	@Override
@@ -983,25 +1076,35 @@ public abstract class ServiceExertion implements Service, Exertion, Revaluation,
 			return exceptions;
 	}
 
-	@Override
+	public List<Setter> getSetters() {
+		return setters;
+	}
+
+	public void setSetters(List<Setter> setters) {
+		this.setters = setters;
+	}
+
+	public boolean isConditional() {
+		return false;
+	}
+
 	public boolean isJob() {
 		return false;
 	}
 
 	@Override
-	public boolean isTask()  {
+	public boolean isTask() {
 		return false;
 	}
-	
-	@Override
-	public boolean isCmd()  {
+
+	public boolean isCmd() {
 		return false;
 	}
-	
+
 	public String describe() {
 		if (!SorcerEnv.debug)
 			return info();
-		
+
 		String stdoutSep = "================================================================================\n";
 		StringBuffer info = new StringBuffer();
 		info.append("\n").append(stdoutSep)

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.service;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -32,28 +39,23 @@ import sorcer.util.ProviderNameUtil;
 import sorcer.util.SorcerProviderNameUtil;
 import sorcer.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static sorcer.core.SorcerConstants.ANY;
 
 /**
  * A service accessing facility that allows to find dynamically a network
  * service provider matching its {@link Signature}. This class uses the Factory
  * Method pattern with the {@link DynamicAccessor} interface.
- * 
+ *
  * @author Mike Sobolewski
  */
 public class Accessor {
-	
-	protected final static Logger logger = Logger.getLogger("sorcer.core");
+
+    protected final static Logger logger = Logger.getLogger(Accessor.class.getName());
 
     /**
-	 * A factory returning instances of {@link Service}s.
-	 */
-	private static DynamicAccessor accessor;
+     * A factory returning instances of {@link Service}s.
+     */
+    private static DynamicAccessor accessor;
     private static int minMatches = SorcerEnv.getLookupMinMatches();
     private static int maxMatches = SorcerEnv.getLookupMaxMatches();
     private static ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
@@ -226,6 +228,25 @@ public class Accessor {
                     logger.log(Level.WARNING, "Requested service with name '*'", new IllegalArgumentException());
                 }
             }
+        }
+    }
+
+    /**
+     * Test if provider is still replying.
+     *
+     * @param provider the provider to check
+     * @return true if a provider is alive, otherwise false
+     * @throws java.rmi.RemoteException
+     */
+    public static boolean isAlive(Provider provider)
+            throws RemoteException {
+        if (provider == null)
+            return false;
+        try {
+            provider.getProviderName();
+            return true;
+        } catch (RemoteException e) {
+            throw e;
         }
     }
 

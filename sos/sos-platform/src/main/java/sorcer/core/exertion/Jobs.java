@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.exertion;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ContextUtil;
+import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.falcon.base.Conditional;
-import sorcer.service.*;
+import sorcer.core.signature.NetSignature;
+import sorcer.service.Context;
+import sorcer.service.ContextException;
+import sorcer.service.ExecState;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-
-import java.util.*;
-
-import static sorcer.core.context.ControlContext.EXERTION_ACCESS;
-import static sorcer.core.context.ControlContext.EXERTION_FLOW;
+import sorcer.service.Task;
 
 public class Jobs {
 
@@ -42,77 +52,77 @@ public class Jobs {
 	public static boolean isCatalogSingleton(Job job) {
 		ControlContext cc = job.getControlContext();
 		return job.size() == 1
-				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
+				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isQosCatalogSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.QOS_PUSH.equals(cc.get(EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.QOS_PUSH.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isQosCatalogParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
-				&& Access.QOS_PUSH.equals(cc.get(EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.QOS_PUSH.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isCatalogParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
-				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isCatalogSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.PUSH.equals(cc.get(EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.PUSH.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isSWIFSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.SWIF.equals(cc.get(EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.SWIF.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isSpaceSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isQosSpaceSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.QOS_PULL.equals(cc.get(EXERTION_ACCESS));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.QOS_PULL.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isSpaceParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
-				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isQosSpaceParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(EXERTION_FLOW))
-				&& Access.QOS_PULL.equals(cc.get(EXERTION_ACCESS));
+		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW))
+				&& Access.QOS_PULL.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 	
 	public static boolean isSpaceSingleton(Job job) {
 		ControlContext cc = job.getControlContext();
 		return job.size() == 1
-				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
+				&& Access.PULL.equals(cc.get(cc.EXERTION_ACCESS));
 	}
 
 	public static boolean isParallel(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.PAR.equals(cc.get(EXERTION_FLOW));
+		return Flow.PAR.equals(cc.get(cc.EXERTION_FLOW));
 	}
 
 	public static boolean isSequential(Job job) {
 		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW));
+		return Flow.SEQ.equals(cc.get(cc.EXERTION_FLOW));
 	}
 
 	public static boolean isMonitorable(Job job) {
@@ -142,6 +152,7 @@ public class Jobs {
 		cc.setId(sc.getId());
 		cc.setParentPath(sc.getParentPath());
 		cc.setParentID((sc.getParentID() == null) ? null : sc.getParentID());
+		cc.setSubject(sc.getSubjectPath(), sc.getSubjectValue());
 		cc.setCreationDate(sc.getCreationDate());
 		cc.setLastUpdateDate(sc.getLastUpdateDate());
 		cc.setDescription(sc.getDescription());
@@ -154,11 +165,7 @@ public class Jobs {
 		cc.setGoodUntilDate(sc.getGoodUntilDate());
 		cc.setDomainID(sc.getDomainID());
 		cc.setSubdomainID(sc.getSubdomainID());
-		// controlContext.setLinkCount(sc.getLinkCount());
-		// controlContext.setExceptionCount(sc.getExceptionCount());
 		cc.setDomainName(sc.getDomainName());
-		// controlContext.setCP(sc.getCP());
-		// controlContext.scratch = sc.scratch;
 		cc.setMetacontext(sc.getMetacontext());
 		cc.isPersistantTaskAssociated = ((ServiceContext) sc).isPersistantTaskAssociated;
 		return cc;
@@ -215,7 +222,7 @@ public class Jobs {
 
 	public static void preserveNodeReferences(Context refContext,
 			Context resContext) throws ContextException {
-		ContextUtil.copyContextNodesFrom(resContext, refContext);
+		Contexts.copyContextNodesFrom(resContext, refContext);
 	}
 
 	public static void replaceNullIDs(Exertion ex) {
@@ -280,9 +287,11 @@ public class Jobs {
 
 	// For Recursion
 	private static void collectTaskContexts(Exertion exertion, List<Context> contexts) {
-		if (exertion instanceof Conditional)
+//		if (exertion.isConditional())
+//			contexts.add(exertion.getDataContext());
+//		else 
+			if (exertion instanceof Job) {
 			contexts.add(exertion.getDataContext());
-		else if (exertion instanceof Job) {
 			for (int i = 0; i < exertion.getExertions().size(); i++)
 				collectTaskContexts(((Job) exertion).exertionAt(i),
 						contexts);

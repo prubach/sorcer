@@ -33,6 +33,7 @@ import static sorcer.eo.operator.strategy;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
 
+import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import junit.sorcer.core.provider.AdderImpl;
@@ -79,7 +80,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void arithmeticTaskTest() throws ExertionException, SignatureException, ContextException {
+	public void arithmeticTaskTest() throws ExertionException, SignatureException, ContextException, RemoteException {
 		//to test tracing of execution enable ServiceExertion.debug 
 		SorcerEnv.debug = true;
 		

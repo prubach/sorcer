@@ -19,24 +19,36 @@ package sorcer.co.tuple;
 
 
 import sorcer.service.Context;
-import sorcer.service.Parameter;
+import sorcer.service.Arg;
+
+import java.net.URL;
 
 /**
  * extracted from operator
  *
  * @author Rafał Krupiński
  */
-public class InEntry<T> extends IndexedTriplet implements Parameter {
+public class InEntry<T> extends IndexedTriplet implements Arg {
     private static final long serialVersionUID = 1L;
 
     public InEntry(String path, T value, int index) {
         T v = value;
         if (v == null)
-            v = (T) Context.Value.NULL;
+            v = (T) Context.none;
 
         this._1 = path;
         this._2 = v;
         this.index = index;
     }
 
+    public InEntry(String path, T value, boolean isPersistant, int index) {
+        this(path, value, index);
+        this.isPersistant = isPersistant;
+    }
+
+    public InEntry(String path, T value, boolean isPersistant, URL url, int index) {
+        this(path, value, index);
+        this.isPersistant = isPersistant;
+        datastoreURL = url;
+    }
 }

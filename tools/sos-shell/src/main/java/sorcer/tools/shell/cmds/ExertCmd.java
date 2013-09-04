@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2011 the original author or authors.
+ * Copyright 2011 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.tools.shell.cmds;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.netlet.ScriptExerter;
+import sorcer.netlet.util.ScriptThread;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.tools.shell.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
 
 public class ExertCmd extends ShellCmd {
 
@@ -71,6 +80,7 @@ public class ExertCmd extends ShellCmd {
         input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");
+
 		File d = NetworkShell.getInstance().getCurrentDir();
 		String nextToken = null;
 		String scriptFilename = null;
@@ -178,11 +188,54 @@ public class ExertCmd extends ShellCmd {
 		this.script = script;
 	}
 
-    public File getScriptFile() {
-        return scriptFile;
+	public static String readFile(File file) throws IOException {
+		// String lineSep = System.getProperty("line.separator");
+		String lineSep = "\n";
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String nextLine = "";
+		StringBuffer sb = new StringBuffer();
+		nextLine = br.readLine();
+		// skip shebang line
+		if (nextLine.indexOf("#!") < 0) {
+			sb.append(nextLine);
+			sb.append(lineSep);
     }
+		while ((nextLine = br.readLine()) != null) {
+			sb.append(nextLine);
+			sb.append(lineSep);
+		}
+		return sb.toString();
+	}
 
-    public void setScriptFile(File scriptFile) {
-        this.scriptFile = scriptFile;
-    }
+	private StringBuilder readTextFromJar(String filename) {
+		InputStream is = null;
+		BufferedReader br = null;
+		String line;
+		StringBuilder sb = new StringBuilder();
+		;
+
+		try {
+			is = getClass().getResourceAsStream(filename);
+			if (is != null) {
+				br = new BufferedReader(new InputStreamReader(is));
+				while (null != (line = br.readLine())) {
+					sb.append(line);
+					sb.append("\n");
+    			}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+				if (is != null)
+					is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb;
+	}
+
 }

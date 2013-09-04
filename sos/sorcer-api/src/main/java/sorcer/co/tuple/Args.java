@@ -34,8 +34,14 @@ public class Args extends Path {
         this.args = args;
     }
 
+    public Args(String path, Object... args) {
+        this.args = args;
+        this._1 = path;
+    }
+
     @Override
     public String toString() {
         return "args: " + Arrays.toString(args);
     }
 }
+

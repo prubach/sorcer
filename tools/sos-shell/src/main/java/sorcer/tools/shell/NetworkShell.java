@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2011 the original author or authors.
+ * Copyright 2011 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.tools.shell;
 
 import groovy.lang.GroovyRuntimeException;
@@ -70,7 +71,6 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
-import sorcer.netlet.ScriptExerter;
 import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -99,7 +99,6 @@ import com.sun.jini.config.Config;
  * @author Mike Sobolewski
  * call the 'nsh help' command
  */
-@SuppressWarnings("static-access")
 public class NetworkShell implements DiscoveryListener {
 
 	private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
@@ -142,7 +141,7 @@ public class NetworkShell implements DiscoveryListener {
 
 	static final int MAX_MATCHES = 5;
 
-	static final String CUR_VERSION = "1.3";
+	static final String CUR_VERSION = "1.2";
 
 	static final String BUILTIN_QUIT_COMMAND = "quit,exit,bye";
 	
@@ -240,7 +239,6 @@ public class NetworkShell implements DiscoveryListener {
 			if (!instance.commandLine) {
 				// System.out.println("main appMap: " + appMap);
 				execNoninteractiveCommand(argv);
-				//Thread.sleep(1000);
 				System.exit(0);
 			}
 			if (argv.length == 1 && argv[0].indexOf("-") == 0) {
@@ -261,6 +259,7 @@ public class NetworkShell implements DiscoveryListener {
 			System.exit(1);
 		}
 		ShellCmd cmd = null;
+		nshUrl = getWebsterUrl();
 		//System.out.println("main request: " + request);
 		if (request==null) {
 			// Exit when CTRL+D is pressed
@@ -362,7 +361,7 @@ public class NetworkShell implements DiscoveryListener {
 	static private void execNoninteractiveCommand(String args[])
 			throws Throwable {
 		// check for external commands
-		System.out.println("noninteractive nsh: " + Arrays.toString(args));
+		System.out.println("monintercative nsh: " + Arrays.toString(args));
 
 		if (args[0].indexOf("--") == 0) {
 			String path = nishAppMap.get(args[0].substring(2));
@@ -395,7 +394,8 @@ public class NetworkShell implements DiscoveryListener {
                 } else if (args[0].equals("-e")) {
                     // evaluate command line expression
                     ExertCmd cmd = (ExertCmd) commandTable.get("exert");
-                    cmd.setScriptFile(huntForTheScriptFile(args[1]));
+				// cmd.setScript(instance.getText(args[1]));
+				cmd.setScript(ExertCmd.readFile(huntForTheScriptFile(args[1])));
                     cmd.execute();
                 }
             }
@@ -617,7 +617,7 @@ public class NetworkShell implements DiscoveryListener {
 	 * 
 	 * @return The SystemConfiguration
 	 */
-	public synchronized Configuration getConfiguration() {
+	public static synchronized Configuration getConfiguration() {
 		if (sysConfig == null)
 			sysConfig = EmptyConfiguration.INSTANCE;
 		return sysConfig;
@@ -1478,7 +1478,7 @@ public class NetworkShell implements DiscoveryListener {
 		out.println("  Space enabled: " + serviceInfo.puller);
 		out.println("  EMX enabled: " + serviceInfo.monitorable);
 		out.println("  location: " + serviceInfo.location);
-		out.println("  repository: " + serviceInfo.repository);
+		out.println("  repository: " + serviceInfo.serviceHome);
 		out.println("  host name: " + serviceInfo.hostName);
 		out.println("  host address: " + serviceInfo.hostAddress);
 		out.println("  provider groups: " + serviceInfo.groups);

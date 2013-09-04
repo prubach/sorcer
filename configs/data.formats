@@ -212,6 +212,7 @@ engineering.nastran.text.outputdball = dnt|nastran|binary|output.DBALL
 engineering.nastran.text.outputf04 = dnt|nastran|text|output.f04
 engineering.nastran.text.outputf06 = dnt|nastran|text|output.f06
 engineering.nastran.object.outputf06 = dnt|nastran|obj|output.f06
+engineering.nastran.object.outputpch = dnt|nastran|obj|output.pch
 engineering.nastran.text.outputlog = dnt|nastran|text|output.log
 engineering.nastran.binary.outputmaster = dnt|nastran|binary|output.MASTER
 engineering.nastran.binary.outputop2 = dnt|nastran|binary|output.op2

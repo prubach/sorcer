@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2008 the original author or authors.
+ * Copyright 2005 Sun Microsystems, Inc.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,17 +21,37 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.util.JavaSystemProperties;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static sorcer.core.SorcerConstants.S_WEBSTER_ROOT;
+import static sorcer.util.JavaSystemProperties.USER_DIR;
 
 /**
  * Webster is a HTTP server which can serve code from multiple codebases.
@@ -60,7 +80,7 @@ public class Webster implements Runnable {
     static final int DEFAULT_MIN_THREADS = 1;
     static final int DEFAULT_MAX_THREADS = 10;
     private ServerSocket ss;
-    private static int port;
+    private int port;
     private volatile boolean run = true;
     private static Properties MimeTypes = new Properties();
     private String[] websterRoot;
@@ -89,7 +109,7 @@ public class Webster implements Runnable {
      */
     public Webster() throws BindException {
         String s = System.getProperty("webster.port");
-        if (s != null && s != "0") {
+        if (s != null) {
             try {
                 port = new Integer(s);
             } catch (NumberFormatException e) {
@@ -97,7 +117,8 @@ public class Webster implements Runnable {
                     throw new RuntimeException("The required system property for 'webster.port' not set");
                 }
             }
-        } else {
+        }
+        if(port ==0){
             port = getAvailablePort();
         }
         this.isDaemon = false;
@@ -112,7 +133,7 @@ public class Webster implements Runnable {
      * @throws BindException if Webster cannot create a socket
      */
     public Webster(int port, boolean isDaemon) throws BindException {
-        Webster.port = port;
+    	this.port = port;
         this.isDaemon = isDaemon;
         initialize();
     }
@@ -146,7 +167,7 @@ public class Webster implements Runnable {
      * @throws BindException if Webster cannot create a socket
      */
     public Webster(int port, String roots, boolean isDaemon) throws BindException {
-        Webster.port = port;
+    	this.port = port;
         this.isDaemon = isDaemon;
         initialize(roots);
     }
@@ -164,18 +185,18 @@ public class Webster implements Runnable {
      */
     public Webster(int port, String roots, String bindAddress, boolean isDaemon)
             throws BindException {
-        Webster.port = port;
+    	this.port = port;
         this.isDaemon = isDaemon;
         initialize(roots, bindAddress);
     }
 
-    public Webster(int port, String[] roots, String bindAddress,
-                   boolean isDaemon) throws BindException {
-        Webster.port = port;
-        this.isDaemon = isDaemon;
-        initialize(roots, bindAddress);
-    }
-
+	public Webster(int port, String[] roots, String bindAddress,
+			boolean isDaemon) throws BindException {
+		this.port = port;
+		this.isDaemon = isDaemon;
+		initialize(roots, bindAddress);
+	}
+    
     /**
      * Create a new Webster
      *
@@ -195,7 +216,7 @@ public class Webster implements Runnable {
                    int minThreads,
                    int maxThreads,
                    boolean isDaemon) throws BindException {
-        Webster.port = port;
+    	this.port = port;
         this.minThreads = minThreads;
         this.maxThreads = maxThreads;
         this.isDaemon = isDaemon;
@@ -225,7 +246,7 @@ public class Webster implements Runnable {
                    int startPort,
                    int endPort,
                    boolean isDaemon) throws BindException {
-        Webster.port = port;
+    	this.port = port;
         this.minThreads = minThreads;
         this.maxThreads = maxThreads;
         this.startPort = startPort;
@@ -288,7 +309,7 @@ public class Webster implements Runnable {
             String option = options[i];
             if(option.equals("-port")) {
                 i++;
-                Webster.port = Integer.parseInt(options[i]);
+                this.port = Integer.parseInt(options[i]);
             } else if(option.equals("-roots")) {
                 i++;
                 roots = options[i];
@@ -333,9 +354,9 @@ public class Webster implements Runnable {
      * the user.dir system property
      */
     private void initialize() throws BindException {
-        String root = System.getProperty(SorcerConstants.S_WEBSTER_ROOT);
+        String root = System.getProperty(S_WEBSTER_ROOT);
         if(root == null)
-            root = System.getProperty(JavaSystemProperties.USER_DIR);
+            root = System.getProperty(USER_DIR);
         initialize(root);
     }
 
@@ -413,7 +434,6 @@ public class Webster implements Runnable {
                 port = getPortAvailable();
             } catch (IOException e) {
                 e.printStackTrace();
-                if (logger.isLoggable(Level.FINE))
                     logger.log(Level.SEVERE, "Cannot determine a server socket port", e);
                 System.exit(1);
             }
@@ -443,7 +463,7 @@ public class Webster implements Runnable {
             port = websterPort;
             // check if the port is not required by the JVM system property
             String s = System.getProperty("webster.port");
-            if (s != null) {
+			if (s != null && s.length() > 0) {
                 port = new Integer(s);
             }
             ss = new ServerSocket(port, 0, address);
@@ -462,8 +482,8 @@ public class Webster implements Runnable {
         if (debug)
             System.out.println("Webster serving on : "
                     + ss.getInetAddress().getHostAddress() + ":" + port);
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Webster serving on : "
+		if (logger.isLoggable(Level.INFO))
+			logger.info("Webster serving on: "
                     + ss.getInetAddress().getHostAddress() + ":" + port);
         if (debug)
             System.out.println("Webster listening on port : " + port);
@@ -501,18 +521,15 @@ public class Webster implements Runnable {
 		/* Set system property */
         System.setProperty(CODESERVER, "http://" + getAddress() + ":"
                 + getPort());
-
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Webster isDaemon: " + isDaemon);
-
-        Thread runner = new Thread(this, "Webster");
-        if (isDaemon)  {
-            runner.setDaemon(true);
-        }
-        Runtime.getRuntime().addShutdownHook(new ShutdownWebster(this.pool));
-        runner.start();
-    }
-
+		if (logger.isLoggable(Level.FINE))
+			logger.fine("Webster isDaemon: " + isDaemon);
+		
+		Thread runner = new Thread(this, "Webster");
+		if (isDaemon)  {
+			runner.setDaemon(true);
+		}
+		runner.start();
+	}
 
     /**
      * Get the roots Webster is serving
@@ -592,12 +609,11 @@ public class Webster implements Runnable {
      *
      * @return The port Webster is bound to
      */
-    public static int getPort() {
-        return getAvailablePort();
-    }
-
-    public static void setPort(int port) {
-        Webster.port = port;
+    public int getPort() {
+        if(port==0){
+            port = getAvailablePort();
+        }
+        return port;
     }
 
     public void run() {
@@ -654,7 +670,7 @@ public class Webster implements Runnable {
                     }
                     if(line != null) {
                         tokenizer =
-                                new StringTokenizer(line, " ");
+                            new StringTokenizer(line, " ");
                         if(!tokenizer.hasMoreTokens())
                             break;
                         String token = tokenizer.nextToken();
@@ -674,46 +690,46 @@ public class Webster implements Runnable {
                             String aToken = tokenizer.nextToken().trim();
                             if(tokenizer.hasMoreTokens()) {
                                 header.setProperty(aToken,
-                                        tokenizer.nextToken().trim());
+                                                   tokenizer.nextToken().trim());
                             }
                         }
                         if(header.getProperty("GET") != null) {
-                            pool.execute(new GetFile(s, fileName));
+                        	 pool.execute(new GetFile(s, fileName));
                         } else if(header.getProperty("PUT") != null) {
-                            pool.execute(new PutFile(s, fileName, header, inFromClient));
+                        	pool.execute(new PutFile(s, fileName, header, inFromClient));
                         } else if(header.getProperty("DELETE") != null) {
-                            pool.execute(new DelFile(s, fileName));
+                        	pool.execute(new DelFile(s, fileName));
                         } else if(header.getProperty("HEAD") != null) {
-                            pool.execute(new Head(s, fileName));
+                        	pool.execute(new Head(s, fileName));
                         } else {
                             if(debug)
-                                System.out.println(
-                                        "bad request ["+line+"] from "+from);
+                            System.out.println(
+                                "bad request ["+line+"] from "+from);
                             if(logger.isLoggable(Level.FINE))
                                 logger.log(Level.FINE,
-                                        "bad request ["+line+"] " +
-                                                "from "+from);
+                                           "bad request ["+line+"] " +
+                                           "from "+from);
                             DataOutputStream clientStream =
-                                    new DataOutputStream(
-                                            new BufferedOutputStream(
-                                                    s.getOutputStream()));
+                                new DataOutputStream(
+                                    new BufferedOutputStream(
+                                        s.getOutputStream()));
                             clientStream.writeBytes(
-                                    "HTTP/1.0 400 Bad Request\r\n\r\n");
+                                "HTTP/1.0 400 Bad Request\r\n\r\n");
                             clientStream.flush();
                             clientStream.close();
                         }
                     } /* if line != null */
                 } catch(Exception e) {
                     DataOutputStream clientStream =
-                            new DataOutputStream(
-                                    new BufferedOutputStream(
-                                            s.getOutputStream()));
+                        new DataOutputStream(
+                            new BufferedOutputStream(
+                                s.getOutputStream()));
                     clientStream.writeBytes(
-                            "HTTP/1.0 500 Internal Server Error\n"+
-                                    "MIME-Version: 1.0\n"+
-                                    "Server: "+SERVER_DESCRIPTION+"\n"+
-                                    "\n\n<H1>500 Internal Server Error</H1>\n"
-                                    +e);
+                        "HTTP/1.0 500 Internal Server Error\n"+
+                        "MIME-Version: 1.0\n"+
+                        "Server: "+SERVER_DESCRIPTION+"\n"+
+                        "\n\n<H1>500 Internal Server Error</H1>\n"
+                        +e);
                     clientStream.flush();
                     clientStream.close();
                     inFromClient.close();
@@ -767,7 +783,7 @@ public class Webster implements Runnable {
         } else {
             if(debug)
                 System.out.println("mimetypes.properties not found, "+
-                        "loading defaults");
+                                   "loading defaults");
             if(logger.isLoggable(Level.FINE))
                 logger.fine("mimetypes.properties not found, loading defaults");
             MimeTypes.put("jpg", "image/jpg");
@@ -822,8 +838,8 @@ public class Webster implements Runnable {
                     File prefixFile = new File(prefix);
                     if (prefixFile.exists()) {
                         String suffix =
-                                (wildcard < (root.length() - 1)) ?
-                                        root.substring(wildcard + 1) : "";
+                            (wildcard < (root.length() - 1)) ?
+                            root.substring(wildcard + 1) : "";
                         String[] children = prefixFile.list();
                         for (String aChildren : children) {
                             expandedRoots.add(prefix + aChildren + suffix);
@@ -875,10 +891,10 @@ public class Webster implements Runnable {
             try {
                 File getFile = parseFileName(fileName);
                 logData.append("Do HEAD: input=")
-                        .append(fileName)
-                        .append(", " + "parsed=")
-                        .append(getFile)
-                        .append(", ");
+                    .append(fileName)
+                    .append(", " + "parsed=")
+                    .append(getFile)
+                    .append(", ");
                 int fileLength;
                 String header;
                 if(getFile.isDirectory()) {
@@ -887,7 +903,7 @@ public class Webster implements Runnable {
                     for (String file : files) {
                         File f = new File(getFile, file);
                         dirData.append(f.toString().substring(
-                                getFile.getParent().length()));
+                            getFile.getParent().length()));
                         dirData.append("\t");
                         if (f.isDirectory())
                             dirData.append("d");
@@ -904,28 +920,28 @@ public class Webster implements Runnable {
                     if(fileType==null)
                         fileType = "application/java";
                     header = "HTTP/1.0 200 OK\n"+
-                            "Allow: GET\nMIME-Version: 1.0\n"+
-                            "Server: "+SERVER_DESCRIPTION+"\n"+
-                            "Content-Type: "+ fileType+ "\n"+
-                            "Content-Length: "+ fileLength + "\r\n\r\n";
+                             "Allow: GET\nMIME-Version: 1.0\n"+
+                             "Server: "+SERVER_DESCRIPTION+"\n"+
+                             "Content-Type: "+ fileType+ "\n"+
+                             "Content-Length: "+ fileLength + "\r\n\r\n";
                 } else if(getFile.exists()) {
                     DataInputStream requestedFile = new DataInputStream(
-                            new BufferedInputStream(new FileInputStream(getFile)));
+                        new BufferedInputStream(new FileInputStream(getFile)));
                     fileLength = requestedFile.available();
                     String fileType =
-                            fileName.substring(fileName.lastIndexOf(".") + 1,
-                                    fileName.length());
+                        fileName.substring(fileName.lastIndexOf(".") + 1,
+                                           fileName.length());
                     fileType = MimeTypes.getProperty(fileType);
                     logData.append("file size: [").append(fileLength).append("]");
                     header = "HTTP/1.0 200 OK\n"
-                            + "Allow: GET\nMIME-Version: 1.0\n"
-                            + "Server: "+SERVER_DESCRIPTION+"\n"
-                            + "Content-Type: "
-                            + fileType
-                            + "\n"
-                            + "Content-Length: "
-                            + fileLength
-                            + "\r\n\r\n";
+                             + "Allow: GET\nMIME-Version: 1.0\n"
+                             + "Server: "+SERVER_DESCRIPTION+"\n"
+                             + "Content-Type: "
+                             + fileType
+                             + "\n"
+                             + "Content-Length: "
+                             + fileLength
+                             + "\r\n\r\n";
                 } else {
                     header = "HTTP/1.1 404 Not Found\r\n\r\n";
                     logData.append("not found");
@@ -937,8 +953,8 @@ public class Webster implements Runnable {
                     logger.fine(logData.toString());
 
                 DataOutputStream clientStream =
-                        new DataOutputStream(
-                                new BufferedOutputStream(client.getOutputStream()));
+                    new DataOutputStream(
+                               new BufferedOutputStream(client.getOutputStream()));
                 clientStream.writeBytes(header);
                 clientStream.flush();
                 clientStream.close();
@@ -949,8 +965,8 @@ public class Webster implements Runnable {
                     client.close();
                 } catch(IOException e2) {
                     logger.log(Level.WARNING,
-                            "Closing incoming socket",
-                            e2);
+                               "Closing incoming socket",
+                               e2);
                 }
             }
         } // end of Head
@@ -973,10 +989,10 @@ public class Webster implements Runnable {
             try {
                 File getFile = parseFileName(fileName);
                 logData.append("Do GET: input=")
-                        .append(fileName)
-                        .append(", " + "parsed=")
-                        .append(getFile)
-                        .append(", ");
+                    .append(fileName)
+                    .append(", " + "parsed=")
+                    .append(getFile)
+                    .append(", ");
                 String header;
                 if(getFile.isDirectory()) {
                     logData.append("directory located");
@@ -984,7 +1000,7 @@ public class Webster implements Runnable {
                     for (String file : files) {
                         File f = new File(getFile, file);
                         dirData.append(f.toString().substring(
-                                getFile.getParent().length()));
+                            getFile.getParent().length()));
                         dirData.append("\t");
                         if (f.isDirectory())
                             dirData.append("d");
@@ -1001,38 +1017,38 @@ public class Webster implements Runnable {
                     if(fileType == null)
                         fileType = "application/java";
                     header = "HTTP/1.0 200 OK\n"
-                            + "Allow: GET\nMIME-Version: 1.0\n"
-                            + "Server: "+SERVER_DESCRIPTION+"\n"
-                            + "Content-Type: "
-                            + fileType
-                            + "\n"
-                            + "Content-Length: "
-                            + fileLength
-                            + "\r\n\r\n";
+                             + "Allow: GET\nMIME-Version: 1.0\n"
+                             + "Server: "+SERVER_DESCRIPTION+"\n"
+                             + "Content-Type: "
+                             + fileType
+                             + "\n"
+                             + "Content-Length: "
+                             + fileLength
+                             + "\r\n\r\n";
                 } else if(getFile.exists()) {
                     requestedFile =
-                            new DataInputStream(
-                                    new BufferedInputStream(new FileInputStream(getFile)));
+                        new DataInputStream(
+                             new BufferedInputStream(new FileInputStream(getFile)));
                     fileLength = requestedFile.available();
                     String fileType =
-                            fileName.substring(fileName.lastIndexOf(".") + 1,
-                                    fileName.length());
+                        fileName.substring(fileName.lastIndexOf(".") + 1,
+                                           fileName.length());
                     fileType = MimeTypes.getProperty(fileType);
                     header = "HTTP/1.0 200 OK\n"
-                            + "Allow: GET\nMIME-Version: 1.0\n"
-                            + "Server: "+SERVER_DESCRIPTION+"\n"
-                            + "Content-Type: "
-                            + fileType
-                            + "\n"
-                            + "Content-Length: "
-                            + fileLength
-                            + "\r\n\r\n";
+                             + "Allow: GET\nMIME-Version: 1.0\n"
+                             + "Server: "+SERVER_DESCRIPTION+"\n"
+                             + "Content-Type: "
+                             + fileType
+                             + "\n"
+                             + "Content-Length: "
+                             + fileLength
+                             + "\r\n\r\n";
                 } else {
                     header = "HTTP/1.0 404 Not Found\r\n\r\n";
                 }
                 DataOutputStream clientStream =
-                        new DataOutputStream(
-                                new BufferedOutputStream(client.getOutputStream()));
+                    new DataOutputStream(
+                               new BufferedOutputStream(client.getOutputStream()));
                 clientStream.writeBytes(header);
 
                 if(getFile.isDirectory()) {
@@ -1045,12 +1061,12 @@ public class Webster implements Runnable {
                         clientStream.write(buffer);
                     } catch(Exception e) {
                         String s = "Sending ["+
-                                getFile.getAbsolutePath()+"], "+
-                                "size ["+fileLength+"], "+
-                                "to client at "+
-                                "["+
-                                client.getInetAddress().getHostAddress()+
-                                "]";
+                                   getFile.getAbsolutePath()+"], "+
+                                   "size ["+fileLength+"], "+
+                                   "to client at "+
+                                   "["+
+                                   client.getInetAddress().getHostAddress()+
+                                   "]";
                         if(logger.isLoggable(Level.FINE))
                             logger.log(Level.FINE, s, e);
                         if(debug) {
@@ -1075,19 +1091,19 @@ public class Webster implements Runnable {
                     client.close();
                 } catch(IOException e2) {
                     logger.log(Level.WARNING,
-                            "Closing incoming socket",
-                            e2);
+                               "Closing incoming socket",
+                               e2);
                 }
             }
         } // end of GetFile
     }
-
+    
     class PutFile implements Runnable {
         private Socket client;
         private String fileName;
         private Properties rheader;
         private BufferedReader in;
-
+        
         PutFile(Socket s, String fileName, Properties header, BufferedReader fromClient) {
             rheader = header;
             client = s;
@@ -1096,36 +1112,36 @@ public class Webster implements Runnable {
         }
 
         public void run() {
-            FileOutputStream requestedFile = null;
-            DataOutputStream clientStream = null;
+        	FileOutputStream requestedFile = null;
+        	DataOutputStream clientStream = null;
             try {
                 // check to see if the file exists if it does the return code
                 // will be 200 if it dosen't it will be 201
-                File putFile;
-                if (tempDir != null) {
-                    putFile = new File(tempDir + File.separator + fileName);
-                }
-                else
-                    putFile = parseFileName(fileName);
+            	File putFile;
+            	if (tempDir != null) {
+            		putFile = new File(tempDir + File.separator + fileName);
+            	}
+            	else
+            		putFile = parseFileName(fileName);
                 String header;
                 if(putFile.exists()) {
                     header = "HTTP/1.0 200 OK\n"
-                            + "Allow: PUT\n"
-                            + "MIME-Version: 1.0\n"
-                            + "Server : SORCER Webster: a Java HTTP Server \n"
-                            + "\n\n <H1>200 PUT File updated</H1>\n";
+                             + "Allow: PUT\n"
+                             + "MIME-Version: 1.0\n"
+                             + "Server : SORCER Webster: a Java HTTP Server \n"
+                             + "\n\n <H1>200 PUT File updated</H1>\n";
                     if (debug)
-                        System.out.println("updated putFile: " + putFile);
+                    	System.out.println("updated putFile: " + putFile);
                 } else {
                     header = "HTTP/1.0 201 Created\n"
-                            + "Allow: PUT\n"
-                            + "MIME-Version: 1.0\n"
-                            + "Server : SORCER Webster: a Java HTTP Server \n"
-                            + "\n\n <H1>201 PUT File Created</H1>\n";
+                             + "Allow: PUT\n"
+                             + "MIME-Version: 1.0\n"
+                             + "Server : SORCER Webster: a Java HTTP Server \n"
+                             + "\n\n <H1>201 PUT File Created</H1>\n";
                     if (debug)
-                        System.out.println("created putFile: " + putFile);
+                    	System.out.println("created putFile: " + putFile);
                 }
-
+                
                 int length = Integer.parseInt(ignoreCaseProperty(rheader, "Content-Length"));
                 requestedFile = new FileOutputStream(putFile);
 
@@ -1134,19 +1150,19 @@ public class Webster implements Runnable {
                         requestedFile.write(in.read());
                     }
                 } catch(IOException e) {
-                    e.printStackTrace();
+                	e.printStackTrace();
                     header = "HTTP/1.0 500 Internal Server Error\n"
-                            + "Allow: PUT\n"
-                            + "MIME-Version: 1.0\n"
-                            + "Server: "+SERVER_DESCRIPTION+"\n"
-                            + "\n\n <H1>500 Internal Server Error</H1>\n"
-                            + e;
+                             + "Allow: PUT\n"
+                             + "MIME-Version: 1.0\n"
+                             + "Server: "+SERVER_DESCRIPTION+"\n"
+                             + "\n\n <H1>500 Internal Server Error</H1>\n"
+                             + e;
                 }
                 requestedFile.flush();
                 requestedFile.close();
 
                 clientStream = new DataOutputStream(
-                        new BufferedOutputStream(client.getOutputStream()));
+                              new BufferedOutputStream(client.getOutputStream()));
                 clientStream.writeBytes(header);
                 clientStream.flush();
                 clientStream.close();
@@ -1154,15 +1170,15 @@ public class Webster implements Runnable {
                 logger.log(Level.WARNING, "Closing Socket", e);
             } finally {
                 try {
-                    if (requestedFile != null)
-                        requestedFile.close();
-                    if (clientStream != null)
-                        clientStream.close();
+                	if (requestedFile != null)
+                		requestedFile.close();
+                	if (clientStream != null)
+                		clientStream.close();
                     client.close();
                 } catch(IOException e2) {
                     logger.log(Level.WARNING,
-                            "Closing incoming socket",
-                            e2);
+                               "Closing incoming socket",
+                               e2);
                 }
             }
         }
@@ -1178,7 +1194,7 @@ public class Webster implements Runnable {
             return (null);
         }
     } // end of PutFile
-
+    
     class DelFile implements Runnable {
         private Socket client;
         private String fileName;
@@ -1194,27 +1210,27 @@ public class Webster implements Runnable {
                 String header;
                 if(!putFile.exists()) {
                     header = "HTTP/1.0 404 File not found\n"
-                            + "Allow: GET\n"
-                            + "MIME-Version: 1.0\n"
-                            +"Server: "+SERVER_DESCRIPTION+"\n"
-                            + "\n\n <H1>404 File not Found</H1>\n"
-                            + "<BR>";
+                             + "Allow: GET\n"
+                             + "MIME-Version: 1.0\n"
+                             +"Server: "+SERVER_DESCRIPTION+"\n"
+                             + "\n\n <H1>404 File not Found</H1>\n"
+                             + "<BR>";
                 } else if(putFile.delete()) {
                     header = "HTTP/1.0 200 OK\n"
-                            + "Allow: PUT\n"
-                            + "MIME-Version: 1.0\n"
-                            +"Server: "+SERVER_DESCRIPTION+"\n"
-                            + "\n\n <H1>200 File succesfully deleted</H1>\n";
+                             + "Allow: PUT\n"
+                             + "MIME-Version: 1.0\n"
+                             +"Server: "+SERVER_DESCRIPTION+"\n"
+                             + "\n\n <H1>200 File succesfully deleted</H1>\n";
                 } else {
                     header = "HTTP/1.0 500 Internal Server Error\n"
-                            + "Allow: PUT\n"
-                            + "MIME-Version: 1.0\n"
-                            +"Server: "+SERVER_DESCRIPTION+"\n"
-                            + "\n\n <H1>500 File could not be deleted</H1>\n";
+                             + "Allow: PUT\n"
+                             + "MIME-Version: 1.0\n"
+                             +"Server: "+SERVER_DESCRIPTION+"\n"
+                             + "\n\n <H1>500 File could not be deleted</H1>\n";
                 }
                 DataOutputStream clientStream =
-                        new DataOutputStream(
-                                new BufferedOutputStream(client.getOutputStream()));
+                    new DataOutputStream(
+                               new BufferedOutputStream(client.getOutputStream()));
                 clientStream.writeBytes(header);
                 clientStream.flush();
                 clientStream.close();
@@ -1225,26 +1241,34 @@ public class Webster implements Runnable {
                     client.close();
                 } catch(IOException e2) {
                     logger.log(Level.WARNING,
-                            "Closing incoming socket",
-                            e2);
+                               "Closing incoming socket",
+                               e2);
                 }
             }
         }
     }
 
-    public static int getAvailablePort() {
-        if (port == 0) {
-            java.net.ServerSocket socket;
-            try {
-                socket = new java.net.ServerSocket(0);
-                port = socket.getLocalPort();
-                socket.close();
+    public static int getWebsterPort() {
+    	return new Integer(System.getProperty("webster.port"));
+    }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+    public static int getAvailablePort() {
+        java.net.ServerSocket socket = null;
+        try {
+            socket = new java.net.ServerSocket(0);
+            return socket.getLocalPort();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
             }
         }
-        return port;
     }
 
     public static void main(String[] args) {
@@ -1254,42 +1278,15 @@ public class Webster implements Runnable {
             e.printStackTrace();
         }
     }
-
+    
     /**
-     * <p>
-     * Returns the embedded class server (webster) for this environment.
-     * </p>
-     *
-     * @return the embedded class server
-     */
-    public static Webster getWebster() {
-        return webster;
-    }
-
-
-    class ShutdownWebster extends Thread {
-
-        ThreadPoolExecutor pool;
-
-        ShutdownWebster(ThreadPoolExecutor pool) {
-            this.pool = pool;
-        }
-
-        public void run() {
-            pool.shutdown(); // Disable new tasks from being submitted
-            try {
-                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
-                    pool.shutdownNow(); // Cancel currently executing tasks
-                    // Wait a while for tasks to respond to being cancelled
-                    if (!pool.awaitTermination(10, TimeUnit.SECONDS))
-                        System.err.println("Pool did not terminate");
-                }
-            } catch (InterruptedException ie) {
-                // (Re-)Cancel if current thread also interrupted
-                pool.shutdownNow();
-                // Preserve interrupt status
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+	 * <p>
+	 * Returns the embedded class server (webster) for this environment.
+	 * </p>
+	 * 
+	 * @return the embedded class server
+	 */
+	public static Webster getWebster() {
+		return webster;
+	}
 }

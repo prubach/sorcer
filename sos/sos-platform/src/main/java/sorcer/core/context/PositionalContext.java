@@ -27,9 +27,11 @@ import static sorcer.core.SorcerConstants.APS;
 
 /**
  * @author Mike Sobolewski
- *
  */
+@SuppressWarnings("rawtypes")
 public class PositionalContext extends ServiceContext implements Positioning {
+
+	private static final long serialVersionUID = -8607789835474515562L;
 	private int tally = 0;
 	
 	public PositionalContext() {
@@ -144,7 +146,7 @@ public class PositionalContext extends ServiceContext implements Positioning {
 	@Override
 	public Object putValue(String path, Object value) throws ContextException {
 		if (this.containsPath(path)) {
-			return super.put(path, value);
+			return super.putValue(path, value);
 		}
 		else {
 			int index = tally++;

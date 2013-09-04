@@ -79,7 +79,7 @@ public class AttributesUtil {
 			if (attributeSets.length > 0) {
 				for (int i = 0; i < attributeSets.length - 1; i++) {
 					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).userDir;
+						return ((SorcerServiceInfo) attributeSets[i]).serviceHome;
 					}
 				}
 			}

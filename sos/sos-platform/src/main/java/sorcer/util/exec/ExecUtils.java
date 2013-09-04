@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import sorcer.util.GenericUtil;
+
 /**
  * Utility methods to interact with and manage native processes started from
  * Java.
@@ -42,11 +44,17 @@ public class ExecUtils {
 	 */
 	public static CmdResult execCommand(String cmd) throws IOException,
 			InterruptedException {
-        // A workaround to start commands on Windows in a separate cmd process
-        String os = System.getProperty("os.name");
-        if (os.toLowerCase().contains("windows"))
-            cmd = "cmd /c start " + cmd;
-        return execCommand(Runtime.getRuntime().exec(cmd));
+
+		String[] cmdarray = null;
+		if (GenericUtil.isWindows()) {
+			cmdarray = new String[3];
+			cmdarray[0] = "cmd";
+			cmdarray[1] = "/C";
+			cmdarray[2] = cmd;
+			return execCommand(Runtime.getRuntime().exec(cmdarray));
+		} else {
+			return execCommand(Runtime.getRuntime().exec(cmd));
+		}		
 	}
 
 	/**
@@ -70,6 +78,18 @@ public class ExecUtils {
 	 */
 	public static CmdResult execCommand(String[] cmdarray) throws IOException,
 			InterruptedException {
+		
+		if (GenericUtil.isWindows()) {
+			String[] ncmdarray = new String[cmdarray.length + 2];
+			ncmdarray[0] = "cmd";
+			ncmdarray[1] = "/C";
+			int ctr = 2;
+			for (int i = 0; i < cmdarray.length; i++) {
+				ncmdarray[ctr] = cmdarray[i];
+				ctr++;
+			}
+			cmdarray = ncmdarray;
+		}
 		return execCommand(Runtime.getRuntime().exec(cmdarray));
 	}
 

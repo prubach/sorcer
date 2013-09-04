@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,22 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.dispatch;
 
-import sorcer.core.Provider;
-import sorcer.core.exertion.Jobs;
-import sorcer.service.*;
+package sorcer.core.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import sorcer.core.Provider;
+import sorcer.core.exertion.Jobs;
+import sorcer.service.Context;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
+import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
+import sorcer.service.SignatureException;
+
 public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;
 
-	public CatalogParallelDispatcher(Job job, Set<Context> sharedContexts,
-			boolean isSpawned, Provider provider) throws Throwable {
-		super(job, sharedContexts, isSpawned, provider);
+	public CatalogParallelDispatcher(Job job, 
+            Set<Context> sharedContexts,
+            boolean isSpawned, 
+            Provider provider,
+            ProvisionManager provisionManager) throws Throwable {
+		super(job, sharedContexts, isSpawned, provider, provisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

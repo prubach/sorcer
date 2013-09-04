@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,26 @@
  */
 package sorcer.co;
 
-import sorcer.co.tuple.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import sorcer.co.tuple.Entry;
+import sorcer.co.tuple.StrategyEntry;
+import sorcer.co.tuple.Tuple1;
+import sorcer.co.tuple.Tuple2;
+import sorcer.co.tuple.Tuple3;
+import sorcer.co.tuple.Tuple4;
+import sorcer.co.tuple.Tuple5;
+import sorcer.co.tuple.Tuple6;
 import sorcer.core.context.ListContext;
 import sorcer.service.ContextException;
 import sorcer.service.Strategy;
-
-import java.util.*;
 
 public class operator {
 
@@ -124,7 +138,7 @@ public class operator {
 		return out;
 	}
 
-	public static <T1, T2> Tuple2<T1, T2> pair(T1 x1, T2 x2) {
+	public static <T1, T2> Tuple2<T1, T2> duo(T1 x1, T2 x2) {
 		return new Tuple2<T1, T2>(x1, x2);
 	}
 
@@ -132,10 +146,23 @@ public class operator {
 		return new Tuple3<T1, T2, T3>(x1, x2, x3);
 	}
 
-	public static <T1, T2> Tuple2<T1, T2> entry(T1 x1, T2 x2) {
-		return new Tuple2<T1, T2>(x1, x2);
+	public static <T2> Entry<T2> entry(String x1, T2 x2) {
+		return new Entry<T2>(x1, x2);
 	}
-
+	
+	public static <T2> Entry<T2> dbEntry(String x1, T2 x2) {
+		Entry<T2> t2 = new Entry<T2>(x1, x2);
+		t2.isPersistant = true;
+		return t2;
+	}
+	
+	public static <T1, T2> Tuple2<T1, T2> dbEntry(T1 x1, T2 x2, URL dbURL) {
+		Tuple2<T1, T2> t2 = new Tuple2<T1, T2>(x1, x2);
+		t2.isPersistant = true;
+		t2.datastoreURL = dbURL;
+		return t2;
+	}
+	
 	public static <T1, T2, T3> Tuple3<T1, T2, T3> entry(T1 x1, T2 x2, T3 x3) {
 		return new Tuple3<T1, T2, T3>(x1, x2, x3);
 	}

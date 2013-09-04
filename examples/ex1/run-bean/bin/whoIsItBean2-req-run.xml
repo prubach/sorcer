@@ -40,7 +40,7 @@
 	<target name="run.requestor" depends="mvn-init">
 		<java classname="${service.requestor}" fork="yes">
 		 	<classpath refid="run-req.classpath"/>
-			<arg value="sorcer.ex1.requestor.bean.WhoIsItBeanReq2" />
+			<arg value="sorcer.ex1.requestor.bean.WhoIsItBeanRunner2" />
 			<arg value="Bean2-WhoIsIt?" />
 		  	<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-req.policy" />

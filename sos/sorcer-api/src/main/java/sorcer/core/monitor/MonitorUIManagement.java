@@ -35,7 +35,7 @@ import java.util.Map;
  * exertion.
  * 
  * This referenceID is also required by the monitorable to be passed back to the
- * MonitorableServicer (ie, the MonitorManager) to control the exertion
+ * MonitorableService (ie, the MonitorManager) to control the exertion
  * execution.
  * 
  * The spec requires that the implementation of this interface gets all the

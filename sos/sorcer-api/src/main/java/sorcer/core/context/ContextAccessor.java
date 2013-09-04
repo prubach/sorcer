@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.context;
 
 import net.jini.id.Uuid;
@@ -23,11 +24,10 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 
 /**
- * ContextAccessor defines the signatures for interfacing with a dataContext
- * storage repository.
- * 
- * @version $Revision: 1.1 $
+ * The ContextAccessor interface defines storage and retrieval of service
+ * contexts.
  */
+@SuppressWarnings("rawtypes")
 public interface ContextAccessor {
 
 	/**
@@ -38,12 +38,12 @@ public interface ContextAccessor {
 	 *            a dataContext to place in the data store.
 	 * @return the stored ServiceContext with incremented version
 	 * @throws ContextException
-	 *             thrown if cntxt is not already in data store or if the
+	 *             thrown if context is not already in data store or if the
 	 *             dataContext's GAppPrincipal does not provide the required
 	 *             authorization.
 	 * @see Context.setPrincipal
 	 */
-	public Context save(Context cntxt) throws ContextException;
+	public Context save(Context context) throws ContextException;
 
 	/**
 	 * Saves dataContext to the data store, assigning a unique id with version set
@@ -57,7 +57,7 @@ public interface ContextAccessor {
 	 *             required authorization.
 	 * @see Context.setPrincipal
 	 */
-	public Context saveAs(Context cntxt) throws ContextException;
+	public Context saveAs(Context context) throws ContextException;
 
 	/**
 	 * Returns the ServiceContext with given id and the most current version.
@@ -68,10 +68,10 @@ public interface ContextAccessor {
 	 *            provides authorization
 	 * @throws ContextException
 	 *             thrown if given id doesn't exist in dataContext storage or if
-	 *             GAppPrincipal does not provide the required authorization.
+	 *             SorcerPrincipal does not provide the required authorization.
 	 * 
 	 */
-	public Context getContext(String id, SorcerPrincipal prin)
+	public Context getContext(String id, SorcerPrincipal principal)
 			throws ContextException;
 
 	/**
@@ -86,11 +86,11 @@ public interface ContextAccessor {
 	 *            provides authorization
 	 * @throws ContextException
 	 *             thrown if id and/or version doesn't exist in dataContext storage
-	 *             or GAppPrincipal does not provide the required authorization.
+	 *             or SorcerPrincipal does not provide the required authorization.
 	 * 
 	 */
 	public Context getContext(Uuid id, float version,
-			SorcerPrincipal prin) throws ContextException;
+			SorcerPrincipal principal) throws ContextException;
 
 	/**
 	 * Returns revision history of dataContext with given id.

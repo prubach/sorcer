@@ -18,9 +18,7 @@
 package junit.sorcer.util.bdb.objects;
 
 import static sorcer.eo.operator.dbURL;
-import static sorcer.eo.operator.sosURL;
 import static sorcer.eo.operator.value;
-import static sorcer.eo.operator.set;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,7 +31,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
-import sorcer.util.bdb.SosURL;
 import sorcer.util.bdb.sdb.Handler;
 
 /**
@@ -58,7 +55,6 @@ public class SosUrlsTest {
 	public void sosUrlsTest() throws SignatureException,
 			ExertionException, ContextException, IOException, InterruptedException {
         storedValuesTest();
-        updateValuesTest();
     }
 
 	public void storedValuesTest() throws SignatureException,
@@ -70,26 +66,6 @@ public class SosUrlsTest {
 		Thread.sleep(1000);
 		Assert.assertEquals("Test1", value(url1));
 		Assert.assertEquals(21.0, value(url2));
-	}
-
-	public void updateValuesTest() throws SignatureException,
-			ExertionException, ContextException, IOException {
-		SosURL url1 = sosURL("Test1");
-		SosURL url2 = sosURL(21.0);
-
-		logger.info("url1: " + url1);
-		logger.info("url2: " + url2);
-		
-		logger.info("x1 value: " + value(url1));
-		logger.info("x2 value: " + value(url2));
-
-		set(url1, "Test2");
-		logger.info("url1 value: " + value(url1));
-		Assert.assertEquals("Test2", value(url1));
-
-		set(url2, 25.0);
-		logger.info("url2 value: " + value(url2));
-		Assert.assertEquals(25.0, value(url2));
 	}
 
 	public static void main(String[]args) throws Exception {

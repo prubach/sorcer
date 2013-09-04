@@ -77,14 +77,15 @@ public class ExertMonitor extends ServiceProvider implements
 		File dbHomeFile = null;
 		if (dbHome == null || dbHome.length() == 0) {
 			logger.severe("Session database home missing: " + dbHome);
-			System.exit(-1);
+			destroy();
 		} else {
 			dbHomeFile = new File(dbHome);
 			if (!dbHomeFile.isDirectory() && !dbHomeFile.exists()) {			
 				boolean done = dbHomeFile.mkdirs();
 				if (!done) {
-					logger.severe("Not able to create session database home: " + dbHomeFile.getAbsolutePath());
-					System.exit(-1);
+					logger.severe("Not able to create session database home: " 
+							+ dbHomeFile.getAbsolutePath());
+					destroy();
 				}
 			}
 		}
@@ -484,6 +485,7 @@ public class ExertMonitor extends ServiceProvider implements
 		} catch (DatabaseException e) {
 			e.printStackTrace();
 		}
+		landlord.terminate();
 		super.destroy();
 	}
 

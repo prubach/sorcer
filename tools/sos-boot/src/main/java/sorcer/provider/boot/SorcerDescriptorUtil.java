@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 the original author or authors.
+ * Copyright 2013 Sorersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +18,18 @@ package sorcer.provider.boot;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
-import org.apache.commons.lang3.StringUtils;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.StringUtils;
 
-import static sorcer.util.ArtifactCoordinates.coords;
 import static sorcer.util.Artifact.sorcer;
+import static sorcer.util.ArtifactCoordinates.coords;
 
 /**
  * Holds static attributes used during the startup of services and provides
@@ -102,7 +104,7 @@ public class SorcerDescriptorUtil {
 
     /**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Webster.
+	 * {@link sorcer.tools.webster.Webster}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -124,7 +126,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Webster.
+	 * {@link sorcer.tools.webster.Webster}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -146,14 +148,14 @@ public class SorcerDescriptorUtil {
 		return (getWebster(policy, port, roots, null, false));
 	}
 
-    public static ServiceDescriptor getWebster(String policy, int port,
-			String address, String[] roots) throws IOException {
-		return (getWebster(policy, port, roots, address, false));
+	public static ServiceDescriptor getWebster(String policy, int port,
+			String[] roots, boolean isDaemon) throws IOException {
+		return (getWebster(policy, port, roots, null, false, isDaemon));
 	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Webster.
+	 * {@link sorcer.tools.webster.Webster}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -175,9 +177,14 @@ public class SorcerDescriptorUtil {
 		return (getWebster(policy, port, roots, address, 0, 0, debug, true));
 	}
 
+    public static ServiceDescriptor getWebster(String policy, int port,
+                                               String[] roots, String address, boolean debug, boolean isDaemon) throws IOException {
+        return (getWebster(policy, port, roots, address, 0, 0, debug, isDaemon));
+    }
+
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Webster
+	 * {@link sorcer.tools.webster.Webster}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -187,8 +194,6 @@ public class SorcerDescriptorUtil {
 	 *            The roots webster should serve
 	 * @param debug
 	 *            If true, set the <tt>sorcer.tools.debug</tt> property
-	 *
-	 *
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
 	 *         webster using a specified port. The <tt>webster.jar</tt> file
 	 *         will be loaded from <tt>${sorcer.home}/common/sorcer</tt>
@@ -199,16 +204,17 @@ public class SorcerDescriptorUtil {
 	public static ServiceDescriptor getWebster(String policy, int port,
 			String[] roots, String address, int startPort, int endPort,
 			boolean debug, boolean isDaemon) throws IOException {
-//		logger.finer("policy: " + policy + ", port: " + port + ", roots: "
-//				+ Arrays.toString(roots) + ", address: " + "startPort: "
-//				+ startPort + ", endPort:" + endPort);
+		logger.info("policy: " + policy + ", port: " + port + ", roots: "
+				+ Arrays.toString(roots) + ", address: " + "startPort: "
+				+ startPort + ", endPort:" + endPort 
+				+ ", debug: " + debug + ", isDaemon: " + isDaemon);
 		int websterPort = 0;
 		if (sorcerHome == null)
 			throw new RuntimeException("'sorcer.home' property not declared");
 		// anonymous case
 		if (port == 0) {
-			websterPort = Booter.getAnonymousPort();
-			System.setProperty("provider.webster.port", "" + websterPort);
+			websterPort = Booter.getAnonymousPort(); 
+			System.setProperty("webster.port", "" + port);
 		}
 		else if (port > 0) {
 			websterPort = port;
@@ -221,11 +227,11 @@ public class SorcerDescriptorUtil {
 		String websterRoots = StringUtils.join(roots, ';');
 		String websterClass = "sorcer.tools.webster.Webster";
 		if (debug) {
-			System.setProperty("webster.debug", "1");
+			System.setProperty("sorcer.tools.webster.debug", "true");
 		}
 		String websterAddress = address;
 		if (address == null || address.length() == 0) {
-			websterAddress = Booter.getWebsterHostName();
+			websterAddress = Booter.getWebsterInterface();
 			//Booter.getHostAddressFromProperty("java.rmi.server.hostname");
 		}
 		System.setProperty("provider.webster.interface", websterAddress);
@@ -234,36 +240,13 @@ public class SorcerDescriptorUtil {
 				websterClass,
 				new String[] { "-port", "" + websterPort, "-roots", websterRoots,
 						"-bindAddress", websterAddress, "-startPort",
-						"" + startPort, "-endPort", "" + endPort, "-isDaemon", "" + isDaemon }));
+						"" + startPort, "-endPort", "" + endPort, 
+						"-isDaemon", "" + isDaemon, "-debug", "" + debug}));
 	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Spacer using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param spacerConfig
-	 *            The configuration file the Spacer will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Spacer using an anonymous port. The <tt>jobberConfig</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getSpacer(String policy, String spacerConfig)
-			throws IOException {
-		return (getSpacer(policy, new String[] { spacerConfig }));
-
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Spacer using the Webster port created
+	 * {@link sorcer.service.Spacer} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -286,7 +269,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Spacer.
+	 * {@link sorcer.service.Spacer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -311,7 +294,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Spacer.
+	 * {@link sorcer.service.Spacer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -354,36 +337,12 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ServiceJobber using the Webster port created
+	 * {@link sorcer.core.provider.ServiceJobber} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
-	 * @param jobberConfig
-	 *            The configuration file the Monitor will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Monitor using an anonymous port. The <tt>jobberConfig</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getJobber(String policy, String jobberConfig)
-			throws IOException {
-		return (getJobber(policy, new String[] { jobberConfig }));
-
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ServiceJobber using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param jobberConfig
+	 * @param monitorConfig
 	 *            The configuration options the Monitor will use
 	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
 	 *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
@@ -401,7 +360,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ServiceJobber
+	 * {@link sorcer.core.provider.ServiceJobber}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -426,7 +385,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ServiceJobber.
+	 * {@link sorcer.core.provider.ServiceJobber}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -466,127 +425,11 @@ public class SorcerDescriptorUtil {
 				jobberClasspath, implClass, jobberConfig));
 
 	}
-
-    /**
-     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * ServiceJobber using the Webster port created
-     * by this utility.
-     *
-     * @param policy
-     *            The security policy file to use
-     * @param exerterConfig
-     *            The configuration file the Monitor will use
-     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-     *         Monitor using an anonymous port. The <tt>jobberConfig</tt> file
-     *         will be loaded from <tt>sorcer.home/lib</tt>
-     *
-     * @throws IOException
-     *             If there are problems getting the anonymous port
-     * @throws RuntimeException
-     *             If the <tt>sorcer.home</tt> system property is not set
-     */
-    public static ServiceDescriptor getExerter(String policy, String exerterConfig)
-            throws IOException {
-        return (getExerter(policy, new String[] { exerterConfig }));
-
-    }
-
-    /**
-     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * ServiceJobber using the Webster port created
-     * by this utility.
-     *
-     * @param policy
-     *            The security policy file to use
-     * @param exerterConfig
-     *            The configuration options the Monitor will use
-     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-     *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
-     *         will be loaded from <tt>sorcer.home/lib</tt>
-     *
-     * @throws IOException
-     *             If there are problems getting the anonymous port
-     * @throws RuntimeException
-     *             If the <tt>sorcer.home</tt> system property is not set
-     */
-    public static ServiceDescriptor getExerter(String policy,
-                                              String... exerterConfig) throws IOException {
-        return (getExerter(policy, Booter.getPort(), exerterConfig));
-    }
-
-    /**
-     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * ServiceJobber
-     *
-     * @param policy
-     *            The security policy file to use
-     * @param port
-     *            The port to use when constructing the codebase
-     * @param exerterConfig
-     *            The configuration options the Monitor will use
-     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-     *         Monitor using an anonymous port. The <tt>monitor.jar</tt> file
-     *         will be loaded from <tt>sorcer.home/lib</tt>
-     *
-     * @throws IOException
-     *             If there are problems getting the anonymous port
-     * @throws RuntimeException
-     *             If the <tt>sorcer.home</tt> system property is not set
-     */
-    public static ServiceDescriptor getExerter(String policy, int port,
-                                              String... exerterConfig) throws IOException {
-        return (getExerter(policy, Booter.getHostAddress(), port, exerterConfig));
-
-    }
-
-    /**
-     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * {@link sorcer.provider.ServiceTasker} with beaned
-     * {@link sorcer.util.ExertManager}, called Exerter.
-     *
-     * @param policy
-     *            The security policy file to use
-     * @param hostAddress
-     *            The address to use when constructing the codebase
-     * @param port
-     *            The port to use when constructing the codebase
-     * @param exerterConfig
-     *            The configuration options the ExertProcessor provider will use
-     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-     *         Exerter using an anonymous port. The <tt>sorcer-prv.jar</tt> file
-     *         will be loaded from <tt>iGrid.home/lib/sorcer/lib</tt>
-     *
-     * @throws IOException
-     *             If there are problems getting the anonymous port
-     * @throws RuntimeException
-     *             If the <tt>iGrid.home</tt> system property is not set
-     */
-    public static ServiceDescriptor getExerter(String policy,
-                                              String hostAddress, int port, String... exerterConfig)
-            throws IOException {
-        if (sorcerHome == null)
-            throw new RuntimeException("'sorcer.home' property not declared");
-
-        // service provider classpath
-        String exerterClasspath = Resolver.resolveClassPath(COMMONS_PRV);
-
-        // service provider codebase
-        String exerterCodebase = getCodebase(new ArtifactCoordinates[]{
-                SOS_PLATFORM,
-                //SOS_ENV,
-                SERVICEUI,
-                EXERTLET_UI,
-        }, hostAddress, Integer.toString(port));
-        String implClass = "sorcer.core.provider.ServiceTasker";
-        return (new SorcerServiceDescriptor(exerterCodebase, policy,
-                exerterClasspath, implClass, exerterConfig));
-
-    }
-
-    /**
+	
+	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * ExertMonitor using the Webster port created
-	 * by this utility.
+	 * {@link sorcer.core.provider.ServiceTasker} with beaned
+	 * {@link sorcer.util.ExertProcessor}, called Exerter.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -601,15 +444,69 @@ public class SorcerDescriptorUtil {
 	 * @throws RuntimeException
 	 *             If the <tt>sorcer.home</tt> system property is not set
 	 */
-	public static ServiceDescriptor getExertMonitor(String policy, String exertmonitorConfig)
+	public static ServiceDescriptor getExerter(String policy,
+			String... exerterConfig) throws IOException {
+		return (getExerter(policy, Booter.getPort(), exerterConfig));
+	}
+
+	/**
+	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+	 * {@link sorcer.core.provider.ServiceTasker} with beaned
+	 * {@link sorcer.util.ExertProcessor}, called Exerter.
+	 * 
+	 * @param policy
+	 *            The security policy file to use
+	 * @param port
+	 *            The port to use when constructing the codebase
+	 * @param exertConfig
+	 *            The configuration options the ExertProcessor provider will use
+	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+	 *         Exerter using an anonymous port. The <tt>sorcer-prv.jar</tt> file
+	 *         will be loaded from <tt>sorcer.home/lib/sorcer/lib</tt>
+	 * 
+	 * @throws IOException
+	 *             If there are problems getting the anonymous port
+	 * @throws RuntimeException
+	 *             If the <tt>sorcer.home</tt> system property is not set
+	 */
+	public static ServiceDescriptor getExerter(String policy, int port,
+			String... exertConfig) throws IOException {
+		return (getJobber(policy, Booter.getHostAddress(), port, exertConfig));
+
+	}
+	
+	/**
+	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
+	 * {@link sorcer.core.provider.ServiceTasker} with beaned
+	 * {@link sorcer.util.ExertProcessor}, called Exerter.
+	 * 
+	 * @param policy
+	 *            The security policy file to use
+	 * @param hostAddress
+	 *            The address to use when constructing the codebase
+	 * @param port
+	 *            The port to use when constructing the codebase
+	 * @param exertConfig
+	 *            The configuration options the ExertProcessor provider will use
+	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
+	 *         Exerter using an anonymous port. The <tt>sorcer-prv.jar</tt> file
+	 *         will be loaded from <tt>sorcer.home/lib/sorcer/lib</tt>
+	 * 
+	 * @throws IOException
+	 *             If there are problems getting the anonymous port
+	 * @throws RuntimeException
+	 *             If the <tt>sorcer.home</tt> system property is not set
+	 */
+	public static ServiceDescriptor getExerter(String policy,
+			String hostAddress, int port, String... exerterConfig)
 			throws IOException {
-		return (getExertMonitor(policy, new String[] { exertmonitorConfig }));
+		return (getExertMonitor(policy, exerterConfig));
 
 	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * .ExertMonitor} using the Webster port created
+	 * {@link sorcer.core.provider.exertmonitor.ExertMonitor} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -632,7 +529,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * .ExertMonitor}.
+	 * {@link sorcer.core.provider.exertmonitor.ExertMonitor}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -657,7 +554,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * .ExertMonitor}.
+	 * {@link sorcer.core.provider.exertmonitor.ExertMonitor}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -733,7 +630,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DatabaseStorerusing the Webster port created
+	 * {@link sorcer.service.DatabaseStorer} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -756,7 +653,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DatabaseStorer.
+	 * {@link sorcer.service.DatabaseStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -781,7 +678,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DatabaseStorer.
+	 * {@link sorcer.service.DatabaseStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -806,7 +703,6 @@ public class SorcerDescriptorUtil {
 		if (sorcerHome == null)
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
-
 		// service provider classpath
 		String dbpc = Resolver.resolveClassPath(
                 //SOS_PLATFORM,
@@ -828,35 +724,10 @@ public class SorcerDescriptorUtil {
 				dbpc, implClass, sdbConfig));
 
 	}
-	
-	
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DataspaceStorer using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param sdbConfig
-	 *            The configuration file the DataspaceStore will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         ObjectStore using an anonymous port. The <tt>sdb-prv.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getDataspaceStorer(String policy, String sdbConfig)
-			throws IOException {
-		return (getDataspaceStorer(policy, new String[] { sdbConfig }));
-
-	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DataspaceStorer using the Webster port created
+	 * {@link sorcer.service.DataspaceStorer} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -879,7 +750,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DataspaceStorer.
+	 * {@link sorcer.service.DataspaceStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -904,7 +775,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * DataspaceStorer.
+	 * {@link sorcer.service.DataspaceStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -945,34 +816,10 @@ public class SorcerDescriptorUtil {
 				dbpc, implClass, sdbConfig));
 
 	}
-	
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Cataloger using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param catalogerConfig
-	 *            The configuration file the Cataloger will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         Cataloger using an anonymous port. The <tt>catalogerConfig</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getCataloger(String policy, String catalogerConfig)
-			throws IOException {
-		return (getCataloger(policy, new String[] { catalogerConfig }));
-
-	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Cataloger using the Webster port created
+	 * {@link sorcer.core.Cataloger} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -995,7 +842,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Cataloger.
+	 * {@link sorcer.core.Cataloger}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -1020,7 +867,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * Cataloger.
+	 * {@link sorcer.core.Cataloger}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -1062,34 +909,9 @@ public class SorcerDescriptorUtil {
 
 	}
 
-	
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * RemoteLoggerManager using the Webster port created
-	 * by this utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param loggerConfig
-	 *            The configuration file the ServiceLogger will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 *         ServiceLogger using an anonymous port. The <tt>loggerConfig</tt> file
-	 *         will be loaded from <tt>sorcer.home/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getLogger(String policy, String loggerConfig)
-			throws IOException {
-		return (getLogger(policy, new String[] { loggerConfig }));
-
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * RemoteLoggerManager using the Webster port created
+	 * {@link sorcer.core.provider.logger.ServiceLogger} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -1112,7 +934,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * RemoteLoggerManager.
+	 * {@link sorcer.core.provider.logger.RemoteLoggerManager}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -1137,7 +959,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * RemoteLoggerManager.
+	 * {@link sorcer.core.provider.logger.RemoteLoggerManager}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -1178,29 +1000,6 @@ public class SorcerDescriptorUtil {
 		return (new SorcerServiceDescriptor(loggerCodebase, policy,
 				loggerClasspath, implClass, loggerConfig));
 
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for the
-	 * Jini Lookup Service (Reggie), using the Webster port created by this
-	 * utility.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param lookupConfig
-	 *            The configuration file Reggie will use
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 *         Reggie using an anonymous port. The <tt>reggie.jar</tt> file will
-	 *         be loaded from <tt>JINI_HOME/lib</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>JINI_HOME</tt> system property is not set
-	 */
-	public static ServiceDescriptor getLookup(String policy, String lookupConfig)
-			throws IOException {
-		return (getLookup(policy, new String[] { lookupConfig }));
 	}
 
 	/**
@@ -1280,7 +1079,7 @@ public class SorcerDescriptorUtil {
 		String reggieClasspath = Resolver.resolveClassPath(
 				coords("org.apache.river:reggie"));
 		String reggieCodebase = getCodebase(new ArtifactCoordinates[]{
-				ArtifactCoordinates.coords("org.apache.river:reggie-dl")
+				coords("org.apache.river:reggie-dl")
 		}, hostAddress, Integer.toString(port));
  		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
 		return (new SorcerServiceDescriptor(reggieCodebase, policy,

@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.co.tuple;
 
-import sorcer.service.Parameter;
+import java.io.Serializable;
+import java.net.URL;
+
+import sorcer.service.Arg;
+import sorcer.service.Identifiable;
 import sorcer.service.Strategy;
 
-import java.io.Serializable;
-
-public class Tuple2<T1, T2> implements Parameter, Serializable {
+public class Tuple2<T1, T2> implements Arg, Serializable, Identifiable {
+	private  static final long serialVersionUID = -6519678282532888568L;
 	public T1 _1 = null;
 	public T2 _2 = null;
+	public boolean isPersistant = false;
+	public URL datastoreURL;
 
-	public Tuple2() {};
+	public Tuple2() {}
 	
 	public Tuple2(T1 x1, T2 x2) {
 		_1 = x1;
@@ -41,10 +47,6 @@ public class Tuple2<T1, T2> implements Parameter, Serializable {
 		return (String)_1;
 	}
 	
-	public String name() {
-		return (String)_1;
-	}
-	
 	public T2 value() {
 		return _2;
 	}
@@ -53,9 +55,17 @@ public class Tuple2<T1, T2> implements Parameter, Serializable {
 		return (Strategy)_2;
 	}
 	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Arg#getName()
+	 */
+	@Override
+	public String getName() {
+		return ""+_1;
+	}
+	
 	@Override
 	public String toString() {
-		return "[" + _1 + "|" + _2 + "]";
+		return "[" + _1 + ":" + _2 + "]";
 	}
 	
 	@Override
@@ -71,5 +81,13 @@ public class Tuple2<T1, T2> implements Parameter, Serializable {
 	@Override
 	public int hashCode() {
 		return 2 * 31 + _1.hashCode() + _2.hashCode();
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Identifiable#getId()
+	 */
+	@Override
+	public Object getId() {
+		return ""+_1;
 	}
 }

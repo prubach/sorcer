@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.security.sign;
 
 /*
@@ -34,6 +35,10 @@ package sorcer.security.sign;
  * limitations under the License.
  */
 
+import java.security.AccessController;
+
+import javax.security.auth.Subject;
+
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.LookupDiscovery;
@@ -42,9 +47,6 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Service;
-
-import javax.security.auth.Subject;
-import java.security.AccessController;
 
 /**
  * <p>

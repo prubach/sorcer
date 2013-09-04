@@ -1,6 +1,6 @@
-/**
- *
- * Copyright 2013 the original author or authors.
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,6 +45,7 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.ControlFlowManager;
+import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -58,436 +59,435 @@ import sorcer.service.Signature;
 import sorcer.service.Spacer;
 import sorcer.service.Task;
 
-import sorcer.util.StringUtils;
-
 import com.sun.jini.start.LifeCycle;
+import sorcer.util.StringUtils;
 
 /**
  * ServiceSpacer - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using JavaSpace from which provides PULL
  * exertions to be executed.
- * 
+ *
  */
-public class ServiceSpacer extends ServiceProvider implements Spacer, Executor {
-	private static Logger logger;
-	private LokiMemberUtil myMemberUtil;
+public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
+    private static Logger logger;
+    private LokiMemberUtil myMemberUtil;
 
-	/**
-	 * ServiceSpacer - Default constructor
-	 * 
-	 * @throws RemoteException
-	 */
-	public ServiceSpacer() throws RemoteException {
-		myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
-	}
+    /**
+     * ServiceSpacer - Default constructor
+     *
+     * @throws RemoteException
+     */
+    public ServiceSpacer() throws RemoteException {
+        myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
+    }
 
-	/**
-	 * ServiceSpacer - Constructor
-	 * 
-	 * @param args
-	 * @param lifeCycle
-	 * @throws RemoteException
-	 * 
-	 *             Require ctor for Jini 2 NonActivatableServiceDescriptor
-	 */
-	public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
-		super(args, lifeCycle);
-		myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
-		initLogger();
-	}
+    /**
+     * ServiceSpacer - Constructor
+     *
+     * @param args
+     * @param lifeCycle
+     * @throws RemoteException
+     *
+     *             Require ctor for Jini 2 NonActivatableServiceDescriptor
+     */
+    public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
+        super(args, lifeCycle);
+        myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
+        initLogger();
+    }
 
-	private void initLogger() {
-		Handler h = null;
-		try {
-			logger = Logger.getLogger("local." + ServiceSpacer.class.getName()
-					+ "." + getProviderName());
+    private void initLogger() {
+        Handler h = null;
+        try {
+            logger = Logger.getLogger("local." + ServiceSpacer.class.getName()
+                    + "." + getProviderName());
 			h = new FileHandler(SorcerEnv.getHomeDir()
-					+ "/logs/remote/local-Spacer-" + delegate.getHostName()
-					+ "-" + getProviderName() + ".log", 20000, 8, true);
-			h.setFormatter(new SimpleFormatter());
-			logger.addHandler(h);
-			logger.setUseParentHandlers(false);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+                    + "/logs/remote/local-Spacer-" + delegate.getHostName()
+                    + "-" + getProviderName() + ".log", 20000, 8, true);
+                h.setFormatter(new SimpleFormatter());
+                logger.addHandler(h);
+            logger.setUseParentHandlers(false);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void setServiceID(Exertion ex) {
-		// By default it's ServiceSpacer associated with this exertion.
-		try {
-			if (getProviderID() != null) {
-				logger.finest(getProviderID().getLeastSignificantBits() + ":"
-						+ getProviderID().getMostSignificantBits());
-				((ServiceExertion) ex).setLsbId(getProviderID()
-						.getLeastSignificantBits());
-				((ServiceExertion) ex).setMsbId(getProviderID()
-						.getMostSignificantBits());
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
+    public void setServiceID(Exertion ex) {
+        // By default it's ServiceSpacer associated with this exertion.
+        try {
+            if (getProviderID() != null) {
+                logger.finest(getProviderID().getLeastSignificantBits() + ":"
+                        + getProviderID().getMostSignificantBits());
+                ((ServiceExertion) ex).setLsbId(getProviderID()
+                        .getLeastSignificantBits());
+                ((ServiceExertion) ex).setMsbId(getProviderID()
+                        .getMostSignificantBits());
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public Exertion service(Exertion exertion) throws RemoteException,
-			ExertionException {
-		try {
-			logger.entering(this.getClass().getName(), "service: " + exertion.getName());
-			setServiceID(exertion);
-			System.out.println("ServiceSpacer.service(): ************************************ exertion = " + exertion);
-			// create an instance of the ExertionProcessor and call on the
-			// process method, returns an Exertion
-			return new ControlFlowManager(exertion, delegate, this)
-					.process(threadManager);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ExertionException();
-		}
-	}
+    public Exertion service(Exertion exertion) throws RemoteException,
+            ExertionException {
+        try {
+            logger.entering(this.getClass().getName(), "service: " + exertion.getName());
+            setServiceID(exertion);
+            System.out.println("ServiceSpacer.service(): ************************************ exertion = " + exertion);
+            // create an instance of the ExertionProcessor and call on the
+            // process method, returns an Exertion
+            return new ControlFlowManager(exertion, delegate, this)
+                    .process(threadManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExertionException();
+        }
+    }
 
-	public Exertion execute(Exertion exertion) throws TransactionException,
-			RemoteException {
-		return execute(exertion, null);
-	}
+    public Exertion execute(Exertion exertion) throws TransactionException,
+            RemoteException {
+        return execute(exertion, null);
+    }
 
-	public Exertion execute(Exertion exertion, Transaction txn)
-			throws TransactionException, RemoteException {
-		if (exertion.isJob())
-			return doJob(exertion);
-		else
-			return doTask(exertion);
-	}
+    public Exertion execute(Exertion exertion, Transaction txn)
+            throws TransactionException, RemoteException {
+        if (exertion.isJob())
+            return doJob(exertion);
+        else
+            return doTask(exertion);
+    }
 
-	public Exertion doJob(Exertion job) {
-		setServiceID(job);
-		try {
-			if (job.getControlContext().isMonitorable()
-					&& !job.getControlContext().isWaitable()) {
-				replaceNullExertionIDs(job);
-				notifyViaEmail(job);
-				new JobThread((Job) job, this).start();
-				return job;
-			} else {
-				JobThread jobThread = new JobThread((Job) job, this);
-				jobThread.start();
-				jobThread.join();
-				Job result = jobThread.getResult();
-				logger.finest("Result: " + result);
-				return result;
-			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public Exertion doJob(Exertion job) {
+        setServiceID(job);
+        try {
+            if (job.getControlContext().isMonitorable()
+                    && !job.getControlContext().isWaitable()) {
+                replaceNullExertionIDs(job);
+                notifyViaEmail(job);
+                new JobThread((Job) job, this).start();
+                return job;
+            } else {
+                JobThread jobThread = new JobThread((Job) job, this);
+                jobThread.start();
+                jobThread.join();
+                Job result = jobThread.getResult();
+                logger.finest("Result: " + result);
+                return result;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	// public Exertion stopJob(String , Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = getJob(jobID, subject);
-	// //If job has serviceID then call stop on the provider with serviceID
-	// if (job.getServiceID()!=null &&
-	// !job.getServiceID().equals(getProviderID())) {
-	// Provider provider =
-	// ServiceProviderAccessor.getProvider(job.getServiceID());
-	// if (provider == null)
-	// throw new ExertionException("Jobber with serviceID ="+job.getServiceID()
-	// +" Jobber Name ="+job.getJobberName()+" down!");
-	// else
-	// return provider.stopJob(jobID, subject);
-	// }
+    // public Exertion stopJob(String , Subject subject)
+    // throws RemoteException, ExertionException, ExertionMethodException {
+    // RemoteServiceJob job = getJob(jobID, subject);
+    // //If job has serviceID then call stop on the provider with serviceID
+    // if (job.getServiceID()!=null &&
+    // !job.getServiceID().equals(getProviderID())) {
+    // Provider provider =
+    // ServiceProviderAccessor.getProvider(job.getServiceID());
+    // if (provider == null)
+    // throw new ExertionException("Jobber with serviceID ="+job.getServiceID()
+    // +" Jobber Name ="+job.getJobberName()+" down!");
+    // else
+    // return provider.stopJob(jobID, subject);
+    // }
 
-	// //else assume the Jobber called on is current one.
+    // //else assume the Jobber called on is current one.
 	// ExertDispatcher dispatcher = getDispatcher(jobID);
-	// if (dispatcher == null) {
-	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-	// //return job;
-	// //return cleanIfCorrupted(job);
-	// }
-	// else {
-	// if (isAuthorized(subject,"STOPSERVICE",jobID)) {
-	// if (job.getStatus()!=RUNNING || job.getState()!=RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" is not Running!");
-	// return dispatcher.stopJob();
-	// }
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-	// }
+    // if (dispatcher == null) {
+    // throw new ExertionException("No job with id "+jobID+" found in Jobber ");
+    // //RemoteServiceJob job = getPersistedJob(jobID ,subject);
+    // //return job;
+    // //return cleanIfCorrupted(job);
+    // }
+    // else {
+    // if (isAuthorized(subject,"STOPSERVICE",jobID)) {
+    // if (job.getStatus()!=RUNNING || job.getState()!=RUNNING)
+    // throw new ExertionException("Job with id="+jobID+" is not Running!");
+    // return dispatcher.stopJob();
+    // }
+    // else
+    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
+    // subject="+subject);
+    // }
+    // }
 
-	// public Exertion suspendJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
+    // public Exertion suspendJob(String jobID,Subject subject)
+    // throws RemoteException, ExertionException, ExertionMethodException {
 
 	// ExertDispatcher dispatcher = getDispatcher(jobID);
-	// if (dispatcher == null) {
-	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-	// //return job;
-	// //return cleanIfCorrupted(job);
-	// }
-	// else {
-	// if (isAuthorized(subject,"SUSPENDJOB",jobID))
-	// return dispatcher.suspendJob();
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-	// }
+    // if (dispatcher == null) {
+    // throw new ExertionException("No job with id "+jobID+" found in Jobber ");
+    // //RemoteServiceJob job = getPersistedJob(jobID ,subject);
+    // //return job;
+    // //return cleanIfCorrupted(job);
+    // }
+    // else {
+    // if (isAuthorized(subject,"SUSPENDJOB",jobID))
+    // return dispatcher.suspendJob();
+    // else
+    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
+    // subject="+subject);
+    // }
+    // }
 
-	// public Exertion resumeJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = null;
-	// if (isAuthorized(subject,"RESUMEJOB",jobID)) {
-	// job = getJob(jobID, subject);
-	// if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" already Running!");
-	// prepareToResume(job);
-	// return doJob(job);
-	// }
-	// els
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
+    // public Exertion resumeJob(String jobID,Subject subject)
+    // throws RemoteException, ExertionException, ExertionMethodException {
+    // RemoteServiceJob job = null;
+    // if (isAuthorized(subject,"RESUMEJOB",jobID)) {
+    // job = getJob(jobID, subject);
+    // if (job.getStatus()==RUNNING || job.getState()==RUNNING)
+    // throw new ExertionException("Job with id="+jobID+" already Running!");
+    // prepareToResume(job);
+    // return doJob(job);
+    // }
+    // els
+    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
+    // subject="+subject);
+    // }
 
-	// public Exertion stepJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = null;
-	// if (isAuthorized(subject,"STEPJOB",jobID)) {
-	// job = getJob(jobID, subject);
-	// if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" already Running!");
-	// prepareToStep(job);
-	// return doJob(job);
-	// }
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
+    // public Exertion stepJob(String jobID,Subject subject)
+    // throws RemoteException, ExertionException, ExertionMethodException {
+    // RemoteServiceJob job = null;
+    // if (isAuthorized(subject,"STEPJOB",jobID)) {
+    // job = getJob(jobID, subject);
+    // if (job.getStatus()==RUNNING || job.getState()==RUNNING)
+    // throw new ExertionException("Job with id="+jobID+" already Running!");
+    // prepareToStep(job);
+    // return doJob(job);
+    // }
+    // else
+    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
+    // subject="+subject);
+    // }
 
-	private String getDataURL(String filename) {
-		return getDelegate().getProviderConfig()
-				.getProperty("provider.dataURL") + filename;
-	}
+    private String getDataURL(String filename) {
+        return ((ProviderDelegate) getDelegate()).getProviderConfig()
+                .getProperty("provider.dataURL") + filename;
+    }
 
-	private String getDataFilename(String filename) {
-		return getDelegate().getProviderConfig()
-				.getDataDir() + "/" + filename;
-	}
+    private String getDataFilename(String filename) {
+        return ((ProviderDelegate) getDelegate()).getProviderConfig()
+                .getDataDir() + "/" + filename;
+    }
 
-	/** {@inheritDoc} */
-	public boolean isAuthorized(Subject subject, Signature signature) {
-		return true;
-	}
+    /** {@inheritDoc} */
+    public boolean isAuthorized(Subject subject, Signature signature) {
+        return true;
+    }
 
-	private void replaceNullExertionIDs(Exertion ex) {
-		if (ex != null && ex.getId() == null) {
-			((ServiceExertion) ex)
-					.setId(UuidFactory.generate());
-			if (ex.isJob()) {
-				for (int i = 0; i < ((Job) ex).size(); i++)
-					replaceNullExertionIDs(((Job) ex).exertionAt(i));
-			}
-		}
-	}
+    private void replaceNullExertionIDs(Exertion ex) {
+        if (ex != null && ((ServiceExertion) ex).getId() == null) {
+            ((ServiceExertion) ex)
+                    .setId(UuidFactory.generate());
+            if (((ServiceExertion) ex).isJob()) {
+                for (int i = 0; i < ((Job) ex).size(); i++)
+                    replaceNullExertionIDs(((Job) ex).exertionAt(i));
+            }
+        }
+    }
 
-	private void notifyViaEmail(Exertion ex) throws ContextException {
+    private void notifyViaEmail(Exertion ex) throws ContextException {
 		if (ex == null || ex.isTask())
-			return;
-		Job job = (Job) ex;
-		Vector recipents = null;
+            return;
+        Job job = (Job) ex;
+        Vector recipents = null;
 		String notifyees = ((ControlContext) job.getDataContext()).getNotifyList();
-		if (notifyees != null) {
+        if (notifyees != null) {
 			String[] list = StringUtils.tokenize(notifyees, SorcerConstants.MAIL_SEP);
-			recipents = new Vector(list.length);
-			for (int i = 0; i < list.length; i++)
-				recipents.addElement(list[i]);
-		}
+            recipents = new Vector(list.length);
+            for (int i = 0; i < list.length; i++)
+                recipents.addElement(list[i]);
+        }
 		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
-		if (recipents == null) {
-			if (admin != null) {
-				recipents = new Vector();
-				recipents.addElement(admin);
-			}
-		} else if (admin != null && !recipents.contains(admin))
-			recipents.addElement(admin);
+        if (recipents == null) {
+            if (admin != null) {
+                recipents = new Vector();
+                recipents.addElement(admin);
+            }
+        } else if (admin != null && !recipents.contains(admin))
+            recipents.addElement(admin);
 
-		if (recipents == null)
-			to = to + "No e-mail notifications will be sent for this job.";
-		else {
-			to = to + "e-mail notification will be sent to\n";
-			for (int i = 0; i < recipents.size(); i++)
-				to = to + "  " + recipents.elementAt(i) + "\n";
-		}
-		String comment = "Your job '" + job.getName()
-				+ "' has been submitted.\n" + to;
+        if (recipents == null)
+            to = to + "No e-mail notifications will be sent for this job.";
+        else {
+            to = to + "e-mail notification will be sent to\n";
+            for (int i = 0; i < recipents.size(); i++)
+                to = to + "  " + recipents.elementAt(i) + "\n";
+        }
+        String comment = "Your job '" + job.getName()
+                + "' has been submitted.\n" + to;
 		((ControlContext) job.getDataContext()).setFeedback(comment);
-		if (job.getMasterExertion() != null
+        if (job.getMasterExertion() != null
 				&& job.getMasterExertion().isTask()) {
 			job.getMasterExertion().getDataContext()
-					.putValue(Context.JOB_COMMENTS, comment);
+                    .putValue(Context.JOB_COMMENTS, comment);
 
-			Contexts.markOut(
+            Contexts.markOut(
 					job.getMasterExertion().getDataContext(),
-					Context.JOB_COMMENTS);
+                    Context.JOB_COMMENTS);
 
-		}
-	}
+        }
+    }
 
-	protected class JobThread extends Thread {
+    protected class JobThread extends Thread {
 
-		// doJob method calls this internally
-		private Job job;
+        // doJob method calls this internally
+        private Job job;
 
-		private Job result;
+        private Job result;
 
-		private String jobID;
+        private String jobID;
 
-		private Provider provider;
-		
-		public JobThread(Job job, Provider provider) {
-			this.job = job;
-			this.provider = provider;
-		}
+        private Provider provider;
 
-		public void run() {
-			logger.finest("*** JobThread Started ***");
-			Dispatcher dispatcher = null;
+        public JobThread(Job job, Provider provider) {
+            this.job = job;
+            this.provider = provider;
+        }
 
-			try {
-				dispatcher = ExertionDispatcherFactory.getFactory()
-						.createDispatcher(job,
-								new HashSet<Context>(), false, myMemberUtil, provider);
-				while (dispatcher.getState() != ExecState.DONE
-						&& dispatcher.getState() != ExecState.FAILED
-						&& dispatcher.getState() != ExecState.SUSPENDED) {
-					logger.fine("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
-					Thread.sleep(250);
-				}
-				logger.fine("Dispatcher State: " + dispatcher.getState());
-			} catch (DispatcherException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			result = (NetJob) dispatcher.getExertion();
-			try {
-				job.getControlContext().appendTrace(provider.getProviderName()  + " dispatcher: " 
-						+ dispatcher.getClass().getName());
-			} catch (RemoteException e) {
-				// ignore it
-			}
-		}
+        public void run() {
+            logger.finest("*** JobThread Started ***");
+            Dispatcher dispatcher = null;
 
-		public Job getJob() {
-			return job;
-		}
+            try {
+                dispatcher = ExertionDispatcherFactory.getFactory()
+                        .createDispatcher((NetJob) job,
+                                new HashSet<Context>(), false, myMemberUtil, provider);
+                while (dispatcher.getState() != ExecState.DONE
+                        && dispatcher.getState() != ExecState.FAILED
+                        && dispatcher.getState() != ExecState.SUSPENDED) {
+                    logger.fine("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
+                    Thread.sleep(250);
+                }
+                logger.fine("Dispatcher State: " + dispatcher.getState());
+            } catch (DispatcherException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            result = (NetJob) dispatcher.getExertion();
+            try {
+                job.getControlContext().appendTrace(provider.getProviderName()  + " dispatcher: "
+                        + dispatcher.getClass().getName());
+            } catch (RemoteException e) {
+                // ignore it
+            }
+        }
 
-		public Job getResult() throws ContextException {
-			return result;
-		}
+        public Job getJob() {
+            return job;
+        }
 
-		public String getJobID() {
-			return jobID;
-		}
-	}
+        public Job getResult() throws ContextException {
+            return result;
+        }
 
-	protected class TaskThread extends Thread {
+        public String getJobID() {
+            return jobID;
+        }
+    }
 
-		// doJob method calls this internally
-		private Task task;
+    protected class TaskThread extends Thread {
 
-		private Task result;
+        // doJob method calls this internally
+        private Task task;
 
-		private String taskID;
-		
-		private Provider provider;
+        private Task result;
 
-		public TaskThread(Task task, Provider provider) {
-			this.task = task;
-			this.provider = provider;
-		}
+        private String taskID;
 
-		public void run() {
-			logger.finest("*** TaskThread Started ***");
-			SpaceTaskDispatcher dispatcher = null;
+        private Provider provider;
 
-			try {
-				dispatcher = (SpaceTaskDispatcher) ExertionDispatcherFactory
+        public TaskThread(Task task, Provider provider) {
+            this.task = task;
+            this.provider = provider;
+        }
+
+        public void run() {
+            logger.finest("*** TaskThread Started ***");
+            SpaceTaskDispatcher dispatcher = null;
+
+            try {
+                dispatcher = (SpaceTaskDispatcher) ExertionDispatcherFactory
 						.getFactory().createDispatcher(task,
-								new HashSet<Context>(), false, myMemberUtil, provider);
-				try {
-					task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: " 
-							+ dispatcher.getClass().getName());
-				} catch (RemoteException e) {
-					//ignore it, local call
-				}
-				while (dispatcher.getState() != ExecState.DONE
-						&& dispatcher.getState() != ExecState.FAILED
-						&& dispatcher.getState() != ExecState.SUSPENDED) {
-					logger.fine("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
-					Thread.sleep(250);
-				}
-				logger.fine("Dispatcher State: " + dispatcher.getState());
+                                new HashSet<Context>(), false, myMemberUtil, provider);
+                try {
+                    task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: "
+                            + dispatcher.getClass().getName());
+                } catch (RemoteException e) {
+                    //ignore it, local call
+                }
+                while (dispatcher.getState() != ExecState.DONE
+                        && dispatcher.getState() != ExecState.FAILED
+                        && dispatcher.getState() != ExecState.SUSPENDED) {
+                    logger.fine("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
+                    Thread.sleep(250);
+                }
+                logger.fine("Dispatcher State: " + dispatcher.getState());
 				result = (NetTask) dispatcher.getExertion();
-			} catch (DispatcherException e) {
+            } catch (DispatcherException e) {
 				logger.log(Level.SEVERE, "Dispatcher exception", e);
-			} catch (InterruptedException e) {
+            } catch (InterruptedException e) {
 				logger.log(Level.SEVERE, "Interrupted", e);
-			}
-		}
+            }
+        }
 
-		public Task getTask() {
-			return task;
-		}
+        public Task getTask() {
+            return task;
+        }
 
-		public Task getResult() throws ContextException {
-			return result;
-		}
+        public Task getResult() throws ContextException {
+            return result;
+        }
 
-		public String getTaskID() {
-			return taskID;
-		}
-	}
-	
-	private void prepareToResume(Job job) {
-		return;
-	}
+        public String getTaskID() {
+            return taskID;
+        }
+    }
 
-	private void prepareToStep(Job job) {
-		Exertion e = null;
-		for (int i = 0; i < job.size(); i++) {
-			e = job.exertionAt(i);
+    private void prepareToResume(Job job) {
+        return;
+    }
+
+    private void prepareToStep(Job job) {
+        Exertion e = null;
+        for (int i = 0; i < job.size(); i++) {
+            e = job.exertionAt(i);
 			((ControlContext) job.getDataContext()).setReview(e, true);
 			if (e.isJob())
-				prepareToStep((Job) e);
-		}
-		return;
-	}
+                prepareToStep((Job) e);
+        }
+        return;
+    }
 
-	public Exertion doTask(Exertion task) throws RemoteException {
-		setServiceID(task);
-		try {
-			if (task.isMonitorable()
-					&& !task.isWaitable()) {
-				replaceNullExertionIDs(task);
-				notifyViaEmail(task);
-				new TaskThread((Task) task, this).start();
-				return task;
-			} else {
-				TaskThread taskThread = new TaskThread((Task) task, this);
-				taskThread.start();
-				taskThread.join();
-				Task result = taskThread.getResult();
-				logger.finest("Spacer result: " + result);
-				return result;
-			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    public Exertion doTask(Exertion task) throws RemoteException {
+        setServiceID(task);
+        try {
+            if (task.isMonitorable()
+                    && !task.isWaitable()) {
+                replaceNullExertionIDs(task);
+                notifyViaEmail(task);
+                new TaskThread((Task) task, this).start();
+                return task;
+            } else {
+                TaskThread taskThread = new TaskThread((Task) task, this);
+                taskThread.start();
+                taskThread.join();
+                Task result = taskThread.getResult();
+                logger.finest("Spacer result: " + result);
+                return result;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 		/*
 		 * try { if (task.isScript()) { ServiceContext[] ctxs = task.contexts;
 		 * String fn = (String)task.getValue(OUT_FILE); Vector outputs =

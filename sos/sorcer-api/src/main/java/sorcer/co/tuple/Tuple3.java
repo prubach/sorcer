@@ -18,7 +18,7 @@
 package sorcer.co.tuple;
 
 public class Tuple3<T1, T2, T3> extends Tuple2<T1, T2> {
-	
+	private static final long serialVersionUID = 8462677030360698197L;
 	public T3 _3 = null;
 
 	public Tuple3() {

@@ -21,9 +21,9 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.core.Monitorable;
 import sorcer.core.Provider;
 import sorcer.core.monitor.MonitorEvent;
+import sorcer.core.Monitorable;
 import sorcer.core.monitor.MonitorableSession;
 import sorcer.core.provider.exertmonitor.lease.MonitorLandlord;
 import sorcer.service.*;
@@ -52,9 +52,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		} catch (Exception e) {
 			logger.log(
 					Level.SEVERE,
-					"Error while instantiating eventPool..quitting.."
+					"Error while instantiating eventPool... "
 							+ e.getMessage());
-			System.exit(1);
 		}
 	}
 

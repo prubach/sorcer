@@ -22,18 +22,21 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Extracted from sorcer.service.Signature
+ * Extracted from sorcer.service.Signature by Rafał Krupiński
  *
  * @author Mike Sobolewski
  */
-public class ReturnPath<T> implements Serializable, Parameter {
+public class ReturnPath<T> implements Serializable, Arg {
     static final long serialVersionUID = 6158097800741638834L;
     public String path;
     public Direction direction;
     public String[] argPaths;
     public Class<T> type;
 
-    public ReturnPath() {}
+    public ReturnPath() {
+        //return the context
+        path = "self";
+    }
 
     public ReturnPath(String path, String... argPaths) {
         this.path = path;
@@ -56,10 +59,14 @@ public class ReturnPath<T> implements Serializable, Parameter {
         type = returnType;
     }
 
+    public String getName() {
+        return path;
+    }
+
     public String toString() {
         String params = "";
         if (argPaths != null)
-             params = " argPaths: " + Arrays.toString(argPaths);
+            params = " argPaths: " + Arrays.toString(argPaths);
         return path + (direction != null ? " direction: " + direction : "")
             + params;
     }

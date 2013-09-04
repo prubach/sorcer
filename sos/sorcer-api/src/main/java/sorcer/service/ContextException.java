@@ -59,7 +59,12 @@ public class ContextException extends Exception {
 		super(exception);
 	}
 
-	
+	/**
+	 * Constructs a new ContextException with a message and an embedded exception.
+	 * 
+	 * @param exception
+	 *            embedded exception
+	 */
 	public ContextException(String msg, Exception exception) {
 		super(msg, exception);
 	}
