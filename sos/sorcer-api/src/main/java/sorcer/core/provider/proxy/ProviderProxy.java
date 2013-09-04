@@ -35,7 +35,6 @@ import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.id.ReferentUuid;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
-import sorcer.util.Log;
 
 /**
  * The Service provider should wrap up the smart proxy/stub. The
