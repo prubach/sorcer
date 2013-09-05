@@ -24,121 +24,125 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 
-
 /**
  * A Condition specifies a conditional value in a given service context for its free variables
  * in the form of path/value pairs with paths being guards's parameters.
- * 
+ *
+ * @author Mike Sobolewski
  * @see Exertion
  * @see WhileExertion
  * @see IfExertion
- * 
- * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
- public class Condition implements Evaluation<Object>, Conditional, Serializable {
+public class Condition implements Evaluation<Object>, Conditional, Serializable {
 
-	private static final long serialVersionUID = -7310117070480410642L;
-	 
-	public static String CONDITION_VALUE = "condition/value";
-	public static String CONDITION_TARGET = "condition/target";
-	
-	protected Context<?> conditionaContext;
-	
-	protected String evaluationPath;
-	
-	protected String closureExpression;
+    private static final long serialVersionUID = -7310117070480410642L;
+    public static String CONDITION_VALUE = "condition/value";
+    public static String CONDITION_TARGET = "condition/target";
+    protected Context<?> conditionaContext;
+    protected String evaluationPath;
+    protected String closureExpression;
+    protected String[] pars;
+    Boolean status = null;
+    private Closure closure;
 
-	private Closure closure;
-	
-	protected String[] pars;
-	
-	Boolean status = null;
-	
-	public Condition() {
-		// do nothing
-	}
-	
-	public Condition(Boolean status) {
-		this.status = status;
-	}
-	
-	public Condition(Context<?> context) {
-		conditionaContext = context;
-	}
-	
-	public Condition(Context<?> context, String parPath) {
-		evaluationPath = parPath;
-		conditionaContext = context;
-	}
-	
-	public Condition(Context<?> context, String closure, String... parameters) {
-		this.closureExpression = closure;
-		conditionaContext = context;
-		this.pars = parameters;
-	}
-	
-	/**
-	 * The isTrue method is responsible for evaluating the underlying contextual
-	 * condition.
-	 * 
-	 * @return boolean true or false depending on given contexts
-	 * @throws ExertionException
-	 *             if there is any problem within the isTrue method.
-	 * @throws ContextException
+    public Condition() {
+        // do nothing
+    }
+
+    public Condition(Boolean status) {
+        this.status = status;
+    }
+
+    public Condition(Context<?> context) {
+        conditionaContext = context;
+    }
+
+    public Condition(Context<?> context, String parPath) {
+        evaluationPath = parPath;
+        conditionaContext = context;
+    }
+
+    public Condition(Context<?> context, String closure, String... parameters) {
+        this.closureExpression = closure;
+        conditionaContext = context;
+        this.pars = parameters;
+    }
+
+    /**
+     * The isTrue method is responsible for evaluating the underlying contextual
+     * condition.
+     *
+     * @return boolean true or false depending on given contexts
+     * @throws ExertionException if there is any problem within the isTrue method.
+     * @throws ContextException
+     */
+    public boolean isTrue() throws ContextException {
+        if (status != null)
+            return status;
+
+        Object obj = null;
+        Object[] args = null;
+        if (closure != null) {
+            args = new Object[pars.length];
+            for (int i = 0; i < pars.length; i++) {
+                args[i] = conditionaContext.getValue(pars[i]);
+            }
+            obj = closure.call(args);
+        } else if (evaluationPath != null && conditionaContext != null) {
+            obj = conditionaContext.getValue(evaluationPath);
+        } else if (closureExpression != null && conditionaContext != null) {
+
+             /*conditionaContext.putValue("closure",
+                    new Invoker((ParModel)conditionaContext));
+            ((Invoker) conditionaContext.get("closure"))
+                    .setEvaluator(groovy(closureExpression));
+
+
+            closure = (Closure)conditionaContext.getValue("closure");
+            args = new Object[pars.length];
+            for (int i = 0; i < pars.length; i++) {
+                args[i] = conditionaContext.getValue(pars[i]);
+            }
+            obj = closure.call(args);*/
+        }
+
+        if (obj instanceof Boolean)
+            return (Boolean) obj;
+        else if (obj != null)
+            return true;
+        else
+            return false;
+    }
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Evaluation#asis()
 	 */
-	public boolean isTrue() throws ContextException {
-		if (status != null)
-			return status;
-		
-		Object obj = null;
-		Object[] args = null;
-		if (closure != null) {
-			args = new Object[pars.length];
-			for (int i = 0; i < pars.length; i++) {
-				args[i] = conditionaContext.getValue(pars[i]);
-			}
-			obj = closure.call(args);
-		} else if (evaluationPath != null && conditionaContext != null) {
-			obj = conditionaContext.getValue(evaluationPath);
-		}
-		
-		if (obj instanceof Boolean)
-			return (Boolean)obj;
-		else if (obj != null)
-			return true;
-		else 
-			return false;
-	}
+    @Override
+    public Object asis() throws EvaluationException, RemoteException {
+        return getValue();
+    }
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#asis()
-	 */
-	@Override
-	public Object asis() throws EvaluationException, RemoteException {
-		return getValue();
-	}
+    /* (non-Javadoc)
+     * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
+     */
+    @Override
+    public Object getValue(Arg... entries) throws EvaluationException,
+            RemoteException {
+        try {
+            return isTrue();
+        } catch (ContextException e) {
+            throw new EvaluationException(e);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
-	 */
-	@Override
-	public Object getValue(Arg... entries) throws EvaluationException,
-			RemoteException {
-		try {
-			return isTrue();
-		} catch (ContextException e) {
-			throw new EvaluationException(e);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
-	 */
-	@Override
-	public Evaluation<Object> substitute(Arg... entries)
-			throws EvaluationException, RemoteException {
-		conditionaContext.substitute(entries);
-		return this;
-	}
+    /* (non-Javadoc)
+     * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
+     */
+    @Override
+    public Evaluation<Object> substitute(Arg... entries)
+            throws EvaluationException, RemoteException {
+        conditionaContext.substitute(entries);
+        return this;
+    }
 }

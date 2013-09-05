@@ -156,6 +156,7 @@ public class ContextFactory {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
                 if (((InEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     pcxt.putInValueAt(
@@ -164,6 +165,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof OutEntry) {
                 if (((OutEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     pcxt.putOutValueAt(
@@ -173,6 +175,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
                 if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     pcxt.putInoutValueAt(
@@ -182,6 +185,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof Entry) {
                 if (((Entry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     pcxt.putValueAt(((Entry) entryList.get(i)).path(),
@@ -193,6 +197,7 @@ public class ContextFactory {
             } else if (entryList.get(i) instanceof Tuple2) {
                 {
                     if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
+                        // setPar
                         throw new UnsupportedOperationException();
                     } else {
                         pcxt.putValueAt(
@@ -210,6 +215,7 @@ public class ContextFactory {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
                 if (((InEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     cxt.putInValue(((Entry) entryList.get(i)).path(),
@@ -217,6 +223,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof OutEntry) {
                 if (((OutEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     cxt.putOutValue(((Entry) entryList.get(i)).path(),
@@ -224,6 +231,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
                 if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     cxt.putInoutValue(
@@ -232,6 +240,7 @@ public class ContextFactory {
                 }
             } else if (entryList.get(i) instanceof Entry) {
                 if (((Entry) entryList.get(i)).isPersistant) {
+                    // setPar
                     throw new UnsupportedOperationException();
                 } else {
                     cxt.putValue(((Entry) entryList.get(i)).path(),
@@ -243,6 +252,7 @@ public class ContextFactory {
             } else if (entryList.get(i) instanceof Tuple2) {
                 {
                     if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
+                        // setPar
                         throw new UnsupportedOperationException();
                     } else {
                         cxt.putValue(
@@ -254,5 +264,42 @@ public class ContextFactory {
             }
         }
     }
+
+/*
+// required for the above functions but it requires strict Par-Modeling integration, therefore disabled
+// PRubach 05.09.2013
+
+    private static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
+            throws ContextException {
+        Par p = new Par(entry.path(), entry.value());
+        p.setPersistent(true);
+        if (entry.datastoreURL != null)
+            p.setDbURL(entry.datastoreURL);
+        if (entry instanceof InEntry)
+            pcxt.putInValueAt(entry.path(), p, i + 1);
+        else if (entry instanceof OutEntry)
+            pcxt.putOutValueAt(entry.path(), p, i + 1);
+        else if (entry instanceof InoutEntry)
+            pcxt.putInoutValueAt(entry.path(), p, i + 1);
+        else
+            pcxt.putValueAt(entry.path(), p, i + 1);
+    }
+
+    private static void setPar(Context cxt, Tuple2 entry)
+            throws ContextException {
+        Arg p = new Par(entry.path(), entry.value());
+        p.setPersistent(true);
+        if (entry.datastoreURL != null)
+            p.setDbURL(entry.datastoreURL);
+        if (entry instanceof InEntry)
+            cxt.putInValue(entry.path(), p);
+        else if (entry instanceof OutEntry)
+            cxt.putOutValue(entry.path(), p);
+        else if (entry instanceof InoutEntry)
+            cxt.putInoutValue(entry.path(), p);
+        else
+            cxt.putValue(entry.path(), p);
+    }
+*/
 
 }
