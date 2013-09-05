@@ -11,7 +11,7 @@ def getPlatformCapabilityConfig() {
             'org.sorcersoft.sorcer:sos-platform',
             'org.sorcersoft.sorcer:logger-api',
             'org.sorcersoft.sorcer:commons-prv',
-//            'org.sorcersoft.sorcer:sorcer-api'
+            'org.sorcersoft.sorcer:sorcer-api'
     ])
 
     return cap;
