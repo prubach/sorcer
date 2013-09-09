@@ -78,7 +78,9 @@ public class JarClassPathHelper {
 			return cache.get(name);
 		}
 		File result = Resolver.resolveSimpleName(name);
-		cache.put(name, result);
-		return result;
+        if (result != null) {
+            cache.put(name, result);
+        }
+        return result;
 	}
 }

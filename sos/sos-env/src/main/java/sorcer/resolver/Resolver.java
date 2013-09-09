@@ -150,7 +150,9 @@ public class Resolver {
 			artifactId = simpleName;
 			packaging = "jar";
 		}
-		return new File(resolver.getRootDir(), resolver.resolveSimpleName(artifactId, packaging));
+        String relPath = resolver.resolveSimpleName(artifactId, packaging);
+        if (relPath == null) return null;
+        return new File(resolver.getRootDir(), relPath);
 	}
 
 	public static String getRootDir() {
