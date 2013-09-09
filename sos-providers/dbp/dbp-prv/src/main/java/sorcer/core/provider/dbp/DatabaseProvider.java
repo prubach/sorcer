@@ -51,7 +51,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sun.jini.start.LifeCycle;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DatabaseProvider extends ServiceProvider implements DatabaseStorer {
+public class DatabaseProvider extends ServiceProvider implements DatabaseStorer, IDatabaseProvider {
 
 	static {
 		Handler.register();
@@ -61,8 +61,8 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 
 	private SorcerDatabaseViews views;
 	
-	public DatabaseProvider() throws RemoteException {
-		// do nothing
+	public DatabaseProvider() {
+        super();
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		ut.start();
 		return ut.getUuid();
 	}
-	
+
 	public Object getObject(Uuid uuid) {
 		StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
 		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
@@ -416,7 +416,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.base.Provider#destroy()
+	 * @see sorcer.core.Provider#destroy()
 	 */
 	@Override
 	public void destroy() throws RemoteException {
@@ -540,4 +540,27 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer 
 		return null;
 	}
 
+    @Override
+    public URL storeObject(Object object) {
+        Uuid uuid = store(object);
+        Store type = getStoreType(object);
+        try {
+            return getDatabaseURL(type, uuid);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException("Couldn't parse my own URL");
+        }
+    }
+
+    /**
+     * the same as #update() but hide requirement on Uuid class
+     */
+    @Override
+    public void updateObject(URL url, Object object) throws InvalidObjectException {
+        update(url, object);
+    }
+
+    @Override
+    public void deleteObject(URL url) {
+        deleteURL(url);
+    }
 }
