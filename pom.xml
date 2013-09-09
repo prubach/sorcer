@@ -21,7 +21,7 @@
 		<v.sorcer>${project.version}</v.sorcer>
         <!-- required for site -->
         <v_sorcer>${project.version}</v_sorcer>
-        <v_sos_release>1.0-M3-SNAPSHOT</v_sos_release>
+        <v_sos_release>1.0-M2</v_sos_release>
 		<v.jini>2.2.1</v.jini>
 		<v.blitz>2.2.0</v.blitz>
 		<v.sleepycat>4.1.21</v.sleepycat>
