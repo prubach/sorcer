@@ -87,6 +87,7 @@
 					<directory/>
 					<includes>
 						<include>boot.xml</include>
+                        <include>__rootArtifactId__Boot.groovy</include>
 					</includes>
 				</fileSet>
 				<fileSet filtered="true" packaged="true" encoding="UTF-8">
