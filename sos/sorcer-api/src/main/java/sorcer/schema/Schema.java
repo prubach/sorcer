@@ -18,8 +18,6 @@ package sorcer.schema;
  */
 
 
-import sorcer.service.Direction;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -27,27 +25,14 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation for java-based context schema. A context schema is a java interface with annotated getters and setters.
- * Sorcer can retrieve list of context paths with type and validate a context against this this list.
- * The provider programmer may convert the context to the interface with methods marked with @Path annotations.
- *
+ * Mark an service interface with a schema interface
  * @author Rafał Krupiński
  */
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Path {
+public @interface Schema {
     /**
-     * Path in context
+     * The schema class (the class with methods annotated with {@link Path})
      */
-    public String value();
-
-    /**
-     * Direction of the entry
-     */
-    public Direction direction = Direction.INOUT;
-
-    /**
-     * If true (the default) a value is required in the context
-     */
-    public boolean required = true;
+    Class value();
 }
