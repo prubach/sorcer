@@ -2856,15 +2856,20 @@ public class ProviderDelegate {
 	}
 
 	private Object initBean(Object serviceBean) {
-		try {
+        String beanClassName = serviceBean.getClass().getName();
+        try {
 			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, provider);
-		} catch (Exception e) {
+		} catch (NoSuchMethodException e) {
 			logger.log(Level.INFO, "No 'init' method for this service bean: "
-					+ serviceBean.getClass().getName());
-		}
-		exports.put(serviceBean, this);
+                    + beanClassName);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("Error while calling init method on " + beanClassName, e);
+        } catch (IllegalAccessException e) {
+            logger.log(Level.WARNING, "Could not access method init in service bean " + beanClassName, e);
+        }
+        exports.put(serviceBean, this);
 		logger.fine(">>>>>>>>>>> exported service bean: \n" + serviceBean
 				+ "\n by provider: " + provider);
 		return serviceBean;
