@@ -44,10 +44,10 @@ public @interface Path {
     /**
      * Direction of the entry
      */
-    public Direction direction = Direction.INOUT;
+    public Direction direction() default Direction.IN;
 
     /**
      * If true (the default) a value is required in the context
      */
-    public boolean required = true;
+    public boolean required() default true;
 }
