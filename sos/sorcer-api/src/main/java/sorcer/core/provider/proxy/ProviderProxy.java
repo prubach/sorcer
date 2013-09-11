@@ -22,6 +22,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -189,9 +190,11 @@ public class ProviderProxy implements Serializable {
             Object obj = null;
             try {
                 obj  = m.invoke(proxy, args);
+            }catch(InvocationTargetException e) {
+                throw e.getCause();
             } catch (Exception e) {
                 logger.log(Level.WARNING, "proxy method: " + m + " for args: "
-                        + Arrays.toString(args), e.getMessage());
+                        + Arrays.toString(args), e);
                 //e.printStackTrace();
             }
             return obj;
