@@ -20,12 +20,13 @@ package sorcer.core.provider.dbp;
 
 import java.io.InvalidObjectException;
 import java.net.URL;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * @author Rafał Krupiński
  */
-public interface IDatabaseProvider {
+public interface IDatabaseProvider extends Remote {
     URL storeObject(Object object) throws RemoteException;
 
     void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
