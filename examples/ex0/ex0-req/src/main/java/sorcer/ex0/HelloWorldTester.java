@@ -13,6 +13,7 @@ import static sorcer.eo.operator.task;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.SorcerConstants;
 import sorcer.service.Exertion;
@@ -36,7 +37,7 @@ public Exertion getExertion(String... args) throws ExertionException,
 		
 		logger.info("Task t1 prepared: " + t1);
 		Exertion out = exert(t1);
-		
+
 		logger.info("Got result: " + get(out, "out/value"));
 		logger.info("----------------------------------------------------------------");
 		logger.info("Task t1 trace: " +  trace(out));

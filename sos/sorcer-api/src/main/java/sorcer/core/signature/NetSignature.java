@@ -107,7 +107,21 @@ public class NetSignature extends ObjectSignature {
 		setSelector(selector);
 	}
 
-	public void setExertion(Exertion exertion) throws ExertionException {
+    /**
+    String version of constructor - required i.e. when running from Scilab
+    */
+    public NetSignature(String selector, String strServiceType) {
+        try {
+            Class serviceType = Class.forName(strServiceType);
+            this.serviceType = serviceType;
+            setSelector(selector);
+        } catch (ClassNotFoundException e) {
+            logger.severe("Problem creating NetSignature: " + e.getMessage());
+        }
+    }
+
+
+    public void setExertion(Exertion exertion) throws ExertionException {
         this.exertion = exertion;
 	}
 

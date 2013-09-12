@@ -376,7 +376,7 @@ public class ProviderDelegate {
 				&& providerProperties.contains("HOSTNAME")) {
 			try {
 				providerProperties = providerProperties.replace("HOSTNAME",
-						Sorcer.getHostName());
+						SorcerEnv.getHostName());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
@@ -424,12 +424,12 @@ public class ProviderDelegate {
 		if (!spaceEnabled)
 			return;
 		
-		try {
+/*		try {
 			hostName = SorcerEnv.getLocalHost().getHostName();
 			hostAddress = SorcerEnv.getHostAddress();
 		} catch (UnknownHostException e) {
 			// ignore it
-		}
+		}*/
 		space = SpaceAccessor.getSpace(spaceName, spaceGroup);
 		if (space == null) {
 			int ctr = 0;

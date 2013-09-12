@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -192,6 +193,8 @@ public class ProviderProxy implements Serializable {
             } catch (Exception e) {
                 logger.log(Level.WARNING, "proxy method: " + m + " for args: "
                         + Arrays.toString(args), e.getMessage());
+                throw new RemoteException("Problem invoking method: " + m + " for args: "
+                        + Arrays.toString(args) + e.getMessage());
                 //e.printStackTrace();
             }
             return obj;

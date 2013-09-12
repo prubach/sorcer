@@ -26,11 +26,12 @@
 	    <!--<java classname="com.sun.jini.start.ServiceStarter" fork="yes"> -->
 	    <java classname="sorcer.boot.ServiceStarter" fork="yes">
             <env key="RIO_HOME" value="${rio.home}"/>
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
 <!--
+
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
 -->
+
             <arg value="${basedir}/src/main/resources/config/start-all-prvs.config" />
             <classpath refid="boot.classpath"/>
             <sysproperty key="sorcer.home" value="${sorcer.home}" />

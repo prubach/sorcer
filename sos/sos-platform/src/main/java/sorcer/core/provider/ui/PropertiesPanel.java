@@ -39,7 +39,7 @@ public class PropertiesPanel extends JPanel {
 	java.util.List data = new ArrayList();
 	java.util.List fields = new ArrayList();
 
-	PropertiesPanel(Provider prv, String borderTitle) {
+	public PropertiesPanel(Provider prv, String borderTitle) {
 		provider = prv;
 		List attributes = null;
 		try {
@@ -58,7 +58,7 @@ public class PropertiesPanel extends JPanel {
 		add(sp, BorderLayout.CENTER);
 	}
 
-	PropertiesPanel(List properties) {
+	public PropertiesPanel(List properties) {
 		// atts=attributes;
 		update(properties);
 		_model = new PropertiesModel(data, fields);
@@ -68,7 +68,7 @@ public class PropertiesPanel extends JPanel {
 		add(sp, BorderLayout.CENTER);
 	}
 
-	void update(List properties) {
+	public void update(List properties) {
 		if (properties == null) {
 			return;
 		}

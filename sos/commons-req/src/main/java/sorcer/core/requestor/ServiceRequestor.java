@@ -50,7 +50,8 @@ import sorcer.util.JavaSystemProperties;
 
 import static sorcer.util.ArtifactCoordinates.coords;
 
-abstract public class ServiceRequestor implements Requestor {
+abstract public class
+        ServiceRequestor implements Requestor {
     /** Logger for logging information about this instance */
     protected static final Logger logger = Logger
             .getLogger(ServiceRequestor.class.getName());
@@ -239,8 +240,11 @@ abstract public class ServiceRequestor implements Requestor {
         return (array);
 	}
 
-
     public static Webster prepareCodebase() {
+        return prepareCodebase(null);
+    }
+
+    public static Webster prepareCodebase(ArtifactCoordinates[] artifactCoords) {
         // Initialize system properties: configs/sorcer.env
         SorcerEnv.getEnvProperties();
         String val = System.getProperty(SorcerConstants.SORCER_WEBSTER_INTERNAL);
@@ -249,13 +253,19 @@ abstract public class ServiceRequestor implements Requestor {
         }
         String exertrun = System.getProperty(SorcerConstants.R_CODEBASE);
         StringBuilder codebase = new StringBuilder();
-        if (exertrun!=null && !exertrun.isEmpty()) {
-            String[] artifacts = exertrun.split(" ");
-            for (String artifact : artifacts) {
-                if (codebase.length() > 0)
-                    codebase.append(" ");
-                codebase.append(resolve(coords(artifact)));
+        if (exertrun!=null || artifactCoords!=null) {
+            if (exertrun!=null && !exertrun.isEmpty()) {
+                String[] artifacts = exertrun.split(" ");
+                for (String artifact : artifacts) {
+                    if (codebase.length() > 0)
+                        codebase.append(" ");
+                    codebase.append(resolve(coords(artifact)));
+                }
             }
+            for (ArtifactCoordinates artCord : artifactCoords) {
+                codebase.append(' ').append(resolve(artCord));
+            }
+
             // Add default codebase sos-platform and sos-env
             codebase.append(' ').append(resolve(Artifact.getSosEnv()));
             codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
@@ -289,4 +299,15 @@ abstract public class ServiceRequestor implements Requestor {
                 ? Resolver.resolveRelative(coords)
                 : Resolver.resolveAbsolute(SorcerEnv.getWebsterUrlURL(), coords);
     }
+    // Utility for setting the basic environment properties
+    // It is required by scilab script that invokes exertions from scilab
+
+    public static void prepareEnvironment() {
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos|org.rioproject.url");
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
+        System.setProperty("webster.internal", "true");
+    }
+
 }

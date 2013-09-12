@@ -882,8 +882,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		try {
 			descriptor = UIDescriptorFactory.getUIDescriptor(
 					MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(SorcerEnv
-							.getWebsterUrl() + "/provider-ui.jar") },
+					new UIComponentFactory(Resolver.resolveAbsoluteURL(new URL(SorcerEnv.getWebsterUrl()), Artifact.sorcer("sos-exertlet-sui")),
 							"sorcer.core.provider.ui.ProviderUI"));
 		} catch (Exception ex) {
 			logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
