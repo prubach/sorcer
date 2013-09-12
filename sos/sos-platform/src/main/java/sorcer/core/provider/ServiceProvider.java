@@ -214,7 +214,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-	protected ServiceProvider() throws RemoteException {
+	protected ServiceProvider() {
 		providers.add(this);
 		delegate = new ProviderDelegate();
 		delegate.provider = this;
