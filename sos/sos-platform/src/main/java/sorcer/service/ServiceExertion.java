@@ -278,11 +278,18 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return (T) result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see sorcer.service.Exertion#exert(sorcer.core.context.Path.Entry[])
-	 */
+    /*
+    Needed by GNU Octave - there is a problem passing a null as argument to a method
+     */
+    public Exertion exert() throws TransactionException,
+            ExertionException, RemoteException {
+        return exert(null);
+    }
+    /*
+         * (non-Javadoc)
+         *
+         * @see sorcer.service.Exertion#exert(sorcer.core.context.Path.Entry[])
+         */
 	@Override
 	public Exertion exert(Arg... entries) throws TransactionException,
 			ExertionException, RemoteException {

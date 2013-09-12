@@ -1724,6 +1724,10 @@ public class SorcerEnv {
         String sorcerHome = env.get(SorcerConstants.SORCER_HOME);
         if (sorcerHome != null)
             setSorcerHome(sorcerHome);
+        // set Rio Home if not set in the environment - this is required by Rio to load resolver-aether.jar
+        String rioHome = System.getenv(E_RIO_HOME);
+        if (rioHome==null || rioHome.length()==0)
+            System.setProperty(E_RIO_HOME, getSorcerHome() + File.separator + "lib" + File.separator + "rio");
     }
 
     public boolean isWebsterInternal() {
