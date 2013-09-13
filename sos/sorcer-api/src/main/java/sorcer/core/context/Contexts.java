@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 import net.jini.id.Uuid;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.ComplexExertion;
 import sorcer.service.Context;

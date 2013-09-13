@@ -20,7 +20,7 @@ package sorcer.core.context;
 
 import net.jini.id.Uuid;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -96,7 +96,7 @@ public class ContextUtil {
 	 *
 	 * @param context
 	 *            a servcie context
-	 * @return a list -f {@link sorcer.core.context.eval.ContextNode}.
+	 * @return a list -f {@link sorcer.core.context.node.ContextNode}.
 	 * @throws sorcer.service.ContextException
 	 */
 	public static ContextNode[] getAllContextNodes(Context context)

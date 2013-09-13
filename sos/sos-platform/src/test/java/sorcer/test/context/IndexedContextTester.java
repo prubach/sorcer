@@ -29,7 +29,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.Collections;

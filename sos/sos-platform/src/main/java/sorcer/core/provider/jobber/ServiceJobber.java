@@ -25,6 +25,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
+import sorcer.core.provider.Jobber;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 

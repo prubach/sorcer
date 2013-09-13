@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import net.jini.config.ConfigurationException;
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;

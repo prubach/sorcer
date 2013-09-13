@@ -70,20 +70,17 @@ import net.jini.lookup.ui.MainUI;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-import sorcer.core.AccessDeniedException;
 import sorcer.core.AdministratableProvider;
-import sorcer.core.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
-import sorcer.core.context.ContextManagement;
+import sorcer.core.ContextManagement;
 import sorcer.core.context.ControlContext;
-import sorcer.core.context.RemoteContextManagement;
+import sorcer.core.RemoteContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.dispatch.MonitoredTaskDispatcher;
-import sorcer.core.provider.proxy.Outer;
-import sorcer.core.provider.proxy.Partner;
-import sorcer.core.provider.proxy.Partnership;
+import sorcer.core.proxy.Outer;
+import sorcer.core.proxy.Partner;
+import sorcer.core.proxy.Partnership;
 import sorcer.resolver.Resolver;
 import sorcer.service.*;
 import sorcer.ui.serviceui.UIComponentFactory;
@@ -154,7 +151,7 @@ import static sorcer.core.SorcerConstants.*;
  * lookup services. Multiple SORECER servers can be deployed within a single
  * {@link sorcer.core.provider.ServiceProvider} as its own service beans.
  * 
- * @see sorcer.core.Provider
+ * @see Provider
  * @see net.jini.lookup.ServiceIDListener
  * @see ReferentUuid
  * @see sorcer.core.AdministratableProvider
@@ -580,7 +577,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * outer proxy of this provider is returned.
 	 * 
 	 * @return a proxy, or null
-	 * @see sorcer.base.Provider#getProxy()
+	 * @see Provider#getProxy()
 	 */
 	public Object getProxy() {
 		return delegate.getProxy();
@@ -1016,7 +1013,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.context.ContextManagement#getContextScript()
+	 * @see sorcer.core.ContextManagement#getContextScript()
 	 */
 	@Override
 	public String getContextScript() throws RemoteException {
@@ -1031,7 +1028,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.context.ContextManagement#getContext()
+	 * @see sorcer.core.ContextManagement#getContext()
 	 */
 	@Override
 	public Context<?> getContext() throws RemoteException {
@@ -1047,7 +1044,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sorcer.core.context.ContextManagement#getMethodContextScript(java.lang
+	 * sorcer.core.ContextManagement#getMethodContextScript(java.lang
 	 * .String, java.lang.String)
 	 */
 	@Override
@@ -1065,7 +1062,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sorcer.core.context.ContextManagement#currentContextList(java.lang.String
+	 * sorcer.core.ContextManagement#currentContextList(java.lang.String
 	 * )
 	 */
 	@Override
@@ -1130,7 +1127,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sorcer.core.context.ContextManagement#deleteContext(java.lang.String,
+	 * sorcer.core.ContextManagement#deleteContext(java.lang.String,
 	 * java.lang.String)
 	 */
 	@Override
@@ -1185,7 +1182,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sorcer.core.context.ContextManagement#getMethodContext(java.lang.String,
+	 * sorcer.core.ContextManagement#getMethodContext(java.lang.String,
 	 * java.lang.String)
 	 */
 	@Override
@@ -1235,7 +1232,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * sorcer.core.context.ContextManagement#saveMethodContext(java.lang.String,
+	 * sorcer.core.ContextManagement#saveMethodContext(java.lang.String,
 	 * java.lang.String, sorcer.service.Context)
 	 */
 	@Override
@@ -1297,7 +1294,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.Provider#mutualExclusion()
+	 * @see sorcer.core.provider.Provider#mutualExclusion()
 	 */
 	@Override
 	public boolean mutualExclusion() throws RemoteException {
@@ -1925,7 +1922,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.Provider#getJavaSystemProperties()
+	 * @see sorcer.core.provider.Provider#getJavaSystemProperties()
 	 */
 	@Override
 	public Properties getJavaSystemProperties() throws RemoteException {
@@ -1958,7 +1955,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.Provider#isContextValid(sorcer.service.Context,
+	 * @see sorcer.core.provider.Provider#isContextValid(sorcer.service.Context,
 	 * sorcer.service.Signature)
 	 */
 	@Override

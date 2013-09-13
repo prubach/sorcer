@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ContextManagement;
+import sorcer.core.ContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
@@ -30,7 +30,7 @@ import sorcer.service.Signature;
 import sorcer.util.Log;
 
 /**
-* The SORCER context task extending the basic task implementation {@link Task}.
+* The SORCER context task extending the basic task implementation {@link sorcer.service.Task}.
 * 
 * @author Mike Sobolewski
 */

@@ -10,7 +10,7 @@ TO DO/PROBLEMS
 lup:	lup (-p | -s) [-i <service interface name>] [-n <name attribute value>] [<LUS index>] | lup <provider index>
 
   no option		list fetched SORCER providers	
-  -p 	list SORCER providers (implementing sorcer.core.Provider interface)
+  -p 	list SORCER providers (implementing sorcer.core.provider.Provider interface)
   -s	list services 
   -r 	rendezvous provider 
   -v	show selected service provider

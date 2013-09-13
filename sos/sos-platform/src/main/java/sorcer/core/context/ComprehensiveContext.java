@@ -24,7 +24,7 @@ import java.util.Vector;
 import sorcer.core.ComprehensiveContextException;
 import sorcer.core.ContextMetaData;
 import sorcer.core.InclusiveContext;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 import sorcer.service.ContextException;
 
 /*******************************************************************************

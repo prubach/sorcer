@@ -31,8 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import sorcer.core.Provider;
-import sorcer.core.context.RemoteContextManagement;
+import sorcer.core.provider.Provider;
+import sorcer.core.RemoteContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -92,7 +92,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 		this.provider = (Provider)provider;
 
 		interfaceIgnoreList = new String[6];
-		interfaceIgnoreList[0] = "sorcer.core.Provider";
+		interfaceIgnoreList[0] = "sorcer.core.provider.Provider";
 		interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
 		interfaceIgnoreList[2] = "java.rmi.Remote";
 		interfaceIgnoreList[3] = "net.jini.core.constraint.RemoteMethodControl";

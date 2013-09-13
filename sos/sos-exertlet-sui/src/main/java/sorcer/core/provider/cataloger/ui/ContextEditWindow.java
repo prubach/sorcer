@@ -37,7 +37,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import sorcer.core.context.eval.ContextGroovyObject;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 
 /**
  * This class is used for the edit window displayed when a path or data node is

@@ -25,7 +25,7 @@ import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.Jobs;

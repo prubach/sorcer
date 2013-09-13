@@ -85,14 +85,14 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import sorcer.core.AccessDeniedException;
-import sorcer.core.Provider;
+import sorcer.core.monitor.MonitoringSession;
+import sorcer.service.AccessDeniedException;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.SorcerNotifierProtocol;
 import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
-import sorcer.core.context.ContextManagement;
+import sorcer.service.UnknownExertionException;
+import sorcer.core.ContextManagement;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -106,8 +106,8 @@ import sorcer.core.misc.MsgRef;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.provider.logger.RemoteHandler;
-import sorcer.core.provider.proxy.Partnership;
-import sorcer.core.provider.proxy.ProviderProxy;
+import sorcer.core.proxy.Partnership;
+import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.jini.jeri.SorcerILFactory;
@@ -216,7 +216,7 @@ public class ProviderDelegate {
 	/** lease manager also used by provider workers. */
 	protected static LeaseRenewalManager leaseManager = new LeaseRenewalManager();
 
-	protected sorcer.core.Provider provider;
+	protected Provider provider;
 
 	protected boolean mutualExclusion = true;
 
@@ -2600,7 +2600,7 @@ public class ProviderDelegate {
 	 * outer proxy of this provider is returned.
 	 * 
 	 * @return a proxy, or null
-	 * @see sorcer.core.Provider#getProxy()
+	 * @see sorcer.core.provider.Provider#getProxy()
 	 */
 	public Object getProxy() {
 		try {

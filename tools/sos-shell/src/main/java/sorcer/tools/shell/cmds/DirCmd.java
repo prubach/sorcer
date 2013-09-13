@@ -25,8 +25,8 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-import sorcer.core.Cataloger;
-import sorcer.core.Provider;
+import sorcer.core.provider.Cataloger;
+import sorcer.core.provider.Provider;
 import sorcer.service.Accessor;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;

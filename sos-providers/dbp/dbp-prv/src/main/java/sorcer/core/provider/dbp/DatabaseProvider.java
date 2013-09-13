@@ -30,11 +30,11 @@ import java.util.List;
 import net.jini.config.Configuration;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.core.StorageManagement;
+import sorcer.core.provider.StorageManagement;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.DatabaseStorer;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.util.bdb.objects.SorcerDatabase;
@@ -309,7 +309,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#update(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#update(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextUpdate(Context context) throws RemoteException,
@@ -337,7 +337,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#contextList(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#contextList(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextList(Context context) throws RemoteException,
@@ -362,7 +362,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#contextClear(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#contextClear(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextClear(Context context) throws RemoteException,
@@ -416,7 +416,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.core.Provider#destroy()
+	 * @see sorcer.core.provider.Provider#destroy()
 	 */
 	@Override
 	public void destroy() throws RemoteException {
@@ -432,7 +432,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#delete(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#delete(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextDelete(Context context) throws RemoteException,
@@ -518,7 +518,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#contextSize(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#contextSize(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextSize(Context context) throws RemoteException,
@@ -531,7 +531,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.StorageManagement#contextRecords(sorcer.service.Context)
+	 * @see sorcer.core.provider.StorageManagement#contextRecords(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextRecords(Context context) throws RemoteException,

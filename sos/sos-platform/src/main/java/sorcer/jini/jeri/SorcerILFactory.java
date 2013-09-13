@@ -39,7 +39,7 @@ import net.jini.jeri.ServerCapabilities;
 import net.jini.security.proxytrust.ProxyTrust;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-import sorcer.core.context.ContextManagement;
+import sorcer.core.ContextManagement;
 import sorcer.service.Service;
 
 /**

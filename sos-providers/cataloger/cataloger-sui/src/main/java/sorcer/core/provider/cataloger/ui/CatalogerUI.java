@@ -23,7 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import net.jini.core.lookup.ServiceItem;
-import sorcer.core.Cataloger;
+import sorcer.core.provider.Cataloger;
 
 /**
  * This is the UI for the Cataloger Service Browser.

@@ -29,7 +29,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.river.Filters;
 import sorcer.service.Accessor;
 import sorcer.service.DynamicAccessor;
-import sorcer.service.Jobber;
+import sorcer.core.provider.Jobber;
 import sorcer.service.Service;
 import sorcer.util.ProviderAccessor;
 import sorcer.util.ProviderLocator;

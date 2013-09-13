@@ -20,11 +20,11 @@ package sorcer.util;
 
 import net.jini.core.transaction.server.TransactionManager;
 import net.jini.space.JavaSpace05;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerNotifierProtocol;
 import sorcer.service.Accessor;
-import sorcer.service.Jobber;
-import sorcer.service.Spacer;
+import sorcer.core.provider.Jobber;
+import sorcer.core.provider.Spacer;
 import sorcer.service.jobber.JobberAccessor;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.service.spacer.SpacerAccessor;

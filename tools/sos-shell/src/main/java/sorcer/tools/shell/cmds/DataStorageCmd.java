@@ -29,14 +29,14 @@ import java.util.StringTokenizer;
 
 import net.jini.core.lookup.ServiceItem;
 import net.jini.id.Uuid;
-import sorcer.core.Provider;
-import sorcer.core.StorageManagement;
+import sorcer.core.provider.Provider;
+import sorcer.core.provider.StorageManagement;
 import sorcer.core.monitor.MonitorUIManagement;
 import sorcer.eo.operator;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.DatabaseStorer;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.MonitorException;

@@ -2,7 +2,7 @@ package sorcer.netlet;
 
 import sorcer.netlet.util.LoaderConfigurationHelper;
 import sorcer.netlet.util.ScriptExertException;
-import sorcer.netlet.util.ScriptThread;
+import sorcer.tools.shell.cmds.ScriptThread;
 
 import java.io.*;
 import java.net.URL;

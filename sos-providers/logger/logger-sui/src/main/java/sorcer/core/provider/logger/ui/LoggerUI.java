@@ -45,7 +45,7 @@ import javax.swing.ListSelectionModel;
 
 import net.jini.core.lookup.ServiceItem;
 import sorcer.core.provider.logger.LogFilter;
-import sorcer.core.provider.logger.RemoteLogger;
+import sorcer.core.RemoteLogger;
 
 /**
  * Component Service UI for the Logger Service

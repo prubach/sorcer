@@ -20,9 +20,9 @@ package sorcer.service.jobber;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.service.Accessor;
-import sorcer.service.Jobber;
+import sorcer.core.provider.Jobber;
 import sorcer.util.AccessorException;
 import sorcer.util.ServiceAccessor;
 

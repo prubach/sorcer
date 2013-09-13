@@ -28,8 +28,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
 import net.jini.core.lookup.ServiceItem;
-import sorcer.core.Provider;
-import sorcer.core.provider.proxy.Outer;
+import sorcer.core.provider.Provider;
+import sorcer.core.proxy.Outer;
 import sorcer.ui.util.WindowUtilities;
 import sorcer.util.Log;
 

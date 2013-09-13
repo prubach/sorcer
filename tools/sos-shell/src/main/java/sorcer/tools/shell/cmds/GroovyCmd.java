@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import sorcer.netlet.util.ScriptThread;
+import sorcer.tools.shell.cmds.ScriptThread;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.tools.shell.ShellStarter;

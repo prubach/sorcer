@@ -38,7 +38,6 @@ import sorcer.core.exertion.OptExertion;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
-import sorcer.falcon.base.Conditional;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.jobber.JobberAccessor;

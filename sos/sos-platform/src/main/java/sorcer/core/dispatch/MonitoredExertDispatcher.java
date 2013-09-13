@@ -31,14 +31,14 @@ import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
 import sorcer.core.monitor.MonitorSessionManagement;
-import sorcer.core.Monitorable;
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.service.Monitorable;
+import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Accessor;
@@ -46,12 +46,10 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.MonitorException;
-import sorcer.service.MonitoringSession;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Service;
 import sorcer.service.SignatureException;
-import sorcer.util.ProviderAccessor;
-import sorcer.util.Sorcer;
 
 public abstract class MonitoredExertDispatcher extends ExertDispatcher
         implements SorcerConstants {

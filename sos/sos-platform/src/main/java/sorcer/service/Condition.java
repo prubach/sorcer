@@ -18,7 +18,6 @@
 package sorcer.service;
 
 import groovy.lang.Closure;
-import sorcer.falcon.base.Conditional;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;

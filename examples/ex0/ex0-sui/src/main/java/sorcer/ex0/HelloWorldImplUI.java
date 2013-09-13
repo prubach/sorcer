@@ -3,7 +3,7 @@ package sorcer.ex0;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.service.Service;

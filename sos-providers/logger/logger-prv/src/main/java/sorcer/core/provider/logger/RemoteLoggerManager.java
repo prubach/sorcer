@@ -42,6 +42,7 @@ import java.util.regex.PatternSyntaxException;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
+import sorcer.core.RemoteLogger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 

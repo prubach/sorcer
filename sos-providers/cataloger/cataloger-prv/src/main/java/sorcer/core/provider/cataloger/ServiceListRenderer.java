@@ -30,7 +30,7 @@ import javax.swing.ListCellRenderer;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.ServiceType;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 
 public class ServiceListRenderer extends JLabel implements ListCellRenderer {

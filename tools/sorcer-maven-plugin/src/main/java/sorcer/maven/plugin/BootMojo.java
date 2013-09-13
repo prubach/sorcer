@@ -26,7 +26,7 @@ import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
 import sorcer.boot.ServiceStarter;
-import sorcer.core.Cataloger;
+import sorcer.core.provider.Cataloger;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.launcher.SorcerProcessBuilder;

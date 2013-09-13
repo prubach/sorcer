@@ -28,7 +28,7 @@ import sorcer.service.Evaluation;
 import sorcer.service.ExertionException;
 import sorcer.service.Invocation;
 import sorcer.service.Job;
-import sorcer.service.Jobber;
+import sorcer.core.provider.Jobber;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature.Type;
 import sorcer.service.SignatureException;

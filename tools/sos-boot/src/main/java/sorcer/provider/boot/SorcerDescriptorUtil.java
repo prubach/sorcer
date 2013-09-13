@@ -246,7 +246,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.Spacer} using the Webster port created
+	 * {@link sorcer.core.provider.Spacer} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -269,7 +269,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.Spacer}.
+	 * {@link sorcer.core.provider.Spacer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -294,7 +294,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.Spacer}.
+	 * {@link sorcer.core.provider.Spacer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -630,7 +630,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.DatabaseStorer} using the Webster port created
+	 * {@link sorcer.core.provider.DatabaseStorer} using the Webster port created
 	 * by this utility.
 	 * 
 	 * @param policy
@@ -653,7 +653,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.DatabaseStorer}.
+	 * {@link sorcer.core.provider.DatabaseStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use
@@ -678,7 +678,7 @@ public class SorcerDescriptorUtil {
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.service.DatabaseStorer}.
+	 * {@link sorcer.core.provider.DatabaseStorer}.
 	 * 
 	 * @param policy
 	 *            The security policy file to use

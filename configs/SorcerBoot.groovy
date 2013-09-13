@@ -76,7 +76,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "Jobber") {
         interfaces {
-            classes 'sorcer.service.Jobber'
+            classes 'sorcer.core.provider.Jobber'
             artifact ref:'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
@@ -88,7 +88,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "Spacer") {
         interfaces {
-            classes 'sorcer.service.Spacer'
+            classes 'sorcer.core.provider.Spacer'
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
@@ -112,7 +112,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "Logger") {
         interfaces {
-            classes 'sorcer.core.provider.logger.RemoteLogger'
+            classes 'sorcer.core.RemoteLogger'
             artifact ref: 'logger-sui'
         }
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
@@ -124,7 +124,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "ExertMonitor") {
         interfaces {
-            classes 'sorcer.core.provider.exertmonitor.MonitoringManagement'
+            classes 'sorcer.core.monitor.MonitoringManagement'
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
@@ -136,7 +136,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "DatabaseStorer") {
         interfaces {
-            classes 'sorcer.service.DatabaseStorer'
+            classes 'sorcer.core.provider.DatabaseStorer'
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.dbp.DatabaseProvider') {

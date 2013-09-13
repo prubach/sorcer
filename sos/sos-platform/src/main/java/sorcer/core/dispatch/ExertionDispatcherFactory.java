@@ -23,9 +23,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import net.jini.config.ConfigurationException;
-import sorcer.core.Cataloger;
+import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;

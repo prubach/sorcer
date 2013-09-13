@@ -23,7 +23,7 @@ import java.net.URL;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.core.StorageManagement;
+import sorcer.core.provider.StorageManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

@@ -18,7 +18,7 @@
 package sorcer.core.loki.group;
 
 import java.rmi.*;
-import sorcer.core.provider.proxy.*;
+import sorcer.core.proxy.RemotePartner;
 import sorcer.service.*;
 
 /**

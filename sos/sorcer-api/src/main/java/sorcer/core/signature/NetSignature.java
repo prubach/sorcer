@@ -25,7 +25,7 @@ import java.util.List;
 
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Name;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.service.Accessor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;

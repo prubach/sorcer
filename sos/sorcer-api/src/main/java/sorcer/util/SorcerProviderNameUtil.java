@@ -28,8 +28,8 @@ public class SorcerProviderNameUtil extends ProviderNameUtil {
 
     {
         overrideFromProps("sorcer.core.Cataloger", SorcerConstants.P_CATALOGER_NAME);
-        overrideFromProps("sorcer.service.Jobber", SorcerConstants.S_JOBBER_NAME);
-        overrideFromProps("sorcer.service.Spacer", SorcerConstants.S_SPACER_NAME);
+        overrideFromProps("sorcer.core.provider.Jobber", SorcerConstants.S_JOBBER_NAME);
+        overrideFromProps("sorcer.core.provider.Spacer", SorcerConstants.S_SPACER_NAME);
         overrideFromProps("net.jini.space.JavaSpace05", SorcerConstants.P_SPACE_NAME);
     }
 

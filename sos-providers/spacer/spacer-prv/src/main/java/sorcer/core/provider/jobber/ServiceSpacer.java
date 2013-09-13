@@ -33,7 +33,7 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
@@ -56,7 +56,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature;
-import sorcer.service.Spacer;
+import sorcer.core.provider.Spacer;
 import sorcer.service.Task;
 
 import com.sun.jini.start.LifeCycle;

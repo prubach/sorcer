@@ -30,10 +30,10 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.eval.ContextNode;
-import sorcer.core.context.eval.ContextNodeException;
+import sorcer.core.context.node.ContextNode;
+import sorcer.core.context.node.ContextNodeException;
 import sorcer.core.invoker.ContextInvoking;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
@@ -315,7 +315,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// the variable node type relationship (var name and its type) in
 			// Analysis Models: vnt|var|vt
 			setCompositeAttribute(VAR_NODE_TYPE + APS + VAR + APS + VT);
-			dbUrl = "sos://sorcer.service.DatabaseStorer";
+			dbUrl = "sos://sorcer.core.provider.DatabaseStorer";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

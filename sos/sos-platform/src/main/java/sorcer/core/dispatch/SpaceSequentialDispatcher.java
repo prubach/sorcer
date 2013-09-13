@@ -21,7 +21,7 @@ package sorcer.core.dispatch;
 import java.rmi.RemoteException;
 import java.util.Set;
 
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;

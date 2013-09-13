@@ -21,7 +21,7 @@ import java.util.*;
 import net.jini.core.event.*;
 import java.rmi.*;
 
-import sorcer.core.Cataloger;
+import sorcer.core.provider.Cataloger;
 
 public class NotifyEvent extends RemoteEvent {
     private Hashtable services;

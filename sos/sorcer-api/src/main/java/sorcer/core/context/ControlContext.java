@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerEnv;
-import sorcer.core.provider.exertmonitor.MonitoringManagement;
+import sorcer.core.monitor.MonitoringManagement;
 import sorcer.service.ComplexExertion;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

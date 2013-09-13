@@ -28,7 +28,7 @@ import java.util.Map;
 
 import net.jini.id.Uuid;
 import sorcer.co.tuple.ExecPath;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.ServiceContext;

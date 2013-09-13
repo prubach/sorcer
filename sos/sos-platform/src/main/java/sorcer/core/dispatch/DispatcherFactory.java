@@ -18,7 +18,7 @@
 package sorcer.core.dispatch;
 
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.service.Job;
 
 /**

@@ -17,7 +17,7 @@
  */
 package sorcer.core.provider.ui;
 
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.util.StringUtils;
 
 import javax.swing.*;

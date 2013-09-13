@@ -31,10 +31,11 @@ import java.util.logging.Logger;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
-import sorcer.core.AccessDeniedException;
-import sorcer.core.Monitorable;
+import sorcer.core.monitor.MonitoringManagement;
+import sorcer.service.AccessDeniedException;
+import sorcer.service.Monitorable;
 import sorcer.core.UEID;
-import sorcer.core.UnknownExertionException;
+import sorcer.service.UnknownExertionException;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.provider.exertmonitor.db.SessionDatabase;
 import sorcer.core.provider.exertmonitor.db.SessionDatabaseViews;
@@ -54,7 +55,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sun.jini.start.LifeCycle;
 
 public class ExertMonitor extends ServiceProvider implements
-		MonitoringManagement {
+        MonitoringManagement {
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.MonitororImpl";
 

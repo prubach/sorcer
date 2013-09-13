@@ -20,7 +20,7 @@ package sorcer.core.dispatch;
 
 import java.util.Set;
 
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;

@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.netlet.ScriptExerter;
-import sorcer.netlet.util.ScriptThread;
+import sorcer.tools.shell.cmds.ScriptThread;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;

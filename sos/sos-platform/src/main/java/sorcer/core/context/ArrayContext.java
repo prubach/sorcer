@@ -19,6 +19,7 @@ package sorcer.core.context;
 
 import sorcer.core.SorcerConstants;
 import sorcer.service.ContextException;
+import sorcer.service.IndexedContext;
 
 import java.util.ArrayList;
 import java.util.List;

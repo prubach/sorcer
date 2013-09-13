@@ -19,6 +19,7 @@ package sorcer.core.context;
 
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.service.Positioning;
 
 import java.util.Arrays;
 import java.util.List;

@@ -45,10 +45,10 @@ import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.entry.Name;
 import sorcer.core.AdministratableProvider;
-import sorcer.core.Cataloger;
-import sorcer.core.Provider;
+import sorcer.core.provider.Cataloger;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
-import sorcer.core.context.ContextManagement;
+import sorcer.core.ContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
@@ -73,9 +73,9 @@ import static sorcer.core.SorcerConstants.*;
  * <li>It uses <code>ServiceDiscoveryManager</code> with lookup cache.<br>
  * <li>It uses an internal hash map for storing services called
  * {@link CatalogerInfo}
- * <li>The key of the map is an {@link InterfaceList}, the value is the list
+ * <li>The key of the map is an {@link sorcer.core.provider.cataloger.ServiceCataloger.CatalogerInfo.InterfaceList}, the value is the list
  * of service proxies (<code>ServiceItem<code>s)
- * <li>{@link InterfaceList} is a list of interfaces with <code>equals</code>
+ * <li>{@link sorcer.core.provider.cataloger.ServiceCataloger.CatalogerInfo.InterfaceList} is a list of interfaces with <code>equals</code>
  * overridden such that for <code>(interfaceList1.equals(interfaceList2)</code>
  * returns <code>true</code> if all elements contained in
  * <code>interfaceList2</code> are contained in <code>interfaceList1</code>.
@@ -244,7 +244,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 * second provider's name. Expected that more entries will be needed to
 	 * identify a provider in the future. See also lookup for a given ServiceID.
 	 * 
-	 * @see sorcer.core.Cataloger#lookup(Class[])
+	 * @see sorcer.core.provider.Cataloger#lookup(Class[])
 	 */
 	public ServiceItem lookupItem(String providerName, Class... serviceTypes)
 			throws RemoteException {
@@ -475,7 +475,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		public CatalogerInfo() {
 			super();
 			interfaceIgnoreList = new String[6];
-			interfaceIgnoreList[0] = "sorcer.core.Provider";
+			interfaceIgnoreList[0] = "sorcer.core.provider.Provider";
 			interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
 			interfaceIgnoreList[2] = "java.rmi.Remote";
 			interfaceIgnoreList[3] = "net.jini.core.constraint.RemoteMethodControl";
@@ -1151,10 +1151,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							serviceName = service.getClass().getName();
 					}
 					if (serviceName.equals(providerName)) {
-						if (service instanceof sorcer.core.Provider) {
+						if (service instanceof sorcer.core.provider.Provider) {
 							logger.info("service is a provider!");
 							try {
-								sorcer.core.Provider temp = (sorcer.core.Provider) service;
+								sorcer.core.provider.Provider temp = (sorcer.core.provider.Provider) service;
 								NetSignature method = new NetSignature(
 										methodName, serviceType);
 								Task task = new NetTask(serviceType

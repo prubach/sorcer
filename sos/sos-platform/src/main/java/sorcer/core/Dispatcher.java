@@ -17,6 +17,7 @@
  */
 package sorcer.core;
 
+import sorcer.core.provider.Provider;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;

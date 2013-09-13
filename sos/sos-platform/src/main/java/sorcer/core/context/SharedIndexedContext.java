@@ -19,6 +19,8 @@ package sorcer.core.context;
 
 import net.jini.space.JavaSpace05;
 import sorcer.service.ContextException;
+import sorcer.service.IndexedContext;
+import sorcer.service.SpaceContext;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.space.array.DistribArray05;
 

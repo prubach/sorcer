@@ -18,6 +18,7 @@
 package sorcer.core.context;
 
 import sorcer.service.ContextException;
+import sorcer.service.IndexedContext;
 
 import java.util.*;
 

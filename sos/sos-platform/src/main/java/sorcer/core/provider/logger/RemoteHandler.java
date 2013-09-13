@@ -17,6 +17,7 @@
  */
 package sorcer.core.provider.logger;
 
+import sorcer.core.RemoteLogger;
 import sorcer.service.Accessor;
 
 import java.rmi.RemoteException;

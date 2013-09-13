@@ -27,8 +27,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import sorcer.core.Cataloger;
-import sorcer.core.Provider;
+import sorcer.core.provider.Cataloger;
+import sorcer.core.provider.Provider;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 
@@ -431,7 +431,7 @@ public class SignatureDispatcherForCataloger implements SignatureDispatchment {
 		try {
 			return catalog.getSavedContextList(model.getSelectedProvider(),
 					model.getSelectedInterfaceName());
-			// sorcer.core.Provider temp=(sorcer.core.Provider)item;
+			// sorcer.core.provider.Provider temp=(sorcer.core.provider.Provider)item;
 			// return temp.currentContextList(model.getSelectedInterface());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -488,7 +488,7 @@ public class SignatureDispatcherForCataloger implements SignatureDispatchment {
 		try {
 			return catalog.deleteContext(model.getSelectedProvider(), model
 					.getSelectedInterfaceName(), methodName);
-			// sorcer.core.Provider temp=(sorcer.core.Provider)item;
+			// sorcer.core.provider.Provider temp=(sorcer.core.provider.Provider)item;
 			// return temp.currentContextList(model.getSelectedInterface());
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -26,12 +26,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import net.jini.core.lookup.ServiceItem;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.provider.cataloger.ui.BrowserModel;
 import sorcer.core.provider.cataloger.ui.BrowserWindow;
 import sorcer.core.provider.cataloger.ui.SignatureDispatcherForProvider;
 import sorcer.core.provider.cataloger.ui.SignatureDispatchment;
-import sorcer.core.provider.proxy.Outer;
+import sorcer.core.proxy.Outer;
 import sorcer.service.Tasker;
 import sorcer.util.Log;
 

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
 import sorcer.arithmetic.provider.ui.CalculatorUI;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

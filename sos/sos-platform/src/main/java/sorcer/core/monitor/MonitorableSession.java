@@ -37,10 +37,9 @@ package sorcer.core.monitor;
 import net.jini.core.lease.Lease;
 import net.jini.core.transaction.server.TransactionConstants;
 import net.jini.id.Uuid;
-import sorcer.core.Monitorable;
+import sorcer.service.Monitorable;
 import sorcer.service.Context;
 import sorcer.service.MonitorException;
-import sorcer.service.MonitoringSession;
 
 import java.rmi.RemoteException;
 

@@ -3,7 +3,7 @@ package ${package};
 import net.jini.core.lookup.ServiceItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.service.Service;
 
 import javax.swing.*;

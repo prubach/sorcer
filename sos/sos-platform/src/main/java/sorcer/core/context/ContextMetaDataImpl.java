@@ -22,7 +22,7 @@ import java.util.Hashtable;
 import sorcer.core.InclusiveContext;
 import sorcer.core.ComprehensiveContextException;
 import sorcer.core.ContextMetaData;
-import sorcer.core.context.eval.ContextNode;
+import sorcer.core.context.node.ContextNode;
 
 /*
  * Class which returns attributes about the leafnodes of a ComprehensiveContext.

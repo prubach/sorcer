@@ -29,7 +29,7 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.ServiceFactory;
 
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;

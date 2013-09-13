@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.Context;
 import sorcer.service.Exertion;

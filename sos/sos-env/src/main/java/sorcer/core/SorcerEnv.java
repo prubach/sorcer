@@ -18,7 +18,7 @@
 package sorcer.core;
 
 import org.apache.commons.io.FileUtils;
-import sorcer.org.rioproject.net.HostUtil;
+import sorcer.util.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;

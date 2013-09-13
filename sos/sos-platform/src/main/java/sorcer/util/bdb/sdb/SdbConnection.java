@@ -18,7 +18,7 @@
 package sorcer.util.bdb.sdb;
 
 import sorcer.co.tuple.InEntry;
-import sorcer.core.StorageManagement;
+import sorcer.core.provider.StorageManagement;
 import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

@@ -23,12 +23,12 @@ import java.util.Set;
 
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
-import sorcer.falcon.base.Conditional;
+import sorcer.service.Conditional;
 import sorcer.service.Accessor;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

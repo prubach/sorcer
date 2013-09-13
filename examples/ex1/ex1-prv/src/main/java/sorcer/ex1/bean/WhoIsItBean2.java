@@ -17,12 +17,11 @@
  */
 package sorcer.ex1.bean;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
-import sorcer.core.Provider;
+import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.ex1.Message;
