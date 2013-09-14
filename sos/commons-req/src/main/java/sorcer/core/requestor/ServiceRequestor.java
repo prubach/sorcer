@@ -262,9 +262,10 @@ abstract public class
                     codebase.append(resolve(coords(artifact)));
                 }
             }
-            for (ArtifactCoordinates artCord : artifactCoords) {
-                codebase.append(' ').append(resolve(artCord));
-            }
+            if (artifactCoords!=null)
+                for (ArtifactCoordinates artCord : artifactCoords) {
+                    codebase.append(' ').append(resolve(artCord));
+                }
 
             // Add default codebase sos-platform and sos-env
             codebase.append(' ').append(resolve(Artifact.getSosEnv()));
