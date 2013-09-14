@@ -265,6 +265,24 @@ public class GenericUtil implements Serializable {
         return;
     }
 
+    public static String findExistingDirectory(String[] dirs) {
+        for (String dir : dirs) {
+            File dirFile = new File(dir);
+            if (dirFile.exists() && dirFile.isDirectory())
+                return dir;
+        }
+        return null;
+    }
+
+    public static File findExistingFile(String[] fileDirs, String fileName) {
+        for (String dir : fileDirs) {
+            File file = new File(dir + File.separator + fileName);
+            if (file.exists() && file.isFile())
+                return file;
+        }
+        return null;
+    }
+
     /**
      * This method append the contents of the string array sA to file at the
      * path dataFile
@@ -570,6 +588,33 @@ public class GenericUtil implements Serializable {
 
         execLog.close();
 
+        return child2;
+    }
+
+    /**
+     * Execute System Shell command with parameters - Paweł Rubach
+     * @param scriptCommand
+     * @param directory
+     * @param result
+     * @param errorString
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static Process execScript(String[] scriptCommand, File directory, List<String> result, List<String> errorString) throws IOException,
+            InterruptedException {
+        Process child2 = Runtime.getRuntime().exec(scriptCommand, null, directory);
+        String line;
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                child2.getInputStream()));
+        while ((line = in.readLine()) != null) {
+            result.add(line);
+        }
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(
+                child2.getErrorStream()));
+        while ((line = errorReader.readLine()) != null) {
+            errorString.add(line);
+        }
         return child2;
     }
 
@@ -1127,6 +1172,9 @@ public class GenericUtil implements Serializable {
         }
         return t;
     }
+
+
+
 
     /**
      * Runs an executable program Written by: R. M. Kolonay

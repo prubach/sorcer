@@ -17,6 +17,8 @@
  */
 package sorcer.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -176,5 +178,48 @@ public class LibraryPathHelper extends AbstractSet<String> {
         boolean result = set.retainAll(c);
         updateLibraryPath(set);
         return result;
+    }
+
+    public static String locateNativePath(String nativeFileName) {
+
+        if (GenericUtil.isLinuxOrMac()) {
+            String libPath = locateNativeLibPath(true, nativeFileName, "/");
+            if (libPath==null)
+                libPath = locateNativeLibPath(false, nativeFileName, "/usr");
+            if (libPath==null)
+                libPath = locateNativeLibPath(false, nativeFileName, "/root");
+            if (libPath==null)
+                libPath = locateNativeLibPath(false, nativeFileName, "/opt");
+            if (libPath==null)
+                libPath = locateNativeLibPath(false, nativeFileName, "/");
+            return libPath;
+        }
+        return null;
+    }
+
+    public static String locateNativeLibPath(boolean useLocate, String nativeFileName, String startDirectory) {
+        String nativeLibPath = null;
+        try {
+            List<String> results = new ArrayList<String>();
+            List<String> errors = new ArrayList<String>();
+            String[] cmds;
+            if (useLocate)
+                cmds = new String[] { "locate" , nativeFileName };
+            else
+                cmds = new String[] { "find" , "-name", nativeFileName };
+            GenericUtil.execScript(cmds, new File(startDirectory), results, errors);
+            for (String res : results) {
+                if (res.endsWith(nativeFileName)) {
+                    res = (res.substring(0, res.lastIndexOf(nativeFileName)));
+                    if (res.startsWith(".")) res = res.substring(1);
+                    return (useLocate ? "" : startDirectory) + res;
+                }
+            }
+        } catch (IOException io) {
+            log.debug("Could not locate native library path: " + io.getMessage());
+        } catch (InterruptedException io) {
+            log.debug("Could not locate native library path: " + io.getMessage());
+        }
+        return null;
     }
 }

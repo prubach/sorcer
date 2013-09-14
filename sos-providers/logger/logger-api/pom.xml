@@ -8,6 +8,7 @@
         <version>1.0-M3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>SORCER OS :: providers :: logger :: api</name>
 
     <artifactId>logger-api</artifactId>
 
