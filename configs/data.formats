@@ -372,6 +372,7 @@ engineering.ensight6.txt.geom = dnt|ensight6|txt|geom
 engineering.scilab.txt.input = dnt|scilab|txt|input
 engineering.scilab.put.input = dnt|scilab|put|input
 engineering.scilab.get.input = dnt|scilab|get|input
+engineering.scilab.name.result = dnt|scilab|name|result
 engineering.scilab.txt.script = dnt|scilab|txt|script
 engineering.scilab.dbl.output = dnt|scilab|dbl|output
 engineering.scilab.txt.output = dnt|scilab|txt|output

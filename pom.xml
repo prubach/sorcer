@@ -335,13 +335,19 @@
 						<exclude>**/archetype-resources/**</exclude>
 						<exclude>**/first/reference/**/*.java</exclude>
 						<exclude>**/first/reference/**/*.xml</exclude>
-						<exclude>**/sos-misc/**/*</exclude>
 						<exclude>**/jini/scripts/**</exclude>
+						<exclude>**/rio/**</exclude>
+						<exclude>**/rio/**/*</exclude>
+						<exclude>**/rio/logging/**</exclude>
+						<exclude>**/lib/rio/config/poms/**</exclude>
+						<exclude>**/lib/rio/config/platform/**</exclude>
+						<exclude>**/lib/rio/config/logging/**</exclude>
 						<exclude>**/.idea/**/*</exclude>
 						<exclude>**/locker/**/*</exclude>
 						<exclude>**/sos-webster/**</exclude>
 						<exclude>**/util/exec/*.java</exclude>
 						<exclude>**/classdepandjar/**</exclude>
+						<exclude>**/site/**/*</exclude>						
 						<!-- Rio code -->
 						<exclude>**/TimeUtil.java</exclude>
 						<exclude>**/PropertyHelper.java</exclude>
@@ -576,3 +582,4 @@
         </profile>
     </profiles>
 </project>
+
