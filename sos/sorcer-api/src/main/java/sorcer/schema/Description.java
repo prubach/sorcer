@@ -1,4 +1,4 @@
-package sorcer.core.provider.dbp;
+package sorcer.schema;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,20 +18,19 @@ package sorcer.core.provider.dbp;
  */
 
 
-import java.io.InvalidObjectException;
-import java.net.URL;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Documentation annotation for methods of schema interface. Value never used in the core Sorcer code, only in the UI.
+ *
  * @author Rafał Krupiński
  */
-public interface IDatabaseProvider extends Remote {
-    URL storeObject(Object object) throws RemoteException;
-
-    void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
-
-    void deleteObject(URL url) throws RemoteException;
-
-    Object retrieve(URL url) throws RemoteException;
+@Retention(RUNTIME)
+@Target(METHOD)
+public @interface Description {
+    String value();
 }

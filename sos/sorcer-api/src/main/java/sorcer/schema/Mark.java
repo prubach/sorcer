@@ -1,4 +1,4 @@
-package sorcer.core.provider.dbp;
+package sorcer.schema;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,20 +18,20 @@ package sorcer.core.provider.dbp;
  */
 
 
-import java.io.InvalidObjectException;
-import java.net.URL;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
+ * Declare context marks supported by given service method. This annotation should be used on service interface methods, not with schema interface.
+ * Marks are designed to be an alternative to schema interface, but they can be used at the same time on the same methods.
+ *
  * @author Rafał Krupiński
  */
-public interface IDatabaseProvider extends Remote {
-    URL storeObject(Object object) throws RemoteException;
-
-    void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
-
-    void deleteObject(URL url) throws RemoteException;
-
-    Object retrieve(URL url) throws RemoteException;
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Mark {
+    String[] value();
 }

@@ -1,4 +1,3 @@
-package sorcer.core.provider.dbp;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -17,21 +16,10 @@ package sorcer.core.provider.dbp;
  * limitations under the License.
  */
 
-
-import java.io.InvalidObjectException;
-import java.net.URL;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-
 /**
- * @author Rafał Krupiński
+ * Annotations {@link Path} and {@link Schema} are markers for adding schema to service contexts.
+ * There is the <code>service interface</code> and the <code>schema interface</code>.
+ * <code>Service interface</code> is the interface implemented by the service provider. All its methods return a {@link Context} and take one as a parameter.
+ * <code>Schema interface</code> is an interface that describes required and optional context paths along with their direction and a 'required' attribute.
  */
-public interface IDatabaseProvider extends Remote {
-    URL storeObject(Object object) throws RemoteException;
-
-    void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
-
-    void deleteObject(URL url) throws RemoteException;
-
-    Object retrieve(URL url) throws RemoteException;
-}
+package sorcer.schema;

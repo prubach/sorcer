@@ -309,7 +309,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.provider.StorageManagement#update(sorcer.service.Context)
+	 * @see sorcer.core.StorageManagement#update(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextUpdate(Context context) throws RemoteException,
@@ -337,7 +337,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.provider.StorageManagement#contextList(sorcer.service.Context)
+	 * @see sorcer.core.StorageManagement#contextList(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextList(Context context) throws RemoteException,
@@ -362,7 +362,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.provider.StorageManagement#contextClear(sorcer.service.Context)
+	 * @see sorcer.core.StorageManagement#contextClear(sorcer.service.Context)
 	 */
 	@Override
 	public Context contextClear(Context context) throws RemoteException,

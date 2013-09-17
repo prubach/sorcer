@@ -317,22 +317,26 @@ public class LookupCmd extends ShellCmd {
 	static private void printProvider(int index, String msg) {
 		out.println("---------" + (msg != null ? " " + msg : "")
 				+ " SERVICE PROVIDER # " + index + " ---------");
+        ServiceItem serviceItem = serviceItems.get(index);
+        Entry[] attributeSets = serviceItem.attributeSets;
 		out.println("ID: "
-				+ serviceItems.get(index).serviceID
+				+ serviceItem.serviceID
 				+ " at: "
-				+ AttributesUtil.getHostName(serviceItems.get(index).attributeSets));
+				+ AttributesUtil.getHostName(attributeSets));
 		out.println("Home: "
-				+ AttributesUtil.getUserDir(serviceItems.get(index).attributeSets));
+                + AttributesUtil.getUserDir(attributeSets));
 		String groups = AttributesUtil
-				.getGroups(serviceItems.get(index).attributeSets);
+				.getGroups(attributeSets);
 		out.println("Provider name: "
-				+ AttributesUtil.getProviderName(serviceItems.get(index).attributeSets));
+				+ AttributesUtil.getProviderName(attributeSets));
+        Class<?> serviceClass = serviceItem.service.getClass();
 		out.println("Proxy class: "
-				+ serviceItems.get(index).service.getClass().getName());
+                + serviceClass.getName());
+        out.println("Proxy class interfaces: " + Arrays.toString(serviceClass.getInterfaces()));
 		out.println("Groups supported: " + groups);
 		out.println("Published services: "
 				+ Arrays.toString(AttributesUtil
-						.getPublishedServices(serviceItems.get(index).attributeSets)));
+						.getPublishedServices(attributeSets)));
 	}
 
 	public static void printCurrentService() throws IOException,

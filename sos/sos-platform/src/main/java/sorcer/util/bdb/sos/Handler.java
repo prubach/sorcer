@@ -1,4 +1,4 @@
-package sorcer.core.provider.dbp;
+package sorcer.util.bdb.sos;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,20 +18,9 @@ package sorcer.core.provider.dbp;
  */
 
 
-import java.io.InvalidObjectException;
-import java.net.URL;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-
 /**
+ * Technical class for compatibility. Sorcer registers sorcer.util.bdb as URL Handler root package, which requires sos Handler to be in sorcer.util.bdb.sos package.
  * @author Rafał Krupiński
  */
-public interface IDatabaseProvider extends Remote {
-    URL storeObject(Object object) throws RemoteException;
-
-    void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
-
-    void deleteObject(URL url) throws RemoteException;
-
-    Object retrieve(URL url) throws RemoteException;
+public class Handler extends sorcer.util.bdb.sdb.Handler {
 }

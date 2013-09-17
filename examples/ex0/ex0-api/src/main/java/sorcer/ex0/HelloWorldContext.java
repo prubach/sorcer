@@ -1,4 +1,4 @@
-package sorcer.core.provider.dbp;
+package sorcer.ex0;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,20 +18,22 @@ package sorcer.core.provider.dbp;
  */
 
 
-import java.io.InvalidObjectException;
-import java.net.URL;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import sorcer.schema.Path;
 
 /**
  * @author Rafał Krupiński
  */
-public interface IDatabaseProvider extends Remote {
-    URL storeObject(Object object) throws RemoteException;
+public interface HelloWorldContext {
+    @Path("in/value")
+    String getInValue();
 
-    void updateObject(URL url, Object object) throws RemoteException, InvalidObjectException;
+    @Path("in/value")
+    void setInValue(String value);
 
-    void deleteObject(URL url) throws RemoteException;
+    @Path("out/value")
+    void setOutValue(String value);
 
-    Object retrieve(URL url) throws RemoteException;
+    @Path("out/value")
+    void getOutValue();
+
 }
