@@ -18,13 +18,20 @@ package sorcer.schema;
  */
 
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * Declare context marks supported by given service method. This annotation should be used on service interface methods, not with schema interface.
+ * Marks are designed to be an alternative to schema interface, but they can be used at the same time on the same methods.
+ *
  * @author Rafał Krupiński
  */
-@Target(value = ElementType.METHOD)
+@Target(METHOD)
+@Retention(RUNTIME)
 public @interface Mark {
     String[] value();
 }

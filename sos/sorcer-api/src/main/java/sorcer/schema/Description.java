@@ -18,9 +18,19 @@ package sorcer.schema;
  */
 
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
+ * Documentation annotation for methods of schema interface. Value never used in the core Sorcer code, only in the UI.
+ *
  * @author Rafał Krupiński
  */
+@Retention(RUNTIME)
+@Target(METHOD)
 public @interface Description {
     String value();
 }
