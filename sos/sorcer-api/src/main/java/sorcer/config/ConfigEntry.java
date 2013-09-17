@@ -26,13 +26,13 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
-    public String DEFAULT_KEY = "ConfigEntry.DefaulKtey";
+    public String DEFAULT_KEY = "ConfigEntry.DefaultKey";
     public String NONE = "ConfigEntry.None";
 
     /**
      * Entry name. Default null value makes use of field or property name.
      */
-    String key() default DEFAULT_KEY;
+    String value() default DEFAULT_KEY;
 
     /**
      * The default value, currently only available for strings.

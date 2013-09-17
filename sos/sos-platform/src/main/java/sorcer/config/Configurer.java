@@ -126,10 +126,10 @@ public class Configurer {
 
     private String getEntryKey(String propertyName, ConfigEntry entry) {
         String key;
-        if (ConfigEntry.DEFAULT_KEY.equals(entry.key())) {
+        if (ConfigEntry.DEFAULT_KEY.equals(entry.value())) {
             return propertyName;
         } else {
-            return entry.key();
+            return entry.value();
         }
     }
 }

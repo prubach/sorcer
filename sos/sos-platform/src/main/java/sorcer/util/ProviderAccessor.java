@@ -188,7 +188,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * This method searches for either a JINI or a RMI Cataloger service.
 	 *
 	 * @return a Cataloger service proxy
-     * @see sorcer.core.Cataloger
+     * @see sorcer.core.provider.Cataloger
 	 */
 	protected Cataloger getCataloger() {
         return getCataloger(providerNameUtil.getName(Cataloger.class)) ;

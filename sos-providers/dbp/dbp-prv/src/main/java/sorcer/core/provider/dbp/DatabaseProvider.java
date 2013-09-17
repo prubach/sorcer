@@ -27,11 +27,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.jini.config.Configuration;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.config.ConfigEntry;
 import sorcer.core.provider.StorageManagement;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.DatabaseStorer;
@@ -42,43 +43,29 @@ import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
-import sorcer.util.bdb.sdb.Handler;
 import sorcer.util.bdb.sdb.SdbUtil;
 
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
-import com.sun.jini.start.LifeCycle;
+
+import static sorcer.core.SorcerConstants.P_PROVIDER_NAME;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DatabaseProvider extends ServiceProvider implements DatabaseStorer, IDatabaseProvider {
-
-	static {
-		Handler.register();
-	}
+public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseProvider.class);
 
 	private SorcerDatabase db;
 
 	private SorcerDatabaseViews views;
-	
+
+    @ConfigEntry(P_PROVIDER_NAME)
+    private String providerName;
+
 	public DatabaseProvider() {
         super();
 	}
 
-	/**
-	 * Constructs an instance of the SORCER Object Store implementing
-	 * EvaluationRemote. This constructor is required by Jini 2 life cycle
-	 * management.
-	 * 
-	 * @param args
-	 * @param lifeCycle
-	 * @throws Exception
-	 */
-	public DatabaseProvider(String[] args, LifeCycle lifeCycle) throws Exception {
-		super(args, lifeCycle);
-		setupDatabase();
-	}
-	
 	public Uuid store(Object object) {
 		Object obj = object;
 		if (!(object instanceof Identifiable)) {
@@ -225,27 +212,22 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	}
 
 	public URL getDatabaseURL(Store storeType, Uuid uuid) throws MalformedURLException {
-		String pn = null;
-		try {
-			pn = getProviderName();
-		} catch (RemoteException e) {
-			// ignore it, local call
-		}
+		String pn = providerName;
 		if (pn == null || pn.length() == 0 || pn.equals("*"))
 			pn = "";
 		else
 			pn = "/" + pn;
-		return new URL("sos://" + delegate.getPublishedServiceTypes()[0].getName() + pn + "#"
+		return new URL("sos://" + IDatabaseProvider.class.getName() + pn + "#"
 				+ storeType + "=" + uuid);
 	}
 	
 	public URL getSdbUrl() throws MalformedURLException, RemoteException {
-		String pn = getProviderName();
+		String pn = providerName;
 		if (pn == null || pn.length() == 0 || pn.equals("*"))
 			pn = "";
 		else
 			pn = "/" + pn;
-		return new URL("sos://" + delegate.getPublishedServiceTypes()[0].getName() + pn);
+		return new URL("sos://" + IDatabaseProvider.class.getName() + pn);
 	}
 	
 	public int size(Store storeType) {
@@ -342,7 +324,7 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	@Override
 	public Context contextList(Context context) throws RemoteException,
 			ContextException, MalformedURLException {
-		List<String> content = list((Store)context.getValue(StorageManagement.store_type));
+		List<String> content = list((Store) context.getValue(StorageManagement.store_type));
 		context.putValue(StorageManagement.store_content_list, content);
 		return context;
 	}
@@ -379,16 +361,11 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 		storedSet.clear();
 		return size;
 	}
-	
+
+    @ConfigEntry("dbHome")
+    private String dbHome;
+
 	protected void setupDatabase() throws DatabaseException, RemoteException {
-		Configuration config = delegate.getDeploymentConfig();
-		String dbHome = null;
-		try {
-			dbHome = (String) config.getEntry(ServiceProvider.COMPONENT,
-					DB_HOME, String.class);
-		} catch (Exception e) {
-			// do nothing, default value is used
-		}
 		logger.info("dbHome: " + dbHome);
 		if (dbHome == null || dbHome.length() == 0) {
 			logger.info("No provider's database created");
@@ -401,8 +378,8 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 		if (!dbHomeFile.isDirectory() && !dbHomeFile.exists()) {
 			boolean done = dbHomeFile.mkdirs();
 			if (!done) {
-				logger.severe("Not able to create session database home: "
-						+ dbHomeFile.getAbsolutePath());
+				logger.error("Not able to create session database home: {}",
+                        dbHomeFile.getAbsolutePath());
 				destroy();
 				return;
 			}
@@ -418,17 +395,15 @@ public class DatabaseProvider extends ServiceProvider implements DatabaseStorer,
 	 * 
 	 * @see sorcer.core.provider.Provider#destroy()
 	 */
-	@Override
 	public void destroy() throws RemoteException {
 		try {
 			if (db != null) {
 				db.close();
 			}
 		} catch (DatabaseException e) {
-			logger.severe("Failed to close provider's databse: "
-					+ e.getMessage());
+			logger.error("Failed to close provider's database",
+                    e.getMessage());
 		}
-		super.destroy();
 	}
 
 	/* (non-Javadoc)
