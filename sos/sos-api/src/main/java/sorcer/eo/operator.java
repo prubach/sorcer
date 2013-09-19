@@ -304,11 +304,7 @@ public class operator {
     public static Signature sig(String operation, Class<?> serviceType,
                                 List<net.jini.core.entry.Entry> attributes)
             throws SignatureException {
-        NetSignature op = new NetSignature();
-        op.setAttributes(attributes);
-        op.setServiceType(serviceType);
-        op.setSelector(operation);
-        return op;
+        return SignatureFactory.sig(operation, serviceType, attributes);
     }
 
     public static Signature sig(Class<?> serviceType) throws SignatureException {
@@ -317,29 +313,16 @@ public class operator {
 
     public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
             throws SignatureException {
-        Signature sig = null;
-        if (serviceType.isInterface()) {
-            sig = new NetSignature("service", serviceType);
-        } else if (Executor.class.isAssignableFrom(serviceType)) {
-            sig = new ObjectSignature("execute", serviceType);
-        } else {
-            sig = new ObjectSignature(serviceType);
-        }
-        if (returnPath != null)
-            sig.setReturnPath(returnPath);
-        return sig;
+        return SignatureFactory.sig(serviceType, returnPath);
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
                                 ReturnPath resultPath) throws SignatureException {
-        Signature sig = sig(operation, serviceType, Type.SRV);
-        sig.setReturnPath(resultPath);
-        return sig;
+        return SignatureFactory.sig(operation, serviceType, resultPath);
     }
 
     public static Signature sig(Exertion exertion, String componentExertionName) {
-        Exertion component = exertion.getExertion(componentExertionName);
-        return component.getProcessSignature();
+        return SignatureFactory.sig(exertion, componentExertionName);
     }
 
     public static String selector(Signature sig) {
