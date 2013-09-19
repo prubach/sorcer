@@ -1,5 +1,6 @@
 package sorcer.netlet;
 
+import net.jini.config.Configuration;
 import sorcer.netlet.util.LoaderConfigurationHelper;
 import sorcer.netlet.util.ScriptExertException;
 import sorcer.tools.shell.cmds.ScriptThread;
@@ -54,6 +55,8 @@ public class ScriptExerter {
 
     private String websterStrUrl;
 
+    private Configuration config;
+
     public ScriptExerter() {
         this(null, null, null);
     }
@@ -85,8 +88,9 @@ public class ScriptExerter {
 
     public Object execute() throws Throwable {
         if (scriptThread!=null) {
-            scriptThread.start();
-            scriptThread.join();
+            //scriptThread.start();
+            //scriptThread.join();
+            scriptThread.run();
             result = scriptThread.getResult();
             return result;
         }
@@ -105,7 +109,7 @@ public class ScriptExerter {
         // Process "codebase" and set codebase variable
         urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
 
-        scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[] { }),  classLoader, out);
+        scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config);
         this.target = scriptThread.getTarget();
         return target;
     }
@@ -214,6 +218,10 @@ public class ScriptExerter {
 
     public Object getResult() {
         return result;
+    }
+
+    public void setConfig(Configuration config) {
+        this.config = config;
     }
 }
 

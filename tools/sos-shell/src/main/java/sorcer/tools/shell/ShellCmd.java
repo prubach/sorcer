@@ -17,6 +17,7 @@
  */
 package sorcer.tools.shell;
 
+import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
@@ -43,6 +44,8 @@ abstract public class ShellCmd {
 	protected static final int MAX_MATCHES = 64;
 
 	abstract public void execute() throws Throwable;
+
+    protected Configuration config;
 
 	public String getCommandWord() {
 		return COMMAND_NAME;
@@ -128,4 +131,7 @@ abstract public class ShellCmd {
 		return serviceItems;
 	}
 
+    public void setConfig(Configuration config) {
+        this.config = config;
+    }
 }

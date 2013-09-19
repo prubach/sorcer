@@ -77,6 +77,7 @@ public class ExertCmd extends ShellCmd {
         out = NetworkShell.getShellOutputStream();
         shell = NetworkShell.getInstance();
         scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl());
+        scriptExerter.setConfig(config);
         input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");
