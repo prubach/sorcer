@@ -18,7 +18,6 @@ package sorcer.core.dispatch;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,9 +35,9 @@ import org.rioproject.opstring.OperationalStringManager;
 import org.rioproject.opstring.ServiceElement;
 
 import sorcer.core.exertion.NetTask;
+import sorcer.service.Accessor;
 import sorcer.service.Exertion;
 import sorcer.service.Signature;
-import sorcer.util.ProviderLookup;
 import sorcer.util.Sorcer;
 
 /**
@@ -69,7 +68,7 @@ public class ProvisionManager {
 	}
 	
 	private OperationalString getIGridDeployment() throws Exception {
-		File iGridDeployment = new File(Sorcer.getHomeDir(), "data/opstrings/IGridDeployment.groovy");
+		File iGridDeployment = new File(Sorcer.getHomeDir(), "configs/rio/SorcerCommon.groovy");
 		OpStringLoader opStringLoader = new OpStringLoader(); 
 		OperationalString[] loaded = opStringLoader.parseOperationalString(iGridDeployment);
 		return loaded[0];
@@ -101,10 +100,7 @@ public class ProvisionManager {
 				}
 				opstring.addOperationalString(getIGridDeployment());
 
-				//ProvisionMonitor provisionMonitor = 
-			    //		(ProvisionMonitor) ProviderAccessor.getProvider("Monitor", ProvisionMonitor.class);
-				ProvisionMonitor provisionMonitor = 
-						(ProvisionMonitor) ProviderLookup.getService(ProvisionMonitor.class);
+				ProvisionMonitor provisionMonitor = Accessor.getService(ProvisionMonitor.class);
 				if (provisionMonitor != null) {
 					deployAdmin = (DeployAdmin) provisionMonitor.getAdmin();
 					deployAdmin.deploy(opstring);
