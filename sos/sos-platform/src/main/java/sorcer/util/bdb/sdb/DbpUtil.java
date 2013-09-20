@@ -10,7 +10,6 @@ import sorcer.service.*;
 import sorcer.util.bdb.objects.Store;
 
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.List;
 
 import static sorcer.util.bdb.sdb.SdbUtil.getProviderName;
@@ -60,7 +59,7 @@ public class DbpUtil {
                 .getDatabaseStorerName());
         Exertion objectUpdateTask = new Task("update",
                 new NetSignature("contextUpdate", DatabaseStorer.class, storageName),
-                SdbUtil.getUpdateContext(value, storeUuid));
+                getUpdateContext(value, storeUuid));
         try {
             objectUpdateTask.exert(null);
         } catch (Exception e) {
@@ -205,7 +204,7 @@ public class DbpUtil {
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("retrieve",
                 new NetSignature("contextRetrieve", DatabaseStorer.class, storageName),
-                SdbUtil.getRetrieveContext(storeUuid, storeType));
+                getRetrieveContext(storeUuid, storeType));
         // It was DataspaceStorer.class in Mike's version
         return (Context) execDbTask(objectStoreTask);
 
@@ -250,7 +249,7 @@ public class DbpUtil {
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("list",
                 new NetSignature("contextList", DatabaseStorer.class, providerName),
-                SdbUtil.getListContext(type));
+                getListContext(type));
         // It was DataspaceStorer.class in Mike's version
         return (List<String>) execDbTask(objectStoreTask);
 
@@ -272,7 +271,7 @@ public class DbpUtil {
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("contextList",
                 new NetSignature("contextList", DatabaseStorer.class, storageName),
-                SdbUtil.getListContext(storeType));
+                getListContext(storeType));
         // It was DataspaceStorer.class in Mike's version
         return (List<String>) execDbTask(objectStoreTask);
 
@@ -310,5 +309,79 @@ public class DbpUtil {
             throw new ExertionException(e);
         }
         return obj;
+    }
+
+    /**
+     * Returns a context to be used with
+     * {@link sorcer.core.provider.StorageManagement#contextStore(sorcer.service.Context)}
+     *
+     * @param uuid
+     *            {@link net.jini.id.Uuid}
+     * @param object
+     *            to be stored
+     * @return storage {@link sorcer.service.Context}
+     * @throws sorcer.service.ContextException
+     */
+    static public Context getStoreContext(Object object)
+            throws ContextException {
+        ServiceContext cxt = new ServiceContext("store context");
+        cxt.putInValue(StorageManagement.object_stored, object);
+        cxt.putInValue(StorageManagement.object_uuid,
+                ((Identifiable) object).getId());
+        cxt.setReturnPath(StorageManagement.object_url);
+        return cxt;
+    }
+
+    /**
+     * Returns a context to be used with
+     * {@link sorcer.core.provider.StorageManagement#contextStore(sorcer.service.Context)}
+     *
+     * @param uuid
+     *            {@link net.jini.id.Uuid}
+     * @param type
+     *            one of: exertion, context, var, table, varModel, object
+     * @return retrieval {@link sorcer.service.Context}
+     * @throws sorcer.service.ContextException
+     */
+    static public Context getRetrieveContext(Uuid uuid, Store type)
+            throws ContextException {
+		ServiceContext cxt = new ServiceContext("retrieve dataContext");
+        cxt.putInValue(StorageManagement.object_type, type);
+        cxt.putInValue(StorageManagement.object_uuid, uuid);
+        cxt.setReturnPath(StorageManagement.object_retrieved);
+        return cxt;
+    }
+
+    static public Context getUpdateContext(Object object, URL url)
+            throws ContextException {
+        return getUpdateContext(object, SdbUtil.getUuid(url));
+    }
+
+    /**
+	 * Returns a dataContext to be used with
+     * {@link sorcer.core.provider.StorageManagement#contextUpdate(sorcer.service.Context)}
+     *
+     * @param object
+     *            to be updated
+     * @param uuid
+     *            {@link net.jini.id.Uuid} og the updated object
+     * @return update {@link sorcer.service.Context}
+     * @throws sorcer.service.ContextException
+     */
+    static public Context getUpdateContext(Object object, Uuid uuid)
+            throws ContextException {
+        ServiceContext cxt = new ServiceContext("update context");
+        cxt.putInValue(StorageManagement.object_uuid, uuid);
+        cxt.putInValue(StorageManagement.object_updated, object);
+        cxt.setReturnPath(StorageManagement.object_url);
+        return cxt;
+    }
+
+    static public Context getListContext(Store storeType)
+            throws ContextException {
+        ServiceContext cxt = new ServiceContext("storage list context");
+        cxt.putInValue(StorageManagement.store_type, storeType);
+        cxt.setReturnPath(StorageManagement.store_content_list);
+        return cxt;
     }
 }

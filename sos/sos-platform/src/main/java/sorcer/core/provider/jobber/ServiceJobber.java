@@ -23,6 +23,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
+import sorcer.core.context.ControlContext;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.Jobber;
@@ -131,8 +132,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 
 		setServiceID(job);
 		try {
-			if (job.getControlContext().isMonitorable()
-					&& !(job.getControlContext()).isWaitable()) {
+			if (((ControlContext)job.getControlContext()).isMonitorable()
+					&& !((ControlContext)job.getControlContext()).isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
 				new JobThread((Job) job, this).start();

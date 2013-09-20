@@ -62,7 +62,7 @@ public class ObjectTask extends Task {
 		else 
 			throw new SignatureException("Object task requires ObjectSignature: "
 					+ signature);
-        // TODO VAR related
+        // TODO VFE related
 
 		/*if (((ObjectSignature)signature).getEvaluator() == null)
 			try {

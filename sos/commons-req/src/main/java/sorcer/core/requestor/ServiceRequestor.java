@@ -36,6 +36,7 @@ import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.ControlContext;
 import sorcer.resolver.Resolver;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
@@ -156,7 +157,7 @@ abstract public class
     public void postprocess(String... args) {
         if (exertion != null) {
             logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
-            logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
+            logger.info("<<<<<<<<<< Traces: \n" + ((ControlContext)exertion.getControlContext()).getTrace());
             logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
         }
         // Exit webster

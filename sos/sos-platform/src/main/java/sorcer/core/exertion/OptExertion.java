@@ -21,6 +21,7 @@ package sorcer.core.exertion;
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
+import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Condition;
 import sorcer.service.Exertion;
@@ -73,7 +74,7 @@ public class OptExertion extends Task {
 			if (condition.isTrue()) {
 				target = target.exert(txn);
 				dataContext = (ServiceContext)target.getContext();
-				controlContext = target.getControlContext();
+				controlContext = (ControlContext)target.getControlContext();
 				dataContext.putValue(Condition.CONDITION_VALUE, true);
 				dataContext.putValue(Condition.CONDITION_TARGET, target.getName());
 				return this;

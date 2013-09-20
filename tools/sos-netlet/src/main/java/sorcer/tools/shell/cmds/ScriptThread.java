@@ -135,8 +135,8 @@ public class ScriptThread extends Thread {
                     e.printStackTrace();
                 } catch (ExertionException e) {
                     e.printStackTrace();
-//                } catch (ConfigurationException e) {
-//                    e.printStackTrace();
+                } catch (ConfigurationException e) {
+                    e.printStackTrace();
                 }
             } else {
                 result = target;

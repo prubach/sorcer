@@ -25,8 +25,7 @@ import java.util.List;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
-import sorcer.core.context.ControlContext;
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -152,7 +151,7 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * @return a control dataContext
 	 * @see #getSignatures
 	 */
-	public ControlContext getControlContext();
+	public Context getControlContext();
 	
 	/**
 	 * Returns a process signature, all pre-processing, post-processing, and

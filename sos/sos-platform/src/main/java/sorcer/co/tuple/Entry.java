@@ -34,6 +34,10 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T> {
 	public Entry() {
 	};
 
+    public Entry(String path) {
+        _1 = path;
+    }
+
 	public Entry(String path, T value) {
 		T v = value;
 		if (v == null)

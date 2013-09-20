@@ -46,7 +46,7 @@ import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.bdb.objects.Store;
-import sorcer.util.bdb.sdb.SdbUtil;
+import sorcer.util.bdb.sdb.DbpUtil;
 
 public class DataStorageCmd extends ShellCmd {
 
@@ -212,7 +212,7 @@ public class DataStorageCmd extends ShellCmd {
 				 out.println("XXXXXXXXXXXXX interfaces: " + Arrays.toString(dataStorers[selectedDataStorer].service.getClass().getInterfaces()));
 				 out.println("XXXXXXXXXXXXX name: " + ((Provider) dataStorers[selectedDataStorer].service).getProviderName());
 				 try {
-				 cxt = ((DatabaseStorer) dataStorers[selectedDataStorer].service).contextList(SdbUtil.getListContext(Store.object));
+				 cxt = ((DatabaseStorer) dataStorers[selectedDataStorer].service).contextList(DbpUtil.getListContext(Store.object));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}

@@ -24,7 +24,6 @@ import java.net.URL;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.provider.StorageManagement;
-import sorcer.core.context.ServiceContext;
 import sorcer.service.*;
 import sorcer.util.bdb.objects.Store;
 
@@ -73,77 +72,4 @@ public class SdbUtil {
         return url.getHost();
     }
 
-    /**
-     * Returns a context to be used with
-     * {@link StorageManagement#contextStore(Context)}
-     *
-     * @param uuid
-     *            {@link Uuid}
-     * @param object
-     *            to be stored
-     * @return storage {@link Context}
-     * @throws ContextException
-     */
-    static public Context getStoreContext(Object object)
-            throws ContextException {
-        ServiceContext cxt = new ServiceContext("store context");
-        cxt.putInValue(StorageManagement.object_stored, object);
-        cxt.putInValue(StorageManagement.object_uuid,
-                ((Identifiable) object).getId());
-        cxt.setReturnPath(StorageManagement.object_url);
-        return cxt;
-    }
-
-    /**
-     * Returns a context to be used with
-     * {@link StorageManagement#contextStore(Context)}
-     *
-     * @param uuid
-     *            {@link Uuid}
-     * @param type
-     *            one of: exertion, context, var, table, varModel, object
-     * @return retrieval {@link Context}
-     * @throws ContextException
-     */
-    static public Context getRetrieveContext(Uuid uuid, Store type)
-            throws ContextException {
-		ServiceContext cxt = new ServiceContext("retrieve dataContext");
-        cxt.putInValue(StorageManagement.object_type, type);
-        cxt.putInValue(StorageManagement.object_uuid, uuid);
-        cxt.setReturnPath(StorageManagement.object_retrieved);
-        return cxt;
-    }
-
-    static public Context getUpdateContext(Object object, URL url)
-            throws ContextException {
-        return getUpdateContext(object, getUuid(url));
-    }
-
-    /**
-	 * Returns a dataContext to be used with
-     * {@link StorageManagement#contextUpdate(Context)}
-     *
-     * @param object
-     *            to be updated
-     * @param uuid
-     *            {@link Uuid} og the updated object
-     * @return update {@link Context}
-     * @throws ContextException
-     */
-    static public Context getUpdateContext(Object object, Uuid uuid)
-            throws ContextException {
-        ServiceContext cxt = new ServiceContext("update context");
-        cxt.putInValue(StorageManagement.object_uuid, uuid);
-        cxt.putInValue(StorageManagement.object_updated, object);
-        cxt.setReturnPath(StorageManagement.object_url);
-        return cxt;
-    }
-
-    static public Context getListContext(Store storeType)
-            throws ContextException {
-        ServiceContext cxt = new ServiceContext("storage list context");
-        cxt.putInValue(StorageManagement.store_type, storeType);
-        cxt.setReturnPath(StorageManagement.store_content_list);
-        return cxt;
-    }
 }

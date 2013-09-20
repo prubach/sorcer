@@ -3,6 +3,7 @@ package sorcer.ex1.requestor.bean;
 import java.net.InetAddress;
 
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
@@ -51,7 +52,7 @@ public class WhoIsItBeanRunner2 extends ServiceRequestor {
 
 	public void postprocess() {
 		logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
-		logger.info("<<<<<<<<<< Trace list: \n" + exertion.getControlContext().getTrace());
+		logger.info("<<<<<<<<<< Trace list: \n" + ((ControlContext)exertion.getControlContext()).getTrace());
 		logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
 	}
 	

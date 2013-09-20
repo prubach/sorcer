@@ -36,6 +36,7 @@ import net.jini.core.event.RemoteEvent;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Tuple2;
+import sorcer.core.context.ControlContext;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
@@ -400,7 +401,7 @@ abstract public class ExertDispatcher implements Dispatcher,
                                      ServiceExertion outTask) {
         // notify o MASTER task completion
         Vector recipients = null;
-        String notifyees = parent.getControlContext().getNotifyList(inTask);
+        String notifyees = ((ControlContext)parent.getControlContext()).getNotifyList(inTask);
         if (notifyees != null) {
 			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
             recipients = new Vector(list.length);

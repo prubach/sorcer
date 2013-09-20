@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2009 the original author or authors.
+ * Copyright 2009 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util.observable;
 
-import net.jini.id.Uuid;
-import net.jini.id.UuidFactory;
-import sorcer.service.EvaluationException;
-import sorcer.service.Identifiable;
+package sorcer.core.context.model.par;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -29,16 +24,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class Observable implements ObservableManagement, Identifiable, Serializable {
+import net.jini.id.Uuid;
+import sorcer.service.EvaluationException;
+import sorcer.service.Identifiable;
+
+/* Class moved from other package by Pawel Rubach 09.2013
+ */
+
+//public class Observable implements EvaluationModel, Serializable {
+public class Observable implements Serializable {
 	static final long serialVersionUID = -6036250788560831439L;
 	protected boolean changed = false;
 	protected static Logger logger = Logger.getLogger(Observable.class
 			.getName());
-	
-	protected Uuid id;
-
-	protected String name;
-	
 	// initialized in addObserver
 	// observer id-observer self
 	protected Map<Uuid, Observer> observerMap = null;
@@ -48,40 +46,9 @@ public class Observable implements ObservableManagement, Identifiable, Serializa
 	 * the first one is added.
 	 */
 	public Observable() {
-		id = UuidFactory.generate();
-	}
-	
-	/**
-	 * getId - Returns id
-	 * @return Uuid
-	 */
-	public Uuid getId() {
-		return id;
+		// do nothing
 	}
 
-	/**
-	 * Assign a unique identifier
-	 */
-	public void setId(Uuid uuid) {
-		 this.id = uuid;;
-	}
-	
-	/**
-	 * getName - Returns name
-	 * @return String
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * setName - Method that allows setting of the name of a Identity Object
-	 * @param name -Name of the Identity Object
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	public boolean hasObservers() {
 		if (countObservers() > 0)
 			return true;
@@ -133,7 +100,7 @@ public class Observable implements ObservableManagement, Identifiable, Serializa
 	 * @throws RemoteException 
 	 * @throws EvaluationException 
 	 * @see Observable#clearChanged()
-	 * @see Observable#changed
+	 * @see Observable#hasChanged()
 	 * @see Observer#update(Observable, Object)
 	 */
 	public void notifyObservers(Object arg) throws EvaluationException, RemoteException {
@@ -177,7 +144,7 @@ public class Observable implements ObservableManagement, Identifiable, Serializa
 	public void addObserver(Observer observer) {
 		if (observerMap == null)
 			observerMap = new HashMap<Uuid, Observer>();
-		observerMap.put(observer.getId(), observer);
+		observerMap.put((Uuid)((Identifiable)observer).getId(), observer);
 	}
 
 	public Observer[] getObservers() {
@@ -190,7 +157,7 @@ public class Observable implements ObservableManagement, Identifiable, Serializa
 
 	public void deleteObserver(Observer observer) {
 		if (observerMap != null)
-			observerMap.remove(observer.getId());
+			observerMap.remove((Uuid)((Identifiable)observer).getId());
 	}
 
 	/**
@@ -224,13 +191,14 @@ public class Observable implements ObservableManagement, Identifiable, Serializa
 		if (observerMap == null)
 			return;
 		Iterator<Observer> i = observerMap.values().iterator();
-		while (i.hasNext()) {
-			ObservableManagement o = (ObservableManagement) i.next();
+        // TODO VAR related
+		/*while (i.hasNext()) {
+			EvaluationModel o = (EvaluationModel) i.next();
 			logger.info("Observable.notifyParentObservers(): o = " + o);
 
 			o.setChanged();
 			o.notifyObservers(obj);
-		}
+		} */
 		logger.info("Observable.notifyParentObservers(): done notifying parents");
 	}
 	

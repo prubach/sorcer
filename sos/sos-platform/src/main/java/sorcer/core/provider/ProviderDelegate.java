@@ -1084,12 +1084,9 @@ public class ProviderDelegate {
 			Method m = null;
 			try {
 				// select the proper method for the bean type
-                // TODO VFE related
-                //if (selector.equals("invoke") && (impl instanceof Exertion
-                //        || impl instanceof ParModel)) {
-
-				if (selector.equals("invoke") && (impl instanceof Exertion)) {
-					m = impl.getClass().getMethod(selector,
+                if (selector.equals("invoke") && (impl instanceof Exertion
+                        || impl instanceof ParModeling)) {
+                    	m = impl.getClass().getMethod(selector,
 							new Class[] { Context.class, Arg[].class });
 					isContextual = true;
 				} else if (selector.equals("exert") && impl instanceof ServiceExerter) {
@@ -1137,11 +1134,8 @@ public class ProviderDelegate {
 			String selector = task.getProcessSignature().getSelector();
 			Object[] args = new Object[] { task.getContext() };
 
-            // TODO VFE related
-            //if (selector.equals("invoke")
-            //        && (impl instanceof Exertion || impl instanceof ParModel)) {
-			if (selector.equals("invoke")
-					&& (impl instanceof Exertion)) {
+            if (selector.equals("invoke")
+                    && (impl instanceof Exertion || impl instanceof ParModeling)) {
 				Object obj = m.invoke(impl, new Object[] { args[0],
 						new Arg[] {} });
 
@@ -1412,7 +1406,7 @@ public class ProviderDelegate {
 					.invoke(provider, new Object[] { ex });
 			return result;
 		} catch (Exception e) {
-			ex.getControlContext().addException(e);
+            ((ControlContext)ex.getControlContext()).addException(e);
 			throw new ExertionException(e);
 		}
 	}

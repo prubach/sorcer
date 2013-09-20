@@ -162,8 +162,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     public Exertion doJob(Exertion job) {
         setServiceID(job);
         try {
-            if (job.getControlContext().isMonitorable()
-                    && !job.getControlContext().isWaitable()) {
+            if (((ControlContext)job.getControlContext()).isMonitorable()
+                    && !((ControlContext)job.getControlContext()).isWaitable()) {
                 replaceNullExertionIDs(job);
                 notifyViaEmail(job);
                 new JobThread((Job) job, this).start();

@@ -5,6 +5,7 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
@@ -28,7 +29,7 @@ public class WhoIsItBeanRequestor1 {
         logger.info("providerName: " + providerName);
 
         Exertion result = new WhoIsItBeanRequestor1().getExertion().exert(null);
-		logger.info("<<<<<<<<<< Trace list: \n" + result.getControlContext().getTrace());
+		logger.info("<<<<<<<<<< Trace list: \n" + ((ControlContext)result.getControlContext()).getTrace());
 		logger.info("<<<<<<<<<< Result: \n" + result);
 	}
 

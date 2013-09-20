@@ -1516,7 +1516,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 		// when service Locker is used
 		if (delegate.mutualExlusion()) {
-			Object mutexId = exertion.getControlContext().getMutexId();
+			Object mutexId = ((ControlContext)exertion.getControlContext()).getMutexId();
 			if (mutexId == null) {
 				exertion.getControlContext().appendTrace(
 						"mutex required by: " + getProviderName() + ":"
@@ -1980,7 +1980,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			}
         } catch (Throwable e) {
             logger.log(Level.SEVERE,"Error while dispatching task", e);
-            task.getControlContext().addException(e);
+            ((ControlContext)task.getControlContext()).addException(e);
 		}
 		return dispatcher.getExertion();
 	}

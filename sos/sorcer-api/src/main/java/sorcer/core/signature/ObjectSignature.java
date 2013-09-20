@@ -19,7 +19,6 @@ package sorcer.core.signature;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 //import org.apache.tools.ant.taskdefs.Length;
 

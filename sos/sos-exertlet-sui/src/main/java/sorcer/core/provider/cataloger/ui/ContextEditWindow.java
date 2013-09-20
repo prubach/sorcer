@@ -231,7 +231,6 @@ public class ContextEditWindow extends JFrame implements ActionListener {
 	 * 
 	 */
 	public void actionPerformed(ActionEvent actionEvent) {
-		// TODO Auto-generated method stub
 		String command = actionEvent.getActionCommand();
 		// System.out.println("command"+command);
 		if (SAVE_BUTTON.equals(command)) {

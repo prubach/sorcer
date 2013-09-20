@@ -29,9 +29,10 @@ import net.jini.core.transaction.TransactionException;
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.dispatch.ProvisionManager;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ControlFlowManager;
@@ -280,7 +281,7 @@ public class ServiceExerter implements Exerter, Callable {
                 new ProviderID(mutexId), txn,
                 ((ServiceExertion) exertion).getId());
         if (lr.didSucceed()) {
-            exertion.getControlContext().setMutexId(provider.getProviderID());
+            ((ControlContext)exertion.getControlContext()).setMutexId(provider.getProviderID());
             Exertion xrt = provider.service(exertion, transaction);
             txn.commit();
             return xrt;
@@ -288,7 +289,7 @@ public class ServiceExerter implements Exerter, Callable {
             // try continue to get lock, if failed abort the transaction txn
             txn.abort();
         }
-        exertion.getControlContext().addException(
+        ((ControlContext)exertion.getControlContext()).addException(
                 new ExertionException("no lock avaialable for: "
                         + provider.getProviderName() + ":"
                         + provider.getProviderID()));

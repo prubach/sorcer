@@ -19,7 +19,7 @@ package sorcer.service;
 
 import java.util.List;
 
-import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.provider.Spacer;
 
 public interface Strategy extends Arg {

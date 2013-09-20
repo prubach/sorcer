@@ -43,8 +43,6 @@ import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.Spacer;
-import sorcer.core.provider.StorageManagement;
-import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.NetJob;
@@ -174,12 +172,12 @@ public class operator {
 
 	public static ControlContext control(Exertion exertion)
 			throws ContextException {
-		return exertion.getControlContext();
+		return (ControlContext)exertion.getControlContext();
 	}
 
 	public static ControlContext control(Exertion exertion, String childName)
 			throws ContextException {
-		return exertion.getExertion(childName).getControlContext();
+		return (ControlContext)exertion.getExertion(childName).getControlContext();
 	}
 
 	public static <T extends Object> Context cxt(T... entries)
@@ -557,11 +555,12 @@ public class operator {
 		return evaluation;
 	}
 
-    public static Signature sig(String operation, Class<?> serviceType,
+    /*public static Signature sig(String operation, Class<?> serviceType,
                                 List<net.jini.core.entry.Entry> attributes)
             throws SignatureException {
         return SignatureFactory.sig(operation, serviceType, attributes);
-    }
+    } */
+
 	public static Revaluation unrevaluable(Revaluation evaluation) {
 		evaluation.setRevaluable(false);
 		return evaluation;
@@ -591,35 +590,12 @@ public class operator {
 				parameters);
 	}
 
-    public static Signature sig(String operation, Class<?> serviceType,
-                                ReturnPath resultPath) throws SignatureException {
-        return SignatureFactory.sig(operation, serviceType, resultPath);
-    }
 	public static Signature sig(String operation, Class<?> serviceType,
 			String providerName, Object... parameters)
 			throws SignatureException {
-		Signature sig = null;
-		if (serviceType.isInterface()) {
-			sig = new NetSignature(operation, serviceType,
-					Sorcer.getActualName(providerName));
-		} else {
-			sig = new ObjectSignature(operation, serviceType);
-		}
-		if (parameters.length > 0) {
-			for (Object o : parameters) {
-				if (o instanceof Type) {
-					sig.setType((Type) o);
-				} else if (o instanceof ReturnPath) {
-					sig.setReturnPath((ReturnPath) o);
-				}
-			}
-		}
-		return sig;
+		return SignatureFactory.sig(operation, serviceType, providerName, parameters);
 	}
 
-    public static Signature sig(Exertion exertion, String componentExertionName) {
-        return SignatureFactory.sig(exertion, componentExertionName);
-    }
 	public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
 	}
@@ -650,22 +626,7 @@ public class operator {
 	}
 
 	public static Signature sig(Class<?> serviceType) throws SignatureException {
-		return sig(serviceType, (ReturnPath) null);
-	}
-
-	public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
-			throws SignatureException {
-		Signature sig = null;
-		if (serviceType.isInterface()) {
-			sig = new NetSignature("service", serviceType);
-		} else if (Executor.class.isAssignableFrom(serviceType)) {
-			sig = new ObjectSignature("execute", serviceType);
-		} else {
-			sig = new ObjectSignature(serviceType);
-		}
-		if (returnPath != null)
-			sig.setReturnPath(returnPath);
-		return sig;
+		return SignatureFactory.sig(serviceType, (ReturnPath) null);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
@@ -1043,9 +1004,7 @@ public class operator {
 	public static Object get(Mappable mappable, String path)
 			throws ContextException {
 		Object obj = ((ServiceContext) mappable).asis(path);
-        // TODO PAR related
-        //while (obj instanceof Mappable || obj instanceof Par) {
-		while (obj instanceof Mappable) {
+        while (obj instanceof Mappable || obj instanceof Par) {
 			try {
 				obj = ((Evaluation) obj).asis();
 			} catch (RemoteException e) {
@@ -1064,7 +1023,7 @@ public class operator {
 	}
 
 	public static List<String> trace(Exertion xrt) {
-		return xrt.getControlContext().getTrace();
+		return ((ControlContext)xrt.getControlContext()).getTrace();
 	}
 
 	public static void print(Object obj) {
@@ -1436,13 +1395,12 @@ public class operator {
 				return "[" + _1 + "-" + _2 + "]";
 		}
 	}
-    // TODO PAR related
-	public static class Pipe {
+    public static class Pipe {
 		String inPath;
 		String outPath;
 		Mappable in;
 		Mappable out;
-		//Par par;
+		Par par;
 
 		Pipe(Exertion out, String outPath, Mappable in, String inPath) {
 			this.out = out;
@@ -1450,9 +1408,8 @@ public class operator {
 			this.in = in;
 			this.inPath = inPath;
 			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                // TODO PAR related
-				//par = new Par(outPath, inPath, in);
-				//((ServiceExertion) out).addPersister(par);
+                par = new Par(outPath, inPath, in);
+				((ServiceExertion) out).addPersister(par);
 			}
 		}
 
@@ -1462,18 +1419,16 @@ public class operator {
 			this.in = inEndPoint.in;
 			this.inPath = inEndPoint.inPath;
 			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                // TODO PAR related
-				//par = new Par(outPath, inPath, in);
-				//((ServiceExertion) out).addPersister(par);
+                par = new Par(outPath, inPath, in);
+				((ServiceExertion) out).addPersister(par);
 			}
 		}
 	}
 
-    // TODO PAR related
-    /*public static Par persistent(Pipe pipe) {
+    public static Par persistent(Pipe pipe) {
 		pipe.par.setPersistent(true);
 		return pipe.par;
-	}*/
+	}
 
 	public static Pipe pipe(OutEndPoint outEndPoint, InEndPoint inEndPoint) {
 		Pipe p = new Pipe(outEndPoint, inEndPoint);
@@ -1531,24 +1486,20 @@ public class operator {
 		return new URL(Sorcer.getDataspaceStorerUrl());
 	}
 
-    // TODO PAR related
 	public static void dbURL(Object object, URL dbUrl)
 			throws MalformedURLException {
-		/*if (object instanceof Par)
+		if (object instanceof Par)
 			((Par) object).setDbURL(dbUrl);
-		else*/
-        if (object instanceof ServiceContext)
+		else if (object instanceof ServiceContext)
 			((ServiceContext) object).setDbUrl("" + dbUrl);
 		else
 			throw new MalformedURLException("Can not set URL to: " + object);
 	}
 
-    // TODO PAR related
 	public static URL dbURL(Object object) throws MalformedURLException {
-		/*if (object instanceof Par)
+		if (object instanceof Par)
 			return ((Par) object).getDbURL();
-		else*/
-        if (object instanceof ServiceContext)
+		else if (object instanceof ServiceContext)
 			return new URL(((ServiceContext) object).getDbUrl());
 		return null;
 	}
@@ -1899,13 +1850,7 @@ public class operator {
 		return signature.build(context);
 	}
 
-    // TODO VFE related
-    /*public static Condition condition(ParModel parcontext, String expression,
-			String... pars) {
-		return new Condition(parcontext, expression, pars);
-	} */
-
-	public static Condition condition(boolean condition) {
+    public static Condition condition(boolean condition) {
 		return new Condition(condition);
 	}
 
@@ -1930,9 +1875,7 @@ public class operator {
 	public static Exertion exertion(Mappable mappable, String path)
 			throws ContextException {
 		Object obj = ((ServiceContext) mappable).asis(path);
-        // TODO PAR related
-        //while (obj instanceof Mappable || obj instanceof Par) {
-		while (obj instanceof Mappable) {
+        while (obj instanceof Mappable || obj instanceof Par) {
 			try {
 				obj = ((Evaluation) obj).asis();
 			} catch (RemoteException e) {
