@@ -46,13 +46,18 @@ public class ReturnPath<T> implements Serializable, Arg {
         }
     }
 
-    public ReturnPath(String path, Direction direction, String... argPaths) {
+    public ReturnPath(String path, Direction direction) {
+        this.path = path;
+        this.direction = direction;
+    }
+
+    public ReturnPath(String path, Direction direction, String...  argPaths) {
         this.path = path;
         this.argPaths = argPaths;
         this.direction = direction;
     }
 
-    public ReturnPath(String path, Direction direction, Class<T> returnType, String... argPaths) {
+    public ReturnPath(String path, Direction direction, Class<T> returnType, String...  argPaths) {
         this.path = path;
         this.direction = direction;
         this.argPaths = argPaths;
@@ -68,6 +73,6 @@ public class ReturnPath<T> implements Serializable, Arg {
         if (argPaths != null)
             params = " argPaths: " + Arrays.toString(argPaths);
         return path + (direction != null ? " direction: " + direction : "")
-            + params;
+                + params;
     }
 }

@@ -1,8 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +19,7 @@ package sorcer.core.provider;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.jini.core.discovery.LookupLocator;
@@ -35,12 +35,12 @@ import sorcer.service.Context;
  * 
  */
 
-public interface Cataloger extends Remote {
+public interface        Cataloger extends Remote {
 
 	/**
 	 * Returns a SORCER service provider identified by its primary service type.
 	 * 
-	 * @param primaryInterfaces
+	 * @param primaryInterface
 	 *            - the interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -53,7 +53,7 @@ public interface Cataloger extends Remote {
 	 * 
 	 * @param providerName
 	 *            - a provider name, a friendly provider's ID.
-	 * @param primaryInterfaces
+	 * @param primaryInterface
 	 *            - interface of a SORCER provider
 	 * @return a SORCER service provider
 	 * @throws RemoteException
@@ -157,7 +157,7 @@ public interface Cataloger extends Remote {
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
-	 * @param serviceType
+	 * @param interfaceName
 	 *            the currently selected interface
 	 * @return a String array of the methods implemented by the interface.
 	 * @throws RemoteException
@@ -191,12 +191,12 @@ public interface Cataloger extends Remote {
 	public ServiceTemplate getTemplate() throws RemoteException;
 
 	/**
-	 * Get the dataContext from the provider specified for the interface and method
+	 * Get the context from the provider specified for the interface and method
 	 * requested
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
-	 * @param serviceType
+	 * @param interfaceName
 	 *            the currently selected interface
 	 * @param methodName
 	 *            String of the currently selected method name
@@ -207,7 +207,7 @@ public interface Cataloger extends Remote {
 			String methodName) throws RemoteException;
 
 	/**
-	 * Saves the dataContext to the provider specified for the interface and method
+	 * Saves the context to the provider specified for the interface and method
 	 * 
 	 * @param providerName
 	 *            String of the currently selected provider
@@ -224,7 +224,7 @@ public interface Cataloger extends Remote {
 			String methodName, Context theContext) throws RemoteException;
 
 	/**
-	 * Delete the dataContext from the provider specified for the interface and
+	 * Delete the context from the provider specified for the interface and
 	 * method
 	 * 
 	 * @param providerName
@@ -253,7 +253,7 @@ public interface Cataloger extends Remote {
 			String serviceType) throws RemoteException;
 
 	/**
-	 * Create an exertion on the provider specified, sending the dataContext to the
+	 * Create an exertion on the provider specified, sending the context to the
 	 * method specified.
 	 * 
 	 * @param providerName
@@ -269,15 +269,15 @@ public interface Cataloger extends Remote {
 			String methodName, Context theContext) throws RemoteException;
 
 	/**
-	 * Returns the template dataContext with which the provider is registered. This
-	 * template dataContext is pulled out of the service attribute (Entry):
+	 * Returns the template context with which the provider is registered. This
+	 * template context is pulled out of the service attribute (Entry):
 	 * SorcerServiceType.
 	 * 
 	 * @param provider
 	 *            - provider name
 	 * @param method
 	 *            - a method name
-	 * @return a service dataContext for a given provider name and its method
+	 * @return a service context for a given provider name and its method
 	 * @throws RemoteException
 	 */
 	public Context getContexts(Class provider, String method)

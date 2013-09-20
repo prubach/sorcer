@@ -176,7 +176,7 @@ public class NetworkShell implements DiscoveryListener {
 	private String[] httpRoots;
 	
 	// true for interactive shell
-	private static boolean commandLine = true;
+	private static boolean interactive = true;
 
 	public static String nshUrl;
 	
@@ -219,16 +219,16 @@ public class NetworkShell implements DiscoveryListener {
 							|| argv[0].equals("-f")
 							|| argv[0].equals("-version") || argv[0]
 							.equals("-help")) || argv.length == 1) {
-				commandLine = false;
+				interactive = false;
 			} else {
-				commandLine = true;
+				interactive = true;
 			}
 		}
 
 		try {
 			// default shellOutput
 			shellOutput = System.out;
-			if (commandLine) {
+			if (interactive) {
 				shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
 						+ ", JVM: " + System.getProperty("java.version"));
 				shellOutput.println("Type 'quit' to terminate the shell");
@@ -236,7 +236,7 @@ public class NetworkShell implements DiscoveryListener {
 			}
 			
 			argv = buildInstance(argv);
-			if (!instance.commandLine) {
+			if (!instance.interactive) {
 				// System.out.println("main appMap: " + appMap);
 				execNoninteractiveCommand(argv);
 				System.exit(0);
@@ -507,7 +507,7 @@ public class NetworkShell implements DiscoveryListener {
 			homeDir = System.getProperty("user.dir");
 		currentDir = new File(homeDir);
 
-		if (!commandLine) {
+		if (!interactive) {
 			String logDirPath = System.getProperty(COMPONENT + "logDir",
 					sorcerHome + File.separator + "logs" + File.separator
 							+ "shell");
@@ -647,8 +647,8 @@ public class NetworkShell implements DiscoveryListener {
 		this.shellLog = shellLog;
 	}
 
-	public static boolean isCommandLine() {
-		return commandLine;
+	public static boolean isInteractive() {
+		return interactive;
 	}
 
 	protected static class HelpCmd extends ShellCmd {
@@ -1293,7 +1293,7 @@ public class NetworkShell implements DiscoveryListener {
 		instance.httpRoots = roots;
 
 		if (!noHttp) {
-			if (instance.commandLine) 
+			if (instance.interactive)
 				HttpCmd.createWebster(httpPort, roots, false, instance.httpJars, shellOutput);
 			else 
 				HttpCmd.createWebster(0, roots, false, instance.httpJars, shellOutput);

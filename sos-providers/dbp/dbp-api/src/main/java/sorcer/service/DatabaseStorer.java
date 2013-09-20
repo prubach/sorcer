@@ -1,6 +1,6 @@
 /*
- * Copyright 2010 the original author or authors.
- * Copyright 2010 SorcerSoft.org.
+ * Copyright 2012 the original author or authors.
+ * Copyright 2012 SorcerSoft.org.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,11 @@
 
 package sorcer.service;
 
-/**
- * Any interaction with the MonitorSessionManager might result in this exception
- * due to the following reasons:
- * <ol>
- * <li>The session does not exist,
- * <li>Some operations on this session which was not valid.
- * </ol>
- */
-public class UnknownExertionException extends Exception {
+import sorcer.core.provider.StorageManagement;
 
-	public UnknownExertionException(String cause) {
-		super(cause);
-	}
+import java.rmi.Remote;
 
+
+public interface DatabaseStorer extends StorageManagement, Remote {
+	
 }

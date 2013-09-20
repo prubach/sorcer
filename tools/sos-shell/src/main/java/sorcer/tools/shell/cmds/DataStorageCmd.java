@@ -36,7 +36,7 @@ import sorcer.eo.operator;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.core.provider.DatabaseStorer;
+import sorcer.service.DatabaseStorer;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.MonitorException;

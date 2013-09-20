@@ -19,6 +19,7 @@
 package sorcer.core.context;
 
 import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +41,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.Link;
+import sorcer.util.GenericUtil;
 import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;
@@ -900,7 +902,7 @@ public class Contexts {
 
     public static Hashtable getContextParameterMap(Context sc) {
 		return (sc != null) ? (Hashtable) sc.getMetacontext().get(
-				sc.CONTEXT_PARAMETER) : null;
+				Context.CONTEXT_PARAMETER) : null;
 	}
 	
 	public static void copyValue(Context fromContext, String fromPath,
@@ -978,72 +980,80 @@ public class Contexts {
 	}
 
     public static Enumeration getPathsWithoutLinkedPaths(
-			ServiceContext contextTree, Enumeration e, boolean linkStop)
-					throws ContextException {
-		Vector keys = new Vector();
-		String path;
-		Link link;
-		Context subcntxt;
-		SorcerPrincipal principal = contextTree.getPrincipal();
-		while (e.hasMoreElements()) {
-			String key1 = (String) e.nextElement();
-			if ((contextTree.getValue(key1) instanceof Link)) {
-				link = (Link) contextTree.getValue(key1);
-				if (!linkStop) {
-					// get subcontext for recursion
-					subcntxt = link.getContext(principal).getSubcontext(
-							link.getOffset().trim());
-					// getSubcontext cuts above, which is what we want
-					Enumeration el = getPathsWithoutLinkedPaths(
-							(ServiceContext) subcntxt,
-							((ServiceContext) subcntxt).keys(), true);
-					while (el.hasMoreElements()) {
-						path = (String) el.nextElement();
-						String str = key1 + CPS + path;
-						keys.addElement(str);
-					}
-					keys.removeElement(key1);
-				} else if (linkStop) {
-					keys.addElement(key1);
-				}
-			} else {
-				keys.addElement(key1);
-			}
-		}
-		StringUtils.bubbleSort(keys);
-		return keys.elements();
-	}
+            ServiceContext contextTree, Enumeration e, boolean linkStop)
+            throws ContextException {
+        Vector keys = new Vector();
+        String path;
+        ContextLink link;
+        Context subcntxt = null;
+        SorcerPrincipal principal = contextTree.getPrincipal();
+        while (e.hasMoreElements()) {
+            String key1 = (String) e.nextElement();
+            if ((contextTree.getValue(key1) instanceof ContextLink)) {
+                link = (ContextLink) contextTree.getValue(key1);
+                if (!linkStop) {
+                    // get subcontext for recursion
+                    try {
+                        subcntxt = link.getContext(principal).getContext(
+                                link.getOffset().trim());
+                    } catch (RemoteException ex) {
+                        throw new ContextException(ex);
+                    }
+                    // getSubcontext cuts above, which is what we want
+                    Enumeration el = getPathsWithoutLinkedPaths(
+                            (ServiceContext) subcntxt,
+                            ((ServiceContext) subcntxt).keys(), true);
+                    while (el.hasMoreElements()) {
+                        path = (String) el.nextElement();
+                        String str = key1 + SorcerConstants.CPS + path;
+                        keys.addElement(str);
+                    }
+                    keys.removeElement(key1);
+                } else if (linkStop) {
+                    keys.addElement(key1);
+                }
+            } else {
+                keys.addElement(key1);
+            }
+        }
+        StringUtils.bubbleSort(keys);
+        return keys.elements();
+    }
 
-	public static Enumeration getPathsWithoutLinkedPaths(
-			ServiceContext contextTree, Enumeration e) throws ContextException {
-		Vector keys = new Vector();
-		String path;
-		Link link;
-		Context subcntxt;
-		SorcerPrincipal principal = contextTree.getPrincipal();
-		while (e.hasMoreElements()) {
-			String key1 = (String) e.nextElement();
-			if ((contextTree.getValue(key1) instanceof Link)) {
-				link = (Link) contextTree.getValue(key1);
-				subcntxt = link.getContext(principal).getSubcontext(
-						link.getOffset().trim());
-				// getSubcontext cuts above, which is what we want
-				Enumeration el = getPathsWithoutLinkedPaths(
-						(ServiceContext) subcntxt,
-						((ServiceContext) subcntxt).keys());
-				while (el.hasMoreElements()) {
-					path = (String) el.nextElement();
-					String str = key1 + CPS + path;
-					keys.addElement(str);
-				}
-				keys.removeElement(key1);
-			} else {
-				keys.addElement(key1);
-			}
-		}
-		StringUtils.bubbleSort(keys);
-		return keys.elements();
-	}
+    public static Enumeration getPathsWithoutLinkedPaths(
+            ServiceContext contextTree, Enumeration e) throws ContextException {
+        Vector keys = new Vector();
+        String path;
+        ContextLink link;
+        Context subcntxt;
+        SorcerPrincipal principal = contextTree.getPrincipal();
+        while (e.hasMoreElements()) {
+            String key1 = (String) e.nextElement();
+            if ((contextTree.getValue(key1) instanceof ContextLink)) {
+                link = (ContextLink) contextTree.getValue(key1);
+                try {
+                    subcntxt = link.getContext(principal).getContext(
+                            link.getOffset().trim());
+                } catch (RemoteException ex) {
+                    throw new ContextException(ex);
+                }
+                // getSubcontext cuts above, which is what we want
+                Enumeration el = getPathsWithoutLinkedPaths(
+                        (ServiceContext) subcntxt,
+                        ((ServiceContext) subcntxt).keys());
+                while (el.hasMoreElements()) {
+                    path = (String) el.nextElement();
+                    String str = key1 + SorcerConstants.CPS + path;
+                    keys.addElement(str);
+                }
+                keys.removeElement(key1);
+            } else {
+                keys.addElement(key1);
+            }
+        }
+        StringUtils.bubbleSort(keys);
+        return keys.elements();
+    }
 
 	public static String[] getPathsWithAttribute(Context cntxt, String attribute)
 			throws ContextException {

@@ -1,8 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +18,7 @@
 package sorcer.service;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * A service <code>Signature</code> is an indirect behavioral feature of
@@ -35,7 +35,7 @@ import java.io.Serializable;
  * In other words, a service signature is a specification of a service that can
  * be requested dynamically at the boundary of a service provider. Operations
  * include modifying a service {@link Context} or disclosing information about
- * the service dataContext.
+ * the service context.
  * 
  * @author Mike Sobolewski
  */
@@ -80,8 +80,7 @@ public interface Signature extends Serializable, Arg {
 	public void setReturnPath(ReturnPath path);
 
     public void setReturnPath(String path);
-
-    /**
+   /**
      * Assigns a path to the return value with a path and directional attribute.
      *
      * @param path to the return value
@@ -89,7 +88,7 @@ public interface Signature extends Serializable, Arg {
      */
     public void setReturnPath(String path, Direction direction);
 
-    /**
+	/**
 	 * Returns a path to the return value by this signature.
 	 * 
 	 * @return path to the return value
@@ -128,7 +127,7 @@ public interface Signature extends Serializable, Arg {
 	public String getCodebase();
 
 	/**
-	 * Assigns a codebase to <code>urls</code> for the code implementing this
+	 * Assigns a codbase to <code>urls</code> for the code implementing this
 	 * signature. The codebase is a space separated string (list) of URls.
 	 * 
 	 * @param urls
@@ -138,24 +137,28 @@ public interface Signature extends Serializable, Arg {
 
 	/**
 	 * There are four types of {@link Signature} operations that can be
-	 * associated with signatures: <code>PREPROCESS</code>, <code>PROCESS</code>
-	 * , <code>POSTPROCESS</code>, and <code>APPEND</code> signature. Only one
-	 * <code>PROCESS</code> signature can be associated with any exertion. The
-	 * <code>PROCESS</code> signature defines an executing provider dynamically
-	 * bounded in runtime.
+	 * associated with signatures: <code>PRE</code> (preprocess),
+	 * <code>SRV</code> (process/service) , <code>POST</code> (postprocess), and
+	 * <code>APD</code> (append) signature. Only one <code>SRV</code> signature
+	 * can be associated with any exertion. The <code>SRV</code> signature
+	 * defines an executing provider dynamically bounded at runtime. The
+	 * <code>APD</code> signatures are invoked invoked first to get specified
+	 * contexts from {@link sorcer.servoce.Contexter}s that are appended to the
+	 * task's current context.
 	 */
 	public enum Type {
 		SRV, PRE, POST, APD
 	}
+	
+	public enum Kind {
+		TASKER, JOBBER, SPACER, DISPATCHER, OPTIMIZER, EXPLORER, MODEL, MODEL_MANAGER
+	}
+
+    // Extracted to separate class
+	//public enum Direction { IN, OUT, INOUT };
 
 	static final Type SRV = Type.SRV; 
 	static final Type PRE = Type.PRE;
 	static final Type POST = Type.POST;
 	static final Type APD = Type.APD;
-	
-	// integers are used to persist types in the datastore
-	static final int PREPROCESS_CD = 1; 
-	static final int PROCESS_CD = 2; 
-	static final int POSTPROCESS_CD = 3; 
-	static final int APPEND_CD = 4;
 }

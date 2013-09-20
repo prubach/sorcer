@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.service;
 
-import sorcer.core.UEID;
+package sorcer.service;
 
 import java.rmi.RemoteException;
 
 import javax.security.auth.Subject;
+
+import sorcer.core.UEID;
 
 /**
  * All providers that need to be monitored implement this interface. If a
@@ -28,67 +29,67 @@ import javax.security.auth.Subject;
  * keep track of the providerExertionID's and the task corresponding to it. It
  * has to also provide functionality to stop, suspend any running exertion or
  * resume/step any suspended or finished tasks.
- *
+ * 
  * All states of the executing exertions are maintained by the MonitorManager.
  */
 
 public interface Monitorable {
 
-    /**
-     * MonitorManagers call stop on a MonitorableService. Once stop is called,
-     * the monitorables must return the context and then initiate the cleanup.
-     *
-     * @throws UnknownExertionException
-     *             if the exertion is not executed by this provider.
-     *
-     * @throws RemoteException
-     *             if there is a communication error
-     *
-     */
+	/**
+	 * MonitorManagers call stop on a MonitorableService. Once stop is called,
+	 * the monitorables must return the context and then initiate the cleanup.
+	 * 
+	 * @throws UnknownExertionException
+	 *             if the exertion is not executed by this provider.
+	 * 
+	 * @throws RemoteException
+	 *             if there is a communication error
+	 * 
+	 */
 
-    public void stop(UEID ref, Subject subject) throws RemoteException,
-            UnknownExertionException, AccessDeniedException;
+	public void stop(UEID ref, Subject subject) throws RemoteException,
+			UnknownExertionException, AccessDeniedException;
 
-    /**
-     * MonitorManagers call suspend a MonitorableService. Once suspend is
-     * called, the monitorables must suspend immediatly and return the suspended
-     * state of the context.
-     *
-     * @throws UnknownExertionException
-     *             if the exertion is not executed by this provider.
-     *
-     * @throws RemoteException
-     *             if there is a communication error
-     *
-     */
+	/**
+	 * MonitorManagers call suspend a MonitorableService. Once suspend is
+	 * called, the monitorables must suspend immediatly and return the suspended
+	 * state of the context.
+	 * 
+	 * @throws UnknownExertionException
+	 *             if the exertion is not executed by this provider.
+	 * 
+	 * @throws RemoteException
+	 *             if there is a communication error
+	 * 
+	 */
 
-    public void suspend(UEID ref, Subject subject) throws RemoteException,
-            UnknownExertionException, AccessDeniedException;
+	public void suspend(UEID ref, Subject subject) throws RemoteException,
+			UnknownExertionException, AccessDeniedException;
 
-    /**
-     * Resume if the resume functionality is supported by the monitorables. Else
-     * start from the begining.
-     *
-     * @throws UnknownExertionException
-     *             if the exertion is not executed by this provider.
-     *
-     * @throws RemoteException
-     *             if there is a communication error
-     *
-     */
-    public void resume(Exertion ex) throws RemoteException, ExertionException;
+	/**
+	 * Resume if the resume functionality is supported by the monitorables. Else
+	 * start from the begining.
+	 * 
+	 * @throws UnknownExertionException
+	 *             if the exertion is not executed by this provider.
+	 * 
+	 * @throws RemoteException
+	 *             if there is a communication error
+	 * 
+	 */
+	public void resume(Exertion ex) throws RemoteException, ExertionException;
 
-    /**
-     * Step if the step functionality is supported by the monitorables. Else
-     * start from the begining.
-     *
-     * @throws UnknownExertionException
-     *             if the exertion is not executed by this provider.
-     *
-     * @throws RemoteException
-     *             if there is a communication error
-     *
-     */
-    public void step(Exertion ex) throws RemoteException, ExertionException;
+	/**
+	 * Step if the step functionality is supported by the monitorables. Else
+	 * start from the begining.
+	 * 
+	 * @throws UnknownExertionException
+	 *             if the exertion is not executed by this provider.
+	 * 
+	 * @throws RemoteException
+	 *             if there is a communication error
+	 * 
+	 */
+	public void step(Exertion ex) throws RemoteException, ExertionException;
 
 }

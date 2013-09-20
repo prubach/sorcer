@@ -23,7 +23,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.RootLoader;
-import sorcer.util.ExertProcessor;
+import sorcer.util.ServiceExerter;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class ScriptThread extends Thread {
                 }
             }
             if (target instanceof Exertion) {
-                ExertProcessor esh = new ExertProcessor((Exertion) target);
+                ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {
                     if (((Exertion) target).isProvisionable()) {
 //                        String configFile = (String) NetworkShell

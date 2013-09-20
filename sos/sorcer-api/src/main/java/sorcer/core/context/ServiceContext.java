@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.Collections;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,8 @@ import static sorcer.core.SorcerConstants.*;
  */
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ServiceContext<T> extends Hashtable<String, T> implements
-		Context<T>, Identifiable, AssociativeContext, Serializable, ContextInvoking<T> {
+		Context<T>, AssociativeContext<T>, Evaluation<T>, Invocation<T>,
+		Contexter<T>, SorcerConstants {
 
 	private static final long serialVersionUID = 3311956866023311727L;
 
@@ -64,8 +66,12 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	// default value new ReturnPath(Context.RETURN);
 	protected ReturnPath<T> returnPath;
+	
 	protected ReturnPath<T> returnJobPath;
+	
 	protected ExecPath execPath;
+	
+	protected boolean contextChanged = false;
 
 	// for calls by reflection for 'args' Object[] set the path
 	// or use the default one: Context.ARGS
@@ -120,7 +126,10 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
     protected String prefix = "";
 
-    /**
+    // TODO PAR related
+	//protected List<EntryList> entryLists;
+
+	/**
 	 * <p>
 	 * Returns <code>true</code> if this context is revaluable, otherwise
 	 * <code>false</code>. If context is revaluable then the values of this
@@ -232,9 +241,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
 			obj = cntxt.getValue(path);
-			if (obj instanceof Link
-					&& ((Link) obj).isFetched())
-				updateLinkedContext((Link) obj);
+			if (obj instanceof ContextLink
+					&& ((ContextLink) obj).isFetched())
+				updateLinkedContext((ContextLink) obj);
 			if (obj == null)
 				put(path, (T)none);
 			else
@@ -315,7 +324,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// the variable node type relationship (var name and its type) in
 			// Analysis Models: vnt|var|vt
 			setCompositeAttribute(VAR_NODE_TYPE + APS + VAR + APS + VT);
-			dbUrl = "sos://sorcer.core.provider.DatabaseStorer";
+			dbUrl = "sos://sorcer.service.DatabaseStorer";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -402,7 +411,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public void setExertion(Exertion exertion) {
-        this.exertion = exertion;
+		if (exertion == null || exertion instanceof Exertion)
+			this.exertion = exertion;
 	}
 
 	public void setProject(String projectName) {
@@ -545,8 +555,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			int len;
 			while (e.hasMoreElements()) {
 				linkPath = (String) e.nextElement();
-				Link link = null;
-				link = (Link) get(linkPath);
+				ContextLink link = null;
+				link = (ContextLink) get(linkPath);
 				String offset = link.getOffset();
 				int index = offset.lastIndexOf(CPS);
 				String extendedLinkPath = linkPath;
@@ -645,7 +655,28 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 		return val;
 	}
+	
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Mappable#getValue(java.lang.String, java.lang.Object)
+//	 */
+//	@Override
+//	public Object getValue(String path, Object defaultValue)
+//			throws ContextException {
+//		T obj;
+//		try {
+//			obj = getValue(path);
+//		} catch (Exception e) {
+//			throw new ContextException(e);
+//		}
+//		if (obj != null)
+//			return obj;
+//		else
+//			return defaultValue;
+//	}
 
+	/* (non-Javadoc)
+	 * @see sorcer.service.AssociativeContext#putValue(java.lang.String, java.lang.Object)
+	 */
 	@Override
 	public T putValue(String path, Object value) throws ContextException {
 		// first test if path is in a linked context
@@ -692,9 +723,16 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 		T obj = null;
 		if (value == null)
-			obj = put(path, (T) none);
-		else
-			obj = put(path, (T) value);
+			obj = put(path, (T)none);
+		else {
+			obj = get(path);
+			//TODO PAR related
+			//if (obj instanceof Par) {
+			//	((Par)obj).setValue(value);
+			//} else {
+				obj = put(path, (T)value);
+			//}
+		}
 		return obj;
 
 	}
@@ -732,7 +770,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 *
 	 * @return the isShared
 	 */
-	@Override
+	//@Override
 	public boolean isShared() {
 		return isShared;
 	}
@@ -1243,10 +1281,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 							+ "\" is defined with metapath =\"" + metapath
 							+ "\"");
 				Object[][] paths = new Object[attrs.length][];
+				Enumeration ps;
 				int ii = -1;
 				for (int i = 0; i < attrs.length; i++) {
-					Enumeration ps = markedPaths(attrs[i] + SorcerConstants.APS + vals[i]);
-					paths[i] = sorcer.util.Collections.makeArray(ps);
+					ps = markedPaths(attrs[i] + SorcerConstants.APS + vals[i]);
+					paths[i] = StringUtils.makeArray(ps);
 					if (paths[i] == null) {
 						ii = -1;
 						break; // i.e. no possible match
@@ -1390,8 +1429,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return list.elements();
 	}
 
-	public Enumeration<String> contextPaths() throws ContextException {
-		Vector keys = new Vector();
+	public List<String> getPaths() throws ContextException {
+		ArrayList<String> paths = new ArrayList<String>();
 		Enumeration e = keys();
 		String key, path;
 		ContextLink link;
@@ -1401,18 +1440,27 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			if (get(key) instanceof ContextLink) {
 				// follow link, add paths
 				link = (ContextLink) get(key);
-				subcntxt = getLinkedContext(link)
-						.getSubcontext(link.getOffset());
+				try {
+					subcntxt = getLinkedContext(link)
+							.getContext(link.getOffset());
+				} catch (RemoteException ex) {
+					throw new ContextException(ex);
+				}
 				// getSubcontext cuts above, which is what we want
 				Enumeration el = subcntxt.contextPaths();
 				while (el.hasMoreElements()) {
-					path = (String) el.nextElement();
-					keys.addElement(key + CPS +path);
+					path = (String) el.nextElement();						
+					paths.add(key + CPS +path);
 				}
 			}
-			keys.addElement(key);
+			paths.add(key);
 		}
-		StringUtils.bubbleSort(keys);
+		Collections.sort(paths);
+		return paths;
+	}
+	
+	public Enumeration<String> contextPaths() throws ContextException {
+		Vector keys = new Vector(getPaths());
 		return keys.elements();
 	}
 
@@ -1452,6 +1500,21 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return Contexts.getInPaths(this);
 	}
 
+	//TODO PAR related
+	/*public ParList getPars() {
+		ParList pl = new ParList();
+		Set<Map.Entry<String, T>> es = entrySet();
+		Iterator<Map.Entry<String, T>> i = es.iterator();
+		Map.Entry<String, T> entry;
+		while (i.hasNext()) {
+			entry = i.next();
+			if (entry.getValue() instanceof Par) {
+				pl.add((Par)entry.getValue());
+			}
+		}
+		return pl;
+	}*/
+	
 	/**
 	 * Returns a list of all paths marked as data output.
 	 *
@@ -1464,7 +1527,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	/**
 	 * Returns a list of input context values marked as data input.
-	 *
+	 * 
 	 * @return a list of input values of this context
 	 * @throws ContextException
 	 * @throws ContextException
@@ -1516,8 +1579,12 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				keys.addElement(key);
 				link = (ContextLink) get(key);
 				// get subcontext for recursion
-				subcntxt = getLinkedContext(link)
-						.getSubcontext(link.getOffset());
+				try {
+					subcntxt = getLinkedContext(link)
+							.getContext(link.getOffset());
+				} catch (RemoteException ex) {
+					throw new ContextException(ex);
+				}
 				// getSubcontext cuts above, which is what we want
 				Enumeration<?> el = subcntxt.linkPaths();
 				while (el.hasMoreElements()) {
@@ -1554,13 +1621,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return links.elements();
 	}
 
-	/*
-	 * Extensions for further context operations
-	 */
-
-	public Context<Object> getSubcontext() {
+	public Context<T> getSubcontext() {
 		// bare-bones subcontext
-		Context<Object> subcntxt = new ServiceContext<Object>();
+		Context<T> subcntxt = new ServiceContext<T>();
 		subcntxt.setSubject(subjectPath, subjectValue);
 		subcntxt.setName(getName() + " subcontext");
 		subcntxt.setDomainID(getDomainID());
@@ -1568,23 +1631,31 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return subcntxt;
 	}
 
-	public Context<Object> getSubcontext(String path) throws ContextException {
-		Context<Object> subcntxt = this.getSubcontext();
-		return subcntxt.appendSubcontext(this, path);
+	public Context<T> getContext(String path) throws ContextException, RemoteException {
+		Context<T> subcntxt = this.getSubcontext();
+		return subcntxt.appendContext(this, path);
 	}
 
 	public Context getTaskContext(String path) throws ContextException {
 		// needed for ContextFilter
 		return null;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Context#append(sorcer.service.Context)
+	 */
 	public Context append(Context context) throws ContextException {
 		if (context != null)
 			putAll((ServiceContext)context);
 		return this;
 	}
-
-    public Context appendSubcontext(Context cntxt) throws ContextException {
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Contexter#appendContext(sorcer.service.Context)
+	 */
+	@Override
+	public Context<T> appendContext(Context<T> cntxt) throws ContextException,
+			RemoteException {
 		// get the whole context, with the context root name as the
 		// path prefix
 		String key;
@@ -1602,18 +1673,21 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 		e = vec.elements();
 		while (e.hasMoreElements()) {
-			appendSubcontext(cntxt, (String) e.nextElement(), true);
+			appendContext(cntxt, (String) e.nextElement(), true);
 		}
 		return this;
 	}
-
-	public Context appendSubcontext(Context cntxt, String path)
-			throws ContextException {
-		return appendSubcontext(cntxt, path, false);
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Contexter#appendContext(sorcer.service.Context, java.lang.String)
+	 */
+	public Context appendContext(Context cntxt, String path)
+			throws ContextException, RemoteException {
+		return appendContext(cntxt, path, false);
 	}
 
-	public Context appendSubcontext(Context cntxt, String path,
-			boolean prefixContextName) throws ContextException {
+	public Context appendContext(Context cntxt, String path,
+			boolean prefixContextName) throws ContextException,  RemoteException {
 		// appendSubcontext snips the context (passed in as the first
 		// argument) BEFORE the requested node and returns it appended
 		// to the context object. Said another way: if the context, ctx,
@@ -1640,7 +1714,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			throw new ContextException("null path");
 		if (path.equals("")) {
 			// append entire context
-			return appendSubcontext(cntxt);
+			return appendContext(cntxt);
 		}
 
 		Object[] map = null;
@@ -1675,7 +1749,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 					if (prefixContextName) {
 						prefix = "";
 						if (mappedCntxt.getSubjectPath().length() > 0)
-							prefix = mappedCntxt.getSubjectPath() + SorcerConstants.CPS;
+							prefix = mappedCntxt.getSubjectPath() + CPS;
 						putValue(prefix + newKey,
 								(T)((Hashtable) mappedCntxt).get(oldKey));
 					}
@@ -1816,7 +1890,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// sb.append(val.toString() + " ");
 			// }
 			try {
-				val = getValue(path);
+				// TODO PAR related
+				// if (val instanceof Par)
+				//	val = val.toString();
+				//else
+					val = getValue(path);
 			} catch (Exception ex) {
 				sb.append("\nUnable to retrieve value: " + ex.getMessage());
 				ex.printStackTrace();
@@ -2713,6 +2791,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return this;
 	}
 
+	// TODO PAR related
+	/*public Par getPar(String path) throws ContextException  {
+		return new Par(path, this);
+	} */
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -2746,7 +2829,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 					obj = ((Evaluation<T>)obj).getValue(entries);
 				}
 			}
-            return (T) obj;
+            // TODO PAR related
+			//if (obj instanceof Par)
+			//	return (T) ((Par)obj).getValue(entries);
+			//else
+				return (T) obj;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new EvaluationException(e);
@@ -2824,38 +2911,128 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return putValue(value.getName(), value);		
 	}
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Context#getURL(java.lang.String)
-     */
-    @Override
-    public URL getURL(String path) throws ContextException {
-        Object obj = asis(path);
-/*
-        if (obj instanceof Par) {
-            try {
-                obj = ((Par)obj).asis();
-            } catch (RemoteException e) {
-                throw new ContextException(e);
-            }
-            if (obj instanceof URL)
-                return (URL)obj;
-        }
-*/
-        return null;
-    }
+    //TODO PAR related
 
-    public String getDbUrl() {
+	/* (non-Javadoc)
+	 * @see sorcer.service.Context#putDbValue(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public Object putDbValue(String path, Object value) throws ContextException {
+        throw new UnsupportedOperationException();
+		/*Par par = new Par(path, value);
+		par.setPersistent(true);
+		return putValue(path, par);*/
+	}
+
+	/*//* (non-Javadoc)
+	 * @see sorcer.service.Context#putDbValue(java.lang.String, java.lang.Object, java.net.URL)
+	 */
+	@Override
+	public Object putDbValue(String path, Object value, URL datastoreUrl)
+			throws ContextException {
+        throw new UnsupportedOperationException();
+        /*Par par = new Par(path, value);
+		par.setPersistent(true);
+		par.setDbURL(datastoreUrl);
+		return putValue(path, par);*/
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Context#getURL(java.lang.String)
+	 */
+	@Override
+	public URL getURL(String path) throws ContextException {
+		Object obj = asis(path);
+		// TODO PAR related
+		/* if (obj instanceof Par) {
+			try {
+				obj = ((Par)obj).asis();
+			} catch (RemoteException e) {
+				throw new ContextException(e);
+			}
+			if (obj instanceof URL)
+				return (URL)obj;
+		} */
+		return null;
+	}
+	
+	public String getDbUrl() {
 		return dbUrl;
 	}
 
 	public void setDbUrl(String dbUrl) {
 		this.dbUrl = dbUrl;
 	}
+    // TODO PAR related
 
+	/*public List<EntryList> getEntryLists() {
+		return entryLists;
+	}
+
+	public void setEntryLists(List<EntryList> entryLists) {
+		this.entryLists = entryLists;
+	}
+	
+	public EntryList getEntryList(EntryList.Type type) {
+		if (entryLists != null) {
+			for (EntryList el : entryLists) {
+				if (el.getType().equals(type))
+					return el;
+			}
+		}
+		return null;
+	} */
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Contexter#getContext(sorcer.service.Context)
+	 */
+	@Override
+	public Context<T> getContext(Context<T> contextTemplate)
+			throws RemoteException, ContextException {
+		Object val = null;
+		for (String path : contextTemplate.getPaths()) {
+			val = asis(path);
+			if (val != null && val != Context.none)
+				contextTemplate.putValue(path, asis(path));
+		}
+		return contextTemplate;
+	}
+
+    // TODO PAR related
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Context#addPar(sorcer.core.context.model.par.Par)
+	 */
+	/*@Override
+	public Par addPar(Par p) throws ContextException {
+		put(p.getName(), (T)p);
+		if (p.getScope() == null)
+			p.setScope(this);
+		try {
+			if (p.asis() instanceof Invoker) {
+				((Invoker) p.asis()).setInvokeContext(this);
+			}
+		} catch (RemoteException e) {
+			throw new ContextException(e);
+		} 
+		contextChanged = true;
+		return p;
+	}*/
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Context#addPar(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	/*public Par addPar(String path, Object value) throws ContextException {
+		Par par = new Par(path, value, this);
+		return par;
+	}
+    */
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.Invocation#invoke(sorcer.service.Arg[])
 	 */
-	@Override
+	//@Override
 	public T invoke(Arg... entries) throws RemoteException,
 			InvocationException {
 		// TODO Auto-generated method stub
@@ -2865,11 +3042,31 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	/* (non-Javadoc)
 	 * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
 	 */
-	@Override
-	public T invoke(Context context, Arg... entries)
-			throws RemoteException, InvocationException {
+	//@Override
+	public T invoke(Context context, Arg... entries) throws RemoteException,
+			InvocationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
+//	 */
+//	@Override
+//	public Exertion service(Exertion exertion, Transaction txn)
+//			throws TransactionException, ExertionException, RemoteException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Service#service(sorcer.service.Exertion)
+//	 */
+//	@Override
+//	public Exertion service(Exertion exertion) throws TransactionException,
+//			ExertionException, RemoteException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
 }

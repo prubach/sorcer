@@ -1,8 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,24 +20,26 @@ package sorcer.service;
 import java.util.List;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
+import sorcer.core.provider.Spacer;
 
 public interface Strategy extends Arg {
 
+	
 	/**
-	 * There are three flow types of {@link Flow}s that can be associated
-	 * with exertions control dataContext. Flow type specify the flow of control (
-	 * <code>SEQ</code>, <code>PAR</code>, or
-	 * <code>CON</code>) for all component exertions at the same level.
+	 * There are three flow types of {@link FlowType}s that can be associated
+	 * with exertions control context. Flow type specify the flow of control (
+	 * <code>SEQ</code> (sequential), <code>PAR</code> (parallel), and
+	 * <code>STEP</code> (stepwise)) for all component exertions at the same level.
 	 */
 	public enum Flow {
-		SEQ, PAR, CON
+		SEQ, PAR, STEP
 	}
 	
 	/**
-	 * When the access type of a control dataContext is set to <code>PULL</code>
+	 * When the access type of a control context is set to <code>PULL</code>
 	 * then the associated exertion is passed onto a {@link Spacer}, otherwise
 	 * (access type is PUSH) the exertion is passed directly on to the provider
-	 * specified by the <code>PROCESS</code>signature	 * 
+	 * specified by the <code>SRV</code>signature.
 	 */
 	public enum Access {
 		PUSH, PULL, SWIF, QOS_PUSH, QOS_PULL, CATALOG, DIRECT
@@ -54,7 +55,7 @@ public interface Strategy extends Arg {
 
 	/**
 	 * The <code>CONCURRENT</code> flow is controlled by mutex state WAIT,
-	 * NOTIFY, and NOTIFY_ALL of the control dataContext. Only one exertion can own
+	 * NOTIFY, and NOTIFY_ALL of the control context. Only one exertion can own
 	 * the mutex at a time. If a second provider tries to acquire the exertion,
 	 * it will block (be suspended) until the owning provider releases the
 	 * mutex. An exertion access to which is guarded by a mutual-exclusion is
@@ -70,8 +71,12 @@ public interface Strategy extends Arg {
 	public enum Wait {
 		YES, TRUE, NO, FALSE
 	}
-
-    public boolean isWaitable();
+	
+	public enum Opti {
+		MAX, MIN
+	}
+	
+	public boolean isWaitable();
 	
 	public Flow getFlowType();
 	

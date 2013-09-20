@@ -48,7 +48,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
-import sorcer.util.ExertProcessor;
+import sorcer.util.ServiceExerter;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;
@@ -268,7 +268,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ExertProcessor ed = new ExertProcessor(this);
+		ServiceExerter ed = new ServiceExerter(this);
 		Exertion result = null;
 		try {
 			result = ed.exert(txn, null, entries);
@@ -301,7 +301,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertProcessor esh = new ExertProcessor(this);
+		ServiceExerter esh = new ServiceExerter(this);
 		return esh.exert(entries);
 	}
 
@@ -313,7 +313,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ExertProcessor esh = new ExertProcessor(this);
+		ServiceExerter esh = new ServiceExerter(this);
 		return esh.exert(txn, providerName);
 	}
 
@@ -394,7 +394,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 
 	public void setService(Service provider) {
 		NetSignature ps = (NetSignature) getProcessSignature();
-		ps.setService(provider);
+		ps.setProvider(provider);
 	}
 
 	public Service getService() {
@@ -663,6 +663,17 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		}
 		return sl;
 	}
+
+
+    public List<Signature> getApdProcessSignatures() {
+        List<Signature> sl = new ArrayList<Signature>();
+        for (Signature s : signatures) {
+            if (s.getType() == Signature.Type.APD)
+                sl.add(s);
+        }
+        return sl;
+    }
+
 
 	public List<Signature> getPostprocessSignatures() {
 		List<Signature> sl = new ArrayList<Signature>();

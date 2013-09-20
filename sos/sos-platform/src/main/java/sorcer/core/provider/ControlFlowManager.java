@@ -479,8 +479,14 @@ public class ControlFlowManager {
                 alls.get(i).setType(Signature.PRE);
             }
         }
-
         task.startExecTime();
+        // append context from Contexters
+        if (task.getApdProcessSignatures().size() > 0) {
+            Context cxt = apdProcess(task);
+            cxt.setExertion(task);
+            task.setContext(cxt);
+        }
+        // do preprocessing
         if (task.getPreprocessSignatures().size() > 0) {
             Context cxt = preprocess(task);
             cxt.setExertion(task);
@@ -508,6 +514,7 @@ public class ControlFlowManager {
             return task;
         }
         task.setSignatures(alls);
+        // do postprocessing
         if (task.getPostprocessSignatures().size() > 0) {
             Context cxt = postprocess(task);
             cxt.setExertion(task);
@@ -525,6 +532,10 @@ public class ControlFlowManager {
         task.setSignatures(alls);
         task.stopExecTime();
         return task;
+    }
+
+    private Context apdProcess(Task task) throws ExertionException {
+        return processContinousely(task, task.getApdProcessSignatures());
     }
 
     private Context preprocess(Task task) throws ExertionException {

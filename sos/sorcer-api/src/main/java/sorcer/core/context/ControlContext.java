@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.SorcerEnv;
 import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.signature.ServiceSignature;
 import sorcer.service.ComplexExertion;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -59,6 +60,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public final static String EXERTION_FLOW = "exertion" + CPS + "flow";
 
 	public final static String EXERTION_PROVISIONABLE = "exertion" + CPS + "provisionable";
+
+    public final static String EXERTION_OPTI = "exertion" + CPS + "opti";
 
 	// exertion monitor state
 	public final static String EXERTION_MONITORABLE = "exertion" + CPS + "monitorable";
@@ -313,7 +316,15 @@ public class ControlContext extends ServiceContext implements Strategy {
 		put(EXERTION_PROVISIONABLE, new Boolean(state));
 	}
 
-	public boolean isProvisionable() {
+    public void setOpti(Opti optiType) {
+        put(EXERTION_OPTI, optiType);
+    }
+
+    public Opti getOpti() {
+        return (Opti)get(EXERTION_OPTI);
+    }
+
+    public boolean isProvisionable() {
 		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
 
@@ -693,7 +704,16 @@ public class ControlContext extends ServiceContext implements Strategy {
 		return signatures;
 	}
 
-	public void setSignatures(List<Signature> signatures) {
+    public ServiceSignature getSignature(Signature.Kind kind) {
+        for (Signature s : signatures) {
+            if (((ServiceSignature)s).isKindOf(kind)) {
+                return (ServiceSignature)s;
+            }
+        }
+        return null;
+    }
+
+    public void setSignatures(List<Signature> signatures) {
 		this.signatures = signatures;
 	}
 

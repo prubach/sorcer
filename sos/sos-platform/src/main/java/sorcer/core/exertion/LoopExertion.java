@@ -37,6 +37,8 @@ import sorcer.service.Task;
  */
 public class LoopExertion extends Task {
 
+	private static final long serialVersionUID = 8538804142085766935L;
+	
 	private int min = 0;
 
 	private int max = 0;

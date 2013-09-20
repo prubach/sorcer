@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.provider.Jobber;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
@@ -28,54 +29,53 @@ import sorcer.service.Evaluation;
 import sorcer.service.ExertionException;
 import sorcer.service.Invocation;
 import sorcer.service.Job;
-import sorcer.core.provider.Jobber;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature.Type;
 import sorcer.service.SignatureException;
-import sorcer.util.ExertProcessor;
+import sorcer.util.ServiceExerter;
 
 public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 
-    private static final long serialVersionUID = 7060442151643838169L;
+	private static final long serialVersionUID = 7060442151643838169L;
 
-    public NetJob() {
-        // do nothing
-    }
+	public NetJob() {
+		// do nothing
+	}
 
-    public NetJob(String name) {
-        super(name);
-        try {
-            signatures.add(new NetSignature("service", Jobber.class, Type.SRV));
-        } catch (SignatureException e) {
-            e.printStackTrace();
-        }
-    }
+	public NetJob(String name) {
+		super(name);
+		try {
+			signatures.add(new NetSignature("service", Jobber.class, Type.SRV));
+		} catch (SignatureException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public NetJob(SorcerPrincipal principal) throws ExertionException {
-        this("undefined" + count++, principal);
-    }
+	public NetJob(SorcerPrincipal principal) throws ExertionException {
+		this("undefined" + count++, principal);
+	}
 
-    public NetJob(String name, SorcerPrincipal principal)
-            throws ExertionException {
-        super(name);
-        if (principal != null)
-            subject = Auth.createSubject(principal);
-        setPrincipal(principal);
-    }
+	public NetJob(String name, SorcerPrincipal principal)
+			throws ExertionException {
+		super(name);
+		if (principal != null)
+			subject = Auth.createSubject(principal);
+		setPrincipal(principal);
+	}
 
-    public static ServiceExertion getTemplate() {
-        NetJob temp = new NetJob();
-        return temp;
-    }
+	public static ServiceExertion getTemplate() {
+		NetJob temp = new NetJob();
+		return temp;
+	}
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Job#doJob(net.jini.core.transaction.Transaction)
-     */
-    @Override
-    public Job doJob(Transaction txn) throws ExertionException,
-            SignatureException, RemoteException, TransactionException {
-        ExertProcessor esh = new ExertProcessor(this);
-        return (Job)esh.exert(txn, null);
-    }
-
+	/* (non-Javadoc)
+	 * @see sorcer.service.Job#doJob(net.jini.core.transaction.Transaction)
+	 */
+	@Override
+	public Job doJob(Transaction txn) throws ExertionException,
+			SignatureException, RemoteException, TransactionException {
+		ServiceExerter esh = new ServiceExerter(this);
+		return (Job)esh.exert(txn, null);
+	}
+	
 }

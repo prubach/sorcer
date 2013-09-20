@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.core.monitor;
 
-import net.jini.core.lease.Lease;
-import net.jini.core.transaction.server.TransactionConstants;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+
 import sorcer.service.Context;
 import sorcer.service.MonitorException;
 import sorcer.service.Monitorable;
 
-import java.io.Serializable;
-import java.rmi.RemoteException;
+import net.jini.core.lease.Lease;
+import net.jini.core.transaction.server.TransactionConstants;
 
 /**
  * An interface for controlling the session in the server. The session is
@@ -136,14 +137,14 @@ public interface MonitoringSession extends Serializable {
 	/**
 	 * Providers use this method to update the monitoring session
 	 * 
-	 * @param ctx
-	 *            The service dataContext changed.
+	 * @param xtc
+	 *            The service context changed.
 	 * 
 	 *  * @param aspect
-	 *            The aspect of dataContext change.
+	 *            The aspect of context change.
 	 * 
 	 * @throws MonitorException
-	 *             1) If there is no such session 2) The dataContext does not
+	 *             1) If there is no such session 2) The context does not
 	 *             belong to this session
 	 * 
 	 * @throws RemoteException

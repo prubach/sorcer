@@ -21,17 +21,11 @@ package sorcer.core.signature;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;
-import sorcer.service.Direction;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ReturnPath;
-import sorcer.service.Signature;
+import sorcer.service.*;
 
 import static sorcer.core.SorcerConstants.*;
 
@@ -53,7 +47,12 @@ public class ServiceSignature implements Signature {
 
 	protected ReturnPath<?> returnPath;
 
-	// Must initialize to ANY to have correct JavaSpace workers behavior
+    // the indicated usage of this signature
+    protected Set<Kind> rank = new HashSet<Kind>();
+
+
+
+    // Must initialize to ANY to have correct JavaSpace workers behavior
 	// to have exertions with providerName/serviceType specified going to
 	// providers
 	// named "providerName". Otherwise, exertions with providerName/serviceType
@@ -123,17 +122,39 @@ public class ServiceSignature implements Signature {
 		return exertion;
 	}
 
-	public Class<?> getServiceType() {
-		return serviceType;
-	}
+    public Class<?> getServiceType() {
+        return serviceType;
+    }
 
-	public void setServiceType(Class<?> serviceType) {
-		this.serviceType = serviceType;
-	}
+    public Signature addRank(Kind... kinds) {
+        rank.addAll(Arrays.asList(kinds));
+        return this;
+    }
 
-	public String getSelector() {
-		return selector;
-	}
+    public void addRank(List<Kind> kinds) {
+        for (Kind k : kinds)
+            rank.add(k);
+    }
+
+    public boolean isKindOf(Kind kind) {
+        return rank.contains(kind);
+    }
+
+    public Set<Kind> getRank() {
+        return rank;
+    }
+
+    public void removeKind(Kind kind) {
+        rank.remove(kind);
+    }
+
+    public void setServiceType(Class<?> serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getSelector() {
+        return selector;
+    }
 
 	public String getProviderName() {
 		return providerName;
@@ -387,30 +408,6 @@ public class ServiceSignature implements Signature {
 			System.err.println("Can not load type: " + serviceName);
 		}
 		return serviceType;
-	}
-
-	public static int getTypeCd(Type type) {
-		if (type == Type.PRE)
-			return PREPROCESS_CD;
-		else if (type == Type.SRV)
-			return PROCESS_CD;
-		else if (type == Type.POST)
-			return POSTPROCESS_CD;
-		else if (type == Type.APD)
-			return APPEND_CD;
-		return 0;
-	}
-
-	public static Signature.Type getType(int code) {
-		if (code == PREPROCESS_CD)
-			return Type.PRE;
-		else if (code == PROCESS_CD)
-			return Type.SRV;
-		else if (code == POSTPROCESS_CD)
-			return Type.POST;
-		else if (code == APPEND_CD)
-			return Type.APD;
-		return null;
 	}
 
 	public String getName() {

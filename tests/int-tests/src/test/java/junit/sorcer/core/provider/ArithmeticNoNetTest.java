@@ -19,21 +19,8 @@ package junit.sorcer.core.provider;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.cxt;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.result;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.srv;
-import static sorcer.eo.operator.strategy;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.value;
+import static sorcer.eo.operator.*;
+import static sorcer.eo.operator.input;
 
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
@@ -44,11 +31,10 @@ import org.junit.Test;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
-import sorcer.service.Job;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
 
 
 /**
@@ -61,7 +47,8 @@ public class ArithmeticNoNetTest {
 			.getLogger(ArithmeticNoNetTest.class.getName());
 	
 	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
+        //ServiceExertion.debug = true;
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
@@ -207,4 +194,38 @@ public class ArithmeticNoNetTest {
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 	}
+
+    // TODO - Problem with context value mappings
+    @Ignore
+    @Test
+    public void contexterTest() throws Exception {
+        Task cxtt = task("addContext", sig("getContext", createContext()),
+                context("add", input("arg/x1"), input("arg/x2")));
+
+        Context result = context(exert(cxtt));
+//		logger.info("contexter context: " + result);
+        assertEquals(get(result, "arg/x1"), 20.0);
+        assertEquals(get(result, "arg/x2"), 80.0);
+
+    }
+
+    // TODO - Problem with context value mappings
+    @Ignore
+    @Test
+    public void objectContexterTaskTest() throws Exception {
+        Task t5 = task("t5", sig("add", AdderImpl.class),
+                type(sig("getContext", createContext()), Signature.APD),
+                context("add", in("arg/x1"), in("arg/x2"),
+                        result("result/y")));
+
+        Context result = context(exert(t5));
+//		logger.info("task context: " + result);
+        assertEquals(get(result, "result/y"), 100.0);
+    }
+
+    public static Context createContext() throws Exception {
+        Context cxt = context("add", input("arg/x1", 20.0), input("arg/x2", 80.0));
+        return  cxt;
+    }
+
 }

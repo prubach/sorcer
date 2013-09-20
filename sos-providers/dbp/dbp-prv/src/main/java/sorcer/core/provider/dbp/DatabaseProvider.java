@@ -34,7 +34,7 @@ import sorcer.core.provider.StorageManagement;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.core.provider.DatabaseStorer;
+import sorcer.service.DatabaseStorer;
 import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.util.bdb.objects.SorcerDatabase;

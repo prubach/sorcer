@@ -17,14 +17,13 @@
  */
 package junit.sorcer.core.provider;
 
+import org.junit.Test;
 import sorcer.core.SorcerEnv;
-import sorcer.service.Accessor;
-import sorcer.service.Job;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
@@ -205,7 +204,55 @@ public class ArithmeticNetTest {
 						output("result/y", null)), strategy(Monitor.YES, Wait.NO));
 	}
 
-	public static void main(String[] args) throws Exception {
+    //@Test
+    public void contexterTest() throws Exception {
+        Task cxtt = task("addContext", sig("getContext", Contexter.class, "Add Contexter"),
+                context("add", input("arg/x1"), input("arg/x2")));
+
+        Context result = context(exert(cxtt));
+//		logger.info("contexter context 1: " + result);
+
+        assertEquals(get(result, "arg/x1"), 20.0);
+        assertEquals(get(result, "arg/x2"), 80.0);
+
+        cxtt = task("appendContext", sig("appendContext", Contexter.class, "Add Contexter"),
+                context("add", input("arg/x1", 200.0), input("arg/x2", 800.0)));
+
+        result = context(exert(cxtt));
+//		logger.info("contexter context 2: " + result);
+
+        cxtt = task("addContext", sig("getContext", Contexter.class, "Add Contexter"),
+                context("add", input("arg/x1"), input("arg/x2")));
+
+        result = context(exert(cxtt));
+//		logger.info("contexter context 3: " + result);
+
+        assertEquals(get(result, "arg/x1"), 200.0);
+        assertEquals(get(result, "arg/x2"), 800.0);
+
+        // reset the contexter
+        cxtt = task("appendContext", sig("appendContext", Contexter.class, "Add Contexter"),
+                context("add", input("arg/x1", 20.0), input("arg/x2", 80.0)));
+
+        result = context(exert(cxtt));
+//		logger.info("contexter context 4: " + result);
+        assertEquals(get(result, "arg/x1"), 20.0);
+        assertEquals(get(result, "arg/x2"), 80.0);
+    }
+
+    //@Test
+    public void netContexterTaskTest() throws Exception {
+        Task t5 = task("t5", sig("add", Adder.class),
+                sig("getContext", Contexter.class, "Add Contexter", Signature.APD),
+                context("add", in("arg/x1"), in("arg/x2"),
+                        result("result/y")));
+
+        Context result =  context(exert(t5));
+//		logger.info("contexter context: " + result);
+        assertEquals(get(result, "result/y"), 100.0);
+    }
+
+    public static void main(String[] args) throws Exception {
         Webster webster = InternalWebster.startRequestorWebsterFromProperties();
         try {
             waitForServices();

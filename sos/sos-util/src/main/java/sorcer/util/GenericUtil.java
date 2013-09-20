@@ -1629,6 +1629,7 @@ public class GenericUtil implements Serializable {
         return getJobControlWrapperScript(childScriptFile, null);
     }
 
+
     private static Vector<String> getJobControlWrapperScript(File childScriptFile, Vector<String> extraKillTimeCommands) {
         Vector<String> script = new Vector<String>();
         script.add("#!/bin/bash");
@@ -1639,11 +1640,18 @@ public class GenericUtil implements Serializable {
         script.add("\t\tkillChildProcess $child");
         script.add("\tdone");
         script.add("\techo \"attempting to kill process $1:\"");
-        script.add("\tps -efp $1");
+        script.add("\techo \"attempting to kill process $1:\" >> wrapperLog.txt");
+        script.add("\t#ps -efp $1");
         script.add("\tkill -9 $1");
+        script.add("\techo \"waiting for process $1 to die...\"");
+        script.add("\techo \"waiting for process $1 to die...\" >> wrapperLog.txt");
+        script.add("\twait $1");
+        script.add("\techo \"process $1 is dead.\"");
         script.add("}");
         script.add("function killChildProcess0 () {");
         script.add("\tfor child in `ps -ef | awk -v parent=$1 '{if ($3==parent){print $2}}'`; do");
+        script.add("\techo \"killChildProcess0: parent=$1; child=$child\"");
+        script.add("\techo \"killChildProcess0: parent=$1; child=$child\" >> wrapperLog.txt");
         script.add("\t\tkillChildProcess $child");
         script.add("\tdone");
         script.add("}");
@@ -1665,13 +1673,16 @@ public class GenericUtil implements Serializable {
         script.add("scriptState=\"RUNNING\"");
         script.add("while [ $scriptState != \"DONE\" ]; do");
         script.add("\techo \"calling read\"");
+        script.add("\techo \"calling read\" >> wrapperLog.txt");
         script.add("\tread line");
         script.add("\techo \"line=$line\"");
+        script.add("\techo \"line=$line\" >> wrapperLog.txt");
         //script.add("\tps axo pid,ppid,cmd");
         script.add("\tif [ -z \"$line\" ]; then");
         script.add("\t\tline=\"null\"");
         script.add("\tfi");
-        script.add("\techo \"line=$line\"");
+        script.add("\techo \"line1=$line\"");
+        script.add("\techo \"line1=$line\" >> wrapperLog.txt");
         script.add("\tif [ $line = \"KILL\" ]; then");
 //		script.add("\t\tCHILD=`ps axo pid,ppid | awk -F\" \" -v p=\"$SCRIPT_PID\" '{if ($2~p) {print $1; exit}}'`");
 //		script.add("\t\techo \"CHILD=$CHILD\"");
@@ -1680,19 +1691,24 @@ public class GenericUtil implements Serializable {
 //		script.add("\t\t\tkill -9 $CHILD");
 //		//script.add("\t\t\tkill -TERM $CHILD");
 //		script.add("\t\tfi");
+        script.add("\t\techo \"received kill command from java; dropping kill.txt file...\"");
+        script.add("\t\techo \"received kill command from java; dropping kill.txt file...\" >> wrapperLog.txt");
         script.add("\t\techo kill>kill.txt");
         if (extraKillTimeCommands != null && extraKillTimeCommands.size() > 0) {
             script.addAll(extraKillTimeCommands);
             script.add("\t\tsleep 2");
         }
-        script.add("\t\tkillChildProcess0 $SCRIPT_PID");
-        script.add("\t\techo \"received kill command; exiting with status = 1.\"");
+
+        //script.add("\t\tkillChildProcess0 $SCRIPT_PID");
+        script.add("\t\techo \"DONE dropping kill.txt file; killing child processes...\"");
+        script.add("\t\techo \"DONE dropping kill.txt file; killing child processes...\" >> wrapperLog.txt");
+        script.add("\t\tkillChildProcess0 $THIS_PID");
+        script.add("\t\techo \"DONEkilling child processes; exiting with status = 1.\"");
         script.add("\t\texit 1");
         script.add("\tfi");
-        script.add("\t# check to see if child is still " +
-                "running");
-        script.add("\tIS_RUN=`ps $SCRIPT_PID | awk -v p=\"$SCRIPT_PID\" 'BEGIN{flag=0} {if ($0~p) {flag=1}} END{print flag}'`");
-        //script.add("\tif ps -p $SCRIPT_PID > /dev/null; then"); 
+        script.add("\t# check to see if child is still running");
+        script.add("\tIS_RUN=`ps -p $SCRIPT_PID | awk -v p=\"$SCRIPT_PID\" 'BEGIN{flag=0} {if ($0~p) {flag=1}} END{print flag}'`");
+        //script.add("\tif ps -p $SCRIPT_PID > /dev/null; then");
         script.add("\tif [ $IS_RUN -eq 1 ]; then");
         script.add("\t\tscriptState=\"RUNNING\"");
         script.add("\telse");
@@ -1701,14 +1717,25 @@ public class GenericUtil implements Serializable {
         script.add("done");
         script.add("# just in case");
         script.add("#");
-        script.add("echo \"calling wait\"");
-        script.add("wait $SCRIPT_PID");
-        script.add("EXIT_CODE=$?");
+        script.add("EXIT_CODE=0");
+        script.add("#echo \"calling wait\"");
+        script.add("#wait $SCRIPT_PID");
+        script.add("#EXIT_CODE=$?");
+        script.add("#wait $SCRIPT_PID");
+        script.add("#EXIT_CODE=$?");
+        script.add("IS_RUN=`ps -p $SCRIPT_PID | awk -v p=\"$SCRIPT_PID\" 'BEGIN{flag=0} {if ($0~p) {flag=1}} END{print flag}'`");
+        script.add("if [ $IS_RUN -eq 1 ]; then");
+        script.add("\techo \"SCRIPT_PID=$SCRIPT_PID is still running and shouldn't be; killing...\"");
+        script.add("\tkill -9 $SCRIPT_PID");
+        script.add("\techo \"DONE killing SCRIPT_PID=$SCRIPT_PID.\"");
+        script.add("\tEXIT_CODE=007");
+        script.add("fi");
         script.add("echo \"done calling wait\"");
         script.add("echo \"exiting with code = $EXIT_CODE\"");
         script.add("exit $EXIT_CODE");
         return script;
     }
+
 
     public static String getFileNameWithoutExtension(File file) {
         String name = file.getName();
@@ -1810,7 +1837,7 @@ public class GenericUtil implements Serializable {
         File executionDir = scriptFile.getParentFile();
 
         String[] scriptCommand = new String[3];
-        boolean isWrapper = false;
+//		boolean isWrapper = false;
         //if (isLinuxOrMac()) {
 
         // create wrapper script
@@ -1826,7 +1853,7 @@ public class GenericUtil implements Serializable {
         //makeExecutable(wrapperScriptFile);
         wrapperScriptFile.setExecutable(true);
 
-        isWrapper = true;
+//			isWrapper = true;
 
         if (isLinuxOrMac()) {
             logger.info("doing linux/mac system call...");
@@ -1878,9 +1905,8 @@ public class GenericUtil implements Serializable {
 
 
             shExec = cygwinHome.trim().replace("\\", "/") + "/bin/sh.exe";
-/*
             try {
-                GenericUtil.checkFileExistsAndIsReadable(new File(shExec), null);
+                IOUtils.checkFileExistsAndIsReadable(new File(shExec));
             } catch (Exception e) {
                 String msg = "***error: the cygwin \"sh.exe\" must be installed in: " + shExec;
                 logger.severe(msg);
@@ -1888,7 +1914,6 @@ public class GenericUtil implements Serializable {
                 e.printStackTrace();
                 throw e;
             }
-*/
 
             //scriptCommand[2] = "\"E:\\LibraryBack\\cygwin\\bin\\sh " + wrapperScriptFile.getAbsolutePath() + "\"";
             scriptCommand[2] = shExec + " " +  wrapperScriptFile.getAbsolutePath() + "\"";
@@ -1903,12 +1928,16 @@ public class GenericUtil implements Serializable {
 //			makeExecutable(scriptFile);
         scriptFile.setExecutable(true);
 
+//		int exitValue = executeCommandWithWorker(scriptCommand, printStdOut,
+//				printStdError, timeout, executionDir, logFile,
+//				doSynchronizedLaunch, isWrapper);
         int exitValue = executeCommandWithWorker(scriptCommand, printStdOut,
                 printStdError, timeout, executionDir, logFile,
-                doSynchronizedLaunch, isWrapper);
+                doSynchronizedLaunch);
 
         return exitValue;
     }
+
 
     /**
      * Runs a series of commands that are in a vector in a UNIX shell script
@@ -2395,6 +2424,10 @@ public class GenericUtil implements Serializable {
         upload(vect2String(getFileContents(fromFile)), toUrl);
     }
 
+    public static void upload(Vector<String> v, URL url) throws IOException {
+        upload(vect2String(v), url);
+    }
+
     public static void upload(String[] sa, URL url) throws IOException {
 
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -2508,6 +2541,9 @@ public class GenericUtil implements Serializable {
 
     private static void appendVectorToFile(File dataFile, Vector<?> fC)
             throws IOException {
+
+        if (!dataFile.getParentFile().exists()) dataFile.getParentFile().mkdirs();
+
         FileWriter out = new FileWriter(dataFile.getAbsolutePath(), true);
         BufferedWriter bwOut = new BufferedWriter(out);
 
@@ -2531,20 +2567,24 @@ public class GenericUtil implements Serializable {
 
     }
 
+    //	private static int executeCommandWithWorker(final String[] command,
+//			final boolean printOutput, final boolean printError,
+//			final long timeOut, File dir, File logFile,
+//			boolean doSynchronizedLaunch) {
+//
+//		return executeCommandWithWorker(command, printOutput
+//				, printError, timeOut, dir, logFile, doSynchronizedLaunch, false);
+//
+//	}
+
+    //	private static int executeCommandWithWorker(final String[] command,
+//			final boolean printOutput, final boolean printError,
+//			final long timeOut, File dir, File logFile,
+//			boolean doSynchronizedLaunch, boolean isWrapper) {
     private static int executeCommandWithWorker(final String[] command,
                                                 final boolean printOutput, final boolean printError,
                                                 final long timeOut, File dir, File logFile,
                                                 boolean doSynchronizedLaunch) {
-
-        return executeCommandWithWorker(command, printOutput
-                , printError, timeOut, dir, logFile, doSynchronizedLaunch, false);
-
-    }
-
-    private static int executeCommandWithWorker(final String[] command,
-                                                final boolean printOutput, final boolean printError,
-                                                final long timeOut, File dir, File logFile,
-                                                boolean doSynchronizedLaunch, boolean isWrapper) {
 
         Runtime runtime;
         Worker worker;
@@ -2558,11 +2598,11 @@ public class GenericUtil implements Serializable {
                     runtime = Runtime.getRuntime();
                     process = runtime.exec(command, null, dir);
                     outputGobbler = new StreamGobbler(process.getInputStream(),
-                            "STD OUT SYNC", printOutput, logFile);
+                            "STD OUT SYNC", printOutput, logFile, dir);
                     errorGobbler = new StreamGobbler(process.getErrorStream(),
-                            "STD ERR SYNC ", printError, logFile);
+                            "STD ERR SYNC ", printError, logFile, dir);
                     jobControlWriter = new StreamJobControlWriter(process.getOutputStream()
-                            , printOutput, logger);
+                            , printOutput, logger, dir);
                     jobControlWriter.start();
                     outputGobbler.start();
                     errorGobbler.start();
@@ -2573,10 +2613,10 @@ public class GenericUtil implements Serializable {
                 runtime = Runtime.getRuntime();
                 process = runtime.exec(command, null, dir);
                 outputGobbler = new StreamGobbler(process.getInputStream(),
-                        "STD OUT ", printOutput, logFile);
+                        "STD OUT ", printOutput, logFile, dir);
                 errorGobbler = new StreamGobbler(process.getErrorStream(),
-                        "STD ERR ", printError, logFile);
-                jobControlWriter = new StreamJobControlWriter(process.getOutputStream(), true, logger);
+                        "STD ERR ", printError, logFile, dir);
+                jobControlWriter = new StreamJobControlWriter(process.getOutputStream(), true, logger, dir);
                 jobControlWriter.start();
                 outputGobbler.start();
                 errorGobbler.start();
@@ -2585,21 +2625,35 @@ public class GenericUtil implements Serializable {
             }
 
             try {
+                GenericUtil.appendFileContents("executeCommandWithWorker(): calling worker.join(timeout)...", dir);
                 worker.join(timeOut);
                 Integer exitValue = worker.getExitValue();
                 if (exitValue == null) {
+                    GenericUtil.appendFileContents("executeCommandWithWorker(): worker exit value was null, sending kill...", dir);
                     jobControlWriter.sendKillToWrapperScript();
+
+                    GenericUtil.appendFileContents("executeCommandWithWorker(): waiting for the kill; calling worker.join()...", dir);
+                    worker.join();
                 } else {
+                    GenericUtil.appendFileContents("executeCommandWithWorker(): calling jobControlWriter.closeDown()...", dir);
                     jobControlWriter.closeDown();
                 }
 
+
+                GenericUtil.appendFileContents("executeCommandWithWorker(): calling jobControlWriter.join()...", dir);
                 jobControlWriter.join();
+                GenericUtil.appendFileContents("executeCommandWithWorker(): DONE calling jobControlWriter.join()...closing gobblers...", dir);
                 outputGobbler.closeDown();
                 errorGobbler.closeDown();
+                GenericUtil.appendFileContents("executeCommandWithWorker(): DONE closing gobblers...calling join() on gobblers...", dir);
                 outputGobbler.join();
                 errorGobbler.join();
+                GenericUtil.appendFileContents("executeCommandWithWorker(): DONE joining gobblers...process.destroy()...", dir);
                 process.destroy();
-
+                GenericUtil.appendFileContents("executeCommandWithWorker(): DONE process.destroy()...calling worker.join()...", dir);
+                worker.join();
+                GenericUtil.appendFileContents("executeCommandWithWorker(): DONE calling worker.join().", dir);
+                GenericUtil.appendFileContents("executeCommandWithWorker(): exitValue = " + exitValue, dir);
                 if (exitValue != null) {
                     logger.info("exitValue is not null; exitValue = " + exitValue);
                     return exitValue;
@@ -2607,8 +2661,11 @@ public class GenericUtil implements Serializable {
 
                 String errorMessage = "***error: the command(s) timed out: \n"
                         + arrayToOneLineSpaceDelimitedString(command) + "\n";
+                setFileContents(new File(dir, "timeout.txt"), errorMessage);
+
                 throw new RuntimeException(errorMessage);
             } catch (InterruptedException ex) {
+                GenericUtil.appendFileContents("executeCommandWithWorker(): ***exception in executeCommandWithWorker: " + ex, dir);
                 System.out.println("***exception in executeCommandWithWorker: " + ex);
                 throw ex;
             }
@@ -2661,9 +2718,9 @@ public class GenericUtil implements Serializable {
                     runtime = Runtime.getRuntime();
                     process = runtime.exec(command, null, dir);
                     outputGobbler = new StreamGobbler(process.getInputStream(),
-                            "STD OUT", printOutput, logFile);
+                            "STD OUT", printOutput, logFile, dir);
                     errorGobbler = new StreamGobbler(process.getErrorStream(),
-                            "STD ERR", printError, logFile);
+                            "STD ERR", printError, logFile, dir);
                     outputGobbler.start();
                     errorGobbler.start();
                     worker = new WorkerNoBlock(process);
@@ -2673,9 +2730,9 @@ public class GenericUtil implements Serializable {
                 runtime = Runtime.getRuntime();
                 process = runtime.exec(command, null, dir);
                 outputGobbler = new StreamGobbler(process.getInputStream(),
-                        "STD OUT", printOutput, logFile);
+                        "STD OUT", printOutput, logFile, dir);
                 errorGobbler = new StreamGobbler(process.getErrorStream(),
-                        "STD ERR", printError, logFile);
+                        "STD ERR", printError, logFile, dir);
                 outputGobbler.start();
                 errorGobbler.start();
                 worker = new WorkerNoBlock(process);
@@ -2693,6 +2750,7 @@ public class GenericUtil implements Serializable {
         }
         return (Thread) worker;
     }
+
 
     private static boolean hasArg(String test, String[] args) {
         for (int ctr = 0; ctr < args.length; ctr++) {
@@ -3836,6 +3894,15 @@ public class GenericUtil implements Serializable {
         return list;
     }
 
+
+    public static synchronized void appendFileContents(String msg, File file) {
+        if (file.isDirectory()) file = new File(file, "genericUtil.txt");
+        try {
+            GenericUtil.appendFileContents(file, new String[] {msg});
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 class StreamGobbler extends Thread {
@@ -3845,17 +3912,21 @@ class StreamGobbler extends Thread {
     private PrintWriter logPw;
     private String type;
     public boolean keepGoing = true;
+    private File dir = null;
 
     public StreamGobbler(InputStream is, String type,
-                         boolean displayStreamOutput, File logFile)
+                         boolean displayStreamOutput, File logFile, File dir)
             throws FileNotFoundException {
         this.is = is;
         this.type = type;
         this.displayStreamOutput = displayStreamOutput;
         logPw = new PrintWriter(new FileOutputStream(logFile));
+        this.dir = dir;
     }
 
     public void closeDown() {
+        GenericUtil.appendFileContents("StreamGobbler.closingDown(): setting flag to stop running "
+                + " keepGoing = false now; stream gobbler type = " + type, dir);
         keepGoing = false;
     }
 
@@ -3876,7 +3947,10 @@ class StreamGobbler extends Thread {
                         e.printStackTrace();
                     }
                 }
+                if (!keepGoing) break;
             }
+            GenericUtil.appendFileContents("StreamGobbler.run(): exited run inner loop; keepGoing = "
+                    + keepGoing, dir);
             logPw.flush();
             logPw.close();
             br.close();
@@ -3884,6 +3958,8 @@ class StreamGobbler extends Thread {
             is.close();
         } catch (IOException ioe) {
             System.out.println("***exception in gobbler type = " + type + ": " + ioe);
+            GenericUtil.appendFileContents("StreamGobbler.run(): exception = "
+                    + ioe, dir);
             ioe.printStackTrace();
         } finally {
             logPw.flush();
@@ -3906,13 +3982,17 @@ class StreamJobControlWriter extends Thread {
     private boolean sendKill = false;
     private boolean keepRunning = true;
     private Logger logger;
+    private File dir = null;
 
-    public StreamJobControlWriter(OutputStream os, boolean displayStreamOutput, Logger logger)
+
+    public StreamJobControlWriter(OutputStream os, boolean displayStreamOutput, Logger logger
+            , File dir)
             throws FileNotFoundException {
         this.os = os;
         this.ps = new PrintStream(os);
         this.displayStreamOutput = displayStreamOutput;
         this.logger = logger;
+        this.dir = dir;
     }
 
     public void closeDown() {
@@ -3923,11 +4003,11 @@ class StreamJobControlWriter extends Thread {
         String message = "KEEP_GOING";
         while (keepRunning) {
             if (sendKill) {
-                //System.out.println("JOB CTRL>SENDING KILL NEXT");
+                GenericUtil.appendFileContents("StreamJobControlWriter.run(): provider sending KILL to script...", dir);
                 message = "KILL";
                 keepRunning = false;
             }
-            if (displayStreamOutput) logger.info("JOB CTRL WRITE>" + message);
+            if (displayStreamOutput) System.out.println("JOB CTRL WRITE>" + message);
             ps.println(message);
             ps.flush();
             try {
@@ -3939,6 +4019,7 @@ class StreamJobControlWriter extends Thread {
         ps.flush();
         ps.close();
         try {
+            os.flush();
             os.close();
         } catch (IOException e) {
             System.out.println("***exception in stream job control writer: " + e);
@@ -3948,6 +4029,8 @@ class StreamJobControlWriter extends Thread {
 
     public void sendKillToWrapperScript() {
         sendKill = true;
+        GenericUtil.appendFileContents("StreamJobControlWriter.sendKillToWrapperScript():"
+                + " setting sendKill flag to true.", dir);
     }
 
 }

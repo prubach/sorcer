@@ -100,7 +100,7 @@ deployment(name: 'Sorcer') {
 
       service(name: "Cataloger") {
         interfaces {
-            classes 'sorcer.core.Cataloger'
+            classes 'sorcer.core.provider.Cataloger'
             artifact ref: 'cataloger-sui'
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
@@ -136,7 +136,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "DatabaseStorer") {
         interfaces {
-            classes 'sorcer.core.provider.DatabaseStorer'
+            classes 'sorcer.service.DatabaseStorer'
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.dbp.DatabaseProvider') {

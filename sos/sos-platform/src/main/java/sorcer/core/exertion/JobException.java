@@ -15,20 +15,29 @@
  * limitations under the License.
  */
 
-package sorcer.service;
+package sorcer.core.exertion;
 
-/**
- * Any interaction with the MonitorSessionManager might result in this exception
- * due to the following reasons:
- * <ol>
- * <li>The session does not exist,
- * <li>Some operations on this session which was not valid.
- * </ol>
- */
-public class UnknownExertionException extends Exception {
+import sorcer.service.Job;
 
-	public UnknownExertionException(String cause) {
-		super(cause);
+public class JobException extends Exception {
+
+	private static final long serialVersionUID = 4121215634452L;
+	
+	Job job;
+
+	public JobException() {
 	}
 
+	public JobException(Job job) {
+		this.job = job;
+	}
+
+	public JobException(String msg) {
+		super(msg);
+	}
+
+	public JobException(String msg, Job job) {
+		super(msg);
+		this.job = job;
+	}
 }

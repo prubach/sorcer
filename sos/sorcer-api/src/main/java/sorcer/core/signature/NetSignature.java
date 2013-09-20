@@ -149,23 +149,28 @@ public class NetSignature extends ObjectSignature {
 		attributes.addAll(attributes);
 	}
 
-	public Service getService() {
-		if (provider == null) return provider;
-		try {
-			// ping provider to see if alive
-			provider.getProviderName();
-		} catch (RemoteException e) {
-			// provider is dead; get new one
-			//e.printStackTrace();
+    public Service getService() {
+        if (provider == null) return provider;
+        try {
+            // ping provider to see if alive
+            provider.getProviderName();
+        } catch (RemoteException e) {
+            // provider is dead; get new one
+            //e.printStackTrace();
+            provider = null;
             provider = (Provider)Accessor.getService(this);
         }
-		
-		return provider;
-	}
 
-	public void setService(Service provider) {
-		this.provider = (Provider)provider;
-	}
+        return provider;
+    }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Service provider) {
+        this.provider = (Provider)provider;
+    }
 
 	public String action() {
 		String pn = (providerName == null) ? ANY : providerName;

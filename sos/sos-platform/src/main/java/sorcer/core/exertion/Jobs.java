@@ -1,8 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,6 +31,7 @@ import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.signature.NetSignature;
+import sorcer.service.Conditional;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExecState;
@@ -43,7 +43,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
-public class Jobs {
+public class Jobs implements SorcerConstants {
 
 	private Jobs() {
 		// Utility class
@@ -172,13 +172,13 @@ public class Jobs {
 	}
 
 	public static void removeExceptions(Job job) {
-		removeExceptions(job.getDataContext());
+		removeExceptions(job.getContext());
 		for (int i = 0; i < job.size(); i++) {
-			if (job.exertionAt(i).isJob())
+			if (((ServiceExertion) job.exertionAt(i)).isJob())
 				removeExceptions((Job) job.exertionAt(i));
 			else
-				removeExceptions(job.exertionAt(i)
-						.getDataContext());
+				removeExceptions(((ServiceExertion) job.exertionAt(i))
+						.getContext());
 		}
 	}
 
@@ -197,10 +197,10 @@ public class Jobs {
 
 	public static void preserveNodeReferences(Exertion ref, Exertion res)
 			throws ContextException {
-		if (ref.isJob() && res.isJob())
+		if (((ServiceExertion) ref).isJob() && ((ServiceExertion) res).isJob())
 			preserveNodeReferences((Job) ref, (Job) res);
 		else
-			preserveNodeReferences(ref, res);
+			preserveNodeReferences((ServiceExertion) ref, (ServiceExertion) res);
 	}
 
 	public static void preserveNodeReferences(Job refJob,
@@ -208,15 +208,15 @@ public class Jobs {
 		int size = (refJob.size() < resJob.size()) ? refJob.size() : resJob
 				.size();
 		for (int i = 0; i < size; i++) {
-			if (refJob.exertionAt(i).isJob()
-					&& resJob.exertionAt(i).isJob())
+			if (((ServiceExertion) refJob.exertionAt(i)).isJob()
+					&& ((ServiceExertion) resJob.exertionAt(i)).isJob())
 				preserveNodeReferences((Job) refJob.exertionAt(i),
 						(Job) resJob.exertionAt(i));
-			else if (refJob.exertionAt(i).isTask()
-					&& resJob.exertionAt(i).isTask())
-				preserveNodeReferences(refJob.exertionAt(i)
-						.getDataContext(), resJob.exertionAt(i)
-						.getDataContext());
+			else if (((ServiceExertion) refJob.exertionAt(i)).isTask()
+					&& ((ServiceExertion) resJob.exertionAt(i)).isTask())
+				preserveNodeReferences(((ServiceExertion) refJob.exertionAt(i))
+						.getContext(), ((ServiceExertion) resJob.exertionAt(i))
+						.getContext());
 		}
 	}
 
@@ -228,12 +228,12 @@ public class Jobs {
 	public static void replaceNullIDs(Exertion ex) {
 		if (ex == null)
 			return;
-		if (ex.isJob()) {
+		if (((ServiceExertion) ex).isJob()) {
 			Job job = (Job) ex;
 			if (job.getId() == null)
 				job.setId(getId());
-			if (job.getDataContext().getId() == null)
-				job.getDataContext().setId(getId());
+			if (job.getContext().getId() == null)
+				job.getContext().setId(getId());
 			for (int i = 0; i < job.size(); i++)
 				replaceNullIDs(job.exertionAt(i));
 		} else
@@ -243,9 +243,9 @@ public class Jobs {
 	public static void replaceNullIDs(ServiceExertion task) {
 		if (task.getId() == null)
 			task.setId(getId());
-		if (task.getDataContext() != null) {
-			if (task.getDataContext().getId() == null)
-				task.getDataContext().setId(getId());
+		if (task.getContext() != null) {
+			if (task.getContext().getId() == null)
+				task.getContext().setId(getId());
 		}
 	}
 
@@ -270,12 +270,12 @@ public class Jobs {
 			throw new ExertionException("No Method For Exertion e=" + ex);
 
 		ExertionEnvelop eenv = ExertionEnvelop.getTemplate();
-		eenv.serviceType = ex.getProcessSignature().getServiceType();
-		eenv.providerName = ex.getProcessSignature().getProviderName();
+		eenv.serviceType = ((NetSignature) ex.getProcessSignature()).getServiceType();
+		eenv.providerName = ((NetSignature) ex.getProcessSignature()).getProviderName();
 		eenv.exertion = ex;
-		eenv.exertionID = ex.getId();
-		eenv.isJob = ex.isJob();
-		eenv.state = ExecState.INITIAL;
+		eenv.exertionID = ((ServiceExertion)ex).getId();
+		eenv.isJob = new Boolean(((ServiceExertion) ex).isJob());
+		eenv.state = new Integer(ExecState.INITIAL);
 		return eenv;
 	}
 
@@ -292,7 +292,7 @@ public class Jobs {
 //		else 
 			if (exertion instanceof Job) {
 			contexts.add(exertion.getDataContext());
-			for (int i = 0; i < exertion.getExertions().size(); i++)
+			for (int i = 0; i < ((Job) exertion).getExertions().size(); i++)
 				collectTaskContexts(((Job) exertion).exertionAt(i),
 						contexts);
 		}

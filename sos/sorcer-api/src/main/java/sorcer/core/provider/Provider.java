@@ -1,8 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,17 +17,13 @@
 
 package sorcer.core.provider;
 
-// Imported Java classes
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.security.Policy;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
-import net.jini.config.Configuration;
-import net.jini.config.ConfigurationException;
-import net.jini.core.entry.Entry;
-import net.jini.core.lookup.ServiceID;
+
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -37,10 +32,15 @@ import sorcer.service.Monitorable;
 import sorcer.service.Service;
 import sorcer.service.Signature;
 
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
+import net.jini.core.entry.Entry;
+import net.jini.core.lookup.ServiceID;
+
 /**
  * This is an interface that defines how a provider interacts with other code 
- * the through the methods that are exposed. It extends {@link Service},
- * {@link Monitorable}, and {@link Remote}.
+ * the through the methods that are exposed. It extends {@link Service}, 
+ * {@link sorcer.service.Monitorable}, and {@link Remote}.
  * @see Service
  * @see Monitorable
  * @see Remote
@@ -78,7 +78,7 @@ public interface Provider extends Service, Monitorable, Remote {
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see Provider#destroy()
+	 * @see sorcer.core.provider.base.Provider#destroy()
 	 */
 	public void destroy() throws RemoteException;
 
@@ -86,7 +86,7 @@ public interface Provider extends Service, Monitorable, Remote {
 	 * Destroy all services in this node (virtual machine) by calling each
 	 * destroy().
 	 * 
-	 * @see Provider#destroyNode()
+	 * @see sorcer.core.provider.base.Provider#destroy()
 	 */
 	public void destroyNode() throws RemoteException;
 	

@@ -37,6 +37,7 @@ import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.id.ReferentUuid;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+import sorcer.util.StringUtils;
 
 /**
  * The Service provider should wrap up the smart proxy/stub. The
@@ -194,11 +195,17 @@ public class ProviderProxy implements Serializable {
             }catch(InvocationTargetException e) {
                 throw e.getCause();
             } catch (Exception e) {
+                // do not report broken network connection on destruction
+                if (!(selector.equals("destroyNode") || selector.equals("destroy"))) {
+                    logger.info("proxy method: " + m + " for args: "
+                            + Arrays.toString(args));
+                } else {
+                    logger.info(StringUtils.stackTraceToString(e));
+                }
                 logger.log(Level.WARNING, "proxy method: " + m + " for args: "
                         + Arrays.toString(args), e);
                 throw new RemoteException("Problem invoking method: " + m + " for args: "
                         + Arrays.toString(args), e);
-                //e.printStackTrace();
             }
             return obj;
         }

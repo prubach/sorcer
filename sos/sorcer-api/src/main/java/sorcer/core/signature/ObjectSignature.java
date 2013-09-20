@@ -1,8 +1,7 @@
 /*
  * Copyright 2012 the original author or authors.
  * Copyright 2012 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,14 +21,22 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+//import org.apache.tools.ant.taskdefs.Length;
+
+//import sorcer.core.context.model.var.ParametricModel;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.service.Contexter;
 import sorcer.service.SignatureException;
 import sorcer.util.ObjectCloner;
+//import sorcer.vfe.ServiceEvaluator;
+//import sorcer.vfe.evaluator.MethodEvaluator;
 
 public class ObjectSignature extends ServiceSignature {
 
 	static final long serialVersionUID = 8042346568722803852L;
+
+	//private MethodEvaluator evaluator;
 
 	Class<?> providerType;
 
@@ -41,52 +48,35 @@ public class ObjectSignature extends ServiceSignature {
 	private Class<?>[] argTypes;
 
 	public ObjectSignature() {
-        execType = Type.SRV;
-	}
 
-	public ObjectSignature(String selector, Object object, Class<?>[] argTypes)
-			throws InstantiationException, IllegalAccessException {
-		if (object instanceof Class)
-			this.providerType = (Class<?>)object;
-		else {
-			target = object;
-			this.providerType = object.getClass();
-		}
-
-		this.argTypes = argTypes;
-		setSelector(selector);
 	}
 
 	public ObjectSignature(String selector, Object object, Class<?>[] argTypes,
 			Object... args) throws InstantiationException,
 			IllegalAccessException {
-		if (object instanceof Class) 
+		if (object instanceof Class) {
 			this.providerType = (Class<?>)object;
-		else {
+		} else {
 			target = object;
 			this.providerType = object.getClass();
 		}
 
-		this.argTypes = argTypes;
-		this.args = args;
 		setSelector(selector);
+		this.argTypes = argTypes;
+		if (args != null && args.length > 0) 
+			this.args = args;
 	}
 
 	public ObjectSignature(String selector, Class<?> providerClass,
 			Class<?>... argClasses) {
 		this.providerType = providerClass;
-		this.argTypes = argClasses;
-		setSelector(selector);
-	}
-
-	public ObjectSignature(String selector, Class<?> providerClass) {
-		this.providerType = providerClass;
+		if (argClasses != null && argClasses.length > 0)
+			this.argTypes = argClasses;
 		setSelector(selector);
 	}
 
 	public ObjectSignature(Class<?> providerClass) {
-		this.selector = null;
-		this.providerType = providerClass;
+		this(null, providerClass);
 	}
 
 	/**
@@ -132,6 +122,36 @@ public class ObjectSignature extends ServiceSignature {
 		this.providerType = providerType;
 	}
 
+/* // TODO VFE related
+	*  *//**
+	    <p> Returns the evaluator for this signature. </p>
+
+	    @return the evaluation
+	 *//*
+	public MethodEvaluator getEvaluator() {
+		return evaluator;
+	}
+
+	*//**
+	    <p> Sets the evaluator for this signature. </p>
+
+	    @param evaluator the evaluation to set
+	 *//*
+	public void setEvaluator(MethodEvaluator evaluator) {
+		this.evaluator = evaluator;
+	}
+
+	public ServiceEvaluator<?> createEvaluator() throws InstantiationException,
+	IllegalAccessException {
+		if (target == null && providerType != null) {
+			evaluator = new MethodEvaluator(providerType.newInstance(),
+					selector);
+		} else
+			evaluator = new MethodEvaluator(target, selector);
+		this.evaluator.setParameters(args);
+		return evaluator;
+	}*/
+
 	public Class<?>[] getTypes() throws ContextException {
 		return argTypes;
 	}
@@ -151,17 +171,10 @@ public class ObjectSignature extends ServiceSignature {
 		Constructor<?> constructor = null;
 		Object obj = null;
 		try {
-			if (providerType != null) {
-				//serviceType.cast(providerClass.newInstance());
-				return providerType.newInstance();
-			}
-			if (argTypes == null) {
+			if (args == null) {
 				constructor = providerType.getConstructor();
 				obj = constructor.newInstance();
 			} else {
-				if (args == null)
-					throw new SignatureException(
-							"Missing args to the constructor: " + providerType);
 				constructor = providerType.getConstructor(argTypes);
 				obj = constructor.newInstance(args);
 			}
@@ -197,17 +210,16 @@ public class ObjectSignature extends ServiceSignature {
 		Object obj = null;
 		Method m = null;
 		try {
-			logger.info("providerType: " + providerType);
-			logger.info("selector: " + selector);
-			logger.info("argTypes: " + Arrays.toString(argTypes));
-
 			obj = providerType.newInstance();
+			if (selector == null && (argTypes == null || argTypes.length == 0))
+				return obj;
+	
 			if (argTypes != null)
 				m = providerType.getMethod(selector, argTypes);
 			else 
 				m = providerType.getMethod(selector);
 
-            if (args != null) {
+			if (args != null) {
 				obj = m.invoke(obj, args);
 			}
 			else if (argTypes != null && argTypes.length == 1 && args == null) {
@@ -220,9 +232,8 @@ public class ObjectSignature extends ServiceSignature {
 			try {
 				// check if that is SORCER service bean signature
 				m = providerType.getMethod(selector, Context.class);
-				if (m.getReturnType() == Context.class)  {
-                    return obj;
-                }
+				if (m.getReturnType() == Context.class)
+					return obj;
 				else
 					throw new SignatureException(e);
 			} catch (Exception e1) {
@@ -284,11 +295,23 @@ public class ObjectSignature extends ServiceSignature {
 			e.printStackTrace();
 			throw new SignatureException(e);
 		}
+        // TODO VFE related
+		/*if (obj instanceof ParametricModel) {
+			try {
+				makeIsolatedParametricModel((ParametricModel) obj, inContext);
+				((ParametricModel)obj).setInputContext(inContext);
+				((ParametricModel)obj).builderInit();
+			} catch (ContextException e) {
+				e.printStackTrace();
+				throw new SignatureException(e);
+			}
+		}*/
 		return obj;
 	}
 
 	public String toString() {
-		String provider = providerType == null ? ""+target.getClass() : ""+providerType;
+		String provider = providerType.toString();
+        //String provider = providerType == null ? ""+evaluator : ""+providerType;
 
 		return this.getClass() + ";" + providerName + ";" + execType + ";" + isActive + ";"
 		+ provider + ";" + selector;

@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 import sorcer.core.context.ControlContext.ThrowableTrace;
 import sorcer.netlet.ScriptExerter;
-import sorcer.tools.shell.cmds.ScriptThread;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
@@ -87,7 +86,7 @@ public class ExertCmd extends ShellCmd {
 		boolean outPersisted = false;
 		boolean outputControlContext = false;
 		boolean marshalled = false;
-		boolean commandLine = NetworkShell.isCommandLine();
+		boolean commandLine = NetworkShell.isInteractive();
 		StringTokenizer tok = new StringTokenizer(input);
 		if (tok.countTokens() >= 1) {
 			while (tok.hasMoreTokens()) {

@@ -63,8 +63,8 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ExertProcessor implements Exerter, Callable {
-    protected final static Logger logger = Logger.getLogger(ExertProcessor.class
+public class ServiceExerter implements Exerter, Callable {
+    protected final static Logger logger = Logger.getLogger(ServiceExerter.class
             .getName());
 
     private ServiceExertion exertion;
@@ -72,14 +72,14 @@ public class ExertProcessor implements Exerter, Callable {
     private static MutualExclusion locker;
     private ProvisionManager provisionManager;
 
-    public ExertProcessor() {
+    public ServiceExerter() {
     }
 
-    public ExertProcessor(Exertion xrt) {
+    public ServiceExerter(Exertion xrt) {
         exertion = (ServiceExertion) xrt;
     }
 
-    public ExertProcessor(Exertion xrt, Transaction txn) {
+    public ServiceExerter(Exertion xrt, Transaction txn) {
         exertion = (ServiceExertion) xrt;
         transaction = txn;
 
@@ -201,7 +201,7 @@ public class ExertProcessor implements Exerter, Callable {
             provider = ((NetSignature) signature).getService();
         } catch (SignatureException e) {
             e.printStackTrace();
-            new ExertionException(e);
+            throw new ExertionException(e);
         }
         if (provider == null) {
             // handle signatures for PULL tasks
@@ -224,7 +224,7 @@ public class ExertProcessor implements Exerter, Callable {
         exertion.getControlContext().appendTrace(
                 "bootstrapping: " + ((Provider) provider).getProviderName()
                         + ":" + ((Provider) provider).getProviderID());
-        ((NetSignature) signature).setService(provider);
+        ((NetSignature) signature).setProvider(provider);
         logger.info("Provider found for: " + signature + "\n\t" + provider);
         if (((Provider) provider).mutualExclusion()) {
             return serviceMutualExclusion((Provider) provider, exertion,
@@ -232,7 +232,7 @@ public class ExertProcessor implements Exerter, Callable {
         } else {
             // test exertion for serialization
 //			 try {
-//				 logger.info("ExertProcessor.exert0(): going to serialize exertion for testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//				 logger.info("ServiceExerter.exert0(): going to serialize exertion for testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //				 ObjectLogger.persistMarshalled("exertionfile", exertion);
 //			 } catch (Exception e) {
 //				 e.printStackTrace();

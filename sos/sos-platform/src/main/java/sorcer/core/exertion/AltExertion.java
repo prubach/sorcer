@@ -37,6 +37,8 @@ import sorcer.service.Task;
  */
 public class AltExertion extends Task {
 
+	private static final long serialVersionUID = 4012356285896459828L;
+	
 	protected List<OptExertion> optExertions;
 
 	public AltExertion(String name, OptExertion... optExertions) {

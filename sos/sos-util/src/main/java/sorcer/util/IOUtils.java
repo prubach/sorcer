@@ -31,6 +31,39 @@ public class IOUtils {
 		}
 	}
 
+    // this method exits the jvm if the file or directory is not readable; the exit is
+    // necessary for boot strapping providers since exceptions in provider constructors
+    // are simply caught and ignored...exit brings the provider down, which is good.
+    public static void checkFileExistsAndIsReadable(File file) {
+
+        try {
+
+            if(!file.exists()) {
+                System.out.println("***error: file does not exist = "
+                        + file.getAbsolutePath());
+                //if (sp != null) sp.destroy();
+                throw new IOException("***error: file does not exist = "
+                        + file.getAbsolutePath());
+
+            }
+
+            if (!file.canRead()){
+                System.out.println("***error: file does not have read permission = "
+                        + file.getAbsolutePath());
+                //if (sp != null) sp.destroy();
+                throw new IOException("***error: file does not have read permission = "
+                        + file.getAbsolutePath());
+            }
+
+        } catch (IOException e) {
+            System.out.println("***error: " + e.toString()
+                    + "; problem with file = " + file.getAbsolutePath());
+            e.printStackTrace();
+            System.exit(1);
+            throw new RuntimeException(e);
+        }
+    }
+
 	/**
 	 * Deletes a direcory and all its files.
 	 *

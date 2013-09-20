@@ -21,6 +21,7 @@ import net.jini.id.Uuid;
 import sorcer.service.EvaluationException;
 
 import java.rmi.RemoteException;
+import java.util.Observable;
 
 public interface Observer {
 

@@ -25,8 +25,7 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.provider.StorageManagement;
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
+import sorcer.service.*;
 import sorcer.util.bdb.objects.Store;
 
 /**
@@ -72,6 +71,27 @@ public class SdbUtil {
 
     public static String getServiceType(URL url) {
         return url.getHost();
+    }
+
+    /**
+     * Returns a context to be used with
+     * {@link StorageManagement#contextStore(Context)}
+     *
+     * @param uuid
+     *            {@link Uuid}
+     * @param object
+     *            to be stored
+     * @return storage {@link Context}
+     * @throws ContextException
+     */
+    static public Context getStoreContext(Object object)
+            throws ContextException {
+        ServiceContext cxt = new ServiceContext("store context");
+        cxt.putInValue(StorageManagement.object_stored, object);
+        cxt.putInValue(StorageManagement.object_uuid,
+                ((Identifiable) object).getId());
+        cxt.setReturnPath(StorageManagement.object_url);
+        return cxt;
     }
 
     /**
@@ -126,5 +146,4 @@ public class SdbUtil {
         cxt.setReturnPath(StorageManagement.store_content_list);
         return cxt;
     }
-
 }

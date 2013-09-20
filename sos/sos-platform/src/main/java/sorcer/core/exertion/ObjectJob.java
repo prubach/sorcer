@@ -1,8 +1,7 @@
 /*
  * Copyright 2012 the original author or authors.
  * Copyright 2012 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +20,7 @@ package sorcer.core.exertion;
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.ObjectSignature;
@@ -30,6 +30,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
+//import sorcer.vfe.evaluator.MethodEvaluator;
 
 /**
  * The SORCER object job extending the basic job implementation {@link Job}.
@@ -62,21 +63,46 @@ public class ObjectJob extends Job {
 			this.dataContext = (ServiceContext) context;
 	}
 
-	public Job doJob(Transaction txn) throws ExertionException,
+    public Job doJob(Transaction txn) throws ExertionException,
+            SignatureException, RemoteException {
+        // return (Job) new ServiceJobber().exec(job, txn);
+        Job result = null;
+        try {
+            Class[] paramTypes = new Class[] { Exertion.class };
+            Object[] parameters = new Object[] { this };
+            result = (Job)((ObjectSignature) getProcessSignature())
+                    .initInstance(parameters, paramTypes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (controlContext != null)
+                controlContext.addException(e);
+        }
+        return result;
+    }
+
+    // TODO VFE related
+	/*public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
 		// return (Job) new ServiceJobber().exec(job, txn);
 		Job result = null;
 		try {
-			Class[] paramTypes = new Class[] { Exertion.class };
-			Object[] parameters = new Object[] { this };
-			result = (Job)((ObjectSignature) getProcessSignature())
-					.initInstance(parameters, paramTypes);
+			ObjectSignature os = (ObjectSignature) getProcessSignature();
+			MethodEvaluator evaluator = ((ObjectSignature) getProcessSignature())
+					.getEvaluator();
+			if (evaluator == null) {
+				evaluator = new MethodEvaluator(os.newInstance(),
+						os.getSelector());
+			}
+			evaluator.setParameterTypes(new Class[] { Exertion.class });
+			evaluator.setParameters(new Exertion[] { this });
+			result = (Job)evaluator.evaluate();
+			getControlContext().appendTrace("" + evaluator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (controlContext != null)
 				controlContext.addException(e);
 		}
 		return result;
-	}
-
+	}*/
+	
 }

@@ -136,12 +136,17 @@ public class SorcerServiceInfo extends ServiceType {
 	 */
 	public String startDate;
 
-	/**
+	/**                    T
 	 * The home directory of the runtime service provider.
 	 */
 	public String serviceHome;
 
-	/**
+    /**
+     * The data store URL or host:port used by this service.
+     */
+    public String repository;
+
+    /**
 	 * An icon file name associated with this service.
 	 */
 	public String iconName;

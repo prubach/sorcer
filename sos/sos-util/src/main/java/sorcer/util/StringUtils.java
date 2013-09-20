@@ -21,11 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 public class StringUtils {
 	private static Calendar calendar = null;
@@ -63,8 +59,22 @@ public class StringUtils {
 		}
 		return buffer.toString();
 	}
+    /**
+     * Makes an arry from the parameter enumeration <code>e</code>.
+     *
+     * @param e
+     *            an enumeration
+     * @return an arry of objects in the underlying enumeration <code>e</code>
+     */
+    static public Object[] makeArray(final Enumeration e) {
+        ArrayList objs = new ArrayList();
+        while (e.hasMoreElements()) {
+            objs.add(e.nextElement());
+        }
+        return objs.toArray();
+    }
 
-	/**
+    /**
 	 * Break string into an array of CVS tokens. The delimiter is passed to
 	 * StringTokenizer for tokenizing the string.
 	 *
