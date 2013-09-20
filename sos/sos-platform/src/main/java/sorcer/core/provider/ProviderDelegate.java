@@ -426,14 +426,6 @@ public class ProviderDelegate {
 		} catch (ConfigurationException e) {
 			// do nothing, used the default value
 		}
-
-		initDynamicServiceAccessor();
-	}
-
-	private void initDynamicServiceAccessor() {
-			String val = Sorcer.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME);
-			if (val != null)
-                Accessor.initialize(val);
 	}
 
 	void initSpaceSupport() throws ConfigurationException, RemoteException {
