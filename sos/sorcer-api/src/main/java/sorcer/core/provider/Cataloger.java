@@ -35,7 +35,7 @@ import sorcer.service.Context;
  * 
  */
 
-public interface        Cataloger extends Remote {
+public interface Cataloger extends Remote {
 
 	/**
 	 * Returns a SORCER service provider identified by its primary service type.
