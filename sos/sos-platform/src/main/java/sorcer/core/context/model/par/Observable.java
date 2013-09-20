@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import net.jini.id.Uuid;
 import sorcer.service.EvaluationException;
 import sorcer.service.Identifiable;
+import sorcer.util.observable.ObservableManagement;
 
 /* Class moved from other package by Pawel Rubach 09.2013
  */
@@ -191,6 +192,13 @@ public class Observable implements Serializable {
 		if (observerMap == null)
 			return;
 		Iterator<Observer> i = observerMap.values().iterator();
+        while (i.hasNext()) {
+            ObservableManagement o = (ObservableManagement) i.next();
+            logger.info("Observable.notifyParentObservers(): o = " + o);
+
+            o.setChanged();
+            o.notifyObservers(obj);
+        }
         // TODO VAR related
 		/*while (i.hasNext()) {
 			EvaluationModel o = (EvaluationModel) i.next();
