@@ -56,7 +56,6 @@ import sorcer.core.signature.EvaluationSignature;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.core.signature.ServiceSignature;
-//import sorcer.core.signature.VarSignature;
 import sorcer.service.*;
 import sorcer.service.Signature.Kind;
 import sorcer.service.Signature.Type;
@@ -558,6 +557,11 @@ public class operator {
 		return evaluation;
 	}
 
+    public static Signature sig(String operation, Class<?> serviceType,
+                                List<net.jini.core.entry.Entry> attributes)
+            throws SignatureException {
+        return SignatureFactory.sig(operation, serviceType, attributes);
+    }
 	public static Revaluation unrevaluable(Revaluation evaluation) {
 		evaluation.setRevaluable(false);
 		return evaluation;
@@ -577,12 +581,20 @@ public class operator {
 		return evaluation.substitute(entries);
 	}
 
+    public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
+            throws SignatureException {
+        return SignatureFactory.sig(serviceType, returnPath);
+    }
 	public static Signature sig(Class<?> serviceType, String providerName,
 			Object... parameters) throws SignatureException {
 		return sig(null, serviceType, Sorcer.getActualName(providerName),
 				parameters);
 	}
 
+    public static Signature sig(String operation, Class<?> serviceType,
+                                ReturnPath resultPath) throws SignatureException {
+        return SignatureFactory.sig(operation, serviceType, resultPath);
+    }
 	public static Signature sig(String operation, Class<?> serviceType,
 			String providerName, Object... parameters)
 			throws SignatureException {
@@ -605,6 +617,9 @@ public class operator {
 		return sig;
 	}
 
+    public static Signature sig(Exertion exertion, String componentExertionName) {
+        return SignatureFactory.sig(exertion, componentExertionName);
+    }
 	public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
 	}

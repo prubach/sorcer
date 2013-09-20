@@ -19,6 +19,7 @@ package sorcer.util;
 
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,5 +40,29 @@ public class Collections {
             objs.add(e.nextElement());
         }
         return objs.toArray();
+    }
+
+    public static <T>Iterable<T> i(final Enumeration<T>e){
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return new Iterator<T>() {
+                    @Override
+                    public boolean hasNext() {
+                        return e.hasMoreElements();
+                    }
+
+                    @Override
+                    public T next() {
+                        return e.nextElement();
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 }

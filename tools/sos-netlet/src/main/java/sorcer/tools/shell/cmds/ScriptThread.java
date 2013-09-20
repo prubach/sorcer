@@ -18,11 +18,15 @@
 package sorcer.tools.shell.cmds;
 
 import groovy.lang.GroovyShell;
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
+import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.RootLoader;
+import sorcer.util.Deployment;
 import sorcer.util.ServiceExerter;
 
 import java.io.File;
@@ -39,11 +43,13 @@ public class ScriptThread extends Thread {
 		private Object result;
 		private Object target = null;
 		private GroovyShell gShell;
+        private Configuration config;
 
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
-        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out) {
+        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config) {
+            this.config = config;
             RootLoader loader = null;
             if (classLoader==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
@@ -62,6 +68,10 @@ public class ScriptThread extends Thread {
 			this.script = script;
             this.parseScript();
 		}
+
+    public ScriptThread(String script, URL[] urls, ClassLoader classLoader, PrintStream out) {
+        this(script, urls, classLoader, out, EmptyConfiguration.INSTANCE);
+    }
 
         public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
             this(script, jarsToAdd, null, out);
@@ -109,14 +119,13 @@ public class ScriptThread extends Thread {
                 ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {
                     if (((Exertion) target).isProvisionable()) {
-//                        String configFile = (String) NetworkShell
-//                                .getConfiguration().getEntry(
-//                                        "sorcer.tools.shell.NetworkShell",
-//                                        "exertionDeploymentConfig", String.class,
-//                                        null);
-//                        if (configFile != null)
-//                            result = esh.exert(new Deployment(configFile));
-//                        else
+                        String configFile = (String) config.getEntry(
+                                        "sorcer.tools.shell.NetworkShell",
+                                        "exertionDeploymentConfig", String.class,
+                                        null);
+                        if (configFile != null)
+                            result = esh.exert(new Deployment(configFile));
+                        else
                             result = esh.exert();
                     } else
                         result = esh.exert();

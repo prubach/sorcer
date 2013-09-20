@@ -56,6 +56,8 @@ public class NetSignature extends ObjectSignature {
 
 	protected List<Entry> attributes;
 
+    protected String version;
+
 	public NetSignature() {
 		providerName = ANY;
 	}
@@ -75,7 +77,7 @@ public class NetSignature extends ObjectSignature {
 
 	public NetSignature(String selector, Class<?> serviceType,
 			String providerName) {
-		this(selector, serviceType, providerName, null);
+		this(selector, serviceType, providerName, (Type) null);
 	}
 
 	public NetSignature(String selector, Class<?> serviceType,
@@ -118,6 +120,17 @@ public class NetSignature extends ObjectSignature {
         } catch (ClassNotFoundException e) {
             logger.severe("Problem creating NetSignature: " + e.getMessage());
         }
+    }
+
+    public NetSignature(String selector, Class<?> serviceType, String version,
+                        String providerName, Type methodType) {
+        this(selector, serviceType, providerName, methodType);
+        this.version = version;
+    }
+
+    public NetSignature(String selector, Class<?> serviceType, String version,
+                        String providerName) {
+        this(selector, serviceType, version, providerName, null);
     }
 
 
@@ -378,7 +391,11 @@ public class NetSignature extends ObjectSignature {
 	public void setUnicast(boolean isUnicast) {
 		this.isUnicast = isUnicast;
 	}
-	
+
+    public String getVersion() {
+        return version;
+	}
+
 	public String toString() {
 		return this.getClass() + ":" + providerName + ";" + execType + ";" + isActive + ";"
 				+ serviceType + ";" + selector 

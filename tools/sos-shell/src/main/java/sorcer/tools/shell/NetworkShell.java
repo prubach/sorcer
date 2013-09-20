@@ -454,6 +454,7 @@ public class NetworkShell implements DiscoveryListener {
 		for (int i = 0; i < shellCommands.length; i++) {
 			addToCommandTable(shellCommands[i], shellCmdClasses[i]);
 			ShellCmd cmdInstance = commandTable.get(shellCommands[i]);
+            cmdInstance.setConfig(getConfiguration());
 			String[] subCmds = toArray(cmdInstance.getCommandWord(), ", ");
 			if (subCmds.length > 1) {
 				for (String subCmd : subCmds) {
