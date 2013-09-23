@@ -50,7 +50,7 @@ else
         -Dssb.logFile="$SORCER_HOME"/configs/browser/logs/browser.log \
         -Dssb.logLen=300 \
         -Djava.security.policy="$SORCER_HOME"/configs/browser/policy/ssb.policy \
-        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" \
+        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
         -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
         -Djava.rmi.server.useCodebaseOnly=false \
         -Dwebster.tmp.dir="$SORCER_HOME"/databases \

@@ -35,7 +35,7 @@ rem echo %CP%
  
 set SHELL_CLASS=sorcer.tools.shell.NetworkShell
 
-CALL java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy" -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home="%SORCER_HOME%" -Dnsh.starter.config="%NSH_CONF%" %STARTER_MAIN_CLASS% --main %SHELL_CLASS% --config "%NSH_CONF%" %*
+CALL java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy" -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home="%SORCER_HOME%" -Dnsh.starter.config="%NSH_CONF%" %STARTER_MAIN_CLASS% --main %SHELL_CLASS% --config "%NSH_CONF%" %*
 rem --classpath "%CP%"
 popd
 

@@ -46,7 +46,7 @@
             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="requestor.properties" value="${basedir}/src/main/resources/config/worker-run.properties" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb|org.rioproject.url" />
             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
             <sysproperty key="RIO_HOME" value="${rio.home}"/>
             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />

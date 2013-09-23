@@ -33,7 +33,7 @@
 			<classpath refid="boot.classpath"/>
 			<arg value="../configs/sorcer-boot-no-http.config" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb|org.rioproject.url" />
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />
 			<env key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="rio.home" value="${rio.home}" />

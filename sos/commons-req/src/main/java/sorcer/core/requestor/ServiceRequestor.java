@@ -306,7 +306,7 @@ abstract public class
 
     public static void prepareEnvironment() {
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb.sos|org.rioproject.url");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
         System.setProperty("webster.internal", "true");

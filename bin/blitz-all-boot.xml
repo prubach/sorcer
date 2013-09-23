@@ -37,7 +37,7 @@
             <sysproperty key="java.security.policy" value="../configs/blitz/policy/blitz.policy" />
             <sysproperty key="provider.webster.url" value="${provider.webster.url}/" />
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb|org.rioproject.url" />
             <env key="RIO_HOME" value="${rio.home}" />
         </java>
     </target>
