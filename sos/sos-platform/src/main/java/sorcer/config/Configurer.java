@@ -22,6 +22,7 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.provider.ServiceProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,15 +31,25 @@ import java.lang.reflect.Method;
 /**
  * @author Rafał Krupiński
  */
-public class Configurer {
+public class Configurer implements ServiceActivator {
+
     final private static Logger log = LoggerFactory.getLogger(Configurer.class);
 
-    public void process(Object object, Configuration config) {
+    public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
+        for (Object serviceBean : serviceBeans) {
+            process(serviceBean, provider.getProviderConfiguration());
+        }
+    }
+
+    public void process(Object object, Configuration config) throws ConfigurationException {
+        if(object instanceof Configurable){
+            ((Configurable) object).configure(config);
+        }
         Class<?> targetClass = object.getClass();
-        Configurable configurable = targetClass.getAnnotation(Configurable.class);
+        Component configurable = targetClass.getAnnotation(Component.class);
         if (configurable == null) return;
 
-        String component = configurable.component();
+        String component = configurable.value();
 
         for (Field field : targetClass.getDeclaredFields()) {
             ConfigEntry configEntry = field.getAnnotation(ConfigEntry.class);
@@ -57,7 +68,7 @@ public class Configurer {
 
     private void updateProperty(Object object, Method method, Configuration config, String component, ConfigEntry configEntry) {
         Class<?>[] ptypes = method.getParameterTypes();
-        if (ptypes.length != 1)return;
+        if (ptypes.length != 1) return;
         Class type = ptypes[0];
 
         Object defaultValue = null;
@@ -66,22 +77,22 @@ public class Configurer {
         }
         Object value;
         try {
-            value = config.getEntry(component, getEntryKey(getPropertyName(method), configEntry),type,defaultValue);
+            value = config.getEntry(component, getEntryKey(getPropertyName(method), configEntry), type, defaultValue);
         } catch (ConfigurationException e) {
             return;
         }
 
-        if (!ptypes[0].isAssignableFrom(type)){
+        if (!ptypes[0].isAssignableFrom(type)) {
             return;
         }
-            try {
-                if (!method.isAccessible()) {
-                    method.setAccessible(true);
-                }
-            } catch (SecurityException ignored) {
-                log.warn("Could not set value of {} because of access restriction", method);
-                return;
+        try {
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
             }
+        } catch (SecurityException ignored) {
+            log.warn("Could not set value of {} because of access restriction", method);
+            return;
+        }
 
         try {
             method.invoke(object, value);

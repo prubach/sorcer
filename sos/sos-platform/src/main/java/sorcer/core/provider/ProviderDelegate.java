@@ -84,13 +84,13 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
+import sorcer.config.ServiceBeanActivator;
 import sorcer.core.ContextManagement;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.SorcerNotifierProtocol;
 import sorcer.core.UEID;
 import sorcer.service.*;
-import sorcer.core.ContextManagement;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -109,7 +109,6 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
@@ -2771,9 +2770,8 @@ public class ProviderDelegate {
 			if (beanClasses.length > 0) {
 				logger.finer("*** service bean classes by " + getProviderName()
 						+ " for: \n" + Arrays.toString(beanClasses));
-				for (int i = 0; i < beanClasses.length; i++)
-					allBeans.add(instantiate(beanClasses[i]));
-			}
+                instantiate(allBeans, beanClasses);
+            }
 
 			// find it out if Groovy scripts are available
 			String[] scriptlets = (String[]) Config.getNonNullEntry(config,
@@ -2807,6 +2805,7 @@ public class ProviderDelegate {
 								exporterInterface, exporterPort),
 								new BasicILFactory()));
 				if (outerExporter == null) {
+
 					logger.warning("*** NO provider exporter defined!!!");
 				} else {
 					logger.finer("current exporter: "
@@ -2833,7 +2832,7 @@ public class ProviderDelegate {
 		}
 	}
 
-	/**
+    /**
 	 * Initializes the map between all the interfaces and the service object
 	 * passed via the configuration file.
 	 * 
@@ -2882,23 +2881,18 @@ public class ProviderDelegate {
 		return bean;
 	}
 
-	private Object instantiate(Class beanClass) throws Exception {
-		return createBean(beanClass);
-	}
-
-	private Object instantiate(String serviceBean) throws Exception {
-		Class clazz = Class.forName(serviceBean, false, implClassLoader);
-		return createBean(clazz);
-	}
-
-	private Object createBean(Class beanClass) throws Exception {
-		Object bean = beanClass.newInstance();
-		initBean(bean);
-		return bean;
-	}
+    private void instantiate(List<Object> allBeans, Class[] beanClasses) throws Exception {
+        for (Class beanClass : beanClasses) {
+            allBeans.add(beanClass.newInstance());
+        }
+        ServiceBeanActivator.getServiceBeanActivator().activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
+        for (Object bean : allBeans) {
+            initBean(bean);
+        }
+    }
 
 	private Object initBean(Object serviceBean) {
-		try {
+        try {
 			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, new Object[] { provider });

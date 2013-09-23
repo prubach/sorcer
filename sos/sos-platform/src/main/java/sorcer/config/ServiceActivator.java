@@ -18,12 +18,12 @@ package sorcer.config;
  */
 
 
-import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
+import sorcer.core.provider.ServiceProvider;
 
 /**
  * @author Rafał Krupiński
  */
-public interface Configurable {
-    void configure(Configuration config) throws ConfigurationException;
+public interface ServiceActivator {
+    public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException;
 }

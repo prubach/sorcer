@@ -18,12 +18,17 @@ package sorcer.config;
  */
 
 
-import net.jini.config.Configuration;
-import net.jini.config.ConfigurationException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Rafał Krupiński
  */
-public interface Configurable {
-    void configure(Configuration config) throws ConfigurationException;
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Component {
+    String value() default "sorcer.core.provider.ServiceProvider";
 }
