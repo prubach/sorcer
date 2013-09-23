@@ -26,8 +26,7 @@ jdk:
 # whitelist
 branches:
   only:
-    - master
-    - develop
+    - v1.0-M3
 
 notifications:
   email:
