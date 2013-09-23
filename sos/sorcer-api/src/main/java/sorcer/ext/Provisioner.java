@@ -20,12 +20,14 @@ package sorcer.ext;
 
 import net.jini.id.Uuid;
 
+import java.rmi.RemoteException;
+
 /**
  * @author Rafał Krupiński
  */
 public interface Provisioner {
-    <T> T deploy(Class<T> clazz, String name, String version);
+    <T> T deploy(Class<T> clazz, String name, String version) throws RemoteException;
 
-    void unDeploy(Uuid service);
+    void unDeploy(Uuid service) throws RemoteException;
 
 }
