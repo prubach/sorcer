@@ -18,7 +18,7 @@ package sorcer.ext;
  */
 
 
-import net.jini.id.Uuid;
+import net.jini.core.lookup.ServiceID;
 
 import java.rmi.RemoteException;
 
@@ -26,8 +26,8 @@ import java.rmi.RemoteException;
  * @author Rafał Krupiński
  */
 public interface Provisioner {
-    <T> T deploy(Class<T> clazz, String name, String version) throws RemoteException;
+    <T> T provision(String type, String name, String version) throws RemoteException;
 
-    void unDeploy(Uuid service) throws RemoteException;
+    void unProvision(ServiceID service) throws RemoteException;
 
 }
