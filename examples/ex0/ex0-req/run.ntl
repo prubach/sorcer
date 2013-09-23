@@ -29,23 +29,5 @@ codebase mvn://org.sorcersoft.sorcer:ex0-api
 //      load file:///opt/sorcer/lib/*.jar
 
 import sorcer.ex0.HelloWorld;
-import sorcer.util.Deployment;
 
-t1 = task("hello1",
-	sig("sayHelloWorld", HelloWorld.class),
-	context(
-		"Hello",
-		new Deployment("/home/rufio/projects/sorcer/examples/ex0/ex0-prv/Ex0Boot.groovy"),
-		input(
-			path("in/value"),
-			"TESTER"
-		),
-		out(
-			path("out", "value"),
-			null
-		)
-	)
-);
-j = job(t1, strategy(Provision.TRUE))
-//print(j);
-return j;
+t1 = task("hello1", sig("sayHelloWorld", HelloWorld.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));
