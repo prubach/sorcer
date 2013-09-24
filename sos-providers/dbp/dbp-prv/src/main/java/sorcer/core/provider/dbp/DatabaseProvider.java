@@ -384,8 +384,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 				return;
 			}
 		}
-		System.out.println("Opening provider's BDBJE in: "
-				+ dbHomeFile.getAbsolutePath());
+		logger.info("Opening provider's BDBJE in: {}"
+				, dbHomeFile.getAbsolutePath());
 		db = new SorcerDatabase(dbHome);
 		views = new SorcerDatabaseViews(db);
 	}

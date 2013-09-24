@@ -37,12 +37,18 @@ public class Configurer implements ServiceActivator {
 
     public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
         for (Object serviceBean : serviceBeans) {
-            process(serviceBean, provider.getProviderConfiguration());
+            try {
+                process(serviceBean, provider.getProviderConfiguration());
+            } catch (IllegalArgumentException x) {
+                log.error("Error while processing {}", serviceBean);
+                throw x;
+            }
         }
     }
 
     public void process(Object object, Configuration config) throws ConfigurationException {
-        if(object instanceof Configurable){
+        log.debug("Processing {} with {}", object, config);
+        if (object instanceof Configurable) {
             ((Configurable) object).configure(config);
         }
         Class<?> targetClass = object.getClass();
@@ -126,7 +132,7 @@ public class Configurer implements ServiceActivator {
             defaultValue = configEntry.defaultValue();
         }
         try {
-            Object value = config.getEntry(component, getEntryKey(component, configEntry), field.getType(), defaultValue);
+            Object value = config.getEntry(component, getEntryKey(field.getName(), configEntry), field.getType(), defaultValue);
             field.set(target, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

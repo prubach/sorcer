@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -299,7 +298,7 @@ public class ProviderDelegate {
 	 * Exposed service type components. A key is an interface and a value its
 	 * implementing service-object.
 	 */
-	private Map serviceComponents;
+	private Map<Class, Object> serviceComponents;
 
 	/**
 	 * List of Exertions for which SLA Offer was given
@@ -2840,7 +2839,7 @@ public class ProviderDelegate {
 	 *            service objects exposing their interface types
 	 */
 	@SuppressWarnings("unchecked")
-	private Map initServiceBeans(Object[] serviceBeans) {
+	private Map<Class, Object> initServiceBeans(Object[] serviceBeans) {
 		if (serviceBeans == null)
 			try {
 				throw new NullPointerException("No service beans defined by: "
@@ -2848,9 +2847,17 @@ public class ProviderDelegate {
 			} catch (RemoteException e) {
 				// ignore it
 			}
-		serviceComponents = new Hashtable();
+		serviceComponents = new HashMap<Class, Object>();
 
-		for (int i = 0; i < serviceBeans.length; i++) {
+/*
+        for (Class published : publishedServiceTypes) {
+            for (Class iface : published.getInterfaces()) {
+                serviceComponents.put(iface, published);
+            }
+        }
+*/
+
+        for (int i = 0; i < serviceBeans.length; i++) {
 			Class[] interfaze = ((Object) serviceBeans[i]).getClass()
 					.getInterfaces();
 			for (int j = 0; j < interfaze.length; j++) {
