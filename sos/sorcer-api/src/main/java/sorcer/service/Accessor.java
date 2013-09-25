@@ -214,6 +214,8 @@ public class Accessor {
     }
 
     private static void checkNullName(ServiceTemplate template) {
+        if (template.attributeSetTemplates == null)
+            return;
         for (Entry attr : template.attributeSetTemplates) {
             if (attr instanceof Name) {
                 Name name = (Name) attr;

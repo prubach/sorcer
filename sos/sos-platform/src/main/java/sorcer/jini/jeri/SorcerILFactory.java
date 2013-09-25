@@ -23,8 +23,8 @@ import java.lang.reflect.Modifier;
 import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.security.Permission;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -169,7 +169,7 @@ public class SorcerILFactory extends BasicILFactory {
 		}
 
         Set<Class> exposedInterfaces = new HashSet<Class>();
-        exposedInterfaces.addAll(Arrays.asList(super.getExtraProxyInterfaces(impl)));
+        Collections.addAll(exposedInterfaces, super.getExtraProxyInterfaces(impl));
         exposedInterfaces.add(Service.class);
         exposedInterfaces.addAll(serviceBeanMap.keySet());
 

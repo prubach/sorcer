@@ -16,6 +16,7 @@
  */
 package sorcer.core.provider;
 
+import com.sun.jini.admin.DestroyAdmin;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -1867,6 +1868,28 @@ public class ProviderDelegate {
 					// System.out.println("ngThreads[" + i + "] = " +
 					// ngThreads[i]);
 					ngThreads[i].interrupt();
+				}
+			}
+		}
+        destroyBeans();
+	}
+
+    private void destroyBeans() throws RemoteException {
+        for (Object o : serviceBeans) {
+            if(o instanceof DestroyAdmin)
+                ((DestroyAdmin)o).destroy();
+            else if(o instanceof sorcer.core.DestroyAdmin)
+                ((sorcer.core.DestroyAdmin) o).destroy();
+            else {
+                try {
+                    Method destroy = o.getClass().getMethod("destroy");
+                    if(destroy.isAccessible())
+                        destroy.invoke(o);
+                } catch (NoSuchMethodException ignored) {
+                } catch (InvocationTargetException e) {
+                    logger.log(Level.WARNING, "error while destroying bean",e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
 				}
 			}
 		}
