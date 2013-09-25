@@ -369,10 +369,15 @@ engineering.ensight6.txt.case = dnt|ensight6|txt|case
 engineering.ensight6.txt.geom = dnt|ensight6|txt|geom
 
 #Scilab Provider
-engineering.scilab.txt.input = dnt|scilab|txt|input
-engineering.scilab.put.input = dnt|scilab|put|input
-engineering.scilab.get.input = dnt|scilab|get|input
+engineering.scilab.txt.script= dnt|scilab|txt|script
 engineering.scilab.name.result = dnt|scilab|name|result
-engineering.scilab.txt.script = dnt|scilab|txt|script
-engineering.scilab.dbl.output = dnt|scilab|dbl|output
-engineering.scilab.txt.output = dnt|scilab|txt|output
+engineering.scilab.dbl.put = dnt|scilab|dbl|put
+engineering.scilab.dbl.get = dnt|scilab|dbl|get
+engineering.scilab.dbl.get-single = dnt|scilab|dbl|get-single
+engineering.scilab.txt.put= dnt|scilab|txt|put
+engineering.scilab.txt.get = dnt|scilab|txt|get
+engineering.scilab.txt.get-single= dnt|scilab|txt|get-single
+engineering.scilab.bool.put= dnt|scilab|bool|put
+engineering.scilab.bool.get= dnt|scilab|bool|get
+engineering.scilab.bool.get-single= dnt|scilab|bool|get=single
+

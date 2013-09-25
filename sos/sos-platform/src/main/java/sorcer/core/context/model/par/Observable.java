@@ -199,7 +199,7 @@ public class Observable implements Serializable {
             o.setChanged();
             o.notifyObservers(obj);
         }
-        // TODO VAR related
+        // TODO VFE related
 		/*while (i.hasNext()) {
 			EvaluationModel o = (EvaluationModel) i.next();
 			logger.info("Observable.notifyParentObservers(): o = " + o);

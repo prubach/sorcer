@@ -150,8 +150,10 @@ public class ExertCmd extends ShellCmd {
 					out.println(xrt.getExceptions());
 				} else {
 					List<ThrowableTrace> ets = xrt.getExceptions();
+                    out.println("Exceptions: ");
 					for (ThrowableTrace t : ets) {
-						System.err.println(t.describe());
+                        out.println(t.message);
+						out.println(t.describe());
 					}
 				}
 			}

@@ -361,7 +361,7 @@ public class NetworkShell implements DiscoveryListener {
 	static private void execNoninteractiveCommand(String args[])
 			throws Throwable {
 		// check for external commands
-		System.out.println("monintercative nsh: " + Arrays.toString(args));
+		//System.out.println("monintercative nsh: " + Arrays.toString(args));
 
 		if (args[0].indexOf("--") == 0) {
 			String path = nishAppMap.get(args[0].substring(2));
