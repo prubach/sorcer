@@ -1,4 +1,4 @@
-package org.sorcersoft.rio;
+package sorcer.util.rio;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
