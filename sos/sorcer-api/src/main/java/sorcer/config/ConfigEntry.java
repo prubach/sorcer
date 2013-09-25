@@ -1,4 +1,4 @@
-package sorcer.ext;
+package sorcer.config;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,16 +18,24 @@ package sorcer.ext;
  */
 
 
-import net.jini.core.lookup.ServiceID;
-
-import java.rmi.RemoteException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author Rafał Krupiński
  */
-public interface Provisioner {
-    <T> T provision(String type, String name, String version) throws RemoteException;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ConfigEntry {
+    public String DEFAULT_KEY = "ConfigEntry.DefaultKey";
+    public String NONE = "ConfigEntry.None";
 
-    void unProvision(ServiceID service) throws RemoteException;
+    /**
+     * Entry name. Default null value makes use of field or property name.
+     */
+    String value() default DEFAULT_KEY;
 
+    /**
+     * The default value, currently only available for strings.
+     */
+    String defaultValue() default NONE;
 }

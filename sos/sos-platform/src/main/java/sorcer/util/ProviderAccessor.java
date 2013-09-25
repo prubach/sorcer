@@ -42,17 +42,17 @@ import java.util.logging.Logger;
  * A utility class that provides access to SORCER services and some
  * infrastructure services. It extends the <code>ServiceAccessor</code>
  * functionality.
- * 
+ *
  * The <code>getService</code> methods directly use ServiceAccessor calls while
  * the <code>getService</code> methods use a SORCER Cataloger's cached services
  * with round robin load balancing.
- * 
+ *
  * The individual SORCER services should be accessed using this utility since it
  * uses local cached proxies for frequently used SORCER infrastructure services,
  * for example: Cataloger, JavaSpace, Jobber. ProviderAccessor normally uses
  * Cataloger if available, otherwise it uses Jini lookup services as implemented
  * by <code>ServiceAccessor</code>.
- * 
+ *
  * @see ServiceAccessor
  */
 
@@ -188,7 +188,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * This method searches for either a JINI or a RMI Cataloger service.
 	 *
 	 * @return a Cataloger service proxy
-     * @see sorcer.core.Cataloger
+     * @see sorcer.core.provider.Cataloger
 	 */
 	protected Cataloger getCataloger() {
         return getCataloger(providerNameUtil.getName(Cataloger.class)) ;
@@ -269,7 +269,7 @@ public class ProviderAccessor extends ServiceAccessor implements
                     ServiceItem[] matching = Filters.matching(matches.items, filter);
                     if (matching.length > 0) return matching;
                 } catch (RemoteException e) {
-                    logger.log(Level.SEVERE, "Could not contact Cataloger, falling back", e);
+                    logger.log(Level.SEVERE, "Problem with Cataloger, falling back", e);
                 }
             }
         }

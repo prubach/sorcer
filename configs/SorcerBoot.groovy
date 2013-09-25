@@ -101,7 +101,7 @@ deployment(name: 'Sorcer') {
       service(name: "Cataloger") {
         interfaces {
             classes 'sorcer.core.provider.Cataloger'
-            artifact ref: 'sorcer-api'
+            artifact ref: 'cataloger-api'
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
             artifact ref: 'cataloger-prv'

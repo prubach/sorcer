@@ -23,11 +23,12 @@ import java.lang.reflect.Modifier;
 import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.security.Permission;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.jini.core.constraint.MethodConstraints;
@@ -167,24 +168,12 @@ public class SorcerILFactory extends BasicILFactory {
 			throw new NullPointerException("impl is null");
 		}
 
-		List exposedInterfaces = new ArrayList();
-		Object curr = null;
-		Iterator it = serviceBeanMap.keySet().iterator();
-		while (it.hasNext()) {
-			curr = (Class) it.next();
-			if (curr != null && !exposedInterfaces.contains(curr))
-				exposedInterfaces.add(curr);
-		}
-		exposedInterfaces.add(Service.class);
-		exposedInterfaces.add(RemoteMethodControl.class);
-		exposedInterfaces.add(TrustEquivalence.class);
-		// exposedInterfaces.add(net.jini.admin.Administrable.class);
+        Set<Class> exposedInterfaces = new HashSet<Class>();
+        Collections.addAll(exposedInterfaces, super.getExtraProxyInterfaces(impl));
+        exposedInterfaces.add(Service.class);
+        exposedInterfaces.addAll(serviceBeanMap.keySet());
 
-		Class[] clazzes = new Class[exposedInterfaces.size()];
-		for (int i = 0; i < clazzes.length; i++) {
-			clazzes[i] = (Class) exposedInterfaces.get(i);
-		}
-		return clazzes;
+        return exposedInterfaces.toArray(new Class[exposedInterfaces.size()]);
 	}
 
 	/** {@inheritDoc} */

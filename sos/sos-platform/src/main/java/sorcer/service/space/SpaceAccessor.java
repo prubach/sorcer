@@ -26,16 +26,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.service.Accessor;
-import sorcer.util.ServiceAccessor;
+import sorcer.util.ProviderNameUtil;
+import sorcer.util.SorcerProviderNameUtil;
 
 
 /**
  * @author Rafał Krupiński
  */
-public class SpaceAccessor extends ServiceAccessor{
+public class SpaceAccessor {
     private static final Logger log = LoggerFactory.getLogger(SpaceAccessor.class);
 
     protected static SpaceAccessor instance = new SpaceAccessor();
+    private JavaSpace05 cache;
+    private ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
+
     /**
      * Returns a JavaSpace service with a given name.
      *
@@ -58,7 +62,7 @@ public class SpaceAccessor extends ServiceAccessor{
         // first test if our cached JavaSpace is alive
         // and if it's the case then return it,
         // otherwise get a new JavSpace proxy
-        JavaSpace05 javaSpace = (JavaSpace05) cache.get(JavaSpace05.class.getName());
+        JavaSpace05 javaSpace = cache;
         if (javaSpace != null) {
             try {
                 javaSpace.readIfExists(new Name("_SORCER_"), null,
@@ -66,13 +70,13 @@ public class SpaceAccessor extends ServiceAccessor{
                 return javaSpace;
             } catch (Exception e) {
                 //log.error("error", e.getMessage());
-                cache.remove(JavaSpace05.class.getName());
+                cache = null;
             }
         }
 
         Entry[] attrs = null;
         if (spaceName != null) {
-            attrs = new Entry[] { new Name(spaceName) };
+            attrs = new Entry[]{new Name(spaceName)};
         }
         String sg = spaceGroup;
         if (spaceGroup == null) {
@@ -84,12 +88,12 @@ public class SpaceAccessor extends ServiceAccessor{
         try {
             javaSpace.readIfExists(new Name("_SORCER_"), null,
                     JavaSpace.NO_WAIT);
-            cache.put(JavaSpace05.class.getName(), javaSpace);
+            cache = javaSpace;
             log.info("JavaSpace is back!");
             return javaSpace;
         } catch (Exception e) {
             log.error("Problem connecting to JavaSpace");
-            cache.remove(JavaSpace05.class.getName());
+            cache = null;
             return null;
         }
     }
@@ -102,6 +106,7 @@ public class SpaceAccessor extends ServiceAccessor{
     public static JavaSpace05 getSpace() {
         return instance.doGetSpace();
     }
+
     public JavaSpace05 doGetSpace() {
         return doGetSpace(providerNameUtil.getName(JavaSpace05.class), SorcerEnv.getSpaceGroup());
     }

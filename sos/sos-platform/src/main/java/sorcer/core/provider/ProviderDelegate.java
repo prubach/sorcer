@@ -16,6 +16,7 @@
  */
 package sorcer.core.provider;
 
+import com.sun.jini.admin.DestroyAdmin;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -41,7 +42,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,13 +84,14 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
+import sorcer.config.BeanListener;
+import sorcer.config.ServiceBeanListener;
 import sorcer.core.ContextManagement;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.SorcerNotifierProtocol;
 import sorcer.core.UEID;
 import sorcer.service.*;
-import sorcer.core.ContextManagement;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -109,7 +110,6 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
@@ -300,7 +300,7 @@ public class ProviderDelegate {
 	 * Exposed service type components. A key is an interface and a value its
 	 * implementing service-object.
 	 */
-	private Map serviceComponents;
+	private Map<Class, Object> serviceComponents;
 
 	/**
 	 * List of Exertions for which SLA Offer was given
@@ -317,6 +317,8 @@ public class ProviderDelegate {
 	private String hostName, hostAddress;
 
 	private ContextManagement contextManager;
+
+    private BeanListener beanListener = ServiceBeanListener.getBeanListener();
 
 	/*
 	 * A nested class to hold the state information of the executing thread for
@@ -405,20 +407,6 @@ public class ProviderDelegate {
 		spaceName = config.getProperty(J_SPACE_NAME,
                 SorcerEnv.getActualSpaceName());
 
-		Class[] serviceTypes = new Class[0];
-		try {
-			serviceTypes = (Class[]) config.jiniConfig.getEntry(
-					ServiceProvider.PROVIDER, J_INTERFACES, Class[].class);
-		} catch (ConfigurationException e) {
-			// do nothing, used the default value
-			// e.printStackTrace();
-		}
-		if ((serviceTypes != null) && (serviceTypes.length > 0)) {
-			publishedServiceTypes = serviceTypes;
-			logger.info("*** published services: "
-					+ Arrays.toString(publishedServiceTypes));
-		}
-
 		try {
 			singleThreadModel = (Boolean) config.jiniConfig.getEntry(
 					ServiceProvider.PROVIDER, J_SINGLE_TRHREADED_MODEL,
@@ -476,7 +464,22 @@ public class ProviderDelegate {
 		String partnerName = null;
 		boolean remoteContextLogging = false;
 
-		try {
+        Class[] serviceTypes = new Class[0];
+        try {
+            serviceTypes = (Class[]) config.jiniConfig.getEntry(
+                    ServiceProvider.PROVIDER, J_INTERFACES, Class[].class);
+        } catch (ConfigurationException e) {
+            // do nothing, used the default value
+            // e.printStackTrace();
+        }
+        if ((serviceTypes != null) && (serviceTypes.length > 0)) {
+            publishedServiceTypes = serviceTypes;
+            logger.info("*** published services: "
+                    + Arrays.toString(publishedServiceTypes));
+            verifyPublishedInterfaces();
+        }
+
+        try {
 			remoteContextLogging = (Boolean) jconfig.getEntry(
 					ServiceProvider.COMPONENT, REMOTE_CONTEXT_LOGGING,
 					boolean.class, false);
@@ -693,7 +696,15 @@ public class ProviderDelegate {
 				+ innerProxy);
 	}
 
-	private void initThreadGroups() {
+    private void verifyPublishedInterfaces() {
+        if (publishedServiceTypes == null) return;
+        for (Class type : publishedServiceTypes) {
+            if (!Remote.class.isAssignableFrom(type))
+                logger.warning("Published interface " + type.getName() + " doeas not extend " + Remote.class.getName());
+        }
+    }
+
+    private void initThreadGroups() {
 		namedGroup = new ThreadGroup("Provider Group: " + getProviderName());
 		namedGroup.setDaemon(true);
 		namedGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
@@ -1863,6 +1874,7 @@ public class ProviderDelegate {
 				}
 			}
 		}
+        beanListener.destroy(serviceBeans);
 	}
 
 	public void fireEvent() throws RemoteException {
@@ -2771,9 +2783,8 @@ public class ProviderDelegate {
 			if (beanClasses.length > 0) {
 				logger.finer("*** service bean classes by " + getProviderName()
 						+ " for: \n" + Arrays.toString(beanClasses));
-				for (int i = 0; i < beanClasses.length; i++)
-					allBeans.add(instantiate(beanClasses[i]));
-			}
+                instantiate(allBeans, beanClasses);
+            }
 
 			// find it out if Groovy scripts are available
 			String[] scriptlets = (String[]) Config.getNonNullEntry(config,
@@ -2807,6 +2818,7 @@ public class ProviderDelegate {
 								exporterInterface, exporterPort),
 								new BasicILFactory()));
 				if (outerExporter == null) {
+
 					logger.warning("*** NO provider exporter defined!!!");
 				} else {
 					logger.finer("current exporter: "
@@ -2833,7 +2845,7 @@ public class ProviderDelegate {
 		}
 	}
 
-	/**
+    /**
 	 * Initializes the map between all the interfaces and the service object
 	 * passed via the configuration file.
 	 * 
@@ -2841,7 +2853,7 @@ public class ProviderDelegate {
 	 *            service objects exposing their interface types
 	 */
 	@SuppressWarnings("unchecked")
-	private Map initServiceBeans(Object[] serviceBeans) {
+	private Map<Class, Object> initServiceBeans(Object[] serviceBeans) {
 		if (serviceBeans == null)
 			try {
 				throw new NullPointerException("No service beans defined by: "
@@ -2849,17 +2861,14 @@ public class ProviderDelegate {
 			} catch (RemoteException e) {
 				// ignore it
 			}
-		serviceComponents = new Hashtable();
+		serviceComponents = new HashMap<Class, Object>();
 
-		for (int i = 0; i < serviceBeans.length; i++) {
-			Class[] interfaze = ((Object) serviceBeans[i]).getClass()
-					.getInterfaces();
-			for (int j = 0; j < interfaze.length; j++) {
-				// if (interfaze[j].getDeclaredMethods().length != 0)
-				// allow marker interfaces to be added
-				serviceComponents.put(interfaze[j], serviceBeans[i]);
-			}
-		}
+        for (Object o : serviceBeans) {
+            for (Class type : publishedServiceTypes) {
+                if(type.isInstance(o))
+                    serviceComponents.put(type, o);
+            }
+        }
 		return serviceComponents;
 	}
 
@@ -2882,23 +2891,18 @@ public class ProviderDelegate {
 		return bean;
 	}
 
-	private Object instantiate(Class beanClass) throws Exception {
-		return createBean(beanClass);
-	}
-
-	private Object instantiate(String serviceBean) throws Exception {
-		Class clazz = Class.forName(serviceBean, false, implClassLoader);
-		return createBean(clazz);
-	}
-
-	private Object createBean(Class beanClass) throws Exception {
-		Object bean = beanClass.newInstance();
-		initBean(bean);
-		return bean;
-	}
+    private void instantiate(List<Object> allBeans, Class[] beanClasses) throws Exception {
+        for (Class beanClass : beanClasses) {
+            allBeans.add(beanClass.newInstance());
+        }
+        beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
+        for (Object bean : allBeans) {
+            initBean(bean);
+        }
+    }
 
 	private Object initBean(Object serviceBean) {
-		try {
+        try {
 			Method m = serviceBean.getClass().getMethod(
 					"init", new Class[] { Provider.class });
 			m.invoke(serviceBean, new Object[] { provider });

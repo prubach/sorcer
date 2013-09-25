@@ -1,4 +1,4 @@
-package sorcer.ext;
+package sorcer.config;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,16 +18,17 @@ package sorcer.ext;
  */
 
 
-import net.jini.core.lookup.ServiceID;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import java.rmi.RemoteException;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Rafał Krupiński
  */
-public interface Provisioner {
-    <T> T provision(String type, String name, String version) throws RemoteException;
-
-    void unProvision(ServiceID service) throws RemoteException;
-
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Component {
+    String value() default "sorcer.core.provider.ServiceProvider";
 }

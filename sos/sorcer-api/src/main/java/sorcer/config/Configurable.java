@@ -1,4 +1,4 @@
-package sorcer.ext;
+package sorcer.config;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,16 +18,12 @@ package sorcer.ext;
  */
 
 
-import net.jini.core.lookup.ServiceID;
-
-import java.rmi.RemoteException;
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
 
 /**
  * @author Rafał Krupiński
  */
-public interface Provisioner {
-    <T> T provision(String type, String name, String version) throws RemoteException;
-
-    void unProvision(ServiceID service) throws RemoteException;
-
+public interface Configurable {
+    void configure(Configuration config) throws ConfigurationException;
 }
