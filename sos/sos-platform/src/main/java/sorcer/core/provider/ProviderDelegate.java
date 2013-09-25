@@ -84,7 +84,8 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import sorcer.config.ServiceBeanActivator;
+import sorcer.config.BeanListener;
+import sorcer.config.ServiceBeanListener;
 import sorcer.core.ContextManagement;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
@@ -316,6 +317,8 @@ public class ProviderDelegate {
 	private String hostName, hostAddress;
 
 	private ContextManagement contextManager;
+
+    private BeanListener beanListener = ServiceBeanListener.getBeanListener();
 
 	/*
 	 * A nested class to hold the state information of the executing thread for
@@ -1871,28 +1874,7 @@ public class ProviderDelegate {
 				}
 			}
 		}
-        destroyBeans();
-	}
-
-    private void destroyBeans() throws RemoteException {
-        for (Object o : serviceBeans) {
-            if(o instanceof DestroyAdmin)
-                ((DestroyAdmin)o).destroy();
-            else if(o instanceof sorcer.core.DestroyAdmin)
-                ((sorcer.core.DestroyAdmin) o).destroy();
-            else {
-                try {
-                    Method destroy = o.getClass().getMethod("destroy");
-                    if(destroy.isAccessible())
-                        destroy.invoke(o);
-                } catch (NoSuchMethodException ignored) {
-                } catch (InvocationTargetException e) {
-                    logger.log(Level.WARNING, "error while destroying bean",e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-				}
-			}
-		}
+        beanListener.destroy(serviceBeans);
 	}
 
 	public void fireEvent() throws RemoteException {
@@ -2913,7 +2895,7 @@ public class ProviderDelegate {
         for (Class beanClass : beanClasses) {
             allBeans.add(beanClass.newInstance());
         }
-        ServiceBeanActivator.getServiceBeanActivator().activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
+        beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
         for (Object bean : allBeans) {
             initBean(bean);
         }

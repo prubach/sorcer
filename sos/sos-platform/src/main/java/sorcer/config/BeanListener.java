@@ -24,6 +24,9 @@ import sorcer.core.provider.ServiceProvider;
 /**
  * @author Rafał Krupiński
  */
-public interface ServiceActivator {
+public interface BeanListener {
+
     public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException;
+
+    public void destroy(Object[]serviceBeans);
 }

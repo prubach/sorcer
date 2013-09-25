@@ -29,9 +29,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * Configure object of which class is annotated with @Component and methods or fields annotated with ConfigEntry
+ *
  * @author Rafał Krupiński
  */
-public class Configurer implements ServiceActivator {
+public class Configurer extends AbstractBeanListener {
 
     final private static Logger log = LoggerFactory.getLogger(Configurer.class);
 

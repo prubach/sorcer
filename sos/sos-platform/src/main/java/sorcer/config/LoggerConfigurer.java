@@ -19,11 +19,12 @@ package sorcer.config;
 
 
 import net.jini.config.ConfigurationException;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceProvider;
 
+import java.io.File;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
@@ -32,27 +33,29 @@ import java.util.logging.SimpleFormatter;
 /**
  * @author Rafał Krupiński
  */
-public class LoggerConfigurer implements ServiceActivator{
+public class LoggerConfigurer extends AbstractBeanListener {
+    private final static org.slf4j.Logger log = LoggerFactory.getLogger(LoggerConfigurer.class);
+
     @Override
     public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
+        String providerName = null;
         try {
-            Handler h = new FileHandler(SorcerEnv.getHomeDir()
-                    + "/logs/remote/local-Cataloger-" + provider.getDelegate().getHostName()
-                    + "-" + provider.getProviderName() + ".log", 2000000, 8, true);
+            File dir = new File(SorcerEnv.getHomeDir(), "logs/remote");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            providerName = provider.getProviderName();
+            Handler h = new FileHandler(dir.getPath() + "/local-Cataloger-" + provider.getDelegate().getHostName()
+                    + "-" + providerName + ".log", 2000000, 8, true);
             h.setFormatter(new SimpleFormatter());
 
             for (Object serviceBean : serviceBeans) {
-
-
-            Logger logger = Logger.getLogger(serviceBean.getClass().getName());
-            logger.addHandler(h);
-            logger.setUseParentHandlers(false);
+                Logger logger = Logger.getLogger(serviceBean.getClass().getName());
+                logger.addHandler(h);
+                logger.setUseParentHandlers(false);
             }
-        } catch (SecurityException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Could not configure log file handler for " + providerName, e);
         }
-
     }
 }

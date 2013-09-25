@@ -21,30 +21,17 @@ package sorcer.config;
 import net.jini.config.ConfigurationException;
 import sorcer.core.provider.ServiceProvider;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * @author Rafał Krupiński
  */
-public class ServiceBeanActivator implements ServiceActivator {
-    private static ServiceBeanActivator inst = new ServiceBeanActivator();
-
-    public static ServiceActivator getServiceBeanActivator() {
-        return inst;
-    }
-
-    private List<ServiceActivator> activators;
-
-    {
-        activators = new LinkedList<ServiceActivator>();
-        activators.add(new Configurer());
-        activators.add(new LoggerConfigurer());
-    }
-
+public abstract class AbstractBeanListener implements BeanListener {
+    @Override
     public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
-        for (ServiceActivator activator : activators) {
-            activator.activate(serviceBeans, provider);
-        }
+
+    }
+
+    @Override
+    public void destroy(Object[] serviceBeans) {
+
     }
 }
