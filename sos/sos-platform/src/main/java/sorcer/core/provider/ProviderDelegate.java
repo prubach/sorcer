@@ -403,20 +403,6 @@ public class ProviderDelegate {
 		spaceName = config.getProperty(J_SPACE_NAME,
                 SorcerEnv.getActualSpaceName());
 
-		Class[] serviceTypes = new Class[0];
-		try {
-			serviceTypes = (Class[]) config.jiniConfig.getEntry(
-					ServiceProvider.PROVIDER, J_INTERFACES, Class[].class);
-		} catch (ConfigurationException e) {
-			// do nothing, used the default value
-			// e.printStackTrace();
-		}
-		if ((serviceTypes != null) && (serviceTypes.length > 0)) {
-			publishedServiceTypes = serviceTypes;
-			logger.info("*** published services: "
-					+ Arrays.toString(publishedServiceTypes));
-		}
-
 		try {
 			singleThreadModel = (Boolean) config.jiniConfig.getEntry(
 					ServiceProvider.PROVIDER, J_SINGLE_TRHREADED_MODEL,
@@ -474,7 +460,22 @@ public class ProviderDelegate {
 		String partnerName = null;
 		boolean remoteContextLogging = false;
 
-		try {
+        Class[] serviceTypes = new Class[0];
+        try {
+            serviceTypes = (Class[]) config.jiniConfig.getEntry(
+                    ServiceProvider.PROVIDER, J_INTERFACES, Class[].class);
+        } catch (ConfigurationException e) {
+            // do nothing, used the default value
+            // e.printStackTrace();
+        }
+        if ((serviceTypes != null) && (serviceTypes.length > 0)) {
+            publishedServiceTypes = serviceTypes;
+            logger.info("*** published services: "
+                    + Arrays.toString(publishedServiceTypes));
+            verifyPublishedInterfaces();
+        }
+
+        try {
 			remoteContextLogging = (Boolean) jconfig.getEntry(
 					ServiceProvider.COMPONENT, REMOTE_CONTEXT_LOGGING,
 					boolean.class, false);
@@ -691,7 +692,15 @@ public class ProviderDelegate {
 				+ innerProxy);
 	}
 
-	private void initThreadGroups() {
+    private void verifyPublishedInterfaces() {
+        if (publishedServiceTypes == null) return;
+        for (Class type : publishedServiceTypes) {
+            if (!Remote.class.isAssignableFrom(type))
+                logger.warning("Published interface " + type.getName() + " doeas not extend " + Remote.class.getName());
+        }
+    }
+
+    private void initThreadGroups() {
 		namedGroup = new ThreadGroup("Provider Group: " + getProviderName());
 		namedGroup.setDaemon(true);
 		namedGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
@@ -2849,23 +2858,12 @@ public class ProviderDelegate {
 			}
 		serviceComponents = new HashMap<Class, Object>();
 
-/*
-        for (Class published : publishedServiceTypes) {
-            for (Class iface : published.getInterfaces()) {
-                serviceComponents.put(iface, published);
+        for (Object o : serviceBeans) {
+            for (Class type : publishedServiceTypes) {
+                if(type.isInstance(o))
+                    serviceComponents.put(type, o);
             }
         }
-*/
-
-        for (int i = 0; i < serviceBeans.length; i++) {
-			Class[] interfaze = ((Object) serviceBeans[i]).getClass()
-					.getInterfaces();
-			for (int j = 0; j < interfaze.length; j++) {
-				// if (interfaze[j].getDeclaredMethods().length != 0)
-				// allow marker interfaces to be added
-				serviceComponents.put(interfaze[j], serviceBeans[i]);
-			}
-		}
 		return serviceComponents;
 	}
 
