@@ -67,7 +67,7 @@ public class Accessor {
     public static void initialize(String providerType) {
         try {
             logger.fine("SORCER DynamicAccessor provider: " + providerType);
-            Class type = Class.forName(providerType);
+            Class type = Class.forName(providerType,true, Thread.currentThread().getContextClassLoader());
             if(!DynamicAccessor.class.isAssignableFrom(type)){
                 throw new IllegalArgumentException("Configured class must implement DynamicAccessor: "+providerType);
             }
