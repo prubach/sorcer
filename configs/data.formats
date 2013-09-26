@@ -381,3 +381,10 @@ engineering.scilab.bool.put= dnt|scilab|bool|put
 engineering.scilab.bool.get= dnt|scilab|bool|get
 engineering.scilab.bool.get-single= dnt|scilab|bool|get=single
 
+#Dakota Provider
+engineering.dakota.file.stdin = dnt|dakota|file|stdin
+engineering.dakota.file.stdout = dnt|dakota|file|stdout
+engineering.dakota.file.stderr = dnt|dakota|file|stderr
+engineering.dakota.file.input = dnt|dakota|file|input
+engineering.dakota.file.output = dnt|dakota|file|output
+engineering.dakota.parser.input = dnt|dakota|parser|input
