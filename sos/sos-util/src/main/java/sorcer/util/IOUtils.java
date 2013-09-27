@@ -1,10 +1,6 @@
 package sorcer.util;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.zip.ZipFile;
 
 public class IOUtils {
@@ -182,4 +178,31 @@ public class IOUtils {
 			// ignore
 		}
 	}
+
+    public static String readFileToString(String filePath) throws IOException {
+        return readFileToString(new File(filePath));
+    }
+
+    public static String readFileToString(File file) throws IOException {
+        StringBuilder str = new StringBuilder();
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            InputStreamReader in = new InputStreamReader(fileInputStream);
+
+            char[] buff = new char[1 << 12];
+            int read;
+
+            while ((read = in.read(buff)) > 0) {
+                str.append(buff, 0, read);
+            }
+        } finally {
+            if (fileInputStream != null)
+                try {
+                    fileInputStream.close();
+                } catch (IOException ignored) {
+                }
+        }
+        return str.toString();
+    }
 }
