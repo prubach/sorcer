@@ -105,6 +105,11 @@
                 <destName>logger-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/logger/logger-api/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logger-api-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/logger/logger-prv/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>logger-prv-${v.sorcer}.pom</destName>
@@ -138,6 +143,11 @@
                 <source>${basedir}/../sos/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../tools/util-rio/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>util-rio-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../tools/provider-root/pom.xml</source>
