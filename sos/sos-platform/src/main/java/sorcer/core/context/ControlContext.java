@@ -177,7 +177,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		setComponentAttribute(PRIORITY);
 		setComponentAttribute(NOTIFY_EXEC);
 		setMonitorable(false);
-		setProvisionable(false);
+		setProvisionable(true);
 		setNotifierEnabled(false);
 		setExecTimeRequested(true);
 		setWaitable(true);
