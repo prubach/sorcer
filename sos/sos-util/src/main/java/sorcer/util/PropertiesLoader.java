@@ -11,7 +11,8 @@ import java.util.Properties;
 public class PropertiesLoader {
 	public Map<String, String> loadAsMap(Class c) {
         String name = c.getName();
-        return loadAsMap(name.replace('.', '/') + ".properties", c.getClassLoader());
+        String path = name.replace('.', '/') + ".properties";
+        return loadAsMap(path, c.getClassLoader());
 	}
 
 	public Map<String, String> loadAsMap(String path, ClassLoader cl) {
@@ -21,8 +22,8 @@ public class PropertiesLoader {
 	public Properties loadAsProperties(String path, ClassLoader cl) {
 		InputStream stream = cl.getResourceAsStream(path);
 		if (stream == null) {
-			throw new IllegalArgumentException("Could not load file " + path);
-		}
+            throw new IllegalArgumentException("Could not load file " + path + " in " + cl);
+        }
 		Properties result = new Properties();
 		try {
 			result.load(stream);
