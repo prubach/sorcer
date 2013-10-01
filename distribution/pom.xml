@@ -258,6 +258,16 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.rioproject.monitor</groupId>
+            <artifactId>monitor-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.cybernode</groupId>
+            <artifactId>cybernode-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>org.rioproject.resolver</groupId>
             <artifactId>resolver-project</artifactId>
             <version>${v.rio}</version>

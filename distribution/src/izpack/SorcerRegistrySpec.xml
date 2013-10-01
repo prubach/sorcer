@@ -4,9 +4,17 @@
                keypath="Environment"
                root="HKCU"
                string="$INSTALL_PATH"/>
-        <!--<value name="PATH"
+    </pack>
+<!--    <pack name="ant">
+        <value name="ANT_HOME"
                keypath="Environment"
                root="HKCU"
-               string="$OLD_KEY_VALUE;&quot;$INSTALL_PATH\bin&quot;"/>-->
+               string="$INSTALL_PATH/lib/apache-ant"/>
     </pack>
+    <pack name="maven">
+        <value name="M2_HOME"
+               keypath="Environment"
+               root="HKCU"
+               string="$INSTALL_PATH/lib/apache-maven"/>
+    </pack>-->
 </registry>

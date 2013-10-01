@@ -19,11 +19,13 @@ package sorcer.resolver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.PropertiesLoader;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,9 +43,15 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 
 	private static PropertiesLoader propertiesLoader = new PropertiesLoader();
 
-	{
-		versions = propertiesLoader.loadAsMap("META-INF/maven/versions.properties", Thread.currentThread()
+    private static String VERSIONS_PROPS_FILE= SorcerEnv.getHomeDir() + File.separator + "configs" +
+            File.separator + "groupversions.properties";
+
+
+    {
+		versions = propertiesLoader.loadAsMap("META-INF/maven/groupversions.properties", Thread.currentThread()
 				.getContextClassLoader());
+        versions.putAll(propertiesLoader.loadAsMap(new File(VERSIONS_PROPS_FILE)));
+
 	}
 
 	@Override
@@ -57,7 +65,7 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 	}
 
 	/**
-	 * Resolve version of artifact using versions.properties or pom.properties
+	 * Resolve version of artifact using groupversions.properties or pom.properties
 	 * from individual artifact jar the jar must be already in the classpath of
 	 * current thread context class loader in order to load its pom.version
 	 *
@@ -103,7 +111,7 @@ abstract public class AbstractArtifactResolver implements ArtifactResolver {
 		String version = properties.getProperty("version");
 		if (version == null) {
 			throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId
-					+ " from versions.properties");
+					+ " from groupversions.properties");
 		}
 		return version;
 	}

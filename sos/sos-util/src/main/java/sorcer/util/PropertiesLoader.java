@@ -1,8 +1,6 @@
 package sorcer.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -39,6 +37,21 @@ public class PropertiesLoader {
 		}
 		return result;
 	}
+
+    public Map<String, String> loadAsMap(File inputFile) {
+
+        Map<String, String> propertyMapVer = new HashMap<String, String>();
+        if (inputFile.exists()) {
+            try {
+                Properties props = new Properties();
+                props.load(new FileInputStream(inputFile));
+                propertyMapVer = (Map) props;
+            } catch (IOException fe) {
+
+            }
+        }
+        return propertyMapVer;
+    }
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, String> toMap(Properties properties) {

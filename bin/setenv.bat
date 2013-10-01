@@ -17,19 +17,33 @@ pushd
 @rem 
 @rem */
 @echo off
+SET mypath=%~dp0
+SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
-    IF EXIST %CD%\bin\sorcer-boot.bat (
-        SET SORCER_HOME=%CD%
+    IF EXIST %SHOME_BIN%\sorcer-boot.bat (
+        SET SORCER_HOME=%SHOME_BIN%\..
     ) ELSE (
-        IF EXIST %CD%\..\bin\sorcer-boot.bat (
-            SET SORCER_HOME=%CD%\..
-        ) ELSE (
-            ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
-        )
+        ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
 )
+
 IF DEFINED SORCER_HOME (
     SET "PATH=%SORCER_HOME%\bin;%PATH%"
+)
+
+SET FOUND=
+SET PROG=mvn.bat
+FOR %%i IN (%PATH%) DO IF EXIST %%i\%PROG% SET FOUND=%%i
+IF NOT DEFINED FOUND (
+    SET M2_HOME=%SORCER_HOME%\lib\apache-maven
+    SET "PATH=%M2_HOME%\bin;%PATH%"
+)
+SET FOUND=
+SET PROG=ant.bat
+FOR %%i IN (%PATH%) DO IF EXIST %%i\%PROG% SET FOUND=%%i
+IF NOT DEFINED FOUND (
+    SET ANT_HOME=%SORCER_HOME%\lib\apache-ant
+    SET "PATH=%ANT_HOME%\bin;%PATH%"
 )
 
 rem This script sets the environment needed to run commands in this 

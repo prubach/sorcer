@@ -1122,11 +1122,13 @@ public class SorcerEnv {
 
             // Fall back to default location in user's home/.m2
             try {
-                File repoDir = new File(System.getProperty("user.home") + "/.m2/repository");
+                File repoDir = new File(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
                 if (repoDir.exists() && repoDir.isDirectory())
                     props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 else {
-                    FileUtils.forceMkdir(repoDir);
+                    logger.info("Creaing missing Repo Dir default location: " + repoDir.getAbsolutePath());
+                    if (!repoDir.mkdirs())
+                        logger.severe("Problem creating Repo Dir default location: " + repoDir.getAbsolutePath());
                     props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 }
                 logger.fine("Setting Repo Dir default location: " + repoDir.getAbsolutePath());

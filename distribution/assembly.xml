@@ -399,9 +399,30 @@
             <includes>
                 <include>**/*</include>
             </includes>
+            <excludes>
+                <exclude>apache-ant/bin/ant</exclude>
+                <exclude>apache-ant/bin/antRun</exclude>
+                <exclude>apache-maven/bin/mvn</exclude>
+                <exclude>apache-maven/bin/mvnyjp</exclude>
+                <exclude>apache-maven/bin/mvnDebug</exclude>
+            </excludes>
             <filtered>false</filtered>
+            <fileMode>0644</fileMode>
         </fileSet>
-
+        <fileSet>
+            <directory>${basedir}/src/main/lib</directory>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>apache-ant/bin/ant</include>
+                <include>apache-ant/bin/antRun</include>
+                <include>apache-maven/bin/mvn</include>
+                <include>apache-maven/bin/mvnyjp</include>
+                <include>apache-maven/bin/mvnDebug</include>
+            </includes>
+            <filtered>false</filtered>
+            <fileMode>0755</fileMode>
+        </fileSet>
+            
         <!-- Hyperic -->
         <fileSet>
             <directory>
@@ -540,6 +561,10 @@
             <includes>
                 <include>org.rioproject:*</include>
             </includes>
+            <excludes>
+                <exclude>org.rioproject:monitor:*</exclude>
+                <exclude>org.rioproject:cybernode:*</exclude>
+            </excludes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
@@ -551,6 +576,26 @@
                 <include>org.rioproject.resolver:*</include>
             </includes>
             <outputDirectory>lib/${org.rioproject.resolver}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.rioproject.monitor:*</include>
+            </includes>
+            <outputDirectory>lib/${org.rioproject.monitor}</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
+
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>org.rioproject.cybernode:*</include>
+            </includes>
+            <outputDirectory>lib/${org.rioproject.cybernode}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
 

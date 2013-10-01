@@ -57,6 +57,9 @@ public class Installer {
 
     private static String COMMONS_LIBS="commons";
 
+    private static String VERSIONS_PROPS_FILE=SorcerEnv.getHomeDir() + File.separator + "configs" +
+            File.separator + "groupversions.properties";
+
     private static String repoDir;
     int errorCount = 0;
 
@@ -88,11 +91,12 @@ public class Installer {
             logger.severe("Problem installing jars to local maven repository - repository directory does not exist! " + io.getMessage());
             System.exit(-1);
         }
-        String resourceName = "META-INF/maven/versions.properties";
+        String resourceName = "META-INF/maven/groupversions.properties";
         URL resourceVersions = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (resourceVersions == null) {
             throw new RuntimeException("Could not find versions.properties");
         }
+
         resourceName = "META-INF/maven/repolayout.properties";
         URL resourceRepo = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (resourceRepo == null) {
@@ -115,6 +119,14 @@ public class Installer {
             @SuppressWarnings("unchecked")
             Map<String, String> propertyMapVer = (Map) propertiesVer;
             versionsMap.putAll(propertyMapVer);
+
+            File versionsFile = new File(VERSIONS_PROPS_FILE);
+            if (versionsFile.exists()) {
+                Properties props = new Properties();
+                props.load(new FileInputStream(versionsFile));
+                propertyMapVer = (Map) props;
+                versionsMap.putAll(propertyMapVer);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Could not load repolayout.properties", e);
         } finally {
