@@ -35,6 +35,7 @@ import sorcer.service.ExertionInfo;
 import sorcer.service.MonitorException;
 import sorcer.service.ServiceExertion;
 import sorcer.tools.shell.NetworkShell;
+import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 
 public class EmxCmd extends ShellCmd {
@@ -368,7 +369,7 @@ public class EmxCmd extends ShellCmd {
 	}
 
 	static ServiceItem[] findMonitors() throws RemoteException {
-		emxMonitors = ShellCmd.lookup(new Class[] { MonitoringManagement.class });
+		emxMonitors = ReggieHelper.lookup(new Class[]{MonitoringManagement.class});
 		return emxMonitors;
 	}
 

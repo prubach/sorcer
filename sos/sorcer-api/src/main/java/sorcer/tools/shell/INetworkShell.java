@@ -24,7 +24,7 @@ import java.io.File;
  * @author Rafał Krupiński
  */
 public interface INetworkShell {
-    void addToCommandTable(String cmd, Class<?> inCls);
+    void addToCommandTable(String cmd, Class<? extends ShellCmd> inCls);
 
     void addAlias(String alias, String command);
 

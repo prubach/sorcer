@@ -101,7 +101,8 @@ import com.sun.jini.config.Config;
  */
 public class NetworkShell implements DiscoveryListener, INetworkShell {
 
-	private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
+    public static int selectedRegistrar = 0;
+    private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
 
 	static private String shellName = "nsh";
 
@@ -427,7 +428,18 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		}
 	}
 
-	public void discovered(DiscoveryEvent evt) {
+    public static ServiceRegistrar getSelectedRegistrar() {
+        List<ServiceRegistrar> registrars = getRegistrars();
+        if (registrars != null && registrars.size() > 0
+                && selectedRegistrar >= 0)
+            return registrars.get(selectedRegistrar);
+        else if (selectedRegistrar < 0 && registrars.size() > 0) {
+            return registrars.get(0);
+        } else
+            return null;
+    }
+
+    public void discovered(DiscoveryEvent evt) {
 		ServiceRegistrar[] regs = evt.getRegistrars();
 		// shellOutput.println("NOTICE: discovery made");
 		// shellOutput.print(SYSTEM_PROMPT);
@@ -475,11 +487,11 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	}
 
 	@Override
-    public void addToCommandTable(String cmd, Class<?> inCls) {
+    public void addToCommandTable(String cmd, Class<? extends ShellCmd> inCls) {
 		try {
 			// System.out.println("creating command's instance - "
 			// + inCls.getName() + " for " + cmd);
-			ShellCmd cmdInstance = (ShellCmd) inCls.newInstance();
+			ShellCmd cmdInstance = inCls.newInstance();
 			commandTable.put(cmd, cmdInstance);
 		} catch (Exception e) {
 			System.out.println(e);

@@ -77,7 +77,7 @@ public class ChgrpCmd extends ShellCmd {
 			NetworkShell.setGroups(groups);
 			NetworkShell.getDisco().terminate();
 			NetworkShell.getRegistrars().clear();
-			DiscoCmd.selectedRegistrar = 0;
+			NetworkShell.selectedRegistrar = 0;
 			NetworkShell.setLookupDiscovery(groups);
 		} else if (next.equals("-r")) {
 			int myIdx = Integer.parseInt(myTk.nextToken());
