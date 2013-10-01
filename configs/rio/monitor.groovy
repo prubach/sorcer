@@ -40,6 +40,7 @@ import org.rioproject.RioVersion
 import net.jini.lookup.ui.MainUI
 import org.rioproject.serviceui.UIFrameFactory
 import sorcer.core.SorcerEnv
+import java.io.File
 
 /*
 * Declare Provision Monitor properties
@@ -48,7 +49,16 @@ import sorcer.core.SorcerEnv
 class MonitorConfig {
     String serviceName = 'Provision Monitor'
     String serviceComment = 'Dynamic Provisioning Agent'
-    String jmxName = 'org.rioproject.monitor:type=Monitor'
+    String jmxName = 'org.rioproject.monitor:type=Monitor';
+
+    String[] getInitialOpStrings() {
+        String basicSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerBoot.groovy";
+        String extSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerExtBoot.groovy";
+        if (new File(extSorcerBoot).exists())
+            return [basicSorcerBoot, extSorcerBoot]
+        else
+            return [basicSorcerBoot]
+    }
 
     String[] getInitialLookupGroups() {
         //def groups = [System.getProperty(Constants.GROUPS_PROPERTY_NAME,

@@ -216,6 +216,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                 // Catalog lookup or use Lookup Service for the particular
                 // service
                 Service service = (Service) Accessor.getService(sig);
+                //if (service == null) {
+                //}
+
                 if (service == null) {
                     String msg = null;
                     // get the PROCESS Method and grab provider name + interface

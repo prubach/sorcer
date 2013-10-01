@@ -18,15 +18,13 @@ package sorcer.util;
  */
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.JarURLConnection;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import static sorcer.util.Collections.i;
+import java.util.jar.JarInputStream;
 
 /**
  * @author Rafał Krupiński
@@ -34,17 +32,18 @@ import static sorcer.util.Collections.i;
 public class MavenUtil {
     public static String findVersion(Class<?> serviceType) {
         URL jar = serviceType.getProtectionDomain().getCodeSource().getLocation();
-        JarURLConnection urlConnection = null;
         try {
-            urlConnection = (JarURLConnection) jar.openConnection();
-            JarFile jarFile = urlConnection.getJarFile();
-            Enumeration<JarEntry> entries = jarFile.entries();
-            for (JarEntry entry : i(entries)) {
+            JarInputStream zip = new JarInputStream(jar.openStream());
+            JarEntry entry = null;
+            while ((entry = zip.getNextJarEntry())!=null) {
                 String name = entry.getName();
-                System.out.println(name);
                 if (name.startsWith("META-INF/") && name.endsWith("/pom.properties")) {
+                    byte[]buf=new byte[(int) entry.getSize()];
+                    zip.read(buf);
+                    InputStream is=new ByteArrayInputStream(buf);
                     Properties properties = new Properties();
-                    properties.load(jarFile.getInputStream(entry));
+                    properties.load(is);
+                    zip.close();
                     return properties.getProperty("version");
                 }
             }

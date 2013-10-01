@@ -22,7 +22,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex1-api</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

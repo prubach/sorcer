@@ -31,6 +31,7 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Service;
 import sorcer.service.SignatureException;
+import sorcer.util.MavenUtil;
 
 import static sorcer.core.SorcerConstants.ANY;
 
@@ -97,6 +98,8 @@ public class NetSignature extends ObjectSignature {
 	public NetSignature(String selector, Class<?> serviceType,
 			String providerName, Type methodType) {
 		this.serviceType = serviceType;
+        if (serviceType!=null)
+            this.version = MavenUtil.findVersion(serviceType);
 		if (providerName == null || providerName.length() == 0)
 			this.providerName = ANY;
 		else
@@ -116,6 +119,7 @@ public class NetSignature extends ObjectSignature {
         try {
             Class serviceType = Class.forName(strServiceType);
             this.serviceType = serviceType;
+            if (serviceType!=null) this.version = MavenUtil.findVersion(serviceType);
             setSelector(selector);
         } catch (ClassNotFoundException e) {
             logger.severe("Problem creating NetSignature: " + e.getMessage());
@@ -125,7 +129,7 @@ public class NetSignature extends ObjectSignature {
     public NetSignature(String selector, Class<?> serviceType, String version,
                         String providerName, Type methodType) {
         this(selector, serviceType, providerName, methodType);
-        this.version = version;
+        if (version!=null) this.version = version;
     }
 
     public NetSignature(String selector, Class<?> serviceType, String version,
