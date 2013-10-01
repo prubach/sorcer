@@ -1796,4 +1796,16 @@ public class SorcerEnv {
     public static void setSorcerEnv(SorcerEnv sorcerEnv){
         SorcerEnv.sorcerEnv = sorcerEnv;
     }
+
+    public String getSorcerExt() {
+        String sorcerExt = System.getenv(SorcerConstants.E_SORCER_EXT);
+        if (sorcerExt == null || "".equals(sorcerExt)) {
+            sorcerExt = getSorcerHome();
+        }
+        return sorcerExt;
+    }
+
+    public File getSorcerExtDir() {
+        return new File(getSorcerExt());
+    }
 }

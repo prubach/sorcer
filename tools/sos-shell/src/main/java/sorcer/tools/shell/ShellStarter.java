@@ -17,9 +17,14 @@
  */
 package sorcer.tools.shell;
 
+import sorcer.boot.load.Activator;
+import sorcer.core.SorcerEnv;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLClassLoader;
 
 /**
  * Helper class to help classworlds to load classes.
@@ -27,6 +32,7 @@ import java.lang.reflect.Method;
 public class ShellStarter {
 
     public static ClassLoader loader;
+    public static final String CONFIG_EXT_PATH = "configs/shell/configs/nsh-start-ext.config";
 
     static void printUsage() {
         System.out.println("possible programs are 'nsh', 'console'");
@@ -85,6 +91,25 @@ public class ShellStarter {
             newArgs[i] = args[i + argsOffset];
         }
         // load configuration file
+        loadConfig(lc, config);
+        loadConfigExt(lc);
+        // create loader and execute main class
+        RootLoader rootLoader = new RootLoader(lc);
+        loader = rootLoader;
+        activate(rootLoader);
+        callMain(lc, newArgs);
+    }
+
+    private static void activate(URLClassLoader loader) {
+        try {
+            new Activator().activate(loader, loader.getURLs());
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit(e);
+        }
+    }
+
+    private static void loadConfig(LoaderConfiguration lc, String config) {
         if (config != null) {
             try {
                 lc.configure(new FileInputStream(config));
@@ -93,8 +118,16 @@ public class ShellStarter {
                 exit(e);
             }
         }
-        // create loader and execute main class
-        loader = new RootLoader(lc);
+    }
+
+    private static void loadConfigExt(LoaderConfiguration lc) {
+        File configFile = new File(SorcerEnv.getEnvironment().getSorcerExtDir(), CONFIG_EXT_PATH);
+        if (configFile.exists()) {
+            loadConfig(lc, configFile.getPath());
+        }
+    }
+
+    private static void callMain(LoaderConfiguration lc, String[] newArgs) {
         Method m = null;
         try {
             Class c = loader.loadClass(lc.getMainClass());

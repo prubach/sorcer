@@ -33,13 +33,17 @@ import java.util.jar.JarFile;
  */
 public class Activator {
 
-    public void activate(URL[] jars) throws Exception {
+    public void activate(ClassLoader cl, URL[]jars) throws Exception {
         for (URL jar : jars) {
-            activate(jar);
+            activate(cl, jar);
         }
     }
 
-    public void activate(URL jarUrl) throws Exception {
+    public void activate(URL[] jars) throws Exception {
+        activate(Thread.currentThread().getContextClassLoader(), jars);
+    }
+
+    public void activate(ClassLoader cl, URL jarUrl) throws Exception {
         JarFile jar;
         try {
             jar = new JarFile(jarUrl.getFile());
@@ -47,7 +51,7 @@ public class Activator {
             Attributes mainAttributes = jar.getManifest().getMainAttributes();
             if (mainAttributes.containsKey(ServiceActivator.KEY_ACTIVATOR)) {
                 String activatorClassName = (String) mainAttributes.get(ServiceActivator.KEY_ACTIVATOR);
-                Class<?> activatorClass = Class.forName(activatorClassName);
+                Class<?> activatorClass = Class.forName(activatorClassName, true, cl);
                 if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
                     throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
                 }

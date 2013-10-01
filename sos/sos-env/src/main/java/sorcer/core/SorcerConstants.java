@@ -38,6 +38,8 @@ public interface SorcerConstants {
 
 	public static final String E_SORCER_HOME = "SORCER_HOME";
 
+	public static final String E_SORCER_EXT = "SORCER_EXT";
+
 	public static final String P_UNDEFINED = "undefined";
 
 	public static final String P_PROVIDER_NAME = "provider.name";
