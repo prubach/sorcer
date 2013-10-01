@@ -242,7 +242,18 @@ abstract public class
 	}
 
     public static Webster prepareCodebase() {
-        return prepareCodebase(null);
+        return prepareCodebase((ArtifactCoordinates[])null);
+    }
+
+    public static Webster prepareCodebase(String[] artifactCoords) {
+        if (artifactCoords==null)
+            return prepareCodebase((ArtifactCoordinates[])null);
+        ArtifactCoordinates[] acc = new ArtifactCoordinates[artifactCoords.length];
+        int i = 0;
+        for (String ac : artifactCoords) {
+            acc[i] = ArtifactCoordinates.coords(ac);
+        }
+        return prepareCodebase(acc);
     }
 
     public static Webster prepareCodebase(ArtifactCoordinates[] artifactCoords) {
