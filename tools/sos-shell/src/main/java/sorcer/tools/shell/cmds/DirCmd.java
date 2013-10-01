@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.provider.Provider;
 import sorcer.service.Accessor;
+import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
@@ -51,7 +52,7 @@ public class DirCmd extends ShellCmd {
 	private PrintStream out;
 
 	public void execute() throws Throwable {
-		NetworkShell shell = NetworkShell.getInstance();
+		INetworkShell shell = NetworkShell.getInstance();
 		BufferedReader br = NetworkShell.getShellInputStream();
 		out = NetworkShell.getShellOutputStream();
 		input = shell.getCmd();

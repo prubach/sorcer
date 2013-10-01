@@ -36,6 +36,7 @@ import net.jini.lookup.entry.Name;
 import sorcer.core.provider.Provider;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.tools.shell.NetworkShell;
+import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 
 import com.sun.jini.admin.DestroyAdmin;
@@ -77,7 +78,7 @@ public class LookupCmd extends ShellCmd {
 		out = NetworkShell.getShellOutputStream();
 		StringTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
-		int index = DiscoCmd.selectedRegistrar;
+		int index = NetworkShell.selectedRegistrar;
 		String next = null;
 		String attribValue = null;
 		String serviceType = null;
@@ -232,11 +233,11 @@ public class LookupCmd extends ShellCmd {
 				myTmpl = new ServiceTemplate(null, serviceTypes, myAttrib);
 			}
 
-			matches = registrar.lookup(myTmpl, MAX_MATCHES);
+			matches = registrar.lookup(myTmpl, ReggieHelper.MAX_MATCHES);
 			out.println("\t.... found " + matches.totalMatches + " services...");
 			// for (int j=0; j < matches.totalMatches; j++) {
 			serviceItems.clear();
-			for (int j = 0; j < Math.min(MAX_MATCHES, matches.totalMatches); j++) {
+			for (int j = 0; j < Math.min(ReggieHelper.MAX_MATCHES, matches.totalMatches); j++) {
 				serviceItems.add(matches.items[j]);
 			}
 			printServices();

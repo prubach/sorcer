@@ -18,8 +18,11 @@ package sorcer.boot.load;
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.ServiceActivator;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -33,30 +36,46 @@ import java.util.jar.JarFile;
  */
 public class Activator {
 
-    public void activate(URL[] jars) throws Exception {
+    private static final Logger log = LoggerFactory.getLogger(Activator.class);
+
+    public void activate(ClassLoader cl, URL[] jars) throws Exception {
         for (URL jar : jars) {
-            activate(jar);
+            activate(cl, jar);
         }
     }
 
-    public void activate(URL jarUrl) throws Exception {
+    public void activate(URL[] jars) throws Exception {
+        activate(Thread.currentThread().getContextClassLoader(), jars);
+    }
+
+    public void activate(ClassLoader cl, URL jarUrl) throws Exception {
         JarFile jar;
         try {
-            jar = new JarFile(jarUrl.getFile());
+            File jarFile = new File(jarUrl.getFile());
+            if (!jarFile.exists()) {
+                log.info("Skip non-existent dir {}", jarFile);
+                return;
+            }
+            if (jarFile.isDirectory()) {
+                log.debug("Skip directory {}", jarFile);
+                return;
+            }
+            jar = new JarFile(jarFile);
 
             Attributes mainAttributes = jar.getManifest().getMainAttributes();
-            if (mainAttributes.containsKey(ServiceActivator.KEY_ACTIVATOR)) {
-                String activatorClassName = (String) mainAttributes.get(ServiceActivator.KEY_ACTIVATOR);
-                Class<?> activatorClass = Class.forName(activatorClassName);
-                if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
-                    throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
-                }
-                if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
-                    throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
-                }
-                ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
-                activator.activate();
+            String activatorClassName = mainAttributes.getValue(ServiceActivator.KEY_ACTIVATOR);
+            if (activatorClassName == null) return;
+
+            Class<?> activatorClass = Class.forName(activatorClassName, true, cl);
+            if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
+                throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
             }
+            if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
+                throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
+            }
+            ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
+            activator.activate();
+
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not open jar file " + jarUrl, e);
         } catch (ClassNotFoundException e) {

@@ -30,6 +30,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
@@ -69,6 +70,7 @@ import net.jini.lookup.entry.UIDescriptor;
 
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
+import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.resolver.Resolver;
@@ -99,9 +101,10 @@ import com.sun.jini.config.Config;
  * @author Mike Sobolewski
  * call the 'nsh help' command
  */
-public class NetworkShell implements DiscoveryListener {
+public class NetworkShell implements DiscoveryListener, INetworkShell {
 
-	private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
+    public static int selectedRegistrar = 0;
+    private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
 
 	static private String shellName = "nsh";
 
@@ -196,7 +199,7 @@ public class NetworkShell implements DiscoveryListener {
 		return argv;
 	}
 
-	public static synchronized NetworkShell getInstance() {
+	public static synchronized INetworkShell getInstance() {
 		return instance;
 	}
 
@@ -236,6 +239,16 @@ public class NetworkShell implements DiscoveryListener {
 			}
 			
 			argv = buildInstance(argv);
+            try {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                if (cl instanceof URLClassLoader) {
+                    new Activator().activate(((URLClassLoader) cl).getURLs());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+
 			if (!instance.interactive) {
 				// System.out.println("main appMap: " + appMap);
 				execNoninteractiveCommand(argv);
@@ -427,7 +440,18 @@ public class NetworkShell implements DiscoveryListener {
 		}
 	}
 
-	public void discovered(DiscoveryEvent evt) {
+    public ServiceRegistrar getSelectedRegistrar() {
+        List<ServiceRegistrar> registrars = getRegistrars();
+        if (registrars != null && registrars.size() > 0
+                && selectedRegistrar >= 0)
+            return registrars.get(selectedRegistrar);
+        else if (selectedRegistrar < 0 && registrars.size() > 0) {
+            return registrars.get(0);
+        } else
+            return null;
+    }
+
+    public void discovered(DiscoveryEvent evt) {
 		ServiceRegistrar[] regs = evt.getRegistrars();
 		// shellOutput.println("NOTICE: discovery made");
 		// shellOutput.print(SYSTEM_PROMPT);
@@ -474,11 +498,12 @@ public class NetworkShell implements DiscoveryListener {
 			}
 	}
 
-	public void addToCommandTable(String cmd, Class<?> inCls) {
+	@Override
+    public void addToCommandTable(String cmd, Class<? extends ShellCmd> inCls) {
 		try {
 			// System.out.println("creating command's instance - "
 			// + inCls.getName() + " for " + cmd);
-			ShellCmd cmdInstance = (ShellCmd) inCls.newInstance();
+			ShellCmd cmdInstance = inCls.newInstance();
 			commandTable.put(cmd, cmdInstance);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -598,6 +623,10 @@ public class NetworkShell implements DiscoveryListener {
 	}
 
 	public static PrintStream getShellOutputStream() {
+		return shellOutput;
+	}
+
+	public PrintStream getOutputStream() {
 		return shellOutput;
 	}
 
@@ -1501,7 +1530,12 @@ public class NetworkShell implements DiscoveryListener {
 		aliases.put("less", "exec");
 	}
 
-	static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
+    public void addAlias(String alias, String command) {
+        if (aliases.containsKey(alias)) throw new IllegalArgumentException("Alias exists");
+        aliases.put(alias, command);
+    }
+
+    static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
 			"groups", "lup", "chgrp", "chport", "help", "exert", "http", "emx",
 //			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
 			"gvy", "edit", "clear", "exec", "about", "ig", "ds" };

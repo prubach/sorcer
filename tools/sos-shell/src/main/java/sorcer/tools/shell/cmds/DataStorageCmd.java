@@ -43,6 +43,7 @@ import sorcer.service.MonitorException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.shell.NetworkShell;
+import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.bdb.objects.Store;
@@ -350,7 +351,7 @@ public class DataStorageCmd extends ShellCmd {
 	}
 
 	static ServiceItem[] findStorers() throws RemoteException {
-		dataStorers = ShellCmd.lookup(new Class[] { StorageManagement.class });
+		dataStorers = ReggieHelper.lookup(new Class[]{StorageManagement.class});
 		return dataStorers;
 	}
 	

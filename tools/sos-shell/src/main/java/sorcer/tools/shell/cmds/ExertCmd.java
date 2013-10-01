@@ -67,7 +67,7 @@ public class ExertCmd extends ShellCmd {
 
 	private String script;
 
-    private NetworkShell shell;
+    private INetworkShell shell;
 
 	public ExertCmd() {
 	}
