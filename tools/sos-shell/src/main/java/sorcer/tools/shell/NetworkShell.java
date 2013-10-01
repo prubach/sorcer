@@ -30,6 +30,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
@@ -69,6 +70,7 @@ import net.jini.lookup.entry.UIDescriptor;
 
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
+import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.resolver.Resolver;
@@ -237,6 +239,16 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			}
 			
 			argv = buildInstance(argv);
+            try {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                if (cl instanceof URLClassLoader) {
+                    new Activator().activate(((URLClassLoader) cl).getURLs());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+
 			if (!instance.interactive) {
 				// System.out.println("main appMap: " + appMap);
 				execNoninteractiveCommand(argv);
@@ -428,7 +440,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		}
 	}
 
-    public static ServiceRegistrar getSelectedRegistrar() {
+    public ServiceRegistrar getSelectedRegistrar() {
         List<ServiceRegistrar> registrars = getRegistrars();
         if (registrars != null && registrars.size() > 0
                 && selectedRegistrar >= 0)
@@ -611,6 +623,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	}
 
 	public static PrintStream getShellOutputStream() {
+		return shellOutput;
+	}
+
+	public PrintStream getOutputStream() {
 		return shellOutput;
 	}
 

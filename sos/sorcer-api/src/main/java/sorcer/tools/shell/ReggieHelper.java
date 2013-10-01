@@ -54,7 +54,7 @@ public class ReggieHelper {
             Class[] serviceTypes, String serviceName) throws RemoteException {
         ServiceRegistrar regie = null;
         if (registrar == null) {
-            regie = NetworkShell.getSelectedRegistrar();
+            regie = NetworkShellAccessor.getNetworkShell(Thread.currentThread().getContextClassLoader()).getSelectedRegistrar();
             if (regie == null)
                 return null;
         } else {
@@ -77,6 +77,7 @@ public class ReggieHelper {
         return serviceItems.toArray(sItems);
     }
 
+/*
     public static ServiceItem[] serviceLookup(
             Class[] serviceTypes) throws RemoteException {
         ServiceTemplate st = new ServiceTemplate(null, serviceTypes, null);
@@ -89,4 +90,5 @@ public class ReggieHelper {
         return Accessor.getServiceItems(st, null,
                 groups);
     }
+*/
 }

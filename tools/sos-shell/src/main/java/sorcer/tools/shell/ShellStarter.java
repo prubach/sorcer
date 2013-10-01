@@ -96,17 +96,7 @@ public class ShellStarter {
         // create loader and execute main class
         RootLoader rootLoader = new RootLoader(lc);
         loader = rootLoader;
-        activate(rootLoader);
         callMain(lc, newArgs);
-    }
-
-    private static void activate(URLClassLoader loader) {
-        try {
-            new Activator().activate(loader, loader.getURLs());
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit(e);
-        }
     }
 
     private static void loadConfig(LoaderConfiguration lc, String config) {

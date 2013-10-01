@@ -18,7 +18,10 @@ package sorcer.tools.shell;
  */
 
 
+import net.jini.core.lookup.ServiceRegistrar;
+
 import java.io.File;
+import java.io.PrintStream;
 
 /**
  * @author Rafał Krupiński
@@ -35,4 +38,8 @@ public interface INetworkShell {
     String getHomeDir();
 
     void setCurrentDir(File file);
+
+    ServiceRegistrar getSelectedRegistrar();
+
+    PrintStream getOutputStream();
 }
