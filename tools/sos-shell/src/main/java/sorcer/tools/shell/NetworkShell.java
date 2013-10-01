@@ -99,7 +99,7 @@ import com.sun.jini.config.Config;
  * @author Mike Sobolewski
  * call the 'nsh help' command
  */
-public class NetworkShell implements DiscoveryListener {
+public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 	private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
 
@@ -196,7 +196,7 @@ public class NetworkShell implements DiscoveryListener {
 		return argv;
 	}
 
-	public static synchronized NetworkShell getInstance() {
+	public static synchronized INetworkShell getInstance() {
 		return instance;
 	}
 
@@ -474,7 +474,8 @@ public class NetworkShell implements DiscoveryListener {
 			}
 	}
 
-	public void addToCommandTable(String cmd, Class<?> inCls) {
+	@Override
+    public void addToCommandTable(String cmd, Class<?> inCls) {
 		try {
 			// System.out.println("creating command's instance - "
 			// + inCls.getName() + " for " + cmd);
@@ -1501,7 +1502,12 @@ public class NetworkShell implements DiscoveryListener {
 		aliases.put("less", "exec");
 	}
 
-	static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
+    public void addAlias(String alias, String command) {
+        if (aliases.containsKey(alias)) throw new IllegalArgumentException("Alias exists");
+        aliases.put(alias, command);
+    }
+
+    static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
 			"groups", "lup", "chgrp", "chport", "help", "exert", "http", "emx",
 //			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
 			"gvy", "edit", "clear", "exec", "about", "ig", "ds" };

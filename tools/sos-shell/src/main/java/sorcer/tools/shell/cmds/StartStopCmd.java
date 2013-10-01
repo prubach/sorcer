@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import net.jini.admin.Administrable;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.discovery.LookupDiscovery;
+import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
@@ -51,7 +52,7 @@ public class StartStopCmd extends ShellCmd {
 	}
 
 	public void execute() throws Throwable {
-		NetworkShell shell = NetworkShell.getInstance();
+		INetworkShell shell = NetworkShell.getInstance();
 		out = NetworkShell.getShellOutputStream();
 		LookupDiscovery ld = NetworkShell.getDisco();
 		StringTokenizer myTk = NetworkShell.getShellTokenizer();

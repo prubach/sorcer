@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import sorcer.tools.shell.cmds.ScriptThread;
+import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.tools.shell.ShellStarter;
@@ -68,7 +68,7 @@ public class GroovyCmd extends ShellCmd {
 	}
 
 	public void execute() throws Throwable {
-		NetworkShell shell = NetworkShell.getInstance();
+		INetworkShell shell = NetworkShell.getInstance();
 		BufferedReader br = NetworkShell.getShellInputStream();
 		out = NetworkShell.getShellOutputStream();
 		input = shell.getCmd();
