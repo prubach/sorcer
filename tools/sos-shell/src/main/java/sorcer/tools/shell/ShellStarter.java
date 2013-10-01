@@ -22,70 +22,70 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Helper class to help classworlds to load classes. 
+ * Helper class to help classworlds to load classes.
  */
 public class ShellStarter {
 
-	public static ClassLoader loader;
+    public static ClassLoader loader;
 
-	static void printUsage() {
+    static void printUsage() {
         System.out.println("possible programs are 'nsh', 'console'");
         System.exit(1);
     }
-    
+
     public static void rootLoader(String args[]) {
-    	String config = System.getProperty("nsh.starter.config", null);
+        String config = System.getProperty("nsh.starter.config", null);
         //System.out.println("nsh.starter.config: " + config);
 
         LoaderConfiguration lc = new LoaderConfiguration();
         // evaluate parameters
-        boolean hadMain=false, hadConf=false, hadCP=false;
+        boolean hadMain = false, hadConf = false, hadCP = false;
         int argsOffset = 0;
-        while (args.length-argsOffset>0 && !(hadMain && hadConf && hadCP)) {
+        while (args.length - argsOffset > 0 && !(hadMain && hadConf && hadCP)) {
             if (args[argsOffset].equals("--classpath")) {
                 if (hadCP) break;
-                if (args.length==argsOffset+1) {
+                if (args.length == argsOffset + 1) {
                     exit("classpath parameter needs argument");
                 }
-                lc.addClassPath(args[argsOffset+1]);
-                argsOffset+=2;
-                hadCP=true;
+                lc.addClassPath(args[argsOffset + 1]);
+                argsOffset += 2;
+                hadCP = true;
             } else if (args[argsOffset].equals("--main")) {
                 if (hadMain) break;
-                if (args.length==argsOffset+1) {
+                if (args.length == argsOffset + 1) {
                     exit("main parameter needs argument");
                 }
-                lc.setMainClass(args[argsOffset+1]);
-                argsOffset+=2;
-                hadMain=true;
+                lc.setMainClass(args[argsOffset + 1]);
+                argsOffset += 2;
+                hadMain = true;
             } else if (args[argsOffset].equals("--config")) {
                 if (hadConf) break;
-                if (args.length==argsOffset+1) {
+                if (args.length == argsOffset + 1) {
                     exit("conf parameter needs argument");
                 }
-                config=args[argsOffset+1];
-                argsOffset+=2;
-                hadConf=true;
+                config = args[argsOffset + 1];
+                argsOffset += 2;
+                hadConf = true;
             } else {
                 break;
-            }            
-        }        
+            }
+        }
         // this allows to override the command line config
-        String confOverride = System.getProperty("nsh.starter.config.override",null);
-        if (confOverride!=null) config = confOverride;
+        String confOverride = System.getProperty("nsh.starter.config.override", null);
+        if (confOverride != null) config = confOverride;
 
         // we need to know the class we want to start
-        if (lc.getMainClass()==null && config==null) {
+        if (lc.getMainClass() == null && config == null) {
             exit("no configuration file or main class specified");
         }
-        
+
         // copy arguments for main class 
-        String[] newArgs = new String[args.length-argsOffset];
-        for (int i=0; i<newArgs.length; i++) {
-            newArgs[i] = args[i+argsOffset];
-        }        
+        String[] newArgs = new String[args.length - argsOffset];
+        for (int i = 0; i < newArgs.length; i++) {
+            newArgs[i] = args[i + argsOffset];
+        }
         // load configuration file
-        if (config!=null) {
+        if (config != null) {
             try {
                 lc.configure(new FileInputStream(config));
             } catch (Exception e) {
@@ -97,7 +97,7 @@ public class ShellStarter {
         loader = new RootLoader(lc);
         Method m = null;
         try {
-            Class c = loader.loadClass(lc.getMainClass());   
+            Class c = loader.loadClass(lc.getMainClass());
             m = c.getMethod("main", new Class[]{String[].class});
         } catch (ClassNotFoundException e1) {
             exit(e1);
@@ -114,22 +114,22 @@ public class ShellStarter {
             exit(e3);
         } catch (InvocationTargetException e3) {
             exit(e3);
-        } 
+        }
     }
-    
+
     private static void exit(Exception e) {
         e.printStackTrace();
         System.exit(1);
     }
-    
+
     private static void exit(String msg) {
         System.err.println(msg);
         System.exit(1);
     }
-    
-	public static ClassLoader getLoader() {
-		return loader;
-	}
+
+    public static ClassLoader getLoader() {
+        return loader;
+    }
 
     public static void main(String args[]) {
         try {

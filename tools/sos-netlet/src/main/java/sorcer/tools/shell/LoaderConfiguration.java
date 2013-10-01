@@ -116,7 +116,7 @@ public class LoaderConfiguration {
                 // or if the environment points to a running system webster
                 List<String> codebasePaths = new ArrayList<String>();
                 codebasePaths.add(line);
-                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, SorcerEnv.getWebsterUrl().toString(), System.out));
+                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, SorcerEnv.getWebsterUrl(), System.out));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);
