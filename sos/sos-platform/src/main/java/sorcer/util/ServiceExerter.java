@@ -38,6 +38,7 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
+import sorcer.ext.Provisioner;
 import sorcer.jini.lookup.ProviderID;
 import sorcer.service.Accessor;
 import sorcer.service.Arg;
@@ -147,13 +148,6 @@ public class ServiceExerter implements Exerter, Callable {
         try {
             if (entries != null && entries.length > 0) {
                 exertion.substitute(entries);
-                for (Arg param : entries) {
-                    if (param instanceof Deployment && exertion.isProvisionable()) {
-                        //System.out.println("ZZZZZZZZZZZZZZZ ExertDispatcher>ProvisionManger configuration: " + ((Deployment)param).getConfigs());
-                        provisionManager = new ProvisionManager(exertion, ((Deployment)param).getConfigs());
-                        provisionManager.deployServices();
-                    }
-                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -211,6 +205,14 @@ public class ServiceExerter implements Exerter, Callable {
                 signature = new NetSignature("service", Spacer.class, Sorcer.getActualSpacerName());
             }
             provider = (Service) Accessor.getService(signature);
+
+            if (provider == null && exertion.isProvisionable() && signature instanceof NetSignature) {
+                Provisioner provisioner = Accessor.getService(Provisioner.class);
+                if (provisioner != null) {
+                    logger.fine("Provisioning "+signature);
+                    provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
+                }
+            }
         }
         // Provider tasker = ProviderLookup.getProvider(exertion.getProcessSignature());
         // provider = ProviderAccessor.getProvider(null, signature

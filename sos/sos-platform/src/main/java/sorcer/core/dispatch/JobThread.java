@@ -52,6 +52,7 @@ public class JobThread extends Thread {
 		Dispatcher dispatcher = null;
 		try {
 			String exertionDeploymentConfig = null;
+/*
 			if (job.isProvisionable()) {
 				try {
 					exertionDeploymentConfig = 
@@ -63,6 +64,7 @@ public class JobThread extends Thread {
 					logger.log(Level.WARNING, "Unable to read property from configuration", e1);
 				}
 			}
+*/
 			if (exertionDeploymentConfig != null)
 				dispatcher = ExertionDispatcherFactory.getFactory().createDispatcher((Job) job, provider, exertionDeploymentConfig);
 			else

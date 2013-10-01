@@ -118,6 +118,7 @@ public class ScriptThread extends Thread {
             if (target instanceof Exertion) {
                 ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {
+/*
                     if (((Exertion) target).isProvisionable()) {
                         String configFile = (String) config.getEntry(
                                         "sorcer.tools.shell.NetworkShell",
@@ -128,6 +129,7 @@ public class ScriptThread extends Thread {
                         else
                             result = esh.exert();
                     } else
+*/
                         result = esh.exert();
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -135,8 +137,8 @@ public class ScriptThread extends Thread {
                     e.printStackTrace();
                 } catch (ExertionException e) {
                     e.printStackTrace();
-                } catch (ConfigurationException e) {
-                    e.printStackTrace();
+//                } catch (ConfigurationException e) {
+//                    e.printStackTrace();
                 }
             } else {
                 result = target;
