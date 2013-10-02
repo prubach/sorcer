@@ -28,6 +28,7 @@ import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
+import sorcer.ext.Provisioner;
 import sorcer.service.Conditional;
 import sorcer.service.Accessor;
 import sorcer.service.Context;
@@ -216,9 +217,19 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                 // Catalog lookup or use Lookup Service for the particular
                 // service
                 Service service = (Service) Accessor.getService(sig);
-                //if (service == null) {
-                //}
-
+                if (service == null && task.isProvisionable()) {
+                    Provisioner provisioner = Accessor.getService(Provisioner.class);
+                    if (provisioner != null) {
+                        try {
+                            logger.fine("Provisioning "+sig);
+                            service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
+                        } catch (RemoteException re) {
+                            String msg = "Problem provisioning "+sig + " " +re.getMessage();
+                            logger.severe(msg);
+                            throw new ExertionException(msg, task);
+                        }
+                    }
+                }
                 if (service == null) {
                     String msg = null;
                     // get the PROCESS Method and grab provider name + interface
