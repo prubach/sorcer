@@ -21,6 +21,7 @@ package sorcer.schema;
 import sorcer.service.Direction;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * @author Rafał Krupiński
@@ -31,11 +32,16 @@ public class SchemaEntry implements Serializable {
     public Direction direction;
     public boolean required;
     public Class type;
+    public String[] tags;
 
-    public SchemaEntry() {
+    protected SchemaEntry() {
     }
 
     public SchemaEntry(Class type, String path, Direction direction, boolean required) {
+        this(type, path, direction, required, new String[0]);
+    }
+
+    public SchemaEntry(Class type, String path, Direction direction, boolean required, String[] tags) {
         if (type == null) throw new IllegalArgumentException("type is null");
         if (path == null) throw new IllegalArgumentException("path is null");
         if (direction == null) throw new IllegalArgumentException("direction is null");
@@ -43,6 +49,7 @@ public class SchemaEntry implements Serializable {
         this.path = path;
         this.direction = direction;
         this.required = required;
+        this.tags = tags;
     }
 
     @Override
@@ -51,16 +58,16 @@ public class SchemaEntry implements Serializable {
     }
 
     protected boolean equals(SchemaEntry entry) {
-        return type.equals(entry.type) && path.equals(entry.path) && direction.equals(entry.direction) && required == entry.required;
+        return type.equals(entry.type) && path.equals(entry.path) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode() + 13 * path.hashCode() + 17 * direction.ordinal() + 31 * (required ? 1 : 0);
+        return type.hashCode() + 13 * path.hashCode() + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * Arrays.hashCode(tags);
     }
 
     @Override
     public String toString() {
-        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + direction;
+        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + direction + " " + Arrays.toString(tags);
     }
 }

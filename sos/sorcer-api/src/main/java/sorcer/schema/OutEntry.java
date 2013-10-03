@@ -25,17 +25,13 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation for java-based context schema. A context schema is a java interface with annotated getters and setters.
- * Sorcer can retrieve list of context paths with type and validate a context against this this list.
- * The provider programmer may convert the context to the interface with methods marked with @Path annotations.
- *
  * @author Rafał Krupiński
  */
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Path {
+public @interface OutEntry {
     /**
-     * Path in context
+     * If true (the default) a value is required in the context
      */
-    public String value();
+    public boolean required() default true;
 }
