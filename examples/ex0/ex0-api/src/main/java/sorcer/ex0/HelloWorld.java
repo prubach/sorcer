@@ -8,7 +8,7 @@ import sorcer.service.Context;
 
 public interface HelloWorld extends Remote {
 
-    @Schema(HelloWorldContext.class)
+    //@Schema(HelloWorldContext.class, HelloWorld2Context.class)
 	Context sayHelloWorld(Context context) throws RemoteException;
 
 }

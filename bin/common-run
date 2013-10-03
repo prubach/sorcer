@@ -272,7 +272,6 @@ $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
   BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $LIB_DIR/sorcer/sos-env.jar:\
-#$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
@@ -281,9 +280,7 @@ $LIB_DIR/jini/jsk-resources.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/rio/rio-logging-support.jar:\
 $LIB_DIR/rio/rio-start.jar:\
-#$LIB_DIR/rio/rio-api.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
-#$LIB_DIR/rio/start.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/commons/google-collections.jar:\
@@ -315,11 +312,9 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.jar:\
-#$MVN_REPO/net/jini/jsk-dl/$V_JINI/jsk-dl-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
-#$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\

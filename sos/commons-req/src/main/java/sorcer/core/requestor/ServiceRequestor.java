@@ -252,6 +252,7 @@ abstract public class
         int i = 0;
         for (String ac : artifactCoords) {
             acc[i] = ArtifactCoordinates.coords(ac);
+            i++;
         }
         return prepareCodebase(acc);
     }

@@ -28,6 +28,9 @@ public interface HelloWorldContext {
     String getInValue();
 
     @Path("in/value")
+    //@PathType("dnt|dsd", "dnt|daa")
+    //@DefaultValue("Hello")
+    //@Description("Give your name")
     void setInValue(String value);
 
     @Path("out/value")
