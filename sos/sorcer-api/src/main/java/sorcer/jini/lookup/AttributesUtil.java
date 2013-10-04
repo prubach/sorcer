@@ -22,6 +22,15 @@ import sorcer.jini.lookup.entry.SorcerServiceInfo;
 
 public class AttributesUtil {
 
+    public static <T extends Entry> T getFirstByType(Entry[] attributeSets, Class<T> type) {
+        if (attributeSets != null && attributeSets.length > 0) {
+            for (Entry attributeSet : attributeSets) {
+                if (type.isInstance(attributeSet)) return (T) attributeSet;
+            }
+        }
+        return null;
+    }
+
 	static public String getGroups(Entry[] attributeSets) {
 		if (attributeSets != null) {
 			if (attributeSets.length > 0) {
