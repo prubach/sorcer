@@ -133,7 +133,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		setLayout(new BorderLayout());
 		this.source = input;
 		boolean isURL = false;
-        scriptExerter = new ScriptExerter(null, this.getClass().getClassLoader(), SorcerEnv.getWebsterUrl().toString());
+        scriptExerter = new ScriptExerter(null, this.getClass().getClassLoader(), SorcerEnv.getWebsterUrl().toString(), debug);
 		if (input != null
 				&& input.length() > 0
 				&& (input.startsWith("http:") || input.startsWith("file:") || input

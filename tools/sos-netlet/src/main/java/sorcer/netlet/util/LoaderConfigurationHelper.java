@@ -149,7 +149,8 @@ public class LoaderConfigurationHelper {
         } catch (MalformedURLException me) {
         }
         for (String codebaseStr : codebaseLines) {
-            codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
+            if (codebaseStr.startsWith("codebase"))
+                codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
             if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://"))) {
                 if (out!=null) out.println("Codebase can only be specified using mvn:// or http://");
                 else logger.severe("Codebase can only be specified using mvn:// or http://");

@@ -25,6 +25,7 @@ import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.RootLoader;
 import sorcer.util.Deployment;
 import sorcer.util.ServiceExerter;
@@ -44,12 +45,14 @@ public class ScriptThread extends Thread {
 		private Object target = null;
 		private GroovyShell gShell;
         private Configuration config;
+        private boolean debug = false;
 
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
-        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config) {
+        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
             this.config = config;
+            this.debug = debug;
             RootLoader loader = null;
             if (classLoader==null) {
                 loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
@@ -59,19 +62,24 @@ public class ScriptThread extends Thread {
                 loader = (RootLoader)classLoader;
                 for (URL url : jarsToAdd)
                     loader.addURL(url);
-                if (out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
+                if (debug && out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
             } else if (classLoader instanceof URLClassLoader) {
                 loader = new RootLoader(jarsToAdd, classLoader);
-                if (out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
+                if (debug && out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
             }
             gShell = new GroovyShell(loader!=null ? loader : classLoader);
 			this.script = script;
             this.parseScript();
 		}
 
-    public ScriptThread(String script, URL[] urls, ClassLoader classLoader, PrintStream out) {
-        this(script, urls, classLoader, out, EmptyConfiguration.INSTANCE);
-    }
+        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config) {
+            this(script, jarsToAdd, classLoader, out, config, false);
+        }
+
+
+        public ScriptThread(String script, URL[] urls, ClassLoader classLoader, PrintStream out) {
+            this(script, urls, classLoader, out, EmptyConfiguration.INSTANCE);
+        }
 
         public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
             this(script, jarsToAdd, null, out);

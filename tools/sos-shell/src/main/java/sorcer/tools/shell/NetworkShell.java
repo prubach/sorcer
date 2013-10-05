@@ -106,6 +106,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
     public static int selectedRegistrar = 0;
     private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
 
+    static private boolean debug = false;
+
 	static private String shellName = "nsh";
 
 	private static String request;
@@ -347,6 +349,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	public static String getUserName() {
 		return userName;
 	}
+
+    public boolean isDebug() {
+        return debug;
+    }
 
 	public static SorcerPrincipal getPrincipal() {
 		return principal;
@@ -1049,10 +1055,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				String[] systemRoots = {Resolver.getRootDir() };
 				
 				String[] realRoots = (roots == null ? systemRoots : roots);
+
+                if (debug)
+                    System.setProperty("webster.debug", "true");
+                else
+                    System.setProperty("webster.debug", "false");
 				
 				instance.webster = new Webster(port, realRoots,
 						instance.hostAddress, true);
-
 				//System.out.println("webster: " + instance.hostAddress + ":"
 						//+ port);
 				//System.out.println("webster roots: " + realRoots);
@@ -1066,8 +1076,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			}
 
 			setCodeBase(jars);
-			
-			if (!quiet) {
+
+			if (!quiet && debug) {
 				out.println("Webster URL: http://" + instance.webster.getAddress()
 						+ ":" + instance.webster.getPort());
 				out.println("  Roots: " + instance.webster.getRoots());
@@ -1179,7 +1189,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 		userName = (String) sysConfig.getEntry(CONFIG_COMPONENT, "userName",
 				String.class, null);
-		// System.out.println("userName: " + userName);
+
+        debug = (Boolean) sysConfig.getEntry(CONFIG_COMPONENT,
+                "debug", boolean.class, Boolean.FALSE);
 		loginContext = null;
 		try {
 			loginContext = (LoginContext) Config.getNonNullEntry(sysConfig,

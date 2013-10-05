@@ -42,4 +42,6 @@ public interface INetworkShell {
     ServiceRegistrar getSelectedRegistrar();
 
     PrintStream getOutputStream();
+
+    boolean isDebug();
 }

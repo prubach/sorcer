@@ -53,7 +53,7 @@ class MonitorConfig {
 
     String[] getInitialOpStrings() {
         String basicSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerBoot.groovy";
-        String extSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerExtBoot.groovy";
+        String extSorcerBoot = SorcerEnv.getExtDir().getAbsolutePath() + "/configs/SorcerExtBoot.groovy";
         if (new File(extSorcerBoot).exists() && new File(basicSorcerBoot).exists())
             return [basicSorcerBoot, extSorcerBoot]
         else if (new File(basicSorcerBoot).exists())

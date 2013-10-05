@@ -24,6 +24,7 @@ import java.util.Set;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.ext.ProvisioningException;
 import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
@@ -70,7 +71,10 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 			writeEnvelop(xrt);
 			logger.finer("written task ==> SPACE EXECUTE TASK: "
 					+ xrt.getName());
-		} catch (RemoteException re) {
+		} catch (ProvisioningException pe) {
+            xrt.setStatus(FAILED);
+            throw new ExertionException(pe.getLocalizedMessage());
+        } catch (RemoteException re) {
 			re.printStackTrace();
 			logger.severe("Space not reachable... resetting space");
 			space = SpaceAccessor.getSpace();

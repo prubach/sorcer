@@ -1096,6 +1096,11 @@ public class SorcerEnv {
             return null;
     }
 
+
+    public static File getExtDir() {
+        return sorcerEnv.getSorcerExtDir();
+    }
+
     public static String getRepoDir() {
         return getEnvProperties().getProperty(S_SORCER_REPO);
     }

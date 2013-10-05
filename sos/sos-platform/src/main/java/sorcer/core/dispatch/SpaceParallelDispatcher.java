@@ -24,6 +24,7 @@ import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.ext.ProvisioningException;
 import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
@@ -58,7 +59,10 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 				index--;
 			}
 			dThread.stop = true;
-		} catch (Exception re) {
+		} catch (ProvisioningException pe) {
+            xrt.setStatus(FAILED);
+            throw new ExertionException(pe.getLocalizedMessage());
+        } catch (Exception re) {
 			re.printStackTrace();
 			logger.severe("Space not reachable....resetting space");
 			space = SpaceAccessor.getSpace();

@@ -57,12 +57,15 @@ public class ScriptExerter {
 
     private Configuration config;
 
+    private boolean debug = false;
+
     public ScriptExerter() {
-        this(null, null, null);
+        this(null, null, null, false);
     }
 
-    public ScriptExerter(PrintStream out, ClassLoader classLoader, String websterStrUrl) {
+    public ScriptExerter(PrintStream out, ClassLoader classLoader, String websterStrUrl, boolean debug) {
         this.out = out;
+        this.debug = debug;
         this.classLoader = classLoader;
         this.websterStrUrl = websterStrUrl;
         if (staticImports == null) {
@@ -75,13 +78,13 @@ public class ScriptExerter {
     }
 
     public ScriptExerter(File scriptFile, PrintStream out, ClassLoader classLoader, String websterStrUrl) throws IOException {
-        this(out, classLoader, websterStrUrl);
+        this(out, classLoader, websterStrUrl, false);
         this.scriptFile = scriptFile;
         readFile(scriptFile);
     }
 
     public ScriptExerter(String script, PrintStream out, ClassLoader classLoader, String websterStrUrl) throws IOException {
-        this(out, classLoader, websterStrUrl);
+        this(out, classLoader, websterStrUrl, false);
         readScriptWithHeaders(script);
     }
 
@@ -109,7 +112,7 @@ public class ScriptExerter {
         // Process "codebase" and set codebase variable
         urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
 
-        scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config);
+        scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
         this.target = scriptThread.getTarget();
         return target;
     }

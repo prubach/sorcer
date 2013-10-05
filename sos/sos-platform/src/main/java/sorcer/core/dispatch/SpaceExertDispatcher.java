@@ -32,14 +32,10 @@ import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.core.signature.NetSignature;
+import sorcer.ext.Provisioner;
+import sorcer.ext.ProvisioningException;
+import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
 @SuppressWarnings("rawtypes")
@@ -145,14 +141,41 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		((ServiceExertion) exertion).setStatus(RUNNING);
 	}
 
+    // This should run in a separate thread and spacer shouldn't wait for provisioning
+    // if there is a problem with provisioning the SpaceExertDispatcher should return failed exertion
+    private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
+        NetSignature sig = (NetSignature) exertion.getProcessSignature();
+        // Catalog lookup or use Lookup Service for the particular
+        // service
+        Service service = (Service) Accessor.getService(sig);
+        if (service == null ) {
+            Provisioner provisioner = Accessor.getService(Provisioner.class);
+            if (provisioner != null) {
+                try {
+                    logger.fine("Provisioning "+sig);
+                    service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
+                } catch (RemoteException re) {
+                    String msg = "Problem provisioning "+sig + " " +re.getMessage();
+                    logger.severe(msg);
+                    throw new ProvisioningException(msg, exertion);
+                }
+            }
+        }
+    }
+
+
 	protected void writeEnvelop(Exertion exertion) throws 
-			ExertionException, SignatureException, RemoteException {
+			ExertionException, SignatureException, RemoteException, ProvisioningException {
 		// setSubject before exertion is dropped
 		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
-		((ServiceExertion) exertion).setSubject(subject);
+
+        if (exertion.isProvisionable())
+            provisionProviderForExertion(exertion);
+
+        ((ServiceExertion) exertion).setSubject(subject);
 		preExecExertion(exertion);
 		ExertionEnvelop ee = ExertionEnvelop.getTemplate(exertion);
 		ee.state = new Integer(INITIAL);
@@ -301,7 +324,10 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 				.info("executeMasterExertion ==============> SPACE EXECUTE MASTER EXERTION");
 		try {
 			writeEnvelop(masterXrt);
-		} catch (RemoteException re) {
+		} catch (ProvisioningException pe) {
+            masterXrt.setStatus(FAILED);
+            throw new ExertionException(pe.getLocalizedMessage());
+        } catch (RemoteException re) {
 			re.printStackTrace();
 			logger.severe("Space died....resetting space");
 			space = SpaceAccessor.getSpace();

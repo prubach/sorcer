@@ -37,7 +37,7 @@ A "src" property should be set and point to the directory containing the module'
 <!--project xmlns:artifact="antlib:org.apache.maven.artifact.ant"-->
 	<property environment="env" />
 	<property name="sorcer.home" value="${env.SORCER_HOME}" />
-	<property name="sorcer.home" value="${sorcer.home}" />
+	<property name="iGrid.home" value="${sorcer.home}" />
 	<property name="java.home" value="${env.JAVA_HOME}" />
 	<property name="jini.home" value="${env.JINI_HOME}" />
 	<!--property name="rio.home" value="${env.RIO_HOME}" /-->
@@ -58,6 +58,7 @@ A "src" property should be set and point to the directory containing the module'
 	<property name="common.lib" value="${lib}/commons" />
 	<property name="local.lib" value="${lib}/local" />
 	<property name="sorcer.lib" value="${lib}/sorcer" />
+	<property name="sorcer-com.lib" value="${lib}/sorcer-com" />
 	<property name="sorcer-dl.lib" value="${lib}/sorcer" />
 	<property name="sorcer-ext.lib" value="${lib}/sorcer" />
 	<property name="support.lib" value="${lib}/buildsupport" />
@@ -94,11 +95,13 @@ A "src" property should be set and point to the directory containing the module'
 		<pathelement location="${sorcer.lib}/commons-req.jar" />
 		<pathelement location="${sorcer.lib}/commons-prv.jar" />
 		<pathelement location="${sorcer.lib}/sos-env.jar" />
+		<pathelement location="${sorcer.lib}/sos-util.jar" />
 		<pathelement location="${sorcer.lib}/sos-platform.jar" />
 		<pathelement location="${sorcer.lib}/sos-api.jar" />
 		<pathelement location="${sorcer.lib}/sorcer-api.jar" />
 		<pathelement location="${sorcer.lib}/dbp-api.jar" />
 		<pathelement location="${sorcer.lib}/dbp-prv.jar" />
+		<pathelement location="${sorcer-com.lib}/sos-modeling.jar" />
 	</path>	
 	
 	<path id="rio.path">

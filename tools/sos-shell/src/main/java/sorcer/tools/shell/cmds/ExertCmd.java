@@ -75,7 +75,7 @@ public class ExertCmd extends ShellCmd {
 	public void execute() throws Throwable {
         out = NetworkShell.getShellOutputStream();
         shell = NetworkShell.getInstance();
-        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl());
+        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl(), shell.isDebug());
         scriptExerter.setConfig(config);
         input = shell.getCmd();
 		if (out == null)

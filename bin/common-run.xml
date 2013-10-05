@@ -34,6 +34,7 @@
     <property name="lib.dir" value="${sorcer.home}/lib"/>
     <!-- AFRL Compatibility - library locations used in distribution -->
     <property name="sorcer.lib" value="${sorcer.home}/lib/sorcer"/>
+    <property name="sorcer-ext.lib" value="${sorcer.home}/lib/sorcer-com"/>
     <property name="jini.lib" value="${sorcer.home}/lib/jini"/>
     <property name="jini-lookup.lib" value="${sorcer.home}/lib/jini-lookup"/>
     <property name="river.lib" value="${sorcer.home}/lib/river"/>
@@ -48,11 +49,15 @@
         <isset property="env.RIO_HOME"/>
     </condition>
 
+    <condition property="provider.debug">
+        <isset property="env.DEBUG"/>
+    </condition>
+
     <exec executable="hostname" outputproperty="hostname"/>
     <echo message="Hostname = ${hostname}"/>
     <echo message="env SORCER_HOME = ${sorcer.home}"/>
     <echo message="env RIO_HOME = ${rio.home}"/>
-    <echo message="SORCER distribution = ${sorcer.distro}"/>
+    <echo message="DEBUG = ${provider.debug}"/>
 
     <loadproperties srcfile="${sorcer.home}/configs/sorcer.env"/>
     <loadproperties srcfile="${sorcer.home}/configs/versions.properties"/>
@@ -342,7 +347,6 @@
 
     <target name="boot.provider" depends="target.classes.check, mvn-init">
         <property name="runtime.classpath.string" refid="runtime.classpath"/>
-        <echo message="Runtime Classpath = ${runtime.classpath.string}"/>
         <ac:var name="prv.debug" value="${provider.debug}" />
 
         <ac:if>
@@ -351,6 +355,7 @@
                 <ac:if>
                     <equals arg1="${prv.debug}" arg2="true"/>
                     <ac:then>
+                        <echo message="Runtime Classpath = ${runtime.classpath.string}"/>
                         <java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
                             <classpath refid="boot.classpath"/>
                             <arg value="${provider.config}"/>

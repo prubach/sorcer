@@ -25,6 +25,7 @@ import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.ext.ProvisioningException;
 import sorcer.service.Context;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
@@ -55,7 +56,10 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 				writeEnvelop(exertion);
 				logger.finer("generateTasks ==> SPACE SEQUENIAL EXECUTE EXERTION: "
 								+ exertion.getName());
-			} catch (RemoteException re) {
+			}  catch (ProvisioningException pe) {
+                xrt.setStatus(FAILED);
+                throw new ExertionException(pe.getLocalizedMessage());
+            } catch (RemoteException re) {
 				re.printStackTrace();
 				logger.severe("Space not reachable....resetting space");
 				space = SpaceAccessor.getSpace();
