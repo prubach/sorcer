@@ -89,8 +89,8 @@ public class LoaderConfigurationHelper {
     }
 
     public static String parseCodebase(URL websterUrl, String str) {
-        if ((!str.startsWith("mvn://")) &&  (!str.startsWith("http://"))) {
-            logger.severe("Codebase can only be specified using mvn:// or http://");
+        if ((!str.startsWith("mvn://")) &&  (!str.startsWith("http://")) && (!str.startsWith("artifact:"))) {
+            logger.severe("Codebase can only be specified using mvn://, http:// or artifact:");
             return null;
         }
         if (str.startsWith("mvn://")) {
@@ -130,12 +130,8 @@ public class LoaderConfigurationHelper {
                 logger.severe("Problem creating URL: " + finalUrl);
             }
         }
-        if (str.startsWith("http://")) {
-                return str;
-        }
-        return null;
+        return str;
     }
-
 
     public static List<URL> setCodebase(List<String> codebaseLines, String websterStrUrl, PrintStream out) {
         String curCodebase = System.getProperty(JavaSystemProperties.RMI_SERVER_CODEBASE);
@@ -151,9 +147,9 @@ public class LoaderConfigurationHelper {
         for (String codebaseStr : codebaseLines) {
             if (codebaseStr.startsWith("codebase"))
                 codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
-            if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://"))) {
-                if (out!=null) out.println("Codebase can only be specified using mvn:// or http://");
-                else logger.severe("Codebase can only be specified using mvn:// or http://");
+            if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://")) && (!codebaseStr.startsWith("artifact:"))) {
+                if (out!=null) out.println("Codebase can only be specified using mvn://, http:// or artifact:");
+                else logger.severe("Codebase can only be specified using mvn://, http:// or artifact:");
                 return null;
             }
 
@@ -161,7 +157,8 @@ public class LoaderConfigurationHelper {
             try {
                 codebaseUrls.add(new URL(parsedCodebase));
             } catch (MalformedURLException me) {
-
+                if (out!=null) out.println("Codebase url is malformed: " + me.getMessage());
+                else logger.severe("Codebase url is malformed: " + me.getMessage());
             }
 
             if (parsedCodebase!=null)

@@ -270,6 +270,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			request = "";
 			request = shellInput.readLine();
 		} catch (Throwable e) {
+            logger.severe("Problem: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
