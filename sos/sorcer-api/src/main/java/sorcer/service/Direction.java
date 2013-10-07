@@ -24,5 +24,22 @@ package sorcer.service;
  * @author Mike Sobolewski
  */
 public enum Direction {
-    IN, OUT, INOUT
+    IN {
+        @Override
+        public String getTag() {
+            return "in";
+        }
+    }, OUT {
+        @Override
+        public String getTag() {
+            return "out";
+        }
+    }, INOUT {
+        @Override
+        public String getTag() {
+            return "inout";
+        }
+    };
+
+    abstract public String getTag();
 }
