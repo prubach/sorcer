@@ -20,6 +20,7 @@ package sorcer.config;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
+import net.jini.config.NoSuchEntryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.provider.ServiceProvider;
@@ -77,22 +78,30 @@ public class Configurer extends AbstractBeanListener {
     private void updateProperty(Object object, Method method, Configuration config, String component, ConfigEntry configEntry) {
         Class<?>[] ptypes = method.getParameterTypes();
         if (ptypes.length != 1) return;
-        Class type = ptypes[0];
+        Class<?> type = ptypes[0];
 
         Object defaultValue = null;
         if (!ConfigEntry.NONE.equals(configEntry.defaultValue())) {
             defaultValue = configEntry.defaultValue();
+        } else {
+            defaultValue = Configuration.NO_DEFAULT;
         }
         Object value;
+        String entryKey = getEntryKey(getPropertyName(method), configEntry);
         try {
-            value = config.getEntry(component, getEntryKey(getPropertyName(method), configEntry), type, defaultValue);
+            value = config.getEntry(component, entryKey, type, defaultValue);
         } catch (ConfigurationException e) {
+            throw new IllegalArgumentException("Could not configure " + method + " with " + entryKey, e);
+        } catch (IllegalArgumentException e) {
+            log.error("Could not configure " + method + " with " + entryKey, e);
+            throw e;
+        }
+
+        if (type.isPrimitive() && value == null) {
+            log.debug("Value for a primitive property is null");
             return;
         }
 
-        if (!ptypes[0].isAssignableFrom(type)) {
-            return;
-        }
         try {
             if (!method.isAccessible()) {
                 method.setAccessible(true);
@@ -105,9 +114,9 @@ public class Configurer extends AbstractBeanListener {
         try {
             method.invoke(object, value);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         }
     }
 
@@ -137,9 +146,9 @@ public class Configurer extends AbstractBeanListener {
             Object value = config.getEntry(component, getEntryKey(field.getName(), configEntry), field.getType(), defaultValue);
             field.set(target, value);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         } catch (ConfigurationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw new RuntimeException(e);
         }
     }
 
