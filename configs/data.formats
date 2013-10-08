@@ -65,6 +65,8 @@ engineering.provider.scratchurl=dnt|provider|object|scratchUrl
 engineering.excel.xls=dnt|excel|bin|xls 
 engineering.excel.xlsx=dnt|excel|bin|xlsx
 engineering.excel.strategy=dnt|excel|text|strategy
+engineering.excel.range=dnt|excel|object|range
+engineering.excel.range.double=dnt|excel|double|range
 
 # BCProvider
 engineering.text.boundarycondition=dnt|engineering|text|boundaryCondition
@@ -346,6 +348,7 @@ engineering.wingdes.OutputRunScript = dnt|wingdes|text|outputrunscript
 
 #Zaero Provider
 engineering.zaero.mainInputTxt = dnt|zaero|text|input
+
 
 engineering.zaero.OutputTxt = dnt|zaero|text|output
 engineering.zaero.OutputTable = dnt|zaero|tableobj|output
