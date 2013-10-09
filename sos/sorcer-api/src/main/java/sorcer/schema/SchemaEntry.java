@@ -43,7 +43,7 @@ public class SchemaEntry implements Serializable {
 
     public SchemaEntry(Class type, String path, Direction direction, boolean required, String[] tags) {
         if (type == null) throw new IllegalArgumentException("type is null");
-        if (path == null) throw new IllegalArgumentException("path is null");
+        if (path == null && tags.length == 0) throw new IllegalArgumentException("path is null and not tags");
         if (direction == null) throw new IllegalArgumentException("direction is null");
         this.type = type;
         this.path = path;
@@ -58,12 +58,12 @@ public class SchemaEntry implements Serializable {
     }
 
     protected boolean equals(SchemaEntry entry) {
-        return type.equals(entry.type) && path.equals(entry.path) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
+        return type.equals(entry.type) && (path == entry.path || path.equals(entry.path)) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode() + 13 * path.hashCode() + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * Arrays.hashCode(tags);
+        return type.hashCode() + 13 * (path == null ? 0 : path.hashCode()) + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * Arrays.hashCode(tags);
     }
 
     @Override
