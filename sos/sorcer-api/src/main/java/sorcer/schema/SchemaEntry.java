@@ -33,23 +33,21 @@ public class SchemaEntry implements Serializable {
     public boolean required;
     public Class type;
     public String[] tags;
+    public String description;
 
     protected SchemaEntry() {
     }
 
-    public SchemaEntry(Class type, String path, Direction direction, boolean required) {
-        this(type, path, direction, required, new String[0]);
-    }
-
-    public SchemaEntry(Class type, String path, Direction direction, boolean required, String[] tags) {
+    public SchemaEntry(Class type, String path, Direction direction, boolean required, String[] tags, String description) {
         if (type == null) throw new IllegalArgumentException("type is null");
-        if (path == null && tags.length == 0) throw new IllegalArgumentException("path is null and not tags");
+        if (path == null && tags.length == 0) throw new IllegalArgumentException("path is null and no tags");
         if (direction == null) throw new IllegalArgumentException("direction is null");
         this.type = type;
         this.path = path;
         this.direction = direction;
         this.required = required;
         this.tags = tags;
+        this.description = description;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class SchemaEntry implements Serializable {
     }
 
     protected boolean equals(SchemaEntry entry) {
-        return type.equals(entry.type) && (path == entry.path || path.equals(entry.path)) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
+        return type.equals(entry.type) && compare(path, entry.path) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
     }
 
     @Override
@@ -68,6 +66,10 @@ public class SchemaEntry implements Serializable {
 
     @Override
     public String toString() {
-        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + direction + " " + Arrays.toString(tags);
+        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + Arrays.toString(tags) + " " + direction;
+    }
+
+    private static boolean compare(Object a, Object b) {
+        return a == null ? b == null : a.equals(b);
     }
 }

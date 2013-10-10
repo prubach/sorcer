@@ -39,7 +39,20 @@ public enum Direction {
         public String getTag() {
             return "inout";
         }
+        @Override
+        public boolean contains(Direction other) {
+            return true;
+        }
     };
 
     abstract public String getTag();
+
+    /**
+     * Returns true if other direction is not wider than this. IN and OUT are considered narrower than OUT
+     * @param other
+     * @return
+     */
+    public boolean contains(Direction other){
+        return equals(other);
+    }
 }

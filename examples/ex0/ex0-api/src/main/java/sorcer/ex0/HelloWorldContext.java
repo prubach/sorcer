@@ -18,19 +18,23 @@ package sorcer.ex0;
  */
 
 
+import sorcer.schema.Description;
 import sorcer.schema.Path;
+import sorcer.schema.SchemaType;
+import sorcer.schema.Tag;
 
 /**
  * @author Rafał Krupiński
  */
+@SchemaType
 public interface HelloWorldContext {
     @Path("in/value")
     String getInValue();
 
-    @Path("in/value")
-    //@PathType("dnt|dsd", "dnt|daa")
     //@DefaultValue("Hello")
-    //@Description("Give your name")
+    @Path("in/value")
+    @Tag({"dnt|dsd", "dnt|daa"})
+    @Description("Give your name")
     void setInValue(String value);
 
     @Path("out/value")
