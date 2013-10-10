@@ -67,6 +67,7 @@ engineering.excel.xlsx=dnt|excel|bin|xlsx
 engineering.excel.strategy=dnt|excel|text|strategy
 engineering.excel.range=dnt|excel|object|range
 engineering.excel.range.double=dnt|excel|double|range
+engineering.excel.range.tuple=dnt|excel|tuple|range
 
 # BCProvider
 engineering.text.boundarycondition=dnt|engineering|text|boundaryCondition
