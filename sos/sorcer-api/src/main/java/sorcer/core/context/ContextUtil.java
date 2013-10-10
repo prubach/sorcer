@@ -23,25 +23,26 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.util.StringUtils;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import static sorcer.core.SorcerConstants.APS;
+import static sorcer.core.SorcerConstants.CPS;
 
 /**
+ * Static fields and methods copied from Contexts. Not moved so original Contexts class is not changed. Migrate after sorcer codebases are merged.
+ *
  * @author Rafał Krupiński
  */
 public class ContextUtil {
+    final static String SORCER_VARIABLES_PATH = "supportObjects" + CPS
+            + "sorcerVariables";
+
     public static void copyNodes(Context fromCntxt, Context toCntxt)
             throws ContextException {
         Enumeration enu = ((Hashtable) fromCntxt).keys();
@@ -61,7 +62,7 @@ public class ContextUtil {
                             .getValue(key));
                     // Util.debug(this, "old DataNode data =
                     // "+((DataNode)val).getData());
-                } else if (!(key.equals(Contexts.SORCER_VARIABLES_PATH))) {
+                } else if (!(key.equals(SORCER_VARIABLES_PATH))) {
                     toCntxt.putValue(key, fromCntxt.getValue(key));
                 }
             }
@@ -72,7 +73,7 @@ public class ContextUtil {
         // remove sorcer variables from new context
         // these objects are new objects and collide with old
         // object IDs in original context
-        ((Hashtable) toCntxt).remove(Contexts.SORCER_VARIABLES_PATH);
+        ((Hashtable) toCntxt).remove(SORCER_VARIABLES_PATH);
     }
 
     public static ContextNode[] getContextNodes(Context context)
@@ -88,127 +89,6 @@ public class ContextUtil {
         ContextNode[] nodeArray = new ContextNode[nodes.size()];
         nodes.toArray(nodeArray);
         return nodeArray;
-    }
-
-    /**
-	 * Returns all context nodes recursively in this context and all its emebded
-	 * contexts, tasks, and jobs.
-	 *
-	 * @param context
-	 *            a servcie context
-	 * @return a list -f {@link sorcer.core.context.node.ContextNode}.
-	 * @throws sorcer.service.ContextException
-	 */
-	public static ContextNode[] getAllContextNodes(Context context)
-			throws ContextException {
-		List allNodes = null;
-		List additional = null;
-		try {
-			allNodes = Arrays.asList(getContextNodes(context));
-			for (Object obj : allNodes) {
-				if (((ContextNode) obj).getData() instanceof Context) {
-					additional = Arrays
-							.asList(getAllContextNodes((Context) obj));
-					if (additional.size() > 0)
-						allNodes.addAll(additional);
-				} else if (obj instanceof ServiceExertion) {
-					additional = Arrays
-							.asList(getTaskContextNodes((ServiceExertion) obj));
-				} else if (obj instanceof Job) {
-					additional = Arrays
-							.asList(getTaskContextNodes((ServiceExertion) obj));
-				}
-			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		ContextNode[] result = new ContextNode[allNodes.size()];
-
-		allNodes.toArray(result);
-		return result;
-	}
-
-    public static ContextNode[] getTaskContextNodes(ServiceExertion task)
-			throws ContextException {
-		List allNodes = new ArrayList();
-		List additional = null;
-
-		additional = Arrays.asList(getAllContextNodes(task.getContext()));
-		if (additional.size() > 0)
-			allNodes.addAll(additional);
-		ContextNode[] result = new ContextNode[allNodes.size()];
-
-		allNodes.toArray(result);
-		return result;
-	}
-
-    public static ContextNode[] getTaskContextNodes(Job job)
-			throws ContextException {
-		List allNodes = new ArrayList();
-		List additional = null;
-
-		List<Exertion> exertions = job.getExertions();
-		for (Object exertion : exertions) {
-			if (exertion instanceof ServiceExertion) {
-				additional = Arrays
-						.asList(getTaskContextNodes((ServiceExertion) exertion));
-				if (additional.size() > 0)
-					allNodes.addAll(additional);
-			} else if (exertion instanceof Job) {
-				additional = Arrays.asList(getTaskContextNodes((Job) exertion));
-				if (additional.size() > 0)
-					allNodes.addAll(additional);
-			}
-		}
-		ContextNode[] result = new ContextNode[allNodes.size()];
-
-		allNodes.toArray(result);
-		return result;
-	}
-
-    public static ContextNode[] getContextNodesWithAttribute(Context sc,
-			String attribute) throws ContextException {
-		String[] paths = Contexts.getPathsWithAttribute(sc, attribute);
-		java.util.Set nodes = new HashSet();
-		Object obj = null;
-		for (int i = 0; i < paths.length; i++) {
-			obj = sc.getValue(paths[i]);
-			if (obj != null && obj instanceof ContextNode)
-				nodes.add(obj);
-		}
-		ContextNode[] nodeArray = new ContextNode[nodes.size()];
-		nodes.toArray(nodeArray);
-		return nodeArray;
-	}
-
-    public static ContextNode[] getMarkedConextNodes(Context sc,
-			String association) throws ContextException {
-		String[] paths = Contexts.getMarkedPaths(sc, association);
-		java.util.Set nodes = new HashSet();
-		Object obj = null;
-		for (int i = 0; i < paths.length; i++) {
-			obj = sc.getValue(paths[i]);
-			if (obj != null && obj instanceof ContextNode)
-				nodes.add(obj);
-		}
-		ContextNode[] nodeArray = new ContextNode[nodes.size()];
-		nodes.toArray(nodeArray);
-		return nodeArray;
-	}
-
-    public static ContextNode getMarkedConextNode(Context sc, String association)
-			throws ContextException {
-		return getMarkedConextNodes(sc, association)[0];
-	}
-
-    public static void copyContextNodesFrom(Context toContext,
-            Context fromContext) throws ContextException {
-        // copy all sorcerNodes from fromContext to this context.
-        for (Enumeration e = fromContext.contextPaths(); e.hasMoreElements();) {
-            String key = (String) e.nextElement();
-            if (fromContext.getValue(key) instanceof ContextNode)
-                toContext.putValue(key, fromContext.getValue(key));
-        }
     }
 
     public static Object putDirectionalValue(Context context, String path,
@@ -256,20 +136,6 @@ public class ContextUtil {
         return false;
     }
 
-    public static String[] getContextNodePathsWithAssoc(Context context,
-			String association) throws ContextException {
-		Vector contextNodes = new Vector();
-		String[] paths = Contexts.getMarkedPaths(context, association);
-		if (paths == null)
-			return null;
-		for (int i = 0; i < paths.length; i++)
-			if (context.getValue(paths[i]) instanceof ContextNode)
-				contextNodes.addElement(paths[i]);
-		String[] contextNodePaths = new String[contextNodes.size()];
-		contextNodes.copyInto(contextNodePaths);
-		return contextNodePaths;
-	}
-
     public static String[] getContextNodePaths(Context context)
 			throws ContextException {
 		String path;
@@ -284,4 +150,33 @@ public class ContextUtil {
 		contextNodes.copyInto(contextNodePaths);
 		return contextNodePaths;
 	}
+
+    public static String getMarkerForDataNodeType(Context ctx, String path) {
+        return getMarkerValueByAttribute(ctx, path, Context.DATA_NODE_TYPE);
+    }
+
+    public static String getMarkerValueByAttribute(Context ctx, String path, String attr) {
+        StringBuilder markerStr = new StringBuilder();
+        try {
+            Hashtable hash = ctx.getMetacontext();
+            if (!ctx.isMetaattribute(attr))
+                return null;
+            String localMeta = ctx.getLocalMetapath(attr);
+
+            if (localMeta!=null)
+                for (String loc : StringUtils.tokenize(localMeta, SorcerConstants.APS)) {
+                    if ((hash!=null && !hash.isEmpty()) &&
+                            ((Hashtable)hash.get(loc))!=null &&
+                    (((Hashtable)hash.get(loc)).containsKey(path))) {
+                        Object val = ((Hashtable)hash.get(loc)).get(path);
+                        if (val!=null) markerStr.append(SorcerConstants.APS).append(val);
+                    }
+                }
+            if (markerStr.length()>0)
+                return attr + markerStr.toString();
+        } catch (ContextException ce) {
+            return null;
+        }
+        return  null;
+    }
 }
