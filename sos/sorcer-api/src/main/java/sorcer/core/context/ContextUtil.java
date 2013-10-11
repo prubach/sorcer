@@ -19,6 +19,8 @@ package sorcer.core.context;
 
 
 import net.jini.id.Uuid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
@@ -40,6 +42,8 @@ import static sorcer.core.SorcerConstants.CPS;
  * @author Rafał Krupiński
  */
 public class ContextUtil {
+    final private static Logger log= LoggerFactory.getLogger(ContextUtil.class);
+
     final static String SORCER_VARIABLES_PATH = "supportObjects" + CPS
             + "sorcerVariables";
 
@@ -121,11 +125,11 @@ public class ContextUtil {
         Hashtable values;
         attr = metaAssoc.substring(0, metaAssoc.indexOf(APS));
         value = metaAssoc.substring(metaAssoc.indexOf(APS) + 1);
-        System.out.println("attr, value" + attr + "," + value);
+        log.debug("attr, value=" + attr + "," + value);
         if (!context.isMetaattribute(attr))
             return false;
         values = (Hashtable) context.getMetacontext().get(attr);
-        System.out.println("values" + values);
+        log.debug("values=" + values);
         Enumeration e = values.keys();
         while (e.hasMoreElements()) {
             key = (String) e.nextElement();
