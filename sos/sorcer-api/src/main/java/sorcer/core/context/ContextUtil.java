@@ -25,6 +25,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
+import sorcer.service.Link;
 import sorcer.util.StringUtils;
 
 import java.net.MalformedURLException;
@@ -183,4 +184,132 @@ public class ContextUtil {
         }
         return  null;
     }
+
+    public static boolean hasMarkedValue(Context sc, String association)
+            throws ContextException {
+        String[] paths = getMarkedPaths(sc, association);
+        if (paths.length == 0)
+            return false;
+        return true;
+    }
+
+    public static String[] getMarkedPaths(Context cntxt, String association)
+            throws ContextException {
+        String attr, value, key;
+        Hashtable values;
+        // java 1.4.0 regex
+        // Pattern p;
+        // Matcher m;
+        boolean result;
+        if (association == null)
+            return null;
+        int index = association.indexOf(APS);
+        if (index < 0)
+            return null;
+
+        attr = association.substring(0, index);
+        value = association.substring(index + 1);
+        if (!cntxt.isAttribute(attr))
+            throw new ContextException("No Attribute defined: " + attr);
+
+        Vector keys = new Vector();
+        if (cntxt.isSingletonAttribute(attr)) {
+            values = (Hashtable) cntxt.getMetacontext().get(attr);
+            if (values != null) { // if there are no attributes set,
+                // values==null;
+                Enumeration e = values.keys();
+                while (e.hasMoreElements()) {
+                    key = (String) e.nextElement();
+					/*
+					 * java 1.4.0 regex p = Pattern.compile(value); m =
+					 * p.matcher((String)values.get(key)); if (m.find())
+					 * keys.addElement(key);
+					 */
+                    if (values.get(key).equals(value))
+                        keys.addElement(key);
+                }
+            }
+        } else {
+            // it is a metaattribute
+            String metapath = cntxt.getLocalMetapath(attr);
+            if (metapath != null) {
+                String[] attrs = StringUtils.tokenize(metapath,
+                        APS);
+                String[] vals = StringUtils.tokenize(value, APS);
+                if (attrs.length != vals.length)
+                    throw new ContextException("Invalid association: \""
+                            + association + "\"  metaattribute \"" + attr
+                            + "\" is defined with metapath =\"" + metapath
+                            + "\"");
+                String[][] paths = new String[attrs.length][];
+                int ii = -1;
+                for (int i = 0; i < attrs.length; i++) {
+                    paths[i] = getMarkedPaths(cntxt, attrs[i]
+                            + APS + vals[i]);
+                    if (paths[i] == null) {
+                        ii = -1;
+                        break; // i.e. no possible match
+                    }
+                    if (ii < 0 || paths[i].length > paths[ii].length) {
+                        ii = i;
+                    }
+                }
+
+                if (ii >= 0) {
+                    // The common paths across the paths[][] array are
+                    // matches. Said another way, the paths[][] array
+                    // contains all the paths that match attributes in the
+                    // metapath. paths[0][] are the matches for the first
+                    // element of the metapath, paths[1][] for the next,
+                    // etc. Therefore, the matches that are common for
+                    // each element of the metapath are the ones in which
+                    // we have interest.
+                    String candidate;
+                    int match, thisMatch;
+                    // go through each element of one with most matches
+                    for (int i = 0; i < paths[ii].length; i++) {
+                        candidate = paths[ii][i];
+                        // now look for paths.length-1 matches...
+                        match = 0;
+                        for (int j = 0; j < paths.length; j++) {
+                            if (j == ii)
+                                continue;
+                            thisMatch = 0;
+                            for (int k = 0; k < paths[j].length; k++)
+                                if (candidate.equals(paths[j][k])) {
+                                    match++;
+                                    thisMatch++;
+                                    break;
+                                }
+                            if (thisMatch == 0)
+                                break; // no possible match for this candidate
+                        }
+                        // System.out.println("candidate="+candidate+"
+                        // match="+match+" required maches="+(paths.length-1));
+                        if (match == paths.length - 1)
+                            keys.addElement(candidate);
+                    }
+                }
+            }
+        }
+        // above we just checked the top-level context; next, check
+        // all the top-level LINKED contexts (which in turn will check
+        // all their top-level linked contexts, etc.)
+        Enumeration e = cntxt.localLinkPaths();
+        Link link;
+        String keysInLink[], linkPath;
+        while (e.hasMoreElements()) {
+            linkPath = (String) e.nextElement();
+            link = (Link) cntxt.get(linkPath);
+            keysInLink = getMarkedPaths((cntxt).getLinkedContext(link), association);
+            if (keysInLink != null)
+                for (int i = 0; i < keysInLink.length; i++)
+                    keys.addElement(linkPath + CPS
+                            + keysInLink[i]);
+        }
+        String[] keysArray = new String[keys.size()];
+        keys.copyInto(keysArray);
+        return keysArray;
+    }
+
 }

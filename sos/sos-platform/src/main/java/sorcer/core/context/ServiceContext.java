@@ -2342,7 +2342,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return true;
 	}
 
-	protected Context getLinkedContext(Link link)
+	public Context getLinkedContext(Link link)
 			throws ContextException {
 		return updateLinkedContext(link);
 	}
