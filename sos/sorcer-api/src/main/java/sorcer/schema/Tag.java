@@ -25,13 +25,13 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Declare context marks supported by given service method. This annotation should be used on service interface methods, not with schema interface.
- * Marks are designed to be an alternative to schema interface, but they can be used at the same time on the same methods.
+ * Declare context tags supported by given service method. This annotation should be used on service interface methods, not on the schema interface.
+ * Tags are designed to be an alternative to schema interface, but they can be used at the same time on the same methods.
  *
  * @author Rafał Krupiński
  */
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Mark {
+public @interface Tag {
     String[] value();
 }

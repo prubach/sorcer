@@ -18,8 +18,6 @@ package sorcer.schema;
  */
 
 
-import sorcer.service.Direction;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -40,14 +38,4 @@ public @interface Path {
      * Path in context
      */
     public String value();
-
-    /**
-     * Direction of the entry
-     */
-    public Direction direction() default Direction.IN;
-
-    /**
-     * If true (the default) a value is required in the context
-     */
-    public boolean required() default true;
 }

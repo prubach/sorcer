@@ -1,4 +1,4 @@
-package sorcer.ex0;
+package sorcer.schema;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -18,29 +18,16 @@ package sorcer.ex0;
  */
 
 
-import sorcer.schema.Description;
-import sorcer.schema.Path;
-import sorcer.schema.SchemaType;
-import sorcer.schema.Tag;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Rafał Krupiński
  */
-@SchemaType
-public interface HelloWorldContext {
-    @Path("in/value")
-    String getInValue();
-
-    //@DefaultValue("Hello")
-    @Path("in/value")
-    @Tag({"dnt|dsd", "dnt|daa"})
-    @Description("Give your name")
-    void setInValue(String value);
-
-    @Path("out/value")
-    void setOutValue(String value);
-
-    @Path("out/value")
-    void getOutValue();
-
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface SchemaType {
 }

@@ -1128,4 +1128,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	final static String TARGET = "context/target";
 	final static String RETURN = "context/result";
 
+    Context getLinkedContext(Link link) throws ContextException;
+
 }
