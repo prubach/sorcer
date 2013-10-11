@@ -385,6 +385,13 @@ engineering.scilab.bool.put= dnt|scilab|bool|put
 engineering.scilab.bool.get= dnt|scilab|bool|get
 engineering.scilab.bool.get-single= dnt|scilab|bool|get=single
 
+#Octave Provider
+engineering.octave.txt.script= dnt|octave|txt|script
+engineering.octave.name.result = dnt|octave|name|result
+engineering.octave.dbl.put = dnt|octave|dbl|put
+engineering.octave.dbl.get = dnt|octave|dbl|get
+engineering.octave.dbl.get-single= dnt|octave|dbl|get-single
+
 #Dakota Provider
 engineering.dakota.file.stdin = dnt|dakota|file|stdin
 engineering.dakota.file.stdout = dnt|dakota|file|stdout
