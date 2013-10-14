@@ -68,6 +68,8 @@ engineering.excel.strategy=dnt|excel|text|strategy
 engineering.excel.range=dnt|excel|object|range
 engineering.excel.range.double=dnt|excel|double|range
 engineering.excel.range.tuple=dnt|excel|tuple|range
+# a pair in form of Tuple2<String, Double>
+engineering.excel.pair.tuple=dnt|excel|pair|tuple
 
 # BCProvider
 engineering.text.boundarycondition=dnt|engineering|text|boundaryCondition
