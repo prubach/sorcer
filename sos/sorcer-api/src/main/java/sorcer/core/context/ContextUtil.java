@@ -363,4 +363,19 @@ public class ContextUtil {
         return list;
     }
 
+    public static Object getMarkedValue(Context sc, String association)
+            throws ContextException {
+        return getMarkedValues(sc, association)[0];
+    }
+
+    public static Object[] getMarkedValues(Context sc, String association)
+            throws ContextException {
+        String[] paths = getMarkedPaths(sc, association);
+        List<Object> values = new ArrayList<Object>();
+        for (int i = 0; i < paths.length; i++) {
+            values.add(sc.getValue(paths[i]));
+        }
+        return values.toArray();
+    }
+
 }
