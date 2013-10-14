@@ -729,8 +729,8 @@ public class Contexts {
 		// get all the in and inout paths
 		String inAssoc = Context.DIRECTION + APS + Context.DA_IN;
 		String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
-		String[] inPaths = Contexts.getMarkedPaths(cntxt, inAssoc);
-		String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
+		String[] inPaths = getMarkedPaths(cntxt, inAssoc);
+		String[] inoutPaths = getMarkedPaths(cntxt, inoutAssoc);
         int cap = (inPaths == null ? 0 : inPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
         List<String> list = new ArrayList<String>(cap);
 
@@ -792,8 +792,8 @@ public class Contexts {
 		// get all the in and inout paths
 		String outAssoc = Context.DIRECTION + APS + Context.DA_OUT;
 		String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
-		String[] outPaths = Contexts.getMarkedPaths(cntxt, outAssoc);
-		String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
+		String[] outPaths = getMarkedPaths(cntxt, outAssoc);
+		String[] inoutPaths = getMarkedPaths(cntxt, inoutAssoc);
         int cap = (outPaths == null ? 0 : outPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
 		List<String> list = new ArrayList<String>(cap);
 

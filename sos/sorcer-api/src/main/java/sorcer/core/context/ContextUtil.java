@@ -29,9 +29,12 @@ import sorcer.service.Link;
 import sorcer.util.StringUtils;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import static sorcer.core.SorcerConstants.APS;
@@ -310,6 +313,54 @@ public class ContextUtil {
         String[] keysArray = new String[keys.size()];
         keys.copyInto(keysArray);
         return keysArray;
+    }
+
+    /**
+     * Returns a list of all paths marked as data output.
+     *
+     * @param cntxt
+     *            a service context
+     * @return list of all paths marked as data output
+     * @throws ContextException
+     */
+    public static List<String> getOutPaths(Context cntxt) throws ContextException {
+        // get all the in and inout paths
+        String outAssoc = Context.DIRECTION + APS + Context.DA_OUT;
+        String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
+        String[] outPaths = getMarkedPaths(cntxt, outAssoc);
+        String[] inoutPaths = getMarkedPaths(cntxt, inoutAssoc);
+        int cap = (outPaths == null ? 0 : outPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
+        List<String> list = new ArrayList<String>(cap);
+
+        if (outPaths != null)
+            Collections.addAll(list, outPaths);
+        if (inoutPaths != null)
+            Collections.addAll(list, inoutPaths);
+        return list;
+    }
+
+    /**
+     * Returns a list of all paths marked as data input.
+     *
+     * @param cntxt
+     *            a service context
+     * @return list of all paths marked as input
+     * @throws ContextException
+     */
+    public static List<String> getInPaths(Context cntxt) throws ContextException {
+        // get all the in and inout paths
+        String inAssoc = Context.DIRECTION + APS + Context.DA_IN;
+        String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
+        String[] inPaths = getMarkedPaths(cntxt, inAssoc);
+        String[] inoutPaths = getMarkedPaths(cntxt, inoutAssoc);
+        int cap = (inPaths == null ? 0 : inPaths.length) + (inoutPaths == null ? 0 : inoutPaths.length);
+        List<String> list = new ArrayList<String>(cap);
+
+        if (inPaths != null)
+            Collections.addAll(list, inPaths);
+        if (inoutPaths != null)
+            Collections.addAll(list, inoutPaths);
+        return list;
     }
 
 }
