@@ -73,7 +73,7 @@ class BlitzConfig {
         return stats as Switch[]
     }
 
-    Exporter serverExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0),
+    Exporter serverExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
             new ProxyTrustILFactory(null, null), false, true);
     ProxyPreparer notifyPreparer = new BasicProxyPreparer();
     ProxyPreparer recoveredNotifyPreparer = new BasicProxyPreparer();

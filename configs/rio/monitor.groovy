@@ -20,6 +20,8 @@
 import net.jini.core.discovery.LookupLocator
 import net.jini.export.Exporter
 import net.jini.jrmp.JrmpExporter
+import net.jini.jeri.*;
+import net.jini.jeri.tcp.*;
 
 import org.rioproject.config.Component
 import org.rioproject.config.Constants
@@ -102,13 +104,17 @@ class MonitorConfig {
 
     /*
      * Use a JrmpExporter for the OpStringManager.
+     *
+     * PR - there is a problem when it is started on a computer with no dns (127.x)
+     * therefore it is changed to BasicJeriExporter
      */
     Exporter getOpStringManagerExporter() {
         int port = 0
         String portRange = System.getProperty(Constants.PORT_RANGE)
         if(portRange!=null)
             port = PortUtil.getPortFromRange(portRange)
-        return new JrmpExporter(port)
+        return new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0), new BasicILFactory());
+        //return new JrmpExporter(port)
     }
     
     ProxyPreparer getInstantiatorPreparer() {

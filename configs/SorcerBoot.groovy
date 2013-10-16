@@ -70,7 +70,7 @@ deployment(name: 'Sorcer') {
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
             artifact ref: 'blitz-impl'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}blitz${fs()}configs${fs()}blitz.config"
+        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}blitz${fs()}configs${fs()}blitz.groovy"
         maintain 1
     }
 
