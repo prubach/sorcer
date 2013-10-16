@@ -258,6 +258,7 @@ public class ContextNode implements Serializable {
 	}
 
     public boolean isHttp() {
+        if (data==null) return false;
 		String urlValue = data.toString();
 		if (urlValue.startsWith("http://"))
 			return true;
@@ -265,14 +266,16 @@ public class ContextNode implements Serializable {
 	}
 
 	public boolean isFile() {
-		String urlValue = data.toString();
+        if (data==null) return false;
+        String urlValue = data.toString();
 		if (urlValue.startsWith("file://"))
 			return true;
 		return false;
 	}
 
 	public boolean isFTP() {
-		String urlValue = data.toString();
+        if (data==null) return false;
+        String urlValue = data.toString();
 		if (urlValue.startsWith("ftp://"))
 			return true;
 		return false;

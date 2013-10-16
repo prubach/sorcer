@@ -38,7 +38,7 @@ deployment(name: 'Sorcer') {
     artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.1'
     artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
     artifact id: 'cataloger-prv', "org.sorcersoft.sorcer:cataloger-prv:" + getSorcerVersion()
-    artifact id: 'cataloger-api', "org.sorcersoft.sorcer:cataloger-api:" + getSorcerVersion()
+    artifact id: 'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:" + getSorcerVersion()
     artifact id: 'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:" + getSorcerVersion()
     artifact id: 'spacer-prv', "org.sorcersoft.sorcer:spacer-prv:" + getSorcerVersion()
     artifact id: 'logger-prv', "org.sorcersoft.sorcer:logger-prv:" + getSorcerVersion()
@@ -101,7 +101,7 @@ deployment(name: 'Sorcer') {
     service(name: "Cataloger") {
         interfaces {
             classes 'sorcer.core.provider.Cataloger'
-            artifact ref: 'cataloger-api'
+            artifact ref: 'cataloger-sui'
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
             artifact ref: 'cataloger-prv'

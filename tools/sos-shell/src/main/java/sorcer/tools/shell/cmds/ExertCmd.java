@@ -18,23 +18,21 @@
 
 package sorcer.tools.shell.cmds;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+import sorcer.core.context.Contexts;
 import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.node.ContextNode;
 import sorcer.netlet.ScriptExerter;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.tools.shell.*;
+import sorcer.util.GenericUtil;
+import sorcer.util.IOUtils;
 
 public class ExertCmd extends ShellCmd {
 
@@ -160,10 +158,12 @@ public class ExertCmd extends ShellCmd {
 			out.println("\n---> OUTPUT EXERTION --->");
 			out.println(((ServiceExertion) xrt).describe());
 			out.println("\n---> OUTPUT DATA CONTEXT --->");
-			if (xrt.isJob())
+			if (xrt.isJob()) {
 				out.println(((Job)xrt).getJobContext());
-			else
+            } else {
 				out.println(xrt.getDataContext());
+            }
+            saveFilesFromContext(xrt, out);
 			if (outputControlContext) {
 				out.println("\n---> OUTPUT CONTROL CONTEXT --->");
 				out.println(xrt.getControlContext());
@@ -239,5 +239,25 @@ public class ExertCmd extends ShellCmd {
 		}
 		return sb;
 	}
+
+
+    private void saveFilesFromContext(Exertion xrt, PrintStream out) {
+        try {
+            ContextNode[] cns = (xrt.isJob() ? Contexts.getTaskContextNodes((ComplexExertion)xrt)
+                    : Contexts.getTaskContextNodes(xrt));
+            for (ContextNode cn : cns) {
+
+                if (cn.isOut() && cn.getData()!=null && cn.getData() instanceof byte[]) {
+                    File f = new File(cn.getName());
+                    FileUtils.writeByteArrayToFile(f, (byte[])cn.getData());
+                    out.println("A file was extracted and saved from context to: " + f.getAbsolutePath());
+                }
+            }
+        } catch (ContextException e) {
+            out.println(e.getMessage());
+        } catch (IOException e) {
+            out.println(e.getMessage());
+        }
+    }
 
 }

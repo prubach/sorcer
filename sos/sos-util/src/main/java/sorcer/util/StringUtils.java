@@ -26,11 +26,16 @@ import java.util.*;
 public class StringUtils {
 	private static Calendar calendar = null;
 
+
+    public static String arrayToString(Object array) {
+        return arrayToString(array, 20);
+    }
+
 	/**
 	 * Returns a string representation of recursive arrays of any component
 	 * type. in the form [e1,...,ek]
 	 */
-	public static String arrayToString(Object array) {
+	public static String arrayToString(Object array, int maxElements) {
 		if (array == null)
 			return "null";
 		else if (!array.getClass().isArray()) {
@@ -39,24 +44,31 @@ public class StringUtils {
 		int length = Array.getLength(array);
 		if (length == 0)
 			return "[no elements]";
+        boolean addTally = false;
+        if (length <= maxElements) {
+           maxElements = length;
+        } else
+            addTally = true;
 
 		StringBuilder buffer = new StringBuilder("[");
-		int last = length - 1;
+		int last = maxElements - 1;
 		Object obj;
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < maxElements; i++) {
 			obj = Array.get(array, i);
 			if (obj == null)
 				buffer.append("null");
 			else if (obj.getClass().isArray())
-				buffer.append(arrayToString(obj));
+				buffer.append(arrayToString(obj, maxElements));
 			else
 				buffer.append(obj);
 
 			if (i == last)
-				buffer.append("]");
+                if (addTally) buffer.append("...{n=").append(length).append("}]");
+                else buffer.append("]");
 			else
 				buffer.append(",");
 		}
+
 		return buffer.toString();
 	}
     /**

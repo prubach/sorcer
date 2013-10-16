@@ -62,11 +62,14 @@ engineering.provider.scratchurl=dnt|provider|object|scratchUrl
 
 
 #excel
-engineering.excel.xls=dnt|excel|bin|xls 
+engineering.excel.inXls=dnt|excel|bin|inXls
+engineering.excel.outXls=dnt|excel|bin|outXls
 engineering.excel.xlsx=dnt|excel|bin|xlsx
 engineering.excel.strategy=dnt|excel|text|strategy
 engineering.excel.range=dnt|excel|object|range
+engineering.excel.range.noEval=dnt|excel|object|rangeNoEval
 engineering.excel.range.double=dnt|excel|double|range
+engineering.excel.range.doubleNoEval=dnt|excel|double|rangeNoEval
 engineering.excel.range.tuple=dnt|excel|tuple|range
 # a pair in form of Tuple2<String, Double>
 engineering.excel.pair.tuple=dnt|excel|pair|tuple

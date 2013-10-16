@@ -1887,10 +1887,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// sb.append(val.toString() + " ");
 			// }
 			try {
-				// TODO PAR related
-				// if (val instanceof Par)
-				//	val = val.toString();
-				//else
+				if (val instanceof Par)
+					val = val.toString();
+				else
 					val = getValue(path);
 			} catch (Exception ex) {
 				sb.append("\nUnable to retrieve value: " + ex.getMessage());

@@ -551,6 +551,16 @@ public class Contexts {
 			obj = e.nextElement();
 			if (obj != null && obj instanceof ContextNode)
 				nodes.add(obj);
+            // Look for ContextNodes also in values and set the ContextNode's direction
+            else {
+                Object val = context.get((String)obj);
+                if (val!= null && val instanceof ContextNode) {
+                    String dire = Contexts.getDirection(context, (String)obj);
+
+                    ((ContextNode)val).setDA(dire);
+                    nodes.add(val);
+                }
+            }
 		}
 		ContextNode[] nodeArray = new ContextNode[nodes.size()];
 		nodes.toArray(nodeArray);
@@ -1438,5 +1448,17 @@ public class Contexts {
 		contextNodes.copyInto(contextNodePaths);
 		return contextNodePaths;
 	}
+
+    public static String getDirection(Context context, String path) throws ContextException {
+        Enumeration ens = Contexts.getSimpleAssociations(context, path);
+        while (ens.hasMoreElements()) {
+            String assoc = (String)ens.nextElement();
+            if ((assoc).startsWith(Context.DIRECTION)) {
+                return assoc.substring(assoc.indexOf(SEP)+1, assoc.length());
+            }
+        }
+        return null;
+    }
+
 
 }
