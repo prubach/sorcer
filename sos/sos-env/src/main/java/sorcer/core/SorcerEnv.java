@@ -17,7 +17,6 @@
  */
 package sorcer.core;
 
-import org.apache.commons.io.FileUtils;
 import sorcer.util.HostUtil;
 import sorcer.resolver.Resolver;
 import sorcer.service.ConfigurationException;
@@ -87,7 +86,8 @@ public class SorcerEnv {
     private boolean bootable = false;
 
 	static int subDirCounter = 0;
-	
+
+    private LookupLocators lookupLocators = new LookupLocators();
 
     public SorcerEnv(Map<String, String> props) {
         this();
@@ -368,9 +368,13 @@ public class SorcerEnv {
      * @return and array of strings as locator URLs
      */
     public static String[] getLookupLocators() {
-        String locs = sorcerEnv.getProperty(P_LOCATORS);
-        return (locs != null && locs.length() != 0) ? toArray(locs)
-                : new String[]{};
+        LookupLocators lookupLocators = sorcerEnv.lookupLocators;
+        if (!lookupLocators.isInitialized()) {
+            String locs = getProperty(P_LOCATORS);
+            lookupLocators.setStaticUrls(toArray(locs));
+
+        }
+        return lookupLocators.getLookupLocators();
     }
 
     /**
