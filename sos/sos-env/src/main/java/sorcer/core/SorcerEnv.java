@@ -371,8 +371,8 @@ public class SorcerEnv {
         LookupLocators lookupLocators = sorcerEnv.lookupLocators;
         if (!lookupLocators.isInitialized()) {
             String locs = getProperty(P_LOCATORS);
-            lookupLocators.setStaticUrls(toArray(locs));
-
+            lookupLocators.setStaticUrls((locs != null && locs.length() != 0) ? toArray(locs)
+                    : new String[]{});
         }
         return lookupLocators.getLookupLocators();
     }

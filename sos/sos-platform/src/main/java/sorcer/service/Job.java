@@ -33,6 +33,7 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.co.tuple.Entry;
+import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.ThrowableTrace;
@@ -216,6 +217,9 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		Signature method = super.getProcessSignature();
 		if (method != null)
 			method.setProviderName(controlContext.getRendezvousName());
+        // Required for space to work - added by PR, 19.10.2013
+        if (method.getProviderName()==null)
+            method.setProviderName(SorcerConstants.ANY);
 		return method;
 	}
 	
