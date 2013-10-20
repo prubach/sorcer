@@ -64,10 +64,9 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
     <!-- provider codebase jars -->
     <property name="j1" value="org.sorcersoft.sorcer:${provider.api}" />
-    <property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
-    <property name="j3" value="org.sorcersoft.sorcer:sos-env" />
+    <property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
 
-    <condition property="provider.codebase" value="${j1} ${j2} ${j3}" >
+    <condition property="provider.codebase" value="${j1} ${j2}" >
         <not>
             <isset property="provider.codebase" />
         </not>

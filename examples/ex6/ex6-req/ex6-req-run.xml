@@ -34,7 +34,7 @@
 
 	<!-- provider codeabse jars -->
 	<property name="j1" value="org.sorcersoft.sorcer:ex6-api" />
-	<property name="j2" value="org.sorcersoft.sorcer:sos-platform" />
+	<property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
 
 
 	<target name="run.requestor" depends="mvn-init">

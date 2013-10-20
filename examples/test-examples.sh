@@ -18,9 +18,9 @@ stopSorcer ( ) {
 startSorcer ( ) {
 if [ "$USE_RIO" == "1" ]; then
   $SORCER_HOME/bin/rio-boot > $1 &
-  sleep 12
-  $SORCER_HOME/bin/rio deploy $SORCER_HOME/configs/SorcerBoot.groovy > $1_deploy &
-  sleep 13
+  sleep 32
+  #$SORCER_HOME/bin/rio deploy $SORCER_HOME/configs/SorcerBoot.groovy > $1_deploy &
+  #sleep 13
 else
   #$SORCER_HOME/bin/sorcer-boot > $1 &
   ant -f $SORCER_HOME/bin/sorcer-boot.xml > $1 &
@@ -29,8 +29,10 @@ fi
 }
 
 restartSorcer ( ) {
-  stopSorcer  $2
-  startSorcer $1
+    if [ "$USE_RIO" != "1" ]; then
+      stopSorcer  $2
+      startSorcer $1
+    fi
 }
 
 showExceptions ( ) {
@@ -200,11 +202,12 @@ if [ "$1" == "rio" ]; then
 fi
 
 cleanLogs
+startSorcer $LOG_DIR/rio.log
 ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
 fi
-ex1
+#ex1
 ex2
 ex3
 ex4

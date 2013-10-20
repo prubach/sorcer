@@ -60,8 +60,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	<!-- provider codebase jars -->
     <property name="j1" value="org.sorcersoft.sorcer:${provider.api}" />
     <property name="j2" value="org.sorcersoft.sorcer:${requestor.dl}" />
-    <property name="j3" value="org.sorcersoft.sorcer:sos-platform" />
-    <property name="j4" value="org.sorcersoft.sorcer:sos-env" />
+    <property name="j3" value="org.sorcersoft.sorcer:sorcer-api" />
 
 	<!-- start provider -->
 	<target name="run.provider" depends="mvn-init">
@@ -70,7 +69,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 			<sysproperty key="java.security.manager" value="" />
 			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="../policy/whoIsIt-prv.policy" />
-			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3} ${j4}" />
+			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />
 			<sysproperty key="sorcer.provider.impl" value="${provider.class}" />
 			<sysproperty key="sorcer.provider.config" value="../configs/whoIsIt-bean${beans.id}.config" />

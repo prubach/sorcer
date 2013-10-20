@@ -1,6 +1,8 @@
 package sorcer.netlet;
 
+import groovy.lang.GroovyRuntimeException;
 import net.jini.config.Configuration;
+import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.netlet.util.LoaderConfigurationHelper;
 import sorcer.netlet.util.ScriptExertException;
 import sorcer.tools.shell.cmds.ScriptThread;
@@ -12,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Sorcer Script Exerter - this class handles parsing an ntl (Netlet) script and executing it or returning its
@@ -28,6 +32,10 @@ public class ScriptExerter {
     private final static String LINE_SEP = "\n";
 
     private final static String SHELL_LINE = "#!";
+
+    private final static String[] GROOVY_ERR_MSG_LINE = new String[] { "groovy: ", "@ line " };
+
+    private boolean startsWithShellLine = false;
 
     private String input;
 
@@ -111,8 +119,30 @@ public class ScriptExerter {
         }
         // Process "codebase" and set codebase variable
         urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
-
-        scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
+        try {
+            scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
+        } catch (Exception e) {
+            // Parse Groovy errors and replace line numbers to adjust according to show the actual line number with an error
+            if (e instanceof GroovyRuntimeException) {
+                int lineNum = 0;
+                if (e instanceof CompilationFailedException) {
+                    String msg = e.getMessage();
+                    for (String groovyErrMsg : GROOVY_ERR_MSG_LINE) {
+                        lineNum = findLineNumAfterText(msg, groovyErrMsg);
+                        if (lineNum>0) msg = msg.replace(groovyErrMsg + lineNum,
+                                groovyErrMsg + (lineNum- getLineOffsetForGroovyErrors()));
+                    }
+                    throw new ScriptExertException(msg, e, lineNum - getLineOffsetForGroovyErrors());
+                }
+                for (StackTraceElement st : e.getStackTrace()) {
+                    if (st.getClassName().equals("Script1")) {
+                        lineNum = st.getLineNumber();
+                        break;
+                    }
+                }
+                throw new ScriptExertException(e.getLocalizedMessage(),e, lineNum - getLineOffsetForGroovyErrors());
+            }
+        }
         this.target = scriptThread.getTarget();
         return target;
     }
@@ -129,7 +159,8 @@ public class ScriptExerter {
         nextLine = br.readLine();
         if (nextLine.indexOf(SHELL_LINE) < 0) {
             sb.append(nextLine).append(LINE_SEP);
-        }
+        } else
+            startsWithShellLine = true;
         while ((nextLine = br.readLine()) != null) {
             // Check for "load" of jars
             if (nextLine.trim().startsWith(LoaderConfigurationHelper.LOAD_PREFIX)) {
@@ -155,7 +186,8 @@ public class ScriptExerter {
             } else if (!line.startsWith(SHELL_LINE)){
                 sb.append(line);
                 sb.append(LINE_SEP);
-            }
+            } else
+                startsWithShellLine = true;
         }
         this.script = sb.toString();
     }
@@ -225,6 +257,20 @@ public class ScriptExerter {
 
     public void setConfig(Configuration config) {
         this.config = config;
+    }
+
+    public int getLineOffsetForGroovyErrors()  {
+        int staticLines = staticImports.toString().split("\n",-1).length-1;
+        return staticLines - codebaseLines.size() - (startsWithShellLine ? 1 : 0);
+    }
+
+    public int findLineNumAfterText(String msg, String needle) {
+        Pattern p= Pattern.compile(needle+"+([0-9]+).*");
+        Matcher m = p.matcher(msg);
+        if (m.find()) {
+            return Integer.parseInt(m.group(1));
+        }
+        return -1;
     }
 }
 

@@ -177,9 +177,7 @@
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
-                <path refid="rio-resolver.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
@@ -192,7 +190,6 @@
                 <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
                 <pathelement location="${lib.dir}/commons/guava.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-lang3.jar"/>
-                <!--<pathelement location="${lib.dir}/commons/google-collections.jar" />-->
             </path>
             <path id="runtime.classpath">
             </path>
@@ -201,10 +198,7 @@
             </path>
 
             <path id="rio-resolver.classpath">
-                <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
-                <pathelement location="${lib.dir}/rio/rio-api.jar"/>
                 <pathelement location="${lib.dir}/rio/resolver-api.jar"/>
-                <pathelement location="${lib.dir}/jini/jsk-dl.jar"/>
                 <pathelement location="${lib.dir}/jini-lookup/jmx-lookup.jar"/>
             </path>
 
@@ -223,11 +217,9 @@
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
-                <path refid="rio-resolver.classpath"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-env/${v.sorcer}/sos-env-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement
@@ -248,13 +240,9 @@
                         location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
             </path>
             <path id="rio-resolver.classpath">
-                <pathelement location="${mvn.repo}/net/jini/jsk-dl/${v.jini}/jsk-dl-${v.jini}.jar"/>
-                <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/${v.jini}/jmx-lookup-${v.jini}.jar"/>
-                <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar"/>
-                <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
-                <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/${v.jini}/jmx-lookup-${v.jini}.jar"/>
             </path>
         </ac:else>
     </ac:if>

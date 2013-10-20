@@ -73,6 +73,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
+import sorcer.netlet.util.ScriptExertException;
 import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
@@ -241,21 +242,22 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			}
 			
 			argv = buildInstance(argv);
+            if (!instance.interactive) {
+                // System.out.println("main appMap: " + appMap);
+                execNoninteractiveCommand(argv);
+                System.exit(0);
+            }
+
             try {
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
                 if (cl instanceof URLClassLoader) {
                     new Activator().activate(((URLClassLoader) cl).getURLs());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(shellOutput);
                 System.exit(-1);
             }
 
-			if (!instance.interactive) {
-				// System.out.println("main appMap: " + appMap);
-				execNoninteractiveCommand(argv);
-				System.exit(0);
-			}
 			if (argv.length == 1 && argv[0].indexOf("-") == 0) {
 				shellOutput.println(UNKNOWN_COMMAND_MSG);
 				shellOutput.flush();
@@ -270,12 +272,17 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			request = "";
 			request = shellInput.readLine();
 		} catch (Throwable e) {
-            logger.severe("Problem: " + e.getMessage());
-			e.printStackTrace();
-			System.exit(1);
-		}
+            if (e instanceof ScriptExertException) {
+                String msg = "Problem parsing script @ line: " +
+                        ((ScriptExertException)e).getLineNum() + ":\n" + e.getLocalizedMessage();
+                logger.severe(msg);
+                shellOutput.println(msg);
+            } else
+                e.printStackTrace(shellOutput);
+            System.exit(1);
+        }
 		ShellCmd cmd = null;
-		nshUrl = getWebsterUrl();
+		//nshUrl = getWebsterUrl();
 		//System.out.println("main request: " + request);
 		if (request==null) {
 			// Exit when CTRL+D is pressed
