@@ -17,8 +17,8 @@
 package sorcer.core.dispatch;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.rmi.RemoteException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,101 +35,167 @@ import org.rioproject.opstring.OperationalStringManager;
 import org.rioproject.opstring.ServiceElement;
 
 import sorcer.core.exertion.NetTask;
+import sorcer.core.provider.Spacer;
+import sorcer.core.signature.NetSignature;
+import sorcer.ext.Provisioner;
 import sorcer.service.Accessor;
 import sorcer.service.Exertion;
+import sorcer.service.Service;
 import sorcer.service.Signature;
 import sorcer.util.Sorcer;
 
 /**
- * @author Mike Sobolewski
+ * @author Pawel Rubach
  */
 public class ProvisionManager {
 	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
-	private final Exertion exertion;
-	private final Configuration config;
-	private OperationalStringManager opStringManager;
-	private DeployAdmin deployAdmin;
-	private String opStringName;
-	
-	public ProvisionManager(final Exertion exertion, String... configuration) throws ConfigurationException {
-		this.exertion = exertion;
-//		System.out.println("ZZZZZZZZZZZZZZZ ProvisionManger configuration: " + Arrays.toString(configuration));
-		config = ConfigurationProvider.getInstance(configuration);
-	}
-	
-	private Iterable<Signature> getSignatures() {
-		List<Signature> signatures = new ArrayList<Signature>();
-		for(Exertion e : exertion.getAllExertions()) {			
-			if(e instanceof NetTask) {
-				signatures.add(e.getProcessSignature());
-			}
-		}
-		return signatures;
-	}
-	
-	private OperationalString getIGridDeployment() throws Exception {
-		File iGridDeployment = new File(Sorcer.getHomeDir(), "configs/rio/SorcerCommon.groovy");
-		OpStringLoader opStringLoader = new OpStringLoader(); 
-		OperationalString[] loaded = opStringLoader.parseOperationalString(iGridDeployment);
-		return loaded[0];
-	}
-	
-	public void deployServices() throws DispatcherException {
-		try {
-			List<ServiceElement> services = new ArrayList<ServiceElement>();
-			for(Signature signature : getSignatures()) {				
-				ServiceElement service = (ServiceElement) config.getEntry("sorcer.core.exertion.deployment", 
-						                                                  "service", 
-						                                                  ServiceElement.class, 
-						                                                  null, 
-						                                                  signature.getServiceType().getName());
-				if(service!=null) {
-					services.add(service);
-				} else {
-					logger.warning("Configuration returned NULL for Signature service type: "+signature.getServiceType().getName());
-				}							                                                 
-			}
-			if(!services.isEmpty()) {
-				StringBuilder nameBuilder = new StringBuilder();
-				nameBuilder.append(exertion.getName()).append("-").append(System.getProperty("user.name"));
-				opStringName = nameBuilder.toString();
-				OpString opstring = new OpString(opStringName, null);
-				for(ServiceElement service : services) {
-					service.setOperationalStringName(opStringName);
-					opstring.addService(service);
-				}
-				opstring.addOperationalString(getIGridDeployment());
+	protected Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
+    private static ProvisionManager instance = null;
 
-				ProvisionMonitor provisionMonitor = Accessor.getService(ProvisionMonitor.class);
-				if (provisionMonitor != null) {
-					deployAdmin = (DeployAdmin) provisionMonitor.getAdmin();
-					deployAdmin.deploy(opstring);
-					opStringName = opstring.getName();
-					opStringManager = deployAdmin.getOperationalStringManager(opStringName);
-				} else {
-					logger.warning(String.format("Unable to obtain a ProvisionMonitor for %s", exertion.getName()));
-				}
-			} else {
-				logger.warning(String.format("Unable to obtain a ServiceElement for %s", exertion.getName()));
-			}
-		} catch (Exception e) {
-			throw new DispatcherException(String.format("While trying to provision exertion %s", 
-					                                    exertion.getName()), 
-					                      e);
-		}
-	}
+
+    public static ProvisionManager getInstance() {
+        if (instance==null)
+            instance = new ProvisionManager();
+        return instance;
+    }
+
 	
-	public void undeploy() {
-		if(deployAdmin!=null) {
-			try {
-				deployAdmin.undeploy(opStringName);
-			} catch (Exception e) {
-				logger.log(Level.WARNING, "Unable to undeply "+opStringName, e);
-			}
-		} 
+	protected ProvisionManager() {
+        ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
+        provGroup.setDaemon(true);
+        provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
+        ProvisionThread pThread = new ProvisionThread(provGroup);
+        pThread.start();
 	}
-	
-	public OperationalStringManager getOperationalStringManager() {
-		return opStringManager;
-	}
+
+    public void add(Signature sig) {
+        Service service = (Service) Accessor.getService(sig);
+        // A hack to disable provisioning spacer itself
+        if (service==null && !sig.getServiceType().getName().equals(Spacer.class.getName())) {
+            synchronized (servicesToProvision) {
+                servicesToProvision.add(
+                        new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
+                                ((NetSignature)sig).getVersion(), sig));
+            }
+        }
+    }
+
+
+
+    protected class ProvisionThread extends Thread {
+
+        public ProvisionThread(ThreadGroup disatchGroup) {
+            super(disatchGroup, "Provisioner");
+        }
+
+        public void run() {
+            Provisioner provisioner = Accessor.getService(Provisioner.class);
+            while (true) {
+                if (!servicesToProvision.isEmpty()) {
+                    Iterator<SignatureElement> it = servicesToProvision.iterator();
+                    Set<SignatureElement> sigsToRemove = new LinkedHashSet<SignatureElement>();
+                    logger.fine("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
+
+                    while (it.hasNext()) {
+                        SignatureElement sigEl = it.next();
+
+                        // Catalog lookup or use Lookup Service for the particular
+                        // service
+                        Service service = (Service) Accessor.getService(sigEl.getSignature());
+                        if (service == null ) {
+                            if (provisioner != null) {
+                                try {
+                                    logger.info("Provisioning: "+ sigEl.getSignature());
+                                    service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
+                                    if (service!=null) sigsToRemove.add(sigEl);
+                                } catch (RemoteException re) {
+                                    provisioner = Accessor.getService(Provisioner.class);
+                                    String msg = "Problem provisioning "+sigEl + " " +re.getMessage();
+                                    logger.severe(msg);
+                                    //throw new ProvisioningException(msg, ((NetSignature)sig).getExertion());
+                                }
+                            }
+                        } else
+                            sigsToRemove.add(sigEl);
+                    }
+                    if (!sigsToRemove.isEmpty()) {
+                        synchronized (servicesToProvision) {
+                            servicesToProvision.removeAll(sigsToRemove);
+                        }
+                    }
+                }
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+
+    private class SignatureElement {
+        String serviceType;
+        String providerName;
+        String version;
+        Signature signature;
+
+        private String getServiceType() {
+            return serviceType;
+        }
+
+        private void setServiceType(String serviceType) {
+            this.serviceType = serviceType;
+        }
+
+        private String getProviderName() {
+            return providerName;
+        }
+
+        private void setProviderName(String providerName) {
+            this.providerName = providerName;
+        }
+
+        private String getVersion() {
+            return version;
+        }
+
+        private void setVersion(String version) {
+            this.version = version;
+        }
+
+        private Signature getSignature() {
+            return signature;
+        }
+
+        private void setSignature(Signature signature) {
+            this.signature = signature;
+        }
+
+        private SignatureElement(String serviceType, String providerName, String version, Signature signature) {
+            this.serviceType = serviceType;
+            this.providerName = providerName;
+            this.version = version;
+            this.signature = signature;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SignatureElement that = (SignatureElement) o;
+            if (!providerName.equals(that.providerName)) return false;
+            if (!serviceType.equals(that.serviceType)) return false;
+            if (version != null ? !version.equals(that.version) : that.version != null) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = serviceType.hashCode();
+            result = 31 * result + providerName.hashCode();
+            result = 31 * result + (version != null ? version.hashCode() : 0);
+            return result;
+        }
+    }
+
 }

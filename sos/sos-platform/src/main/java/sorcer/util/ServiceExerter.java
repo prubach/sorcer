@@ -244,9 +244,9 @@ public class ServiceExerter implements Exerter, Callable {
             try {
                 result = provider.service(exertion, transaction);
             } finally {
-                if (provisionManager != null) {
+                /*if (provisionManager != null) {
                     provisionManager.undeploy();
-                }
+                } */
             }
             if (result != null && result.getExceptions().size() > 0) {
                 for (ThrowableTrace et : result.getExceptions()) {

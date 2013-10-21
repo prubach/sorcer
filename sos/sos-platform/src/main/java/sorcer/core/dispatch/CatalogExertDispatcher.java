@@ -204,7 +204,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         Task result;
         try {
             if (((NetSignature) task.getProcessSignature())
-                    .getService() == provider) {
+                    .getService().equals(provider)) {
                 logger.finer("\n*** getting result from delegate of "
                         + provider.getProviderName() + "... ***\n");
                 result = ((ServiceProvider) provider).getDelegate().doTask(

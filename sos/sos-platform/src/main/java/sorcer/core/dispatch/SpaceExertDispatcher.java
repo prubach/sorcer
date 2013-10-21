@@ -19,7 +19,7 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
-import java.util.Set;
+import java.util.*;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
@@ -141,26 +141,9 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		((ServiceExertion) exertion).setStatus(RUNNING);
 	}
 
-    // This should run in a separate thread and spacer shouldn't wait for provisioning
-    // if there is a problem with provisioning the SpaceExertDispatcher should return failed exertion
     private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
-        // Catalog lookup or use Lookup Service for the particular
-        // service
-        Service service = (Service) Accessor.getService(sig);
-        if (service == null ) {
-            Provisioner provisioner = Accessor.getService(Provisioner.class);
-            if (provisioner != null) {
-                try {
-                    logger.fine("Provisioning "+sig);
-                    service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
-                } catch (RemoteException re) {
-                    String msg = "Problem provisioning "+sig + " " +re.getMessage();
-                    logger.severe(msg);
-                    throw new ProvisioningException(msg, exertion);
-                }
-            }
-        }
+        provisionManager.add(sig);
     }
 
 

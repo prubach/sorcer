@@ -42,6 +42,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     private static ExertionDispatcherFactory factory;
     public static Cataloger catalog; // The service catalog object
     private final static Logger logger = Logger.getLogger(ExertionDispatcherFactory.class.getName());
+    private ProvisionManager provisionManager = ProvisionManager.getInstance();
 
     public static ExertionDispatcherFactory getFactory() {
         if (factory == null)
@@ -81,19 +82,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                                        Provider provider,
                                        String... config) throws DispatcherException {
         Dispatcher dispatcher = null;
-        ProvisionManager provisionManager = null;
-//		logger.severe("Create ProvisionManager with configuration arg: "+
-//				(config==null?"<NULL>":(config.length==0?"<NO CONFIGURATION>":config[0])));
-
-//		System.out.println("ZZZZZZZZZZZZZZZZZZZZZZ config: " + Arrays.toString(config));
-        if (config!=null && config.length>0) {
-            try {
-                provisionManager = new ProvisionManager(exertion, config);
-            } catch (ConfigurationException e) {
-                throw new DispatcherException("Unable to create the ProvisionManager", e);
-            }
-        }
-
         try {
             if (!exertion.isJob()) {
                 logger.info("Running Space Task Dispatcher...");
