@@ -1817,4 +1817,8 @@ public class SorcerEnv {
     public File getSorcerExtDir() {
         return new File(getSorcerExt());
     }
+
+    public LookupLocators getLookupLocatorsHolder(){
+        return lookupLocators;
+    }
 }

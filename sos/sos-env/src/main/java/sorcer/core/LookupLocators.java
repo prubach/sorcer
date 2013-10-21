@@ -18,7 +18,11 @@ package sorcer.core;
  */
 
 
+import sorcer.util.Collections;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Keep a list of lookup locator URLs. Two internal lists are kept - static locators that are read by SorcerEnv from
@@ -28,7 +32,7 @@ import java.util.List;
  */
 public class LookupLocators {
     private String[] staticUrls = new String[0];
-    private String[] dynamicUrls = new String[0];
+    private Set<String> dynamicUrls = new HashSet<String>();
     private String[] allUrls = staticUrls;
 
     private boolean initialized;
@@ -46,14 +50,16 @@ public class LookupLocators {
      * @param dynamicUrls list of lookup locator URLs read from external dynamic source
      */
     public void setDynamicUrls(List<String> dynamicUrls) {
-        String[] newDynamic = dynamicUrls.toArray(new String[dynamicUrls.size()]);
+        if(!isInitialized())return;
+        Set<String> newDynamic = new HashSet<String>(dynamicUrls);
+        if (newDynamic.equals(this.dynamicUrls)) return;
         allUrls = join(staticUrls, newDynamic);
         this.dynamicUrls = newDynamic;
     }
 
     public void setStaticUrls(String[] urls) {
         allUrls = join(urls, dynamicUrls);
-        this.dynamicUrls = urls;
+        this.staticUrls = urls;
         initialized = true;
     }
 
@@ -64,10 +70,10 @@ public class LookupLocators {
         return initialized;
     }
 
-    private String[] join(String[] a, String[] b) {
-        String[] result = new String[a.length + b.length];
+    private String[] join(String[] a, Set<String> b) {
+        String[] result = new String[a.length + b.size()];
         System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
+        Collections.copy(b.iterator(), result, a.length, result.length);
         return result;
     }
 }

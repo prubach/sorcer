@@ -30,8 +30,7 @@ public class Collections {
     /**
      * Makes an arry from the parameter enumeration <code>e</code>.
      *
-     * @param e
-     *            an enumeration
+     * @param e an enumeration
      * @return an arry of objects in the underlying enumeration <code>e</code>
      */
     static public Object[] makeArray(final Enumeration e) {
@@ -42,7 +41,7 @@ public class Collections {
         return objs.toArray();
     }
 
-    public static <T>Iterable<T> i(final Enumeration<T>e){
+    public static <T> Iterable<T> i(final Enumeration<T> e) {
         return new Iterable<T>() {
             @Override
             public Iterator<T> iterator() {
@@ -64,5 +63,13 @@ public class Collections {
                 };
             }
         };
+    }
+
+    public static <T> void copy(Iterator<T> src, T[] target, int beginIndex, int endIndex) {
+        if (endIndex > target.length) throw new ArrayIndexOutOfBoundsException(endIndex);
+        for (int i = beginIndex; i < endIndex; i++) {
+            if (!src.hasNext()) throw new IndexOutOfBoundsException();
+            target[i] = src.next();
+        }
     }
 }
