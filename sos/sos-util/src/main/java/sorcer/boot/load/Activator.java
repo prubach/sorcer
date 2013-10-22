@@ -73,6 +73,7 @@ public class Activator {
             if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
                 throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
             }
+            log.info("Activating {} with class {}", jarFile, activatorClassName);
             ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
             activator.activate();
 

@@ -18,6 +18,8 @@ package sorcer.core;
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.util.Collections;
 
 import java.util.HashSet;
@@ -31,6 +33,7 @@ import java.util.Set;
  * @author Rafał Krupiński
  */
 public class LookupLocators {
+    final private static Logger log = LoggerFactory.getLogger(LookupLocators.class);
     private String[] staticUrls = new String[0];
     private Set<String> dynamicUrls = new HashSet<String>();
     private String[] allUrls = staticUrls;
@@ -50,8 +53,9 @@ public class LookupLocators {
      * @param dynamicUrls list of lookup locator URLs read from external dynamic source
      */
     public void setDynamicUrls(List<String> dynamicUrls) {
-        if(!isInitialized())return;
+        if (!isInitialized()) return;
         Set<String> newDynamic = new HashSet<String>(dynamicUrls);
+        log.info("New set of dynamic URLs = {}", dynamicUrls);
         if (newDynamic.equals(this.dynamicUrls)) return;
         allUrls = join(staticUrls, newDynamic);
         this.dynamicUrls = newDynamic;
