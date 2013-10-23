@@ -33,7 +33,7 @@ public interface HelloWorldContext {
 
     //@DefaultValue("Hello")
     @Path("in/value")
-    @Tag({"dnt|dsd", "dnt|daa"})
+    @Tag("dnt|dsd")
     @Description("Give your name")
     void setInValue(String value);
 

@@ -21,7 +21,6 @@ package sorcer.schema;
 import sorcer.service.Direction;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * @author Rafał Krupiński
@@ -32,21 +31,21 @@ public class SchemaEntry implements Serializable {
     public Direction direction;
     public boolean required;
     public Class type;
-    public String[] tags;
+    public String tag;
     public String description;
 
     protected SchemaEntry() {
     }
 
-    public SchemaEntry(Class type, String path, Direction direction, boolean required, String[] tags, String description) {
+    public SchemaEntry(Class type, String path, Direction direction, boolean required, String tag, String description) {
         if (type == null) throw new IllegalArgumentException("type is null");
-        if (path == null && tags.length == 0) throw new IllegalArgumentException("path is null and no tags");
+        if (path == null && tag == null) throw new IllegalArgumentException("path is null and no tags");
         if (direction == null) throw new IllegalArgumentException("direction is null");
         this.type = type;
         this.path = path;
         this.direction = direction;
         this.required = required;
-        this.tags = tags;
+        this.tag = tag;
         this.description = description;
     }
 
@@ -56,20 +55,24 @@ public class SchemaEntry implements Serializable {
     }
 
     protected boolean equals(SchemaEntry entry) {
-        return type.equals(entry.type) && compare(path, entry.path) && direction.equals(entry.direction) && required == entry.required && Arrays.equals(tags, entry.tags);
+        return type.equals(entry.type) && compare(path, entry.path) && direction.equals(entry.direction) && required == entry.required && equals(tag, entry.tag);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode() + 13 * (path == null ? 0 : path.hashCode()) + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * Arrays.hashCode(tags);
+        return type.hashCode() + 13 * (path == null ? 0 : path.hashCode()) + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * (tag == null ? 0 : tag.hashCode());
     }
 
     @Override
     public String toString() {
-        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + Arrays.toString(tags) + " " + direction;
+        return (required ? "required" : "optional") + " " + type.getName() + " " + path + " " + tag + " " + direction;
     }
 
     private static boolean compare(Object a, Object b) {
+        return a == null ? b == null : a.equals(b);
+    }
+
+    private static boolean equals(Object a, Object b) {
         return a == null ? b == null : a.equals(b);
     }
 }
