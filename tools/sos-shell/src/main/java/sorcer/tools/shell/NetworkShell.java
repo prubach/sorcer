@@ -342,8 +342,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                     System.exit(1);
                 }
             } catch (Throwable ex) {
-				ex.printStackTrace();
-				try {
+                if (ex instanceof ScriptExertException) {
+                    String msg = "Problem parsing script @ line: " +
+                            ((ScriptExertException)ex).getLineNum() + ":\n" + ex.getLocalizedMessage();
+                    logger.severe(msg);
+                    shellOutput.println(msg);
+                } else
+                    ex.printStackTrace(shellOutput);
+                try {
 					request = shellInput.readLine();
 				} catch (IOException e) {
 					e.printStackTrace();
