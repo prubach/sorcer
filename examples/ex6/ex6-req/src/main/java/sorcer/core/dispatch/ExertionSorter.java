@@ -43,37 +43,158 @@ public class ExertionSorter {
      */
     public ExertionSorter(Job topLevelJob)
             throws CycleDetectedException, ContextException {
+
+        System.out.println("--------BEFORE-----------------------");
+        printAllExertions(topLevelJob);
+        System.out.println("\n--------------------------------------");
+
         dag = new DAG();
-
         projectMap = new HashMap();
-
         contextIdsMap = new HashMap<String, String>();
-
         revContextIdsMap = new HashMap<String, String>();
 
         addVertex(topLevelJob);
-
         getMapping(topLevelJob);
-
         checkParentCycle(topLevelJob);
 
         List sortedProjects = new ArrayList();
         for (Iterator i = TopologicalSorter.sort(dag).iterator(); i.hasNext(); ) {
             String id = (String) i.next();
-
             sortedProjects.add(projectMap.get(id));
         }
 
-
         this.sortedProjects = Collections.unmodifiableList(sortedProjects);
+        printExertions(this.sortedProjects);
+        reorderJob(topLevelJob, this.sortedProjects);
 
+        System.out.println("--------AFTER-----------------------");
+        printAllExertions(topLevelJob);
+        System.out.println("\n--------------------------------------");
+    }
+
+    private void reorderJob(Exertion topXrt, List<Exertion> sortedExertions) throws CycleDetectedException, ContextException {
+
+        List<Exertion> sortedSubset = new ArrayList(sortedExertions);
+        sortedSubset.retainAll(topXrt.getExertions());
+        //System.out.println("SUBSET for: " + topXrt.getName());
+        //printExertions(sortedSubset);
+
+        System.out.println("Exertions before reordered: ");
+        printExertions(topXrt.getExertions());
+        topXrt.getExertions().removeAll(sortedSubset);
+
+
+        topXrt.getExertions().addAll(sortedSubset);
+
+        System.out.println("Exertions reordered: ");
+        printExertions(topXrt.getExertions());
+
+        for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
+            Exertion xrt = (Exertion) i.next();
+            if (xrt instanceof Job) {
+                reorderJob(xrt, sortedExertions);
+            }
+        }
+    }
+
+    private void addVertex(Exertion topXrt) throws ContextException {
+
+        String id = topXrt.getId().toString();
+        dag.addVertex(id);
+        projectMap.put(id, topXrt);
+        contextIdsMap.put(id, topXrt.getDataContext().getId().toString());
+        revContextIdsMap.put(topXrt.getDataContext().getId().toString(), id);
+
+        for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
+            Exertion project = (Exertion) i.next();
+
+            id = project.getId().toString();
+
+            if (dag.getVertex(id) != null) {
+                throw new ContextException("Project '" + id + "' is duplicated in the reactor");
+            }
+
+            dag.addVertex(id);
+
+            projectMap.put(id, project);
+
+            contextIdsMap.put(id, project.getDataContext().getId().toString());
+            revContextIdsMap.put(project.getDataContext().getId().toString(), id);
+
+            if (project instanceof Job) {
+                addVertex(project);
+            }
+        }
+    }
+
+    private void getMapping(Exertion topXrt) throws CycleDetectedException, ContextException {
+
+        for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
+            Exertion project = (Exertion) i.next();
+            String id = project.getId().toString();
+            String topId = topXrt.getId().toString();
+            dag.addEdge(id, topId);
+
+            Map<String, Map<String, String>> metaCtx = project.getDataContext().getMetacontext();
+            Map<String, String> ctxMapping = metaCtx.get("cid");
+            if (ctxMapping != null) {
+                for (Map.Entry<String, String> mapping : ctxMapping.entrySet()) {
+                    if (mapping.getValue() != null && mapping.getValue().length() > 0) {
+                        String dependencyId = revContextIdsMap.get(mapping.getValue());
+                        System.out.println("Map: " + mapping.getKey() + " to " + dependencyId);
+                        if (dag.getVertex(dependencyId) != null) {
+                            dag.addEdge(id, dependencyId);
+                        }
+                    }
+
+                }
+            }
+            if (project instanceof Job) {
+                getMapping(project);
+            }
+        }
+    }
+
+    private void checkParentCycle(Exertion topXrt) throws CycleDetectedException, ContextException {
+        if (topXrt.getDataContext().getParentID() != null) {
+            String parentId = topXrt.getDataContext().getParentID().toString();
+            if (dag.getVertex(parentId) != null) {
+                // Parent is added as an edge, but must not cause a cycle - so we remove any other edges it has in conflict
+                if (dag.hasEdge(parentId, topXrt.getId().toString())) {
+                    dag.removeEdge(parentId, topXrt.getId().toString());
+                }
+                dag.addEdge(topXrt.getId().toString(), parentId);
+            }
+        }
+    }
+
+
+
+
+
+    private void printExertions(List<Exertion> exertions) {
         int i = 0;
-        for (Exertion xrt : this.sortedProjects) {
+        for (Exertion xrt : exertions) {
             System.out.println("Exertion: " + i + " " + xrt.getName());
             i++;
         }
-
     }
+
+
+    private void printAllExertions(Exertion topXrt) {
+        if (topXrt.isTask())
+            System.out.print("T " + topXrt.getName() + " ");
+        else {
+            System.out.println("J " + topXrt.getName() + " {");
+            for (Exertion xrt : topXrt.getExertions()) {
+                printAllExertions(xrt);
+            }
+            System.out.print(" }");
+        }
+    }
+
+
+
 
     // two level job composition with PULL and PAR execution
     private static Job createJob(Strategy.Flow flow, Strategy.Access access) throws Exception {
@@ -138,91 +259,19 @@ public class ExertionSorter {
         Task f55 = task("Task_f55", sig("add", Adder.class),
                 context("add", input(path("arg/x53"), 20.0d), input(path("arg/x54"), 80.0d), output(path("result/y52"), null)));
 
-        Job j8 = job("Job_f8", f9, pipe(out(f10, path("result/y7")), input(f55, path("arg/x54"))), pipe(out(f7, path("result/y5")), input(f55, path("arg/x53"))), f10, f55,
+        Job j8 = job("Job_f8", pipe(out(f10, path("result/y7")), input(f55, path("arg/x54"))), pipe(out(f7, path("result/y5")), input(f55, path("arg/x53"))), f55, f10, f9,
                 pipe(out(f9, path("result/y6")), input(f10, path("arg/x13"))));
 
         Pipe p1 = pipe(out(f4, path("result/y1")), input(f7, path("arg/x9")));
 
-        return job("Job_f1", j8, f3, job("Job_f2", f7, f6, f4, f5),
+        return job("Job_f1", f3, j8, job("Job_f2", f5, f7, f6, f4),
                 pipe(out(f6, path("result/y4")), input(f5, path("arg/x3"))),
                 pipe(out(f4, path("result/y1")), input(f3, path("arg/x5"))),
                 pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))), p1);
-
-
     }
 
     public static void main(String[] args) throws Exception {
         //ExertionSorter es = new ExertionSorter(createJob(Strategy.Flow.SEQ, Strategy.Access.PUSH));
         ExertionSorter es = new ExertionSorter(createJob2());
-    }
-
-    private void addVertex(Exertion topXrt) throws ContextException {
-
-        String id = topXrt.getId().toString();
-        dag.addVertex(id);
-        projectMap.put(id, topXrt);
-        contextIdsMap.put(id, topXrt.getDataContext().getId().toString());
-        revContextIdsMap.put(topXrt.getDataContext().getId().toString(), id);
-
-        for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
-            Exertion project = (Exertion) i.next();
-
-            id = project.getId().toString();
-
-            if (dag.getVertex(id) != null) {
-                throw new ContextException("Project '" + id + "' is duplicated in the reactor");
-            }
-
-            dag.addVertex(id);
-
-            projectMap.put(id, project);
-
-            contextIdsMap.put(id, project.getDataContext().getId().toString());
-            revContextIdsMap.put(project.getDataContext().getId().toString(), id);
-
-            if (project instanceof Job) {
-                addVertex(project);
-            }
-        }
-    }
-
-    private void getMapping(Exertion topXrt) throws CycleDetectedException, ContextException {
-
-        for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
-            Exertion project = (Exertion) i.next();
-
-            String id = project.getId().toString();
-
-            Map<String, Map<String, String>> metaCtx = project.getDataContext().getMetacontext();
-            Map<String, String> ctxMapping = metaCtx.get("cid");
-            if (ctxMapping != null) {
-                for (Map.Entry<String, String> mapping : ctxMapping.entrySet()) {
-                    if (mapping.getValue() != null && mapping.getValue().length() > 0) {
-                        String dependencyId = revContextIdsMap.get(mapping.getValue());
-                        System.out.println("Map: " + mapping.getKey() + " to " + dependencyId);
-                        if (dag.getVertex(dependencyId) != null) {
-                            dag.addEdge(id, dependencyId);
-                        }
-                    }
-
-                }
-            }
-            if (project instanceof Job) {
-                getMapping(project);
-            }
-        }
-    }
-
-    private void checkParentCycle(Exertion topXrt) throws CycleDetectedException, ContextException {
-        if (topXrt.getDataContext().getParentID() != null) {
-            String parentId = topXrt.getDataContext().getParentID().toString();
-            if (dag.getVertex(parentId) != null) {
-                // Parent is added as an edge, but must not cause a cycle - so we remove any other edges it has in conflict
-                if (dag.hasEdge(parentId, topXrt.getId().toString())) {
-                    dag.removeEdge(parentId, topXrt.getId().toString());
-                }
-                dag.addEdge(topXrt.getId().toString(), parentId);
-            }
-        }
     }
 }
