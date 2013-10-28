@@ -23,6 +23,8 @@ ENDLOCAL & SET MVN_REPO=%MVN_REPO%
 
 set LIB_DIR=%SORCER_HOME%\lib
 
+set JAVA_OPTS="%JAVA_OPTS% -Dsorcer.env.file=%SORCER_HOME%/configs/sorcer.env"
+
 IF EXIST %LIB_DIR%\sorcer\sos-env.jar (
    rem Distro
    set "JINI_CLASSPATH=%LIB_DIR%\jini\jsk-platform.jar;%LIB_DIR%\jini\jsk-lib.jar;%LIB_DIR%\river\start.jar;%LIB_DIR%\jini-lookup\serviceui.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\logback-classic.jar;%LIB_DIR%\commons\logback-core.jar"
