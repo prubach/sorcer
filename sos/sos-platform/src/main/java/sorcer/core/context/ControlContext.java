@@ -169,7 +169,10 @@ public class ControlContext extends ServiceContext implements Strategy {
 		setDomainID("0");
 		setSubdomainID("0");
 		setExecTimeRequested(true);
-		setFlowType(Flow.SEQ);
+        // Changed for Sorter
+		//setFlowType(Flow.AUTO);
+        setFlowType(Flow.SEQ);
+
 		setAccessType(Access.PUSH);
 		setComponentAttribute(GET_EXEC_TIME);
 		setComponentAttribute(SKIPPED_);

@@ -63,6 +63,13 @@
             <artifactId>monitor-api</artifactId>
             <version>${v.rio}</version>
         </dependency>
+        <!-- Added for ExertionSorter tests -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.15</version>
+        </dependency>
+        <!-- -->
         <dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
