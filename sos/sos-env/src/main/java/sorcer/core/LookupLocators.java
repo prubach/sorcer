@@ -53,12 +53,12 @@ public class LookupLocators {
      * @param dynamicUrls list of lookup locator URLs read from external dynamic source
      */
     public void setDynamicUrls(List<String> dynamicUrls) {
-        if (!isInitialized()) return;
         Set<String> newDynamic = new HashSet<String>(dynamicUrls);
-        log.info("New set of dynamic URLs = {}", dynamicUrls);
         if (newDynamic.equals(this.dynamicUrls)) return;
-        allUrls = join(staticUrls, newDynamic);
+        log.info("New set of dynamic URLs = {}", dynamicUrls);
         this.dynamicUrls = newDynamic;
+        if (!isInitialized()) return;
+        allUrls = join(staticUrls, newDynamic);
     }
 
     public void setStaticUrls(String[] urls) {
