@@ -20,6 +20,7 @@
 import org.rioproject.config.Component
 import org.rioproject.config.Constants
 import net.jini.export.Exporter
+import net.jini.core.discovery.LookupLocator
 import org.rioproject.net.HostUtil
 import sorcer.core.SorcerEnv;
 
@@ -38,5 +39,11 @@ class ReggieConfig {
 
     Exporter getServerExporter() {
         return ExporterConfiguration.getDefaultExporter()
+    }
+
+    LookupLocator[] getInitialLookupLocators(){
+        def result = []
+        SorcerEnv.getLookupLocators().each(){ s -> result += new LookupLocator("jini://$s/".toString())}
+        return result as LookupLocator[];
     }
 }
