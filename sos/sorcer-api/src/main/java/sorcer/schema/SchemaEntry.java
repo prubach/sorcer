@@ -33,11 +33,13 @@ public class SchemaEntry implements Serializable {
     public Class type;
     public String tag;
     public String description;
+    public boolean result;
+    public String[] returnArgPaths;
 
     protected SchemaEntry() {
     }
 
-    public SchemaEntry(Class type, String path, Direction direction, boolean required, String tag, String description) {
+    public SchemaEntry(Class type, String path, Direction direction, boolean required, String tag, String description, boolean result, String[] returnArgPaths) {
         if (type == null) throw new IllegalArgumentException("type is null");
         if (path == null && tag == null) throw new IllegalArgumentException("path is null and no tags");
         if (direction == null) throw new IllegalArgumentException("direction is null");
@@ -47,6 +49,8 @@ public class SchemaEntry implements Serializable {
         this.required = required;
         this.tag = tag;
         this.description = description;
+        this.result = result;
+        this.returnArgPaths = returnArgPaths;
     }
 
     @Override
@@ -55,12 +59,12 @@ public class SchemaEntry implements Serializable {
     }
 
     protected boolean equals(SchemaEntry entry) {
-        return type.equals(entry.type) && compare(path, entry.path) && direction.equals(entry.direction) && required == entry.required && equals(tag, entry.tag);
+        return compare(path, entry.path) && equals(tag, entry.tag);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode() + 13 * (path == null ? 0 : path.hashCode()) + 17 * direction.ordinal() + 31 * (required ? 1 : 0) + 37 * (tag == null ? 0 : tag.hashCode());
+        return 13 * (path == null ? 0 : path.hashCode()) + 37 * (tag == null ? 0 : tag.hashCode());
     }
 
     @Override
