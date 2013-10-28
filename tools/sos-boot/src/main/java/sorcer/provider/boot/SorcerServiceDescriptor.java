@@ -306,6 +306,7 @@ public class SorcerServiceDescriptor implements ServiceDescriptor {
             return docreate(config);
         } catch (Exception x) {
             erredServices.incrementAndGet();
+            logger.log(Level.SEVERE, "Error creating service", x);
             throw x;
         } finally {
             int i = startedServices.incrementAndGet();
