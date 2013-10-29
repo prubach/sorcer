@@ -1130,4 +1130,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
     Context getLinkedContext(Link link) throws ContextException;
 
+    Context setReturnPath(ReturnPath returnPath);
+
 }
