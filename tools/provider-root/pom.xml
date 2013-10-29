@@ -135,26 +135,6 @@
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
-        <repository>
-            <id>oracle</id>
-            <url>http://download.oracle.com/maven/</url>
-            <releases>
-                <enabled>true</enabled>
-                <!-- disabled to make the startup of sorcer provider's faster -->
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>maven.boundary.com</id>
-            <name>maven.boundary.com-releases</name>
-            <url>http://maven.boundary.com/artifactory/external</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
 </project>
