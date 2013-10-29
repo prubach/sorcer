@@ -113,9 +113,9 @@ public class ExertionSorter {
         List<Exertion> sortedSubset = new ArrayList(sortedExertions);
         sortedSubset.retainAll(topXrt.getExertions());
 
-        if (topXrt.getFlowType().equals(Strategy.Flow.AUTO)) {
+        /*if (topXrt.getFlowType().equals(Strategy.Flow.AUTO)) {
             ((ServiceExertion) topXrt).setFlowType(setFlow(topXrt, sortedSubset));
-        }
+        }*/
         topXrt.getExertions().removeAll(sortedSubset);
         topXrt.getExertions().addAll(sortedSubset);
 
