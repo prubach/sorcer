@@ -195,7 +195,8 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 			ex.printStackTrace();
 		}
 		if (contextId == null
-				&& controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)) {
+				&& (controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)
+                || controlContext.getFlowType().equals(ControlContext.AUTO))) {
 			return (size() > 0) ? exertionAt(size() - 1) : null;
 		} else {
 			Exertion master = null;

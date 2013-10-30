@@ -1,12 +1,20 @@
-package sorcer.core.dispatch;
+package junit.sorcer.core.dispatch;
 
-import sorcer.arithmetic.provider.Adder;
-import sorcer.arithmetic.provider.Multiplier;
-import sorcer.arithmetic.provider.Subtractor;
-import sorcer.service.*;
+import junit.sorcer.core.provider.*;
+import org.junit.Assert;
+import org.junit.Test;
+import sorcer.core.dispatch.ExertionSorter;
+import sorcer.core.dispatch.SortingException;
+import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.service.Exertion;
+import sorcer.service.Job;
+import sorcer.service.Strategy;
+import sorcer.service.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import static sorcer.co.operator.from;
 import static sorcer.eo.operator.*;
 
 /**
@@ -14,7 +22,7 @@ import static sorcer.eo.operator.*;
  * User: Pawel Rubach
  * Date: 23.10.13
  */
-public class ExertionSorterTester {
+public class ExertionSorterTest {
 
     private static void printExertions(List<Exertion> exertions) {
         int i = 0;
@@ -23,7 +31,6 @@ public class ExertionSorterTester {
             i++;
         }
     }
-
 
     private static void printAllExertions(Exertion topXrt) {
         if (topXrt.isTask())
@@ -36,7 +43,6 @@ public class ExertionSorterTester {
             System.out.println(" }");
         }
     }
-
 
     // two level job composition with PULL and PAR execution
     private static Job createJob(Strategy.Flow flow, Strategy.Access access) throws Exception {
@@ -57,14 +63,39 @@ public class ExertionSorterTester {
         // Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
         Job j1 = job("j1", t3, // sig("service", Jobber.class),
                 job("j2", t5, t4, strategy(flow, access)),
-                pipe(out(t3, "result/y"), in(t4, "arg/x1")),
                 pipe(out(t4, "result/y"), in(t3, "arg/x1")),
                 pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 
         return j1;
     }
 
-    private static Job createJob2() throws Exception {
+
+    private static Job createSrv() throws Exception {
+        Task t3 = srv("t3", sig("subtract", SubtractorImpl.class),
+                cxt("subtract", in("arg/x1"), in("arg/x2"),
+                        out("result/y")));
+
+        Task t4 = srv("t4", sig("multiply", MultiplierImpl.class),
+                //cxt("multiply", in("super/arg/x1"), in("arg/x2", 50.0),
+                cxt("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
+                        out("result/y")));
+
+        Task t5 = srv("t5", sig("add", AdderImpl.class),
+                cxt("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
+                        out("result/y")));
+
+        // Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
+        //Job j1= job("j1", job("j2", t4, t5, strategy(Flow.PARALLEL, Access.PULL)), t3,
+        return srv("j1", sig("execute", ServiceJobber.class),
+                cxt(in("arg/x1", 10.0), result("job/result", from("j1/t3/result/y"))),
+                srv("j2", sig("execute", ServiceJobber.class), t4, t5),
+                t3,
+                pipe(out(t4, "result/y"), in(t3, "arg/x1")),
+                pipe(out(t5, "result/y"), in(t3, "arg/x2")));
+    }
+
+
+    private static Job createComplexJob() throws Exception {
 
         Task f4 = task("Task_f4", sig("multiply", Multiplier.class),
                 context("multiply", input(path("arg/x1"), 2), input(path("arg/x2"), 25 * 2),
@@ -118,14 +149,48 @@ public class ExertionSorterTester {
                 pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))), p1);
     }
 
-    public static void main(String[] args) throws Exception {
-        //ExertionSorter es = new ExertionSorter(createJob(Strategy.Flow.SEQ, Strategy.Access.PUSH));
+    @Test
+    public void testSorterSimple() throws SortingException, Exception {
         System.out.println("Before sorting");
-        Job job = createJob2();
+        Job job = createSrv(); //createComplexJob();
         printAllExertions(job);
         ExertionSorter es = new ExertionSorter(job);
         System.out.println("After sorting");
         printAllExertions(es.getSortedJob());
+        Assert.assertEquals(Strategy.Flow.SEQ, es.getSortedJob().getFlowType());
+        Assert.assertEquals(Strategy.Flow.PAR, es.getSortedJob().getExertion("j2").getFlowType());
 
     }
+
+    @Test
+    public void testSorterSimple2() throws SortingException, Exception {
+        System.out.println("Before sorting");
+        Job job = createJob(Strategy.Flow.AUTO, Strategy.Access.PULL);
+        printAllExertions(job);
+        ExertionSorter es = new ExertionSorter(job);
+        System.out.println("After sorting");
+        printAllExertions(es.getSortedJob());
+        Assert.assertEquals(Strategy.Flow.PAR, es.getSortedJob().getExertion("j2").getFlowType());
+    }
+
+    @Test
+    public void testSorterComplex() throws SortingException, Exception {
+        System.out.println("Before sorting");
+        Job job = createComplexJob();
+        printAllExertions(job);
+        ExertionSorter es = new ExertionSorter(job);
+        System.out.println("After sorting");
+        printAllExertions(es.getSortedJob());
+        final Exertion f3 = job.getExertion("Task_f3");
+        final Exertion j2 = job.getExertion("Job_f2");
+        final Exertion j8 = job.getExertion("Job_f8");
+        final Exertion j20 = job.getExertion("Job_f20");
+        List<Exertion> expList = new ArrayList<Exertion>();
+        expList.add(j2);
+        expList.add(f3);
+        expList.add(j8);
+        expList.add(j20);
+        Assert.assertArrayEquals(expList.toArray(), es.getSortedJob().getExertions().toArray());
+    }
+
 }

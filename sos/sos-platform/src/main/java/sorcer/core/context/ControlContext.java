@@ -124,6 +124,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public final static String DIRECT = "direct";
 
+    public final static String AUTO = "auto";
+
 	public final static String PARALLEL = "parallel";
 
 	public final static String SEQUENTIAL = "sequential";
@@ -170,8 +172,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 		setSubdomainID("0");
 		setExecTimeRequested(true);
         // Changed for Sorter
-		//setFlowType(Flow.AUTO);
-        setFlowType(Flow.SEQ);
+		setFlowType(Flow.AUTO);
+        //setFlowType(Flow.SEQ);
 
 		setAccessType(Access.PUSH);
 		setComponentAttribute(GET_EXEC_TIME);
@@ -289,7 +291,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	}
 
 	public void setFlowType(Flow type) {
-		if (Flow.PAR.equals(type) || Flow.SEQ.equals(type))
+		if (Flow.PAR.equals(type) || Flow.SEQ.equals(type) || Flow.AUTO.equals(type))
 			put(EXERTION_FLOW, type);
 	}
 

@@ -31,6 +31,8 @@ import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
+import sorcer.core.dispatch.ExertionSorter;
+import sorcer.core.dispatch.SortingException;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.dispatch.ProvisionManager;
@@ -162,6 +164,13 @@ public class ServiceExerter implements Exerter, Callable {
         Signature signature = exertion.getProcessSignature();
         Service provider = null;
         try {
+            // If the exertion is a job rearrange the inner exertions to make sure the
+            // dependencies are not broken
+            if (exertion.isJob()) {
+                ExertionSorter es = new ExertionSorter(exertion);
+                exertion = (ServiceExertion)es.getSortedJob();
+            }
+            //
             if (!(signature instanceof NetSignature)) {
                 if (exertion instanceof Task) {
                     if (exertion.getSignatures().size() == 1) {
@@ -197,7 +206,10 @@ public class ServiceExerter implements Exerter, Callable {
         } catch (SignatureException e) {
             e.printStackTrace();
             throw new ExertionException(e);
+        } catch (SortingException se) {
+            throw new ExertionException(se);
         }
+
         if (provider == null) {
             // handle signatures for PULL tasks
             if (!exertion.isJob()

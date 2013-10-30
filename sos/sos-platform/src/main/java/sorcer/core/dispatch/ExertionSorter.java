@@ -32,7 +32,7 @@ public class ExertionSorter {
     /**
      * Construct the ExertionSorter
      */
-    public ExertionSorter(Job topLevelJob) throws SortingException {
+    public ExertionSorter(Exertion topLevelJob) throws SortingException {
 
         dag = new DAG();
         projectMap = new HashMap();
@@ -55,7 +55,7 @@ public class ExertionSorter {
             this.sortedProjects = Collections.unmodifiableList(sortedProjects);
             reorderJob(this.topLevelJob, this.sortedProjects);
         } catch (CycleDetectedException ce) {
-            throw new SortingException(ce);
+            throw new SortingException(ce.getMessage());
         }
     }
 
@@ -68,6 +68,23 @@ public class ExertionSorter {
         return topLevelJob;
     }
 
+
+    /**
+     * Helper method to build a tree of all exertion IDs in a tree - required by setFlow
+     * @param sortedSubXrt
+     * @return
+     */
+    private List<String> addSubExertions(List<Exertion> sortedSubXrt) {
+        List<String> sortedSubsetIds = new ArrayList<String>();
+        for (Exertion xrt : sortedSubXrt) {
+            sortedSubsetIds.add(xrt.getId().toString());
+            if (xrt.isJob())
+                sortedSubsetIds.addAll(addSubExertions(xrt.getExertions()));
+        }
+        return sortedSubsetIds;
+    }
+
+
     /**
      * Determine the Flow (PAR or SEQ) for exertions that have the Flow set to AUTO
      *
@@ -76,10 +93,8 @@ public class ExertionSorter {
      * @return
      */
     private Strategy.Flow setFlow(Exertion topXrt, List<Exertion> sortedSubXrt) {
-        List<String> sortedSubsetIds = new ArrayList<String>();
-        for (Exertion xrt : sortedSubXrt) {
-            sortedSubsetIds.add(xrt.getId().toString());
-        }
+        List<String> sortedSubsetIds = addSubExertions(sortedSubXrt);
+
         int edges = 0;
         for (Exertion xrt : topXrt.getExertions()) {
             for (String depId : dag.getParentLabels(xrt.getId().toString())) {
@@ -113,9 +128,10 @@ public class ExertionSorter {
         List<Exertion> sortedSubset = new ArrayList(sortedExertions);
         sortedSubset.retainAll(topXrt.getExertions());
 
-        /*if (topXrt.getFlowType().equals(Strategy.Flow.AUTO)) {
+        if (topXrt.getFlowType()!=null && topXrt.getFlowType().equals(Strategy.Flow.AUTO)) {
             ((ServiceExertion) topXrt).setFlowType(setFlow(topXrt, sortedSubset));
-        }*/
+            logger.info("FLOW for exertion: " + topXrt.getName() + " set to: " + topXrt.getFlowType());
+        }
         topXrt.getExertions().removeAll(sortedSubset);
         topXrt.getExertions().addAll(sortedSubset);
 

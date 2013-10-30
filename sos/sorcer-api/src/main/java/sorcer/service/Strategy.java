@@ -32,7 +32,7 @@ public interface Strategy extends Arg {
 	 * <code>STEP</code> (stepwise)) for all component exertions at the same level.
 	 */
 	public enum Flow {
-		SEQ, PAR, STEP
+		SEQ, PAR, STEP, AUTO
 	}
 	
 	/**

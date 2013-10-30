@@ -110,7 +110,9 @@ public class ProvisionManager {
                                     if (service!=null) sigsToRemove.add(sigEl);
                                 } catch (RemoteException re) {
                                     provisioner = Accessor.getService(Provisioner.class);
-                                    String msg = "Problem provisioning "+sigEl + " " +re.getMessage();
+                                    String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
+                                            + " (" + sigEl.getSignature().getProviderName() + ")"
+                                            + " " +re.getMessage();
                                     logger.severe(msg);
                                     //throw new ProvisioningException(msg, ((NetSignature)sig).getExertion());
                                 }

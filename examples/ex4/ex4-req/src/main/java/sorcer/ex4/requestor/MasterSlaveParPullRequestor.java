@@ -98,9 +98,9 @@ public class MasterSlaveParPullRequestor extends ServiceRequestor {
         // define a job
         Job job = new NetJob();
         job.addExertion(task1);
-        job.addExertion(task4);
         job.addExertion(task2);
         job.addExertion(task3);
+        job.addExertion(task4);
 
         // define a job control strategy
         // use the catalog to delegate the tasks
