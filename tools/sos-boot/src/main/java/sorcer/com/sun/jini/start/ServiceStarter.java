@@ -255,9 +255,10 @@ public class ServiceStarter {
 	 */
 	private Service[] processServiceDescriptors(Configuration... configs) throws Exception {
 		List<Service> resultList = new LinkedList<Service>();
+        ServiceDescriptor[][] descriptors = new ServiceDescriptor[configs.length][];
 
-        Map<Configuration, ServiceDescriptor[]>serviceDescriptors = new HashMap<Configuration, ServiceDescriptor[]>();
-		for (Configuration config : configs) {
+        for (int i = 0; i < configs.length; i++) {
+            Configuration config = configs[i];
 			ServiceDescriptor[] descs = (ServiceDescriptor[])
 					config.getEntry(START_PACKAGE, "serviceDescriptors",
 							ServiceDescriptor[].class, null);
@@ -265,12 +266,14 @@ public class ServiceStarter {
 				logger.warning("service.config.empty");
 				continue;
 			}
-            serviceDescriptors.put(config, descs);
+            descriptors[i] = descs;
         }
 
-        for (Map.Entry<Configuration, ServiceDescriptor[]> e : serviceDescriptors.entrySet()) {
-            Configuration config = e.getKey();
-            ServiceDescriptor[] descs = e.getValue();
+        for (int i = 0; i < configs.length; i++) {
+            Configuration config = configs[i];
+            ServiceDescriptor[] descs = descriptors[i];
+            if(descs == null)
+                continue;
 
 			LoginContext loginContext = (LoginContext)
 					config.getEntry(START_PACKAGE, "loginContext",
