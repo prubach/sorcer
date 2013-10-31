@@ -7,6 +7,7 @@ IF NOT DEFINED SORCER_HOME (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
 )
+IF NOT DEFINED SORCER_EXT SET SORCER_EXT=%SORCER_HOME%
 IF NOT DEFINED RIO_HOME SET RIO_HOME=%SORCER_HOME%\lib\rio
 rem read sorcer.env to get the local repo location
 FOR /F "tokens=1,2 delims==" %%G IN (%SORCER_HOME%\configs\sorcer.env) DO (set %%G=%%H)

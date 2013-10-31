@@ -95,6 +95,12 @@ earlyInit ( ) {
         export SORCER_HOME
     fi
 
+    # Attempt to set SORCER_EXT if it is not already set.
+    if [ -z "$SORCER_EXT" -o ! -d "$SORCER_EXT" ] ; then
+        SORCER_EXT=$SORCER_HOME
+        export SORCER_EXT
+    fi
+
 	JAVA_OPTS="$JAVA_OPTS -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env"
 
     # Set RIO_HOME if not already set
