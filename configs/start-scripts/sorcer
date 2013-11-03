@@ -1,0 +1,98 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          sorcer
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Start/stop SORCER platform
+# Description:       Provide the SORCER computing platform on this machine                                                                                                                  
+### END INIT INFO
+
+# The configuration file /etc/sorcer.conf should exist and contain the following
+# variable:
+# SORCER_HOME - the location of the Sorcer installation
+#
+# if a different UNIX user than the owner of SORCER_HOME directory should be used to
+# start SORCER specify also the SORCER_USER variable
+
+if [ -f /etc/sorcer.conf ]; then
+  . /etc/sorcer.conf
+fi
+
+if [ -z "$SORCER_HOME" ]; then
+    echo "SORCER_HOME must be set in /etc/environment or a configuration"
+    echo "file (/etc/sorcer.conf) must exist and contain the SORCER_HOME variable"
+    exit -1
+fi
+
+if [ -z "$SORCER_USER" ]; then
+  SORCER_USER=$(stat -c %U $SORCER_HOME)
+fi
+
+col=`expr $(tput cols) - 25`
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+NORMAL=$(tput sgr0)
+
+echo "executing SORCER_STARTER, SH: $SORCER_HOME" > /tmp/sorcer-starter.log
+
+do_start()
+{
+       echo -n " * Starting SORCER..."
+        if [ ! -f $SORCER_HOME/pid ]; then
+            su -c "$SORCER_HOME/bin/rio-boot -d" $SORCER_USER
+	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
+	    echo " "
+        else
+            echo " SORCER is already running..."
+        fi 
+}
+
+do_stop()
+{
+       if [ -f $SORCER_HOME/pid ]; then
+            PID=$(cat $SORCER_HOME/pid);
+            echo -n " * Stopping SORCER..."
+            kill $PID;
+	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
+	    echo " "
+            rm $SORCER_HOME/pid
+        else
+            echo " SORCER is not running..."
+        fi
+}
+
+do_status()
+{
+    if [ -f $SORCER_HOME/pid ]; then
+	PID=$(cat $SORCER_HOME/pid);	
+        PS=$(ps aux | grep $PID | grep -v grep);        
+        if [ -z "$PS" ]; then
+	  echo " SORCER is not running"
+	else
+	  echo " SORCER is running"
+	fi
+    else
+      echo " SORCER is not running"
+    fi      
+}
+
+case $1 in
+    start)
+      do_start
+    ;;
+    stop)
+      do_stop
+    ;;    
+    restart)
+      do_stop
+      do_start
+    ;;
+    status)
+      do_status
+    ;;
+esac
+
+exit 0

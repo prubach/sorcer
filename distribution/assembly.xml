@@ -268,6 +268,16 @@
             <outputDirectory>/policy</outputDirectory>
         </fileSet>
 
+        <!-- Start scripts -->
+        <fileSet>
+            <directory>${basedir}/../configs/start-scripts</directory>
+            <outputDirectory>/configs/start-scripts</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <filtered>false</filtered>
+            <fileMode>0755</fileMode>
+        </fileSet>
         <!-- Configuration files -->
         <fileSet>
             <directory>${basedir}/../configs/</directory>
@@ -284,6 +294,7 @@
                 <exclude>template/**</exclude>
                 <exclude>shellEnv</exclude>
                 <exclude>logback.xml</exclude>
+                <exclude>start-scripts/*</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>

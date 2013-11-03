@@ -25,6 +25,9 @@ scriptPath="$scriptDir/$scriptName"
 command_line=$*
 
 if [ "$1" = "start" ]; then
+    if [ "$3" = "-d" ]; then
+        daem=1
+    fi
     start=1
     shift
     command_line=$*
@@ -120,10 +123,19 @@ if [ -f "$LIB_DIR/sorcer/sos-env.jar" ]; then
     # Run Sorcer Installer to install sorcer jars to local repo
     # Check if marker file exists - if so installer has already been run, ignore
     if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
-        echo "Sorcer jars already installed.";
+        if [ "$daem" = "1" ]; then
+          echo "Sorcer jars already installed." > $SORCER_HOME/logs/rio-boot.log
+        else
+          echo "Sorcer jars already installed."
+        fi
     else
-        SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
-        ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
+        if [ "$daem" = "1" ]; then
+          SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
+                  ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
+        else
+            SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
+            ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
+        fi
     fi
 fi
 ##############################
@@ -173,9 +185,13 @@ fi
 # If the command is to start the Rio services, invoke the ServiceStarter
 # Otherwise invoke the CLI
 if [ "$start" = "1" ]; then
-
     # Run installer first
-    echo "INFO  $(date +%T) check local repository for artifacts"
+    
+    if [ "$daem" = "1" ]; then
+      echo "INFO  $(date +%T) check local repository for artifacts"  > $SORCER_HOME/logs/rio-boot.log
+    else
+      echo "INFO  $(date +%T) check local repository for artifacts"
+    fi    
     installRioToLocalRepository
 
     if [ -z "$RIO_NATIVE_DIR" ] ; then
@@ -211,7 +227,11 @@ if [ "$start" = "1" ]; then
     else
         starter_arg=$1
         getStarterConfig $1
-        echo "INFO  $(date +%T) starter config [$starterConfig]"
+        if [ "$daem" = "1" ]; then
+	  echo "INFO  $(date +%T) starter config [$starterConfig]" > $SORCER_HOME/logs/rio-boot.log
+	else 
+	  echo "INFO  $(date +%T) starter config [$starterConfig]"
+	fi	
         shift
         command_line=$*
     fi
@@ -226,7 +246,25 @@ if [ "$start" = "1" ]; then
     #     -Dorg.rioproject.locators="jini://localhost:10500" \
     # -------------------
 
-    ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
+    if [ "$daem" = "1" ]; then
+      nohup ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
+	  -XX:+HeapDumpOnOutOfMemoryError \
+	  -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
+	  -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
+	  $classpath $agentpath $libpath $RIO_OPTS \
+	  -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
+	  '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
+	  $loggingConfig \
+	  -Dorg.rioproject.service=$service \
+	  -Djava.rmi.server.useCodebaseOnly=false \
+	  -DRIO_HOME=$RIO_HOME \
+	  -DRIO_LOG_DIR=$RIO_HOME/../../logs/ \
+	  -Drio.script.mainClass="$launchTarget" \
+	  $USER_OPTS \
+	  $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line > $SORCER_HOME/logs/rio-boot.log 2>&1 &
+      echo $! > $SORCER_HOME/pid
+    else
+        ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
         -XX:+HeapDumpOnOutOfMemoryError \
         -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
         -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
@@ -241,6 +279,7 @@ if [ "$start" = "1" ]; then
         -Drio.script.mainClass="$launchTarget" \
         $USER_OPTS \
         $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line
+    fi
 elif [ "$project" = "1" ] ;then
     echo "Create project"
     mvn archetype:generate \

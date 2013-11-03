@@ -50,7 +50,7 @@ class StartAllConfig {
                                 home+'/configs/rio/compute_resource.groovy']
 
         def serviceDescriptors = [
-            new SorcerServiceDescriptor(
+            /*new SorcerServiceDescriptor(
                     null,
                     policyFile,
                     Booter.resolveClasspath([
@@ -60,7 +60,7 @@ class StartAllConfig {
                     ] as String[]),
                     "com.sorcersoft.aws.AmazonStarter",
                     null
-            ),
+            ),*/
             ServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
             ServiceDescriptorUtil.getLookup(policyFile, reggieConfigs as String[]),
             ServiceDescriptorUtil.getMonitor(policyFile, monitorConfigs as String[]),

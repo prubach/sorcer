@@ -103,6 +103,8 @@
             <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/ant" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/antRun" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvn" os="unix"/>
