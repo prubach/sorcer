@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# chkconfig: 2345 50 99
+# description: Starts and stops SORCER computing platform
+#
 ### BEGIN INIT INFO
 # Provides:          sorcer
 # Required-Start:    $local_fs $remote_fs $network $syslog
@@ -24,6 +28,14 @@ fi
 if [ -z "$SORCER_HOME" ]; then
     echo "SORCER_HOME must be set in /etc/environment or a configuration"
     echo "file (/etc/sorcer.conf) must exist and contain the SORCER_HOME variable"
+    echo "SORCER_HOME must be set in /etc/environment or in the configuration file (/etc/sorcer.conf)" > /tmp/sorcer-starter.log
+    exit -1
+fi
+
+if [ -z "$JAVA_HOME" ]; then
+    echo "JAVA_HOME must be set in /etc/environment or a configuration"
+    echo "file (/etc/sorcer.conf) must exist and contain the JAVA_HOME variable"
+    echo "JAVA_HOME must be set in /etc/environment or in the configuration file (/etc/sorcer.conf)" > /tmp/sorcer-starter.log
     exit -1
 fi
 
@@ -36,11 +48,12 @@ RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
-echo "executing SORCER_STARTER, SH: $SORCER_HOME" > /tmp/sorcer-starter.log
+#echo "executing SORCER_STARTER, SH: $SORCER_HOME" > /tmp/sorcer-starter.log
 
 do_start()
-{
-       echo -n " * Starting SORCER..."
+{       
+       echo -n " * Starting SORCER..."              
+       check_status
         if [ ! -f $SORCER_HOME/pid ]; then
             su -c "$SORCER_HOME/bin/rio-boot -d" $SORCER_USER
 	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
@@ -52,6 +65,7 @@ do_start()
 
 do_stop()
 {
+       check_status
        if [ -f $SORCER_HOME/pid ]; then
             PID=$(cat $SORCER_HOME/pid);
             echo -n " * Stopping SORCER..."
@@ -64,19 +78,25 @@ do_stop()
         fi
 }
 
-do_status()
+check_status()
 {
     if [ -f $SORCER_HOME/pid ]; then
 	PID=$(cat $SORCER_HOME/pid);	
         PS=$(ps aux | grep $PID | grep -v grep);        
-        if [ -z "$PS" ]; then
-	  echo " SORCER is not running"
-	else
-	  echo " SORCER is running"
+        if [ -z "$PS" ]; then	  
+	  rm $SORCER_HOME/pid
 	fi
-    else
-      echo " SORCER is not running"
     fi      
+}
+
+do_status()
+{
+    check_status
+    if [ -f $SORCER_HOME/pid ]; then
+	echo " SORCER is running"
+    else
+	echo " SORCER is not running"	  
+    fi
 }
 
 case $1 in
@@ -92,6 +112,10 @@ case $1 in
     ;;
     status)
       do_status
+    ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit -1
     ;;
 esac
 
