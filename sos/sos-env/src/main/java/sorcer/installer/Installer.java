@@ -60,7 +60,7 @@ public class Installer {
     private static String VERSIONS_PROPS_FILE=SorcerEnv.getHomeDir() + File.separator + "configs" +
             File.separator + "groupversions.properties";
 
-    private static String REPOLAYOUT_PROPS_FILE=SorcerEnv.getHomeDir() + File.separator + "configs" +
+    private static String REPOLAYOUT_PROPS_FILE=SorcerEnv.getExtDir() + File.separator + "configs" +
             File.separator + "repolayout.properties";
 
     private static String repoDir;
@@ -121,7 +121,7 @@ public class Installer {
                 Properties props = new Properties();
                 props.load(new FileInputStream(repoFile));
                 propertyMap = (Map) props;
-                groupDirMap.putAll(propertyMap);
+                 groupDirMap.putAll(propertyMap);
             }
 
             inputStream = resourceVersions.openStream();

@@ -44,7 +44,41 @@ SORCER_HOME="$DIRNAME/../../"
 cd $SORCER_HOME
 SORCER_HOME=`pwd`
 
-echo Installing start script to start SORCER from SORCER_HOME: $SORCER_HOME
-echo "SORCER_HOME=$SORCER_HOME" > /etc/sorcer.conf
-ln -s $SORCER_HOME/configs/start-scripts/sorcer /etc/init.d/sorcer
-update-rc.d sorcer defaults
+
+install()
+{
+    echo Installing start script to start SORCER from SORCER_HOME: $SORCER_HOME
+    echo "SORCER_HOME=$SORCER_HOME" > /etc/sorcer.conf
+    ln -s $SORCER_HOME/configs/start-scripts/sorcer /etc/init.d/sorcer
+    if [ -n "$(command -v update-rc.d)" ]; then
+        update-rc.d sorcer defaults
+    elif [ -n "$(command -v chkconfig)" ]; then
+        chkconfig --level 345 sorcer on
+    else
+      echo "could not set sorcer to autostart with the OS"
+    fi
+}
+
+uninstall()
+{
+    echo Uninstalling SORCER start script for SORCER_HOME: $SORCER_HOME
+    if [ -n "$(command -v update-rc.d)" ]; then
+        update-rc.d -f sorcer remove
+    elif [ -n "$(command -v chkconfig)" ]; then
+        chkconfig --level 345 sorcer off
+    else
+      echo "could not uninstall autostarting SORCER with the OS"
+    fi
+    if [ -f /etc/init.d/sorcer ]; then
+        rm /etc/init.d/sorcer
+    fi
+    if [ -f /etc/sorcer.conf ]; then
+        rm /etc/sorcer.conf
+    fi
+}
+
+if [ "$1" = "-u" ]; then
+    uninstall
+else
+    install
+fi
