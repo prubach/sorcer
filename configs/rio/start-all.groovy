@@ -18,13 +18,10 @@
  * This configuration is used to start a ProvisionMonitor, Cybernode, Webster and a Lookup Service
  */
 
-import com.sun.xml.internal.ws.api.wsdl.parser.ServiceDescriptor
 import org.rioproject.util.ServiceDescriptorUtil
 import org.rioproject.config.Component
 import com.sun.jini.start.ServiceDescriptor
 import org.rioproject.resolver.maven2.Repository
-import sorcer.provider.boot.SorcerServiceDescriptor;
-import sorcer.provider.boot.Booter;
 
 @Component('org.rioproject.start')
 class StartAllConfig {
@@ -49,24 +46,11 @@ class StartAllConfig {
                                 home+'/configs/rio/cybernode.groovy',
                                 home+'/configs/rio/compute_resource.groovy']
 
-        def serviceDescriptors = [
-            /*new SorcerServiceDescriptor(
-                    null,
-                    policyFile,
-                    Booter.resolveClasspath([
-                            "com.sorcersoft.sorcer:sorcer-amazon:1.0-M3-SNAPSHOT",
-                            "com.sorcersoft.hazelcast:hazelcast-cloud:3.2",
-                            "com.sorcersoft.hazelcast:hazelcast-mini:3.2"
-                    ] as String[]),
-                    "com.sorcersoft.aws.AmazonStarter",
-                    null
-            ),*/
+        return [
             ServiceDescriptorUtil.getWebster(policyFile, '9010', websterRoots as String[]),
             ServiceDescriptorUtil.getLookup(policyFile, reggieConfigs as String[]),
             ServiceDescriptorUtil.getMonitor(policyFile, monitorConfigs as String[]),
             ServiceDescriptorUtil.getCybernode(policyFile, cybernodeConfigs as String[])
         ] as ServiceDescriptor[];
-
-        return serviceDescriptors
     }
 }

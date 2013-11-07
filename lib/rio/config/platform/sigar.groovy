@@ -20,11 +20,13 @@ import sorcer.rio.util.MavenLibraryHelper
 def getPlatformCapabilityConfig() {
     MavenLibraryHelper.installLibFromArtifact("org.sorcersoft.sigar:sigar:zip:native:1.6.4", "lib")
 
-    return new SorcerCapabilityDescriptor(
-        "Sigar",
-        "1.6.4",
-        "Hyperic SIGAR",
-        "Hyperic",
-        ["org.sorcersoft.sigar:sigar:1.6.4"]
+    def cap = new SorcerCapabilityDescriptor(
+            "Sigar",
+            "1.6.4",
+            "Hyperic SIGAR",
+            "Hyperic",
+            "org.sorcersoft.sigar:sigar:1.6.4"
     )
+    cap.common = true
+    return cap
 }

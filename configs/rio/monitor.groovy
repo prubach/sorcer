@@ -25,10 +25,10 @@ import net.jini.jeri.tcp.*;
 
 import org.rioproject.config.Component
 import org.rioproject.config.Constants
-import org.rioproject.monitor.selectors.LeastActiveSelector
-import org.rioproject.monitor.selectors.ServiceResourceSelector
+import org.rioproject.monitor.service.selectors.LeastActiveSelector
+import org.rioproject.monitor.service.selectors.ServiceResourceSelector
 import org.rioproject.resolver.RemoteRepository
-import org.rioproject.resources.client.JiniClient
+import org.rioproject.impl.client.JiniClient
 import net.jini.security.BasicProxyPreparer
 import net.jini.core.constraint.InvocationConstraints
 import net.jini.constraint.BasicMethodConstraints

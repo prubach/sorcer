@@ -19,6 +19,7 @@ package sorcer.util.rio;
 
 
 import org.apache.commons.io.FileUtils;
+import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 
 import java.io.File;
@@ -29,7 +30,7 @@ import java.io.File;
  *
  * @author Rafał Krupiński
  */
-public class OpStringStrLoader extends org.rioproject.opstring.OpStringLoader {
+public class OpStringStrLoader extends OpStringLoader {
     /**
      * Create temporary file, call the parser with that file as an argument, and, unless there was an exception, delete the file.
      *

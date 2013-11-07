@@ -46,6 +46,7 @@ deployment(name: 'Sorcer') {
     artifact id: 'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:" + getSorcerVersion()
     artifact id: 'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:" + getSorcerVersion()
     artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
+    artifact id: 'exerter-prv', "org.sorcersoft.sorcer:exerter-prv:" + getSorcerVersion()
 
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
     artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'
@@ -152,7 +153,7 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
-            artifact ref: 'commons-prv'
+            artifact ref: 'exerter-prv'
         }
         configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}exerter.config"
         maintain 1
