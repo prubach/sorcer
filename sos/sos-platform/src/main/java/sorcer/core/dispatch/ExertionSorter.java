@@ -132,8 +132,20 @@ public class ExertionSorter {
             ((ServiceExertion) topXrt).setFlowType(setFlow(topXrt, sortedSubset));
             logger.info("FLOW for exertion: " + topXrt.getName() + " set to: " + topXrt.getFlowType());
         }
-        topXrt.getExertions().removeAll(sortedSubset);
-        topXrt.getExertions().addAll(sortedSubset);
+        List<String> exertionsBefore = new ArrayList<String>();
+        for (Exertion xrt : topXrt.getExertions())
+                exertionsBefore.add(xrt.getName());
+
+        List<String> exertionsAfter = new ArrayList<String>();
+        for (Exertion xrt : sortedExertions)
+            exertionsAfter.add(xrt.getName());
+        if (!topXrt.getExertions().equals(sortedSubset)) {
+            logger.info("Order of exertions for " + topXrt.getName() + " will be changed: ");
+            logger.info("From: " + exertionsBefore);
+            logger.info("To: " + exertionsAfter);
+            topXrt.getExertions().removeAll(sortedSubset);
+            topXrt.getExertions().addAll(sortedSubset);
+        }
 
 
         for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
