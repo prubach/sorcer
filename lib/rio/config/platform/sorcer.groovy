@@ -16,6 +16,5 @@ def getPlatformCapabilityConfig() {
             ],
             false
     )
-    cap.common = true
     return cap
 }
