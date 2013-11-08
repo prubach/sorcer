@@ -31,6 +31,7 @@
 		<v.lockmgr>0.2.sorcer2</v.lockmgr>
         <v.slf4j>1.7.5</v.slf4j>
         <v.junit>4.11</v.junit>
+        <v.logback>1.0.11</v.logback>
     </properties>
 
 	<modules>
@@ -184,6 +185,12 @@
 				<artifactId>aether-util</artifactId>
 				<version>1.13.1</version>
 			</dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${v.logback}</version>
+                <scope>runtime</scope>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
