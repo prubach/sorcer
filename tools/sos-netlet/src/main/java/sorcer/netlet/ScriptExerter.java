@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,9 +122,11 @@ public class ScriptExerter {
         urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
         try {
             scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
-        } catch (Exception e) {
+            this.target = scriptThread.getTarget();
+            return target;
+        }
             // Parse Groovy errors and replace line numbers to adjust according to show the actual line number with an error
-            if (e instanceof GroovyRuntimeException) {
+            catch (GroovyRuntimeException e) {
                 int lineNum = 0;
                 if (e instanceof CompilationFailedException) {
                     String msg = e.getMessage();
@@ -142,9 +145,10 @@ public class ScriptExerter {
                 }
                 throw new ScriptExertException(e.getLocalizedMessage(),e, lineNum - getLineOffsetForGroovyErrors());
             }
+        catch (Exception e) {
+            logger.log(Level.SEVERE,"error while parsing", e);
+            throw new ScriptExertException(e.getLocalizedMessage(),e, - getLineOffsetForGroovyErrors());
         }
-        this.target = scriptThread.getTarget();
-        return target;
     }
 
 
