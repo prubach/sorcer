@@ -1,0 +1,14 @@
+import sorcer.rio.util.SorcerCapabilityDescriptor
+
+def getPlatformCapabilityConfig() {
+    def cap = new SorcerCapabilityDescriptor(
+            "Rio",
+            sorcer.core.SorcerConstants.RIO_VERSION,
+            "Rio",
+            "Rio",
+            ['org.rioproject:rio-lib'],
+            false
+    )
+    cap.platformClass = "org.rioproject.system.capability.software.RioSupport"
+    return cap;
+}

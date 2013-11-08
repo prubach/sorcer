@@ -190,6 +190,7 @@
                 <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
                 <pathelement location="${lib.dir}/commons/guava.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-lang3.jar"/>
+                <pathelement location="${lib.dir}/commons/plexus-utils.jar"/>
             </path>
             <path id="runtime.classpath">
             </path>
@@ -238,6 +239,8 @@
                 <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar"/>
                 <pathelement
                         location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/codehaus/plexus/plexus-utils/${v.plexus}/plexus-utils-${v.plexus}.jar"/>
             </path>
             <path id="rio-resolver.classpath">
                 <pathelement

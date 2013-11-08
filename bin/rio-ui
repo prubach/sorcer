@@ -19,9 +19,13 @@
 # Launches the Rio UI
 #
 
-rioVersion=5.0-M4_sorcer2
-
 scriptDir="`dirname $0`"
+
+# Sorcer basic jars added to classpath
+. "$scriptDir/common-run"
+
+rioVersion=$(getVersion v.rio)
+
 if [ "${RIO_HOME}defined" = defined ] ; then
     if [ "$scriptDir" = "bin" ] ; then
         RIO_HOME="$scriptDir/../lib/rio"
@@ -40,8 +44,6 @@ else
 fi
 
 ##############################
-# Sorcer basic jars added to classpath
-. "$scriptDir/common-run"
 SOS_CLASSPATH=$(createSorcerRioCp)
 RIOUI_CLASSPATH=$SOS_CLASSPATH:$path_to_jar
 MAIN_CLASS=org.rioproject.tools.ui.Main

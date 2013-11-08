@@ -16,33 +16,18 @@
  */
 package sorcer.core.dispatch;
 
-import java.io.File;
-import java.rmi.RemoteException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.jini.config.Configuration;
-import net.jini.config.ConfigurationException;
-import net.jini.config.ConfigurationProvider;
-
-import org.rioproject.deploy.DeployAdmin;
-import org.rioproject.monitor.ProvisionMonitor;
-import org.rioproject.opstring.OpString;
-import org.rioproject.opstring.OpStringLoader;
-import org.rioproject.opstring.OperationalString;
-import org.rioproject.opstring.OperationalStringManager;
-import org.rioproject.opstring.ServiceElement;
-
-import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
 import sorcer.service.Accessor;
-import sorcer.service.Exertion;
 import sorcer.service.Service;
 import sorcer.service.Signature;
-import sorcer.util.Sorcer;
+
+import java.rmi.RemoteException;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author Pawel Rubach

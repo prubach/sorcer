@@ -1,13 +1,14 @@
 import sorcer.rio.util.SorcerCapabilityDescriptor
 
 def getPlatformCapabilityConfig() {
-    def cap = new SorcerCapabilityDescriptor()
-    cap.name = "Plexus-utils"
-    cap.version = "3.0.15"
-    cap.manufacturer = "Codehaus.org"
-    cap.setClasspath([
+    def cap = new SorcerCapabilityDescriptor(
+            "Plexus-utils",
+            "3.0.15",
+            "Plexus utils",
+            "Codehaus.org",
             'org.codehaus.plexus:plexus-utils:3.0.15'
-    ])
+    )
+    cap.common = true
 
-    return cap;
+    return cap
 }

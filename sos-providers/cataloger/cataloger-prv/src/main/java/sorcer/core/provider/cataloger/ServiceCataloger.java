@@ -1396,6 +1396,9 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	public ServiceMatches lookup(ServiceTemplate tmpl, int maxMatches)
 			throws RemoteException {
         List<ServiceItem> result = new LinkedList<ServiceItem>();
+        if(cinfo==null){
+            logger.warning("Cataloger not initialized");
+        } else
         for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : cinfo.entrySet()) {
             List<ServiceItem> serviceItems = entry.getValue();
             SRVITEM:

@@ -2,79 +2,78 @@ package sorcer.rio.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.config.PlatformCapabilityConfig;
+import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.ResolverException;
+import org.rioproject.resolver.ResolverHelper;
 import sorcer.resolver.Resolver;
-import sorcer.util.LibraryPathHelper;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
- * Extend PlatformCapabilityConfig with ability to alter system library path and setting classpath with maven artifact coordinates.
+ * Extend PlatformCapabilityConfig with<ul>
+ * <li>provide collection of artifacts
+ * <li>artifact coordinates without version
+ * <li>option not to resolve transitive dependencies
  *
  * @author Rafał Krupiński
  */
 public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
+    public SorcerCapabilityDescriptor(String name, String version, String classpath) throws ResolverException {
+        super(name, version, classpath);
+    }
 
-	private static final String COORDS_SEPARATOR = ":";
+    public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
+                                      String classpath) throws ResolverException {
+        super(name, version, description, manufacturer, getClasspath(classpath, version, true));
+    }
 
-    protected static Set<String> libraryPath = LibraryPathHelper.getLibraryPath();
+    public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
+                                      Collection<String> classpath) throws ResolverException {
+        super(name, version, description, manufacturer, getClasspath(classpath, version, true));
+    }
 
-	public SorcerCapabilityDescriptor() {
-	}
+    public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
+                                      Collection<String> classpath, boolean transitive) throws ResolverException {
+        super(name, version, description, manufacturer, getClasspath(classpath, version, transitive));
+    }
 
-	public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
-                                      String classpath) {
-		super(name, version, description, manufacturer, classpath);
-	}
+    protected static String getClasspath(Collection<String> classpath, String version, boolean transitive) throws ResolverException {
+        return StringUtils.join(getClasspath0(classpath, version, transitive), File.pathSeparator);
+    }
 
-	public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
-                                      Collection<String> classpath, String libraryPathElem) {
-		this(name, version, description, manufacturer, classpath);
-        libraryPath.add(libraryPathElem);
-	}
+    private static Collection<String> getClasspath0(Collection<String> classpath, String version, boolean transitive) throws ResolverException {
+        Collection<String> result = new HashSet<String>();
+        for (String entry : classpath) {
+            result.addAll(resolve(entry, version, transitive));
+        }
+        return result;
+    }
 
-	public SorcerCapabilityDescriptor(String name, String version, String description, String manufacturer,
-                                      Collection<String> classpath) {
-		super(name, version, description, manufacturer, null);
-		setClasspath(classpath);
-	}
+    protected static String getClasspath(String classpath, String version, boolean transitive) throws ResolverException {
+        Collection<String> result = new HashSet<String>();
+        result.addAll(resolve(classpath, version, transitive));
+        return StringUtils.join(result, File.pathSeparator);
+    }
 
-	@Override
-	public void setClasspath(String classpath) {
-		super.setClasspath(resolve(classpath));
-	}
+    protected static Collection<String> resolve(String entry, String version, boolean transitive) throws ResolverException {
+        if (Artifact.isArtifact(entry)) {
+            return resolve(entry, transitive);
+        } else {
+            String entryVer = entry + ":" + version;
+            if (Artifact.isArtifact(entryVer))
+                return resolve(entryVer, transitive);
+        }
+        return getClasspath0(Arrays.asList(StringUtils.split(entry, File.separatorChar)), version, transitive);
+    }
 
-	public void setClasspath(Collection<String> classpath) {
-		super.setClasspath(resolve(classpath));
-	}
-
-	protected String resolve(Collection<String> classpath) {
-		List<String> result = new LinkedList<String>();
-		for (String entry : classpath) {
-			result.add(resolve(entry));
-		}
-		return StringUtils.join(result, File.pathSeparator);
-	}
-
-	public String resolve(String entry) {
-		if (new File(entry).exists()) {
-			return entry;
-		}
-		String[] splitted = entry.split(COORDS_SEPARATOR);
-		if (splitted.length < 2 || splitted.length > 5) {
-			return entry;
-		}
-		String coords = entry;
-		if (splitted.length == 2) {
-			coords += COORDS_SEPARATOR + getVersion();
-		}
-		try {
-			return Resolver.resolveAbsolute(coords);
-		} catch (IllegalArgumentException x) {
-			return entry;
-		}
-	}
+    protected static Collection<String> resolve(String entry, boolean transitive) throws ResolverException {
+        if (transitive)
+            return Arrays.asList(ResolverHelper.getResolver().getClassPathFor(entry));
+        else
+            return Collections.singleton(Resolver.resolveClassPath(new String[]{entry}));
+    }
 }
