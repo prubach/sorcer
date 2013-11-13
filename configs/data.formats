@@ -396,6 +396,7 @@ engineering.octave.name.result = dnt|octave|name|result
 engineering.octave.dbl.put = dnt|octave|dbl|put
 engineering.octave.dbl.get = dnt|octave|dbl|get
 engineering.octave.dbl.get-single= dnt|octave|dbl|get-single
+engineering.octave.dbl.get-array= dnt|octave|dbl|get-array
 
 #Dakota Provider
 engineering.dakota.file.stdin = dnt|dakota|file|stdin

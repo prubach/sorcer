@@ -23,7 +23,7 @@ package sorcer.service;
  *
  * @author Mike Sobolewski
  */
-public enum Direction {
+public enum Direction implements java.io.Serializable {
     IN {
         @Override
         public String getTag() {
