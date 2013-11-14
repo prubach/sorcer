@@ -437,25 +437,36 @@ private Exertion f1SEQpull() throws Exception {
 
 		return out;
 	}
+    // SET Provisioning to false!!!
 	private Exertion f5xS(String repeat) throws Exception {
 		int to = new Integer(repeat);
 		
 		Task f5 = task("f5", sig("add", Adder.class), 
 		   context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
 		      out("result/y", null),
-		      strategy(Access.PULL, Wait.YES)));
-		
-		f5.setAccess(Access.PULL);
-		
+		      strategy(Access.PULL, Wait.YES, Provision.FALSE)));
+        Job f1= job("f1", strategy(Access.PULL, Provision.FALSE, Flow.SEQ), f5);
+
 		Exertion out = null;
-		long start = System.currentTimeMillis();
 		for (int i = 0; i < to; i++) {
-			f5.setName("f5-" + i);
-			f5.getContext().setName("f5-" + i);
-			out = exert(f5);
+            f5 = task("f5-" + i, sig("add", Adder.class),
+                    context("f5-" +i, in("arg/x1", 20.0), in("arg/x2", 80.0),
+                            out("result/y", null),
+                            strategy(Access.PULL, Wait.YES, Provision.FALSE)));
+            f5.setAccess(Access.PULL);
+			//f5.setName("f5-" + i);
+			//f5.getContext().setName("f5-" + i);
+            f1.addExertion(f5);
+			//out = exert(f5);
 			System.out.println("out context: " + name(f5) + "\n" + context(out));
 		}
-		long end = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
+        out = exert(f1);
+        for (Exertion inExt : out.getExertions())
+            System.out.println("out context: " + name(inExt) + "\n" + context(inExt));
+
+        //System.out.println("job context: " + name(f1) + "\n" + context(f1));
+        long end = System.currentTimeMillis();
 		System.out.println("Execution time: " + (end-start) + " ms.");
 		return out;
 	}
@@ -470,7 +481,8 @@ private Exertion f1SEQpull() throws Exception {
 						in("arg/x2", 80.0), out("result/y", null)));
 		return f5;
 	}
-	
+
+    // SET Provisioning to false!!!
 	private Exertion f5xP(String poolSizeStr, String size) throws Exception {
 		int poolSize = new Integer(size);
 		int tally = new Integer(size);
@@ -482,6 +494,7 @@ private Exertion f1SEQpull() throws Exception {
 		for (int i = 0; i < tally; i++) {
 			task = getTask();
 			task.getControlContext().setAccessType(Access.PULL);
+            task.getControlContext().setProvisionable(false);
 			task.setName("f5-" + i);
 			ec = new ExertionCallable(task);
 			logger.info("exertion submit: " + task.getName());
