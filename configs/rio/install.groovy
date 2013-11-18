@@ -1,4 +1,6 @@
 #!/usr/bin/env groovy
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 /*
  * Copyright to the original author or authors.
  *
@@ -88,26 +90,30 @@ loggingLibDir.eachFile() { file ->
 }
 classPath.append(File.pathSeparator).append(new File(rioHome, "../../configs/rio/logging/"))
 
+
+
+File logDir = new File(rioHome+File.separator+"logs")
+if(!logDir.exists())
+    logDir.mkdirs()
+File installerLog = new File(logDir, "install.log")
+if(!installerLog.exists())
+    installerLog.createNewFile()
+else
+    return
+
+Date date = new Date(System.currentTimeMillis())
+DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
+println "INFO  ${formatter.format(date)} check local repository for artifacts"
+
 StringBuffer out = new StringBuffer()
 long installDate = System.currentTimeMillis()
-
-ProcessBuilder procBld = new ProcessBuilder("${java.toString()}", "-Djava.security.policy=${rioHome}/../../configs/rio/rio.policy", "-DRIO_HOME=$rioHome", "-cp", "${classPath.toString()}", "org.rioproject.install.Installer")
-//String install = "${java.toString()} -Djava.security.policy=${rioHome}/../../configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
-//System.out.println(install)
-//Process process = install.execute()
-
-Process process = procBld.start()
+String install = "${java.toString()} -Djava.security.policy=$rioHome/../../configs/rio/rio.policy -DRIO_HOME=$rioHome -classpath ${classPath.toString()} org.rioproject.install.Installer"
+Process process = install.execute()
 process.consumeProcessOutputStream(out)
 process.consumeProcessErrorStream(out)
 process.waitFor()
 
 if(out.length()>0) {
-    File logDir = new File(rioHome+File.separator+".."+File.separator+".."+File.separator+"logs")
-    if(!logDir.exists())
-        logDir.mkdirs()
-    File installerLog = new File(logDir, "rio_install.log")
-    if(!installerLog.exists())
-        installerLog.createNewFile()
     StringBuilder builder = new StringBuilder()
     builder.append("===============================================\n")
     builder.append("Installer").append("\n")

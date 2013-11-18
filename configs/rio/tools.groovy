@@ -19,7 +19,7 @@
  */
 
 import org.rioproject.config.Component;
-import org.rioproject.tools.cli.CLI.OptionHandlerDesc;
+//import org.rioproject.tools.cli.CLI.OptionHandlerDesc;
 
 @Component('net.jini.discovery.LookupDiscovery')
 class ClientDiscoveryConfig {
