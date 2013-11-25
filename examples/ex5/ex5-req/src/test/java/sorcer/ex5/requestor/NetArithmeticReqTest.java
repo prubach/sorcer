@@ -50,10 +50,13 @@ public class NetArithmeticReqTest {
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex5-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-	}
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
+
+    }
 	
 	@Test
 	public void exertJobComposition() throws Exception {

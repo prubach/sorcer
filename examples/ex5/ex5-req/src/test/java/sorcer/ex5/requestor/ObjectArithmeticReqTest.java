@@ -50,7 +50,7 @@ public class ObjectArithmeticReqTest {
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex5-prv",
                 "org.sorcersoft.sorcer:ex5-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));

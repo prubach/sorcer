@@ -184,6 +184,8 @@ logger("net.jini.discovery.LookupDiscovery", OFF)
 logger("net.jini.lookup.JoinManager", OFF)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 
+logger("com.sorcersoft.almanac.level", INFO)
+
 root(INFO, appenders)
 
 /*

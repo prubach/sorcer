@@ -36,7 +36,7 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
-public class SharedContextWorkerRunner extends ServiceRequestor {
+public class    SharedContextWorkerRunner extends ServiceRequestor {
 	SharedAssociativeContext context = new SharedAssociativeContext(SorcerEnv.getActualSpaceName());
 	
 	public Exertion getExertion(String... args) throws ExertionException {
@@ -44,6 +44,10 @@ public class SharedContextWorkerRunner extends ServiceRequestor {
 		String prefix1 = getProperty("value.prefix.1");
 		String prefix2 = getProperty("value.prefix.2");
 		String prefix3 = getProperty("value.prefix.3");
+        // A workaround because prefixes don't exist in Works anymore
+        prefix1="";
+        prefix2="";
+        prefix3="";
 
 		// define requestor data
 		Job job = null;

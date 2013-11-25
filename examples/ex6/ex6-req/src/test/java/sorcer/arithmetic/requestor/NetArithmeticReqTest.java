@@ -55,7 +55,7 @@ public class NetArithmeticReqTest {
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-api"});
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");

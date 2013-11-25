@@ -62,7 +62,7 @@ public class JarClassPathHelper {
 					if (add != null) {
 						result.add(add.getCanonicalPath());
 					} else {
-						log.warn("Could not find {} on the search path", v);
+						log.warn("Could not find {} on the search path, jar: {}", v, jar.getName());
 					}
 				}
 			}

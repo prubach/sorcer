@@ -92,7 +92,7 @@ classPath.append(File.pathSeparator).append(new File(rioHome, "../../configs/rio
 
 
 
-File logDir = new File(rioHome+File.separator+"logs")
+File logDir = new File(rioHome+"/../../logs")
 if(!logDir.exists())
     logDir.mkdirs()
 File installerLog = new File(logDir, "install.log")
