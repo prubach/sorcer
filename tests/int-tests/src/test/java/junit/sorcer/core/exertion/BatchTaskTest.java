@@ -47,14 +47,16 @@ import sorcer.service.Task;
  */
 public class BatchTaskTest {
 	static {
-		System.setProperty("java.util.logging.config.file",
-				System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-		SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
+        System.setProperty("java.util.logging.config.file",
+                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+        SorcerEnv.debug = true;
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sos-platform"});
+                "org.sorcersoft.sorcer:sorcer-api"});
 	}
 
 	@Test

@@ -73,9 +73,11 @@ public class ServiceExertionTest {
 	private String x1 = "x1", x2 = "x2", y = "y";
 	
 	static {
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
 		SorcerEnv.debug = true;
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:ju-arithmetic-api",
                 "org.sorcersoft.sorcer:sorcer-api"});
