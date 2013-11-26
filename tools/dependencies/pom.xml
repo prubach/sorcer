@@ -194,6 +194,16 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject.cybernode</groupId>
+            <artifactId>cybernode-proxy</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.cybernode</groupId>
+            <artifactId>cybernode-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.1_3</version>
