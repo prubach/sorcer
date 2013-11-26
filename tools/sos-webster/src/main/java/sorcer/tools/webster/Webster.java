@@ -21,6 +21,7 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.util.ConfigurableThreadFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -491,14 +491,9 @@ public class Webster implements Runnable {
             logger.fine("Webster listening on port : " + port);
         }
         try {
-            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads, new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable runnable) {
-                    Thread thread = Executors.defaultThreadFactory().newThread(runnable);
-                    thread.setDaemon(true);
-                    return thread;
-                }
-            });
+            ConfigurableThreadFactory threadFactory = new ConfigurableThreadFactory();
+            threadFactory.setDaemon(true);
+            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(maxThreads, threadFactory);
 
             if (debug)
                 System.out.println("Webster minThreads [" + minThreads + "], "
