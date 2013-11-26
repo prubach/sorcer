@@ -62,16 +62,17 @@ public class ArithmeticNetTest {
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
+        System.setSecurityManager(new RMISecurityManager());
 		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
 			SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                    "org.sorcersoft.sorcer:sos-platform",
+                    "org.sorcersoft.sorcer:sorcer-api",
                     "org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
 
         System.out.println("CLASSPATH :" + System.getProperty(JavaSystemProperties.CLASS_PATH));
 		System.out.println("Webster:" + SorcerEnv.getWebsterUrl());
 		System.out.println("Codebase:" + System.getProperty(RMI_SERVER_CODEBASE));
-		System.setSecurityManager(new RMISecurityManager());
+
 	}
 
 	public static void waitForServices() throws InterruptedException {

@@ -52,7 +52,7 @@ public class ArithmeticNoNetTest {
 				+ "/configs/sorcer.policy");
 		System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ju-arithmetic-api"});
 	}
 	
