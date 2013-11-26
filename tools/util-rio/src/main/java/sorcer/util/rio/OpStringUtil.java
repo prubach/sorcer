@@ -19,9 +19,14 @@ package sorcer.util.rio;
 
 
 import org.rioproject.opstring.ClassBundle;
+import org.rioproject.opstring.OperationalString;
+import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -30,6 +35,8 @@ import java.net.URLClassLoader;
  * @author Rafał Krupiński
  */
 public class OpStringUtil {
+    private static Logger log = LoggerFactory.getLogger(OpStringUtil.class);
+
     /**
      * Load a class from Rio ClassBundle
      *
@@ -39,8 +46,8 @@ public class OpStringUtil {
      * @throws ResolverException
      * @throws ClassNotFoundException
      */
-    public static Class loadClass(ClassBundle bundle) throws MalformedURLException, ResolverException, ClassNotFoundException {
-        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), null);
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement) throws MalformedURLException, ResolverException, ClassNotFoundException {
+        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
         URL[] urls = new URL[urlStrings.length];
 
         for (int i = 0; i < urlStrings.length; i++) {
@@ -49,6 +56,61 @@ public class OpStringUtil {
         }
         URLClassLoader cl = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
         return Class.forName(bundle.getClassName(), false, cl);
+    }
+
+    /**
+     * Ensure that list of bundles is exactly one element and return that element.
+     */
+    public static ClassBundle getClassBundle(ClassBundle... bundles) {
+        if (bundles.length != 1)
+            throw new IllegalArgumentException("OpString service with no codebase is not supported");
+        return bundles[0];
+    }
+
+    /**
+     * Parse operational string
+     *
+     * @throws java.io.IOException
+     */
+    public static OperationalString getOpString(String opString) throws IOException {
+        OperationalString[] operationalStrings;
+        try {
+            OpStringStrLoader opStringLoader = new OpStringStrLoader();
+            operationalStrings = opStringLoader.parseOperationalString(opString);
+        } catch (Exception e) {
+            log.error("Error while parsing operational string", e);
+            throw new IllegalStateException("Error while parsing operational string: " + e.getMessage());
+        }
+        if (operationalStrings.length != 1)
+            throw new IllegalArgumentException("OpString file must contain exactly one OpString");
+        return operationalStrings[0];
+    }
+
+    /**
+     * Resolve exported class from a bundle, handle Rio exceptions
+     *
+     * @throws IOException
+     */
+    public static Class loadClass2(ClassBundle bundle, ServiceElement serviceElement) throws IOException {
+        String type = bundle.getClassName();
+        try {
+            return loadClass(bundle, serviceElement);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Class " + type + " was not found in " + bundle, e);
+        } catch (ResolverException e) {
+            throw new IllegalArgumentException("Class " + type + " was not found in " + bundle, e);
+        }
+    }
+
+    /**
+     * Return single service from operational string
+     * @throws IllegalArgumentException when there is zero or more than 1 services in the opstring
+     */
+    public static ServiceElement getServiceElement(OperationalString operationalString) {
+        ServiceElement[] services = operationalString.getServices();
+        if (services.length != 1)
+            throw new IllegalArgumentException("OpString with more than 1 services are not supported");
+        return services[0];
     }
 
 }
