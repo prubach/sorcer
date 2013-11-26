@@ -33,6 +33,7 @@ import static sorcer.eo.operator.strategy;
 import static sorcer.eo.operator.task;
 import static sorcer.eo.operator.value;
 
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
@@ -61,7 +62,19 @@ public class TaskTest {
 	private final static Logger logger = Logger.getLogger(TaskTest.class
 			.getName());
 
-	@Test
+    static {
+        System.setProperty("java.util.logging.config.file",
+                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
+                + "/configs/sorcer.policy");
+        System.setSecurityManager(new RMISecurityManager());
+        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:ju-arithmetic-api",
+                "org.sorcersoft.sorcer:sorcer-api"});
+    }
+
+
+    @Test
 	public void freeArithmeticTaskTest() throws ExertionException, SignatureException, ContextException {
 		//to test tracing of execution enable ServiceExertion.debug 		
 		Exertion task = task("add",
