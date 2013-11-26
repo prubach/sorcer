@@ -34,7 +34,7 @@
 	<!-- provider codebase jars -->
     <property name="j1" value="${requestor.groupId}:ex2-api:${requestor.version}" />
     <property name="j2" value="${requestor.groupId}:ex2-rdl:${requestor.version}" />
-    <property name="j3" value="org.sorcersoft.sorcer:sos-platform" />
+    <property name="j3" value="org.sorcersoft.sorcer:sorcer-api" />
 	
 	<target name="run.requestor" depends="mvn-init, requestor.policy.check">
 		<java classname="${requestor.class}" fork="yes">

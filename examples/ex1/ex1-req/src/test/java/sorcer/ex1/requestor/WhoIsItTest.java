@@ -53,7 +53,7 @@ public class WhoIsItTest {
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
         SorcerEnv.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sos-platform",
+                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex1-rdl",
                 "org.sorcersoft.sorcer:ex1-prv",
                 "org.sorcersoft.sorcer:ex1-api"});
