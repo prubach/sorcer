@@ -224,96 +224,83 @@
                         </goals>
                         <phase>pre-integration-test</phase>
                         <configuration>
+                            <outputDirectory>${rioLib}</outputDirectory>
+                            <overWriteIfNewer>false</overWriteIfNewer>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-start</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-cli</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-lib</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>webster</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-platform</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-ui</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject.monitor</groupId>
                                     <artifactId>monitor-service</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject.gnostic</groupId>
                                     <artifactId>gnostic-service</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject.cybernode</groupId>
                                     <artifactId>cybernode-service</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.rioproject.resolver</groupId>
                                     <artifactId>resolver-api</artifactId>
                                     <version>${v.rio}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.codehaus.groovy</groupId>
                                     <artifactId>groovy-all</artifactId>
                                     <version>${v.groovy}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>net.jini</groupId>
                                     <artifactId>jsk-lib</artifactId>
                                     <version>${v.jini}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>net.jini</groupId>
                                     <artifactId>jsk-platform</artifactId>
                                     <version>${v.jini}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>net.jini</groupId>
                                     <artifactId>jsk-resources</artifactId>
                                     <version>${v.jini}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.river</groupId>
                                     <artifactId>reggie</artifactId>
                                     <version>${v.jini}</version>
-                                    <outputDirectory>${rioLib}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.river</groupId>
