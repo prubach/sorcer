@@ -38,4 +38,9 @@ public @interface ConfigEntry {
      * The default value, currently only available for strings.
      */
     String defaultValue() default NONE;
+
+    /**
+     * if true, configuration entry is required and exception is thrown if it's missing or wrong type. Warning is issued otherwise.
+     */
+    boolean required() default true;
 }

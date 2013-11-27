@@ -88,14 +88,21 @@ public class Configurer extends AbstractBeanListener {
         }
         Object value;
         String entryKey = getEntryKey(getPropertyName(method), configEntry);
+        boolean required = configEntry.required();
         try {
             value = config.getEntry(component, entryKey, type, defaultValue);
         } catch (ConfigurationException e) {
-            log.warn("Could not configure {} with {} {}", method, entryKey, e.getMessage());
+            if (required)
+                throw new IllegalArgumentException("Could not configure " + method + " with " + entryKey, e);
+            else
+                log.warn("Could not configure {} with {} {}", method, entryKey, e.getMessage());
             return;
         } catch (IllegalArgumentException e) {
-            log.error("Could not configure " + method + " with " + entryKey, e);
-            throw e;
+            log.error("Could not configure {} with {} {}", method, entryKey, e.getMessage());
+            if (required)
+                throw e;
+            else
+                return;
         }
 
         if (type.isPrimitive() && value == null) {

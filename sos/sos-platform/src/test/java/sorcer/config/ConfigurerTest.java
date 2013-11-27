@@ -46,14 +46,23 @@ public class ConfigurerTest {
         assertEquals(true, o.value2);
     }
 
-/*
-    TODO RKR add support for optional entries
     @Test(expected = IllegalArgumentException.class)
     public void testWrongType() throws Exception {
         Object o = new WrongType();
-        configurer.process(o,config);
+        configurer.process(o, config);
     }
-*/
+
+    @Test
+    public void testMissingNonRequired() throws Exception {
+        Object o = new MissingEntry();
+        configurer.process(o, config);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingRequired() throws Exception {
+        Object o = new MissingRequiredEntry();
+        configurer.process(o, config);
+    }
 }
 
 @Component
@@ -73,7 +82,22 @@ class ConfigureTest {
 }
 
 @Component
-class WrongType{
+class WrongType {
     @ConfigEntry("booleanValue")
-    void setString(String s){}
+    void setString(String s) {
+    }
+}
+
+@Component
+class MissingEntry {
+    @ConfigEntry(value = "missingEntry", required = false)
+    void setString(String s) {
+    }
+}
+
+@Component
+class MissingRequiredEntry {
+    @ConfigEntry("missingEntry")
+    void setString(String s) {
+    }
 }
