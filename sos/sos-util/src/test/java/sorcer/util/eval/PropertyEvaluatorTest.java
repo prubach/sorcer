@@ -43,6 +43,8 @@ public class PropertyEvaluatorTest {
 
     @Test
     public void testEval() throws Exception {
+		String envSorcerHome = System.getenv("SORCER_HOME");
+		assertNotNull(envSorcerHome);
         Map<String,String>source = new HashMap<String, String>();
         source.put("key","replacedValue");
         eval.addSource("source", source);
@@ -63,7 +65,7 @@ public class PropertyEvaluatorTest {
 
         eval.eval(data);
         assertEquals("replacedValue", data.get("key"));
-        assertEquals(System.getenv("SORCER_HOME"),data.get("env"));
+		assertEquals(envSorcerHome,data.get("env"));
         assertEquals(System.getProperty("user.home"),data.get("sys"));
         assertEquals("replacedValue",data.get("self"));
         assertEquals("other value: <replacedValue>", data.get("partial"));
