@@ -91,7 +91,8 @@ public class Configurer extends AbstractBeanListener {
         try {
             value = config.getEntry(component, entryKey, type, defaultValue);
         } catch (ConfigurationException e) {
-            throw new IllegalArgumentException("Could not configure " + method + " with " + entryKey, e);
+            log.warn("Could not configure {} with {} {}", method, entryKey, e.getMessage());
+            return;
         } catch (IllegalArgumentException e) {
             log.error("Could not configure " + method + " with " + entryKey, e);
             throw e;
