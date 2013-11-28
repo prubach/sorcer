@@ -68,6 +68,7 @@ import sorcer.util.Sorcer;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.DbpUtil;
 import sorcer.util.bdb.sdb.SdbUtil;
+import com.sorcersoft.converger.anno.*;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {
@@ -454,6 +455,7 @@ public class operator {
 				parameters);
 	}
 
+    @DelegateTo(type=SignatureFactory.class, method="sig")
 	public static Signature sig(String operation, Class<?> serviceType,
 			String providerName, Object... parameters)
 			throws SignatureException {
