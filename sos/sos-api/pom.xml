@@ -23,34 +23,5 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.sorcersoft</groupId>
-            <artifactId>apt-converger-api</artifactId>
-            <version>1.0-M2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sorcersoft</groupId>
-            <artifactId>apt-converger-tool</artifactId>
-            <version>1.0-M2-SNAPSHOT</version>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <annotationProcessors>
-                        <annotationProcessor>
-                            com.sorcersoft.converger.DelegationProcessor
-                        </annotationProcessor>
-                    </annotationProcessors>
-                </configuration>
-                <dependencies>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -18,6 +18,10 @@ package sorcer.service;
  */
 
 
+import sorcer.core.signature.NetSignature;
+import sorcer.core.signature.ObjectSignature;
+import sorcer.util.Sorcer;
+
 import static sorcer.service.Signature.Type;
 
 /**
@@ -32,7 +36,23 @@ public class SignatureFactory {
                                 String providerName, Object... parameters)
             throws SignatureException {
         /*#TARGET sig_operation_servicetype_providername_parameters*/
-        return null;
+        Signature sig = null;
+        if (serviceType.isInterface()) {
+            sig = new NetSignature(operation, serviceType,
+                    Sorcer.getActualName(providerName));
+        } else {
+            sig = new ObjectSignature(operation, serviceType);
+        }
+        if (parameters.length > 0) {
+            for (Object o : parameters) {
+                if (o instanceof Type) {
+                    sig.setType((Type) o);
+                } else if (o instanceof ReturnPath) {
+                    sig.setReturnPath((ReturnPath) o);
+                }
+            }
+        }
+        return sig;
         /*#*/
     }
 
@@ -44,7 +64,17 @@ public class SignatureFactory {
     public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
             throws SignatureException {
         /*#TARGET sig_class_returnpath*/
-        return null;
+        Signature sig = null;
+        if (serviceType.isInterface()) {
+            sig = new NetSignature("service", serviceType);
+        } else if (Executor.class.isAssignableFrom(serviceType)) {
+            sig = new ObjectSignature("execute", serviceType);
+        } else {
+            sig = new ObjectSignature(serviceType);
+        }
+        if (returnPath != null)
+            sig.setReturnPath(returnPath);
+        return sig;
         /*#*/
     }
 
