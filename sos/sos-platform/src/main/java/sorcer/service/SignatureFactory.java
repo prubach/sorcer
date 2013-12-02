@@ -18,7 +18,6 @@ package sorcer.service;
  */
 
 
-import sorcer.core.SorcerEnv;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.util.Sorcer;
@@ -36,6 +35,7 @@ public class SignatureFactory {
     public static Signature sig(String operation, Class<?> serviceType,
                                 String providerName, Object... parameters)
             throws SignatureException {
+        /*#TARGET sig_operation_servicetype_providername_parameters*/
         Signature sig = null;
         if (serviceType.isInterface()) {
             sig = new NetSignature(operation, serviceType,
@@ -53,6 +53,7 @@ public class SignatureFactory {
             }
         }
         return sig;
+        /*#*/
     }
 
 
@@ -62,6 +63,7 @@ public class SignatureFactory {
 
     public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
             throws SignatureException {
+        /*#TARGET sig_class_returnpath*/
         Signature sig = null;
         if (serviceType.isInterface()) {
             sig = new NetSignature("service", serviceType);
@@ -73,6 +75,7 @@ public class SignatureFactory {
         if (returnPath != null)
             sig.setReturnPath(returnPath);
         return sig;
+        /*#*/
     }
 
 }
