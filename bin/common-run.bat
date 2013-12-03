@@ -24,8 +24,6 @@ ENDLOCAL & SET MVN_REPO=%MVN_REPO%
 
 set LIB_DIR=%SORCER_HOME%\lib
 
-set JAVA_OPTS="%JAVA_OPTS% -Dsorcer.env.file=%SORCER_HOME%/configs/sorcer.env"
-
 IF EXIST %LIB_DIR%\sorcer\sos-env.jar (
    rem Distro
    set "JINI_CLASSPATH=%LIB_DIR%\jini\jsk-platform.jar;%LIB_DIR%\jini\jsk-lib.jar;%LIB_DIR%\river\start.jar;%LIB_DIR%\jini-lookup\serviceui.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\logback-classic.jar;%LIB_DIR%\commons\logback-core.jar"
@@ -60,7 +58,7 @@ IF DEFINED DEBUG (
   SET JAVA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000
 ) 
 
-set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% %STARTER_MAIN_CLASS% %CONFIG%
+set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% %STARTER_MAIN_CLASS% %CONFIG%
 
 rem ECHO %WEBSTER_URL%
 rem ECHO %BOOT_CLASSPATH%
