@@ -185,6 +185,8 @@ logger("net.jini.lookup.JoinManager", OFF)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 
 logger("com.sorcersoft.almanac.level", INFO)
+logger("sorcer.boot", DEBUG)
+logger("sorcer.provider.boot", DEBUG)
 
 root(INFO, appenders)
 

@@ -10,10 +10,6 @@ String[] getInitialMemberGroups() {
     return groups as String[]
 }
 
-def getSorcerHome() {
-    return sorcerHome = SorcerEnv.getHomeDir();
-}
-
 def getSorcerVersion() {
     return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
@@ -39,7 +35,7 @@ deployment(name: 'ex0-provider') {
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
              artifact ref:'ex0-prv'
          }
-         configuration file: "${getSorcerHome()}/examples/ex0/ex0-prv/src/main/resources/config/HelloWorld.config"
+         configuration file: "classpath:/HelloWorld.config"
          maintain 1
      }
 }

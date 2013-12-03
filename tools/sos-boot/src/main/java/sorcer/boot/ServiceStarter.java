@@ -138,6 +138,6 @@ public class ServiceStarter {
 				return new URL(String.format("jar:file:%1$s!/%2$s", path, CONFIG_RIVER));
 			}
 		}
-		throw new FileNotFoundException(CONFIG_RIVER);
+        return new File(path).toURI().toURL();
 	}
 }
