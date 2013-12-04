@@ -28,6 +28,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * Find, instantiate and call ServiceActivator implementation in jars
@@ -62,20 +63,16 @@ public class Activator {
             }
             jar = new JarFile(jarFile);
 
-            Attributes mainAttributes = jar.getManifest().getMainAttributes();
+            Manifest manifest = jar.getManifest();
+            if (manifest == null) {
+                log.debug("No manifest in {}", jarFile);
+                return;
+            }
+            Attributes mainAttributes = manifest.getMainAttributes();
             String activatorClassName = mainAttributes.getValue(ServiceActivator.KEY_ACTIVATOR);
             if (activatorClassName == null) return;
 
-            Class<?> activatorClass = Class.forName(activatorClassName, true, cl);
-            if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
-                throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
-            }
-            if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
-                throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
-            }
-            log.info("Activating {} with class {}", jarFile, activatorClassName);
-            ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
-            activator.activate();
+            activate(cl, jarFile, activatorClassName);
 
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not open jar file " + jarUrl, e);
@@ -86,5 +83,18 @@ public class Activator {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Could not instantiate Sorcer-Activator class from " + jarUrl, e);
         }
+    }
+
+    private void activate(ClassLoader cl, File jarFile, String activatorClassName) throws Exception {
+        Class<?> activatorClass = Class.forName(activatorClassName, true, cl);
+        if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
+            throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
+        }
+        if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
+            throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
+        }
+        log.info("Activating {} with class {}", jarFile, activatorClassName);
+        ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
+        activator.activate();
     }
 }
