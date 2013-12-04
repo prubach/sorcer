@@ -9,7 +9,21 @@
         <artifactId>ex0</artifactId>
     </parent>
 
-    <artifactId>ex0-deployment</artifactId>
+    <artifactId>ex0-deploy</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -19,7 +33,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <OAR-OperationalString>Ex0Boot.groovy</OAR-OperationalString>
+                            <OAR-OperationalString>opstring.groovy</OAR-OperationalString>
                             <OAR-Name>Ex0Boot</OAR-Name>
                             <OAR-Version>${project.version}</OAR-Version>
                             <OAR-Activation>Automatic</OAR-Activation>

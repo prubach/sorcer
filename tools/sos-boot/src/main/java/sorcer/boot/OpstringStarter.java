@@ -19,7 +19,6 @@ package sorcer.boot;
 
 
 import net.jini.config.EmptyConfiguration;
-import org.rioproject.impl.opstring.OAR;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 
@@ -48,13 +47,14 @@ public class OpstringStarter {
     }
 
     private void createServices(File file) throws Exception {
-        OAR oar = new OAR(file);
+        SorcerOAR oar = new SorcerOAR(file);
         OperationalString[] operationalStrings = oar.loadOperationalStrings();
+        URL policyFile = oar.getPolicyFile();
         URL oarUrl = file.toURI().toURL();
 
         for (OperationalString op : operationalStrings) {
             for (ServiceElement se : op.getServices()) {
-                new OpstringServiceDescriptor(se, oarUrl).create(EmptyConfiguration.INSTANCE);
+                new OpstringServiceDescriptor(se, oarUrl, policyFile).create(EmptyConfiguration.INSTANCE);
             }
         }
     }

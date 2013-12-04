@@ -398,14 +398,10 @@ startSos ( ) {
     if $useprofiler ; then
         runProfiler
     else
-	if [ -z "$POLICY_FILE" ]; then
-		POLICY_FILE="$SORCER_HOME"/configs/sorcer.policy
-	fi
-
 #            -Djava.net.preferIPv4Stack=true \
         exec "$JAVACMD" $JAVA_OPTS \
             -classpath "$BOOT_CLASSPATH" \
-            -Djava.security.policy=$POLICY_FILE \
+            -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
             -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
             -Dlogback.configurationFile="$SORCER_HOME"/configs/rio/logging/logback.groovy \

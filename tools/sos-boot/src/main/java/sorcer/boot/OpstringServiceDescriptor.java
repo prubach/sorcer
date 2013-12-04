@@ -32,13 +32,15 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     private ServiceElement serviceElement;
     private ProxyPreparer servicePreparer = new BasicProxyPreparer();
     private URL oar;
+    private URL policyFile;
 
     private static AggregatePolicyProvider globalPolicy = null;
     private static Policy initialGlobalPolicy = null;
 
-    public OpstringServiceDescriptor(ServiceElement serviceElement, URL oar) {
+    public OpstringServiceDescriptor(ServiceElement serviceElement, URL oar, URL policyFile) {
         this.serviceElement = serviceElement;
         this.oar = oar;
+        this.policyFile = policyFile;
     }
 
     @Override
@@ -86,18 +88,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
     private void security(ClassLoader cl) throws PolicyInitializationException {
-        synchronized (AbstractServiceDescriptor.class) {
-            String policyFile = System.getProperty("java.security.policy");
-            if (policyFile == null) throw new IllegalStateException("java.security.policy must be defined");
-            else {
-                File pFile = new File(policyFile);
-                if (!pFile.exists())
-                    throw new IllegalStateException("java.security.policy file must exist " + policyFile);
-                if (!pFile.isFile())
-                    throw new IllegalStateException("java.security.policy file must be a file " + policyFile);
-                if (!pFile.canRead())
-                    throw new IllegalStateException("java.security.policy file must be readable " + policyFile);
-            }
+        synchronized (OpstringServiceDescriptor.class) {
             if (globalPolicy == null) {
                 initialGlobalPolicy = Policy.getPolicy();
                 globalPolicy = new AggregatePolicyProvider(initialGlobalPolicy);
@@ -105,6 +96,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                 logger.debug("Global policy set: {}",
                         globalPolicy);
             }
+
+            String policyFile = this.policyFile.toExternalForm();
             DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
                     new PolicyFileProvider(policyFile));
             LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
