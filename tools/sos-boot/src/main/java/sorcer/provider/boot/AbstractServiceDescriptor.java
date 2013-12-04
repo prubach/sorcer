@@ -80,7 +80,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
                     buffer.append("\n");
                 buffer.append(commonJARs[i].toExternalForm());
             }
-            logger.debug("commonJARs=\n", buffer);
+            logger.debug("commonJARs=\n{}", buffer);
         }
 
         commonCL.addCommonJARs(commonJARs);
