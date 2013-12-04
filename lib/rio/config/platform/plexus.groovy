@@ -8,7 +8,5 @@ def getPlatformCapabilityConfig() {
             "Codehaus.org",
             'org.codehaus.plexus:plexus-utils:3.0.15'
     )
-    cap.common = true
-
     return cap
 }

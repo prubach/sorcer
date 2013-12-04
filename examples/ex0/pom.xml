@@ -22,6 +22,7 @@
 		<module>ex0-prv</module>
 		<module>ex0-req</module>
 		<module>ex0-sui</module>
+        <module>ex0-deploy</module>
 	</modules>
 
 	<dependencyManagement>

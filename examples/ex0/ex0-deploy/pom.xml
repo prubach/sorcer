@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <version>1.0-M3-SNAPSHOT</version>
+        <artifactId>ex0</artifactId>
+    </parent>
+
+    <artifactId>ex0-deploy</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <OAR-OperationalString>opstring.groovy</OAR-OperationalString>
+                            <OAR-Name>Ex0Boot</OAR-Name>
+                            <OAR-Version>${project.version}</OAR-Version>
+                            <OAR-Activation>Automatic</OAR-Activation>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

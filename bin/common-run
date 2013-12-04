@@ -288,6 +288,7 @@ $LIB_DIR/jini/jsk-resources.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/rio/rio-logging-support.jar:\
 $LIB_DIR/rio/rio-start.jar:\
+$LIB_DIR/rio/rio-lib.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
@@ -316,6 +317,7 @@ $MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"
 
      BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/util-rio/$V_SORCER/util-rio-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
@@ -325,6 +327,7 @@ $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
@@ -484,6 +487,16 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
             --classpath "$CP" \
             "$@"
     fi
+}
+
+boot_config( ) {
+	STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
+	startSos "$@"
+}
+
+boot_opstring( ) {
+	STARTER_MAIN_CLASS=sorcer.boot.OpstringStarter
+	startSos "$@"
 }
 
 earlyInit

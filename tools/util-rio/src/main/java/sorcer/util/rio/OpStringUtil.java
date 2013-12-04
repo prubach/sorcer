@@ -37,6 +37,10 @@ import java.net.URLClassLoader;
 public class OpStringUtil {
     private static Logger log = LoggerFactory.getLogger(OpStringUtil.class);
 
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement) throws MalformedURLException, ResolverException, ClassNotFoundException {
+        return loadClass(bundle, serviceElement, Thread.currentThread().getContextClassLoader());
+    }
+
     /**
      * Load a class from Rio ClassBundle
      *
@@ -46,7 +50,7 @@ public class OpStringUtil {
      * @throws ResolverException
      * @throws ClassNotFoundException
      */
-    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement) throws MalformedURLException, ResolverException, ClassNotFoundException {
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws MalformedURLException, ResolverException, ClassNotFoundException {
         String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
         URL[] urls = new URL[urlStrings.length];
 
@@ -54,7 +58,7 @@ public class OpStringUtil {
             String urlString = urlStrings[i];
             urls[i] = new URL(urlString);
         }
-        URLClassLoader cl = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+        URLClassLoader cl = new URLClassLoader(urls, parentCL);
         return Class.forName(bundle.getClassName(), false, cl);
     }
 

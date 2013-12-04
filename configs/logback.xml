@@ -14,7 +14,7 @@
     <root level="FINE">
         <appender-ref ref="FILE"/>
     </root>
-    <sorcer.boot level="debug">
+    <logger name="sorcer.boot" level="debug">
         <appender-ref ref="STDOUT"/>
-    </sorcer.boot>
+    </logger>
 </configuration>
