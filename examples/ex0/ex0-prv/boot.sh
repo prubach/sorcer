@@ -4,6 +4,6 @@
 
 main="`dirname $0`/../ex0-deployment"
 
-POLICY_FILE=${main}/policy/prv.policy
+POLICY_FILE=${main}/src/main/policy/prv.policy
 
 boot_opstring `find ${main}/target -name ex0-deployment*jar`

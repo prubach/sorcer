@@ -27,6 +27,5 @@ def getPlatformCapabilityConfig() {
             "Hyperic",
             "org.sorcersoft.sigar:sigar:1.6.4"
     )
-    cap.common = true
     return cap
 }

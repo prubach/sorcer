@@ -30,7 +30,6 @@ class CommonPlatformConfig {
                 "Apache Software Foundation",
                 ["org.apache.commons:commons-compress:1.5"]
         )
-        cap.common = true
         return cap
     }
 }
