@@ -112,7 +112,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                 splitServicePolicy.grant(OpstringServiceDescriptor.class, null,
                         new Permission[]{new AllPermission()});
                 globalPolicy.setPolicy(cl, splitServicePolicy);
-            }
+            } else
+                logger.warn("No policy file found in deploy jar");
         }
     }
 
