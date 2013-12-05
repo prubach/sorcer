@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>ex0-deploy</artifactId>
+    <name>SORCER :: ex0 :: deploy</name>
 
     <dependencies>
         <dependency>

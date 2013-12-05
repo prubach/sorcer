@@ -97,20 +97,22 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                         globalPolicy);
             }
 
-            String policyFile = this.policyFile.toExternalForm();
-            DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
-                    new PolicyFileProvider(policyFile));
-            LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
-                    cl, service_policy, new DynamicPolicyProvider(
-                    initialGlobalPolicy));
-            /*
-             * Grant "this" code enough permission to do its work under the
-			 * service policy, which takes effect (below) after the context
-			 * loader is (re)set.
-			 */
-            splitServicePolicy.grant(OpstringServiceDescriptor.class, null,
-                    new Permission[]{new AllPermission()});
-            globalPolicy.setPolicy(cl, splitServicePolicy);
+            if (this.policyFile!=null) {
+                String policyFile = this.policyFile.toExternalForm();
+                DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
+                        new PolicyFileProvider(policyFile));
+                LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
+                        cl, service_policy, new DynamicPolicyProvider(
+                        initialGlobalPolicy));
+                /*
+                 * Grant "this" code enough permission to do its work under the
+                 * service policy, which takes effect (below) after the context
+                 * loader is (re)set.
+                 */
+                splitServicePolicy.grant(OpstringServiceDescriptor.class, null,
+                        new Permission[]{new AllPermission()});
+                globalPolicy.setPolicy(cl, splitServicePolicy);
+            }
         }
     }
 
