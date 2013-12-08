@@ -59,9 +59,10 @@ public class SessionDatabaseTest {
 	
 	@BeforeClass 
 	public static void setUpOnce() throws Exception {
-		dbDir = new File("./tmp/ju-session-db");
+
+		dbDir = new File(System.getProperty("java.io.tmpdir"), "ju-session-db");
 		dbDir.mkdirs();
-		String homeDir = "./tmp/ju-session-db";
+		String homeDir = System.getProperty("java.io.tmpdir") + File.separator + "ju-session-db";
 		runner = new SessionDatabaseRunner(homeDir);
 		runner.run();
 	}
