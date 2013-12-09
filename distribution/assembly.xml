@@ -450,7 +450,7 @@
 	
         <!-- Rio resolver files-->
         <fileSet>
-	    <directory>${basedir}/../lib/rio/lib/resolver</directory>
+	    <directory>${basedir}/../target/rio/lib/resolver</directory>
 	    <outputDirectory>/lib/rio/lib/resolver</outputDirectory>
             <includes>
                 <include>**/*</include>
@@ -460,7 +460,7 @@
 
         <!-- Rio home distribution -->
         <fileSet>
-	    <directory>${basedir}/../lib/rio/</directory>
+	    <directory>${basedir}/../target/rio/</directory>
 	    <outputDirectory>/lib/rio/</outputDirectory>
             <includes>
                 <include>**/*</include>

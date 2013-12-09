@@ -31,6 +31,10 @@
         <isset property="env.SORCER_HOME"/>
     </condition>
 
+    <condition property="rio.home" value="${env.RIO_HOME}" else="${sorcer.home}/lib/rio">
+        <isset property="env.RIO_HOME"/>
+    </condition>
+
     <property name="lib.dir" value="${sorcer.home}/lib"/>
     <!-- AFRL Compatibility - library locations used in distribution -->
     <property name="sorcer.lib" value="${sorcer.home}/lib/sorcer"/>
@@ -38,16 +42,12 @@
     <property name="jini.lib" value="${sorcer.home}/lib/jini"/>
     <property name="jini-lookup.lib" value="${sorcer.home}/lib/jini-lookup"/>
     <property name="river.lib" value="${sorcer.home}/lib/river"/>
-    <property name="rio.lib" value="${sorcer.home}/lib/rio"/>
+    <property name="rio.lib" value="${rio.home}"/>
     <property name="common.lib" value="${sorcer.home}/lib/commons"/>
     <property name="iGrid.home" value="${sorcer.home}"/>
     <!-- / -->
 
     <available file="${lib.dir}/sorcer/sos-env.jar" property="sorcer.distro"/>
-
-    <condition property="rio.home" value="${env.RIO_HOME}" else="${sorcer.home}/lib/rio">
-        <isset property="env.RIO_HOME"/>
-    </condition>
 
     <condition property="provider.debug">
         <isset property="env.DEBUG"/>

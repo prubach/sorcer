@@ -26,13 +26,14 @@ import org.rioproject.resolver.maven2.Repository
 @Component('org.rioproject.start')
 class StartAllConfig {
     String home = System.getenv("SORCER_HOME")
+    String rioHome = System.getenv("RIO_HOME")
 
     ServiceDescriptor[] getServiceDescriptors() {
         ServiceDescriptorUtil.checkForLoopback()
         String m2Repo = Repository.getLocalRepository().absolutePath
 
-        def websterRoots = [home+'/lib/rio/lib-dl', ';',
-                            home+'/lib/rio/lib',    ';',
+        def websterRoots = [rioHome+'/lib-dl', ';',
+                            rioHome+'/lib',    ';',
                             home+'/deploy', ';',
                             home+'/lib', ';',
                             m2Repo]

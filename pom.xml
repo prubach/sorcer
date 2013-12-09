@@ -277,7 +277,7 @@
                     <systemProperties>
                         <property>
                             <name>RIO_HOME</name>
-                            <value>${env.SORCER_HOME}/lib/rio</value>
+                            <value>${env.SORCER_HOME}/target/rio</value>
                         </property>
                     </systemProperties>
                 </configuration>
@@ -345,10 +345,6 @@
 						<exclude>**/jini/scripts/**</exclude>
 						<exclude>**/rio/**</exclude>
 						<exclude>**/rio/**/*</exclude>
-						<exclude>**/rio/logging/**</exclude>
-						<exclude>**/lib/rio/config/poms/**</exclude>
-						<exclude>**/lib/rio/config/platform/**</exclude>
-						<exclude>**/lib/rio/config/logging/**</exclude>
 						<exclude>**/.idea/**/*</exclude>
 						<exclude>**/locker/**/*</exclude>
 						<exclude>**/sos-webster/**</exclude>

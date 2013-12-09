@@ -41,7 +41,7 @@ A "src" property should be set and point to the directory containing the module'
 	<property name="java.home" value="${env.JAVA_HOME}" />
 	<property name="jini.home" value="${env.JINI_HOME}" />
 	<!--property name="rio.home" value="${env.RIO_HOME}" /-->
-	<property name="rio.home" value="${sorcer.home}/lib/rio" />
+	<property name="rio.home" value="${env.RIO_HOME" />
 	<property name="ant.home" value="${env.ANT_HOME}" />
 	<property name="iGrid.config" value="${sorcer.home}/configs" />
 	<property name="lib" value="${sorcer.home}/lib" />

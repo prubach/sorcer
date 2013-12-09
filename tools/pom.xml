@@ -26,6 +26,7 @@
 		<module>sorcer-provider</module>
 		<module>provider-root</module>
         <module>util-rio</module>
+        <module>sorcer-rio</module>
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
 	</modules>

@@ -33,7 +33,7 @@
                     <version>2.14.1</version>
 					<configuration>
 						<systemPropertyVariables>
-							<RIO_HOME>${env.SORCER_HOME}/lib/rio</RIO_HOME>
+							<RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
 							<buildDirectory>${project.build.directory}</buildDirectory>
 						</systemPropertyVariables>
 					</configuration>
