@@ -16,6 +16,7 @@
         <rioLib>${rio.home}/lib</rioLib>
         <rioLibDl>${rio.home}/lib-dl</rioLibDl>
         <rioLibLog>${rioLib}/logging</rioLibLog>
+        <rioLibResolver>${rioLib}/resolver</rioLibResolver>
     </properties>
     <build>
         <plugins>
