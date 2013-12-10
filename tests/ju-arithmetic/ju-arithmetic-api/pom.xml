@@ -16,5 +16,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
-        </dependency>    </dependencies>
+        </dependency>
+    </dependencies>
 </project>
