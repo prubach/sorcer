@@ -1,7 +1,7 @@
 package config.platform
 
-import config.platform.sorcer.rio.util.SorcerCapabilityDescriptor
-import static config.platform.sorcer.core.SorcerConstants.SORCER_VERSION
+import sorcer.rio.util.SorcerCapabilityDescriptor
+import static sorcer.core.SorcerConstants.SORCER_VERSION
 
 def getPlatformCapabilityConfig() {
     def cap = new SorcerCapabilityDescriptor(

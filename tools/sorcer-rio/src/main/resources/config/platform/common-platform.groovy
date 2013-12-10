@@ -15,7 +15,6 @@ package config.platform
 * limitations under the License.
 */
 
-import org.rioproject.config.PlatformCapabilityConfig
 import sorcer.rio.util.SorcerCapabilityDescriptor
 
 

@@ -18,12 +18,13 @@
         <rioLibLog>${rioLib}/logging</rioLibLog>
         <rioLibResolver>${rioLib}/resolver</rioLibResolver>
     </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.5</version>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
                 <executions>
                     <execution>
                         <phase>process-resources</phase>
@@ -262,4 +263,22 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-start</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-rio-start</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-env</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+    </dependencies>
 </project>

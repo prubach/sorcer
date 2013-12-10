@@ -120,14 +120,15 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     protected CommonClassLoader getCommonClassLoader(Configuration config) throws Exception {
     /* Set common JARs to the CommonClassLoader */
         String defaultDir = null;
-        String fs = File.separator;
-        String sorcerHome = SorcerEnv.getHomeDir().getPath();
-        if (sorcerHome == null) {
-            logger.info("'sorcer.home' not defined, no default platformDir");
+        File sorcerHome = SorcerEnv.getHomeDir();
+        String rioHome = System.getenv("RIO_HOME");
+        if (rioHome == null && sorcerHome != null) {
+            rioHome = new File(sorcerHome, "lib/rio").getPath();
+        }
+        if (rioHome != null) {
+            defaultDir = new File(rioHome, "config/platform").getPath();
         } else {
-            defaultDir = sorcerHome + fs + "configs" + fs + "platform" + fs + "sorcer";
-            if (!new File(defaultDir).exists())
-                defaultDir = sorcerHome + fs + "lib" + fs + "rio" + fs + "config" + fs + "platform";
+            logger.info("No RIO_HOME nor SORCER_HOME defined, no default platformDir");
         }
 
         CommonClassLoader commonCL = CommonClassLoader.getInstance();
