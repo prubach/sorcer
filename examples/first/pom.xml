@@ -29,6 +29,7 @@
 
 	<build>
 		<plugins>
+<!--
 			<plugin>
 				<groupId>org.sorcersoft.sorcer</groupId>
 				<artifactId>sorcer-maven-plugin</artifactId>
@@ -41,6 +42,7 @@
 					</execution>
 				</executions>
 			</plugin>
+-->
 		</plugins>
 	</build>
 
