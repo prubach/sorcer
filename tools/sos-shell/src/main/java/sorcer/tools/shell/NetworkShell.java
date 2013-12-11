@@ -1444,7 +1444,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	static public File huntForTheScriptFile(String input) throws IOException {
 		String scriptFileName = input.trim();
 		File scriptFile = new File(scriptFileName);
-		String[] standardExtensions = { ".xrt", ".exertlet", ".netlet", ".net",
+		String[] standardExtensions = { ".ntl", ".xrt", ".exertlet", ".netlet", ".net",
 				".groovy", ".gvy", ".gy", ".gsh" };
 		int i = 0;
 		while (i < standardExtensions.length && !scriptFile.exists()) {

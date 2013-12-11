@@ -33,17 +33,17 @@ import static sorcer.service.Signature.Type;
 public class SignatureFactory {
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                String providerName, Object... parameters)
+                                String version, String providerName, Object... parameters)
             throws SignatureException {
         /*#TARGET sig_operation_servicetype_providername_parameters*/
         Signature sig = null;
         if (serviceType.isInterface()) {
-            sig = new NetSignature(operation, serviceType,
-                    Sorcer.getActualName(providerName));
+            sig = new NetSignature(operation, serviceType, version,
+                    (providerName!=null ? Sorcer.getActualName(providerName) : null));
         } else {
             sig = new ObjectSignature(operation, serviceType);
         }
-        if (parameters.length > 0) {
+            if (parameters.length > 0) {
             for (Object o : parameters) {
                 if (o instanceof Type) {
                     sig.setType((Type) o);
@@ -57,8 +57,8 @@ public class SignatureFactory {
     }
 
 
-    public static Signature sig(String operation, Class serviceType) throws SignatureException {
-        return sig(operation, serviceType, null, Type.SRV);
+    public static Signature sig(String operation, Class serviceType, String version) throws SignatureException {
+        return sig(operation, serviceType, version, null, Type.SRV);
     }
 
     public static Signature sig(Class<?> serviceType, ReturnPath returnPath)

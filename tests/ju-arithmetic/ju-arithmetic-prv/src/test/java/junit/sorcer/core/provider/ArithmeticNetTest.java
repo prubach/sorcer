@@ -244,7 +244,7 @@ public class ArithmeticNetTest {
     //@Test
     public void netContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", Adder.class),
-                sig("getContext", Contexter.class, "Add Contexter", Signature.APD),
+                sig("getContext", Contexter.class, null, "Add Contexter", Signature.APD),
                 context("add", in("arg/x1"), in("arg/x2"),
                         result("result/y")));
 

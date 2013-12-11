@@ -450,14 +450,14 @@ public class operator {
     }
 	public static Signature sig(Class<?> serviceType, String providerName,
 			Object... parameters) throws SignatureException {
-		return sig(null, serviceType, Sorcer.getActualName(providerName),
+		return sig(null, serviceType, null, Sorcer.getActualName(providerName),
 				parameters);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
-			String providerName, Object... parameters)
+			String version, String providerName, Object... parameters)
 			throws SignatureException {
-		return SignatureFactory.sig(operation, serviceType, providerName, parameters);
+		return SignatureFactory.sig(operation, serviceType, version, providerName, parameters);
         /*#SOURCE sig_operation_servicetype_providername_parameters
         Signature sig = null;
         if (serviceType.isInterface()) {
@@ -479,7 +479,33 @@ public class operator {
         #*/
 	}
 
-	public static Signature sig(String selector) throws SignatureException {
+    public static Signature sig(String operation, Class<?> serviceType,
+                                String version)
+            throws SignatureException {
+        return SignatureFactory.sig(operation, serviceType, version);
+        /*#SOURCE sig_operation_servicetype_providername_parameters
+        Signature sig = null;
+        if (serviceType.isInterface()) {
+            sig = new NetSignature(operation, serviceType,
+                    Sorcer.getActualName(providerName));
+        } else {
+            sig = new ObjectSignature(operation, serviceType);
+        }
+        if (parameters.length > 0) {
+            for (Object o : parameters) {
+                if (o instanceof Type) {
+                    sig.setType((Type) o);
+                } else if (o instanceof ReturnPath) {
+                    sig.setReturnPath((ReturnPath) o);
+                }
+            }
+        }
+        return sig;
+        #*/
+    }
+
+
+    public static Signature sig(String selector) throws SignatureException {
 		return new ServiceSignature(selector);
 	}
 
@@ -490,12 +516,12 @@ public class operator {
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			Type type) throws SignatureException {
-		return sig(operation, serviceType, (String) null, type);
+		return sig(operation, serviceType, null, (String) null, type);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			Provision type) throws SignatureException {
-		return sig(operation, serviceType, (String) null, type);
+		return sig(operation, serviceType, null, (String) null, type);
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
