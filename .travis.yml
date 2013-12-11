@@ -2,16 +2,17 @@ language: java
 before_install:
   - unset SORCER_HOME
   - export SORCER_HOME=`pwd`
+  - unset RIO_HOME
+  - export RIO_HOME=$SORCER_HOME/target/rio
   - echo "SORCER_HOME is $SORCER_HOME"
-  - ifconfig
-  - cat /etc/hosts
-  - hostname
+  - echo "RIO_HOME is $RIO_HOME"
 install: mvn -q -P disttest install
 before_script:
 #  - cp -f $SORCER_HOME/configs/template/sorcer.env_int-tests $SORCER_HOME/configs/sorcer.env
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
   - cd distribution/target/sorcer-*/sorcer-*/
   - export SORCER_HOME=`pwd`
+  - export RIO_HOME=$SORCER_HOME/lib/rio
   - $SORCER_HOME/bin/sorcer-boot &
   - sleep 8
 #temporally disable integration tests. Enable them after all of them has been migrated to sorcer-maven-plugin
