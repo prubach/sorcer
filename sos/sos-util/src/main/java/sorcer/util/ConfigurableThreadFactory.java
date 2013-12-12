@@ -27,6 +27,7 @@ import java.util.concurrent.ThreadFactory;
 public class ConfigurableThreadFactory implements ThreadFactory {
     private ThreadFactory threadFactory;
     private boolean daemon = false;
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
 
     public ConfigurableThreadFactory() {
         this(Executors.defaultThreadFactory());
@@ -42,11 +43,19 @@ public class ConfigurableThreadFactory implements ThreadFactory {
         thread.setDaemon(daemon);
         //thread.setContextClassLoader();
         //thread.setPriority();
-        //thread.setUncaughtExceptionHandler();
+
+        if (uncaughtExceptionHandler == null)
+            uncaughtExceptionHandler = new LoggingExceptionHandler();
+        thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+
         return thread;
     }
 
     public void setDaemon(boolean daemon) {
         this.daemon = daemon;
+    }
+
+    public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        this.uncaughtExceptionHandler = uncaughtExceptionHandler;
     }
 }
