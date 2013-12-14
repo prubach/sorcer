@@ -1,18 +1,19 @@
 package sorcer.netlet.util;
 
+import org.rioproject.resolver.*;
+import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import sorcer.resolver.*;
+import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,15 +34,23 @@ public class LoaderConfigurationHelper {
     public static final String LOAD_PREFIX = "load";
     public static final String CODEBASE_PREFIX = "codebase";
     static final Logger logger = Logger.getLogger(LoaderConfigurationHelper.class.getName());
+    private static org.rioproject.resolver.Resolver resolver;
 
 
     public static List<URL> load(String str) {
         List<URL> urlsList = new ArrayList<URL>();
-        if (str.startsWith("file://")) {
-            String resolvedPath = assignProperties(str.substring(7));
-            return getFilesFromFilteredPath(resolvedPath);
+        URI uri;
+        str = assignProperties(str);
+        try {
+            uri = new URI(str);
+        } catch (URISyntaxException e) {
+            logger.log(Level.SEVERE, "Error while parsing URL " + str, e);
+            return urlsList;
         }
-        if (str.startsWith("mvn://")) {
+        String scheme = uri.getScheme();
+        if ("file".equals(scheme)) {
+            return getFilesFromFilteredPath(str);
+        } else if ("mvn".equals(scheme)) {
             String url = str.substring(6);
             // Check if URL specifies ana artifact on a remote webster
             String[] urlEntries = url.split("@");
@@ -77,15 +86,36 @@ public class LoaderConfigurationHelper {
             } catch (MalformedURLException e) {
                     logger.severe("Problem creating URL: " + finalUrl);
             }
-        }
-        if (str.startsWith("http://")) {
+        } else if ("http".equals(scheme)) {
             try {
                 urlsList.add(new URL(str));
             } catch (MalformedURLException e) {
                 logger.severe("Problem creating URL: " + str);
             }
+        } else {
+            if ("artifact".equals(scheme)) {
+                ArtifactURLConfiguration artifactConf = new ArtifactURLConfiguration(uri.getSchemeSpecificPart());
+                try {
+                    org.rioproject.resolver.Resolver resolver = getResolver();
+                    RemoteRepository[] repos = artifactConf.getRepositories();
+                    String[] classpath = ResolverHelper.resolve(artifactConf.getArtifact(), resolver, repos);
+                    for (String s : classpath) {
+                        urlsList.add(new URL(s));
+                    }
+                } catch (ResolverException e) {
+                    logger.log(Level.SEVERE, "Could not resolve " + str, e);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         return urlsList;
+    }
+
+    private static org.rioproject.resolver.Resolver getResolver() throws ResolverException {
+        if (resolver == null)
+            resolver = ResolverHelper.getResolver();
+        return resolver;
     }
 
     public static String parseCodebase(URL websterUrl, String str) {
