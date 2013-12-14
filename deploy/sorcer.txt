@@ -1,0 +1,14 @@
+org.sorcersoft.sorcer:ex0-cfg:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex1-cfg1:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex1-cfg2:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex2-cfg1:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex2-cfg2:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex2-cfg3:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex5-cfg1:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex5-cfg2:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex5-cfg3:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex5-cfg4:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex6-cfg1:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex6-cfg2:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex6-cfg3:1.0-M3-SNAPSHOT
+org.sorcersoft.sorcer:ex6-cfg4:1.0-M3-SNAPSHOT

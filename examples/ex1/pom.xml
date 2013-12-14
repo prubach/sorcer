@@ -20,7 +20,9 @@
 		<module>ex1-prv</module>
 		<module>ex1-rdl</module>
 		<module>ex1-req</module>
-	</modules>
+        <module>ex1-cfg1</module>
+        <module>ex1-cfg2</module>
+    </modules>
 
 	<properties>
 		<maven.test.skip>true</maven.test.skip>

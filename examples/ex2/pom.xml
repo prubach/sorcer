@@ -19,6 +19,9 @@
 		<module>ex2-prv</module>
 		<module>ex2-req</module>
         <module>ex2-rdl</module>
+        <module>ex2-cfg1</module>
+        <module>ex2-cfg2</module>
+        <module>ex2-cfg3</module>
 	</modules>
 
 	<properties>
