@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>ex6</artifactId>
         <version>1.0-M3-SNAPSHOT</version>
-        <artifactId>ex0</artifactId>
     </parent>
 
     <artifactId>ex6-cfg2</artifactId>
