@@ -1,9 +1,14 @@
 package sorcer.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.zip.ZipFile;
 
 public class IOUtils {
+
+    final private static Logger log = LoggerFactory.getLogger(IOUtils.class);
 
 	public static void closeQuietly(ZipFile closeable) {
 		//stupid java 1.6 doesn't know ZipFile is Closeable
@@ -33,30 +38,60 @@ public class IOUtils {
     public static void checkFileExistsAndIsReadable(File file) {
 
         try {
-
-            if(!file.exists()) {
-                System.out.println("***error: file does not exist = "
-                        + file.getAbsolutePath());
-                //if (sp != null) sp.destroy();
-                throw new IOException("***error: file does not exist = "
-                        + file.getAbsolutePath());
-
-            }
-
-            if (!file.canRead()){
-                System.out.println("***error: file does not have read permission = "
-                        + file.getAbsolutePath());
-                //if (sp != null) sp.destroy();
-                throw new IOException("***error: file does not have read permission = "
-                        + file.getAbsolutePath());
-            }
-
+            ensureFile(file, FileCheck.readable);
         } catch (IOException e) {
             System.out.println("***error: " + e.toString()
                     + "; problem with file = " + file.getAbsolutePath());
             e.printStackTrace();
             System.exit(1);
             throw new RuntimeException(e);
+        }
+    }
+
+    public static enum FileCheck {
+        readable("File not readable") {
+            @Override
+            boolean check(File file) {
+                return file.canRead();
+            }
+        }, writable("File not writable") {
+            @Override
+            boolean check(File file) {
+                return file.canWrite();
+            }
+        }, directory("Path is not a directory") {
+            @Override
+            boolean check(File file) {
+                return file.isDirectory();
+            }
+        }, executable("File not executable") {
+            @Override
+            boolean check(File file) {
+                return file.canExecute();
+            }
+        };
+
+        abstract boolean check(File file);
+
+        FileCheck(String desc) {
+            description = desc;
+        }
+
+        String description;
+    }
+
+    public static void ensureFile(File file, FileCheck...checks) throws IOException {
+        if(!file.exists()) {
+            log.error("File {} does not exist", file.getAbsolutePath());
+            throw new IOException("File "+file.getAbsolutePath()+" does not exist");
+        }
+
+        for (FileCheck check : checks) {
+            if(!check.check(file)){
+                String msg = check.description + ": " + file.getAbsolutePath();
+                log.error(msg);
+                throw new IOException(msg);
+            }
         }
     }
 
