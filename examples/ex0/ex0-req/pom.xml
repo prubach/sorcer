@@ -8,7 +8,7 @@
   </parent>
 
 	<artifactId>ex0-req</artifactId>
-	<name>SORCER :: ex0 :: requestor</name>
+	<name>SORCER :: examples :: ex0 :: requestor</name>
 
 	<dependencies>
 		<dependency>

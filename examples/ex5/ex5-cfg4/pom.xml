@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex5-cfg4</artifactId>
-    <name>SORCER :: ex5 :: config1</name>
+    <name>SORCER :: examples :: ex5 :: config1</name>
 
     <dependencies>
         <dependency>

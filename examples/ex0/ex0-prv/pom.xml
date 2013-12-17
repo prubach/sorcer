@@ -10,7 +10,7 @@
   </parent>
 
 	<artifactId>ex0-prv</artifactId>
-	<name>SORCER :: ex0 :: provider</name>
+	<name>SORCER :: examples :: ex0 :: provider</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

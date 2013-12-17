@@ -8,7 +8,7 @@
   </parent>
 
 	<artifactId>ex0-sui</artifactId>
-	<name>SORCER :: ex0 :: service UI</name>
+	<name>SORCER :: examples :: ex0 :: service UI</name>
 
 	<dependencies>
 		<dependency>
