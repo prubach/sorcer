@@ -293,6 +293,7 @@ $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/commons/google-collections.jar:\
+$LIB_DIR/commons/commons-io.jar:\
 $LIB_DIR/commons/commons-lang3.jar"
 
     else
@@ -331,6 +332,7 @@ $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
 $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"
 
     fi
@@ -491,11 +493,6 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
 
 boot_config( ) {
 	STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-	startSos "$@"
-}
-
-boot_opstring( ) {
-	STARTER_MAIN_CLASS=sorcer.boot.OpstringStarter
 	startSos "$@"
 }
 
