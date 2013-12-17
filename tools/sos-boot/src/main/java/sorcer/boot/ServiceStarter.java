@@ -17,33 +17,42 @@
  */
 package sorcer.boot;
 
-import com.sun.jini.start.LifeCycle;
-import net.jini.config.ConfigurationException;
-import sorcer.core.DestroyAdmin;
+import net.jini.config.EmptyConfiguration;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AbstractFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.rioproject.opstring.OperationalString;
+import org.rioproject.opstring.ServiceElement;
+import org.rioproject.resolver.Artifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.resolver.Resolver;
+import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static sorcer.provider.boot.AbstractServiceDescriptor.Created;
+
 /**
  * @author Rafał Krupiński
  */
 public class ServiceStarter {
+    final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
 	public static final String CONFIG_RIVER = "config/services.config";
-	private static final String SUFFIX_RIVER = ".config";
-	final public static String SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config").getPath();
+    private static final String SUFFIX_RIVER = "config";
+    final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
+    private sorcer.com.sun.jini.start.ServiceStarter riverServiceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
 
 	public static void main(String[] args) throws Exception {
 		new ServiceStarter().doMain(args);
@@ -51,16 +60,9 @@ public class ServiceStarter {
 
 	private void doMain(String[] args) throws Exception {
 		loadDefaultProperties();
-		List<String> configs = new LinkedList<String>();
-		for (String arg : args) {
-			if (isConfigFile(args[0])) {
-				configs.add(arg);
-			} else {
-				configs.add(findConfigUrl(arg).toExternalForm());
-			}
-		}
+        List<String> configs = new LinkedList<String>(Arrays.asList(args));
 		if (configs.isEmpty()) {
-			configs.add(SORCER_DEFAULT_CONFIG);
+            configs.add(SORCER_DEFAULT_CONFIG.getPath());
 		}
 		start(configs);
 	}
@@ -79,65 +81,96 @@ public class ServiceStarter {
 		}
 	}
 
-	private boolean isConfigFile(String path) {
-		return path.endsWith(SUFFIX_RIVER);
-	}
-
-	private List<Object> rioServices = new LinkedList<Object>();
-
 	/**
 	 * Start services from the configs
 	 *
 	 * @param configs file path or URL of the services.config configuration
 	 */
-	public void start(Collection<String> configs) throws ConfigurationException {
-		sorcer.com.sun.jini.start.ServiceStarter serviceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
-		serviceStarter.startServicesFromPaths(configs.toArray(new String[configs.size()]));
-	}
+    public void start(Collection<String> configs) throws Exception {
+        List<String> riverServices = new LinkedList<String>();
+        List<File> cfgJars = new LinkedList<File>();
 
-	/**
-	 * This unused method is left for further reference
-	 */
-	public void stop() {
-		Class<com.sun.jini.start.ServiceStarter> c = com.sun.jini.start.ServiceStarter.class;
-		try {
-			Field servicesField = c.getDeclaredField("transient_service_refs");
-			if (!servicesField.isAccessible()) {
-				servicesField.setAccessible(true);
-			}
-			List riverServices = (List) servicesField.get(null);
-			List<Object> allServices = new ArrayList<Object>(riverServices);
-			allServices.addAll(this.rioServices);
-			for (Object o : allServices) {
-				if (o instanceof DestroyAdmin) {
-					((DestroyAdmin) o).destroyNode();
-				} else if (o instanceof LifeCycle) {
-					((LifeCycle) o).unregister(o);
-				}
-			}
-		} catch (NoSuchFieldException e) {
-			throw new IllegalStateException("Unsupported Apache River version (expected field is missing)", e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException("Could not access river services", e);
-		} catch (RemoteException e) {
-			throw new RuntimeException("Unknown error", e);
-		}
+        for (String path : configs) {
+            File file = null;
+            if (path.startsWith(":")) {
+                file = findArtifact(path.substring(1));
+            } else if (Artifact.isArtifact(path))
+                file = new File(Resolver.resolveAbsolute(path));
+            if (file == null) file = new File(path);
 
-	}
+            IOUtils.ensureFile(file, IOUtils.FileCheck.readable);
+            path = file.getPath();
+            String ext = path.substring(path.lastIndexOf('.') + 1);
 
-	private URL findConfigUrl(String path) throws IOException {
-		File configFile = new File(path);
+            if (file.isDirectory())
+                riverServices.add(findConfigUrl(path).toExternalForm());
+            else if (SUFFIX_RIVER.equals(ext))
+                riverServices.add(path);
+            else if ("oar".equals(ext) || "jar".equals(ext))
+                cfgJars.add(file);
+        }
+        if (!riverServices.isEmpty())
+            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[configs.size()]));
+        if (!cfgJars.isEmpty())
+            startConfigJars(cfgJars);
+    }
 
-		if (!configFile.exists()) {
-			throw new FileNotFoundException(path);
-		} else if (configFile.isDirectory()) {
-			return new File(configFile, CONFIG_RIVER).toURI().toURL();
-		} else if (path.endsWith(".jar")) {
-			ZipEntry entry = new ZipFile(path).getEntry(CONFIG_RIVER);
-			if (entry != null) {
-				return new URL(String.format("jar:file:%1$s!/%2$s", path, CONFIG_RIVER));
-			}
-		}
+    private File findArtifact(String artifactId) {
+        Collection<File> files = FileUtils.listFiles(new File(System.getProperty("user.dir")), new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
+        if (files.size() == 0) {
+            log.error("Artifact file {} not found", artifactId);
+            return null;
+        }
+        if (files.size() > 1) {
+            log.warn("Found {} files possibly matching artifactId, using the first", files.size());
+        }
+        return files.iterator().next();
+    }
+
+    protected void startConfigJars(Collection<File> files) throws Exception {
+        for (File file : files) {
+            createServices(file);
+        }
+    }
+
+    private List<Created> createServices(File file) throws Exception {
+        SorcerOAR oar = new SorcerOAR(file);
+        OperationalString[] operationalStrings = oar.loadOperationalStrings();
+        URL policyFile = oar.getPolicyFile();
+        URL oarUrl = file.toURI().toURL();
+        List<Created> result = new LinkedList<Created>();
+
+        for (OperationalString op : operationalStrings) {
+            for (ServiceElement se : op.getServices()) {
+                result.add(new OpstringServiceDescriptor(se, oarUrl, policyFile).create(EmptyConfiguration.INSTANCE));
+            }
+        }
+        return result;
+    }
+
+    private URL findConfigUrl(String path) throws IOException {
+        File configFile = new File(path);
+        if (configFile.isDirectory()) {
+            return new File(configFile, CONFIG_RIVER).toURI().toURL();
+        } else if (path.endsWith(".jar")) {
+            ZipEntry entry = new ZipFile(path).getEntry(CONFIG_RIVER);
+            if (entry != null) {
+                return new URL(String.format("jar:file:%1$s!/%2$s", path, CONFIG_RIVER));
+            }
+        }
         return new File(path).toURI().toURL();
+    }
+
+    private static class ArtifactIdFileFilter extends AbstractFileFilter {
+        private String prefix;
+
+        public ArtifactIdFileFilter(String prefix) {
+            this.prefix = prefix + "-";
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return "target".equals(dir.getName()) && name.startsWith(prefix) && name.endsWith(".jar");
+        }
 	}
 }

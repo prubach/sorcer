@@ -46,7 +46,6 @@ import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceProxyAccessor;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.JarClassPathHelper;
-import sorcer.core.SorcerEnv;
 
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
@@ -253,7 +252,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	}
 
     @Override
-    protected Object doCreate(Configuration config) throws Exception {
+    protected Created doCreate(Configuration config) throws Exception {
 		ensureSecurityManager();
 		Object proxy = null;
 

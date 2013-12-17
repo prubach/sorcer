@@ -351,20 +351,4 @@ public class ServiceStarter {
 			throw new IllegalArgumentException("Error while parsing configuration", e);
 		}
 	}
-
-	public Service[] startServices(String[] args) {
-		ServiceStarter.ensureSecurityManager();
-		try {
-			Configuration config = ConfigurationProvider.getInstance(args);
-			return processServiceDescriptors(config);
-		} catch (ConfigurationException cex) {
-			logger.log(Level.SEVERE, "service.config.exception", cex);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "service.creation.exception", e);
-		} finally {
-			logger.exiting(ServiceStarter.class.getName(),
-					"main");
-		}
-		return new Service[0];
-	}
-}//end class ServiceStarter
+}

@@ -102,7 +102,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     /**
      * @see com.sun.jini.start.ServiceDescriptor#create
      */
-    public Object create(Configuration config) throws Exception {
+    public Created create(Configuration config) throws Exception {
         try {
             return doCreate(config);
         } catch (Exception x) {
@@ -115,7 +115,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    protected abstract Object doCreate(Configuration config) throws Exception;
+    protected abstract Created doCreate(Configuration config) throws Exception;
 
     protected CommonClassLoader getCommonClassLoader(Configuration config) throws Exception {
     /* Set common JARs to the CommonClassLoader */

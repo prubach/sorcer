@@ -14,7 +14,6 @@ import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -44,7 +43,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
     @Override
-    protected Object doCreate(Configuration config) throws Exception {
+    protected Created doCreate(Configuration config) throws Exception {
         ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, getCommonClassLoader(config), new URL[]{oar});
 
         security(cl);

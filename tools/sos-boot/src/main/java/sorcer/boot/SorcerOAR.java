@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
  * @author Rafał Krupiński
  */
 public class SorcerOAR extends OAR {
-    static final String POLICY = "provider.policy";
+    static final String POLICY = "service.policy";
     private URL policyFile;
 
     public SorcerOAR(File file) throws OARException, IOException {
