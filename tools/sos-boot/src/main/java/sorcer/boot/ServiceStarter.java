@@ -35,6 +35,7 @@ import sorcer.util.JavaSystemProperties;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RMISecurityManager;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -89,7 +90,7 @@ public class ServiceStarter {
     public void start(Collection<String> configs) throws Exception {
         List<String> riverServices = new LinkedList<String>();
         List<File> cfgJars = new LinkedList<File>();
-
+        System.setSecurityManager(new RMISecurityManager());
         for (String path : configs) {
             File file = null;
             if (path.startsWith(":")) {

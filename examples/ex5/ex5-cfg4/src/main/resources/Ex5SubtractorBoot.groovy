@@ -29,7 +29,7 @@ deployment(name: 'ex5-subtractor') {
     codebase getCodebase()
 
     artifact id:'ex5-api', 'org.sorcersoft.sorcer:ex5-api:'+getSorcerVersion()
-    artifact id:'ex5-prv', 'org.sorcersoft.sorcer:ex5-prv:'+getSorcerVersion()
+    artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg4:'+getSorcerVersion()
 
     service(name:'ex5-subtractor-prv') {
          interfaces {
@@ -37,7 +37,7 @@ deployment(name: 'ex5-subtractor') {
              artifact ref:'ex5-api'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
-             artifact ref:'ex5-prv'
+             artifact ref:'ex5-cfg'
          }
          configuration file: "classpath:subtractor-prv.config"
          maintain 1

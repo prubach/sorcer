@@ -29,7 +29,7 @@ deployment(name: 'ex2-worker-1') {
     codebase getCodebase()
 
     artifact id:'ex2-rdl', 'org.sorcersoft.sorcer:ex2-rdl:'+getSorcerVersion()
-    artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg:'+getSorcerVersion()
+    artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg1:'+getSorcerVersion()
 
     service(name:'ex2-worker-1') {
          interfaces {

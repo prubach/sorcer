@@ -19,6 +19,7 @@ package sorcer.core.dispatch;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
+import sorcer.ext.ProvisioningException;
 import sorcer.service.Accessor;
 import sorcer.service.Service;
 import sorcer.service.Signature;
@@ -93,6 +94,9 @@ public class ProvisionManager {
                                     logger.info("Provisioning: "+ sigEl.getSignature());
                                     service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
                                     if (service!=null) sigsToRemove.add(sigEl);
+                                } catch (ProvisioningException pe) {
+                                    logger.severe("Problem provisioning: " +pe.getMessage());
+                                    // TODO Think what to do when Provisioning doesn't finish successfully
                                 } catch (RemoteException re) {
                                     provisioner = Accessor.getService(Provisioner.class);
                                     String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()

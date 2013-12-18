@@ -41,6 +41,7 @@ import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.ext.Provisioner;
+import sorcer.ext.ProvisioningException;
 import sorcer.jini.lookup.ProviderID;
 import sorcer.service.Accessor;
 import sorcer.service.Arg;
@@ -217,12 +218,19 @@ public class ServiceExerter implements Exerter, Callable {
                 signature = new NetSignature("service", Spacer.class, Sorcer.getActualSpacerName());
             }
             provider = (Service) Accessor.getService(signature);
-
             if (provider == null && exertion.isProvisionable() && signature instanceof NetSignature) {
-                Provisioner provisioner = Accessor.getService(Provisioner.class);
-                if (provisioner != null) {
-                    logger.fine("Provisioning "+signature);
-                    provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
+                try {
+                    Provisioner provisioner = Accessor.getService(Provisioner.class);
+                    if (provisioner != null) {
+                        logger.fine("Provisioning "+signature);
+                        provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
+                    }
+                } catch (ProvisioningException pe) {
+                    logger.warning("* Provider not available and not provisioned: " + pe.getMessage());
+                    exertion.setStatus(ExecState.FAILED);
+                    exertion.reportException(new RuntimeException(
+                            "Cannot find provider and provisioning returned error: " + pe.getMessage()));
+                    return exertion;
                 }
             }
         }

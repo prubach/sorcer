@@ -29,6 +29,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
+import sorcer.ext.ProvisioningException;
 import sorcer.service.Conditional;
 import sorcer.service.Accessor;
 import sorcer.service.Context;
@@ -224,6 +225,10 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                         try {
                             logger.fine("Provisioning "+sig);
                             service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
+                        } catch (ProvisioningException pe) {
+                            String msg = "PROBLEM: " +pe.getMessage();
+                            logger.severe(msg);
+                            throw new ExertionException(msg, task);
                         } catch (RemoteException re) {
                             String msg = "Problem provisioning "+sig + " " +re.getMessage();
                             logger.severe(msg);

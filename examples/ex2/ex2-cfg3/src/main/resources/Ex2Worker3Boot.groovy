@@ -29,7 +29,7 @@ deployment(name: 'ex2-worker-3') {
     codebase getCodebase()
 
     artifact id:'ex2-rdl', 'org.sorcersoft.sorcer:ex2-rdl:'+getSorcerVersion()
-    artifact id:'ex2-prv', 'org.sorcersoft.sorcer:ex2-prv:'+getSorcerVersion()
+    artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg3:'+getSorcerVersion()
 
     service(name:'ex2-worker-3') {
          interfaces {
@@ -37,9 +37,9 @@ deployment(name: 'ex2-worker-3') {
              artifact ref:'ex2-rdl'
          }
          implementation(class: 'sorcer.ex2.provider.WorkerProvider') {
-             artifact ref:'ex2-prv'
+             artifact ref:'ex2-cfg'
          }
-         configuration file: "${getSorcerHome()}/examples/ex2/ex2-prv/src/main/resources/config/worker3-prv.config"
+         configuration file: "classpath:worker3-prv.config"
          maintain 1
      }
 }
