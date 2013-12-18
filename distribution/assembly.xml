@@ -471,6 +471,15 @@
             <filtered>false</filtered>
         </fileSet>
 
+        <!-- Deploy dir -->
+        <fileSet>
+            <directory>${basedir}/../deploy</directory>
+            <outputDirectory>/deploy</outputDirectory>
+            <includes>
+                <include>*.txt</include>
+            </includes>
+        </fileSet>
+
     </fileSets>
 
     <dependencySets>
