@@ -23,23 +23,23 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex5-adder') {
+deployment(name: 'ex5-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
     artifact id:'ex5-api', 'org.sorcersoft.sorcer:ex5-api:'+getSorcerVersion()
-    artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg1:'+getSorcerVersion()
+    artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg-all:'+getSorcerVersion()
 
-    service(name:'ex5-adder-prv') {
+    service(name:'ex5-prv') {
          interfaces {
-             classes 'sorcer.ex5.provider.Adder'
+             classes 'sorcer.ex5.provider.Arithmetic'
              artifact ref:'ex5-api'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
-             artifact ref:'ex5-cfg'
+             artifact ref:'ex5-cfg-all'
          }
-         configuration file: "classpath:adder-prv.config"
+         configuration file: "classpath:arithmetic-all-beans.config"
          maintain 1
      }
 }

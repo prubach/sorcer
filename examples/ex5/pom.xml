@@ -18,10 +18,11 @@
 		<module>ex5-api</module>
 		<module>ex5-prv</module>
         <module>ex5-req</module>
-        <module>ex5-cfg1</module>
-        <module>ex5-cfg2</module>
-        <module>ex5-cfg3</module>
-        <module>ex5-cfg4</module>
+        <module>ex5-cfg-adder</module>
+        <module>ex5-cfg-divider</module>
+        <module>ex5-cfg-multiplier</module>
+        <module>ex5-cfg-subtractor</module>
+        <module>ex5-cfg-all</module>
 	</modules>
 
 	<properties>

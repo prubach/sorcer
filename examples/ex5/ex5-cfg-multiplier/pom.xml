@@ -9,8 +9,8 @@
         <version>1.0-M3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex5-cfg4</artifactId>
-    <name>SORCER :: examples :: ex5 :: config1</name>
+    <artifactId>ex5-cfg-multiplier</artifactId>
+    <name>SORCER :: examples :: ex5 :: multiplier config</name>
 
     <dependencies>
         <dependency>
@@ -39,8 +39,8 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <OAR-OperationalString>Ex5SubtractorBoot.groovy</OAR-OperationalString>
-                            <OAR-Name>Ex5AdderBoot</OAR-Name>
+                            <OAR-OperationalString>Ex5MultiplierBoot.groovy</OAR-OperationalString>
+                            <OAR-Name>Ex5Multiplier</OAR-Name>
                             <OAR-Version>${project.version}</OAR-Version>
                             <OAR-Activation>Automatic</OAR-Activation>
                         </manifestEntries>

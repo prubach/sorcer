@@ -9,8 +9,8 @@
         <version>1.0-M3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex6-cfg2</artifactId>
-    <name>SORCER :: examples :: ex6 :: config2</name>
+    <artifactId>ex6-cfg-all</artifactId>
+    <name>SORCER :: examples :: ex6 :: all config</name>
 
     <dependencies>
         <dependency>
@@ -28,6 +28,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
             <version>${v.sorcer}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -39,8 +40,8 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <OAR-OperationalString>Ex6DividerBoot.groovy</OAR-OperationalString>
-                            <OAR-Name>ex6Divider</OAR-Name>
+                            <OAR-OperationalString>AllEx6Boot.groovy</OAR-OperationalString>
+                            <OAR-Name>Ex6AllBoot</OAR-Name>
                             <OAR-Version>${project.version}</OAR-Version>
                             <OAR-Activation>Automatic</OAR-Activation>
                         </manifestEntries>

@@ -19,10 +19,11 @@
 		<module>ex6-prv</module>
 		<module>ex6-req</module>
         <module>ex6-sui</module>
-        <module>ex6-cfg1</module>
-        <module>ex6-cfg2</module>
-        <module>ex6-cfg3</module>
-        <module>ex6-cfg4</module>
+        <module>ex6-cfg-adder</module>
+        <module>ex6-cfg-divider</module>
+        <module>ex6-cfg-multiplier</module>
+        <module>ex6-cfg-subtractor</module>
+        <module>ex6-cfg-all</module>
 	</modules>
 
 	<properties>

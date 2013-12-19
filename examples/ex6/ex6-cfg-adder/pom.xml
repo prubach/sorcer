@@ -9,8 +9,8 @@
         <version>1.0-M3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex6-cfg3</artifactId>
-    <name>SORCER :: examples :: ex6 :: config3</name>
+    <artifactId>ex6-cfg-adder</artifactId>
+    <name>SORCER :: examples :: ex6 :: adder config</name>
 
     <dependencies>
         <dependency>
@@ -39,8 +39,8 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <OAR-OperationalString>Ex6MultiplierBoot.groovy</OAR-OperationalString>
-                            <OAR-Name>ex6Multiplier</OAR-Name>
+                            <OAR-OperationalString>Ex6AdderBoot.groovy</OAR-OperationalString>
+                            <OAR-Name>ex6AdderBoot</OAR-Name>
                             <OAR-Version>${project.version}</OAR-Version>
                             <OAR-Activation>Automatic</OAR-Activation>
                         </manifestEntries>
