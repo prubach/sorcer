@@ -24,12 +24,12 @@ import org.junit.Test;
 /**
  * @author Rafał Krupiński
  */
-public class AbstractArtifactResolverTest {
-	AbstractArtifactResolver resolver;
+public class VersionResolverTest {
+	VersionResolver resolver;
 
 	@Before
 	public void init() {
-		resolver = new RepositoryArtifactResolver(null);
+		resolver = new VersionResolver();
 	}
 
 	@Test
