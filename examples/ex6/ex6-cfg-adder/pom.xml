@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex6-cfg-adder</artifactId>
-    <name>SORCER :: examples :: ex6 :: adder config</name>
+    <name>SORCER examples :: ex6 :: adder config</name>
 
     <dependencies>
         <dependency>

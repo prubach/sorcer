@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex6-cfg-subtractor</artifactId>
-    <name>SORCER :: examples :: ex6 :: subtractor config</name>
+    <name>SORCER examples :: ex6 :: subtractor config</name>
 
     <dependencies>
         <dependency>

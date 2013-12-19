@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex5-cfg-multiplier</artifactId>
-    <name>SORCER :: examples :: ex5 :: multiplier config</name>
+    <name>SORCER examples :: ex5 :: multiplier config</name>
 
     <dependencies>
         <dependency>

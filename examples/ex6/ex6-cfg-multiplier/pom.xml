@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex6-cfg-multiplier</artifactId>
-    <name>SORCER :: examples :: ex6 :: multiplier config</name>
+    <name>SORCER examples :: ex6 :: multiplier config</name>
 
     <dependencies>
         <dependency>

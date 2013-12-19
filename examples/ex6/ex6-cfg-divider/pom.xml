@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ex6-cfg-divider</artifactId>
-    <name>SORCER :: examples :: ex6 :: divider config</name>
+    <name>SORCER examples :: ex6 :: divider config</name>
 
     <dependencies>
         <dependency>

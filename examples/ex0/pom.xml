@@ -10,7 +10,7 @@
 
 	<artifactId>ex0</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER :: examples :: ex0</name>
+	<name>SORCER examples :: ex0</name>
 	<description>HelloWorld Service</description>
 
 	<properties>

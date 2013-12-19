@@ -10,6 +10,7 @@
     </parent>
     <artifactId>sorcer-rio</artifactId>
     <packaging>pom</packaging>
+    <name>SORCER :: Rio home builder</name>
 
     <properties>
         <rio.home>${env.SORCER_HOME}/target/rio</rio.home>
