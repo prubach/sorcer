@@ -23,27 +23,23 @@ import sorcer.service.ContextException;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 
-public class ${providerInterface}Tester extends ServiceRequestor {
-
+public class ${providerInterface}Tester extends ServiceRequestor{
     private static Logger logger = LoggerFactory.getLogger(${providerInterface}Tester.class);
 
     public Exertion getExertion(String... args) throws ExertionException,
-            ContextException, SignatureException {
-		System.setSecurityManager(new RMISecurityManager());
-		logger.info("Starting ${providerInterface}Tester");
-		
-		Task t1 = task("hello", sig("sayHelloWorld", ${providerInterface}.class),
-				   context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
-		
-		logger.info("Task t1 prepared: " + t1);
-		Exertion out = exert(t1);
-		
-		logger.info("Got result: " + get(out, "out/value"));
-		logger.info("----------------------------------------------------------------");
-		logger.info("Task t1 trace: " +  trace(out));
+        ContextException, SignatureException {
+        System.setSecurityManager(new RMISecurityManager());
+        logger.info("Starting ${providerInterface}Tester");
+
+        Task t1 = task("hello", sig("sayHelloWorld", ${providerInterface}.class),
+        context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
+
+        logger.info("Task t1 prepared: " + t1);
+        Exertion out = exert(t1);
+
+        logger.info("Got result: {}", get(out, "out/value"));
+        logger.info("----------------------------------------------------------------");
+        logger.info("Task t1 trace: {}" + trace(out));
         return out;
-	}
+    }
 }
-
-
-

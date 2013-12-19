@@ -1,17 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.sorcersoft.sorcer</groupId>
-	<artifactId>sorcer</artifactId>
-	<packaging>pom</packaging>
-	<name>SORCER Project</name>
-	<version>1.0-M3-SNAPSHOT</version>
-	<description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services.
-        Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming.
-        Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service.
-        Secondly, a friendly and intuitive service-oriented programming model allows the users to dynamically compose the relevant service federations.
-        These federations range from tens to thousands or even millions of services and execute in the global network with an unprecedented level of reliability.
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <artifactId>sorcer</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-M3-SNAPSHOT</version>
+
+    <name>SORCER Project</name>
+
+    <description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual
+        services.
+        Dynamically federated services integrate various science and engineering domains fostering transdisciplinary
+        modeling and programming.
+        Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and
+        federatable service.
+        Secondly, a friendly and intuitive service-oriented programming model allows the users to dynamically compose
+        the relevant service federations.
+        These federations range from tens to thousands or even millions of services and execute in the global network
+        with an unprecedented level of reliability.
     </description>
+
 	<url>http://sorcersoft.github.com/</url>
 	<inceptionYear>2013</inceptionYear>
 
@@ -589,4 +599,3 @@
         </profile>
     </profiles>
 </project>
-

@@ -49,7 +49,7 @@
             <dependency>
                 <groupId>org.sorcersoft.sorcer</groupId>
                 <artifactId>sos-api</artifactId>
-                <version>${project.version}</version>
+                <version>${v.sorcer}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>org.sorcersoft.sorcer</groupId>
                 <artifactId>sos-platform</artifactId>
-                <version>${project.version}</version>
+                <version>${v.sorcer}</version>
             </dependency>
             <dependency>
                 <groupId>org.rioproject</groupId>

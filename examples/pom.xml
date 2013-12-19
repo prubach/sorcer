@@ -21,8 +21,7 @@
 		<module>ex4</module>
 		<module>ex5</module>
 		<module>ex6</module>
-		<module>first</module>
-  </modules>
+    </modules>
 
 	<build>
 		<pluginManagement>

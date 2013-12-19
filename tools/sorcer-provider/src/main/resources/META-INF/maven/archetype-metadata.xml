@@ -76,6 +76,14 @@
 				<fileSet filtered="true" packaged="true" encoding="UTF-8">
 					<directory>src/main/java</directory>
 				</fileSet>
+                <fileSet filtered="false" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>
+                            **/*.png
+                        </include>
+                    </includes>
+                </fileSet>
 			</fileSets>
 		</module>
 
@@ -83,13 +91,6 @@
 
 		<module id="${artifactId}-prv" dir="__rootArtifactId__-prv" name="${artifactId}-prv">
 			<fileSets>
-				<fileSet filtered="true" packaged="false">
-					<directory/>
-					<includes>
-						<include>boot.xml</include>
-                        <include>__rootArtifactId__Boot.groovy</include>
-					</includes>
-				</fileSet>
 				<fileSet filtered="true" packaged="true" encoding="UTF-8">
 					<directory>src/main/java</directory>
 				</fileSet>
@@ -107,17 +108,9 @@
 					</includes>
 					<excludes>
 						<exclude>
-							**/*.png
 							**/*.policy
 						</exclude>
 					</excludes>
-				</fileSet>
-				<fileSet filtered="false" packaged="false" encoding="UTF-8">
-					<directory>src/main/resources</directory>
-					<includes>
-						<include>**/*.png</include>
-						<include>**/*.policy</include>
-					</includes>
 				</fileSet>
 			</fileSets>
 		</module>
@@ -141,14 +134,33 @@
         </module>
 
         <module id="${artifactId}-sui" dir="__rootArtifactId__-sui" name="${artifactId}-sui">
-        <fileSets>
-            <fileSet filtered="true" packaged="true" encoding="UTF-8">
-                <directory>src/main/java</directory>
-            </fileSet>
-            <fileSet filtered="true" packaged="false" encoding="UTF-8">
-                <directory>src/main/resources</directory>
-            </fileSet>
-        </fileSets>
+            <fileSets>
+                <fileSet filtered="true" packaged="true" encoding="UTF-8">
+                    <directory>src/main/java</directory>
+                </fileSet>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                </fileSet>
+            </fileSets>
         </module>
+
+        <module id="${artifactId}-cfg" dir="__rootArtifactId__-cfg" name="${artifactId}-cfg">
+            <fileSets>
+                <fileSet filtered="true" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*.config</include>
+                        <include>**/*.groovy</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="false" packaged="false" encoding="UTF-8">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*.policy</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
+
     </modules>
 </archetype-descriptor>

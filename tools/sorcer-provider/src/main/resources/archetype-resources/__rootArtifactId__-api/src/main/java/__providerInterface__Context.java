@@ -1,4 +1,4 @@
-package sorcer.ex0;
+package ${package};
 /**
  *
  * Copyright 2013 Sorcersoft.com S.A.
@@ -22,15 +22,11 @@ import sorcer.schema.Path;
 import sorcer.schema.SchemaType;
 import sorcer.schema.Tag;
 
-/**
- * @author Rafał Krupiński
- */
 @SchemaType
-public interface HelloWorldContext {
+public interface ${providerInterface}Context {
     @Path("in/value")
     String getInValue();
 
-    //@DefaultValue("Hello")
     @Path("in/value")
     @Tag("dnt|dsd")
     @Description("Give your name")
