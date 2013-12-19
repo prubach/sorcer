@@ -17,15 +17,21 @@
  */
 package sorcer.provider.boot;
 
+import org.apache.commons.lang3.StringUtils;
+import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.ResolverException;
+import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
+import sorcer.resolver.VersionResolver;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -85,7 +91,41 @@ public class Booter {
 				"sorcer.provider.boot.BootUtil cannot be instantiated");
 	}
 
-	/**
+    private static final VersionResolver versionResolver = new VersionResolver();
+    private static final org.rioproject.resolver.Resolver resolver;
+
+    static {
+        try {
+            resolver = ResolverHelper.getResolver();
+        } catch (ResolverException e) {
+            throw new IllegalStateException("could not initialize Aether resolver", e);
+        }
+    }
+
+    /**
+     * API for configs
+     * resolve codebase from artifact coordinates
+     */
+    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException {
+        if (!Artifact.isArtifact(coords)) {
+            String[] split = coords.split(":");
+            String ver = versionResolver.resolveVersion(split[0], split[1]);
+            coords = coords + ":" + ver;
+        }
+
+        String[] resolved = ResolverHelper.resolve(coords, resolver, null);
+        String repoRoot = new File(System.getProperty("user.home"), "./m2/repository").getAbsolutePath();
+        int start = repoRoot.length()+"file:".length();
+        URL root = SorcerEnv.getCodebaseRoot();
+        for (int i = 0; i < resolved.length; i++) {
+            logger.info(resolved[i]);
+            resolved[i] = root.toURI().resolve("/"+resolved[i].substring(start)).toString();
+            logger.info(resolved[i]);
+        }
+        return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
+    }
+
+    /**
 	 * API for configs
 	 * resolve classpath from artifact coordinates
 	 */
@@ -115,7 +155,7 @@ public class Booter {
 	 */
 	public static String resolveCodebase(String coords) throws UnknownHostException {
         String[] coordsEntries = coords.split(" ");
-		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coordsEntries);
+		return resolveCodebase(coordsEntries);
 	}
 
     /**
