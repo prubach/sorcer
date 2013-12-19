@@ -25,15 +25,13 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
+import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -53,7 +51,7 @@ import static sorcer.core.SorcerConstants.*;
 public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
 	private static Logger logger = Logger.getLogger(COMPONENT);
-	
+
 	/**
 	 * Code server (wester) port
 	 */
@@ -76,7 +74,18 @@ public class Booter {
 	 */
 	private static Properties props = new Properties();
 
+    private static final VersionResolver versionResolver = new VersionResolver();
+    private static final org.rioproject.resolver.Resolver resolver;
+
+    private static final String localRepoUrl = getLocalRepoRootUrl();
+
 	static {
+		try {
+            resolver = ResolverHelper.getResolver();
+        } catch (ResolverException e) {
+            throw new IllegalStateException("could not initialize Aether resolver", e);
+        }
+
 		try {
 			loadEnvironment();
 		} catch (IOException e) {
@@ -91,38 +100,40 @@ public class Booter {
 				"sorcer.provider.boot.BootUtil cannot be instantiated");
 	}
 
-    private static final VersionResolver versionResolver = new VersionResolver();
-    private static final org.rioproject.resolver.Resolver resolver;
-
-    static {
-        try {
-            resolver = ResolverHelper.getResolver();
-        } catch (ResolverException e) {
-            throw new IllegalStateException("could not initialize Aether resolver", e);
-        }
-    }
-
     /**
      * API for configs
-     * resolve codebase from artifact coordinates
+     * resolve codebase from artifact coordinates with maven
      */
     public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException {
         if (!Artifact.isArtifact(coords)) {
-            String[] split = coords.split(":");
-            String ver = versionResolver.resolveVersion(split[0], split[1]);
+            int pos = coords.indexOf(':');
+            if (pos < 1)
+                throw new IllegalArgumentException("Invalid artifact " + coords);
+            String groupdId = coords.substring(0, pos);
+            String artifactId = coords.substring(pos + 1);
+            String ver = versionResolver.resolveVersion(groupdId, artifactId);
             coords = coords + ":" + ver;
         }
 
+        return resolveCodebase2(ArtifactCoordinates.coords(coords));
+    }
+
+    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException {
+        String coords = artifact.toString();
         String[] resolved = ResolverHelper.resolve(coords, resolver, null);
-        String repoRoot = new File(System.getProperty("user.home"), "./m2/repository").getAbsolutePath();
-        int start = repoRoot.length()+"file:".length();
-        URL root = SorcerEnv.getCodebaseRoot();
+        URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
         for (int i = 0; i < resolved.length; i++) {
-            logger.info(resolved[i]);
-            resolved[i] = root.toURI().resolve("/"+resolved[i].substring(start)).toString();
-            logger.info(resolved[i]);
+            String relative = resolved[i].substring(localRepoUrl.length());
+            resolved[i] = codeBaseRoot.resolve(relative).toString();
         }
         return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
+    }
+
+    private static String getLocalRepoRootUrl() {
+        String repoRoot = SorcerEnv.getRepoDir();
+        if (repoRoot.endsWith("/"))
+            repoRoot = repoRoot.substring(0, repoRoot.length() - 1);
+        return "file:" + repoRoot;
     }
 
     /**
