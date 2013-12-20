@@ -22,7 +22,14 @@
 
 scriptDir="`dirname $0`"
 
-if [ -z "$RIO_HOME" ]; then
-    export RIO_HOME; RIO_HOME="$scriptDir/../lib/rio"
+if [ "X$SORCER_HOME" = "X" ]; then
+    export SORCER_HOME=`readlink -fn $scriptDir/..`
+    echo "setting SORCER_HOME to $SORCER_HOME"
 fi
-$RIO_HOME/../../bin/rio start all $*
+
+if [ "X$RIO_HOME" = "X" ]; then
+    export RIO_HOME="$SORCER_HOME/lib/rio"
+    echo "setting RIO_HOME to $RIO_HOME"
+fi
+
+$SORCER_HOME/bin/rio start all $*
