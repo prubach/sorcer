@@ -31,6 +31,11 @@ public class AdderImpl implements Adder {
 	private Logger logger = LoggerFactory.getLogger(AdderImpl.class.getName());
 	
 	public Context add(Context context) throws RemoteException, ContextException {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ie) {
+
+        }
 		Context out = arithmometer.add(context);
 		logger.info("add result: " + out);
 		
