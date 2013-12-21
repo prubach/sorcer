@@ -233,7 +233,7 @@ public class ArithmeticTester implements SorcerConstants {
 	// composition with mixed flow/access strategy
 	private Exertion f1PARpull() throws Exception {
 		
-		Task f4 = task("f4", sig("multiply", Multiplier.class), 
+		Task f4 = task("f4", sig("multiply", Multiplier.class),
 				context("multiply", in(path("arg/x1"), 10.0), in(path("arg/x2"), 50.0),
 						out(path("result/y1"), null)), Access.PULL);
 

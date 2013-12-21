@@ -22,7 +22,7 @@
 <project name="arithmetic tester" default="run.requestor" basedir=".">
 
 	<property name="ex6-req.arg1" value="f5xP" />
-	<property name="ex6-req.arg2" value="30" />
+	<property name="ex6-req.arg2" value="300" />
 	<property name="ex6-req.arg3" value="300" />
 	<import file="ex6-req-run.xml" />
 	
