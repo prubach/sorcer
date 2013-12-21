@@ -9,31 +9,7 @@
 
     <artifactId>sorcer-launcher</artifactId>
     <name>SORCER tools :: launcher</name>
-    <packaging>bundle</packaging>
     <description>Helper classes for launching Sorcer server (provider) and client (requestor) processes; to be used by other Sorcer tools. Do not confuse it with sos-boot which contains classes internal to the server process, i.e. the main class for server (ServiceStarter) or with ServiceRequestor helper 'main' class for clients.</description>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Export-Package>sorcer.launcher</Export-Package>
-                        <Import-Package>
-                        	sorcer.launcher;version=1.0.0.M2-SNAPSHOT,
-                        	sorcer.core;version=1.0.0.M2-SNAPSHOT,
-                        	sorcer.util;version=1.0.0.M2-SNAPSHOT,
-                        	sorcer.service;version=1.0.0.M2-SNAPSHOT,
-                        	org.slf4j;version="[1.6,2)",
-                        	org.apache.commons.lang3;version=3.1
-                        </Import-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
