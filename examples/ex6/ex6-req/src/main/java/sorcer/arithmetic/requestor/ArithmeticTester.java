@@ -250,7 +250,7 @@ public class ArithmeticTester implements SorcerConstants {
 		//Job f1= job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), f3,
 		Job f1= job("f1", job("f2", f4, f5, strategy(Access.PULL, Flow.PAR)), f3,
 				pipe(out(f4, path("result/y1")), in(f3, path("arg/x5"))),
-				pipe(out(f5, path("result/y2")), in(f3, path("arg/x6"))));
+				pipe(out(f5, path("result/y2")), in(f3, path("arg/x6"))), strategy(Access.PULL, Flow.SEQ));
 
 		long start = System.currentTimeMillis();
 		Exertion out = exert(f1);

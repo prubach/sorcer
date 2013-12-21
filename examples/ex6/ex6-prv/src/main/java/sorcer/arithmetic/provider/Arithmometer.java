@@ -225,6 +225,7 @@ public class Arithmometer implements Serializable {
             throws ContextException {
         PositionalContext cxt = (PositionalContext) context;
         try {
+            Thread.sleep(500);
             //logger.info("selector: " + ((ServiceContext)context).getCurrentSelector());
             // get sorted list of input values
             List<Double> inputs = (List<Double>)Contexts.getNamedInValues(context);
