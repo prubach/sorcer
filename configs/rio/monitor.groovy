@@ -54,7 +54,7 @@ class MonitorConfig {
     String jmxName = 'org.rioproject.monitor:type=Monitor';
 
     String[] getInitialOpStrings() {
-        String basicSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerBoot.groovy";
+        String basicSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerRioBoot.groovy";
         String extSorcerBoot = SorcerEnv.getExtDir().getAbsolutePath() + "/configs/SorcerExtBoot.groovy";
         if (new File(extSorcerBoot).exists() && new File(basicSorcerBoot).exists())
             return [basicSorcerBoot, extSorcerBoot]

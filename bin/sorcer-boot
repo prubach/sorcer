@@ -28,9 +28,11 @@ DIRNAME=`dirname "$PRG"`
 
 STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
 
-if [ -f $SORCER_EXT/configs/sorcer-ext-boot.config ]; then
-  startSos $SORCER_HOME/configs/sorcer-boot.config $SORCER_EXT/configs/sorcer-ext-boot.config "$@"
-else
-  startSos $SORCER_HOME/configs/sorcer-boot.config "$@"
-fi
+sorcerConfig=$SORCER_HOME/configs/SorcerBoot.groovy
+extConfig=$SORCER_EXT/configs/SorcerExtBoot.groovy
 
+if [ -f $extConfig ]; then
+  startSos $sorcerConfig $extConfig "$@"
+else
+  startSos $sorcerConfig "$@"
+fi

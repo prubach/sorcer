@@ -1,7 +1,13 @@
 @echo off
 pushd
 set STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-set CONFIG=..\configs\sorcer-boot.config
+set CONFIG=..\configs\SorcerBoot.groovy
+
+SET CFG_EXT="%SORCER_EXT%\configs\SorcerExtBoot.groovy"
+IF EXIST  (
+set CONFIG=%CONFIG% %CFG_EXT%
+)
+
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
