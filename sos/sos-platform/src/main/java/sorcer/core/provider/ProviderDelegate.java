@@ -208,6 +208,8 @@ public class ProviderDelegate {
 
 	private List<Entry> extraLookupAttributes = new Vector<Entry>();
 
+    public int processedExertionsCount=0;
+
 	/** Map of exertion ID's and state of execution */
 	static final Map exertionStateTable = Collections
 			.synchronizedMap(new HashMap(11));
@@ -822,7 +824,9 @@ public class ProviderDelegate {
 					return (Task) forwardTask(task, provider);
 				}
 			} finally {
-				exertionStateTable.remove(exertionStateTable.remove(task
+                processedExertionsCount++;
+                logger.warn("EXERTIONS PROCESSED: " + processedExertionsCount);
+                exertionStateTable.remove(exertionStateTable.remove(task
 						.getId()));
 			}
 		}
