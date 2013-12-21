@@ -101,7 +101,7 @@ earlyInit ( ) {
         export SORCER_EXT
     fi
 
-	JAVA_OPTS="$JAVA_OPTS -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env"
+	JAVA_OPTS="$JAVA_OPTS -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env -Dsun.net.maxDatagramSockets=1024"
 
     # Set RIO_HOME if not already set
     if [ -z "$RIO_HOME" ]; then

@@ -52,9 +52,11 @@ IF DEFINED %SORCER_WEBSTER_INTERFACE% IF DEFINED %SORCER_WEBSTER_PORT% (
    SET WEBSTER_URL=http://%provider.webster.interface%:%provider.webster.port%
 )
 
+set JAVA_OPTS=-Dsun.net.maxDatagramSockets=1024
+
 REM Turn on debugging if DEBUG is set in env
 IF DEFINED DEBUG (
-  SET JAVA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000
+  SET JAVA_OPTS=%JAVA_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000
 ) 
 
 set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% %STARTER_MAIN_CLASS% %CONFIG%
