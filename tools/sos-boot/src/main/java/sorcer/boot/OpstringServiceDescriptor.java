@@ -1,7 +1,9 @@
 package sorcer.boot;
 
+import com.sun.jini.config.Config;
 import com.sun.jini.start.*;
 import net.jini.config.Configuration;
+import net.jini.config.ConfigurationProvider;
 import net.jini.export.ProxyAccessor;
 import net.jini.security.BasicProxyPreparer;
 import net.jini.security.ProxyPreparer;
@@ -29,26 +31,23 @@ import java.security.Policy;
 public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     public static final NoOpLifeCycle NOOP = new NoOpLifeCycle();
     private ServiceElement serviceElement;
-    private ProxyPreparer servicePreparer = new BasicProxyPreparer();
-    private URL oar;
     private URL policyFile;
 
     private static AggregatePolicyProvider globalPolicy = null;
     private static Policy initialGlobalPolicy = null;
 
-    public OpstringServiceDescriptor(ServiceElement serviceElement, URL oar, URL policyFile) {
+    public OpstringServiceDescriptor(ServiceElement serviceElement, URL policyFile) {
         this.serviceElement = serviceElement;
-        this.oar = oar;
         this.policyFile = policyFile;
     }
 
     @Override
-    protected Created doCreate(Configuration config) throws Exception {
-        ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, getCommonClassLoader(config), new URL[]{oar});
+    protected Created doCreate(Configuration globalConfig) throws Exception {
+        ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, getCommonClassLoader(globalConfig));
 
         security(cl);
 
-        Class implClass = cl.loadClass(serviceElement.getComponentBundle().getClassName());
+        Class<?> implClass = cl.loadClass(serviceElement.getComponentBundle().getClassName());
         ClassLoaderUtil.displayClassLoaderTree(cl);
         Object impl;
         Object proxy;
@@ -56,8 +55,13 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         ClassLoader currentClassLoader = currentThread.getContextClassLoader();
         currentThread.setContextClassLoader(cl);
         try {
+            Configuration config = ConfigurationProvider.getInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), cl);
+            ProxyPreparer servicePreparer = (ProxyPreparer) Config.getNonNullEntry(
+                          config, COMPONENT, "servicePreparer", ProxyPreparer.class,
+                          new BasicProxyPreparer());
+
             logger.trace("Attempting to get implementation constructor");
-            Constructor constructor = implClass.getDeclaredConstructor(new Class[]{String[].class, LifeCycle.class});
+            Constructor constructor = implClass.getDeclaredConstructor(actTypes);
             logger.trace("Obtained implementation constructor: {}", constructor.toString());
             constructor.setAccessible(true);
             impl = constructor.newInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), NOOP);
@@ -117,15 +121,13 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
 
-    private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL, URL[] extraCp) throws ResolverException, MalformedURLException {
+    private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, MalformedURLException {
         String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
-        URL[] urls = new URL[urlStrings.length + extraCp.length];
+        URL[] urls = new URL[urlStrings.length];
 
         for (int i = 0; i < urlStrings.length; i++) {
-            String urlString = urlStrings[i];
-            urls[i] = new URL(urlString);
+            urls[i] = new URL(urlStrings[i]);
         }
-        System.arraycopy(extraCp, 0, urls, urlStrings.length, extraCp.length);
         return new URLClassLoader(urls, parentCL);
     }
 

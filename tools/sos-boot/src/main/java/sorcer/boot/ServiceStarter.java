@@ -17,10 +17,11 @@
  */
 package sorcer.boot;
 
-import net.jini.config.EmptyConfiguration;
+import net.jini.config.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
@@ -36,10 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -56,6 +55,7 @@ public class ServiceStarter {
     private sorcer.com.sun.jini.start.ServiceStarter riverServiceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
 
 	public static void main(String[] args) throws Exception {
+        System.setSecurityManager(new RMISecurityManager());
 		new ServiceStarter().doMain(args);
 	}
 
@@ -90,7 +90,8 @@ public class ServiceStarter {
     public void start(Collection<String> configs) throws Exception {
         List<String> riverServices = new LinkedList<String>();
         List<File> cfgJars = new LinkedList<File>();
-        System.setSecurityManager(new RMISecurityManager());
+        List<File> opstrings = new LinkedList<File>();
+
         for (String path : configs) {
             File file = null;
             if (path.startsWith(":")) {
@@ -109,11 +110,21 @@ public class ServiceStarter {
                 riverServices.add(path);
             else if ("oar".equals(ext) || "jar".equals(ext))
                 cfgJars.add(file);
+            else if ("opstring".equals(ext) || "groovy".equals(ext))
+                opstrings.add(file);
+            else
+                throw new IllegalArgumentException("Unrecognized file " + path);
         }
         if (!riverServices.isEmpty())
             riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[configs.size()]));
-        if (!cfgJars.isEmpty())
-            startConfigJars(cfgJars);
+        if (!cfgJars.isEmpty() || !opstrings.isEmpty())
+            startRioStyleServices(cfgJars, opstrings);
+    }
+
+    private void startRioStyleServices(List<File> cfgJars, List<File> opstrings) throws Exception {
+        List<OpstringServiceDescriptor> serviceDescriptors = createFromOpStrFiles(opstrings);
+        serviceDescriptors.addAll(createFromOar(cfgJars));
+        startServices(serviceDescriptors);
     }
 
     private File findArtifact(String artifactId) {
@@ -128,22 +139,48 @@ public class ServiceStarter {
         return files.iterator().next();
     }
 
-    protected void startConfigJars(Collection<File> files) throws Exception {
-        for (File file : files) {
-            createServices(file);
+    protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) throws Exception {
+        List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
+        String policyFile = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
+        URL policyFileUrl = new File(policyFile).toURI().toURL();
+        OpStringLoader loader = new OpStringLoader();
+        for (File opString : files) {
+            OperationalString[] operationalStrings = loader.parseOperationalString(opString);
+            result.addAll(createServiceDescriptors(operationalStrings, policyFileUrl));
         }
+        return result;
     }
 
-    private List<Created> createServices(File file) throws Exception {
-        SorcerOAR oar = new SorcerOAR(file);
-        OperationalString[] operationalStrings = oar.loadOperationalStrings();
-        URL policyFile = oar.getPolicyFile();
-        URL oarUrl = file.toURI().toURL();
-        List<Created> result = new LinkedList<Created>();
+    private List<OpstringServiceDescriptor> createFromOar(Iterable<File> oarFiles) throws Exception {
+        List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
+        for (File oarFile : oarFiles) {
+            SorcerOAR oar = new SorcerOAR(oarFile);
+            OperationalString[] operationalStrings = oar.loadOperationalStrings();
+            URL policyFile = oar.getPolicyFile();
+            result.addAll(createServiceDescriptors(operationalStrings, policyFile));
+        }
+        return result;
+    }
 
+    private List<OpstringServiceDescriptor> createServiceDescriptors(OperationalString[] operationalStrings, URL policyFile) throws ConfigurationException {
+        List<OpstringServiceDescriptor> descriptors = new LinkedList<OpstringServiceDescriptor>();
         for (OperationalString op : operationalStrings) {
             for (ServiceElement se : op.getServices()) {
-                result.add(new OpstringServiceDescriptor(se, oarUrl, policyFile).create(EmptyConfiguration.INSTANCE));
+                descriptors.add(new OpstringServiceDescriptor(se, policyFile));
+            }
+
+            descriptors.addAll(createServiceDescriptors(op.getNestedOperationalStrings(), policyFile));
+        }
+        return descriptors;
+    }
+
+    private List<Created> startServices(List<OpstringServiceDescriptor> services) {
+        List<Created> result = new ArrayList<Created>(services.size());
+        for (AbstractServiceDescriptor descriptor : services) {
+            try {
+                result.add(descriptor.create(EmptyConfiguration.INSTANCE));
+            } catch (Exception x) {
+                log.warn("Error while creating a service from {}", descriptor, x);
             }
         }
         return result;

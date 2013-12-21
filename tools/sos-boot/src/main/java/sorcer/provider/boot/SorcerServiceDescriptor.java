@@ -80,12 +80,6 @@ import sorcer.boot.util.JarClassPathHelper;
  * @author Dennis Reedy, updated for SORCER by M. Sobolewski
  */
 public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
-	static String COMPONENT = "sorcer.provider.boot";
-
-	/**
-	 * The parameter types for the "activation constructor".
-	 */
-	private static final Class[] actTypes = { String[].class, LifeCycle.class };
 	private String codebase;
 	private String policy;
 	private String classpath;

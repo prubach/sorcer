@@ -18,6 +18,7 @@ package sorcer.provider.boot;
  */
 
 
+import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.Configuration;
 import org.rioproject.config.PlatformCapabilityConfig;
@@ -38,10 +39,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Rafał Krupiński
  */
 public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
+    /**
+	 * The parameter types for the "activation constructor".
+	 */
+	protected static final Class[] actTypes = { String[].class, LifeCycle.class };
     protected static boolean platformLoaded = false;
     protected static AtomicInteger allDescriptors = new AtomicInteger(0);
     protected static AtomicInteger startedServices = new AtomicInteger(0);
     protected static AtomicInteger erredServices = new AtomicInteger(0);
+    protected static String COMPONENT = "sorcer.provider.boot";
     private static Activator activator = new Activator();
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -54,7 +60,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         PlatformLoader platformLoader = new PlatformLoader();
         List<URL> urlList = new LinkedList<URL>();
 
-        String platformDir = (String) config.getEntry(SorcerServiceDescriptor.COMPONENT, "platformDir",
+        String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
                 String.class, defaultDir);
         logger.debug("Platform dir: {}", platformDir);
         PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir);
