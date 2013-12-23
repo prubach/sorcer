@@ -37,7 +37,7 @@ deployment(name: 'ex5-provider') {
              artifact ref:'ex5-api'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
-             artifact ref:'ex5-cfg-all'
+             artifact ref:'ex5-cfg'
          }
          configuration file: "classpath:arithmetic-all-beans.config"
          maintain 1

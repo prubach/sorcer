@@ -29,7 +29,7 @@ deployment(name: 'ex6-divider') {
     codebase getCodebase()
 
     artifact id:'ex6-api', 'org.sorcersoft.sorcer:ex6-api:'+getSorcerVersion()
-    artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg2:'+getSorcerVersion()
+    artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-divider:'+getSorcerVersion()
 
     service(name:'ex6-divider-prv') {
          interfaces {

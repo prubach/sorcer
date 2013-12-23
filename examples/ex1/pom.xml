@@ -22,6 +22,7 @@
 		<module>ex1-req</module>
         <module>ex1-cfg1</module>
         <module>ex1-cfg2</module>
+        <module>ex1-cfg-all</module>
     </modules>
 
 	<properties>

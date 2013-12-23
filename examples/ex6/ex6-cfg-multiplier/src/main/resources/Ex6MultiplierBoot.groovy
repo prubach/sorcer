@@ -29,7 +29,7 @@ deployment(name: 'ex6-multiplier') {
     codebase getCodebase()
 
     artifact id:'ex6-api', 'org.sorcersoft.sorcer:ex6-api:'+getSorcerVersion()
-    artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg3:'+getSorcerVersion()
+    artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-multiplier:'+getSorcerVersion()
 
     service(name:'ex6-multiplier-prv') {
          interfaces {

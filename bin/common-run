@@ -122,13 +122,13 @@ earlyInit ( ) {
     fi
 
     # Read sorcer.env to set the Sorcer Jar repository location
-    MVN_REPO_TMP=$(getProperty sorcer.local.repo.location)
-    echo $MVN_REPO_TMP | sed -e 's/\./\@/g' | sed "s,\${user@home},$HOME,g" > /tmp/repo_ttt
-    echo `cat /tmp/repo_ttt` | sed -e "s:@:.:g" > /tmp/repo_tt
-    MVN_REPO=`cat /tmp/repo_tt`
-    rm /tmp/repo_ttt
-    rm /tmp/repo_tt
-    if [ -z "MVN_REPO" ] ; then
+    #MVN_REPO_TMP=$(getProperty sorcer.local.repo.location)
+    #echo $MVN_REPO_TMP | sed -e 's/\./\@/g' | sed "s,\${user@home},$HOME,g" > /tmp/repo_ttt
+    #echo `cat /tmp/repo_ttt` | sed -e "s:@:.:g" > /tmp/repo_tt
+    #MVN_REPO=`cat /tmp/repo_tt`
+    #rm /tmp/repo_ttt
+    #rm /tmp/repo_tt
+    if [ -z "$MVN_REPO" ] ; then
         MVN_REPO="$HOME/.m2/repository"
     fi
 
@@ -360,7 +360,7 @@ $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.j
 }
 
 createSorcerRioCp ( ) {
-if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
       # Distro version
       SORCER_RIO_CP="$LIB_DIR/sorcer/sos-env.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
@@ -369,7 +369,6 @@ $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/commons/commons-lang3.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/jini/jsk-dl.jar"
-
     else
       # MVN version
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
@@ -382,6 +381,16 @@ $MVN_REPO/net/jini/jsk-dl/$V_JINI/jsk-dl-$V_JINI.jar"
     fi
 
     echo $SORCER_RIO_CP
+}
+
+createSorcerRioUICp ( ) {
+    SORCER_RIO_CP=$(createSorcerRioCp)
+    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+        SORCER_RIOUI_CP="$SORCER_RIO_CP:$LIB_DIR/sorcer/sorcer-api.jar"
+    else
+        SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
+    fi
+    echo $SORCER_RIOUI_CP
 }
 
 startSos ( ) {

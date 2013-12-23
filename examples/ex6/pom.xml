@@ -23,6 +23,7 @@
         <module>ex6-cfg-divider</module>
         <module>ex6-cfg-multiplier</module>
         <module>ex6-cfg-subtractor</module>
+        <module>ex6-cfg-one-bean</module>
         <module>ex6-cfg-all</module>
 	</modules>
 
@@ -31,3 +32,4 @@
 		<skipTests>${maven.test.skip}</skipTests>
 	</properties>
 </project>
+

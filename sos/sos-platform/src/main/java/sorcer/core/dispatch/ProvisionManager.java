@@ -16,13 +16,18 @@
  */
 package sorcer.core.dispatch;
 
+import net.jini.core.entry.Entry;
+import net.jini.core.lease.Lease;
+import net.jini.space.JavaSpace05;
+import sorcer.core.SorcerConstants;
+import sorcer.core.exertion.ExertionEnvelop;
+import sorcer.core.provider.SpaceTaker;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
-import sorcer.service.Accessor;
-import sorcer.service.Service;
-import sorcer.service.Signature;
+import sorcer.service.*;
+import sorcer.service.space.SpaceAccessor;
 
 import java.rmi.RemoteException;
 import java.util.Iterator;
@@ -37,6 +42,7 @@ public class ProvisionManager {
 	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
 	protected Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
     private static ProvisionManager instance = null;
+    private static int MAX_ATTEMPTS = 2;
 
 
     public static ProvisionManager getInstance() {
@@ -54,14 +60,15 @@ public class ProvisionManager {
         pThread.start();
 	}
 
-    public void add(Signature sig) {
+    public void add(Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
+        NetSignature sig = (NetSignature) exertion.getProcessSignature();
         Service service = (Service) Accessor.getService(sig);
         // A hack to disable provisioning spacer itself
         if (service==null && !sig.getServiceType().getName().equals(Spacer.class.getName())) {
             synchronized (servicesToProvision) {
                 servicesToProvision.add(
                         new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
-                                ((NetSignature)sig).getVersion(), sig));
+                                ((NetSignature)sig).getVersion(), sig, exertion, spaceExertDispatcher));
             }
         }
     }
@@ -92,6 +99,7 @@ public class ProvisionManager {
                             if (provisioner != null) {
                                 try {
                                     logger.info("Provisioning: "+ sigEl.getSignature());
+                                    sigEl.incrementProvisionAttempts();
                                     service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
                                     if (service!=null) sigsToRemove.add(sigEl);
                                 } catch (ProvisioningException pe) {
@@ -103,7 +111,19 @@ public class ProvisionManager {
                                             + " (" + sigEl.getSignature().getProviderName() + ")"
                                             + " " +re.getMessage();
                                     logger.severe(msg);
-                                    //throw new ProvisioningException(msg, ((NetSignature)sig).getExertion());
+                                }
+                            } else
+                                provisioner = Accessor.getService(Provisioner.class);
+
+                            if (sigEl.getProvisionAttempts()>MAX_ATTEMPTS) {
+                                String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
+                                        + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";
+                                logger.severe(logMsg);
+                                try {
+                                    failExertionInSpace(sigEl, new ProvisioningException(logMsg));
+                                    sigsToRemove.add(sigEl);
+                                } catch (ExertionException ile) {
+                                    logger.severe("Problem trying to remove exception after reattempting to provision");
                                 }
                             }
                         } else
@@ -124,11 +144,42 @@ public class ProvisionManager {
     }
 
 
+    private void failExertionInSpace(SignatureElement sigEl, Exception exc) throws ExertionException {
+        logger.info("Setting Failed state for service type: " + sigEl.getServiceType() + " exertion ID: " +
+                "" + sigEl.getExertion().getId());
+        ExertionEnvelop ee = ExertionEnvelop.getTemplate(sigEl.getExertion());
+
+        ExertionEnvelop result = null;
+        result = sigEl.getSpaceExertDispatcher().takeEnvelop(ee);
+        if (result!=null) {
+            result.state = new Integer(ExecState.FAILED);
+            ((ServiceExertion)result.exertion).setStatus(ExecState.FAILED);
+            ((ServiceExertion)result.exertion).reportException(exc);
+            try {
+
+                JavaSpace05 space = SpaceAccessor.getSpace();
+                if (space == null) {
+                    throw new ExertionException("NO exertion space available!");
+                }
+                space.write(result, null, Lease.FOREVER);
+                logger.finer("===========================> written failure envelop: "
+                        + ee.describe() + "\n to: " + space);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.throwing(this.getClass().getName(), "faileExertionInSpace", e);
+                throw new ExertionException("Problem writing exertion back to space");
+            }
+        }
+    }
+
     private class SignatureElement {
         String serviceType;
         String providerName;
         String version;
         Signature signature;
+        int provisionAttempts=0;
+        Exertion exertion;
+        SpaceExertDispatcher spaceExertDispatcher;
 
         private String getServiceType() {
             return serviceType;
@@ -162,11 +213,31 @@ public class ProvisionManager {
             this.signature = signature;
         }
 
-        private SignatureElement(String serviceType, String providerName, String version, Signature signature) {
+
+        public int getProvisionAttempts() {
+            return provisionAttempts;
+        }
+
+        public void incrementProvisionAttempts() {
+            this.provisionAttempts++;
+        }
+
+        public Exertion getExertion() {
+            return exertion;
+        }
+
+        public SpaceExertDispatcher getSpaceExertDispatcher() {
+            return spaceExertDispatcher;
+        }
+
+        private SignatureElement(String serviceType, String providerName, String version, Signature signature,
+                                 Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
             this.serviceType = serviceType;
             this.providerName = providerName;
             this.version = version;
             this.signature = signature;
+            this.exertion = exertion;
+            this.spaceExertDispatcher = spaceExertDispatcher;
         }
 
         @Override
@@ -176,6 +247,7 @@ public class ProvisionManager {
             SignatureElement that = (SignatureElement) o;
             if (!providerName.equals(that.providerName)) return false;
             if (!serviceType.equals(that.serviceType)) return false;
+            if (!exertion.equals(that.exertion)) return false;
             if (version != null ? !version.equals(that.version) : that.version != null) return false;
             return true;
         }

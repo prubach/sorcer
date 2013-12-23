@@ -23,6 +23,7 @@
         <module>ex5-cfg-multiplier</module>
         <module>ex5-cfg-subtractor</module>
         <module>ex5-cfg-all</module>
+        <module>ex5-cfg-one-bean</module>
 	</modules>
 
 	<properties>

@@ -44,7 +44,7 @@ else
 fi
 
 ##############################
-SOS_CLASSPATH=$(createSorcerRioCp)
+SOS_CLASSPATH=$(createSorcerRioUICp)
 RIOUI_CLASSPATH=$SOS_CLASSPATH:$path_to_jar
 MAIN_CLASS=org.rioproject.tools.ui.Main
 

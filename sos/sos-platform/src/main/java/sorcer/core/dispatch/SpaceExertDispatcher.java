@@ -142,8 +142,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	}
 
     private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
-        NetSignature sig = (NetSignature) exertion.getProcessSignature();
-        provisionManager.add(sig);
+        provisionManager.add(exertion, this);
     }
 
 

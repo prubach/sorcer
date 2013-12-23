@@ -25,7 +25,7 @@ deployment(name: 'ex1-whoIsIt-1') {
     codebase getCodebase()
 
     artifact id:'ex1-api', 'org.sorcersoft.sorcer:ex1-api:'+getSorcerVersion()
-    artifact id:'ex1-cfg', 'org.sorcersoft.sorcer:ex1-cfg:'+getSorcerVersion()
+    artifact id:'ex1-cfg', 'org.sorcersoft.sorcer:ex1-cfg1:'+getSorcerVersion()
 
     service(name:'ex1-whoIsItBean-1') {
          interfaces {

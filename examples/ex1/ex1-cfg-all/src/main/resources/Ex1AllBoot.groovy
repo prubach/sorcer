@@ -23,13 +23,13 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex1-whoIsIt-2') {
+deployment(name: 'ex1-all') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
     artifact id:'ex1-api', 'org.sorcersoft.sorcer:ex1-api:'+getSorcerVersion()
-    artifact id:'ex1-cfg', 'org.sorcersoft.sorcer:ex1-cfg2:'+getSorcerVersion()
+    artifact id:'ex1-prv', 'org.sorcersoft.sorcer:ex1-cfg-all:'+getSorcerVersion()
 
     service(name:'ex1-whoIsItBean-2') {
          interfaces {
@@ -37,9 +37,20 @@ deployment(name: 'ex1-whoIsIt-2') {
              artifact ref:'ex1-api'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
-             artifact ref:'ex1-cfg'
+             artifact ref:'ex1-prv'
          }
          configuration file: "classpath:whoIsIt2-prv.config"
          maintain 1
      }
+     service(name:'ex1-whoIsItBean-1') {
+        interfaces {
+            classes 'sorcer.ex1.WhoIsIt'
+            artifact ref:'ex1-api'
+        }
+        implementation(class: 'sorcer.core.provider.ServiceTasker') {
+            artifact ref:'ex1-prv'
+        }
+        configuration file: "classpath:whoIsIt1-prv.config"
+        maintain 1
+    }
 }

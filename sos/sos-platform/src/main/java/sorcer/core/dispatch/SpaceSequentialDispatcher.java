@@ -98,7 +98,7 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 		while (count < inputXrts.size() && state != FAILED) {
 			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(temp);
 			logger.finer("collected result envelope  <===================== \n"
-					+ resultEnvelop.describe());
+					+ (resultEnvelop!=null ? resultEnvelop.describe() : "NULL"));
 
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)

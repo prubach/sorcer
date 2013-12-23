@@ -29,10 +29,8 @@ Task f6 = task("f6", sig("divide", Divider.class),
 		output(path("result/y4"), null)));		
 		
 
-
-
-job("f1", job("f2", f4, f5), job("f7",f3, f6),		
 //job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), f3,
+job("f1", job("f2", f4, f5, strategy(Flow.PAR, Access.PULL)), job("f7",f3, f6, strategy(Flow.SEQ, Access.PULL)), strategy(Flow.SEQ, Access.PUSH),
 	pipe(out(f4, path("result/y1")), input(f3, path("arg/x5"))),
 	pipe(out(f5, path("result/y2")), input(f3, path("arg/x6"))),
 	pipe(out(f3, path("result/y3")), input(f6, path("arg/x7"))));

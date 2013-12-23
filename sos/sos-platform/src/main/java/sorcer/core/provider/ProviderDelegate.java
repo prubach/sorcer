@@ -1703,8 +1703,8 @@ public class ProviderDelegate {
 
 			if (publishedServiceTypes == null && spaceEnabled) {
 				logger.severe(getProviderName()
-						+ " does NOT declare its space interfaces");
-				System.exit(1);
+						+ " does NOT declare its space interfaces, destroying provider");
+                provider.destroy();
 			}
 			if (publishedServiceTypes != null) {
 				String[] typeNames = new String[publishedServiceTypes.length];
@@ -2169,7 +2169,11 @@ public class ProviderDelegate {
 			} else {
 				if (exitOnEmptyName) {
 					logger.severe("Provider HALTED: its name not defined in the provider config file");
-					System.exit(1);
+                    try {
+                        provider.destroy();
+                    } catch (Exception e) {
+                        logger.severe("Problem trying to destroy the provider due to empty name in the provider config file");
+                    }
 				}
 			}
 		}

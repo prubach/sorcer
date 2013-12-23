@@ -39,6 +39,7 @@ deployment(name: 'Sorcer') {
     artifact id: 'reggie', 'org.apache.river:reggie:2.2.1'
     artifact id: 'reggie-dl', 'org.apache.river:reggie-dl:2.2.1'
 
+
     service(name: 'Webster') {
         implementation(class: 'sorcer.tools.webster.Webster') {
             artifact ref: 'webster-srv'
@@ -58,6 +59,8 @@ deployment(name: 'Sorcer') {
         configuration file: getSorcerHome() + "/configs/jini/configs/reggie.config"
         maintain 1
     }
+
 }
+
 
 include 'SorcerRioBoot.groovy'
