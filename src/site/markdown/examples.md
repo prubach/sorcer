@@ -33,8 +33,9 @@ To build examples go to the <tt>$SORCER_HOME/examples</tt> folder and execute:
 ## Running examples
 Most examples contain the following directory structure:
 - exX-api - this folder contains the code of the interfaces published by the service provider as well as classes required for passing input/output data (context) to/from the provider.
-- exX-prv - the actual implementation of the service provider. This folder often contains ant scripts (XML files) for starting the provider.
-- exX-req - this folder contains the requestor used for testing the service provider. The testing code may be implemented either as a regular java appication or a junit test class. 
+- exX-prv - the actual implementation of the service provider.
+- exX-cfg - this folder contains the configuration files of the service. You can start the provider by executing `boot :exX-cfgY` in the console after building the examples.
+- exX-req - this folder contains the requestor used for testing the service provider. The testing code may be implemented either as a regular java appication or a junit test class.
 In the first case (regular java file) you should find ant scripts for starting the requestor - there may be more than one script - they usually differ by input parameters that are provided as arguments during startup. 
 In the second case (requestor as a junit class) you may have to start the junit tests by running in the exX-req folder:
 <pre>mvn -Dmaven.test.skip=false test</pre>
