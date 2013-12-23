@@ -12,7 +12,8 @@ before_script:
 #  - export JAVA_OPTS=-Djava.net.preferIPv6Stack=true
   - cd distribution/target/sorcer-*/sorcer-*/
   - export SORCER_HOME=`pwd`
-  - export RIO_HOME=$SORCER_HOME/lib/rio
+  - unset RIO_HOME
+#  - export RIO_HOME=$SORCER_HOME/lib/rio
   - $SORCER_HOME/bin/sorcer-boot &
   - sleep 8
 #temporally disable integration tests. Enable them after all of them has been migrated to sorcer-maven-plugin
