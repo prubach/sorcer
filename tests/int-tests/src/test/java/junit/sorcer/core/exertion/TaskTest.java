@@ -65,6 +65,8 @@ public class TaskTest {
     static {
         System.setProperty("java.util.logging.config.file",
                 System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());

@@ -62,6 +62,8 @@ public class ArithmeticNetTest {
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setSecurityManager(new RMISecurityManager());
 		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
 			SorcerEnv.setCodeBaseByArtifacts(new String[]{

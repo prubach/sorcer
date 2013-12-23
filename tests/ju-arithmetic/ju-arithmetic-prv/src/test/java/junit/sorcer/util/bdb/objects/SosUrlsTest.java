@@ -46,6 +46,8 @@ public class SosUrlsTest {
 		if (System.getProperty("java.security.policy") == null) {
 			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
 		}
+        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setSecurityManager(new RMISecurityManager());
 		System.out.println("CLASSPATH :"
 				+ System.getProperty("java.class.path"));

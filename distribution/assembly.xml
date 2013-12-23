@@ -334,6 +334,7 @@
                 <exclude>sorcer-boot</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
+                <exclude>boot</exclude>
                 <exclude>rio</exclude>
                 <exclude>rio-ui</exclude>
                 <exclude>rio-boot</exclude>
@@ -354,6 +355,7 @@
                 <include>rio</include>
                 <include>rio-ui</include>
                 <include>rio-boot</include>
+                <include>boot</include>
             </includes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>
