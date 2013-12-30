@@ -49,7 +49,7 @@ IF defined SORCER_HOME (
 )
 
 :: Set Versions
-set rioVersion=5.0-M4-sorcer3
+set rioVersion=5.0-M4-S4
 set groovyVersion=2.1.3
 
 if "%JAVA_HOME%" == "" goto noJavaHome

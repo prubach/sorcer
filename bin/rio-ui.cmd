@@ -23,7 +23,7 @@ title Rio UI
 set command_line=%*
 
 if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\lib\rio
-set rioVersion=5.0-M4-sorcer3
+set rioVersion=5.0-M4-S4
 
 :: Sorcer basic jars added to classpath
 SET mypath=%~dp0
