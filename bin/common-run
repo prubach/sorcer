@@ -278,6 +278,7 @@ $LIB_DIR/jini-lookup/serviceui.jar:\
 $LIB_DIR/commons/slf4j-api.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
+
   BOOT_CLASSPATH="$JINI_CLASSPATH:\
 $LIB_DIR/sorcer/sos-env.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\

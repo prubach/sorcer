@@ -4,7 +4,7 @@ set STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
 set CONFIG=..\configs\SorcerBoot.groovy
 
 SET CFG_EXT="%SORCER_EXT%\configs\SorcerExtBoot.groovy"
-IF EXIST  (
+IF EXIST %CFG_EXT% (
 set CONFIG=%CONFIG% %CFG_EXT%
 )
 
