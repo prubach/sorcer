@@ -280,8 +280,8 @@ abstract public class
                     codebase.append(' ').append(resolve(artCord));
                 }
 
-            // Add default codebase sos-platform and sos-env
-            codebase.append(' ').append(resolve(Artifact.getSosEnv()));
+            // Add default codebase sos-platform and sorcer-api
+            codebase.append(' ').append(resolve(Artifact.getSorcerApi()));
             codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
 
             logger.fine("ServiceRequestor generated codebase: " + codebase.toString());

@@ -34,7 +34,7 @@
         <echo message="env SORCER_HOME ${sorcer.home}"/>
         <java classname="sorcer.installer.Installer" fork="no">
             <classpath>
-                <pathelement location="${lib.dir}/sorcer/sos-env.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/commons/slf4j-api.jar"/>
                 <pathelement location="${lib.dir}/commons/slf4j-simple.jar"/>

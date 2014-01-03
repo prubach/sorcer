@@ -23,9 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
-import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
-import sorcer.util.PropertiesLoader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

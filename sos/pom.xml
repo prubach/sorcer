@@ -13,7 +13,6 @@
     <name>SORCER OS</name>
 
     <modules>
-        <module>sos-env</module>
         <module>sos-platform</module>
         <module>sos-util</module>
         <module>sos-security-sui</module>

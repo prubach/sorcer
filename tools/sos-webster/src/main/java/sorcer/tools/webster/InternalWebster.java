@@ -179,7 +179,7 @@ public class InternalWebster {
             URL root = SorcerEnv.getCodebaseRoot(SorcerEnv.getHostAddress(), webster.getPort());
             String codebase;
             if (userCodebase == null || userCodebase.isEmpty()) {
-                codebase = Resolver.resolveCodeBase(root, Artifact.getSosEnv(), Artifact.getSosPlatform());
+                codebase = Resolver.resolveCodeBase(root, Artifact.getSorcerApi(), Artifact.getSosPlatform());
             } else {
                 String[] jars = userCodebase.split(" ");
                 codebase = SorcerEnv.getCodebase(root, jars);

@@ -410,7 +410,7 @@
                                 <replace file="${project.basedir}/configs/versions.properties" token="v.sorcer=${project.version}" value="v.sorcer=${v_sos_release}" />
                                 <replace file="${project.basedir}/distribution/pom.xml" token="${project.version}" value="${v_sos_release}" />
                                 <replace file="${project.basedir}/tools/provider-root/pom.xml" token="${project.version}" value="${v_sos_release}" />
-                                <replace file="${project.basedir}/sos/sos-env/src/main/java/sorcer/core/SorcerConstants.java" token="SORCER_VERSION = &quot;${project.version}&quot;;" value="SORCER_VERSION = &quot;${v_sos_release}&quot;;" />
+                                <replace file="${project.basedir}/sos/sorcer-api/src/main/java/sorcer/core/SorcerConstants.java" token="SORCER_VERSION = &quot;${project.version}&quot;;" value="SORCER_VERSION = &quot;${v_sos_release}&quot;;" />
                             </target>
                         </configuration>
                         <goals>

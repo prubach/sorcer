@@ -39,7 +39,6 @@ import static sorcer.util.ArtifactCoordinates.coords;
 public class SorcerDescriptorUtil {
     final static Logger logger = Logger.getLogger("sorcer.provider.boot");
     public static final ArtifactCoordinates SOS_PLATFORM = sorcer("sos-platform");
-    public static final ArtifactCoordinates SOS_ENV = sorcer("sos-env");
     public static final ArtifactCoordinates COMMONS_PRV = sorcer("commons-prv");
     public static final ArtifactCoordinates EXERTMONITOR_SERVICE = sorcer("exertmonitor-prv");
     public static final ArtifactCoordinates EXERTLET_UI = sorcer("sos-exertlet-sui");

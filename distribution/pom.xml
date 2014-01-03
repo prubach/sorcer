@@ -27,7 +27,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-env</artifactId>
+            <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -336,7 +336,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>../sos/sos-env/src/main/resources/META-INF/maven/repolayout.properties</file>
+                                <file>../sos/sorcer-api/src/main/resources/META-INF/maven/repolayout.properties</file>
                             </files>
                         </configuration>
                     </execution>

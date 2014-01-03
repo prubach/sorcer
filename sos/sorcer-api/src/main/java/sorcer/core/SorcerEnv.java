@@ -1183,7 +1183,7 @@ public class SorcerEnv {
         for (String jar : jars) {
             cb.add(getCodebase(root, jar).toExternalForm());
         }
-        return StringUtils.join(cb, SorcerConstants.CODEBASE_SEPARATOR);
+        return StringUtils.join(cb, CODEBASE_SEPARATOR);
     }
 
     /**
@@ -1732,7 +1732,7 @@ public class SorcerEnv {
         if (portStr != null && !portStr.isEmpty()) {
             setWebsterPortProperty(Integer.parseInt(portStr));
         }
-        String sorcerHome = env.get(SorcerConstants.SORCER_HOME);
+        String sorcerHome = env.get(SORCER_HOME);
         if (sorcerHome != null)
             setSorcerHome(sorcerHome);
         // set Rio Home if not set in the environment - this is required by Rio to load resolver-aether.jar
@@ -1766,19 +1766,19 @@ public class SorcerEnv {
     }
 
     public String getWebsterRootsString() {
-        return properties.getProperty(SorcerConstants.WEBSTER_ROOTS);
+        return properties.getProperty(WEBSTER_ROOTS);
     }
 
     public void setWebsterRootsString(String roots) {
-        properties.setProperty(SorcerConstants.WEBSTER_ROOTS, roots);
+        properties.setProperty(WEBSTER_ROOTS, roots);
     }
 
     public String getSorcerHome() {
-        return properties.getProperty(SorcerConstants.SORCER_HOME);
+        return properties.getProperty(SORCER_HOME);
     }
 
     public void setSorcerHome(String sorcerHome) {
-        properties.setProperty(SorcerConstants.SORCER_HOME, sorcerHome);
+        properties.setProperty(SORCER_HOME, sorcerHome);
     }
 
     /**
@@ -1807,7 +1807,7 @@ public class SorcerEnv {
     }
 
     public String getSorcerExt() {
-        String sorcerExt = System.getenv(SorcerConstants.E_SORCER_EXT);
+        String sorcerExt = System.getenv(E_SORCER_EXT);
         if (sorcerExt == null || "".equals(sorcerExt)) {
             sorcerExt = getSorcerHome();
         }

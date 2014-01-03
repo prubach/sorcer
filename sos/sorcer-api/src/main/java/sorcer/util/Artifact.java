@@ -35,7 +35,7 @@ public class Artifact {
 		return sorcer("sos-platform");
 	}
 
-	public static ArtifactCoordinates getSosEnv() {
-		return sorcer("sos-env");
+	public static ArtifactCoordinates getSorcerApi() {
+		return sorcer("sorcer-api");
 	}
 }

@@ -269,7 +269,7 @@ getProperty ( ) {
 }
 
 createBootCp ( ) {
-    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
       # Distro version
       JINI_CLASSPATH="$LIB_DIR/jini/jsk-platform.jar:\
 $LIB_DIR/jini/jsk-lib.jar:\
@@ -280,7 +280,7 @@ $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
 
   BOOT_CLASSPATH="$JINI_CLASSPATH:\
-$LIB_DIR/sorcer/sos-env.jar:\
+$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-webster.jar:\
@@ -321,7 +321,7 @@ $MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/util-rio/$V_SORCER/util-rio-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.jar:\
 $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
@@ -361,9 +361,9 @@ $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.j
 }
 
 createSorcerRioCp ( ) {
-    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
       # Distro version
-      SORCER_RIO_CP="$LIB_DIR/sorcer/sos-env.jar:\
+      SORCER_RIO_CP="$LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-rio-start.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
@@ -374,7 +374,7 @@ $LIB_DIR/jini/jsk-dl.jar"
       # MVN version
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
 $MVN_REPO/com/google/guava/guava/14.0.1/guava-14.0.1.jar:\
@@ -386,7 +386,7 @@ $MVN_REPO/net/jini/jsk-dl/$V_JINI/jsk-dl-$V_JINI.jar"
 
 createSorcerRioUICp ( ) {
     SORCER_RIO_CP=$(createSorcerRioCp)
-    if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
         SORCER_RIOUI_CP="$SORCER_RIO_CP:$LIB_DIR/sorcer/sorcer-api.jar"
     else
         SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
@@ -432,12 +432,11 @@ startShell ( ) {
 SR_CP=$(createSorcerRioCp)
 #echo "SORCER RIO CP:"$SR_CP
 
-	if [ -f $LIB_DIR/sorcer/sos-env.jar ]; then
+	if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
         # Distro version
         LIB_DIR=$SORCER_HOME/lib
         SHELL_CLASSPATH="$LIB_DIR/sorcer/sos-shell.jar:\
 $LIB_DIR/sorcer/sorcer-api.jar:\
-$LIB_DIR/sorcer/sos-env.jar:\
 $LIB_DIR/sorcer/sos-netlet.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-platform.jar:\
@@ -457,7 +456,6 @@ $LIB_DIR/jini-lookup/serviceui.jar"
       	# MVN version
       	SHELL_CLASSPATH="$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-env/$V_SORCER/sos-env-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
@@ -508,7 +506,7 @@ boot_config( ) {
 
 installSorcerToLocalRepository() {
     # Installer is only needed in Distribution
-    if [ -f "$LIB_DIR/sorcer/sos-env.jar" ]; then
+    if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
         # Run Sorcer Installer to install sorcer jars to local repo
         # Check if marker file exists - if so installer has already been run, ignore
         if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
@@ -519,10 +517,10 @@ installSorcerToLocalRepository() {
             fi
         else
             if [ "$daem" = "1" ]; then
-                SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
+                SOS_INST_CP=$LIB_DIR/sorcer/sos-boot.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
                       ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
             else
-                SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
+                SOS_INST_CP=$LIB_DIR/sorcer/sos-boot.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
                 ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer
             fi
         fi

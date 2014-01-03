@@ -13,17 +13,20 @@
     <name>SORCER :: API</name>
     <description>Low level API for SORCER</description>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-env</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.jini</groupId>
@@ -42,6 +45,19 @@
             <version>${v.jini}</version>
         </dependency>
 <!-- -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -54,6 +70,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
 </project>
