@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex2</artifactId>
-        <version>1.0-M3-SNAPSHOT</version>
+        <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
     <artifactId>ex2-req</artifactId>

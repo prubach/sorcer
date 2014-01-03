@@ -73,7 +73,7 @@ A "src" property should be set and point to the directory containing the module'
 	<property name="default_manifest" value="${build.dir}/manifest.mf" />
 	<property name="sorcer_manifest" value="${build.dir}/sorcer-manifest.mf" />
 	<property name="sorcer-title" value="Sorcersoft.com" />
-	<property name="sorcer-version" value="1.0-M3-SNAPSHOT" />
+	<property name="sorcer-version" value="1.0-M4-SNAPSHOT" />
 
 	<path id="maven-ant-tasks.classpath" path="${common.lib}/maven-ant-tasks.jar" />
 	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />

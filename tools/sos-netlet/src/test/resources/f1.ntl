@@ -1,8 +1,8 @@
 #!/usr/bin/env nsh
 
 //codebase mvn://org.sorcersoft.sorcer:ex6-api
-load mvn://org.sorcersoft.sorcer:ex6-api:1.0-M3-SNAPSHOT
-load mvn://org.sorcersoft.sorcer:sorcer-api:1.0-M3-SNAPSHOT
+load mvn://org.sorcersoft.sorcer:ex6-api:1.0-M4-SNAPSHOT
+load mvn://org.sorcersoft.sorcer:sorcer-api:1.0-M4-SNAPSHOT
 
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;

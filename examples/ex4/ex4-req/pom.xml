@@ -5,10 +5,9 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex4</artifactId>
-        <version>1.0-M3-SNAPSHOT</version>
+        <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>ex4-req</artifactId>
     <name>SORCER examples :: ex4 :: req</name>
 
