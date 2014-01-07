@@ -208,7 +208,7 @@ public class ServiceStarter {
 
         @Override
         public boolean accept(File dir, String name) {
-            return "target".equals(dir.getName()) && name.startsWith(prefix) && name.endsWith(".jar");
+            return name.startsWith(prefix) && name.endsWith(".jar");
         }
 	}
 }
