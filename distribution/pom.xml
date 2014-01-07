@@ -689,6 +689,7 @@
                                             </fileset>
                                             <filterset>
                                                 <filter token="${project.version}" value="${project.version}"/>
+                                                <filter token="v_sorcer" value="${v.sorcer}"/>
                                             </filterset>
                                         </copy>
                                         <copy todir="${staging.dir}/izpack">
