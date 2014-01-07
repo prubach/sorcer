@@ -267,8 +267,8 @@
                 <exclude>*.iml</exclude>
                 <exclude>**/*.iml</exclude>
                 <exclude>**/*/*.iml</exclude>
-                <exclude>*/target</exclude>
-                <exclude>*/target/**</exclude>
+                <exclude>**/target</exclude>
+                <exclude>**/target/**</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
@@ -276,11 +276,9 @@
             <directory>${basedir}/src/main/examples</directory>
             <outputDirectory>/examples</outputDirectory>
             <includes>
-                <include>prepare-repository.xml</include>
+                <include>prepare-repository.bat</include>
+                <include>prepare-repository</include>
             </includes>
-            <excludes>
-                <exclude>**/target/**/*</exclude>
-            </excludes>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
@@ -290,8 +288,8 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-               <exclude>**/target/**/*</exclude>
-               <exclude>prepare-repository.xml</exclude>
+                <exclude>prepare-repository.bat</exclude>
+                <exclude>prepare-repository</exclude>
             </excludes>
             <filtered>true</filtered>
         </fileSet>
@@ -371,6 +369,7 @@
                 <exclude>nsh</exclude>
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>
+                <exclude>create-provider</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
                 <exclude>boot</exclude>

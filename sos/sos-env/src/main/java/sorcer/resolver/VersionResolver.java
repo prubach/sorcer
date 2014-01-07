@@ -97,6 +97,6 @@ public class VersionResolver {
 
     private boolean checkFileExists(String groupId, String artifactId, String version) {
         String path = Resolver.resolveAbsolute(ArtifactCoordinates.coords(groupId, artifactId, version));
-        return new File(path).exists();
+        return path!=null ? new File(path).exists() : false;
     }
 }

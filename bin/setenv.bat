@@ -71,12 +71,16 @@ echo ##   1. Before building examples for the first time please run:
 echo ##      prepare-repository.bat
 echo ##   2. Then run: mvn install to build the examples.
 echo ##   3. If all builds succeed you are ready to go.
-echo ##      Please look for xml ant scripts to start providers and requestors.
-echo ##   4. You can start them by running:
+echo ##      You can start providers by executing:
+echo ##      boot :ex0-cfg or
+echo ##      boot ex0/ex0-cfg/target/ex0-cfg.jar
+echo ##      or
+echo ##      look for xml ant scripts to start providers
+echo ##      and requestors.
+echo ##   7. You can start them by running:
 echo ##      ant -f script.xml
 echo ##
 echo ##############################################################################
 echo .
 call %windir%\System32\cmd.exe
 popd
-

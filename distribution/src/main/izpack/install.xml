@@ -77,6 +77,7 @@
                 <include name="bin/sorcer-boot-no-http" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
+                <include name="bin/create-provider" os="unix"/>
                 <include name="bin/nsh" os="unix"/>
                 <include name="bin/setenv" os="unix"/>
                 <include name="bin/uninstall" os="unix"/>
@@ -114,6 +115,7 @@
             <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/setenv" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/ant" os="unix"/>
@@ -131,7 +133,7 @@
                 <exclude name="**/target/**/*"/>
                 <exclude name="README.txt"/>
                 <exclude name="setenv"/>
-                <exclude name="prepare-repository.xml"/>
+                <exclude name="prepare-repository"/>
                 <os family="windows"/>
             </fileset>
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
@@ -144,7 +146,9 @@
                 <os family="mac"/>
             </fileset>
             <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex5/ex5-req/f1.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>
         </pack>
     </packs>
