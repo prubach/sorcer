@@ -634,7 +634,7 @@
                     <plugin>
                         <groupId>org.codehaus.izpack</groupId>
                         <artifactId>izpack-maven-plugin</artifactId>
-                        <version>5.0.0-rc1</version>
+                        <version>${izpack.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -645,9 +645,8 @@
                                     <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
                                     <!--base for relative paths in izpack descriptor -->
                                     <baseDir>${staging.dir}/izpack</baseDir>
-                                    <!--<installFile>${staging.dir}/izpack/install.xml</installFile>-->
-                                    <installerFile>${project.build.directory}/sorcer-${project.version}-setup.jar
-                                    </installerFile>
+                                    <installFile>${staging.dir}/izpack/install.xml</installFile>
+                                    <finalName>sorcer-${project.version}-setup</finalName>
                                 </configuration>
                             </execution>
                         </executions>

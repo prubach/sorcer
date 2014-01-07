@@ -38,8 +38,6 @@
         <res id="Unix_shortcutSpec.xml" src="SorcerInstaller_Unix_shortcutSpec.xml"/>
         <res id="installer.langsel.img" src="sos.com_icon.png"/>
         <res id="Installer.image" src="SOS-leftpanel.png"/>
-        <!--<res id="TargetPanel.dir.windows" src="C:/sorcer"/>-->
-<!--        <res id="TargetPanel.dir.windows" src="installpath.windows.txt"/>-->
         <res id="customicons.xml" src="customicons.xml"/>
         <res id="JFrameIcon" src="sos.com_icon_16x16.png"/>
         <res id="RegistrySpec.xml" src="SorcerRegistrySpec.xml"/>
@@ -50,7 +48,7 @@
         <res id="HTMLInfoPanel.env" src="info.html"/>
     </resources>
     <variables>
-        <variable name="TargetPanel.dir.windows" value="C:/sorcer"/>
+        <variable name="TargetPanel.dir.windows" value="C:\sorcer"/>
     </variables>
     <panels>
         <panel classname="CheckedHelloPanel"/>
