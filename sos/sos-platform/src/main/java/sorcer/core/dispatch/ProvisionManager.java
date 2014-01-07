@@ -16,12 +16,9 @@
  */
 package sorcer.core.dispatch;
 
-import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.space.JavaSpace05;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.provider.SpaceTaker;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
@@ -40,9 +37,9 @@ import java.util.logging.Logger;
  */
 public class ProvisionManager {
 	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
-	protected Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
+	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
     private static ProvisionManager instance = null;
-    private static int MAX_ATTEMPTS = 2;
+    private static final int MAX_ATTEMPTS = 2;
 
 
     public static ProvisionManager getInstance() {
@@ -56,7 +53,7 @@ public class ProvisionManager {
         ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
         provGroup.setDaemon(true);
         provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-        ProvisionThread pThread = new ProvisionThread(provGroup);
+        Thread pThread = new Thread(provGroup, new ProvisionThread(), "Provisioner");
         pThread.start();
 	}
 
@@ -68,24 +65,24 @@ public class ProvisionManager {
             synchronized (servicesToProvision) {
                 servicesToProvision.add(
                         new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
-                                ((NetSignature)sig).getVersion(), sig, exertion, spaceExertDispatcher));
+                                sig.getVersion(), sig, exertion, spaceExertDispatcher));
             }
         }
     }
 
 
 
-    protected class ProvisionThread extends Thread {
-
-        public ProvisionThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, "Provisioner");
-        }
+    protected class ProvisionThread implements Runnable {
 
         public void run() {
             Provisioner provisioner = Accessor.getService(Provisioner.class);
             while (true) {
                 if (!servicesToProvision.isEmpty()) {
-                    Iterator<SignatureElement> it = servicesToProvision.iterator();
+                    LinkedHashSet<SignatureElement> copy ;
+                    synchronized (servicesToProvision){
+                        copy = new LinkedHashSet<SignatureElement>(servicesToProvision);
+                    }
+                    Iterator<SignatureElement> it = copy.iterator();
                     Set<SignatureElement> sigsToRemove = new LinkedHashSet<SignatureElement>();
                     logger.fine("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
 
@@ -104,7 +101,6 @@ public class ProvisionManager {
                                     if (service!=null) sigsToRemove.add(sigEl);
                                 } catch (ProvisioningException pe) {
                                     logger.severe("Problem provisioning: " +pe.getMessage());
-                                    // TODO Think what to do when Provisioning doesn't finish successfully
                                 } catch (RemoteException re) {
                                     provisioner = Accessor.getService(Provisioner.class);
                                     String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
@@ -115,7 +111,7 @@ public class ProvisionManager {
                             } else
                                 provisioner = Accessor.getService(Provisioner.class);
 
-                            if (sigEl.getProvisionAttempts()>MAX_ATTEMPTS) {
+                            if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {
                                 String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
                                         + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";
                                 logger.severe(logMsg);
@@ -136,7 +132,7 @@ public class ProvisionManager {
                     }
                 }
                 try {
-                    sleep(500);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                 }
             }
@@ -152,7 +148,7 @@ public class ProvisionManager {
         ExertionEnvelop result = null;
         result = sigEl.getSpaceExertDispatcher().takeEnvelop(ee);
         if (result!=null) {
-            result.state = new Integer(ExecState.FAILED);
+            result.state = ExecState.FAILED;
             ((ServiceExertion)result.exertion).setStatus(ExecState.FAILED);
             ((ServiceExertion)result.exertion).reportException(exc);
             try {
