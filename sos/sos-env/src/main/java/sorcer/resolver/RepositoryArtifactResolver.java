@@ -40,7 +40,8 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
-		return new File(root, resolveRelative(artifactCoordinates)).getAbsolutePath();
+        String res = resolveRelative(artifactCoordinates);
+		return res!=null ? new File(root, resolveRelative(artifactCoordinates)).getAbsolutePath() : null;
 	}
 
 	/**
@@ -63,8 +64,11 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 			result.append('-').append(classifier);
 		}
 		result.append('.').append(artifactCoordinates.getPackaging());
-		return result.toString();
-
+        File relFile = new File(root, result.toString());
+        if (relFile.exists())
+            return result.toString();
+        else
+            return null;
 	}
 
 	@Override
