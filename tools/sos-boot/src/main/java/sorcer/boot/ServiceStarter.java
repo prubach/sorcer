@@ -209,15 +209,16 @@ public class ServiceStarter {
         @Override
         public boolean accept(File dir, String name) {
             String parent = dir.getName();
+            String grandParent = dir.getParentFile().getName();
             return
                     name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
                             //check development structure
                             "target".equals(parent)
                                     //check repository just in case
-                                    || artifactId.equals(dir.getParentFile().getName())
+                                    || artifactId.equals(grandParent)
                     )
                             //check distribution structure
-                            || "lib".equals(parent) && (artifactId + ".jar").equals(name)
+                            || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
                     ;
         }
     }
