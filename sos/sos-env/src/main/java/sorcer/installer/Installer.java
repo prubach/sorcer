@@ -173,7 +173,7 @@ public class Installer {
                     File libraryDir = new File(sigarDir, "lib");
                     if (!libraryDir.exists()) {
                         Zip.unzip(zipFile, sigarDir);
-                        FileUtils.copyFile(zipFile, new File(sigarDir, "sigar-native.zip"));
+                        FileUtils.copyFile(zipFile, new File(sigarDir, "sigar-"+ version + "-native.zip"));
                     }
                     } catch (IOException io) {
                         logger.severe("Problem unzipping sigar-native.zip to repo: " + io.getMessage());
