@@ -11,14 +11,7 @@ public class IOUtils {
     final private static Logger log = LoggerFactory.getLogger(IOUtils.class);
 
 	public static void closeQuietly(ZipFile closeable) {
-		//stupid java 1.6 doesn't know ZipFile is Closeable
-		try {
-			if (closeable != null) {
-				closeable.close();
-			}
-		} catch (IOException ioe) {
-			// ignore
-		}
+        closeQuietly(new CloseableZipFile(closeable));
 	}
 
 	protected static void checkFileExists(File file) throws IOException {
@@ -80,14 +73,14 @@ public class IOUtils {
         String description;
     }
 
-    public static void ensureFile(File file, FileCheck...checks) throws IOException {
-        if(!file.exists()) {
+    public static void ensureFile(File file, FileCheck... checks) throws IOException {
+        if (!file.exists()) {
             log.error("File {} does not exist", file.getAbsolutePath());
-            throw new IOException("File "+file.getAbsolutePath()+" does not exist");
+            throw new IOException("File " + file.getAbsolutePath() + " does not exist");
         }
 
         for (FileCheck check : checks) {
-            if(!check.check(file)){
+            if (!check.check(file)) {
                 String msg = check.description + ": " + file.getAbsolutePath();
                 log.error(msg);
                 throw new IOException(msg);
@@ -239,5 +232,18 @@ public class IOUtils {
                 }
         }
         return str.toString();
+    }
+}
+
+class CloseableZipFile implements Closeable {
+    private ZipFile zipFile;
+
+    CloseableZipFile(ZipFile zipFile) {
+        this.zipFile = zipFile;
+    }
+
+    @Override
+    public void close() throws IOException {
+        zipFile.close();
     }
 }
