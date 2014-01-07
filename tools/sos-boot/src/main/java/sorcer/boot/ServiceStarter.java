@@ -200,15 +200,25 @@ public class ServiceStarter {
     }
 
     private static class ArtifactIdFileFilter extends AbstractFileFilter {
-        private String prefix;
+        private String artifactId;
 
-        public ArtifactIdFileFilter(String prefix) {
-            this.prefix = prefix + "-";
+        public ArtifactIdFileFilter(String artifactId) {
+            this.artifactId = artifactId;
         }
 
         @Override
         public boolean accept(File dir, String name) {
-            return name.startsWith(prefix) && name.endsWith(".jar");
+            String parent = dir.getName();
+            return
+                    name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
+                            //check development structure
+                            "target".equals(parent)
+                                    //check repository just in case
+                                    || artifactId.equals(dir.getParentFile().getName())
+                    )
+                            //check distribution structure
+                            || "lib".equals(parent) && (artifactId + ".jar").equals(name)
+                    ;
         }
-	}
+    }
 }

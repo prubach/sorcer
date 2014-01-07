@@ -267,8 +267,8 @@
                 <exclude>*.iml</exclude>
                 <exclude>**/*.iml</exclude>
                 <exclude>**/*/*.iml</exclude>
-                <exclude>first/**</exclude>
-                <exclude>first</exclude>
+                <exclude>*/target</exclude>
+                <exclude>*/target/**</exclude>
             </excludes>
             <filtered>false</filtered>
         </fileSet>
