@@ -48,19 +48,6 @@ IF defined SORCER_HOME (
   )
 )
 
-:: Set Versions
-set rioVersion=5.0-M4-S4
-set groovyVersion=2.1.3
-
-if "%JAVA_HOME%" == "" goto noJavaHome
-if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
-set JAVACMD=%JAVA_HOME%\bin\java.exe
-goto endOfJavaHome
-
-:noJavaHome
-set JAVACMD=java.exe
-:endOfJavaHome
-
 if "%JAVA_MEM_OPTIONS%" == "" set JAVA_MEM_OPTIONS="-XX:MaxPermSize=256m"
 
 :: Parse command line

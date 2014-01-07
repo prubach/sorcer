@@ -47,22 +47,15 @@ elif [ "$1" = "restart" ]; then
 fi
 
 # Set local variables
-if [ -z "$RIO_HOME" ] ; then
-  RIO_HOME="$scriptDir/../lib/rio"
-fi
+#if [ -z "$RIO_HOME" ] ; then
+#  RIO_HOME="$scriptDir/../lib/rio"
+#fi
 
-# Convert to absolute path
-RIO_HOME=`cd "$RIO_HOME" && pwd`
-
-RIO_LIB=$RIO_HOME/lib
-RIO_LIB_DL=$RIO_HOME/lib-dl
-
-# Check for JAVA_HOME
-if [ -z "$JAVA_HOME" ] ; then
-    JAVACMD=java
-else
-    JAVACMD="$JAVA_HOME/bin/java"
-fi
+cygwin=
+case $OS in
+    Windows*)
+        cygwin=1
+esac
 
 # Function to find a file
 getStarterConfig() {
@@ -77,46 +70,6 @@ getStarterConfig() {
     fi
 }
 
-cygwin=
-case $OS in
-    Windows*)
-        cygwin=1
-esac
-
-# Check to see if path conversion is needed
-toNative() {
-    # Check for Cygwin
-    case $OS in
-        Windows*)
-           toWindows "$@";;
-        *) echo $* ;;
-    esac
-}
-
-# Cygwin utility to convert path if running under windows
-toWindows() {
-    cygpath -pw "$@"
-}
-
-# -----------------------------------
-# Versions of jars used in the script
-# -----------------------------------
-rioVersion=$(getVersion v.rio)
-groovyVersion=$(getVersion v.groovy)
-
-# Call the install script, do not assume that Groovy has been installed.
-installRioToLocalRepository() {
-    if [ ! -f "$RIO_HOME../../logs/install.log" ]; then
-        if [ -f "$RIO_LIB/groovy-all-$groovyVersion.jar" ]; then
-            groovyClasspath="-cp `toNative $RIO_LIB/groovy-all-$groovyVersion.jar`"
-            ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
-            $scriptDir/../configs/rio/install.groovy $JAVA_HOME $RIO_HOME
-        else
-            echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
-            exit 1
-        fi
-    fi
-}
 ##############################
 # Sorcer basic jars added to classpath
 SOS_CLASSPATH=$(createSorcerRioCp)

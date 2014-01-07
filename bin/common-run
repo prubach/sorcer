@@ -109,6 +109,25 @@ earlyInit ( ) {
         export RIO_HOME
     fi
 
+    # Convert to absolute path
+    RIO_HOME=`cd "$RIO_HOME" && pwd`
+
+    RIO_LIB=$RIO_HOME/lib
+    RIO_LIB_DL=$RIO_HOME/lib-dl
+
+    # Check for JAVA_HOME
+    if [ -z "$JAVA_HOME" ] ; then
+        JAVACMD=java
+    else
+        JAVACMD="$JAVA_HOME/bin/java"
+    fi
+
+    # -----------------------------------
+    # Versions of jars used in the script
+    # -----------------------------------
+    rioVersion=$(getVersion v.rio)
+    groovyVersion=$(getVersion v.groovy)
+
     # For Cygwin, ensure paths are in UNIX format before anything is touched.
     if $cygwin ; then
         [ -n "$SORCER_HOME" ] && SORCER_HOME=`cygpath --unix "$SORCER_HOME"`
@@ -183,6 +202,36 @@ earlyInit ( ) {
     fi
 
     return
+}
+
+# Check to see if path conversion is needed
+toNative() {
+    # Check for Cygwin
+    case $OS in
+        Windows*)
+           toWindows "$@";;
+        *) echo $* ;;
+    esac
+}
+
+# Cygwin utility to convert path if running under windows
+toWindows() {
+    cygpath -pw "$@"
+}
+
+
+# Call the install script, do not assume that Groovy has been installed.
+installRioToLocalRepository() {
+    if [ ! -f "$SORCER_HOME/logs/install.log" ]; then
+        if [ -f "$RIO_LIB/groovy-all-$groovyVersion.jar" ]; then
+            groovyClasspath="-cp `toNative $RIO_LIB/groovy-all-$groovyVersion.jar`"
+            ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
+            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $RIO_HOME
+        else
+            echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
+            exit 1
+        fi
+    fi
 }
 
 lateInit ( ) {
@@ -514,10 +563,13 @@ installSorcerToLocalRepository() {
         if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
             if [ "$daem" = "1" ]; then
                 echo "Sorcer jars already installed." > $SORCER_HOME/logs/rio-boot.log
-            else
-                echo "Sorcer jars already installed."
             fi
+            #else
+            #    echo "Sorcer jars already installed."
+            #fi
         else
+            # run Rio instaler first
+            installRioToLocalRepository
             if [ "$daem" = "1" ]; then
                 SOS_INST_CP=$LIB_DIR/sorcer/sos-env.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
                       ""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log

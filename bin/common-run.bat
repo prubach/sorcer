@@ -1,3 +1,16 @@
+:: Set Versions
+set rioVersion=5.0-M4-S4
+set groovyVersion=2.1.3
+
+if "%JAVA_HOME%" == "" goto noJavaHome
+if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
+set JAVACMD=%JAVA_HOME%\bin\java.exe
+goto endOfJavaHome
+
+:noJavaHome
+set JAVACMD=java.exe
+:endOfJavaHome
+
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
@@ -62,6 +75,16 @@ IF DEFINED DEBUG (
 ) 
 
 set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% %STARTER_MAIN_CLASS% %CONFIG%
+
+
+:: Call the Sorcer installer to install Sorcer jars to local repo
+set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-env.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar"
+if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
+    :: Call the install script, do not assume that Groovy has been installed.
+    set groovyClasspath=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
+    "%JAVACMD%" %groovyClasspath% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
+    "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
+)
 
 rem ECHO %WEBSTER_URL%
 rem ECHO %BOOT_CLASSPATH%
