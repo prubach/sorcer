@@ -26,7 +26,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
 import sorcer.util.ArtifactCoordinates;
-import sorcer.util.GenericUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,7 +77,7 @@ public class Booter {
     private static final VersionResolver versionResolver = new VersionResolver();
     private static final org.rioproject.resolver.Resolver resolver;
 
-    private static final String localRepoUrl = getLocalRepoRootUrl();
+    private static final URL localRepoUrl = getLocalRepoRootUrl();
 
 	static {
 		try {
@@ -105,7 +104,7 @@ public class Booter {
      * API for configs
      * resolve codebase from artifact coordinates with maven
      */
-    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException {
+    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException, MalformedURLException {
         if (!Artifact.isArtifact(coords)) {
             int pos = coords.indexOf(':');
             if (pos < 1)
@@ -119,27 +118,25 @@ public class Booter {
         return resolveCodebase2(ArtifactCoordinates.coords(coords));
     }
 
-    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException {
-        String coords = artifact.toString();
-        String[] resolved = ResolverHelper.resolve(coords, resolver, null);
+    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
+        String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, null);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
+        String localRepo = new File(localRepoUrl.toURI()).getPath();
+
         for (int i = 0; i < resolved.length; i++) {
-            // Nasty workaround for RIO resolver returning on Windows: file:\C:\Users\pol\.m2\repository...
-            String relative = (resolved[i].startsWith("file:/") && !localRepoUrl.startsWith("file:/")) ?
-                    resolved[i].substring(localRepoUrl.length()+1) : resolved[i].substring(localRepoUrl.length()+1);
-            if ((GenericUtil.isWindows()) && relative.contains("\\")) {
-                relative = relative.replace("\\", "/");
-            }
+            String path = new File(new URL(resolved[i]).toURI()).getPath();
+            String relative = path.substring(localRepo.length()).replace("\\", "/");
             resolved[i] = codeBaseRoot.resolve(relative).toString();
         }
         return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
     }
 
-    private static String getLocalRepoRootUrl() {
-        String repoRoot = SorcerEnv.getRepoDir();
-        if (repoRoot.endsWith("/"))
-            repoRoot = repoRoot.substring(0, repoRoot.length() - 1);
-        return "file:" + repoRoot;
+    private static URL getLocalRepoRootUrl() {
+        try {
+            return new File(SorcerEnv.getRepoDir()).toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
