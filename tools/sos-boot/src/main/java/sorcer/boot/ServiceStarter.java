@@ -116,7 +116,7 @@ public class ServiceStarter {
                 throw new IllegalArgumentException("Unrecognized file " + path);
         }
         if (!riverServices.isEmpty())
-            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[configs.size()]));
+            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[riverServices.size()]));
         if (!cfgJars.isEmpty() || !opstrings.isEmpty())
             startRioStyleServices(cfgJars, opstrings);
     }
