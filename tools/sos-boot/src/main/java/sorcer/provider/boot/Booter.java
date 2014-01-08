@@ -77,7 +77,7 @@ public class Booter {
     private static final VersionResolver versionResolver = new VersionResolver();
     private static final org.rioproject.resolver.Resolver resolver;
 
-    private static final URL localRepoUrl = getLocalRepoRootUrl();
+    private static final String localRepo;
 
 	static {
 		try {
@@ -91,6 +91,12 @@ public class Booter {
 		} catch (IOException e) {
 			logger.severe("Cannot load the SORCER environment");
 		}
+        try {
+            localRepo = new File(getLocalRepoRootUrl().toURI()).getPath();
+        } catch (URISyntaxException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+
         SorcerEnv.setBootable(true);
     }
 
@@ -121,7 +127,6 @@ public class Booter {
     public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
         String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, null);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
-        String localRepo = new File(localRepoUrl.toURI()).getPath();
 
         for (int i = 0; i < resolved.length; i++) {
             String path = new File(new URL(resolved[i]).toURI()).getPath();
