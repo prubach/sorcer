@@ -26,6 +26,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.GenericUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,7 +124,12 @@ public class Booter {
         String[] resolved = ResolverHelper.resolve(coords, resolver, null);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
         for (int i = 0; i < resolved.length; i++) {
-            String relative = resolved[i].substring(localRepoUrl.length());
+            // Nasty workaround for RIO resolver returning on Windows: file:\C:\Users\pol\.m2\repository...
+            String relative = (resolved[i].startsWith("file:/") && !localRepoUrl.startsWith("file:/")) ?
+                    resolved[i].substring(localRepoUrl.length()+1) : resolved[i].substring(localRepoUrl.length()+1);
+            if ((GenericUtil.isWindows()) && relative.contains("\\")) {
+                relative = relative.replace("\\", "/");
+            }
             resolved[i] = codeBaseRoot.resolve(relative).toString();
         }
         return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
