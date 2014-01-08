@@ -11,6 +11,7 @@
             <author email="michael.sobolewski@sorcersoft.com" name="Michael Sobolewski"/>
             <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
             <author email="rafal.krupinski@sorcersoft.com" name="Rafa&#x142; Krupi&#x144;ski"/>
+            <author email="kacper.marczewski@sorcersoft.com" name="Kacper Marczewski"/>
         </authors>
         <url>http://www.sorcersoft.com/</url>
         <uninstaller name="Uninstaller.jar" write="yes"/>
@@ -47,9 +48,6 @@
         <res id="os_pack" src="sos.com.png"/>
         <res id="HTMLInfoPanel.env" src="info.html"/>
     </resources>
-    <variables>
-        <variable name="TargetPanel.dir.windows" value="C:\sorcer"/>
-    </variables>
     <panels>
         <panel classname="CheckedHelloPanel"/>
         <panel classname="HTMLInfoPanel" id="readme" />
@@ -64,11 +62,13 @@
 
 
     <variables>
+        <variable name="TargetPanel.dir.windows" value="C:\sorcer"/>
+        <variable name="TargetPanel.dir.mac" value="~/sorcer"/>
+        <variable name="TargetPanel.dir.unix" value="~/sorcer"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     </variables>
     <packs>
-        <pack name="Sorcer OS"  id="sorcer_os" loose="false" packImgId="os_pack" preselected="yes" required="yes">
-        <!--<pack id="sorcer_os" name="Sorcer OS" required="yes">-->
+        <pack name="Sorcer OS" id="sorcer_os" loose="false" packImgId="os_pack" preselected="yes" required="yes">
             <description>SORCER Platform</description>
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
@@ -87,8 +87,13 @@
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
+                <include name="deploy/**/*"/>
                 <include name="lib/**/*"/>
                 <include name="logs/**/*"/>
+                <exclude name="lib/apache-ant"/>
+                <exclude name="lib/apache-ant/**/*"/>
+                <exclude name="lib/apache-maven"/>
+                <exclude name="lib/apache-maven/**/*"/>
                 <os family="unix"/>
                 <os family="mac"/>
             </fileset>
@@ -99,8 +104,13 @@
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
                 <include name="docs/**/*"/>
+                <include name="deploy/**/*"/>
                 <include name="lib/**/*"/>
                 <include name="logs/**/*"/>
+                <exclude name="lib/apache-ant"/>
+                <exclude name="lib/apache-ant/**/*"/>
+                <exclude name="lib/apache-maven"/>
+                <exclude name="lib/apache-maven/**/*"/>
                 <os family="windows"/>
             </fileset>
 
@@ -118,14 +128,32 @@
             <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
+        </pack>
+        <pack id="ant" name="Apache Ant" required="no">
+            <description>Apache Ant - required to run Sorcer Examples</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="lib/apache-ant"/>
+                <include name="lib/apache-ant/**/*"/>
+            </fileset>
+
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/ant" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/antRun" os="unix"/>
+        </pack>
+        <pack id="maven" name="Apache Maven" required="no">
+            <description>Apache Maven - required to run Sorcer Examples</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="lib/apache-maven"/>
+                <include name="lib/apache-maven/**/*"/>
+            </fileset>
+
             <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvn" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvnDebug" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvnyjp" os="unix"/>
         </pack>
-        <pack id="examples" loose="false" packImgId="examples_pack" name="Sorcer examples" preselected="yes" required="no">
-        <!--<pack id="examples" name="Sorcer Examples" required="no">-->
+
+        <pack id="examples" loose="false" packImgId="examples_pack" name="Sorcer Examples" preselected="yes" required="no">
             <description>Sorcer Examples</description>
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
@@ -173,4 +201,3 @@
         </listener>
     </listeners>
 </izpack:installation>
-
