@@ -19,6 +19,7 @@ package sorcer.provider.boot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerConstants;
@@ -125,7 +126,7 @@ public class Booter {
     }
 
     public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
-        String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, null);
+        String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, new RemoteRepository[0]);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
 
         for (int i = 0; i < resolved.length; i++) {
