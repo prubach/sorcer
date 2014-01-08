@@ -59,7 +59,7 @@
         <panel classname="InstallPanel"/>
         <panel classname="ShortcutPanel"/>
         <panel classname="HTMLInfoPanel" id="env" condition="izpack.windowsinstall"/>
-        <panel classname="SimpleFinishPanel"/>
+        <panel classname="FinishPanel"/>
     </panels>
 
 
