@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
+import sorcer.util.ClassPath;
 
 import java.io.File;
 import java.net.URL;
@@ -68,26 +69,15 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         logger.debug("Capabilities: {}", Arrays.toString(caps));
         for (PlatformCapabilityConfig cap : caps) {
             if (cap.getCommon()) {
-                URL[] urls = cap.getClasspathURLs();
-                urlList.addAll(Arrays.asList(urls));
+                for (URL url : cap.getClasspathURLs()) {
+                    if(!ClassPath.contains(commonCL.getParent(), url))
+                        urlList.add(url);
+                }
             }
         }
 
+        logger.debug("commonJARs = {}", urlList);
         URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
-
-			/*
-             * if(commonJARs.length==0) throw new
-			 * RuntimeException("No commonJARs have been defined");
-			 */
-        if (logger.isDebugEnabled()) {
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i < commonJARs.length; i++) {
-                if (i > 0)
-                    buffer.append("\n");
-                buffer.append(commonJARs[i].toExternalForm());
-            }
-            logger.debug("commonJARs=\n{}", buffer);
-        }
 
         commonCL.addCommonJARs(commonJARs);
 
