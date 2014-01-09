@@ -90,7 +90,7 @@ public class ExertMonitor extends ServiceProvider implements
 				}
 			}
 		}
-        System.out.println("Opening BDBJE environment in: " + dbHomeFile.getAbsolutePath());
+        logger.fine("Opening BDBJE environment in: " + dbHomeFile.getAbsolutePath());
 		db = new SessionDatabase(dbHome);
 		SessionDatabaseViews views = new SessionDatabaseViews(db);
 		resources = views.getSessionMap();
@@ -522,7 +522,7 @@ public class ExertMonitor extends ServiceProvider implements
 		Map.Entry<UuidKey, IMonitorSession> entry = null;
 		while (mei.hasNext()) {
 			entry = mei.next();
-			System.out.println("session cookie: " + entry.getKey().getId()
+			logger.fine("session cookie: " + entry.getKey().getId()
 					+ ":" + entry.getValue().getInitialExertion().getName());
 		}
 	}
