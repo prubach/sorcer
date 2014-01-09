@@ -293,7 +293,6 @@
                 <exclude>shell/policy/shell.policy_old</exclude>
                 <exclude>template/**</exclude>
                 <exclude>shellEnv</exclude>
-                <exclude>logback.xml</exclude>
                 <exclude>start-scripts/*</exclude>
             </excludes>
             <filtered>false</filtered>

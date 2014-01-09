@@ -463,7 +463,7 @@
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="java.util.logging.config.file"
                                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
@@ -484,7 +484,7 @@
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="java.util.logging.config.file"
                                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
@@ -507,7 +507,7 @@
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="java.util.logging.config.file"
                                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
@@ -525,7 +525,7 @@
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="java.util.logging.config.file"
                                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                             <sysproperty key="requestor.webster.codebase"
@@ -553,7 +553,7 @@
                                     <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
-                                    <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                    <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                     <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                     <sysproperty key="requestor.webster.codebase"
@@ -570,7 +570,7 @@
                                     <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="java.util.logging.config.file"
                                                  value="${sorcer.home}/configs/sorcer.logging"/>
-                                    <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                                    <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                     <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                                     <sysproperty key="requestor.webster.codebase"
@@ -594,7 +594,7 @@
                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="java.util.logging.config.file"
                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>
@@ -610,7 +610,7 @@
                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
                             <sysproperty key="java.util.logging.config.file"
                                          value="${sorcer.home}/configs/sorcer.logging"/>
-                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/rio/logging/logback.groovy" />
+                            <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
                             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false"/>

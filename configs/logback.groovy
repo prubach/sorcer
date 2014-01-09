@@ -153,40 +153,19 @@ def createWatchAppender() {
 }
 
 /* Set up loggers */
-logger("org.rioproject.cybernode", INFO)
-logger("org.rioproject.cybernode.loader", INFO)
-logger("org.rioproject.config", INFO)
-logger("org.rioproject.resources.servicecore", INFO)
-logger("org.rioproject.system", INFO)
-logger("org.rioproject.cybernode.ServiceBeanLoader", INFO)
-logger("org.rioproject.system.measurable", INFO)
-logger("org.rioproject.jsb", INFO)
-logger("org.rioproject.associations", INFO)
-
-logger("org.rioproject.monitor", INFO)
-logger("org.rioproject.monitor.sbi", INFO)
-logger("org.rioproject.monitor.provision", INFO)
-logger("org.rioproject.monitor.selector", INFO)
-logger("org.rioproject.monitor.services", INFO)
-logger("org.rioproject.monitor.DeploymentVerifier", INFO)
-logger("org.rioproject.monitor.InstantiatorResource", INFO)
-logger("org.rioproject.monitor.managers.FixedServiceManager", INFO)
-logger("org.rioproject.resolver.aether", INFO)
-
 logger("org.rioproject.rmi.ResolvingLoader", OFF)
-
-logger("org.rioproject.gnostic", INFO)
-logger("org.rioproject.gnostic.drools", INFO)
-logger("org.rioproject.gnostic.DroolsCEPManager", INFO)
-logger("org.rioproject.config.GroovyConfig", INFO)
 
 logger("net.jini.discovery.LookupDiscovery", OFF)
 logger("net.jini.lookup.JoinManager", OFF)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 
-logger("com.sorcersoft.almanac.level", INFO)
-logger("sorcer.boot", DEBUG)
-logger("sorcer.provider.boot", DEBUG)
+logger("sorcer.core.security.level", OFF)
+logger("sorcer.test.level", DEBUG)
+logger("private.level", FINE)
+logger("local.level", FINE)
+
+// Other specialized loggers
+logger("sorcer.core.dispatchlevel", ALL)
 
 root(INFO, appenders)
 

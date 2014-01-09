@@ -138,7 +138,7 @@ SLF4J_CLASSPATH=`echo $SLF4J_CLASSPATH | cut -c2-`
 #echo "slf4j":$SLF4J_CLASSPATH
 
 if [ "$logger" = "logback" ]; then
-    loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/rio/logging/logback.groovy`"
+    loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/logback.groovy`"
 else
     loggingConfig="-Djava.util.logging.config.file=`toNative $RIO_HOME/../../configs/rio/logging/rio-logging.properties`"
 fi
