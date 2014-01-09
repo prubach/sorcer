@@ -126,22 +126,12 @@ SOS_CLASSPATH=$(createSorcerRioCp)
 
 # Build the classpath for SLF4J Logging
 for file in $RIO_HOME/lib/logging/*.jar; do
-    case $file in
-        *logback*)
-            logger="logback";;
-        *slf4j-jdk14*)
-            logger="jul";;
-    esac
     SLF4J_CLASSPATH="$SLF4J_CLASSPATH:$file"
 done
 SLF4J_CLASSPATH=`echo $SLF4J_CLASSPATH | cut -c2-`
-#echo "slf4j":$SLF4J_CLASSPATH
 
-if [ "$logger" = "logback" ]; then
-    loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/logback.groovy`"
-else
-    loggingConfig="-Djava.util.logging.config.file=`toNative $RIO_HOME/../../configs/rio/logging/rio-logging.properties`"
-fi
+echo "slf4j":$SLF4J_CLASSPATH
+loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/logback.groovy`"
 
 #DEBUG=-Dorg.rioproject.tools.webster.debug
 #NETWORK=-Djava.rmi.server.hostname=130.0.0.1

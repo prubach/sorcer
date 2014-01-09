@@ -27,6 +27,7 @@ import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
@@ -55,6 +56,10 @@ public class ServiceStarter {
     private sorcer.com.sun.jini.start.ServiceStarter riverServiceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
 
 	public static void main(String[] args) throws Exception {
+        //redirect java.util.logging to slf4j/logback
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
         System.setSecurityManager(new RMISecurityManager());
 		new ServiceStarter().doMain(args);
 	}

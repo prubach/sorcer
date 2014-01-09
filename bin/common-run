@@ -276,6 +276,7 @@ $LIB_DIR/jini/jsk-lib.jar:\
 $LIB_DIR/river/start.jar:\
 $LIB_DIR/jini-lookup/serviceui.jar:\
 $LIB_DIR/commons/slf4j-api.jar:\
+$LIB_DIR/commons/jul-to-slf4j.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
 
@@ -308,12 +309,14 @@ $LIB_DIR/commons/commons-lang3.jar"
       V_BLITZ=$(getVersion v.blitz)
       V_GROOVY=$(getVersion v.groovy)
       V_PLEXUS=$(getVersion v.plexus)
+      V_SLF4J=$(getVersion v.slf4j)
 
       JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
 $MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
-$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
+$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
+$MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar:\
 $MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
 $MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"
 
@@ -416,7 +419,7 @@ startSos ( ) {
             -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
             -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
-            -Dlogback.configurationFile="$SORCER_HOME"/configs/rio/logging/logback.groovy \
+            -Dlogback.configurationFile="$SORCER_HOME"/configs/logback.groovy \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -Dprogram.name="$PROGNAME" \
@@ -444,6 +447,7 @@ $LIB_DIR/sorcer/sos-webster.jar:\
 $LIB_DIR/rio/rio-platform.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/slf4j-api.jar:\
+$LIB_DIR/commons/jul-to-slf4j.jar:\
 $LIB_DIR/commons/logback-core.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
@@ -462,7 +466,8 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.ja
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
-$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
+$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
+$MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
 $MVN_REPO/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar:\
 $MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
@@ -484,7 +489,7 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
             -Djava.security.policy="$SORCER_HOME"/configs/shell/policy/shell.policy \
             -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
             -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
-            -Dlogback.configurationFile="$SORCER_HOME"/configs/rio/logging/logback.groovy \
+            -Dlogback.configurationFile="$SORCER_HOME"/configs/logback.groovy \
             -Djava.rmi.server.useCodebaseOnly=false \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
