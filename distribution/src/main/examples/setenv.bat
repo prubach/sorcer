@@ -1,4 +1,4 @@
-pushd
+@rem pushd
 @rem /*
 @rem 
 @rem Copyright 2005 Sun Microsystems, Inc.
@@ -20,27 +20,33 @@ pushd
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
-    IF EXIST %SHOME_BIN%\sorcer-boot.bat (
+	echo sh not set
+    IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
         SET SORCER_HOME=%SHOME_BIN%\..
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
+		EXIT
     )
 )
-
 IF DEFINED SORCER_HOME (
-    SET "PATH=%SORCER_HOME%\bin;%PATH%"
+rem	SET FOUND=
+rem	SET PROG=sorcer-boot.bat
+rem	FOR %%i IN ("%PATH:;=";"%") DO IF EXIST %%i\%PROG% SET FOUND=%%i  
+rem	IF NOT DEFINED FOUND (
+		SET "PATH=%SORCER_HOME%\bin;%PATH%"
+rem	)
 )
 
 SET FOUND=
 SET PROG=mvn.bat
-FOR %%i IN (%PATH%) DO IF EXIST %%i\%PROG% SET FOUND=%%i
+FOR %%i IN ("%PATH:;=";"%") DO IF EXIST %%i\%PROG% SET FOUND=%%i  
 IF NOT DEFINED FOUND (
     SET M2_HOME=%SORCER_HOME%\lib\apache-maven
     SET "PATH=%M2_HOME%\bin;%PATH%"
 )
 SET FOUND=
 SET PROG=ant.bat
-FOR %%i IN (%PATH%) DO IF EXIST %%i\%PROG% SET FOUND=%%i
+FOR %%i IN ("%PATH:;=";"%") DO IF EXIST %%i\%PROG% SET FOUND=%%i  
 IF NOT DEFINED FOUND (
     SET ANT_HOME=%SORCER_HOME%\lib\apache-ant
     SET "PATH=%ANT_HOME%\bin;%PATH%"

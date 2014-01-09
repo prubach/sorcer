@@ -31,7 +31,6 @@ set USER_HOME=%HOMEDRIVE%%HOMEPATH%
 SETLOCAL EnableDelayedExpansion
 set MVN_REPO=!MVN_REPO;${user.home}=%USER_HOME%!
 set MVN_REPO=%MVN_REPO;/=\%
-rem echo %MVN_REPO%
 IF NOT DEFINED MVN_REPO SET MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository
 ENDLOCAL & SET MVN_REPO=%MVN_REPO%
 
@@ -82,8 +81,8 @@ set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-env.jar;%LIB_DIR%\sorcer\sos-util.jar;
 
 if exist %LIB_DIR%\sorcer\sos-env.jar if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
     :: Call the install script, do not assume that Groovy has been installed.
-    set groovyClasspath=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
-    "%JAVACMD%" %groovyClasspath% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
+    set GCP=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
+	"%JAVACMD%" %GCP% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
     "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
 )
 
