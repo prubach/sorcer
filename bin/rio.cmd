@@ -48,19 +48,6 @@ IF defined SORCER_HOME (
   )
 )
 
-:: Set Versions
-set rioVersion=5.0-M4-S4
-set groovyVersion=2.1.3
-
-if "%JAVA_HOME%" == "" goto noJavaHome
-if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
-set JAVACMD=%JAVA_HOME%\bin\java.exe
-goto endOfJavaHome
-
-:noJavaHome
-set JAVACMD=java.exe
-:endOfJavaHome
-
 if "%JAVA_MEM_OPTIONS%" == "" set JAVA_MEM_OPTIONS="-XX:MaxPermSize=256m"
 
 :: Parse command line
@@ -98,7 +85,7 @@ set groovyClasspath=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
 
 :: Call the Sorcer installer to install Sorcer jars to local repo
 set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-boot.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar"
-if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
+if exist %LIB_DIR%\sorcer\sos-env.jar if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
     "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
 )
 

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    <info>
+        <appname>Sorcer</appname>
+        <appversion>@v_sorcer@</appversion>
+        <appsubpath>sorcer</appsubpath>
+        <authors>
+            <author email="michael.sobolewski@sorcersoft.com" name="Michael Sobolewski"/>
+            <author email="pawel.rubach@sorcersoft.com" name="Pawe&#x142; Rubach"/>
+            <author email="rafal.krupinski@sorcersoft.com" name="Rafa&#x142; Krupi&#x144;ski"/>
+            <author email="kacper.marczewski@sorcersoft.com" name="Kacper Marczewski"/>
+        </authors>
+        <url>http://www.sorcersoft.com/</url>
+        <uninstaller name="Uninstaller.jar" write="yes"/>
+        <javaversion>1.6</javaversion>
+        <requiresjdk>yes</requiresjdk>
+        <writeinstallationinformation>yes</writeinstallationinformation>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+    <guiprefs height="540" resizable="no" width="700">
+        <modifier key="useFlags" value="yes"/>
+        <modifier key="langDisplayType" value="default"/>
+        <modifier key="headingPanelCounter" value="progressbar"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useHeadingForSummary" value="yes"/>
+        <modifier key="headingLineCount" value="2"/>
+        <modifier key="headingFontSize" value="1.5"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="APACHE-LICENSE-2.0.txt"/>
+        <res id="shortcutSpec.xml" src="SorcerInstaller_Win_shortcutSpec.xml"/>
+        <res id="Unix_shortcutSpec.xml" src="SorcerInstaller_Unix_shortcutSpec.xml"/>
+        <res id="installer.langsel.img" src="sos.com_icon.png"/>
+        <res id="Installer.image" src="SOS-leftpanel.png"/>
+        <res id="customicons.xml" src="customicons.xml"/>
+        <res id="JFrameIcon" src="sos.com_icon_16x16.png"/>
+        <res id="RegistrySpec.xml" src="SorcerRegistrySpec.xml"/>
+        <res id="HTMLInfoPanel.readme" src="readme.html"/>
+        <res id="sos.com.png" src="sos.com.png"/>
+        <res id="examples_pack" src="sos.com.png"/>
+        <res id="os_pack" src="sos.com.png"/>
+        <res id="HTMLInfoPanel.env" src="info.html"/>
+    </resources>
+    <panels>
+        <panel classname="CheckedHelloPanel"/>
+        <panel classname="HTMLInfoPanel" id="readme" />
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="HTMLInfoPanel" id="env" condition="izpack.windowsinstall"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+
+
+    <variables>
+        <variable name="TargetPanel.dir.windows" value="C:\sorcer"/>
+        <variable name="TargetPanel.dir.mac" value="~/sorcer"/>
+        <variable name="TargetPanel.dir.unix" value="~/sorcer"/>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
+    <packs>
+        <pack name="Sorcer OS" id="sorcer_os" loose="false" packImgId="os_pack" preselected="yes" required="yes">
+            <description>SORCER Platform</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="bin/sorcer-boot" os="unix"/>
+                <include name="bin/boot" os="unix"/>
+                <include name="bin/sorcer-boot-no-http" os="unix"/>
+                <include name="bin/sorcer-browser" os="unix"/>
+                <include name="bin/common-run" os="unix"/>
+                <include name="bin/create-provider" os="unix"/>
+                <include name="bin/nsh" os="unix"/>
+                <include name="bin/setenv" os="unix"/>
+                <include name="bin/uninstall" os="unix"/>
+                <include name="bin/rio" os="unix"/>
+                <include name="bin/rio-boot" os="unix"/>
+                <include name="bin/rio-ui" os="unix"/>
+                <include name="bin/*.xml"/>
+                <include name="configs/**/*"/>
+                <include name="docs/**/*"/>
+                <include name="deploy/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="logs/**/*"/>
+                <exclude name="lib/apache-ant"/>
+                <exclude name="lib/apache-ant/**/*"/>
+                <exclude name="lib/apache-maven"/>
+                <exclude name="lib/apache-maven/**/*"/>
+                <os family="unix"/>
+                <os family="mac"/>
+            </fileset>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="bin/*.bat" os="windows"/>
+                <include name="bin/*.cmd" os="windows"/>
+                <include name="bin/*.xml"/>
+                <include name="configs/**/*"/>
+                <include name="docs/**/*"/>
+                <include name="deploy/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="logs/**/*"/>
+                <exclude name="lib/apache-ant"/>
+                <exclude name="lib/apache-ant/**/*"/>
+                <exclude name="lib/apache-maven"/>
+                <exclude name="lib/apache-maven/**/*"/>
+                <os family="windows"/>
+            </fileset>
+
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/setenv" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
+        </pack>
+        <pack id="ant" name="Apache Ant" required="no">
+            <description>Apache Ant - required to run Sorcer Examples</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="lib/apache-ant"/>
+                <include name="lib/apache-ant/**/*"/>
+            </fileset>
+
+            <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/ant" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/antRun" os="unix"/>
+        </pack>
+        <pack id="maven" name="Apache Maven" required="no">
+            <description>Apache Maven - required to run Sorcer Examples</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
+                     defaultexcludes="yes">
+                <include name="lib/apache-maven"/>
+                <include name="lib/apache-maven/**/*"/>
+            </fileset>
+
+            <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvn" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvnDebug" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/lib/apache-maven/bin/mvnyjp" os="unix"/>
+        </pack>
+
+        <pack id="examples" loose="false" packImgId="examples_pack" name="Sorcer Examples" preselected="yes" required="no">
+            <description>Sorcer Examples</description>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
+                     targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
+                <include name="**/*"/>
+                <exclude name="**/target/**/*"/>
+                <exclude name="README.txt"/>
+                <exclude name="setenv"/>
+                <exclude name="prepare-repository"/>
+                <os family="windows"/>
+            </fileset>
+            <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
+                     targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
+                <include name="**/*"/>
+                <exclude name="**/target/**/*"/>
+                <exclude name="prepare-repository.bat"/>
+                <exclude name="setenv.bat"/>
+                <os family="unix"/>
+                <os family="mac"/>
+            </fileset>
+            <executable targetfile="$INSTALL_PATH/examples/ex0/ex0-req/run.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex5/ex5-req/f1.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>
+        </pack>
+    </packs>
+
+    <natives>
+        <native type="izpack" name="ShellLink.dll"/>
+        <native type="izpack" name="ShellLink_x64.dll"/>
+        <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+            <os family="windows"/>
+        </native>
+        <native type="3rdparty" name="COIOSHelper_x64.dll" stage="both">
+            <os family="windows"/>
+        </native>
+    </natives>
+
+    <listeners>
+        <listener classname="RegistryInstallerListener" stage="install">
+            <os family="windows"/>
+        </listener>
+        <listener classname="RegistryUninstallerListener" stage="uninstall">
+            <os family="windows"/>
+        </listener>
+    </listeners>
+</izpack:installation>

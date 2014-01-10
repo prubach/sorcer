@@ -1374,7 +1374,7 @@ public class SorcerEnv {
      */
     public static URL getCodebaseRoot(String address, int port) {
         try {
-            return new URL("http", address, port, "");
+            return new URL("http", address, port, "/");
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Could not prepare codebase root URL", e);
         }

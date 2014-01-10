@@ -41,16 +41,16 @@ public class HybridArtifactResolver extends AbstractArtifactResolver {
 
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
-        String jar = flatResolver.resolveAbsolute(artifactCoordinates);
+        String jar = repoResolver.resolveAbsolute(artifactCoordinates);
         if (jar!=null) return jar;
-        return repoResolver.resolveAbsolute(artifactCoordinates);
+        return flatResolver.resolveAbsolute(artifactCoordinates);
 	}
 
 	@Override
 	public String resolveRelative(ArtifactCoordinates coords) {
-        String jar = flatResolver.resolveRelative(coords);
+        String jar = repoResolver.resolveRelative(coords);
         if (jar!=null) return jar;
-        return repoResolver.resolveRelative(coords);
+        return flatResolver.resolveRelative(coords);
 	}
 
     public String resolveFlatRelative(ArtifactCoordinates coords) {

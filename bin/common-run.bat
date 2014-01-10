@@ -1,3 +1,16 @@
+:: Set Versions
+set rioVersion=5.0-M4-S4
+set groovyVersion=2.1.3
+
+if "%JAVA_HOME%" == "" goto noJavaHome
+if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
+set JAVACMD=%JAVA_HOME%\bin\java.exe
+goto endOfJavaHome
+
+:noJavaHome
+set JAVACMD=java.exe
+:endOfJavaHome
+
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
@@ -18,7 +31,6 @@ set USER_HOME=%HOMEDRIVE%%HOMEPATH%
 SETLOCAL EnableDelayedExpansion
 set MVN_REPO=!MVN_REPO;${user.home}=%USER_HOME%!
 set MVN_REPO=%MVN_REPO;/=\%
-rem echo %MVN_REPO%
 IF NOT DEFINED MVN_REPO SET MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository
 ENDLOCAL & SET MVN_REPO=%MVN_REPO%
 
@@ -63,7 +75,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\com\google\guava\14.0.1\guava-14.0.1.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar"
-   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-io\2.4\commons-io-2.4.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\..\configs"
 
    set SHELL_CLASSPATH="%JINI_BASE%;%LOG_CP%;%SORCER_COMMON%"
@@ -105,7 +117,21 @@ IF DEFINED DEBUG (
   SET JAVA_OPTS=%JAVA_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000
 ) 
 
-set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% %STARTER_MAIN_CLASS% %CONFIG%
+set SOS_START_CMD=java %JAVA_OPTS% -classpath "%BOOT_CLASSPATH%" -Dlogback.configurationFile="%SORCER_HOME%/configs/rio/logging/logback.groovy" -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env" -Djava.net.preferIPv4Stack=true -Djava.security.policy=%SORCER_HOME%/configs/sorcer.policy -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dwebster.tmp.dir=%SORCER_HOME%/databases -Dprogram.name=SORCER -Dsorcer.home=%SORCER_HOME% -DRIO_HOME=%RIO_HOME% %STARTER_MAIN_CLASS% %CONFIG%
+
+
+:: Call the Sorcer installer to install Sorcer jars to local repo
+set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-boot.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar"
+set RIO_INST=-cp "%LIB_DIR%\commons\groovy-all.jar"
+
+if exist %LIB_DIR%\sorcer\sos-boot.jar if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
+    :: Call the install script, do not assume that Groovy has been installed.
+    rem set GCP=-cp "%RIO_HOME%\lib\groovy-all-%groovyVersion%.jar"
+	"%JAVACMD%" %RIO_INST% org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain "%RIO_HOME%\..\..\configs\rio\install.groovy" "%JAVA_HOME%" "%RIO_HOME%"
+    "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
+	set SOS_INST=
+	set RIO_INST=
+)
 
 rem ECHO %WEBSTER_URL%
 rem ECHO %BOOT_CLASSPATH%

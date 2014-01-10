@@ -19,6 +19,7 @@ package sorcer.provider.boot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerConstants;
@@ -77,7 +78,7 @@ public class Booter {
     private static final VersionResolver versionResolver = new VersionResolver();
     private static final org.rioproject.resolver.Resolver resolver;
 
-    private static final String localRepoUrl = getLocalRepoRootUrl();
+    private static final String localRepo;
 
 	static {
 		try {
@@ -91,6 +92,12 @@ public class Booter {
 		} catch (IOException e) {
 			logger.severe("Cannot load the SORCER environment");
 		}
+        try {
+            localRepo = new File(getLocalRepoRootUrl().toURI()).getPath();
+        } catch (URISyntaxException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+
         SorcerEnv.setBootable(true);
     }
 
@@ -104,7 +111,7 @@ public class Booter {
      * API for configs
      * resolve codebase from artifact coordinates with maven
      */
-    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException {
+    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException, MalformedURLException {
         if (!Artifact.isArtifact(coords)) {
             int pos = coords.indexOf(':');
             if (pos < 1)
@@ -118,22 +125,24 @@ public class Booter {
         return resolveCodebase2(ArtifactCoordinates.coords(coords));
     }
 
-    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException {
-        String coords = artifact.toString();
-        String[] resolved = ResolverHelper.resolve(coords, resolver, null);
+    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
+        String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, new RemoteRepository[0]);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
+
         for (int i = 0; i < resolved.length; i++) {
-            String relative = resolved[i].substring(localRepoUrl.length());
+            String path = new File(new URL(resolved[i]).toURI()).getPath();
+            String relative = path.substring(localRepo.length()).replace("\\", "/");
             resolved[i] = codeBaseRoot.resolve(relative).toString();
         }
         return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
     }
 
-    private static String getLocalRepoRootUrl() {
-        String repoRoot = SorcerEnv.getRepoDir();
-        if (repoRoot.endsWith("/"))
-            repoRoot = repoRoot.substring(0, repoRoot.length() - 1);
-        return "file:" + repoRoot;
+    private static URL getLocalRepoRootUrl() {
+        try {
+            return new File(SorcerEnv.getRepoDir()).toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

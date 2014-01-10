@@ -51,16 +51,17 @@ ex0 ( ) {
   EX=ex0
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX$1.log $LOG_DIR/$EX/
+  cd $SORCER_HOME
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex0/ex0-cfg/src/main/resources/opstring.groovy
   else
-    cd $EX_DIR/$EX/
     $SORCER_HOME/bin/boot :ex0-cfg 2>&1 > $LOG_DIR/$EX/ex0-prv-run.log &
   fi
   sleep 8
   cd $EX_DIR/$EX/$EX-req/
   ant -f run.xml > $LOG_DIR/$EX/req$1.log
   ./run.ntl >> $LOG_DIR/$EX/req$1.log
+  cd $SORCER_HOME
 }
 
 ex1 ( ) {
@@ -81,8 +82,9 @@ ex1 ( ) {
 
   ## ex1 run-prv boot
   restartSorcer $LOG_DIR/$EX/run-prv-boot-socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/$EX/
-  $SORCER_HOME/bin/boot $EX-cfg-all/target/*.jar > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
+  cd $SORCER_HOME
+  $SORCER_HOME/bin/boot :ex1-cfg-all > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
+
   cd $EX_DIR/$EX/run-prv/bin/
   #ant -f whoIsIt-prvs-boot.xml > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
   sleep 5
@@ -111,11 +113,13 @@ ex2 ( ) {
   EX=ex2
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/$EX/
-  $SORCER_HOME/bin/boot :$EX-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
-  $SORCER_HOME/bin/boot :$EX-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
-  $SORCER_HOME/bin/boot :$EX-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
+
+  cd $SORCER_HOME
+  $SORCER_HOME/bin/boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
+  $SORCER_HOME/bin/boot :ex2-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
+  $SORCER_HOME/bin/boot :ex2-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
   sleep 5
+
   cd $EX_DIR/$EX/$EX-req/
   ant -f worker-task-app-run.xml > $LOG_DIR/$EX/req.log
   ant -f worker-singleton-app-run.xml >> $LOG_DIR/$EX/req.log
@@ -127,7 +131,8 @@ ex3 ( ) {
   EX=ex3
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/ex2/
+
+  cd $SORCER_HOME
   $SORCER_HOME/bin/boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
   $SORCER_HOME/bin/boot :ex2-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
   $SORCER_HOME/bin/boot :ex2-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
@@ -142,7 +147,7 @@ ex4 ( ) {
   EX=ex4
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/ex2/
+  cd $SORCER_HOME
   $SORCER_HOME/bin/boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
   $SORCER_HOME/bin/boot :ex2-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
   $SORCER_HOME/bin/boot :ex2-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
@@ -158,7 +163,7 @@ ex5 ( ) {
   EX=ex5
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
-  cd $EX_DIR/$EX/
+  cd $SORCER_HOME
 
   if [ "$1" == "prov" ]; then
     $SORCER_HOME/bin/boot :ex5-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
@@ -182,17 +187,16 @@ ex6 ( ) {
   mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
 
+  cd $SORCER_HOME
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex6/ex6-cfg-all/src/main/resources/AllEx6Boot.groovy
   elif [ "$1" == "prov" ]; then
-    cd $EX_DIR/$EX/
     $SORCER_HOME/bin/boot :ex6-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
     $SORCER_HOME/bin/boot :ex6-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
     $SORCER_HOME/bin/boot :ex6-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
     $SORCER_HOME/bin/boot :ex6-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
   else
-      cd $EX_DIR/$EX/
-      $SORCER_HOME/bin/boot ex6-cfg-$TYPE/target/*.jar > $LOG_DIR/$EX/$TYPE-arithmetic.log &
+      $SORCER_HOME/bin/boot :ex6-cfg-$TYPE > $LOG_DIR/$EX/$TYPE-arithmetic.log &
   fi
   cd $EX_DIR/$EX/$EX-req/
   ant -f arithmetic-ter-run.xml > $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &

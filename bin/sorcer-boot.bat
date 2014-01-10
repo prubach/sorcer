@@ -1,7 +1,8 @@
 @echo off
 pushd
 set STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-set CONFIG=..\configs\SorcerBoot.groovy
+rem set CONFIG=..\configs\SorcerBoot.groovy
+set CONFIG=..\configs\sorcer-boot.config
 
 SET CFG_EXT="%SORCER_EXT%\configs\SorcerExtBoot.groovy"
 IF EXIST %CFG_EXT% (
@@ -26,12 +27,6 @@ IF defined SORCER_HOME (
   ) ELSE (
     call %CD%\bin\common-run.bat
   )
-)
-
-:: Call the Sorcer installer to install Sorcer jars to local repo
-set SOS_INST_CP=-cp "%LIB_DIR%\sorcer\sos-boot.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar"
-if not exist "%SORCER_HOME%\logs\sorcer_jars_installed.tmp" (
-    "%JAVACMD%" %SOS_INST_CP% sorcer.installer.Installer
 )
 
 echo ##############################################################################

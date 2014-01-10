@@ -1,0 +1,23 @@
+<izpack:registry version="5.0"
+                 xmlns:izpack="http://izpack.org/schema/registry"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://izpack.org/schema/registry http://izpack.org/schema/5.0/izpack-registry-5.0.xsd">
+    <pack name="Sorcer OS">
+        <value name="SORCER_HOME"
+               keypath="Environment"
+               root="HKCU"
+               string="$INSTALL_PATH"/>
+    </pack>
+<!--    <pack name="ant">
+        <value name="ANT_HOME"
+               keypath="Environment"
+               root="HKCU"
+               string="$INSTALL_PATH/lib/apache-ant"/>
+    </pack>
+    <pack name="maven">
+        <value name="M2_HOME"
+               keypath="Environment"
+               root="HKCU"
+               string="$INSTALL_PATH/lib/apache-maven"/>
+    </pack>-->
+</izpack:registry>

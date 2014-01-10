@@ -61,7 +61,10 @@ public class SessionDatabaseTest {
 	public static void setUpOnce() throws Exception {
 
 		dbDir = new File(System.getProperty("java.io.tmpdir"), "ju-session-db");
-		dbDir.mkdirs();
+        // required on Windows because cleanup is not able to delete previous
+        // dbDir due to the windows file locking
+        if (dbDir.exists()) IOUtils.deleteDir(dbDir);
+        dbDir.mkdirs();
 		String homeDir = System.getProperty("java.io.tmpdir") + File.separator + "ju-session-db";
 		runner = new SessionDatabaseRunner(homeDir);
 		runner.run();

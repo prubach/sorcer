@@ -121,7 +121,7 @@ public class ServiceStarter {
                 throw new IllegalArgumentException("Unrecognized file " + path);
         }
         if (!riverServices.isEmpty())
-            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[configs.size()]));
+            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[riverServices.size()]));
         if (!cfgJars.isEmpty() || !opstrings.isEmpty())
             startRioStyleServices(cfgJars, opstrings);
     }
@@ -205,15 +205,26 @@ public class ServiceStarter {
     }
 
     private static class ArtifactIdFileFilter extends AbstractFileFilter {
-        private String prefix;
+        private String artifactId;
 
-        public ArtifactIdFileFilter(String prefix) {
-            this.prefix = prefix + "-";
+        public ArtifactIdFileFilter(String artifactId) {
+            this.artifactId = artifactId;
         }
 
         @Override
         public boolean accept(File dir, String name) {
-            return "target".equals(dir.getName()) && name.startsWith(prefix) && name.endsWith(".jar");
+            String parent = dir.getName();
+            String grandParent = dir.getParentFile().getName();
+            return
+                    name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
+                            //check development structure
+                            "target".equals(parent)
+                                    //check repository just in case
+                                    || artifactId.equals(grandParent)
+                    )
+                            //check distribution structure
+                            || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
+                    ;
         }
-	}
+    }
 }

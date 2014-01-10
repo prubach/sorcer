@@ -20,7 +20,8 @@
 
 import org.rioproject.config.Component
 
-import sorcer.provider.boot.RioServiceDescriptorUtil;
+//import sorcer.provider.boot.RioServiceDescriptorUtil;
+import org.rioproject.util.ServiceDescriptorUtil;
 import com.sun.jini.start.ServiceDescriptor;
 
 @Component('org.rioproject.start')
@@ -28,21 +29,28 @@ class StartReggieConfig {
 
     String rioHome = System.getProperty('RIO_HOME')
     String platformDir = rioHome+'/config/platform/'
-    //String platformDir = rioHome+'/../../configs/platform/sorcer/'
 
     ServiceDescriptor[] getServiceDescriptors() {
-        RioServiceDescriptorUtil.checkForLoopback()
-        def websterRoots = [rioHome+'/lib-dl', ';', rioHome+'/lib/']
+        ServiceDescriptorUtil.checkForLoopback()
+        def websterRoots = [rioHome+'/lib-dl', ';', rioHome+'/lib']
 
         String policyFile = rioHome+'/../../configs/rio/rio.policy'
         def reggieConfig = [rioHome+'/../../configs/rio/common.groovy', rioHome+'/../../configs/rio/reggie.groovy']
 
         def serviceDescriptors = [
-            RioServiceDescriptorUtil.getWebster(policyFile, '10000', websterRoots as String[]),
-            RioServiceDescriptorUtil.getLookup(policyFile, reggieConfig as String[])
+                ServiceDescriptorUtil.getWebster(policyFile, '10000', websterRoots as String[]),
+                ServiceDescriptorUtil.getLookup(policyFile, reggieConfig as String[])
         ]
 
         return (ServiceDescriptor[])serviceDescriptors
     }
 
 }
+
+
+/*
+        def serviceDescriptors = [
+            RioServiceDescriptorUtil.getWebster(policyFile, '10000', websterRoots as String[]),
+            RioServiceDescriptorUtil.getLookup(policyFile, reggieConfig as String[])
+        ]
+*/

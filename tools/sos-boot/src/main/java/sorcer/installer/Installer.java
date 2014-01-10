@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.Zip;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -145,9 +146,6 @@ public class Installer {
 
     public void install() {
         for (String group : groupDirMap.keySet()) {
-            // Ignore Sigar
-            if (group.equals("org.sorcersoft.sigar")) continue;
-
             String dir = groupDirMap.get(group);
             String version = versionsMap.get(group);
 
@@ -156,6 +154,31 @@ public class Installer {
                 errorCount++;
                 continue;
             }
+
+            // unzip Sigar
+            if (group.equals("org.sorcersoft.sigar")) {
+                File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        if (pathname.getName().endsWith("native.zip"))
+                            return true;
+                        return false;
+                    }
+                });
+                for (File zipFile : jars) {
+                    try {
+                    File sigarDir = new File(Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/sigar/" + version);
+                    File libraryDir = new File(sigarDir, "lib");
+                    if (!libraryDir.exists()) {
+                        Zip.unzip(zipFile, sigarDir);
+                        FileUtils.copyFile(zipFile, new File(sigarDir, "sigar-"+ version + "-native.zip"));
+                    }
+                    } catch (IOException io) {
+                        logger.severe("Problem unzipping sigar-native.zip to repo: " + io.getMessage());
+                    }
+                }
+            }
+
             File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
@@ -217,6 +240,7 @@ public class Installer {
         try {
             properties.load(new FileInputStream(fileName));
             ac = new ArtifactCoordinates(properties.getProperty("groupId"), properties.getProperty("artifactId"), "jar", properties.getProperty("version"), null);
+            new File(fileName).deleteOnExit();
         } catch (FileNotFoundException e) {
             logger.fine("Could not find pom.properties in file: " + jar.toString() + "\n" + e.getMessage());
         } catch (IOException e) {
@@ -251,7 +275,8 @@ public class Installer {
                         errorCount++;
                         logger.severe("Problem installing pom file: " + jar.getAbsolutePath() + " to: " + artifactDir);
                     }
-                }
+                } else
+                    errorCount++;
         }
     }
 
@@ -317,16 +342,24 @@ public class Installer {
                 packaging = nodes.item(0).getTextContent();
 
         } catch (ParserConfigurationException e) {
+            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return null;
         } catch (XPathExpressionException e) {
+            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return null;
         } catch (SAXException e) {
+            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return null;
         } catch (IOException e) {
+            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
+        } catch (Exception e) {
+            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
+            e.printStackTrace();
             return null;
         }
 

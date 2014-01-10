@@ -170,7 +170,7 @@
         <!-- Examples -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex0-prv</artifactId>
+            <artifactId>ex0-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -185,7 +185,17 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex1-prv</artifactId>
+            <artifactId>ex1-cfg1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-cfg2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex1-cfg-all</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -195,7 +205,17 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex2-prv</artifactId>
+            <artifactId>ex2-cfg1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-cfg2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex2-cfg3</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -215,7 +235,32 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex5-prv</artifactId>
+            <artifactId>ex5-cfg-adder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-cfg-all</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-cfg-divider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-cfg-multiplier</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-cfg-one-bean</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-cfg-subtractor</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -225,7 +270,32 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex6-prv</artifactId>
+            <artifactId>ex6-cfg-adder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-cfg-all</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-cfg-divider</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-cfg-multiplier</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-cfg-one-bean</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex6-cfg-subtractor</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -301,6 +371,11 @@
             <version>2.1_3</version>
         </dependency>
         <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.1_3</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
             <version>3.0.5</version>
@@ -325,6 +400,23 @@
             <artifactId>junit</artifactId>
             <version>${v.junit}</version>
         </dependency>
+        <dependency>
+            <groupId>net.jini.lookup</groupId>
+            <artifactId>serviceui</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -407,8 +499,8 @@
 
     <properties>
         <staging.dir>${project.build.directory}/staging</staging.dir>
-        <izpack.version>4.3.5</izpack.version>
-        <!--<izpack.version>5.0.0-beta11</izpack.version>-->
+        <!--<izpack.version>4.3.5</izpack.version>-->
+        <izpack.version>5.0.0-rc1</izpack.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -422,7 +514,7 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.7</version>
                         <executions>
-                            <execution>
+                           <execution>
                                 <id>create-staging-area</id>
                                 <phase>process-resources</phase>
                                 <goals>
@@ -431,19 +523,20 @@
                                 <configuration>
                                     <tasks>
                                         <!-- Setup installer -->
-                                        <copy todir="${staging.dir}/izpack">
-                                            <fileset dir="${basedir}/src/izpack">
+                                        <copy todir="${staging.dir}/izpack" filtering="true">
+                                            <fileset dir="${basedir}/src/main/izpack">
                                                 <include name="**/*.xml"/>
                                                 <include name="**/*.html"/>
                                                 <include name="**/*.xml_*"/>
                                                 <include name="**/*.txt"/>
                                             </fileset>
                                             <filterset>
-                                                <filter token="${project.version}" value="${project.version}"/>
+                                                <filter token="project.version" value="${project.version}"/>
+                                                <filter token="v_sorcer" value="${v.sorcer}"/>
                                             </filterset>
                                         </copy>
                                         <copy todir="${staging.dir}/izpack">
-                                            <fileset dir="${basedir}/src/izpack">
+                                            <fileset dir="${basedir}/src/main/izpack">
                                                 <include name="**/*.png"/>
                                             </fileset>
                                         </copy>
@@ -469,6 +562,26 @@
                     <plugin>
                         <groupId>org.codehaus.izpack</groupId>
                         <artifactId>izpack-maven-plugin</artifactId>
+                        <version>${izpack.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>izpack</goal>
+                                </goals>
+                                <configuration>
+                                    <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
+                                    <!--base for relative paths in izpack descriptor -->
+                                    <baseDir>${staging.dir}/izpack</baseDir>
+                                    <installFile>${staging.dir}/izpack/install.xml</installFile>
+                                    <finalName>sorcer-${project.version}-setup</finalName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                  <!--  <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
                         <version>1.0-alpha-5</version>
 
                         <executions>
@@ -479,9 +592,9 @@
                                 </goals>
                                 <configuration>
                                     <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
-                                    <!-- base for relative paths in izpack descriptor -->
-                                    <!--<baseDir>${staging.dir}/izpack</baseDir>-->
-                                    <!--<installFile>${staging.dir}/izpack/install.xml</installFile>-->
+                                    &lt;!&ndash; base for relative paths in izpack descriptor &ndash;&gt;
+                                    &lt;!&ndash;<baseDir>${staging.dir}/izpack</baseDir>&ndash;&gt;
+                                    &lt;!&ndash;<installFile>${staging.dir}/izpack/install.xml</installFile>&ndash;&gt;
                                     <installerFile>${project.build.directory}/sorcer-${project.version}-setup.jar
                                     </installerFile>
                                 </configuration>
@@ -494,10 +607,11 @@
                                 <version>${izpack.version}</version>
                             </dependency>
                         </dependencies>
-                    </plugin>
+                    </plugin>-->
                     <plugin>
                         <groupId>com.akathist.maven.plugins.launch4j</groupId>
                         <artifactId>launch4j-maven-plugin</artifactId>
+                        <version>1.5.2</version>
                         <executions>
                             <execution>
                                 <id>l4j-clui</id>
@@ -572,7 +686,7 @@
                                     <tasks>
                                         <!-- Setup installer -->
                                         <copy todir="${staging.dir}/izpack">
-                                            <fileset dir="${basedir}/src/izpack">
+                                            <fileset dir="${basedir}/src/main/izpack">
                                                 <include name="**/*.xml"/>
                                                 <include name="**/*.html"/>
                                                 <include name="**/*.xml_*"/>
@@ -580,10 +694,11 @@
                                             </fileset>
                                             <filterset>
                                                 <filter token="${project.version}" value="${project.version}"/>
+                                                <filter token="v_sorcer" value="${v.sorcer}"/>
                                             </filterset>
                                         </copy>
                                         <copy todir="${staging.dir}/izpack">
-                                            <fileset dir="${basedir}/src/izpack">
+                                            <fileset dir="${basedir}/src/main/izpack">
                                                 <include name="**/*.png"/>
                                             </fileset>
                                         </copy>
@@ -595,8 +710,7 @@
                     <plugin>
                         <groupId>org.codehaus.izpack</groupId>
                         <artifactId>izpack-maven-plugin</artifactId>
-                        <version>1.0-alpha-5</version>
-
+                        <version>${izpack.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -605,21 +719,13 @@
                                 </goals>
                                 <configuration>
                                     <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
-                                    <!-- base for relative paths in izpack descriptor -->
-                                    <!--<baseDir>${staging.dir}/izpack</baseDir>-->
-                                    <!--<installFile>${staging.dir}/izpack/install.xml</installFile>-->
-                                    <installerFile>${project.build.directory}/sorcer-${project.version}-setup.jar
-                                    </installerFile>
+                                    <!--base for relative paths in izpack descriptor -->
+                                    <baseDir>${staging.dir}/izpack</baseDir>
+                                    <installFile>${staging.dir}/izpack/install.xml</installFile>
+                                    <finalName>sorcer-${project.version}-setup</finalName>
                                 </configuration>
                             </execution>
                         </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.codehaus.izpack</groupId>
-                                <artifactId>izpack-standalone-compiler</artifactId>
-                                <version>${izpack.version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
