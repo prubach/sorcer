@@ -80,8 +80,10 @@ public class LoaderConfigurationHelper {
                     }
                 } else {
                     finalUrl = Resolver.resolveAbsolute(urlEntries[0]);
-                    if (new File(finalUrl).exists())
+                    if (finalUrl!=null && new File(finalUrl).exists())
                         urlsList.add(new File(finalUrl).toURI().toURL());
+                    else
+                        logger.severe("Problem adding library to codebase, file not found for: " + urlEntries[0]);
                 }
             } catch (MalformedURLException e) {
                     logger.severe("Problem creating URL: " + finalUrl);

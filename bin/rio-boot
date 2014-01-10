@@ -23,13 +23,27 @@
 scriptDir="`dirname $0`"
 
 if [ "X$SORCER_HOME" = "X" ]; then
-    export SORCER_HOME=`readlink -fn $scriptDir/..`
-    echo "setting SORCER_HOME to $SORCER_HOME"
+
+  TARGET_FILE=$scriptDir/..
+  cd `dirname $TARGET_FILE`
+  TARGET_FILE=`basename $TARGET_FILE`
+  # Iterate down a (possible) chain of symlinks
+  while [ -L "$TARGET_FILE" ]
+  do
+      TARGET_FILE=`readlink $TARGET_FILE`
+      cd `dirname $TARGET_FILE`
+      TARGET_FILE=`basename $TARGET_FILE`
+  done
+  # Compute the canonicalized name by finding the physical path 
+  # for the directory we're in and appending the target file.
+  PHYS_DIR=`pwd -P`
+  export SORCER_HOME=$PHYS_DIR/$TARGET_FILE
+  echo "setting SORCER_HOME to $SORCER_HOME"
 fi
 
 if [ "X$RIO_HOME" = "X" ]; then
-    export RIO_HOME="$SORCER_HOME/lib/rio"
-    echo "setting RIO_HOME to $RIO_HOME"
+  export RIO_HOME="$SORCER_HOME/lib/rio"
+  echo "setting RIO_HOME to $RIO_HOME"
 fi
 
 $SORCER_HOME/bin/rio start all $*
