@@ -6,13 +6,13 @@
     <parent>
         <artifactId>provider-root</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M3-SNAPSHOT</version>
+        <version>1.0-M3</version>
         <relativePath></relativePath>
     </parent>
 
     <artifactId>examples</artifactId>
     <groupId>org.sorcersoft.sorcer</groupId>
-    <version>1.0-M3-SNAPSHOT</version>
+    <version>1.0-M3</version>
 
     <packaging>pom</packaging>
     <name>SORCER examples</name>

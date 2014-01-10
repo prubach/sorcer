@@ -8,7 +8,7 @@
     <artifactId>provider-root</artifactId>
     <packaging>pom</packaging>
     <name>SORCER Provider Root</name>
-    <version>1.0-M3-SNAPSHOT</version>
+    <version>1.0-M3</version>
     <description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services.
         Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming.
         Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service.
@@ -19,7 +19,7 @@
     <inceptionYear>2013</inceptionYear>
 
     <properties>
-        <v.sorcer>1.0-M3-SNAPSHOT</v.sorcer>
+        <v.sorcer>1.0-M3</v.sorcer>
         <v.jini>2.2.1</v.jini>
         <v.blitz>2.2.0</v.blitz>
         <v.sleepycat>4.1.21</v.sleepycat>

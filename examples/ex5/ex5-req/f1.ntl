@@ -1,7 +1,7 @@
 #!/usr/bin/env nsh
 
-codebase artifact:org.sorcersoft.sorcer/ex5-api/1.0-M3-SNAPSHOT
-//codebase mvn://org.sorcersoft.sorcer:ex5-api:1.0-M3-SNAPSHOT
+codebase artifact:org.sorcersoft.sorcer/ex5-api/1.0-M3
+//codebase mvn://org.sorcersoft.sorcer:ex5-api:1.0-M3
 
 import sorcer.ex5.provider.Adder;
 import sorcer.ex5.provider.Multiplier;

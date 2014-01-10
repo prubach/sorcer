@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>tools</artifactId>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>1.0-M3-SNAPSHOT</version>
+		<version>1.0-M3</version>
 	</parent>
 
 	<artifactId>sorcer-maven-plugin</artifactId>

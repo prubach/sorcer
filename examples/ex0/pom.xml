@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M3-SNAPSHOT</version>
+        <version>1.0-M3</version>
         <artifactId>examples</artifactId>
     </parent>
 
@@ -14,7 +14,7 @@
 	<description>HelloWorld Service</description>
 
 	<properties>
-		<v.sorcer>1.0-M3-SNAPSHOT</v.sorcer>
+		<v.sorcer>1.0-M3</v.sorcer>
 	</properties>
 
 	<modules>
