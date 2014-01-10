@@ -28,7 +28,7 @@ jdk:
 # whitelist
 branches:
   only:
-    - v1.0-M3
+    - v1.0-M4
 
 notifications:
   email:
