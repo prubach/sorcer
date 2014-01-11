@@ -9,7 +9,7 @@
           <img src="sorcersoft.com_logo_mini.png"> SORCER
         ]]>
         </name>
-        <href>http://sorcersoft.github.com/</href>
+        <href>http://www.sorcersoft.com/</href>
 	</bannerLeft>
 
 
@@ -26,7 +26,7 @@
         <reflowSkin>
             <brand/>
             <!-- Make this to 'false' for local development, i.e. file:// URLs -->
-<!--             <protocolRelativeURLs>false</protocolRelativeURLs> -->
+             <!--<protocolRelativeURLs>false</protocolRelativeURLs>-->
             <protocolRelativeURLs>true</protocolRelativeURLs>
             <!-- theme should be site for local development, otherwise
             bootswatch-spacelab -->
