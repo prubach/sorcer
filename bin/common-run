@@ -383,7 +383,7 @@ $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.j
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
-$MVN_REPO/com/google/guava/14.0.1/guava-14.0.1.jar:\
+$MVN_REPO/com/google/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
 $MVN_REPO/com/google/collections/google-collections/1.0/google-collections-1.0.jar"
@@ -429,7 +429,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-rio-start/$V_SORCER/sos-rio-start-$V_SORCER.
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
-$MVN_REPO/com/google/guava/guava/14.0.1/guava-14.0.1.jar:\
+$MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/net/jini/jsk-dl/$V_JINI/jsk-dl-$V_JINI.jar"
     fi
 
