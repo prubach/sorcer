@@ -1,8 +1,7 @@
 package sorcer.launcher;
 /**
  *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +16,7 @@ package sorcer.launcher;
  * limitations under the License.
  */
 
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.util.Process2;
 
@@ -41,7 +41,9 @@ public class SorcerProcessBuilder extends JavaProcessBuilder {
     @Override
     public Process2 startProcess() throws IOException {
         environment.put(E_SORCER_HOME, sorcerHome);
-        environment.put(E_RIO_HOME, new File(sorcerHome, "lib/rio").getPath());
+        String rioHome = System.getenv(SorcerConstants.E_RIO_HOME);
+        if (rioHome == null) rioHome = new File(sorcerHome, "lib/rio").getPath();
+        environment.put(E_RIO_HOME, rioHome);
         return super.startProcess();
     }
 }

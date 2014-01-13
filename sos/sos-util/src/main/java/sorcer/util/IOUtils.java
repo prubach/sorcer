@@ -14,6 +14,19 @@ public class IOUtils {
         closeQuietly(new CloseableZipFile(closeable));
 	}
 
+    protected static class CloseableZipFile implements Closeable {
+        private ZipFile zipFile;
+
+        public CloseableZipFile(ZipFile zipFile) {
+            this.zipFile = zipFile;
+        }
+
+        @Override
+        public void close() throws IOException {
+            zipFile.close();
+        }
+    }
+
 	protected static void checkFileExists(File file) throws IOException {
 		if (!file.exists()) {
 			throw new IOException("***error: the file does not exist: "
@@ -117,7 +130,6 @@ public class IOUtils {
 	 * The default buffer size to use for
 	 * {@link #copyLarge(java.io.InputStream, java.io.OutputStream)}
 	 * and
-	 * {@link #copyLarge(java.io.Reader, java.io.Writer)}
 	 */
 	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -232,18 +244,5 @@ public class IOUtils {
                 }
         }
         return str.toString();
-    }
-}
-
-class CloseableZipFile implements Closeable {
-    private ZipFile zipFile;
-
-    CloseableZipFile(ZipFile zipFile) {
-        this.zipFile = zipFile;
-    }
-
-    @Override
-    public void close() throws IOException {
-        zipFile.close();
     }
 }

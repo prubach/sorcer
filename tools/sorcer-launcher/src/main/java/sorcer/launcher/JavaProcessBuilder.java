@@ -1,6 +1,5 @@
 /*
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +19,13 @@ package sorcer.launcher;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.util.ByteDumper;
 import sorcer.util.Process2;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,6 +51,9 @@ public class JavaProcessBuilder {
 	protected File output;
     protected String command = "java";
     protected int debugPort = 8000;
+
+    protected OutputStream out;
+    protected OutputStream err;
 
     public void setProperties(Map<String, String> environment) {
 		this.properties = environment;
@@ -155,8 +160,20 @@ public class JavaProcessBuilder {
             int x = proc.exitValue();
             throw new IllegalStateException("Process exited with value " + x);
         } catch (IllegalThreadStateException ignored) {
+            redirectOutputs(proc);
             return new Process2(proc);
 		}
+    }
+
+    private void redirectOutputs(Process proc) {
+        if (out != null)
+            redirectOutput(proc.getInputStream(), out, proc.toString() + " stdout reader thread");
+        if (err != null)
+            redirectOutput(proc.getErrorStream(), err, proc.toString() + " stderr reader thread");
+    }
+
+    private void redirectOutput(InputStream inputStream, OutputStream outputStream, String name) {
+        new Thread(new ByteDumper(inputStream, outputStream), name).start();
     }
 
     /**
@@ -199,4 +216,12 @@ public class JavaProcessBuilder {
 	private String _D(String key, String value) {
 		return "-D" + key + '=' + value;
 	}
+
+    public void setOut(OutputStream out) {
+        this.out = out;
+    }
+
+    public void setErr(OutputStream err) {
+        this.err = err;
+    }
 }
