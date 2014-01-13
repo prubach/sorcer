@@ -55,11 +55,16 @@ public class Resolver {
 	}
 
 	public static String resolveRelative(ArtifactCoordinates coords){
-		return resolver.resolveRelative(coords).replace(File.separator, "/");
+		return normalizePath(resolver.resolveRelative(coords));
 	}
 
+    private static String normalizePath(String path) {
+        if (path == null) return null;
+        return path.replace(File.separator, "/");
+    }
+
 	public static String resolveRelative(String coords){
-		return resolveRelative(ArtifactCoordinates.coords(coords)).replace(File.separator, "/");
+		return normalizePath(resolveRelative(ArtifactCoordinates.coords(coords)));
 	}
 
 	public static String resolveAbsolute(URL baseUrl, ArtifactCoordinates coords) {
@@ -72,7 +77,7 @@ public class Resolver {
 
     public static URL resolveAbsoluteURL(URL baseUrl, ArtifactCoordinates coords) {
 		try {
-			return new URL(baseUrl, resolveRelative(coords).replace(File.separator, "/"));
+			return new URL(baseUrl, resolveRelative(coords));
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
