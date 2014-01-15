@@ -343,7 +343,6 @@ $LIB_DIR/rio/rio-lib.jar:\
 $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
-$LIB_DIR/commons/google-collections.jar:\
 $LIB_DIR/commons/commons-io.jar:\
 $LIB_DIR/commons/commons-lang3.jar"
 
@@ -420,7 +419,6 @@ $LIB_DIR/sorcer/sos-util.jar:\
 $LIB_DIR/sorcer/sos-rio-start.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
 $LIB_DIR/commons/commons-lang3.jar:\
-$LIB_DIR/commons/slf4j-api.jar:\
 $LIB_DIR/jini-lookup/serviceui.jar:\
 $LIB_DIR/jini/jsk-platform.jar:\
 $LIB_DIR/jini/jsk-lib.jar"
@@ -432,7 +430,6 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
-$MVN_REPO/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
