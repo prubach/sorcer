@@ -34,16 +34,26 @@ import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 public class SorcerProcessBuilder extends JavaProcessBuilder {
     protected String sorcerHome;
 
+    public SorcerProcessBuilder(String sorcerHome) {
+        this.sorcerHome = sorcerHome;
+    }
+
     public SorcerProcessBuilder(SorcerEnv env) {
         sorcerHome = env.getSorcerHome();
+    }
+
+    public void setRioHome(String sorcerHome) {
+        this.sorcerHome = sorcerHome;
     }
 
     @Override
     public Process2 startProcess() throws IOException {
         environment.put(E_SORCER_HOME, sorcerHome);
-        String rioHome = System.getenv(SorcerConstants.E_RIO_HOME);
-        if (rioHome == null) rioHome = new File(sorcerHome, "lib/rio").getPath();
-        environment.put(E_RIO_HOME, rioHome);
+        if (!environment.containsKey(E_RIO_HOME)) {
+            String rioHome = System.getenv(SorcerConstants.E_RIO_HOME);
+            if (rioHome == null) rioHome = new File(sorcerHome, "lib/rio").getPath();
+            environment.put(E_RIO_HOME, rioHome);
+        }
         return super.startProcess();
     }
 }

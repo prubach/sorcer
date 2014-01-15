@@ -130,7 +130,7 @@ public class RequestorMojo extends AbstractSorcerMojo {
 
 			builder.setWorkingDir(workingDir);
 			builder.setDebugger(debug);
-			builder.setOutput(getLogFile(configurations, i));
+			builder.setOutFile(getLogFile(configurations, i));
 			if (config.arguments != null) {
 				builder.setParameters(Arrays.asList(config.arguments));
 			}

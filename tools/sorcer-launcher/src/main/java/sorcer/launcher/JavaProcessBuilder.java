@@ -23,6 +23,8 @@ import sorcer.util.ByteDumper;
 import sorcer.util.Process2;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +33,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,18 +45,22 @@ import static java.util.Arrays.asList;
 public class JavaProcessBuilder {
     protected Logger log = LoggerFactory.getLogger(getClass());
     protected Map<String, String> properties;
-    protected Map<String, String> environment = System.getenv();
+    protected Map<String, String> environment = new HashMap<String, String>(System.getenv());
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
 	protected File workingDir;
 	protected boolean debugger;
-	protected File output;
+	protected File outFile;
+	protected File errFile;
     protected String command = "java";
     protected int debugPort = 8000;
 
     protected OutputStream out;
     protected OutputStream err;
+
+    protected ThreadGroup ioThreads = new ThreadGroup("Sorcer launcher IO threads");
+    private final ProcessBuilder builder = new ProcessBuilder();
 
     public void setProperties(Map<String, String> environment) {
 		this.properties = environment;
@@ -92,9 +99,13 @@ public class JavaProcessBuilder {
 	 *
 	 * @param output output file
 	 */
-	public void setOutput(File output) {
-		this.output = output;
+	public void setOutFile(File output) {
+		this.outFile = output;
 	}
+
+    public void setErrFile(File errFile) {
+        this.errFile = errFile;
+    }
 
     public Map<String, String> getEnvironment() {
         return environment;
@@ -108,17 +119,18 @@ public class JavaProcessBuilder {
         if (mainClass == null || mainClass.trim().isEmpty()) {
             throw new IllegalStateException("mainClass must be set");
         }
-        ProcessBuilder procBld = new ProcessBuilder().command(command);
+        builder.command(command);
 
-        if (debugger) {
-            procBld.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
-        }
+        if (debugger)
+            builder.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
 
-		procBld.command().addAll(_D(properties));
+		if(properties!=null)
+            builder.command().addAll(_D(properties));
+
 		String classPath = StringUtils.join(classPathList, File.pathSeparator);
-		procBld.command().addAll(asList("-classpath", classPath, mainClass));
+		builder.command().addAll(asList("-classpath", classPath, mainClass));
 		if (parameters != null) {
-			procBld.command().addAll(parameters);
+			builder.command().addAll(parameters);
 		}
 
 		if (workingDir == null) {
@@ -126,27 +138,27 @@ public class JavaProcessBuilder {
 			// make explicit for logging purpose
 			workingDir = new File(System.getProperty("user.dir"));
 		}
-		procBld.directory(workingDir);
+		builder.directory(workingDir);
 
-        Map<String, String> procEnv = procBld.environment();
+        Map<String, String> procEnv = builder.environment();
         if(!procEnv.equals(environment)){
             procEnv.clear();
             procEnv.putAll(environment);
         }
 
 		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
-				.append(StringUtils.join(procBld.command(), " "));
-		if (output != null) {
-			cmdStr.append(" > ").append(output.getPath());
+				.append(StringUtils.join(builder.command(), " "));
+		if (outFile != null) {
+			cmdStr.append(" > ").append(outFile.getPath());
 		}
 
 		log.info(cmdStr.toString());
 
-		redirectIO(procBld);
+		redirectIO();
 
 		Process proc = null;
 		try {
-            proc = procBld.start();
+            proc = builder.start();
 
             try {
                 // give it a moment to exit on error
@@ -161,7 +173,7 @@ public class JavaProcessBuilder {
             throw new IllegalStateException("Process exited with value " + x);
         } catch (IllegalThreadStateException ignored) {
             redirectOutputs(proc);
-            return new Process2(proc);
+            return new Process2(proc, ioThreads);
 		}
     }
 
@@ -173,36 +185,52 @@ public class JavaProcessBuilder {
     }
 
     private void redirectOutput(InputStream inputStream, OutputStream outputStream, String name) {
-        new Thread(new ByteDumper(inputStream, outputStream), name).start();
+        new Thread(ioThreads, new ByteDumper(inputStream, outputStream), name).start();
     }
 
     /**
 	 * Redirect output and error to ours IF the method
 	 * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
 	 */
-	private void redirectIO(ProcessBuilder processBuilder) {
-		if (output != null) {
-			invokeIgnoreErrors(processBuilder, "redirectErrorStream", new Class[]{Boolean.TYPE}, true);
-			// processBuilder.redirectErrorStream(true);
-			invokeIgnoreErrors(processBuilder, "redirectOutput", new Class[]{File.class}, output);
-		} else {
-			invokeIgnoreErrors(processBuilder, "inheritIO", new Class[0]);
-		}
-	}
+    private void redirectIO() throws FileNotFoundException {
+        if (outFile != null)
+            redirectOutput(outFile);
+        if (errFile != null) {
+            redirectError(errFile);
+        } else if (outFile != null)
+            redirectErrorStream(true);
+    }
 
-	protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) {
-		try {
+    protected JavaProcessBuilder redirectOutput(File file) throws FileNotFoundException {
+        try {
+            invokeIgnoreErrors(builder, "redirectOutput", new Class[]{File.class}, file);
+        } catch (Exception e) {
+            out = new FileOutputStream(file);
+        }
+        return this;
+    }
+
+    protected JavaProcessBuilder redirectError(File file) throws FileNotFoundException {
+        try {
+            invokeIgnoreErrors(builder, "redirectError", new Class[]{File.class}, file);
+        } catch (Exception e) {
+            err = new FileOutputStream(file);
+        }
+        return this;
+    }
+
+    protected JavaProcessBuilder redirectErrorStream(boolean redirect) {
+        try {
+            invokeIgnoreErrors(builder, "redirectErrorStream", new Class[]{Boolean.TYPE}, redirect);
+        } catch (Exception e) {
+            err = out;
+        }
+        return this;
+    }
+
+    protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 			Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
 			return method.invoke(target, args);
-		} catch (NoSuchMethodException e) {
-			// looks like we're not in jdk1.7
-			log.warn(e.getMessage(), e);
-			return null;
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
 	}
 
 	private List<String> _D(Map<String, String> d) {

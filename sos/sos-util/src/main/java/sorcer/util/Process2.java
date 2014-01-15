@@ -1,6 +1,5 @@
 /*
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +23,17 @@ import java.util.Timer;
  */
 public class Process2 {
 	final private Process process;
+    private ThreadGroup helperThreads;
 
-	public Process2(Process process) {
+	public Process2(Process process, ThreadGroup helperThreads) {
 		this.process = process;
+        this.helperThreads = helperThreads;
 	}
 
 	public boolean running() {
 		try {
 			process.exitValue();
+            killThreads();
 			return false;
 		} catch (IllegalThreadStateException x) {
 			return true;
@@ -39,7 +41,11 @@ public class Process2 {
 	}
 
 	public int waitFor() throws InterruptedException {
+        try {
 		return process.waitFor();
+        } finally {
+            killThreads();
+        }
 	}
 
 	/**
@@ -72,10 +78,21 @@ public class Process2 {
 		} catch (IllegalThreadStateException x) {
 			process.destroy();
 			return null;
+        } finally {
+            killThreads();
 		}
 	}
 
 	public void destroy() {
 		process.destroy();
+    }
+
+    private void killThreads() {
+        if (helperThreads != null && helperThreads.activeCount() > 0) {
+            try {
+                helperThreads.destroy();
+            } catch (IllegalThreadStateException x) {
+            }
+        }
 	}
 }

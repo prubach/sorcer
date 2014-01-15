@@ -23,8 +23,27 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.io.output.TeeOutputStream;
+import sorcer.resolver.Resolver;
+import sorcer.util.Process2;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
+import static sorcer.util.JavaSystemProperties.RMI_SERVER_USE_CODEBASE_ONLY;
+import static sorcer.util.JavaSystemProperties.SECURITY_POLICY;
+import static sorcer.util.JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE;
 
 /**
  * @author Rafał Krupiński
@@ -44,6 +63,9 @@ public class SorcerLauncher {
     private File home;
     private File rio;
     private File logs;
+    private String[] args;
+
+    protected Process2 sorcerProcess;
 
     /**
      * -wait=[no,start,end]
@@ -55,7 +77,7 @@ public class SorcerLauncher {
      *
      * @param args
      */
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, IOException, InterruptedException {
         Options options = buildOptions();
 
         if (args.length == 0) {
@@ -65,7 +87,13 @@ public class SorcerLauncher {
             CommandLineParser parser = new PosixParser();
             CommandLine cmd = parser.parse(options, args);
             SorcerLauncher launcher = new SorcerLauncher();
-            launcher.setWaitMode(cmd.hasOption(WAIT) ? WaitMode.valueOf(cmd.getOptionValue(WAIT)) : WaitMode.start);
+            String waitValue = cmd.getOptionValue(WAIT);
+            try {
+                launcher.setWaitMode(cmd.hasOption(WAIT) ? WaitMode.valueOf(waitValue) : WaitMode.start);
+            } catch (IllegalArgumentException x) {
+                System.out.println("Illegal " + WAIT + " option " + waitValue + ". Use one of " + Arrays.toString(WaitMode.values()));
+                System.exit(-1);
+            }
 
             String homePath = cmd.hasOption(HOME) ? cmd.getOptionValue(HOME) : System.getenv("SORCER_HOME");
             File home = new File(homePath);
@@ -79,15 +107,96 @@ public class SorcerLauncher {
             launcher.setRio(new File(rioPath));
 
             launcher.setLogs(new File(cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : new File(home, "logs").getPath()));
-            Runtime.getRuntime().addShutdownHook(new Thread(launcher.new Killer(),"Sorcer shutdown hook"));
+            launcher.setArgs(cmd.getArgs());
+
+            launcher.start();
         }
     }
 
-    class Killer implements Runnable{
+    private void start() throws IOException, InterruptedException {
+        if (waitMode == WaitMode.end)
+            Runtime.getRuntime().addShutdownHook(new Thread(new Killer(), "Sorcer shutdown hook"));
+
+        SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
+        File errFile = new File(logs, "error.txt");
+        File outFile = new File(logs, "output.txt");
+        if (waitMode == WaitMode.start) {
+            Pipe pipe = Pipe.open();
+            OutputStream pipeStream = Channels.newOutputStream(pipe.sink());
+            bld.setOut(new TeeOutputStream(new FileOutputStream(outFile), System.out));
+            bld.setErr(new TeeOutputStream(new FileOutputStream(errFile), System.err));
+        } else {
+            bld.setOutFile(outFile);
+            bld.setErrFile(errFile);
+        }
+
+        bld.setWorkingDir(home);
+        bld.setRioHome(rio.getPath());
+        bld.setMainClass("sorcer.boot.ServiceStarter");
+
+        File config=new File(home,"configs");
+        Map<String,String> defaultSystemProps=new HashMap<String, String>();
+        defaultSystemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
+        defaultSystemProps.put(SECURITY_POLICY, new File(config, "sorcer.policy").getPath());
+        defaultSystemProps.put(S_KEY_SORCER_ENV, new File(config,"sorcer.env").getPath());
+        defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
+        //defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
+        //defaultSystemProps.put(SORCER_HOME, sorcerHome.getPath());
+        bld.setProperties(defaultSystemProps);
+
+        bld.setParameters(Arrays.asList(args));
+
+        bld.setClassPath(resolveClassPath(
+                "net.jini:jsk-platform",
+                "net.jini:jsk-lib",
+                "net.jini:jsk-resources",
+                "org.apache.river:start",
+                "net.jini.lookup:serviceui",
+
+                "org.rioproject:rio-platform",
+                "org.rioproject:rio-logging-support",
+                "org.rioproject:rio-start",
+                "org.rioproject:rio-lib",
+                "org.rioproject.resolver:resolver-api",
+
+                "org.sorcersoft.sorcer:sorcer-api",
+                "org.sorcersoft.sorcer:sorcer-resolver",
+                "org.sorcersoft.sorcer:sos-boot",
+                "org.sorcersoft.sorcer:util-rio",
+                "org.sorcersoft.sorcer:sos-util",
+                "org.sorcersoft.sorcer:sos-webster",
+                "org.sorcersoft.sorcer:sos-rio-start",
+
+                "org.codehaus.groovy:groovy-all:2.1.3",
+                "com.google.guava:guava:15.0",
+                "org.apache.commons:commons-lang3",
+                "commons-io:commons-io",
+
+                "org.slf4j:slf4j-api",
+                "org.slf4j:jul-to-slf4j:1.7.5",
+                "ch.qos.logback:logback-core:1.0.11",
+                "ch.qos.logback:logback-classic:1.0.11"
+        ));
+
+        sorcerProcess = bld.startProcess();
+
+        if(waitMode==WaitMode.end)
+            sorcerProcess.waitFor();
+    }
+
+    protected Collection<String> resolveClassPath(String...artifacts){
+        Set<String> result = new HashSet<String>(artifacts.length);
+        for (String artifact : artifacts) {
+            result.add(Resolver.resolveAbsolute(artifact));
+        }
+        return result;
+    }
+    
+   class Killer implements Runnable {
         @Override
         public void run() {
-            System.out.println("pif paf");
-            SorcerLauncher.this.rio.getPath();
+            if (sorcerProcess != null)
+                sorcerProcess.destroy();
         }
     }
 
@@ -129,5 +238,9 @@ public class SorcerLauncher {
 
     public void setLogs(File logs) {
         this.logs = logs;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
     }
 }

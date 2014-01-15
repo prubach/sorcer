@@ -146,7 +146,7 @@ public class BootMojo extends AbstractSorcerMojo {
 		builder.setParameters(Arrays.asList(ServiceStarter.SORCER_DEFAULT_CONFIG.getPath(), servicesConfig.getPath()));
 		builder.setClassPath(ArtifactUtil.toString(artifacts));
 		builder.setDebugger(debug);
-		builder.setOutput(logFile);
+		builder.setOutFile(logFile);
 		builder.setWorkingDir(workingDir);
 
         getLog().info("starting sorcer");
