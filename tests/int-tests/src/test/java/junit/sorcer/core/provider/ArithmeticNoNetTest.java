@@ -19,6 +19,7 @@ package junit.sorcer.core.provider;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
+import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 import static sorcer.eo.operator.*;
 import static sorcer.eo.operator.input;
 
@@ -28,8 +29,6 @@ import java.util.logging.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -53,7 +52,7 @@ public class ArithmeticNoNetTest {
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ju-arithmetic-api"});
 	}

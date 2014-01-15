@@ -17,11 +17,10 @@
  */
 package sorcer.arithmetic.requestor;
 
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
@@ -50,7 +49,7 @@ public class ArithmeticExertleterTest {
 
 		System.setSecurityManager(new RMISecurityManager());
 
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-api"});
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");

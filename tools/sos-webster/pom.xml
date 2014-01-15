@@ -19,11 +19,13 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
+            <scope>provided</scope>
         </dependency>
        	<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-api</artifactId>
 			<version>${project.version}</version>
+            <scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

@@ -44,6 +44,11 @@
 			<version>${project.version}</version>
 		</dependency>
         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-resolver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-api</artifactId>
             <version>${v.rio}</version>

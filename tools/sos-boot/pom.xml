@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-webster</artifactId>
+			<artifactId>sorcer-resolver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -42,12 +42,6 @@
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
 			<version>${v.rio}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.rioproject.resolver</groupId>
-					<artifactId>resolver-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
@@ -55,6 +49,7 @@
             <version>${v.rio}</version>
         </dependency>
 
+<!--
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
@@ -64,18 +59,21 @@
             <artifactId>util-rio</artifactId>
             <version>${project.version}</version>
         </dependency>
+-->
         <dependency>
             <groupId>org.rioproject.resolver</groupId>
             <artifactId>resolver-aether</artifactId>
             <version>${v.rio}</version>
             <scope>runtime</scope>
         </dependency>
+<!--
 		<dependency>
 			<groupId>net.jini.lookup</groupId>
 			<artifactId>serviceui</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
+-->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -85,6 +83,7 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>
+        <!--ServiceStarter-->
 		<dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
@@ -95,6 +94,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
 		</dependency>
+        <!--ServiceStarter, Installer-->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

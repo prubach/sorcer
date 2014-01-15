@@ -18,10 +18,10 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.exertion.ObjectTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex5.provider.AdderImpl;
 import sorcer.ex5.provider.MultiplierImpl;
@@ -49,7 +49,7 @@ public class ObjectArithmeticReqTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex5-prv",
                 "org.sorcersoft.sorcer:ex5-api"});

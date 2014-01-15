@@ -25,6 +25,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
@@ -52,7 +53,7 @@ public class WhoIsItTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex1-rdl",
                 "org.sorcersoft.sorcer:ex1-prv",

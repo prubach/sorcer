@@ -37,6 +37,7 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Signature;
 import sorcer.service.Direction;
 import sorcer.service.Task;
@@ -54,7 +55,7 @@ public class BatchTaskTest {
         System.setProperty("java.util.logging.config.file",
                 System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
         SorcerEnv.debug = true;
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:ju-arithmetic-api",
                 "org.sorcersoft.sorcer:sorcer-api"});
 	}

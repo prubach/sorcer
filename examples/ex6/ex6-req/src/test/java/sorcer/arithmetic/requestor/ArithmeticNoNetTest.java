@@ -5,8 +5,8 @@ import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
 import sorcer.arithmetic.provider.SubtractorImpl;
-import sorcer.core.SorcerEnv;
 import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Direction;
@@ -34,7 +34,7 @@ public class ArithmeticNoNetTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-prv",
                 "org.sorcersoft.sorcer:ex6-api"});

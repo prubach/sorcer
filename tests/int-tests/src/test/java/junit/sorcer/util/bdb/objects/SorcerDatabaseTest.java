@@ -19,6 +19,7 @@ package junit.sorcer.util.bdb.objects;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.list;
+import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.IOUtils;
@@ -61,9 +61,9 @@ public class SorcerDatabaseTest {
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setSecurityManager(new RMISecurityManager());
-		SorcerEnv.setCodeBaseByArtifacts(new String[] {
-				"org.sorcersoft.sorcer:sorcer-api",
-				"org.sorcersoft.sorcer:ju-arithmetic-api" });
+		setCodeBaseByArtifacts(new String[]{
+                "org.sorcersoft.sorcer:sorcer-api",
+                "org.sorcersoft.sorcer:ju-arithmetic-api"});
 	}
 	
 	private static SorcerDatabaseRunner runner;

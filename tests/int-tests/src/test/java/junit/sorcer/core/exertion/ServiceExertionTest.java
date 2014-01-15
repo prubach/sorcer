@@ -19,6 +19,7 @@ package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.list;
+import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 import static sorcer.eo.operator.context;
 import static sorcer.eo.operator.cxt;
 import static sorcer.eo.operator.exert;
@@ -78,7 +79,7 @@ public class ServiceExertionTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
 		SorcerEnv.debug = true;
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:ju-arithmetic-api",
                 "org.sorcersoft.sorcer:sorcer-api"});
 	}
