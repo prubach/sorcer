@@ -83,9 +83,11 @@ public class Process2 {
 		}
 	}
 
-	private Integer exitValueOrNull() {
+	public Integer exitValueOrNull() {
 		try {
-			return process.exitValue();
+            int exitValue = process.exitValue();
+            killThreads();
+            return exitValue;
 		} catch (IllegalThreadStateException ignore) {
 			return null;
 		}
@@ -93,7 +95,11 @@ public class Process2 {
 
 	public int destroy() {
 		process.destroy();
-        return process.exitValue();
+        try {
+            return process.waitFor();
+        } catch (InterruptedException ignore) {
+            return -1;
+        }
     }
 
     private void killThreads() {

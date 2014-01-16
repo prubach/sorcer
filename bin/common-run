@@ -474,7 +474,6 @@ startSos ( ) {
             -Dprogram.name="$PROGNAME" \
             -Dsorcer.home="$SORCER_HOME" \
             -DRIO_HOME="$RIO_HOME" \
-            -Dtools.jar="$TOOLS_JAR" \
             $STARTER_MAIN_CLASS \
             "$@"
     fi

@@ -136,22 +136,25 @@ public class SorcerLauncher {
         bld.setMainClass("sorcer.boot.ServiceStarter");
 
         File config = new File(home, "configs");
-        Map<String, String> defaultSystemProps = new HashMap<String, String>();
-        defaultSystemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
-        defaultSystemProps.put(SECURITY_POLICY, new File(config, "sorcer.policy").getPath());
-        defaultSystemProps.put(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
-        defaultSystemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
-        //defaultSystemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
-        defaultSystemProps.put(E_RIO_HOME, rio.getPath());
+        Map<String, String> systemProps = new HashMap<String, String>();
+        systemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
+        systemProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
 
-        defaultSystemProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
-        defaultSystemProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        defaultSystemProps.put("logback.configurationFile", new File(config, "logback.groovy").getPath());
-        //defaultSystemProps.put("logback.configurationFile", new File(config, "logback.xml").getPath());
-        defaultSystemProps.put("webster.tmp.dir", new File(home, "databases").getPath());
-        defaultSystemProps.put("sorcer.home", home.getPath());
+        systemProps.put("sorcer.home", home.getPath());
+        systemProps.put("webster.tmp.dir", new File(home, "databases").getPath());
+        systemProps.put(SECURITY_POLICY, new File(config, "sorcer.policy").getPath());
+        systemProps.put(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
+        //systemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
-        bld.setProperties(defaultSystemProps);
+        systemProps.put(E_RIO_HOME, rio.getPath());
+        systemProps.put("RIO_LOG_DIR", logs.getPath());
+        systemProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
+
+        systemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
+        systemProps.put("logback.configurationFile", new File(config, "logback.groovy").getPath());
+        //systemProps.put("logback.configurationFile", new File(config, "logback.xml").getPath());
+
+        bld.setProperties(systemProps);
         bld.setParameters(Arrays.asList(args));
         if (debugPort != null) {
             bld.setDebugger(true);
@@ -181,13 +184,13 @@ public class SorcerLauncher {
 
                 "org.codehaus.groovy:groovy-all:2.1.3",
                 "com.google.guava:guava:15.0",
-                "org.apache.commons:commons-lang3",
+                "org.apache.commons:commons-lang3:3.1",
                 "commons-io:commons-io",
 
                 "org.slf4j:slf4j-api",
                 "org.slf4j:jul-to-slf4j:1.7.5",
-                "ch.qos.logback:logback-core:1.0.11",
-                "ch.qos.logback:logback-classic:1.0.11"
+                "ch.qos.logback:logback-core:1.0.13",
+                "ch.qos.logback:logback-classic:1.0.13"
         ));
 
         sorcerProcess = bld.startProcess();
@@ -201,7 +204,7 @@ public class SorcerLauncher {
         if (waitMode == WaitMode.no)
             if (!sorcerProcess.running()) {
                 out.println("SORCER not started properly");
-                System.exit(sorcerProcess.waitFor());
+                System.exit(sorcerProcess.exitValueOrNull());
             }
         //if (waitMode == WaitMode.start)
         //read input, wait for some marker

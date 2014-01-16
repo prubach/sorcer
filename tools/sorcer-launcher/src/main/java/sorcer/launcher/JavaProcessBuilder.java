@@ -16,11 +16,11 @@
 
 package sorcer.launcher;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.util.ByteDumper;
 import sorcer.util.Process2;
+import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,59 +62,6 @@ public class JavaProcessBuilder {
     protected ThreadGroup ioThreads = new ThreadGroup("Sorcer launcher IO threads");
     private final ProcessBuilder builder = new ProcessBuilder();
 
-    public void setProperties(Map<String, String> environment) {
-        this.properties = environment;
-    }
-
-	public void setClassPath(Collection<String> classPath) {
-		this.classPathList = classPath;
-	}
-
-	public void setMainClass(String mainClass) {
-		this.mainClass = mainClass;
-	}
-
-	public void setParameters(List<String> parameters) {
-		this.parameters = parameters;
-	}
-
-	public void setWorkingDir(File workingDir) {
-		this.workingDir = workingDir;
-	}
-
-	public void setDebugger(boolean debugger) {
-		this.debugger = debugger;
-	}
-
-    public int getDebugPort() {
-        return debugPort;
-    }
-
-    public void setDebugPort(int debugPort) {
-        this.debugPort = debugPort;
-    }
-
-    /**
-     * Set standard and error output
-	 *
-	 * @param output output file
-	 */
-	public void setOutFile(File output) {
-		this.outFile = output;
-	}
-
-    public void setErrFile(File errFile) {
-        this.errFile = errFile;
-    }
-
-    public Map<String, String> getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(Map<String, String> environment) {
-        this.environment = environment;
-    }
-
 	public Process2 startProcess() throws IOException {
         if (mainClass == null || mainClass.trim().isEmpty()) {
             throw new IllegalStateException("mainClass must be set");
@@ -151,11 +98,15 @@ public class JavaProcessBuilder {
         procEnv.putAll(environment);
 
         if (log.isInfoEnabled()) {
-            StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
-                    .append(StringUtils.join(builder.command(), " "));
-            if (outFile != null) {
-                cmdStr.append(" > ").append(outFile.getPath());
+            StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("]");
+            for (String s : builder.command()) {
+                cmdStr.append(' ').append(s);
             }
+            if (outFile != null) {
+                cmdStr.append(" > ").append(outFile);
+            }
+            if (errFile != null)
+                cmdStr.append(" 2> ").append(errFile);
 
             log.info("{}", cmdStr);
         }
@@ -210,7 +161,7 @@ public class JavaProcessBuilder {
     protected JavaProcessBuilder redirectOutput(File file) throws FileNotFoundException {
         try {
             invokeIgnoreErrors(builder, "redirectOutput", new Class[]{File.class}, file);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
             out = new FileOutputStream(file);
         }
         return this;
@@ -219,7 +170,7 @@ public class JavaProcessBuilder {
     protected JavaProcessBuilder redirectError(File file) throws FileNotFoundException {
         try {
             invokeIgnoreErrors(builder, "redirectError", new Class[]{File.class}, file);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
             err = new FileOutputStream(file);
         }
         return this;
@@ -228,7 +179,7 @@ public class JavaProcessBuilder {
     protected JavaProcessBuilder redirectErrorStream(boolean redirect) {
         try {
             invokeIgnoreErrors(builder, "redirectErrorStream", new Class[]{Boolean.TYPE}, redirect);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
             err = out;
         }
         return this;
@@ -258,4 +209,54 @@ public class JavaProcessBuilder {
     public void setErr(OutputStream err) {
         this.err = err;
     }
+
+    public void setProperties(Map<String, String> environment) {
+        this.properties = environment;
+    }
+
+    public void setClassPath(Collection<String> classPath) {
+        this.classPathList = classPath;
+    }
+
+    public void setMainClass(String mainClass) {
+        this.mainClass = mainClass;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void setWorkingDir(File workingDir) {
+        this.workingDir = workingDir;
+    }
+
+    public void setDebugger(boolean debugger) {
+        this.debugger = debugger;
+    }
+
+    public void setDebugPort(int debugPort) {
+        this.debugPort = debugPort;
+    }
+
+    /**
+     * Set standard and error output
+     *
+     * @param output output file
+     */
+    public void setOutFile(File output) {
+        this.outFile = output;
+    }
+
+    public void setErrFile(File errFile) {
+        this.errFile = errFile;
+    }
+
+    public Map<String, String> getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Map<String, String> environment) {
+        this.environment = environment;
+    }
+
 }

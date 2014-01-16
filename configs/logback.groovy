@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
-import ch.qos.logback.core.rolling.RollingFileAppender
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
-
 import java.lang.management.ManagementFactory
-
-import static ch.qos.logback.classic.Level.*
 
 /* Scan for changes every minute. */
 scan()
@@ -74,22 +66,22 @@ def appenders = []
 /*
  * Only add the CONSOLE appender if we have a console
  */
-if (System.console() != null) {
+if (System.console() != null && !System.getProperty("os.name").startsWith("Windows")) {
     appender("CONSOLE", ConsoleAppender) {
-        if(!System.getProperty("os.name").startsWith("Windows")) {
-            withJansi = true
+        withJansi = true
 
-            encoder(PatternLayoutEncoder) {
-                pattern = "%highlight(%-5level) %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
-            }
-        } else {
-            encoder(PatternLayoutEncoder) {
-                pattern = "%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
-            }
+        encoder(PatternLayoutEncoder) {
+            pattern = "%highlight(%-5level) %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
         }
     }
-    appenders << "CONSOLE"
+} else {
+    appender("CONSOLE", ConsoleAppender) {
+        encoder(PatternLayoutEncoder) {
+            pattern = "%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
+        }
+    }
 }
+appenders << "CONSOLE"
 
 /*
  * Only add the rolling file appender if we are logging for a service
@@ -153,19 +145,40 @@ def createWatchAppender() {
 }
 
 /* Set up loggers */
+//logger("org.rioproject.cybernode", INFO)
+//logger("org.rioproject.cybernode.loader", INFO)
+//logger("org.rioproject.config", INFO)
+//logger("org.rioproject.resources.servicecore", INFO)
+//logger("org.rioproject.system", INFO)
+//logger("org.rioproject.cybernode.ServiceBeanLoader", INFO)
+//logger("org.rioproject.system.measurable", INFO)
+//logger("org.rioproject.jsb", INFO)
+//logger("org.rioproject.associations", INFO)
+
+//logger("org.rioproject.monitor", INFO)
+//logger("org.rioproject.monitor.sbi", INFO)
+//logger("org.rioproject.monitor.provision", INFO)
+//logger("org.rioproject.monitor.selector", INFO)
+//logger("org.rioproject.monitor.services", INFO)
+//logger("org.rioproject.monitor.DeploymentVerifier", INFO)
+//logger("org.rioproject.monitor.InstantiatorResource", INFO)
+//logger("org.rioproject.monitor.managers.FixedServiceManager", INFO)
+//logger("org.rioproject.resolver.aether", INFO)
+
 logger("org.rioproject.rmi.ResolvingLoader", OFF)
 
+//logger("org.rioproject.gnostic", INFO)
+//logger("org.rioproject.gnostic.drools", INFO)
+//logger("org.rioproject.gnostic.DroolsCEPManager", INFO)
+//logger("org.rioproject.config.GroovyConfig", INFO)
+
 logger("net.jini.discovery.LookupDiscovery", OFF)
-logger("net.jini.lookup.JoinManager", OFF)
+//logger("net.jini.lookup.JoinManager", OFF)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 
-logger("sorcer.core.security.level", OFF)
+//logger("sorcer.core.security.level", OFF)
 logger("sorcer.test.level", DEBUG)
 logger("private.level", DEBUG)
-logger("local.level", DEBUG)
-
-// Other specialized loggers
-logger("sorcer.core.dispatchlevel", ALL)
 
 root(INFO, appenders)
 
