@@ -35,14 +35,14 @@ public class Process2 {
 			process.exitValue();
             killThreads();
 			return false;
-		} catch (IllegalThreadStateException x) {
+		} catch (IllegalThreadStateException ignore) {
 			return true;
 		}
 	}
 
 	public int waitFor() throws InterruptedException {
         try {
-		return process.waitFor();
+		    return process.waitFor();
         } finally {
             killThreads();
         }
@@ -75,23 +75,32 @@ public class Process2 {
 	private Integer exitValueOrDestroy() {
 		try {
 			return process.exitValue();
-		} catch (IllegalThreadStateException x) {
+		} catch (IllegalThreadStateException ignore) {
 			process.destroy();
-			return null;
+			return process.exitValue();
         } finally {
             killThreads();
 		}
 	}
 
-	public void destroy() {
+	private Integer exitValueOrNull() {
+		try {
+			return process.exitValue();
+		} catch (IllegalThreadStateException ignore) {
+			return null;
+		}
+	}
+
+	public int destroy() {
 		process.destroy();
+        return process.exitValue();
     }
 
     private void killThreads() {
         if (helperThreads != null && helperThreads.activeCount() > 0) {
             try {
                 helperThreads.destroy();
-            } catch (IllegalThreadStateException x) {
+            } catch (IllegalThreadStateException ignore) {
             }
         }
 	}

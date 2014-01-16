@@ -45,7 +45,7 @@ import static java.util.Arrays.asList;
 public class JavaProcessBuilder {
     protected Logger log = LoggerFactory.getLogger(getClass());
     protected Map<String, String> properties;
-    protected Map<String, String> environment = new HashMap<String, String>(System.getenv());
+    protected Map<String, String> environment = new HashMap<String, String>();
 	protected Collection<String> classPathList;
 	protected String mainClass;
 	protected List<String> parameters;
@@ -63,8 +63,8 @@ public class JavaProcessBuilder {
     private final ProcessBuilder builder = new ProcessBuilder();
 
     public void setProperties(Map<String, String> environment) {
-		this.properties = environment;
-	}
+        this.properties = environment;
+    }
 
 	public void setClassPath(Collection<String> classPath) {
 		this.classPathList = classPath;
@@ -124,8 +124,11 @@ public class JavaProcessBuilder {
         if (debugger)
             builder.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
 
-		if(properties!=null)
+        if (properties != null)
             builder.command().addAll(_D(properties));
+
+        if (classPathList == null || classPathList.isEmpty())
+            throw new IllegalStateException("Empty Class Path");
 
 		String classPath = StringUtils.join(classPathList, File.pathSeparator);
 		builder.command().addAll(asList("-classpath", classPath, mainClass));
@@ -140,19 +143,22 @@ public class JavaProcessBuilder {
 		}
 		builder.directory(workingDir);
 
-        Map<String, String> procEnv = builder.environment();
-        if(!procEnv.equals(environment)){
-            procEnv.clear();
-            procEnv.putAll(environment);
+        for (Map.Entry<String, String> e : environment.entrySet()) {
+            log.info("{}", e);
         }
 
-		StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
-				.append(StringUtils.join(builder.command(), " "));
-		if (outFile != null) {
-			cmdStr.append(" > ").append(outFile.getPath());
-		}
+        Map<String, String> procEnv = builder.environment();
+        procEnv.putAll(environment);
 
-		log.info(cmdStr.toString());
+        if (log.isInfoEnabled()) {
+            StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("] ")
+                    .append(StringUtils.join(builder.command(), " "));
+            if (outFile != null) {
+                cmdStr.append(" > ").append(outFile.getPath());
+            }
+
+            log.info("{}", cmdStr);
+        }
 
 		redirectIO();
 
@@ -229,8 +235,8 @@ public class JavaProcessBuilder {
     }
 
     protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-			Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
-			return method.invoke(target, args);
+		Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
+		return method.invoke(target, args);
 	}
 
 	private List<String> _D(Map<String, String> d) {

@@ -12,6 +12,7 @@ import java.util.Properties;
 public class JavaSystemProperties {
     public static final String RMI_SERVER_CODEBASE = "java.rmi.server.codebase";
     public static final String RMI_SERVER_USE_CODEBASE_ONLY = "java.rmi.server.useCodebaseOnly";
+    public static final String RMI_SERVER_CLASS_LOADER = "java.rmi.server.RMIClassLoaderSpi";
     public static final String SECURITY_POLICY = "java.security.policy";
     public static final String UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
     public static final String NET_PREFER_IPV4_STACK = "java.net.preferIPv4Stack";

@@ -42,8 +42,8 @@ public class SorcerProcessBuilder extends JavaProcessBuilder {
         sorcerHome = env.getSorcerHome();
     }
 
-    public void setRioHome(String sorcerHome) {
-        this.sorcerHome = sorcerHome;
+    public void setRioHome(String rioHome) {
+        environment.put(E_RIO_HOME, rioHome);
     }
 
     @Override
