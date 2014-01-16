@@ -32,10 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,6 +61,8 @@ public class Installer {
 
     private static String repoDir;
     int errorCount = 0;
+
+    private Map<String, ArtifactCoordinates> artifactsFromPoms = new HashMap<String, ArtifactCoordinates>();
 
     protected static final Logger logger = Logger.getLogger(Installer.class.getName());
 
@@ -167,12 +166,14 @@ public class Installer {
                 });
                 for (File zipFile : jars) {
                     try {
-                    File sigarDir = new File(Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/sigar/" + version);
-                    File libraryDir = new File(sigarDir, "lib");
-                    if (!libraryDir.exists()) {
-                        Zip.unzip(zipFile, sigarDir);
-                        FileUtils.copyFile(zipFile, new File(sigarDir, "sigar-"+ version + "-native.zip"));
-                    }
+                        File sigarDir = new File(Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/sigar/" + version);
+                        File libraryDir = new File(sigarDir, "lib");
+                        if (!libraryDir.exists()) {
+                            Zip.unzip(zipFile, sigarDir);
+                            File destFile = new File(sigarDir, "sigar-"+ version + "-native.zip");
+                            if (!destFile.exists())
+                                FileUtils.copyFile(zipFile, destFile);
+                        }
                     } catch (IOException io) {
                         logger.severe("Problem unzipping sigar-native.zip to repo: " + io.getMessage());
                     }
@@ -195,7 +196,9 @@ public class Installer {
                     FileUtils.forceMkdir(new File(artifactDir));
                     extractZipFile(jar, "META-INF/maven/" + group + "/" + fileNoExt + "/pom.xml",
                             artifactDir + "/" + fileNoExt + "-" + version + ".pom");
-                    FileUtils.copyFile(jar, new File(artifactDir, fileNoExt + "-" + version + ".jar"));
+                    File destJarFile = new File(artifactDir, fileNoExt + "-" + version + ".jar");
+                    if (!destJarFile.exists())
+                        FileUtils.copyFile(jar, destJarFile);
                 } catch (IOException io) {
                     errorCount++;
                     logger.severe("Problem installing jar: " + fileNoExt + " to: " + artifactDir);
@@ -213,14 +216,16 @@ public class Installer {
         });
 
         for (File jar : jars) {
-            ArtifactCoordinates ac = getArtifactCoordinatesFromJar(jar);
+            ArtifactCoordinates ac = getArtifactCoordinatesForFile(jar);
             if (ac!=null && ac.getGroupId()!=null && ac.getArtifactId()!=null && ac.getVersion()!=null) {
                 String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
                 try {
                     FileUtils.forceMkdir(new File(artifactDir));
                     extractZipFile(jar, "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml",
                             artifactDir + "/" + ac.getArtifactId() + "-" + ac.getVersion() + ".pom");
-                    FileUtils.copyFile(jar, new File(artifactDir, ac.getArtifactId() + "-" + ac.getVersion() + ".jar"));
+                    File destJarFile = new File(artifactDir, ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
+                    if (!destJarFile.exists())
+                        FileUtils.copyFile(jar, destJarFile);
                     logger.info("Installed jar and pom file: " + artifactDir + File.separator + ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
                 } catch (IOException io) {
                     errorCount++;
@@ -230,6 +235,13 @@ public class Installer {
         }
     }
 
+    public ArtifactCoordinates getArtifactCoordinatesForFile(File jar) {
+        String artifactIdFromFileName = jar.getName().replace(".jar", "");
+        if (artifactsFromPoms.containsKey(artifactIdFromFileName)) {
+            return artifactsFromPoms.get(artifactIdFromFileName);
+        } else
+            return getArtifactCoordinatesFromJar(jar);
+    }
 
     public ArtifactCoordinates getArtifactCoordinatesFromJar(File jar) {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
@@ -266,10 +278,13 @@ public class Installer {
         for (File jar : jars) {
                 ArtifactCoordinates ac = getArtifactCoordsFromPom(jar.getAbsolutePath());
                 if (ac!=null) {
+                    artifactsFromPoms.put(ac.getArtifactId(), ac);
                     String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
                     try {
                         FileUtils.forceMkdir(new File(artifactDir));
-                        FileUtils.copyFile(jar, new File(artifactDir, jar.getName()));
+                        File destFile = new File(artifactDir, jar.getName());
+                        if (!destFile.exists())
+                            FileUtils.copyFile(jar, destFile);
                         logger.info("Installed pom file: " + artifactDir + File.separator + jar.getName());
                     } catch (IOException io) {
                         errorCount++;
@@ -282,8 +297,8 @@ public class Installer {
 
     public static void main(String[] args) {
         Installer installer = new Installer();
-        installer.install();
         installer.installPoms();
+        installer.install();
         installer.createMarker();
     }
 
@@ -305,58 +320,46 @@ public class Installer {
             xpath.setNamespaceContext(
                     new NamespaceContextImpl("http://maven.apache.org/POM/4.0.0",
                             namespaces));
-            XPathExpression expr = xpath.compile("/pom:project/pom:groupId");
+            XPathExpression expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'groupId']");
             Object result = expr.evaluate(doc, XPathConstants.NODESET);
             NodeList nodes = (NodeList) result;
             if (nodes.getLength()>0)
                 groupId = nodes.item(0).getTextContent();
             else {
-                expr = xpath.compile("/pom:project/pom:parent/pom:groupId");
+                expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'parent']/*[local-name() = 'groupId']");
                 result = expr.evaluate(doc, XPathConstants.NODESET);
                 nodes = (NodeList) result;
                 if (nodes.getLength()>0)
                     groupId = nodes.item(0).getTextContent();
             }
 
-            expr = xpath.compile("/pom:project/pom:artifactId");
+            expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'artifactId']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
+            if (nodes.getLength()==0) {
+                logger.severe("Problem installing file: " + fileName + "\n" + " could not read artifactId");
+                return null;
+            }
             artifactId = nodes.item(0).getTextContent();
 
-            expr = xpath.compile("/pom:project/pom:version");
+            expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'version']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
             if (nodes.getLength()>0)
                 version = nodes.item(0).getTextContent();
             else {
-                expr = xpath.compile("/pom:project/pom:parent/pom:version");
+                expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'parent']/*[local-name() = 'version']");
                 result = expr.evaluate(doc, XPathConstants.NODESET);
                 nodes = (NodeList) result;
                 if (nodes.getLength()>0)
                     version = nodes.item(0).getTextContent();
             }
-            expr = xpath.compile("/pom:project/pom:packaging");
+            expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'packaging']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
             if (nodes.getLength()>0)
                 packaging = nodes.item(0).getTextContent();
 
-        } catch (ParserConfigurationException e) {
-            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;
-        } catch (XPathExpressionException e) {
-            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;
-        } catch (SAXException e) {
-            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;
-        } catch (IOException e) {
-            logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            return null;
         } catch (Exception e) {
             logger.severe("Problem installing file: " + fileName + "\n" + e.getMessage());
             e.printStackTrace();
@@ -391,30 +394,32 @@ public class Installer {
 
     public static void extractZipFile(File zipFileSrc, String relativeFilePath, String targetFilePath) {
         try {
-            ZipFile zipFile = new ZipFile(zipFileSrc);
-            Enumeration<? extends ZipEntry> e = zipFile.entries();
+            // Do not overwrite
+            if (!new File(targetFilePath).exists()) {
+                ZipFile zipFile = new ZipFile(zipFileSrc);
+                Enumeration<? extends ZipEntry> e = zipFile.entries();
+                while (e.hasMoreElements()) {
+                    ZipEntry entry = (ZipEntry) e.nextElement();
+                    // if the entry is not directory and matches relative file then extract it
+                    if (!entry.isDirectory() && entry.getName().equals(relativeFilePath)) {
+                        InputStream bis = new BufferedInputStream(
+                                zipFile.getInputStream(entry));
 
-            while (e.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) e.nextElement();
-                // if the entry is not directory and matches relative file then extract it
-                if (!entry.isDirectory() && entry.getName().equals(relativeFilePath)) {
-                    InputStream bis = new BufferedInputStream(
-                            zipFile.getInputStream(entry));
+                        // write the inputStream to a FileOutputStream
+                        OutputStream outputStream =
+                                new FileOutputStream(new File(targetFilePath));
 
-                    // write the inputStream to a FileOutputStream
-                    OutputStream outputStream =
-                            new FileOutputStream(new File(targetFilePath));
+                        int read = 0;
+                        byte[] bytes = new byte[1024];
 
-                    int read = 0;
-                    byte[] bytes = new byte[1024];
-
-                    while ((read = bis.read(bytes)) != -1) {
-                        outputStream.write(bytes, 0, read);
+                        while ((read = bis.read(bytes)) != -1) {
+                            outputStream.write(bytes, 0, read);
+                        }
+                        bis.close();
+                        outputStream.close();
+                    } else {
+                        continue;
                     }
-                    bis.close();
-                    outputStream.close();
-                } else {
-                    continue;
                 }
             }
         } catch (IOException e) {

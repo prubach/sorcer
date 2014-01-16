@@ -216,34 +216,6 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sigar-${v.sigar}.pom</destName>
             </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/codehaus/plexus/plexus/3.3.1/plexus-3.3.1.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>plexus-3.3.1.pom</destName>
-            </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/sonatype/spice/spice-parent/17/spice-parent-17.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>spice-parent-17.pom</destName>
-            </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/sonatype/forge/forge-parent/10/forge-parent-10.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>forge-parent-10.pom</destName>
-            </file>
-
-            <file>
-                <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/28/commons-parent-28.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>commons-parent-28.pom</destName>
-            </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/apache/apache/13/apache-13.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>apache-13.pom</destName>
-            </file>
-
-
 
             <!-- Copy the logging configuration file -->
             <file>
