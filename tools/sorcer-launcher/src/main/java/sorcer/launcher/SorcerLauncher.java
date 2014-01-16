@@ -25,14 +25,11 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.output.TeeOutputStream;
 import sorcer.resolver.Resolver;
+import sorcer.util.IOUtils;
 import sorcer.util.Process2;
 import sorcer.util.ProcessMonitor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
@@ -40,6 +37,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.System.err;
 import static java.lang.System.out;
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
@@ -54,10 +52,15 @@ public class SorcerLauncher {
     public static final String RIO = "rio";
     public static final String LOGS = "logs";
     public static final String DEBUG = "debug";
-
+    public static final String FLAVOUR = "flavour";
 
     enum WaitMode {
         no, start, end
+    }
+
+    enum Flavour {
+        sorcer,
+        rio
     }
 
     private WaitMode waitMode;
@@ -66,6 +69,7 @@ public class SorcerLauncher {
     private File logs;
     private List<String> args;
     private Integer debugPort;
+    private Flavour flavour;
 
     protected Process2 sorcerProcess;
     private ProcessDestroyer processDestroyer;
@@ -110,16 +114,21 @@ public class SorcerLauncher {
                 launcher.setDebugPort(Integer.parseInt(cmd.getOptionValue(DEBUG)));
 
             launcher.setLogs(new File(cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : new File(home, "logs").getPath()));
-            launcher.setArgs(cmd.getArgList());
+            launcher.setFlavour(cmd.hasOption(FLAVOUR) ? Flavour.valueOf(cmd.getOptionValue(FLAVOUR)) : Flavour.sorcer);
 
+            launcher.setArgs(cmd.getArgList());
             launcher.start();
         }
     }
 
     private void start() throws IOException, InterruptedException {
-        out.println("*******   *******   *******   SORCER launcher   *******   *******   *******");
-        out.println(E_SORCER_HOME + " = " + home);
-        out.println(E_RIO_HOME + "    = " + rio);
+        err.println("*******   *******   *******   SORCER launcher   *******   *******   *******");
+
+        File config = new File(home, "configs");
+
+        logs.mkdirs();
+        System.setProperty(SORCER_HOME, home.getPath());
+        System.setProperty(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
 
         SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
         File errFile = new File(logs, "error.txt");
@@ -136,12 +145,16 @@ public class SorcerLauncher {
 
         bld.setWorkingDir(home);
         bld.setRioHome(rio.getPath());
-        bld.setMainClass("sorcer.boot.ServiceStarter");
 
-        File config = new File(home, "configs");
+        if (flavour == Flavour.sorcer)
+            bld.setMainClass("sorcer.boot.ServiceStarter");
+        else
+            bld.setMainClass("org.rioproject.start.ServiceStarter");
+
         Map<String, String> systemProps = new HashMap<String, String>();
         systemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
         systemProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        systemProps.put(MAX_DATAGRAM_SOCKETS, "1024");
 
         systemProps.put(SORCER_HOME, home.getPath());
         systemProps.put(S_WEBSTER_TMP_DIR, new File(home, "databases").getPath());
@@ -155,48 +168,89 @@ public class SorcerLauncher {
 
         systemProps.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
         systemProps.put("logback.configurationFile", new File(config, "logback.groovy").getPath());
-        //systemProps.put("logback.configurationFile", new File(config, "logback.xml").getPath());
+
+        //rio specific
+        systemProps.put("org.rioproject.service", "all");
 
         bld.setProperties(systemProps);
+
         bld.setParameters(args);
         if (debugPort != null) {
             bld.setDebugger(true);
             bld.setDebugPort(debugPort);
         }
 
-        bld.setClassPath(resolveClassPath(
-                "net.jini:jsk-platform",
-                "net.jini:jsk-lib",
-                "net.jini:jsk-resources",
-                "org.apache.river:start",
-                "net.jini.lookup:serviceui",
+        Collection<String> classPath;
+        if (flavour == Flavour.sorcer)
+            classPath = resolveClassPath(
+                    "net.jini:jsk-platform",
+                    "net.jini:jsk-lib",
+                    "net.jini:jsk-resources",
+                    "org.apache.river:start",
+                    "net.jini.lookup:serviceui",
 
-                "org.rioproject:rio-platform",
-                "org.rioproject:rio-logging-support",
-                "org.rioproject:rio-start",
-                "org.rioproject:rio-lib",
-                "org.rioproject.resolver:resolver-api",
+                    "org.rioproject:rio-platform",
+                    "org.rioproject:rio-logging-support",
+                    "org.rioproject:rio-start",
+                    "org.rioproject:rio-lib",
+                    "org.rioproject.resolver:resolver-api",
 
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:sorcer-resolver",
-                "org.sorcersoft.sorcer:sos-boot",
-                "org.sorcersoft.sorcer:util-rio",
-                "org.sorcersoft.sorcer:sos-util",
-                "org.sorcersoft.sorcer:sos-webster",
-                "org.sorcersoft.sorcer:sos-rio-start",
+                    "org.sorcersoft.sorcer:sorcer-api",
+                    "org.sorcersoft.sorcer:sorcer-resolver",
+                    "org.sorcersoft.sorcer:sos-boot",
+                    "org.sorcersoft.sorcer:util-rio",
+                    "org.sorcersoft.sorcer:sos-util",
+                    "org.sorcersoft.sorcer:sos-webster",
+                    "org.sorcersoft.sorcer:sos-rio-start",
 
-                "org.codehaus.groovy:groovy-all:2.1.3",
-                "com.google.guava:guava:15.0",
-                "org.apache.commons:commons-lang3:3.1",
-                "commons-io:commons-io",
+                    "org.codehaus.groovy:groovy-all:2.1.3",
+                    "com.google.guava:guava:15.0",
+                    "org.apache.commons:commons-lang3:3.1",
+                    "commons-io:commons-io",
 
-                "org.slf4j:slf4j-api",
-                "org.slf4j:jul-to-slf4j:1.7.5",
-                "ch.qos.logback:logback-core:1.0.13",
-                "ch.qos.logback:logback-classic:1.0.13"
-        ));
+                    "org.slf4j:slf4j-api",
+                    "org.slf4j:jul-to-slf4j:1.7.5",
+                    "ch.qos.logback:logback-core:1.0.13",
+                    "ch.qos.logback:logback-classic:1.0.13"
+            );
+        else {
+            classPath = resolveClassPath(
+                    "org.apache.river:start",
+                    "net.jini.lookup:serviceui",
+                    "net.jini:jsk-platform",
+                    "net.jini:jsk-lib",
 
-        sorcerProcess = bld.startProcess();
+                    "org.rioproject:rio-start",
+                    "org.rioproject:rio-platform",
+                    "org.rioproject:rio-logging-support",
+                    "org.rioproject.resolver:resolver-api",
+
+                    "org.sorcersoft.sorcer:sos-util",
+                    "org.sorcersoft.sorcer:sorcer-api",
+                    "org.sorcersoft.sorcer:sorcer-resolver",
+                    "org.sorcersoft.sorcer:sos-boot",
+                    "org.sorcersoft.sorcer:sos-rio-start",
+
+                    "org.apache.commons:commons-lang3:3.1",
+                    "org.codehaus.groovy:groovy-all:2.1.3",
+
+                    "org.slf4j:slf4j-api",
+                    "org.slf4j:jul-to-slf4j:1.7.5",
+                    "ch.qos.logback:logback-core:1.0.13",
+                    "ch.qos.logback:logback-classic:1.0.13"
+            );
+            classPath.add(new File(System.getProperty("JAVA_HOME"), "lib/tools.jar").getPath());
+        }
+        bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
+
+        bld.setClassPath(classPath);
+
+        try {
+            sorcerProcess = bld.startProcess();
+        } catch (IllegalStateException x) {
+            err.println("Child process immediately died");
+            System.exit(-1);
+        }
 
         if (waitMode == WaitMode.no) {
             if (!sorcerProcess.running()) {
@@ -232,6 +286,7 @@ public class SorcerLauncher {
                 }
             }
         }
+
     }
 
     private void installShutdownHook() {
@@ -250,10 +305,16 @@ public class SorcerLauncher {
 
     protected Collection<String> resolveClassPath(String... artifacts) {
         Set<String> result = new HashSet<String>(artifacts.length);
-        for (String artifact : artifacts) {
-            result.add(Resolver.resolveAbsolute(artifact));
+        try {
+            for (String artifact : artifacts) {
+                String p = Resolver.resolveAbsolute(artifact);
+                IOUtils.ensureFile(new File(p));
+                result.add(p);
+            }
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return result;
     }
 
     private static Options buildOptions() {
@@ -262,25 +323,39 @@ public class SorcerLauncher {
         wait.setRequired(true);
         wait.setType(WaitMode.class);
         wait.setArgs(1);
+        wait.setArgName("wait-mode");
         options.addOption(wait);
 
         Option logs = new Option(LOGS, true, "Directory for logs");
         logs.setType(File.class);
         logs.setArgs(1);
+        logs.setArgName("dir");
         options.addOption(logs);
 
         Option home = new Option(HOME, true, "SORCER_HOME variable, read from environment by default");
         home.setArgs(1);
         home.setType(File.class);
+        home.setArgName("dir");
         options.addOption(home);
 
         Option rioHome = new Option(RIO, true, "Force RIO_HOME variable. by default it's read from environment or $SORCER_HOME/lib/rio");
         rioHome.setType(File.class);
+        rioHome.setArgs(1);
+        rioHome.setArgName("dir");
         options.addOption(rioHome);
 
         Option debug = new Option(DEBUG, true, "Add debug option to JVM");
         debug.setType(Boolean.class);
+        debug.setArgs(1);
+        debug.setArgName("port");
         options.addOption(debug);
+
+        Option flav = new Option(FLAVOUR, true, "Starting mechanism, either sorcer or rio");
+        flav.setArgs(1);
+        flav.setType(Flavour.class);
+        flav.setArgName("start-mode");
+        options.addOption(flav);
+
         return options;
     }
 
@@ -306,5 +381,9 @@ public class SorcerLauncher {
 
     public void setDebugPort(Integer debugPort) {
         this.debugPort = debugPort;
+    }
+
+    public void setFlavour(Flavour flavour) {
+        this.flavour = flavour;
     }
 }

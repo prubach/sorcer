@@ -55,6 +55,7 @@ public class JavaProcessBuilder {
 	protected File errFile;
     protected String command = "java";
     protected int debugPort = 8000;
+    protected Map<String,String> javaAgent=new HashMap<String, String>();
 
     protected OutputStream out;
     protected OutputStream err;
@@ -66,24 +67,18 @@ public class JavaProcessBuilder {
         if (mainClass == null || mainClass.trim().isEmpty()) {
             throw new IllegalStateException("mainClass must be set");
         }
-        builder.command(command);
-
-        if (debugger)
-            builder.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
-
-        if (properties != null)
-            builder.command().addAll(_D(properties));
-
         if (classPathList == null || classPathList.isEmpty())
             throw new IllegalStateException("Empty Class Path");
 
-		String classPath = StringUtils.join(classPathList, File.pathSeparator);
-		builder.command().addAll(asList("-classpath", classPath, mainClass));
-		if (parameters != null) {
-			builder.command().addAll(parameters);
-		}
+        appendJavaOptions();
 
-		if (workingDir == null) {
+        builder.command().add(mainClass);
+
+        if (parameters != null) {
+            builder.command().addAll(parameters);
+        }
+
+        if (workingDir == null) {
 			// the default
 			// make explicit for logging purpose
 			workingDir = new File(System.getProperty("user.dir"));
@@ -131,7 +126,28 @@ public class JavaProcessBuilder {
         } catch (IllegalThreadStateException ignored) {
             redirectOutputs(proc);
             return new Process2(proc, ioThreads);
-		}
+		}finally{}
+    }
+
+    private void appendJavaOptions() {
+        builder.command(command);
+
+        if (debugger)
+            builder.command().addAll(Arrays.asList("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=" + debugPort));
+
+        if (properties != null)
+            builder.command().addAll(_D(properties));
+
+        String classPath = StringUtils.join(classPathList, File.pathSeparator);
+        builder.command().addAll(asList("-classpath", classPath));
+
+        for (Map.Entry<String, String> e : javaAgent.entrySet()) {
+            StringBuilder buf = new StringBuilder("-javaagent:").append(e.getKey());
+            String value = e.getValue();
+            if (value != null)
+                buf.append('=').append(value);
+            builder.command().add(buf.toString());
+        }
     }
 
     private void redirectOutputs(Process proc) {
@@ -259,4 +275,7 @@ public class JavaProcessBuilder {
         this.environment = environment;
     }
 
+    public Map<String, String> getJavaAgent() {
+        return javaAgent;
+    }
 }
