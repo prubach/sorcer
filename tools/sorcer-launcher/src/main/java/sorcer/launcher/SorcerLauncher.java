@@ -24,6 +24,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.Process2;
@@ -34,8 +36,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.lang.System.err;
 import static java.lang.System.out;
@@ -46,6 +46,7 @@ import static sorcer.util.JavaSystemProperties.*;
  * @author Rafał Krupiński
  */
 public class SorcerLauncher {
+    private final static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
 
     public static final String WAIT = "wait";
     public static final String HOME = "home";
@@ -70,6 +71,7 @@ public class SorcerLauncher {
     private List<String> args;
     private Integer debugPort;
     private Flavour flavour;
+    private boolean quiet;
 
     protected Process2 sorcerProcess;
     private ProcessDestroyer processDestroyer;
@@ -96,7 +98,7 @@ public class SorcerLauncher {
             try {
                 launcher.setWaitMode(cmd.hasOption(WAIT) ? WaitMode.valueOf(waitValue) : WaitMode.start);
             } catch (IllegalArgumentException ignored) {
-                out.println("Illegal " + WAIT + " option " + waitValue + ". Use one of " + Arrays.toString(WaitMode.values()));
+                log.error("Illegal wait option {}. Use one of {}", waitValue, Arrays.toString(WaitMode.values()));
                 System.exit(-1);
             }
 
@@ -107,22 +109,30 @@ public class SorcerLauncher {
             if (cmd.hasOption(RIO)) {
                 rioPath = cmd.getOptionValue(RIO);
             } else if ((rioPath = System.getenv(E_RIO_HOME)) == null)
-                rioPath = new File(home, "lib/rio").getPath();
-            launcher.setRio(new File(rioPath));
+                rioPath = "lib/rio";
+            launcher.setRio(new File(home, rioPath));
 
             if (cmd.hasOption(DEBUG))
                 launcher.setDebugPort(Integer.parseInt(cmd.getOptionValue(DEBUG)));
 
             launcher.setLogs(new File(cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : new File(home, "logs").getPath()));
             launcher.setFlavour(cmd.hasOption(FLAVOUR) ? Flavour.valueOf(cmd.getOptionValue(FLAVOUR)) : Flavour.sorcer);
+            launcher.setQuiet(cmd.hasOption('q'));
 
             launcher.setArgs(cmd.getArgList());
-            launcher.start();
+
+            try {
+                launcher.start();
+            } catch (IllegalStateException x) {
+                log.error("Child process immediately died",x);
+                System.exit(-1);
+            }
         }
+        System.exit(0);
     }
 
     private void start() throws IOException, InterruptedException {
-        err.println("*******   *******   *******   SORCER launcher   *******   *******   *******");
+        log.debug("*******   *******   *******   SORCER launcher   *******   *******   *******");
 
         File config = new File(home, "configs");
 
@@ -131,6 +141,9 @@ public class SorcerLauncher {
         System.setProperty(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
 
         SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
+        bld.setWorkingDir(home);
+        bld.setRioHome(rio.getPath());
+
         File errFile = new File(logs, "error.txt");
         File outFile = new File(logs, "output.txt");
         Pipe pipe = Pipe.open();
@@ -143,14 +156,62 @@ public class SorcerLauncher {
             bld.setErrFile(errFile);
         }
 
-        bld.setWorkingDir(home);
-        bld.setRioHome(rio.getPath());
+        bld.setProperties(getProperties(config));
 
-        if (flavour == Flavour.sorcer)
-            bld.setMainClass("sorcer.boot.ServiceStarter");
+        if (debugPort != null) {
+            bld.setDebugger(true);
+            bld.setDebugPort(debugPort);
+        }
+
+        SorcerFlavour sorcerFlavour;
+        if (flavour == Flavour.rio)
+            sorcerFlavour = new RioSorcerFlavour();
         else
-            bld.setMainClass("org.rioproject.start.ServiceStarter");
+            sorcerFlavour = new SorcerSorcerFlavour();
 
+        Collection<String> classPath = resolveClassPath(sorcerFlavour.getClassPath());
+        classPath.addAll(sorcerFlavour.getNonResolvableClassPath());
+        bld.setClassPath(classPath);
+
+        bld.setMainClass(sorcerFlavour.getMainClass());
+
+        List<String> configs = args.isEmpty() ? sorcerFlavour.getDefaultConfigs() : args;
+        bld.setParameters(configs);
+
+        bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
+
+        sorcerProcess = bld.startProcess();
+
+        if (waitMode == WaitMode.no) {
+            if (!sorcerProcess.running()) {
+                out.println("SORCER not started properly");
+                System.exit(sorcerProcess.exitValue());
+            } else
+                System.exit(0);
+        } else {
+            //install shutdown hook also in start mode, so sorcer can be stopped with ^C before it finishes starting
+            processDestroyer = new ProcessDestroyer(sorcerProcess, "SORCER");
+            installShutdownHook();
+            installProcessMonitor();
+        }
+
+        BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
+        OutputConsumer consumer = sorcerFlavour.getConsumer();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (!quiet) out.println(line);
+            boolean starting = consumer.consume(line);
+            if (!starting) break;
+        }
+
+        if (waitMode == WaitMode.start) {
+            //don't kill sorcer on launcher exit
+            processDestroyer.setEnabled(false);
+        }
+    }
+
+    private Map<String, String> getProperties(File config) {
         Map<String, String> systemProps = new HashMap<String, String>();
         systemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
         systemProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
@@ -171,122 +232,11 @@ public class SorcerLauncher {
 
         //rio specific
         systemProps.put("org.rioproject.service", "all");
+        return systemProps;
+    }
 
-        bld.setProperties(systemProps);
-
-        bld.setParameters(args);
-        if (debugPort != null) {
-            bld.setDebugger(true);
-            bld.setDebugPort(debugPort);
-        }
-
-        Collection<String> classPath;
-        if (flavour == Flavour.sorcer)
-            classPath = resolveClassPath(
-                    "net.jini:jsk-platform",
-                    "net.jini:jsk-lib",
-                    "net.jini:jsk-resources",
-                    "org.apache.river:start",
-                    "net.jini.lookup:serviceui",
-
-                    "org.rioproject:rio-platform",
-                    "org.rioproject:rio-logging-support",
-                    "org.rioproject:rio-start",
-                    "org.rioproject:rio-lib",
-                    "org.rioproject.resolver:resolver-api",
-
-                    "org.sorcersoft.sorcer:sorcer-api",
-                    "org.sorcersoft.sorcer:sorcer-resolver",
-                    "org.sorcersoft.sorcer:sos-boot",
-                    "org.sorcersoft.sorcer:util-rio",
-                    "org.sorcersoft.sorcer:sos-util",
-                    "org.sorcersoft.sorcer:sos-webster",
-                    "org.sorcersoft.sorcer:sos-rio-start",
-
-                    "org.codehaus.groovy:groovy-all:2.1.3",
-                    "com.google.guava:guava:15.0",
-                    "org.apache.commons:commons-lang3:3.1",
-                    "commons-io:commons-io",
-
-                    "org.slf4j:slf4j-api",
-                    "org.slf4j:jul-to-slf4j:1.7.5",
-                    "ch.qos.logback:logback-core:1.0.13",
-                    "ch.qos.logback:logback-classic:1.0.13"
-            );
-        else {
-            classPath = resolveClassPath(
-                    "org.apache.river:start",
-                    "net.jini.lookup:serviceui",
-                    "net.jini:jsk-platform",
-                    "net.jini:jsk-lib",
-
-                    "org.rioproject:rio-start",
-                    "org.rioproject:rio-platform",
-                    "org.rioproject:rio-logging-support",
-                    "org.rioproject.resolver:resolver-api",
-
-                    "org.sorcersoft.sorcer:sos-util",
-                    "org.sorcersoft.sorcer:sorcer-api",
-                    "org.sorcersoft.sorcer:sorcer-resolver",
-                    "org.sorcersoft.sorcer:sos-boot",
-                    "org.sorcersoft.sorcer:sos-rio-start",
-
-                    "org.apache.commons:commons-lang3:3.1",
-                    "org.codehaus.groovy:groovy-all:2.1.3",
-
-                    "org.slf4j:slf4j-api",
-                    "org.slf4j:jul-to-slf4j:1.7.5",
-                    "ch.qos.logback:logback-core:1.0.13",
-                    "ch.qos.logback:logback-classic:1.0.13"
-            );
-            classPath.add(new File(System.getProperty("JAVA_HOME"), "lib/tools.jar").getPath());
-        }
-        bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
-
-        bld.setClassPath(classPath);
-
-        try {
-            sorcerProcess = bld.startProcess();
-        } catch (IllegalStateException x) {
-            err.println("Child process immediately died");
-            System.exit(-1);
-        }
-
-        if (waitMode == WaitMode.no) {
-            if (!sorcerProcess.running()) {
-                out.println("SORCER not started properly");
-                System.exit(sorcerProcess.exitValueOrNull());
-            } else
-                System.exit(0);
-        } else {
-            processDestroyer = new ProcessDestroyer(sorcerProcess, "SORCER");
-            installShutdownHook();
-            installProcessMonitor();
-        }
-
-        BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
-        String line;
-        Pattern pattern = Pattern.compile("Started (\\d+)/(\\d+) services; (\\d+) errors");
-
-        while ((line = reader.readLine()) != null) {
-            out.println(line);
-            Matcher m = pattern.matcher(line);
-            if (m.find()) {
-                String started = m.group(1);
-                String all = m.group(2);
-                String errors = m.group(3);
-                if (!"0".equals(errors))
-                    System.exit(-1);
-                if (started.equals(all)) {
-                    if (waitMode == WaitMode.start) {
-                        //don't kill sorcer on launcher exit
-                        processDestroyer.setDoKill(false);
-                        System.exit(0);
-                    }
-                }
-            }
-        }
-
+    interface OutputConsumer {
+        public boolean consume(String line);
     }
 
     private void installShutdownHook() {
@@ -303,8 +253,8 @@ public class SorcerLauncher {
         }, true);
     }
 
-    protected Collection<String> resolveClassPath(String... artifacts) {
-        Set<String> result = new HashSet<String>(artifacts.length);
+    protected Collection<String> resolveClassPath(List<String> artifacts) {
+        Set<String> result = new HashSet<String>(artifacts.size());
         try {
             for (String artifact : artifacts) {
                 String p = Resolver.resolveAbsolute(artifact);
@@ -356,6 +306,10 @@ public class SorcerLauncher {
         flav.setArgName("start-mode");
         options.addOption(flav);
 
+        //Option ext
+
+        options.addOption(new Option("q", "quiet", false, "Don't pass SORCER's output to Launcher's console"));
+
         return options;
     }
 
@@ -385,5 +339,9 @@ public class SorcerLauncher {
 
     public void setFlavour(Flavour flavour) {
         this.flavour = flavour;
+    }
+
+    public void setQuiet(boolean quiet) {
+        this.quiet = quiet;
     }
 }

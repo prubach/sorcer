@@ -26,8 +26,12 @@ import static java.lang.System.out;
  */
 public class ProcessDestroyer implements Runnable {
     private Process2 process;
-    private boolean doKill = true;
+    private boolean enabled = true;
     private String name;
+
+    public ProcessDestroyer(Process process, String name) {
+        this(new Process2(process), name);
+    }
 
     public ProcessDestroyer(Process2 sorcerProcess, String name) {
         this.name = name;
@@ -37,14 +41,14 @@ public class ProcessDestroyer implements Runnable {
 
     @Override
     public void run() {
-        if (!doKill || !process.running()) return;
+        if (!enabled || !process.running()) return;
 
         out.print("Killing " + name + " process");
         int exit = process.destroyAndExitCode();
         out.println("; exit code = " + exit);
     }
 
-    public void setDoKill(boolean doKill) {
-        this.doKill = doKill;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

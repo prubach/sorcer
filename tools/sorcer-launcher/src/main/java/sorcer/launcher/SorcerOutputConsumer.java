@@ -1,0 +1,30 @@
+package sorcer.launcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * @author Rafał Krupiński
+ */
+public class SorcerOutputConsumer implements SorcerLauncher.OutputConsumer {
+    private static final Logger log = LoggerFactory.getLogger(SorcerOutputConsumer.class);
+    private Pattern pattern = Pattern.compile("Started (\\d+)/(\\d+) services; (\\d+) errors");
+
+    @Override
+    public boolean consume(String line) {
+        Matcher m = pattern.matcher(line);
+        if (!m.find()) {
+            return true;
+        }
+        String started = m.group(1);
+        String all = m.group(2);
+        String errors = m.group(3);
+        log.debug("Stared {} of {} with {} errors", started, all, errors);
+        if (!"0".equals(errors))
+            throw new IllegalArgumentException("Errors while starting services");
+        return !started.equals(all);
+    }
+}

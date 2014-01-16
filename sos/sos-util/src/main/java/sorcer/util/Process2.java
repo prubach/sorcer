@@ -27,8 +27,12 @@ public class Process2 extends Process{
 	final private Process process;
     private ThreadGroup helperThreads;
 
-	public Process2(Process process, ThreadGroup helperThreads) {
-		this.process = process;
+    public Process2(Process process) {
+        this.process = process;
+    }
+
+    public Process2(Process process, ThreadGroup helperThreads) {
+        this(process);
         this.helperThreads = helperThreads;
 	}
 
