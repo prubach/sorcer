@@ -26,18 +26,25 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.output.TeeOutputStream;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
+import sorcer.util.ProcessMonitor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static java.lang.System.err;
 import static java.lang.System.out;
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
@@ -54,6 +61,7 @@ public class SorcerLauncher {
     public static final String LOGS = "logs";
     public static final String DEBUG = "debug";
 
+
     enum WaitMode {
         no, start, end
     }
@@ -66,6 +74,7 @@ public class SorcerLauncher {
     private Integer debugPort;
 
     protected Process2 sorcerProcess;
+    private ProcessDestroyer processDestroyer;
 
     /**
      * -wait=[no,start,end]
@@ -103,7 +112,7 @@ public class SorcerLauncher {
                 rioPath = new File(home, "lib/rio").getPath();
             launcher.setRio(new File(rioPath));
 
-            if(cmd.hasOption(DEBUG))
+            if (cmd.hasOption(DEBUG))
                 launcher.setDebugPort(Integer.parseInt(cmd.getOptionValue(DEBUG)));
 
             launcher.setLogs(new File(cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : new File(home, "logs").getPath()));
@@ -121,11 +130,11 @@ public class SorcerLauncher {
         SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
         File errFile = new File(logs, "error.txt");
         File outFile = new File(logs, "output.txt");
+        Pipe pipe = Pipe.open();
         if (waitMode != WaitMode.no) {
-//            Pipe pipe = Pipe.open();
-//            OutputStream pipeStream = Channels.newOutputStream(pipe.sink());
-            bld.setOut(new TeeOutputStream(new FileOutputStream(outFile), out));
-            bld.setErr(new TeeOutputStream(new FileOutputStream(errFile), System.err));
+            OutputStream pipeStream = Channels.newOutputStream(pipe.sink());
+            bld.setOut(new TeeOutputStream(new FileOutputStream(outFile), pipeStream));
+            bld.setErr(new TeeOutputStream(new FileOutputStream(errFile), pipeStream));
         } else {
             bld.setOutFile(outFile);
             bld.setErrFile(errFile);
@@ -195,20 +204,55 @@ public class SorcerLauncher {
 
         sorcerProcess = bld.startProcess();
 
-        if (waitMode != WaitMode.no)
-            Runtime.getRuntime().addShutdownHook(new Thread(new Killer(sorcerProcess), "Sorcer shutdown hook"));
-
-        if (waitMode == WaitMode.end)
-            sorcerProcess.waitFor();
-
-        if (waitMode == WaitMode.no)
+        if (waitMode == WaitMode.no) {
             if (!sorcerProcess.running()) {
                 out.println("SORCER not started properly");
                 System.exit(sorcerProcess.exitValueOrNull());
-            }
-        //if (waitMode == WaitMode.start)
-        //read input, wait for some marker
+            } else
+                System.exit(0);
+        } else {
+            processDestroyer = new ProcessDestroyer(sorcerProcess, "SORCER");
+            installShutdownHook();
+            //installProcessMonitor();
+        }
 
+        BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
+        String line;
+        Pattern pattern = Pattern.compile("Started (\\d+)/(\\d+) services; (\\d+) errors");
+
+        while ((line = reader.readLine()) != null) {
+            out.println(line);
+            Matcher m = pattern.matcher(line);
+            if (m.find()) {
+                String started = m.group(1);
+                String all = m.group(2);
+                String errors = m.group(3);
+                if (!"0".equals(errors))
+                    System.exit(-1);
+                if (started.equals(all)) {
+                    if (waitMode == WaitMode.start) {
+                        //don't kill sorcer on launcher exit
+                        processDestroyer.setDoKill(false);
+                        System.exit(0);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void installShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(processDestroyer, "Sorcer shutdown hook"));
+    }
+
+    private void installProcessMonitor() {
+        ProcessMonitor.install(sorcerProcess, new ProcessMonitor.ProcessDownCallback() {
+            @Override
+            public void processDown(Process process) {
+                SorcerLauncher.this.sorcerProcess = null;
+                System.exit(-1);
+            }
+        }, true);
     }
 
     protected Collection<String> resolveClassPath(String... artifacts) {
@@ -217,31 +261,6 @@ public class SorcerLauncher {
             result.add(Resolver.resolveAbsolute(artifact));
         }
         return result;
-    }
-
-    static class Killer implements Runnable {
-        private Process2 process;
-
-        public Killer(Process2 sorcerProcess) {
-            process = sorcerProcess;
-        }
-
-        @Override
-        public void run() {
-            if (process != null) {
-                if (process.running()) {
-                    out.print("Killing SORCER process");
-                    int exit = process.destroy();
-                    out.println("; exit code = " + exit);
-                } else {
-                    out.println("SORCER has stopped");
-                }
-            } else {
-                out.println("No SORCER running");
-            }
-            out.flush();
-            err.flush();
-        }
     }
 
     private static Options buildOptions() {
@@ -266,7 +285,7 @@ public class SorcerLauncher {
         rioHome.setType(File.class);
         options.addOption(rioHome);
 
-        Option debug = new Option(DEBUG,true,"Add debug option to JVM");
+        Option debug = new Option(DEBUG, true, "Add debug option to JVM");
         debug.setType(Boolean.class);
         options.addOption(debug);
         return options;

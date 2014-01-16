@@ -16,12 +16,14 @@
 
 package sorcer.util;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Timer;
 
 /**
  * @author Rafał Krupiński
  */
-public class Process2 {
+public class Process2 extends Process{
 	final private Process process;
     private ThreadGroup helperThreads;
 
@@ -40,7 +42,7 @@ public class Process2 {
 		}
 	}
 
-	public int waitFor() throws InterruptedException {
+    public int waitFor() throws InterruptedException {
         try {
 		    return process.waitFor();
         } finally {
@@ -48,7 +50,7 @@ public class Process2 {
         }
 	}
 
-	/**
+    /**
 	 * {@link Process#waitFor()} with timeout
 	 *
 	 * @param timeout timeout in milliseconds
@@ -93,7 +95,7 @@ public class Process2 {
 		}
 	}
 
-	public int destroy() {
+	public int destroyAndExitCode() {
 		process.destroy();
         try {
             return process.waitFor();
@@ -110,4 +112,29 @@ public class Process2 {
             }
         }
 	}
+
+    @Override
+    public OutputStream getOutputStream() {
+        return process.getOutputStream();
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        return process.getInputStream();
+    }
+
+    @Override
+    public InputStream getErrorStream() {
+        return process.getErrorStream();
+    }
+
+    @Override
+    public int exitValue() {
+        return process.exitValue();
+    }
+
+    @Override
+    public void destroy() {
+        process.destroy();
+    }
 }
