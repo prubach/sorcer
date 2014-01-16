@@ -37,15 +37,11 @@ public class ProcessDestroyer implements Runnable {
 
     @Override
     public void run() {
-        if (!doKill) return;
+        if (!doKill || !process.running()) return;
 
-        if (process.running()) {
-            out.print("Killing " + name + " process");
-            int exit = process.destroyAndExitCode();
-            out.println("; exit code = " + exit);
-        } else {
-            out.println("The " + name + " process is already down");
-        }
+        out.print("Killing " + name + " process");
+        int exit = process.destroyAndExitCode();
+        out.println("; exit code = " + exit);
     }
 
     public void setDoKill(boolean doKill) {

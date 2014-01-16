@@ -36,18 +36,12 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.out;
-import static sorcer.core.SorcerConstants.E_RIO_HOME;
-import static sorcer.core.SorcerConstants.S_KEY_SORCER_ENV;
+import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
 
 /**
@@ -70,7 +64,7 @@ public class SorcerLauncher {
     private File home;
     private File rio;
     private File logs;
-    private String[] args;
+    private List<String> args;
     private Integer debugPort;
 
     protected Process2 sorcerProcess;
@@ -102,13 +96,13 @@ public class SorcerLauncher {
                 System.exit(-1);
             }
 
-            File home = new File(cmd.hasOption(HOME) ? cmd.getOptionValue(HOME) : System.getenv("SORCER_HOME"));
+            File home = new File(cmd.hasOption(HOME) ? cmd.getOptionValue(HOME) : System.getenv(E_SORCER_HOME));
             launcher.setHome(home);
 
             String rioPath;
             if (cmd.hasOption(RIO)) {
                 rioPath = cmd.getOptionValue(RIO);
-            } else if ((rioPath = System.getenv("RIO_HOME")) == null)
+            } else if ((rioPath = System.getenv(E_RIO_HOME)) == null)
                 rioPath = new File(home, "lib/rio").getPath();
             launcher.setRio(new File(rioPath));
 
@@ -116,7 +110,7 @@ public class SorcerLauncher {
                 launcher.setDebugPort(Integer.parseInt(cmd.getOptionValue(DEBUG)));
 
             launcher.setLogs(new File(cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : new File(home, "logs").getPath()));
-            launcher.setArgs(cmd.getArgs());
+            launcher.setArgs(cmd.getArgList());
 
             launcher.start();
         }
@@ -124,8 +118,8 @@ public class SorcerLauncher {
 
     private void start() throws IOException, InterruptedException {
         out.println("*******   *******   *******   SORCER launcher   *******   *******   *******");
-        out.println("SORCER_HOME = " + home);
-        out.println("RIO_HOME    = " + rio);
+        out.println(E_SORCER_HOME + " = " + home);
+        out.println(E_RIO_HOME + "    = " + rio);
 
         SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
         File errFile = new File(logs, "error.txt");
@@ -149,8 +143,8 @@ public class SorcerLauncher {
         systemProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
         systemProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
 
-        systemProps.put("sorcer.home", home.getPath());
-        systemProps.put("webster.tmp.dir", new File(home, "databases").getPath());
+        systemProps.put(SORCER_HOME, home.getPath());
+        systemProps.put(S_WEBSTER_TMP_DIR, new File(home, "databases").getPath());
         systemProps.put(SECURITY_POLICY, new File(config, "sorcer.policy").getPath());
         systemProps.put(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
         //systemProps.put(S_WEBSTER_INTERFACE, getInetAddress());
@@ -164,7 +158,7 @@ public class SorcerLauncher {
         //systemProps.put("logback.configurationFile", new File(config, "logback.xml").getPath());
 
         bld.setProperties(systemProps);
-        bld.setParameters(Arrays.asList(args));
+        bld.setParameters(args);
         if (debugPort != null) {
             bld.setDebugger(true);
             bld.setDebugPort(debugPort);
@@ -213,7 +207,7 @@ public class SorcerLauncher {
         } else {
             processDestroyer = new ProcessDestroyer(sorcerProcess, "SORCER");
             installShutdownHook();
-            //installProcessMonitor();
+            installProcessMonitor();
         }
 
         BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
@@ -238,7 +232,6 @@ public class SorcerLauncher {
                 }
             }
         }
-
     }
 
     private void installShutdownHook() {
@@ -249,7 +242,7 @@ public class SorcerLauncher {
         ProcessMonitor.install(sorcerProcess, new ProcessMonitor.ProcessDownCallback() {
             @Override
             public void processDown(Process process) {
-                SorcerLauncher.this.sorcerProcess = null;
+                out.println("Sorcer is down, closing launcher");
                 System.exit(-1);
             }
         }, true);
@@ -307,7 +300,7 @@ public class SorcerLauncher {
         this.logs = logs;
     }
 
-    public void setArgs(String[] args) {
+    public void setArgs(List<String> args) {
         this.args = args;
     }
 
