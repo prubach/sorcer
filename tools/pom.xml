@@ -29,6 +29,7 @@
         <module>sorcer-rio</module>
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
+        <module>sorcer-resolver</module>
 	</modules>
 	<build>
 <!--	<plugins>

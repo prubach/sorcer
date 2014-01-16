@@ -18,7 +18,6 @@
 package sorcer.core;
 
 import sorcer.util.HostUtil;
-import sorcer.resolver.Resolver;
 import sorcer.service.ConfigurationException;
 import sorcer.util.GenericUtil;
 import sorcer.util.ParentFirstProperties;
@@ -975,14 +974,6 @@ public class SorcerEnv {
         return port;
     }
 
-    public static void setCodeBaseByArtifacts(String[] artifactCoords) {
-        String[] jars = new String[artifactCoords.length];
-        for (int i = 0; i < artifactCoords.length; i++) {
-            jars[i] = Resolver.resolveRelative(artifactCoords[i]);
-        }
-        setCodeBase(jars);
-    }
-
     public static void updateCodebase() {
         String codebase = System.getProperty("java.rmi.server.codebase");
         if (codebase == null)
@@ -1107,6 +1098,10 @@ public class SorcerEnv {
 
     public static String getRepoDir() {
         return getEnvProperties().getProperty(S_SORCER_REPO);
+    }
+
+    public static String getLibPath() {
+        return new File(getHomeDir(), "lib").getPath();
     }
 
     /**

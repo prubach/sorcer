@@ -1,6 +1,5 @@
-package config.platform
 /*
-* Copyright 2013 Rafał Krupiński SorcerSoft.com S.A.
+* Copyright 2013 SorcerSoft.com S.A.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

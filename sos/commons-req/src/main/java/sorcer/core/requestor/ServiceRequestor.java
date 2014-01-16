@@ -107,6 +107,14 @@ abstract public class
         }
         }
 
+    public static void setCodeBaseByArtifacts(String[] artifactCoords) {
+        String[] jars = new String[artifactCoords.length];
+        for (int i = 0; i < artifactCoords.length; i++) {
+            jars[i] = Resolver.resolveRelative(artifactCoords[i]);
+        }
+        SorcerEnv.setCodeBase(jars);
+    }
+
     public void setExertion(Exertion exertion) {
         this.exertion = exertion;
     }

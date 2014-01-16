@@ -17,14 +17,14 @@
  */
 package junit.sorcer.core.provider;
 
-import org.junit.Test;
 import sorcer.core.SorcerEnv;
+import sorcer.core.requestor.ResolvingWebster;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Wait;
-import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.JavaSystemProperties;
 
@@ -66,7 +66,7 @@ public class ArithmeticNetTest {
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setSecurityManager(new RMISecurityManager());
 		if(System.getProperty(RMI_SERVER_CODEBASE)==null){
-			SorcerEnv.setCodeBaseByArtifacts(new String[]{
+			ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                     "org.sorcersoft.sorcer:sorcer-api",
                     "org.sorcersoft.sorcer:ju-arithmetic-api"});
 		}
@@ -256,7 +256,7 @@ public class ArithmeticNetTest {
     }
 
     public static void main(String[] args) throws Exception {
-        Webster webster = InternalWebster.startRequestorWebsterFromProperties();
+        Webster webster = ResolvingWebster.startRequestorWebsterFromProperties();
         try {
             waitForServices();
             ArithmeticNetTest ant = new ArithmeticNetTest();

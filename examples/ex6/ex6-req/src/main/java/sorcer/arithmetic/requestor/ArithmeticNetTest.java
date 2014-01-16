@@ -22,7 +22,7 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Arithmetic;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.SorcerEnv;
+import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -48,7 +48,7 @@ public class ArithmeticNetTest {
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
                 + "/configs/sorcer.policy");
         System.setSecurityManager(new RMISecurityManager());
-        SorcerEnv.setCodeBaseByArtifacts(new String[]{
+        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-prv",
                 "org.sorcersoft.sorcer:ex6-api"});

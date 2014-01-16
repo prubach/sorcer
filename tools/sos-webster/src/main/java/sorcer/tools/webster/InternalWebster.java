@@ -17,22 +17,16 @@
 package sorcer.tools.webster;
 
 import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
-import sorcer.util.Artifact;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static sorcer.core.SorcerConstants.CODEBASE_JARS;
 import static sorcer.core.SorcerConstants.S_WEBSTER_INTERFACE;
-import static sorcer.util.JavaSystemProperties.RMI_SERVER_CODEBASE;
 
 /**
  * Helper class for starting an Internal Webster
@@ -93,7 +87,7 @@ public class InternalWebster {
         StringBuffer sb = new StringBuffer();
         if (roots == null && websterRoots == null) {
             // defaults Sorcer roots
-            sb.append(";").append(Resolver.getRepoDir()).append(";").append(Resolver.getRootDir());
+            sb.append(";").append(SorcerEnv.getRepoDir()).append(";").append(SorcerEnv.getLibPath());
         } else if (websterRoots != null) {
             for (int i=0; i<websterRoots.length; i++) {
                 sb.append(';').append(websterRoots[i]);
@@ -165,32 +159,6 @@ public class InternalWebster {
             logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
 
         return webster;
-    }
-
-    public static Webster startRequestorWebsterFromProperties() {
-        SorcerEnv env = SorcerEnv.getEnvironment();
-        String userCodebase = env.getRequestorWebsterCodebase();
-
-        String roots = env.getWebsterRootsString();
-        Webster webster = null;
-        try {
-            webster = new Webster(roots, true);
-
-            URL root = SorcerEnv.getCodebaseRoot(SorcerEnv.getHostAddress(), webster.getPort());
-            String codebase;
-            if (userCodebase == null || userCodebase.isEmpty()) {
-                codebase = Resolver.resolveCodeBase(root, Artifact.getSorcerApi(), Artifact.getSosPlatform());
-            } else {
-                String[] jars = userCodebase.split(" ");
-                codebase = SorcerEnv.getCodebase(root, jars);
-            }
-            System.setProperty(RMI_SERVER_CODEBASE, codebase);
-            return webster;
-        } catch (BindException e) {
-            throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + webster.getPort(), e);
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException("Could not obtain local address", e);
-        }
     }
 
     private static String[] toArray(String arg) {
