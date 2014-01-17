@@ -1,7 +1,5 @@
 package sorcer.util;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,7 +1,5 @@
 package sorcer.util;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +14,6 @@ package sorcer.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

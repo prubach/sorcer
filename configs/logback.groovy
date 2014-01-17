@@ -179,6 +179,7 @@ logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 //logger("sorcer.core.security.level", OFF)
 logger("sorcer.test.level", DEBUG)
 logger("private.level", DEBUG)
+logger("net.jini.config", ALL)
 
 root(INFO, appenders)
 
