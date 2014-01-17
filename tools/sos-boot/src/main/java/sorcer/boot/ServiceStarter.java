@@ -16,7 +16,10 @@
 package sorcer.boot;
 
 import com.sun.jini.start.ServiceDescriptor;
-import net.jini.config.*;
+import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
+import net.jini.config.ConfigurationProvider;
+import net.jini.config.EmptyConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -27,9 +30,9 @@ import org.rioproject.resolver.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
@@ -38,10 +41,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static sorcer.com.sun.jini.start.ServiceStarter.Result;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Created;
 
 /**
@@ -53,14 +58,54 @@ public class ServiceStarter {
     private static final String SUFFIX_RIVER = "config";
     final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
 
-	public static void main(String[] args) throws Exception {
+    protected List<Result> services = new LinkedList<Result>();
+
+    public static void main(String[] args) throws Exception {
         //redirect java.util.logging to slf4j/logback
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
         System.setSecurityManager(new RMISecurityManager());
-		new ServiceStarter().doMain(args);
+        ServiceStarter serviceStarter = new ServiceStarter();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(serviceStarter.new ServiceStopper(), "SORCER service destroyer"));
+
+        serviceStarter.doMain(args);
 	}
+
+    class ServiceStopper implements Runnable{
+        @Override
+        public void run() {
+            for (Result service : services) {
+                if(service.result instanceof Created){
+                    Created created = (Created) service.result;
+                    stop(created.impl);
+                }
+            }
+        }
+
+        private void stop(Object impl) {
+            if (impl instanceof DestroyAdmin) {
+                DestroyAdmin da = (DestroyAdmin) impl;
+                try {
+                    log.info("Stopping {}", da);
+                    da.destroy();
+                } catch (RemoteException e) {
+                    log.warn("Error", e);
+                }
+            } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
+                com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
+                try {
+                    log.info("Stopping {}", da);
+                    da.destroy();
+                } catch (RemoteException e) {
+                    log.warn("Error", e);
+                }
+            } else {
+                log.warn("Unable to stop {}", impl);
+            }
+        }
+    }
 
 	private void doMain(String[] args) throws Exception {
 		loadDefaultProperties();
@@ -125,7 +170,7 @@ public class ServiceStarter {
         serviceDescriptors.addAll(createFromOar(cfgJars));
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
-        sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs);
+        services = sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs);
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
