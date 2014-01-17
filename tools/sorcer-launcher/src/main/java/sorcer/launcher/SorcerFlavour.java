@@ -9,8 +9,6 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public abstract class SorcerFlavour {
-
-
     public abstract String getMainClass();
 
     public List<String> getClassPath() {
@@ -52,5 +50,5 @@ public abstract class SorcerFlavour {
         return Collections.emptyList();
     }
 
-    public abstract SorcerLauncher.OutputConsumer getConsumer();
+    public abstract OutputConsumer getConsumer();
 }

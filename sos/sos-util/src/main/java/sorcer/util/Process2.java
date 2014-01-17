@@ -18,21 +18,50 @@ package sorcer.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.Timer;
 
 /**
  * @author Rafał Krupiński
  */
-public class Process2 extends Process{
+public class Process2 extends Process {
+    private static Field pidField;
+
 	final private Process process;
+    private String name;
+
     private ThreadGroup helperThreads;
 
-    public Process2(Process process) {
-        this.process = process;
+    static {
+        try {
+            Class<?> unixProc = Class.forName("java.lang.UNIXProcess");
+            pidField = unixProc.getField("pid");
+            if (!pidField.isAccessible())
+                pidField.setAccessible(true);
+        } catch (ClassNotFoundException ignore) {
+        } catch (NoSuchFieldException ignore) {
+        } catch (SecurityException ignore) {
+        }
     }
 
-    public Process2(Process process, ThreadGroup helperThreads) {
-        this(process);
+    public static int getUnixPid(Process p) {
+        if (pidField == null)
+            return -1;
+        try {
+            return pidField.getInt(p);
+        } catch (IllegalAccessException e) {
+            return -1;
+        }
+    }
+
+    public Process2(Process process, String name) {
+        this.process = process;
+        int pid = getUnixPid(process);
+        this.name = (pid == -1) ? name : name + '@' + pid;
+    }
+
+    public Process2(Process process, String name, ThreadGroup helperThreads) {
+        this(process, name);
         this.helperThreads = helperThreads;
 	}
 
@@ -89,6 +118,9 @@ public class Process2 extends Process{
 		}
 	}
 
+    /**
+     * @return process's exit value if it's finished, null otherwise.
+     */
 	public Integer exitValueOrNull() {
 		try {
             int exitValue = process.exitValue();
@@ -99,13 +131,9 @@ public class Process2 extends Process{
 		}
 	}
 
-	public int destroyAndExitCode() {
+    public int destroyAndExitCode() throws InterruptedException {
 		process.destroy();
-        try {
-            return process.waitFor();
-        } catch (InterruptedException ignore) {
-            return -1;
-        }
+        return process.waitFor();
     }
 
     private void killThreads() {
@@ -140,5 +168,10 @@ public class Process2 extends Process{
     @Override
     public void destroy() {
         process.destroy();
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

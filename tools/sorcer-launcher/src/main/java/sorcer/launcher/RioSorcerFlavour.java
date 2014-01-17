@@ -37,47 +37,47 @@ public class RioSorcerFlavour extends SorcerFlavour {
     }
 
     @Override
-    public SorcerLauncher.OutputConsumer getConsumer() {
+    public OutputConsumer getConsumer() {
         return new RioOutputConsumer();
     }
-}
 
-class RioOutputConsumer implements SorcerLauncher.OutputConsumer {
-    final private static Logger log = LoggerFactory.getLogger(RioOutputConsumer.class);
+    static class RioOutputConsumer implements OutputConsumer {
+        final private static Logger log = LoggerFactory.getLogger(RioOutputConsumer.class);
 
-    private Pattern startPattern = Pattern.compile(".*Instantiating \\[([\\w/]+), instance:(\\d+)\\]");
+        private Pattern startPattern = Pattern.compile(".*Instantiating \\[([\\w/]+), instance:(\\d+)\\]");
 
-    private Pattern stopPatter = Pattern.compile(".*\\[([\\w/]+)\\] service provisioned, instanceId=\\[\\d+\\], type=\\[\\w+\\], have \\[(\\d+)\\].*");
+        private Pattern stopPatter = Pattern.compile(".*\\[([\\w/]+)\\] service provisioned, instanceId=\\[\\d+\\], type=\\[\\w+\\], have \\[(\\d+)\\].*");
 
 
-    Set<String> allServices = new HashSet<String>();
-    Set<String> startingServices = new HashSet<String>();
+        Set<String> allServices = new HashSet<String>();
+        Set<String> startingServices = new HashSet<String>();
 
-    @Override
-    public boolean consume(String line) {
-        Matcher m = startPattern.matcher(line);
-        if (m.find()) {
-            initService(m.group(1), m.group(2));
-            return true;
+        @Override
+        public boolean consume(String line) {
+            Matcher m = startPattern.matcher(line);
+            if (m.find()) {
+                initService(m.group(1), m.group(2));
+                return true;
+            }
+
+            m = stopPatter.matcher(line);
+            if (m.find())
+                serviceStared(m.group(1));
+
+            return allServices.isEmpty() || !startingServices.isEmpty();
         }
 
-        m = stopPatter.matcher(line);
-        if (m.find())
-            serviceStared(m.group(1));
+        private void initService(String name, String num) {
+            startingServices.add(name);
+            allServices.add(name);
+            log.info("Starting {} services", allServices.size());
+        }
 
-        return allServices.isEmpty() || !startingServices.isEmpty();
-    }
-
-    private void initService(String name, String num) {
-        startingServices.add(name);
-        allServices.add(name);
-        log.info("Starting {} services", allServices.size());
-    }
-
-    private void serviceStared(String name) {
-        startingServices.remove(name);
-        int all = allServices.size();
-        int started = all - startingServices.size();
-        log.info("Started {}, {} out of {} services", name, started, all);
+        private void serviceStared(String name) {
+            startingServices.remove(name);
+            int all = allServices.size();
+            int started = all - startingServices.size();
+            log.info("Started {}, {} out of {} services", name, started, all);
+        }
     }
 }

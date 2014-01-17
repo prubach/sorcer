@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * @author Rafał Krupiński
  */
-public class SorcerOutputConsumer implements SorcerLauncher.OutputConsumer {
+public class SorcerOutputConsumer implements OutputConsumer {
     private static final Logger log = LoggerFactory.getLogger(SorcerOutputConsumer.class);
     private Pattern pattern = Pattern.compile("Started (\\d+)/(\\d+) services; (\\d+) errors");
 

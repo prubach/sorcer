@@ -30,7 +30,7 @@ public class SorcerSorcerFlavour extends SorcerFlavour {
     }
 
     @Override
-    public SorcerLauncher.OutputConsumer getConsumer() {
+    public OutputConsumer getConsumer() {
         return new SorcerOutputConsumer();
     }
 }

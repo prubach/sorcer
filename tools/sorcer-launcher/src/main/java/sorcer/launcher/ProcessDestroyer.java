@@ -17,38 +17,41 @@
 package sorcer.launcher;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.util.Process2;
 
-import static java.lang.System.out;
+import java.util.List;
 
 /**
  * @author Rafał Krupiński
  */
 public class ProcessDestroyer implements Runnable {
-    private Process2 process;
-    private boolean enabled = true;
-    private String name;
+    private static final Logger log = LoggerFactory.getLogger(ProcessDestroyer.class);
+    private List<Process> children;
 
-    public ProcessDestroyer(Process process, String name) {
-        this(new Process2(process), name);
-    }
-
-    public ProcessDestroyer(Process2 sorcerProcess, String name) {
-        this.name = name;
-        assert sorcerProcess != null;
-        process = sorcerProcess;
+    public ProcessDestroyer(List<Process> children) {
+        assert children != null;
+        this.children = children;
     }
 
     @Override
     public void run() {
-        if (!enabled || !process.running()) return;
+        for (Process child : children) {
+            Process2 p2;
+            if ((child instanceof Process2)) {
+                p2 = (Process2) child;
+            } else {
+                p2 = new Process2(child, "child process");
+            }
 
-        out.print("Killing " + name + " process");
-        int exit = process.destroyAndExitCode();
-        out.println("; exit code = " + exit);
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+            log.info("Killing {}", p2);
+            try {
+                int exit = p2.destroyAndExitCode();
+                log.info("Exit code for {} is {}", p2, exit);
+            } catch (InterruptedException e) {
+                log.warn("Interrupted on {}", p2, e);
+            }
+        }
     }
 }

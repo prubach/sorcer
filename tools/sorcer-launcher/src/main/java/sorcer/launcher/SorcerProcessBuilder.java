@@ -35,11 +35,12 @@ public class SorcerProcessBuilder extends JavaProcessBuilder {
     protected String sorcerHome;
 
     public SorcerProcessBuilder(String sorcerHome) {
+        super("SORCER");
         this.sorcerHome = sorcerHome;
     }
 
     public SorcerProcessBuilder(SorcerEnv env) {
-        sorcerHome = env.getSorcerHome();
+        this(env.getSorcerHome());
     }
 
     public void setRioHome(String rioHome) {

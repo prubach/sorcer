@@ -55,10 +55,6 @@ public class ProcessMonitor implements Runnable {
         install(process, new RunnableCallback(callback), daemon);
     }
 
-    public static interface ProcessDownCallback {
-        public void processDown(Process process);
-    }
-
     private static class RunnableCallback implements ProcessDownCallback {
         private final Runnable callback;
 

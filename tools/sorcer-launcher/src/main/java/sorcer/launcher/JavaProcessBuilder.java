@@ -44,26 +44,31 @@ import static java.util.Arrays.asList;
  */
 public class JavaProcessBuilder {
     protected Logger log = LoggerFactory.getLogger(getClass());
+    protected String name;
     protected Map<String, String> properties;
     protected Map<String, String> environment = new HashMap<String, String>();
-	protected Collection<String> classPathList;
-	protected String mainClass;
-	protected List<String> parameters;
-	protected File workingDir;
-	protected boolean debugger;
-	protected File outFile;
-	protected File errFile;
+    protected Collection<String> classPathList;
+    protected String mainClass;
+    protected List<String> parameters;
+    protected File workingDir;
+    protected boolean debugger;
     protected String command = "java";
     protected int debugPort = 8000;
-    protected Map<String,String> javaAgent=new HashMap<String, String>();
+    protected Map<String, String> javaAgent = new HashMap<String, String>();
 
+    protected File outFile;
+    protected File errFile;
     protected OutputStream out;
     protected OutputStream err;
 
     protected ThreadGroup ioThreads = new ThreadGroup("Sorcer launcher IO threads");
     private final ProcessBuilder builder = new ProcessBuilder();
 
-	public Process2 startProcess() throws IOException {
+    public JavaProcessBuilder(String name) {
+        this.name = name;
+    }
+
+    public Process2 startProcess() throws IOException {
         if (mainClass == null || mainClass.trim().isEmpty()) {
             throw new IllegalStateException("mainClass must be set");
         }
@@ -79,11 +84,11 @@ public class JavaProcessBuilder {
         }
 
         if (workingDir == null) {
-			// the default
-			// make explicit for logging purpose
-			workingDir = new File(System.getProperty("user.dir"));
-		}
-		builder.directory(workingDir);
+            // the default
+            // make explicit for logging purpose
+            workingDir = new File(System.getProperty("user.dir"));
+        }
+        builder.directory(workingDir);
 
         for (Map.Entry<String, String> e : environment.entrySet()) {
             log.info("{}", e);
@@ -106,10 +111,10 @@ public class JavaProcessBuilder {
             log.info("{}", cmdStr);
         }
 
-		redirectIO();
+        redirectIO();
 
-		Process proc = null;
-		try {
+        Process proc = null;
+        try {
             proc = builder.start();
 
             try {
@@ -125,8 +130,8 @@ public class JavaProcessBuilder {
             throw new IllegalStateException("Process exited with value " + x);
         } catch (IllegalThreadStateException ignored) {
             redirectOutputs(proc);
-            return new Process2(proc, ioThreads);
-		}finally{}
+            return new Process2(proc, name, ioThreads);
+        }
     }
 
     private void appendJavaOptions() {
@@ -162,15 +167,15 @@ public class JavaProcessBuilder {
     }
 
     /**
-	 * Redirect output and error to ours IF the method
-	 * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
-	 */
+     * Redirect output and error to ours IF the method
+     * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
+     */
     private void redirectIO() throws FileNotFoundException {
-        if (outFile != null)
+        if (out == null && outFile != null)
             redirectOutput(outFile);
-        if (errFile != null) {
+        if (err == null && errFile != null) {
             redirectError(errFile);
-        } else if (outFile != null)
+        } else if (err == null && outFile != null)
             redirectErrorStream(true);
     }
 
@@ -202,21 +207,21 @@ public class JavaProcessBuilder {
     }
 
     protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-		Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
-		return method.invoke(target, args);
-	}
+        Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
+        return method.invoke(target, args);
+    }
 
-	private List<String> _D(Map<String, String> d) {
-		List<String> result = new ArrayList<String>(d.size());
-		for (Map.Entry<String, String> e : d.entrySet()) {
-			result.add(_D(e.getKey(), e.getValue()));
-		}
-		return result;
-	}
+    private List<String> _D(Map<String, String> d) {
+        List<String> result = new ArrayList<String>(d.size());
+        for (Map.Entry<String, String> e : d.entrySet()) {
+            result.add(_D(e.getKey(), e.getValue()));
+        }
+        return result;
+    }
 
-	private String _D(String key, String value) {
-		return "-D" + key + '=' + value;
-	}
+    private String _D(String key, String value) {
+        return "-D" + key + '=' + value;
+    }
 
     public void setOut(OutputStream out) {
         this.out = out;
