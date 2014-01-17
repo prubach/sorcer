@@ -1,7 +1,5 @@
 /**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +15,7 @@
  */
 package sorcer.boot;
 
+import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
@@ -53,7 +52,6 @@ public class ServiceStarter {
 	public static final String CONFIG_RIVER = "config/services.config";
     private static final String SUFFIX_RIVER = "config";
     final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
-    private sorcer.com.sun.jini.start.ServiceStarter riverServiceStarter = new sorcer.com.sun.jini.start.ServiceStarter();
 
 	public static void main(String[] args) throws Exception {
         //redirect java.util.logging to slf4j/logback
@@ -120,16 +118,22 @@ public class ServiceStarter {
             else
                 throw new IllegalArgumentException("Unrecognized file " + path);
         }
-        if (!riverServices.isEmpty())
-            riverServiceStarter.startServicesFromPaths(riverServices.toArray(new String[riverServices.size()]));
-        if (!cfgJars.isEmpty() || !opstrings.isEmpty())
-            startRioStyleServices(cfgJars, opstrings);
-    }
+        Map<Configuration, List<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, List<? extends ServiceDescriptor>>();
+        descs.putAll(instantiateDescriptors(riverServices));
 
-    private void startRioStyleServices(List<File> cfgJars, List<File> opstrings) throws Exception {
         List<OpstringServiceDescriptor> serviceDescriptors = createFromOpStrFiles(opstrings);
         serviceDescriptors.addAll(createFromOar(cfgJars));
-        startServices(serviceDescriptors);
+        descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
+
+        sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs);
+    }
+
+    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
+        List<Configuration>configs = new ArrayList<Configuration>(riverServices.size());
+        for (String s : riverServices) {
+            configs.add(ConfigurationProvider.getInstance(new String[]{s}));
+        }
+        return sorcer.com.sun.jini.start.ServiceStarter.instantiateDescriptors(configs);
     }
 
     private File findArtifact(String artifactId) {
@@ -177,18 +181,6 @@ public class ServiceStarter {
             descriptors.addAll(createServiceDescriptors(op.getNestedOperationalStrings(), policyFile));
         }
         return descriptors;
-    }
-
-    private List<Created> startServices(List<OpstringServiceDescriptor> services) {
-        List<Created> result = new ArrayList<Created>(services.size());
-        for (AbstractServiceDescriptor descriptor : services) {
-            try {
-                result.add(descriptor.create(EmptyConfiguration.INSTANCE));
-            } catch (Exception x) {
-                log.warn("Error while creating a service from {}", descriptor, x);
-            }
-        }
-        return result;
     }
 
     private URL findConfigUrl(String path) throws IOException {

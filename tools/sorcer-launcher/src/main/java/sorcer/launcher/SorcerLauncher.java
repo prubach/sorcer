@@ -193,12 +193,14 @@ public class SorcerLauncher {
             boolean keepGoing = consumer.consume(line);
             if (!keepGoing) break;
         }
+        log.info("{} has started", sorcerProcess);
 
-        if (waitMode == WaitMode.start) {
-            //don't kill sorcer on launcher exit
-            children.remove(sorcerProcess);
-        } else
+        if (waitMode == WaitMode.end) {
             sorcerProcess.waitFor();
+        }
+
+        //avoid killing sorcer on launcher exit
+        children.remove(sorcerProcess);
 
         return sorcerProcess;
     }

@@ -37,14 +37,9 @@ import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.MissingResourceException;
 
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -276,7 +271,7 @@ public class ServiceStarter {
     * @see ServiceDescriptor
     * @see net.jini.config.Configuration
     */
-    private static Result[] create(final ServiceDescriptor[] descs,
+    public static Result[] create(final ServiceDescriptor[] descs,
         final Configuration config)
         throws Exception
     {
@@ -456,47 +451,6 @@ public class ServiceStarter {
        maintainNonActivatableReferences(results);
     }
 
-	private static Result[] processServiceDescriptors(Configuration... configs) throws Exception {
-		List<Result> resultList = new LinkedList<Result>();
-        ServiceDescriptor[][] descriptors = new ServiceDescriptor[configs.length][];
-
-        for (int i = 0; i < configs.length; i++) {
-            Configuration config = configs[i];
-			ServiceDescriptor[] descs = (ServiceDescriptor[])
-					config.getEntry(START_PACKAGE, "serviceDescriptors",
-							ServiceDescriptor[].class, null);
-			if (descs == null || descs.length == 0) {
-				logger.warning("service.config.empty");
-				continue;
-			}
-            descriptors[i] = descs;
-        }
-
-        for (int i = 0; i < configs.length; i++) {
-            Configuration config = configs[i];
-            ServiceDescriptor[] descs = descriptors[i];
-            if(descs == null)
-                continue;
-
-			LoginContext loginContext = (LoginContext)
-					config.getEntry(START_PACKAGE, "loginContext",
-							LoginContext.class, null);
-
-			Result[] results;
-			if (loginContext != null) {
-				results = createWithLogin(descs, config, loginContext);
-			} else {
-				results = create(descs, config);
-			}
-			resultList.addAll(Arrays.asList(results));
-		}
-
-        Result[] results = resultList.toArray(new Result[resultList.size()]);
-		checkResultFailures(results);
-		maintainNonActivatableReferences(results);
-		return results;
-	}
-
     /**
      * The main method for the <code>ServiceStarter</code> application.
      * The <code>args</code> argument is passed directly to
@@ -562,32 +516,42 @@ public class ServiceStarter {
 	   "main");
     }
 
-	/**
-	 * Create a Configuration object from each path in args and create service for each entry.
-	 *
-	 * @param args config file paths
-	 * @throws ConfigurationException
-	 * @return list ofcreated services
-	 */
-	public static Result[] startServicesFromPaths(String[] args) throws ConfigurationException {
-		logger.info("Loading from " + Arrays.deepToString(args));
-		Collection<Configuration> configs = new ArrayList<Configuration>(args.length);
-        ClassLoader cl = ServiceStarter.class.getClassLoader();
-        for (String arg : args) {
-            if (arg == null) continue;
-            URL resource = cl.getResource(arg);
-			String options;
-			if (resource == null) {
-				options = arg;
-			} else {
-				options = resource.toExternalForm();
-			}
-			configs.add(ConfigurationProvider.getInstance(new String[]{options}));
-		}
-		try {
-			return processServiceDescriptors(configs.toArray(new Configuration[configs.size()]));
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error while parsing configuration", e);
-		}
-	}
+    /**
+     * Create a service for each ServiceDescriptor in the map
+     * @throws Exception
+     */
+    public static List<Result> instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap) throws Exception {
+        List<Result> result = new LinkedList<Result>();
+        for (Configuration config : descriptorMap.keySet()) {
+            List<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
+            ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
+
+            LoginContext loginContext = (LoginContext)
+                    config.getEntry(START_PACKAGE, "loginContext",
+                            LoginContext.class, null);
+            Result[] results = null;
+            if (loginContext != null)
+                results = createWithLogin(descs, config, loginContext);
+            else
+                results = create(descs, config);
+            checkResultFailures(results);
+            Collections.addAll(result, results);
+        }
+        return result;
+    }
+
+    public static Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
+        Map<Configuration, List<ServiceDescriptor>> result = new HashMap<Configuration, List<ServiceDescriptor>>();
+        for (Configuration config : configs) {
+            ServiceDescriptor[] descs = (ServiceDescriptor[])
+                    config.getEntry(START_PACKAGE, "serviceDescriptors",
+                            ServiceDescriptor[].class, null);
+            if (descs == null || descs.length == 0) {
+                logger.warning("service.config.empty");
+                return result;
+            }
+            result.put(config, Arrays.asList(descs));
+        }
+        return result;
+    }
 }//end class ServiceStarter
