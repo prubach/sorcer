@@ -35,7 +35,7 @@ public class Process2 extends Process {
     static {
         try {
             Class<?> unixProc = Class.forName("java.lang.UNIXProcess");
-            pidField = unixProc.getField("pid");
+            pidField = unixProc.getDeclaredField("pid");
             if (!pidField.isAccessible())
                 pidField.setAccessible(true);
         } catch (ClassNotFoundException ignore) {

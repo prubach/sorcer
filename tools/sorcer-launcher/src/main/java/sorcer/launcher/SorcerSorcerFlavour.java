@@ -16,6 +16,8 @@
 
 package sorcer.launcher;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +25,12 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public class SorcerSorcerFlavour extends SorcerFlavour {
+    private File ext;
+
+    public SorcerSorcerFlavour(File ext) {
+        this.ext = ext;
+    }
+
     @Override
     public String getMainClass() {
         return "sorcer.boot.ServiceStarter";
@@ -42,7 +50,11 @@ public class SorcerSorcerFlavour extends SorcerFlavour {
 
     @Override
     public List<String> getDefaultConfigs() {
-        return Arrays.asList("configs/sorcer-boot.config");
+        List<String> result = new ArrayList<String>(Arrays.asList("configs/sorcer-boot.config"));
+        File extCfg = new File(ext, "configs/SorcerExtBoot.groovy");
+        if (extCfg.exists())
+            result.add(extCfg.getPath());
+        return result;
     }
 
     @Override

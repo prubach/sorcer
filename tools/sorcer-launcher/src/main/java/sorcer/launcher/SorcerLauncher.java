@@ -159,7 +159,7 @@ public class SorcerLauncher {
         if (flavour == Flavour.rio)
             sorcerFlavour = new RioSorcerFlavour();
         else
-            sorcerFlavour = new SorcerSorcerFlavour();
+            sorcerFlavour = new SorcerSorcerFlavour(ext);
 
         Collection<String> classPath = resolveClassPath(sorcerFlavour.getClassPath());
         classPath.addAll(sorcerFlavour.getNonResolvableClassPath());
@@ -190,14 +190,16 @@ public class SorcerLauncher {
 
         String line;
         while ((line = reader.readLine()) != null) {
-            boolean starting = consumer.consume(line);
-            if (!starting) break;
+            boolean keepGoing = consumer.consume(line);
+            if (!keepGoing) break;
         }
 
         if (waitMode == WaitMode.start) {
             //don't kill sorcer on launcher exit
             children.remove(sorcerProcess);
-        }
+        } else
+            sorcerProcess.waitFor();
+
         return sorcerProcess;
     }
 
@@ -292,10 +294,9 @@ public class SorcerLauncher {
         if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
             launcher.setOutFile(outFile);
             launcher.setErrFile(errFile);
-        } else {
-            launcher.setOut(new PrintStream(outFile));
-            launcher.setErr(new PrintStream(errFile));
         }
+        launcher.setOut(new PrintStream(outFile));
+        launcher.setErr(new PrintStream(errFile));
 
         launcher.setFlavour(cmd.hasOption(FLAVOUR) ? Flavour.valueOf(cmd.getOptionValue(FLAVOUR)) : Flavour.sorcer);
 
