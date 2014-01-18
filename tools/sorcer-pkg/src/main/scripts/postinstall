@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /opt/sorcer/lib/sigar/
+unzip -q sigar-native.zip
+cd /opt/sorcer/configs/start-scripts/
+./install_script -s

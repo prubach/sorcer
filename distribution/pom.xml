@@ -579,35 +579,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                  <!--  <plugin>
-                        <groupId>org.codehaus.izpack</groupId>
-                        <artifactId>izpack-maven-plugin</artifactId>
-                        <version>1.0-alpha-5</version>
-
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>izpack</goal>
-                                </goals>
-                                <configuration>
-                                    <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
-                                    &lt;!&ndash; base for relative paths in izpack descriptor &ndash;&gt;
-                                    &lt;!&ndash;<baseDir>${staging.dir}/izpack</baseDir>&ndash;&gt;
-                                    &lt;!&ndash;<installFile>${staging.dir}/izpack/install.xml</installFile>&ndash;&gt;
-                                    <installerFile>${project.build.directory}/sorcer-${project.version}-setup.jar
-                                    </installerFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.codehaus.izpack</groupId>
-                                <artifactId>izpack-standalone-compiler</artifactId>
-                                <version>${izpack.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>-->
                     <plugin>
                         <groupId>com.akathist.maven.plugins.launch4j</groupId>
                         <artifactId>launch4j-maven-plugin</artifactId>

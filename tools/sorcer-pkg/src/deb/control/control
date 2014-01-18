@@ -1,0 +1,10 @@
+Package: Sorcer
+Version: [[version]]
+Section: java
+Priority: optional
+Architecture: all
+Depends: adduser, default-jre-headless | java5-runtime-headless
+Maintainer: Sorcersoft.com (info@sorcersoft.com)
+Homepage: http://www.sorcersoft.com
+Description: SORCER platform
+Distribution: development

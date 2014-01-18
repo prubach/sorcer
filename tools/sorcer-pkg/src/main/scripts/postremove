@@ -1,0 +1,10 @@
+#!/bin/sh
+USER=sorcer
+GROUP=sorcer
+if [ -n "`cat /etc/passwd | grep $USER`" ]; then
+  userdel $USER > /dev/null
+fi
+if [ -n "`cat /etc/group | grep $GROUP`" ]; then
+  groupdel $GROUP > /dev/null
+fi
+

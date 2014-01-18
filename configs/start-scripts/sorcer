@@ -21,21 +21,25 @@
 # if a different UNIX user than the owner of SORCER_HOME directory should be used to
 # start SORCER specify also the SORCER_USER variable
 
+if [ -f /etc/profile.d/sorcer-env.sh ]; then
+  . /etc/profile.d/sorcer-env.sh
+fi
+
 if [ -f /etc/sorcer.conf ]; then
   . /etc/sorcer.conf
 fi
 
 if [ -z "$SORCER_HOME" ]; then
     echo "SORCER_HOME must be set in /etc/environment or a configuration"
-    echo "file (/etc/sorcer.conf) must exist and contain the SORCER_HOME variable"
-    echo "SORCER_HOME must be set in /etc/environment or in the configuration file (/etc/sorcer.conf)" > /tmp/sorcer-starter.log
+    echo "file (/etc/profile.d/sorcer-env.sh or /etc/sorcer.conf) must exist and contain the SORCER_HOME variable"
+    echo "SORCER_HOME must be set in /etc/environment or in the configuration file (/etc/profile.d/sorcer-env.sh /etc/sorcer.conf)" > /tmp/sorcer-starter.log
     exit -1
 fi
 
 if [ -z "$JAVA_HOME" ]; then
     echo "JAVA_HOME must be set in /etc/environment or a configuration"
-    echo "file (/etc/sorcer.conf) must exist and contain the JAVA_HOME variable"
-    echo "JAVA_HOME must be set in /etc/environment or in the configuration file (/etc/sorcer.conf)" > /tmp/sorcer-starter.log
+    echo "file (/etc/profile.d/sorcer-env.sh or /etc/sorcer.conf) must exist and contain the JAVA_HOME variable"
+    echo "JAVA_HOME must be set in /etc/environment or in the configuration file (/etc/profile.d/sorcer-env.sh or /etc/sorcer.conf)" > /tmp/sorcer-starter.log
     exit -1
 fi
 

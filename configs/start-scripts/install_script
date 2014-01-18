@@ -14,12 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# 
-# This script is a wrapper around the "rio" script, and provides the command
-# line instruction to start all required Rio services
-# (Cybernode, Monitor & Lookup)
-# resolve links - $0 may be a soft-link
+# Run with -s in silent mode
+# Run with -u to uninstall
+# Run with -u -s to uninstall in silent mode
 
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
@@ -47,8 +44,13 @@ SORCER_HOME=`pwd`
 
 install()
 {
-    echo Installing start script to start SORCER from SORCER_HOME: $SORCER_HOME
-    echo "SORCER_HOME=$SORCER_HOME" > /etc/sorcer.conf
+    if [ ! "$1" = "-s" ]; then
+        echo Installing start script to start SORCER from SORCER_HOME: $SORCER_HOME
+    fi
+    if [ ! -f /etc/profile.d/sorcer-env.sh ]; then
+      echo "SORCER_HOME=$SORCER_HOME" > /etc/sorcer.conf
+    fi
+    rm -f /etc/init.d/sorcer
     ln -s $SORCER_HOME/configs/start-scripts/sorcer /etc/init.d/sorcer
     if [ -n "$(command -v update-rc.d)" ]; then
         update-rc.d sorcer defaults
@@ -61,7 +63,9 @@ install()
 
 uninstall()
 {
-    echo Uninstalling SORCER start script for SORCER_HOME: $SORCER_HOME
+    if [ ! "$1" = "-s" ]; then
+        echo Uninstalling SORCER start script for SORCER_HOME: $SORCER_HOME
+    fi
     if [ -n "$(command -v update-rc.d)" ]; then
         update-rc.d -f sorcer remove
     elif [ -n "$(command -v chkconfig)" ]; then
@@ -78,7 +82,7 @@ uninstall()
 }
 
 if [ "$1" = "-u" ]; then
-    uninstall
+    uninstall $2
 else
-    install
+    install $1
 fi

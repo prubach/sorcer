@@ -1,0 +1,11 @@
+#!/bin/sh
+USER=sorcer
+GROUP=sorcer
+#if [ -z "`cat /etc/group | grep $GROUP`" ]; then
+#  groupadd $GROUP
+#fi
+if [ -z "`cat /etc/passwd | grep $USER`" ]; then
+  useradd -d /home/$USER -m $USER > /dev/null
+fi
+# -g $GROUP
+

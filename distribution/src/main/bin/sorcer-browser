@@ -10,6 +10,7 @@ SORCER_APP_NAME="SorcerBrowser"
 
 # resolve links - $0 may be a soft-link
 PRG="$0"
+#echo VAL:$0
 
 while [ -h "$PRG" ] ; do
     ls=`ls -ld "$PRG"`
@@ -62,4 +63,3 @@ else
         
   #-Djava.net.preferIPv4Stack=true
 fi
-

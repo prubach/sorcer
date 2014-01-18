@@ -30,6 +30,7 @@
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
         <module>sorcer-resolver</module>
+        <module>sorcer-pkg</module>
 	</modules>
 	<build>
 <!--	<plugins>

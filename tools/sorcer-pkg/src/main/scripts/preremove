@@ -1,0 +1,5 @@
+#!/bin/sh
+/etc/init.d/sorcer stop
+rm -rf /opt/sorcer/lib/sigar/lib
+cd /opt/sorcer/configs/start-scripts/
+./install_script -u -s
