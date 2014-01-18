@@ -25,6 +25,7 @@
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
+    <name>SORCER tools :: resolver</name>
     <artifactId>sorcer-resolver</artifactId>
 
     <dependencies>

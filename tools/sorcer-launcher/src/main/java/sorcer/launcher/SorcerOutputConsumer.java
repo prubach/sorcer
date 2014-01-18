@@ -38,7 +38,7 @@ public class SorcerOutputConsumer implements OutputConsumer {
         String started = m.group(1);
         String all = m.group(2);
         String errors = m.group(3);
-        log.debug("Stared {} of {} with {} errors", started, all, errors);
+        log.debug("Started {} of {} with {} errors", started, all, errors);
         if (!"0".equals(errors))
             throw new IllegalArgumentException("Errors while starting services");
         return !started.equals(all);
