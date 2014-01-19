@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>cataloger-api</module>
+        <module>cataloger-cfg</module>
         <module>cataloger-prv</module>
         <module>cataloger-sui</module>
     </modules>

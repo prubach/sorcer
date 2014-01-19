@@ -11,6 +11,7 @@
 	<name>SORCER OS :: providers :: exertmonitor</name>
 	<packaging>pom</packaging>
 	<modules>
+		<module>exertmonitor-cfg</module>
 		<module>exertmonitor-prv</module>
 	</modules>
 </project>

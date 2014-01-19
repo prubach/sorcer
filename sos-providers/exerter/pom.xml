@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>exerter-cfg</module>
 		<module>exerter-prv</module>
 	</modules>
 </project>

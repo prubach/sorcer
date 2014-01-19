@@ -13,5 +13,6 @@
 
     <modules>
 		<module>spacer-prv</module>
+		<module>spacer-cfg</module>
     </modules>
 </project>

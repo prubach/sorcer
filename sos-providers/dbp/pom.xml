@@ -11,6 +11,7 @@
     <name>SORCER OS :: providers :: dbp</name>
     <packaging>pom</packaging>
     <modules>
+        <module>dbp-cfg</module>
         <module>dbp-prv</module>
         <module>dbp-api</module>
     </modules>

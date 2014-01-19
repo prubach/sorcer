@@ -11,6 +11,7 @@
     <name>SORCER OS :: providers :: jobber</name>
     <packaging>pom</packaging>
     <modules>
+	<module>jobber-cfg</module>
 	<module>jobber-prv</module>
     </modules>
 </project>

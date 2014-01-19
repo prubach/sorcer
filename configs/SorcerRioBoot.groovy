@@ -43,16 +43,16 @@ deployment(name: 'Sorcer') {
     artifact id: 'mercury', 'org.apache.river:mercury:2.2.1'
     artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.1'
     artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
-    artifact id: 'cataloger-prv', "org.sorcersoft.sorcer:cataloger-prv:" + getSorcerVersion()
+    artifact id: 'cataloger-cfg', "org.sorcersoft.sorcer:cataloger-cfg:" + getSorcerVersion()
     artifact id: 'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:" + getSorcerVersion()
-    artifact id: 'jobber-prv', "org.sorcersoft.sorcer:jobber-prv:" + getSorcerVersion()
-    artifact id: 'spacer-prv', "org.sorcersoft.sorcer:spacer-prv:" + getSorcerVersion()
-    artifact id: 'logger-prv', "org.sorcersoft.sorcer:logger-prv:" + getSorcerVersion()
+    artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
+    artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
+    artifact id: 'logger-cfg', "org.sorcersoft.sorcer:logger-cfg:" + getSorcerVersion()
     artifact id: 'logger-sui', "org.sorcersoft.sorcer:logger-sui:" + getSorcerVersion()
-    artifact id: 'dbp-prv', "org.sorcersoft.sorcer:dbp-prv:" + getSorcerVersion()
-    artifact id: 'exertmonitor-prv', "org.sorcersoft.sorcer:exertmonitor-prv:" + getSorcerVersion()
+    artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
+    artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
     artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
-    artifact id: 'exerter-prv', "org.sorcersoft.sorcer:exerter-prv:" + getSorcerVersion()
+    artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
     artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'
@@ -121,9 +121,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
-            artifact ref: 'jobber-prv'
+            artifact ref: 'jobber-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}jobber.config"
+        configuration file: 'classpath:jobber.config'
         maintain 1
     }
 
@@ -133,9 +133,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
-            artifact ref: 'spacer-prv'
+            artifact ref: 'spacer-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}spacer.config"
+        configuration file: 'classpath:spacer.config'
         maintain 1
     }
 
@@ -145,9 +145,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'cataloger-sui'
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
-            artifact ref: 'cataloger-prv'
+            artifact ref: 'cataloger-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}cataloger.config"
+        configuration file: 'classpath:cataloger.config'
         maintain 1
     }
 
@@ -157,9 +157,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'logger-sui'
         }
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
-            artifact ref: 'logger-prv'
+            artifact ref: 'logger-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}logger.config"
+        configuration file: 'classpath:logger.config'
         maintain 1
     }
 
@@ -169,9 +169,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
-            artifact ref: 'exertmonitor-prv'
+            artifact ref: 'exertmonitor-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}exertmonitor.config"
+        configuration file: 'classpath:exertmonitor.config'
         maintain 1
     }
 
@@ -181,9 +181,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.ServiceProvider') {
-            artifact ref: 'dbp-prv'
+            artifact ref: 'dbp-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}dbp.config"
+        configuration file: 'classpath:dbp.config'
         maintain 1
     }
 
@@ -193,9 +193,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'sos-exertlet-sui'
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
-            artifact ref: 'exerter-prv'
+            artifact ref: 'exerter-cfg'
         }
-        configuration file: "" + getSorcerHome() + "${fs()}configs${fs()}sos-providers${fs()}exerter.config"
+        configuration file: 'classpath:exerter.config'
         maintain 1
     }
 }
