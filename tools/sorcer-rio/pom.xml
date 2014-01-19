@@ -203,6 +203,18 @@
                                     <outputDirectory>${rioLibDl}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>org.rioproject.monitor</groupId>
+                                    <artifactId>monitor-api</artifactId>
+                                    <version>${v.rio}</version>
+                                    <outputDirectory>${rioLibDl}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.rioproject.monitor</groupId>
+                                    <artifactId>monitor-proxy</artifactId>
+                                    <version>${v.rio}</version>
+                                    <outputDirectory>${rioLibDl}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>watch-ui</artifactId>
                                     <version>${v.rio}</version>
@@ -211,6 +223,12 @@
                                 <artifactItem>
                                     <groupId>org.rioproject</groupId>
                                     <artifactId>rio-api</artifactId>
+                                    <version>${v.rio}</version>
+                                    <outputDirectory>${rioLibDl}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.rioproject</groupId>
+                                    <artifactId>rio-proxy</artifactId>
                                     <version>${v.rio}</version>
                                     <outputDirectory>${rioLibDl}</outputDirectory>
                                 </artifactItem>

@@ -47,7 +47,7 @@ if $useprofiler ; then
 else
     exec "$JAVACMD" $JAVA_OPTS \
         -classpath "$BROWSER_CLASSPATH" \
-        -Dssb.logFile="$SORCER_HOME"/configs/browser/logs/browser.log \
+        -Dssb.logFile="$SORCER_HOME"/logs/browser.log \
         -Dssb.logLen=300 \
         -Djava.security.policy="$SORCER_HOME"/configs/browser/policy/ssb.policy \
         -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \

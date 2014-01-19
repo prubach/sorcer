@@ -46,32 +46,9 @@
                 </defineStatements>
                 <mappings>
                     <mapping>
-                        <!--<directoryIncluded>true</directoryIncluded>-->
-                        <directory>/opt/sorcer</directory>
-                        <filemode>644</filemode>
-                        <dirmode>755</dirmode>
-                        <defaultUsername>sorcer</defaultUsername>
-                        <defaultGroupname>sorcer</defaultGroupname>
-                        <!--<needarch>true</needarch>-->
-                        <sources>
-                            <source>
-                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}</location>
-                                <excludes>
-                                    <exclude>configs/start-scripts/**</exclude>
-                                    <exclude>bin/**</exclude>
-                                    <exclude>lib/sigar/lib/**</exclude>
-                                    <exclude>bin/*.bat</exclude>
-                                    <exclude>examples/*.bat</exclude>
-                                    <exclude>bin/*.cmd</exclude>
-                                </excludes>
-                            </source>
-                        </sources>
-                    </mapping>
-                    <mapping>
                         <directoryIncluded>true</directoryIncluded>
                         <directory>/opt/sorcer/bin</directory>
                         <filemode>755</filemode>
-                        <dirmode>755</dirmode>
                         <username>sorcer</username>
                         <groupname>sorcer</groupname>
                         <!--<needarch>true</needarch>-->
@@ -90,13 +67,96 @@
                         </sources>
                     </mapping>
                     <mapping>
-                        <!--<directoryIncluded>true</directoryIncluded>-->
-                        <directory>/opt/sorcer/examples</directory>
+                         <directoryIncluded>true</directoryIncluded>
+                         <directory>/opt/sorcer</directory>
+                         <filemode>755</filemode>
+                         <username>sorcer</username>
+                         <groupname>sorcer</groupname>
+                    </mapping>
+                    <mapping>
+                        <directory>/opt/sorcer/configs</directory>
                         <filemode>755</filemode>
-                        <dirmode>755</dirmode>
+                        <username>sorcer</username>
+                        <groupname>sorcer</groupname>
+                        <sources>
+                            <source>
+                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/configs</location>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>true</directoryIncluded>
+                        <directory>/opt/sorcer/lib</directory>
+                        <filemode>755</filemode>
+                        <username>sorcer</username>
+                        <groupname>sorcer</groupname>
+                        <sources>
+                            <source>
+                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/lib</location>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>sigar/lib/**</exclude>
+                                </excludes>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                         <directoryIncluded>true</directoryIncluded>
+                         <directory>/opt/sorcer/logs</directory>
+                         <filemode>777</filemode>
+                         <username>sorcer</username>
+                         <groupname>sorcer</groupname>
+                         <sources>
+                             <source>
+                                 <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/logs</location>
+                                 <includes>
+                                     <include>**</include>
+                                 </includes>
+                             </source>
+                         </sources>
+                     </mapping>
+                    <mapping>
+                        <directoryIncluded>true</directoryIncluded>
+                        <directory>/opt/sorcer/deploy</directory>
+                        <filemode>755</filemode>
+                        <username>sorcer</username>
+                        <groupname>sorcer</groupname>
+                        <sources>
+                            <source>
+                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/deploy</location>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>true</directoryIncluded>
+                        <directory>/opt/sorcer/docs</directory>
+                        <filemode>755</filemode>
                         <username>sorcer</username>
                         <groupname>sorcer</groupname>
                         <!--<needarch>true</needarch>-->
+                        <sources>
+                            <source>
+                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/docs</location>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
+                        <directoryIncluded>true</directoryIncluded>
+                        <directory>/opt/sorcer/examples</directory>
+                        <filemode>755</filemode>
+                        <username>sorcer</username>
+                        <groupname>sorcer</groupname>
                         <sources>
                             <source>
                                 <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/examples</location>
@@ -111,28 +171,10 @@
                         </sources>
                     </mapping>
                     <mapping>
-                        <directoryIncluded>true</directoryIncluded>
-                        <directory>/opt/sorcer/configs/start-scripts/</directory>
-                        <filemode>755</filemode>
-                        <dirmode>755</dirmode>
-                        <username>sorcer</username>
-                        <groupname>sorcer</groupname>
-                        <!--<needarch>true</needarch>-->
-                        <sources>
-                            <source>
-                                <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/configs/start-scripts</location>
-                                <includes>
-                                    <include>**</include>
-                                </includes>
-                            </source>
-                        </sources>
-                    </mapping>
-                    <mapping>
                         <directory>/etc/profile.d/</directory>
                         <filemode>755</filemode>
                         <username>sorcer</username>
                         <groupname>sorcer</groupname>
-                        <!--<needarch>true</needarch>-->
                         <sources>
                             <source>
                                 <location>src/main/scripts</location>
@@ -178,7 +220,6 @@
                 <preinstallScriptlet>
                     <scriptFile>src/main/scripts/preinstall</scriptFile>
                     <fileEncoding>utf-8</fileEncoding>
-                    <!--<script>echo "installing now"</script>-->
                 </preinstallScriptlet>
                 <postinstallScriptlet>
                     <scriptFile>src/main/scripts/postinstall</scriptFile>
@@ -217,7 +258,7 @@
                                 <type>directory</type>
                                 <src>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}</src>
                                 <includes>**/**</includes>
-                                <excludes>configs/start-scripts/**,bin/**,lib/sigar/lib/**,bin/*.bat,examples/*.bat,bin/*.cmd</excludes>
+                                <excludes>configs/start-scripts/**,bin/**,lib/sigar/lib/**,bin/*.bat,examples/*.bat,bin/*.cmd,logs/**,logs</excludes>
                                 <mapper>
                                     <type>perm</type>
                                     <strip>0</strip>
@@ -232,7 +273,7 @@
                                 <type>directory</type>
                                 <src>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}</src>
                                 <includes>configs/start-scripts/**,bin/**,examples/setenv,examples/prepare-repository</includes>
-                                <excludes>bin/*.bat,examples/*.bat,bin/*.cmd,bin/uninstall,bin/tmp</excludes>
+                                <excludes>bin/*.bat,examples/*.bat,bin/*.cmd,bin/uninstall,bin/tmp,logs/**,logs</excludes>
                                 <mapper>
                                     <type>perm</type>
                                     <strip>0</strip>
@@ -255,6 +296,20 @@
                                     <user>sorcer</user>
                                     <group>sorcer</group>
                                     <filemode>644</filemode>
+                                </mapper>
+                            </data>
+                            <data>
+                                <type>directory</type>
+                                <src>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/logs</src>
+                                <includes>**</includes>
+                                <mapper>
+                                    <type>perm</type>
+                                    <strip>0</strip>
+                                    <prefix>/opt/sorcer/logs</prefix>
+                                    <user>sorcer</user>
+                                    <group>sorcer</group>
+                                    <filemode>777</filemode>
+                                    <dirmode>777</dirmode>
                                 </mapper>
                             </data>
 
@@ -304,6 +359,12 @@
                                 <type>link</type>
                                 <linkName>/usr/bin/boot</linkName>
                                 <linkTarget>/opt/sorcer/bin/boot</linkTarget>
+                                <symlink>true</symlink>
+                            </data>
+                            <data>
+                                <type>link</type>
+                                <linkName>/usr/bin/common-run</linkName>
+                                <linkTarget>/opt/sorcer/bin/common-run</linkTarget>
                                 <symlink>true</symlink>
                             </data>
                         </dataSet>
