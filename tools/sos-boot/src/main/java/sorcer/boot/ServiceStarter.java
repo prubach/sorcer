@@ -27,6 +27,7 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -46,7 +47,14 @@ import java.net.URL;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -57,23 +65,25 @@ import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
  */
 public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
-	final private static String CONFIG_RIVER = "config/services.config";
+    final private static String CONFIG_RIVER = "config/services.config";
     final private static String SUFFIX_RIVER = "config";
     final private static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
     final private static String START_PACKAGE = "com.sun.jini.start";
 
-    protected List<Service> services;
+    private List<Service> services;
+    private volatile boolean bootInterrupted;
 
     public static void main(String[] args) throws Exception {
+        log.info("******* Starting Sorcersoft.com SORCER *******");
         loadDefaultProperties();
         installLogging();
         installSecurityManager();
 
-        List<Service>services = new LinkedList<Service>();
+        List<Service> services = new LinkedList<Service>();
         ServiceStarter serviceStarter = new ServiceStarter(services);
-        ServiceStopper.install(services);
+        ServiceStopper.install(serviceStarter, services);
         serviceStarter.start(new LinkedList<String>(Arrays.asList(args)));
-	}
+    }
 
     private static void installSecurityManager() {
         if (System.getSecurityManager() == null)
@@ -104,11 +114,15 @@ public class ServiceStarter {
         this.services = services;
     }
 
+    public void interrupt() {
+        bootInterrupted = true;
+    }
+
     /**
-	 * Start services from the configs
-	 *
-	 * @param configs file path or URL of the services.config configuration
-	 */
+     * Start services from the configs
+     *
+     * @param configs file path or URL of the services.config configuration
+     */
     public void start(Collection<String> configs) throws Exception {
         if (configs.isEmpty()) {
             configs.add(SORCER_DEFAULT_CONFIG.getPath());
@@ -208,9 +222,10 @@ public class ServiceStarter {
 
     /**
      * Create a service for each ServiceDescriptor in the map
+     *
      * @throws Exception
      */
-    public static void instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap, List<AbstractServiceDescriptor.Service> result) throws Exception {
+    public void instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap, List<AbstractServiceDescriptor.Service> result) throws Exception {
         for (Configuration config : descriptorMap.keySet()) {
             List<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
             ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
@@ -241,11 +256,13 @@ public class ServiceStarter {
         return result;
     }
 
-    /** Generic service creation method that attempts to start the
-     *  services defined by the provided <code>ServiceDescriptor[]</code>
-     *  argument.
-     * @param descs The <code>ServiceDescriptor[]</code> that contains
-     *              the descriptors for the services to start.
+    /**
+     * Generic service creation method that attempts to start the
+     * services defined by the provided <code>ServiceDescriptor[]</code>
+     * argument.
+     *
+     * @param descs  The <code>ServiceDescriptor[]</code> that contains
+     *               the descriptors for the services to start.
      * @param config The associated <code>Configuration</code> object
      *               used to customize the service creation process.
      * @throws Exception If there was a problem creating the service.
@@ -253,19 +270,22 @@ public class ServiceStarter {
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
      */
-    public static void create(ServiceDescriptor[] descs, Configuration config, Collection<AbstractServiceDescriptor.Service> proxies) throws Exception {
+    public void create(ServiceDescriptor[] descs, Configuration config, Collection<AbstractServiceDescriptor.Service> proxies) throws Exception {
         for (ServiceDescriptor desc : descs) {
-            if(Thread.currentThread().isInterrupted())
+            if (bootInterrupted)
                 break;
             if (desc != null) {
                 AbstractServiceDescriptor.Service service = null;
                 try {
-                    if(desc instanceof AbstractServiceDescriptor)
+                    if (desc instanceof AbstractServiceDescriptor)
                         service = (Service) desc.create(config);
-                    else
+                    else if (desc instanceof RioServiceDescriptor) {
+                        RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) desc.create(config);
+                        service = new Service(created.impl, created.proxy, desc);
+                    } else
                         service = new AbstractServiceDescriptor.Service(desc.create(config), null, desc);
                 } catch (Exception e) {
-                    service = new Service(null,null, desc, e);
+                    service = new Service(null, null, desc, e);
                 } finally {
                     proxies.add(service);
                 }
@@ -291,7 +311,7 @@ public class ServiceStarter {
      * @see net.jini.config.Configuration
      * @see javax.security.auth.login.LoginContext
      */
-    private static void createWithLogin(
+    private void createWithLogin(
             final ServiceDescriptor[] descs, final Configuration config,
             final LoginContext loginContext,
             final Collection<AbstractServiceDescriptor.Service> result)

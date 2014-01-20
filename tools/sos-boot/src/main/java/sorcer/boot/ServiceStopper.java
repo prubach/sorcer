@@ -16,7 +16,6 @@
 
 package sorcer.boot;
 
-import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.DestroyAdmin;
@@ -34,25 +33,25 @@ import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
  */
 public class ServiceStopper extends Thread {
     private final List<Service> services;
-    private WeakReference<Thread> main;
+    private WeakReference<ServiceStarter> serviceStarter;
     private static final Logger log = LoggerFactory.getLogger(ServiceStopper.class);
 
-    public ServiceStopper(String name, List<Service> services) {
+    public ServiceStopper(String name, List<Service> services, ServiceStarter serviceStarter) {
         super(name);
-        this.main = new WeakReference<Thread>(Thread.currentThread());
+        this.serviceStarter = new WeakReference<ServiceStarter>(serviceStarter);
         this.services = services;
     }
 
-    static void install(List<Service> services) {
-        Runtime.getRuntime().addShutdownHook(new ServiceStopper("SORCER service destroyer", services));
+    static void install(ServiceStarter serviceStarter, List<Service> services) {
+        Runtime.getRuntime().addShutdownHook(new ServiceStopper("SORCER service destroyer", services, serviceStarter));
     }
 
     @Override
     public void run() {
-        Thread main = this.main.get();
-        if (main != null) {
-            log.debug("Interrupting {}", main);
-            main.interrupt();
+        ServiceStarter starter = serviceStarter.get();
+        if (starter != null) {
+            log.debug("Interrupting {}", starter);
+            starter.interrupt();
         }
         ArrayList<Service> services = new ArrayList<Service>(this.services);
         Collections.reverse(services);
@@ -79,9 +78,6 @@ public class ServiceStopper extends Thread {
             } catch (RemoteException e) {
                 log.warn("Error", e);
             }
-        } else if (impl instanceof RioServiceDescriptor.Created) {
-            RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) impl;
-            stop(new Service(created.impl, created.proxy, service.descriptor, service.exception));
         } else {
             log.warn("Unable to stop {}", service.impl);
         }
