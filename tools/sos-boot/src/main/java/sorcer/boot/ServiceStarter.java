@@ -67,7 +67,7 @@ public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
     final private static String CONFIG_RIVER = "config/services.config";
     final private static String SUFFIX_RIVER = "config";
-    final private static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
+    final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
     final private static String START_PACKAGE = "com.sun.jini.start";
 
     private List<Service> services;
