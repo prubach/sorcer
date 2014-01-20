@@ -95,13 +95,13 @@ public class Configurer extends AbstractBeanListener {
             if (required)
                 throw new IllegalArgumentException("Could not configure " + method + " with " + entryKey, e);
             else
-                log.info("Could not configure {} with {} {}", method, entryKey, e.getMessage());
+                log.debug("Could not configure {} with {} {}", method, entryKey, e.getMessage());
             return;
         } catch (IllegalArgumentException e) {
             if (required)
                 throw e;
             else{
-                log.info("Could not configure {} with {} {}", method, entryKey, e.getMessage());
+                log.debug("Could not configure {} with {} {}", method, entryKey, e.getMessage());
                 return;
             }
         }
