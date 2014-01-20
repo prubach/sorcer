@@ -42,7 +42,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
     @Override
-    protected Created doCreate(Configuration globalConfig) throws Exception {
+    protected Service doCreate(Configuration globalConfig) throws Exception {
         ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, getCommonClassLoader(globalConfig));
 
         security(cl);
@@ -87,7 +87,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         } finally {
             currentThread.setContextClassLoader(currentClassLoader);
         }
-        return new Created(impl, proxy);
+        return new Service(impl, proxy, this);
     }
 
     private void security(ClassLoader cl) throws PolicyInitializationException {

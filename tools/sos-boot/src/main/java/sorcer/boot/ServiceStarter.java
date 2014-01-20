@@ -27,136 +27,93 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
-import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static sorcer.com.sun.jini.start.ServiceStarter.Result;
-import static sorcer.provider.boot.AbstractServiceDescriptor.Created;
+import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
 /**
  * @author Rafał Krupiński
  */
 public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
-	public static final String CONFIG_RIVER = "config/services.config";
-    private static final String SUFFIX_RIVER = "config";
-    final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
+	final private static String CONFIG_RIVER = "config/services.config";
+    final private static String SUFFIX_RIVER = "config";
+    final private static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
+    final private static String START_PACKAGE = "com.sun.jini.start";
 
-    protected List<Result> services = new LinkedList<Result>();
+    protected List<Service> services;
 
     public static void main(String[] args) throws Exception {
+        loadDefaultProperties();
+        installLogging();
+        installSecurityManager();
+
+        List<Service>services = new LinkedList<Service>();
+        ServiceStarter serviceStarter = new ServiceStarter(services);
+        ServiceStopper.install(services);
+        serviceStarter.start(new LinkedList<String>(Arrays.asList(args)));
+	}
+
+    private static void installSecurityManager() {
+        if (System.getSecurityManager() == null)
+            System.setSecurityManager(new RMISecurityManager());
+    }
+
+    private static void installLogging() {
         //redirect java.util.logging to slf4j/logback
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceStarter serviceStarter = new ServiceStarter();
-
-        Runtime.getRuntime().addShutdownHook(serviceStarter.new ServiceStopper(Thread.currentThread(), "SORCER service destroyer"));
-
-        serviceStarter.doMain(args);
-	}
-
-    class ServiceStopper extends Thread {
-        private WeakReference<Thread> main;
-
-        public ServiceStopper(Thread main, String name) {
-            super(name);
-            this.main = new WeakReference<Thread>(main);
-        }
-
-        @Override
-        public void run() {
-            Thread main = this.main.get();
-            if (main != null) {
-                log.debug("Interrupting {}",main);
-                main.interrupt();
-            }
-            ArrayList<Result> services = new ArrayList<Result>(ServiceStarter.this.services);
-            Collections.reverse(services);
-            for (Result service : services) {
-                if (service.result instanceof Created) {
-                    Created created = (Created) service.result;
-                    stop(created.impl);
-                }else if (service.result instanceof RioServiceDescriptor.Created){
-                    RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) service.result;
-                    stop(created.impl);
-                } else {
-                    log.warn("Don't know how to stop {}", service.result);
-                }
-            }
-        }
-
-        private void stop(Object impl) {
-            if (impl instanceof DestroyAdmin) {
-                DestroyAdmin da = (DestroyAdmin) impl;
-                try {
-                    log.debug("Stopping {}", da);
-                    da.destroy();
-                } catch (RemoteException e) {
-                    log.warn("Error", e);
-                }
-            } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
-                com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
-                try {
-                    log.info("Stopping {}", da);
-                    da.destroy();
-                } catch (RemoteException e) {
-                    log.warn("Error", e);
-                }
-            } else {
-                log.warn("Unable to stop {}", impl);
-            }
-        }
     }
 
-	private void doMain(String[] args) throws Exception {
-		loadDefaultProperties();
-        List<String> configs = new LinkedList<String>(Arrays.asList(args));
-		if (configs.isEmpty()) {
-            configs.add(SORCER_DEFAULT_CONFIG.getPath());
-		}
-		start(configs);
-	}
-
-	private void loadDefaultProperties() {
+	private static void loadDefaultProperties() {
 		String sorcerHome = SorcerEnv.getHomeDir().getPath();
 		setDefaultProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
 		setDefaultProperty(JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE, sorcerHome + "/configs/sorcer.logging");
 		setDefaultProperty(SorcerConstants.S_KEY_SORCER_ENV, sorcerHome + "/configs/sorcer.env");
 	}
 
-	private void setDefaultProperty(String key, String value) {
+	private static void setDefaultProperty(String key, String value) {
 		String userValue = System.getProperty(key);
 		if (userValue == null) {
 			System.setProperty(key, value);
 		}
 	}
 
-	/**
+    public ServiceStarter(List<Service> services) {
+        this.services = services;
+    }
+
+    /**
 	 * Start services from the configs
 	 *
 	 * @param configs file path or URL of the services.config configuration
 	 */
     public void start(Collection<String> configs) throws Exception {
+        if (configs.isEmpty()) {
+            configs.add(SORCER_DEFAULT_CONFIG.getPath());
+        }
+
         List<String> riverServices = new LinkedList<String>();
         List<File> cfgJars = new LinkedList<File>();
         List<File> opstrings = new LinkedList<File>();
@@ -191,7 +148,7 @@ public class ServiceStarter {
         serviceDescriptors.addAll(createFromOar(cfgJars));
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
-        sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs, services);
+        instantiateServices(descs, services);
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
@@ -199,7 +156,7 @@ public class ServiceStarter {
         for (String s : riverServices) {
             configs.add(ConfigurationProvider.getInstance(new String[]{s}));
         }
-        return sorcer.com.sun.jini.start.ServiceStarter.instantiateDescriptors(configs);
+        return instantiateDescriptors(configs);
     }
 
     private File findArtifact(String artifactId) {
@@ -247,6 +204,135 @@ public class ServiceStarter {
             descriptors.addAll(createServiceDescriptors(op.getNestedOperationalStrings(), policyFile));
         }
         return descriptors;
+    }
+
+    /**
+     * Create a service for each ServiceDescriptor in the map
+     * @throws Exception
+     */
+    public static void instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap, List<AbstractServiceDescriptor.Service> result) throws Exception {
+        for (Configuration config : descriptorMap.keySet()) {
+            List<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
+            ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
+
+            LoginContext loginContext = (LoginContext)
+                    config.getEntry(START_PACKAGE, "loginContext",
+                            LoginContext.class, null);
+            if (loginContext != null)
+                createWithLogin(descs, config, loginContext, result);
+            else
+                create(descs, config, result);
+            checkResultFailures(result);
+        }
+    }
+
+    public static Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
+        Map<Configuration, List<ServiceDescriptor>> result = new HashMap<Configuration, List<ServiceDescriptor>>();
+        for (Configuration config : configs) {
+            ServiceDescriptor[] descs = (ServiceDescriptor[])
+                    config.getEntry(START_PACKAGE, "serviceDescriptors",
+                            ServiceDescriptor[].class, null);
+            if (descs == null || descs.length == 0) {
+                log.warn("service.config.empty");
+                return result;
+            }
+            result.put(config, Arrays.asList(descs));
+        }
+        return result;
+    }
+
+    /** Generic service creation method that attempts to start the
+     *  services defined by the provided <code>ServiceDescriptor[]</code>
+     *  argument.
+     * @param descs The <code>ServiceDescriptor[]</code> that contains
+     *              the descriptors for the services to start.
+     * @param config The associated <code>Configuration</code> object
+     *               used to customize the service creation process.
+     * @throws Exception If there was a problem creating the service.
+     * @see com.sun.jini.start.ServiceStarter.Result
+     * @see com.sun.jini.start.ServiceDescriptor
+     * @see net.jini.config.Configuration
+     */
+    public static void create(ServiceDescriptor[] descs, Configuration config, Collection<AbstractServiceDescriptor.Service> proxies) throws Exception {
+        for (ServiceDescriptor desc : descs) {
+            if(Thread.currentThread().isInterrupted())
+                break;
+            if (desc != null) {
+                AbstractServiceDescriptor.Service service = null;
+                try {
+                    if(desc instanceof AbstractServiceDescriptor)
+                        service = (Service) desc.create(config);
+                    else
+                        service = new AbstractServiceDescriptor.Service(desc.create(config), null, desc);
+                } catch (Exception e) {
+                    service = new Service(null,null, desc, e);
+                } finally {
+                    proxies.add(service);
+                }
+            }
+        }
+    }
+
+    /**
+     * Generic service creation method that attempts to login via
+     * the provided <code>LoginContext</code> and then call the
+     * <code>create</code> overload without a login context argument.
+     *
+     * @param descs        The <code>ServiceDescriptor[]</code> that contains
+     *                     the descriptors for the services to start.
+     * @param config       The associated <code>Configuration</code> object
+     *                     used to customize the service creation process.
+     * @param loginContext The associated <code>LoginContext</code> object
+     *                     used to login/logout.
+     * @throws Exception If there was a problem logging in/out or
+     *                   a problem creating the service.
+     * @see com.sun.jini.start.ServiceStarter.Result
+     * @see com.sun.jini.start.ServiceDescriptor
+     * @see net.jini.config.Configuration
+     * @see javax.security.auth.login.LoginContext
+     */
+    private static void createWithLogin(
+            final ServiceDescriptor[] descs, final Configuration config,
+            final LoginContext loginContext,
+            final Collection<AbstractServiceDescriptor.Service> result)
+            throws Exception {
+        loginContext.login();
+
+        try {
+            Subject.doAsPrivileged(
+                    loginContext.getSubject(),
+                    new PrivilegedExceptionAction() {
+                        public Object run()
+                                throws Exception {
+                            create(descs, config, result);
+                            return null;
+                        }
+                    },
+                    null);
+        } catch (PrivilegedActionException pae) {
+            throw pae.getException();
+        } finally {
+            try {
+                loginContext.logout();
+            } catch (LoginException le) {
+                log.warn("service.logout.exception", le);
+            }
+        }
+    }
+
+    /**
+     * Utility routine that prints out warning messages for each service
+     * descriptor that produced an exception or that was null.
+     */
+    private static void checkResultFailures(List<AbstractServiceDescriptor.Service> results) {
+        for (AbstractServiceDescriptor.Service result : results) {
+            if (result.exception != null) {
+                log.warn("service.creation.unknown", result.exception);
+                log.warn("service.creation.unknown.detail", result.descriptor);
+            } else if (result.descriptor == null) {
+                log.warn("service.creation.null");
+            }
+        }
     }
 
     private URL findConfigUrl(String path) throws IOException {

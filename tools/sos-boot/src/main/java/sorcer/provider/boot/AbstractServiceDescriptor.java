@@ -1,8 +1,7 @@
 package sorcer.provider.boot;
 /**
  *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +97,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     /**
      * @see com.sun.jini.start.ServiceDescriptor#create
      */
-    public Created create(Configuration config) throws Exception {
+    public Service create(Configuration config) throws Exception {
         try {
             return doCreate(config);
         } catch (Exception x) {
@@ -111,7 +110,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    protected abstract Created doCreate(Configuration config) throws Exception;
+    protected abstract Service doCreate(Configuration config) throws Exception;
 
     protected CommonClassLoader getCommonClassLoader(Configuration config) throws Exception {
     /* Set common JARs to the CommonClassLoader */
@@ -142,7 +141,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
      * SorcerServiceDescriptor.create()} method that returns the proxy and
      * implementation references for the created service.
      */
-    public static class Created {
+    public static class Service {
         /**
          * The reference to the proxy of the created service
          */
@@ -152,15 +151,25 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
          */
         public final Object impl;
 
+        public final ServiceDescriptor descriptor;
+
+        public Exception exception;
         /**
          * Constructs an instance of this class.
          *
          * @param impl  reference to the implementation of the created service
          * @param proxy reference to the proxy of the created service
+         * @param descriptor    service descriptor of the service
          */
-        public Created(Object impl, Object proxy) {
+        public Service(Object impl, Object proxy, ServiceDescriptor descriptor) {
             this.proxy = proxy;
             this.impl = impl;
+            this.descriptor = descriptor;
+        }
+
+        public Service(Object impl, Object proxy, ServiceDescriptor descriptor, Exception exception) {
+            this(impl, proxy, descriptor);
+            this.exception = exception;
         }
     }
 }

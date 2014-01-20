@@ -246,7 +246,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	}
 
     @Override
-    protected Created doCreate(Configuration config) throws Exception {
+    protected Service doCreate(Configuration config) throws Exception {
 		ensureSecurityManager();
 		Object proxy = null;
 
@@ -340,7 +340,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
         } finally {
 			currentThread.setContextClassLoader(currentClassLoader);
 		}
-		return (new Created(impl, proxy));
+		return (new Service(impl, proxy, this));
 	}
 
     /*
