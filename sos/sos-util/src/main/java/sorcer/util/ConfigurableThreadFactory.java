@@ -18,34 +18,37 @@ package sorcer.util;
  */
 
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Rafał Krupiński
  */
 public class ConfigurableThreadFactory implements ThreadFactory {
-    private ThreadFactory threadFactory;
+    private static final AtomicInteger poolNumber = new AtomicInteger(1);
+    private final static String defaultNameFormat = "pool-%d-thread-%d";
+    private final static Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = new LoggingExceptionHandler();
+
+    private final ThreadGroup group;
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
     private boolean daemon = false;
-    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
+    private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = defaultUncaughtExceptionHandler;
+    private String nameFormat = defaultNameFormat;
 
     public ConfigurableThreadFactory() {
-        this(Executors.defaultThreadFactory());
-    }
-
-    public ConfigurableThreadFactory(ThreadFactory threadFactory) {
-        this.threadFactory = threadFactory;
+        SecurityManager s = System.getSecurityManager();
+        group = (s != null) ? s.getThreadGroup() :
+                Thread.currentThread().getThreadGroup();
     }
 
     @Override
     public Thread newThread(Runnable runnable) {
-        Thread thread = threadFactory.newThread(runnable);
+        String name = String.format(nameFormat, poolNumber.getAndIncrement(), threadNumber.getAndIncrement());
+        Thread thread = new Thread(group, runnable, name);
         thread.setDaemon(daemon);
         //thread.setContextClassLoader();
         //thread.setPriority();
 
-        if (uncaughtExceptionHandler == null)
-            uncaughtExceptionHandler = new LoggingExceptionHandler();
         thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
         return thread;
@@ -57,5 +60,9 @@ public class ConfigurableThreadFactory implements ThreadFactory {
 
     public void setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
+    }
+
+    public void setNameFormat(String nameFormat) {
+        this.nameFormat = nameFormat;
     }
 }
