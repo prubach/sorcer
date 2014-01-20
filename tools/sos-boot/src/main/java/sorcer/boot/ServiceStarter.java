@@ -27,6 +27,7 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -39,6 +40,7 @@ import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -68,18 +70,37 @@ public class ServiceStarter {
         System.setSecurityManager(new RMISecurityManager());
         ServiceStarter serviceStarter = new ServiceStarter();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(serviceStarter.new ServiceStopper(), "SORCER service destroyer"));
+        Runtime.getRuntime().addShutdownHook(serviceStarter.new ServiceStopper(Thread.currentThread(), "SORCER service destroyer"));
 
         serviceStarter.doMain(args);
 	}
 
-    class ServiceStopper implements Runnable{
+    class ServiceStopper extends Thread {
+        private WeakReference<Thread> main;
+
+        public ServiceStopper(Thread main, String name) {
+            super(name);
+            this.main = new WeakReference<Thread>(main);
+        }
+
         @Override
         public void run() {
+            Thread main = this.main.get();
+            if (main != null) {
+                log.debug("Interrupting {}",main);
+                main.interrupt();
+            }
+            ArrayList<Result> services = new ArrayList<Result>(ServiceStarter.this.services);
+            Collections.reverse(services);
             for (Result service : services) {
-                if(service.result instanceof Created){
+                if (service.result instanceof Created) {
                     Created created = (Created) service.result;
                     stop(created.impl);
+                }else if (service.result instanceof RioServiceDescriptor.Created){
+                    RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) service.result;
+                    stop(created.impl);
+                } else {
+                    log.warn("Don't know how to stop {}", service.result);
                 }
             }
         }
@@ -88,7 +109,7 @@ public class ServiceStarter {
             if (impl instanceof DestroyAdmin) {
                 DestroyAdmin da = (DestroyAdmin) impl;
                 try {
-                    log.info("Stopping {}", da);
+                    log.debug("Stopping {}", da);
                     da.destroy();
                 } catch (RemoteException e) {
                     log.warn("Error", e);
@@ -170,11 +191,11 @@ public class ServiceStarter {
         serviceDescriptors.addAll(createFromOar(cfgJars));
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
-        services = sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs);
+        sorcer.com.sun.jini.start.ServiceStarter.instantiateServices(descs, services);
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
-        List<Configuration>configs = new ArrayList<Configuration>(riverServices.size());
+        List<Configuration> configs = new ArrayList<Configuration>(riverServices.size());
         for (String s : riverServices) {
             configs.add(ConfigurationProvider.getInstance(new String[]{s}));
         }

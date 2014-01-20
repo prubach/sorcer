@@ -30,7 +30,6 @@ import net.jini.config.ConfigurationProvider;
 import net.jini.security.BasicProxyPreparer;
 import net.jini.security.ProxyPreparer;
 
-import java.net.URL;
 import java.rmi.activation.ActivationException;
 import java.rmi.activation.ActivationSystem;
 import java.rmi.Naming;
@@ -520,8 +519,7 @@ public class ServiceStarter {
      * Create a service for each ServiceDescriptor in the map
      * @throws Exception
      */
-    public static List<Result> instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap) throws Exception {
-        List<Result> result = new LinkedList<Result>();
+    public static void instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap, List<Result> result) throws Exception {
         for (Configuration config : descriptorMap.keySet()) {
             List<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
             ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
@@ -529,15 +527,12 @@ public class ServiceStarter {
             LoginContext loginContext = (LoginContext)
                     config.getEntry(START_PACKAGE, "loginContext",
                             LoginContext.class, null);
-            Result[] results = null;
             if (loginContext != null)
-                results = createWithLogin(descs, config, loginContext);
+                createWithLogin(descs, config, loginContext, result);
             else
-                results = create(descs, config);
-            checkResultFailures(results);
-            Collections.addAll(result, results);
+                create(descs, config, result);
+            checkResultFailures(result);
         }
-        return result;
     }
 
     public static Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
@@ -553,5 +548,105 @@ public class ServiceStarter {
             result.put(config, Arrays.asList(descs));
         }
         return result;
+    }
+
+    /** Generic service creation method that attempts to start the
+     *  services defined by the provided <code>ServiceDescriptor[]</code>
+     *  argument.
+     * @param descs The <code>ServiceDescriptor[]</code> that contains
+     *              the descriptors for the services to start.
+     * @param config The associated <code>Configuration</code> object
+     *               used to customize the service creation process.
+     * @throws Exception If there was a problem creating the service.
+     * @see Result
+     * @see ServiceDescriptor
+     * @see net.jini.config.Configuration
+     */
+    public static void create(ServiceDescriptor[] descs, Configuration config, Collection<Result> proxies) throws Exception {
+        logger.entering(ServiceStarter.class.getName(), "create", new Object[]{descs, config});
+        for (ServiceDescriptor desc : descs) {
+            if(Thread.currentThread().isInterrupted())
+                break;
+            if (desc != null) {
+                Object result = null;
+                Exception problem = null;
+                try {
+                    result = desc.create(config);
+                } catch (Exception e) {
+                    problem = e;
+                } finally {
+                    proxies.add(new Result(desc, result, problem));
+                }
+            }
+        }
+        logger.exiting(ServiceStarter.class.getName(), "create", proxies);
+    }
+
+    /**
+     * Generic service creation method that attempts to login via
+     * the provided <code>LoginContext</code> and then call the
+     * <code>create</code> overload without a login context argument.
+     *
+     * @param descs        The <code>ServiceDescriptor[]</code> that contains
+     *                     the descriptors for the services to start.
+     * @param config       The associated <code>Configuration</code> object
+     *                     used to customize the service creation process.
+     * @param loginContext The associated <code>LoginContext</code> object
+     *                     used to login/logout.
+     * @throws Exception If there was a problem logging in/out or
+     *                   a problem creating the service.
+     * @see Result
+     * @see ServiceDescriptor
+     * @see net.jini.config.Configuration
+     * @see javax.security.auth.login.LoginContext
+     */
+    private static void createWithLogin(
+            final ServiceDescriptor[] descs, final Configuration config,
+            final LoginContext loginContext,
+            final Collection<Result> result)
+            throws Exception {
+        logger.entering(ServiceStarter.class.getName(),
+                "createWithLogin", new Object[]{descs, config, loginContext});
+        loginContext.login();
+
+        try {
+            Subject.doAsPrivileged(
+                    loginContext.getSubject(),
+                    new PrivilegedExceptionAction() {
+                        public Object run()
+                                throws Exception {
+                            create(descs, config, result);
+                            return null;
+                        }
+                    },
+                    null);
+        } catch (PrivilegedActionException pae) {
+            throw pae.getException();
+        } finally {
+            try {
+                loginContext.logout();
+            } catch (LoginException le) {
+                logger.log(Level.FINE, "service.logout.exception", le);
+            }
+        }
+        logger.exiting(ServiceStarter.class.getName(),
+                "createWithLogin", result);
+    }
+
+    /**
+     * Utility routine that prints out warning messages for each service
+     * descriptor that produced an exception or that was null.
+     */
+    private static void checkResultFailures(List<Result> results) {
+        logger.entering(ServiceStarter.class.getName(), "checkResultFailures", results);
+        for (Result result : results) {
+            if (result.exception != null) {
+                logger.log(Level.WARNING, "service.creation.unknown", result.exception);
+                logger.log(Level.WARNING, "service.creation.unknown.detail", result.descriptor);
+            } else if (result.descriptor == null) {
+                logger.log(Level.WARNING, "service.creation.null");
+            }
+        }
+        logger.exiting(ServiceStarter.class.getName(), "checkResultFailures");
     }
 }//end class ServiceStarter
