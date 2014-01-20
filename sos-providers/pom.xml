@@ -14,7 +14,8 @@
 	<name>SORCER OS :: sos-providers</name>
 
 	<modules>
-		<module>jobber</module>
+        <module>blitz-cfg</module>
+        <module>jobber</module>
 		<module>cataloger</module>
 		<module>spacer</module>
 		<module>logger</module>

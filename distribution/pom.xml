@@ -59,32 +59,32 @@
         <!-- sos-providers -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>cataloger-prv</artifactId>
+            <artifactId>cataloger-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>dbp-prv</artifactId>
+            <artifactId>dbp-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>exerter-prv</artifactId>
+            <artifactId>exerter-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>exertmonitor-prv</artifactId>
+            <artifactId>exertmonitor-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>jobber-prv</artifactId>
+            <artifactId>jobber-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>logger-prv</artifactId>
+            <artifactId>logger-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -99,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>spacer-prv</artifactId>
+            <artifactId>spacer-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
 

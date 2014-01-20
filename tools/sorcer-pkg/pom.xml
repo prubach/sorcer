@@ -161,6 +161,8 @@
                             <source>
                                 <location>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}/examples</location>
                                 <includes>
+                                    <include>**/*</include>
+                                    <include>pom.xml</include>
                                     <include>setenv</include>
                                     <include>prepare-repository</include>
                                 </includes>

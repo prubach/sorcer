@@ -139,9 +139,9 @@
                 </dependency>
         -->
         <dependency>
-            <groupId>org.sorcersoft.blitz</groupId>
-            <artifactId>blitz-service</artifactId>
-            <version>${v.blitz}</version>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>blitz-cfg</artifactId>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.blitz</groupId>

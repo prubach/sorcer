@@ -54,8 +54,10 @@ deployment(name: 'Sorcer') {
     artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
+    artifact id: 'blitz-cfg', "org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion()
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
-    artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'
+    //artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'
+
 
     service(name: 'Mahalo') {
         interfaces {
@@ -109,9 +111,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'blitz-dl'
         }
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
-            artifact ref: 'blitz-impl'
+            artifact ref: 'blitz-cfg'
         }
-        configuration file: "" + getSorcerHome() + "/configs/blitz/configs/blitz.config"
+        configuration file: 'classpath:blitz.config'
         maintain 1
     }
 

@@ -7,4 +7,6 @@ fi
 if [ -n "`cat /etc/group | grep $GROUP`" ]; then
   groupdel $GROUP > /dev/null
 fi
+rm -f /opt/sorcer/logs/sorcer_jars_installed.tmp
+
 
