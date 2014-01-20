@@ -48,7 +48,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         security(cl);
 
         Class<?> implClass = cl.loadClass(serviceElement.getComponentBundle().getClassName());
-        ClassLoaderUtil.displayClassLoaderTree(cl);
+        if(logger.isTraceEnabled())
+            ClassLoaderUtil.displayClassLoaderTree(cl);
         Object impl;
         Object proxy;
         Thread currentThread = Thread.currentThread();
