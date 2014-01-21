@@ -391,7 +391,6 @@ $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
 
      BOOT_CLASSPATH=$(createLoggerCp)":$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/util-rio/$V_SORCER/util-rio-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\

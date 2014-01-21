@@ -315,11 +315,6 @@
             <artifactId>ex6-req</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>util-rio</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!--    rio -->
         <dependency>

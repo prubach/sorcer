@@ -45,6 +45,8 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set JINI_CLASSPATH="%JINI_BASE%;%JINI_START%;%LOG_CP%"
    set BOOT_CLASSPATH="%JINI_CLASSPATH%"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-api.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-start.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-lib.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-resolver.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-boot.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-util.jar"
@@ -80,7 +82,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set SORCER_RIO_CP="%SORCER_RIO_CP%%LIB_DIR%\sorcer\sorcer-api.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%%LIB_DIR%\sorcer\sorcer-resolver.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-util.jar"
-   set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-rio-start.jar"
+   set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sorcer-rio-start.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-boot.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\commons\commons-lang3.jar"
 
@@ -129,7 +131,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set SHELL_CLASSPATH="%SHELL_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar"
 
    set SORCER_RIO_CP="%SORCER_COMMON%;%JINI_BASE%"
-   set SORCER_RIO_CP="%SORCER_RIO_CP%;%MVN_REPO%\org\sorcersoft\sorcer\sos-rio-start\%v.sorcer%\sos-rio-start-%v.sorcer%.jar"
+   set SORCER_RIO_CP="%SORCER_RIO_CP%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%MVN_REPO%\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar"
 
    set SORCER_RIOUI_CP="%SORCER_RIO_CP%"

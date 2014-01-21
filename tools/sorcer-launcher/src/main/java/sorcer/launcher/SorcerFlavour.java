@@ -42,7 +42,7 @@ public abstract class SorcerFlavour {
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:sorcer-resolver",
                 "org.sorcersoft.sorcer:sos-boot",
-                "org.sorcersoft.sorcer:sos-rio-start",
+                "org.sorcersoft.sorcer:sorcer-rio-start",
                 "org.sorcersoft.sorcer:sos-util",
 
                 "org.codehaus.groovy:groovy-all:2.1.3",
