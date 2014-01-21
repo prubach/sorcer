@@ -10,7 +10,7 @@
     </parent>
     <artifactId>sorcer-rio-config</artifactId>
     <packaging>pom</packaging>
-    <name>SORCER :: Rio home builder</name>
+    <name>SORCER :: Rio :: config</name>
 
     <properties>
         <rio.home>${env.SORCER_HOME}/target/rio</rio.home>
