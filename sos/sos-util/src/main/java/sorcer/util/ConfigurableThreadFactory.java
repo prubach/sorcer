@@ -28,7 +28,7 @@ public class ConfigurableThreadFactory implements ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final static String defaultNameFormat = "pool-%d-thread-%d";
     private final static Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = new LoggingExceptionHandler();
-
+    private final int thisPoolNumber;
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private boolean daemon = false;
@@ -39,11 +39,12 @@ public class ConfigurableThreadFactory implements ThreadFactory {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
+        thisPoolNumber = poolNumber.getAndIncrement();
     }
 
     @Override
     public Thread newThread(Runnable runnable) {
-        String name = String.format(nameFormat, poolNumber.getAndIncrement(), threadNumber.getAndIncrement());
+        String name = String.format(nameFormat, thisPoolNumber, threadNumber.getAndIncrement());
         Thread thread = new Thread(group, runnable, name);
         thread.setDaemon(daemon);
         //thread.setContextClassLoader();
