@@ -567,7 +567,7 @@ installSorcerToLocalRepository() {
     if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
         # Run Sorcer Installer to install sorcer jars to local repo
         # Check if marker file exists - if so installer has already been run, ignore
-        if [ -f "$SORCER_HOME/logs/sorcer_jars_installed.tmp" ]; then
+        if [ -f "$SORCER_HOME/logs/sorcer_jars_installed_user_$USER.tmp" ]; then
             if [ "$daem" = "1" ]; then
                 echo "Sorcer jars already installed." > $SORCER_HOME/logs/rio-boot.log
             fi

@@ -194,6 +194,11 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>provider-root-${v.sorcer}.pom</destName>
             </file>
+            <file>
+                <source>${basedir}/../sos-providers/other-configs/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>other-configs-${v.sorcer}.pom</destName>
+            </file>
             <!-- top-level poms for examples -->
             <file>
                 <source>${basedir}/../tools/sorcer-provider/pom.xml</source>

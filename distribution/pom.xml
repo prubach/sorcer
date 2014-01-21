@@ -103,6 +103,33 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- config modules for Jini/Blitz -->
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>blitz-cfg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>fiddler-cfg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>mahalo-cfg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>mercury-cfg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>norm-cfg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- tools -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -678,7 +705,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
+                    <!--<plugin>
                         <groupId>org.codehaus.izpack</groupId>
                         <artifactId>izpack-maven-plugin</artifactId>
                         <version>${izpack.version}</version>
@@ -690,14 +717,14 @@
                                 </goals>
                                 <configuration>
                                     <izpackBasedir>${staging.dir}/izpack</izpackBasedir>
-                                    <!--base for relative paths in izpack descriptor -->
+                                    &lt;!&ndash;base for relative paths in izpack descriptor &ndash;&gt;
                                     <baseDir>${staging.dir}/izpack</baseDir>
                                     <installFile>${staging.dir}/izpack/install.xml</installFile>
                                     <finalName>sorcer-${project.version}-setup</finalName>
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                 </plugins>
             </build>
         </profile>

@@ -49,7 +49,9 @@ public class Installer {
     protected Map<String, String> groupDirMap = new HashMap<String, String>();
     protected Map<String, String> versionsMap = new HashMap<String, String>();
 
-    private static String MARKER_FILENAME="sorcer_jars_installed.tmp";
+    private static String MARKER_FILENAME="sorcer_jars_installed_user_";
+
+    private static String MARKER_FILENAME_EXT=".tmp";
 
     private static String COMMONS_LIBS="commons";
 
@@ -197,7 +199,7 @@ public class Installer {
                     extractZipFile(jar, "META-INF/maven/" + group + "/" + fileNoExt + "/pom.xml",
                             artifactDir + "/" + fileNoExt + "-" + version + ".pom");
                     File destJarFile = new File(artifactDir, fileNoExt + "-" + version + ".jar");
-                    if (!destJarFile.exists())
+                    if (!destJarFile.exists() || destJarFile.getName().contains("SNAPSHOT"))
                         FileUtils.copyFile(jar, destJarFile);
                 } catch (IOException io) {
                     errorCount++;
@@ -224,7 +226,7 @@ public class Installer {
                     extractZipFile(jar, "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml",
                             artifactDir + "/" + ac.getArtifactId() + "-" + ac.getVersion() + ".pom");
                     File destJarFile = new File(artifactDir, ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
-                    if (!destJarFile.exists())
+                    if (!destJarFile.exists() || destJarFile.getName().contains("SNAPSHOT"))
                         FileUtils.copyFile(jar, destJarFile);
                     logger.info("Installed jar and pom file: " + artifactDir + File.separator + ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
                 } catch (IOException io) {
@@ -283,7 +285,7 @@ public class Installer {
                     try {
                         FileUtils.forceMkdir(new File(artifactDir));
                         File destFile = new File(artifactDir, jar.getName());
-                        if (!destFile.exists())
+                        if (!destFile.exists() || destFile.getName().contains("SNAPSHOT"))
                             FileUtils.copyFile(jar, destFile);
                         logger.info("Installed pom file: " + artifactDir + File.separator + jar.getName());
                     } catch (IOException io) {
@@ -371,7 +373,8 @@ public class Installer {
 
     private void createMarker() {
         if (errorCount==0) {
-            String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME;
+            String userName = System.getProperty("user.name");
+            String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME + userName + MARKER_FILENAME_EXT;
             File f = new File(markerFile);
             try {
                 f.createNewFile();
