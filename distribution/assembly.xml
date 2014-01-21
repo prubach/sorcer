@@ -185,15 +185,16 @@
                 <destName>sos-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../tools/util-rio/pom.xml</source>
+                <source>${basedir}/../sorcer-rio/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
-                <destName>util-rio-${v.sorcer}.pom</destName>
+                <destName>sorcer-rio-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../tools/provider-root/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>provider-root-${v.sorcer}.pom</destName>
             </file>
+
             <!-- top-level poms for examples -->
             <file>
                 <source>${basedir}/../tools/sorcer-provider/pom.xml</source>
