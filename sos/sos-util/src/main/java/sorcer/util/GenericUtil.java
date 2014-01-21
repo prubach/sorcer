@@ -528,6 +528,21 @@ public class GenericUtil implements Serializable {
         }
     }
 
+
+    public static double[][][] dObjATodPrimA(Double[][][] aD) {
+        double[][][] ad = new double[aD.length][][];
+        for (int i = 0; i < aD.length; i++)
+            ad[i] = dObjATodPrimA(aD[i]);
+        return ad;
+    }
+
+    public static double[][] dObjATodPrimA(Double[][] aD) {
+        double[][] ad = new double[aD.length][];
+        for (int i = 0; i < aD.length; i++)
+            ad[i] = dObjATodPrimA(aD[i]);
+        return ad;
+    }
+
     /**
      * DoubleToDouble is a function that converts an array of double[] to and
      * array of Double[]. originally written by R.M. Kolonay
@@ -541,6 +556,19 @@ public class GenericUtil implements Serializable {
         return ad;
     }
 
+    public static Double[][][] dPrimATodObjA(double[][][] ad) {
+        Double[][][] aD = new Double[ad.length][][];
+        for (int i = 0; i < ad.length; i++)
+            aD[i] = dPrimATodObjA(ad[i]);
+        return aD;
+    }
+
+    public static Double[][] dPrimATodObjA(double[][] ad) {
+        Double[][] aD = new Double[ad.length][];
+        for (int i = 0; i < ad.length; i++)
+            aD[i] = dPrimATodObjA(ad[i]);
+        return aD;
+    }
     /**
      * dPrimAToDObjA is a function that converts an array of double[] to and
      * array of Double[]. originally written by R.M. Kolonay

@@ -5,23 +5,20 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>sorcer</artifactId>
+		<artifactId>sos-providers</artifactId>
 		<version>1.0-M4-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>sos-providers</artifactId>
+	<artifactId>other-configs</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER OS :: sos-providers</name>
+	<name>SORCER OS :: sos-providers :: other-configs</name>
 
 	<modules>
-        <module>other-configs</module>
-        <module>jobber</module>
-		<module>cataloger</module>
-		<module>spacer</module>
-		<module>logger</module>
-		<module>exertmonitor</module>
-		<module>dbp</module>
-        <module>exerter</module>
+        <module>blitz-cfg</module>
+        <module>fiddler-cfg</module>
+        <module>mahalo-cfg</module>
+        <module>mercury-cfg</module>
+        <module>norm-cfg</module>
     </modules>
 	
 </project>

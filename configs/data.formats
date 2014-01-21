@@ -405,3 +405,11 @@ engineering.dakota.file.stderr = dnt|dakota|file|stderr
 engineering.dakota.file.input = dnt|dakota|file|input
 engineering.dakota.file.output = dnt|dakota|file|output
 engineering.dakota.parser.input = dnt|dakota|parser|input
+
+#Matlab Provider
+engineering.matlab.txt.script= dnt|matlab|txt|script
+engineering.matlab.name.result = dnt|matlab|name|result
+engineering.matlab.dbl.put = dnt|matlab|dbl|put
+engineering.matlab.dbl.get = dnt|matlab|dbl|get
+engineering.matlab.dbl.get-single= dnt|matlab|dbl|get-single
+engineering.matlab.dbl.get-array= dnt|matlab|dbl|get-array

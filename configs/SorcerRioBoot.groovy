@@ -34,13 +34,13 @@ deployment(name: 'Sorcer') {
 
     codebase getCodebase()
 
-    artifact id: 'mahalo', 'org.apache.river:mahalo:2.2.1'
+    artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
     artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.1'
-    artifact id: 'fiddler', 'org.apache.river:fiddler:2.2.1'
+    artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
     artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.1'
-    artifact id: 'norm', 'org.apache.river:norm:2.2.1'
+    artifact id: 'norm-cfg', "org.sorcersoft.sorcer:norm-cfg:" + getSorcerVersion()
     artifact id: 'norm-dl', 'org.apache.river:norm-dl:2.2.1'
-    artifact id: 'mercury', 'org.apache.river:mercury:2.2.1'
+    artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
     artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.1'
     artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
     artifact id: 'cataloger-cfg', "org.sorcersoft.sorcer:cataloger-cfg:" + getSorcerVersion()
@@ -65,9 +65,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'mahalo-dl'
         }
         implementation(class: 'com.sun.jini.mahalo.TransientMahaloImpl') {
-            artifact ref: 'mahalo'
+            artifact ref: 'mahalo-cfg'
         }
-        configuration file: getSorcerHome() + "/configs/jini/configs/mahalo.config"
+        configuration file: 'classpath:mahalo.config'
         maintain 1
     }
     service(name: 'Fiddler') {
@@ -76,9 +76,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'fiddler-dl'
         }
         implementation(class: 'com.sun.jini.fiddler.TransientFiddlerImpl') {
-            artifact ref: 'fiddler'
+            artifact ref: 'fiddler-cfg'
         }
-        configuration file: getSorcerHome() + "/configs/jini/configs/fiddler.config"
+        configuration file: 'classpath:fiddler.config'
         maintain 1
     }
     service(name: 'Norm') {
@@ -87,9 +87,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'norm-dl'
         }
         implementation(class: 'com.sun.jini.norm.TransientNormServerImpl') {
-            artifact ref: 'norm'
+            artifact ref: 'norm-cfg'
         }
-        configuration file: getSorcerHome() + "/configs/jini/configs/norm.config"
+        configuration file: 'classpath:norm.config'
         maintain 1
     }
 
@@ -99,9 +99,9 @@ deployment(name: 'Sorcer') {
             artifact ref: 'mercury-dl'
         }
         implementation(class: 'com.sun.jini.mercury.TransientMercuryImpl') {
-            artifact ref: 'mercury'
+            artifact ref: 'mercury-cfg'
         }
-        configuration file: getSorcerHome() + "/configs/jini/configs/mercury.config"
+        configuration file: 'classpath:mercury.config'
         maintain 1
     }
 

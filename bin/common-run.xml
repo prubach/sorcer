@@ -182,14 +182,17 @@
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-resolver.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
+                <pathelement location="${lib.dir}/sorcer/util-rio.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-rio-start.jar"/>
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>
 		        <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
                 <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
@@ -226,12 +229,16 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
                 <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-resolver/${v.sorcer}/sorcer-resolver-${v.sorcer}.jar"/>
+                <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
+                <pathelement
+                        location="${mvn.repo}/org/sorcersoft/sorcer/util-rio/${v.sorcer}/util-rio-${v.sorcer}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/sorcersoft/sorcer/sos-rio-start/${v.sorcer}/sos-rio-start-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.jar"/>
@@ -240,6 +247,7 @@
                 <pathelement
                         location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-lib/${v.rio}/rio-lib-${v.rio}.jar"/>
                 <pathelement
                         location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar"/>
                 <pathelement location="${mvn.repo}/com/google/guava/15.0/guava-15.0.jar"/>

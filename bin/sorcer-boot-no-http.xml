@@ -35,7 +35,8 @@
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb|org.rioproject.url" />
 			<sysproperty key="sorcer.home" value="${sorcer.home}" />
-			<env key="RIO_HOME" value="${rio.home}" />
+            <sysproperty key="RIO_HOME" value="${rio.home}"/>
+			<!--<env key="RIO_HOME" value="${rio.home}" />-->
 			<sysproperty key="rio.home" value="${rio.home}" />
 			<sysproperty key="java.security.policy" value="../configs/sorcer.policy" />
 			<sysproperty key="webster.tmp.dir" value="${sorcer.data}" />

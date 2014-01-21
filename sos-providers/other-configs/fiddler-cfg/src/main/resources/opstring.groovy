@@ -19,23 +19,23 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'dbp-provider') {
+deployment(name: 'fiddler-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
-    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
-    artifact id: 'blitz-cfg', 'org.sorcersoft.sorcer:blitz-cfg:2.2.0'
+    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.1'
+    artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
 
-    service(name: "BlitzSpace") {
+    service(name: 'Fiddler') {
         interfaces {
-            classes 'net.jini.space.JavaSpace05'
-            artifact ref: 'blitz-dl'
+            classes 'com.sun.jini.fiddler.Fiddler'
+            artifact ref: 'fiddler-dl'
         }
-        implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
-            artifact ref: 'blitz-cfg'
+        implementation(class: 'com.sun.jini.fiddler.TransientFiddlerImpl') {
+            artifact ref: 'fiddler-cfg'
         }
-        configuration file: 'classpath:blitz.config'
+        configuration file: 'classpath:fiddler.config'
         maintain 1
     }
 }
