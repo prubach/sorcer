@@ -16,6 +16,7 @@
 
 package sorcer.rio;
 
+import org.apache.commons.io.IOUtils;
 import org.rioproject.impl.opstring.DSLException;
 import org.rioproject.impl.opstring.GroovyDSLOpStringParser;
 import org.rioproject.impl.opstring.OpString;
@@ -32,10 +33,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
 /**
@@ -44,6 +43,7 @@ import java.util.List;
 public class SerialisedOpStringParser implements OpStringParser {
     private final static Logger log = LoggerFactory.getLogger(SerialisedOpStringParser.class);
     public static final String EXT_SER = "ser";
+    public static final String PREFIX_FILE = "file";
     private File serDir = new File(SorcerEnv.getHomeDir(), "databases/opstring");
     private OpStringParser backend;
 
@@ -53,8 +53,9 @@ public class SerialisedOpStringParser implements OpStringParser {
 
     @Override
     public List<OpString> parse(Object source, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
-        File serFile;
         URL srcUrl;
+        File container;
+        String path;
         if (source instanceof File) {
             File srcFile = (File) source;
             try {
@@ -62,72 +63,88 @@ public class SerialisedOpStringParser implements OpStringParser {
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
+            container = srcFile;
+            path = srcFile.getPath();
         } else if (source instanceof URL) {
             srcUrl = (URL) source;
+            try {
+                if (PREFIX_FILE.equals(srcUrl.getProtocol())) {
+                    container = new File(srcUrl.toURI());
+                    path = container.getPath();
+                } else if ("jar".equals(srcUrl.getProtocol())) {
+                    // cache only for local files
+                    if (!srcUrl.toExternalForm().startsWith("jar:file:"))
+                        return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+
+                    JarURLConnection jarUrl = (JarURLConnection) srcUrl.openConnection();
+                    container = new File(jarUrl.getJarFileURL().toURI());
+                    path = jarUrl.getEntryName();
+                } else {
+                    return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+                }
+            } catch (IOException e) {
+                //JarUrlConnection.openConnection() on local file should never happen
+                throw new DSLException(e);
+            } catch (URISyntaxException e) {
+                throw new DSLException(e);
+            }
         } else
             throw new DSLException("Unrecognized source " + source);
-        serFile = getSerialisedFile(srcUrl);
 
-        List<OpString> result = parse(srcUrl, serFile, loader, defaultExportJars, defaultGroups, loadPath);
-        log.info("{} -> {} opstrings", source, result.size());
+        File serFile = getSerialisedFile(container, path);
+
+        return parse(container, srcUrl, serFile, loader, defaultExportJars, defaultGroups, loadPath);
+    }
+
+    public List<OpString> parse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+        List<OpString> result;
+
+        if (serialised.exists() && serialised.lastModified() > container.lastModified()) {
+            log.debug("Reading opstrings from cache {}", serialised);
+            List<OpString> opStrings = readFile(serialised);
+            if (opStrings != null)
+                return opStrings;
+        }
+
+        result = defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+
+        try {
+            writeFile(serialised, result);
+        } catch (IOException e) {
+            log.warn("Could not write {}", serialised, e);
+        }
+
         return result;
     }
 
-    public List<OpString> parse(URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+    private void writeFile(File serialised, List<OpString> result) throws IOException {
+        log.debug("Writing cached opstring to {}", serialised);
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(serialised));
+        out.writeObject(result);
+        out.close();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<OpString> readFile(File serialised) {
+        ObjectInputStream in = null;
         try {
-            log.info("Parsing {}", source);
-            List<OpString> result;
-            File container;
-            if ("file".equals(source.getProtocol())) {
-                container = new File(source.toURI());
-            } else if ("jar".equals(source.getProtocol())) {
-                String sub = source.toURI().getSchemeSpecificPart();
-
-                System.out.println(sub);
-                System.exit(0);
-                container = new File(new URI(sub));
-            } else {
-                return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
-            }
-
-            if (source.getProtocol().equals("jar")) {
-
-            }
-            if (serialised.exists()) {
-
-
-                URLConnection urlConnection = source.openConnection();
-                //JarURLConnection urlConnection = (JarURLConnection) source.openConnection();
-                //urlConnection.getLastModified();
-                //new File(urlConnection.getJarFileURL().toURI());
-                long lastModified = container.lastModified();
-                if (serialised.lastModified() > lastModified) {
-                    ObjectInputStream in = new ObjectInputStream(new FileInputStream(serialised));
-                    result = (List<OpString>) in.readObject();
-                    in.close();
-                    return result;
-                }
-            }
-
-            result = defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
-            try {
-                ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(serialised));
-                out.writeObject(result);
-                out.close();
-                return result;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            in = new ObjectInputStream(new FileInputStream(serialised));
+            Object o = in.readObject();
+            in.close();
+            return o instanceof List ? (List<OpString>) o : null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.warn("Could not read {}", serialised, e);
+            return null;
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            log.warn("Error while reading serialised file {}", serialised, e);
+            return null;
+        } finally {
+            IOUtils.closeQuietly(in);
         }
     }
 
     private List<OpString> defaultParse(Object source, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+        log.debug("Parsing opstring from {}", source);
         List<OpString> result;
         if (backend == null)
             backend = new GroovyDSLOpStringParser();
@@ -135,15 +152,12 @@ public class SerialisedOpStringParser implements OpStringParser {
         return result;
     }
 
-    public static File getSerialisedFile(URL src) {
-        String serPath = replaceExt(src.toExternalForm(), EXT_SER);
-        try {
-            return new File(new URL(serPath).toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Error while converting URL to URI: " + serPath, e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Error while creating URL: " + serPath, e);
-        }
+    public File getSerialisedFile(File container, String path) {
+        File file = new File(replaceExt(path, EXT_SER));
+        if (container.getPath().equals(path))
+            return new File(serDir, file.getName());
+        else
+            return new File(serDir, container.getName() + "_" + file.getName());
     }
 
     private static String replaceExt(String path, String ext) {
