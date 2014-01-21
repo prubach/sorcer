@@ -1,5 +1,3 @@
-package config.platform
-
 import sorcer.rio.util.SorcerCapabilityDescriptor
 
 def getPlatformCapabilityConfig() {

@@ -1,4 +1,3 @@
-package config.platform
 /*
 * Copyright to the original author or authors.
 *
