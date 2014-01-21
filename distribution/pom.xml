@@ -52,9 +52,21 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-rio-start</artifactId>
+            <artifactId>sorcer-rio-start</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-lib</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-cli</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+-->
 
         <!-- sos-providers -->
         <dependency>
@@ -328,11 +340,6 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex6-req</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>util-rio</artifactId>
             <version>${project.version}</version>
         </dependency>
 

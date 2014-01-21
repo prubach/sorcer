@@ -41,8 +41,7 @@ public class SorcerSorcerFlavour extends SorcerFlavour {
         return new String[]{
                 "net.jini:jsk-resources",
                 "org.rioproject:rio-lib",
-                "org.sorcersoft.sorcer:util-rio",
-                //"org.sorcersoft.sorcer:sos-webster",
+                "org.sorcersoft.sorcer:sorcer-rio-lib",
                 "com.google.guava:guava:15.0",
                 "commons-io:commons-io"
         };

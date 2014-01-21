@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>tools</artifactId>
+        <artifactId>sorcer-rio</artifactId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
-    <artifactId>sorcer-rio</artifactId>
+    <artifactId>sorcer-rio-config</artifactId>
     <packaging>pom</packaging>
-    <name>SORCER :: Rio home builder</name>
+    <name>SORCER :: Rio :: config</name>
 
     <properties>
         <rio.home>${env.SORCER_HOME}/target/rio</rio.home>
@@ -291,8 +291,14 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-rio-start</artifactId>
+            <artifactId>sorcer-rio-start</artifactId>
             <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-boot</artifactId>
+            <version>${v.sorcer}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

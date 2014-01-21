@@ -19,14 +19,11 @@
 		<module>sos-boot</module>
         <module>sos-netlet</module>
 		<module>sos-shell</module>
-        <module>sos-rio-start</module>
 		<module>browser</module>
         <module>sorcer-launcher</module>
 		<module>sorcer-maven-plugin</module>
 		<module>sorcer-provider</module>
 		<module>provider-root</module>
-        <module>util-rio</module>
-        <module>sorcer-rio</module>
 		<!-- force download implicit dependencies -->
 		<module>dependencies</module>
         <module>sorcer-resolver</module>

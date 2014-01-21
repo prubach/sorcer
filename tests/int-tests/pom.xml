@@ -68,6 +68,16 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <!-- prepare Rio environment for tests -->
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-config</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
