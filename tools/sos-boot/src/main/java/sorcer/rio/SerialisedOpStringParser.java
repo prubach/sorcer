@@ -61,7 +61,7 @@ public class SerialisedOpStringParser implements OpStringParser {
             try {
                 srcUrl = srcFile.toURI().toURL();
             } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
+                throw new DSLException(e);
             }
             container = srcFile;
             path = srcFile.getPath();
@@ -96,9 +96,22 @@ public class SerialisedOpStringParser implements OpStringParser {
         return parse(container, srcUrl, serFile, loader, defaultExportJars, defaultGroups, loadPath);
     }
 
+    /**
+     * Synchronize calls on internalized file path, so concurrent parsing og the same file are queued.
+     */
     public List<OpString> parse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
-        List<OpString> result;
+        String sync = null;
+        try {
+            sync = serialised.getCanonicalPath().intern();
+        } catch (IOException e) {
+            throw new DSLException(e);
+        }
+        synchronized (sync) {
+            return doParse(container, source, serialised, loader, defaultExportJars, defaultGroups, loadPath);
+        }
+    }
 
+    public List<OpString> doParse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
         if (serialised.exists() && serialised.lastModified() > container.lastModified()) {
             log.debug("Reading opstrings from cache {}", serialised);
             List<OpString> opStrings = readFile(serialised);
@@ -106,7 +119,7 @@ public class SerialisedOpStringParser implements OpStringParser {
                 return opStrings;
         }
 
-        result = defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+        List<OpString> result = defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
 
         try {
             writeFile(serialised, result);

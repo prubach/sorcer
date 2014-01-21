@@ -28,6 +28,11 @@ import java.net.URL;
  * @author Rafał Krupiński
  */
 public class SorcerOpStringParserStrategy implements OpStringParserSelectionStrategy {
+
+    private static class Holder {
+        public static SerialisedOpStringParser INSTANCE = new SerialisedOpStringParser();
+    }
+
     @Override
     public OpStringParser findParser(Object source) {
         if (source instanceof File)
@@ -45,7 +50,7 @@ public class SorcerOpStringParserStrategy implements OpStringParserSelectionStra
     public OpStringParser findParser(URI uri) {
         String path = uri.toString();
         if (path.endsWith(".groovy")) {
-            return new SerialisedOpStringParser();
+            return Holder.INSTANCE;
         } else
             throw new UnsupportedOperationException("There is no support for " + path + " format");
 
