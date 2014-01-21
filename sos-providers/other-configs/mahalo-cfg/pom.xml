@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>mahalo-cfg</artifactId>
-	<name>SORCER OS :: providers :: mahalo ::  config</name>
+	<name>SORCER OS :: providers :: mahalo :: config</name>
 
     <dependencies>
         <dependency>

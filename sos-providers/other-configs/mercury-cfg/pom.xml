@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>mercury-cfg</artifactId>
-	<name>SORCER OS :: providers :: mercury ::  config</name>
+	<name>SORCER OS :: providers :: mercury :: config</name>
 
     <dependencies>
         <dependency>

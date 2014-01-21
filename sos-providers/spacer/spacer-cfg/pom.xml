@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>spacer-cfg</artifactId>
-	<name>SORCER OS :: providers :: spacer ::  config</name>
+	<name>SORCER OS :: providers :: spacer :: config</name>
 
     <dependencies>
         <dependency>

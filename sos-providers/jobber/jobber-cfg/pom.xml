@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>jobber-cfg</artifactId>
-	<name>SORCER OS :: providers :: jobber ::  config</name>
+	<name>SORCER OS :: providers :: jobber :: config</name>
 
     <dependencies>
         <dependency>

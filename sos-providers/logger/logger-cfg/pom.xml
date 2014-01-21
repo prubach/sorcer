@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>logger-cfg</artifactId>
-	<name>SORCER OS :: providers :: logger ::  config</name>
+	<name>SORCER OS :: providers :: logger :: config</name>
 
     <dependencies>
         <dependency>

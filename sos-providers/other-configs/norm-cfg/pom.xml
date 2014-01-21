@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>norm-cfg</artifactId>
-	<name>SORCER OS :: providers :: norm ::  config</name>
+	<name>SORCER OS :: providers :: norm :: config</name>
 
     <dependencies>
         <dependency>

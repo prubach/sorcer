@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>exerter-cfg</artifactId>
-	<name>SORCER OS :: providers :: exerter ::  config</name>
+	<name>SORCER OS :: providers :: exerter :: config</name>
 
     <dependencies>
         <dependency>

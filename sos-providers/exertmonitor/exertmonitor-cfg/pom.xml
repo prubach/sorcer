@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>exertmonitor-cfg</artifactId>
-	<name>SORCER OS :: providers :: exertmonitor ::  config</name>
+	<name>SORCER OS :: providers :: exertmonitor :: config</name>
 
     <dependencies>
         <dependency>

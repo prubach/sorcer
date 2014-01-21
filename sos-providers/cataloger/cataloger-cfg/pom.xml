@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>cataloger-cfg</artifactId>
-	<name>SORCER OS :: providers :: cataloger ::  config</name>
+	<name>SORCER OS :: providers :: cataloger :: config</name>
 
     <dependencies>
         <dependency>

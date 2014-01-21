@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>fiddler-cfg</artifactId>
-	<name>SORCER OS :: providers :: fiddler ::  config</name>
+	<name>SORCER OS :: providers :: fiddler :: config</name>
 
     <dependencies>
         <dependency>

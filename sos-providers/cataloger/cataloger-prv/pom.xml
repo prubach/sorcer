@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>cataloger-prv</artifactId>
-	<name>SORCER OS :: providers :: cataloger ::  prv</name>
+	<name>SORCER OS :: providers :: cataloger :: prv</name>
 
     <dependencies>
         <dependency>

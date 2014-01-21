@@ -8,7 +8,7 @@
     </parent>
 
 	<artifactId>blitz-cfg</artifactId>
-	<name>SORCER OS :: providers :: blitz ::  config</name>
+	<name>SORCER OS :: providers :: blitz :: config</name>
 
     <dependencies>
         <dependency>
