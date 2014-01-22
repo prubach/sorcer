@@ -22,19 +22,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
-			<artifactId>sigar-maven</artifactId>
+			<artifactId>sigar-native</artifactId>
 			<version>${v.sigar}</version>
+            <type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sigar</groupId>
 			<artifactId>sigar</artifactId>
 			<version>${v.sigar}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
         <!-- required for Rio platform -->
         <dependency>

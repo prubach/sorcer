@@ -17,6 +17,9 @@
  */
 package sorcer.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -24,13 +27,10 @@ import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.io.File.pathSeparator;
 import static sorcer.util.JavaSystemProperties.LIBRARY_PATH;
@@ -50,8 +50,9 @@ public class LibraryPathHelper extends AbstractSet<String> {
     }
 
     private static Set<String> currentElements() {
-        Set<String> result = new HashSet<String>();
-        Collections.addAll(result, System.getProperty(LIBRARY_PATH, "").split(pathSeparator));
+        String[] elements = System.getProperty(LIBRARY_PATH, "").split(pathSeparator);
+        Set<String> result = new LinkedHashSet<String>(elements.length);
+        Collections.addAll(result, elements);
         return result;
     }
 
@@ -84,13 +85,8 @@ public class LibraryPathHelper extends AbstractSet<String> {
     }
 
     private void reportSetDifference(Collection<String> current, Collection<String> updated) {
-        if (!log.isInfoEnabled()) return;
-        StringBuilder message = new StringBuilder("Modifying ").append(LIBRARY_PATH).append(": ");
-        message.append(oneWayDiff(current, updated))
-                .append(" -> ")
-                .append(oneWayDiff(updated, current));
-
-        log.info(message.toString());
+        if (log.isInfoEnabled())
+            log.info("Modifying {}: {} -> {}", LIBRARY_PATH, oneWayDiff(current, updated), oneWayDiff(updated, current));
     }
 
     private String oneWayDiff(Collection<String> old, Collection<String> updated) {

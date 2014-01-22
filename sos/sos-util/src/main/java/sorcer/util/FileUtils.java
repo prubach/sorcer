@@ -26,6 +26,8 @@ public class FileUtils {
      * Same as new File(parent, child), but if child is absolute, return new File(child)
      */
     public static File getFile(File parent, String child) {
+        if (child == null)
+            return parent;
         File result = new File(child);
         if (result.isAbsolute())
             return result;

@@ -1,5 +1,8 @@
 package sorcer.rio.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.util.FileUtils;
 import sorcer.util.Zip;
 import sorcer.resolver.Resolver;
 import sorcer.util.LibraryPathHelper;
@@ -13,6 +16,8 @@ import java.io.IOException;
  * @author Rafał Krupiński
  */
 public class MavenLibraryHelper {
+    final private static Logger log = LoggerFactory.getLogger(MavenLibraryHelper.class);
+
 	/**
 	 * Unzip an artifact and add a directory to java.library.path
 	 *
@@ -27,19 +32,20 @@ public class MavenLibraryHelper {
 	 * Unzip an artifact and add a directory to java.library.path
 	 *
 	 * @param coords            artifact coordinates to use as a
-	 * @param internalDirectory root directory in the zip file, may be null
+     * @param targetDir root directory in the zip file, may be null
 	 */
-	public static void installLibFromArtifact(String coords, String internalDirectory) throws IOException {
+    public static void installLibFromArtifact(String coords, String targetDir) throws IOException {
 		File artifactFile = new File(Resolver.resolveAbsolute(coords));
-		File target = artifactFile.getParentFile();
-		String child = internalDirectory != null ? internalDirectory : ".";
-		File libraryDir = new File(target, child);
+        File parent = artifactFile.getParentFile();
 
+        File target = FileUtils.getFile(parent, targetDir);
 		//if the directory exists, assume it was properly unzipped
-		if (!libraryDir.exists()) {
-			Zip.unzip(artifactFile, target);
-		}
+        if (!target.exists()) {
+            log.debug("Unzip {} to {}", coords, target);
+            Zip.unzip(artifactFile, target);
+        } else
+            log.debug("For {} using existing {}", coords, target);
 
-		LibraryPathHelper.getLibraryPath().add(libraryDir.getPath());
+        LibraryPathHelper.getLibraryPath().add(target.getPath());
 	}
 }

@@ -288,11 +288,13 @@
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
             <version>${v.rio}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-start</artifactId>
             <version>${v.sorcer}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -304,6 +306,14 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${v.sorcer}</version>
+            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sigar</groupId>
+            <artifactId>sigar-native</artifactId>
+            <version>${v.sigar}</version>
+            <type>zip</type>
+        </dependency>
+
     </dependencies>
 </project>
