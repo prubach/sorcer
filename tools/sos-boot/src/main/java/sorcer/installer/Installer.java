@@ -20,15 +20,12 @@ package sorcer.installer;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
-import sorcer.util.Zip;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.net.URL;
@@ -146,48 +143,22 @@ public class Installer {
     }
 
     public void install() {
+        installSigar();
+
         for (String group : groupDirMap.keySet()) {
             String dir = groupDirMap.get(group);
             String version = versionsMap.get(group);
 
-            if (dir == null || version == null || !new File(Resolver.getRootDir() + "/" + dir).exists()) {
+            if (dir == null || version == null || !new File(Resolver.getRootDir(), dir).exists()) {
                 logger.severe("Problem installing jars for groupId: " + group + " directory or version not specified: " + dir + " " + version);
                 errorCount++;
                 continue;
             }
 
-            // unzip Sigar
-            if (group.equals("org.sorcersoft.sigar")) {
-                File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        if (pathname.getName().endsWith("native.zip"))
-                            return true;
-                        return false;
-                    }
-                });
-                for (File zipFile : jars) {
-                    try {
-                        File sigarDir = new File(Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/sigar/" + version);
-                        File libraryDir = new File(sigarDir, "lib");
-                        if (!libraryDir.exists()) {
-                            Zip.unzip(zipFile, sigarDir);
-                            File destFile = new File(sigarDir, "sigar-"+ version + "-native.zip");
-                            if (!destFile.exists())
-                                FileUtils.copyFile(zipFile, destFile);
-                        }
-                    } catch (IOException io) {
-                        logger.severe("Problem unzipping sigar-native.zip to repo: " + io.getMessage());
-                    }
-                }
-            }
-
             File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
-                    if (pathname.getName().endsWith("jar"))
-                        return true;
-                    return false;
+                    return pathname.getName().endsWith(".jar");
                 }
             });
 
@@ -211,9 +182,7 @@ public class Installer {
         File[] jars = new File(Resolver.getRootDir() + "/" + COMMONS_LIBS).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.getName().endsWith("jar"))
-                    return true;
-                return false;
+                return pathname.getName().endsWith("jar");
             }
         });
 
@@ -234,6 +203,26 @@ public class Installer {
                     logger.severe("Problem installing jar: " + ac.getArtifactId() + " to: " + artifactDir + "\n" + io.getMessage());
                 }
             }
+        }
+    }
+
+    private void installSigar() {
+        // unzip Sigar
+        try {
+            String group = "org.sorcersoft.sigar";
+            String version = versionsMap.get(group);
+            File sigarDir = new File(Resolver.getRepoDir() + "/org/sorcersoft/sigar/sigar-native/" + version);
+            File destFile = new File(sigarDir, "sigar-native-" + version + ".zip");
+            File srcDir = new File(Resolver.getRootDir() + "/" + groupDirMap.get(group));
+            File zipFile = new File(srcDir, "sigar-native.zip");
+            if (!destFile.exists()) {
+                logger.info("Installing zip file: " + zipFile + " to " + destFile);
+                FileUtils.copyFile(zipFile, destFile);
+            } else
+                logger.info("File already exists " + destFile);
+        } catch (IOException io) {
+            ++errorCount;
+            throw new IllegalStateException("Problem unzipping sigar-native.zip to repo: " + io.getMessage());
         }
     }
 
