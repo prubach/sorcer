@@ -124,8 +124,6 @@
             <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/examples/setenv" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
         </pack>
@@ -178,6 +176,8 @@
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/setenv" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
         </pack>
     </packs>
 
