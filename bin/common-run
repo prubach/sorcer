@@ -336,6 +336,7 @@ $LIB_DIR/commons/jul-to-slf4j.jar:\
 $LIB_DIR/commons/logback-classic.jar:\
 $LIB_DIR/commons/logback-core.jar"
 else
+	V_SLF4J=$(getVersion v.slf4j)
     echo "$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
 $MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar:\
 $MVN_REPO/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar:\
