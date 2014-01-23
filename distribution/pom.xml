@@ -42,11 +42,6 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-security-sui</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -344,6 +339,12 @@
         </dependency>
 
         <!--    rio -->
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-config</artifactId>
+            <version>${v.sorcer}</version>
+            <type>pom</type>
+        </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-api</artifactId>
