@@ -93,10 +93,10 @@ public class ProvisionManager {
                         // service
                         Service service = (Service) Accessor.getService(sigEl.getSignature());
                         if (service == null ) {
+                            sigEl.incrementProvisionAttempts();
                             if (provisioner != null) {
                                 try {
                                     logger.info("Provisioning: "+ sigEl.getSignature());
-                                    sigEl.incrementProvisionAttempts();
                                     service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
                                     if (service!=null) sigsToRemove.add(sigEl);
                                 } catch (ProvisioningException pe) {
