@@ -3,6 +3,12 @@
 EX_DIR=$SORCER_HOME/examples
 LOG_DIR=/tmp/logs/
 
+_mkdir () {
+	if [ ! -e  $1 ]; then
+		mkdir $1
+	fi
+}
+
 stopSorcer ( ) {
   for p in `jps | grep ServiceStarter | cut -d " " -f 1`; do
     kill -9 $p > /dev/null
@@ -49,7 +55,7 @@ cleanLogs ( ) {
 
 ex0 ( ) {
   EX=ex0
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX$1.log $LOG_DIR/$EX/
   cd $SORCER_HOME
   if [ "$1" == "rio" ]; then
@@ -69,7 +75,7 @@ ex1 ( ) {
   # Enabling tests on this module will generate RuntimeExceptions thatT are
   # thrown on purpose by the second provider (whoIsIt2...)
   EX=ex1
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/run-bean-socer-$EX.log $LOG_DIR/$EX/
   cd $EX_DIR/$EX/run-bean/bin/
   ant -f whoIsItBean1-prv-run.xml > $LOG_DIR/$EX/run-bean-whoIsItBean1-prv.log &
@@ -111,7 +117,7 @@ ex1 ( ) {
 
 ex2 ( ) {
   EX=ex2
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
 
   cd $SORCER_HOME
@@ -129,7 +135,7 @@ ex2 ( ) {
 
 ex3 ( ) {
   EX=ex3
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
 
   cd $SORCER_HOME
@@ -145,7 +151,7 @@ ex3 ( ) {
 
 ex4 ( ) {
   EX=ex4
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
   cd $SORCER_HOME
   $SORCER_HOME/bin/boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
@@ -161,7 +167,7 @@ ex4 ( ) {
 ex5 ( ) {
   TYPE=$1
   EX=ex5
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
   cd $SORCER_HOME
 
@@ -184,7 +190,7 @@ ex5 ( ) {
 ex6 ( ) {
   TYPE=$1
   EX=ex6
-  mkdir $LOG_DIR/$EX
+  _mkdir $LOG_DIR/$EX
   restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
 
   cd $SORCER_HOME

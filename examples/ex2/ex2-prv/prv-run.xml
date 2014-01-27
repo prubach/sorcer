@@ -71,7 +71,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
 	<!-- start provider -->
 	<target name="run.provider" depends="mvn-init">
-	    <java classname="com.sun.jini.start.ServiceStarter" fork="yes">
+	    <java classname="sorcer.boot.ServiceStarter" fork="yes">
 	    	<classpath refid="boot.classpath"/>
 <!--
             <jvmarg value="-Xdebug"/>
