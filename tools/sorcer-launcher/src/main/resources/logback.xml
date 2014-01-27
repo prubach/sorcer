@@ -15,6 +15,9 @@
   -->
 
 <configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
 
     <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
         <target>System.err</target>
