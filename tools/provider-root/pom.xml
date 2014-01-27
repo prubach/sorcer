@@ -28,7 +28,7 @@
         <v.sigar>1.6.4</v.sigar>
         <v.lockmgr>0.2.sorcer2</v.lockmgr>
         <v.slf4j>1.7.5</v.slf4j>
-        <v.logback>1.0.11</v.logback>
+        <v.logback>1.0.13</v.logback>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
