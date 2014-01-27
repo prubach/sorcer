@@ -700,7 +700,7 @@ public class ProviderDelegate {
         if (publishedServiceTypes == null) return;
         for (Class type : publishedServiceTypes) {
             if (!Remote.class.isAssignableFrom(type))
-                logger.warning("Published interface " + type.getName() + " doeas not extend " + Remote.class.getName());
+                logger.warning("Published interface " + type.getName() + " does not extend " + Remote.class.getName());
         }
     }
 
