@@ -54,8 +54,7 @@ MAIN_CLASS=org.rioproject.tools.ui.Main
 # Check for running on OS/X
 opSys=`uname -s`
 if [ $opSys = "Darwin" ] ; then
-    java -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url -Xdock:name="Rio" $MAIN_CLASS $*
-else
-    java -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url $MAIN_CLASS $*
+	JAVA_OPTS=$JAVA_OPTS -Xdock:name="Rio"
 fi
 
+java $JAVA_OPTS -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url $MAIN_CLASS $*

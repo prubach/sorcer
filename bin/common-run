@@ -263,6 +263,11 @@ lateInit ( ) {
         JAVA_OPTS="$JAVA_OPTS -Xdock:name=$SORCER_APP_NAME -Xdock:icon=$SORCER_HOME/configs/shell/configs/sorcer-dock-rgb.png"
     fi
 
+    # Turn on debugging if DEBUG is set in env
+    if [ -n "$DEBUG" ]; then
+        JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
+    fi
+
     # For Cygwin, switch paths to Windows format before running java
     if $cygwin ; then
         SORCER_HOME=`cygpath --mixed "$SORCER_HOME"`
@@ -424,12 +429,6 @@ $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
     else
         WEBSTER_URL=http://$WEBSTER_INTERFACE:$WEBSTER_PORT
     fi
-    
-    # Turn on debugging if DEBUG is set in env
-    if [ -n "$DEBUG" ]; then
-        JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"
-    fi
-
 }
 
 createSorcerRioCp ( ) {
@@ -511,7 +510,7 @@ SR_CP=$(createSorcerRioCp)
 	if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
         # Distro version
         LIB_DIR=$SORCER_HOME/lib
-        SHELL_CLASSPATH=$(createLoggerCp)"$LIB_DIR/sorcer/sos-shell.jar:\
+        SHELL_CLASSPATH=$(createLoggerCp)":$LIB_DIR/sorcer/sos-shell.jar:\
 $LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sorcer-resolver.jar:\
 $LIB_DIR/sorcer/sos-netlet.jar:\
@@ -528,7 +527,7 @@ $LIB_DIR/jini/jsk-lib.jar:\
 $LIB_DIR/jini-lookup/serviceui.jar"
     else        
       	# MVN version
-      	SHELL_CLASSPATH=$(createLoggerCp)"$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+      	SHELL_CLASSPATH=$(createLoggerCp)":$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
