@@ -222,8 +222,8 @@
                 <pathelement location="${mvn.repo}/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.jar"/>
                 <pathelement location="${mvn.repo}/org/slf4j/slf4j-api/${v.slf4j}/slf4j-api-${v.slf4j}.jar"/>
                 <pathelement location="${mvn.repo}/org/slf4j/jul-to-slf4j/${v.slf4j}/jul-to-slf4j-${v.slf4j}.jar"/>
-                <pathelement location="${mvn.repo}/ch/qos/logback/logback-core/1.0.11/logback-core-1.0.11.jar"/>
-                <pathelement location="${mvn.repo}/ch/qos/logback/logback-classic/1.0.11/logback-classic-1.0.11.jar"/>
+                <pathelement location="${mvn.repo}/ch/qos/logback/logback-core/${v.logback}/logback-core-${v.logback}.jar"/>
+                <pathelement location="${mvn.repo}/ch/qos/logback/logback-classic/${v.logback}/logback-classic-${v.logback}.jar"/>
             </path>
 
             <path id="boot.classpath">

@@ -92,8 +92,8 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    FOR /F "tokens=1,2 delims==" %%G IN (%SORCER_HOME%\configs\versions.properties) DO (set %%G=%%H)
    set LOG_CP="%MVN_REPO%\org\slf4j\slf4j-api\%v.slf4j%\slf4j-api-%v.slf4j%.jar"
    set LOG_CP="%LOG_CP%;%MVN_REPO%\org\slf4j\jul-to-slf4j\%v.slf4j%\jul-to-slf4j-%v.slf4j%.jar"
-   set LOG_CP="%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-core\1.0.11\logback-core-1.0.11.jar"
-   set LOG_CP="%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-classic\1.0.11\logback-classic-1.0.11.jar"
+   set LOG_CP="%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-core\%v.logback%\logback-core-%v.logback%.jar"
+   set LOG_CP="%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-classic\%v.logback%\logback-classic-%v.logback%.jar"
    set JINI_BASE="%MVN_REPO%\net\jini\jsk-platform\%v.jini%\jsk-platform-%v.jini%.jar;%MVN_REPO%\net\jini\jsk-lib\%v.jini%\jsk-lib-%v.jini%.jar;%MVN_REPO%\net\jini\lookup\serviceui\%v.jini%\serviceui-%v.jini%.jar"
    set JINI_START="%MVN_REPO%\org\apache\river\start\%v.jini%\start-%v.jini%.jar"
 
