@@ -1066,7 +1066,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				String[] systemRoots = { sorcerLibDir, sorcerLibDLDir, sorcerExtDir };
 				*/
 
-				String[] systemRoots = {Resolver.getRootDir() };
+				String[] systemRoots = {SorcerEnv.getRepoDir() };
 				
 				String[] realRoots = (roots == null ? systemRoots : roots);
 

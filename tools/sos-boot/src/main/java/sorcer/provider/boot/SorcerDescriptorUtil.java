@@ -16,7 +16,6 @@
  */
 package sorcer.provider.boot;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -54,8 +53,6 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
 
-    private static String fs = File.separator;
-	private static String ps = File.pathSeparator;
 	private static String sorcerHome = SorcerEnv.getHomeDir().getAbsolutePath();
 
     /**
@@ -76,22 +73,7 @@ public class SorcerDescriptorUtil {
      */
     public static ServiceDescriptor getWebster(String policy, int port)
             throws IOException {
-        if (Resolver.isMaven()) {
-            String[] roots = {
-                    sorcerHome + "/deploy",
-                    sorcerHome + "/lib/river",
-                    Resolver.getRepoDir()
-            };
-            return (getWebster(policy, port, roots));
-        } else {
-            String[] roots = {
-                    sorcerHome + "/deploy",
-                    sorcerHome + "/lib/river",
-                    Resolver.getRootDir(),
-                    Resolver.getRepoDir()
-            };
-            return (getWebster(policy, port, roots));
-        }
+        return (getWebster(policy, port, Booter.getWebsterRoots()));
     }
 
 

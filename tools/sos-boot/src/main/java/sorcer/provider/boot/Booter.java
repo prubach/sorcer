@@ -36,6 +36,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -165,7 +166,7 @@ public class Booter {
 	 * API for configs
 	 * resolve codebase from artifact coordinates
 	 */
-	public static String resolveCodebase(String[] coords) throws UnknownHostException {
+	public static String resolveCodebase(String[] coords) throws UnknownHostException, MalformedURLException {
 		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coords);
 	}
 
@@ -173,7 +174,7 @@ public class Booter {
 	 * API for configs
 	 * resolve codebase from artifact coordinates
 	 */
-	public static String resolveCodebase(String coords) throws UnknownHostException {
+	public static String resolveCodebase(String coords) throws UnknownHostException, MalformedURLException {
         String[] coordsEntries = coords.split(" ");
 		return resolveCodebase(coordsEntries);
 	}
@@ -749,5 +750,40 @@ public class Booter {
         int port = socket.getLocalPort();
         socket.close();
         return port;
+    }
+
+    private static List<String> websterRoots = Arrays.asList(
+            SorcerEnv.getRepoDir(),
+            SorcerEnv.getLibPath(),
+            new File(SorcerEnv.getHomeDir(), "deploy").getPath()
+    );
+
+    static {
+        String scratch = System.getProperty(SCRATCH_DIR);
+        if (scratch != null) {
+            List<String> oldWr = websterRoots;
+            websterRoots = new ArrayList<String>(oldWr.size() + 1);
+            websterRoots.addAll(oldWr);
+            websterRoots.add(scratch);
+        }
+    }
+
+    public static String[] getWebsterRoots() {
+        return websterRoots.toArray(new String[websterRoots.size()]);
+    }
+
+    public static String[] getWebsterRoots(String[] additional) {
+        String[] result = new String[websterRoots.size() + additional.length];
+        addAll(websterRoots, result);
+        System.arraycopy(additional, 0, result, websterRoots.size(), additional.length);
+        return result;
+    }
+
+    private static <T> void addAll(List<T> src, T[] target) {
+        int i = 0;
+        for (T o : src) {
+            target[i] = o;
+            ++i;
+        }
     }
 }

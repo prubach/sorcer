@@ -19,6 +19,7 @@ package sorcer.resolver;
 
 import org.apache.commons.lang3.StringUtils;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public class Resolver {
-	private static ArtifactResolver resolver = new ArtifactResolverFactory().createResolver();
+	private static ArtifactResolver resolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
 
 	/**
 	 * Resolve artifact coordinates to absolute path
@@ -90,14 +91,16 @@ public class Resolver {
 	 * @param baseUrl URL root of artifacts
 	 * @param coords  array of artifact coordinates
 	 */
-	public static String resolveCodeBase(URL baseUrl, String... coords) {
+	public static String resolveCodeBase(URL baseUrl, String... coords) throws MalformedURLException {
+        String baseUrlStr = baseUrl.toExternalForm();
+        URL base = baseUrlStr.endsWith("/") ? baseUrl : new URL(baseUrlStr + "/");
 		String[] relatives = new String[coords.length];
 		for (int i = 0; i < coords.length; i++) {
             // For compatibility do not resolve against artifacts if coords is a url to a jar
             if (coords[i].contains("http"))
                 relatives[i] = coords[i];
             else
-			    relatives[i] = resolveAbsolute(baseUrl, ArtifactCoordinates.coords(coords[i]));
+			    relatives[i] = resolveAbsolute(base, ArtifactCoordinates.coords(coords[i]));
 		}
 		return StringUtils.join(relatives, SorcerConstants.CODEBASE_SEPARATOR);
 	}
@@ -159,18 +162,6 @@ public class Resolver {
         if (relPath == null) return null;
         return new File(resolver.getRootDir(), relPath);
 	}
-
-	public static String getRootDir() {
-        return resolver.getRootDir();
-    }
-
-    public static String getRepoDir() {
-        return resolver.getRepoDir();
-    }
-
-    public static boolean isMaven() {
-        return (resolver instanceof RepositoryArtifactResolver);
-    }
 
     public static ArtifactResolver getResolver() {
         return resolver;

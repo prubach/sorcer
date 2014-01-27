@@ -183,6 +183,26 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	}
 
 	/**
+     * Create a SorcerServiceDescriptor. Equivalent to calling the other
+     * overloaded constructor with new String[]{sorcerConfig}
+     *
+     * @param codebase      location where clients can download required service-related
+     *                      classes (for example, stubs, proxies, etc.). Codebase
+     *                      components must be separated by spaces in which each component
+     *                      is in <code>URL</code> format.
+     * @param policy        server policy filename or URL
+     * @param classpath     location where server implementation classes can be found.
+     *                      Classpath components must be separated by path separators.
+     * @param implClassName name of server implementation class
+     * @param serverConfig  service configuration file path
+     */
+    public SorcerServiceDescriptor(String codebase, String policy,
+                                   String classpath, String implClassName,
+                                   String serverConfig) {
+        this(codebase, policy, classpath, implClassName, new String[]{serverConfig});
+    }
+
+    /**
 	 * Codebase accessor method.
 	 * 
 	 * @return The codebase string associated with this service descriptor.

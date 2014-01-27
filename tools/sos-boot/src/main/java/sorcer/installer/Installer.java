@@ -21,7 +21,9 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
+import sorcer.resolver.ArtifactResolver;
+import sorcer.resolver.MappedFlattenedArtifactResolver;
+import sorcer.resolver.RepositoryArtifactResolver;
 import sorcer.util.ArtifactCoordinates;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,6 +45,9 @@ import java.util.zip.ZipFile;
  * Time: 10:18
  */
 public class Installer {
+    private ArtifactResolver libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()));
+    private ArtifactResolver mvnResolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
+
     protected Map<String, String> groupDirMap = new HashMap<String, String>();
     protected Map<String, String> versionsMap = new HashMap<String, String>();
 
@@ -58,7 +63,6 @@ public class Installer {
     private static String REPOLAYOUT_PROPS_FILE=SorcerEnv.getExtDir() + File.separator + "configs" +
             File.separator + "repolayout.properties";
 
-    private static String repoDir;
     int errorCount = 0;
 
     private Map<String, ArtifactCoordinates> artifactsFromPoms = new HashMap<String, ArtifactCoordinates>();
@@ -81,7 +85,7 @@ public class Installer {
             ioe.printStackTrace();
         }
         try {
-            repoDir = Resolver.getRepoDir();
+            String repoDir = SorcerEnv.getRepoDir();
             if (repoDir == null)                          {
                 throw new IOException("Repo Dir is null");
             }
@@ -149,13 +153,14 @@ public class Installer {
             String dir = groupDirMap.get(group);
             String version = versionsMap.get(group);
 
-            if (dir == null || version == null || !new File(Resolver.getRootDir(), dir).exists()) {
+            File libDir = new File(SorcerEnv.getLibPath(), dir);
+            if (dir == null || version == null || !libDir.exists()) {
                 logger.severe("Problem installing jars for groupId: " + group + " directory or version not specified: " + dir + " " + version);
                 errorCount++;
                 continue;
             }
 
-            File[] jars = new File(Resolver.getRootDir() + "/" + dir).listFiles(new FileFilter() {
+            File[] jars = libDir.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
                     return pathname.getName().endsWith(".jar");
@@ -164,13 +169,13 @@ public class Installer {
 
             for (File jar : jars) {
                 String fileNoExt = jar.getName().replace(".jar", "");
-                String artifactDir = Resolver.getRepoDir() + "/" + group.replace(".", "/") + "/" + fileNoExt + "/" + version;
+                ArtifactCoordinates ac = new ArtifactCoordinates(group, fileNoExt, version);
+                File destJarFile = new File(mvnResolver.resolveAbsolute(ac));
+                File artifactDir = destJarFile.getParentFile();
                 try {
-                    FileUtils.forceMkdir(new File(artifactDir));
-                    extractZipFile(jar, "META-INF/maven/" + group + "/" + fileNoExt + "/pom.xml",
-                            artifactDir + "/" + fileNoExt + "-" + version + ".pom");
-                    File destJarFile = new File(artifactDir, fileNoExt + "-" + version + ".jar");
-                    if (!destJarFile.exists() || destJarFile.getName().contains("SNAPSHOT"))
+                    FileUtils.forceMkdir(artifactDir);
+                    extractZipFile(jar, getInternalPomPath(ac), replaceExt(destJarFile, "pom"));
+                    if (!destJarFile.exists() || ac.isVersionSnapshot())
                         FileUtils.copyFile(jar, destJarFile);
                 } catch (IOException io) {
                     errorCount++;
@@ -179,7 +184,7 @@ public class Installer {
             }
         }
         // install commons
-        File[] jars = new File(Resolver.getRootDir() + "/" + COMMONS_LIBS).listFiles(new FileFilter() {
+        File[] jars = new File(SorcerEnv.getLibPath(), COMMONS_LIBS).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().endsWith("jar");
@@ -189,15 +194,14 @@ public class Installer {
         for (File jar : jars) {
             ArtifactCoordinates ac = getArtifactCoordinatesForFile(jar);
             if (ac!=null && ac.getGroupId()!=null && ac.getArtifactId()!=null && ac.getVersion()!=null) {
-                String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
+                File destJarFile = new File(mvnResolver.resolveAbsolute(ac));
+                File artifactDir = destJarFile.getParentFile();
                 try {
-                    FileUtils.forceMkdir(new File(artifactDir));
-                    extractZipFile(jar, "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml",
-                            artifactDir + "/" + ac.getArtifactId() + "-" + ac.getVersion() + ".pom");
-                    File destJarFile = new File(artifactDir, ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
-                    if (!destJarFile.exists() || destJarFile.getName().contains("SNAPSHOT"))
+                    FileUtils.forceMkdir(artifactDir);
+                    extractZipFile(jar, getInternalPomPath(ac), replaceExt(destJarFile, "pom"));
+                    if (!destJarFile.exists() || ac.isVersionSnapshot())
                         FileUtils.copyFile(jar, destJarFile);
-                    logger.info("Installed jar and pom file: " + artifactDir + File.separator + ac.getArtifactId() + "-" + ac.getVersion() + ".jar");
+                    logger.info("Installed jar and pom file: " + destJarFile);
                 } catch (IOException io) {
                     errorCount++;
                     logger.severe("Problem installing jar: " + ac.getArtifactId() + " to: " + artifactDir + "\n" + io.getMessage());
@@ -211,10 +215,9 @@ public class Installer {
         try {
             String group = "org.sorcersoft.sigar";
             String version = versionsMap.get(group);
-            File sigarDir = new File(Resolver.getRepoDir() + "/org/sorcersoft/sigar/sigar-native/" + version);
-            File destFile = new File(sigarDir, "sigar-native-" + version + ".zip");
-            File srcDir = new File(Resolver.getRootDir() + "/" + groupDirMap.get(group));
-            File zipFile = new File(srcDir, "sigar-native.zip");
+            ArtifactCoordinates ac = new ArtifactCoordinates(group, "sigar-native","zip",version,null);
+            File destFile = new File(mvnResolver.resolveAbsolute(ac));
+            File zipFile = new File(libResolver.resolveAbsolute(ac));
             if (!destFile.exists()) {
                 logger.info("Installing zip file: " + zipFile + " to " + destFile);
                 FileUtils.copyFile(zipFile, destFile);
@@ -260,23 +263,20 @@ public class Installer {
         File[] jars = new File(pomDir).listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                if (pathname.getName().endsWith("pom"))
-                    return true;
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
+                return pathname.getName().endsWith("pom");
             }
         });
-        String group = "org.sorcersoft.sorcer";
         for (File jar : jars) {
                 ArtifactCoordinates ac = getArtifactCoordsFromPom(jar.getAbsolutePath());
                 if (ac!=null) {
                     artifactsFromPoms.put(ac.getArtifactId(), ac);
-                    String artifactDir = Resolver.getRepoDir() + "/" + ac.getGroupId().replace(".", "/") + "/" + ac.getArtifactId() + "/" + ac.getVersion();
+                    File destFile = new File(mvnResolver.resolveAbsolute(ac));
+                    File artifactDir = destFile.getParentFile();
                     try {
-                        FileUtils.forceMkdir(new File(artifactDir));
-                        File destFile = new File(artifactDir, jar.getName());
-                        if (!destFile.exists() || destFile.getName().contains("SNAPSHOT"))
+                        FileUtils.forceMkdir(artifactDir);
+                        if (!destFile.exists() || ac.isVersionSnapshot())
                             FileUtils.copyFile(jar, destFile);
-                        logger.info("Installed pom file: " + artifactDir + File.separator + jar.getName());
+                        logger.info("Installed pom file: " + destFile);
                     } catch (IOException io) {
                         errorCount++;
                         logger.severe("Problem installing pom file: " + jar.getAbsolutePath() + " to: " + artifactDir);
@@ -384,10 +384,10 @@ public class Installer {
         }
     }
 
-    public static void extractZipFile(File zipFileSrc, String relativeFilePath, String targetFilePath) {
+    public static void extractZipFile(File zipFileSrc, String relativeFilePath, File targetFilePath) {
         try {
             // Do not overwrite
-            if (!new File(targetFilePath).exists()) {
+            if (!targetFilePath.exists()) {
                 ZipFile zipFile = new ZipFile(zipFileSrc);
                 Enumeration<? extends ZipEntry> e = zipFile.entries();
                 while (e.hasMoreElements()) {
@@ -399,7 +399,7 @@ public class Installer {
 
                         // write the inputStream to a FileOutputStream
                         OutputStream outputStream =
-                                new FileOutputStream(new File(targetFilePath));
+                                new FileOutputStream(targetFilePath);
 
                         int read = 0;
                         byte[] bytes = new byte[1024];
@@ -454,4 +454,12 @@ public class Installer {
         }
     }
 
+    private static String getInternalPomPath(ArtifactCoordinates ac) {
+        return "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml";
+    }
+
+    private static File replaceExt(File file, String ext) {
+        String path = file.getPath();
+        return new File(path.substring(0, path.lastIndexOf('.') + 1) + ext);
+    }
 }

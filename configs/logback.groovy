@@ -205,4 +205,7 @@ logger("watch.Process Memory", DEBUG, ["WATCH-LOG"], false)
 logger("watch.Perm Gen", DEBUG, ["WATCH-LOG"], false)
 */
 
-
+def listener = new ch.qos.logback.classic.jul.LevelChangePropagator();
+listener.setResetJUL(true);
+((ch.qos.logback.classic.LoggerContext)context).addListener(listener);
+org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();

@@ -2,9 +2,7 @@ package sorcer.netlet.util;
 
 import org.rioproject.resolver.*;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
-import sorcer.resolver.*;
 import sorcer.resolver.Resolver;
-import sorcer.util.ArtifactCoordinates;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
@@ -57,26 +55,10 @@ public class LoaderConfigurationHelper {
             String finalUrl = null;
             try {
                 if (urlEntries.length > 1) {
-                    // Try different resolvers
-                    ArtifactResolver resolver = Resolver.getResolver();
-                    if (resolver instanceof HybridArtifactResolver) {
-                        HybridArtifactResolver hResolver = (HybridArtifactResolver)resolver;
-                        finalUrl = "http://" + urlEntries[1] + "/" +
-                                hResolver.resolveRepoRelative(ArtifactCoordinates.coords(urlEntries[0]));
-                        if (existRemoteFile(new URL(finalUrl))) {
-                            urlsList.add(new URL(finalUrl));
-                        } else {
-                            finalUrl = "http://" + urlEntries[1] + "/" +
-                                    hResolver.resolveFlatRelative(ArtifactCoordinates.coords(urlEntries[0]));
-                            if (existRemoteFile(new URL(finalUrl)))
-                                urlsList.add(new URL(finalUrl));
-                        }
-                    } else {
-                        finalUrl = "http://" + urlEntries[1] + "/" +
-                                Resolver.resolveRelative(urlEntries[0]);
-                        if (existRemoteFile(new URL(finalUrl))) {
-                            urlsList.add(new URL(finalUrl));
-                        }
+                    finalUrl = "http://" + urlEntries[1] + "/" +
+                            Resolver.resolveRelative(urlEntries[0]);
+                    if (existRemoteFile(new URL(finalUrl))) {
+                        urlsList.add(new URL(finalUrl));
                     }
                 } else {
                     finalUrl = Resolver.resolveAbsolute(urlEntries[0]);
@@ -132,26 +114,10 @@ public class LoaderConfigurationHelper {
             String finalUrl = null;
             try {
                 if (urlEntries.length > 1) {
-                    // Try different resolvers
-                    ArtifactResolver resolver = Resolver.getResolver();
-                    if (resolver instanceof HybridArtifactResolver) {
-                        HybridArtifactResolver hResolver = (HybridArtifactResolver)resolver;
-                        finalUrl = "http://" + urlEntries[1] + "/" +
-                                hResolver.resolveRepoRelative(ArtifactCoordinates.coords(urlEntries[0]));
-                        if (existRemoteFile(new URL(finalUrl))) {
-                            return new URL(finalUrl).toString();
-                        } else {
-                            finalUrl = "http://" + urlEntries[1] + "/" +
-                                    hResolver.resolveFlatRelative(ArtifactCoordinates.coords(urlEntries[0]));
-                            if (existRemoteFile(new URL(finalUrl)))
-                                return new URL(finalUrl).toString();
-                        }
-                    } else {
-                        finalUrl = "http://" + urlEntries[1] + "/" +
-                                Resolver.resolveRelative(urlEntries[0]);
-                        if (existRemoteFile(new URL(finalUrl))) {
-                            return new URL(finalUrl).toString();
-                        }
+                    finalUrl = "http://" + urlEntries[1] + "/" +
+                            Resolver.resolveRelative(urlEntries[0]);
+                    if (existRemoteFile(new URL(finalUrl))) {
+                        return new URL(finalUrl).toString();
                     }
                 } else if (websterUrl!=null) {
                     finalUrl = Resolver.resolveAbsolute(websterUrl, urlEntries[0]);

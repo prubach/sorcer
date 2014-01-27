@@ -194,4 +194,8 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	public int compareTo(ArtifactCoordinates o) {
 		return toString().compareTo(o.toString());
 	}
+
+    public boolean isVersionSnapshot(){
+        return version.endsWith("-SNAPSHOT");
+    }
 }
