@@ -74,7 +74,6 @@ import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.netlet.util.ScriptExertException;
-import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
@@ -288,8 +287,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			// Exit when CTRL+D is pressed
 			System.exit(0);
 		}
-		while ((request.length() > 0 && BUILTIN_QUIT_COMMAND.indexOf(request) < 0)
-				|| request.length() == 0) {
+		while (request != null && ((request.length() > 0 && BUILTIN_QUIT_COMMAND.indexOf(request) < 0)
+				|| request.length() == 0)) {
 			shellTokenizer = new StringTokenizer(request);
 			curToken = "";
 			if (shellTokenizer.hasMoreTokens()) {

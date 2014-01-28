@@ -17,14 +17,12 @@
  */
 package sorcer.tools.shell;
 
-import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URLClassLoader;
 
 /**
  * Helper class to help classworlds to load classes.

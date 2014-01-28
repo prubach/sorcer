@@ -19,10 +19,10 @@
 package sorcer.tools.shell.cmds;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import sorcer.core.context.Contexts;
@@ -31,8 +31,6 @@ import sorcer.core.context.node.ContextNode;
 import sorcer.netlet.ScriptExerter;
 import sorcer.service.*;
 import sorcer.tools.shell.*;
-import sorcer.util.GenericUtil;
-import sorcer.util.IOUtils;
 
 public class ExertCmd extends ShellCmd {
 
@@ -83,17 +81,23 @@ public class ExertCmd extends ShellCmd {
 			throw new NullPointerException("Must have an output PrintStream");
 
 		File d = NetworkShell.getInstance().getCurrentDir();
-		String nextToken = null;
 		String scriptFilename = null;
 		boolean outPersisted = false;
 		boolean outputControlContext = false;
 		boolean marshalled = false;
 		boolean commandLine = NetworkShell.isInteractive();
-		StringTokenizer tok = new StringTokenizer(input);
-		if (tok.countTokens() >= 1) {
-			while (tok.hasMoreTokens()) {
-				nextToken = tok.nextToken();
-				if (nextToken.equals("-s")) {
+
+        Pattern p = Pattern.compile("(\"[^\"]*\"|[^\"^\\s]+)(\\s+|$)", Pattern.MULTILINE);
+        Matcher m = p.matcher(input);
+        if (m.groupCount() == 0) {
+            out.println(COMMAND_USAGE);
+            return;
+        }
+        while (m.find()) {
+            String nextToken = m.group(1);
+            if (nextToken.startsWith("\""))
+                nextToken = nextToken.substring(1, nextToken.length() - 1);
+            if (nextToken.equals("-s")) {
 					outPersisted = true;
 					outputFile = new File("" + d + File.separator + nextToken);
 				} else if (nextToken.equals("-controlContext"))
@@ -112,11 +116,6 @@ public class ExertCmd extends ShellCmd {
 				else
 					scriptFilename = nextToken;
 			}
-		} else {
-			out.println(COMMAND_USAGE);
-			return;
-		}
-		StringBuilder sb = null;
         if (script != null) {
             scriptExerter.readScriptWithHeaders(script);
 		} else if (scriptFilename != null) {
