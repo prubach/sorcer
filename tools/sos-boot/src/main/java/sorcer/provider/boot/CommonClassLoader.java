@@ -191,6 +191,7 @@ public class CommonClassLoader extends URLClassLoader {
             if (!hasURL(jar))
                 addURL(jar);
         }
+        org.rioproject.loader.CommonClassLoader.getInstance().addCommonJARs(jars);
     }
 	
     /**

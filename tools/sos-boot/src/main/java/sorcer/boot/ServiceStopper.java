@@ -62,6 +62,10 @@ public class ServiceStopper extends Thread {
 
     private void stop(Service service) {
         Object impl = service.impl;
+        if (impl == null) {
+            log.warn("Service didn't start {}", service.descriptor, service.exception);
+            return;
+        }
         if (impl instanceof DestroyAdmin) {
             DestroyAdmin da = (DestroyAdmin) impl;
             try {
@@ -79,7 +83,7 @@ public class ServiceStopper extends Thread {
                 log.warn("Error", e);
             }
         } else {
-            log.warn("Unable to stop {}", service.impl);
+            log.warn("Unable to stop {}", impl);
         }
     }
 }

@@ -5,40 +5,23 @@
  */
 import sorcer.core.SorcerEnv;
 
-
-String[] getInitialMemberGroups() {
-    def groups = SorcerEnv.getLookupGroups();
-    return groups as String[]
-}
-
 def getSorcerHome() {
-    return SorcerEnv.getHomeDir().path;
+    return SorcerEnv.homeDir.path;
 }
-
-def fs() {
-    return File.separator;
-}
-
 
 def getSorcerVersion() {
     return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
 
-
-def String getCodebase() {
-    return 'http://' + SorcerEnv.getLocalHost().getHostAddress() + ":9010"
-}
-
 deployment(name: 'Sorcer') {
-    groups getInitialMemberGroups();
+    groups SorcerEnv.getLookupGroups() as String[];
 
-    codebase getCodebase()
+    codebase "http://${SorcerEnv.getLocalHost().getHostAddress()}:9010/".toString()
 
     artifact id: 'webster-srv', 'org.sorcersoft.sorcer:sos-webster:' + getSorcerVersion()
 
     artifact id: 'reggie', 'org.apache.river:reggie:2.2.1'
     artifact id: 'reggie-dl', 'org.apache.river:reggie-dl:2.2.1'
-
 
     service(name: 'Webster') {
         implementation(class: 'sorcer.tools.webster.Webster') {
@@ -59,8 +42,4 @@ deployment(name: 'Sorcer') {
         configuration file: getSorcerHome() + "/configs/jini/configs/reggie.config"
         maintain 1
     }
-
 }
-
-
-include 'SorcerRioBoot.groovy'

@@ -1,7 +1,11 @@
 package sorcer.boot;
 
 import com.sun.jini.config.Config;
-import com.sun.jini.start.*;
+import com.sun.jini.start.AggregatePolicyProvider;
+import com.sun.jini.start.ClassLoaderUtil;
+import com.sun.jini.start.LifeCycle;
+import com.sun.jini.start.LoaderSplitPolicyProvider;
+import com.sun.jini.start.ServiceProxyAccessor;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
 import net.jini.export.ProxyAccessor;
@@ -10,20 +14,29 @@ import net.jini.security.ProxyPreparer;
 import net.jini.security.policy.DynamicPolicyProvider;
 import net.jini.security.policy.PolicyFileProvider;
 import net.jini.security.policy.PolicyInitializationException;
+import org.rioproject.impl.opstring.OpStringUtil;
+import org.rioproject.loader.ClassAnnotator;
+import org.rioproject.loader.ServiceClassLoader;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
+import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Policy;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rafał Krupiński
@@ -122,14 +135,40 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
 
-    private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, MalformedURLException {
+    private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
         String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
-        URL[] urls = new URL[urlStrings.length];
+        URI[] urls = new URI[urlStrings.length];
 
         for (int i = 0; i < urlStrings.length; i++) {
-            urls[i] = new URL(urlStrings[i]);
+            urls[i] = new URI(urlStrings[i]);
         }
-        return new URLClassLoader(urls, parentCL);
+        URL codebaseRoot = SorcerEnv.getCodebaseRoot();
+        OpStringUtil.checkCodebase(serviceElement, codebaseRoot.toExternalForm());
+
+        URL[] codebase = getCodebase(serviceElement);
+        return new ServiceClassLoader(urls, new ClassAnnotator(codebase), parentCL);
+    }
+
+    private static URL[] getCodebase(ServiceElement serviceElement) throws MalformedURLException {
+        URL[] exportURLs = serviceElement.getExportURLs();
+        if (exportURLs.length != 0)
+            return exportURLs;
+
+        ClassBundle[] exportBundles = serviceElement.getExportBundles();
+        List<URL> exportUrls = new ArrayList<URL>(exportBundles.length);
+
+        for (ClassBundle exportBundle : exportBundles) {
+            URL codebaseRoot = new URL(exportBundle.getCodebase());
+            String artifact = exportBundle.getArtifact();
+            if (artifact != null)
+                exportUrls.add(artifactToUrl(codebaseRoot, artifact));
+        }
+        return exportUrls.toArray(new URL[exportUrls.size()]);
+    }
+
+    private static URL artifactToUrl(URL codebase, String artifact) throws MalformedURLException {
+        artifact = artifact.replace(':', '/');
+        return new URL("artifact:" + artifact + ";" + codebase.getHost() + "@" + codebase.toExternalForm());
     }
 
     private static class NoOpLifeCycle implements LifeCycle {

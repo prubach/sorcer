@@ -27,6 +27,7 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.start.LogManagementHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +95,7 @@ public class ServiceStarter {
         //redirect java.util.logging to slf4j/logback
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
+        LogManagementHelper.setup();
     }
 
 	private static void loadDefaultProperties() {
@@ -181,6 +183,7 @@ public class ServiceStarter {
         }
         if (files.size() > 1) {
             log.warn("Found {} files possibly matching artifactId, using the first", files.size());
+            log.debug("Files found: {}", files);
         }
         return files.iterator().next();
     }
