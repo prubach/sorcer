@@ -16,6 +16,7 @@
 
 package sorcer.boot;
 
+import org.rioproject.servicebean.ServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.DestroyAdmin;
@@ -82,6 +83,9 @@ public class ServiceStopper extends Thread {
             } catch (RemoteException e) {
                 log.warn("Error", e);
             }
+        }else if(impl instanceof ServiceBean){
+            ServiceBean sb= (ServiceBean) impl;
+            sb.destroy(false);
         } else {
             log.warn("Unable to stop {}", impl);
         }

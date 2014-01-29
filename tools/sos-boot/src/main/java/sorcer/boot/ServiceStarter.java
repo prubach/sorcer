@@ -38,6 +38,7 @@ import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
 /**
@@ -68,22 +70,63 @@ public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
     final private static String CONFIG_RIVER = "config/services.config";
     final private static String SUFFIX_RIVER = "config";
-    final public static File SORCER_DEFAULT_CONFIG = new File(SorcerEnv.getHomeDir(), "configs/sorcer-boot.config");
     final private static String START_PACKAGE = "com.sun.jini.start";
+
+    final private static Map<String,List<String>>configurations;
+    final private static Map<String,List<String>>monitorConfigurations;
+
+    static {
+        configurations = new HashMap<String, List<String>>();
+        monitorConfigurations = new HashMap<String, List<String>>();
+
+        File river = new File(SorcerEnv.getHomeDir(), "configs/River.groovy");
+        File sorcer = new File(SorcerEnv.getHomeDir(), "configs/Sorcer.groovy");
+        File rio = new File(SorcerEnv.getHomeDir(), "configs/Rio.groovy");
+        File sorcerExt = new File(SorcerEnv.getExtDir(), "configs/SorcerExtBoot.groovy");
+
+        configurations.put("sorcer", pathList(river, sorcer, sorcerExt));
+
+        configurations.put("rio", pathList(river, rio));
+        monitorConfigurations.put("rio", pathList(sorcer, sorcerExt));
+
+        configurations.put("mix", pathList(river, sorcer, sorcerExt, rio));
+    }
+
+    private static List<String> pathList(File... files) {
+        List<String> result = new ArrayList<String>(files.length);
+        for (File file : files) {
+            if(file.exists())
+                result.add(file.getPath());
+        }
+        return result;
+    }
 
     private List<Service> services;
     private volatile boolean bootInterrupted;
 
     public static void main(String[] args) throws Exception {
-        log.info("******* Starting Sorcersoft.com SORCER *******");
         loadDefaultProperties();
         installLogging();
+        log.info("******* Starting Sorcersoft.com SORCER *******");
         installSecurityManager();
 
         List<Service> services = new LinkedList<Service>();
         ServiceStarter serviceStarter = new ServiceStarter(services);
         ServiceStopper.install(serviceStarter, services);
-        serviceStarter.start(new LinkedList<String>(Arrays.asList(args)));
+        serviceStarter.start(parseCmdLine(args));
+    }
+
+    private static List<String> parseCmdLine(String[] args) {
+        LinkedList<String> result = new LinkedList<String>();
+        for (String arg : args) {
+            if (configurations.containsKey(arg)) {
+                result.addAll(configurations.get(arg));
+                if(monitorConfigurations.containsKey(arg))
+                    System.setProperty(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigurations.get(arg), File.pathSeparator));
+            } else
+                result.add(arg);
+        }
+        return result;
     }
 
     private static void installSecurityManager() {
@@ -126,9 +169,7 @@ public class ServiceStarter {
      * @param configs file path or URL of the services.config configuration
      */
     public void start(Collection<String> configs) throws Exception {
-        if (configs.isEmpty()) {
-            configs.add(SORCER_DEFAULT_CONFIG.getPath());
-        }
+        log.debug("Starting from {}", configs);
 
         List<String> riverServices = new LinkedList<String>();
         List<File> cfgJars = new LinkedList<File>();

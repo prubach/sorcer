@@ -42,7 +42,7 @@ import org.rioproject.RioVersion
 import net.jini.lookup.ui.MainUI
 import org.rioproject.serviceui.UIFrameFactory
 import sorcer.core.SorcerEnv
-import java.io.File
+import sorcer.util.StringUtils;
 
 /*
 * Declare Provision Monitor properties
@@ -54,14 +54,7 @@ class MonitorConfig {
     String jmxName = 'org.rioproject.monitor:type=Monitor';
 
     String[] getInitialOpStrings() {
-        String basicSorcerBoot = SorcerEnv.getHomeDir().getAbsolutePath() + "/configs/SorcerRioBoot.groovy";
-        String extSorcerBoot = SorcerEnv.getExtDir().getAbsolutePath() + "/configs/SorcerExtBoot.groovy";
-        if (new File(extSorcerBoot).exists() && new File(basicSorcerBoot).exists())
-            return [basicSorcerBoot, extSorcerBoot]
-        else if (new File(basicSorcerBoot).exists())
-            return [basicSorcerBoot]
-        else
-            return []
+        return StringUtils.tokenizerSplit(System.getProperty(sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS, ""), File.pathSeparator);
     }
 
     String[] getInitialLookupGroups() {

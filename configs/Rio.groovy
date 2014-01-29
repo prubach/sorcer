@@ -23,22 +23,17 @@ import sorcer.core.SorcerEnv;
 
 
 String[] getInitialMemberGroups() {
-    def groups = SorcerEnv.getLookupGroups();
-    return groups as String[]
+    return SorcerEnv.lookupGroups as String[];
 }
 
 def getSorcerHome() {
     return SorcerEnv.homeDir.path;
 }
 
-def String getCodebase() {
-    return 'http://' + SorcerEnv.localHost.hostAddress + ":9010/"
-}
-
 deployment(name: 'Sorcer') {
     groups getInitialMemberGroups();
 
-    codebase(getCodebase())
+    codebase 'http://' + SorcerEnv.localHost.hostAddress + ":9010/"
 
     artifact id: 'monitor-service', 'org.rioproject.monitor:monitor-service:5.0-M4-S4'
     artifact id: 'monitor-proxy',   'org.rioproject.monitor:monitor-proxy:5.0-M4-S4'

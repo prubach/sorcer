@@ -124,6 +124,8 @@ public interface SorcerConstants {
 
 	public static final String P_QOSWORKERS_MAX = "provider.qosworkers.max";
 
+    public static final String P_MONITOR_INITIAL_OPSTRINGS = "sorcer.rio.monitor.initialOpStrings";
+
 	// code server, constants with sorcer.* prefix recommended as system
 	// properties
 	public static final String SORCER_WEBSTER_INTERNAL = "webster.internal";
