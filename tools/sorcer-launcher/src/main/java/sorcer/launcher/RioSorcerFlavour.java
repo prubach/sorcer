@@ -72,7 +72,7 @@ public class RioSorcerFlavour extends SorcerFlavour {
         public boolean consume(String line) {
             Matcher m = startPattern.matcher(line);
             if (m.find()) {
-                initService(m.group(1), m.group(2));
+                initService(m.group(1));
                 return true;
             }
 
@@ -83,7 +83,7 @@ public class RioSorcerFlavour extends SorcerFlavour {
             return allServices.isEmpty() || !startingServices.isEmpty();
         }
 
-        private void initService(String name, String num) {
+        private void initService(String name) {
             startingServices.add(name);
             allServices.add(name);
             log.info("Starting {} services", allServices.size());

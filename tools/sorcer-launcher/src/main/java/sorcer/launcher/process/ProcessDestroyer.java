@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.launcher;
+package sorcer.launcher.process;
 
 
 import org.slf4j.Logger;
@@ -24,6 +24,8 @@ import sorcer.util.Process2;
 import java.util.List;
 
 /**
+ * Runnable that destroys all processes in a list passed in the constructor
+ *
  * @author Rafał Krupiński
  */
 public class ProcessDestroyer implements Runnable {

@@ -13,11 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.launcher;
 
+
+import sorcer.util.Process2;
+
 /**
-* @author Rafał Krupiński
-*/
-public interface OutputConsumer {
-    public boolean consume(String line);
+ * Do-nothing default implementation of SorcerListener. Used internally in the Launcher, may be used as a base class for other implementations.
+ *
+ * @author Rafał Krupiński
+ */
+public class NullSorcerListener implements SorcerListener {
+    @Override
+    public void processLaunched(Process2 process) {
+
+    }
+
+    @Override
+    public void sorcerStarting() {
+
+    }
+
+    @Override
+    public void sorcerStarted() {
+
+    }
+
+    @Override
+    public void processDown(Process process) {
+
+    }
 }

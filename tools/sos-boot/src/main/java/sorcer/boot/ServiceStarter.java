@@ -110,10 +110,15 @@ public class ServiceStarter {
         log.info("******* Starting Sorcersoft.com SORCER *******");
         installSecurityManager();
 
+        List<String> configs = parseCmdLine(args);
+        start(configs);
+    }
+
+    public static void start(List<String> configs) throws Exception {
         List<Service> services = new LinkedList<Service>();
         ServiceStarter serviceStarter = new ServiceStarter(services);
         ServiceStopper.install(serviceStarter, services);
-        serviceStarter.start(parseCmdLine(args));
+        serviceStarter.start((Collection<String>) configs);
     }
 
     private static List<String> parseCmdLine(String[] args) {
@@ -331,7 +336,8 @@ public class ServiceStarter {
                 } catch (Exception e) {
                     service = new Service(null, null, desc, e);
                 } finally {
-                    proxies.add(service);
+                    if (service != null)
+                        proxies.add(service);
                 }
             }
         }

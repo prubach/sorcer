@@ -18,7 +18,6 @@ package sorcer.launcher;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,8 +25,10 @@ import java.util.List;
  */
 public class SorcerSorcerFlavour extends SorcerFlavour {
     private File ext;
+    private File home;
 
-    public SorcerSorcerFlavour(File ext) {
+    public SorcerSorcerFlavour(File home, File ext) {
+        this.home = home;
         this.ext = ext;
     }
 
@@ -49,10 +50,20 @@ public class SorcerSorcerFlavour extends SorcerFlavour {
 
     @Override
     public List<String> getDefaultConfigs() {
-        List<String> result = new ArrayList<String>(Arrays.asList("configs/sorcer-boot.config"));
-        File extCfg = new File(ext, "configs/SorcerExtBoot.groovy");
-        if (extCfg.exists())
-            result.add(extCfg.getPath());
+        return pathList(
+                new File(home, "configs/River.groovy"),
+                new File(home, "configs/Sorcer.groovy"),
+                new File(home, "configs/Rio.groovy"),
+                new File(ext, "configs/SorcerExtBoot.groovy")
+        );
+    }
+
+    private static List<String> pathList(File... files) {
+        List<String> result = new ArrayList<String>(files.length);
+        for (File file : files) {
+            if (file.exists())
+                result.add(file.getPath());
+        }
         return result;
     }
 

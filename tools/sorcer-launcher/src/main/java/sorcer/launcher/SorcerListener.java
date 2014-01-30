@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.launcher;
 
+import sorcer.util.Process2;
+import sorcer.util.ProcessDownCallback;
+
 /**
-* @author Rafał Krupiński
-*/
-public interface OutputConsumer {
-    public boolean consume(String line);
+ * @author Rafał Krupiński
+ */
+public interface SorcerListener extends ProcessDownCallback{
+    void processLaunched(Process2 process);
+    void sorcerStarting();
+    void sorcerStarted();
 }

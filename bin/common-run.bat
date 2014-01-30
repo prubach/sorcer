@@ -44,6 +44,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
 
    set JINI_CLASSPATH="%JINI_BASE%;%JINI_START%;%LOG_CP%"
    set BOOT_CLASSPATH="%JINI_CLASSPATH%"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-launcher.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-api.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-start.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-lib.jar"
@@ -61,6 +62,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\commons\guava.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\commons\commons-lang3.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\commons\commons-io.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\commons\commons-cli.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\..\configs"
 
    set SHELL_CLASSPATH="%JINI_BASE%;%LOG_CP%"
@@ -98,13 +100,14 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set JINI_START="%MVN_REPO%\org\apache\river\start\%v.jini%\start-%v.jini%.jar"
 
    set SORCER_COMMON="%MVN_REPO%\org\sorcersoft\sorcer\sorcer-api\%v.sorcer%\sorcer-api-%v.sorcer%.jar"
-   set SORCER_COMMON="%SORCER_COMMON%\org\sorcersoft\sorcer\sorcer-resolver\%v.sorcer%\sorcer-resolver-%v.sorcer%.jar"
+   set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-resolver\%v.sorcer%\sorcer-resolver-%v.sorcer%.jar"
    set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-boot\%v.sorcer%\sos-boot-%v.sorcer%.jar"
    set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-util\%v.sorcer%\sos-util-%v.sorcer%.jar"
 
    set JINI_CLASSPATH="%JINI_BASE%;%JINI_START%;%LOG_CP%"
 
    set BOOT_CLASSPATH="%JINI_CLASSPATH%;%SORCER_COMMON%"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-webster\%v.sorcer%\sos-webster-%v.sorcer%.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\net\jini\jsk-resources\%v.jini%\jsk-resources-%v.jini%.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar"
@@ -116,6 +119,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\com\google\guava\guava\15.0\guava-15.0.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commons-cli-1.2.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\..\configs"
 
    set SHELL_CLASSPATH="%JINI_BASE%;%LOG_CP%;%SORCER_COMMON%"

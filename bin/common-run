@@ -359,6 +359,7 @@ $LIB_DIR/river/start.jar:\
 $LIB_DIR/jini-lookup/serviceui.jar"
 
   BOOT_CLASSPATH=$(createLoggerCp)":$JINI_CLASSPATH:\
+$LIB_DIR/sorcer/sorcer-launcher.jar:\
 $LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sorcer-resolver.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
@@ -375,6 +376,7 @@ $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/commons/commons-io.jar:\
+$LIB_DIR/commons/commons-cli.jar:\
 $LIB_DIR/commons/commons-lang3.jar"
 
     else
@@ -400,6 +402,7 @@ $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-lib/$V_SORCER/sorcer-rio-lib-$V_SORCER.jar:\
@@ -412,6 +415,7 @@ $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
     fi
