@@ -27,4 +27,10 @@ DIRNAME=`dirname "$PRG"`
 
 STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
 
-startSos "$@"
+if [ "x$1" != "x" ]; then
+	args=$@
+else
+	args="mix"
+fi
+
+startSos $args
