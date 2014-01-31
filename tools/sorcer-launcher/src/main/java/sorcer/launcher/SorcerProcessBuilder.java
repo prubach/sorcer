@@ -50,11 +50,13 @@ public class SorcerProcessBuilder extends JavaProcessBuilder {
     @Override
     public Process2 startProcess() throws IOException {
         environment.put(E_SORCER_HOME, sorcerHome);
+/*
         if (!environment.containsKey(E_RIO_HOME)) {
             String rioHome = System.getenv(SorcerConstants.E_RIO_HOME);
             if (rioHome == null) rioHome = new File(sorcerHome, "lib/rio").getPath();
             environment.put(E_RIO_HOME, rioHome);
         }
+*/
         return super.startProcess();
     }
 }

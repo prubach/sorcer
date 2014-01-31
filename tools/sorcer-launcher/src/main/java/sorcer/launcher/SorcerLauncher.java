@@ -16,29 +16,29 @@
 
 package sorcer.launcher;
 
+import org.rioproject.start.LogManagementHelper;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.resolver.Resolver;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
-    public static boolean checkEnvironment(SorcerFlavour flavour) throws MalformedURLException {
+    private ThreadFactory threadFactory;
+
+    public static boolean checkEnvironment() throws MalformedURLException {
         String[] requiredEnv = {
-                SorcerConstants.E_RIO_HOME,
+//                SorcerConstants.E_RIO_HOME,
                 SorcerConstants.E_SORCER_HOME
         };
         for (String key : requiredEnv) {
@@ -52,7 +52,7 @@ public class SorcerLauncher extends Launcher {
 
 
         List<URL> requiredClassPath = new LinkedList<URL>();
-        for (String file : flavour.getClassPath()) {
+        for (String file : CLASS_PATH) {
             requiredClassPath.add(new File(Resolver.resolveAbsolute(file)).toURI().toURL());
         }
         List<URL> actualClassPath = new ArrayList<URL>();
@@ -91,20 +91,65 @@ public class SorcerLauncher extends Launcher {
         overrides.putAll(System.getProperties());
 
         System.setProperties(overrides);
+        installLogging();
+        installSecurityManager();
 
         try {
-            getClass().getClassLoader().loadClass(sorcerFlavour.getMainClass()).getMethod("start", List.class).invoke(null, getConfigs());
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException) throw (RuntimeException) cause;
-            if (cause instanceof Error) throw (Error) cause;
-            throw new RuntimeException(e);
+            Class<?> serviceStarter = getClass().getClassLoader().loadClass(MAIN_CLASS);
+            Method start = serviceStarter.getDeclaredMethod("start", List.class);
+
+            SorcerRunnable sorcerRun = new SorcerRunnable(start, getConfigs());
+            if (threadFactory != null) {
+                threadFactory.newThread(sorcerRun).start();
+            } else {
+                sorcerRun.run();
+            }
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
+        }
+    }
+
+    private static void installSecurityManager() {
+        if (System.getSecurityManager() == null)
+            System.setSecurityManager(new SecurityManager());
+    }
+
+    private static void installLogging() {
+        //redirect java.util.logging to slf4j/logback
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        LogManagementHelper.setup();
+    }
+
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
+    }
+
+    private static class SorcerRunnable implements Runnable {
+        private final Method start;
+        private List<String> configs;
+
+        public SorcerRunnable(Method start, List<String> configs) {
+            this.start = start;
+            this.configs = configs;
+        }
+
+        @Override
+        public void run() {
+            try {
+                start.invoke(null, configs);
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof RuntimeException) throw (RuntimeException) cause;
+                if (cause instanceof Error) throw (Error) cause;
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while starting SORCER", e);
+            }
         }
     }
 }

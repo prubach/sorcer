@@ -21,9 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.OutputConsumer;
+import sorcer.launcher.SorcerOutputConsumer;
 import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.resolver.Resolver;
-import sorcer.util.IOUtils;
 import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;
 import sorcer.util.ProcessMonitor;
@@ -39,11 +39,8 @@ import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
@@ -68,16 +65,11 @@ public class ForkingLauncher extends Launcher {
 
         logDir.mkdirs();
 
-        System.setProperty(SORCER_HOME, home.getPath());
-        System.setProperty(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
-
         SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
 
         bld.setRioHome(rio.getPath());
         Map<String, String> env = bld.getEnvironment();
         env.put(E_SORCER_EXT, ext.getPath());
-        //env.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        env.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
 
         Pipe pipe = Pipe.open();
         if (waitMode != WaitMode.no) {
@@ -98,11 +90,10 @@ public class ForkingLauncher extends Launcher {
             bld.setDebugPort(debugPort);
         }
 
-        Collection<String> classPath = resolveClassPath();
-        classPath.addAll(sorcerFlavour.getNonResolvableClassPath());
+        Collection<String> classPath = getClassPath();
         bld.setClassPath(classPath);
 
-        bld.setMainClass(sorcerFlavour.getMainClass());
+        bld.setMainClass(MAIN_CLASS);
 
         bld.setParameters(getConfigs());
 
@@ -122,7 +113,7 @@ public class ForkingLauncher extends Launcher {
         installProcessMonitor(sorcerListener, sorcerProcess);
 
         BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
-        OutputConsumer consumer = sorcerFlavour.getConsumer();
+        OutputConsumer consumer = new SorcerOutputConsumer();
 
         String line;
         while ((line = reader.readLine()) != null) {

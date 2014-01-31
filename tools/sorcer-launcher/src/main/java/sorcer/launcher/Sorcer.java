@@ -53,8 +53,8 @@ public class Sorcer {
     private static final String RIO = "rio";
     private static final String LOGS = "logs";
     private static final String DEBUG = "debug";
-    private static final String FLAVOUR = "flavour";
     private static final String EXT = "ext";
+    private static final String PROFILE = "P";
 
     /**
      * This method calls {@link java.lang.System#exit(int)} before returning, in case of any remaining non-daemon threads running.
@@ -65,7 +65,7 @@ public class Sorcer {
      * -home {}
      * -rioHome {} = home/lib/rio
      * <p/>
-     * {}... pliki dla ServiceStarter
+     * {}... config files for ServiceStarter
      */
     public static void main(String[] args) throws ParseException, IOException, InterruptedException {
         Options options = buildOptions();
@@ -94,7 +94,6 @@ public class Sorcer {
             log.error(x.getMessage(), x);
             System.exit(-1);
         }
-        System.exit(0);
     }
 
     private static void installShutdownHook(List<Process> children) {
@@ -133,11 +132,12 @@ public class Sorcer {
         debug.setArgName("port");
         options.addOption(debug);
 
-        Option flav = new Option(FLAVOUR, true, "Starting mechanism, on of " + Arrays.asList(Launcher.Flavour.values()));
-        flav.setArgs(1);
-        flav.setType(ForkingLauncher.Flavour.class);
-        flav.setArgName("start-mode");
-        options.addOption(flav);
+        //see sorcer.launcher.Profile
+        Option profile = new Option(PROFILE, "profile", true, "Profile, one of [sorcer, rio, mix]");
+        profile.setArgs(1);
+        profile.setType(String.class);
+        profile.setArgName("profile");
+        options.addOption(profile);
 
         Option ext = new Option(EXT, true, "SORCER_EXT variable");
         ext.setArgName("ext-dir");
@@ -171,20 +171,12 @@ public class Sorcer {
         File logDir = FileUtils.getFile(home, cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
         File ext = FileUtils.getFile(home, cmd.hasOption(EXT) ? cmd.getOptionValue(EXT) : homePath);
 
-        Launcher.Flavour flavour = cmd.hasOption(FLAVOUR) ? Launcher.Flavour.valueOf(cmd.getOptionValue(FLAVOUR)) : Launcher.Flavour.sorcer;
-        SorcerFlavour sorcerFlavour;
-        if (flavour == Launcher.Flavour.rio)
-            sorcerFlavour = new RioSorcerFlavour();
-        else
-            sorcerFlavour = new SorcerSorcerFlavour(home, ext);
-
         Launcher launcher = null;
         if (inProcess) {
-            if (SorcerLauncher.checkEnvironment(sorcerFlavour) && debugPort == null) {
+            if (SorcerLauncher.checkEnvironment() && debugPort == null) {
                 launcher = new SorcerLauncher();
-            }else{
+            } else {
                 log.warn("User has requested in-process launch, but it's impossible");
-                throw new IllegalStateException("Environment doesn't meet requirements or debugPort set");
             }
         }
         if (launcher == null) {
@@ -213,18 +205,34 @@ public class Sorcer {
             throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()));
         }
 
-        String rioPath;
         if (cmd.hasOption(RIO)) {
+            String rioPath;
             rioPath = cmd.getOptionValue(RIO);
-        } else if ((rioPath = System.getenv(E_RIO_HOME)) == null)
-            rioPath = "lib/rio";
-        launcher.setRio(FileUtils.getFile(home, rioPath));
+            launcher.setRio(FileUtils.getFile(home, rioPath));
+        }
+//        else if ((rioPath = System.getenv(E_RIO_HOME)) == null)
+//            rioPath = "lib/rio";
 
         launcher.setExt(ext.getCanonicalFile());
 
-        launcher.setFlavour(sorcerFlavour);
+        @SuppressWarnings("unchecked")
+        List<String> userConfigFiles = cmd.getArgList();
+        launcher.setConfigs(userConfigFiles);
 
-        launcher.setConfigs(cmd.getArgList());
+        Profile profile = null;
+        if (cmd.hasOption(PROFILE)) {
+            String profileName = cmd.getOptionValue(PROFILE);
+            if (profileName.endsWith(".xml"))
+                profile = Profile.load(new File(profileName).toURI().toURL());
+            else
+                profile = Profile.loadBuiltin(profileName);
+        } else {
+            if (userConfigFiles.isEmpty())
+                profile = Profile.loadDefault();
+        }
+        if (profile != null)
+            launcher.setProfile(profile);
+
         return launcher;
     }
 }

@@ -18,7 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-api</artifactId>
+            <artifactId>sos-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-resolver</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
@@ -27,22 +32,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-util</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-resolver</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!-- required for in-process launch -->
         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-boot</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-start</artifactId>
+            <version>${v.rio}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -57,6 +53,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${v.slf4j}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

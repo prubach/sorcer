@@ -19,16 +19,13 @@ package sorcer.launcher;
 import sorcer.resolver.Resolver;
 import sorcer.util.HostUtil;
 import sorcer.util.IOUtils;
+import sorcer.util.StringUtils;
+import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
@@ -42,26 +39,60 @@ public abstract class Launcher {
     protected File ext;
     protected File rio;
     protected File logDir;
-    protected File config;
+    protected File configDir;
     protected List<String> configs;
-    protected SorcerFlavour sorcerFlavour;
-
+    private Profile profile;
     protected SorcerListener sorcerListener;
 
-    private Flavour flavour;
+    final protected static String MAIN_CLASS = "sorcer.boot.ServiceStarter";
+
+    //TODO RKR remove versions
+    final protected static String[] CLASS_PATH = {
+            "org.apache.river:start",
+            "net.jini:jsk-resources",
+            "net.jini:jsk-platform",
+            "net.jini:jsk-lib",
+            "net.jini.lookup:serviceui",
+
+            "org.rioproject:rio-start",
+            "org.rioproject:rio-platform",
+            "org.rioproject:rio-logging-support",
+            "org.rioproject.resolver:resolver-api",
+            "org.rioproject:rio-lib",
+
+            "org.sorcersoft.sorcer:sorcer-api",
+            "org.sorcersoft.sorcer:sorcer-resolver",
+            "org.sorcersoft.sorcer:sorcer-rio-start",
+            "org.sorcersoft.sorcer:sorcer-rio-lib",
+            "org.sorcersoft.sorcer:sos-boot",
+            "org.sorcersoft.sorcer:sos-util",
+
+            "org.codehaus.groovy:groovy-all:2.1.3",
+            "org.apache.commons:commons-lang3:3.1",
+            "com.google.guava:guava:15.0",
+            "commons-io:commons-io",
+
+            "org.slf4j:slf4j-api",
+            "org.slf4j:jul-to-slf4j:1.7.5",
+            "ch.qos.logback:logback-core:1.0.13",
+            "ch.qos.logback:logback-classic:1.0.13"
+    };
+
 
     public final void start() throws Exception {
+        //needed by Resolver to read repoRoot from sorcer.env
+        ensureSystemProperty(SORCER_HOME, home.getPath());
+        ensureSystemProperty(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+
         if (sorcerListener == null)
             sorcerListener = new NullSorcerListener();
 
-        if (flavour != null && sorcerFlavour == null) {
-            if (flavour == Flavour.rio)
-                sorcerFlavour = new RioSorcerFlavour();
-            else
-                sorcerFlavour = new SorcerSorcerFlavour(home, ext);
-        }
-
         doStart();
+    }
+
+    private void ensureSystemProperty(String key, String value) {
+        if(System.getProperty(key)==null)
+            System.setProperty(key, value);
     }
 
     abstract protected void doStart() throws Exception;
@@ -83,14 +114,14 @@ public abstract class Launcher {
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
-        sysProps.put(SECURITY_POLICY, new File(config, "sorcer.policy").getPath());
+        sysProps.put(SECURITY_POLICY, new File(configDir, "sorcer.policy").getPath());
 
-        sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(config, "sorcer.logging").getPath());
-        sysProps.put("logback.configurationFile", new File(config, "logback.groovy").getPath());
+        sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
+        sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());
 
         sysProps.put(SORCER_HOME, home.getPath());
         sysProps.put(S_WEBSTER_TMP_DIR, new File(home, "databases").getPath());
-        sysProps.put(S_KEY_SORCER_ENV, new File(config, "sorcer.env").getPath());
+        sysProps.put(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
         //sysProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
         //rio specific
@@ -99,21 +130,29 @@ public abstract class Launcher {
         try {
             sysProps.put("org.rioproject.codeserver", "http://+" + HostUtil.getInetAddress() + ":9010");
         } catch (UnknownHostException e) {
-            System.err.println("Error" + e);
+            throw new RuntimeException("Unable to read host address", e);
         }
+
+        String[] monitorConfigPaths = profile.getMonitorConfigPaths();
+        if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
+            sysProps.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigPaths, File.pathSeparator));
+        }
+
+        sysProps.put("RIO_HOME",rio.getPath());
+        sysProps.put("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4"));
 
         return sysProps;
     }
 
-    protected Collection<String> resolveClassPath() {
-        List<String> artifacts = sorcerFlavour.getClassPath();
-        Set<String> result = new HashSet<String>(artifacts.size());
+    protected Collection<String> getClassPath() {
+        Set<String> result = new HashSet<String>(CLASS_PATH.length);
         try {
-            for (String artifact : artifacts) {
+            for (String artifact : CLASS_PATH) {
                 String p = Resolver.resolveAbsolute(artifact);
                 IOUtils.ensureFile(new File(p));
                 result.add(p);
             }
+            result.add(new File(System.getProperty("JAVA_HOME"), "lib/tools.jar").getPath());
             return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -121,16 +160,26 @@ public abstract class Launcher {
     }
 
     protected List<String> getConfigs() {
-        return this.configs.isEmpty() ? sorcerFlavour.getDefaultConfigs() : this.configs;
+        ArrayList<String> result = new ArrayList<String>();
+        if (profile != null) {
+            String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
+            result.ensureCapacity(sorcerConfigPaths.length + configs.size());
+
+            PropertyEvaluator evaluator = new PropertyEvaluator();
+            evaluator.addDefaultSources();
+            for (String cfg : sorcerConfigPaths) {
+                String path = evaluator.eval(cfg);
+                if (new File(path).exists())
+                    result.add(path);
+            }
+        }
+        if (!configs.isEmpty())
+            result.addAll(configs);
+        return result;
     }
 
     public enum WaitMode {
         no, start, end
-    }
-
-    public enum Flavour {
-        sorcer,
-        rio
     }
 
     public void setRio(File rio) {
@@ -139,14 +188,6 @@ public abstract class Launcher {
 
     public void setLogDir(File logDir) {
         this.logDir = logDir;
-    }
-
-    public void setFlavour(Flavour flavour) {
-        this.flavour = flavour;
-    }
-
-    public void setFlavour(SorcerFlavour flavour) {
-        this.sorcerFlavour = flavour;
     }
 
     public void setExt(File ext) {
@@ -162,10 +203,15 @@ public abstract class Launcher {
     }
 
     public void setConfigDir(File config) {
-        this.config = config;
+        this.configDir = config;
     }
 
     public void setSorcerListener(SorcerListener listener) {
         this.sorcerListener = listener;
     }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
 }

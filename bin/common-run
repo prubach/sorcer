@@ -101,25 +101,28 @@ earlyInit ( ) {
         export SORCER_EXT
     fi
 
-	JAVA_OPTS="$JAVA_OPTS -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env -Dsun.net.maxDatagramSockets=1024"
+	JAVA_OPTS="$JAVA_OPTS\
+	  -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env\
+	  -Dsun.net.maxDatagramSockets=1024\
+	  -Djava.util.logging.config.file=$SORCER_HOME/configs/sorcer.logging"
 
     # Set RIO_HOME if not already set
-    if [ -z "$RIO_HOME" ]; then
-        RIO_HOME=$SORCER_HOME/lib/rio
-        export RIO_HOME
-    fi
+#    if [ -z "$RIO_HOME" ]; then
+#        RIO_HOME=$SORCER_HOME/lib/rio
+#        export RIO_HOME
+#    fi
 
     # Convert to absolute path
-    RIO_HOME_ORIG=$RIO_HOME
-    RIO_HOME=`cd "$RIO_HOME" && pwd`
+#    RIO_HOME_ORIG=$RIO_HOME
+#    RIO_HOME=`cd "$RIO_HOME" && pwd`
 
-    if [ -z $RIO_HOME ]; then
-        echo Invalid '$RIO_HOME' $RIO_HOME_ORIG
-        exit 1
-    fi
+#    if [ -z $RIO_HOME ]; then
+#        echo Invalid '$RIO_HOME' $RIO_HOME_ORIG
+#        exit 1
+#    fi
 
-    RIO_LIB=$RIO_HOME/lib
-    RIO_LIB_DL=$RIO_HOME/lib-dl
+#    RIO_LIB=$RIO_HOME/lib
+#    RIO_LIB_DL=$RIO_HOME/lib-dl
 
     # Check for JAVA_HOME
     if [ -z "$JAVA_HOME" ] ; then

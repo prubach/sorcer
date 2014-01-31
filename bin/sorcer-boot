@@ -30,7 +30,7 @@ STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
 if [ "x$1" != "x" ]; then
 	args=$@
 else
-	args="mix"
+	args=-Pmix
 fi
 
 startSos $args
