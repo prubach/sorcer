@@ -19,11 +19,14 @@ import org.rioproject.loader.ClassAnnotator;
 import org.rioproject.loader.ServiceClassLoader;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceElement;
+import org.rioproject.resolver.RemoteRepository;
+import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -43,6 +46,16 @@ import java.util.List;
  */
 public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     public static final NoOpLifeCycle NOOP = new NoOpLifeCycle();
+    private static Resolver resolver;
+
+    static {
+        try {
+            resolver = ResolverHelper.getResolver();
+        } catch (ResolverException e) {
+            throw new RuntimeException("Could not initialize RIO Aether resolver",e);
+        }
+    }
+
     private ServiceElement serviceElement;
     private URL policyFile;
 
@@ -136,7 +149,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
 
     private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
-        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
+        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), resolver, serviceElement.getRemoteRepositories());
         URI[] urls = new URI[urlStrings.length];
 
         for (int i = 0; i < urlStrings.length; i++) {
@@ -149,7 +162,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         return new ServiceClassLoader(urls, new ClassAnnotator(codebase), parentCL);
     }
 
-    private static URL[] getCodebase(ServiceElement serviceElement) throws MalformedURLException {
+    private static URL[] getCodebase(ServiceElement serviceElement) throws MalformedURLException, ResolverException, URISyntaxException {
         URL[] exportURLs = serviceElement.getExportURLs();
         if (exportURLs.length != 0)
             return exportURLs;
@@ -161,14 +174,27 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
             URL codebaseRoot = new URL(exportBundle.getCodebase());
             String artifact = exportBundle.getArtifact();
             if (artifact != null)
-                exportUrls.add(artifactToUrl(codebaseRoot, artifact));
+                exportUrls.addAll(artifactToUrl(codebaseRoot, artifact));
         }
         return exportUrls.toArray(new URL[exportUrls.size()]);
     }
 
-    private static URL artifactToUrl(URL codebase, String artifact) throws MalformedURLException {
+    private static List<URL> artifactToUrl(URL codebase, String artifact) throws MalformedURLException, ResolverException, URISyntaxException {
+        List<URL>result=new ArrayList<URL>();
+        String urlBase = codebase.toExternalForm();
+        String mvnRoot = SorcerEnv.getRepoDir();
+
+        String[] resolve = ResolverHelper.resolve(artifact, resolver, null);
+        for (String fileUrl : resolve) {
+            String absolute = new File(new URL(fileUrl).toURI()).getPath();
+            String replace = absolute.replace(mvnRoot, urlBase);
+            result.add(new URL(replace));
+        }
+/*
         artifact = artifact.replace(':', '/');
-        return new URL("artifact:" + artifact + ";" + codebase.getHost() + "@" + codebase.toExternalForm());
+        result.add(new URL("artifact:" + artifact + ";" + codebase.getHost() + "@" + codebase.toExternalForm()));
+*/
+        return result;
     }
 
     private static class NoOpLifeCycle implements LifeCycle {
