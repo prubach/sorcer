@@ -38,6 +38,12 @@ import java.net.URL;
 import java.util.List;
 
 /**
+ * OpStringParser implementation that uses the default implementation GroovyDSLOpStringParser to do actual parsing,
+ * but before it actually parses the opstring it tries to read it from serialized file with name derived from URL
+ * and file name inside jar (if it is ajar). If the file doesn't exist it calls the default parser and stores
+ * the parsed opstring in the serialized file.
+ * In case of any problems with reading serialized file, it calls the parser and tries to write the file again.
+ *
  * @author Rafał Krupiński
  */
 public class SerialisedOpStringParser implements OpStringParser {
@@ -72,7 +78,7 @@ public class SerialisedOpStringParser implements OpStringParser {
                     container = new File(srcUrl.toURI());
                     path = container.getPath();
                 } else if ("jar".equals(srcUrl.getProtocol())) {
-                    // cache only for local files
+                    // cache only local files
                     if (!srcUrl.toExternalForm().startsWith("jar:file:"))
                         return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
 
@@ -100,7 +106,7 @@ public class SerialisedOpStringParser implements OpStringParser {
      * Synchronize calls on internalized file path, so concurrent parsing og the same file are queued.
      */
     public List<OpString> parse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
-        String sync = null;
+        String sync;
         try {
             sync = serialised.getCanonicalPath().intern();
         } catch (IOException e) {
