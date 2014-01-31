@@ -1,8 +1,6 @@
 package sorcer.util.eval;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +42,6 @@ public class PropertyEvaluator {
     }
 
     public void eval(Map<String, String> data) {
-
         boolean dirty;
         do {
             dirty = false;
@@ -52,6 +49,14 @@ public class PropertyEvaluator {
                 dirty |= eval(e.getKey(), e.getValue(), data, sources);
             }
         } while (dirty);
+    }
+
+    public String eval(String value) {
+        Map<String,String>data=new HashMap<String, String>();
+        String key = "--KEY--";
+        data.put(key,value);
+        eval(data);
+        return data.get(key);
     }
 
     private boolean eval(String key, String value, Map<String, String> data, Map<String, Map<String, String>> sources) {
