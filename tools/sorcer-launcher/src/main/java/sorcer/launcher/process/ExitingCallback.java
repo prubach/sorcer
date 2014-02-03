@@ -13,11 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.launcher;
+
+package sorcer.launcher.process;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.launcher.NullSorcerListener;
 
 /**
-* @author Rafał Krupiński
-*/
-public interface OutputConsumer {
-    public boolean consume(String line);
+ * Shutdown application by calling System.exit(-1) when processDown is called
+ *
+ * @author Rafał Krupiński
+ */
+public class ExitingCallback extends NullSorcerListener {
+    private static final Logger log = LoggerFactory.getLogger(ExitingCallback.class);
+
+    @Override
+    public void processDown(Process process) {
+        log.info("{} is down, closing launching application", process);
+        System.exit(-1);
+    }
 }

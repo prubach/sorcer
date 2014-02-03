@@ -33,34 +33,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.*;
 
-import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
 /**
@@ -68,70 +54,29 @@ import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
  */
 public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
-    final private static String CONFIG_RIVER = "config/services.config";
-    final private static String SUFFIX_RIVER = "config";
     final private static String START_PACKAGE = "com.sun.jini.start";
-
-    final private static Map<String,List<String>>configurations;
-    final private static Map<String,List<String>>monitorConfigurations;
-
-    static {
-        configurations = new HashMap<String, List<String>>();
-        monitorConfigurations = new HashMap<String, List<String>>();
-
-        File river = new File(SorcerEnv.getHomeDir(), "configs/River.groovy");
-        File sorcer = new File(SorcerEnv.getHomeDir(), "configs/Sorcer.groovy");
-        File rio = new File(SorcerEnv.getHomeDir(), "configs/Rio.groovy");
-        File sorcerExt = new File(SorcerEnv.getExtDir(), "configs/SorcerExtBoot.groovy");
-
-        configurations.put("sorcer", pathList(river, sorcer, sorcerExt));
-
-        configurations.put("rio", pathList(river, rio));
-        monitorConfigurations.put("rio", pathList(sorcer, sorcerExt));
-
-        configurations.put("mix", pathList(river, sorcer, sorcerExt, rio));
-    }
-
-    private static List<String> pathList(File... files) {
-        List<String> result = new ArrayList<String>(files.length);
-        for (File file : files) {
-            if(file.exists())
-                result.add(file.getPath());
-        }
-        return result;
-    }
 
     private List<Service> services;
     private volatile boolean bootInterrupted;
 
     public static void main(String[] args) throws Exception {
-        loadDefaultProperties();
         installLogging();
+        checkRequiredProperties();
         log.info("******* Starting Sorcersoft.com SORCER *******");
         installSecurityManager();
+        start(Arrays.asList(args));
+    }
 
+    public static void start(List<String> configs) throws Exception {
         List<Service> services = new LinkedList<Service>();
         ServiceStarter serviceStarter = new ServiceStarter(services);
         ServiceStopper.install(serviceStarter, services);
-        serviceStarter.start(parseCmdLine(args));
-    }
-
-    private static List<String> parseCmdLine(String[] args) {
-        LinkedList<String> result = new LinkedList<String>();
-        for (String arg : args) {
-            if (configurations.containsKey(arg)) {
-                result.addAll(configurations.get(arg));
-                if(monitorConfigurations.containsKey(arg))
-                    System.setProperty(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigurations.get(arg), File.pathSeparator));
-            } else
-                result.add(arg);
-        }
-        return result;
+        serviceStarter.start((Collection<String>) configs);
     }
 
     private static void installSecurityManager() {
         if (System.getSecurityManager() == null)
-            System.setSecurityManager(new RMISecurityManager());
+            System.setSecurityManager(new SecurityManager());
     }
 
     private static void installLogging() {
@@ -141,19 +86,16 @@ public class ServiceStarter {
         LogManagementHelper.setup();
     }
 
-	private static void loadDefaultProperties() {
-		String sorcerHome = SorcerEnv.getHomeDir().getPath();
-		setDefaultProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-		setDefaultProperty(JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE, sorcerHome + "/configs/sorcer.logging");
-		setDefaultProperty(SorcerConstants.S_KEY_SORCER_ENV, sorcerHome + "/configs/sorcer.env");
-	}
+    private static void checkRequiredProperties() {
+        checkRequiredProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS);
+        checkRequiredProperty(JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE);
+        checkRequiredProperty(SorcerConstants.S_KEY_SORCER_ENV);
+    }
 
-	private static void setDefaultProperty(String key, String value) {
-		String userValue = System.getProperty(key);
-		if (userValue == null) {
-			System.setProperty(key, value);
-		}
-	}
+    private static void checkRequiredProperty(String key) {
+        if (System.getProperty(key) == null)
+            log.warn("Required system property '{}' not set!", key);
+    }
 
     public ServiceStarter(List<Service> services) {
         this.services = services;
@@ -187,9 +129,7 @@ public class ServiceStarter {
             path = file.getPath();
             String ext = path.substring(path.lastIndexOf('.') + 1);
 
-            if (file.isDirectory())
-                riverServices.add(findConfigUrl(path).toExternalForm());
-            else if (SUFFIX_RIVER.equals(ext))
+            if ("config".equals(ext))
                 riverServices.add(path);
             else if ("oar".equals(ext) || "jar".equals(ext))
                 cfgJars.add(file);
@@ -331,7 +271,8 @@ public class ServiceStarter {
                 } catch (Exception e) {
                     service = new Service(null, null, desc, e);
                 } finally {
-                    proxies.add(service);
+                    if (service != null)
+                        proxies.add(service);
                 }
             }
         }
@@ -399,19 +340,6 @@ public class ServiceStarter {
         }
     }
 
-    private URL findConfigUrl(String path) throws IOException {
-        File configFile = new File(path);
-        if (configFile.isDirectory()) {
-            return new File(configFile, CONFIG_RIVER).toURI().toURL();
-        } else if (path.endsWith(".jar")) {
-            ZipEntry entry = new ZipFile(path).getEntry(CONFIG_RIVER);
-            if (entry != null) {
-                return new URL(String.format("jar:file:%1$s!/%2$s", path, CONFIG_RIVER));
-            }
-        }
-        return new File(path).toURI().toURL();
-    }
-
     private static class ArtifactIdFileFilter extends AbstractFileFilter {
         private String artifactId;
 
@@ -424,7 +352,7 @@ public class ServiceStarter {
             String parent = dir.getName();
             String grandParent = dir.getParentFile().getName();
             return
-                    name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
+                    new File(dir,name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
                             //check development structure
                             "target".equals(parent)
                                     //check repository just in case

@@ -1,8 +1,7 @@
 package sorcer.util.eval;
 /**
  *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +17,6 @@ package sorcer.util.eval;
  */
 
 
-import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,38 +34,40 @@ public class PropertyEvaluatorTest {
     static PropertyEvaluator eval = new PropertyEvaluator();
 
     @BeforeClass
-    public static void init(){
+    public static void init() {
         eval.addDefaultSources();
     }
 
-
     @Test
     public void testEval() throws Exception {
-		String envSorcerHome = System.getenv("SORCER_HOME");
-		assertNotNull(envSorcerHome);
-        Map<String,String>source = new HashMap<String, String>();
-        source.put("key","replacedValue");
+        Map.Entry<String, String> firstEnvEntry = System.getenv().entrySet().iterator().next();
+        String envKey = firstEnvEntry.getKey();
+        String envValue = firstEnvEntry.getValue();
+
+        assertNotNull(envValue);
+        Map<String, String> source = new HashMap<String, String>();
+        source.put("key", "replacedValue");
         eval.addSource("source", source);
 
-        Map<String, String>data= new HashMap<String, String>();
+        Map<String, String> data = new HashMap<String, String>();
         //good
-        data.put("key","${source.key}");
-        data.put("env","${env.SORCER_HOME}");
-        data.put("sys","${sys.user.home}");
-        data.put("self","${key}");
-        data.put("partial","other value: <${key}>");
-        data.put("multi","other value: <${key}> and <${self}>");
+        data.put("key", "${source.key}");
+        data.put("env", "${env." + envKey + "}");
+        data.put("sys", "${sys.user.home}");
+        data.put("self", "${key}");
+        data.put("partial", "other value: <${key}>");
+        data.put("multi", "other value: <${key}> and <${self}>");
 
         //bad
-        data.put("selfreferencing","${selfreferencing}");
-        data.put("missing","${nothere}");
-        data.put("invalid","${invalid");
+        data.put("selfreferencing", "${selfreferencing}");
+        data.put("missing", "${nothere}");
+        data.put("invalid", "${invalid");
 
         eval.eval(data);
         assertEquals("replacedValue", data.get("key"));
-		assertEquals(envSorcerHome,data.get("env"));
-        assertEquals(System.getProperty("user.home"),data.get("sys"));
-        assertEquals("replacedValue",data.get("self"));
+        assertEquals(envValue, data.get("env"));
+        assertEquals(System.getProperty("user.home"), data.get("sys"));
+        assertEquals("replacedValue", data.get("self"));
         assertEquals("other value: <replacedValue>", data.get("partial"));
         assertEquals("other value: <replacedValue> and <replacedValue>", data.get("multi"));
 

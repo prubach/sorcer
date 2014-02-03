@@ -101,25 +101,10 @@ earlyInit ( ) {
         export SORCER_EXT
     fi
 
-	JAVA_OPTS="$JAVA_OPTS -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env -Dsun.net.maxDatagramSockets=1024"
-
-    # Set RIO_HOME if not already set
-    if [ -z "$RIO_HOME" ]; then
-        RIO_HOME=$SORCER_HOME/lib/rio
-        export RIO_HOME
-    fi
-
-    # Convert to absolute path
-    RIO_HOME_ORIG=$RIO_HOME
-    RIO_HOME=`cd "$RIO_HOME" && pwd`
-
-    if [ -z $RIO_HOME ]; then
-        echo Invalid '$RIO_HOME' $RIO_HOME_ORIG
-        exit 1
-    fi
-
-    RIO_LIB=$RIO_HOME/lib
-    RIO_LIB_DL=$RIO_HOME/lib-dl
+	JAVA_OPTS="$JAVA_OPTS\
+	  -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env\
+	  -Dsun.net.maxDatagramSockets=1024\
+	  -Djava.util.logging.config.file=$SORCER_HOME/configs/sorcer.logging"
 
     # Check for JAVA_HOME
     if [ -z "$JAVA_HOME" ] ; then
@@ -228,11 +213,11 @@ toWindows() {
 
 # Call the install script, do not assume that Groovy has been installed.
 installRioToLocalRepository() {
-    if [ ! -f "$SORCER_HOME/logs/install.log" ]; then
+    if [ -d $SORCER_HOME/lib/rio -a ! -f "$SORCER_HOME/logs/install.log" ]; then
         if [ -f "$RIO_LIB/groovy-all-$groovyVersion.jar" ]; then
             groovyClasspath="-cp `toNative $RIO_LIB/groovy-all-$groovyVersion.jar`"
             ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
-            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $RIO_HOME
+            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $SORCER_HOME/lib/rio
         else
             echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
             exit 1
@@ -359,6 +344,7 @@ $LIB_DIR/river/start.jar:\
 $LIB_DIR/jini-lookup/serviceui.jar"
 
   BOOT_CLASSPATH=$(createLoggerCp)":$JINI_CLASSPATH:\
+$LIB_DIR/sorcer/sorcer-launcher.jar:\
 $LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sorcer-resolver.jar:\
 $LIB_DIR/sorcer/sos-boot.jar:\
@@ -375,6 +361,7 @@ $LIB_DIR/rio-resolver/resolver-api.jar:\
 $LIB_DIR/commons/groovy-all.jar:\
 $LIB_DIR/commons/guava.jar:\
 $LIB_DIR/commons/commons-io.jar:\
+$LIB_DIR/commons/commons-cli.jar:\
 $LIB_DIR/commons/commons-lang3.jar"
 
     else
@@ -400,6 +387,7 @@ $MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-lib/$V_SORCER/sorcer-rio-lib-$V_SORCER.jar:\
@@ -412,6 +400,7 @@ $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
     fi
@@ -475,7 +464,6 @@ startSos ( ) {
     echo "##############################################################################"
     echo "##                       SORCER OS Booter"                                
     echo "##   SORCER_HOME: $SORCER_HOME"
-    echo "##   RIO_HOME   : $RIO_HOME"
     echo "##   Webster URL: $WEBSTER_URL"
     echo "##"   
     echo "##############################################################################"
@@ -497,7 +485,6 @@ startSos ( ) {
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -Dprogram.name="$PROGNAME" \
             -Dsorcer.home="$SORCER_HOME" \
-            -DRIO_HOME="$RIO_HOME" \
             $STARTER_MAIN_CLASS \
             "$@"
     fi
