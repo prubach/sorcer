@@ -752,38 +752,12 @@ public class Booter {
         return port;
     }
 
-    private static List<String> websterRoots = Arrays.asList(
-            SorcerEnv.getRepoDir(),
-            SorcerEnv.getLibPath(),
-            new File(SorcerEnv.getHomeDir(), "deploy").getPath()
-    );
-
-    static {
-        String scratch = System.getProperty(SCRATCH_DIR);
-        if (scratch != null) {
-            List<String> oldWr = websterRoots;
-            websterRoots = new ArrayList<String>(oldWr.size() + 1);
-            websterRoots.addAll(oldWr);
-            websterRoots.add(scratch);
-        }
-    }
-
     public static String[] getWebsterRoots() {
-        return websterRoots.toArray(new String[websterRoots.size()]);
+        return SorcerEnv.getWebsterRoots(new String[0]);
     }
 
     public static String[] getWebsterRoots(String[] additional) {
-        String[] result = new String[websterRoots.size() + additional.length];
-        addAll(websterRoots, result);
-        System.arraycopy(additional, 0, result, websterRoots.size(), additional.length);
-        return result;
+        return SorcerEnv.getWebsterRoots(additional);
     }
 
-    private static <T> void addAll(List<T> src, T[] target) {
-        int i = 0;
-        for (T o : src) {
-            target[i] = o;
-            ++i;
-        }
-    }
 }

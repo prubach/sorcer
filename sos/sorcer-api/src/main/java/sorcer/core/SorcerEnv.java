@@ -1812,4 +1812,34 @@ public class SorcerEnv {
     public LookupLocators getLookupLocatorsHolder(){
         return lookupLocators;
     }
+
+    private static List<String> websterRoots = Arrays.asList(
+            SorcerEnv.getRepoDir(),
+            SorcerEnv.getLibPath(),
+            new File(SorcerEnv.getHomeDir(), "deploy").getPath()
+    );
+
+    static {
+        String scratch = System.getProperty(SCRATCH_DIR);
+        if (scratch != null) {
+            List<String> oldWr = websterRoots;
+            websterRoots = new ArrayList<String>(oldWr.size() + 1);
+            websterRoots.addAll(oldWr);
+            websterRoots.add(scratch);
+        }
+    }
+
+    public static String[] getWebsterRoots(String[] additional) {
+        String[] result = new String[websterRoots.size() + additional.length];
+        addAll(websterRoots, result);
+        System.arraycopy(additional, 0, result, websterRoots.size(), additional.length);
+        return result;
+    }
+    private static <T> void addAll(List<T> src, T[] target) {
+        int i = 0;
+        for (T o : src) {
+            target[i] = o;
+            ++i;
+        }
+    }
 }
