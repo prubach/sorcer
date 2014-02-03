@@ -25,7 +25,7 @@ DIRNAME=`dirname "$PRG"`
 
 . "$DIRNAME/common-run"
 
-STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
+STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
 if [ "x$1" != "x" ]; then
 	args=$@
