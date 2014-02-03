@@ -522,7 +522,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
         try {
             return getDatabaseURL(type, uuid);
         } catch (MalformedURLException e) {
-            throw new IllegalStateException("Couldn't parse my own URL");
+            throw new IllegalStateException("Couldn't parse my own URL", e);
         }
     }
 
