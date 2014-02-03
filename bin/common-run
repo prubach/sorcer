@@ -106,24 +106,6 @@ earlyInit ( ) {
 	  -Dsun.net.maxDatagramSockets=1024\
 	  -Djava.util.logging.config.file=$SORCER_HOME/configs/sorcer.logging"
 
-    # Set RIO_HOME if not already set
-#    if [ -z "$RIO_HOME" ]; then
-#        RIO_HOME=$SORCER_HOME/lib/rio
-#        export RIO_HOME
-#    fi
-
-    # Convert to absolute path
-#    RIO_HOME_ORIG=$RIO_HOME
-#    RIO_HOME=`cd "$RIO_HOME" && pwd`
-
-#    if [ -z $RIO_HOME ]; then
-#        echo Invalid '$RIO_HOME' $RIO_HOME_ORIG
-#        exit 1
-#    fi
-
-#    RIO_LIB=$RIO_HOME/lib
-#    RIO_LIB_DL=$RIO_HOME/lib-dl
-
     # Check for JAVA_HOME
     if [ -z "$JAVA_HOME" ] ; then
         JAVACMD=java
@@ -231,11 +213,11 @@ toWindows() {
 
 # Call the install script, do not assume that Groovy has been installed.
 installRioToLocalRepository() {
-    if [ ! -f "$SORCER_HOME/logs/install.log" ]; then
+    if [ -d $SORCER_HOME/lib/rio -a ! -f "$SORCER_HOME/logs/install.log" ]; then
         if [ -f "$RIO_LIB/groovy-all-$groovyVersion.jar" ]; then
             groovyClasspath="-cp `toNative $RIO_LIB/groovy-all-$groovyVersion.jar`"
             ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
-            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $RIO_HOME
+            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $SORCER_HOME/lib/rio
         else
             echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
             exit 1
@@ -482,7 +464,6 @@ startSos ( ) {
     echo "##############################################################################"
     echo "##                       SORCER OS Booter"                                
     echo "##   SORCER_HOME: $SORCER_HOME"
-    echo "##   RIO_HOME   : $RIO_HOME"
     echo "##   Webster URL: $WEBSTER_URL"
     echo "##"   
     echo "##############################################################################"
@@ -504,7 +485,6 @@ startSos ( ) {
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -Dprogram.name="$PROGNAME" \
             -Dsorcer.home="$SORCER_HOME" \
-            -DRIO_HOME="$RIO_HOME" \
             $STARTER_MAIN_CLASS \
             "$@"
     fi

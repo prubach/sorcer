@@ -91,7 +91,7 @@ public abstract class Launcher {
     }
 
     private void ensureSystemProperty(String key, String value) {
-        if(System.getProperty(key)==null)
+        if (System.getProperty(key) == null)
             System.setProperty(key, value);
     }
 
@@ -138,7 +138,7 @@ public abstract class Launcher {
             sysProps.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigPaths, File.pathSeparator));
         }
 
-        sysProps.put("RIO_HOME",rio.getPath());
+        sysProps.put("RIO_HOME", rio.getPath());
         sysProps.put("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4"));
 
         return sysProps;

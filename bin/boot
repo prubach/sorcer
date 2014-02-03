@@ -1,5 +1,0 @@
-#!/bin/sh
-
-. ${SORCER_HOME}/bin/common-run
-
-boot_config $@

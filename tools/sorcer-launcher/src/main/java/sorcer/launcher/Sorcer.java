@@ -169,7 +169,7 @@ public class Sorcer {
             throw new IllegalArgumentException("No SORCER_HOME defined");
         File home = new File(homePath).getCanonicalFile();
         File logDir = FileUtils.getFile(home, cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
-        File ext = FileUtils.getFile(home, cmd.hasOption(EXT) ? cmd.getOptionValue(EXT) : homePath);
+        File ext = cmd.hasOption(EXT) ? FileUtils.getFile(home, cmd.getOptionValue(EXT)) : home;
 
         Launcher launcher = null;
         if (inProcess) {
@@ -205,13 +205,17 @@ public class Sorcer {
             throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()));
         }
 
+        String rioPath;
+        String envRioHome = System.getenv(E_RIO_HOME);
         if (cmd.hasOption(RIO)) {
-            String rioPath;
             rioPath = cmd.getOptionValue(RIO);
-            launcher.setRio(FileUtils.getFile(home, rioPath));
+        } else if (envRioHome != null) {
+            log.warn("Using environment variable $RIO_HOME, please use -rio parameter instead");
+            rioPath = envRioHome;
+        } else {
+            rioPath = "lib/rio";
         }
-//        else if ((rioPath = System.getenv(E_RIO_HOME)) == null)
-//            rioPath = "lib/rio";
+        launcher.setRio(FileUtils.getFile(home, rioPath));
 
         launcher.setExt(ext.getCanonicalFile());
 

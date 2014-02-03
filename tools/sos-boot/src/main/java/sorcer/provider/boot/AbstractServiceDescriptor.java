@@ -25,7 +25,7 @@ import org.rioproject.config.PlatformLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
-import sorcer.core.SorcerEnv;
+import sorcer.core.SorcerConstants;
 import sorcer.util.ClassPath;
 
 import java.io.File;
@@ -115,7 +115,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     protected CommonClassLoader getCommonClassLoader(Configuration config) throws Exception {
     /* Set common JARs to the CommonClassLoader */
         String defaultDir = null;
-        String rioHome = System.getProperty("RIO_HOME");
+        String rioHome = System.getProperty(SorcerConstants.E_RIO_HOME);
         if (rioHome != null) {
             defaultDir = new File(rioHome, "config/platform").getPath();
         } else {
