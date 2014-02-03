@@ -18,13 +18,13 @@ package sorcer.core.provider.dbp;
  */
 
 
-import org.junit.Assert;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Accessor;
 
 import java.io.IOException;
 import java.net.URL;
-import java.rmi.RMISecurityManager;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Rafał Krupiński
@@ -36,12 +36,13 @@ public class DatabaseStorerTest {
 
     public static void main(String[] args) throws Exception {
         ServiceRequestor.prepareCodebase();
-        System.setSecurityManager(new RMISecurityManager());
+        System.setSecurityManager(new SecurityManager());
         new DatabaseStorerTest().run();
     }
 
     private void run() throws Exception {
         IDatabaseProvider databaseProvider = Accessor.getService(IDatabaseProvider.class);
+        assertNotNull(databaseProvider);
 
         URL url = databaseProvider.storeObject(TXT);
         verify(url, TXT);
@@ -54,8 +55,8 @@ public class DatabaseStorerTest {
 
     private void verify(URL url, String expected) throws IOException {
         Object content = url.openConnection().getContent();
-        Assert.assertTrue(content instanceof String);
+        assertTrue(content instanceof String);
         String result = (String) content;
-        Assert.assertEquals(expected, result);
+        assertEquals(expected, result);
     }
 }

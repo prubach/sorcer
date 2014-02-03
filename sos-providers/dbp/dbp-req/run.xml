@@ -6,7 +6,7 @@
 
 	<property name="requestor.api" value="dbp-api"/>
 	<property name="requestor.groupId" value="org.sorcersoft.sorcer"/>
-	<property name="requestor.policy" value="src/main/resources/policy/req.policy"/>
+	<property name="requestor.policy" value="${basedir}/src/main/resources/policy/req.policy"/>
 
 	<!-- loads system environment variables -->
 	<property environment="env" />
