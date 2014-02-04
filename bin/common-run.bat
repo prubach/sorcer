@@ -49,6 +49,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-start.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-rio-lib.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sorcer-resolver.jar"
+   set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-platform.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-boot.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-util.jar"
    set BOOT_CLASSPATH="%BOOT_CLASSPATH%;%LIB_DIR%\sorcer\sos-webster.jar"
@@ -81,8 +82,9 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set SHELL_CLASSPATH="%SHELL_CLASSPATH%;%LIB_DIR%\commons\plexus-utils.jar"
 
    set SORCER_RIO_CP="%JINI_BASE%"
-   set SORCER_RIO_CP="%SORCER_RIO_CP%%LIB_DIR%\sorcer\sorcer-api.jar"
-   set SORCER_RIO_CP="%SORCER_RIO_CP%%LIB_DIR%\sorcer\sorcer-resolver.jar"
+   set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sorcer-api.jar"
+   set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-platform.jar"
+   set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sorcer-resolver.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-util.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sorcer-rio-start.jar"
    set SORCER_RIO_CP="%SORCER_RIO_CP%;%LIB_DIR%\sorcer\sos-boot.jar"
@@ -102,6 +104,7 @@ IF EXIST %LIB_DIR%\sorcer\sorcer-api.jar (
    set SORCER_COMMON="%MVN_REPO%\org\sorcersoft\sorcer\sorcer-api\%v.sorcer%\sorcer-api-%v.sorcer%.jar"
    set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-resolver\%v.sorcer%\sorcer-resolver-%v.sorcer%.jar"
    set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-boot\%v.sorcer%\sos-boot-%v.sorcer%.jar"
+   set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-platform\%v.sorcer%\sos-platform-%v.sorcer%.jar"
    set SORCER_COMMON="%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-util\%v.sorcer%\sos-util-%v.sorcer%.jar"
 
    set JINI_CLASSPATH="%JINI_BASE%;%JINI_START%;%LOG_CP%"

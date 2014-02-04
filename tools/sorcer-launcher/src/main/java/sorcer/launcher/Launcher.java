@@ -67,6 +67,9 @@ public abstract class Launcher {
             "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sos-util",
 
+            //required for sos.Handler to work
+            "org.sorcersoft.sorcer:sos-platform",
+
             "org.codehaus.groovy:groovy-all:2.1.3",
             "org.apache.commons:commons-lang3:3.1",
             "com.google.guava:guava:15.0",
@@ -133,9 +136,11 @@ public abstract class Launcher {
             throw new RuntimeException("Unable to read host address", e);
         }
 
-        String[] monitorConfigPaths = profile.getMonitorConfigPaths();
-        if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
-            sysProps.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigPaths, File.pathSeparator));
+        if (profile != null) {
+            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
+            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
+                sysProps.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigPaths, File.pathSeparator));
+            }
         }
 
         sysProps.put("RIO_HOME", rio.getPath());

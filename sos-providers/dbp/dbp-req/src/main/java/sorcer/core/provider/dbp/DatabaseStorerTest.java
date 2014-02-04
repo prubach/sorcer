@@ -18,7 +18,12 @@ package sorcer.core.provider.dbp;
  */
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.resolver.Resolver;
 import sorcer.service.Accessor;
 
 import java.io.IOException;
@@ -31,13 +36,25 @@ import static org.junit.Assert.*;
  */
 public class DatabaseStorerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(DatabaseStorerTest.class);
+
     public static final String TXT = "This is me";
     private static final String TXT2 = "This is me again";
 
-    public static void main(String[] args) throws Exception {
-        ServiceRequestor.prepareCodebase();
+    public static void main(String[] args) {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        if (System.getProperty("org.rioproject.resolver.jar") == null)
+            System.setProperty("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
         System.setSecurityManager(new SecurityManager());
-        new DatabaseStorerTest().run();
+
+        try {
+			SorcerEnv.debug = true;
+			ServiceRequestor.prepareCodebase();
+            new DatabaseStorerTest().run();
+        } catch (Exception x) {
+            log.error("Error in test", x);
+        }
     }
 
     private void run() throws Exception {
@@ -45,6 +62,7 @@ public class DatabaseStorerTest {
         assertNotNull(databaseProvider);
 
         URL url = databaseProvider.storeObject(TXT);
+        log.info("url = {}", url);
         verify(url, TXT);
 
         databaseProvider.updateObject(url, TXT2);

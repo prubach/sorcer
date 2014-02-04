@@ -31,7 +31,9 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
+import sorcer.core.provider.Provider;
 import sorcer.core.provider.StorageManagement;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -49,9 +51,8 @@ import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
 
-import static sorcer.core.SorcerConstants.P_PROVIDER_NAME;
-
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@Component
 public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseProvider.class);
 
@@ -59,12 +60,12 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 
 	private SorcerDatabaseViews views;
 
-    @ConfigEntry(P_PROVIDER_NAME)
+    @ConfigEntry("name")
     private String providerName;
 
-	public DatabaseProvider() {
-        super();
-	}
+    public void init(Provider ignored) throws Exception {
+        setupDatabase();
+    }
 
 	public Uuid store(Object object) {
 		Object obj = object;
@@ -217,7 +218,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			pn = "";
 		else
 			pn = "/" + pn;
-		return new URL("sos://" + IDatabaseProvider.class.getName() + pn + "#"
+		return new URL("sos://" + StorageManagement.class.getName() + pn + "#"
 				+ storeType + "=" + uuid);
 	}
 	
