@@ -24,6 +24,6 @@ import sorcer.util.ProcessDownCallback;
  */
 public interface SorcerListener extends ProcessDownCallback{
     void processLaunched(Process2 process);
-    void sorcerStarting();
+
     void sorcerStarted();
 }

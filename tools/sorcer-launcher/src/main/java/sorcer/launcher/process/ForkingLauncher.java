@@ -19,10 +19,10 @@ package sorcer.launcher.process;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.launcher.JavaProcessBuilder;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.OutputConsumer;
 import sorcer.launcher.SorcerOutputConsumer;
-import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;
@@ -31,19 +31,13 @@ import sorcer.util.ProcessMonitor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static sorcer.core.SorcerConstants.*;
-import static sorcer.util.JavaSystemProperties.*;
 
 /**
  * @author Rafał Krupiński
@@ -53,23 +47,19 @@ public class ForkingLauncher extends Launcher {
 
     private File outFile;
     private File errFile;
-    private PrintStream out;
-    private PrintStream err;
+    private OutputStream out;
+    private OutputStream err;
 
     private Integer debugPort;
-
-    private List<Process> children = new ArrayList<Process>();
 
     protected void doStart() throws IOException, InterruptedException {
         log.debug("*******   *******   *******   SORCER launcher   *******   *******   *******");
 
         logDir.mkdirs();
 
-        SorcerProcessBuilder bld = new SorcerProcessBuilder(home.getPath());
+        JavaProcessBuilder bld = new JavaProcessBuilder(home.getPath());
 
-        bld.setRioHome(rio.getPath());
-        Map<String, String> env = bld.getEnvironment();
-        env.put(E_SORCER_EXT, ext.getPath());
+        bld.getEnvironment().putAll(getEnvironment());
 
         Pipe pipe = Pipe.open();
         if (waitMode != WaitMode.no) {
@@ -108,7 +98,6 @@ public class ForkingLauncher extends Launcher {
             } else
                 return;
         }
-        children.add(sorcerProcess);
 
         installProcessMonitor(sorcerListener, sorcerProcess);
 
@@ -127,16 +116,13 @@ public class ForkingLauncher extends Launcher {
             sorcerProcess.waitFor();
         }
 
-        //avoid killing sorcer on launcher exit
-        children.remove(sorcerProcess);
-
     }
 
-    private static PrintStream getStream(PrintStream stream, File file, PrintStream defaultStream) throws FileNotFoundException {
+    private static OutputStream getStream(OutputStream stream, File file, OutputStream defaultStream) throws FileNotFoundException {
         if (stream != null)
             return stream;
         if (file != null) {
-            return new PrintStream(file);
+            return new FileOutputStream(file);
         }
         return defaultStream;
     }
@@ -149,11 +135,11 @@ public class ForkingLauncher extends Launcher {
         this.debugPort = debugPort;
     }
 
-    public void setOut(PrintStream out) {
+    public void setOut(OutputStream out) {
         this.out = out;
     }
 
-    public void setErr(PrintStream err) {
+    public void setErr(OutputStream err) {
         this.err = err;
     }
 
@@ -163,10 +149,6 @@ public class ForkingLauncher extends Launcher {
 
     public void setErrFile(File errFile) {
         this.errFile = errFile;
-    }
-
-    public void setChildProcesses(List<Process> childProcesses) {
-        this.children = childProcesses;
     }
 
 }

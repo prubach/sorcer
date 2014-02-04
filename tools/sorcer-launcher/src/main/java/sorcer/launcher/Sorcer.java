@@ -27,7 +27,7 @@ import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.launcher.process.ExitingCallback;
+import sorcer.launcher.process.DestroyingListener;
 import sorcer.launcher.process.ForkingLauncher;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
@@ -35,7 +35,6 @@ import sorcer.util.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,10 +82,7 @@ public class Sorcer {
 
             if (launcher instanceof ForkingLauncher) {
                 ForkingLauncher forkingLauncher = (ForkingLauncher) launcher;
-                forkingLauncher.setSorcerListener(new ExitingCallback());
-                List<Process> children = new ArrayList<Process>();
-                installShutdownHook(children);
-                forkingLauncher.setChildProcesses(children);
+                forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
             }
 
             launcher.start();
@@ -94,10 +90,6 @@ public class Sorcer {
             log.error(x.getMessage(), x);
             System.exit(-1);
         }
-    }
-
-    private static void installShutdownHook(List<Process> children) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new ProcessDestroyer(children), "Sorcer shutdown hook"));
     }
 
     private static Options buildOptions() {

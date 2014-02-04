@@ -19,15 +19,18 @@ package sorcer.launcher.process;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.launcher.NullSorcerListener;
 
 /**
  * Shutdown application by calling System.exit(-1) when processDown is called
  *
  * @author Rafał Krupiński
  */
-public class ExitingCallback extends NullSorcerListener {
+public class ExitingCallback extends DestroyingListener {
     private static final Logger log = LoggerFactory.getLogger(ExitingCallback.class);
+
+    public ExitingCallback(ProcessDestroyer processDestroyer) {
+        super(processDestroyer);
+    }
 
     @Override
     public void processDown(Process process) {

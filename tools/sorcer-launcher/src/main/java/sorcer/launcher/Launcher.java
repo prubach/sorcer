@@ -34,13 +34,13 @@ import static sorcer.util.JavaSystemProperties.*;
  * @author Rafał Krupiński
  */
 public abstract class Launcher {
-    public WaitMode waitMode;
+    public WaitMode waitMode = WaitMode.no;
     protected File home;
     protected File ext;
     protected File rio;
     protected File logDir;
     protected File configDir;
-    protected List<String> configs;
+    protected List<String> configs = Collections.emptyList();
     private Profile profile;
     protected SorcerListener sorcerListener;
 
@@ -83,7 +83,6 @@ public abstract class Launcher {
 
 
     public final void start() throws Exception {
-
         if (home == null) {
             String envHome = System.getProperty(E_SORCER_HOME);
             if (envHome == null)
@@ -125,10 +124,10 @@ public abstract class Launcher {
     }
 
     protected Map<String, String> getEnvironment() {
-        Map<String, String> sysProps = new HashMap<String, String>();
-        sysProps.put(E_RIO_HOME, rio.getPath());
-        sysProps.put("RIO_LOG_DIR", logDir.getPath());
-        return sysProps;
+        Map<String, String> sysEnv = new HashMap<String, String>();
+        sysEnv.put(E_RIO_HOME, rio.getPath());
+        sysEnv.put(E_SORCER_EXT, ext.getPath());
+        return sysEnv;
     }
 
     protected Map<String, String> getProperties() {
@@ -149,9 +148,12 @@ public abstract class Launcher {
 
         //rio specific
         sysProps.put("org.rioproject.service", "all");
+        sysProps.put("RIO_HOME", rio.getPath());
+        sysProps.put("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4"));
+        sysProps.put("RIO_LOG_DIR", logDir.getPath());
 
         try {
-            sysProps.put("org.rioproject.codeserver", "http://+" + HostUtil.getInetAddress() + ":9010");
+            sysProps.put("org.rioproject.codeserver", "http://" + HostUtil.getInetAddress() + ":9010");
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unable to read host address", e);
         }
@@ -163,8 +165,6 @@ public abstract class Launcher {
             }
         }
 
-        sysProps.put("RIO_HOME", rio.getPath());
-        sysProps.put("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4"));
 
         return sysProps;
     }
@@ -191,7 +191,8 @@ public abstract class Launcher {
             result.ensureCapacity(sorcerConfigPaths.length + configs.size());
 
             PropertyEvaluator evaluator = new PropertyEvaluator();
-            evaluator.addDefaultSources();
+            evaluator.addSource("sys", getProperties());
+            evaluator.addSource("env", getEnvironment());
             for (String cfg : sorcerConfigPaths) {
                 String path = evaluator.eval(cfg);
                 if (new File(path).exists())

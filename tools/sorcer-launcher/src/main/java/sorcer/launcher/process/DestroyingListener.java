@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package sorcer.launcher;
+package sorcer.launcher.process;
 
-
+import sorcer.launcher.NullSorcerListener;
 import sorcer.util.Process2;
 
 /**
- * Do-nothing default implementation of SorcerListener. Used internally in the Launcher, may be used as a base class for other implementations.
- *
  * @author Rafał Krupiński
  */
-public class NullSorcerListener implements SorcerListener {
+public class DestroyingListener extends NullSorcerListener {
+    private ProcessDestroyer processDestroyer;
+
+    public DestroyingListener(ProcessDestroyer processDestroyer) {
+        this.processDestroyer = processDestroyer;
+    }
+
     @Override
     public void processLaunched(Process2 process) {
-
-    }
-
-    @Override
-    public void sorcerStarted() {
-
-    }
-
-    @Override
-    public void processDown(Process process) {
-
+        processDestroyer.addProcess(process);
     }
 }

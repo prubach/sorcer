@@ -20,20 +20,20 @@
         <void property="monitorConfigPaths">
             <array class="java.lang.String" length="2">
                 <void index="0">
-                    <string>${env.sorcer.home}/configs/Sorcer.groovy</string>
+                    <string>${sys.sorcer.home}/configs/Sorcer.groovy</string>
                 </void>
                 <void index="1">
-                    <string>${sys.SORCER_EXT}/configs/SorcerExtBoot.groovy</string>
+                    <string>${env.SORCER_EXT}/configs/SorcerExtBoot.groovy</string>
                 </void>
             </array>
         </void>
         <void property="sorcerConfigPaths">
             <array class="java.lang.String" length="2">
                 <void index="0">
-                    <string>${env.sorcer.home}/configs/River.groovy</string>
+                    <string>${sys.sorcer.home}/configs/River.groovy</string>
                 </void>
                 <void index="1">
-                    <string>${env.sorcer.home}/configs/Rio.groovy</string>
+                    <string>${sys.sorcer.home}/configs/Rio.groovy</string>
                 </void>
             </array>
         </void>

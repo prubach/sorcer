@@ -21,7 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.util.Process2;
 
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Runnable that destroys all processes in a list passed in the constructor
@@ -30,12 +31,7 @@ import java.util.List;
  */
 public class ProcessDestroyer implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ProcessDestroyer.class);
-    private List<Process> children;
-
-    public ProcessDestroyer(List<Process> children) {
-        assert children != null;
-        this.children = children;
-    }
+    private Queue<Process> children = new ConcurrentLinkedQueue<Process>();
 
     @Override
     public void run() {
@@ -55,5 +51,15 @@ public class ProcessDestroyer implements Runnable {
                 log.warn("Interrupted on {}", p2, e);
             }
         }
+    }
+
+    public void addProcess(Process p) {
+        children.add(p);
+    }
+
+    public static ProcessDestroyer installShutdownHook() {
+        ProcessDestroyer processDestroyer = new ProcessDestroyer();
+        Runtime.getRuntime().addShutdownHook(new Thread(processDestroyer, "Sorcer shutdown hook"));
+        return processDestroyer;
     }
 }
