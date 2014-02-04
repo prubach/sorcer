@@ -33,8 +33,8 @@ public class PropertyEvaluator {
 
     @SuppressWarnings("unchecked")
     public void addDefaultSources(String sys, String env) {
-        addSource(sys, System.getenv());
-        addSource(env, (Map) System.getProperties());
+        addSource(sys, (Map) System.getProperties());
+        addSource(env, System.getenv());
     }
 
     public void addSource(String prefix, Map<String, String> source) {

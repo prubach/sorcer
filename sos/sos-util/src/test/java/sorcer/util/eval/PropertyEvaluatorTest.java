@@ -52,8 +52,8 @@ public class PropertyEvaluatorTest {
         Map<String, String> data = new HashMap<String, String>();
         //good
         data.put("key", "${source.key}");
-        data.put("env", "${env." + envKey + "}");
-        data.put("sys", "${sys.user.home}");
+        data.put("envKey", "${env." + envKey + "}");
+        data.put("sysKey", "${sys.user.home}");
         data.put("self", "${key}");
         data.put("partial", "other value: <${key}>");
         data.put("multi", "other value: <${key}> and <${self}>");
@@ -65,8 +65,8 @@ public class PropertyEvaluatorTest {
 
         eval.eval(data);
         assertEquals("replacedValue", data.get("key"));
-        assertEquals(envValue, data.get("env"));
-        assertEquals(System.getProperty("user.home"), data.get("sys"));
+        assertEquals(envValue, data.get("envKey"));
+        assertEquals(System.getProperty("user.home"), data.get("sysKey"));
         assertEquals("replacedValue", data.get("self"));
         assertEquals("other value: <replacedValue>", data.get("partial"));
         assertEquals("other value: <replacedValue> and <replacedValue>", data.get("multi"));

@@ -162,11 +162,12 @@ public class ServiceStarter {
             log.error("Artifact file {} not found", artifactId);
             return null;
         }
+        File first = files.iterator().next();
         if (files.size() > 1) {
-            log.warn("Found {} files possibly matching artifactId, using the first", files.size());
+            log.warn("Found {} files possibly matching artifactId, using {}", files.size(), first);
             log.debug("Files found: {}", files);
         }
-        return files.iterator().next();
+        return first;
     }
 
     protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) throws Exception {

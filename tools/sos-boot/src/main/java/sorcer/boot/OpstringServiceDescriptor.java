@@ -184,7 +184,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         String urlBase = codebase.toExternalForm();
         String mvnRoot = SorcerEnv.getRepoDir();
 
-        String[] resolve = ResolverHelper.resolve(artifact, resolver, null);
+        String[] resolve = ResolverHelper.resolve(artifact, resolver, new RemoteRepository[0]);
         for (String fileUrl : resolve) {
             String absolute = new File(new URL(fileUrl).toURI()).getPath();
             String replace = absolute.replace(mvnRoot, urlBase);

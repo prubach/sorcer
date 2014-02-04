@@ -151,13 +151,16 @@ public class Configurer extends AbstractBeanListener {
         if (!ConfigEntry.NONE.equals(configEntry.defaultValue()) && field.getType().isAssignableFrom(String.class)) {
             defaultValue = configEntry.defaultValue();
         }
+        String entryKey = getEntryKey(field.getName(), configEntry);
         try {
-            Object value = config.getEntry(component, getEntryKey(field.getName(), configEntry), field.getType(), defaultValue);
+            Object value = config.getEntry(component, entryKey, field.getType(), defaultValue);
             field.set(target, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
         } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error while reading config entry [" + component + "] " + entryKey, e);
         }
     }
 
