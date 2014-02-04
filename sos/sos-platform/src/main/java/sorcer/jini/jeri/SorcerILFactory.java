@@ -25,6 +25,7 @@ import java.rmi.server.ExportException;
 import java.security.Permission;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class SorcerILFactory extends BasicILFactory {
 	 * Exposed service type map. A key is an interface and a value its
 	 * implementing object.
 	 */
-	protected Map serviceBeanMap;
+	protected Map<Class, Object> serviceBeanMap;
 
 	/**
      * Creates a <code>SorcerILFactory</code> instance with no server
@@ -86,8 +87,7 @@ public class SorcerILFactory extends BasicILFactory {
 	 * 
 	 */
 	public SorcerILFactory(Map serviceBeans, ClassLoader loader) {
-		super(null, null, loader);
-		serviceBeanMap = serviceBeans;
+		this(null, null, loader, serviceBeans);
 	}
 
 	/**
@@ -110,8 +110,7 @@ public class SorcerILFactory extends BasicILFactory {
 	public SorcerILFactory(MethodConstraints serverConstraints,
 			Class permissionClass, Map serviceBeans)
 			throws IllegalArgumentException {
-		super(serverConstraints, permissionClass, null);
-		serviceBeanMap = serviceBeans;
+		this(serverConstraints, permissionClass, null, serviceBeans);
 	}
 
 	/**
@@ -145,7 +144,14 @@ public class SorcerILFactory extends BasicILFactory {
 			throws IllegalArgumentException {
 		super(serverConstraints, permissionClass, loader);
 		serviceBeanMap = serviceBeans;
-	}
+        Map<Class, Object> superIfaces = new HashMap<Class, Object>();
+        for (Map.Entry<Class, Object> e : serviceBeanMap.entrySet()) {
+            for (Class iface : e.getKey().getInterfaces()) {
+                superIfaces.put(iface, e.getValue());
+            }
+        }
+        serviceBeanMap.putAll(superIfaces);
+    }
 
 	/**
 	 * Returns a new array containing any additional interfaces that the proxy
@@ -187,7 +193,7 @@ public class SorcerILFactory extends BasicILFactory {
 		Iterator it = serviceBeanMap.keySet().iterator();
 		while (it.hasNext()) {
 			curr = (Class) it.next();
-			additionalMethods = curr.getDeclaredMethods();
+			additionalMethods = curr.getMethods();
 			for (int j = 0; j < additionalMethods.length; j++)
 				methods.add(additionalMethods[j]);
 		}
