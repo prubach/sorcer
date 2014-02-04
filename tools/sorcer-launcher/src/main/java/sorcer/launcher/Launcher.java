@@ -83,6 +83,26 @@ public abstract class Launcher {
 
 
     public final void start() throws Exception {
+
+        if (home == null) {
+            String envHome = System.getProperty(E_SORCER_HOME);
+            if (envHome == null)
+                throw new IllegalStateException("No SORCER_HOME set");
+            home = new File(envHome);
+        }
+
+        if (ext == null)
+            ext = home;
+
+        if (configDir == null)
+            configDir = new File(home, "configs");
+
+        if (rio == null)
+            rio = new File(home, "lib/rio");
+
+        if (logDir == null)
+            logDir = new File(home, "logs");
+
         //needed by Resolver to read repoRoot from sorcer.env
         ensureSystemProperty(SORCER_HOME, home.getPath());
         ensureSystemProperty(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());

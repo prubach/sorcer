@@ -164,13 +164,6 @@ public class Sorcer {
             debugPort = Integer.parseInt(cmd.getOptionValue(DEBUG));
         }
 
-        String homePath = cmd.hasOption(HOME) ? cmd.getOptionValue(HOME) : System.getenv(E_SORCER_HOME);
-        if (homePath == null)
-            throw new IllegalArgumentException("No SORCER_HOME defined");
-        File home = new File(homePath).getCanonicalFile();
-        File logDir = FileUtils.getFile(home, cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
-        File ext = cmd.hasOption(EXT) ? FileUtils.getFile(home, cmd.getOptionValue(EXT)) : home;
-
         Launcher launcher = null;
         if (inProcess) {
             if (SorcerLauncher.checkEnvironment() && debugPort == null) {
@@ -179,6 +172,14 @@ public class Sorcer {
                 log.warn("User has requested in-process launch, but it's impossible");
             }
         }
+
+        String homePath = cmd.hasOption(HOME) ? cmd.getOptionValue(HOME) : System.getenv(E_SORCER_HOME);
+        if (homePath == null)
+            throw new IllegalArgumentException("No SORCER_HOME defined");
+        File home = new File(homePath).getCanonicalFile();
+
+        File logDir = FileUtils.getFile(home, cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
+
         if (launcher == null) {
             ForkingLauncher forkingLauncher = new ForkingLauncher();
             launcher = forkingLauncher;
@@ -194,10 +195,11 @@ public class Sorcer {
             forkingLauncher.setErr(new PrintStream(errFile));
         }
 
-        launcher.setLogDir(logDir);
-
         launcher.setHome(home);
-        launcher.setConfigDir(new File(home, "configs"));
+
+        if (cmd.hasOption(EXT)) {
+            launcher.setExt(FileUtils.getFile(home, cmd.getOptionValue(EXT)).getCanonicalFile());
+        }
 
         try {
             launcher.setWaitMode(cmd.hasOption(WAIT) ? Launcher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : Launcher.WaitMode.start);
@@ -205,19 +207,18 @@ public class Sorcer {
             throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()));
         }
 
-        String rioPath;
+        String rioPath = null;
         String envRioHome = System.getenv(E_RIO_HOME);
         if (cmd.hasOption(RIO)) {
             rioPath = cmd.getOptionValue(RIO);
         } else if (envRioHome != null) {
             log.warn("Using environment variable $RIO_HOME, please use -rio parameter instead");
             rioPath = envRioHome;
-        } else {
-            rioPath = "lib/rio";
         }
-        launcher.setRio(FileUtils.getFile(home, rioPath));
+        if (rioPath != null)
+            launcher.setRio(FileUtils.getFile(home, rioPath));
 
-        launcher.setExt(ext.getCanonicalFile());
+        launcher.setLogDir(logDir);
 
         @SuppressWarnings("unchecked")
         List<String> userConfigFiles = cmd.getArgList();
