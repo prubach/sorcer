@@ -14,5 +14,6 @@
         <module>dbp-cfg</module>
         <module>dbp-prv</module>
         <module>dbp-api</module>
+        <module>dbp-req</module>
     </modules>
 </project>

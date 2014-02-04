@@ -26,11 +26,12 @@ deployment(name: 'dbp-provider') {
 
     artifact id:'dbp-api', 'org.sorcersoft.sorcer:dbp-api:'+getSorcerVersion()
     artifact id:'dbp-cfg', 'org.sorcersoft.sorcer:dbp-cfg:'+getSorcerVersion()
+//    artifact id:'sos-exertlet-sui', 'org.sorcersoft.sorcer:sos-exertlet-sui:'+getSorcerVersion()
 
     service(name: "DatabaseStorer") {
         interfaces {
-            classes 'sorcer.service.DatabaseStorer'
-            artifact ref: 'sos-exertlet-sui'
+            classes 'sorcer.core.provider.dbp.IDatabaseProvider'
+            artifact ref: 'dbp-api'
         }
         implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact ref: 'dbp-cfg'

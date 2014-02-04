@@ -34,25 +34,30 @@ import static sorcer.service.ContextFactory.context;
  * @author Mike Sobolewski
  *
  * sdb URL = sos://serviceType/providerName#objectType=Uuid
- * 
+ *
  * objectType = dataContext, exertion, table, var, varModel, object
  */
 public class SdbConnection extends URLConnection {
 
 	private StorageManagement store;
-	
+
 	private String serviceType;
-	
+
 	private String providerName;
-	
+
 	private Store storeType;
-	
+
 	private String uuid;
-	
+
 	public  SdbConnection(URL url) {
 		super(url);
 		serviceType = getURL().getHost();
-		providerName = getURL().getPath().substring(1);
+        String path = getURL().getPath();
+        if (path != null && path.startsWith("/"))
+            path = path.substring(1);
+        if (path != null && path.isEmpty())
+            path = null;
+        providerName = path;
 		String reference = getURL().getRef();
 		int index = reference.indexOf('=');
 		storeType = Store.getStoreType(reference.substring(0, index));
@@ -77,6 +82,8 @@ public class SdbConnection extends URLConnection {
 		Context outContext;
 		if (!connected)
 			connect();
+        if (store == null)
+            throw new IOException("Could not access StorageManagement implementation " + serviceType);
 		try {
 			outContext = store.contextRetrieve(context(in(StorageManagement.object_type, storeType),
 					in(StorageManagement.object_uuid, uuid)));

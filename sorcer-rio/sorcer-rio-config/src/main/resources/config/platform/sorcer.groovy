@@ -9,7 +9,7 @@ def getPlatformCapabilityConfig() {
             "SorcerSoft.com",
             [
                     'org.sorcersoft.sorcer:sos-api',
-                    'org.sorcersoft.sorcer:sos-platform',
+//                    'org.sorcersoft.sorcer:sos-platform',
                     'org.codehaus.plexus:plexus-utils:3.0.15',
                     'org.sorcersoft.sorcer:logger-api',
                     'org.sorcersoft.sorcer:commons-prv'

@@ -49,6 +49,7 @@ deployment(name: 'Sorcer') {
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
     artifact id: 'logger-cfg', "org.sorcersoft.sorcer:logger-cfg:" + getSorcerVersion()
     artifact id: 'logger-sui', "org.sorcersoft.sorcer:logger-sui:" + getSorcerVersion()
+    artifact id: 'dbp-api', "org.sorcersoft.sorcer:dbp-api:" + getSorcerVersion()
     artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
     artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
     artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
@@ -180,7 +181,7 @@ deployment(name: 'Sorcer') {
     service(name: "DatabaseStorer") {
         interfaces {
             classes 'sorcer.service.DatabaseStorer'
-            artifact ref: 'sos-exertlet-sui'
+            artifact ref: 'dbp-api'
         }
         implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact ref: 'dbp-cfg'
