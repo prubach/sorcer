@@ -214,8 +214,9 @@ toWindows() {
 # Call the install script, do not assume that Groovy has been installed.
 installRioToLocalRepository() {
     if [ -d $SORCER_HOME/lib/rio -a ! -f "$SORCER_HOME/logs/install.log" ]; then
-        if [ -f "$RIO_LIB/groovy-all-$groovyVersion.jar" ]; then
-            groovyClasspath="-cp `toNative $RIO_LIB/groovy-all-$groovyVersion.jar`"
+        groovy="$SORCER_HOME/lib/commons/groovy-all.jar"
+        if [ -f $groovy ]; then
+            groovyClasspath="-cp `toNative $groovy`"
             ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
             $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $SORCER_HOME/lib/rio
         else
