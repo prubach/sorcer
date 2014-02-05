@@ -120,7 +120,7 @@ public class Accessor {
     }
 
     private static String overrideName(String providerName, Class serviceType) {
-        if (providerName == null) return null;
+        if (providerName == null || "*".equals(providerName)) return providerName;
         if (SorcerConstants.NAME_DEFAULT.equals(providerName))
             providerName = providerNameUtil.getName(serviceType);
         return SorcerEnv.getActualName(providerName);
