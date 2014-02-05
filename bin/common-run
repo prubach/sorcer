@@ -217,7 +217,7 @@ installRioToLocalRepository() {
         groovy="$SORCER_HOME/lib/commons/groovy-all.jar"
         if [ -f $groovy ]; then
             groovyClasspath="-cp `toNative $groovy`"
-            ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
+            RIO_HOME=$SORCER_HOME/lib/rio ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
             $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $SORCER_HOME/lib/rio
         else
             echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
@@ -319,6 +319,30 @@ if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
 else
     sorcer_simple_layout=0
 fi
+
+defaultSorcerParams (){
+params="-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
+-Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
+-Djava.protocol.handler.pkgs='net.jini.url|sorcer.util.bdb|org.rioproject.url' \
+-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
+-Djava.rmi.server.useCodebaseOnly=false \
+-Dsorcer.home=$SORCER_HOME \
+-Dtools.jar=$TOOLS_JAR"
+
+if [ "x$RIO_HOME" = "x" ]; then
+	rioHome=${SORCER_HOME}/lib/rio
+else
+	rioHome=$RIO_HOME
+fi
+
+V_RIO=$(getVersion v.rio)
+if [ sorcer_simple_layout = 1 ]; then
+	rewsolver=$LIB_DIR/rio/lib/resolver/resolver-aether-$V_RIO.jar
+else
+	resolver=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar
+fi
+echo $params -DRIO_HOME=$rioHome -Dorg.rioproject.resolver.jar=$resolver
+}
 
 createLoggerCp(){
 if [ $sorcer_simple_layout = 1 ]; then
@@ -477,17 +501,11 @@ startSos ( ) {
     if $useprofiler ; then
         runProfiler
     else
-#            -Djava.net.preferIPv4Stack=true \
         exec "$JAVACMD" $JAVA_OPTS \
-            -classpath "$BOOT_CLASSPATH" \
-            -Djava.security.policy="$SORCER_HOME"/configs/sorcer.policy \
-            -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
-            -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
-            -Dlogback.configurationFile="$SORCER_HOME"/configs/logback.groovy \
-            -Djava.rmi.server.useCodebaseOnly=false \
+			$(defaultSorcerParams) \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+            -classpath "$BOOT_CLASSPATH" \
             -Dprogram.name="$PROGNAME" \
-            -Dsorcer.home="$SORCER_HOME" \
             $STARTER_MAIN_CLASS \
             "$@"
     fi
@@ -542,17 +560,11 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
         runProfiler
     else
         exec "$JAVACMD" $JAVA_OPTS \
-            -classpath "$SHELL_CLASSPATH" \
-            -Djava.security.policy="$SORCER_HOME"/configs/shell/policy/shell.policy \
-            -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
-            -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
-            -Dlogback.configurationFile="$SORCER_HOME"/configs/logback.groovy \
-            -Djava.rmi.server.useCodebaseOnly=false \
+        	$(defaultSorcerParams) \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
             -Dnsh.starter.config="$NSH_CONF" \
-            -Dsorcer.home="$SORCER_HOME" \
-            -Dtools.jar="$TOOLS_JAR" \
+			-classpath $SHELL_CLASSPATH \
             $STARTER_MAIN_CLASS \
             --main $CLASS \
             --config "$NSH_CONF" \

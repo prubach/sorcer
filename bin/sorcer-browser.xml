@@ -53,12 +53,13 @@
             <classpath>
 			    <path refid="run.classpath"/>  				
 			</classpath>
-            <env key="RIO_HOME" value="${rio.home}" />
+            <sysproperty key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
 			<sysproperty key="ssb.logLen" value="300" />
+            <sysproperty key="org.rioproject.resolver.jar" value="${mvn.repo}/org/rioproject/resolver/resolver-aether/${v.rio}/resolver-aether-${v.rio}.jar"/>
 		</java>
 	</target>
 
@@ -68,7 +69,7 @@
             <classpath>
                 <path refid="run.classpath"/>
             </classpath>
-            <env key="RIO_HOME" value="${rio.home}" />
+            <sysproperty key="RIO_HOME" value="${rio.home}" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
             <!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
@@ -77,6 +78,7 @@
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
             <sysproperty key="ssb.logLen" value="300" />
+            <sysproperty key="org.rioproject.resolver.jar" value="${mvn.repo}/org/rioproject/resolver/resolver-aether/${v.rio}/resolver-aether-${v.rio}.jar"/>
         </java>
     </target>
 </project>
