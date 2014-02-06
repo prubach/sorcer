@@ -40,6 +40,7 @@ public class JavaSystemProperties {
      * @param properties      properties to search they key in. If null, the system properties are used
      * @return property value or default value if the property is not defined
      */
+    @SuppressWarnings("unchecked")
     public static String getProperty(String key, String defaultValue, Properties properties) {
 		return getProperty(key, defaultValue, (Map)properties);
 	}
@@ -58,5 +59,25 @@ public class JavaSystemProperties {
 			String value = properties.get(key);
 			return value != null ? value : defaultValue;
 		}
+	}
+
+    public static void ensure(Map<String, String> properties, String key) {
+        if (!properties.containsKey(key))
+            throw new IllegalStateException("System property " + key + " not defined");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void ensure(String key) {
+        ensure((Map) System.getProperties(), key);
+    }
+
+    public static void ensure(Map<String, String> properties, String key, String value) {
+        if (!properties.containsKey(key))
+            properties.put(key, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void ensure(String key, String value) {
+        ensure((Map) System.getProperties(), key, value);
 	}
 }
