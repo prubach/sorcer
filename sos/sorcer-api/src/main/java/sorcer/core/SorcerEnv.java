@@ -1502,8 +1502,10 @@ public class SorcerEnv {
         } catch (Exception e) {
             try {
                 // try to look for sorcer.env in SORCER_HOME/configs
-                props.load((new FileInputStream(new File(System.getenv(E_SORCER_HOME) + "/configs/" + filename))));
-                logger.fine("loaded properties from: " + System.getenv(E_SORCER_HOME) + "/configs/" + filename);
+                String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
+                File file = new File(home + "/configs/" + filename);
+                props.load((new FileInputStream(file)));
+                logger.fine("loaded properties from: " + file);
             } catch (Exception ee) {
                 try {
                     // No file give, try as resource sorcer/util/sorcer.env
@@ -1673,8 +1675,10 @@ public class SorcerEnv {
         } catch (Throwable t1) {
             try {
                 // try to look for sorcer.env in SORCER_HOME/configs
-                properties.load((new FileInputStream(new File(System.getenv("SORCER_HOME") + "/configs/" + filename))));
-                logger.fine("loaded data nodes from: " + System.getenv("SORCER_HOME") + "/configs/" + filename);
+                String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
+                File file = new File(home + "/configs/" + filename);
+                properties.load((new FileInputStream(file)));
+                logger.fine("loaded data nodes from: " + file);
             } catch (Exception e) {
                 try {
                     // Can not access "filename" give try as resource
