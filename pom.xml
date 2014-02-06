@@ -260,7 +260,14 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.14.1</version>
+                    <version>2.16</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
+                            <sorcer.home>${env.SORCER_HOME}</sorcer.home>
+                            <java.security.policy>${env.SORCER_HOME}/configs/sorcer.policy</java.security.policy>
+                        </systemPropertyVariables>
+                    </configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -290,19 +297,6 @@
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 					</filesets>
-				</configuration>
-			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.14.1</version>
-                <configuration>
-                    <systemProperties>
-                        <property>
-                            <name>RIO_HOME</name>
-                            <value>${env.SORCER_HOME}/target/rio</value>
-                        </property>
-                    </systemProperties>
                 </configuration>
             </plugin>
 			<plugin>
@@ -373,7 +367,7 @@
 						<exclude>**/sos-webster/**</exclude>
 						<exclude>**/util/exec/*.java</exclude>
 						<exclude>**/classdepandjar/**</exclude>
-						<exclude>**/site/**/*</exclude>						
+						<exclude>**/site/**/*</exclude>
 						<!-- Rio code -->
 						<exclude>**/TimeUtil.java</exclude>
 						<exclude>**/PropertyHelper.java</exclude>
