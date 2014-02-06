@@ -1,8 +1,6 @@
 package sorcer.core.provider.dbp;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +15,14 @@ package sorcer.core.provider.dbp;
  * limitations under the License.
  */
 
-
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-import sorcer.core.SorcerEnv;
-import sorcer.core.requestor.ServiceRequestor;
-import sorcer.resolver.Resolver;
 import sorcer.service.Accessor;
+import sorcer.util.junit.SorcerClient;
+import sorcer.util.junit.SorcerRunner;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,6 +32,8 @@ import static org.junit.Assert.*;
 /**
  * @author Rafał Krupiński
  */
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
 public class DatabaseStorerTest {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseStorerTest.class);
@@ -41,23 +41,8 @@ public class DatabaseStorerTest {
     public static final String TXT = "This is me";
     private static final String TXT2 = "This is me again";
 
-    public static void main(String[] args) {
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-        if (System.getProperty("org.rioproject.resolver.jar") == null)
-            System.setProperty("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
-        System.setSecurityManager(new SecurityManager());
-
-        try {
-			SorcerEnv.debug = true;
-			ServiceRequestor.prepareCodebase();
-            new DatabaseStorerTest().run();
-        } catch (Exception x) {
-            log.error("Error in test", x);
-        }
-    }
-
-    private void run() throws Exception {
+    @Test
+    public void testDbp() throws Exception {
         IDatabaseProvider databaseProvider = Accessor.getService(IDatabaseProvider.class);
         assertNotNull(databaseProvider);
 
