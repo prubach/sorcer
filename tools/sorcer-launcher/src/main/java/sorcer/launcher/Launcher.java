@@ -34,6 +34,7 @@ import static sorcer.util.JavaSystemProperties.*;
  * @author Rafał Krupiński
  */
 public abstract class Launcher {
+    final protected static String MAIN_CLASS = "sorcer.boot.ServiceStarter";
     public WaitMode waitMode = WaitMode.no;
     protected File home;
     protected File ext;
@@ -44,7 +45,8 @@ public abstract class Launcher {
     private Profile profile;
     protected SorcerListener sorcerListener;
 
-    final protected static String MAIN_CLASS = "sorcer.boot.ServiceStarter";
+    protected Map<String,String> properties;
+    protected Map<String,String> environment;
 
     //TODO RKR remove versions
     final protected static String[] CLASS_PATH = {
@@ -80,7 +82,7 @@ public abstract class Launcher {
             "ch.qos.logback:logback-core:1.0.13",
             "ch.qos.logback:logback-classic:1.0.13"
     };
-
+    private PropertyEvaluator evaluator;
 
     public final void start() throws Exception {
         if (home == null) {
@@ -109,7 +111,30 @@ public abstract class Launcher {
         if (sorcerListener == null)
             sorcerListener = new NullSorcerListener();
 
+        environment = getEnvironment();
+        properties = getProperties();
+        evaluator = new PropertyEvaluator();
+        evaluator.addSource("sys", properties);
+        evaluator.addSource("env", environment);
+
+        updateMonitorConfig();
+
         doStart();
+    }
+
+    private void updateMonitorConfig() {
+        if (profile != null) {
+            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
+            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
+                List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
+                for (String path : monitorConfigPaths) {
+                    path = evaluator.eval(path);
+                    if (new File(path).exists())
+                        paths.add(path);
+                }
+                properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
+            }
+        }
     }
 
     private void ensureSystemProperty(String key, String value) {
@@ -123,12 +148,7 @@ public abstract class Launcher {
         this.waitMode = waitMode;
     }
 
-    protected Map<String, String> getEnvironment() {
-        Map<String, String> sysEnv = new HashMap<String, String>();
-        sysEnv.put(E_RIO_HOME, rio.getPath());
-        sysEnv.put(E_SORCER_EXT, ext.getPath());
-        return sysEnv;
-    }
+    abstract protected Map<String, String> getEnvironment();
 
     protected Map<String, String> getProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
@@ -168,14 +188,6 @@ public abstract class Launcher {
             throw new RuntimeException("Unable to read host address", e);
         }
 
-        if (profile != null) {
-            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
-            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
-                sysProps.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(monitorConfigPaths, File.pathSeparator));
-            }
-        }
-
-
         return sysProps;
     }
 
@@ -200,9 +212,6 @@ public abstract class Launcher {
             String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
             result.ensureCapacity(sorcerConfigPaths.length + configs.size());
 
-            PropertyEvaluator evaluator = new PropertyEvaluator();
-            evaluator.addSource("sys", getProperties());
-            evaluator.addSource("env", getEnvironment());
             for (String cfg : sorcerConfigPaths) {
                 String path = evaluator.eval(cfg);
                 if (new File(path).exists())

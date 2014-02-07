@@ -38,6 +38,12 @@ import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static sorcer.core.SorcerConstants.E_RIO_HOME;
+import static sorcer.core.SorcerConstants.E_SORCER_EXT;
+import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 
 /**
  * @author Rafał Krupiński
@@ -59,7 +65,7 @@ public class ForkingLauncher extends Launcher {
 
         JavaProcessBuilder bld = new JavaProcessBuilder(home.getPath());
 
-        bld.getEnvironment().putAll(getEnvironment());
+        bld.getEnvironment().putAll(environment);
 
         Pipe pipe = Pipe.open();
         if (waitMode != WaitMode.no) {
@@ -73,7 +79,7 @@ public class ForkingLauncher extends Launcher {
             bld.setErrFile(errFile);
         }
 
-        bld.setProperties(getProperties());
+        bld.setProperties(properties);
 
         if (debugPort != null) {
             bld.setDebugger(true);
@@ -116,6 +122,15 @@ public class ForkingLauncher extends Launcher {
             sorcerProcess.waitFor();
         }
 
+    }
+
+    @Override
+    protected Map<String, String> getEnvironment() {
+        Map<String, String> sysEnv = new HashMap<String, String>();
+        sysEnv.put(E_SORCER_HOME, home.getPath());
+        sysEnv.put(E_RIO_HOME, rio.getPath());
+        sysEnv.put(E_SORCER_EXT, ext.getPath());
+        return sysEnv;
     }
 
     private static OutputStream getStream(OutputStream stream, File file, OutputStream defaultStream) throws FileNotFoundException {

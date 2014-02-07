@@ -90,7 +90,7 @@ public class SorcerLauncher extends Launcher {
     public void doStart() throws MalformedURLException {
         //TODO RKR check grant
         Properties defaults = new Properties();
-        defaults.putAll(getProperties());
+        defaults.putAll(properties);
 
         Properties overrides = new Properties(defaults);
         overrides.putAll(System.getProperties());
@@ -122,6 +122,11 @@ public class SorcerLauncher extends Launcher {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
         }
+    }
+
+    @Override
+    protected Map<String, String> getEnvironment() {
+        return System.getenv();
     }
 
     private static void installSecurityManager() {
