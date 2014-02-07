@@ -23,8 +23,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author Rafał Krupiński
  */
 public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
-	private static final String DEFAULT_PACKAGING = "jar";
-	private static final char MVN_SEP = ':';
+	final public static String DEFAULT_PACKAGING = "jar";
+	private static final String MVN_SEP = ":";
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -37,7 +37,7 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	 * @throws IllegalArgumentException
 	 */
 	public static ArtifactCoordinates coords(String coords) {
-		String[] coordSplit = coords.split(":");
+		String[] coordSplit = coords.split(MVN_SEP);
 		int length = coordSplit.length;
 		if (length < 2 || length > 5) {
 			throw new IllegalArgumentException(
