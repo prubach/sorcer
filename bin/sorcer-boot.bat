@@ -1,5 +1,5 @@
 @echo off
-pushd
+setlocal
 set STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
 SET mypath=%~dp0
@@ -23,10 +23,10 @@ IF defined SORCER_HOME (
 )
 
 
-IF defined "%*"(
-	set CONFIG="%*"
+IF NOT "%1"=="" (
+	set CONFIG=%*
 ) ELSE (
-    set CONFIG="-Pmix"
+    set CONFIG=-Pmix
 )
 
 echo ##############################################################################
@@ -36,6 +36,7 @@ echo ##   Webster URL: %WEBSTER_URL%
 echo ##   
 echo ##############################################################################
 echo .
-cd %SORCER_HOME%\bin
+pushd %SORCER_HOME%\bin
 call %SOS_START_CMD%
 popd
+endlocal
