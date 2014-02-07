@@ -17,6 +17,8 @@
 package sorcer.launcher;
 
 import org.rioproject.start.LogManagementHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.resolver.Resolver;
@@ -34,16 +36,20 @@ import java.util.concurrent.ThreadFactory;
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
+    final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
+
     private ThreadFactory threadFactory;
 
     public static boolean checkEnvironment() throws MalformedURLException {
+        boolean result = true;
         String[] requiredEnv = {
-//                SorcerConstants.E_RIO_HOME,
                 SorcerConstants.E_SORCER_HOME
         };
         for (String key : requiredEnv) {
-            if (System.getenv(key) == null)
-                return false;
+            if (System.getenv(key) == null) {
+                log.warn("Missing required environment variable {}", key);
+                result = false;
+            }
         }
 
         //we can't simply create another AppClassLoader,
@@ -77,8 +83,10 @@ public class SorcerLauncher extends Launcher {
                 requiredClassPath.removeAll(commonUrls);
             }
         }
-        return requiredClassPath.isEmpty();
-
+        for (URL entry : requiredClassPath) {
+            log.warn("Missing required ClassPath element {}",entry);
+        }
+        return result && requiredClassPath.isEmpty();
     }
 
     @Override
