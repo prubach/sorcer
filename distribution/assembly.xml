@@ -50,44 +50,9 @@
                 <destName>dbp-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/dbp/dbp-api/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>dbp-api-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/dbp/dbp-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>dbp-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/dbp/dbp-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>dbp-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/cataloger/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>cataloger-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/cataloger/cataloger-api/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>cataloger-api-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/cataloger/cataloger-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>cataloger-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/cataloger/cataloger-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>cataloger-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/cataloger/cataloger-sui/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>cataloger-sui-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos-providers/exerter/pom.xml</source>
@@ -95,29 +60,9 @@
                 <destName>exerter-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/exerter/exerter-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exerter-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/exerter/exerter-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exerter-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/jobber/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jobber-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/jobber/jobber-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>jobber-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/jobber/jobber-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>jobber-cfg-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos-providers/logger/pom.xml</source>
@@ -125,59 +70,14 @@
                 <destName>logger-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/logger/logger-api/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>logger-api-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/logger/logger-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>logger-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/logger/logger-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>logger-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/logger/logger-sui/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>logger-sui-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/spacer/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>spacer-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/spacer/spacer-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>spacer-prv-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/spacer/spacer-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>spacer-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exertmonitor-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/exertmonitor/exertmonitor-cfg/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exertmonitor-cfg-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos-providers/exertmonitor/exertmonitor-prv/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exertmonitor-prv-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos/pom.xml</source>
@@ -201,11 +101,6 @@
             </file>
 
             <!-- top-level poms for examples -->
-            <file>
-                <source>${basedir}/../tools/sorcer-provider/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sorcer-provider-${v.sorcer}.pom</destName>
-            </file>
             <file>
                 <source>${basedir}/src/main/examples/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
