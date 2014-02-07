@@ -195,8 +195,8 @@ public class Sorcer {
 
         try {
             launcher.setWaitMode(cmd.hasOption(WAIT) ? Launcher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : Launcher.WaitMode.start);
-        } catch (IllegalArgumentException ignored) {
-            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()));
+        } catch (IllegalArgumentException x) {
+            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()), x);
         }
 
         String rioPath = null;
@@ -204,9 +204,11 @@ public class Sorcer {
         if (cmd.hasOption(RIO)) {
             rioPath = cmd.getOptionValue(RIO);
         } else if (envRioHome != null) {
-            log.warn("Using environment variable $RIO_HOME, please use -rio parameter instead");
-            rioPath = envRioHome;
+            rioPath = FileUtils.getFile(home, envRioHome).getPath();
+            log.info("Overriding $RIO_HOME = {}", rioPath);
         }
+
+        //if rioPath is not set, launcher will use the default
         if (rioPath != null)
             launcher.setRio(FileUtils.getFile(home, rioPath));
 

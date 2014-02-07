@@ -321,12 +321,7 @@ else
 fi
 
 defaultSorcerParams (){
-params="-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
--Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
--Djava.protocol.handler.pkgs='net.jini.url|sorcer.util.bdb|org.rioproject.url' \
--Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
--Djava.rmi.server.useCodebaseOnly=false \
--Dsorcer.home=$SORCER_HOME \
+params="-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
 -Dtools.jar=$TOOLS_JAR"
 
 if [ "x$RIO_HOME" = "x" ]; then
@@ -503,6 +498,7 @@ startSos ( ) {
     else
         exec "$JAVACMD" $JAVA_OPTS \
 			$(defaultSorcerParams) \
+        	-Djava.security.policy=$SORCER_HOME/configs/sorcer.policy \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -classpath "$BOOT_CLASSPATH" \
             -Dprogram.name="$PROGNAME" \
@@ -561,6 +557,13 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
     else
         exec "$JAVACMD" $JAVA_OPTS \
         	$(defaultSorcerParams) \
+			-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
+			-Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
+			"-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url" \
+			-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
+			-Djava.rmi.server.useCodebaseOnly=false \
+			-Dsorcer.home=$SORCER_HOME \
+			-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
             -Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
             -Dnsh.starter.config="$NSH_CONF" \

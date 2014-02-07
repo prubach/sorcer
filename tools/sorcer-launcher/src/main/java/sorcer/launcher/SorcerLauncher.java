@@ -17,6 +17,8 @@
 package sorcer.launcher;
 
 import org.rioproject.start.LogManagementHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.resolver.Resolver;
@@ -30,10 +32,13 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
 
+import static sorcer.util.Collections.i;
+
 /**
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
+    private final static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
     private ThreadFactory threadFactory;
 
     public static boolean checkEnvironment() throws MalformedURLException {
@@ -90,15 +95,23 @@ public class SorcerLauncher extends Launcher {
         Properties overrides = new Properties(defaults);
         overrides.putAll(System.getProperties());
 
+        if (log.isDebugEnabled())
+            for(Object key : i(overrides.propertyNames()))
+                log.debug("{} = {}", key, overrides.getProperty((String) key));
+
+
         System.setProperties(overrides);
         installLogging();
-        installSecurityManager();
 
         try {
             Class<?> serviceStarter = getClass().getClassLoader().loadClass(MAIN_CLASS);
             Method start = serviceStarter.getDeclaredMethod("start", List.class);
 
             SorcerRunnable sorcerRun = new SorcerRunnable(start, getConfigs());
+
+            // last moment
+            installSecurityManager();
+
             if (threadFactory != null) {
                 threadFactory.newThread(sorcerRun).start();
             } else {

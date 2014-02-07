@@ -131,13 +131,23 @@ public abstract class Launcher {
     }
 
     protected Map<String, String> getProperties() {
+        File policyPath = new File(configDir, "sorcer.policy");
+        String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4");
+
+        try {
+            IOUtils.ensureFile(policyPath, IOUtils.FileCheck.readable);
+            IOUtils.ensureFile(new File(resolverPath), IOUtils.FileCheck.readable);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         Map<String, String> sysProps = new HashMap<String, String>();
         sysProps.put(MAX_DATAGRAM_SOCKETS, "1024");
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
-        sysProps.put(SECURITY_POLICY, new File(configDir, "sorcer.policy").getPath());
 
+        sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
         sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());
 
@@ -149,8 +159,8 @@ public abstract class Launcher {
         //rio specific
         sysProps.put("org.rioproject.service", "all");
         sysProps.put("RIO_HOME", rio.getPath());
-        sysProps.put("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S4"));
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
+        sysProps.put("org.rioproject.resolver.jar", resolverPath);
 
         try {
             sysProps.put("org.rioproject.codeserver", "http://" + HostUtil.getInetAddress() + ":9010");
