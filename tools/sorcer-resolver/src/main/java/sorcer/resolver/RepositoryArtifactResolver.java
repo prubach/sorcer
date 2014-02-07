@@ -1,7 +1,6 @@
 /**
  *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +39,7 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
-        String res = resolveRelative(artifactCoordinates);
-		return res!=null ? new File(root, resolveRelative(artifactCoordinates)).getAbsolutePath() : null;
+		return new File(root, resolveRelative(artifactCoordinates)).getAbsolutePath();
 	}
 
 	/**
@@ -64,20 +62,11 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 			result.append('-').append(classifier);
 		}
 		result.append('.').append(artifactCoordinates.getPackaging());
-        File relFile = new File(root, result.toString());
-        if (relFile.exists())
-            return result.toString();
-        else
-            return null;
+        return result.toString();
 	}
 
 	@Override
 	public String getRootDir() {
-		return root;
-	}
-
-	@Override
-	public String getRepoDir() {
 		return root;
 	}
 

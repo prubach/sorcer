@@ -1,7 +1,5 @@
 /**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,11 +83,6 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	@Override
 	public String getRootDir() {
-		return rootDir.toString();
-	}
-
-	@Override
-	public String getRepoDir() {
 		return rootDir.toString();
 	}
 
