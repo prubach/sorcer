@@ -316,7 +316,7 @@ public class Installer {
                 //special case: bundle is really a jar
                 packaging = nodes.item(0).getTextContent();
                 //TODO RKR move to ArtifactCoordinates
-                if ("bundle".equals(packaging) || "maven-plugin".equals(packaging))
+                if ("bundle".equals(packaging) || "maven-archetype".equals(packaging) || "maven-plugin".equals(packaging) || "eclipse-plugin".equals(packaging))
                     packaging = "jar";
             } else
                 packaging = ArtifactCoordinates.DEFAULT_PACKAGING;
