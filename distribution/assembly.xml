@@ -80,6 +80,11 @@
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertmonitor-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-${v.sorcer}.pom</destName>
@@ -101,6 +106,11 @@
             </file>
 
             <!-- top-level poms for examples -->
+            <file>
+                <source>${basedir}/../tools/sorcer-provider/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sorcer-provider-${v.sorcer}.pom</destName>
+            </file>
             <file>
                 <source>${basedir}/src/main/examples/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
@@ -141,6 +151,7 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex6-${v.sorcer}.pom</destName>
             </file>
+
             <!-- Other libs -->
             <file>
                 <source>${user.home}/.m2/repository/org/dancres/main/${v.blitz}/main-${v.blitz}.pom</source>
@@ -156,6 +167,44 @@
                 <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar-parent/${v.sigar}/sigar-parent-${v.sigar}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sigar-parent-${v.sigar}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/apple/AppleJavaExtensions/1.4/AppleJavaExtensions-1.4.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>AppleJavaExtensions-1.4.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/classworlds/classworlds/1.1-alpha-2/classworlds-1.1-alpha-2.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>classworlds-1.1-alpha-2.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ant-contrib-1.0b3.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/nekohtml/xercesMinimal/1.9.6.2/xercesMinimal-1.9.6.2.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>xercesMinimal-1.9.6.2.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>aopalliance-1.0.pom</destName>
+            </file>
+
+            <!-- sigar -->
+            <!-- TODO RKR add poms to sigar jar and zip, remove below -->
+            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/sigar-${v.sigar}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sigar-${v.sigar}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar-native/${v.sigar}/sigar-native-${v.sigar}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sigar-native-${v.sigar}.pom</destName>
             </file>
 
             <!-- Copy the logging configuration file -->
@@ -387,19 +436,6 @@
             <fileMode>0755</fileMode>
         </fileSet>
             
-        <!-- Hyperic -->
-        <fileSet>
-            <directory>
-                ${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/lib
-            </directory>
-            <fileMode>0644</fileMode>
-            <outputDirectory>lib/${org.sorcersoft.sigar}/lib</outputDirectory>
-            <excludes>
-                <exclude>junit.jar</exclude>
-                <exclude>log4j.jar</exclude>
-            </excludes>
-        </fileSet>
-	
         <!-- Rio resolver files-->
         <fileSet>
 	    <directory>${basedir}/../target/rio/lib/resolver</directory>

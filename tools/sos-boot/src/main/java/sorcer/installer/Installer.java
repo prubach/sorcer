@@ -36,6 +36,8 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 /**
  * User: prubach
  * Date: 14.05.13
@@ -43,12 +45,11 @@ import java.util.zip.ZipFile;
  */
 public class Installer {
     final private static Logger log = LoggerFactory.getLogger(Installer.class);
-    final private static Logger logger = log;
 
     private ArtifactResolver libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()));
     private ArtifactResolver mvnResolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
 
-    protected Map<String, String> groupDirMap = new HashMap<String, String>();
+    protected Map<String, String> groupDirMap;
     protected Map<String, String> versionsMap = new HashMap<String, String>();
 
     final private static String MARKER_FILENAME = "sorcer_jars_installed_user_";
@@ -56,243 +57,218 @@ public class Installer {
     final private static String MARKER_FILENAME_EXT = ".tmp";
 
     final private static String COMMONS_LIBS = "commons";
+    protected static File configDir = new File(SorcerEnv.getHomeDir(), "configs");
 
-    private static String VERSIONS_PROPS_FILE=SorcerEnv.getHomeDir() + File.separator + "configs" +
-            File.separator + "groupversions.properties";
+    private static File VERSIONS_PROPS_FILE = new File(configDir, "groupversions.properties");
 
-    private static String REPOLAYOUT_PROPS_FILE=SorcerEnv.getExtDir() + File.separator + "configs" +
-            File.separator + "repolayout.properties";
+    private static File REPOLAYOUT_PROPS_FILE = new File(configDir, "repolayout.properties");
 
     int errorCount = 0;
 
+    // artifactId -> coordinates (non-pom only)
     private Map<String, ArtifactCoordinates> artifactsFromPoms = new HashMap<String, ArtifactCoordinates>();
 
+    public static void main(String[] args) throws IOException {
+        Installer installer = new Installer();
+        installer.installPoms();
+        installer.installJars();
+        installer.createMarker();
+    }
 
-    protected Installer() {
+    @SuppressWarnings("unchecked")
+    protected Installer() throws IOException {
         String repoDir = SorcerEnv.getRepoDir();
         try {
             if (repoDir == null)
-                throw new IOException("Repo Dir is null");
+                throw new IOException("Maven repository root directory is undefined");
             else
                 FileUtils.forceMkdir(new File(repoDir));
         } catch (IOException io) {
-            logger.error("Problem installing jars to local maven repository - repository directory {} does not exist! ", repoDir, io);
+            log.error("Problem installing jars to local maven repository - repository directory {} does not exist! ", repoDir, io);
             System.exit(-1);
         }
-        String resourceName = "META-INF/maven/groupversions.properties";
+
+        Properties versions = new Properties();
+        loadProperties(versions, "META-INF/maven/groupversions.properties");
+        loadProperties(versions, VERSIONS_PROPS_FILE);
+        versionsMap = (Map) versions;
+
+        Properties groups = new Properties();
+        loadProperties(groups, "META-INF/maven/repolayout.properties");
+        loadProperties(groups, REPOLAYOUT_PROPS_FILE);
+        groupDirMap = (Map) groups;
+    }
+
+    protected void loadProperties(Properties properties, String resourceName) throws IOException {
         URL resourceVersions = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (resourceVersions == null) {
-            throw new RuntimeException("Could not find versions.properties");
+            throw new IOException("Could not find versions.properties");
         }
-
-        resourceName = "META-INF/maven/repolayout.properties";
-        URL resourceRepo = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-        if (resourceRepo == null) {
-            throw new RuntimeException("Could not find repolayout.properties");
-        }
-        Properties propertiesRepo = new Properties();
-        Properties propertiesVer = new Properties();
         InputStream inputStream = null;
         try {
-            inputStream = resourceRepo.openStream();
-            propertiesRepo.load(inputStream);
-            // properties is a Map<Object, Object> but it contains only Strings
-            @SuppressWarnings("unchecked")
-            Map<String, String> propertyMap = (Map) propertiesRepo;
-            groupDirMap.putAll(propertyMap);
-
-            File repoFile = new File(REPOLAYOUT_PROPS_FILE);
-            if (repoFile.exists()) {
-                Properties props = new Properties();
-                props.load(new FileInputStream(repoFile));
-                propertyMap = (Map) props;
-                 groupDirMap.putAll(propertyMap);
-            }
-
             inputStream = resourceVersions.openStream();
-            propertiesVer.load(inputStream);
-            // properties is a Map<Object, Object> but it contains only Strings
-            @SuppressWarnings("unchecked")
-            Map<String, String> propertyMapVer = (Map) propertiesVer;
-            versionsMap.putAll(propertyMapVer);
-
-            File versionsFile = new File(VERSIONS_PROPS_FILE);
-            if (versionsFile.exists()) {
-                Properties props = new Properties();
-                props.load(new FileInputStream(versionsFile));
-                propertyMapVer = (Map) props;
-                versionsMap.putAll(propertyMapVer);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load repolayout.properties", e);
+            properties.load(inputStream);
         } finally {
-            close(inputStream);
+            closeQuietly(inputStream);
         }
     }
 
-    public void install() throws IOException {
-        installSigar();
-
-        for (String group : groupDirMap.keySet()) {
-            String dir = groupDirMap.get(group);
-            String version = versionsMap.get(group);
-
-            File libDir = new File(SorcerEnv.getLibPath(), dir);
-            if (dir == null || version == null || !libDir.exists()) {
-                logger.error("Problem installing jars for groupId: {} directory or version not specified: {} {}", group, dir, version);
-                errorCount++;
-                continue;
-            }
-
-            File[] jars = libDir.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.getName().endsWith(".jar");
-                }
-            });
-
-            for (File jar : jars) {
-                String fileNoExt = jar.getName().replace(".jar", "");
-                ArtifactCoordinates ac = new ArtifactCoordinates(group, fileNoExt, version);
-                File destJarFile = new File(mvnResolver.resolveAbsolute(ac));
-                File artifactDir = destJarFile.getParentFile();
-                try {
-                    FileUtils.forceMkdir(artifactDir);
-                    extractZipFile(jar, getInternalPomPath(ac), replaceExt(destJarFile, "pom"));
-                    if (!destJarFile.exists() || ac.isVersionSnapshot())
-                        FileUtils.copyFile(jar, destJarFile);
-                } catch (IOException io) {
-                    errorCount++;
-                    logger.error("Problem installing jar: {} to: {}", fileNoExt, artifactDir);
-                }
-            }
-        }
-        // install commons
-        File[] jars = new File(SorcerEnv.getLibPath(), COMMONS_LIBS).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getName().endsWith("jar");
-            }
-        });
-
-        for (File jar : jars) {
-            ArtifactCoordinates ac = getArtifactCoordinatesForFile(jar);
-            if (ac!=null && ac.getGroupId()!=null && ac.getArtifactId()!=null && ac.getVersion()!=null) {
-                File destJarFile = new File(mvnResolver.resolveAbsolute(ac));
-                File artifactDir = destJarFile.getParentFile();
-                try {
-                    FileUtils.forceMkdir(artifactDir);
-                    extractZipFile(jar, getInternalPomPath(ac), replaceExt(destJarFile, "pom"));
-                    if (!destJarFile.exists() || ac.isVersionSnapshot())
-                        FileUtils.copyFile(jar, destJarFile);
-                    logger.info("Installed jar and pom file: {}", destJarFile);
-                } catch (IOException io) {
-                    errorCount++;
-                    logger.error("Problem installing jar: {} to: {}", ac.getArtifactId(), artifactDir, io);
-                }
-            }
-        }
-    }
-
-    private void installSigar() {
+    protected void loadProperties(Properties properties, File file) throws IOException {
+        if (!file.exists()) return;
+        InputStream inputStream = null;
         try {
-            String group = "org.sorcersoft.sigar";
-            String version = versionsMap.get(group);
-            ArtifactCoordinates ac = new ArtifactCoordinates(group, "sigar-native", "zip", version, null);
-            File destFile = new File(mvnResolver.resolveAbsolute(ac));
-            File zipFile = new File(libResolver.resolveAbsolute(ac));
-            if (!destFile.exists()) {
-                logger.info("Installing zip file: " + zipFile + " to " + destFile);
-                FileUtils.copyFile(zipFile, destFile);
-            } else
-                logger.info("File already exists " + destFile);
-        } catch (IOException io) {
-            ++errorCount;
-            throw new IllegalStateException("Problem while copying sigar-native.zip to repo: ", io);
-        }
-    }
-
-    public ArtifactCoordinates getArtifactCoordinatesForFile(File jar) throws IOException {
-        String artifactIdFromFileName = jar.getName().replace(".jar", "");
-        if (artifactsFromPoms.containsKey(artifactIdFromFileName)) {
-            return artifactsFromPoms.get(artifactIdFromFileName);
-        } else
-            return getArtifactCoordinatesFromJar(jar);
-    }
-
-    public ArtifactCoordinates getArtifactCoordinatesFromJar(File jar) throws IOException {
-        ZipFile zipFile = null;
-        try {
-            zipFile = new ZipFile(jar);
-            ZipEntry pomProps = get(zipFile, new ZipEntryFilter() {
-                @Override
-                public boolean accept(ZipEntry entry) {
-                    return (!entry.isDirectory() && entry.getName().contains("META-INF/maven/") && entry.getName().contains("pom.properties"));
-                }
-            });
-            Properties properties = new Properties();
-            properties.load(zipFile.getInputStream(pomProps));
-            String fileName = jar.getName();
-            String packaging = fileName.substring(fileName.lastIndexOf('.') + 1);
-
-            return new ArtifactCoordinates(properties.getProperty("groupId"), properties.getProperty("artifactId"), packaging, properties.getProperty("version"), null);
+            inputStream = new FileInputStream(file);
+            properties.load(inputStream);
         } finally {
-            //also closes input streams
-            IOUtils.closeQuietly(zipFile);
+            closeQuietly(inputStream);
         }
     }
 
+    public void installPoms() throws IOException {
+        File pomDir = new File(SorcerEnv.getHomeDir(), "configs/poms");
 
-    public void installPoms() {
-        String pomDir = SorcerEnv.getHomeDir() + "/configs/poms/";
-
-        File[] poms = new File(pomDir).listFiles(new FileFilter() {
+        File[] poms = pomDir.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.getName().endsWith("pom");
             }
         });
         for (File pom : poms) {
-                ArtifactCoordinates ac = getArtifactCoordsFromPom(pom.getAbsolutePath());
-                if (ac!=null) {
-                    artifactsFromPoms.put(ac.getArtifactId(), ac);
-                    File destFile = new File(mvnResolver.resolveAbsolute(ac));
-                    File artifactDir = destFile.getParentFile();
-                    try {
-                        FileUtils.forceMkdir(artifactDir);
-                        if (!destFile.exists() || ac.isVersionSnapshot())
-                            FileUtils.copyFile(pom, destFile);
-                        logger.info("Installed pom file: " + destFile);
-                    } catch (IOException io) {
-                        errorCount++;
-                        logger.error("Problem installing pom file: " + pom.getAbsolutePath() + " to: " + artifactDir);
-                    }
-                } else
-                    errorCount++;
+            ArtifactCoordinates ac = getArtifactCoordsFromPom(pom);
+            if (ac == null) {
+                log.error("Problem while reading pom", pom);
+                errorCount++;
+                return;
+            }
+
+            if (!"pom".equals(ac.getPackaging())) {
+                String artifactId = ac.getArtifactId();
+                artifactsFromPoms.put(artifactId, ac);
+            }
+
+            try {
+                install(pom, toPomCoordinates(ac));
+            } catch (IOException io) {
+                errorCount++;
+                log.error("Problem installing pom file: {}", pom.getAbsolutePath(), io);
+            }
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Installer installer = new Installer();
-        installer.installPoms();
-        installer.install();
-        installer.createMarker();
+    public void installJars() throws IOException {
+        File libDir = new File(SorcerEnv.getLibPath());
+        //Collection<File> files = FileUtils.listFiles(libDir, new String[]{"jar", "zip"}, true);
+
+        Collection<String> paths = new ArrayList<String>(groupDirMap.size() + 1);
+        paths.addAll(groupDirMap.values());
+        paths.add(COMMONS_LIBS);
+
+        for (String dir : paths) {
+            File dir1 = new File(libDir, dir);
+            log.info("Installing files from {}", dir1);
+            for (File file : dir1.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    String name = file.getName();
+                    return !file.isDirectory() && (name.endsWith("jar") || name.endsWith("zip"));
+                }
+            })) {
+                try {
+                    install(file);
+                } catch (IOException x) {
+                    ++errorCount;
+                    log.error("Erro while installing {}", file, x);
+                }
+            }
+        }
     }
 
-    protected void install(ArtifactCoordinates coordinates, File pom){}
+    protected ArtifactCoordinates installPomFromJar(File jarFile) throws IOException {
+        ZipFile jarZip = null;
+        try {
+            jarZip = new ZipFile(jarFile);
+            ZipEntry pomEntry = get(jarZip, new ZipEntryFilter() {
+                @Override
+                public boolean accept(ZipEntry entry) {
+                    String name = entry.getName();
+                    return (!entry.isDirectory() && name.startsWith("META-INF/maven/") && name.endsWith("pom.xml"));
+                }
+            });
+            if (pomEntry == null)
+                throw new FileNotFoundException("pom.xml entry not found in " + jarFile);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream((int) pomEntry.getSize());
+            org.apache.commons.io.IOUtils.copy(jarZip.getInputStream(pomEntry), outputStream);
 
-    protected static ArtifactCoordinates getArtifactCoordsFromPom(String fileName) {
+            byte[] pomBytes = outputStream.toByteArray();
+            ArtifactCoordinates jarCoords = getArtifactCoordsFromPom(new ByteArrayInputStream(pomBytes));
+            install(new ByteArrayInputStream(pomBytes), toPomCoordinates(jarCoords));
+            return jarCoords;
+        } finally {
+            IOUtils.closeQuietly(jarZip);
+        }
+    }
+
+    public void install(File file) throws IOException {
+        File fileNoExt = replaceExt(file, null);
+        String artifactId = fileNoExt.getName();
+
+        ArtifactCoordinates ac;
+
+        if (artifactsFromPoms.containsKey(artifactId)) {
+            ac = artifactsFromPoms.get(artifactId);
+        } else {
+            ac = installPomFromJar(file);
+        }
+
+        install(ac);
+    }
+
+    protected void install(ArtifactCoordinates coordinates) throws IOException {
+        File srcJarFile = new File(libResolver.resolveAbsolute(coordinates));
+        install(srcJarFile, coordinates);
+    }
+
+    private void install(File srcJarFile, ArtifactCoordinates destCoords) throws IOException {
+        File destJarFile = new File(mvnResolver.resolveAbsolute(destCoords));
+        if (destJarFile.exists())
+            return;
+        FileUtils.forceMkdir(destJarFile.getParentFile());
+        FileUtils.copyFile(srcJarFile, destJarFile);
+    }
+
+    protected void install(InputStream inputStream, ArtifactCoordinates coordinates) throws IOException {
+        File destFile = new File(mvnResolver.resolveAbsolute(coordinates));
+        if (destFile.exists())
+            return;
+        FileUtils.copyInputStreamToFile(inputStream, destFile);
+    }
+
+    private static ArtifactCoordinates toPomCoordinates(ArtifactCoordinates ac) {
+        return new ArtifactCoordinates(ac.getGroupId(), ac.getArtifactId(), "pom", ac.getVersion(), ac.getClassifier());
+    }
+
+    protected static ArtifactCoordinates getArtifactCoordsFromPom(File file) throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            return getArtifactCoordsFromPom(inputStream);
+        } finally {
+            closeQuietly(inputStream);
+        }
+    }
+
+    protected static ArtifactCoordinates getArtifactCoordsFromPom(InputStream file) {
         DocumentBuilderFactory domFactory =
                 DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true);
-        DocumentBuilder builder = null;
+        DocumentBuilder builder;
         String groupId = null;
-        String artifactId = null;
+        String artifactId;
         String version = null;
-        String packaging = null;
+        String packaging;
         try {
             builder = domFactory.newDocumentBuilder();
-            Document doc = builder.parse(fileName);
+            Document doc = builder.parse(file);
             XPath xpath = XPathFactory.newInstance().newXPath();
             Map<String, String> namespaces = new HashMap<String, String>();
             namespaces.put("pom", "http://maven.apache.org/POM/4.0.0");
@@ -302,21 +278,21 @@ public class Installer {
             XPathExpression expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'groupId']");
             Object result = expr.evaluate(doc, XPathConstants.NODESET);
             NodeList nodes = (NodeList) result;
-            if (nodes.getLength()>0)
+            if (nodes.getLength() > 0)
                 groupId = nodes.item(0).getTextContent();
             else {
                 expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'parent']/*[local-name() = 'groupId']");
                 result = expr.evaluate(doc, XPathConstants.NODESET);
                 nodes = (NodeList) result;
-                if (nodes.getLength()>0)
+                if (nodes.getLength() > 0)
                     groupId = nodes.item(0).getTextContent();
             }
 
             expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'artifactId']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
-            if (nodes.getLength()==0) {
-                logger.error("Problem installing file: " + fileName + "\n" + " could not read artifactId");
+            if (nodes.getLength() == 0) {
+                log.error("Problem installing file: " + file + "\n" + " could not read artifactId");
                 return null;
             }
             artifactId = nodes.item(0).getTextContent();
@@ -324,26 +300,29 @@ public class Installer {
             expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'version']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
-            if (nodes.getLength()>0)
+            if (nodes.getLength() > 0)
                 version = nodes.item(0).getTextContent();
             else {
                 expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'parent']/*[local-name() = 'version']");
                 result = expr.evaluate(doc, XPathConstants.NODESET);
                 nodes = (NodeList) result;
-                if (nodes.getLength()>0)
+                if (nodes.getLength() > 0)
                     version = nodes.item(0).getTextContent();
             }
             expr = xpath.compile("/*[local-name() = 'project']/*[local-name() = 'packaging']");
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
-            if (nodes.getLength()>0)
+            if (nodes.getLength() > 0) {
+                //special case: bundle is really a jar
                 packaging = nodes.item(0).getTextContent();
-            else
+                //TODO RKR move to ArtifactCoordinates
+                if ("bundle".equals(packaging) || "maven-plugin".equals(packaging))
+                    packaging = "jar";
+            } else
                 packaging = ArtifactCoordinates.DEFAULT_PACKAGING;
 
         } catch (Exception e) {
-            logger.error("Problem installing file: " + fileName + "\n" + e.getMessage());
-            e.printStackTrace();
+            log.error("Problem reading file: {}", file, e);
             return null;
         }
 
@@ -351,61 +330,18 @@ public class Installer {
     }
 
     private void createMarker() {
-        if (errorCount==0) {
+        if (errorCount == 0) {
             String userName = System.getProperty("user.name");
             String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME + userName + MARKER_FILENAME_EXT;
             File f = new File(markerFile);
             try {
-                f.createNewFile();
+                if (!f.createNewFile())
+                    log.warn("Couldn't create marker file {}", f);
             } catch (IOException e) {
+                log.warn("Error while creating marker file {}", f, e);
             }
         }
-        logger.info("Installer finished with " + errorCount + " errors");
-    }
-
-
-    protected void close(Closeable inputStream) {
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-    }
-
-    public static void extractZipFile(File zipFileSrc, String relativeFilePath, File targetFilePath) {
-        try {
-            // Do not overwrite
-            if (!targetFilePath.exists()) {
-                ZipFile zipFile = new ZipFile(zipFileSrc);
-                Enumeration<? extends ZipEntry> e = zipFile.entries();
-                while (e.hasMoreElements()) {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
-                    // if the entry is not directory and matches relative file then extract it
-                    if (!entry.isDirectory() && entry.getName().equals(relativeFilePath)) {
-                        InputStream bis = new BufferedInputStream(
-                                zipFile.getInputStream(entry));
-
-                        // write the inputStream to a FileOutputStream
-                        OutputStream outputStream =
-                                new FileOutputStream(targetFilePath);
-
-                        int read = 0;
-                        byte[] bytes = new byte[1024];
-
-                        while ((read = bis.read(bytes)) != -1) {
-                            outputStream.write(bytes, 0, read);
-                        }
-                        bis.close();
-                        outputStream.close();
-                    }
-                }
-            }
-        } catch (IOException e) {
-            logger.error("IOError :", e);
-            e.printStackTrace();
-        }
+        log.info("Installer finished with " + errorCount + " errors");
     }
 
     public static ZipEntry get(ZipFile zipFile, ZipEntryFilter filter) {
@@ -419,19 +355,19 @@ public class Installer {
         return null;
     }
 
-    private static String getInternalPomPath(ArtifactCoordinates ac) {
-        return "META-INF/maven/" + ac.getGroupId() + "/" + ac.getArtifactId() + "/pom.xml";
-    }
-
+    /**
+     * replaces filename extension to a provided one. Special case: if ext is null, remove '.' as well
+     */
     private static File replaceExt(File file, String ext) {
         String path = file.getPath();
-        return new File(path.substring(0, path.lastIndexOf('.') + 1) + ext);
+        int cut = path.lastIndexOf('.');
+        if (ext != null)
+            ++cut;
+        String result = path.substring(0, cut);
+        if (ext != null)
+            result += ext;
+        return new File(result);
     }
-
-    private static ArtifactCoordinates coordsForPom(ArtifactCoordinates ac){
-        return new ArtifactCoordinates(ac.getGroupId(),ac.getArtifactId(),"pom",ac.getVersion(),ac.getClassifier());
-    }
-
 }
 
 interface ZipEntryFilter {
