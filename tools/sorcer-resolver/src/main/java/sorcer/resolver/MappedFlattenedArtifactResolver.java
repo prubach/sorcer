@@ -60,8 +60,7 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 	@Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
 		String relPath = resolveRelative(artifactCoordinates);
-		if (relPath == null) return null;
-		else return new File(rootDir, relPath).getPath();
+		return new File(rootDir, relPath).getPath();
 	}
 
 	@Override
@@ -74,11 +73,7 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 			groupDir = GROUPDIR_DEFAULT;
 		}
 		File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier() != null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging());
-		File jar = new File(rootDir, relFile.getPath());
-		if (jar.exists())
-			return relFile.getPath();
-		else
-			return null;
+        return relFile.getPath();
 	}
 
 	@Override
