@@ -59,7 +59,7 @@ do_start()
        echo -n " * Starting SORCER..."              
        check_status
         if [ ! -f $SORCER_HOME/pid ]; then
-            su -c "$SORCER_HOME/bin/rio-boot -d" $SORCER_USER
+            su -c "$SORCER_HOME/bin/sorcer-boot -d" $SORCER_USER
 	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
 	    echo " "
         else
