@@ -42,14 +42,6 @@
               iconFile="$INSTALL_PATH/configs/icons/examples.png"/>
 
     <shortcut KdeUsername="root" applications="yes"
-              description="Start Rio Provisioning platform" desktop="yes"
-              encoding="UTF-8" iconFile="$INSTALL_PATH/configs/icons/rio.png" iconIndex="0"
-              initialState="normal" name="Start Rio" programGroup="yes"
-              startMenu="no" startup="no"
-              target="$INSTALL_PATH/bin/rio-boot" terminal="true" type="Application"
-              workingDirectory="$INSTALL_PATH"/>
-
-    <shortcut KdeUsername="root" applications="yes"
               description="Start Rio Provisioning GUI" desktop="yes"
               encoding="UTF-8" iconFile="$INSTALL_PATH/configs/icons/rio.png" iconIndex="0"
               initialState="normal" name="Start Rio UI" programGroup="yes"

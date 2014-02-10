@@ -82,7 +82,6 @@
                 <include name="bin/setenv" os="unix"/>
                 <include name="bin/uninstall" os="unix"/>
                 <include name="bin/rio" os="unix"/>
-                <include name="bin/rio-boot" os="unix"/>
                 <include name="bin/rio-ui" os="unix"/>
                 <include name="bin/*.xml"/>
                 <include name="configs/**/*"/>
@@ -122,7 +121,6 @@
             <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/bin/rio-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/sorcer" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configs/start-scripts/install_script" os="unix"/>
