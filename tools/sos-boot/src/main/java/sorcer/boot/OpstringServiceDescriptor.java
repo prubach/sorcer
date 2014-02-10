@@ -25,6 +25,7 @@ import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.SorcerResolverHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -150,6 +151,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
     private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
         String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), resolver, serviceElement.getRemoteRepositories());
+        //TODO RKR fix rio
+
         URI[] urls = new URI[urlStrings.length];
 
         for (int i = 0; i < urlStrings.length; i++) {
@@ -185,8 +188,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         String mvnRoot = SorcerEnv.getRepoDir();
 
         String[] resolve = ResolverHelper.resolve(artifact, resolver, new RemoteRepository[0]);
-        for (String fileUrl : resolve) {
-            String absolute = new File(new URL(fileUrl).toURI()).getPath();
+        for (URI fileUri : SorcerResolverHelper.fixUris(resolve)) {
+            String absolute = new File(fileUri).getPath();
             String replace = absolute.replace(mvnRoot, urlBase);
             result.add(new URL(replace));
         }

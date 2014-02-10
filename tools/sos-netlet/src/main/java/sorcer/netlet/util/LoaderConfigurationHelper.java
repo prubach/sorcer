@@ -82,6 +82,7 @@ public class LoaderConfigurationHelper {
                 try {
                     org.rioproject.resolver.Resolver resolver = getResolver();
                     RemoteRepository[] repos = artifactConf.getRepositories();
+                    //TODO RKR fix
                     String[] classpath = ResolverHelper.resolve(artifactConf.getArtifact(), resolver, repos);
                     for (String s : classpath) {
                         urlsList.add(new URL(s));

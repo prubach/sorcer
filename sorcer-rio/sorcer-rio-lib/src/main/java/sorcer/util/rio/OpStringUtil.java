@@ -51,6 +51,7 @@ public class OpStringUtil {
      * @throws ClassNotFoundException
      */
     public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws MalformedURLException, ResolverException, ClassNotFoundException {
+        //TODO RKR fix
         String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
         URL[] urls = new URL[urlStrings.length];
 

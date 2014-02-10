@@ -126,6 +126,7 @@ public class Booter {
         return resolveCodebase2(ArtifactCoordinates.coords(coords));
     }
 
+    //TODO RKR fix
     public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
         String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, new RemoteRepository[0]);
         URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
