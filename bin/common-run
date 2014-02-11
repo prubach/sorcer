@@ -456,14 +456,13 @@ BROWSER_CLASSPATH=$JINI_CLASSPATH:$LOG_CP:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/browser/$V_SORCER/browser-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/net/jini/lookup/jmx-lookup/$V_JINI/jmx-lookup-$V_JINI.jar:\
-$LIB_DIR/rio-resolver/resolver-api.jar:\
-$LIB_DIR/rio/rio-api.jar
-#$LIB_DIR/rio/rio-platform.jar
+$MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar
 
 echo "##############################################################################"
 echo "##                       SORCER OS Booter"
