@@ -508,17 +508,15 @@ installSorcerToLocalRepository() {
             #    echo "Sorcer jars already installed."
             #fi
         else
-            # run Rio instaler first
-            installRioToLocalRepository
-			SOS_INST_CP=$LIB_DIR/sorcer/sos-boot.jar:\
-			$LIB_DIR/sorcer/sorcer-resolver.jar:\
-			$LIB_DIR/sorcer/sorcer-api.jar:\
-			$LIB_DIR/sorcer/sos-util.jar:\
-			$LIB_DIR/commons/slf4j-api.jar:\
-			$LIB_DIR/commons/slf4j-simple.jar:\
-			$LIB_DIR/commons/commons-io.jar:\
-			$LIB_DIR/commons/xml-apis.jar:\
-			$LIB_DIR/commons/xercesImpl.jar
+			SOS_INST_CP="$LIB_DIR/sorcer/sos-boot.jar:\
+$LIB_DIR/sorcer/sorcer-resolver.jar:\
+$LIB_DIR/sorcer/sorcer-api.jar:\
+$LIB_DIR/sorcer/sos-util.jar:\
+$LIB_DIR/commons/slf4j-api.jar:\
+$LIB_DIR/commons/slf4j-simple.jar:\
+$LIB_DIR/commons/commons-io.jar:\
+$LIB_DIR/commons/xml-apis.jar:\
+$LIB_DIR/commons/xercesImpl.jar"
             if [ "$daem" = "1" ]; then
 				""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
             else
