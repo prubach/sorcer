@@ -17,9 +17,6 @@
  */
 package sorcer.provider.boot;
 
-import org.apache.commons.lang3.StringUtils;
-import org.rioproject.resolver.Artifact;
-import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.LoggerFactory;
@@ -27,8 +24,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
-import sorcer.util.ArtifactCoordinates;
-import sorcer.util.SorcerResolverHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -108,37 +103,6 @@ public class Booter {
 	private Booter() {
 		throw new AssertionError(
 				"sorcer.provider.boot.BootUtil cannot be instantiated");
-	}
-
-    /**
-     * API for configs
-     * resolve codebase from artifact coordinates with maven
-     */
-    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException, MalformedURLException {
-        if (!Artifact.isArtifact(coords)) {
-            int pos = coords.indexOf(':');
-            if (pos < 1)
-                throw new IllegalArgumentException("Invalid artifact " + coords);
-            String groupdId = coords.substring(0, pos);
-            String artifactId = coords.substring(pos + 1);
-            String ver = versionResolver.resolveVersion(groupdId, artifactId);
-            coords = coords + ":" + ver;
-        }
-
-        return resolveCodebase2(ArtifactCoordinates.coords(coords));
-    }
-
-    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
-        URI[] resolved = SorcerResolverHelper.fixUris(ResolverHelper.resolve(artifact.toString(), resolver, new RemoteRepository[0]));
-        URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
-        String[] result = new String[resolved.length];
-        for (int i = 0; i < resolved.length; i++) {
-            String path = resolved[i].getPath();
-            String relative = path.substring(localRepo.length());
-            result[i] = codeBaseRoot.resolve(relative).toString();
-            log.debug("{} -> {}", resolved[i], result[i]);
-        }
-        return StringUtils.join(result, SorcerConstants.CODEBASE_SEPARATOR);
     }
 
     private static URL getLocalRepoRootUrl() {
