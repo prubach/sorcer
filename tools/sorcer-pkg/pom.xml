@@ -196,12 +196,6 @@
                                 <location>/opt/sorcer/bin/sorcer-boot</location>
                             </softlinkSource>
                             <softlinkSource>
-                                <location>/opt/sorcer/bin/boot</location>
-                            </softlinkSource>
-                            <softlinkSource>
-                                <location>/opt/sorcer/bin/rio-boot</location>
-                            </softlinkSource>
-                            <softlinkSource>
                                 <location>/opt/sorcer/bin/sorcer-browser</location>
                             </softlinkSource>
                             <softlinkSource>
@@ -215,6 +209,9 @@
                             </softlinkSource>
                             <softlinkSource>
                                 <location>/opt/sorcer/bin/rio-ui</location>
+                            </softlinkSource>
+                            <softlinkSource>
+                                <location>/opt/sorcer/bin/common-run</location>
                             </softlinkSource>
                         </sources>
                     </mapping>
@@ -323,12 +320,6 @@
                             </data>
                             <data>
                                 <type>link</type>
-                                <linkName>/usr/bin/rio-boot</linkName>
-                                <linkTarget>/opt/sorcer/bin/rio-boot</linkTarget>
-                                <symlink>true</symlink>
-                            </data>
-                            <data>
-                                <type>link</type>
                                 <linkName>/usr/bin/rio-ui</linkName>
                                 <linkTarget>/opt/sorcer/bin/rio-ui</linkTarget>
                                 <symlink>true</symlink>
@@ -355,12 +346,6 @@
                                 <type>link</type>
                                 <linkName>/usr/bin/create-provider</linkName>
                                 <linkTarget>/opt/sorcer/bin/create-provider</linkTarget>
-                                <symlink>true</symlink>
-                            </data>
-                            <data>
-                                <type>link</type>
-                                <linkName>/usr/bin/boot</linkName>
-                                <linkTarget>/opt/sorcer/bin/boot</linkTarget>
                                 <symlink>true</symlink>
                             </data>
                             <data>

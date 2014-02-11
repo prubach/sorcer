@@ -333,10 +333,8 @@
                 <exclude>create-provider</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
-                <exclude>boot</exclude>
                 <exclude>rio</exclude>
                 <exclude>rio-ui</exclude>
-                <exclude>rio-boot</exclude>
             </excludes>
             <filtered>false</filtered>
             <fileMode>0644</fileMode>

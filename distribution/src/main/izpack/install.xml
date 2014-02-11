@@ -73,7 +73,6 @@
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="bin/sorcer-boot" os="unix"/>
-                <include name="bin/boot" os="unix"/>
                 <include name="bin/sorcer-boot-no-http" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
@@ -114,7 +113,6 @@
             </fileset>
 
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/bin/boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
