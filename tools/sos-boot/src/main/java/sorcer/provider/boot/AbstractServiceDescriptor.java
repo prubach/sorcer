@@ -50,7 +50,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     protected static String COMPONENT = "sorcer.provider.boot";
     private static Activator activator = new Activator();
 
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private static Logger logger = LoggerFactory.getLogger(AbstractServiceDescriptor.class);
 
     {
         allDescriptors.incrementAndGet();

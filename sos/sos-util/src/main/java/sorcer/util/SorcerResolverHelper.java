@@ -16,8 +16,10 @@
 
 package sorcer.util;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * @author Rafał Krupiński
@@ -38,6 +40,14 @@ public class SorcerResolverHelper {
         URI[] result = new URI[uris.length];
         for (int i = 0; i < uris.length; i++) {
             result[i] = new URI(fixUri(uris[i]));
+        }
+        return result;
+    }
+
+    public static URL[] fixUrls(String[] uris) throws URISyntaxException, MalformedURLException {
+        URL[] result = new URL[uris.length];
+        for (int i = 0; i < uris.length; i++) {
+            result[i] = new URI(fixUri(uris[i])).toURL();
         }
         return result;
     }

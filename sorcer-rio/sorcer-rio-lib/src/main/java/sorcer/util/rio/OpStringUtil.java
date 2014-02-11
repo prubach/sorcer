@@ -1,8 +1,6 @@
 package sorcer.util.rio;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +15,6 @@ package sorcer.util.rio;
  * limitations under the License.
  */
 
-
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
@@ -25,9 +22,11 @@ import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.util.SorcerResolverHelper;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -51,16 +50,13 @@ public class OpStringUtil {
      * @throws ClassNotFoundException
      */
     public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws MalformedURLException, ResolverException, ClassNotFoundException {
-        //TODO RKR fix
-        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories());
-        URL[] urls = new URL[urlStrings.length];
-
-        for (int i = 0; i < urlStrings.length; i++) {
-            String urlString = urlStrings[i];
-            urls[i] = new URL(urlString);
+        try {
+            URL[] urls = SorcerResolverHelper.fixUrls(ResolverHelper.resolve(bundle.getArtifact(), ResolverHelper.getResolver(), serviceElement.getRemoteRepositories()));
+            URLClassLoader cl = new URLClassLoader(urls, parentCL);
+            return Class.forName(bundle.getClassName(), false, cl);
+        } catch (URISyntaxException e) {
+            throw new ResolverException("Error in resulting URLs", e);
         }
-        URLClassLoader cl = new URLClassLoader(urls, parentCL);
-        return Class.forName(bundle.getClassName(), false, cl);
     }
 
     /**
