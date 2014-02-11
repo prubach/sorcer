@@ -95,17 +95,6 @@ earlyInit ( ) {
         export SORCER_HOME
     fi
 
-    # Attempt to set SORCER_EXT if it is not already set.
-    if [ -z "$SORCER_EXT" -o ! -d "$SORCER_EXT" ] ; then
-        SORCER_EXT=$SORCER_HOME
-        export SORCER_EXT
-    fi
-
-	JAVA_OPTS="$JAVA_OPTS\
-	  -Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env\
-	  -Dsun.net.maxDatagramSockets=1024\
-	  -Djava.util.logging.config.file=$SORCER_HOME/configs/sorcer.logging"
-
     # Check for JAVA_HOME
     if [ -z "$JAVA_HOME" ] ; then
         JAVACMD=java
@@ -113,11 +102,6 @@ earlyInit ( ) {
         JAVACMD="$JAVA_HOME/bin/java"
     fi
 
-    # -----------------------------------
-    # Versions of jars used in the script
-    # -----------------------------------
-    rioVersion=$(getVersion v.rio)
-    groovyVersion=$(getVersion v.groovy)
 
     # For Cygwin, ensure paths are in UNIX format before anything is touched.
     if $cygwin ; then
@@ -210,22 +194,6 @@ toWindows() {
     cygpath -pw "$@"
 }
 
-
-# Call the install script, do not assume that Groovy has been installed.
-installRioToLocalRepository() {
-    if [ -d $SORCER_HOME/lib/rio -a ! -f "$SORCER_HOME/logs/install.log" ]; then
-        groovy="$SORCER_HOME/lib/commons/groovy-all.jar"
-        if [ -f $groovy ]; then
-            groovyClasspath="-cp `toNative $groovy`"
-            RIO_HOME=$SORCER_HOME/lib/rio ""$JAVACMD"" $groovyClasspath org.codehaus.groovy.tools.GroovyStarter --main groovy.ui.GroovyMain \
-            $SORCER_HOME/configs/rio/install.groovy $JAVA_HOME $SORCER_HOME/lib/rio
-        else
-            echo "The required Rio environment does not exist, it seems either that the configured or derived setting of RIO_HOME [$RIO_HOME] is invalid."
-            exit 1
-        fi
-    fi
-}
-
 lateInit ( ) {
     # Create the final classpath. Setting a classpath using the -cp or -classpath option means not to use the
     # global classpath. Network shell behaves then the same as the java interpreter
@@ -243,6 +211,44 @@ lateInit ( ) {
     #if $darwin; then
     #    TOOLS_JAR="/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Classes/classes.jar"
     #fi
+
+    # -----------------------------------
+    # Versions of jars used in the script
+    # -----------------------------------
+	V_SORCER=$(getVersion v.sorcer)
+	V_SLF4J=$(getVersion v.slf4j)
+	V_LOGBACK=$(getVersion v.logback)
+	V_RIO=$(getVersion v.rio)
+	V_JINI=$(getVersion v.jini)
+	V_GROOVY=$(getVersion v.groovy)
+	V_PLEXUS=$(getVersion v.plexus)
+
+	if [ "x$RIO_HOME" = "x" ]; then
+		rioHome=${SORCER_HOME}/lib/rio
+	else
+		rioHome=$RIO_HOME
+	fi
+
+	JAVA_OPTS="$JAVA_OPTS\
+		-Dsorcer.env.file=$SORCER_HOME/configs/sorcer.env\
+		-Dsun.net.maxDatagramSockets=1024\
+		-Djava.util.logging.config.file=$SORCER_HOME/configs/sorcer.logging\
+		-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
+		-Dtools.jar=$TOOLS_JAR \
+		-Dorg.rioproject.resolver.jar=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar \
+		-DRIO_HOME=$rioHome"
+
+
+	LOG_CP="$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
+$MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar:\
+$MVN_REPO/ch/qos/logback/logback-core/$V_LOGBACK/logback-core-$V_LOGBACK.jar:\
+$MVN_REPO/ch/qos/logback/logback-classic/$V_LOGBACK/logback-classic-$V_LOGBACK.jar"
+
+	JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
+$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
 
     # For Darwin, add NSH_APP_NAME to the JAVA_OPTS as -Xdock:name
     if $darwin; then
@@ -314,97 +320,8 @@ getProperty ( ) {
   echo $RESULT
 }
 
-if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
-    sorcer_simple_layout=1
-else
-    sorcer_simple_layout=0
-fi
-
-defaultSorcerParams (){
-params="-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
--Dtools.jar=$TOOLS_JAR"
-
-if [ "x$RIO_HOME" = "x" ]; then
-	rioHome=${SORCER_HOME}/lib/rio
-else
-	rioHome=$RIO_HOME
-fi
-
-V_RIO=$(getVersion v.rio)
-if [ sorcer_simple_layout = 1 ]; then
-	rewsolver=$LIB_DIR/rio/lib/resolver/resolver-aether-$V_RIO.jar
-else
-	resolver=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar
-fi
-echo $params -DRIO_HOME=$rioHome -Dorg.rioproject.resolver.jar=$resolver
-}
-
-createLoggerCp(){
-if [ $sorcer_simple_layout = 1 ]; then
-    echo "$LIB_DIR/commons/slf4j-api.jar:\
-$LIB_DIR/commons/jul-to-slf4j.jar:\
-$LIB_DIR/commons/logback-classic.jar:\
-$LIB_DIR/commons/logback-core.jar"
-else
-	V_SLF4J=$(getVersion v.slf4j)
-	V_LOGBACK=$(getVersion v.logback)
-    echo "$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
-$MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar:\
-$MVN_REPO/ch/qos/logback/logback-core/$V_LOGBACK/logback-core-$V_LOGBACK.jar:\
-$MVN_REPO/ch/qos/logback/logback-classic/$V_LOGBACK/logback-classic-$V_LOGBACK.jar"
-fi
-}
-
 createBootCp ( ) {
-    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
-      # Distro version
-      JINI_CLASSPATH="$LIB_DIR/jini/jsk-platform.jar:\
-$LIB_DIR/jini/jsk-lib.jar:\
-$LIB_DIR/river/start.jar:\
-$LIB_DIR/jini-lookup/serviceui.jar"
-
-  BOOT_CLASSPATH=$(createLoggerCp)":$JINI_CLASSPATH:\
-$LIB_DIR/sorcer/sorcer-launcher.jar:\
-$LIB_DIR/sorcer/sorcer-api.jar:\
-$LIB_DIR/sorcer/sorcer-resolver.jar:\
-$LIB_DIR/sorcer/sos-boot.jar:\
-$LIB_DIR/sorcer/sos-util.jar:\
-$LIB_DIR/sorcer/sos-webster.jar:\
-$LIB_DIR/sorcer/sos-platform.jar:\
-$LIB_DIR/sorcer/sorcer-rio-lib.jar:\
-$LIB_DIR/sorcer/sorcer-rio-start.jar:\
-$LIB_DIR/jini/jsk-resources.jar:\
-$LIB_DIR/rio/rio-platform.jar:\
-$LIB_DIR/rio/rio-logging-support.jar:\
-$LIB_DIR/rio/rio-start.jar:\
-$LIB_DIR/rio/rio-lib.jar:\
-$LIB_DIR/rio-resolver/resolver-api.jar:\
-$LIB_DIR/commons/groovy-all.jar:\
-$LIB_DIR/commons/guava.jar:\
-$LIB_DIR/commons/commons-io.jar:\
-$LIB_DIR/commons/commons-cli.jar:\
-$LIB_DIR/commons/commons-lang3.jar"
-
-    else
-      # MVN version
-      V_SORCER=$(getVersion v.sorcer)
-      if [ -z "V_SORCER" ] ; then
-        V_SORCER="1.0-M4-SNAPSHOT"
-      fi
-      V_RIO=$(getVersion v.rio)
-      V_JINI=$(getVersion v.jini)
-      V_BLITZ=$(getVersion v.blitz)
-      V_GROOVY=$(getVersion v.groovy)
-      V_PLEXUS=$(getVersion v.plexus)
-      V_SLF4J=$(getVersion v.slf4j)
-
-      JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
-$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
-
-     BOOT_CLASSPATH=$(createLoggerCp)":$JINI_CLASSPATH:\
+     BOOT_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
@@ -425,7 +342,6 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
-    fi
 
     # Determine webster url
 
@@ -444,19 +360,6 @@ $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 }
 
 createSorcerRioCp ( ) {
-    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
-      # Distro version
-      SORCER_RIO_CP="$LIB_DIR/sorcer/sorcer-api.jar:\
-$LIB_DIR/sorcer/sorcer-resolver.jar:\
-$LIB_DIR/sorcer/sos-util.jar:\
-$LIB_DIR/sorcer/sorcer-rio-start.jar:\
-$LIB_DIR/sorcer/sos-boot.jar:\
-$LIB_DIR/commons/commons-lang3.jar:\
-$LIB_DIR/jini-lookup/serviceui.jar:\
-$LIB_DIR/jini/jsk-platform.jar:\
-$LIB_DIR/jini/jsk-lib.jar"
-    else
-      # MVN version
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
@@ -466,23 +369,18 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
-    fi
 
     echo $SORCER_RIO_CP
 }
 
 createSorcerRioUICp ( ) {
     SORCER_RIO_CP=$(createSorcerRioCp)
-    if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
-        SORCER_RIOUI_CP="$SORCER_RIO_CP:$LIB_DIR/sorcer/sorcer-api.jar"
-    else
-        SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
-    fi
+	SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
     echo $SORCER_RIOUI_CP
 }
 
 startSos ( ) {
-
+	createBootCp
     echo "##############################################################################"
     echo "##                       SORCER OS Booter"                                
     echo "##   SORCER_HOME: $SORCER_HOME"
@@ -497,7 +395,6 @@ startSos ( ) {
         runProfiler
     else
         exec "$JAVACMD" $JAVA_OPTS \
-			$(defaultSorcerParams) \
         	-Djava.security.policy=$SORCER_HOME/configs/sorcer.policy \
             -Dwebster.tmp.dir="$SORCER_HOME"/databases \
             -classpath "$BOOT_CLASSPATH" \
@@ -512,27 +409,7 @@ startShell ( ) {
 SR_CP=$(createSorcerRioCp)
 #echo "SORCER RIO CP:"$SR_CP
 
-	if [ -f $LIB_DIR/sorcer/sorcer-api.jar ]; then
-        # Distro version
-        LIB_DIR=$SORCER_HOME/lib
-        SHELL_CLASSPATH=$(createLoggerCp)":$LIB_DIR/sorcer/sos-shell.jar:\
-$LIB_DIR/sorcer/sorcer-api.jar:\
-$LIB_DIR/sorcer/sorcer-resolver.jar:\
-$LIB_DIR/sorcer/sos-netlet.jar:\
-$LIB_DIR/sorcer/sos-util.jar:\
-$LIB_DIR/sorcer/sos-platform.jar:\
-$LIB_DIR/sorcer/sos-webster.jar:\
-$LIB_DIR/rio/rio-platform.jar:\
-$LIB_DIR/rio-resolver/resolver-api.jar:\
-$LIB_DIR/commons/groovy-all.jar:\
-$LIB_DIR/commons/commons-io.jar:\
-$LIB_DIR/commons/plexus-utils.jar:\
-$LIB_DIR/jini/jsk-platform.jar:\
-$LIB_DIR/jini/jsk-lib.jar:\
-$LIB_DIR/jini-lookup/serviceui.jar"
-    else        
-      	# MVN version
-      	SHELL_CLASSPATH=$(createLoggerCp)":$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+      	SHELL_CLASSPATH="$LOG_CP:$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
@@ -547,7 +424,6 @@ $MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
-    fi
 
     CLASS=$1
     shift
@@ -556,8 +432,7 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
         runProfiler
     else
         exec "$JAVACMD" $JAVA_OPTS \
-        	$(defaultSorcerParams) \
-			-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
+        	-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
 			-Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
 			"-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url" \
 			-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
@@ -576,9 +451,49 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
     fi
 }
 
-boot_config( ) {
-	STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-	startSos "$@"
+startBrowser(){
+BROWSER_CLASSPATH=$JINI_CLASSPATH:$LOG_CP:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-util-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/browser/$V_SORCER/browser-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/net/jini/lookup/jmx-lookup/$V_JINI/jmx-lookup-$V_JINI.jar:\
+$LIB_DIR/rio-resolver/resolver-api.jar:\
+$LIB_DIR/rio/rio-api.jar
+#$LIB_DIR/rio/rio-platform.jar
+
+echo "##############################################################################"
+echo "##                       SORCER OS Booter"
+echo "##   SORCER_HOME: $SORCER_HOME"
+echo "##   Webster URL: $WEBSTER_URL"
+echo "##"
+echo "##############################################################################"
+echo " "
+
+# Start the Profiler or the JVM
+if $useprofiler ; then
+    runProfiler
+else
+    exec "$JAVACMD" $JAVA_OPTS \
+        -classpath "$BROWSER_CLASSPATH" \
+        -Dssb.logFile="$SORCER_HOME"/logs/browser.log \
+        -Dssb.logLen=300 \
+        -Djava.security.policy="$SORCER_HOME"/configs/browser/policy/ssb.policy \
+        -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
+        -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
+        -Djava.rmi.server.useCodebaseOnly=false \
+        -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+        -Dprogram.name="$PROGNAME" \
+        -Dsorcer.home="$SORCER_HOME" \
+        -Dtools.jar="$TOOLS_JAR" \
+        $STARTER_MAIN_CLASS \
+        $CONFIG \
+        "$@"
+fi
+
 }
 
 installSorcerToLocalRepository() {
@@ -596,7 +511,15 @@ installSorcerToLocalRepository() {
         else
             # run Rio instaler first
             installRioToLocalRepository
-			SOS_INST_CP=$LIB_DIR/sorcer/sos-boot.jar:$LIB_DIR/sorcer/sorcer-resolver.jar:$LIB_DIR/sorcer/sorcer-api.jar:$LIB_DIR/sorcer/sos-util.jar:$LIB_DIR/commons/slf4j-api.jar:$LIB_DIR/commons/slf4j-simple.jar:$LIB_DIR/commons/commons-io.jar:$LIB_DIR/commons/xml-apis.jar:$LIB_DIR/commons/xercesImpl.jar
+			SOS_INST_CP=$LIB_DIR/sorcer/sos-boot.jar:\
+			$LIB_DIR/sorcer/sorcer-resolver.jar:\
+			$LIB_DIR/sorcer/sorcer-api.jar:\
+			$LIB_DIR/sorcer/sos-util.jar:\
+			$LIB_DIR/commons/slf4j-api.jar:\
+			$LIB_DIR/commons/slf4j-simple.jar:\
+			$LIB_DIR/commons/commons-io.jar:\
+			$LIB_DIR/commons/xml-apis.jar:\
+			$LIB_DIR/commons/xercesImpl.jar
             if [ "$daem" = "1" ]; then
 				""$JAVACMD"" -cp $SOS_INST_CP sorcer.installer.Installer > $SORCER_HOME/logs/rio-boot.log
             else
@@ -607,6 +530,5 @@ installSorcerToLocalRepository() {
 }
 
 earlyInit
-createBootCp
 lateInit
 installSorcerToLocalRepository

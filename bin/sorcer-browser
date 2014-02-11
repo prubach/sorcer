@@ -1,0 +1,33 @@
+#!/bin/sh
+
+##############################################################################
+##                                                                          ##
+##  SORCER OS Boot script for UN*X                                          ##
+##                                                                          ##
+##############################################################################
+
+SORCER_APP_NAME="SorcerBrowser"
+
+# resolve links - $0 may be a soft-link
+PRG="$0"
+#echo VAL:$0
+
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> /(.*/)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`/"$link"
+    fi
+done
+
+DIRNAME=`dirname "$PRG"`
+
+. "$DIRNAME/common-run"
+
+
+STARTER_MAIN_CLASS=sorcer.ssb.SorcerServiceBrowser
+CONFIG=$SORCER_HOME/configs/browser/configs/ssb.config
+
+startBrowser
