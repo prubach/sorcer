@@ -230,7 +230,7 @@ public class Installer {
 
     private void install(File srcJarFile, ArtifactCoordinates destCoords) throws IOException {
         File destJarFile = new File(mvnResolver.resolveAbsolute(destCoords));
-        if (destJarFile.exists())
+        if (destJarFile.exists() && !destCoords.isVersionSnapshot())
             return;
         FileUtils.forceMkdir(destJarFile.getParentFile());
         FileUtils.copyFile(srcJarFile, destJarFile);
@@ -238,7 +238,7 @@ public class Installer {
 
     protected void install(InputStream inputStream, ArtifactCoordinates coordinates) throws IOException {
         File destFile = new File(mvnResolver.resolveAbsolute(coordinates));
-        if (destFile.exists())
+        if (destFile.exists() && !coordinates.isVersionSnapshot())
             return;
         FileUtils.copyInputStreamToFile(inputStream, destFile);
     }
