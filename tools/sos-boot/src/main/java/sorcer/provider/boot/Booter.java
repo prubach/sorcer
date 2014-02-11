@@ -1,7 +1,7 @@
 /*
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@
  */
 package sorcer.provider.boot;
 
-import org.apache.commons.lang3.StringUtils;
-import org.rioproject.resolver.Artifact;
-import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
-import sorcer.util.ArtifactCoordinates;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +33,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -53,6 +49,7 @@ import static sorcer.core.SorcerConstants.*;
 public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
 	private static Logger logger = Logger.getLogger(COMPONENT);
+	private static org.slf4j.Logger log = LoggerFactory.getLogger(Booter.class);
 
 	/**
 	 * Code server (wester) port
@@ -106,36 +103,6 @@ public class Booter {
 	private Booter() {
 		throw new AssertionError(
 				"sorcer.provider.boot.BootUtil cannot be instantiated");
-	}
-
-    /**
-     * API for configs
-     * resolve codebase from artifact coordinates with maven
-     */
-    public static String resolveCodebase2(String coords) throws ResolverException, URISyntaxException, MalformedURLException {
-        if (!Artifact.isArtifact(coords)) {
-            int pos = coords.indexOf(':');
-            if (pos < 1)
-                throw new IllegalArgumentException("Invalid artifact " + coords);
-            String groupdId = coords.substring(0, pos);
-            String artifactId = coords.substring(pos + 1);
-            String ver = versionResolver.resolveVersion(groupdId, artifactId);
-            coords = coords + ":" + ver;
-        }
-
-        return resolveCodebase2(ArtifactCoordinates.coords(coords));
-    }
-
-    public static String resolveCodebase2(ArtifactCoordinates artifact) throws ResolverException, URISyntaxException, MalformedURLException {
-        String[] resolved = ResolverHelper.resolve(artifact.toString(), resolver, new RemoteRepository[0]);
-        URI codeBaseRoot = SorcerEnv.getCodebaseRoot().toURI();
-
-        for (int i = 0; i < resolved.length; i++) {
-            String path = new File(new URL(resolved[i]).toURI()).getPath();
-            String relative = path.substring(localRepo.length()).replace("\\", "/");
-            resolved[i] = codeBaseRoot.resolve(relative).toString();
-        }
-        return StringUtils.join(resolved, SorcerConstants.CODEBASE_SEPARATOR);
     }
 
     private static URL getLocalRepoRootUrl() {

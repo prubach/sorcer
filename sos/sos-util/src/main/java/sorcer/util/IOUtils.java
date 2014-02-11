@@ -11,6 +11,8 @@ public class IOUtils {
     final private static Logger log = LoggerFactory.getLogger(IOUtils.class);
 
 	public static void closeQuietly(ZipFile closeable) {
+        if (closeable == null)
+            return;
         closeQuietly(new CloseableZipFile(closeable));
 	}
 

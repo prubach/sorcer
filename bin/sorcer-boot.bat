@@ -1,13 +1,6 @@
 @echo off
-pushd
-set STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
-rem set CONFIG=..\configs\SorcerBoot.groovy
-set CONFIG=..\configs\sorcer-boot.config
-
-SET CFG_EXT="%SORCER_EXT%\configs\SorcerExtBoot.groovy"
-IF EXIST %CFG_EXT% (
-set CONFIG=%CONFIG% %CFG_EXT%
-)
+setlocal
+set STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
@@ -29,14 +22,21 @@ IF defined SORCER_HOME (
   )
 )
 
+
+IF NOT "%1"=="" (
+	set CONFIG=%*
+) ELSE (
+    set CONFIG=-Pmix
+)
+
 echo ##############################################################################
 echo ##                       SORCER OS Booter                                
 echo ##   SORCER_HOME: %SORCER_HOME%
-echo ##   RIO_HOME   : %RIO_HOME%
 echo ##   Webster URL: %WEBSTER_URL%
 echo ##   
 echo ##############################################################################
 echo .
-cd %SORCER_HOME%\bin
+pushd %SORCER_HOME%\bin
 call %SOS_START_CMD%
 popd
+endlocal

@@ -1,4 +1,19 @@
 package sorcer.boot;
+/**
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import com.sun.jini.config.Config;
 import com.sun.jini.start.AggregatePolicyProvider;
@@ -23,8 +38,11 @@ import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.SorcerResolverHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +64,7 @@ import java.util.List;
  */
 public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     public static final NoOpLifeCycle NOOP = new NoOpLifeCycle();
+    private static final Logger logger = LoggerFactory.getLogger(OpstringServiceDescriptor.class);
     private static Resolver resolver;
 
     static {
@@ -149,17 +168,13 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
 
     private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
-        String[] urlStrings = ResolverHelper.resolve(bundle.getArtifact(), resolver, serviceElement.getRemoteRepositories());
-        URI[] urls = new URI[urlStrings.length];
+        URI[] uris = SorcerResolverHelper.fixUris(ResolverHelper.resolve(bundle.getArtifact(), resolver, serviceElement.getRemoteRepositories()));
 
-        for (int i = 0; i < urlStrings.length; i++) {
-            urls[i] = new URI(urlStrings[i]);
-        }
         URL codebaseRoot = SorcerEnv.getCodebaseRoot();
         OpStringUtil.checkCodebase(serviceElement, codebaseRoot.toExternalForm());
 
         URL[] codebase = getCodebase(serviceElement);
-        return new ServiceClassLoader(urls, new ClassAnnotator(codebase), parentCL);
+        return new ServiceClassLoader(uris, new ClassAnnotator(codebase), parentCL);
     }
 
     private static URL[] getCodebase(ServiceElement serviceElement) throws MalformedURLException, ResolverException, URISyntaxException {
@@ -180,14 +195,14 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
     private static List<URL> artifactToUrl(URL codebase, String artifact) throws MalformedURLException, ResolverException, URISyntaxException {
-        List<URL>result=new ArrayList<URL>();
+        List<URL> result = new ArrayList<URL>();
         String urlBase = codebase.toExternalForm();
-        String mvnRoot = SorcerEnv.getRepoDir();
+        String mvnRootFileUrl = new File(SorcerEnv.getRepoDir()).toURI().toString();
 
         String[] resolve = ResolverHelper.resolve(artifact, resolver, new RemoteRepository[0]);
-        for (String fileUrl : resolve) {
-            String absolute = new File(new URL(fileUrl).toURI()).getPath();
-            String replace = absolute.replace(mvnRoot, urlBase);
+        for (String fileUri : SorcerResolverHelper.fixUriStrings(resolve)) {
+            String replace = fileUri.replace(mvnRootFileUrl, urlBase);
+            logger.debug("{} -> {}", fileUri, replace);
             result.add(new URL(replace));
         }
 /*

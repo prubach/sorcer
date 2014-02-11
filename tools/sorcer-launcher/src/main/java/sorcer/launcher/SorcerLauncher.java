@@ -38,17 +38,20 @@ import static sorcer.util.Collections.i;
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
-    private final static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
+    final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
+
     private ThreadFactory threadFactory;
 
     public static boolean checkEnvironment() throws MalformedURLException {
+        boolean result = true;
         String[] requiredEnv = {
-//                SorcerConstants.E_RIO_HOME,
                 SorcerConstants.E_SORCER_HOME
         };
         for (String key : requiredEnv) {
-            if (System.getenv(key) == null)
-                return false;
+            if (System.getenv(key) == null) {
+                log.warn("Missing required environment variable {}", key);
+                result = false;
+            }
         }
 
         //we can't simply create another AppClassLoader,
@@ -82,8 +85,10 @@ public class SorcerLauncher extends Launcher {
                 requiredClassPath.removeAll(commonUrls);
             }
         }
-        return requiredClassPath.isEmpty();
-
+        for (URL entry : requiredClassPath) {
+            log.warn("Missing required ClassPath element {}",entry);
+        }
+        return result && requiredClassPath.isEmpty();
     }
 
     @Override

@@ -44,6 +44,8 @@ import com.sun.jini.start.HTTPDStatus;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceProxyAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.JarClassPathHelper;
 
@@ -80,6 +82,7 @@ import sorcer.boot.util.JarClassPathHelper;
  * @author Dennis Reedy, updated for SORCER by M. Sobolewski
  */
 public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
+    private static final Logger logger = LoggerFactory.getLogger(SorcerServiceDescriptor.class);
 	private String codebase;
 	private String policy;
 	private String classpath;

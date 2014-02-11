@@ -1,15 +1,32 @@
 package sorcer.netlet.util;
+/**
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import org.rioproject.resolver.*;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import sorcer.resolver.Resolver;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.SorcerResolverHelper;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,13 +99,14 @@ public class LoaderConfigurationHelper {
                 try {
                     org.rioproject.resolver.Resolver resolver = getResolver();
                     RemoteRepository[] repos = artifactConf.getRepositories();
-                    String[] classpath = ResolverHelper.resolve(artifactConf.getArtifact(), resolver, repos);
-                    for (String s : classpath) {
-                        urlsList.add(new URL(s));
-                    }
+
+                    URL[] classpath = SorcerResolverHelper.fixUrls(ResolverHelper.resolve(artifactConf.getArtifact(), resolver, repos));
+                    Collections.addAll(urlsList, classpath);
                 } catch (ResolverException e) {
                     logger.log(Level.SEVERE, "Could not resolve " + str, e);
                 } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
             }
