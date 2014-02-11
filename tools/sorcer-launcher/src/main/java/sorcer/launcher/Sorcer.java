@@ -45,6 +45,10 @@ import static sorcer.core.SorcerConstants.E_SORCER_HOME;
  * @author Rafał Krupiński
  */
 public class Sorcer {
+    /**
+     * This class might start ServiceStarter as part of current process, in which case it will configure logback.
+     * Please do not use it before we know that we have failed or ServiceStarter will be started in a new process (by ForkingLauncher)
+     */
     private static final Logger log = LoggerFactory.getLogger(Sorcer.class);
 
     private static final String WAIT = "w";
@@ -204,8 +208,7 @@ public class Sorcer {
         if (cmd.hasOption(RIO)) {
             rioPath = cmd.getOptionValue(RIO);
         } else if (envRioHome != null) {
-            rioPath = FileUtils.getFile(home, envRioHome).getPath();
-            log.info("Overriding $RIO_HOME = {}", rioPath);
+            rioPath = envRioHome;
         }
 
         //if rioPath is not set, launcher will use the default
