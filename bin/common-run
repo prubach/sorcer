@@ -427,11 +427,17 @@ $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
 
     CLASS=$1
     shift
+    # Use rlwrap if installed to enable history in nsh
+    if [ -n "$(which rlwrap)" ]; then
+        RLWRAP="rlwrap "
+    else
+        RLWRAP=""
+    fi
     # Start the Profiler or the JVM
     if $useprofiler ; then
         runProfiler
     else
-        exec "$JAVACMD" $JAVA_OPTS \
+        exec $RLWRAP"$JAVACMD" $JAVA_OPTS \
         	-Djava.security.policy=$SORCER_HOME/configs/shell/policy/shell.policy \
 			-Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader \
 			"-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url" \
