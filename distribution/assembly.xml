@@ -353,8 +353,7 @@
                 <include>sorcer-boot-no-http</include>
                 <include>rio</include>
                 <include>rio-ui</include>
-                <include>rio-boot</include>
-                <include>boot</include>
+                <include>sorcer-browser</include>
             </includes>
             <filtered>false</filtered>
             <fileMode>0755</fileMode>
@@ -364,7 +363,6 @@
             <directory>${basedir}/src/main/bin</directory>
             <outputDirectory>/bin</outputDirectory>
             <includes>
-                <include>sorcer-browser</include>
                 <include>uninstall</include>
             </includes>
             <filtered>false</filtered>
