@@ -44,6 +44,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.SorcerResolverHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -194,13 +195,13 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     }
 
     private static List<URL> artifactToUrl(URL codebase, String artifact) throws MalformedURLException, ResolverException, URISyntaxException {
-        List<URL>result=new ArrayList<URL>();
+        List<URL> result = new ArrayList<URL>();
         String urlBase = codebase.toExternalForm();
-        String mvnRoot = SorcerEnv.getRepoDir();
+        String mvnRootFileUrl = new File(SorcerEnv.getRepoDir()).toURI().toString();
 
         String[] resolve = ResolverHelper.resolve(artifact, resolver, new RemoteRepository[0]);
-        for (URI fileUri : SorcerResolverHelper.fixUris(resolve)) {
-            String replace = fileUri.getPath().replace(mvnRoot, urlBase);
+        for (String fileUri : SorcerResolverHelper.fixUriStrings(resolve)) {
+            String replace = fileUri.replace(mvnRootFileUrl, urlBase);
             logger.debug("{} -> {}", fileUri, replace);
             result.add(new URL(replace));
         }
