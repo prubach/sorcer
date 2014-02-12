@@ -21,6 +21,7 @@ public class JavaSystemProperties {
     public static final String USER_DIR = "user.dir";
     public static final String LIBRARY_PATH = "java.library.path";
     public static final String MAX_DATAGRAM_SOCKETS = "sun.net.maxDatagramSockets";
+    public static final String USER_NAME = "user.name";
 
     /**
      * Get the property from map or from system properties.

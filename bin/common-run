@@ -320,8 +320,30 @@ getProperty ( ) {
   echo $RESULT
 }
 
-createBootCp ( ) {
+createSorcerRioCp ( ) {
+      SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
+
+    echo $SORCER_RIO_CP
+}
+
+createSorcerRioUICp ( ) {
+    SORCER_RIO_CP=$(createSorcerRioCp)
+	SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
+    echo $SORCER_RIOUI_CP
+}
+
+startSos ( ) {
      BOOT_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-start/$V_SORCER/sos-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-installer/$V_SORCER/sorcer-installer-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
@@ -357,30 +379,7 @@ $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
     else
         WEBSTER_URL=http://$WEBSTER_INTERFACE:$WEBSTER_PORT
     fi
-}
 
-createSorcerRioCp ( ) {
-      SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
-
-    echo $SORCER_RIO_CP
-}
-
-createSorcerRioUICp ( ) {
-    SORCER_RIO_CP=$(createSorcerRioCp)
-	SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
-    echo $SORCER_RIOUI_CP
-}
-
-startSos ( ) {
-	createBootCp
     echo "##############################################################################"
     echo "##                       SORCER OS Booter"                                
     echo "##   SORCER_HOME: $SORCER_HOME"
@@ -502,6 +501,12 @@ fi
 }
 
 installSorcerToLocalRepository() {
+
+#
+# The paths to sorcer-api and marker file are also used in common-run.bat and sorcer.installer.Installer class.
+# Pleas keep them synchronized
+#
+
     # Installer is only needed in Distribution
     if [ -f "$LIB_DIR/sorcer/sorcer-api.jar" ]; then
         # Run Sorcer Installer to install sorcer jars to local repo
@@ -514,7 +519,7 @@ installSorcerToLocalRepository() {
             #    echo "Sorcer jars already installed."
             #fi
         else
-			SOS_INST_CP="$LIB_DIR/sorcer/sos-boot.jar:\
+			SOS_INST_CP="$LIB_DIR/sorcer/sorcer-installer.jar:\
 $LIB_DIR/sorcer/sorcer-resolver.jar:\
 $LIB_DIR/sorcer/sorcer-api.jar:\
 $LIB_DIR/sorcer/sos-util.jar:\

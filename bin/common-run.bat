@@ -51,6 +51,8 @@ set SORCER_COMMON=%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-util\%v.s
 set JINI_CLASSPATH=%JINI_BASE%;%JINI_START%;%LOG_CP%
 
 set BOOT_CLASSPATH=%JINI_CLASSPATH%;%SORCER_COMMON%
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-installer\%v.sorcer%\sorcer-installer-%v.sorcer%.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-start\%v.sorcer%\sos-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-lib\%v.sorcer%\sorcer-rio-lib-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
@@ -117,7 +119,7 @@ set SOS_START_CMD=java %JAVA_OPTS% -Dprogram.name=SORCER -classpath %BOOT_CLASSP
 
 :: Call the Sorcer installer to install Sorcer jars to local repo
 if not exist "%SORCER_HOME%\logs\sorcer_jars_installed_user_%USERNAME%.tmp" (
-	call "%JAVACMD%" -cp %LIB_DIR%\sorcer\sorcer-resolver.jar;%LIB_DIR%\sorcer\sos-boot.jar;%LIB_DIR%\sorcer\sorcer-api.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar sorcer.installer.Installer
+	call "%JAVACMD%" -cp %LIB_DIR%\sorcer\sorcer-resolver.jar;%LIB_DIR%\sorcer\sorcer-installer.jar;%LIB_DIR%\sorcer\sorcer-api.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar sorcer.installer.Installer
 )
 
 rem ECHO %WEBSTER_URL%

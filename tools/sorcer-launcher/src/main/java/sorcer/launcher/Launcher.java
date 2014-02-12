@@ -16,9 +16,11 @@
 
 package sorcer.launcher;
 
+import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
 import sorcer.util.HostUtil;
 import sorcer.util.IOUtils;
+import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
 import sorcer.util.eval.PropertyEvaluator;
 
@@ -45,8 +47,8 @@ public abstract class Launcher {
     private Profile profile;
     protected SorcerListener sorcerListener;
 
-    protected Map<String,String> properties;
-    protected Map<String,String> environment;
+    protected Map<String, String> properties;
+    protected Map<String, String> environment;
 
     //TODO RKR remove versions
     final protected static String[] CLASS_PATH = {
@@ -85,6 +87,32 @@ public abstract class Launcher {
     private PropertyEvaluator evaluator;
 
     public final void start() throws Exception {
+        ensureDirConfig();
+
+        //needed by Resolver to read repoRoot from sorcer.env
+        JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
+        JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+
+        if (sorcerListener == null)
+            sorcerListener = new NullSorcerListener();
+
+        environment = getEnvironment();
+        properties = getProperties();
+        evaluator = new PropertyEvaluator();
+        evaluator.addSource("sys", properties);
+        evaluator.addSource("env", environment);
+
+        updateMonitorConfig();
+
+        configure();
+
+        if(Installer.isInstallRequired(logDir))
+            Installer.install();
+
+        doStart();
+    }
+
+    protected void ensureDirConfig() {
         if (home == null) {
             String envHome = System.getProperty(E_SORCER_HOME);
             if (envHome == null)
@@ -103,23 +131,6 @@ public abstract class Launcher {
 
         if (logDir == null)
             logDir = new File(home, "logs");
-
-        //needed by Resolver to read repoRoot from sorcer.env
-        ensureSystemProperty(SORCER_HOME, home.getPath());
-        ensureSystemProperty(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
-
-        if (sorcerListener == null)
-            sorcerListener = new NullSorcerListener();
-
-        environment = getEnvironment();
-        properties = getProperties();
-        evaluator = new PropertyEvaluator();
-        evaluator.addSource("sys", properties);
-        evaluator.addSource("env", environment);
-
-        updateMonitorConfig();
-
-        doStart();
     }
 
     private void updateMonitorConfig() {
@@ -137,9 +148,7 @@ public abstract class Launcher {
         }
     }
 
-    private void ensureSystemProperty(String key, String value) {
-        if (System.getProperty(key) == null)
-            System.setProperty(key, value);
+    protected void configure() {
     }
 
     abstract protected void doStart() throws Exception;

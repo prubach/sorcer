@@ -37,6 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
+import static sorcer.util.JavaSystemProperties.USER_NAME;
 
 /**
  * User: prubach
@@ -46,7 +47,7 @@ import static org.apache.commons.io.IOUtils.closeQuietly;
 public class Installer {
     final private static Logger log = LoggerFactory.getLogger(Installer.class);
 
-    private ArtifactResolver libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()));
+    private static ArtifactResolver libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()));
     private ArtifactResolver mvnResolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
 
     protected Map<String, String> groupDirMap;
@@ -69,6 +70,16 @@ public class Installer {
     private Map<String, ArtifactCoordinates> artifactsFromPoms = new HashMap<String, ArtifactCoordinates>();
 
     public static void main(String[] args) throws IOException {
+        install();
+    }
+
+    public static boolean isInstallRequired(File logDir) {
+        File sorcerApi = new File(libResolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-api"));
+        File markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
+        return sorcerApi.exists() && !markerFile.exists();
+    }
+
+    public static void install() throws IOException {
         Installer installer = new Installer();
         installer.installPoms();
         installer.installJars();

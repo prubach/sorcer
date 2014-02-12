@@ -58,7 +58,6 @@ public class SorcerLauncher extends Launcher {
         //because rio CommonClassLoader enforces SystemClassLoader as parent,
         //so all services started with rio would have parallel CL hierarchy
 
-
         List<URL> requiredClassPath = new LinkedList<URL>();
         for (String file : CLASS_PATH) {
             requiredClassPath.add(new File(Resolver.resolveAbsolute(file)).toURI().toURL());
@@ -92,7 +91,7 @@ public class SorcerLauncher extends Launcher {
     }
 
     @Override
-    public void doStart() throws MalformedURLException {
+    protected void configure() {
         //TODO RKR check grant
         Properties defaults = new Properties();
         defaults.putAll(properties);
@@ -107,7 +106,10 @@ public class SorcerLauncher extends Launcher {
 
         System.setProperties(overrides);
         installLogging();
+    }
 
+    @Override
+    public void doStart() throws MalformedURLException {
         try {
             Class<?> serviceStarter = getClass().getClassLoader().loadClass(MAIN_CLASS);
             Method start = serviceStarter.getDeclaredMethod("start", List.class);
