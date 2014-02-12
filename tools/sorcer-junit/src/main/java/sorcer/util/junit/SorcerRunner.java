@@ -37,6 +37,7 @@ import static sorcer.core.SorcerConstants.SORCER_HOME;
  */
 public class SorcerRunner extends BlockJUnit4ClassRunner {
     private static Webster webster;
+    private Class<?> klass;
 
     /**
      * Creates a BlockJUnit4ClassRunner to run {@code klass}
@@ -45,6 +46,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
      */
     public SorcerRunner(Class<?> klass) throws InitializationError {
         super(klass);
+        this.klass = klass;
     }
 
     @Override
@@ -89,11 +91,25 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             if (webster == null)
                 webster = ServiceRequestor.prepareCodebase();
 
+            String[]serviceConfigPaths=getServiceConfigPaths();
+            if(serviceConfigPaths!=null)
+                startSorcer(serviceConfigPaths);
+
             super.run(notifier);
+
+
         } catch (RuntimeException x) {
             notifier.fireTestFailure(new Failure(getDescription(), x));
         } catch (Error x) {
             notifier.fireTestFailure(new Failure(getDescription(), x));
         }
+    }
+
+    private void startSorcer(String[] serviceConfigPaths) {
+
+    }
+
+    private String[] getServiceConfigPaths() {
+        return klass.getAnnotation(SorcerService.class).value();
     }
 }
