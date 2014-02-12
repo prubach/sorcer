@@ -47,7 +47,7 @@ import static sorcer.util.JavaSystemProperties.USER_NAME;
 public class Installer {
     final private static Logger log = LoggerFactory.getLogger(Installer.class);
 
-    private static ArtifactResolver libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()));
+    private ArtifactResolver libResolver;
     private ArtifactResolver mvnResolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
 
     protected Map<String, String> groupDirMap;
@@ -70,24 +70,24 @@ public class Installer {
     private Map<String, ArtifactCoordinates> artifactsFromPoms = new HashMap<String, ArtifactCoordinates>();
 
     public static void main(String[] args) throws IOException {
-        install();
+        new Installer().install();
     }
 
-    public static boolean isInstallRequired(File logDir) {
+    public boolean isInstallRequired(File logDir) {
+        assert logDir != null;
         File sorcerApi = new File(libResolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-api"));
         File markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
         return sorcerApi.exists() && !markerFile.exists();
     }
 
-    public static void install() throws IOException {
-        Installer installer = new Installer();
-        installer.installPoms();
-        installer.installJars();
-        installer.createMarker();
+    public void install() throws IOException {
+        installPoms();
+        installJars();
+        createMarker();
     }
 
     @SuppressWarnings("unchecked")
-    protected Installer() throws IOException {
+    public Installer() throws IOException {
         String repoDir = SorcerEnv.getRepoDir();
         try {
             if (repoDir == null)
@@ -99,18 +99,24 @@ public class Installer {
             System.exit(-1);
         }
 
-        Properties versions = new Properties();
-        loadProperties(versions, "META-INF/maven/groupversions.properties");
-        loadProperties(versions, VERSIONS_PROPS_FILE);
-        versionsMap = (Map) versions;
 
-        Properties groups = new Properties();
-        loadProperties(groups, "META-INF/maven/repolayout.properties");
-        loadProperties(groups, REPOLAYOUT_PROPS_FILE);
-        groupDirMap = (Map) groups;
+        versionsMap = (Map) readProperties("META-INF/maven/groupversions.properties", VERSIONS_PROPS_FILE);
+        groupDirMap = (Map) readProperties("META-INF/maven/repolayout.properties", REPOLAYOUT_PROPS_FILE);
+
+        libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()), groupDirMap);
     }
 
-    protected void loadProperties(Properties properties, String resourceName) throws IOException {
+    /**
+     * loadProperties(map, File) version is used to load additional data in commercial distribution
+     */
+    protected Properties readProperties(String resourceName, File versions_props_file) throws IOException {
+        Properties versions = new Properties();
+        loadProperties(versions, resourceName);
+        loadProperties(versions, versions_props_file);
+        return versions;
+    }
+
+    protected static void loadProperties(Properties properties, String resourceName) throws IOException {
         URL resourceVersions = Thread.currentThread().getContextClassLoader().getResource(resourceName);
         if (resourceVersions == null) {
             throw new IOException("Could not find versions.properties");
@@ -124,7 +130,7 @@ public class Installer {
         }
     }
 
-    protected void loadProperties(Properties properties, File file) throws IOException {
+    protected static void loadProperties(Properties properties, File file) throws IOException {
         if (!file.exists()) return;
         InputStream inputStream = null;
         try {

@@ -106,8 +106,9 @@ public abstract class Launcher {
 
         configure();
 
-        if(Installer.isInstallRequired(logDir))
-            Installer.install();
+        Installer installer = new Installer();
+        if (installer.isInstallRequired(logDir))
+            installer.install();
 
         doStart();
     }

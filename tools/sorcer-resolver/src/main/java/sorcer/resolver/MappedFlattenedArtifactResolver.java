@@ -42,22 +42,26 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 
 	protected List<String> roots;
 
-	public MappedFlattenedArtifactResolver(File rootDir) {
-		this.rootDir = rootDir;
-	}
+    /**
+     * Create the resolver with the default set of mapped directories read from META-INF/maven/repolayout.properties resource
+     */
+    public MappedFlattenedArtifactResolver(File rootDir) {
+        this(rootDir, new PropertiesLoader().loadAsMap("META-INF/maven/repolayout.properties", Thread.currentThread().getContextClassLoader()));
+    }
 
-	{
-		String resourceName = "META-INF/maven/repolayout.properties";
-		Map<String, String> propertyMap = new PropertiesLoader().loadAsMap(resourceName, Thread.currentThread().getContextClassLoader());
-		groupDirMap.putAll(propertyMap);
+    /**
+     * Create the resolver with a set of mapped directories read from provided map
+     */
+    public MappedFlattenedArtifactResolver(File rootDir, Map<String, String> groups) {
+        this.rootDir = rootDir;
+        groupDirMap.putAll(groups);
 
-		Collection<String> _roots = new HashSet<String>(groupDirMap.values());
-		_roots.add(GROUPDIR_DEFAULT);
-		roots = Collections.unmodifiableList(new ArrayList<String>(_roots));
+        Collection<String> _roots = new HashSet<String>(groupDirMap.values());
+        _roots.add(GROUPDIR_DEFAULT);
+        roots = Collections.unmodifiableList(new ArrayList<String>(_roots));
+    }
 
-	}
-
-	@Override
+    @Override
 	public String resolveAbsolute(ArtifactCoordinates artifactCoordinates) {
 		String relPath = resolveRelative(artifactCoordinates);
 		return new File(rootDir, relPath).getPath();
