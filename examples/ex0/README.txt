@@ -6,7 +6,7 @@ Before starting this provider (development):
 2) start the Registry Service
   This can be done by starting SORCER from the distribution ($SORCER_HOME/bin/sorcer-boot)
 3) start the service itself by calling
-    boot :ex0-cfg
+    sorcer-boot :ex0-cfg
 4) test the service by running its requestor:
     ant -f ex0-req/run.xml
 5) You can also run the netlet script by invoking:

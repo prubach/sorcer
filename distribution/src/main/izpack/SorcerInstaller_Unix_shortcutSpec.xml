@@ -37,7 +37,7 @@
               description="Sorcer Examples Terminal" desktop="yes"
               encoding="UTF-8" initialState="noShow" name="Sorcer Examples Terminal"
               programGroup="yes" startMenu="no" startup="no"
-              target="xterm" terminal="false"
+              target="$INSTALL_PATH/bin/terminal_sorcer" terminal="false"
               type="Application" workingDirectory="$INSTALL_PATH/examples"
               iconFile="$INSTALL_PATH/configs/icons/examples.png"/>
 

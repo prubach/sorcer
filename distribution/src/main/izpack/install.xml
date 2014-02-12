@@ -77,6 +77,7 @@
                 <include name="bin/sorcer-browser" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
                 <include name="bin/create-provider" os="unix"/>
+                <include name="bin/terminal_sorcer" os="unix"/>
                 <include name="bin/nsh" os="unix"/>
                 <include name="bin/setenv" os="unix"/>
                 <include name="bin/uninstall" os="unix"/>
@@ -117,6 +118,7 @@
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/bin/terminal_sorcer" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/uninstall" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/rio-ui" os="unix"/>

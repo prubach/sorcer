@@ -340,6 +340,7 @@
                 <exclude>nsh</exclude>
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>
+                <exclude>terminal_sorcer</exclude>
                 <exclude>create-provider</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
@@ -358,6 +359,7 @@
                 <include>setenv</include>
                 <include>create-provider</include>
                 <include>sorcer-boot</include>
+                <include>terminal_sorcer</include>
                 <include>sorcer-boot-no-http</include>
                 <include>rio</include>
                 <include>rio-ui</include>
@@ -368,6 +370,18 @@
         </fileSet>
 
         <fileSet>
+            <directory>${basedir}/../bin</directory>
+            <outputDirectory>/examples</outputDirectory>
+            <includes>
+                <include>setenv</include>
+                <include>setenv.bat</include>
+            </includes>
+            <filtered>false</filtered>
+            <fileMode>0755</fileMode>
+        </fileSet>
+
+
+            <fileSet>
             <directory>${basedir}/src/main/bin</directory>
             <outputDirectory>/bin</outputDirectory>
             <includes>
