@@ -154,7 +154,7 @@
 			<dependency>
 				<groupId>net.jini.lookup</groupId>
 				<artifactId>jmx-lookup</artifactId>
-				<version>${v.jini}</version>
+				<version>2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>

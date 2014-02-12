@@ -24,10 +24,10 @@ class CommonPlatformConfig {
     def getPlatformCapabilityConfig() {
         def cap = new SorcerCapabilityDescriptor(
                 "Commons Compress",
-                "1.5",
+                "1.0",
                 "Apache Commons Compress",
                 "Apache Software Foundation",
-                ["org.apache.commons:commons-compress:1.5"]
+                ["org.apache.commons:commons-compress:1.0"]
         )
         return cap
     }
