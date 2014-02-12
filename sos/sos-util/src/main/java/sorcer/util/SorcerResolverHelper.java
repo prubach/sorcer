@@ -16,47 +16,35 @@
 
 package sorcer.util;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
+ * Convert classpath returned by Rio Resolver to URLs or URIs
+ *
  * @author Rafał Krupiński
  */
 public class SorcerResolverHelper {
-    public static String[] fixUriStrings(String[] uris) {
-        if (!System.getProperty("os.name").startsWith("Windows"))
-            return uris;
-
-        String[] result = new String[uris.length];
-        for (int i = 0; i < uris.length; i++) {
-            result[i] = fixUri(uris[i]);
+    public static URI[] toURIs(String[] filePaths) throws URISyntaxException {
+        URI[] result = new URI[filePaths.length];
+        for (int i = 0; i < filePaths.length; i++) {
+            result[i] = toURI(filePaths[i]);
         }
         return result;
     }
 
-    public static URI[] fixUris(String[] uris) throws URISyntaxException {
-        URI[] result = new URI[uris.length];
-        for (int i = 0; i < uris.length; i++) {
-            result[i] = new URI(fixUri(uris[i]));
+    public static URL[] toURLs(String[] filePaths) throws URISyntaxException, MalformedURLException {
+        URL[] result = new URL[filePaths.length];
+        for (int i = 0; i < filePaths.length; i++) {
+            result[i] = toURI(filePaths[i]).toURL();
         }
         return result;
     }
 
-    public static URL[] fixUrls(String[] uris) throws URISyntaxException, MalformedURLException {
-        URL[] result = new URL[uris.length];
-        for (int i = 0; i < uris.length; i++) {
-            result[i] = new URI(fixUri(uris[i])).toURL();
-        }
-        return result;
-    }
-
-    public static String fixUri(String uriString) {
-        if (uriString.startsWith("file:"))
-            return uriString.replace('\\', '/');
-        else
-            return uriString;
-
+    public static URI toURI(String filePath) {
+        return new File(filePath).toURI();
     }
 }

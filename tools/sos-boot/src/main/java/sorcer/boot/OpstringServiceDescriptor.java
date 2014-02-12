@@ -34,7 +34,6 @@ import org.rioproject.loader.ClassAnnotator;
 import org.rioproject.loader.ServiceClassLoader;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceElement;
-import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
@@ -168,7 +167,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
 
     private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
-        URI[] uris = SorcerResolverHelper.fixUris(ResolverHelper.resolve(bundle.getArtifact(), resolver, serviceElement.getRemoteRepositories()));
+        URI[] uris = SorcerResolverHelper.toURIs(resolver.getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
 
         URL codebaseRoot = SorcerEnv.getCodebaseRoot();
         OpStringUtil.checkCodebase(serviceElement, codebaseRoot.toExternalForm());
@@ -199,10 +198,9 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         String urlBase = codebase.toExternalForm();
         String mvnRootFileUrl = new File(SorcerEnv.getRepoDir()).toURI().toString();
 
-        String[] resolve = ResolverHelper.resolve(artifact, resolver, new RemoteRepository[0]);
-        for (String fileUri : SorcerResolverHelper.fixUriStrings(resolve)) {
-            String replace = fileUri.replace(mvnRootFileUrl, urlBase);
-            logger.debug("{} -> {}", fileUri, replace);
+        for (String file : resolver.getClassPathFor(artifact)) {
+            String replace = new File(file).toURI().toString().replace(mvnRootFileUrl, urlBase);
+            logger.debug("{} -> {}", file, replace);
             result.add(new URL(replace));
         }
 /*

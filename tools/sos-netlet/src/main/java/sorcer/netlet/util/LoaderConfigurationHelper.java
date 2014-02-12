@@ -100,7 +100,7 @@ public class LoaderConfigurationHelper {
                     org.rioproject.resolver.Resolver resolver = getResolver();
                     RemoteRepository[] repos = artifactConf.getRepositories();
 
-                    URL[] classpath = SorcerResolverHelper.fixUrls(ResolverHelper.resolve(artifactConf.getArtifact(), resolver, repos));
+                    URL[] classpath = SorcerResolverHelper.toURLs(resolver.getClassPathFor(artifactConf.getArtifact(), repos));
                     Collections.addAll(urlsList, classpath);
                 } catch (ResolverException e) {
                     logger.log(Level.SEVERE, "Could not resolve " + str, e);
