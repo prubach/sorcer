@@ -25,7 +25,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.process.DestroyingListener;
 import sorcer.launcher.process.ForkingLauncher;
@@ -45,12 +44,6 @@ import static sorcer.core.SorcerConstants.E_SORCER_HOME;
  * @author Rafał Krupiński
  */
 public class Sorcer {
-    /**
-     * This class might start ServiceStarter as part of current process, in which case it will configure logback.
-     * Please do not use it before we know that we have failed or ServiceStarter will be started in a new process (by ForkingLauncher)
-     */
-    private static final Logger log = LoggerFactory.getLogger(Sorcer.class);
-
     private static final String WAIT = "w";
     private static final String HOME = "home";
     private static final String RIO = "rio";
@@ -91,7 +84,7 @@ public class Sorcer {
 
             launcher.start();
         } catch (Exception x) {
-            log.error(x.getMessage(), x);
+            x.printStackTrace();
             System.exit(-1);
         }
     }
@@ -165,7 +158,7 @@ public class Sorcer {
             if (SorcerLauncher.checkEnvironment() && debugPort == null) {
                 launcher = new SorcerLauncher();
             } else {
-                log.warn("User has requested in-process launch, but it's impossible");
+                LoggerFactory.getLogger(Sorcer.class).warn("User has requested in-process launch, but it's impossible");
             }
         }
 
