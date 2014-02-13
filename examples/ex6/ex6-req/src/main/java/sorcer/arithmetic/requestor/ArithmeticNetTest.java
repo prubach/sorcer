@@ -18,19 +18,23 @@
 package sorcer.arithmetic.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Arithmetic;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
+import sorcer.util.junit.ExportCodebase;
+import sorcer.util.junit.SorcerClient;
+import sorcer.util.junit.SorcerRunner;
+import sorcer.util.junit.SorcerService;
 
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -39,22 +43,17 @@ import static sorcer.eo.operator.*;
 /**
  * @author Mike Sobolewski
  */
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+                /*"org.sorcersoft.sorcer:ex6-prv",*/
+                "org.sorcersoft.sorcer:ex6-api"})
+@Category(SorcerClient.class)
+@SorcerService(":ex6-cfg-all")
 public class ArithmeticNetTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNetTest.class.getName());
 
-    static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex6-prv",
-                "org.sorcersoft.sorcer:ex6-api"});
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-    }
-	
 	@Test
 	public void netTaskTest() throws Exception {
 
