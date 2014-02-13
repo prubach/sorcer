@@ -21,14 +21,21 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.launcher.Launcher;
+import sorcer.launcher.process.DestroyingListener;
+import sorcer.launcher.process.ForkingLauncher;
+import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.resolver.Resolver;
-import sorcer.tools.webster.Webster;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.StringUtils;
 
 import java.io.File;
+import java.security.Policy;
+import java.util.Arrays;
 
 import static sorcer.core.SorcerConstants.SORCER_HOME;
 
@@ -36,8 +43,8 @@ import static sorcer.core.SorcerConstants.SORCER_HOME;
  * @author Rafał Krupiński
  */
 public class SorcerRunner extends BlockJUnit4ClassRunner {
-    private static Webster webster;
     private Class<?> klass;
+    private File home;
 
     /**
      * Creates a BlockJUnit4ClassRunner to run {@code klass}
@@ -47,69 +54,96 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     public SorcerRunner(Class<?> klass) throws InitializationError {
         super(klass);
         this.klass = klass;
+        try {
+            JavaSystemProperties.ensure(SORCER_HOME);
+            home = new File(System.getProperty(SORCER_HOME));
+        } catch (IllegalStateException x) {
+            throw new InitializationError("sorcer.home property is required");
+        }
     }
 
     @Override
     public void run(RunNotifier notifier) {
         try {
-            try {
-                JavaSystemProperties.ensure(SORCER_HOME);
-            } catch (IllegalStateException x) {
-                notifier.fireTestFailure(new Failure(getDescription(), x));
-                return;
-            }
-
-            JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
-
-            File home = new File(System.getProperty(SORCER_HOME));
             JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
             JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+            JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
+            JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
 
-            File policy;
+
             String policyPath = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
-            if (policyPath != null)
-                policy = new File(policyPath);
-            else {
+            if (policyPath != null) {
+                File policy = new File(policyPath);
+                IOUtils.checkFileExistsAndIsReadable(policy);
+            } else {
                 if (System.getSecurityManager() != null) {
                     notifier.fireTestFailure(new Failure(getDescription(), new IllegalStateException("SecurityManager set but no " + JavaSystemProperties.SECURITY_POLICY)));
                     return;
                 }
-                policy = new File(home, "configs/sorcer.policy");
-                JavaSystemProperties.ensure(JavaSystemProperties.SECURITY_POLICY, policy.getPath());
+                File policy = new File(home, "configs/sorcer.policy");
+                IOUtils.checkFileExistsAndIsReadable(policy);
+                System.setProperty(JavaSystemProperties.SECURITY_POLICY, policy.getPath());
+                Policy.getPolicy().refresh();
             }
-            IOUtils.checkFileExistsAndIsReadable(policy);
+            System.setSecurityManager(new SecurityManager());
 
-            if (System.getSecurityManager() == null) {
-                SLF4JBridgeHandler.removeHandlersForRootLogger();
-                SLF4JBridgeHandler.install();
-
-                System.setSecurityManager(new SecurityManager());
-            }
-
+            SLF4JBridgeHandler.removeHandlersForRootLogger();
+            SLF4JBridgeHandler.install();
 
             SorcerEnv.debug = true;
-            if (webster == null)
-                webster = ServiceRequestor.prepareCodebase();
+            ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
+            String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
+            if (codebase != null && codebase.length > 0) {
+                JavaSystemProperties.ensure(SorcerConstants.R_CODEBASE, StringUtils.join(codebase, ' '));
+                ServiceRequestor.prepareCodebase();
+            }
 
-            String[]serviceConfigPaths=getServiceConfigPaths();
-            if(serviceConfigPaths!=null)
-                startSorcer(serviceConfigPaths);
+            Launcher sorcerLauncher = null;
+            String[] serviceConfigPaths = getServiceConfigPaths();
 
-            super.run(notifier);
+            if (serviceConfigPaths != null) {
+                if (serviceConfigPaths.length == 0) {
+                    notifier.fireTestFailure(new Failure(getDescription(), new IllegalArgumentException("@SorcerService annotation without any configuration files")));
+                    return;
+                }
 
+                try {
+                    sorcerLauncher = startSorcer(serviceConfigPaths);
+                } catch (Exception e) {
+                    notifier.fireTestFailure(new Failure(getDescription(), e));
+                }
+            }
 
+            try {
+                super.run(notifier);
+            } finally {
+                if (sorcerLauncher != null)
+                    sorcerLauncher.stop();
+            }
         } catch (RuntimeException x) {
-            notifier.fireTestFailure(new Failure(getDescription(), x));
-        } catch (Error x) {
             notifier.fireTestFailure(new Failure(getDescription(), x));
         }
     }
 
-    private void startSorcer(String[] serviceConfigPaths) {
+    private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
+        ForkingLauncher launcher = new ForkingLauncher();
+        launcher.setConfigs(Arrays.asList(serviceConfigPaths));
+        launcher.setWaitMode(Launcher.WaitMode.start);
+        launcher.setHome(home);
+        File logDir = new File("/tmp/logs");
+        logDir.mkdir();
+        launcher.setLogDir(logDir);
+        String rio = System.getProperty("RIO_HOME");
+        if (rio != null)
+            launcher.setRio(new File(rio));
+        launcher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
+        launcher.start();
 
+        return launcher;
     }
 
     private String[] getServiceConfigPaths() {
-        return klass.getAnnotation(SorcerService.class).value();
+        SorcerService annotation = klass.getAnnotation(SorcerService.class);
+        return annotation != null ? annotation.value() : null;
     }
 }

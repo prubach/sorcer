@@ -27,11 +27,13 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.servicebean.ServiceBean;
 import org.rioproject.start.LogManagementHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerConstants;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
@@ -43,6 +45,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
@@ -56,22 +59,17 @@ public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
     final private static String START_PACKAGE = "com.sun.jini.start";
 
-    private List<Service> services;
+    private List<Service> services = new LinkedList<Service>();
     private volatile boolean bootInterrupted;
 
     public static void main(String[] args) throws Exception {
         installLogging();
         checkRequiredProperties();
-        log.info("******* Starting Sorcersoft.com SORCER *******");
         installSecurityManager();
-        start(Arrays.asList(args));
-    }
 
-    public static void start(List<String> configs) throws Exception {
-        List<Service> services = new LinkedList<Service>();
-        ServiceStarter serviceStarter = new ServiceStarter(services);
-        ServiceStopper.install(serviceStarter, services);
-        serviceStarter.start((Collection<String>) configs);
+        ServiceStarter serviceStarter = new ServiceStarter();
+        ServiceStopper.install(serviceStarter);
+        serviceStarter.start(Arrays.asList(args));
     }
 
     private static void installSecurityManager() {
@@ -97,20 +95,13 @@ public class ServiceStarter {
             log.warn("Required system property '{}' not set!", key);
     }
 
-    public ServiceStarter(List<Service> services) {
-        this.services = services;
-    }
-
-    public void interrupt() {
-        bootInterrupted = true;
-    }
-
     /**
      * Start services from the configs
      *
      * @param configs file path or URL of the services.config configuration
      */
     public void start(Collection<String> configs) throws Exception {
+        log.info("******* Starting Sorcersoft.com SORCER *******");
         log.debug("Starting from {}", configs);
 
         List<String> riverServices = new LinkedList<String>();
@@ -146,6 +137,19 @@ public class ServiceStarter {
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
         instantiateServices(descs, services);
+        log.info("*** Sorcersoft.com SORCER started ***");
+    }
+
+    public void stop() {
+        log.info("*** Stopping Sorcersoft.com SORCER ***");
+
+        bootInterrupted = true;
+        ArrayList<Service> services = new ArrayList<Service>(this.services);
+        Collections.reverse(services);
+        for (Service service : services)
+            stop(service);
+
+        log.info("******* Sorcersoft.com SORCER stopped *******");
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
@@ -362,6 +366,36 @@ public class ServiceStarter {
                             //check distribution structure
                             || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
                     ;
+        }
+    }
+
+    private void stop(Service service) {
+        Object impl = service.impl;
+        if (impl == null) {
+            log.warn("Service didn't start {}", service.descriptor, service.exception);
+            return;
+        }
+        if (impl instanceof DestroyAdmin) {
+            DestroyAdmin da = (DestroyAdmin) impl;
+            try {
+                log.debug("Stopping {}", da);
+                da.destroy();
+            } catch (RemoteException e) {
+                log.warn("Error", e);
+            }
+        } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
+            com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
+            try {
+                log.info("Stopping {}", da);
+                da.destroy();
+            } catch (RemoteException e) {
+                log.warn("Error", e);
+            }
+        }else if(impl instanceof ServiceBean){
+            ServiceBean sb= (ServiceBean) impl;
+            sb.destroy(false);
+        } else {
+            log.warn("Unable to stop {}", impl);
         }
     }
 }

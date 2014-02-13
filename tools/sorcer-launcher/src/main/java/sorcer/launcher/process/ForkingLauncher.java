@@ -57,6 +57,7 @@ public class ForkingLauncher extends Launcher {
     private OutputStream err;
 
     private Integer debugPort;
+    private Process2 process;
 
     protected void doStart() throws IOException, InterruptedException {
         log.debug("*******   *******   *******   SORCER launcher   *******   *******   *******");
@@ -95,17 +96,17 @@ public class ForkingLauncher extends Launcher {
 
         bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
 
-        Process2 sorcerProcess = bld.startProcess();
-        sorcerListener.processLaunched(sorcerProcess);
+        process = bld.startProcess();
+        sorcerListener.processLaunched(process);
 
         if (waitMode == WaitMode.no) {
-            if (!sorcerProcess.running()) {
-                throw new IllegalStateException("SORCER has not started properly; exit value: " + sorcerProcess.exitValue());
+            if (!process.running()) {
+                throw new IllegalStateException("SORCER has not started properly; exit value: " + process.exitValue());
             } else
                 return;
         }
 
-        installProcessMonitor(sorcerListener, sorcerProcess);
+        installProcessMonitor(sorcerListener, process);
 
         BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
         OutputConsumer consumer = new SorcerOutputConsumer();
@@ -116,12 +117,24 @@ public class ForkingLauncher extends Launcher {
             if (!keepGoing) break;
         }
         sorcerListener.sorcerStarted();
-        log.info("{} has started", sorcerProcess);
+        log.info("{} has started", process);
 
         if (waitMode == WaitMode.end) {
-            sorcerProcess.waitFor();
+            process.waitFor();
         }
 
+    }
+
+    @Override
+    public void stop() {
+        process.destroy();
+    }
+
+    @Override
+    protected void configure() {
+        if (process != null)
+            throw new IllegalStateException("This instance have already started a process");
+        super.configure();
     }
 
     @Override

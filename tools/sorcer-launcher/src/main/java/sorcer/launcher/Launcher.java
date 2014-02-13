@@ -115,7 +115,7 @@ public abstract class Launcher {
 
     protected void ensureDirConfig() {
         if (home == null) {
-            String envHome = System.getProperty(E_SORCER_HOME);
+            String envHome = System.getProperty(SORCER_HOME);
             if (envHome == null)
                 throw new IllegalStateException("No SORCER_HOME set");
             home = new File(envHome);
@@ -153,6 +153,8 @@ public abstract class Launcher {
     }
 
     abstract protected void doStart() throws Exception;
+
+    abstract public void stop();
 
     public void setWaitMode(WaitMode waitMode) {
         this.waitMode = waitMode;

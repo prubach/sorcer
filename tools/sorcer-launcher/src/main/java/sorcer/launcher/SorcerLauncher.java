@@ -20,12 +20,11 @@ import org.rioproject.start.LogManagementHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerConstants;
 import sorcer.resolver.Resolver;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -41,6 +40,7 @@ public class SorcerLauncher extends Launcher {
     final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
 
     private ThreadFactory threadFactory;
+    private ServiceStarter serviceStarter;
 
     public static boolean checkEnvironment() throws MalformedURLException {
         boolean result = true;
@@ -85,7 +85,7 @@ public class SorcerLauncher extends Launcher {
             }
         }
         for (URL entry : requiredClassPath) {
-            log.warn("Missing required ClassPath element {}",entry);
+            log.warn("Missing required ClassPath element {}", entry);
         }
         return result && requiredClassPath.isEmpty();
     }
@@ -100,7 +100,7 @@ public class SorcerLauncher extends Launcher {
         overrides.putAll(System.getProperties());
 
         if (log.isDebugEnabled())
-            for(Object key : i(overrides.propertyNames()))
+            for (Object key : i(overrides.propertyNames()))
                 log.debug("{} = {}", key, overrides.getProperty((String) key));
 
 
@@ -109,25 +109,16 @@ public class SorcerLauncher extends Launcher {
     }
 
     @Override
-    public void doStart() throws MalformedURLException {
-        try {
-            Class<?> serviceStarter = getClass().getClassLoader().loadClass(MAIN_CLASS);
-            Method start = serviceStarter.getDeclaredMethod("start", List.class);
+    protected void doStart() {
+        SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
 
-            SorcerRunnable sorcerRun = new SorcerRunnable(start, getConfigs());
+        // last moment
+        installSecurityManager();
 
-            // last moment
-            installSecurityManager();
-
-            if (threadFactory != null) {
-                threadFactory.newThread(sorcerRun).start();
-            } else {
-                sorcerRun.run();
-            }
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Incompatible sorcer-launcher and sos-boot modules", e);
+        if (threadFactory != null) {
+            threadFactory.newThread(sorcerRun).start();
+        } else {
+            sorcerRun.run();
         }
     }
 
@@ -148,33 +139,35 @@ public class SorcerLauncher extends Launcher {
         LogManagementHelper.setup();
     }
 
-    public void setThreadFactory(ThreadFactory threadFactory) {
-        this.threadFactory = threadFactory;
-    }
-
-    private static class SorcerRunnable implements Runnable {
-        private final Method start;
+    private class SorcerRunnable implements Runnable {
         private List<String> configs;
 
-        public SorcerRunnable(Method start, List<String> configs) {
-            this.start = start;
+        public SorcerRunnable(List<String> configs) {
             this.configs = configs;
         }
 
         @Override
         public void run() {
             try {
-                start.invoke(null, configs);
+                serviceStarter = new ServiceStarter();
+                serviceStarter.start(configs);
             } catch (RuntimeException e) {
                 throw e;
-            } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof RuntimeException) throw (RuntimeException) cause;
-                if (cause instanceof Error) throw (Error) cause;
-                throw new RuntimeException(e);
             } catch (Exception e) {
                 throw new RuntimeException("Error while starting SORCER", e);
             }
         }
     }
+
+    @Override
+    public void stop() {
+        if (serviceStarter == null)
+            throw new IllegalStateException("Sorcer not running");
+        serviceStarter.stop();
+    }
+
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
+    }
+
 }

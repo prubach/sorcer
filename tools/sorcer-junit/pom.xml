@@ -29,16 +29,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>${v.slf4j}</version>
-        </dependency>
-        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-resolver</artifactId>
             <version>${project.version}</version>
@@ -47,6 +37,31 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-launcher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-boot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-start</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${v.slf4j}</version>
         </dependency>
     </dependencies>
 

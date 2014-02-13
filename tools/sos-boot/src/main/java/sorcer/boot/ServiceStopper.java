@@ -16,78 +16,27 @@
 
 package sorcer.boot;
 
-import org.rioproject.servicebean.ServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.DestroyAdmin;
-
-import java.lang.ref.WeakReference;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
 /**
  * @author Rafał Krupiński
  */
 public class ServiceStopper extends Thread {
-    private final List<Service> services;
-    private WeakReference<ServiceStarter> serviceStarter;
+    private ServiceStarter serviceStarter;
     private static final Logger log = LoggerFactory.getLogger(ServiceStopper.class);
 
-    public ServiceStopper(String name, List<Service> services, ServiceStarter serviceStarter) {
+    public ServiceStopper(String name, ServiceStarter serviceStarter) {
         super(name);
-        this.serviceStarter = new WeakReference<ServiceStarter>(serviceStarter);
-        this.services = services;
+        this.serviceStarter = serviceStarter;
     }
 
-    static void install(ServiceStarter serviceStarter, List<Service> services) {
-        Runtime.getRuntime().addShutdownHook(new ServiceStopper("SORCER service destroyer", services, serviceStarter));
+    static void install(ServiceStarter serviceStarter) {
+        Runtime.getRuntime().addShutdownHook(new ServiceStopper("SORCER service destroyer", serviceStarter));
     }
 
     @Override
     public void run() {
-        ServiceStarter starter = serviceStarter.get();
-        if (starter != null) {
-            log.debug("Interrupting {}", starter);
-            starter.interrupt();
-        }
-        ArrayList<Service> services = new ArrayList<Service>(this.services);
-        Collections.reverse(services);
-        for (Service service : services) {
-            stop(service);
-        }
-    }
-
-    private void stop(Service service) {
-        Object impl = service.impl;
-        if (impl == null) {
-            log.warn("Service didn't start {}", service.descriptor, service.exception);
-            return;
-        }
-        if (impl instanceof DestroyAdmin) {
-            DestroyAdmin da = (DestroyAdmin) impl;
-            try {
-                log.debug("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
-        } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
-            com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
-            try {
-                log.info("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
-        }else if(impl instanceof ServiceBean){
-            ServiceBean sb= (ServiceBean) impl;
-            sb.destroy(false);
-        } else {
-            log.warn("Unable to stop {}", impl);
-        }
+        serviceStarter.stop();
     }
 }

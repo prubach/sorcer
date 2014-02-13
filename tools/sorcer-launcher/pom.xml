@@ -28,6 +28,13 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-boot</artifactId>
+            <version>${project.version}</version>
+            <!-- required if using SorcerLauncher (in-process launch) -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-resolver</artifactId>
             <version>${project.version}</version>
             <exclusions>
