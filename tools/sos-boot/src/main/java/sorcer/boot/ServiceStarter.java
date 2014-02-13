@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerConstants;
+import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
@@ -161,7 +162,7 @@ public class ServiceStarter {
     }
 
     private File findArtifact(String artifactId) {
-        Collection<File> files = FileUtils.listFiles(new File(System.getProperty("user.dir")), new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
+        Collection<File> files = FileUtils.listFiles(SorcerEnv.getHomeDir(), new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
         if (files.size() == 0) {
             log.error("Artifact file {} not found", artifactId);
             return null;

@@ -18,12 +18,11 @@ import java.util.List;
 import static sorcer.eo.operator.*;
 
 @RunWith(SorcerRunner.class)
-//@Category(SorcerClient.class)
+@Category(SorcerClient.class)
 @ExportCodebase("org.sorcersoft.sorcer:ex0-api")
 @SorcerService(":ex0-cfg")
-public class HelloWorldTester {
-
-    private static Logger logger = LoggerFactory.getLogger(HelloWorldTester.class);
+public class HelloWorldTest {
+    private static Logger logger = LoggerFactory.getLogger(HelloWorldTest.class);
 
     @Test
     public void getExertion() throws ExertionException, ContextException, SignatureException {

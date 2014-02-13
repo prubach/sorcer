@@ -25,8 +25,8 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.Launcher;
+import sorcer.launcher.SorcerLauncher;
 import sorcer.launcher.process.DestroyingListener;
-import sorcer.launcher.process.ForkingLauncher;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
@@ -57,7 +57,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         try {
             JavaSystemProperties.ensure(SORCER_HOME);
             home = new File(System.getProperty(SORCER_HOME));
-        } catch (IllegalStateException x) {
+        } catch (IllegalStateException ignore) {
             throw new InitializationError("sorcer.home property is required");
         }
     }
@@ -111,6 +111,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
                     sorcerLauncher = startSorcer(serviceConfigPaths);
                 } catch (Exception e) {
                     notifier.fireTestFailure(new Failure(getDescription(), e));
+                    return;
                 }
             }
 
@@ -126,7 +127,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     }
 
     private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
-        ForkingLauncher launcher = new ForkingLauncher();
+        Launcher launcher = new SorcerLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
         launcher.setWaitMode(Launcher.WaitMode.start);
         launcher.setHome(home);

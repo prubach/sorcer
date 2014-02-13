@@ -270,9 +270,15 @@
                         <systemPropertyVariables>
                             <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
                             <sorcer.home>${env.SORCER_HOME}</sorcer.home>
-                            <java.security.policy>${env.SORCER_HOME}/configs/sorcer.policy</java.security.policy>
                         </systemPropertyVariables>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                            <version>${v.junit}</version>
+                        </dependency>
+                    </dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
