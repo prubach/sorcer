@@ -105,7 +105,7 @@ public class SorcerLauncher extends Launcher {
 
 
         System.setProperties(overrides);
-        installLogging();
+        //installLogging();
     }
 
     @Override

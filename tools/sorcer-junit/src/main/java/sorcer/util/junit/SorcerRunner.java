@@ -26,8 +26,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
-import sorcer.launcher.process.DestroyingListener;
-import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
@@ -36,6 +34,7 @@ import sorcer.util.StringUtils;
 import java.io.File;
 import java.security.Policy;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import static sorcer.core.SorcerConstants.SORCER_HOME;
 
@@ -63,7 +62,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    public void run(RunNotifier notifier) {
+    public void run(final RunNotifier notifier) {
         try {
             JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
             JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
@@ -116,7 +115,20 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             }
 
             try {
-                super.run(notifier);
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SorcerRunner.super.run(notifier);
+                    }
+                });
+                t.start();
+                t.join(30000);
+                if (t.isAlive())
+                    t.stop(new RuntimeException(new TimeoutException()));
+            } catch (ThreadDeath x) {
+                notifier.fireTestFailure(new Failure(getDescription(), x));
+            } catch (InterruptedException e) {
+                notifier.fireTestFailure(new Failure(getDescription(), e));
             } finally {
                 if (sorcerLauncher != null)
                     sorcerLauncher.stop();
@@ -137,7 +149,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         String rio = System.getProperty("RIO_HOME");
         if (rio != null)
             launcher.setRio(new File(rio));
-        launcher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
         launcher.start();
 
         return launcher;

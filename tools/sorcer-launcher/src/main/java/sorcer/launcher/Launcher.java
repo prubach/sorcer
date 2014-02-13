@@ -78,6 +78,7 @@ public abstract class Launcher {
             "org.apache.commons:commons-lang3:3.1",
             "com.google.guava:guava:15.0",
             "commons-io:commons-io",
+            "org.codehaus.plexus:plexus-utils:3.0.15",
 
             "org.slf4j:slf4j-api",
             "org.slf4j:jul-to-slf4j:1.7.5",
