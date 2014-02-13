@@ -19,22 +19,26 @@ package sorcer.arithmetic.requestor;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Direction;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Task;
+import sorcer.util.junit.ExportCodebase;
+import sorcer.util.junit.SorcerClient;
+import sorcer.util.junit.SorcerRunner;
+import sorcer.util.junit.SorcerService;
 
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -45,22 +49,17 @@ import static sorcer.eo.operator.*;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
+@Category(SorcerClient.class)
+@RunWith(SorcerRunner.class)
+@SorcerService(":ex6-cfg-all")
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex6-api",
+        "org.sorcersoft.sorcer:sorcer-api"
+})
 public class NetArithmeticReqTest {
 
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReqTest.class.getName());
-
-	static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex6-api"});
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-    }
 
     @Ignore
     @Test
@@ -107,23 +106,23 @@ public class NetArithmeticReqTest {
 
 	@Test
 	public void exertJobComposition() throws Exception {
-		Job job = getJobComposition();
+		Job job = getJobComposition("-NetArithmeticReqTest");
 		Job result = (NetJob) job.exert();
 		logger.info("result context: " + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
 		assertEquals(400.0, result.getValue("1job1task/subtract/result/value"));
 	}
 
-	public static Job getJobComposition() throws Exception {
+	public static Job getJobComposition(String suffix) throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
 
-		Job internal = new NetJob("2tasks");
+		Job internal = new NetJob("2tasks" + suffix);
 		internal.addExertion(task2);
 		internal.addExertion(task1);
 		
-		Job job = new NetJob("1job1task");
+		Job job = new NetJob("1job1task" + suffix);
 		job.addExertion(internal);
 		job.addExertion(task3);
 		

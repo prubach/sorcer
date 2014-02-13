@@ -18,17 +18,20 @@
 package sorcer.arithmetic.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Exerter;
 import sorcer.service.Job;
 import sorcer.service.Task;
+import sorcer.util.junit.ExportCodebase;
+import sorcer.util.junit.SorcerClient;
+import sorcer.util.junit.SorcerRunner;
+import sorcer.util.junit.SorcerService;
 
-
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -37,26 +40,21 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex6-api"
+})
+@SorcerService(":ex6-cfg-all")
 public class ArithmeticExerterTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticExerterTest.class.getName());
 
-	static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex6-api" });
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-	}
-	
 	@Test
 	public void exertExerter() throws Exception {
-		Job exertion = NetArithmeticReqTest.getJobComposition();
+		Job exertion = NetArithmeticReqTest.getJobComposition(getClass().getSimpleName());
 		Task task = new NetTask("exert", new NetSignature("exert",
 				Exerter.class),
 				new ServiceContext(exertion));

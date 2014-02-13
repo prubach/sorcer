@@ -26,10 +26,4 @@
         <module>ex6-cfg-one-bean</module>
         <module>ex6-cfg-all</module>
 	</modules>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>${maven.test.skip}</skipTests>
-	</properties>
 </project>
-

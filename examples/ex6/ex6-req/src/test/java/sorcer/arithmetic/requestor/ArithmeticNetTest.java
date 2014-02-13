@@ -44,10 +44,9 @@ import static sorcer.eo.operator.*;
  * @author Mike Sobolewski
  */
 @RunWith(SorcerRunner.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-                /*"org.sorcersoft.sorcer:ex6-prv",*/
-                "org.sorcersoft.sorcer:ex6-api"})
 @Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+                "org.sorcersoft.sorcer:ex6-api"})
 @SorcerService(":ex6-cfg-all")
 public class ArithmeticNetTest {
 
@@ -80,7 +79,7 @@ public class ArithmeticNetTest {
 		t5 = exert(t5);
 		// logger.info("t5 context: " + context(t5));
 		// logger.info("t5 value: " + get(t5));
-		assertEquals("Wrong value for 100.0", value(t5), 100.0);
+		assertEquals("Wrong value for 100.0", 100.0, value(t5));
 	}
 
 	@Test
