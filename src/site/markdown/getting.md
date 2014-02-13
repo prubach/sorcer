@@ -54,7 +54,7 @@ Getting the sources
 
     ![Import project from Maven](getting/console/step9.png)
 
-9. Do not select any profiles, clinc Next
+9. Do not select any profiles, click Next
 
     ![Select profiles](getting/console/step10.png)
 
