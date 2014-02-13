@@ -26,6 +26,7 @@ import sorcer.util.junit.SorcerRunner;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import static org.junit.Assert.*;
 
@@ -57,7 +58,9 @@ public class DatabaseStorerTest {
     }
 
     private void verify(URL url, String expected) throws IOException {
-        Object content = url.openConnection().getContent();
+        URLConnection urlConnection = url.openConnection();
+        assertNotNull(urlConnection);
+        Object content = urlConnection.getContent();
         assertTrue(content instanceof String);
         String result = (String) content;
         assertEquals(expected, result);
