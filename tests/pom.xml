@@ -23,10 +23,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <junit.sorcer.provider.start>true</junit.sorcer.provider.start>
                         <buildDirectory>${project.build.directory}</buildDirectory>
                     </systemPropertyVariables>
-					<!--<reuseForks>false</reuseForks>-->
                 </configuration>
             </plugin>
         </plugins>

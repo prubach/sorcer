@@ -118,7 +118,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.14.1</version>
+                    <version>2.16</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -142,7 +142,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
-                        <buildDirectory>${project.build.directory}</buildDirectory>
+                        <sorcer.home>${env.SORCER_HOME}</sorcer.home>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
