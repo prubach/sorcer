@@ -361,6 +361,7 @@ $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
