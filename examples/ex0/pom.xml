@@ -16,7 +16,6 @@
 	<modules>
 		<module>ex0-api</module>
 		<module>ex0-prv</module>
-		<module>ex0-req</module>
 		<module>ex0-sui</module>
         <module>ex0-cfg</module>
 	</modules>

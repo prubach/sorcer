@@ -30,8 +30,41 @@
 			<artifactId>commons-prv</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
-	<build>
+
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>1.0-M4-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+
+                    <systemPropertyVariables>
+                        <junit.sorcer.provider.start>true</junit.sorcer.provider.start>
+                        <buildDirectory>${project.build.directory}</buildDirectory>
+                    </systemPropertyVariables>
+                    <!--<reuseForks>false</reuseForks>-->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                        <version>${v.junit}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
 
 		<!-- Enable maven filter feature for all *.groovy and *.config files in the src/main/resources -->
 		<resources>
