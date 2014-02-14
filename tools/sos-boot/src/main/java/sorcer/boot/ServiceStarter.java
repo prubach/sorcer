@@ -28,13 +28,10 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
 import org.rioproject.servicebean.ServiceBean;
-import org.rioproject.start.LogManagementHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.DestroyAdmin;
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
@@ -60,41 +57,8 @@ public class ServiceStarter {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
     final private static String START_PACKAGE = "com.sun.jini.start";
 
-    private List<Service> services = new LinkedList<Service>();
+    private Deque<Service> services = new LinkedList<Service>();
     private volatile boolean bootInterrupted;
-
-    public static void main(String[] args) throws Exception {
-        installLogging();
-        checkRequiredProperties();
-        installSecurityManager();
-
-        ServiceStarter serviceStarter = new ServiceStarter();
-        ServiceStopper.install(serviceStarter);
-        serviceStarter.start(Arrays.asList(args));
-    }
-
-    private static void installSecurityManager() {
-        if (System.getSecurityManager() == null)
-            System.setSecurityManager(new SecurityManager());
-    }
-
-    private static void installLogging() {
-        //redirect java.util.logging to slf4j/logback
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-        LogManagementHelper.setup();
-    }
-
-    private static void checkRequiredProperties() {
-        checkRequiredProperty(JavaSystemProperties.PROTOCOL_HANDLER_PKGS);
-        checkRequiredProperty(JavaSystemProperties.UTIL_LOGGING_CONFIG_FILE);
-        checkRequiredProperty(SorcerConstants.S_KEY_SORCER_ENV);
-    }
-
-    private static void checkRequiredProperty(String key) {
-        if (System.getProperty(key) == null)
-            log.warn("Required system property '{}' not set!", key);
-    }
 
     /**
      * Start services from the configs
@@ -130,7 +94,7 @@ public class ServiceStarter {
             else
                 throw new IllegalArgumentException("Unrecognized file " + path);
         }
-        Map<Configuration, List<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, List<? extends ServiceDescriptor>>();
+        Map<Configuration, Collection<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, Collection<? extends ServiceDescriptor>>();
         descs.putAll(instantiateDescriptors(riverServices));
 
         List<OpstringServiceDescriptor> serviceDescriptors = createFromOpStrFiles(opstrings);
@@ -138,16 +102,15 @@ public class ServiceStarter {
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
         instantiateServices(descs, services);
-        log.info("*** Sorcersoft.com SORCER started ***");
+        log.debug("*** Sorcersoft.com SORCER started ***");
     }
 
     public void stop() {
-        log.info("*** Stopping Sorcersoft.com SORCER ***");
+        log.debug("*** Stopping Sorcersoft.com SORCER ***");
 
         bootInterrupted = true;
-        ArrayList<Service> services = new ArrayList<Service>(this.services);
-        Collections.reverse(services);
-        for (Service service : services)
+        Service service;
+        while ((service = services.pollLast()) != null)
             stop(service);
 
         log.info("******* Sorcersoft.com SORCER stopped *******");
@@ -215,9 +178,9 @@ public class ServiceStarter {
      *
      * @throws Exception
      */
-    public void instantiateServices(Map<Configuration, List<? extends ServiceDescriptor>> descriptorMap, List<AbstractServiceDescriptor.Service> result) throws Exception {
+    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap, Collection<AbstractServiceDescriptor.Service> result) throws Exception {
         for (Configuration config : descriptorMap.keySet()) {
-            List<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
+            Collection<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
             ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
 
             LoginContext loginContext = (LoginContext)
@@ -335,11 +298,11 @@ public class ServiceStarter {
      * Utility routine that prints out warning messages for each service
      * descriptor that produced an exception or that was null.
      */
-    private static void checkResultFailures(List<AbstractServiceDescriptor.Service> results) {
+    private static void checkResultFailures(Collection<AbstractServiceDescriptor.Service> results) {
         for (AbstractServiceDescriptor.Service result : results) {
             if (result.exception != null) {
-                log.warn("service.creation.unknown", result.exception);
-                log.warn("service.creation.unknown.detail", result.descriptor);
+                log.warn("Exception creating service.", result.exception);
+                log.warn("Associated service descriptor: {}", result.descriptor);
             } else if (result.descriptor == null) {
                 log.warn("service.creation.null");
             }
