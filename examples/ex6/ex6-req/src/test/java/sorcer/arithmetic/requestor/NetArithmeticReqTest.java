@@ -36,7 +36,6 @@ import sorcer.service.Task;
 import sorcer.util.junit.ExportCodebase;
 import sorcer.util.junit.SorcerClient;
 import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
 
 
 import java.util.logging.Logger;
@@ -51,7 +50,7 @@ import static sorcer.eo.operator.*;
 @SuppressWarnings({ "rawtypes" })
 @Category(SorcerClient.class)
 @RunWith(SorcerRunner.class)
-@SorcerService(":ex6-cfg-all")
+//@SorcerService(":ex6-cfg-all")
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex6-api",
         "org.sorcersoft.sorcer:sorcer-api"
@@ -106,23 +105,23 @@ public class NetArithmeticReqTest {
 
 	@Test
 	public void exertJobComposition() throws Exception {
-		Job job = getJobComposition("-NetArithmeticReqTest");
+		Job job = getJobComposition();
 		Job result = (NetJob) job.exert();
 		logger.info("result context: " + result.getComponentContext("3tasks/subtract"));
 		logger.info("job context: " + result.getJobContext());
 		assertEquals(400.0, result.getValue("1job1task/subtract/result/value"));
 	}
 
-	public static Job getJobComposition(String suffix) throws Exception {
+	public static Job getJobComposition() throws Exception {
 		Task task1 = getAddTask();
 		Task task2 = getMultiplyTask();
 		Task task3 = getSubtractTask();
 
-		Job internal = new NetJob("2tasks" + suffix);
+		Job internal = new NetJob("2tasks");
 		internal.addExertion(task2);
 		internal.addExertion(task1);
 		
-		Job job = new NetJob("1job1task" + suffix);
+		Job job = new NetJob("1job1task");
 		job.addExertion(internal);
 		job.addExertion(task3);
 		

@@ -54,7 +54,7 @@ public class ArithmeticExerterTest {
 
 	@Test
 	public void exertExerter() throws Exception {
-		Job exertion = NetArithmeticReqTest.getJobComposition(getClass().getSimpleName());
+		Job exertion = NetArithmeticReqTest.getJobComposition();
 		Task task = new NetTask("exert", new NetSignature("exert",
 				Exerter.class),
 				new ServiceContext(exertion));
