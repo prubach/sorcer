@@ -12,8 +12,6 @@
 	<packaging>pom</packaging>
 
 	<name>SORCER examples :: ex1</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<modules>
 		<module>ex1-api</module>
@@ -24,9 +22,4 @@
         <module>ex1-cfg2</module>
         <module>ex1-cfg-all</module>
     </modules>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>${maven.test.skip}</skipTests>
-	</properties>
 </project>

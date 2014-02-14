@@ -19,23 +19,27 @@ package sorcer.ex1.requestor;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
+import sorcer.util.junit.ExportCodebase;
+import sorcer.util.junit.SorcerClient;
+import sorcer.util.junit.SorcerRunner;
+import sorcer.util.junit.SorcerService;
 
 
 import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -44,23 +48,22 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@Category(SorcerClient.class)
+@RunWith(SorcerRunner.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex1-rdl",
+        "org.sorcersoft.sorcer:ex1-prv",
+        "org.sorcersoft.sorcer:ex1-api"
+})
+@SorcerService({
+        ":ex1-cfg1",
+        ":ex1-cfg2"
+})
 public class WhoIsItTest {
 
 	private final static Logger logger = Logger
 			.getLogger(WhoIsItTest.class.getName());
-
-	static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex1-rdl",
-                "org.sorcersoft.sorcer:ex1-prv",
-                "org.sorcersoft.sorcer:ex1-api"});
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-        System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
-    }
 
     @Test
     public void localhost() throws Exception {
@@ -93,7 +96,7 @@ public class WhoIsItTest {
             logger.info("exceptions: " + result.getExceptions());
         else {
             logger.info("task context: " + result.getContext());
-            assertEquals(result.getContext().getValue("provider/hostname"), hostname);
+            assertEquals(hostname, result.getContext().getValue("provider/hostname"));
         }
     }
 
@@ -145,8 +148,8 @@ public class WhoIsItTest {
 
         Exertion result = task.exert();
         logger.info("task context: " + result.getContext());
-        assertEquals(result.getContext().getValue("provider/hostname"), hostname);
-        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
+        assertEquals(hostname, result.getContext().getValue("provider/hostname"));
+        assertEquals(ipAddress, result.getContext().getValue("provider/address"));
     }
 
     @Ignore
@@ -176,8 +179,8 @@ public class WhoIsItTest {
                 context);
 
         Exertion result = task.exert();
-        assertEquals(result.getContext().getValue("provider/hostname"), hostname);
-        assertEquals(result.getContext().getValue("provider/address"), inetAddress.getHostAddress());
+        assertEquals(hostname, result.getContext().getValue("provider/hostname"));
+        assertEquals(inetAddress.getHostAddress(), result.getContext().getValue("provider/address"));
     }
 
     @Ignore
@@ -225,10 +228,8 @@ public class WhoIsItTest {
         logger.info("task 1 trace: " + result.getExertion("Who is it1?").getTrace());
         logger.info("task 2 trace: " + result.getExertion("Who is it2?").getTrace());
 
-        assertEquals(result.getValue("Who are they?/Who is it1?/provider/message"),
-                "Hello " + ipAddress + "!");
-        assertEquals(""+result.getValue("Who are they?/Who is it2?/provider/message"),
-                "Hi XYZ-DEV!; XYZ-DEV:Hi " + ipAddress + "!");
+        assertEquals("Hello " + ipAddress + "!", result.getValue("Who are they?/Who is it1?/provider/message"));
+        assertEquals("Hi XYZ-DEV!; XYZ-DEV:Hi " + ipAddress + "!", "" + result.getValue("Who are they?/Who is it2?/provider/message"));
     }
 
 }
