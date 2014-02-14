@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>tools</artifactId>
+        <artifactId>sos-launch</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sorcer-launcher</artifactId>
-    <name>SORCER tools :: launcher</name>
+    <name>SORCER Launch :: Launcher</name>
     <description>Helper classes for launching Sorcer server (provider) and client (requestor) processes; to be used by
         other Sorcer tools. Do not confuse it with sos-boot which contains classes internal to the server process, i.e.
         the main class for server (ServiceStarter) or with ServiceRequestor helper 'main' class for clients.
@@ -18,20 +18,18 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-launcher-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-installer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-boot</artifactId>
-            <version>${project.version}</version>
-            <!-- required if using SorcerLauncher (in-process launch) -->
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -45,28 +43,13 @@
             </exclusions>
         </dependency>
 
-        <!-- required for in-process launch -->
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-start</artifactId>
-            <version>${v.rio}</version>
-            <optional>true</optional>
-        </dependency>
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-<!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>${v.slf4j}</version>
         </dependency>
 
     </dependencies>

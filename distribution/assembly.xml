@@ -90,6 +90,11 @@
                 <destName>sos-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos/sos-launch/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sos-launch-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sorcer-rio/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sorcer-rio-${v.sorcer}.pom</destName>

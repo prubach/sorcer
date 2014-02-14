@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.JavaProcessBuilder;
 import sorcer.launcher.Launcher;
+import sorcer.launcher.Mode;
 import sorcer.launcher.OutputConsumer;
 import sorcer.launcher.SorcerOutputConsumer;
 import sorcer.resolver.Resolver;
@@ -39,6 +40,7 @@ import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
@@ -50,6 +52,7 @@ import static sorcer.core.SorcerConstants.E_SORCER_HOME;
  */
 public class ForkingLauncher extends Launcher {
     private final static Logger log = LoggerFactory.getLogger(ForkingLauncher.class);
+    final protected static String MAIN_CLASS = "sorcer.launcher.Sorcer";
 
     private File outFile;
     private File errFile;
@@ -58,11 +61,14 @@ public class ForkingLauncher extends Launcher {
 
     private Integer debugPort;
     private Process2 process;
+    private Mode startMode = Mode.preferDirect;
 
+    @Override
+    public void start() throws Exception {
+
+    }
     protected void doStart() throws IOException, InterruptedException {
         log.debug("*******   *******   *******   SORCER launcher   *******   *******   *******");
-
-        logDir.mkdirs();
 
         JavaProcessBuilder bld = new JavaProcessBuilder(home.getPath());
 
@@ -92,7 +98,10 @@ public class ForkingLauncher extends Launcher {
 
         bld.setMainClass(MAIN_CLASS);
 
-        bld.setParameters(getConfigs());
+        List<String> parameters = bld.getParameters();
+        parameters.add("-M");
+        parameters.add(startMode.toString());
+        parameters.addAll(getConfigs());
 
         bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
 
@@ -131,10 +140,9 @@ public class ForkingLauncher extends Launcher {
     }
 
     @Override
-    protected void configure() {
+    protected void configure() throws IOException {
         if (process != null)
             throw new IllegalStateException("This instance have already started a process");
-        super.configure();
     }
 
     @Override
@@ -179,4 +187,11 @@ public class ForkingLauncher extends Launcher {
         this.errFile = errFile;
     }
 
+    public void setStartMode(Mode startMode) {
+        this.startMode = startMode;
+    }
+
+    public Mode getStartMode() {
+        return startMode;
+    }
 }

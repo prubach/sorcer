@@ -16,21 +16,27 @@
 
 package sorcer.launcher;
 
+import org.apache.commons.io.FileUtils;
 import org.rioproject.start.LogManagementHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
-import sorcer.core.SorcerConstants;
+import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
+import sorcer.util.JavaSystemProperties;
+import sorcer.util.StringUtils;
+import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
 
+import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
 
 /**
@@ -42,18 +48,74 @@ public class SorcerLauncher extends Launcher {
     private ThreadFactory threadFactory;
     private ServiceStarter serviceStarter;
 
-    public static boolean checkEnvironment() throws MalformedURLException {
-        boolean result = true;
-        String[] requiredEnv = {
-                SorcerConstants.E_SORCER_HOME
-        };
-        for (String key : requiredEnv) {
-            if (System.getenv(key) == null) {
-                log.warn("Missing required environment variable {}", key);
-                result = false;
+    public void start() throws Exception {
+        ensureDirConfig();
+
+        //needed by Resolver to read repoRoot from sorcer.env
+        JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
+        JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+
+        if (sorcerListener == null)
+            sorcerListener = new NullSorcerListener();
+
+        environment = getEnvironment();
+        properties = getProperties();
+        evaluator = new PropertyEvaluator();
+        evaluator.addSource("sys", properties);
+        evaluator.addSource("env", environment);
+
+        updateMonitorConfig();
+
+        configure();
+
+        doStart();
+    }
+
+    protected void ensureDirConfig() {
+        if (home == null)
+            home = sorcer.util.FileUtils.getDir(System.getenv(E_SORCER_HOME));
+        if (home == null)
+            home = sorcer.util.FileUtils.getDir(System.getProperty(SORCER_HOME));
+        if (home == null)
+            throw new IllegalStateException("No SORCER home defined");
+
+        String envSorcerExt = System.getenv(E_SORCER_EXT);
+        if (envSorcerExt != null)
+            setExt(new File(envSorcerExt));
+
+        String envRioHome = System.getenv(E_RIO_HOME);
+        if (envRioHome != null)
+            setRio(new File(envRioHome));
+
+        if (ext == null)
+            ext = home;
+
+        if (configDir == null)
+            configDir = new File(home, "configs");
+
+        if (rio == null)
+            rio = new File(home, "lib/rio");
+
+        if (logDir == null)
+            logDir = new File(home, "logs");
+    }
+
+    private void updateMonitorConfig() {
+        if (profile != null) {
+            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
+            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
+                List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
+                for (String path : monitorConfigPaths) {
+                    path = evaluator.eval(path);
+                    if (new File(path).exists())
+                        paths.add(path);
+                }
+                properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
             }
         }
+    }
 
+    public static boolean checkEnvironment() throws MalformedURLException {
         //we can't simply create another AppClassLoader,
         //because rio CommonClassLoader enforces SystemClassLoader as parent,
         //so all services started with rio would have parallel CL hierarchy
@@ -84,14 +146,17 @@ public class SorcerLauncher extends Launcher {
                 requiredClassPath.removeAll(commonUrls);
             }
         }
-        for (URL entry : requiredClassPath) {
+        // use logger, we won't be able to start in direct mode anyway
+        for (URL entry : requiredClassPath)
             log.warn("Missing required ClassPath element {}", entry);
-        }
-        return result && requiredClassPath.isEmpty();
+        return requiredClassPath.isEmpty();
     }
 
     @Override
-    protected void configure() {
+    protected void configure() throws IOException {
+        if (!logDir.exists())
+            FileUtils.forceMkdir(logDir);
+
         //TODO RKR check grant
         Properties defaults = new Properties();
         defaults.putAll(properties);
@@ -109,11 +174,17 @@ public class SorcerLauncher extends Launcher {
     }
 
     @Override
-    protected void doStart() {
+    protected void doStart() throws IOException {
+        Installer installer = new Installer();
+        if (installer.isInstallRequired(logDir))
+            installer.install();
+
         SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
 
         // last moment
         installSecurityManager();
+
+        SorcerShutdownHook.instance.add(this);
 
         if (threadFactory != null) {
             threadFactory.newThread(sorcerRun).start();
@@ -127,12 +198,12 @@ public class SorcerLauncher extends Launcher {
         return System.getenv();
     }
 
-    private static void installSecurityManager() {
+    public static void installSecurityManager() {
         if (System.getSecurityManager() == null)
             System.setSecurityManager(new SecurityManager());
     }
 
-    private static void installLogging() {
+    public static void installLogging() {
         //redirect java.util.logging to slf4j/logback
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();

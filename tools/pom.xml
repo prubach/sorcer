@@ -19,11 +19,12 @@
 		<module>sos-boot</module>
         <module>sos-netlet</module>
 		<module>sos-shell</module>
-        <module>sos-start</module>
 		<module>browser</module>
         <module>sorcer-installer</module>
-        <module>sorcer-launcher</module>
+<!--
+        the plugin is currently not maintained
 		<module>sorcer-maven-plugin</module>
+-->
 		<module>sorcer-provider</module>
 		<module>provider-root</module>
 		<!-- force download implicit dependencies -->

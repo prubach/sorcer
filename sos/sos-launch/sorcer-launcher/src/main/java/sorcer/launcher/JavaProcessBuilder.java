@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class JavaProcessBuilder {
     protected Map<String, String> environment = new HashMap<String, String>();
     protected Collection<String> classPathList;
     protected String mainClass;
-    protected List<String> parameters;
+    protected List<String> parameters = new LinkedList<String>();
     protected File workingDir;
     protected boolean debugger;
     protected String command = "java";
@@ -282,5 +283,9 @@ public class JavaProcessBuilder {
 
     public Map<String, String> getJavaAgent() {
         return javaAgent;
+    }
+
+    public List<String> getParameters() {
+        return parameters;
     }
 }

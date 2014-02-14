@@ -236,7 +236,8 @@ lateInit ( ) {
 		-Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
 		-Dtools.jar=$TOOLS_JAR \
 		-Dorg.rioproject.resolver.jar=$MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar \
-		-DRIO_HOME=$rioHome"
+		-DRIO_HOME=$rioHome\
+		-Dsorcer.home=$SORCER_HOME"
 
 
 	LOG_CP="$MVN_REPO/org/slf4j/slf4j-api/$V_SLF4J/slf4j-api-$V_SLF4J.jar:\
@@ -343,6 +344,7 @@ createSorcerRioUICp ( ) {
 startSos ( ) {
      BOOT_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-start/$V_SORCER/sos-start-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher-base/$V_SORCER/sorcer-launcher-base-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-installer/$V_SORCER/sorcer-installer-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\

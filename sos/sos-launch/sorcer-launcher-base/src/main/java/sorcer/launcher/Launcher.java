@@ -16,18 +16,22 @@
 
 package sorcer.launcher;
 
-import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
 import sorcer.util.HostUtil;
 import sorcer.util.IOUtils;
-import sorcer.util.JavaSystemProperties;
-import sorcer.util.StringUtils;
 import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
@@ -36,7 +40,6 @@ import static sorcer.util.JavaSystemProperties.*;
  * @author Rafał Krupiński
  */
 public abstract class Launcher {
-    final protected static String MAIN_CLASS = "sorcer.boot.ServiceStarter";
     public WaitMode waitMode = WaitMode.no;
     protected File home;
     protected File ext;
@@ -44,7 +47,7 @@ public abstract class Launcher {
     protected File logDir;
     protected File configDir;
     protected List<String> configs = Collections.emptyList();
-    private Profile profile;
+    protected Profile profile;
     protected SorcerListener sorcerListener;
 
     protected Map<String, String> properties;
@@ -64,11 +67,12 @@ public abstract class Launcher {
             "org.rioproject.resolver:resolver-api",
             "org.rioproject:rio-lib",
 
+            "org.sorcersoft.sorcer:sos-start",
+            "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sorcer-api",
             "org.sorcersoft.sorcer:sorcer-resolver",
             "org.sorcersoft.sorcer:sorcer-rio-start",
             "org.sorcersoft.sorcer:sorcer-rio-lib",
-            "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sos-util",
 
             //required for sos.Handler to work
@@ -85,73 +89,12 @@ public abstract class Launcher {
             "ch.qos.logback:logback-core:1.0.13",
             "ch.qos.logback:logback-classic:1.0.13"
     };
-    private PropertyEvaluator evaluator;
 
-    public final void start() throws Exception {
-        ensureDirConfig();
+    protected PropertyEvaluator evaluator;
 
-        //needed by Resolver to read repoRoot from sorcer.env
-        JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
-        JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+    abstract public void start() throws Exception;
 
-        if (sorcerListener == null)
-            sorcerListener = new NullSorcerListener();
-
-        environment = getEnvironment();
-        properties = getProperties();
-        evaluator = new PropertyEvaluator();
-        evaluator.addSource("sys", properties);
-        evaluator.addSource("env", environment);
-
-        updateMonitorConfig();
-
-        configure();
-
-        Installer installer = new Installer();
-        if (installer.isInstallRequired(logDir))
-            installer.install();
-
-        doStart();
-    }
-
-    protected void ensureDirConfig() {
-        if (home == null) {
-            String envHome = System.getProperty(SORCER_HOME);
-            if (envHome == null)
-                throw new IllegalStateException("No SORCER_HOME set");
-            home = new File(envHome);
-        }
-
-        if (ext == null)
-            ext = home;
-
-        if (configDir == null)
-            configDir = new File(home, "configs");
-
-        if (rio == null)
-            rio = new File(home, "lib/rio");
-
-        if (logDir == null)
-            logDir = new File(home, "logs");
-    }
-
-    private void updateMonitorConfig() {
-        if (profile != null) {
-            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
-            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
-                List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
-                for (String path : monitorConfigPaths) {
-                    path = evaluator.eval(path);
-                    if (new File(path).exists())
-                        paths.add(path);
-                }
-                properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
-            }
-        }
-    }
-
-    protected void configure() {
-    }
+    abstract protected void configure() throws IOException;
 
     abstract protected void doStart() throws Exception;
 

@@ -13,12 +13,13 @@
     <name>SORCER OS</name>
 
     <modules>
+        <module>sorcer-api</module>
         <module>sos-platform</module>
         <module>sos-util</module>
         <module>sos-exertlet-sui</module>
+        <module>sos-launch</module>
         <module>commons-req</module>
         <module>commons-prv</module>
         <module>sos-api</module>
-        <module>sorcer-api</module>
     </modules>
 </project>

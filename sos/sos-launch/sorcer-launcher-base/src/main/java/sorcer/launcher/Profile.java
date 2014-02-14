@@ -16,8 +16,6 @@
 
 package sorcer.launcher;
 
-import org.apache.commons.io.IOUtils;
-
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.IOException;
@@ -72,7 +70,8 @@ public class Profile {
         } finally {
             if (xd != null)
                 xd.close();
-            in.close();
+            if (in != null)
+                in.close();
         }
     }
 

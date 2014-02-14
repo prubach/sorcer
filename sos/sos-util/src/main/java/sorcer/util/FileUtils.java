@@ -29,9 +29,21 @@ public class FileUtils {
         if (child == null)
             return parent;
         File result = new File(child);
-        if (result.isAbsolute())
+        if (result.isAbsolute() || parent == null)
             return result;
         else
             return new File(parent, child);
+    }
+
+    public static File getDir(String path) {
+        File file = getFile(path);
+        return (file != null && file.isDirectory()) ? file : null;
+    }
+
+    public static File getFile(String path) {
+        if (path == null)
+            return null;
+        File file = new File(path);
+        return file.exists() ? file : null;
     }
 }
