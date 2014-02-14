@@ -176,9 +176,9 @@ logger("net.jini.discovery.LookupDiscovery", OFF)
 //logger("net.jini.lookup.JoinManager", OFF)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 
-//logger("sorcer.core.security.level", OFF)
-logger("sorcer.test.level", DEBUG)
-logger("private.level", DEBUG)
+//logger("sorcer.core.security", OFF)
+logger("sorcer.test", DEBUG)
+logger("private", DEBUG)
 logger("org.dancres.blitz", WARN)
 
 root(INFO, appenders)
@@ -208,4 +208,4 @@ logger("watch.Perm Gen", DEBUG, ["WATCH-LOG"], false)
 def listener = new ch.qos.logback.classic.jul.LevelChangePropagator();
 listener.setResetJUL(true);
 ((ch.qos.logback.classic.LoggerContext)context).addListener(listener);
-org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();
+//org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();
