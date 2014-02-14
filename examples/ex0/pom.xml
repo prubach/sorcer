@@ -18,6 +18,7 @@
 		<module>ex0-prv</module>
 		<module>ex0-sui</module>
         <module>ex0-cfg</module>
+        <module>ex0-req</module>
 	</modules>
 
 	<dependencyManagement>
