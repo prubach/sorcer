@@ -160,17 +160,16 @@ public class Sorcer {
             if (envOk && debugPort == null) {
                 SorcerLauncher.installLogging();
                 launcher = new SorcerLauncher();
-            }
-            else {
+            } else {
                 if (debugPort == null)
                     if (mode.force)
-                        throw new IllegalArgumentException("Cannot run in force-direct mode with debug");
+                        throw new IllegalArgumentException("Cannot run in force-direct mode");
                     else
-                        LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode with debug");
+                        LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode");
                 else if (mode.force)
-                    throw new IllegalArgumentException("Cannot run in force-direct mode");
+                    throw new IllegalArgumentException("Cannot run in force-direct mode with debug");
                 else
-                    LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode");
+                    LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode with debug");
             }
         }
 
@@ -189,13 +188,10 @@ public class Sorcer {
             forkingLauncher.setOut(new PrintStream(outFile));
             forkingLauncher.setErr(new PrintStream(errFile));
 */
-
-            //set force-direct to avoid infinite loop of Sorcer and ForkingLauncher
-            forkingLauncher.setStartMode(Mode.forceDirect);
         }
 
         String homePath = System.getProperty(SORCER_HOME);
-        File home=null;
+        File home = null;
         if (homePath != null) {
             home = new File(homePath).getCanonicalFile();
             launcher.setHome(home);
@@ -215,19 +211,8 @@ public class Sorcer {
         List<String> userConfigFiles = cmd.getArgList();
         launcher.setConfigs(userConfigFiles);
 
-        Profile profile = null;
-        if (cmd.hasOption(PROFILE)) {
-            String profileName = cmd.getOptionValue(PROFILE);
-            if (profileName.endsWith(".xml"))
-                profile = Profile.load(new File(profileName).toURI().toURL());
-            else
-                profile = Profile.loadBuiltin(profileName);
-        } else {
-            if (userConfigFiles.isEmpty())
-                profile = Profile.loadDefault();
-        }
-        if (profile != null)
-            launcher.setProfile(profile);
+        if (cmd.hasOption(PROFILE))
+            launcher.setProfile(cmd.getOptionValue(PROFILE));
 
         return launcher;
     }

@@ -47,6 +47,7 @@ public class SorcerLauncher extends Launcher {
 
     private ThreadFactory threadFactory;
     private ServiceStarter serviceStarter;
+    protected Profile profile;
 
     public void start() throws Exception {
         ensureDirConfig();
@@ -69,35 +70,6 @@ public class SorcerLauncher extends Launcher {
         configure();
 
         doStart();
-    }
-
-    protected void ensureDirConfig() {
-        if (home == null)
-            home = sorcer.util.FileUtils.getDir(System.getenv(E_SORCER_HOME));
-        if (home == null)
-            home = sorcer.util.FileUtils.getDir(System.getProperty(SORCER_HOME));
-        if (home == null)
-            throw new IllegalStateException("No SORCER home defined");
-
-        String envSorcerExt = System.getenv(E_SORCER_EXT);
-        if (envSorcerExt != null)
-            setExt(new File(envSorcerExt));
-
-        String envRioHome = System.getenv(E_RIO_HOME);
-        if (envRioHome != null)
-            setRio(new File(envRioHome));
-
-        if (ext == null)
-            ext = home;
-
-        if (configDir == null)
-            configDir = new File(home, "configs");
-
-        if (rio == null)
-            rio = new File(home, "lib/rio");
-
-        if (logDir == null)
-            logDir = new File(home, "logs");
     }
 
     private void updateMonitorConfig() {
@@ -152,7 +124,6 @@ public class SorcerLauncher extends Launcher {
         return requiredClassPath.isEmpty();
     }
 
-    @Override
     protected void configure() throws IOException {
         if (!logDir.exists())
             FileUtils.forceMkdir(logDir);
@@ -173,7 +144,6 @@ public class SorcerLauncher extends Launcher {
         //installLogging();
     }
 
-    @Override
     protected void doStart() throws IOException {
         Installer installer = new Installer();
         if (installer.isInstallRequired(logDir))
@@ -193,9 +163,38 @@ public class SorcerLauncher extends Launcher {
         }
     }
 
+    protected List<String> getConfigs() {
+        ArrayList<String> result = new ArrayList<String>();
+        if (profile != null) {
+            String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
+            result.ensureCapacity(sorcerConfigPaths.length + configs.size());
+
+            for (String cfg : sorcerConfigPaths) {
+                String path = evaluator.eval(cfg);
+                if (new File(path).exists())
+                    result.add(path);
+            }
+        }
+        if (!configs.isEmpty())
+            result.addAll(configs);
+        return result;
+    }
+
     @Override
     protected Map<String, String> getEnvironment() {
         return System.getenv();
+    }
+
+    @Override
+    public void setProfile(String profileName) {
+        try {
+            if (profileName.endsWith(".xml"))
+                profile = Profile.load(new File(profileName).toURI().toURL());
+            else
+                profile = Profile.loadBuiltin(profileName);
+        } catch (IOException x) {
+            throw new IllegalArgumentException("Could not load profile " + profileName);
+        }
     }
 
     public static void installSecurityManager() {

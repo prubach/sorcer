@@ -19,15 +19,12 @@ package sorcer.launcher.process;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.launcher.JavaProcessBuilder;
-import sorcer.launcher.Launcher;
-import sorcer.launcher.Mode;
-import sorcer.launcher.OutputConsumer;
-import sorcer.launcher.SorcerOutputConsumer;
+import sorcer.launcher.*;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;
 import sorcer.util.ProcessMonitor;
+import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,13 +59,13 @@ public class ForkingLauncher extends Launcher {
     private Integer debugPort;
     private Process2 process;
     private Mode startMode = Mode.preferDirect;
+    private String profile;
 
     @Override
     public void start() throws Exception {
-
-    }
-    protected void doStart() throws IOException, InterruptedException {
-        log.debug("*******   *******   *******   SORCER launcher   *******   *******   *******");
+        configure();
+        if (sorcerListener == null)
+            sorcerListener = new NullSorcerListener();
 
         JavaProcessBuilder bld = new JavaProcessBuilder(home.getPath());
 
@@ -96,14 +93,22 @@ public class ForkingLauncher extends Launcher {
         Collection<String> classPath = getClassPath();
         bld.setClassPath(classPath);
 
+        bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
+
         bld.setMainClass(MAIN_CLASS);
 
         List<String> parameters = bld.getParameters();
         parameters.add("-M");
-        parameters.add(startMode.toString());
-        parameters.addAll(getConfigs());
+        parameters.add(Mode.forceDirect.paramValue);
 
-        bld.getJavaAgent().put(Resolver.resolveAbsolute("org.rioproject:rio-start"), null);
+        if (profile != null) {
+            parameters.add("-P");
+            parameters.add(profile);
+        }
+
+        //last parameters
+        if (configs != null)
+            parameters.addAll(configs);
 
         process = bld.startProcess();
         sorcerListener.processLaunched(process);
@@ -139,10 +144,17 @@ public class ForkingLauncher extends Launcher {
         process.destroy();
     }
 
-    @Override
     protected void configure() throws IOException {
         if (process != null)
             throw new IllegalStateException("This instance have already started a process");
+
+        ensureDirConfig();
+
+        environment = getEnvironment();
+        properties = getProperties();
+        evaluator = new PropertyEvaluator();
+        evaluator.addSource("sys", properties);
+        evaluator.addSource("env", environment);
     }
 
     @Override
@@ -187,11 +199,8 @@ public class ForkingLauncher extends Launcher {
         this.errFile = errFile;
     }
 
-    public void setStartMode(Mode startMode) {
-        this.startMode = startMode;
-    }
-
-    public Mode getStartMode() {
-        return startMode;
+    @Override
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 }

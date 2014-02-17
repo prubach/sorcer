@@ -47,7 +47,6 @@ public abstract class Launcher {
     protected File logDir;
     protected File configDir;
     protected List<String> configs = Collections.emptyList();
-    protected Profile profile;
     protected SorcerListener sorcerListener;
 
     protected Map<String, String> properties;
@@ -70,6 +69,9 @@ public abstract class Launcher {
             "org.sorcersoft.sorcer:sos-start",
             "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sorcer-api",
+            "org.sorcersoft.sorcer:sorcer-launcher-base",
+            "org.sorcersoft.sorcer:sorcer-launcher",
+            "org.sorcersoft.sorcer:sorcer-installer",
             "org.sorcersoft.sorcer:sorcer-resolver",
             "org.sorcersoft.sorcer:sorcer-rio-start",
             "org.sorcersoft.sorcer:sorcer-rio-lib",
@@ -82,6 +84,7 @@ public abstract class Launcher {
             "org.apache.commons:commons-lang3:3.1",
             "com.google.guava:guava:15.0",
             "commons-io:commons-io",
+            "commons-cli:commons-cli:1.2",
             "org.codehaus.plexus:plexus-utils:3.0.15",
 
             "org.slf4j:slf4j-api",
@@ -94,14 +97,37 @@ public abstract class Launcher {
 
     abstract public void start() throws Exception;
 
-    abstract protected void configure() throws IOException;
-
-    abstract protected void doStart() throws Exception;
-
     abstract public void stop();
 
     public void setWaitMode(WaitMode waitMode) {
         this.waitMode = waitMode;
+    }
+
+    protected void ensureDirConfig() {
+        if (home == null)
+            home = sorcer.util.FileUtils.getDir(System.getenv(E_SORCER_HOME));
+        if (home == null)
+            home = sorcer.util.FileUtils.getDir(System.getProperty(SORCER_HOME));
+        if (home == null)
+            throw new IllegalStateException("No SORCER home defined");
+
+        String envSorcerExt = System.getenv(E_SORCER_EXT);
+        if (envSorcerExt != null)
+            setExt(new File(envSorcerExt));
+        else
+            ext = home;
+
+        String envRioHome = System.getenv(E_RIO_HOME);
+        if (envRioHome != null)
+            setRio(new File(envRioHome));
+        else
+            rio = new File(home, "lib/rio");
+
+        if (configDir == null)
+            configDir = new File(home, "configs");
+
+        if (logDir == null)
+            logDir = new File(home, "logs");
     }
 
     abstract protected Map<String, String> getEnvironment();
@@ -155,28 +181,11 @@ public abstract class Launcher {
                 IOUtils.ensureFile(new File(p));
                 result.add(p);
             }
-            result.add(new File(System.getProperty("JAVA_HOME"), "lib/tools.jar").getPath());
+            result.add(new File(System.getProperty("java.home"), "lib/tools.jar").getPath());
             return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    protected List<String> getConfigs() {
-        ArrayList<String> result = new ArrayList<String>();
-        if (profile != null) {
-            String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
-            result.ensureCapacity(sorcerConfigPaths.length + configs.size());
-
-            for (String cfg : sorcerConfigPaths) {
-                String path = evaluator.eval(cfg);
-                if (new File(path).exists())
-                    result.add(path);
-            }
-        }
-        if (!configs.isEmpty())
-            result.addAll(configs);
-        return result;
     }
 
     public enum WaitMode {
@@ -211,8 +220,6 @@ public abstract class Launcher {
         this.sorcerListener = listener;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
+    abstract public void setProfile(String profile) throws IOException;
 
 }
