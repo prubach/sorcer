@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.service.Accessor;
+import sorcer.util.junit.ExportCodebase;
 import sorcer.util.junit.SorcerClient;
 import sorcer.util.junit.SorcerRunner;
 
@@ -35,6 +36,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
+@ExportCodebase("org.sorcersoft.sorcer:dbp-api")
 public class DatabaseStorerTest {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseStorerTest.class);
@@ -42,19 +44,25 @@ public class DatabaseStorerTest {
     public static final String TXT = "This is me";
     private static final String TXT2 = "This is me again";
 
-    @Test
+    @Test(/*timeout = 5000*/)
     public void testDbp() throws Exception {
         IDatabaseProvider databaseProvider = Accessor.getService(IDatabaseProvider.class);
         assertNotNull(databaseProvider);
 
-        URL url = databaseProvider.storeObject(TXT);
-        log.info("url = {}", url);
-        verify(url, TXT);
+        URL url = null;
+        try {
+            url = databaseProvider.storeObject(TXT);
+            Thread.sleep(100);
+            log.info("url = {}", url);
+            verify(url, TXT);
 
-        databaseProvider.updateObject(url, TXT2);
-        verify(url, TXT2);
-
-        databaseProvider.deleteObject(url);
+            databaseProvider.updateObject(url, TXT2);
+            Thread.sleep(100);
+            verify(url, TXT2);
+        } finally {
+            if (url != null)
+                databaseProvider.deleteObject(url);
+        }
     }
 
     private void verify(URL url, String expected) throws IOException {
