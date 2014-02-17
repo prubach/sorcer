@@ -33,6 +33,7 @@ import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
+import sorcer.util.HostUtil;
 import sorcer.util.junit.ExportCodebase;
 import sorcer.util.junit.SorcerClient;
 import sorcer.util.junit.SorcerRunner;
@@ -67,7 +68,7 @@ public class WhoIsItTest {
 
     @Test
     public void localhost() throws Exception {
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -78,7 +79,7 @@ public class WhoIsItTest {
 
     @Test
     public void helloObjectTask() throws Exception {
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -103,17 +104,15 @@ public class WhoIsItTest {
     @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
-        String ipAddress = inetAddress.getHostAddress();
-        String providerName = null;
 
         Context context = new ServiceContext("Who Is It?");
         context.putValue("requestor/message", new RequestorMessage("Hello Network!"));
         context.putValue("requestor/hostname", hostname);
 
         NetSignature signature = new NetSignature("getHostName",
-                sorcer.ex1.WhoIsIt.class, providerName);
+                sorcer.ex1.WhoIsIt.class, (String) null);
 
         Task task = new NetTask("Who Is It?", signature, context);
         Exertion result = task.exert();
@@ -129,7 +128,7 @@ public class WhoIsItTest {
 
 	@Test
 	public void execBatchTask() throws Exception {
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -155,7 +154,7 @@ public class WhoIsItTest {
     @Ignore
     @Test
     public void exertBatchTask() throws Exception {
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
         String providername = "*";
@@ -190,7 +189,7 @@ public class WhoIsItTest {
         String providerName2 = SorcerEnv.getSuffixedName("XYZ");
 
         // define requestor data
-        InetAddress inetAddress = InetAddress.getLocalHost();
+        InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 

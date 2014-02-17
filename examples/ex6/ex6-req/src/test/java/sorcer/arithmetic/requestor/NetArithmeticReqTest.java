@@ -36,6 +36,7 @@ import sorcer.service.Task;
 import sorcer.util.junit.ExportCodebase;
 import sorcer.util.junit.SorcerClient;
 import sorcer.util.junit.SorcerRunner;
+import sorcer.util.junit.SorcerService;
 
 
 import java.util.logging.Logger;
@@ -50,7 +51,7 @@ import static sorcer.eo.operator.*;
 @SuppressWarnings({ "rawtypes" })
 @Category(SorcerClient.class)
 @RunWith(SorcerRunner.class)
-//@SorcerService(":ex6-cfg-all")
+@SorcerService(":ex6-cfg-all")
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex6-api",
         "org.sorcersoft.sorcer:sorcer-api"

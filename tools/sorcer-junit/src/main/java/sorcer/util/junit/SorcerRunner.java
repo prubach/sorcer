@@ -16,25 +16,26 @@
 
 package sorcer.util.junit;
 
+import org.junit.Ignore;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.Launcher;
-import sorcer.launcher.SorcerLauncher;
+import sorcer.launcher.process.ForkingLauncher;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.security.Policy;
 import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
 
 import static sorcer.core.SorcerConstants.SORCER_HOME;
 
@@ -43,33 +44,36 @@ import static sorcer.core.SorcerConstants.SORCER_HOME;
  */
 public class SorcerRunner extends BlockJUnit4ClassRunner {
     private Class<?> klass;
-    private File home;
+    private static File home;
+    private static final Logger log;
+
+    static {
+        String homePath = System.getProperty(SORCER_HOME);
+        if (homePath != null)
+            home = new File(homePath);
+
+        JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
+        JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
+        //JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
+        //JavaSystemProperties.ensure(RMI_SERVER_CODEBASE, SorcerEnv.getWebsterUrl());
+        log = LoggerFactory.getLogger(SorcerRunner.class);
+    }
 
     /**
-     * Creates a BlockJUnit4ClassRunner to run {@code klass}
-     *
      * @throws org.junit.runners.model.InitializationError if the test class is malformed.
      */
     public SorcerRunner(Class<?> klass) throws InitializationError {
         super(klass);
-        this.klass = klass;
-        try {
-            JavaSystemProperties.ensure(SORCER_HOME);
-            home = new File(System.getProperty(SORCER_HOME));
-        } catch (IllegalStateException ignore) {
+        if (home == null)
             throw new InitializationError("sorcer.home property is required");
-        }
+        this.klass = klass;
     }
 
     @Override
     public void run(final RunNotifier notifier) {
+        Launcher sorcerLauncher = null;
         try {
-            JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
-            JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-            JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
-            JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
-
-
             String policyPath = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
             if (policyPath != null) {
                 File policy = new File(policyPath);
@@ -93,11 +97,10 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
             String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
             if (codebase != null && codebase.length > 0) {
-                JavaSystemProperties.ensure(SorcerConstants.R_CODEBASE, StringUtils.join(codebase, ' '));
+                JavaSystemProperties.ensure(JavaSystemProperties.RMI_SERVER_CODEBASE, Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), codebase));
                 ServiceRequestor.prepareCodebase();
             }
 
-            Launcher sorcerLauncher = null;
             String[] serviceConfigPaths = getServiceConfigPaths();
 
             if (serviceConfigPaths != null) {
@@ -105,47 +108,35 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
                     notifier.fireTestFailure(new Failure(getDescription(), new IllegalArgumentException("@SorcerService annotation without any configuration files")));
                     return;
                 }
-
-                try {
-                    sorcerLauncher = startSorcer(serviceConfigPaths);
-                } catch (Exception e) {
-                    notifier.fireTestFailure(new Failure(getDescription(), e));
-                    return;
-                }
+                sorcerLauncher = startSorcer(serviceConfigPaths);
             }
 
-            try {
-                Thread t = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SorcerRunner.super.run(notifier);
-                    }
-                });
-                t.start();
-                t.join(30000);
-                if (t.isAlive())
-                    t.stop(new RuntimeException(new TimeoutException()));
-            } catch (ThreadDeath x) {
-                notifier.fireTestFailure(new Failure(getDescription(), x));
-            } catch (InterruptedException e) {
-                notifier.fireTestFailure(new Failure(getDescription(), e));
-            } finally {
-                if (sorcerLauncher != null)
-                    sorcerLauncher.stop();
-            }
-        } catch (RuntimeException x) {
+            super.run(notifier);
+        } catch (Exception x) {
             notifier.fireTestFailure(new Failure(getDescription(), x));
+        } finally {
+            if (sorcerLauncher != null)
+                sorcerLauncher.stop();
         }
     }
 
+    @Override
+    protected void runChild(FrameworkMethod method, RunNotifier notifier) {
+        if (method.getAnnotation(Ignore.class) == null)
+            log.info("Testing {}", method.getMethod());
+        super.runChild(method, notifier);
+    }
+
     private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
-        Launcher launcher = new SorcerLauncher();
+        ForkingLauncher launcher = new ForkingLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
         launcher.setWaitMode(Launcher.WaitMode.start);
         launcher.setHome(home);
         File logDir = new File("/tmp/logs");
         logDir.mkdir();
         launcher.setLogDir(logDir);
+
+        log.info("Starting SORCER instance for test {}", getDescription());
         launcher.start();
 
         return launcher;
