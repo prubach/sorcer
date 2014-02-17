@@ -23,8 +23,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.process.DestroyingListener;
 import sorcer.launcher.process.ForkingLauncher;
@@ -35,7 +33,6 @@ import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,7 +67,7 @@ public class Sorcer {
 
             if (cmd.hasOption('h')) {
                 HelpFormatter helpFormatter = new HelpFormatter();
-                helpFormatter.printHelp(80, "sorcer", "Start sorcer", options, null);
+                helpFormatter.printHelp(160, "sorcer", "Start sorcer", options, null);
                 return;
             }
 
@@ -79,6 +76,12 @@ public class Sorcer {
             if (launcher instanceof ForkingLauncher) {
                 ForkingLauncher forkingLauncher = (ForkingLauncher) launcher;
                 forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
+            }
+
+            launcher.preConfigure();
+
+            if (launcher instanceof SorcerLauncher) {
+                SorcerLauncher.installSecurityManager();
             }
 
             launcher.start();
@@ -90,7 +93,10 @@ public class Sorcer {
 
     private static Options buildOptions() {
         Options options = new Options();
-        Option wait = new Option(WAIT, "wait", true, "Wait style, one of:\n\t'no' - don't wait,\n\t'start' - wait until sorcer starts\n\t'end' - wait until sorcer finishes, stopping launcher also stops sorcer");
+        Option wait = new Option(WAIT, "wait", true, "Wait style, one of:\n"
+                +"'no' - exit immediately, forces forked mode\n"
+                +"'start' - wait until sorcer starts, then exit, forces forked mode\n"
+                +"'end' - wait until sorcer finishes, stopping launcher also stops SORCER");
         wait.setType(Launcher.WaitMode.class);
         wait.setArgs(1);
         wait.setArgName("wait-mode");
@@ -109,16 +115,21 @@ public class Sorcer {
         options.addOption(debug);
 
         //see sorcer.launcher.Profile
-        Option profile = new Option(PROFILE, "profile", true, "Profile, one of [sorcer, rio, mix]");
+        Option profile = new Option(PROFILE, "profile", true, "Profile, one of [sorcer, rio, mix] or a path");
         profile.setArgs(1);
         profile.setType(String.class);
         profile.setArgName("profile");
         options.addOption(profile);
 
-        Option mode = new Option(MODE, "mode", true, "Select start mode:\n\tdirect - start SORCER in current JVM\n\tfork - start SORCER in a new process\n\tprefer - try different if selected is invalid for some reason\n\tforce - exits process with error if cannot start in selected mode\nValue is case-insensitive");
+        String modeDesc = "Select start mode, one of:\n"
+                + Mode.preferDirect.paramValue + " - default, prefer current JVM, start in forked if debug is enabled or required environment variable is not set\n"
+                + Mode.forceDirect.paramValue + " - try current JVM, exit on failure\n"
+                + Mode.preferFork.paramValue + " - prefer new process, try in current JVM if cannot run a process (e.g. insufficient privileges)\n"
+                + Mode.forceFork.paramValue + " try new process, exit on failure";
+        Option mode = new Option(MODE, "mode", true, modeDesc);
         mode.setType(Boolean.class);
         mode.setArgs(1);
-        mode.setArgName(getModeArgName());
+        mode.setArgName("mode");
         options.addOption(mode);
         options.addOption("h", "help", false, "Print this help");
 
