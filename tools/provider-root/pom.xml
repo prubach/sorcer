@@ -100,11 +100,13 @@
     <build>
         <pluginManagement>
             <plugins>
+<!--
                 <plugin>
                     <groupId>org.sorcersoft.sorcer</groupId>
                     <artifactId>sorcer-maven-plugin</artifactId>
                     <version>${project.version}</version>
                 </plugin>
+-->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>

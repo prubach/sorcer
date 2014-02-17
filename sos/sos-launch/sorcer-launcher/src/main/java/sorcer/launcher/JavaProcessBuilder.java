@@ -30,13 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -144,7 +138,9 @@ public class JavaProcessBuilder {
         if (properties != null)
             builder.command().addAll(_D(properties));
 
-        String classPath = StringUtils.join(classPathList, File.pathSeparator);
+        List<String> _classPathList = new ArrayList<String>(classPathList);
+        Collections.sort(_classPathList);
+        String classPath = StringUtils.join(_classPathList, File.pathSeparator);
         builder.command().addAll(asList("-classpath", classPath));
 
         for (Map.Entry<String, String> e : javaAgent.entrySet()) {

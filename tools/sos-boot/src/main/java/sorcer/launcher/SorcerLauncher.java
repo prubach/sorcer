@@ -16,7 +16,6 @@
 
 package sorcer.launcher;
 
-import org.apache.commons.io.FileUtils;
 import org.rioproject.start.LogManagementHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
 import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
-import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
-import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,41 +46,69 @@ public class SorcerLauncher extends Launcher {
     private ServiceStarter serviceStarter;
     protected Profile profile;
 
-    public void start() throws Exception {
-        ensureDirConfig();
+    @Override
+    public void preConfigure() {
+        if (serviceStarter != null)
+            throw new IllegalStateException("This instance has already created an object");
 
-        //needed by Resolver to read repoRoot from sorcer.env
-        JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
-        JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+        super.preConfigure();
 
-        if (sorcerListener == null)
-            sorcerListener = new NullSorcerListener();
-
-        environment = getEnvironment();
-        properties = getProperties();
-        evaluator = new PropertyEvaluator();
-        evaluator.addSource("sys", properties);
-        evaluator.addSource("env", environment);
-
-        updateMonitorConfig();
+        try {
+            Installer installer = new Installer();
+            if (installer.isInstallRequired(logDir))
+                installer.install();
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new RuntimeException("Error while installing SORCER", x);
+        }
 
         configure();
+    }
 
-        doStart();
+    public void start() throws IOException {
+        SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
+
+        SorcerShutdownHook.instance.add(this);
+
+        if (threadFactory != null) {
+            threadFactory.newThread(sorcerRun).start();
+        } else {
+            sorcerRun.run();
+        }
+    }
+
+    protected void configure() {
+        updateMonitorConfig();
+
+        //TODO RKR check grant
+        Properties defaults = new Properties();
+        defaults.putAll(properties);
+
+        Properties overrides = new Properties(defaults);
+        overrides.putAll(System.getProperties());
+
+        if (log.isDebugEnabled())
+            for (Object key : i(overrides.propertyNames()))
+                log.debug("{} = {}", key, overrides.getProperty((String) key));
+
+
+        System.setProperties(overrides);
     }
 
     private void updateMonitorConfig() {
-        if (profile != null) {
-            String[] monitorConfigPaths = profile.getMonitorConfigPaths();
-            if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
-                List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
-                for (String path : monitorConfigPaths) {
-                    path = evaluator.eval(path);
-                    if (new File(path).exists())
-                        paths.add(path);
-                }
-                properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
+        if (profile == null) {
+            return;
+        }
+        String[] monitorConfigPaths = profile.getMonitorConfigPaths();
+        if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
+            List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
+            for (String path : monitorConfigPaths) {
+                path = evaluator.eval(path);
+                if (new File(path).exists())
+                    paths.add(path);
             }
+            properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
         }
     }
 
@@ -122,45 +147,6 @@ public class SorcerLauncher extends Launcher {
         for (URL entry : requiredClassPath)
             log.warn("Missing required ClassPath element {}", entry);
         return requiredClassPath.isEmpty();
-    }
-
-    protected void configure() throws IOException {
-        if (!logDir.exists())
-            FileUtils.forceMkdir(logDir);
-
-        //TODO RKR check grant
-        Properties defaults = new Properties();
-        defaults.putAll(properties);
-
-        Properties overrides = new Properties(defaults);
-        overrides.putAll(System.getProperties());
-
-        if (log.isDebugEnabled())
-            for (Object key : i(overrides.propertyNames()))
-                log.debug("{} = {}", key, overrides.getProperty((String) key));
-
-
-        System.setProperties(overrides);
-        //installLogging();
-    }
-
-    protected void doStart() throws IOException {
-        Installer installer = new Installer();
-        if (installer.isInstallRequired(logDir))
-            installer.install();
-
-        SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
-
-        // last moment
-        installSecurityManager();
-
-        SorcerShutdownHook.instance.add(this);
-
-        if (threadFactory != null) {
-            threadFactory.newThread(sorcerRun).start();
-        } else {
-            sorcerRun.run();
-        }
     }
 
     protected List<String> getConfigs() {
@@ -232,8 +218,9 @@ public class SorcerLauncher extends Launcher {
     @Override
     public void stop() {
         if (serviceStarter == null)
-            throw new IllegalStateException("Sorcer not running");
+            return;
         serviceStarter.stop();
+        serviceStarter = null;
     }
 
     public void setThreadFactory(ThreadFactory threadFactory) {

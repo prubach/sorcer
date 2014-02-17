@@ -24,13 +24,11 @@ import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;
 import sorcer.util.ProcessMonitor;
-import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
@@ -58,14 +56,12 @@ public class ForkingLauncher extends Launcher {
 
     private Integer debugPort;
     private Process2 process;
-    private Mode startMode = Mode.preferDirect;
     private String profile;
 
     @Override
     public void start() throws Exception {
-        configure();
-        if (sorcerListener == null)
-            sorcerListener = new NullSorcerListener();
+        if (process != null)
+            throw new IllegalStateException("This instance has already started a process");
 
         JavaProcessBuilder bld = new JavaProcessBuilder(home.getPath());
 
@@ -98,6 +94,8 @@ public class ForkingLauncher extends Launcher {
         bld.setMainClass(MAIN_CLASS);
 
         List<String> parameters = bld.getParameters();
+
+        //-Mforce-direct enforces SorcerLauncher, so we ensure that there is no loop ForkingLauncher->Sorcer->ForkingLauncher
         parameters.add("-M");
         parameters.add(Mode.forceDirect.paramValue);
 
@@ -142,19 +140,6 @@ public class ForkingLauncher extends Launcher {
     @Override
     public void stop() {
         process.destroy();
-    }
-
-    protected void configure() throws IOException {
-        if (process != null)
-            throw new IllegalStateException("This instance have already started a process");
-
-        ensureDirConfig();
-
-        environment = getEnvironment();
-        properties = getProperties();
-        evaluator = new PropertyEvaluator();
-        evaluator.addSource("sys", properties);
-        evaluator.addSource("env", environment);
     }
 
     @Override

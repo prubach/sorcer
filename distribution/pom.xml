@@ -150,11 +150,13 @@
         </dependency>
 
         <!-- maven plugins -->
+<!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-maven-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

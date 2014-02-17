@@ -237,11 +237,13 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+<!--
 				<plugin>
 					<groupId>org.sorcersoft.sorcer</groupId>
 					<artifactId>sorcer-maven-plugin</artifactId>
 					<version>${project.version}</version>
 				</plugin>
+-->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
@@ -271,6 +273,7 @@
                             <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
                             <sorcer.home>${env.SORCER_HOME}</sorcer.home>
                         </systemPropertyVariables>
+
                         <!-- reuse forks should work after all integration tests are migrated to SorcerRunner -->
                         <reuseForks>false</reuseForks>
                     </configuration>

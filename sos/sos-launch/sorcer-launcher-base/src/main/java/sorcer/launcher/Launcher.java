@@ -17,21 +17,16 @@
 package sorcer.launcher;
 
 import sorcer.resolver.Resolver;
+import sorcer.util.FileUtils;
 import sorcer.util.HostUtil;
 import sorcer.util.IOUtils;
+import sorcer.util.JavaSystemProperties;
 import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.JavaSystemProperties.*;
@@ -95,42 +90,68 @@ public abstract class Launcher {
 
     protected PropertyEvaluator evaluator;
 
-    abstract public void start() throws Exception;
+    {
+        preConfigure();
+    }
+
+    public void preConfigure() {
+        if (sorcerListener == null)
+            sorcerListener = new NullSorcerListener();
+
+        ensureDirConfig();
+
+        //needed by Resolver to read repoRoot from sorcer.env
+        JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
+        JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+
+        environment = getEnvironment();
+        properties = getProperties();
+        evaluator = new PropertyEvaluator();
+        evaluator.addSource("sys", properties);
+        evaluator.addSource("env", environment);
+    }
+
+    public abstract void start() throws Exception;
 
     abstract public void stop();
 
-    public void setWaitMode(WaitMode waitMode) {
-        this.waitMode = waitMode;
-    }
+    abstract protected Map<String, String> getEnvironment();
 
     protected void ensureDirConfig() {
         if (home == null)
-            home = sorcer.util.FileUtils.getDir(System.getenv(E_SORCER_HOME));
+            home = FileUtils.getDir(System.getenv(E_SORCER_HOME));
         if (home == null)
-            home = sorcer.util.FileUtils.getDir(System.getProperty(SORCER_HOME));
+            home = FileUtils.getDir(System.getProperty(SORCER_HOME));
         if (home == null)
             throw new IllegalStateException("No SORCER home defined");
 
-        String envSorcerExt = System.getenv(E_SORCER_EXT);
-        if (envSorcerExt != null)
-            setExt(new File(envSorcerExt));
-        else
+        if (ext == null)
+            ext = FileUtils.getDir(System.getenv(E_SORCER_EXT));
+        if (ext == null)
             ext = home;
 
-        String envRioHome = System.getenv(E_RIO_HOME);
-        if (envRioHome != null)
-            setRio(new File(envRioHome));
-        else
+        if (rio == null)
+            rio = FileUtils.getDir(System.getenv(E_RIO_HOME));
+        if (rio == null)
+            // note that rio home system property is named just as the env variable - RIO_HOME
+            rio = FileUtils.getDir(System.getProperty(E_RIO_HOME));
+        if (rio == null)
             rio = new File(home, "lib/rio");
 
         if (configDir == null)
             configDir = new File(home, "configs");
 
         if (logDir == null)
+            logDir = FileUtils.getDir(System.getenv("RIO_LOG_DIR"));
+        if (logDir == null)
             logDir = new File(home, "logs");
-    }
 
-    abstract protected Map<String, String> getEnvironment();
+        try {
+            org.apache.commons.io.FileUtils.forceMkdir(logDir);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not create logs directory",e);
+        }
+    }
 
     protected Map<String, String> getProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
@@ -192,16 +213,8 @@ public abstract class Launcher {
         no, start, end
     }
 
-    public void setRio(File rio) {
-        this.rio = rio;
-    }
-
     public void setLogDir(File logDir) {
         this.logDir = logDir;
-    }
-
-    public void setExt(File ext) {
-        this.ext = ext;
     }
 
     public void setHome(File home) {
@@ -221,5 +234,9 @@ public abstract class Launcher {
     }
 
     abstract public void setProfile(String profile) throws IOException;
+
+    public void setWaitMode(WaitMode waitMode) {
+        this.waitMode = waitMode;
+    }
 
 }

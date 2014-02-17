@@ -11,22 +11,50 @@
 	<artifactId>tests</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER OS :: int tests</name>
+
 	<modules>
 		<module>ju-arithmetic</module>
 		<module>int-tests</module>
 	</modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <systemPropertyVariables>
-                        <buildDirectory>${project.build.directory}</buildDirectory>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <profiles>
+        <profile>
+            <id>run-its</id>
+            <properties>
+                <run-its>true</run-its>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>sorcer.util.junit.SorcerClient</groups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dont-run-its</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>run-its</name>
+                    <value/>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedGroups>sorcer.util.junit.SorcerClient</excludedGroups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -79,9 +79,10 @@
         </dependency>
 
         <dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>
