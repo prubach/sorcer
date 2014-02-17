@@ -27,7 +27,6 @@ import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
-import org.rioproject.servicebean.ServiceBean;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -321,7 +320,7 @@ public class ServiceStarter {
             String parent = dir.getName();
             String grandParent = dir.getParentFile().getName();
             return
-                    new File(dir,name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
+                    new File(dir, name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
                             //check development structure
                             "target".equals(parent)
                                     //check repository just in case
@@ -355,9 +354,12 @@ public class ServiceStarter {
             } catch (RemoteException e) {
                 log.warn("Error", e);
             }
+// this stops Rio services, but it has it's own shutdown hook
+/*
         }else if(impl instanceof ServiceBean){
             ServiceBean sb= (ServiceBean) impl;
             sb.destroy(false);
+*/
         } else {
             log.warn("Unable to stop {}", impl);
         }
