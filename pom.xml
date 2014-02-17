@@ -271,6 +271,8 @@
                             <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
                             <sorcer.home>${env.SORCER_HOME}</sorcer.home>
                         </systemPropertyVariables>
+                        <!-- reuse forks should work after all integration tests are migrated to SorcerRunner -->
+                        <reuseForks>false</reuseForks>
                     </configuration>
                     <dependencies>
                         <dependency>
