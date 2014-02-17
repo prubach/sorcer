@@ -755,11 +755,13 @@ public class ProviderDelegate {
 		}
 		for (int i = 0; i < publishedServiceTypes.length; i++) {
 			// spaceWorkerPool = Executors.newFixedThreadPool(workerCount);
+            ConfigurableThreadFactory factory = new ConfigurableThreadFactory();
+            factory.setNameFormat("SpaceTaker-" + spaceName + "-thread-%2$d");
 			spaceWorkerPool = new ThreadPoolExecutor(workerCount,
 					maximumPoolSize > workerCount ? maximumPoolSize
 							: workerCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>(
-							(queueSize == 0 ? workerCount : queueSize)));
+							(queueSize == 0 ? workerCount : queueSize)), factory);
 			spaceHandlingPools.add(spaceWorkerPool);
 			// SORCER.ANY is required for a ProviderWorker
 			// to avoid matching to any provider name
