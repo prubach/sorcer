@@ -146,9 +146,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         File logDir = new File("/tmp/logs");
         logDir.mkdir();
         launcher.setLogDir(logDir);
-        String rio = System.getProperty("RIO_HOME");
-        if (rio != null)
-            launcher.setRio(new File(rio));
         launcher.start();
 
         return launcher;
