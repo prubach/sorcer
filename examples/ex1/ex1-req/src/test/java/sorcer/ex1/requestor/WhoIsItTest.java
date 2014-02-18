@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,8 @@ import java.net.InetAddress;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mike Sobolewski
@@ -54,7 +56,6 @@ import static org.junit.Assert.assertEquals;
 @ExportCodebase({
         "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex1-rdl",
-        "org.sorcersoft.sorcer:ex1-prv",
         "org.sorcersoft.sorcer:ex1-api"
 })
 @SorcerService({
@@ -116,6 +117,8 @@ public class WhoIsItTest {
 
         Task task = new NetTask("Who Is It?", signature, context);
         Exertion result = task.exert();
+        assertNotNull(result);
+        assertNotNull(result.getContext());
         logger.info("task context: " + result.getContext());
         if (result.getExceptions().size() > 0)
             logger.info("exceptions: " + result.getExceptions());
@@ -124,9 +127,11 @@ public class WhoIsItTest {
 //        assertEquals(result.getContext().getValue("provider/hostname"), hostname);
 //        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
         }
+        assertTrue(result.getExceptions().isEmpty());
     }
 
 	@Test
+    @Ignore
 	public void execBatchTask() throws Exception {
         InetAddress inetAddress = HostUtil.getInetAddress();
         String hostname = inetAddress.getHostName();
@@ -151,7 +156,6 @@ public class WhoIsItTest {
         assertEquals(ipAddress, result.getContext().getValue("provider/address"));
     }
 
-    @Ignore
     @Test
     public void exertBatchTask() throws Exception {
         InetAddress inetAddress = HostUtil.getInetAddress();

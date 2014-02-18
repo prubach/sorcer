@@ -52,12 +52,12 @@ public class DatabaseStorerTest {
         URL url = null;
         try {
             url = databaseProvider.storeObject(TXT);
-            Thread.sleep(100);
+            Thread.sleep(500);
             log.info("url = {}", url);
             verify(url, TXT);
 
             databaseProvider.updateObject(url, TXT2);
-            Thread.sleep(100);
+            Thread.sleep(500);
             verify(url, TXT2);
         } finally {
             if (url != null)
