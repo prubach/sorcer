@@ -179,7 +179,7 @@ public class SorcerLauncher extends Launcher {
             else
                 profile = Profile.loadBuiltin(profileName);
         } catch (IOException x) {
-            throw new IllegalArgumentException("Could not load profile " + profileName);
+            throw new IllegalArgumentException("Could not load profile " + profileName, x);
         }
     }
 

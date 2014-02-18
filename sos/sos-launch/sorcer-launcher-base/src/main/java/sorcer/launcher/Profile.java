@@ -76,7 +76,9 @@ public class Profile {
     }
 
     public static Profile loadBuiltin(String name) throws IOException {
-        return load(Profile.class.getClassLoader().getResource(name + ".xml"));
+        URL url = Profile.class.getClassLoader().getResource(name + ".xml");
+        if (url == null) throw new IllegalAccessError("Profile not found" + name);
+        return load(url);
     }
 
     /**

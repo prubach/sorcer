@@ -17,7 +17,6 @@
 package sorcer.util.junit;
 
 import org.junit.Ignore;
-import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -28,12 +27,13 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.Launcher;
-import sorcer.launcher.process.ForkingLauncher;
+import sorcer.launcher.SorcerLauncher;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.security.Policy;
 import java.util.Arrays;
 
@@ -43,9 +43,11 @@ import static sorcer.core.SorcerConstants.SORCER_HOME;
  * @author Rafał Krupiński
  */
 public class SorcerRunner extends BlockJUnit4ClassRunner {
-    private Class<?> klass;
     private static File home;
     private static final Logger log;
+
+    private Class<?> klass;
+    private Launcher sorcerLauncher;
 
     static {
         String homePath = System.getProperty(SORCER_HOME);
@@ -68,52 +70,53 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         if (home == null)
             throw new InitializationError("sorcer.home property is required");
         this.klass = klass;
+
+        String policyPath = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
+        if (policyPath != null) {
+            File policy = new File(policyPath);
+            IOUtils.checkFileExistsAndIsReadable(policy);
+        } else {
+            if (System.getSecurityManager() != null)
+                throw new InitializationError("SecurityManager set but no " + JavaSystemProperties.SECURITY_POLICY);
+            File policy = new File(home, "configs/sorcer.policy");
+            IOUtils.checkFileExistsAndIsReadable(policy);
+            System.setProperty(JavaSystemProperties.SECURITY_POLICY, policy.getPath());
+            Policy.getPolicy().refresh();
+        }
+        System.setSecurityManager(new SecurityManager());
+
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
+        SorcerEnv.debug = true;
+        ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
+        String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
+        if (codebase != null && codebase.length > 0) {
+            try {
+                JavaSystemProperties.ensure(JavaSystemProperties.RMI_SERVER_CODEBASE, Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), codebase));
+            } catch (MalformedURLException e) {
+                throw new InitializationError(e);
+            }
+            ServiceRequestor.prepareCodebase();
+        }
+
+        String[] serviceConfigPaths = getServiceConfigPaths();
+
+        if (serviceConfigPaths != null) {
+            if (serviceConfigPaths.length == 0)
+                throw new InitializationError("@SorcerService annotation without any configuration files");
+            try {
+                sorcerLauncher = startSorcer(serviceConfigPaths);
+            } catch (Exception e) {
+                throw new InitializationError(e);
+            }
+        }
     }
 
     @Override
     public void run(final RunNotifier notifier) {
-        Launcher sorcerLauncher = null;
         try {
-            String policyPath = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
-            if (policyPath != null) {
-                File policy = new File(policyPath);
-                IOUtils.checkFileExistsAndIsReadable(policy);
-            } else {
-                if (System.getSecurityManager() != null) {
-                    notifier.fireTestFailure(new Failure(getDescription(), new IllegalStateException("SecurityManager set but no " + JavaSystemProperties.SECURITY_POLICY)));
-                    return;
-                }
-                File policy = new File(home, "configs/sorcer.policy");
-                IOUtils.checkFileExistsAndIsReadable(policy);
-                System.setProperty(JavaSystemProperties.SECURITY_POLICY, policy.getPath());
-                Policy.getPolicy().refresh();
-            }
-            System.setSecurityManager(new SecurityManager());
-
-            SLF4JBridgeHandler.removeHandlersForRootLogger();
-            SLF4JBridgeHandler.install();
-
-            SorcerEnv.debug = true;
-            ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
-            String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
-            if (codebase != null && codebase.length > 0) {
-                JavaSystemProperties.ensure(JavaSystemProperties.RMI_SERVER_CODEBASE, Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), codebase));
-                ServiceRequestor.prepareCodebase();
-            }
-
-            String[] serviceConfigPaths = getServiceConfigPaths();
-
-            if (serviceConfigPaths != null) {
-                if (serviceConfigPaths.length == 0) {
-                    notifier.fireTestFailure(new Failure(getDescription(), new IllegalArgumentException("@SorcerService annotation without any configuration files")));
-                    return;
-                }
-                sorcerLauncher = startSorcer(serviceConfigPaths);
-            }
-
             super.run(notifier);
-        } catch (Exception x) {
-            notifier.fireTestFailure(new Failure(getDescription(), x));
         } finally {
             if (sorcerLauncher != null)
                 sorcerLauncher.stop();
@@ -128,7 +131,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     }
 
     private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
-        ForkingLauncher launcher = new ForkingLauncher();
+        Launcher launcher = new SorcerLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
         launcher.setWaitMode(Launcher.WaitMode.start);
         launcher.setHome(home);
