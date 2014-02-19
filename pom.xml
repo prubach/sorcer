@@ -614,5 +614,28 @@
                 <module>distribution</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>run-its</id>
+            <properties>
+                <run-its>true</run-its>
+                <surefire.excludedGroups/>
+                <surefire.includedGroups>sorcer.junit.SorcerClient</surefire.includedGroups>
+            </properties>
+        </profile>
+        <profile>
+            <id>dont-run-its</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>run-its</name>
+                    <value/>
+                </property>
+            </activation>
+            <properties>
+                <surefire.includedGroups/>
+                <surefire.excludedGroups>sorcer.junit.SorcerClient</surefire.excludedGroups>
+            </properties>
+        </profile>
     </profiles>
 </project>
