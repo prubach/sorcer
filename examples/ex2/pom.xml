@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>1.0-M4-SNAPSHOT</version>
 		<artifactId>examples</artifactId>
+        <version>1.0-M4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ex2</artifactId>
@@ -23,9 +23,4 @@
         <module>ex2-cfg2</module>
         <module>ex2-cfg3</module>
 	</modules>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>${maven.test.skip}</skipTests>
-	</properties>
 </project>

@@ -10,7 +10,7 @@
 
     <artifactId>ex2-prv</artifactId>
     <name>SORCER examples :: ex2 :: prv</name>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex2-api</artifactId>
-            <version>${project.version}</version>	
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -63,4 +63,14 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!--disable categories -->
+                <configuration combine.self="override"/>
+            </plugin>
+        </plugins>
+    </build>
 </project>
