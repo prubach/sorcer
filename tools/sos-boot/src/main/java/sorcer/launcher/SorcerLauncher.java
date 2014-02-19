@@ -66,7 +66,7 @@ public class SorcerLauncher extends Launcher {
         configure();
     }
 
-    public void start() throws IOException {
+    public void start() {
         SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
 
         SorcerShutdownHook.instance.add(this);

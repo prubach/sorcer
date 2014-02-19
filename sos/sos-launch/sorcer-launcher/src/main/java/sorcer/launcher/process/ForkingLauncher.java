@@ -25,11 +25,7 @@ import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;
 import sorcer.util.ProcessMonitor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
@@ -59,7 +55,7 @@ public class ForkingLauncher extends Launcher {
     private String profile;
 
     @Override
-    public void start() throws Exception {
+    public void start() throws IOException {
         if (process != null)
             throw new IllegalStateException("This instance has already started a process");
 
@@ -132,7 +128,11 @@ public class ForkingLauncher extends Launcher {
         log.info("{} has started", process);
 
         if (waitMode == WaitMode.end) {
-            process.waitFor();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                log.warn("Interrupted", e);
+            }
         }
 
     }

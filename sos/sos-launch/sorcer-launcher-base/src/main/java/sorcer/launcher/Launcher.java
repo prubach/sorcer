@@ -111,7 +111,7 @@ public abstract class Launcher {
         evaluator.addSource("env", environment);
     }
 
-    public abstract void start() throws Exception;
+    public abstract void start() throws IOException;
 
     abstract public void stop();
 

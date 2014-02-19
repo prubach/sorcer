@@ -58,7 +58,7 @@ public class Sorcer {
      * <p/>
      * {}... config files for ServiceStarter
      */
-    public static void main(String[] args) throws ParseException, IOException, InterruptedException {
+    public static void main(String[] args) {
         try {
             JavaSystemProperties.ensure(SORCER_HOME);
             Options options = buildOptions();
