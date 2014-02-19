@@ -28,10 +28,9 @@ import java.util.List;
         @SorcerServiceConfiguration(
                 ":ex1-cfg-all"
         ),
-        @SorcerServiceConfiguration({
-                ":ex1-cfg1",
-                ":ex1-cfg2"
-        })
+        @SorcerServiceConfiguration(
+                ":ex1-cfg1"
+        )
 })
 public class WhoIsItBeanRunner2Test {
     private final static Logger logger = LoggerFactory.getLogger(WhoIsItBeanRunner2Test.class);

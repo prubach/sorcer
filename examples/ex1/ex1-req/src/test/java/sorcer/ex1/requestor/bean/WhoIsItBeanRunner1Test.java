@@ -1,5 +1,6 @@
 package sorcer.ex1.requestor.bean;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -27,10 +28,9 @@ import java.util.List;
         @SorcerServiceConfiguration(
                 ":ex1-cfg-all"
         ),
-        @SorcerServiceConfiguration({
-                ":ex1-cfg1",
-                ":ex1-cfg2"
-        })
+        @SorcerServiceConfiguration(
+                ":ex1-cfg1"
+        )
 })
 public class WhoIsItBeanRunner1Test {
     private final static Logger logger = LoggerFactory.getLogger(WhoIsItBeanRunner1Test.class);

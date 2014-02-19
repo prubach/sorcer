@@ -26,11 +26,6 @@ To run an Ant script:
 
 
 SPECIAL CASES
-Batch task
-	Build examples: examples-build.xml in the 'examples' directory
-	in examples/ex1run-prv/bin
-		provider: whoIsIt2-prv-run.xml
-		requestor: whoIsItBatchTask-req-run.xml
 
 Monitored Task
 	Build examples: examples-build.xml in the 'examples' directory

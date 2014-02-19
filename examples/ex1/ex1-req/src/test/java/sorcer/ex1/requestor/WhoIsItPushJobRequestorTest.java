@@ -17,46 +17,58 @@
  */
 package sorcer.ex1.requestor;
 
-import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
-import sorcer.service.Signature;
-import sorcer.service.Task;
 import sorcer.service.Strategy.Flow;
-import sorcer.util.Log;
-import sorcer.util.Sorcer;
+import sorcer.service.Task;
 
-public class WhoIsItPushJobRequestor {
+import java.net.InetAddress;
 
-	private static Logger logger = Log.getTestLog();
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex1-api",
+        "org.sorcersoft.sorcer:ex1-rdl"
+})
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration(
+                ":ex1-cfg-all"
+        ),
+        @SorcerServiceConfiguration(
+                ":ex1-cfg2"
+        )
+})
+public class WhoIsItPushJobRequestorTest {
 
-	public static void main(String... args) throws Exception {
-		System.setSecurityManager(new RMISecurityManager());
-		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
-        ServiceRequestor.prepareCodebase();
-		// get the queried provider name
-		String providerName = SorcerEnv.getSuffixedName(args[0]);
+	private static Logger logger = LoggerFactory.getLogger(WhoIsItPushJobRequestorTest.class);
+
+	@Test(expected = ExertionErrors.MultiException.class)
+    public void whoIsItPushTest() throws Exception {
+		String providerName = SorcerEnv.getSuffixedName("XYZ");
 
         logger.info("Who is \"" + providerName + "\"?");
 
-		Exertion result = new WhoIsItPushJobRequestor().getExertion(providerName)
+		Exertion result = getExertion(providerName)
 				.exert(null);
 		logger.info("Job exceptions job: \n" + result.getExceptions());
 		logger.info("Output job: \n" + result);
 		logger.info("Output context1: \n" + result.getContext("Who Is It1?"));
 		logger.info("Output context2: \n" + result.getContext("Who Is It2?"));
+        ExertionErrors.check(result.getExceptions());
 	}
 
 	public Exertion getExertion(String providerName) throws Exception {

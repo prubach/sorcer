@@ -58,10 +58,9 @@ import static org.junit.Assert.assertTrue;
         "org.sorcersoft.sorcer:ex1-rdl",
         "org.sorcersoft.sorcer:ex1-api"
 })
-@SorcerServiceConfiguration({
-        ":ex1-cfg1",
-        ":ex1-cfg2"
-})
+@SorcerServiceConfiguration(
+        ":ex1-cfg1"
+)
 public class WhoIsItTest {
 
 	private final static Logger logger = Logger

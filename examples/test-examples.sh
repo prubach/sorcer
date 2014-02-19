@@ -71,41 +71,6 @@ ex0 ( ) {
   cd $SORCER_HOME
 }
 
-ex1 ( ) {
-  ## ex1 run-bean
-  # Enabling tests on this module will generate RuntimeExceptions thatT are
-  # thrown on purpose by the second provider (whoIsIt2...)
-  EX=ex1
-  _mkdir $LOG_DIR/$EX
-
-  ## ex1 run-prv boot
-  restartSorcer $LOG_DIR/$EX/run-prv-boot-socer-$EX.log $LOG_DIR/$EX/
-  cd $SORCER_HOME
-  $SORCER_HOME/bin/sorcer-boot :ex1-cfg-all > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
-
-  cd $EX_DIR/$EX/run-prv/bin/
-  sleep 5
-  ant -f whoIsItBatchTask-app-run.xml > $LOG_DIR/$EX/run-prv_boot_req.log
-  ant -f whoIsItTask-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log
-  ant -f whoIsItSeqTask-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log
-  ant -f whoIsItParTask-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log
-  ant -f whoIsItPushJob-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log
-  ant -f whoIsItPullJob-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log
-
-  ## ex1 run-prv run
-  restartSorcer $LOG_DIR/$EX/run-prv-socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/$EX/run-prv/bin/
-  ant -f whoIsIt1-prv-run.xml > $LOG_DIR/$EX/run-prv-whoIsIt1.log &
-  ant -f whoIsIt2-prv-run.xml > $LOG_DIR/$EX/whoIsIt2-prv.log &
-  sleep 5
-  ant -f whoIsItBatchTask-app-run.xml > $LOG_DIR/$EX/run-prv_req.log
-  ant -f whoIsItTask-app-run.xml >> $LOG_DIR/$EX/run-prv_req.log
-  ant -f whoIsItSeqTask-app-run.xml >> $LOG_DIR/$EX/run-prv_req.log
-  ant -f whoIsItParTask-app-run.xml >> $LOG_DIR/$EX/run-prv_req.log
-  ant -f whoIsItPushJob-app-run.xml >> $LOG_DIR/$EX/run-prv_req.log
-  ant -f whoIsItPullJob-app-run.xml >> $LOG_DIR/$EX/run-prv_req.log  
-}
-
 ex2 ( ) {
   EX=ex2
   _mkdir $LOG_DIR/$EX
@@ -227,7 +192,6 @@ ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
 fi
-#ex1
 ex2
 ex3
 ex4
