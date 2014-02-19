@@ -2339,7 +2339,7 @@ public class ProviderDelegate {
 					Sorcer.updateFromProperties(props);
 				}
 			} catch (Exception ex) {
-				logger.warning("Not able to load provider's file properties"
+				logger.warning("Not able to load provider's file properties "
 						+ filename);
 			}
 		}
