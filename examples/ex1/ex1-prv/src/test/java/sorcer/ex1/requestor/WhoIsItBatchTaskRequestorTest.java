@@ -18,45 +18,44 @@
 
 package sorcer.ex1.requestor;
 
-import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
+import sorcer.junit.SorcerServiceConfigurations;
 import sorcer.service.Context;
-import sorcer.service.Exertion;
 import sorcer.service.Signature;
-import sorcer.service.Task;
 import sorcer.service.Signature.Type;
-import sorcer.util.Log;
-import sorcer.util.Sorcer;
+import sorcer.service.Task;
 
-public class WhoIsItBatchTaskRequestor {
+import java.net.InetAddress;
+import java.util.List;
 
-	private static Logger logger = Log.getTestLog();
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase(
+        "org.sorcersoft.sorcer:ex1-api"
+)
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration(
+                ":ex1-cfg-all"
+        ),
+        @SorcerServiceConfiguration({
+                ":ex1-cfg1",
+                ":ex1-cfg2"
+        })
+})
+public class WhoIsItBatchTaskRequestorTest {
 
-	public static void main(String... args) throws Exception {
-		System.setSecurityManager(new RMISecurityManager());
-		// initialize system environment from configs/sorcer.env
-		Sorcer.getEnvProperties();
-        ServiceRequestor.prepareCodebase();
-		// get the queried provider name
-		String providerName = SorcerEnv.getSuffixedName(args[0]);
-		logger.info("Who is provider \"" + providerName + "\"?");
-		
-		Exertion result = new WhoIsItBatchTaskRequestor().getExertion(providerName)
-				.exert(null);
-		logger.info("Exceptions: \n" + result.getExceptions());
-		logger.info("Trace: \n" + result.getTrace());
-		logger.info("Ouptut context: \n" + result.getContext());
-	}
-	
-	public Exertion getExertion(String providername) throws Exception {
-		String hostname, ipAddress;
+    @Test
+	public void getExertion() throws Throwable {
+        String providername = SorcerEnv.getSuffixedName("ABC");
+        String hostname, ipAddress;
 		InetAddress inetAddress = InetAddress.getLocalHost();
 		hostname = inetAddress.getHostName();
 		ipAddress = inetAddress.getHostAddress();
@@ -65,7 +64,7 @@ public class WhoIsItBatchTaskRequestor {
 		context.putValue("requestor/message", new RequestorMessage("SORCER"));
 		context.putValue("requestor/hostname", hostname);
 		context.putValue("requestor/address", ipAddress);
-		
+
 		Signature signature1 = new NetSignature("getHostAddress",
 				sorcer.ex1.WhoIsIt.class, providername, Type.PRE);
 		Signature signature2 = new NetSignature("getHostName",
@@ -74,9 +73,12 @@ public class WhoIsItBatchTaskRequestor {
 				sorcer.ex1.WhoIsIt.class, providername, Type.POST);
 		Signature signature4 = new NetSignature("getTimestamp",
 				sorcer.ex1.WhoIsIt.class, providername, Type.POST);
-		
+
 		Task task = new NetTask("Who Is It?",  new Signature[] { signature1, signature2, signature3, signature4 }, context);
 
-		return task;
+        task.exert();
+        List<ThrowableTrace> exceptions = task.getExceptions();
+        if (exceptions != null && !exceptions.isEmpty())
+            throw exceptions.iterator().next().getThrowable();
 	}
 }
