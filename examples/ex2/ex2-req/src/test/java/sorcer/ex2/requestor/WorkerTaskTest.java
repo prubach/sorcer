@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,51 +18,56 @@
 
 package sorcer.ex2.requestor;
 
-import java.net.InetAddress;
 import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
-public class WorkerSingletonRequestor {
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+public class WorkerTaskTest {
 
 	private static Logger logger = Log.getTestLog();
 
-	public static void main(String[] args) throws Exception {
+    @Test
+	public void workerTask() throws Exception {
 		System.setSecurityManager(new RMISecurityManager());
 		// initialize system properties
 		Sorcer.getEnvProperties();
         ServiceRequestor.prepareCodebase();
 
 		// get the queried provider name from the command line
-		String pn = null;
-		if (args.length == 1)
-			pn = args[0];
+		String pn = "Worker1";
 
 		logger.info("Provider name: " + pn);
 
-		Exertion exertion = new WorkerSingletonRequestor().getExertion(pn);
+		Exertion exertion = getExertion(pn);
 		Exertion result = exertion.exert(null);
 		logger.info("Output context: \n" + result.getContext());
-		logger.info("Output context: \n"
-				+ result.getExertion("work").getContext());
+        ExertionErrors.check(result.getExceptions());
 	}
 
 	private Exertion getExertion(String pn) throws Exception {
 		String hostname = SorcerEnv.getHostName();
-        // get the queried provider name from the command line
+
         if (pn!=null) pn = SorcerEnv.getSuffixedName(pn);
         logger.info("Suffixed Provider name: " + pn);
 
@@ -73,14 +78,12 @@ public class WorkerSingletonRequestor {
         context.putValue("to/provider/name", pn);
         context.putValue("requestor/work", Works.work2);
 
+
         NetSignature signature = new NetSignature("doWork",
 				sorcer.ex2.provider.Worker.class, pn);
 
 		Task task = new NetTask("work", signature, context);
 
-		Job job = new NetJob("sigleton");
-		job.addExertion(task);
-
-		return job;
+		return task;
 	}
 }

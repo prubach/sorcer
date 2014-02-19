@@ -71,24 +71,6 @@ ex0 ( ) {
   cd $SORCER_HOME
 }
 
-ex2 ( ) {
-  EX=ex2
-  _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
-
-  cd $SORCER_HOME
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
-  sleep 5
-
-  cd $EX_DIR/$EX/$EX-req/
-  ant -f worker-task-app-run.xml 2>&1 > $LOG_DIR/$EX/req.log
-  ant -f worker-singleton-app-run.xml 2>&1 >> $LOG_DIR/$EX/req.log
-  ant -f worker-job-app-run.xml 2>&1 >> $LOG_DIR/$EX/req.log
-}
-
-
 ex3 ( ) {
   EX=ex3
   _mkdir $LOG_DIR/$EX
@@ -192,7 +174,6 @@ ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
 fi
-ex2
 ex3
 ex4
 ex5 all

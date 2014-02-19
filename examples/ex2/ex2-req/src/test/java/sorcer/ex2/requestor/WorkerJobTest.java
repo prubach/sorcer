@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,50 +18,57 @@
 
 package sorcer.ex2.requestor;
 
-import java.net.InetAddress;
-import java.rmi.RMISecurityManager;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
-import sorcer.service.Signature;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
-import sorcer.util.Log;
 
-public class WorkerJobRequestor {
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+@ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex2-api",
+        "org.sorcersoft.sorcer:ex2-rdl"
+})
+public class WorkerJobTest {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(WorkerJobTest.class);
 
-	public static void main(String[] args) throws Exception {
-		System.setSecurityManager(new RMISecurityManager());
-		// initialize system properties
-		Sorcer.getEnvProperties();
-        ServiceRequestor.prepareCodebase();
-		
+    @Test
+	public void testWorkerJob() throws Exception {
+
 		// get the queried provider name from the command line
-		String pn1 = args[0];
-		String pn2 = args[1];
-		String pn3 = args[2];
+		String pn1 = "Worker1";
+		String pn2 = "Worker2";
+		String pn3 = "Worker3";
 		
 		logger.info("Provider name1: " + pn1);
 		logger.info("Provider name2: " + pn2);
 		logger.info("Provider name3: " + pn3);
 
-		Exertion result = new WorkerJobRequestor()
+		Exertion result = new WorkerJobTest()
 			.getExertion(pn1, pn2, pn3).exert(null);
 		// get contexts of component exertions - in this case tasks
 		logger.info("Output context1: \n" + result.getContext("work1"));
 		logger.info("Output context2: \n" + result.getContext("work2"));
 		logger.info("Output context3: \n" + result.getContext("work3"));
+        ExertionErrors.check(result.getExceptions());
 	}
 
 	private Exertion getExertion(String pn1, String pn2, String pn3) throws Exception {
