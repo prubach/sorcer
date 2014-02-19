@@ -23,18 +23,15 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.junit.*;
-import sorcer.junit.SorcerServiceConfigurations;
 import sorcer.service.Context;
 import sorcer.service.Signature;
 import sorcer.service.Signature.Type;
 import sorcer.service.Task;
 
 import java.net.InetAddress;
-import java.util.List;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
@@ -77,8 +74,6 @@ public class WhoIsItBatchTaskRequestorTest {
 		Task task = new NetTask("Who Is It?",  new Signature[] { signature1, signature2, signature3, signature4 }, context);
 
         task.exert();
-        List<ThrowableTrace> exceptions = task.getExceptions();
-        if (exceptions != null && !exceptions.isEmpty())
-            throw exceptions.iterator().next().getThrowable();
+        ExertionErrors.check(task.getExceptions());
 	}
 }

@@ -11,12 +11,9 @@ import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex1.requestor.RequestorMessage;
-import sorcer.junit.SorcerServiceConfiguration;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Task;
-import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
-import sorcer.junit.SorcerRunner;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -27,8 +24,14 @@ import java.util.List;
         "org.sorcersoft.sorcer:ex1-api",
         "org.sorcersoft.sorcer:ex1-rdl"
 })
-@SorcerServiceConfiguration({
-        ":ex1-cfg1"
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration(
+                ":ex1-cfg-all"
+        ),
+        @SorcerServiceConfiguration({
+                ":ex1-cfg1",
+                ":ex1-cfg2"
+        })
 })
 public class WhoIsItBeanRunner2Test {
     private final static Logger logger = LoggerFactory.getLogger(WhoIsItBeanRunner2Test.class);
@@ -59,8 +62,6 @@ public class WhoIsItBeanRunner2Test {
 
         task = new NetTask("Who Is It?", signature, context);
         task.exert();
-        List<ThrowableTrace> exceptions = task.getExceptions();
-        if (exceptions != null && !exceptions.isEmpty())
-            throw exceptions.iterator().next().getThrowable();
+        ExertionErrors.check(task.getExceptions());
     }
 }
