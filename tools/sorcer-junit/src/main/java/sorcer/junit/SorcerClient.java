@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.util.junit;
+package sorcer.junit;
 
 /**
  * @author Rafał Krupiński

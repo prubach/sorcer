@@ -23,14 +23,14 @@ import org.junit.runner.RunWith;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.Context;
 import sorcer.service.Exerter;
 import sorcer.service.Job;
 import sorcer.service.Task;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 import java.util.logging.Logger;
 
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertEquals;
         "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex6-api"
 })
-@SorcerService(":ex6-cfg-all")
+@SorcerServiceConfiguration(":ex6-cfg-all")
 public class ArithmeticExerterTest {
 
 	private final static Logger logger = Logger

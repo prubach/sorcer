@@ -31,13 +31,13 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
 import sorcer.util.HostUtil;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 
 import java.net.InetAddress;
@@ -58,7 +58,7 @@ import static org.junit.Assert.assertTrue;
         "org.sorcersoft.sorcer:ex1-rdl",
         "org.sorcersoft.sorcer:ex1-api"
 })
-@SorcerService({
+@SorcerServiceConfiguration({
         ":ex1-cfg1",
         ":ex1-cfg2"
 })

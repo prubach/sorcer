@@ -28,15 +28,15 @@ import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.Context;
 import sorcer.service.Direction;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Task;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 
 import java.util.logging.Logger;
@@ -51,7 +51,7 @@ import static sorcer.eo.operator.*;
 @SuppressWarnings({ "rawtypes" })
 @Category(SorcerClient.class)
 @RunWith(SorcerRunner.class)
-@SorcerService(":ex6-cfg-all")
+@SorcerServiceConfiguration(":ex6-cfg-all")
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex6-api",
         "org.sorcersoft.sorcer:sorcer-api"

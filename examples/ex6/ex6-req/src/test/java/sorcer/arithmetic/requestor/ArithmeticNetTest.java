@@ -24,15 +24,15 @@ import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Arithmetic;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.Subtractor;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.Job;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 
 import java.util.logging.Logger;
@@ -47,7 +47,7 @@ import static sorcer.eo.operator.*;
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-api"})
-@SorcerService(":ex6-cfg-all")
+@SorcerServiceConfiguration(":ex6-cfg-all")
 public class ArithmeticNetTest {
 
 	private final static Logger logger = Logger

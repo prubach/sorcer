@@ -77,15 +77,6 @@ ex1 ( ) {
   # thrown on purpose by the second provider (whoIsIt2...)
   EX=ex1
   _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/run-bean-socer-$EX.log $LOG_DIR/$EX/
-  cd $EX_DIR/$EX/run-bean/bin/
-  ant -f whoIsItBean1-prv-run.xml > $LOG_DIR/$EX/run-bean-whoIsItBean1-prv.log &
-  #ant -f whoIsItBean2-prv-run.xml > $LOG_DIR/$EX/run-bean-whoIsItBean2-prv.log &
-  sleep 5
-  ant -f whoIsItBean1-req-run.xml > $LOG_DIR/$EX/run-bean_req.log 
-  ant -f whoIsItBean2-req-run.xml >> $LOG_DIR/$EX/run-bean_req.log
-  ant -f whoIsItBean1-app-run.xml >> $LOG_DIR/$EX/run-bean_req.log
-  ant -f whoIsItBean2-app-run.xml >> $LOG_DIR/$EX/run-bean_req.log
 
   ## ex1 run-prv boot
   restartSorcer $LOG_DIR/$EX/run-prv-boot-socer-$EX.log $LOG_DIR/$EX/
@@ -93,7 +84,6 @@ ex1 ( ) {
   $SORCER_HOME/bin/sorcer-boot :ex1-cfg-all > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
 
   cd $EX_DIR/$EX/run-prv/bin/
-  #ant -f whoIsIt-prvs-boot.xml > $LOG_DIR/$EX/run-prv-boot-whoIsIt.log &
   sleep 5
   ant -f whoIsItBatchTask-app-run.xml > $LOG_DIR/$EX/run-prv_boot_req.log
   ant -f whoIsItTask-app-run.xml >> $LOG_DIR/$EX/run-prv_boot_req.log

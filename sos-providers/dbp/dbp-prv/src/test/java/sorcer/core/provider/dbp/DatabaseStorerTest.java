@@ -21,9 +21,9 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.service.Accessor;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 import java.io.IOException;
 import java.net.URL;

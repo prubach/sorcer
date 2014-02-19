@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package sorcer.util.junit;
+package sorcer.junit;
 
 import org.junit.Ignore;
+import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -33,6 +34,7 @@ import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Policy;
 import java.util.Arrays;
@@ -46,8 +48,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     private static File home;
     private static final Logger log;
 
-    private Class<?> klass;
-    private Launcher sorcerLauncher;
+    private SorcerServiceConfiguration[] configurations;
 
     static {
         String homePath = System.getProperty(SORCER_HOME);
@@ -69,7 +70,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         super(klass);
         if (home == null)
             throw new InitializationError("sorcer.home property is required");
-        this.klass = klass;
 
         String policyPath = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
         if (policyPath != null) {
@@ -100,26 +100,44 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             ServiceRequestor.prepareCodebase();
         }
 
-        String[] serviceConfigPaths = getServiceConfigPaths();
+        SorcerServiceConfigurations sorcerServiceConfigurations = klass.getAnnotation(SorcerServiceConfigurations.class);
+        SorcerServiceConfiguration sorcerServiceConfiguration = klass.getAnnotation(SorcerServiceConfiguration.class);
+        if (sorcerServiceConfiguration != null && sorcerServiceConfigurations != null)
+            throw new InitializationError("Both @SorcerServiceConfigurations and @SorcerServiceConfiguration is allowed");
 
-        if (serviceConfigPaths != null) {
-            if (serviceConfigPaths.length == 0)
-                throw new InitializationError("@SorcerService annotation without any configuration files");
-            try {
-                sorcerLauncher = startSorcer(serviceConfigPaths);
-            } catch (Exception e) {
-                throw new InitializationError(e);
-            }
+        if (sorcerServiceConfigurations != null) {
+            configurations = sorcerServiceConfigurations.value();
+            if (configurations == null || configurations.length == 0)
+                throw new InitializationError("@SorcerServiceConfigurations annotation without any @SorcerServiceConfiguration entries");
+
+        } else
+            configurations = new SorcerServiceConfiguration[]{sorcerServiceConfiguration};
+
+        for (SorcerServiceConfiguration configuration : configurations) {
+            if (configuration.value() == null || configuration.value().length == 0)
+                throw new InitializationError("@SorcerServiceConfiguration annotation without any configuration files");
         }
     }
 
     @Override
     public void run(final RunNotifier notifier) {
-        try {
+        if (configurations == null) {
             super.run(notifier);
-        } finally {
-            if (sorcerLauncher != null)
-                sorcerLauncher.stop();
+            return;
+        }
+
+        for (SorcerServiceConfiguration configuration : configurations) {
+            Launcher sorcerLauncher = null;
+            String[] configs = configuration.value();
+            try {
+                sorcerLauncher = startSorcer(configs);
+                super.run(notifier);
+            } catch (IOException e) {
+                notifier.fireTestFailure(new Failure(getDescription(), new Exception("Error while starting SORCER with configs: " + Arrays.toString(configs), e)));
+            } finally {
+                if (sorcerLauncher != null)
+                    sorcerLauncher.stop();
+            }
         }
     }
 
@@ -130,7 +148,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         super.runChild(method, notifier);
     }
 
-    private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
+    private Launcher startSorcer(String[] serviceConfigPaths) throws IOException {
         Launcher launcher = new SorcerLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
         launcher.setWaitMode(Launcher.WaitMode.start);
@@ -143,10 +161,5 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         launcher.start();
 
         return launcher;
-    }
-
-    private String[] getServiceConfigPaths() {
-        SorcerService annotation = klass.getAnnotation(SorcerService.class);
-        return annotation != null ? annotation.value() : null;
     }
 }

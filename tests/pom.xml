@@ -29,7 +29,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <groups>sorcer.util.junit.SorcerClient</groups>
+                            <groups>sorcer.junit.SorcerClient</groups>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -50,7 +50,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludedGroups>sorcer.util.junit.SorcerClient</excludedGroups>
+                            <excludedGroups>sorcer.junit.SorcerClient</excludedGroups>
                         </configuration>
                     </plugin>
                 </plugins>

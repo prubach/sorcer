@@ -7,11 +7,11 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.context.ThrowableTrace;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.*;
-import sorcer.util.junit.ExportCodebase;
-import sorcer.util.junit.SorcerClient;
-import sorcer.util.junit.SorcerRunner;
-import sorcer.util.junit.SorcerService;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import static sorcer.eo.operator.*;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase("org.sorcersoft.sorcer:ex0-api")
-@SorcerService(":ex0-cfg")
+@SorcerServiceConfiguration(":ex0-cfg")
 public class HelloWorldTest {
     private static Logger logger = LoggerFactory.getLogger(HelloWorldTest.class);
 
