@@ -33,22 +33,28 @@ public class ExertionErrors {
         if (errors == null || errors.isEmpty())
             return;
 
-        List<Exception> exceptions = new ArrayList<Exception>(errors.size());
+        List<Throwable> exceptions = new ArrayList<Throwable>(errors.size());
 
         for (ThrowableTrace error : errors) {
-            Exception t = new Exception(error.message, error.getThrowable());
+            Throwable et = error.getThrowable();
+            String msg = error.message;
+            Throwable t = msg == null ? et : new Exception(msg, et);
             exceptions.add(t);
             log.error("Exertion Error", t);
         }
         throw new MultiException(exceptions);
     }
 
-    static class MultiException extends Exception {
-        private List<Exception> exceptions;
+    public static class MultiException extends Exception {
+        private List<Throwable> errors;
 
-        public MultiException(List<Exception> others) {
+        public MultiException(List<Throwable> others) {
             super("Exceptions found in the Context", others.iterator().next());
-            exceptions = others;
+            errors = others;
+        }
+
+        public List<Throwable> getErrors() {
+            return errors;
         }
     }
 }
