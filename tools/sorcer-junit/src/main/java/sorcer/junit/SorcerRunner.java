@@ -100,8 +100,15 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             ServiceRequestor.prepareCodebase();
         }
 
+        configureSorcerServer(klass);
+    }
+
+    private void configureSorcerServer(Class<?> klass) throws InitializationError {
         SorcerServiceConfigurations sorcerServiceConfigurations = klass.getAnnotation(SorcerServiceConfigurations.class);
         SorcerServiceConfiguration sorcerServiceConfiguration = klass.getAnnotation(SorcerServiceConfiguration.class);
+        if (sorcerServiceConfiguration == null && sorcerServiceConfigurations == null)
+            return;
+
         if (sorcerServiceConfiguration != null && sorcerServiceConfigurations != null)
             throw new InitializationError("Both @SorcerServiceConfigurations and @SorcerServiceConfiguration is allowed");
 
@@ -109,7 +116,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             configurations = sorcerServiceConfigurations.value();
             if (configurations == null || configurations.length == 0)
                 throw new InitializationError("@SorcerServiceConfigurations annotation without any @SorcerServiceConfiguration entries");
-
         } else
             configurations = new SorcerServiceConfiguration[]{sorcerServiceConfiguration};
 
