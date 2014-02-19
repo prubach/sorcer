@@ -22,15 +22,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.core.SorcerEnv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.junit.*;
 import sorcer.service.Context;
-import sorcer.service.Signature;
-import sorcer.service.Signature.Type;
-import sorcer.service.Task;
+import sorcer.service.Exertion;
+import sorcer.service.ServiceExertion;
 
 import java.net.InetAddress;
 
@@ -44,36 +44,43 @@ import java.net.InetAddress;
                 ":ex1-cfg-all"
         ),
         @SorcerServiceConfiguration({
-                ":ex1-cfg1"
+                ":ex1-cfg1",
+                ":ex1-cfg2"
         })
 })
-public class WhoIsItBatchTaskRequestorTest {
+@Ignore
+public class WhoIsItSequentialTaskTest {
+
+	private static Logger logger = LoggerFactory.getLogger(WhoIsItSequentialTaskTest.class);
 
     @Test
-	public void getExertion() throws Throwable {
-        String providername = SorcerEnv.getSuffixedName("ABC");
-        String hostname, ipAddress;
+	public void whoIsItSequential() throws Exception {
+		int tally = 5;
+		// create a service task and execute it 'tally' times
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < tally; i++) {
+			Exertion task = getExertion();
+			((ServiceExertion)task).setName(task.getName() + "-" + i);
+			task = task.exert(null);
+			logger.info("got sequentially executed task: {}", task.getName());
+            ExertionErrors.check(task.getExceptions());
+        }
+		long end = System.currentTimeMillis();
+        logger.info("Execution time for {} sequential tasks : {} ms.", tally, (end - start));
+    }
+
+	public Exertion getExertion() throws Exception {
+		String hostname;
 		InetAddress inetAddress = InetAddress.getLocalHost();
 		hostname = inetAddress.getHostName();
-		ipAddress = inetAddress.getHostAddress();
 
 		Context context = new ServiceContext("Who Is It?");
 		context.putValue("requestor/message", new RequestorMessage("SORCER"));
 		context.putValue("requestor/hostname", hostname);
-		context.putValue("requestor/address", ipAddress);
+		
+		NetSignature signature = new NetSignature("getHostName",
+				sorcer.ex1.WhoIsIt.class);
 
-		Signature signature1 = new NetSignature("getHostAddress",
-				sorcer.ex1.WhoIsIt.class, providername, Type.PRE);
-		Signature signature2 = new NetSignature("getHostName",
-				sorcer.ex1.WhoIsIt.class, providername, Type.SRV);
-		Signature signature3 = new NetSignature("getCanonicalHostName",
-				sorcer.ex1.WhoIsIt.class, providername, Type.POST);
-		Signature signature4 = new NetSignature("getTimestamp",
-				sorcer.ex1.WhoIsIt.class, providername, Type.POST);
-
-		Task task = new NetTask("Who Is It?",  new Signature[] { signature1, signature2, signature3, signature4 }, context);
-
-        task.exert();
-        ExertionErrors.check(task.getExceptions());
+        return new NetTask("Who Is It?", signature, context);
 	}
 }

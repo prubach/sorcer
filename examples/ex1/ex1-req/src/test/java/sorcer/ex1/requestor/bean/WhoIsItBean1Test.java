@@ -1,6 +1,5 @@
 package sorcer.ex1.requestor.bean;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -8,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.ThrowableTrace;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.junit.*;
@@ -16,7 +14,6 @@ import sorcer.service.Context;
 import sorcer.service.Task;
 
 import java.net.InetAddress;
-import java.util.List;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
@@ -32,8 +29,8 @@ import java.util.List;
                 ":ex1-cfg1"
         )
 })
-public class WhoIsItBeanRunner1Test {
-    private final static Logger logger = LoggerFactory.getLogger(WhoIsItBeanRunner1Test.class);
+public class WhoIsItBean1Test {
+    private final static Logger logger = LoggerFactory.getLogger(WhoIsItBean1Test.class);
 
     @Test
     public void getExertion() throws Throwable {
