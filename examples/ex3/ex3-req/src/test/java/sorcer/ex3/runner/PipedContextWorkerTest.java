@@ -18,12 +18,16 @@
 
 package sorcer.ex3.runner;
 
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.requestor.Works;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -33,12 +37,24 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
 @SuppressWarnings("rawtypes")
-public class PipedContextWorkerRunner extends ServiceRequestor {
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex2-api",
+        "org.sorcersoft.sorcer:ex2-rdl"
+})
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+public class PipedContextWorkerTest {
 
-	public Exertion getExertion(String... args) throws ExertionException {
-		String requestorName = getProperty("requestor.name");
-		
-		// define requestor data
+    @Test
+	public void testPipedContextWorker() throws Exception {
+        String requestorName = System.getProperty("user.name", "local-user");
+
+        // define requestor data
 		Job job = null;
 		try {
             Context context1 = new ServiceContext("work1");
@@ -96,7 +112,8 @@ public class PipedContextWorkerRunner extends ServiceRequestor {
 		// time the job execution
 		job.setExecTimeRequested(true);
 
-		return job;
+        Exertion result = job.exert();
+        ExertionErrors.check(result.getExceptions());
 	}
 
 }

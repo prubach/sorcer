@@ -18,56 +18,57 @@
 
 package sorcer.ex3.runner;
 
-import java.rmi.RemoteException;
-
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.SharedAssociativeContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.requestor.Works;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
+import sorcer.junit.*;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
-import sorcer.service.Task;
 
-public class    SharedContextWorkerRunner extends ServiceRequestor {
-	SharedAssociativeContext context = new SharedAssociativeContext(SorcerEnv.getActualSpaceName());
-	
-	public Exertion getExertion(String... args) throws ExertionException {
-		String requestorName = getProperty("requestor.name");
-		String prefix1 = getProperty("value.prefix.1");
-		String prefix2 = getProperty("value.prefix.2");
-		String prefix3 = getProperty("value.prefix.3");
-        // A workaround because prefixes don't exist in Works anymore
-        prefix1="";
-        prefix2="";
-        prefix3="";
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex2-api",
+        "org.sorcersoft.sorcer:ex2-rdl"
+})
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+public class SharedContextWorkerTest {
+
+    @Test(timeout = 30000)
+	public void testSharedContextWorker() throws Exception {
+        SharedAssociativeContext context = new SharedAssociativeContext(SorcerEnv.getActualSpaceName());
+        String requestorName = System.getProperty("user.name", "local-user");
 
 		// define requestor data
 		Job job = null;
 		try {
 			context.putValue("requestor/name", requestorName);
 			
-			context.putValue("requestor/operand/" + prefix1 + "1", 1);
-			context.putValue("requestor/operand/" + prefix1 + "2", 1);
+			context.putValue("requestor/operand/1", 1);
+			context.putValue("requestor/operand/2", 1);
             context.putValue("requestor/work", Works.work1);
-            context.writeValue("provider/result/" + prefix1 + "0", Context.none);
+            context.writeValue("provider/result/0", Context.none);
 			
-			context.putValue("requestor/operand/" + prefix2 + "1", 1);
-			context.putValue("requestor/operand/" + prefix2 + "2", 1);
+			context.putValue("requestor/operand/1", 1);
+			context.putValue("requestor/operand/2", 1);
             context.putValue("requestor/work", Works.work2);
-			context.writeValue("provider/result/" + prefix2 + "0", Context.none);
+			context.writeValue("provider/result/0", Context.none);
 			
-			context.aliasValue("requestor/operand/" + prefix3 + "1", "provider/result/" + prefix1 + "0");
-			context.aliasValue("requestor/operand/" + prefix3 + "2", "provider/result/" + prefix2 + "0");
+			context.aliasValue("requestor/operand/1", "provider/result/0");
+			context.aliasValue("requestor/operand/2", "provider/result/0");
             context.putValue("requestor/work", Works.work3);
-			context.putValue("provider/result/" + prefix3 + "0", 0);
+			context.putValue("provider/result/0", 0);
 
 			// define required services
 			NetSignature signature1 = new NetSignature("doWork",
@@ -98,17 +99,7 @@ public class    SharedContextWorkerRunner extends ServiceRequestor {
 		// time the job execution
 		job.setExecTimeRequested(true);
 
-		return job;
-	}
-
-	public void postprocess() {
-		try {
-			context.unshare();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (ContextException e) {
-			e.printStackTrace();
-		}
-		logger.info("<<<<<<<<<< Ouput exertion: \n" + exertion);
+        Exertion result = job.exert();
+        ExertionErrors.check(result.getExceptions());
 	}
 }

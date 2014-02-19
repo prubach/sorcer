@@ -4,22 +4,15 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<version>1.0-M4-SNAPSHOT</version>
-		<artifactId>examples</artifactId>
+        <artifactId>examples</artifactId>
+        <version>1.0-M4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ex3</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER examples :: ex3</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<modules>
         <module>ex3-req</module>
 	</modules>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>${maven.test.skip}</skipTests>
-	</properties>
 </project>
