@@ -18,6 +18,7 @@
 
 package sorcer.ex3.runner;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -43,6 +44,7 @@ import sorcer.service.Strategy.Flow;
         ":ex2-cfg2",
         ":ex2-cfg3"
 })
+@Ignore("Works only if run separately")
 public class SharedContextWorkerTest {
 
     @Test(timeout = 30000)
