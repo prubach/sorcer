@@ -18,13 +18,17 @@
 
 package sorcer.ex3.runner;
 
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.requestor.Works;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -34,15 +38,28 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
 @SuppressWarnings("rawtypes")
-public class FlowAccessWorkerRunner extends ServiceRequestor {
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex2-api",
+        "org.sorcersoft.sorcer:ex2-rdl"
+})
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+@Ignore("Works only if run separately")
+public class FlowAccessWorkerTest {
 
-	public Exertion getExertion(String... args) throws ExertionException {
-		String requestorName = getProperty("requestor.name");
+    @Test
+	public void getExertion() throws Exception {
+		String requestorName = System.getProperty("user.name");
 		String pn1, pn2, pn3;
-        pn1 = SorcerEnv.getSuffixedName(getProperty("provider.name.1"));
-        pn2 = SorcerEnv.getSuffixedName(getProperty("provider.name.2"));
-        pn3 = SorcerEnv.getSuffixedName(getProperty("provider.name.3"));
-        Job job = null;
+        pn1 = SorcerEnv.getSuffixedName("Worker1");
+        pn2 = SorcerEnv.getSuffixedName("Worker1");
+        pn3 = SorcerEnv.getSuffixedName("Worker1");
+        Job job;
         try {
             Context context1 = new ServiceContext("work1");
             context1.putValue("requestor/name", requestorName);
@@ -84,24 +101,17 @@ public class FlowAccessWorkerRunner extends ServiceRequestor {
 			job.addExertion(task3);
 						
 			// PUSH or PULL provider access
-			boolean isPushAccess = getProperty("provider.access.type", "PUSH").equals("PUSH");
-			if (isPushAccess)
-				job.setAccessType(Access.PUSH);
-			else
-				job.setAccessType(Access.PULL);
+            job.setAccessType(Access.PULL);
 			
 			// Exertion control flow PARallel or SEQential
-			boolean iSequential = getProperty("provider.control.flow", "SEQUENTIAL").equals("SEQUENTIAL");
-			if (iSequential)
-				job.setFlowType(Flow.SEQ);
-			else
-				job.setFlowType(Flow.PAR);
+            job.setFlowType(Flow.PAR);
 			
-			logger.info("isPushAccess: " + isPushAccess + " iSequential: " + iSequential);
+//			logger.info("isPushAccess: " + isPushAccess + " iSequential: " + iSequential);
 		} catch (Exception e) {
 			throw new ExertionException("Failed to create exertion", e);
 		}
-		return job;
+        Exertion result = job.exert();
+        ExertionErrors.check(result.getExceptions());
 	}
 
 }

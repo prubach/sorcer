@@ -71,11 +71,6 @@ ex0 ( ) {
   cd $SORCER_HOME
 }
 
-ex3 ( ) {
-  ant -f piped-worker-req-run.xml >> $LOG_DIR/$EX/req.log
-  ant -f strategy-worker-req-run.xml >> $LOG_DIR/$EX/req.log
-}
-
 ex4 ( ) {
   EX=ex4
   _mkdir $LOG_DIR/$EX
@@ -163,7 +158,6 @@ ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
 fi
-ex3
 ex4
 ex5 all
 ex5 one-bean
