@@ -72,17 +72,6 @@ ex0 ( ) {
 }
 
 ex4 ( ) {
-  EX=ex4
-  _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX.log $LOG_DIR/$EX/
-  cd $SORCER_HOME
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg1 2>&1 > $LOG_DIR/$EX/worker1-prv-run.log &
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg2 2>&1 > $LOG_DIR/$EX/worker2-prv-run.log &
-  $SORCER_HOME/bin/sorcer-boot :ex2-cfg3 2>&1 > $LOG_DIR/$EX/worker3-prv-run.log &
-  sleep 8
-  cd $EX_DIR/$EX/$EX-req/
-  ant -f seqJob-req-run.xml > $LOG_DIR/$EX/req.log
-  ant -f parPullMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
   ant -f seqPushMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
 }
 

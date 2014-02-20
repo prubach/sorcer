@@ -18,31 +18,40 @@
 
 package sorcer.ex4.requestor;
 
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.requestor.Works;
+import sorcer.junit.*;
 import sorcer.service.Context;
-import sorcer.service.ContextException;
 import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.SignatureException;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
-public class MasterSlaveParPullRequestor extends ServiceRequestor {
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:ex2-api",
+        "org.sorcersoft.sorcer:ex2-rdl"
+})
+@SorcerServiceConfiguration({
+        ":ex2-cfg1",
+        ":ex2-cfg2",
+        ":ex2-cfg3"
+})
+@Ignore("Works only if run separately")
+public class MasterSlaveParPullTest {
 
-	/* (non-Javadoc)
-	 * @see sorcer.core.requestor.ExertionRunner#getExertion(java.lang.String[])
-	 */
-	@Override
-	public Exertion getExertion(String... args) 
-		throws ExertionException, ContextException, SignatureException {
-		String requestorName = getProperty("requestor.name");
+    @Test(timeout = 30000)
+    public void getExertion() throws Exception {
+		String requestorName = System.getProperty("user.name");
 
         // define requestors data
         Context context1 = new ServiceContext("work1");
@@ -115,7 +124,9 @@ public class MasterSlaveParPullRequestor extends ServiceRequestor {
         job.setMonitored(false);
         // wait for results or do it asynchronously
         job.setMasterExertion(task4);
-		return job;
+
+        Exertion result = job.exert();
+        ExertionErrors.check(result.getExceptions());
 	}
 
 }
