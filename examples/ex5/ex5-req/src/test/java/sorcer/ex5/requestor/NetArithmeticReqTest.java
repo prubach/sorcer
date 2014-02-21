@@ -41,7 +41,7 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
-@RunWith(SorcerRunner.class)
+@RunWith(SorcerSuite.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
         "org.sorcersoft.sorcer:sorcer-api",

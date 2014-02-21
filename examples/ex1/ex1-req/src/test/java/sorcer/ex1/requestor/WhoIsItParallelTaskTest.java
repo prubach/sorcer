@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@RunWith(SorcerRunner.class)
+@RunWith(SorcerSuite.class)
 @Category(SorcerClient.class)
 @ExportCodebase(
         "org.sorcersoft.sorcer:ex1-api"

@@ -37,7 +37,7 @@ import sorcer.service.Task;
 
 import java.net.InetAddress;
 
-@RunWith(SorcerRunner.class)
+@RunWith(SorcerSuite.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex1-api",
