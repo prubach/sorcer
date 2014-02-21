@@ -41,7 +41,7 @@ import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 /**
  * @author Rafał Krupiński
  */
-public class ForkingLauncher extends Launcher {
+public class ForkingLauncher extends Launcher implements IForkingLauncher {
     private final static Logger log = LoggerFactory.getLogger(ForkingLauncher.class);
     final protected static String MAIN_CLASS = "sorcer.launcher.Sorcer";
 
@@ -164,22 +164,27 @@ public class ForkingLauncher extends Launcher {
         ProcessMonitor.install(process, callback, true);
     }
 
+    @Override
     public void setDebugPort(Integer debugPort) {
         this.debugPort = debugPort;
     }
 
+    @Override
     public void setOut(OutputStream out) {
         this.out = out;
     }
 
+    @Override
     public void setErr(OutputStream err) {
         this.err = err;
     }
 
+    @Override
     public void setOutFile(File outFile) {
         this.outFile = outFile;
     }
 
+    @Override
     public void setErrFile(File errFile) {
         this.errFile = errFile;
     }

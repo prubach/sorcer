@@ -34,7 +34,7 @@ import static sorcer.util.JavaSystemProperties.*;
 /**
  * @author Rafał Krupiński
  */
-public abstract class Launcher {
+public abstract class Launcher implements ILauncher {
     public WaitMode waitMode = WaitMode.no;
     protected File home;
     protected File ext;
@@ -65,12 +65,14 @@ public abstract class Launcher {
             "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sorcer-api",
             "org.sorcersoft.sorcer:sorcer-launcher-base",
-            "org.sorcersoft.sorcer:sorcer-launcher",
             "org.sorcersoft.sorcer:sorcer-installer",
             "org.sorcersoft.sorcer:sorcer-resolver",
             "org.sorcersoft.sorcer:sorcer-rio-start",
             "org.sorcersoft.sorcer:sorcer-rio-lib",
             "org.sorcersoft.sorcer:sos-util",
+
+            // optional: required only in fork mode
+            //"org.sorcersoft.sorcer:sorcer-launcher",
 
             //required for sos.Handler to work
             "org.sorcersoft.sorcer:sos-platform",
@@ -94,6 +96,7 @@ public abstract class Launcher {
         preConfigure();
     }
 
+    @Override
     public void preConfigure() {
         if (sorcerListener == null)
             sorcerListener = new NullSorcerListener();
@@ -110,10 +113,6 @@ public abstract class Launcher {
         evaluator.addSource("sys", properties);
         evaluator.addSource("env", environment);
     }
-
-    public abstract void start() throws IOException;
-
-    abstract public void stop();
 
     abstract protected Map<String, String> getEnvironment();
 
@@ -209,32 +208,32 @@ public abstract class Launcher {
         }
     }
 
-    public enum WaitMode {
-        no, start, end
-    }
-
+    @Override
     public void setLogDir(File logDir) {
         this.logDir = logDir;
     }
 
+    @Override
     public void setHome(File home) {
         this.home = home;
     }
 
+    @Override
     public void setConfigs(List<String> configs) {
         this.configs = configs;
     }
 
+    @Override
     public void setConfigDir(File config) {
         this.configDir = config;
     }
 
+    @Override
     public void setSorcerListener(SorcerListener listener) {
         this.sorcerListener = listener;
     }
 
-    abstract public void setProfile(String profile) throws IOException;
-
+    @Override
     public void setWaitMode(WaitMode waitMode) {
         this.waitMode = waitMode;
     }

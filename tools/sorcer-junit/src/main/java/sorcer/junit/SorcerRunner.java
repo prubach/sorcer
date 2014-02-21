@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.launcher.ILauncher;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
 import sorcer.resolver.Resolver;
@@ -144,7 +145,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     private Launcher startSorcer(String[] serviceConfigPaths) throws IOException {
         Launcher launcher = new SorcerLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
-        launcher.setWaitMode(Launcher.WaitMode.start);
+        launcher.setWaitMode(ILauncher.WaitMode.start);
         launcher.setHome(home);
         File logDir = new File("/tmp/logs");
         logDir.mkdir();

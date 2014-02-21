@@ -25,11 +25,9 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.process.DestroyingListener;
-import sorcer.launcher.process.ForkingLauncher;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
 import sorcer.util.JavaSystemProperties;
-import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,12 +69,7 @@ public class Sorcer {
                 return;
             }
 
-            Launcher launcher = parseCommandLine(cmd);
-
-            if (launcher instanceof ForkingLauncher) {
-                ForkingLauncher forkingLauncher = (ForkingLauncher) launcher;
-                forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
-            }
+            ILauncher launcher = parseCommandLine(cmd);
 
             launcher.preConfigure();
 
@@ -94,9 +87,9 @@ public class Sorcer {
     private static Options buildOptions() {
         Options options = new Options();
         Option wait = new Option(WAIT, "wait", true, "Wait style, one of:\n"
-                +"'no' - exit immediately, forces forked mode\n"
-                +"'start' - wait until sorcer starts, then exit, forces forked mode\n"
-                +"'end' - wait until sorcer finishes, stopping launcher also stops SORCER");
+                + "'no' - exit immediately, forces forked mode\n"
+                + "'start' - wait until sorcer starts, then exit, forces forked mode\n"
+                + "'end' - wait until sorcer finishes, stopping launcher also stops SORCER");
         wait.setType(Launcher.WaitMode.class);
         wait.setArgs(1);
         wait.setArgName("wait-mode");
@@ -136,14 +129,7 @@ public class Sorcer {
         return options;
     }
 
-    private static String getModeArgName() {
-        String[] modes = new String[Mode.values().length];
-        for (int i = 0; i < modes.length; i++)
-            modes[i] = Mode.values()[i].paramValue;
-        return "[" + StringUtils.join(modes, "|") + "]";
-    }
-
-    private static Launcher parseCommandLine(CommandLine cmd) throws ParseException, IOException {
+    private static ILauncher parseCommandLine(CommandLine cmd) throws ParseException, IOException {
         Mode mode;
         if (cmd.hasOption(MODE)) {
             String modeValue = cmd.getOptionValue(MODE);
@@ -165,12 +151,11 @@ public class Sorcer {
             debugPort = Integer.parseInt(cmd.getOptionValue(DEBUG));
         }
 
-        Launcher launcher = null;
+        ILauncher launcher = null;
         if (!mode.fork) {
             boolean envOk = SorcerLauncher.checkEnvironment();
             if (envOk && debugPort == null) {
-                SorcerLauncher.installLogging();
-                launcher = new SorcerLauncher();
+                launcher = createSorcerLauncher();
             } else {
                 if (debugPort == null)
                     if (mode.force)
@@ -185,10 +170,14 @@ public class Sorcer {
         }
 
         if (launcher == null) {
-            ForkingLauncher forkingLauncher = new ForkingLauncher();
+            IForkingLauncher forkingLauncher = null;
+            try {
+                forkingLauncher = createForkingLauncher(debugPort);
+            } catch (IllegalStateException e) {
+                if ((mode.fork && mode.force) || (!mode.fork))
+                    throw e;
+            }
             launcher = forkingLauncher;
-            if (debugPort != null)
-                forkingLauncher.setDebugPort(debugPort);
 /*
             File outFile = new File(logDir, "output.log");
             File errFile = new File(logDir, "error.log");
@@ -200,6 +189,14 @@ public class Sorcer {
             forkingLauncher.setErr(new PrintStream(errFile));
 */
         }
+
+        // called prefer-fork but didn't make it
+        // fallback to direct
+        if (launcher == null && mode.fork && !mode.force)
+            launcher = createSorcerLauncher();
+
+        if (launcher == null)
+            throw new IllegalStateException("Could not start SORCER");
 
         String homePath = System.getProperty(SORCER_HOME);
         File home = null;
@@ -213,9 +210,9 @@ public class Sorcer {
         launcher.setLogDir(logDir);
 
         try {
-            launcher.setWaitMode(cmd.hasOption(WAIT) ? Launcher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : Launcher.WaitMode.start);
+            launcher.setWaitMode(cmd.hasOption(WAIT) ? ILauncher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : ILauncher.WaitMode.start);
         } catch (IllegalArgumentException x) {
-            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(Launcher.WaitMode.values()), x);
+            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(ILauncher.WaitMode.values()), x);
         }
 
         @SuppressWarnings("unchecked")
@@ -225,6 +222,31 @@ public class Sorcer {
         if (cmd.hasOption(PROFILE))
             launcher.setProfile(cmd.getOptionValue(PROFILE));
 
+        return launcher;
+    }
+
+    private static IForkingLauncher createForkingLauncher(Integer debugPort) {
+        IForkingLauncher forkingLauncher;
+        try {
+            forkingLauncher = (IForkingLauncher) Class.forName("sorcer.launcher.process.ForkingLauncher").newInstance();
+            if (debugPort != null)
+                forkingLauncher.setDebugPort(debugPort);
+
+            forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
+        } catch (InstantiationException e) {
+            throw new IllegalStateException("Could not instantiate ForkingLauncher", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Could not access ForkingLauncher", e);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Could not instantiate ForkingLauncher", e);
+        }
+        return forkingLauncher;
+    }
+
+    private static ILauncher createSorcerLauncher() {
+        ILauncher launcher;
+        SorcerLauncher.installLogging();
+        launcher = new SorcerLauncher();
         return launcher;
     }
 }
