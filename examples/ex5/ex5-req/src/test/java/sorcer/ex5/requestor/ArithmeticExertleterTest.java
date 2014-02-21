@@ -18,19 +18,19 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
-
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,24 +38,33 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes" })
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex5-api"
+})
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-adder",
+                ":ex5-cfg-multiplier",
+                ":ex5-cfg-subtractor",
+                ":ex5-cfg-divider",
+                ":ex5-job"
+        }),
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-all",
+                ":ex5-job"
+        }),
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-one-bean",
+                ":ex5-job"
+        })
+})
 public class ArithmeticExertleterTest {
 
-	private final static Logger logger = Logger
-			.getLogger(NetArithmeticReqTest.class.getName());
-
-	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex5-api"});
-		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-        System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
-
-    }
+	private final static Logger logger = LoggerFactory
+			.getLogger(NetArithmeticReqTest.class);
 
     @Test
     public void exertExertleter() throws Exception {

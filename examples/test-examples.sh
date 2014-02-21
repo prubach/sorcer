@@ -71,33 +71,6 @@ ex0 ( ) {
   cd $SORCER_HOME
 }
 
-ex4 ( ) {
-  ant -f seqPushMasterJob-req-run.xml >> $LOG_DIR/$EX/req.log
-}
-
-ex5 ( ) {
-  TYPE=$1
-  EX=ex5
-  _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
-  cd $SORCER_HOME
-
-  if [ "$1" == "prov" ]; then
-    $SORCER_HOME/bin/sorcer-boot :ex5-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex5-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex5-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex5-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
-    sleep 8
-  else
-    $SORCER_HOME/bin/sorcer-boot :ex5-cfg-$TYPE 2>&1 > $LOG_DIR/$EX/$TYPE-arithmetic.log &
-  fi
-  #ant -f arithmetic-$TYPE.xml > $LOG_DIR/$EX/$TYPE-arithmetic.log &
-  cd $EX_DIR/$EX/$EX-req/
-  ant -f arithmetic-ter-run.xml > $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &
-  sleep 8
-  mvn -Dmaven.test.skip=false -DskipTests=false test > $LOG_DIR/$EX/$TYPE-req.log
-}
-
 ex6 ( ) {
   TYPE=$1
   EX=ex6
@@ -147,10 +120,6 @@ ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
 fi
-ex4
-ex5 all
-ex5 one-bean
-ex5 prov
 ex6 all
 ex6 one-bean
 ex6 prov

@@ -11,23 +11,17 @@
 	<artifactId>ex5</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER examples :: ex5</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<modules>
 		<module>ex5-api</module>
 		<module>ex5-prv</module>
-        <module>ex5-req</module>
         <module>ex5-cfg-adder</module>
         <module>ex5-cfg-divider</module>
         <module>ex5-cfg-multiplier</module>
         <module>ex5-cfg-subtractor</module>
         <module>ex5-cfg-all</module>
         <module>ex5-cfg-one-bean</module>
+        <module>ex5-job</module>
+        <module>ex5-req</module>
 	</modules>
-
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-		<skipTests>${maven.test.skip}</skipTests>
-	</properties>
 </project>

@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,53 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exerter;
 import sorcer.service.Job;
 import sorcer.service.Task;
-
-
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mike Sobolewski
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings("rawtypes")
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex5-api"
+})
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-adder",
+                ":ex5-cfg-multiplier",
+                ":ex5-cfg-subtractor",
+                ":ex5-cfg-divider",
+                ":ex5-job"
+        }),
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-all",
+                ":ex5-job"
+        }),
+        @SorcerServiceConfiguration({
+                ":ex5-cfg-one-bean",
+                ":ex5-job"
+        })
+})
 public class ArithmeticExerterTest {
 
-	private final static Logger logger = Logger
-			.getLogger(ArithmeticExerterTest.class.getName());
+	private final static Logger logger = LoggerFactory
+			.getLogger(ArithmeticExerterTest.class);
 
-	static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex5-api"});
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
-
-    }
-	
 	@Test
 	public void exertExerter() throws Exception {
 		Job exertion = NetArithmeticReqTest.getJobComposition();
@@ -65,7 +75,7 @@ public class ArithmeticExerterTest {
 		// logger.info("result: " + result);
 		// logger.info("return value: " + result.getReturnValue());
 	
-		Context out = (Context) result.getContext();
+		Context out = result.getContext();
 //		logger.info("out context: " + out);
 		logger.info("1job1task/subtract/result/value: "
 				+ out.getValue(

@@ -11,10 +11,6 @@
 	<artifactId>ex5-req</artifactId>
 	<name>SORCER examples :: ex5 :: req</name>
 
-    <properties>
-        <skipTests>true</skipTests>
-    </properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
@@ -47,8 +43,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>
