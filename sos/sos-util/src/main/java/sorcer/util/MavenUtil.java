@@ -25,9 +25,18 @@ import java.util.jar.JarInputStream;
  * @author Rafał Krupiński
  */
 public class MavenUtil {
+    /**
+     * Exception source indicator.
+     */
     private static boolean inside;
 
-    public static String findVersion(Class<?> serviceType) {
+    /**
+     * Extracts version for jar archive
+     *
+     * @param serviceType service class
+     * @return library version
+     */
+    public synchronized static String findVersion(Class<?> serviceType) {
         inside = false;
         URL jar = serviceType.getProtectionDomain().getCodeSource().getLocation();
         JarInputStream zip = null;
@@ -57,11 +66,24 @@ public class MavenUtil {
         return null;
     }
 
+    /**
+     * Handles exception
+     *
+     * @param e   exception to print as stack trace
+     * @param jar jar file that causes the exception
+     */
     private static void handleException(Exception e, URL jar) {
         System.err.println(String.format("Unable to open '%s' jar file", jar.toString()));
         e.printStackTrace();
     }
 
+    /**
+     * Handles jar version extraction.
+     *
+     * @param zip jar input stream
+     * @return jar version
+     * @throws IOException
+     */
     private static String handleJar(JarInputStream zip) throws IOException {
         inside = true;
         JarEntry entry = null;
