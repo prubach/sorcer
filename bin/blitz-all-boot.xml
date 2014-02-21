@@ -28,7 +28,7 @@
     <property name="provider.config" value="../configs/blitz/configs/start-blitz-all.config" />
 
     <target name="blitz">
-        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+        <java classname="sorcer.launcher.Sorcer" fork="yes">
             <classpath refid="boot.classpath" />
             <arg value="${provider.config}" />
             <!--        <jvmarg value="-Xdebug"/>

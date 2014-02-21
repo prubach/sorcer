@@ -23,7 +23,7 @@
     <import file="../../common-run.xml" />
 
 	<target name="jini all">
-        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+        <java classname="sorcer.launcher.Sorcer" fork="yes">
             <jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <classpath refid="boot.classpath"/>
             <sysproperty key="java.rmi.server.useCodebaseOnly" value="false" />

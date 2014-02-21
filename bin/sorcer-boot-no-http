@@ -26,7 +26,7 @@ DIRNAME=`dirname "$PRG"`
 . "$DIRNAME/common-run"
 
 
-STARTER_MAIN_CLASS=sorcer.boot.ServiceStarter
+STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
 if [ -f $SORCER_EXT/configs/sorcer-ext-boot.config ]; then
   startSos $SORCER_HOME/configs/sorcer-boot-no-http.config $SORCER_EXT/configs/sorcer-ext-boot.config "$@"

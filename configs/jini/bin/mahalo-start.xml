@@ -24,7 +24,7 @@
     <import file="../../common-run.xml" />
 
 	<target name="mahalo">
-        <java classname="sorcer.boot.ServiceStarter" fork="yes">
+        <java classname="sorcer.launcher.Sorcer" fork="yes">
             <jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <classpath refid="boot.classpath"/>
             <arg value="../configs/start-mahalo.config" />

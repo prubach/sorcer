@@ -24,7 +24,7 @@
 	
 	<target name="all-arithmetic">
 	    <!--<java classname="com.sun.jini.start.ServiceStarter" fork="yes"> -->
-	    <java classname="sorcer.boot.ServiceStarter" fork="yes">
+	    <java classname="sorcer.launcher.Sorcer" fork="yes">
             <env key="RIO_HOME" value="${rio.home}"/>
 <!--
 

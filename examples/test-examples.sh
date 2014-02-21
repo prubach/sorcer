@@ -1,7 +1,25 @@
 #!/bin/bash
 
+PRG="$0"
+
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`/"$link"
+    fi
+done
+
+DIRNAME=`dirname "$PRG"`
+
+. "$DIRNAME/common-run"
+
 EX_DIR=$SORCER_HOME/examples
 LOG_DIR=/tmp/logs/
+
+PATH=$PATH:$SORCER_HOME/bin
 
 _mkdir () {
 	if [ ! -e  $1 ]; then
@@ -23,15 +41,11 @@ stopSorcer ( ) {
 
 startSorcer ( ) {
 if [ "$USE_RIO" == "1" ]; then
-  $SORCER_HOME/bin/sorcer-boot -Prio 2>&1 > $1 &
-  sleep 32
-  #$SORCER_HOME/bin/rio deploy $SORCER_HOME/configs/SorcerBoot.groovy > $1_deploy &
-  #sleep 13
+  export SOS_PROFILE=rio
 else
-  $SORCER_HOME/bin/sorcer-boot 2>&1 > $1 &
-  #ant -f $SORCER_HOME/bin/sorcer-boot.xml > $1 &
-  sleep 15
+  export SOS_PROFILE=sorcer
 fi
+$SORCER_HOME/bin/sorcer-boot -P${SOS_PROFILE} -Mforce-direct -wstart 2>&1 > $1 &
 }
 
 restartSorcer ( ) {
@@ -56,18 +70,19 @@ cleanLogs ( ) {
 ex0 ( ) {
   EX=ex0
   _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX$1.log $LOG_DIR/$EX/
+  startSorcer $LOG_DIR/$EX/socer-$EX$1.log
   cd $SORCER_HOME
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex0/ex0-cfg/src/main/resources/opstring.groovy
   else
-    $SORCER_HOME/bin/sorcer-boot :ex0-cfg > $LOG_DIR/$EX/ex0-prv-run.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex0-cfg > $LOG_DIR/$EX/ex0-prv-run.log &
     #$SORCER_HOME/bin/sorcer-boot :ex0-cfg 2>&1 > $LOG_DIR/$EX/ex0-prv-run.log &
   fi
-  sleep 8
-  cd $EX_DIR/$EX/$EX-req/
-  ant -f run.xml > $LOG_DIR/$EX/req$1.log
-  ./run.ntl >> $LOG_DIR/$EX/req$1.log
+
+  cd $EX_DIR/$EX
+  ant -f $EX-req/run.xml > $LOG_DIR/$EX/req$1.log
+  ex0-prv/src/test/netlet/run.ntl >> $LOG_DIR/$EX/req$1.log
+  stopSorcer $LOG_DIR/$EX/
   cd $SORCER_HOME
 }
 
@@ -75,22 +90,22 @@ ex6 ( ) {
   TYPE=$1
   EX=ex6
   _mkdir $LOG_DIR/$EX
-  restartSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log $LOG_DIR/$EX/
+  startSorcer $LOG_DIR/$EX/socer-$EX-$TYPE.log
 
   cd $SORCER_HOME
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex6/ex6-cfg-all/src/main/resources/AllEx6Boot.groovy
   elif [ "$1" == "prov" ]; then
-    $SORCER_HOME/bin/sorcer-boot :ex6-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex6-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex6-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot :ex6-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
   else
-      $SORCER_HOME/bin/sorcer-boot :ex6-cfg-$TYPE > $LOG_DIR/$EX/$TYPE-arithmetic.log &
+      $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-$TYPE > $LOG_DIR/$EX/$TYPE-arithmetic.log &
   fi
   cd $EX_DIR/$EX/$EX-req/
   ant -f arithmetic-ter-run.xml > $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &
-  sleep 8
+
   mvn -Dmaven.test.skip=false -DskipTests=false test > $LOG_DIR/$EX/$TYPE-req.log 
   ant -f f5-req-run.xml > $LOG_DIR/$EX/$TYPE-f5-req.log
   ant -f f5a-req-run.xml >> $LOG_DIR/$EX/$TYPE-f5a-req.log
@@ -103,6 +118,7 @@ ex6 ( ) {
   ant -f f1-SEQ-pull-run.xml >> $LOG_DIR/$EX/$TYPE-f1-SEQ-req.log
   nsh f1.ntl > $LOG_DIR/$EX/$TYPE-ntl-req.log
   nsh f1a.ntl > $LOG_DIR/$EX/$TYPE-ntl-a-req.log
+  stopSorcer $LOG_DIR/$EX/
 }
 
 if [ "$1" == "exc" ]; then
@@ -115,7 +131,6 @@ if [ "$1" == "rio" ]; then
 fi
 
 cleanLogs
-startSorcer $LOG_DIR/sorcer.log
 ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
@@ -127,5 +142,5 @@ if [ "$1" == "rio" ]; then
   ex6 rio
 fi
 
-stopSorcer
+#stopSorcer
 showExceptions

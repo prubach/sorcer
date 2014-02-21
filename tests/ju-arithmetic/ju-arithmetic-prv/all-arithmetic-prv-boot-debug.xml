@@ -33,7 +33,7 @@
 	
 	<target name="debug.provider" depends="mvn-init">
 		<property name="runtime.classpath.string" refid="runtime.classpath" />
-		<java classname="sorcer.boot.ServiceStarter" fork="yes" spawn="${provider.spawn}">
+		<java classname="sorcer.launcher.Sorcer" fork="yes" spawn="${provider.spawn}">
 			<classpath refid="boot.classpath" />
 			<arg value="${provider.config}" />
 			<jvmarg value="-Xdebug"/>

@@ -383,6 +383,10 @@ $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
         WEBSTER_URL=http://$WEBSTER_INTERFACE:$WEBSTER_PORT
     fi
 
+    if [ "x$STARTER_MAIN_CLASS" = "x" ]; then
+        STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
+    fi
+
     echo "##############################################################################"
     echo "##                       SORCER OS Booter"                                
     echo "##   SORCER_HOME: $SORCER_HOME"
