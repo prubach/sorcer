@@ -44,6 +44,8 @@
         <v.junit>4.11</v.junit>
         <v.logback>1.0.13</v.logback>
         <v.plexus>3.0.15</v.plexus>
+        <surefire.includedGroups/>
+        <surefire.excludedGroups>sorcer.junit.SorcerClient</surefire.excludedGroups>
     </properties>
 
 	<modules>
@@ -621,20 +623,6 @@
                 <run-its>true</run-its>
                 <surefire.excludedGroups/>
                 <surefire.includedGroups>sorcer.junit.SorcerClient</surefire.includedGroups>
-            </properties>
-        </profile>
-        <profile>
-            <id>dont-run-its</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>run-its</name>
-                    <value/>
-                </property>
-            </activation>
-            <properties>
-                <surefire.includedGroups/>
-                <surefire.excludedGroups>sorcer.junit.SorcerClient</surefire.excludedGroups>
             </properties>
         </profile>
     </profiles>
