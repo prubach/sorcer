@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Properties;
@@ -68,6 +67,7 @@ abstract public class
     final static String REQUESTOR_PROPERTIES_FILENAME = "requestor.properties";
 
     public static void main(String... args) throws Exception {
+        prepareBasicEnvironment();
         SorcerEnv.debug = true;
         Webster myWebster = prepareCodebase();
         initialize(args);
@@ -78,8 +78,6 @@ abstract public class
     }
 
 	public static void initialize(String... args) {
-        System.setSecurityManager(new RMISecurityManager());
-
         // Initialize system properties: configs/sorcer.env
 		SorcerEnv.getEnvProperties();
         String runnerType = null;
@@ -325,11 +323,15 @@ abstract public class
     // It is required by scilab script that invokes exertions from scilab
 
     public static void prepareEnvironment() {
+        System.setProperty("webster.internal", "true");
+        prepareBasicEnvironment();
+    }
+
+    protected static void prepareBasicEnvironment(){
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        System.setProperty("webster.internal", "true");
+        System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+        System.setSecurityManager(new SecurityManager());
     }
-
 }

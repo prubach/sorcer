@@ -14,8 +14,6 @@ done
 
 DIRNAME=`dirname "$PRG"`
 
-. "$DIRNAME/common-run"
-
 EX_DIR=$SORCER_HOME/examples
 LOG_DIR=/tmp/logs/
 

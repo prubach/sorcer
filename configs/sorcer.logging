@@ -1,1 +1,2 @@
 # See logback.groovy
+handlers = org.slf4j.bridge.SLF4JBridgeHandler
