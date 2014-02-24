@@ -216,6 +216,11 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex0-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex0-sui</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -267,6 +272,11 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex4-req</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ex5-job</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -346,6 +356,11 @@
             <artifactId>sorcer-rio-config</artifactId>
             <version>${v.sorcer}</version>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-cli</artifactId>
+            <version>${v.sorcer}</version>
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
