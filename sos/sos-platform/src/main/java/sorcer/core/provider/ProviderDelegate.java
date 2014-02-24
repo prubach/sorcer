@@ -989,8 +989,10 @@ public class ProviderDelegate {
 			resetSigantures(signatures, st);
 			throw new ExertionException(e);
 		}
+        if (result==null)
+            throw new ExertionException("Result is null - exception added by ProviderDelegate");
 		// append accumulated exceptions and trace
-		task.getExceptions().addAll(result.getExceptions());
+        task.getExceptions().addAll(result.getExceptions());
 		task.getTrace().addAll(result.getTrace());
 		if (result.getStatus() <= ExecState.FAILED) {
 			task.setStatus(ExecState.FAILED);
