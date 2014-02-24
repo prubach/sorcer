@@ -16,6 +16,8 @@
 
 import java.lang.management.ManagementFactory
 
+installJUL();
+
 /* Scan for changes every minute. */
 scan()
 
@@ -205,7 +207,10 @@ logger("watch.Process Memory", DEBUG, ["WATCH-LOG"], false)
 logger("watch.Perm Gen", DEBUG, ["WATCH-LOG"], false)
 */
 
-def listener = new ch.qos.logback.classic.jul.LevelChangePropagator();
-listener.setResetJUL(true);
-((ch.qos.logback.classic.LoggerContext)context).addListener(listener);
-//org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();
+def installJUL() {
+    def listener = new ch.qos.logback.classic.jul.LevelChangePropagator();
+    listener.setContext(context);
+    listener.setResetJUL(true);
+    org.slf4j.bridge.SLF4JBridgeHandler.removeHandlersForRootLogger();
+    ((ch.qos.logback.classic.LoggerContext) context).addListener(listener);
+}
