@@ -47,9 +47,11 @@ elif [ "$1" = "restart" ]; then
 fi
 
 # Set local variables
-#if [ -z "$RIO_HOME" ] ; then
-#  RIO_HOME="$scriptDir/../lib/rio"
-#fi
+if [ "x$RIO_HOME" = "x" ]; then
+	RIO_HOME=$SORCER_HOME/lib/rio
+fi
+rioVersion=$V_RIO
+RIO_LIB=$RIO_HOME/lib
 
 cygwin=
 case $OS in
@@ -78,12 +80,8 @@ SOS_CLASSPATH=$(createSorcerRioCp)
 
 
 # Build the classpath for SLF4J Logging
-for file in $RIO_HOME/lib/logging/*.jar; do
-    SLF4J_CLASSPATH="$SLF4J_CLASSPATH:$file"
-done
-SLF4J_CLASSPATH=`echo $SLF4J_CLASSPATH | cut -c2-`
+SLF4J_CLASSPATH=$LOG_CP:$MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar
 
-echo "slf4j":$SLF4J_CLASSPATH
 loggingConfig="-Dlogback.configurationFile=`toNative $RIO_HOME/../../configs/logback.groovy`"
 
 #DEBUG=-Dorg.rioproject.tools.webster.debug
@@ -110,15 +108,6 @@ fi
 # If the command is to start the Rio services, invoke the ServiceStarter
 # Otherwise invoke the CLI
 if [ "$start" = "1" ]; then
-    # Run installer first
-    
-    if [ "$daem" = "1" ]; then
-      echo "INFO  $(date +%T) check local repository for artifacts"  > $SORCER_HOME/logs/rio-boot.log
-    else
-      echo "INFO  $(date +%T) check local repository for artifacts"
-    fi    
-    installRioToLocalRepository
-
     if [ -z "$RIO_NATIVE_DIR" ] ; then
         RIO_NATIVE_DIR="`toNative $RIO_LIB/native`"
     fi
