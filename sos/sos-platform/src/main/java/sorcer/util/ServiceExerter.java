@@ -167,10 +167,10 @@ public class ServiceExerter implements Exerter, Callable {
         try {
             // If the exertion is a job rearrange the inner exertions to make sure the
             // dependencies are not broken
-            if (exertion.isJob()) {
+          /*  if (exertion.isJob()) {
                 ExertionSorter es = new ExertionSorter(exertion);
                 exertion = (ServiceExertion)es.getSortedJob();
-            }
+            }*/
             //
             if (!(signature instanceof NetSignature)) {
                 if (exertion instanceof Task) {
@@ -207,9 +207,9 @@ public class ServiceExerter implements Exerter, Callable {
         } catch (SignatureException e) {
             e.printStackTrace();
             throw new ExertionException(e);
-        } catch (SortingException se) {
+        } /*catch (SortingException se) {
             throw new ExertionException(se);
-        }
+        }   */
 
         if (provider == null) {
             // handle signatures for PULL tasks

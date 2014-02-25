@@ -951,6 +951,7 @@ public class ProviderDelegate {
 
 		ObjectJob job = new ObjectJob(signatures.get(0).getType() + "-"
 				+ task.getName(), new ObjectSignature("execute", ServiceJobber.class));
+        job.setFlow(Strategy.Flow.SEQ);
 		Task t = null;
 		Signature ss = null;
 		for (int i = 0; i < signatures.size(); i++) {

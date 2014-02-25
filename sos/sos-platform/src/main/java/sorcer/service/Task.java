@@ -209,7 +209,9 @@ public class Task extends ServiceExertion {
 		sb.append(", parent ID: ").append(parentId);
 
 		if (signatures.size() == 1) {
-			sb.append(getProcessSignature().getProviderName());
+            ///
+            if (getProcessSignature()!=null)
+			    sb.append(getProcessSignature().getProviderName());
 		} else {
 			for (Signature s : signatures) {
 				sb.append("\n  ").append(s);

@@ -32,6 +32,7 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
+import sorcer.service.ServiceExertion;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The
@@ -91,8 +92,10 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         myMemberUtil,
                         provisionManager);
             }
-
             Job job = (Job)exertion;
+            ExertionSorter es = new ExertionSorter(job);
+            job = (Job)es.getSortedJob();
+
             if (Jobs.isSpaceSingleton(job)) {
                 logger.info("Running Space Sequential Dispatcher...");
                 dispatcher = new SpaceSequentialDispatcher(job,
