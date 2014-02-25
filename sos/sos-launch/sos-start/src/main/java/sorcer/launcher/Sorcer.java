@@ -65,7 +65,14 @@ public class Sorcer {
 
             if (cmd.hasOption('h')) {
                 HelpFormatter helpFormatter = new HelpFormatter();
-                helpFormatter.printHelp(160, "sorcer", "Start sorcer", options, null);
+                helpFormatter.printHelp(160,
+                        "sorcer-boot [options] [service list files]\n"
+                        +"Service list file may be:\n" +
+                                "- a .config file with list of service descriptors,\n"
+                        +"- an .opstring or .groovy Operational String file,\n"
+                        +"- an .oar or .jar file compliant with OAR specification,\n"
+                        +"- an :artifactId of a module that output is compliant with OAR specification (artifact*jar file is searched under $SORCER_HOME)",
+                        "Start sorcer", options, null);
                 return;
             }
 
