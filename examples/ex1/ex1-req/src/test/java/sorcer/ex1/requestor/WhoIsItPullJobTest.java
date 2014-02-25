@@ -42,6 +42,7 @@ import java.net.InetAddress;
 @RunWith(SorcerSuite.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex1-api",
         "org.sorcersoft.sorcer:ex1-rdl"
 })
@@ -54,12 +55,12 @@ import java.net.InetAddress;
                 ":ex1-cfg2"
         })
 })
-@Ignore
+//@Ignore
 public class WhoIsItPullJobTest {
 
     private static Logger logger = LoggerFactory.getLogger(WhoIsItPullJobTest.class);
 
-    @Test
+    @Test(expected = ExertionErrors.MultiException.class)
     public void whoIsItPullTest() throws Exception {
         // get the queried provider name
         String providerName1 = SorcerEnv.getSuffixedName("XYZ");

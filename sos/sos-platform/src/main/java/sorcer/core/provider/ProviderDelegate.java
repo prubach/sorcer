@@ -181,6 +181,8 @@ public class ProviderDelegate {
 
 	protected String spaceName;
 
+    private List<SpaceTaker> spaceTakers = new ArrayList<SpaceTaker>();
+
 	protected Class[] publishedServiceTypes;
 
 	/** provider service type entry used to be included in the provider's proxy. */
@@ -772,10 +774,12 @@ public class ProviderDelegate {
 				worker = new SpaceIsReadyTaker(new SpaceTaker.SpaceTakerData(
 						envelop, memberInfo, provider, spaceName, spaceGroup,
 						workerTransactional, queueSize == 0), spaceWorkerPool);
+                spaceTakers.add(worker);
 			} else {
 				worker = new SpaceTaker(new SpaceTaker.SpaceTakerData(envelop,
 						memberInfo, provider, spaceName, spaceGroup,
 						workerTransactional, queueSize == 0), spaceWorkerPool);
+                spaceTakers.add(worker);
 			}
 			Thread sith = new Thread(interfaceGroup, worker);
 			sith.setDaemon(true);
@@ -801,11 +805,13 @@ public class ProviderDelegate {
 									provider, spaceName, spaceGroup,
 									workerTransactional, queueSize == 0),
 							spaceWorkerPool);
+                    spaceTakers.add(worker);
 				} else {
 					worker = new SpaceTaker(new SpaceTaker.SpaceTakerData(
 							envelop, memberInfo, provider, spaceName,
 							spaceGroup, workerTransactional, queueSize == 0),
 							spaceWorkerPool);
+                    spaceTakers.add(worker);
 				}
 				Thread snth = new Thread(namedGroup, worker);
 				snth.setDaemon(true);
@@ -1857,6 +1863,14 @@ public class ProviderDelegate {
 
 	public void destroy() throws RemoteException {
 		if (spaceEnabled && spaceHandlingPools != null) {
+            for (SpaceTaker st : spaceTakers) {
+                st.destroy();
+            }
+            // Wait until spaceTakers shutdown
+            try {
+                Thread.sleep(SpaceTaker.SPACE_TIMEOUT);
+            } catch (InterruptedException ie) {
+            }
 			for (ExecutorService es : spaceHandlingPools)
 				shutdownAndAwaitTermination(es);
 			if (interfaceGroup != null) {
@@ -1870,12 +1884,14 @@ public class ProviderDelegate {
 				for (int i = 0; i < ifgThreads.length; i++) {
 					// System.out.println("ifgThreads[" + i + "] = " +
 					// ifgThreads[i]);
-					ifgThreads[i].interrupt();
+                    if (ifgThreads[i].isAlive())
+					    ifgThreads[i].interrupt();
 				}
 				for (int i = 0; i < ngThreads.length; i++) {
 					// System.out.println("ngThreads[" + i + "] = " +
 					// ngThreads[i]);
-					ngThreads[i].interrupt();
+                    if (ngThreads[i].isAlive())
+                        ngThreads[i].interrupt();
 				}
 			}
 		}

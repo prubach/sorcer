@@ -40,20 +40,22 @@ import java.net.InetAddress;
         "org.sorcersoft.sorcer:ex1-api"
 )
 @SorcerServiceConfigurations({
+/*
         @SorcerServiceConfiguration(
                 ":ex1-cfg-all"
         ),
+*/
         @SorcerServiceConfiguration({
                 ":ex1-cfg1",
-                ":ex1-cfg2"
+                //":ex1-cfg2"
         })
 })
-@Ignore
+
 public class WhoIsItSequentialTaskTest {
 
 	private static Logger logger = LoggerFactory.getLogger(WhoIsItSequentialTaskTest.class);
 
-    @Test
+    @Test(timeout = 10000)
 	public void whoIsItSequential() throws Exception {
 		int tally = 5;
 		// create a service task and execute it 'tally' times

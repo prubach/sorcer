@@ -69,7 +69,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 
 	protected long transactionLeaseTimeout = TRANSACTION_LEASE_TIME;
 
-	public final static long SPACE_TIMEOUT = 1000 * 30; // 1/2 minute
+	public final static long SPACE_TIMEOUT = 100 * 5; // 1/8 minute
 
 	protected long spaceTimeout = SPACE_TIMEOUT;
 
@@ -414,7 +414,12 @@ public class SpaceTaker implements Runnable, LeaseListener {
 //				+ e.getLease());
 	}
 
-	class SpaceWorker implements Runnable {
+    public void destroy() {
+        keepGoing = false;
+    }
+
+
+    class SpaceWorker implements Runnable {
 		private ExertionEnvelop ee;
 		private Transaction.Created txnCreated;
 		
