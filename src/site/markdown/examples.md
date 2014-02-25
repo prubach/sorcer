@@ -1,6 +1,6 @@
 # Running provided Sorcer examples
 ## Prerequisites
-- [Sorcer platform] (download.html)
+- [Sorcer platform](download.html)
 
 The examples are supplied in the form of source code in the SORCER distribution (<tt>examples</tt> folder). To be able to compile and run them you need have a running Maven and Ant and for convenience add the <tt>bin</tt> folders of both of them to your <tt>PATH</tt>.
 SORCER distribution comes with both Maven and Ant - they're located in the SORCER_HOME/lib/ directory and SORCER scripts add their bin directories to your path. Please use the SORCER_HOME/bin/setenv scripts to configure your environment.
@@ -21,7 +21,7 @@ on Unix-based systems:
 <pre>./prepare-repository</pre>
 
 __Important note:__
-Before you proceed, please note that Maven may need to download some plugins during this process, therefore it is necessary that you have an active internet connection and that your maven is not set to work [offline] (#offline).
+Before you proceed, please note that Maven may need to download some plugins during this process, therefore it is necessary that you have an active internet connection and that your maven is not set to work [offline](#offline).
 
 
 
@@ -36,18 +36,20 @@ Most examples contain the following directory structure:
 
 - exX-api - this folder contains the code of the interfaces published by the service provider as well as classes required for passing input/output data (context) to/from the provider.
 - exX-prv - the actual implementation of the service provider.
-- exX-cfg - this folder contains the configuration files of the service. You can start the provider by executing `sorcer-boot :exX-cfgY` in the console after building the examples.
-- exX-req - this folder contains the requestor used for testing the service provider. The testing code may be implemented either as a regular java application or a junit test class.
+- exX-cfg - this folder contains the configuration files of the service. You can start the provider by executing <pre>sorcer-boot :exX-cfgY</pre> in the console after building the examples.
+- exX-req - this folder contains the requestor used for testing the service provider. The testing code may be implemented either as a:
+ - regular java application
 
-In the first case (regular java file) you should find ant scripts for starting the requestor - there may be more than one script - they usually differ by input parameters that are provided as arguments during startup.
-In the second case (requestor as a junit class) you may have to start the junit tests by running in the exX-req folder:
-<pre>mvn -Dmaven.test.skip=false test</pre>
+    you should find ant scripts for starting the requestor - there may be more than one script - they usually differ by input parameters that are provided as arguments during startup.
+ - junit test class
 
+    you may start the tests by calling <pre>mvn test -f examples/pom.xml</pre> which will run all junit tests in the example modules or <pre>mvn test -Prun-its</pre> which will run all tests that require running SORCER (which you must first run).
 
+ - netlet script
 
 ## Creating your own Sorcer service provider using Sorcer maven archetype
 
-When you have run the examples you are ready to go on and create your own service provider. Please visit the next tutorial on [Creating Sorcer service provider using a maven archetype] (new-provider.html).
+When you have run the examples you are ready to go on and create your own service provider. Please visit the next tutorial on [Creating Sorcer service provider using a maven archetype](new-provider.html).
 
 
 
