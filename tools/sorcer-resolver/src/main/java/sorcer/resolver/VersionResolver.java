@@ -7,6 +7,7 @@ import sorcer.util.ArtifactCoordinates;
 import sorcer.util.PropertiesLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -22,7 +23,11 @@ public class VersionResolver {
     {
         versions = propertiesLoader.loadAsMap("META-INF/maven/groupversions.properties", Thread.currentThread()
                 .getContextClassLoader());
-        versions.putAll(propertiesLoader.loadAsMap(VERSIONS_PROPS_FILE));
+        try {
+            versions.putAll(propertiesLoader.loadAsMap(VERSIONS_PROPS_FILE));
+        } catch (IOException e) {
+            log.warn("Could not load versions from {}", VERSIONS_PROPS_FILE, e);
+        }
     }
 
     /**
