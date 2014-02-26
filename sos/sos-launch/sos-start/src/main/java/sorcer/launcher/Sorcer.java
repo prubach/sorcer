@@ -192,7 +192,7 @@ public class Sorcer {
         if (launcher == null) {
             IForkingLauncher forkingLauncher = null;
             try {
-                forkingLauncher = createForkingLauncher(debugPort);
+                forkingLauncher = createForkingLauncher(debugPort, wait);
             } catch (IllegalStateException e) {
                 if ((mode.fork && mode.force) || (!mode.fork))
                     throw e;
@@ -241,14 +241,14 @@ public class Sorcer {
         return launcher;
     }
 
-    private static IForkingLauncher createForkingLauncher(Integer debugPort) {
+    private static IForkingLauncher createForkingLauncher(Integer debugPort, ILauncher.WaitMode mode) {
         IForkingLauncher forkingLauncher;
         try {
             forkingLauncher = (IForkingLauncher) Class.forName("sorcer.launcher.process.ForkingLauncher").newInstance();
             if (debugPort != null)
                 forkingLauncher.setDebugPort(debugPort);
 
-            forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook()));
+            forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook(), mode == ILauncher.WaitMode.start));
         } catch (InstantiationException e) {
             throw new IllegalStateException("Could not instantiate ForkingLauncher", e);
         } catch (IllegalAccessException e) {

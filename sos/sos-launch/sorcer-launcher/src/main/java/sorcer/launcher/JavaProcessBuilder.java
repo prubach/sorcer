@@ -108,25 +108,21 @@ public class JavaProcessBuilder {
 
         redirectIO();
 
-        Process proc = null;
+        Process proc = builder.start();
+
         try {
-            proc = builder.start();
-
-            try {
-                // give it a moment to exit on error
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-                //ignore
-            }
-
-            // if the next call throws exception, then we're probably good -
-            // process hasn't finished yet.
-            int x = proc.exitValue();
-            throw new IllegalStateException("Process exited with value " + x);
-        } catch (IllegalThreadStateException ignored) {
-            redirectOutputs(proc);
-            return new Process2(proc, name, ioThreads);
+            // give it a moment to exit on error
+            Thread.sleep(100);
+        } catch (InterruptedException ignored) {
+            //ignore
         }
+
+        Process2 p = new Process2(proc, name, ioThreads);
+        if (!p.running())
+            throw new IllegalStateException("Process exited with value " + proc.exitValue());
+
+        redirectOutputs(p);
+        return p;
     }
 
     private void appendJavaOptions() {
@@ -160,7 +156,9 @@ public class JavaProcessBuilder {
     }
 
     private void redirectOutput(InputStream inputStream, OutputStream outputStream, String name) {
-        new Thread(ioThreads, new ByteDumper(inputStream, outputStream), name).start();
+        Thread t = new Thread(ioThreads, new ByteDumper(inputStream, outputStream), name);
+        t.setDaemon(true);
+        t.start();
     }
 
     /**

@@ -64,12 +64,14 @@
             <version>${v.slf4j}</version>
             <scope>test</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${v.slf4j}</version>
             <scope>test</scope>
         </dependency>
+-->
 
         <dependency>
             <!-- prepare Rio environment for tests -->

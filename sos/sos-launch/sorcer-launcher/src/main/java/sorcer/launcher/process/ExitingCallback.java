@@ -29,7 +29,7 @@ public class ExitingCallback extends DestroyingListener {
     private static final Logger log = LoggerFactory.getLogger(ExitingCallback.class);
 
     public ExitingCallback(ProcessDestroyer processDestroyer) {
-        super(processDestroyer);
+        super(processDestroyer, false);
     }
 
     @Override

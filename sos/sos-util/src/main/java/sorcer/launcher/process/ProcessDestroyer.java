@@ -57,6 +57,10 @@ public class ProcessDestroyer implements Runnable {
         children.add(p);
     }
 
+    public void remove(Process p) {
+        children.remove(p);
+    }
+
     public static ProcessDestroyer installShutdownHook() {
         ProcessDestroyer processDestroyer = new ProcessDestroyer();
         Runtime.getRuntime().addShutdownHook(new Thread(processDestroyer, "Sorcer shutdown hook"));

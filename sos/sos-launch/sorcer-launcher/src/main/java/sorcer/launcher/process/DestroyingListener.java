@@ -24,13 +24,23 @@ import sorcer.util.Process2;
  */
 public class DestroyingListener extends NullSorcerListener {
     private ProcessDestroyer processDestroyer;
+    private Process2 process;
+    private boolean unRegisterOnSuccess = true;
 
-    public DestroyingListener(ProcessDestroyer processDestroyer) {
+    public DestroyingListener(ProcessDestroyer processDestroyer, boolean unRegisterOnSuccess) {
         this.processDestroyer = processDestroyer;
+        this.unRegisterOnSuccess = unRegisterOnSuccess;
     }
 
     @Override
     public void processLaunched(Process2 process) {
         processDestroyer.addProcess(process);
+        this.process = process;
+    }
+
+    @Override
+    public void sorcerStarted() {
+        if (unRegisterOnSuccess)
+            processDestroyer.remove(process);
     }
 }

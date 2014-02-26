@@ -139,7 +139,8 @@ public class Process2 extends Process {
     private void killThreads() {
         if (helperThreads != null && helperThreads.activeCount() > 0) {
             try {
-                helperThreads.destroy();
+                if (!helperThreads.isDestroyed())
+                    helperThreads.destroy();
             } catch (IllegalThreadStateException ignore) {
             }
         }
