@@ -39,16 +39,19 @@ public class PropertiesLoader {
 		return result;
 	}
 
-    public Map<String, String> loadAsMap(File inputFile) {
+    public Map<String, String> loadAsMap(File inputFile) throws IOException {
 
         Map<String, String> propertyMapVer = new HashMap<String, String>();
         if (inputFile.exists()) {
+            FileInputStream inStream = null;
             try {
                 Properties props = new Properties();
-                props.load(new FileInputStream(inputFile));
+                inStream = new FileInputStream(inputFile);
+                props.load(inStream);
                 propertyMapVer = (Map) props;
             } catch (IOException fe) {
-
+                IOUtils.closeQuietly(inStream);
+                throw fe;
             }
         }
         return propertyMapVer;

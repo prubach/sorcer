@@ -51,7 +51,6 @@ public class Installer {
     private ArtifactResolver mvnResolver = new RepositoryArtifactResolver(SorcerEnv.getRepoDir());
 
     protected Map<String, String> groupDirMap;
-    protected Map<String, String> versionsMap = new HashMap<String, String>();
 
     final private static String MARKER_FILENAME = "sorcer_jars_installed_user_";
 
@@ -59,8 +58,6 @@ public class Installer {
 
     final private static String COMMONS_LIBS = "commons";
     protected static File configDir = new File(SorcerEnv.getHomeDir(), "configs");
-
-    private static File VERSIONS_PROPS_FILE = new File(configDir, "groupversions.properties");
 
     private static File REPOLAYOUT_PROPS_FILE = new File(configDir, "repolayout.properties");
 
@@ -99,8 +96,6 @@ public class Installer {
             System.exit(-1);
         }
 
-
-        versionsMap = (Map) readProperties("META-INF/maven/groupversions.properties", VERSIONS_PROPS_FILE);
         groupDirMap = (Map) readProperties("META-INF/maven/repolayout.properties", REPOLAYOUT_PROPS_FILE);
 
         libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()), groupDirMap);
