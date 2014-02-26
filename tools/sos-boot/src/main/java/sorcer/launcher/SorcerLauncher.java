@@ -40,6 +40,8 @@ import static sorcer.util.Collections.i;
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
+    //TODO remove checking waitMode in Sorcer when other modes are supported
+
     final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
 
     private ThreadFactory threadFactory;
@@ -91,7 +93,6 @@ public class SorcerLauncher extends Launcher {
         if (log.isDebugEnabled())
             for (Object key : i(overrides.propertyNames()))
                 log.debug("{} = {}", key, overrides.getProperty((String) key));
-
 
         System.setProperties(overrides);
     }

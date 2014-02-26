@@ -158,10 +158,18 @@ public class Sorcer {
             debugPort = Integer.parseInt(cmd.getOptionValue(DEBUG));
         }
 
+        ILauncher.WaitMode wait;
+        try {
+            wait = cmd.hasOption(WAIT) ? ILauncher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : ILauncher.WaitMode.start;
+        } catch (IllegalArgumentException x) {
+            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(ILauncher.WaitMode.values()), x);
+        }
+
         ILauncher launcher = null;
         if (!mode.fork) {
             boolean envOk = SorcerLauncher.checkEnvironment();
-            if (envOk && debugPort == null) {
+            //TODO remove checking waitMode when other modes are supported by SorcerLauncher
+            if (envOk && debugPort == null && wait == ILauncher.WaitMode.start) {
                 launcher = createSorcerLauncher();
             } else {
                 if (debugPort == null)
@@ -169,6 +177,11 @@ public class Sorcer {
                         throw new IllegalArgumentException("Cannot run in force-direct mode");
                     else
                         LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode");
+                else if(wait != ILauncher.WaitMode.start)
+                    if (mode.force)
+                        throw new IllegalArgumentException("Cannot run in force-direct mode with 'wait' other than 'start'");
+                    else
+                        LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode with 'wait' other than 'start'");
                 else if (mode.force)
                     throw new IllegalArgumentException("Cannot run in force-direct mode with debug");
                 else
@@ -216,11 +229,7 @@ public class Sorcer {
 
         launcher.setLogDir(logDir);
 
-        try {
-            launcher.setWaitMode(cmd.hasOption(WAIT) ? ILauncher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : ILauncher.WaitMode.start);
-        } catch (IllegalArgumentException x) {
-            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(ILauncher.WaitMode.values()), x);
-        }
+        launcher.setWaitMode(wait);
 
         @SuppressWarnings("unchecked")
         List<String> userConfigFiles = cmd.getArgList();
