@@ -34,11 +34,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>cataloger-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-util</artifactId>
 			<version>${project.version}</version>
@@ -49,20 +44,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-api</artifactId>
-            <version>${v.rio}</version>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-platform</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-lib</artifactId>
-            <version>${v.rio}</version>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
         </dependency>
-        <dependency>
-            <groupId>org.rioproject.monitor</groupId>
-            <artifactId>monitor-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
+
         <!-- Added for ExertionSorter tests -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
@@ -80,6 +70,10 @@
 			<artifactId>jaxrpc-api</artifactId>
 			<version>1.1</version>
 			<scope>provided</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

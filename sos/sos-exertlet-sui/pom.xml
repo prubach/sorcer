@@ -17,11 +17,13 @@
             <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>net.jini.lookup</groupId>
             <artifactId>serviceui</artifactId>
             <version>${v.jini}</version>
         </dependency>
+-->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
@@ -31,11 +33,6 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-netlet</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
 		<dependency>

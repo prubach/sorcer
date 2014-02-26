@@ -19,16 +19,12 @@ package sorcer.tools.shell.cmds;
 
 import groovy.lang.GroovyShell;
 import net.jini.config.Configuration;
-import net.jini.config.ConfigurationException;
 import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
-import org.apache.commons.io.FileUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.RootLoader;
-import sorcer.util.Deployment;
 import sorcer.util.ServiceExerter;
 
 import java.io.File;

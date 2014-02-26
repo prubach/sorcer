@@ -18,11 +18,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-boot</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>ju-arithmetic-prv</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
@@ -34,23 +29,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-webster</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>jobber-prv</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>exertmonitor-prv</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.sleepycat</groupId>
@@ -70,18 +50,33 @@
         </dependency>
 
         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${v.junit}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${v.slf4j}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${v.slf4j}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <!-- prepare Rio environment for tests -->
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-rio-config</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-junit</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>

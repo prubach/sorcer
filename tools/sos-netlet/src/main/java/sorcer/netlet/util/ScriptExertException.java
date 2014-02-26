@@ -1,7 +1,5 @@
 package sorcer.netlet.util;
 
-import org.apache.commons.io.output.ThresholdingOutputStream;
-
 /**
  * SORCER class
  * User: prubach
@@ -9,6 +7,7 @@ import org.apache.commons.io.output.ThresholdingOutputStream;
  */
 public class ScriptExertException extends Exception {
 
+    private static final long serialVersionUID = 1111821632555733930L;
     int lineNum;
     Throwable cause;
 

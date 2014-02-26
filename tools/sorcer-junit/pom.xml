@@ -43,18 +43,6 @@
             <artifactId>sos-boot</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-launcher</artifactId>
-            <version>${project.version}</version>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-start</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

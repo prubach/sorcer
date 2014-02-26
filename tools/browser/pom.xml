@@ -47,6 +47,7 @@
 		<dependency>
 			<groupId>org.rioproject</groupId>
 			<artifactId>rio-platform</artifactId>
+            <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.jini</groupId>
@@ -56,6 +57,7 @@
 			<groupId>net.jini.lookup</groupId>
 			<artifactId>serviceui</artifactId>
 			<version>${v.jini}</version>
+            <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

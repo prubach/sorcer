@@ -37,6 +37,7 @@
             <artifactId>jul-to-slf4j</artifactId>
             <version>${v.slf4j}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
 	</dependencies>
 </project>

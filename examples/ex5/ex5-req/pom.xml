@@ -24,24 +24,9 @@
         </dependency>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-platform</artifactId>
+			<artifactId>sorcer-api</artifactId>
         	<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>commons-req</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-boot</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-webster</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-junit</artifactId>

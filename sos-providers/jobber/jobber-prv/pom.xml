@@ -1,40 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>jobber</artifactId>
-		<version>1.0-M4-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>jobber</artifactId>
+        <version>1.0-M4-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>jobber-prv</artifactId>
-	<packaging>jar</packaging>
-	<name>SORCER OS :: providers :: jobber :: prv</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
+    <artifactId>jobber-prv</artifactId>
+    <name>SORCER OS :: providers :: jobber :: prv</name>
 
-	    <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
-        	<version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-util</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-            <dependency>
-                <groupId>net.jini</groupId>
-                <artifactId>jsk-dl</artifactId>
-                <version>${v.jini}</version>
-            </dependency>
     </dependencies>
 
 </project>

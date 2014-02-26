@@ -35,6 +35,8 @@
             <artifactId>sorcer-installer</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- SerializedOpstringParser -->
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-rio-lib</artifactId>
@@ -50,6 +52,8 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
+
+        <!-- platform -->
         <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>

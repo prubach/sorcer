@@ -23,8 +23,6 @@ import java.net.URL;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.core.provider.StorageManagement;
-import sorcer.service.*;
 import sorcer.util.bdb.objects.Store;
 
 /**

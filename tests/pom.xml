@@ -27,6 +27,13 @@
                         <groups>${surefire.includedGroups}</groups>
                         <excludedGroups>${surefire.excludedGroups}</excludedGroups>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.sorcersoft.sorcer</groupId>
+                            <artifactId>sorcer-junit</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

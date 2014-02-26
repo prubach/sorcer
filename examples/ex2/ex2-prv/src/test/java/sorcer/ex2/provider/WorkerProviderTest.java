@@ -19,7 +19,6 @@
 package sorcer.ex2.provider;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -30,7 +29,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;

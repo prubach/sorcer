@@ -38,33 +38,5 @@
             <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>dbp-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.river</groupId>
-            <artifactId>start</artifactId>
-            <version>${v.jini}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.jini</groupId>
-            <artifactId>jsk-lib</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${v.groovy}</version>
-        </dependency>
     </dependencies>
 </project>

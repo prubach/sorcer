@@ -9,10 +9,7 @@
 	</parent>
 
 	<artifactId>exerter-prv</artifactId>
-	<packaging>jar</packaging>
 	<name>SORCER OS :: providers :: exerter :: prv</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<dependencies>
         <dependency>
@@ -20,11 +17,6 @@
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>       
-	<dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

@@ -22,12 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>logger-sui</artifactId>
+            <artifactId>logger-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

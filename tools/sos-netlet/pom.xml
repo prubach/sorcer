@@ -16,12 +16,37 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- required bu the scripts -->
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-resolver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

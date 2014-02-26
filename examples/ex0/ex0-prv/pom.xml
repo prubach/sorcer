@@ -25,17 +25,10 @@
 			<artifactId>sos-platform</artifactId>
             <version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>commons-prv</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-junit</artifactId>
-            <version>1.0-M4-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>

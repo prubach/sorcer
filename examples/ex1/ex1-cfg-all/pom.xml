@@ -18,17 +18,6 @@
             <artifactId>ex1-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-            <version>${v.rio}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
-            <version>${v.sorcer}</version>
-        </dependency>
     </dependencies>
 
     <build>

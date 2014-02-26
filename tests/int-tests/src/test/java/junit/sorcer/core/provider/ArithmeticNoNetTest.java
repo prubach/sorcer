@@ -44,19 +44,7 @@ public class ArithmeticNoNetTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNoNetTest.class.getName());
-	
-	static {
-        //ServiceExertion.debug = true;
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setSecurityManager(new RMISecurityManager());
-        setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ju-arithmetic-api"});
-	}
-	
+
 	@Test
 	public void exertSrvTest() throws Exception {
 		Job srv = createSrv();

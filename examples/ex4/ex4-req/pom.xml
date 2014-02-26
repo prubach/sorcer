@@ -16,21 +16,19 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex2-api</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex2-rdl</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
+            <artifactId>sorcer-api</artifactId>
         	<version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-req</artifactId>
-            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

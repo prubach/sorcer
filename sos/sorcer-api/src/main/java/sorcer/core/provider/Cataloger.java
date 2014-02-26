@@ -19,7 +19,6 @@ package sorcer.core.provider;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.Map;
 
 import net.jini.core.discovery.LookupLocator;

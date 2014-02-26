@@ -16,7 +16,13 @@
             <artifactId>logger-prv</artifactId>
         	<version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>logger-sui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

@@ -22,19 +22,9 @@
         	<version>${project.version}</version>
         </dependency>
 		<dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sos-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>cataloger-sui</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>
