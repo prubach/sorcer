@@ -1,5 +1,6 @@
 package sorcer.resolver;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
@@ -18,16 +19,18 @@ public class VersionResolver {
     // groupId_artifactId -> version
     protected Map<String, String> versions = new HashMap<String, String>();
     static PropertiesLoader propertiesLoader = new PropertiesLoader();
-    static File VERSIONS_PROPS_FILE = new File(SorcerEnv.getHomeDir(), "configs/groupversions.properties");
+    static String VERSIONS_PROPS_PATTERN = "configs/groupversions*.properties";
 
     {
-        versions = propertiesLoader.loadAsMap("META-INF/maven/groupversions.properties", Thread.currentThread()
-                .getContextClassLoader());
-        try {
-            versions.putAll(propertiesLoader.loadAsMap(VERSIONS_PROPS_FILE));
-        } catch (IOException e) {
-            log.warn("Could not load versions from {}", VERSIONS_PROPS_FILE, e);
-        }
+        File configRoot = new File(SorcerEnv.getHomeDir(), "configs");
+        String[] list = configRoot.list(new WildcardFileFilter(VERSIONS_PROPS_PATTERN));
+
+        for (String path : list)
+            try {
+                versions.putAll(propertiesLoader.loadAsMap(new File(path)));
+            } catch (IOException e) {
+                log.warn("Could load versions from {}", path, e);
+            }
     }
 
     static public final VersionResolver instance = new VersionResolver();

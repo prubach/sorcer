@@ -325,6 +325,23 @@ getProperty ( ) {
   echo $RESULT
 }
 
+uncoment and use after groupversions.properties is in configs directory
+
+_getVersion2(){
+  sed '/^\#/d' $SORCER_HOME/sos/sorcer-api/target/classes/META-INF/maven/groupversions.properties | grep $1 | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
+}
+
+resolve(){
+    local VERSION
+    if [ "x$3" = "x" ]; then
+        VERSION=$(_getVersion2 $1)
+    else
+        VERSION=$3
+    fi
+    groupDir=`echo $1 | tr '.' '/'`
+    echo $MVN_REPO/$groupDir/$2/$VERSION/$2-${VERSION}.jar
+}
+
 createSorcerRioCp ( ) {
       SORCER_RIO_CP="$MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
@@ -368,6 +385,7 @@ $MVN_REPO/org/rioproject/monitor/monitor-api/$V_RIO/monitor-api-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/16.0.1/guava-16.0.1.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
+$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/com/google/inject/guice/4.0-beta4/guice-4.0-beta4.jar:\
 $MVN_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:\
