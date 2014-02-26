@@ -82,3 +82,13 @@ If you are using commercial distribution of SORCER, you can install cfg modules 
 - To test your provider start sample requestor (client):
             <pre>ant -f &lt;serviceName&gt;-req/run.xml</pre>
 - If you use IntelliJ Idea you can drag and drop the run.xml script to the "Ant build" window and double-click the "run.requestor" goal
+
+- you can write JUnit tests for providers.
+ - JUnit 4 or newer is required
+ - sorcer-junit must be on classpath
+
+    Annotate your test class with:
+ - @RunWith(SorcerRunner.class) or @RunWith(SorcerSuite.class) (required)
+ - @ExportCodebase({list of artifact coordinates}) exports artifacts as a codebase
+ - @SorcerServiceConfiguration({list of artifacts}) annotation takes array of cfg module coordinates and starts the services before the tests are run.
+ - @SorcerServiceConfigurations({array of @SorcerServiceConfiguration}) same as above, but tests are run for each @SorcerServiceConfiguration
