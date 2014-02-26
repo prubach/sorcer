@@ -49,6 +49,7 @@
         <v.guava>15.0</v.guava>
         <v.clang>3.2.1</v.clang>
         <v.ccli>1.2</v.ccli>
+        <v.cio>2.4</v.cio>
     </properties>
 
 	<modules>
@@ -223,7 +224,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>${v.cio}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

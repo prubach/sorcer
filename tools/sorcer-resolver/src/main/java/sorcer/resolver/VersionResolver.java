@@ -6,9 +6,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.PropertiesLoader;
 
-import java.io.Closeable;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -39,13 +37,15 @@ public class VersionResolver {
      */
     public String resolveVersion(String groupId, String artifactId) {
         String version = resolveCachedVersion(groupId, artifactId);
-        if (version != null && checkFileExists(groupId, artifactId, version)) {
-            return version;
-        }
+        if (version != null)
+            if (checkFileExists(groupId, artifactId, version)) {
+                return version;
+            } else
+                log.warn("Version of {}:{} resolved to {} but file not found", groupId, artifactId, version);
 
         version = loadVersionFromPomProperties(groupId, artifactId);
         if (version == null) {
-            throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId);
+            throw new IllegalArgumentException("Could not load version of " + groupId + ':' + artifactId);
         }
         versions.put(key(groupId, artifactId), version);
         return version;
@@ -58,14 +58,14 @@ public class VersionResolver {
             ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
             properties = propertiesLoader.loadAsProperties(resourceName, contextClassLoader);
         } catch (IllegalArgumentException x) {
-            log.debug("Could not find pom.properties for {}:{}", groupId, artifactId);
+            log.debug("Could not find {} in classpath", resourceName);
             return null;
         }
 
         String version = properties.getProperty("version");
         if (version == null) {
-            throw new IllegalArgumentException("Could not load version " + groupId + ':' + artifactId
-                    + " from groupversions.properties");
+            throw new IllegalArgumentException("Could not load version of " + groupId + ':' + artifactId
+                    + " from artifacts pom.properties");
         }
         return version;
     }
@@ -74,29 +74,20 @@ public class VersionResolver {
      * @return cached version, may be null
      */
     String resolveCachedVersion(String groupId, String artifactId) {
-        if (versions.containsKey(groupId)) {
-            return versions.get(groupId);
+        String key = key(groupId, artifactId);
+        if (versions.containsKey(key)) {
+            return versions.get(key);
         }
         // may be null
-        return versions.get(key(groupId, artifactId));
+        return versions.get(groupId);
     }
 
-    protected void close(Closeable inputStream) {
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // igonre
-            }
-        }
-    }
-
-    private String key(String groupId, String artifactId) {
+    private static String key(String groupId, String artifactId) {
         return groupId + "_" + artifactId;
     }
 
     private boolean checkFileExists(String groupId, String artifactId, String version) {
         String path = Resolver.resolveAbsolute(ArtifactCoordinates.coords(groupId, artifactId, version));
-        return path!=null ? new File(path).exists() : false;
+        return new File(path).exists();
     }
 }
