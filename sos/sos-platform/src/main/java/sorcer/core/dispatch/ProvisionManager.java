@@ -40,6 +40,7 @@ public class ProvisionManager {
 	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
     private static ProvisionManager instance = null;
     private static final int MAX_ATTEMPTS = 2;
+    boolean keepGoing = true;
 
 
     public static ProvisionManager getInstance() {
@@ -70,13 +71,16 @@ public class ProvisionManager {
         }
     }
 
+    public void destroy() {
+        keepGoing = false;
+    }
 
 
     protected class ProvisionThread implements Runnable {
 
         public void run() {
             Provisioner provisioner = Accessor.getService(Provisioner.class);
-            while (true) {
+            while (keepGoing) {
                 if (!servicesToProvision.isEmpty()) {
                     LinkedHashSet<SignatureElement> copy ;
                     synchronized (servicesToProvision){

@@ -40,7 +40,7 @@
                     <archive>
                         <manifestEntries>
                             <OAR-OperationalString>Ex6SubtractorBoot.groovy</OAR-OperationalString>
-                            <OAR-Name>Ex6SubtractorBoot</OAR-Name>
+                            <OAR-Name>ex6Subtractor</OAR-Name>
                             <OAR-Version>${project.version}</OAR-Version>
                             <OAR-Activation>Automatic</OAR-Activation>
                         </manifestEntries>

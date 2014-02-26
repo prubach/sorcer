@@ -167,10 +167,10 @@ public class ServiceExerter implements Exerter, Callable {
         try {
             // If the exertion is a job rearrange the inner exertions to make sure the
             // dependencies are not broken
-          /*  if (exertion.isJob()) {
+            if (exertion.isJob()) {
                 ExertionSorter es = new ExertionSorter(exertion);
                 exertion = (ServiceExertion)es.getSortedJob();
-            }*/
+            }
             //
             if (!(signature instanceof NetSignature)) {
                 if (exertion instanceof Task) {
@@ -207,9 +207,9 @@ public class ServiceExerter implements Exerter, Callable {
         } catch (SignatureException e) {
             e.printStackTrace();
             throw new ExertionException(e);
-        } /*catch (SortingException se) {
+        } catch (SortingException se) {
             throw new ExertionException(se);
-        }   */
+        }
 
         if (provider == null) {
             // handle signatures for PULL tasks
@@ -331,7 +331,7 @@ public class ServiceExerter implements Exerter, Callable {
         Signature sig = exertion.getProcessSignature();
         if (sig != null) {
             Access access = exertion.getControlContext().getAccessType();
-            if ((Access.PULL == access || Access.QOS_PULL == access)
+            if ((access.equals(Access.PULL) || access.equals(Access.QOS_PULL))
                     && !exertion.getProcessSignature().getServiceType()
                     .isAssignableFrom(Spacer.class)) {
                 sig.setServiceType(Spacer.class);
@@ -339,7 +339,7 @@ public class ServiceExerter implements Exerter, Callable {
                 sig.setProviderName(SorcerConstants.ANY);
                 sig.setType(Signature.Type.SRV);
                 exertion.getControlContext().setAccessType(access);
-            } else if ((Access.PUSH == access || Access.QOS_PUSH == access)
+            } else if (( access.equals(Access.PUSH) || access.equals(Access.QOS_PUSH))
                     && !exertion.getProcessSignature().getServiceType()
                     .isAssignableFrom(Jobber.class)) {
                 if (sig.getServiceType().isAssignableFrom(Spacer.class)) {
