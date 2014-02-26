@@ -15,8 +15,6 @@ script:
   - export -n RIO_HOME
   - cd -
   - bin/test-examples.sh
-after_script:
-  - kill `jps|grep Sorcer|cut -d' ' -f1`
 jdk:
   - oraclejdk7
 # whitelist
