@@ -4,7 +4,7 @@ before_install:
   - export RIO_HOME=$SORCER_HOME/target/rio
   - echo "SORCER_HOME is $SORCER_HOME"
   - echo "RIO_HOME is $RIO_HOME"
-install: mvn -q -P disttest install
+install: mvn -P disttest install
 script:
   - bin/sorcer-boot -Psorcer
   - mvn test -Prun-its
