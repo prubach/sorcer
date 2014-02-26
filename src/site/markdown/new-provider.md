@@ -53,6 +53,23 @@
 1. In the next steps of the importing wizard you can leave the defaults and continue
 1. When the project is imported you can use the "Maven Projects" window to build the project
 
+##cfg modules
+
+A cfg module is a module (jar file) that consists only from configuration files: opstring, service configuration and policy file. It's purpose is encapsulate configurations of a service provider (or a group of).
+
+Cfg module must have manifest file with these entries (names are compatible with Rio OAR):
+- OAR-OperationalString path of opstring file inside cfg module
+- OAR-Name - a name of Operational String, not used by sorcer, kept for compatibility with Rio OAR
+- OAR-Version
+- OAR-Activation - only for compatibility with RIO, possible value are Automatic or Manual
+
+Also, cfg module should contain policy file named service.policy
+
+If a module is kept in a directory under $SORCER_HOME it can be run with a special syntax (artifactId is usually module name):
+<pre>sorcer-boot :artifactId</pre>
+
+If you are using commercial distribution of SORCER, you can install cfg modules in Almanac to make it available for auto provisioning.
+
 ##Starting provider
 
 1. Start Sorcer - please refer to our [Getting Started Guide](getting-started.html) to see how to do that
