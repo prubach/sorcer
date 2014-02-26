@@ -14,7 +14,7 @@ script:
   - unset RIO_HOME
   - export -n RIO_HOME
   - cd -
-  - bin/test-examples.sh
+  - examples/test-examples.sh
 jdk:
   - oraclejdk7
 # whitelist
