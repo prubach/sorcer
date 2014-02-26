@@ -33,24 +33,9 @@
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>
-<!-- added for rio compat -->
-<!--
-        <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-api</artifactId>
-            <version>${v.rio}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
--->
-<!-- -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
         </dependency>
 <!--
         <dependency>

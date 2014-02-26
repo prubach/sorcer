@@ -47,7 +47,6 @@ public abstract class Launcher implements ILauncher {
     protected Map<String, String> properties;
     protected Map<String, String> environment;
 
-    //TODO RKR remove versions
     final protected static String[] CLASS_PATH = {
             "org.apache.river:start",
             "net.jini:jsk-resources",
@@ -77,24 +76,20 @@ public abstract class Launcher implements ILauncher {
             //required for sos.Handler to work
             "org.sorcersoft.sorcer:sos-platform",
 
-            "org.codehaus.groovy:groovy-all:2.1.3",
-            "org.apache.commons:commons-lang3:3.1",
-            "com.google.guava:guava:15.0",
+            "org.codehaus.groovy:groovy-all",
+            "org.apache.commons:commons-lang3",
+            "com.google.guava:guava",
             "commons-io:commons-io",
-            "commons-cli:commons-cli:1.2",
-            "org.codehaus.plexus:plexus-utils:3.0.15",
+            "commons-cli:commons-cli",
+            "org.codehaus.plexus:plexus-utils",
 
             "org.slf4j:slf4j-api",
-            "org.slf4j:jul-to-slf4j:1.7.5",
-            "ch.qos.logback:logback-core:1.0.13",
-            "ch.qos.logback:logback-classic:1.0.13"
+            "org.slf4j:jul-to-slf4j",
+            "ch.qos.logback:logback-core",
+            "ch.qos.logback:logback-classic"
     };
 
     protected PropertyEvaluator evaluator;
-
-    {
-        preConfigure();
-    }
 
     @Override
     public void preConfigure() {
