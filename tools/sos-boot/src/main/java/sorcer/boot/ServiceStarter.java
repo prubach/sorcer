@@ -41,6 +41,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.PrivilegedActionException;
@@ -123,18 +124,38 @@ public class ServiceStarter {
         return instantiateDescriptors(configs);
     }
 
-    private File findArtifact(String artifactId) {
-        Collection<File> files = FileUtils.listFiles(SorcerEnv.getHomeDir(), new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
-        if (files.size() == 0) {
-            log.error("Artifact file {} not found", artifactId);
-            return null;
+    private File findArtifact(String artifactId) throws IOException {
+        File homeDir = SorcerEnv.getHomeDir().getCanonicalFile();
+        File userDir = new File(System.getProperty(JavaSystemProperties.USER_DIR)).getCanonicalFile();
+
+        Collection<File> roots = new LinkedList<File>();
+        String homePath = homeDir.getPath();
+        String userPath = userDir.getPath();
+
+        //if one directory is ancestor of another, use only the ancestor
+        if (homeDir.equals(userDir) || homePath.startsWith(userPath))
+            roots.add(userDir);
+        else if (userPath.startsWith(homePath))
+            roots.add(homeDir);
+        else {
+            roots.add(userDir);
+            roots.add(homeDir);
         }
-        File first = files.iterator().next();
-        if (files.size() > 1) {
-            log.warn("Found {} files possibly matching artifactId, using {}", files.size(), first);
-            log.debug("Files found: {}", files);
+        //roots.add(new File(SorcerEnv.getRepoDir()));
+
+        File result = null;
+        for (File root : roots) {
+            Collection<File> files = FileUtils.listFiles(root, new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
+            if (files.size() > 0) {
+                result = files.iterator().next();
+                if (files.size() > 1) {
+                    log.warn("Found {} files in {} possibly matching artifactId, using {}", files.size(), root, result);
+                    log.debug("Files found: {}", files);
+                }
+                break;
+            }
         }
-        return first;
+        return result;
     }
 
     protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) throws Exception {
