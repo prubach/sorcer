@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, 2014 Sorcersoft.com S.A.
+ * Copyright 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,14 @@ public class SerialisedOpStringParser implements OpStringParser {
         serDir.mkdirs();
     }
 
+    @Deprecated
     @Override
     public List<OpString> parse(Object source, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+        return parse(source, loader, defaultGroups, loadPath);
+    }
+
+    @Override
+    public List<OpString> parse(Object source, ClassLoader loader, String[] defaultGroups, Object loadPath) {
         URL srcUrl;
         File container;
         String path;
@@ -80,13 +86,13 @@ public class SerialisedOpStringParser implements OpStringParser {
                 } else if ("jar".equals(srcUrl.getProtocol())) {
                     // cache only local files
                     if (!srcUrl.toExternalForm().startsWith("jar:file:"))
-                        return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+                        return defaultParse(source, loader, defaultGroups, loadPath);
 
                     JarURLConnection jarUrl = (JarURLConnection) srcUrl.openConnection();
                     container = new File(jarUrl.getJarFileURL().toURI());
                     path = jarUrl.getEntryName();
                 } else {
-                    return defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+                    return defaultParse(source, loader, defaultGroups, loadPath);
                 }
             } catch (IOException e) {
                 //JarUrlConnection.openConnection() on local file should never happen
@@ -99,13 +105,13 @@ public class SerialisedOpStringParser implements OpStringParser {
 
         File serFile = getSerialisedFile(container, path);
 
-        return parse(container, srcUrl, serFile, loader, defaultExportJars, defaultGroups, loadPath);
+        return parse(container, srcUrl, serFile, loader, defaultGroups, loadPath);
     }
 
     /**
      * Synchronize calls on internalized file path, so concurrent parsing og the same file are queued.
      */
-    public List<OpString> parse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+    public List<OpString> parse(File container, URL source, File serialised, ClassLoader loader, String[] defaultGroups, Object loadPath) {
         String sync;
         try {
             sync = serialised.getCanonicalPath().intern();
@@ -113,11 +119,11 @@ public class SerialisedOpStringParser implements OpStringParser {
             throw new DSLException(e);
         }
         synchronized (sync) {
-            return doParse(container, source, serialised, loader, defaultExportJars, defaultGroups, loadPath);
+            return doParse(container, source, serialised, loader, defaultGroups, loadPath);
         }
     }
 
-    public List<OpString> doParse(File container, URL source, File serialised, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+    public List<OpString> doParse(File container, URL source, File serialised, ClassLoader loader, String[] defaultGroups, Object loadPath) {
         if (serialised.exists() && serialised.lastModified() > container.lastModified()) {
             log.debug("Reading opstrings from cache {}", serialised);
             List<OpString> opStrings = readFile(serialised);
@@ -125,7 +131,7 @@ public class SerialisedOpStringParser implements OpStringParser {
                 return opStrings;
         }
 
-        List<OpString> result = defaultParse(source, loader, defaultExportJars, defaultGroups, loadPath);
+        List<OpString> result = defaultParse(source, loader, defaultGroups, loadPath);
 
         try {
             writeFile(serialised, result);
@@ -162,12 +168,12 @@ public class SerialisedOpStringParser implements OpStringParser {
         }
     }
 
-    private List<OpString> defaultParse(Object source, ClassLoader loader, String[] defaultExportJars, String[] defaultGroups, Object loadPath) {
+    private List<OpString> defaultParse(Object source, ClassLoader loader, String[] defaultGroups, Object loadPath) {
         log.debug("Parsing opstring from {}", source);
         List<OpString> result;
         if (backend == null)
             backend = new GroovyDSLOpStringParser();
-        result = backend.parse(source, loader, defaultExportJars, defaultGroups, loadPath);
+        result = backend.parse(source, loader, defaultGroups, loadPath);
         return result;
     }
 

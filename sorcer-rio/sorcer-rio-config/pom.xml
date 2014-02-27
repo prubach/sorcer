@@ -49,7 +49,26 @@
                                     }
                                 }
 
+                                [
+                                    'jsk-dl':      resolve('net.jini',        'jsk-dl',      'v.jini'),
+                                    'jsk-platform':resolve('net.jini',        'jsk-platform','v.jini'),
+                                    'reggie-dl':   resolve('org.apache.river','reggie-dl',   'v.jini'),
+                                    'serviceui':   resolve('net.jini.lookup', 'serviceui',   'v.jini'),
+                                    'rio-gnostic': resolve('org.rioproject',  'gnostic',     'v.rio'),
+                                    'rio-main':    resolve('org.rioproject',  'main',        'v.rio'),
+                                ].each(){
+                                    name, file -> ant.copy(
+                                        file:new File(settings.localRepository, file),
+                                        tofile:new File(target,'/config/poms/'+name+'.pom')
+                                    )
+                                }
+
                                 ant.mkdir(dir: new File(target, 'logs'))
+
+                                def resolve(String groupId, String artifactId, String vKey){
+                                    def version = project.properties[vKey]
+                                    return groupId.replace('.','/') +'/'+ artifactId+'/'+version+'/'+artifactId+'-'+version+'.pom'
+                                }
                             </source>
                         </configuration>
                     </execution>

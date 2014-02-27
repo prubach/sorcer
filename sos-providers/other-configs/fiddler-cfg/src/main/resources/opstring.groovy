@@ -24,7 +24,7 @@ deployment(name: 'fiddler-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.1'
+    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.2'
     artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
 
     service(name: 'Fiddler') {

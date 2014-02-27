@@ -24,7 +24,7 @@ deployment(name: 'mercury-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.1'
+    artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.2'
     artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
 
     service(name: 'Mercury') {

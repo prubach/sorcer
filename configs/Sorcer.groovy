@@ -35,13 +35,13 @@ deployment(name: 'Sorcer') {
     codebase getCodebase()
 
     artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
-    artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.1'
+    artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.2'
     artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
-    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.1'
+    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.2'
     artifact id: 'norm-cfg', "org.sorcersoft.sorcer:norm-cfg:" + getSorcerVersion()
-    artifact id: 'norm-dl', 'org.apache.river:norm-dl:2.2.1'
+    artifact id: 'norm-dl', 'org.apache.river:norm-dl:2.2.2'
     artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
-    artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.1'
+    artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.2'
     artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
     artifact id: 'cataloger-cfg', "org.sorcersoft.sorcer:cataloger-cfg:" + getSorcerVersion()
     artifact id: 'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:" + getSorcerVersion()

@@ -1,8 +1,5 @@
 <!--
-
-
-    Copyright 2013 the original author or authors.
-    Copyright 2013 Sorcersoft.com S.A.
+    Copyright 2013, 2014 Sorcersoft.com S.A.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -157,6 +154,99 @@
                 <destName>ex6-${v.sorcer}.pom</destName>
             </file>
 
+            <!-- River -->
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/fiddler/${v.jini}/fiddler-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>fiddler-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/fiddler-dl/${v.jini}/fiddler-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>fiddler-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/net/jini/jsk-dl/${v.jini}/jsk-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jsk-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jsk-lib-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jsk-platform-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>jsk-resources-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/mahalo/${v.jini}/mahalo-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>mahalo-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/mahalo-dl/${v.jini}/mahalo-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>mahalo-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/mercury/${v.jini}/mercury-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>mercury-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/mercury-dl/${v.jini}/mercury-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>mercury-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/norm/${v.jini}/norm-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>norm-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/norm-dl/${v.jini}/norm-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>norm-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/outrigger/${v.jini}/outrigger-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>outrigger-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/outrigger-dl/${v.jini}/outrigger-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>outrigger-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/reggie/${v.jini}/reggie-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>reggie-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/reggie-dl/${v.jini}/reggie-dl-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>reggie-dl-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>serviceui-${v.jini}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/river/start/${v.jini}/start-${v.jini}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>start-${v.jini}.pom</destName>
+            </file>
+
+
             <!-- Other libs -->
             <file>
                 <source>${user.home}/.m2/repository/org/dancres/main/${v.blitz}/main-${v.blitz}.pom</source>
@@ -207,6 +297,11 @@
                 <source>${user.home}/.m2/repository/org/apache/apache/4/apache-4.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>apache-4.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>groovy-all-${v.groovy}.pom</destName>
             </file>
 
             <!-- sigar -->
