@@ -327,7 +327,7 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_S
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
 $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
@@ -362,7 +362,7 @@ $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:\
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
