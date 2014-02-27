@@ -224,7 +224,7 @@
 
             <!-- Copy the logging configuration file -->
             <file>
-                <source>${basedir}/src/main/configs/sorcer.logging</source>
+                <source>${basedir}/../configs/sorcer.logging</source>
                 <outputDirectory>/configs/</outputDirectory>
                 <destName>sorcer.logging</destName>
             </file>
