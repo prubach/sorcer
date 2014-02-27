@@ -1000,7 +1000,7 @@ public class SorcerEnv {
         codebase = sb.toString();
         System.setProperty("java.rmi.server.codebase", codebase);
         if (logger.isLoggable(Level.FINE))
-            logger.fine("Setting codbase 'java.rmi.server.codebase': "
+            logger.fine("Setting codebase 'java.rmi.server.codebase': "
                     + codebase);
     }
 

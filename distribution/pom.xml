@@ -379,6 +379,11 @@
         </dependency>
         <dependency>
             <groupId>org.rioproject</groupId>
+            <artifactId>watch-ui</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
             <version>${v.rio}</version>
             <exclusions>
@@ -397,6 +402,11 @@
         <dependency>
             <groupId>org.rioproject.cybernode</groupId>
             <artifactId>cybernode-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.cybernode</groupId>
+            <artifactId>cybernode-ui</artifactId>
             <version>${v.rio}</version>
         </dependency>
         <dependency>

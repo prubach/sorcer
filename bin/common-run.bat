@@ -68,7 +68,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-lib\%v.rio%\ri
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\guava\guava\15.0\guava-15.0.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commons-cli-1.2.jar
 
@@ -86,7 +86,7 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commo
 
 set SORCER_RIO_CP=%SORCER_COMMON%;%JINI_BASE%
 set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
-set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar
+set SORCER_RIO_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
 
 set SORCER_RIOUI_CP=%SORCER_RIO_CP%
  

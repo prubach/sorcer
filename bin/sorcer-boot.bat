@@ -2,6 +2,12 @@
 setlocal
 set STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
+IF NOT "%1"=="" (
+	set CONFIG=%*
+) ELSE (
+    set CONFIG=-Pmix
+)
+
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
@@ -20,13 +26,6 @@ IF defined SORCER_HOME (
   ) ELSE (
     call %CD%\bin\common-run.bat
   )
-)
-
-
-IF NOT "%1"=="" (
-	set CONFIG=%*
-) ELSE (
-    set CONFIG=-Pmix
 )
 
 echo ##############################################################################

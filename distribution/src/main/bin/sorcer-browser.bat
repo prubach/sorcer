@@ -22,7 +22,7 @@ echo .
 
 set STARTER_MAIN_CLASS=sorcer.ssb.SorcerServiceBrowser
 set CONFIG=..\configs\browser\configs\ssb.config
-set BROWSER_CLASSPATH=%JINI_CLASSPATH%;%LIB_DIR%\sorcer\browser.jar;%LIB_DIR%\sorcer\sorcer-api.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\sorcer\sos-platform.jar;%LIB_DIR%\sorcer\sos-webster.jar;%LIB_DIR%\rio-resolver\resolver-api.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\logback-core.jar;%LIB_DIR%\commons\logback-classic.jar;%LIB_DIR%\rio\rio-api.jar;%LIB_DIR%\rio\rio-platform.jar;%LIB_DIR%\commons\groovy-all.jar;%LIB_DIR%\commons\jsc-admin.jar
+set BROWSER_CLASSPATH=%JINI_CLASSPATH%;%LIB_DIR%\sorcer\browser.jar;%LIB_DIR%\jini-lookup\jmx-lookup.jar;%LIB_DIR%\sorcer\sorcer-api.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\sorcer\sos-platform.jar;%LIB_DIR%\sorcer\sos-webster.jar;%LIB_DIR%\sorcer\sos-netlet.jar;%LIB_DIR%\rio-resolver\resolver-api.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\logback-core.jar;%LIB_DIR%\commons\logback-classic.jar;%LIB_DIR%\rio\rio-api.jar;%LIB_DIR%\rio\rio-platform.jar;%LIB_DIR%\commons\groovy-all.jar;%LIB_DIR%\commons\jsc-admin.jar
 cd %SORCER_HOME%\bin
 CALL java %JAVA_OPTS% -classpath %BROWSER_CLASSPATH% -Dssb.logFile=..\configs\browser\logs\browser.log -Dssb.logLen=300 -Djava.net.preferIPv4Stack=true -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader -Djava.security.policy=%SORCER_HOME%\configs\browser\policy\ssb.policy  -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=Browser %STARTER_MAIN_CLASS% %CONFIG% %*
 popd

@@ -73,7 +73,7 @@ public class ArtifactRmiLoader extends RMIClassLoaderSpi {
             logger.trace("codebase: {}, name: {}, defaultLoader: {}",
                     codebase, name, defaultLoader == null ? "NULL" : defaultLoader.getClass().getName());
         }
-
+        //TODO  Why do you check for a space?
         if (codebase != null && !codebase.contains(" "))
             try {
                 artifactClassLoader.addURI(new URI(codebase));
