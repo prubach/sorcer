@@ -69,7 +69,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 
 	protected long transactionLeaseTimeout = TRANSACTION_LEASE_TIME;
 
-	public final static long SPACE_TIMEOUT = 100 * 5; // 1/8 minute
+	public final static long SPACE_TIMEOUT = 1000 * 3; // 3 seconds
 
 	protected long spaceTimeout = SPACE_TIMEOUT;
 

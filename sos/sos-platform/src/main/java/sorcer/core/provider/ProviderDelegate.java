@@ -1866,11 +1866,6 @@ public class ProviderDelegate {
             for (SpaceTaker st : spaceTakers) {
                 st.destroy();
             }
-            // Wait until spaceTakers shutdown
-            try {
-                Thread.sleep(SpaceTaker.SPACE_TIMEOUT);
-            } catch (InterruptedException ie) {
-            }
 			for (ExecutorService es : spaceHandlingPools)
 				shutdownAndAwaitTermination(es);
 			if (interfaceGroup != null) {
@@ -1878,22 +1873,35 @@ public class ProviderDelegate {
 				Thread[] ngThreads = new Thread[namedGroup.activeCount()];
 				interfaceGroup.enumerate(ifgThreads);
 				namedGroup.enumerate(ngThreads);
-				// System.out.println("ifgThreads.length = " +
-				// ifgThreads.length);
-				// System.out.println("ngThreads.length = " + ngThreads.length);
-				for (int i = 0; i < ifgThreads.length; i++) {
-					// System.out.println("ifgThreads[" + i + "] = " +
-					// ifgThreads[i]);
-                    if (ifgThreads[i].isAlive())
-					    ifgThreads[i].interrupt();
-				}
-				for (int i = 0; i < ngThreads.length; i++) {
-					// System.out.println("ngThreads[" + i + "] = " +
-					// ngThreads[i]);
-                    if (ngThreads[i].isAlive())
-                        ngThreads[i].interrupt();
-				}
-			}
+                // Wait until spaceTakers shutdown
+                int attempts = 0;
+                Set<Thread> spaceTakerThreads = new HashSet<Thread>();
+                while (attempts < 11) {
+                    try {
+                        Thread.sleep(SpaceTaker.SPACE_TIMEOUT/10);
+                    } catch (InterruptedException ie) {
+                    }
+                    attempts++;
+                    for (int i = 0; i < ifgThreads.length; i++) {
+                        if (ifgThreads[i].isAlive())
+                            spaceTakerThreads.add(ifgThreads[i]);
+                        else
+                            spaceTakerThreads.remove(ifgThreads[i]);
+                    }
+                    for (int i = 0; i < ngThreads.length; i++) {
+                        if (ngThreads[i].isAlive())
+                            spaceTakerThreads.add(ngThreads[i]);
+                        else
+                            spaceTakerThreads.remove(ngThreads[i]);
+                    }
+                    if (spaceTakerThreads.isEmpty())
+                        break;
+                }
+                for (Thread thread : spaceTakerThreads) {
+                    if (thread.isAlive())
+                        thread.interrupt();
+                }
+            }
 		}
         beanListener.destroy(serviceBeans);
 	}
