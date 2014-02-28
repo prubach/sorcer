@@ -303,6 +303,16 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>groovy-all-${v.groovy}.pom</destName>
             </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/eclipse/jdt/core/compiler/ecj/3.5.1/ecj-3.5.1.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ecj-3.5.1.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/codehaus/janino/janino/2.5.16/janino-2.5.16.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>janino-2.5.16.pom</destName>
+            </file>
 
             <!-- sigar -->
             <!-- TODO RKR add poms to sigar jar and zip, remove below -->
