@@ -360,6 +360,8 @@ $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-logging-support/$V_RIO/rio-logging-support-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-start/$V_RIO/rio-start-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-proxy/$V_RIO/rio-proxy-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
 $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\

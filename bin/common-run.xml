@@ -193,6 +193,8 @@
 		        <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-api.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-proxy.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
                 <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
@@ -245,6 +247,8 @@
                 <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-lib/${v.rio}/rio-lib-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar"/>
+                <pathelement location="${mvn.repo}/org/rioproject/rio-proxy/${v.rio}/rio-proxy-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar"/>
                 <pathelement location="${mvn.repo}/com/google/guava/guava/15.0/guava-15.0.jar"/>
                 <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"/>
