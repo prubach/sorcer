@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import net.jini.admin.Administrable;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -45,7 +46,9 @@ import net.jini.core.lookup.ServiceID;
  * @see Monitorable
  * @see Remote
  */
-public interface Provider extends Service, Monitorable, Remote {
+public interface Provider extends Service, Monitorable, Administrable, Remote {
+
+	public ServiceID getProviderID() throws RemoteException;
 
 	public String getProviderName() throws RemoteException;
 	
@@ -61,8 +64,6 @@ public interface Provider extends Service, Monitorable, Remote {
 
 	public void restore() throws RemoteException;
 
-	public ServiceID getProviderID() throws RemoteException;
-
 	public boolean mutualExclusion() throws RemoteException;
 	
 	public String getProperty(String property) throws RemoteException;
@@ -75,6 +76,7 @@ public interface Provider extends Service, Monitorable, Remote {
 
 	public void fireEvent() throws RemoteException;
 
+	public boolean isBusy() throws RemoteException;
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 

@@ -546,7 +546,7 @@ public class ControlFlowManager {
         return processContinousely(task, task.getPostprocessSignatures());
     }
 
-    private Context processContinousely(Task task, List<Signature> signatures)
+    public Context processContinousely(Task task, List<Signature> signatures)
             throws ExertionException {
         Signature.Type type = signatures.get(0).getType();
         Task t = null;

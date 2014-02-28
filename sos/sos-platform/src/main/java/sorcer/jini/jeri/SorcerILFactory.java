@@ -23,13 +23,7 @@ import java.lang.reflect.Modifier;
 import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.security.Permission;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.jini.core.constraint.MethodConstraints;
@@ -42,6 +36,7 @@ import net.jini.security.proxytrust.ProxyTrust;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import sorcer.core.ContextManagement;
+import sorcer.service.ExertionException;
 import sorcer.service.Service;
 
 /**
@@ -174,11 +169,18 @@ public class SorcerILFactory extends BasicILFactory {
 			throw new NullPointerException("impl is null");
 		}
 
-        Set<Class> exposedInterfaces = new HashSet<Class>();
-        Collections.addAll(exposedInterfaces, super.getExtraProxyInterfaces(impl));
-        exposedInterfaces.add(Service.class);
-        exposedInterfaces.addAll(serviceBeanMap.keySet());
-
+		List<Class> exposedInterfaces = new ArrayList<Class>();
+		Class curr = null;
+		Iterator it = serviceBeanMap.keySet().iterator();
+		while (it.hasNext()) {
+			curr = (Class) it.next();
+			if (curr != null && !exposedInterfaces.contains(curr))
+				exposedInterfaces.add(curr);
+		}
+		exposedInterfaces.add(Service.class);
+		exposedInterfaces.add(RemoteMethodControl.class);
+		exposedInterfaces.add(TrustEquivalence.class);
+		// exposedInterfaces.add(net.jini.admin.Administrable.class);
         return exposedInterfaces.toArray(new Class[exposedInterfaces.size()]);
 	}
 
@@ -193,7 +195,7 @@ public class SorcerILFactory extends BasicILFactory {
 		Iterator it = serviceBeanMap.keySet().iterator();
 		while (it.hasNext()) {
 			curr = (Class) it.next();
-			additionalMethods = curr.getMethods();
+			additionalMethods = curr.getDeclaredMethods();
 			for (int j = 0; j < additionalMethods.length; j++)
 				methods.add(additionalMethods[j]);
 		}
@@ -236,17 +238,22 @@ public class SorcerILFactory extends BasicILFactory {
 				return ((ServerProxyTrust) impl).getProxyVerifier();
 			}
 			Object obj = null;
-			// handle context management by the containing provider
-			if (decl == ContextManagement.class) {
-				obj = method.invoke((ContextManagement) impl, args);
-				return obj;
-			}
-			// Check if the invocation is to be made on provider's service beans
-			Object service = serviceBeanMap.get(method.getDeclaringClass());
-			if (service != null) {
-				obj = method.invoke(service, args);
-			} else {
-				obj = method.invoke(impl, args);
+			try {
+				// handle context management by the containing provider
+				if (decl == ContextManagement.class) {
+					obj = method.invoke((ContextManagement) impl, args);
+					return obj;
+				}
+				// Check if the invocation is to be made on provider's service
+				// beans
+				Object service = serviceBeanMap.get(method.getDeclaringClass());
+				if (service != null) {
+					obj = method.invoke(service, args);
+				} else {
+					obj = method.invoke(impl, args);
+				}
+			} catch (Throwable t) {
+				throw new ExertionException(t);
 			}
 			return obj;
 		}

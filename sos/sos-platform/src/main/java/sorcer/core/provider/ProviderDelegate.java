@@ -63,6 +63,7 @@ import java.util.logging.SimpleFormatter;
 
 import javax.security.auth.Subject;
 
+import net.jini.admin.Administrable;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
@@ -166,8 +167,10 @@ public class ProviderDelegate {
 	/** Provider deployment configuration. */
 	protected DeploymentConfiguration config = new DeploymentConfiguration();
 
-	/** The unique ID for this server proxy verification. */
-	private Uuid serverUuid;
+	/** The unique ID for this provider proxy verification. */
+	private Uuid providerUuid;
+
+	private Uuid adminProviderUuid;
 
 	protected String[] groupsToDiscover;
 
@@ -242,7 +245,7 @@ public class ProviderDelegate {
 	private List<Entry> extraLookupAttributes = new Vector<Entry>();
 
 	/** Map of exertion ID's and state of execution */
-	private static final Map exertionStateTable = Collections
+	static final Map exertionStateTable = Collections
 			.synchronizedMap(new HashMap(11));
 	/**
 	 * A smart proxy instance
@@ -291,8 +294,8 @@ public class ProviderDelegate {
 	/**
 	 * The admin proxy handles the standard Jini Admin interface.
 	 */
-	private Remote adminProxy;
-
+	protected Object adminProxy;
+	
 	/**
 	 * SORCER service beans instantiated by this delegate
 	 */
@@ -407,7 +410,7 @@ public class ProviderDelegate {
 		spaceGroup = config.getProperty(J_SPACE_GROUP, SorcerEnv.getSpaceGroup());
 		// set provider space name if defined in provider's properties
 		spaceName = config.getProperty(J_SPACE_NAME,
-                SorcerEnv.getActualSpaceName());
+				SorcerEnv.getActualSpaceName());
 
 		try {
 			singleThreadModel = (Boolean) config.jiniConfig.getEntry(
@@ -467,7 +470,7 @@ public class ProviderDelegate {
 		boolean remoteContextLogging = false;
 
         Class[] serviceTypes = new Class[0];
-        try {
+		try {
             serviceTypes = (Class[]) config.jiniConfig.getEntry(
                     ServiceProvider.PROVIDER, J_INTERFACES, Class[].class);
         } catch (ConfigurationException e) {
@@ -687,15 +690,16 @@ public class ProviderDelegate {
 		} catch (Exception ee) {
 			logger.throwing(ProviderDelegate.class.getName(), "deploymnet failed", ee);
 		}
-		providerProxy = outerProxy;
-		adminProxy = outerProxy;
+		adminProxy = createAdmin();
+		providerProxy = getProxy();
 		exports.put(outerProxy, outerExporter);
 		logger.fine(">>>>>>>>>>> exported outerProxy: \n" + outerProxy
 				+ ", outerExporter: \n" + outerExporter);
 
 		logger.info("PROXIES >>>>> provider: " + providerProxy + "\nsmart: "
 				+ smartProxy + "\nouter: " + outerProxy + "\ninner: "
-				+ innerProxy);
+				+ innerProxy + "\nadmin: "
+				+ adminProxy);
 	}
 
     private void verifyPublishedInterfaces() {
@@ -952,66 +956,9 @@ public class ProviderDelegate {
 	}
 
 	private Context processContinousely(Task task, List<Signature> signatures)
-			throws ExertionException, SignatureException {
-		Signature.Type st = signatures.get(0).getType();
-
-		ObjectJob job = new ObjectJob(signatures.get(0).getType() + "-"
-				+ task.getName(), new ObjectSignature("execute", ServiceJobber.class));
-        job.setFlow(Strategy.Flow.SEQ);
-		Task t = null;
-		Signature ss = null;
-		for (int i = 0; i < signatures.size(); i++) {
-			ss = signatures.get(i);
-			//if (ss instanceof NetSignature)
-			//	((NetSignature) ss).setService(provider);
-			try {
-				t = Task.newTask(task.getName() + "-" + i, ss,
-						task.getContext());
-				ss.setType(Signature.SRV);
-				((ServiceContext) task.getContext()).setCurrentSelector(ss
-						.getSelector());
-				if (ss.getPrefix() != null)
-                    ((ServiceContext)task.getContext()).setPrefix(ss.getPrefix());
-                if (ss.getReturnPath() != null)
-                    ((ServiceContext)task.getContext()).setReturnPath(ss.getReturnPath());
-
-				t.setContinous(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				resetSigantures(signatures, st);
-				throw new ExertionException(e);
-			}
-			job.addExertion(t);
-		}
-		Exertion result;
-		try {
-			// result = sj.exert();
-			JobThread jobThread = new JobThread(job, provider);
-			jobThread.start();
-			jobThread.join();
-			result = jobThread.getResult();
-			// logger.info("<==== JobThread result: " + result);
-		} catch (Exception e) {
-			e.printStackTrace();
-			resetSigantures(signatures, st);
-			throw new ExertionException(e);
-		}
-        if (result==null)
-            throw new ExertionException("Result is null - exception added by ProviderDelegate");
-		// append accumulated exceptions and trace
-        task.getExceptions().addAll(result.getExceptions());
-		task.getTrace().addAll(result.getTrace());
-		if (result.getStatus() <= ExecState.FAILED) {
-			task.setStatus(ExecState.FAILED);
-			ExertionException ne = new ExertionException(
-					"Batch signatures failed: " + signatures);
-			task.reportException(ne);
-			resetSigantures(signatures, st);
-			throw ne;
-		}
-		// return the service context of the last exertion
-		resetSigantures(signatures, st);
-        return result.getExertions().get(job.size() - 1).getContext();
+			throws ExertionException {
+		ControlFlowManager cfm = new ControlFlowManager(task, this);
+		return cfm.processContinousely(task, signatures);
 	}
 
 	private void resetSigantures(List<Signature> signatures, Signature.Type type) {
@@ -1624,8 +1571,15 @@ public class ProviderDelegate {
 
 		try {
 			// name of the provider suffixed in loadJiniConfiguration
-			attrVec.add(new Name(getProviderName()));
-			attrVec.addAll(VersionInfo.productAttributesFor(null));
+			boolean discoveryEnabled = (Boolean) Config.getNonNullEntry(
+					getDeploymentConfig(), ServiceProvider.COMPONENT,
+					ProviderDelegate.DISCOVERY_ENABLED, boolean.class, true);
+			if (discoveryEnabled)
+				attrVec.add(new Name(getProviderName()));
+			else
+				attrVec.add(new Name("Admin-" + getProviderName()));
+
+			attrVec.addAll(VersionInfo.productAttributesFor(getProviderName()));
 			Entry sst = getSorcerServiceTypeEntry();
 			attrVec.add(sst);
 			// add additional entries declared in the Jini provider's
@@ -1757,8 +1711,7 @@ public class ProviderDelegate {
 	public void restore() {
 		if (idPersistent) {
 			try {
-				// ObjectLogger.setResourceClass(this.getClass());
-				this.setServerUuid((ServiceID) ObjectLogger.restore(SorcerEnv
+				this.setProviderUuid((ServiceID) ObjectLogger.restore(SorcerEnv
 						.getProperty(S_SERVICE_ID_FILENAME,
                                 SorcerEnv.getServiceIdFilename())));
 			} catch (Exception e) { // first time if exception caught
@@ -1767,31 +1720,44 @@ public class ProviderDelegate {
 		}
 	}
 
-	private void ensureServerUuidIsSet() {
-		if (serverUuid == null) {
-			serverUuid = UuidFactory.generate();
+	private void ensureProviderUuidIsSet() {
+		if (providerUuid == null) {
+			providerUuid = UuidFactory.generate();
 		}
 	}
 
+	/**
+	 * Returns a ServiceID for a given Uuid.
+	 * 
+	 * @return a ServiceID representation of a Uuid.
+	 */
+	public ServiceID getServiceID(Uuid uuid) {
+		return new ServiceID(uuid.getMostSignificantBits(),
+				uuid.getLeastSignificantBits());
+	}
+	
 	/**
 	 * Retrieves the ServerUUID as an ServiceID.
 	 * 
 	 * @return a ServiceID representation of the ServerUUID.
 	 */
 	public ServiceID getServiceID() {
-		ensureServerUuidIsSet();
-		return new ServiceID(this.serverUuid.getMostSignificantBits(),
-				this.serverUuid.getLeastSignificantBits());
-	}
+		ensureProviderUuidIsSet();
+	    return getServiceID(providerUuid);
+    }
 
-	/**
-	 * Retrieves the Unique ID of this server.
-	 * 
-	 * @return the {@link Uuid} of this server
-	 */
-	public Uuid getServerUuid() {
-		ensureServerUuidIsSet();
-		return serverUuid;
+	protected Uuid getProviderUuid() {
+		if (providerUuid == null) {
+			providerUuid = UuidFactory.generate();
+		}
+		return providerUuid;
+	}
+	
+	protected Uuid getAdminProviderUuid() {
+		if (adminProviderUuid == null) {
+			adminProviderUuid = UuidFactory.generate();
+		}
+		return adminProviderUuid;
 	}
 
 	/**
@@ -1800,21 +1766,21 @@ public class ProviderDelegate {
 	 * @param serviceID
 	 *            the ServiceID to use.
 	 */
-	public void setServerUuid(ServiceID serviceID) {
+	public void setProviderUuid(ServiceID serviceID) {
 		logger.info("Setting service ID:" + serviceID);
-		serverUuid = UuidFactory.create(serviceID.getMostSignificantBits(),
+		providerUuid = UuidFactory.create(serviceID.getMostSignificantBits(),
 				serviceID.getLeastSignificantBits());
 	}
 
 	/**
-	 * Sets the Uuid of this server from a given {@link Uuid}.
+	 * Sets the Uuid of this provider from a given {@link Uuid}.
 	 * 
-	 * @param serverID
+	 * @param providerUuid
 	 *            the Uuid to use.
 	 */
-	public void setServerUuid(Uuid serverID) {
-		logger.info("Setting server ID:" + serverID);
-		this.serverUuid = serverID;
+	public void setServerUuid(Uuid providerUuid) {
+		logger.info("Setting provider Uuid:" + providerUuid);
+		this.providerUuid = providerUuid;
 	}
 
 	public String getInfo() throws RemoteException {
@@ -1911,52 +1877,60 @@ public class ProviderDelegate {
 	}
 
 	public boolean isValidTask(Exertion servicetask) throws RemoteException,
-			ExertionException {
-		if (servicetask.getContext() == null) {
-			servicetask.getContext().reportException(
-					new ExertionException(getProviderName()
-							+ " no service context in task: "
-							+ servicetask.getClass().getName()));
-			return false;
-		}
-		Task task = (Task)servicetask;
+	ExertionException {
+		//try {
+			if (servicetask.getContext() == null) {
+				servicetask.getContext().reportException(
+						new ExertionException(getProviderName()
+								+ " no service context in task: "
+								+ servicetask.getClass().getName()));
+				return false;
+			}
+			Task task = (Task)servicetask;
 
-		// if (task.subject == null)
-		// throw new ExertionException("No subject provided with the task '" +
-		// task.getName() + "'");
-		// else if (!isAuthorized(task))
-		// throw new ExertionException("The subject provided with the task '" +
-		// task.getName() + "' not authorized to use the service '" +
-		// providerName + "'");
+			// if (task.subject == null)
+			// throw new ExertionException("No subject provided with the task '" +
+			// task.getName() + "'");
+			// else if (!isAuthorized(task))
+			// throw new ExertionException("The subject provided with the task '" +
+			// task.getName() + "' not authorized to use the service '" +
+			// providerName + "'");
 
-		String pn = task.getProcessSignature().getProviderName();
-		if (pn != null && !matchInterfaceOnly) {
-			if (!(pn.equals(SorcerConstants.ANY) || SorcerConstants.ANY
-					.equals(pn.trim()))) {
-				if (!pn.equals(getProviderName())) {
-					servicetask.getContext().reportException(
-							new ExertionException(
-									"No valid task for service provider: "
-											+ config.getProviderName()));
-					return false;
+			String pn = task.getProcessSignature().getProviderName();
+			if (pn != null && !matchInterfaceOnly) {
+				if (!(pn.equals(SorcerConstants.ANY) || SorcerConstants.ANY
+						.equals(pn.trim()))) {
+					if (!pn.equals(getProviderName())) {
+						servicetask.getContext().reportException(
+								new ExertionException(
+										"No valid task for service provider: "
+												+ config.getProviderName()));
+						return false;
+					}
 				}
 			}
-		}
-		Class st = task.getProcessSignature().getServiceType();
+			Class st = ((NetSignature) task.getProcessSignature()).getServiceType();
 
-		if (publishedServiceTypes == null) {
+			if (publishedServiceTypes == null) {
+				servicetask.getContext().reportException(
+						new ExertionException(
+								"No published interfaces defined by: "
+										+ getProviderName()));
+				return false;
+			} else {
+				for (int i = 0; i < publishedServiceTypes.length; i++) {
+					if (publishedServiceTypes[i] == st) {
+						return true;
+					}
+				}
+			}
 			servicetask.getContext().reportException(
 					new ExertionException(
-							"No published interfaces defined by: "
-									+ getProviderName()));
-			return false;
-		} else {
-			for (int i = 0; i < publishedServiceTypes.length; i++) {
-				if (publishedServiceTypes[i] == st) {
-					return true;
-				}
-			}
-		}
+							"No valid task for published service types:\n"
+									+ Arrays.toString(publishedServiceTypes)));
+		//} catch (ContextException e) {
+		//	throw new ExertionException(e);
+		//}
 		servicetask.getContext().reportException(
 				new ExertionException(
 						"No valid task for published service types:\n"
@@ -2619,11 +2593,8 @@ public class ProviderDelegate {
 		return workerTransactional;
 	}
 
-    public TrustVerifier getProxyVerifier() {
-		if (smartProxy == null)
-			return new ProxyVerifier(outerProxy, this.getServerUuid());
-		else
-			return new ProxyVerifier(smartProxy, this.getServerUuid());
+	public TrustVerifier getProxyVerifier() {
+		return new ProxyVerifier(getProxy(), this.getProviderUuid());
 	}
 
 	/**
@@ -2634,7 +2605,7 @@ public class ProviderDelegate {
 	 *         appropriate for the particular service.
 	 */
 	public Object getAdmin() {
-		return adminProxy;
+		 return adminProxy;
 	}
 
 	/*
@@ -2643,7 +2614,7 @@ public class ProviderDelegate {
 	 * @see sorcer.core.provider.OuterProxy#setAdmin(java.lang.Object)
 	 */
 	public void setAdmin(Object proxy) {
-		adminProxy = (Remote) proxy;
+//		adminProxy = proxy;
 	}
 
 	/**
@@ -2677,7 +2648,33 @@ public class ProviderDelegate {
 
 		return success;
 	}
-
+	
+	public Object createAdmin() {
+		if (adminProxy != null)
+			return adminProxy;
+		try {
+			adminProxy = ProviderProxy.wrapAdminProxy(outerProxy,
+					getAdminProviderUuid());
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.warning("No admin proxy created by: " + provider
+					+ " cause: " + e.getMessage());
+		}
+		return adminProxy;
+	}
+	
+	public Object getAdminProxy() {
+		try {
+			providerProxy = ProviderProxy.wrapServiceProxy(adminProxy,
+					getProviderUuid(), adminProxy, Administrable.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.warning("No admin proxy created by: " + provider
+					+ " cause: " + e.getMessage());
+		}
+		return providerProxy;
+	}
+	
 	/**
 	 * Returns a proxy object for this provider. If the smart proxy is alocated
 	 * then returns a non exported object to be registerd with loookup services.
@@ -2688,7 +2685,9 @@ public class ProviderDelegate {
 	 * @return a proxy, or null
 	 * @see sorcer.core.provider.Provider#getProxy()
 	 */
-	public Object getProxy() {
+	public Remote getProxy() {
+		if (providerProxy != null)
+			return providerProxy;
 		try {
 			if (smartProxy == null) {
 				if (innerProxy != null && partner == null
@@ -2699,16 +2698,20 @@ public class ProviderDelegate {
 					((Partnership) partner).setInner(innerProxy);
 					((Partnership) partner).setAdmin(adminProxy);
 				}
-				return ProviderProxy.wrapServiceProxy(outerProxy, getServerUuid());
-							} else if (smartProxy instanceof Partnership) {
+				providerProxy = ProviderProxy.wrapServiceProxy(outerProxy,
+						getProviderUuid(), adminProxy);
+				return providerProxy;
+			} else if (smartProxy instanceof Partnership) {
 				((Partnership) smartProxy).setInner(outerProxy);
 				((Partnership) smartProxy).setAdmin(adminProxy);
 			}
-			return ProviderProxy.wrapServiceProxy(smartProxy, getServerUuid());
+			providerProxy = ProviderProxy.wrapServiceProxy(smartProxy,
+					getProviderUuid(), adminProxy);
 		} catch (ProviderException e) {
-			logger.warning("No proxy created by: " + provider + " cause: " + e.getMessage());
-			return null;
+			logger.warning("No proxy created by: " + provider + " cause: "
+					+ e.getMessage());
 		}
+		return providerProxy;
 	}
 
 	/** {@inheritDoc} */
@@ -3261,6 +3264,8 @@ public class ProviderDelegate {
 
 	public final static int KEEP_ALIVE_TIME = 1000;
 
+	public static final String DISCOVERY_ENABLED = "discoveryEnabled";
+	
 	public static final String SPACE_ENABLED = "spaceEnabled";
 
 	public static final String SPACE_READINESS = "spaceReadiness";

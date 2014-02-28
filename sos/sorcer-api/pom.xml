@@ -24,6 +24,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>

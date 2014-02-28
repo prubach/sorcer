@@ -71,6 +71,7 @@ deployment(name: 'Sorcer') {
         configuration file: 'classpath:mahalo.config'
         maintain 1
     }
+/*
     service(name: 'Fiddler') {
         interfaces {
             classes 'com.sun.jini.fiddler.Fiddler'
@@ -105,6 +106,7 @@ deployment(name: 'Sorcer') {
         configuration file: 'classpath:mercury.config'
         maintain 1
     }
+*/
 
     service(name: "BlitzSpace") {
         interfaces {

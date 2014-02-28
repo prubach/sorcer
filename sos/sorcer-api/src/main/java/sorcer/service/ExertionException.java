@@ -45,7 +45,7 @@ public class ExertionException extends Exception {
 		super(msg);
 	}
 
-	public ExertionException(Exception e) {
+	public ExertionException(Throwable e) {
 		super(e);
 	}
 	
