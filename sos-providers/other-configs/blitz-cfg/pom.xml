@@ -16,6 +16,25 @@
             <artifactId>blitz-service</artifactId>
         	<version>${v.blitz}</version>
         </dependency>
+
+        <!-- for the opstring -->
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+        	<version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-api</artifactId>
+        	<version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

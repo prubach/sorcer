@@ -117,22 +117,7 @@
 			<scope>runtime</scope>
 		</dependency>		
 		<!-- /RIVER -->
-        <!--	    <dependency>
-                    <groupId>org.dancres.blitz</groupId>
-                    <artifactId>blitz</artifactId>
-                    <version>${v.blitz}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.dancres.blitz</groupId>
-                    <artifactId>blitz-dl</artifactId>
-                    <version>${v.blitz}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.dancres.blitz</groupId>
-                    <artifactId>blitzui</artifactId>
-                    <version>${v.blitz}</version>
-                </dependency>
-        -->
+
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>blitz-cfg</artifactId>

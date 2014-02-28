@@ -56,8 +56,8 @@ deployment(name: 'Sorcer') {
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
     artifact id: 'blitz-cfg', "org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion()
-    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.0'
-    //artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.0'
+    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.1-1'
+    //artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.1-1'
 
 
     service(name: 'Mahalo') {
