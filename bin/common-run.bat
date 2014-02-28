@@ -103,6 +103,8 @@ IF DEFINED %SORCER_WEBSTER_INTERFACE% IF DEFINED %SORCER_WEBSTER_PORT% (
    SET WEBSTER_URL=http://%provider.webster.interface%:%provider.webster.port%
 )
 
+IF NOT DEFINED RIO_HOME SET RIO_HOME=%SORCER_HOME%\lib\rio
+
 set JAVA_OPTS=%JAVA_OPTS% -Dsun.net.maxDatagramSockets=1024
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.env.file=%SORCER_HOME%\configs\sorcer.env
 rem set JAVA_OPTS=%JAVA_OPTS% -Djava.net.preferIPv4Stack=true
@@ -112,7 +114,7 @@ set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.useCodebaseOnly=false
 set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir=%SORCER_HOME%\databases
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home=%SORCER_HOME%
-set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME=%SORCER_HOME%\lib\rio
+set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME=%RIO_HOME%
 set JAVA_OPTS=%JAVA_OPTS% -Dorg.rioproject.resolver.jar=%MVN_REPO%\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar
 set JAVA_OPTS=%JAVA_OPTS% -Dlogback.configurationFile=%SORCER_HOME%\configs\logback.groovy
 
