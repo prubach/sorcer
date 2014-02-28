@@ -17,9 +17,12 @@
 package sorcer.rmi;
 
 import edu.emory.mathcs.util.classloader.URIClassLoader;
+import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URI;
@@ -30,6 +33,7 @@ import java.net.URISyntaxException;
  */
 public class ArtifactClassLoader extends URIClassLoader {
     private Resolver resolver;
+    private static final Logger logger = LoggerFactory.getLogger(ArtifactRmiLoader.class);
 
     public ArtifactClassLoader(ClassLoader parent, Resolver resolver) {
         super(new URI[0], parent);
@@ -48,7 +52,14 @@ public class ArtifactClassLoader extends URIClassLoader {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         } catch (ResolverException e) {
-            throw new IllegalArgumentException(e);
+            try {
+                logger.warn("Trying again to resolve: " + artifact + " in repos: " + new ArtifactURLConfiguration(artifact.toString()).getRepositories().toString());
+                URI[] resolved = resolve(artifact, resolver);
+                for (URI uri : resolved)
+                    super.addURI(uri);
+            } catch (Exception ee) {
+                throw new IllegalArgumentException(ee);
+            }
         }
     }
 
