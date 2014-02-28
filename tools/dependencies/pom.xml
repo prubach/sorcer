@@ -195,6 +195,16 @@
             <version>${v.rio}</version>
         </dependency>
         <dependency>
+            <groupId>org.rioproject.gnostic</groupId>
+            <artifactId>gnostic-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.gnostic</groupId>
+            <artifactId>gnostic-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.1_3</version>

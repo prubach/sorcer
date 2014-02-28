@@ -371,8 +371,8 @@ public class LookupCmd extends ShellCmd {
 		if (cl instanceof URLClassLoader) {
 			URL[] urls = ((URLClassLoader) cl).getURLs();
 			if (urls.length > 0) {
-				out.println("Codbase URLs:");
-				for (int l = 1; l < urls.length; l++) {
+				out.println("Codebase URLs:");
+				for (int l = 0; l < urls.length; l++) {
 					out.println("  " + urls[l]);
 				}
 			}

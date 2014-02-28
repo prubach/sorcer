@@ -19,7 +19,7 @@ def getSorcerVersion() {
 }
 
 def String getCodebase() {
-    return 'http://'+SorcerEnv.getLocalHost().getHostAddress()+":9010"
+    return SorcerEnv.getWebsterUrl();
 }
 
 

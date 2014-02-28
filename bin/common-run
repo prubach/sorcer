@@ -337,7 +337,8 @@ $MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
 
 createSorcerRioUICp ( ) {
     SORCER_RIO_CP=$(createSorcerRioCp)
-	SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar"
+	SORCER_RIOUI_CP="$SORCER_RIO_CP:$MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
+$MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar"
     echo $SORCER_RIOUI_CP
 }
 
