@@ -36,7 +36,6 @@
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-netlet/${v.sorcer}/sos-netlet-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar" />
-        <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/2.1/jmx-lookup-2.1.jar" />
 	</path>
 
     <condition property="isMac" value="true">

@@ -289,11 +289,6 @@
                 <destName>aopalliance-1.0.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/lookup/jmx-lookup/2.1/jmx-lookup-2.1.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>jmx-lookup-2.1.pom</destName>
-            </file>
-            <file>
                 <source>${user.home}/.m2/repository/org/apache/apache/4/apache-4.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>apache-4.pom</destName>

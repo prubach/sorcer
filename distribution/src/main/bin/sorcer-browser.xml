@@ -39,7 +39,6 @@
         <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
-        <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/2.1/jmx-lookup-2.1.jar" />
 	</path>
 
     <condition property="isMac" value="true">

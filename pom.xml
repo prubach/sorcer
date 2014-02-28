@@ -158,11 +158,6 @@
 				<version>${v.jini}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.jini.lookup</groupId>
-				<artifactId>jmx-lookup</artifactId>
-				<version>2.1</version>
-			</dependency>
-			<dependency>
 				<groupId>org.sorcersoft.sorcer</groupId>
 				<artifactId>sos-api</artifactId>
 				<version>${project.version}</version>

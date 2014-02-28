@@ -209,7 +209,6 @@
 
             <path id="rio-resolver.classpath">
                 <pathelement location="${lib.dir}/rio/resolver-api.jar"/>
-                <pathelement location="${lib.dir}/jini-lookup/jmx-lookup.jar"/>
             </path>
 
         </ac:then>
@@ -256,7 +255,6 @@
             </path>
             <path id="rio-resolver.classpath">
                 <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
-                <pathelement location="${mvn.repo}/net/jini/lookup/jmx-lookup/2.1/jmx-lookup-2.1.jar"/>
             </path>
         </ac:else>
     </ac:if>
