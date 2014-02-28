@@ -114,6 +114,7 @@ set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir=%SORCER_HOME%\databases
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home=%SORCER_HOME%
 set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME=%SORCER_HOME%\lib\rio
 set JAVA_OPTS=%JAVA_OPTS% -Dorg.rioproject.resolver.jar=%MVN_REPO%\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar
+set JAVA_OPTS=%JAVA_OPTS% -Dlogback.configurationFile=%SORCER_HOME%\configs\logback.groovy
 
 REM Turn on debugging if DEBUG is set in env
 IF DEFINED DEBUG (

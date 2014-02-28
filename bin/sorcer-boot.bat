@@ -35,7 +35,7 @@ echo ##   Webster URL: %WEBSTER_URL%
 echo ##   
 echo ##############################################################################
 echo .
-pushd %SORCER_HOME%\bin
+
 call %SOS_START_CMD%
-popd
+
 endlocal
