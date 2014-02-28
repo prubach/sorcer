@@ -254,7 +254,7 @@
                 <destName>main-${v.blitz}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/lockmgr/lockmgr/${v.lockmgr}/main-${v.lockmgr}.pom</source>
+                <source>${user.home}/.m2/repository/org/sorcersoft/lockmgr/lockmgr/${v.lockmgr}/lockmgr-${v.lockmgr}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>lockmgr-${v.lockmgr}.pom</destName>
             </file>
