@@ -43,7 +43,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#writeValue(java.lang.String, java.lang.Object)
+	 * @see sorcer.core.context.SpaceContext#writeValue(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public Object writeValue(String path, Object value) throws ContextException, RemoteException {
@@ -57,7 +57,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#readValue(java.lang.String)
+	 * @see sorcer.core.context.SpaceContext#readValue(java.lang.String)
 	 */
 	@Override
 	public Object readValue(String path) throws ContextException, RemoteException {
@@ -78,7 +78,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#takeValue(java.lang.String)
+	 * @see sorcer.core.context.SpaceContext#takeValue(java.lang.String)
 	 */
 	@Override
 	public Object takeValue(String path) throws ContextException, RemoteException {
@@ -104,7 +104,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#aliasValue(java.lang.String)
+	 * @see sorcer.core.context.SpaceContext#aliasValue(java.lang.String)
 	 */
 	@Override
 	public Object aliasValue(String path, String alias) throws ContextException,
@@ -114,7 +114,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#share()
+	 * @see sorcer.core.context.SpaceContext#share()
 	 */
 	@Override
 	public void share() throws ContextException, RemoteException {
@@ -123,7 +123,7 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#unshare()
+	 * @see sorcer.core.context.SpaceContext#unshare()
 	 */
 	@Override
 	public void unshare() throws ContextException, RemoteException {

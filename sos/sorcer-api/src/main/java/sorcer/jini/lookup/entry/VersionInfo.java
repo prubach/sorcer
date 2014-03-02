@@ -22,6 +22,7 @@ import java.util.List;
 
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.ServiceInfo;
+import sorcer.core.SorcerEnv;
 
 /**
  * @author Mike Sobolewski
@@ -30,9 +31,9 @@ import net.jini.lookup.entry.ServiceInfo;
 public class VersionInfo {
 	public static final String PRODUCT_NAME = "SORCER Runtime Environmnet";
 	public static final String EMAIL_CONTACT = "sobol@sorcersoft.org";
-	public static final String SUPPLIER_NAME = "SORCERsoft.org";
-	public static final String VERSION = "13.7.0";
-	public static final String MODEL = "MSTC/AFRL/WPAFB";
+	public static final String SUPPLIER_NAME = "Sorcersoft.com S.A.";
+	public static final String VERSION = SorcerEnv.getSorcerVersion();
+	public static final String MODEL = "Sorcersoft.com";
 
 	public static String getVersion() {
 		return PRODUCT_NAME + ", " + EMAIL_CONTACT + ", " + SUPPLIER_NAME

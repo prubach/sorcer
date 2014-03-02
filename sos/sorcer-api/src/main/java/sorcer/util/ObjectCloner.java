@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util;
 
-import net.jini.io.MarshalledInstance;
+package sorcer.util;
 
 import java.io.IOException;
 import java.rmi.MarshalledObject;
+
+import net.jini.io.MarshalledInstance;
 
 public class ObjectCloner {
 
@@ -35,7 +35,7 @@ public class ObjectCloner {
 		return null;
 	}
 
-    public static Object cloneAnnotated(Object o) {
+	public static Object cloneAnnotated(Object o) {
 		try {
 			return new MarshalledInstance(o).get(false);
 		} catch (ClassNotFoundException cnfe) {
@@ -45,5 +45,6 @@ public class ObjectCloner {
 		}
 		return null;
 	}
+
 
 }

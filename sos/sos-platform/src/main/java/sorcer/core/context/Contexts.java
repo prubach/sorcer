@@ -36,11 +36,7 @@ import net.jini.id.Uuid;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.ComplexExertion;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Link;
+import sorcer.service.*;
 import sorcer.util.GenericUtil;
 import sorcer.util.StringUtils;
 
@@ -177,11 +173,11 @@ public class Contexts {
 	}
 
 	public static List<?> getNamedOutValues(Context context) throws ContextException {
-		List inpaths = Contexts.getNamedOutPaths(context);
-		if (inpaths == null) 
+		List outpaths = Contexts.getNamedOutPaths(context);
+		if (outpaths == null) 
 			return null;
-		List list = new ArrayList(inpaths.size());
-		for (Object path : inpaths)
+		List list = new ArrayList(outpaths.size());
+		for (Object path : outpaths)
 			try {
 				list.add(context.getValue((String) path));
 			} catch (ContextException e) {
@@ -588,6 +584,12 @@ public class Contexts {
 							.asList(getAllContextNodes((Context) obj));
 					if (additional.size() > 0)
 						allNodes.addAll(additional);
+				} else if (obj instanceof ServiceExertion) {
+					additional = Arrays
+							.asList(getTaskContextNodes((ServiceExertion) obj));
+				} else if (obj instanceof Job) {
+					additional = Arrays
+							.asList(getTaskContextNodes((ServiceExertion) obj));
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -613,20 +615,20 @@ public class Contexts {
 		return result;
 	}
 
-	public static ContextNode[] getTaskContextNodes(ComplexExertion job)
+	public static ContextNode[] getTaskContextNodes(Job job)
 			throws ContextException {
 		List allNodes = new ArrayList();
 		List additional = null;
 
-		List<Exertion> exertions = ((ComplexExertion) job).getExertions();
+		List<Exertion> exertions = ((Job) job).getExertions();
 		for (Object exertion : exertions) {
-			if (exertion instanceof Exertion) {
+			if (exertion instanceof ServiceExertion) {
 				additional = Arrays
-						.asList(getTaskContextNodes((Exertion) exertion));
+						.asList(getTaskContextNodes((ServiceExertion) exertion));
 				if (additional.size() > 0)
 					allNodes.addAll(additional);
-			} else if (exertion instanceof ComplexExertion) {
-				additional = Arrays.asList(getTaskContextNodes((ComplexExertion) exertion));
+			} else if (exertion instanceof Job) {
+				additional = Arrays.asList(getTaskContextNodes((Job) exertion));
 				if (additional.size() > 0)
 					allNodes.addAll(additional);
 			}
@@ -1164,7 +1166,6 @@ public class Contexts {
 		// java 1.4.0 regex
 		// Pattern p;
 		// Matcher m;
-		boolean result;
 		if (association == null)
 			return null;
 		int index = association.indexOf(APS);
@@ -1449,7 +1450,7 @@ public class Contexts {
 		return contextNodePaths;
 	}
 
-    public static String getDirection(Context context, String path) throws ContextException {
+   public static String getDirection(Context context, String path) throws ContextException {
         Enumeration ens = Contexts.getSimpleAssociations(context, path);
         while (ens.hasMoreElements()) {
             String assoc = (String)ens.nextElement();

@@ -48,6 +48,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 	 */
 	@Override
 	public void dispatchExertions() throws ExertionException {
+        checkAndDispatchExertions();
 		preExecExertion(xrt);
 		collectResults();
 	}
@@ -70,7 +71,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				xrt.setStatus(FAILED);
 				state = FAILED;
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						Category.FAILED);
+						State.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
 				result.reportException(fe);
@@ -80,7 +81,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				state = DONE;
 				xrt.setStatus(DONE);
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						Category.DONE);
+						State.DONE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -74,8 +74,8 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 	@Override
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ServiceExerter esh = new ServiceExerter(this);
-		return (Job)esh.exert(txn, null);
+		ServiceExerter se = new ServiceExerter(this);
+		return (Job)se.exert(txn, null);
 	}
 	
 }

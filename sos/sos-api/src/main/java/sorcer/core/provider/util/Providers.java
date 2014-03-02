@@ -63,7 +63,7 @@ public class Providers {
     public static ServiceExertion[] getServiceTasks(Job fJ) {
         ServiceExertion[] fTA = new ServiceExertion[fJ.size()];
         for (int i = 0; i < fJ.size(); i++) {
-            fTA[i] = (ServiceExertion) fJ.exertionAt(i);
+            fTA[i] = (ServiceExertion) fJ.get(i);
         }
         return fTA;
     }

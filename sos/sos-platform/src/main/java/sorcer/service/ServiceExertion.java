@@ -20,13 +20,9 @@ package sorcer.service;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,11 +32,16 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.co.tuple.Entry;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.ContextLink;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.ThrowableTrace;
+import sorcer.core.context.model.par.Par;
+import sorcer.core.context.model.par.ParImpl;
+import sorcer.core.deploy.Deployment;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Spacer;
@@ -55,7 +56,7 @@ import static sorcer.service.Strategy.Access;
 import static sorcer.service.Strategy.Flow;
 
 @SuppressWarnings("rawtypes")
-public abstract class ServiceExertion implements Exertion, Revaluation, ExecState, Serializable {
+public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Serializable {
 
 	static final long serialVersionUID = -3907402419486719293L;
 
@@ -106,7 +107,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 	protected Integer scopeCode;
 
 	/** execution status: INITIAL|DONE|RUNNING|SUSPENDED|HALTED */
-	protected Integer status = ExecState.INITIAL;
+	protected Integer status = Exec.INITIAL;
 
 	protected Integer priority;
 
@@ -243,8 +244,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 					List<Exertion> exts = getAllExertions();
 					for (Exertion e : exts) {
 						Object link = context.getLink(e.getName());
-						if (link != null) {
-							e.getContext().append(((Link)link).getContext());
+						if (link instanceof ContextLink) {
+							e.getContext().append(
+									((ContextLink) link).getContext());
 						}
 					}
 
@@ -268,10 +270,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ServiceExerter ed = new ServiceExerter(this);
+		ServiceExerter se = new ServiceExerter(this);
 		Exertion result = null;
 		try {
-			result = ed.exert(txn, null, entries);
+			result = se.exert(txn, null, entries);
 		} catch (Exception e) {
 			logger.log(Level.WARNING,"Error while exerting", e);
 			if (result != null)
@@ -301,8 +303,8 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter esh = new ServiceExerter(this);
-		return esh.exert(entries);
+		ServiceExerter se = new ServiceExerter(this);
+		return se.exert(entries);
 	}
 
 	public Exertion exert(Transaction txn, String providerName, Arg... entries)
@@ -313,8 +315,8 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter esh = new ServiceExerter(this);
-		return esh.exert(txn, providerName);
+		ServiceExerter se = new ServiceExerter(this);
+		return se.exert(txn, providerName);
 	}
 
 	private void setSubject(Principal principal) {
@@ -513,6 +515,19 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return exertionId;
 	}
 
+	public String getDeploymentId(List<NetSignature> list) throws NoSuchAlgorithmException {
+		StringBuilder ssb = new StringBuilder();
+		for (Signature s : list) {
+			ssb.append(s.getProviderName());
+			ssb.append(s.getServiceType());
+		}
+		return Deployment.createDeploymentID(ssb.toString());
+	}
+	
+	public String getDeploymentId() throws NoSuchAlgorithmException {
+		return getDeploymentId(getAllNetTaskSignatures());
+	}
+
 	public String getRuntimeId() {
 		return runtimeId;
 	}
@@ -571,10 +586,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 
 	public boolean isMonitorable() {
 		return controlContext.isMonitorable();
-	}
-
-	public boolean isProvisionable() {
-		return controlContext.isProvisionable();
 	}
 
 	public void setMonitored(boolean state) {
@@ -655,6 +666,15 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return null;
 	}
 
+	public List<Signature> getApdProcessSignatures() {
+		List<Signature> sl = new ArrayList<Signature>();
+		for (Signature s : signatures) {
+			if (s.getType() == Signature.Type.APD)
+				sl.add(s);
+		}
+		return sl;
+	}
+
 	public List<Signature> getPreprocessSignatures() {
 		List<Signature> sl = new ArrayList<Signature>();
 		for (Signature s : signatures) {
@@ -663,17 +683,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		}
 		return sl;
 	}
-
-
-    public List<Signature> getApdProcessSignatures() {
-        List<Signature> sl = new ArrayList<Signature>();
-        for (Signature s : signatures) {
-            if (s.getType() == Signature.Type.APD)
-                sl.add(s);
-        }
-        return sl;
-    }
-
 
 	public List<Signature> getPostprocessSignatures() {
 		List<Signature> sl = new ArrayList<Signature>();
@@ -759,7 +768,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return isTree(new HashSet());
 	}
 
-	public Context getDataContext() {
+	public Context getDataContext() throws ContextException {
 		return dataContext;
 	}
 
@@ -767,11 +776,12 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return controlContext;
 	}
 
-	public Context getContext() {
-		return dataContext;
+	public Context getContext() throws ContextException {
+		return getDataContext();
 	}
 
-	public Context getContext(String componentExertionName) {
+	public Context getContext(String componentExertionName)
+			throws ContextException {
 		Exertion component = getExertion(componentExertionName);
 		if (component != null)
 			return getExertion(componentExertionName).getContext();
@@ -817,9 +827,15 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return controlContext.isExecTimeRequested();
 	}
 
-	abstract public Context linkContext(Context context, String path) throws ContextException;
+	public Par getPar(String path) {
+		return new ParImpl(path, this);
+	}
 
-	abstract public Context linkControlContext(Context context, String path) throws ContextException;
+	abstract public Context linkContext(Context context, String path)
+			throws ContextException;
+
+	abstract public Context linkControlContext(Context context, String path)
+			throws ContextException;
 
 	/*
 	 * Subclasses implement this to support the isTree() algorithm.
@@ -838,9 +854,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			throws EvaluationException {
 		if (entries != null && entries.length > 0) {
 			for (Arg e : entries) {
-				if (e instanceof Tuple2) {
+				if (e instanceof Entry) {
 					try {
-						putValue((String) ((Tuple2) e)._1, ((Tuple2) e)._2);
+						putValue((String) ((Entry) e).path(),
+								((Entry) e).value());
 					} catch (ContextException ex) {
 						ex.printStackTrace();
 						throw new EvaluationException(ex);
@@ -863,7 +880,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			if (returnPath.path == null || returnPath.path.equals("self"))
 				return getContext();
 			else
-				return getValue(returnPath.path, entries);
+				return getContext().getValue(returnPath.path, entries);
 		} else {
 			return getContext();
 		}
@@ -929,6 +946,97 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		getExertions(exs);
 		return exs;
 	}
+	
+	public List<Deployment> getDeployments() {
+		List<NetSignature> nsigs = getAllNetSignatures();
+		List<Deployment> deploymnets = new ArrayList<Deployment>();
+		for (Signature s : nsigs) {
+			Deployment d = ((ServiceSignature)s).getDeployment();
+			if (d != null)
+				deploymnets.add(d);
+		}
+		return deploymnets;
+	}
+	
+	@Override
+    public List<NetSignature> getAllNetSignatures() {
+        List<Signature> allSigs = getAllSignatures();
+        List<NetSignature> netSignatures = new ArrayList<NetSignature>();
+        for (Signature s : allSigs) {
+            if (s instanceof NetSignature)
+                netSignatures.add((NetSignature)s);
+        }
+        Collections.sort(netSignatures);
+        return netSignatures;
+    }
+	
+	@Override
+	public List<NetSignature> getAllNetTaskSignatures() {
+		List<Signature> allSigs = getAllTaskSignatures();
+        List<NetSignature> netSignatures = new ArrayList<NetSignature>();
+        for (Signature s : allSigs) {
+            if (s instanceof NetSignature)
+                netSignatures.add((NetSignature)s);
+        }
+		Collections.sort(netSignatures);
+		return netSignatures;
+	}	
+	
+	public List<Deployment> getDeploymnets() {
+		List<NetSignature> nsigs = getAllNetSignatures();
+		List<Deployment> deploymnets = new ArrayList<Deployment>();
+		for (Signature s : nsigs) {
+			Deployment d = ((ServiceSignature)s).getDeployment();
+			if (d != null)
+				deploymnets.add(d);
+		}
+		return deploymnets;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Exertion#getExceptions()
+	 */
+	@Override
+	public List<ThrowableTrace> getAllExceptions() {
+		List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
+			return getExceptions(exceptions);
+	}
+	
+	public List<ThrowableTrace> getExceptions(List<ThrowableTrace> exs) {
+		if (controlContext != null)
+			exs.addAll(controlContext.getExceptions());
+		return exs;
+	}
+	
+	public List<Signature> getAllSignatures() {
+		List<Signature> allSigs = new ArrayList<Signature>();
+		List<Exertion> allExertions = getAllExertions();
+		for (Exertion e : allExertions) {
+				allSigs.add(e.getProcessSignature());
+		}
+		return allSigs;
+	}
+
+	public List<Signature> getAllTaskSignatures() {
+		List<Signature> allSigs = new ArrayList<Signature>();
+		List<Exertion> allExertions = getAllExertions();
+		for (Exertion e : allExertions) {
+			if (e instanceof Task)
+				allSigs.add(e.getProcessSignature());
+		}
+		return allSigs;
+	}
+	
+	public List<Deployment> getAllDeployments() {
+		List<Deployment> allDeployments = new ArrayList<Deployment>();
+		List<NetSignature> allSigs = getAllNetTaskSignatures();
+		for (NetSignature s : allSigs) {
+			allDeployments.add(s.getDeployment());
+		}
+		return allDeployments;
+	}
 
 	abstract public List<Exertion> getExertions(List<Exertion> exs);
 
@@ -992,6 +1100,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 			}
 		}
 		return sig;
+	}
+
+	public void reset(int state) {
+		status = state;
 	}
 
 	/**
@@ -1108,6 +1220,14 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exertion#isCompound()
+	 */
+	@Override
+	public boolean isCompound() {
+		return false;
+	}
+
 	public boolean isJob() {
 		return false;
 	}
@@ -1117,8 +1237,20 @@ public abstract class ServiceExertion implements Exertion, Revaluation, ExecStat
 		return false;
 	}
 
+	public boolean isBlock() {
+		return false;
+	}
+
 	public boolean isCmd() {
 		return false;
+	}
+	
+	public boolean isProvisionable() {
+		return controlContext.isProvisionable();
+	}
+	
+	public void setProvisionable(boolean state) {
+		controlContext.setProvisionable(state);
 	}
 
 	public String describe() {

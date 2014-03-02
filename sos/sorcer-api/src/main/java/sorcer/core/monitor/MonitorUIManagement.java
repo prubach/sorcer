@@ -19,7 +19,7 @@ package sorcer.core.monitor;
 
 import net.jini.id.Uuid;
 import sorcer.core.UEID;
-import sorcer.service.ExecState.Category;
+import sorcer.service.Exec;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionInfo;
 import sorcer.service.MonitorException;
@@ -57,7 +57,7 @@ public interface MonitorUIManagement {
 	 * 
 	 */
 	public Map<Uuid, ExertionInfo> getMonitorableExertionInfo(
-			Category aspect, Principal principal)
+			Exec.State aspect, Principal principal)
 			throws RemoteException, MonitorException;
 
 	/**

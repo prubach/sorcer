@@ -18,130 +18,254 @@
 package sorcer.service;
 
 import groovy.lang.Closure;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.par.Par;
+import sorcer.core.context.model.par.ParImpl;
+import sorcer.core.exertion.AltExertion;
+import sorcer.core.exertion.LoopExertion;
+import sorcer.core.exertion.OptExertion;
+import sorcer.core.invoker.GroovyInvoker;
+import sorcer.core.invoker.Invoker;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A Condition specifies a conditional value in a given service context for its free variables
  * in the form of path/value pairs with paths being guards's parameters.
- *
+ * 
+ * @see LoopExertion
+ * @see OptExertion
+ * @see AltExertion
+
  * @author Mike Sobolewski
- * @see Exertion
- * @see WhileExertion
- * @see IfExertion
  */
 @SuppressWarnings("rawtypes")
-public class Condition implements Evaluation<Object>, Conditional, Serializable {
+ public class Condition implements Evaluation<Object>, Conditional, Serializable {
 
-    private static final long serialVersionUID = -7310117070480410642L;
-    public static String CONDITION_VALUE = "condition/value";
-    public static String CONDITION_TARGET = "condition/target";
-    protected Context<?> conditionaContext;
-    protected String evaluationPath;
-    protected String closureExpression;
-    protected String[] pars;
-    Boolean status = null;
-    private Closure closure;
+	final static public String _closure_ = "_closure_";
+	
+	private static final long serialVersionUID = -7310117070480410642L;
+	 
+	protected final static Logger logger = Logger.getLogger(Condition.class
+			.getName());
 
-    public Condition() {
-        // do nothing
-    }
+	
+	public static String CONDITION_VALUE = "condition/value";
+	public static String CONDITION_TARGET = "condition/target";
+	
+	protected Context<?> conditionalContext;
 
-    public Condition(Boolean status) {
-        this.status = status;
-    }
+	protected String evaluationPath;
+	
+	protected String closureExpression;
 
-    public Condition(Context<?> context) {
-        conditionaContext = context;
-    }
-
-    public Condition(Context<?> context, String parPath) {
-        evaluationPath = parPath;
-        conditionaContext = context;
-    }
-
-    public Condition(Context<?> context, String closure, String... parameters) {
-        this.closureExpression = closure;
-        conditionaContext = context;
-        this.pars = parameters;
-    }
-
-    /**
-     * The isTrue method is responsible for evaluating the underlying contextual
-     * condition.
-     *
-     * @return boolean true or false depending on given contexts
-     * @throws ExertionException if there is any problem within the isTrue method.
-     * @throws ContextException
-     */
-    public boolean isTrue() throws ContextException {
-        if (status != null)
-            return status;
-
-        Object obj = null;
-        Object[] args = null;
-        if (closure != null) {
-            args = new Object[pars.length];
-            for (int i = 0; i < pars.length; i++) {
-                args[i] = conditionaContext.getValue(pars[i]);
-            }
-            obj = closure.call(args);
-        } else if (evaluationPath != null && conditionaContext != null) {
-            obj = conditionaContext.getValue(evaluationPath);
-        } else if (closureExpression != null && conditionaContext != null) {
-
-             /*conditionaContext.putValue("closure",
-                    new Invoker((ParModel)conditionaContext));
-            ((Invoker) conditionaContext.get("closure"))
-                    .setEvaluator(groovy(closureExpression));
-
-
-            closure = (Closure)conditionaContext.getValue("closure");
-            args = new Object[pars.length];
-            for (int i = 0; i < pars.length; i++) {
-                args[i] = conditionaContext.getValue(pars[i]);
-            }
-            obj = closure.call(args);*/
-        }
-
-        if (obj instanceof Boolean)
-            return (Boolean) obj;
-        else if (obj != null)
-            return true;
-        else
-            return false;
-    }
-
-    /* (non-Javadoc)
-     * @see sorcer.service.Evaluation#asis()
+	private Closure closure;
+	
+	protected String[] pars;
+	
+	private Boolean status = null;
+	
+	public Condition() {
+		// do nothing
+	}
+	
+	public Condition(Boolean status) {
+		this.status = status;
+	}
+	
+	public Condition(Context<?> context) {
+		conditionalContext = context;
+	}
+	
+	public Condition(Context<?> context, String parPath) {
+		evaluationPath = parPath;
+		conditionalContext = context;
+	}
+	
+	public Condition(String closure, String... parameters) {
+		this.closureExpression = closure;
+		this.pars = parameters;
+	}
+	
+	public Condition(Context<?> context, String closure, String... parameters) {
+		this.closureExpression = closure;
+		conditionalContext = context;
+		this.pars = parameters;
+	}
+	
+	/**
+	 * The isTrue method is responsible for evaluating the underlying contextual
+	 * condition.
+	 * 
+	 * @return boolean true or false depending on given contexts
+	 * @throws ExertionException
+	 *             if there is any problem within the isTrue method.
+	 * @throws ContextException
 	 */
-    @Override
-    public Object asis() throws EvaluationException, RemoteException {
-        return getValue();
-    }
+	synchronized public boolean isTrue() throws ContextException {
+		// always constant true or false condition		
+		if (status instanceof Boolean)
+			return status;
+	
+		Object obj = null;
+		Object[] args = null;
+		if (closure != null) {
+			args = new Object[pars.length];
+			for (int i = 0; i < pars.length; i++) {
+				args[i] = conditionalContext.getValue(pars[i]);
+				if (args[i] instanceof Evaluation)
+					try {
+						args[i] = ((Evaluation)args[i]).getValue();
+					} catch (RemoteException e) {
+						throw new ContextException(e);
+					}
+			}
+			obj = closure.call(args);
+		} else if (evaluationPath != null && conditionalContext != null) {
+			obj = conditionalContext.getValue(evaluationPath);
+		} else if (closureExpression !=  null && conditionalContext != null) {
+			Invoker invoker = new GroovyInvoker(closureExpression, pars(pars));
+			try {
+				invoker.setScope(conditionalContext);
+			} catch (RemoteException re) {
+				throw new ContextException(re);
+			}
+			conditionalContext.putValue(_closure_, invoker);
+			closure = (Closure)conditionalContext.getValue(_closure_);
+			args = new Object[pars.length];
+			for (int i = 0; i < pars.length; i++) {
+				try {
+					args[i] = ((ServiceContext)conditionalContext).getValueEndsWith(pars[i]);
+					if (args[i] instanceof Evaluation)
+						args[i] = ((Evaluation)args[i]).getValue();
+				} catch (RemoteException e) {
+					throw new ContextException(e);
+				}
+			}
+			obj = closure.call(args);
+		}
+		if (obj instanceof Boolean)
+			return (Boolean)obj;
+		else if (obj != null)
+			return true;
+		else 
+			return false;
+	}
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
-     */
-    @Override
-    public Object getValue(Arg... entries) throws EvaluationException,
-            RemoteException {
-        try {
-            return isTrue();
-        } catch (ContextException e) {
-            throw new EvaluationException(e);
+    public static Arg[] pars(String... parnames)
+            throws ContextException {
+        ArgSet ps = new ArgSet();
+        for (String name : parnames) {
+            ps.add(new ParImpl(name));
         }
+        return ps.toArray();
     }
 
-    /* (non-Javadoc)
-     * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
-     */
-    @Override
-    public Evaluation<Object> substitute(Arg... entries)
-            throws EvaluationException, RemoteException {
-        conditionaContext.substitute(entries);
-        return this;
-    }
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#asis()
+	 */
+	@Override
+	public Object asis() throws EvaluationException, RemoteException {
+		return getValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#getValue(sorcer.service.Parameter[])
+	 */
+	@Override
+	public Object getValue(Arg... entries) throws EvaluationException,
+			RemoteException {
+		try {
+			return isTrue();
+		} catch (ContextException e) {
+			throw new EvaluationException(e);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluation#substitute(sorcer.service.Parameter[])
+	 */
+	@Override
+	public Evaluation<Object> substitute(Arg... entries)
+			throws EvaluationException, RemoteException {
+		conditionalContext.substitute(entries);
+		return this;
+	}
+	
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+	public Closure getClosure() {
+		return closure;
+	}
+
+	public void setClosure(Closure closure) {
+		this.closure = closure;
+	}
+
+	public Context<?> getConditionalContext() {
+		return conditionalContext;
+	}
+
+	public void setConditionalContext(Context<?> conditionaContext) {
+		this.conditionalContext = conditionaContext;
+	}
+	
+	public String getClosureExpression() {
+		return closureExpression;
+	}
+	
+	static public void cleanupScripts(Exertion exertion) throws ContextException {
+		clenupContextScripts(exertion.getContext());
+		for (Exertion e : exertion.getExertions()) {
+					clenupExertionScripts(e);
+					clenupContextScripts((ServiceContext)e.getContext());
+		}
+	}
+	
+	static public void clenupContextScripts(Context context) {
+		Iterator i = ((ServiceContext) context).entrySet().iterator();
+		while (i.hasNext()) {
+			Map.Entry entry = (Map.Entry) i.next();
+			String path = (String) entry.getKey();
+			if (path.equals(_closure_)) {
+				i.remove();
+			}
+			if (entry.getValue() instanceof Invoker) {
+				clenupContextScripts(((Invoker) entry.getValue())
+						.getScope());
+			} else if (entry.getValue() instanceof Par
+					&& ((ServiceContext) ((Par) entry.getValue()).getScope())
+							.containsKey(Condition._closure_)) {
+				((ServiceContext) ((Par) entry.getValue()).getScope())
+						.remove(Condition._closure_);
+			}
+		}
+	}
+	
+	public static void clenupExertionScripts(Exertion exertion)
+			throws ContextException {
+		if (exertion instanceof ConditionalExertion) {
+			List<Conditional> cs = ((ConditionalExertion) exertion)
+					.getConditions();
+			for (Conditional c : cs) {
+                ((Condition)c).setClosure(null);
+			}
+			List<Exertion> tl = ((ConditionalExertion) exertion).getTargets();
+			for (Exertion vt : tl) {
+				clenupContextScripts(vt.getContext());
+			}
+		}
+	}
+
 }

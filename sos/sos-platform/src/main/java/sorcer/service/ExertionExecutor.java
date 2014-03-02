@@ -82,7 +82,7 @@ public class ExertionExecutor {
     }
 
     public static Exertion exertOpenTask(Exertion exertion,
-                                         Arg... entries) throws ExertionException {
+                                         Arg... entries) throws ContextException, ExertionException {
         Exertion closedTask = null;
         List<Arg> params = Arrays.asList(entries);
         List<Object> items = new ArrayList<Object>();

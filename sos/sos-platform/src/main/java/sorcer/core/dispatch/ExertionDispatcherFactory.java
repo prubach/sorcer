@@ -19,20 +19,19 @@
 package sorcer.core.dispatch;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import net.jini.config.ConfigurationException;
+import sorcer.core.deploy.Deployment;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The
@@ -45,37 +44,34 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     private final static Logger logger = Logger.getLogger(ExertionDispatcherFactory.class.getName());
     private ProvisionManager provisionManager = ProvisionManager.getInstance();
 
-    public static ExertionDispatcherFactory getFactory() {
-        if (factory == null)
-            factory = new ExertionDispatcherFactory();
-        return factory;
+	public static ExertionDispatcherFactory getFactory() {
+		if (factory == null)
+			factory = new ExertionDispatcherFactory();
+		return factory;
+	}
+	public static ExertionDispatcherFactory getProvisionableFactory() {
+		if (factory == null)
+			factory = new ExertionDispatcherFactory();
+		return factory;
+	}
+	
+	/**
+	 * Returns an instance of the appropriate subclass of Dispatcher as
+	 * determined from information provided by the given Job instance.
+	 * 
+	 * @param exertion
+	 *            The SORCER job that will be used to perform a collection of
+	 *            components exertions
+	 */
+    public Dispatcher createDispatcher(Exertion exertion, Provider provider) throws DispatcherException {
+        return createDispatcher(exertion, new HashSet<Context>(), false, null, provider);
     }
-
-    public static ExertionDispatcherFactory getProvisionableFactory() {
-        if (factory == null)
-            factory = new ExertionDispatcherFactory();
-        return factory;
-    }
-
-    /**
-     * Returns an instance of the appropriate subclass of Dispatcher as
-     * determined from information provided by the given Job instance.
-     *
-     * @param job
-     *            The SORCER job that will be used to perform a collection of
-     *            components exertions
-     */
-    public Dispatcher createDispatcher(Job job, Provider provider) throws DispatcherException {
-        return createDispatcher(job, new HashSet<Context>(), false, null, provider);
-    }
-
-    public Dispatcher createDispatcher(Job job,
+    public Dispatcher createDispatcher(Exertion exertion,
                                        Set<Context> sharedContexts,
                                        boolean isSpawned,
                                        Provider provider) throws DispatcherException {
-        return createDispatcher(job, sharedContexts, isSpawned, null, provider);
+        return createDispatcher(exertion, sharedContexts, isSpawned, null, provider);
     }
-
     public Dispatcher createDispatcher(Exertion exertion,
                                        Set<Context> sharedContexts,
                                        boolean isSpawned,
@@ -83,19 +79,37 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                                        Provider provider,
                                        String... config) throws DispatcherException {
         Dispatcher dispatcher = null;
+        DeploymentProvisionManager deployProvisionManager = null;
+        List<Deployment> deploymnets = ((ServiceExertion)exertion).getDeploymnets();
+        if (deploymnets.size() > 0)
+            deployProvisionManager = new DeploymentProvisionManager(exertion);
         try {
-            if (!exertion.isJob()) {
-                logger.info("Running Space Task Dispatcher...");
-                return dispatcher = new SpaceTaskDispatcher((NetTask)exertion,
-                        sharedContexts,
-                        isSpawned,
-                        myMemberUtil,
-                        provisionManager);
-            }
+			if (exertion instanceof NetTask) {
+				logger.info("Running Space Task Dispatcher...");
+				return dispatcher =  new SpaceTaskDispatcher((NetTask)exertion,
+						                                    sharedContexts, 
+						                                    isSpawned, 
+						                                    myMemberUtil,
+						                                    provisionManager);
+			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
+				logger.info("Running Catalog Block Dispatcher...");
+				 return dispatcher = new CatalogBlockDispatcher((Block)exertion,
+						                                  sharedContexts, 
+						                                  isSpawned, 
+						                                  provider,
+						                                  provisionManager);
+			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
+				logger.info("Running Catalog Block Dispatcher...");
+				return dispatcher = new SpaceBlockDispatcher((Block)exertion,
+						                                  sharedContexts, 
+						                                  isSpawned, 
+						                                  myMemberUtil, 
+						                                  provider,
+						                                  provisionManager);
+			}
             Job job = (Job)exertion;
             ExertionSorter es = new ExertionSorter(job);
             job = (Job)es.getSortedJob();
-
             if (Jobs.isSpaceSingleton(job)) {
                 logger.info("Running Space Sequential Dispatcher...");
                 dispatcher = new SpaceSequentialDispatcher(job,
@@ -160,7 +174,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 
 
     @Override
-    public Dispatcher createDispatcher(Job job, Provider provider, String... config) throws DispatcherException {
-        return createDispatcher(job, new HashSet<Context>(), false, null, provider, config);
+    public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException {
+        return createDispatcher(exertion, new HashSet<Context>(), false, null, provider, config);
     }
 }

@@ -24,11 +24,7 @@ import java.util.Set;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 
 public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 
@@ -42,10 +38,14 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		logger
-				.info("sorcer.core.dispatch.SWIFSequentialDispatcher::generateExertions");
-		inputXrts = Jobs.getInputExertions((Job)xrt);
-		reconcileInputExertions(xrt);
+        checkAndDispatchExertions();
+		try {
+			inputXrts = Jobs.getInputExertions((Job)xrt);
+			reconcileInputExertions(xrt);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
+
 		collectResults();
 	}
 
@@ -55,7 +55,7 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
 		ServiceExertion exertion;
 		// RemoteExertion result = null;
 		for (int i = 0; i < inputXrts.size(); i++) {
-			exertion = (ServiceExertion) inputXrts.elementAt(i);
+			exertion = (ServiceExertion) inputXrts.get(i);
 			if (isInterupted(exertion))
 				return;
 			exertion = execExertion(exertion);

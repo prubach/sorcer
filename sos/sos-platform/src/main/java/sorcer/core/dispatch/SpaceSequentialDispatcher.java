@@ -26,11 +26,7 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.ext.ProvisioningException;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
 public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
@@ -40,17 +36,23 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
             boolean isSpawned, 
             LokiMemberUtil myMemberUtil, 
             Provider provider,
-            ProvisionManager provisionManager) throws ExertionException  {
+            ProvisionManager provisionManager) throws ExertionException, ContextException  {
 		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		reconcileInputExertions(xrt);
+        checkAndDispatchExertions();
+		try {
+			reconcileInputExertions(xrt);
+		} catch (ContextException ex) {
+			throw new ExertionException(ex);
+		}
+
 		logger.finer("exertion count: " + inputXrts.size());
 		for (int i = 0; i < inputXrts.size(); i++) {
 			ServiceExertion exertion = (ServiceExertion) inputXrts
-					.elementAt(i);
+					.get(i);
 			logger.finer("exertion #: " + i + ", exertion:\n" + exertion);
 			try {
 				writeEnvelop(exertion);
@@ -102,7 +104,7 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.exertionAt(((ServiceExertion) resultEnvelop.exertion)
+						.get(((ServiceExertion) resultEnvelop.exertion)
 								.getIndex());
 				ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
 				postExecExertion(input, result);

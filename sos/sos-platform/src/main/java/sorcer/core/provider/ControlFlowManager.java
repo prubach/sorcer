@@ -35,6 +35,7 @@ import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.OptExertion;
+import sorcer.core.provider.jobber.ServiceConcatenator;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
@@ -81,49 +82,38 @@ public class ControlFlowManager {
      */
     protected Jobber jobber;
 
-    /**
-     * Reference to a spacer proxy if available.
-     */
-    protected Spacer spacer;
+	/**
+	 * Reference to a concatenator proxy if available.
+	 */
+	protected Concatenator concatenator;
 
-    static int WAIT_INCREMENT = 50;
+	
+	/**
+	 * Reference to a spacer proxy if available.
+	 */
+	protected Spacer spacer;
 
-    /**
-     * Default Constructor.
-     */
-    public ControlFlowManager() {
-        // do nothng
-    }
+	static int WAIT_INCREMENT = 50;
 
-    /**
-     * Overloaded constructor which takes in an Exertion and an ExerterDelegate.
-     *
-     * @param exertion
-     *            Exertion
-     * @param delegate
-     *            ExerterDelegate
-     */
-    public ControlFlowManager(Exertion exertion, ProviderDelegate delegate) {
-        this.delegate = delegate;
-        this.exertion = exertion;
-    }
+	/**
+	 * Default Constructor.
+	 */
+	public ControlFlowManager() {
+		// do nothing
+	}
 
-    /**
-     * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
-     * Jobber. This constructor is used when handling {@link ServiceJobs}.
-     *
-     * @param exertion
-     *            Exertion
-     * @param delegate
-     *            ExerterDelegate
-     * @param jobber
-     *            Jobber
-     */
-    public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
-                              Jobber jobber) {
-        this(exertion, delegate);
-		this.jobber = jobber;
-    }
+	/**
+	 * Overloaded constructor which takes in an Exertion and an ExerterDelegate.
+	 * 
+	 * @param exertion
+	 *            Exertion
+	 * @param delegate
+	 *            ExerterDelegate
+	 */
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate) {
+		this.delegate = delegate;
+		this.exertion = exertion;
+	}
 
     /**
      * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
@@ -133,15 +123,49 @@ public class ControlFlowManager {
      *            Exertion
      * @param delegate
      *            ExerterDelegate
-     * @param spacer
-     *            Spacer
-     */
-    public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
-                              Spacer spacer) {
-        this(exertion, delegate);
-        this.jobber = null;
-        this.spacer = spacer;
-    }
+ 	 * @param jobber
+	 *            Jobber
+	 */
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+			Jobber jobber) {
+		this(exertion, delegate);
+		this.jobber = (ServiceJobber)jobber;
+	}
+	/**
+	 * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
+	 * Concatenator. This constructor is used when handling {@link Blocks}.
+	 * 
+	 * @param exertion
+	 *            Exertion
+	 * @param delegate
+	 *            ExerterDelegate
+	 * @param concatenator
+	 *            Concatenator
+	 */
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+			Concatenator concatenator) {
+		this(exertion, delegate);
+		this.concatenator = (ServiceConcatenator)concatenator;
+	}
+	
+	/**
+	 * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
+	 * Spacer. This constructor is used when handling {@link Jobs}.
+	 * 
+	 * @param exertion
+	 *            Exertion
+	 * @param delegate
+	 *            ExerterDelegate
+	 * @param spacer
+	 *            Spacer
+	 */
+	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
+			Spacer spacer) {
+		this(exertion, delegate);
+		this.jobber = null;
+		this.spacer = spacer;
+	}
+
     /**
      * Process the Exertion accordingly if it is a job, task, or a Conditional
      * Exertion.
@@ -170,7 +194,11 @@ public class ControlFlowManager {
                     logger.info("********************************************* exertion isJob()");
                     result = doRendezvousExertion((Job) exertion);
                     logger.info("********************************************* exertion isJob(); result: " + result);
-                } else if (((ServiceExertion) exertion).isTask()) {
+                } else if (((ServiceExertion) exertion).isBlock()) {
+					logger.info("********************************************* exertion isBlock()");
+					result = doBlock((Block) exertion);
+					logger.info("********************************************* exertion isBlock(); result: " + result);
+				} else if (((ServiceExertion) exertion).isTask()) {
                     logger.info("********************************************* exertion isTask()");
                     result = doTask((Task) exertion);
                     logger.info("********************************************* exertion isTask(); result: " + result);
@@ -189,7 +217,7 @@ public class ControlFlowManager {
                     Thread.sleep(WAIT_INCREMENT);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    ((ServiceExertion)exertion).setStatus(ExecState.FAILED);
+                    ((ServiceExertion)exertion).setStatus(Exec.FAILED);
                     ((ServiceExertion)exertion).reportException(e);
                     return exertion;
                 }
@@ -228,6 +256,12 @@ public class ControlFlowManager {
 
         return result;
     }
+
+	public Block doBlock(Block block) throws RemoteException, ExertionException,
+			SignatureException, TransactionException, ContextException {
+		Block result = (Block)((ServiceConcatenator)concatenator).execute(block);
+		return result;
+	}
 
     /**
      * Selects a Jobber or Spacer for exertion processing. If own Jobber or
@@ -288,7 +322,6 @@ public class ControlFlowManager {
                 }
 				Exertion job = ((Executor)jobber).execute(xrt, null);
                 logger.info("********************************************* job exerted = " + job);
-
                 return job;
             }
         } catch (TransactionException e) {
@@ -296,7 +329,6 @@ public class ControlFlowManager {
         }
         return null;
     }
-
     /**
      * This method handles the {@link Conditional} Exertions. It determines if
      * the conditional Exertion: {@link OptExertion}, {@link AltExertion}, and
@@ -315,7 +347,6 @@ public class ControlFlowManager {
             ExertionException, SignatureException {
         return ((Task) exertion).doTask();
     }
-
     /**
      * This mehtod saves all the data nodes of a context and put it on a Map.
      *
@@ -328,7 +359,6 @@ public class ControlFlowManager {
         try {
             Enumeration e = context.contextPaths();
 			String path;
-
             while (e.hasMoreElements()) {
 				path = (String) e.nextElement();
 				mapBackUp.put(path, context.get(path));
@@ -338,7 +368,6 @@ public class ControlFlowManager {
             ce.printStackTrace();
         }
     }
-
     /**
 	 * Copies the backup map of the dataContext to the passed dataContext.
      *
@@ -350,7 +379,6 @@ public class ControlFlowManager {
     public static void restoreState(Map<String, Object> mapBackUp,
                                     Context context) {
         Iterator iter = mapBackUp.entrySet().iterator();
-
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             String path = (String) entry.getKey();
@@ -428,10 +456,10 @@ public class ControlFlowManager {
      */
     public void resetExertionStatus(Exertion exertion) {
 		if (exertion.isTask()) {
-            ((Task) exertion).setStatus(ExecState.INITIAL);
+            ((Task) exertion).setStatus(Exec.INITIAL);
 		} else if (exertion.isJob()) {
             for (int i = 0; i < ((Job) exertion).size(); i++) {
-                this.resetExertionStatus(((Job) exertion).exertionAt(i));
+                this.resetExertionStatus(((Job) exertion).get(i));
             }
         }
     }
@@ -471,7 +499,7 @@ public class ControlFlowManager {
     }
 
     public Task doBatchTask(Task task) throws ExertionException,
-            SignatureException, RemoteException {
+            SignatureException, RemoteException, ContextException {
         List<Signature> alls = task.getSignatures();
         Signature lastSig = alls.get(alls.size()-1);
         if (alls.size() > 1 &&  task.isBatch() && !(lastSig instanceof NetSignature)) {
@@ -504,12 +532,12 @@ public class ControlFlowManager {
             ((ServiceContext)task.getContext()).setReturnPath(tsig.getReturnPath());
 
         task = task.doTask();
-        if (task.getStatus() <= ExecState.FAILED) {
+        if (task.getStatus() <= Exec.FAILED) {
             task.stopExecTime();
             ExertionException ex = new ExertionException("Batch service task failed: "
                     + task.getName());
             task.reportException(ex);
-            task.setStatus(ExecState.FAILED);
+            task.setStatus(Exec.FAILED);
             task.setSignatures(alls);
             return task;
         }
@@ -520,12 +548,12 @@ public class ControlFlowManager {
             cxt.setExertion(task);
             task.setContext(cxt);
         }
-        if (task.getStatus() <= ExecState.FAILED) {
+        if (task.getStatus() <= Exec.FAILED) {
             task.stopExecTime();
             ExertionException ex = new ExertionException("Batch service task failed: "
                     + task.getName());
             task.reportException(ex);
-            task.setStatus(ExecState.FAILED);
+            task.setStatus(Exec.FAILED);
             task.setSignatures(alls);
             return task;
         }
@@ -534,20 +562,20 @@ public class ControlFlowManager {
         return task;
     }
 
-    private Context apdProcess(Task task) throws ExertionException {
+    private Context apdProcess(Task task) throws ExertionException, ContextException {
         return processContinousely(task, task.getApdProcessSignatures());
     }
 
-    private Context preprocess(Task task) throws ExertionException {
+    private Context preprocess(Task task) throws ExertionException, ContextException {
         return processContinousely(task, task.getPreprocessSignatures());
     }
 
-    private Context postprocess(Task task) throws ExertionException {
+    private Context postprocess(Task task) throws ExertionException, ContextException {
         return processContinousely(task, task.getPostprocessSignatures());
     }
 
     public Context processContinousely(Task task, List<Signature> signatures)
-            throws ExertionException {
+            throws ExertionException, ContextException {
         Signature.Type type = signatures.get(0).getType();
         Task t = null;
         Context shared = task.getContext();
@@ -555,19 +583,20 @@ public class ControlFlowManager {
             try {
                 t = task(task.getName() + "-" + i, signatures.get(i), shared);
                 signatures.get(i).setType(Signature.SRV);
-                ((ServiceContext)task.getContext()).setCurrentSelector(signatures.get(i).getSelector());
-                ((ServiceContext)task.getContext()).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
+                ((ServiceContext)shared).setCurrentSelector(signatures.get(i).getSelector());
+                ((ServiceContext)shared).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
 
                 List<Signature> tmp = new ArrayList<Signature>(1);
                 tmp.add(signatures.get(i));
                 t.setSignatures(tmp);
                 t.setContinous(true);
+                t.setContext(shared);
 
                 t = t.doTask();
                 signatures.get(i).setType(type);
                 shared = t.getContext();
-                if (t.getStatus() <= ExecState.FAILED) {
-                    task.setStatus(ExecState.FAILED);
+                if (t.getStatus() <= Exec.FAILED) {
+                    task.setStatus(Exec.FAILED);
                     ExertionException ne = new ExertionException(
                             "Batch signature failed: " + signatures.get(i));
                     task.reportException(ne);
@@ -576,7 +605,7 @@ public class ControlFlowManager {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                task.setStatus(ExecState.FAILED);
+                task.setStatus(Exec.FAILED);
                 task.reportException(e);
                 task.setContext(shared);
                 return shared;

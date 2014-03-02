@@ -327,9 +327,8 @@ public class NetSignature extends ObjectSignature {
 		// If customized method provided by Mobile Agent
 		Method m = getSubstituteMethod(new Class[] { Exertion.class });
 		try {
-			if (m != null) {
-                return (Exertion) m.invoke(this, ex);
-            }
+			if (m != null)
+				return (Exertion) m.invoke(this, new Object[] { ex });
 
 			if (((ServiceProvider) provider).isValidMethod(selector)) {
 				return (Exertion) ((ServiceProvider) provider).getDelegate()

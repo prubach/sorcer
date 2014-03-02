@@ -53,7 +53,7 @@ public class ListContext<T> extends ServiceContext implements IndexedContext {
 	 * Return an index of this ListContext path.
 	 * 
 	 * @param path
-	 *            ListContext dataContext path
+	 *            ListContext context path
 	 * @return an index of the ListContext path
 	 */
 	public int pathIndex(String path) {
@@ -80,7 +80,7 @@ public class ListContext<T> extends ServiceContext implements IndexedContext {
 	}
 	
 	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.IndexedContext#putValue(int, java.lang.Object)
+	 * @see sorcer.core.context.IndexedContext#putValue(int, java.lang.Object)
 	 */
 	@Override
 	public Object putValue(int i, Object value) throws ContextException {

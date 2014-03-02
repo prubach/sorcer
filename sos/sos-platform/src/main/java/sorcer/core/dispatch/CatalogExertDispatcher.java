@@ -21,33 +21,25 @@ package sorcer.core.dispatch;
 import java.rmi.RemoteException;
 import java.util.Set;
 
+import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.Dispatcher;
+import sorcer.core.SorcerEnv;
+import sorcer.core.provider.Concatenator;
 import sorcer.core.provider.Provider;
-import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.signature.NetSignature;
 import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
-import sorcer.service.Conditional;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.Service;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 
 abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     private final static int SLEEP_TIME = 20;
 
-    public CatalogExertDispatcher(Job job,
+    public CatalogExertDispatcher(Exertion job,
                                   Set<Context> sharedContext,
                                   boolean isSpawned,
                                   Provider provider,
@@ -62,7 +54,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             state = FAILED;
         }
     }
-
     protected void preExecExertion(Exertion exertion) throws ExertionException,
             SignatureException {
         // If Job, new dispatcher will update inputs for it's Exertion
@@ -80,11 +71,14 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             // ignore it, local call
         }
         logger.finest("preExecExertions>>>...UPDATING INPUTS...");
-        if (exertion.isTask()) {
-            updateInputs(exertion);
-
-        }
-        ((ServiceExertion) exertion).startExecTime();
+		try {
+			if (exertion.isTask()) {
+				updateInputs(exertion);
+			}
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}        
+		((ServiceExertion) exertion).startExecTime();
         ((ServiceExertion) exertion).setStatus(RUNNING);
     }
 
@@ -94,48 +88,44 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         eThread.start();
         return eThread;
     }
-
     // Sequential
     protected Exertion execExertion(Exertion ex) throws SignatureException,
             ExertionException {
         // set subject before task goes out.
         // ex.setSubject(subject);
         ServiceExertion result = null;
-        try {
-            preExecExertion(ex);
-            if (ex instanceof Conditional) {
-                result = (ServiceExertion) execConditional(ex);
-            } else if (ex.isTask()) {
-                //logger.info("CONTEXT BEFORE: " + ex.getContext());
-                result = execTask((Task) ex);
-                //logger.info("CONTEXT AFTER: " + ex.getContext());
-            } else if (ex.isJob()) {
-                result = execJob((Job) ex);
-            } else {
-                logger.warning("Unknown ServiceExertion");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            // return original exertion with exception
-            result = (ServiceExertion) ex;
-            result.getControlContext().addException(e);
-            result.setStatus(FAILED);
-            setState(ExecState.FAILED);
-            return result;
-        }
-        // set subject after result is received
-        // result.setSubject(subject);
-        postExecExertion(ex, result);
-        return result;
+  	try {
+			preExecExertion(ex);
+			if (ex.isTask()) {
+				result = execTask((Task) ex);
+			} else if (ex.isJob()) {
+				result = execJob((Job) ex);
+			} else if (ex.isBlock()) {
+				result = execBlock((Block) ex);
+			} else {
+				logger.warning("Unknown ServiceExertion: " + ex);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// return original exertion with exception
+			result = (ServiceExertion) ex;
+			result.getControlContext().addException(e);
+			result.setStatus(FAILED);
+			setState(Exec.FAILED);
+			return result;
+		}
+		// set subject after result is received
+		// result.setSubject(subject);
+		postExecExertion(ex, result);
+		return result;
     }
-
     protected void postExecExertion(Exertion ex, Exertion result)
             throws SignatureException, ExertionException {
         ServiceExertion ser = (ServiceExertion) result;
-		((Job)xrt).setExertionAt(result, ex.getIndex());
+		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
         if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
             ser.setStatus(DONE);
-            if (xrt.getControlContext().isNodeReferencePreserved())
+/*            if (xrt.getControlContext().isNodeReferencePreserved())
                 try {
                     Jobs.preserveNodeReferences(ex, result);
                 } catch (ContextException ce) {
@@ -143,48 +133,19 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     throw new ExertionException("ContextException caught: "
                             + ce.getMessage());
                 }
+*/
             // update all outputs from sharedcontext only for tasks. For jobs,
             // spawned dispatcher does it.
-			if (result.isTask()) {
-                collectOutputs(result);
-            }
-            notifyExertionExecution(ex, result);
+			try {
+				if (((ServiceExertion) result).isTask()) {
+					collectOutputs(result);
+				}
+				notifyExertionExecution(ex, result);
+			} catch (ContextException e) {
+				throw new ExertionException(e);
+			}
         }
     }
-
-    /**
-     * Executes the Conditional exertions to the appropriate providers
-     *
-     * @param exertion
-     *            Exertion
-     * @return Exertion
-     * @throws ExertionException
-     * @throws SignatureException
-     */
-    private Exertion execConditional(Exertion exertion)
-            throws ExertionException {
-
-        String providerName =  exertion
-                .getProcessSignature().getProviderName();
-        Class serviceType = exertion.getProcessSignature()
-                .getServiceType();
-
-        Service provider = (Service) Accessor.getService(providerName,
-                serviceType);
-
-        try {
-            return provider.service(exertion, null);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            throw new ExertionException(
-                    "Remote Exception while executing Conditional exertion");
-        } catch (TransactionException e) {
-            e.printStackTrace();
-            throw new ExertionException(
-                    "Transaction Exception while executing Conditional exertion");
-        }
-    }
-
     protected Task execTask(Task task) throws ExertionException,
             SignatureException, RemoteException {
 //		 try {
@@ -357,6 +318,72 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         }
 */
     }
+
+
+	private Block execBlock(Block block)
+			throws DispatcherException, InterruptedException,
+			ClassNotFoundException, ExertionException, RemoteException {
+
+		try {
+			ServiceTemplate st = Accessor.getServiceTemplate(null,
+					null, new Class[] { Concatenator.class }, null);
+			ServiceItem[] concatenators = Accessor.getServiceItems(st, null,
+					SorcerEnv.getLookupGroups());
+			/*
+			 * check if there is any available concatenator in the network and
+			 * delegate the inner block to the available Concatenator. In the future, a
+			 * efficient load balancing algorithm should be implemented for
+			 * dispatching inner jobs. Currently, it only does round robin.
+			 */
+			for (int i = 0; i < concatenators.length; i++) {
+				if (concatenators[i] != null) {
+					if (!provider.getProviderID().equals(
+							concatenators[i].serviceID)) {
+						logger.finest("\n***Concatenator: " + i + " ServiceID: "
+								+ concatenators[i].serviceID);
+						Provider rconcatenator = (Provider) concatenators[i].service;
+
+						return (Block) rconcatenator.service(block, null);
+					}
+				}
+			}
+
+			/*
+			 * Create a new dispatcher thread for the inner job, if no available
+			 * Jobber is found in the network
+			 */
+			Dispatcher dispatcher = null;
+			runningExertionIDs.addElement(block.getId());
+
+			// create a new instance of a dispatcher
+			dispatcher = ExertDispatcherFactory.getFactory()
+					.createDispatcher(block, sharedContexts, true, provider);
+			// wait until serviceJob is done by dispatcher
+			while (dispatcher.getState() != DONE
+					&& dispatcher.getState() != FAILED) {
+				Thread.sleep(SLEEP_TIME);
+			}
+			Block out = (Block) dispatcher.getExertion();
+			out.getControlContext().appendTrace(provider.getProviderName() 
+					+ " dispatcher: " + getClass().getName());
+			return out;
+		} catch (RemoteException re) {
+			re.printStackTrace();
+			throw re;
+		} catch (ExertionException ee) {
+			ee.printStackTrace();
+			throw ee;
+		} catch (DispatcherException de) {
+			de.printStackTrace();
+			throw de;
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+			throw ie;
+		} catch (TransactionException te) {
+			te.printStackTrace();
+			throw new ExertionException("transaction failure", te);
+		}
+	}
 
     protected class ExertionThread extends Thread {
 

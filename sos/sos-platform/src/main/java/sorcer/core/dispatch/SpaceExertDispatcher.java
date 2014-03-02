@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 import net.jini.core.entry.Entry;
+import net.jini.core.entry.UnusableEntryException;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
@@ -48,23 +49,26 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		//do nothing
 	}
 	
-	public SpaceExertDispatcher(Job job,
+	public SpaceExertDispatcher(Exertion exertion, 
             Set<Context> sharedContext,
             boolean isSpawned,
             LokiMemberUtil memUtil,
             Provider provider,
-            ProvisionManager provisionManager) throws ExertionException {
-		super(job, sharedContext, isSpawned, provider, provisionManager);
-		
+            ProvisionManager provisionManager) throws ExertionException, ContextException {
+		super(exertion, sharedContext, isSpawned, provider, provisionManager);
+	
 		space = SpaceAccessor.getSpace();
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
 		// logger.info(this, "using space=" + Env.getSpaceName());
 
-		inputXrts = Jobs.getInputExertions(job);
+		if (exertion instanceof Job)
+			inputXrts = Jobs.getInputExertions((Job)exertion);
+		else if (exertion instanceof Block) 
+			inputXrts = ((Block)exertion).getExertions();
 
-		disatchGroup = new ThreadGroup("exertion-"+ job.getId());
+		disatchGroup = new ThreadGroup("exertion-"+ exertion.getId());
 		disatchGroup.setDaemon(true);
 		disatchGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
 
@@ -83,8 +87,9 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		myMemberUtil = memUtil;
 	}
 
-	public SpaceExertDispatcher(Job job, Set<Context> sharedContext,
-            boolean isSpawned,
+	public SpaceExertDispatcher(Job job, 
+            Set<Context> sharedContext,
+            boolean isSpawned, 
             Provider provider) throws Throwable {
 		super(job, sharedContext, isSpawned, provider, null);
 
@@ -100,7 +105,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			ee.parentID = exertion.getId();
 		else
 			ee.parentID = ((ServiceExertion) exertion).getParentId();
-		ee.state = ExecState.POISONED;
+		ee.state = Exec.POISONED;
 		try {
 			space.write(ee, null, Lease.FOREVER);
 			logger.finer("==========> written poisoned envelop for: "
@@ -136,7 +141,11 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 //		} catch (RemoteException e) {
 //			// ignore it, local call
 //		}
-		updateInputs(exertion);
+		try {
+			updateInputs(exertion);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
 		((ServiceExertion) exertion).startExecTime();
 		((ServiceExertion) exertion).setStatus(RUNNING);
 	}
@@ -167,7 +176,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 					+ ee.describe() + "\n to: " + space);
 		} catch (Exception e) {
 			e.printStackTrace();
-			state = ExecState.FAILED;
+			state = Exec.FAILED;
 			logger.throwing(this.getClass().getName(), "writeEnvelop", e);
 		}
 	}
@@ -186,7 +195,18 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 					return result;
 				}
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			if (e instanceof UnusableEntryException) {
+				UnusableEntryException e1 = (UnusableEntryException) e;
+				System.out.println("UnusableEntryException!\nunusable fields = \n");
+				Arrays.toString(e1.unusableFields);
+				System.out.println("partialEntry = " + e1.partialEntry);
+				for (int ctr = 0; ctr < e1.nestedExceptions.length; ctr ++) {
+					Throwable ne = e1.nestedExceptions[ctr];
+					System.out.println("nested exception " + ctr + " = " + ne);
+					ne.printStackTrace();
+				}
+			}
 			throw new ExertionException("Taking exertion envelop failed", e);
 		}
 		return null;
@@ -198,23 +218,16 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		try {
 			result.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
-		} catch (RemoteException e) {
-			// ignore it
-		}
-		((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
-		ServiceExertion ser = (ServiceExertion) result;
-		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
-			ser.setStatus(DONE);
-			if (xrt.getControlContext().isNodeReferencePreserved())
-				try {
-					Jobs.preserveNodeReferences(ex, result);
-				} catch (ContextException ce) {
-					ce.printStackTrace();
-					throw new ExertionException("ContextException caught: "
-							+ ce.getMessage());
-				}
-			collectOutputs(result);
-			notifyExertionExecution(ex, result);
+
+			((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+			ServiceExertion ser = (ServiceExertion) result;
+			if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
+				ser.setStatus(DONE);
+				collectOutputs(result);
+				notifyExertionExecution(ex, result);
+			}
+		} catch (Exception e) {
+			throw new ExertionException(e);
 		}
 		changeDoneExertionIndex(((ServiceExertion) result).getIndex());
 	}

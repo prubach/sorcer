@@ -24,12 +24,7 @@ import java.util.Set;
 
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 
 public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;
@@ -45,11 +40,15 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
 		workers = new ArrayList<ExertionThread>();
-		inputXrts = Jobs.getInputExertions(((Job)xrt));
-		reconcileInputExertions(xrt);
+		try {
+			inputXrts = Jobs.getInputExertions(((Job)xrt));
+			reconcileInputExertions(xrt);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
 		for (int i = 0; i < inputXrts.size(); i++) {
 			ServiceExertion exertion = (ServiceExertion) inputXrts
-					.elementAt(i);
+					.get(i);
 			workers.add(runExertion(exertion));
 		}
 		collectResults();
@@ -109,6 +108,7 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 				xrt.setStatus(DONE);
 
 		}
+		xrt.setStatus(DONE);
 		dispatchers.remove(xrt.getId());
 		state = DONE;
 	}

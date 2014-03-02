@@ -18,12 +18,23 @@
 package sorcer.core.invoker;
 
 
+import sorcer.service.Arg;
+import sorcer.service.EvaluationException;
 import sorcer.service.Invocation;
+
+import java.rmi.RemoteException;
 
 /**
  * @author Mike Sobolewski
  */
 
 public interface MethodInvoking<T> extends Invocation<T> {
+    public void setParameterTypes(Class<?>[] types);
 
+    public void setParameters(Object... args);
+
+    Object[] getParameters() throws EvaluationException;
+
+    public T evaluate(Arg... entries) throws EvaluationException,
+            RemoteException;
 }

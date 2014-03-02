@@ -244,7 +244,7 @@ public class ExertCmd extends ShellCmd {
 
     private void saveFilesFromContext(Exertion xrt, PrintStream out) {
         try {
-            ContextNode[] cns = (xrt.isJob() ? Contexts.getTaskContextNodes((ComplexExertion)xrt)
+            ContextNode[] cns = (xrt.isJob() ? Contexts.getTaskContextNodes(xrt)
                     : Contexts.getTaskContextNodes(xrt));
             for (ContextNode cn : cns) {
 

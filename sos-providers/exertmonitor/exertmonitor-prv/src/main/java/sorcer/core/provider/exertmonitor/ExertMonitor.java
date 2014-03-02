@@ -32,22 +32,13 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import sorcer.core.monitor.MonitoringManagement;
-import sorcer.service.AccessDeniedException;
-import sorcer.service.Monitorable;
+import sorcer.service.*;
 import sorcer.core.UEID;
-import sorcer.service.UnknownExertionException;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.core.provider.exertmonitor.db.SessionDatabase;
 import sorcer.core.provider.exertmonitor.db.SessionDatabaseViews;
 import sorcer.core.provider.exertmonitor.lease.MonitorLandlord;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Context;
-import sorcer.service.ExecState.Category;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ExertionInfo;
-import sorcer.service.MonitorException;
-import sorcer.service.ServiceExertion;
 import sorcer.util.bdb.objects.UuidKey;
 
 import com.sleepycat.collections.StoredMap;
@@ -388,7 +379,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 * 
 	 */
 	public Map<Uuid, ExertionInfo> getMonitorableExertionInfo(
-			Category category, Principal principal) throws RemoteException,
+			Exec.State state, Principal principal) throws RemoteException,
 			MonitorException {
 		Map<Uuid, ExertionInfo> table = new HashMap<Uuid, ExertionInfo>();
 		try {
@@ -406,8 +397,8 @@ public class ExertMonitor extends ServiceProvider implements
 				ServiceExertion xrt = (ServiceExertion) (getSession(key)).getRuntimeExertion();						
 				if (xrt.getPrincipal().getId()
 						.equals(((SorcerPrincipal) principal).getId())) {
-					if (category == null || category.equals(Category.ALL)
-							|| xrt.getStatus() == category.ordinal()) {
+					if (state == null || state.equals(Exec.State.NULL)
+							|| xrt.getStatus() == state.ordinal()) {
 						table.put(xrt.getId(), new ExertionInfo(xrt, key.getId()));
 					}
 				}
@@ -470,11 +461,11 @@ public class ExertMonitor extends ServiceProvider implements
 	@Override
 	public void update(Uuid cookie, Context ctx, Object aspect)
 			throws RemoteException, MonitorException {
-		if (aspect.equals(Category.UPDATED)) {
+		if (aspect.equals(Exec.State.UPDATED)) {
 			update(cookie, ctx);
-		} else if (aspect.equals(Category.DONE)) {
+		} else if (aspect.equals(Exec.State.DONE)) {
 			done(cookie, ctx);
-		} else if (aspect.equals(Category.FAILED)) {
+		} else if (aspect.equals(Exec.State.FAILED)) {
 			failed(cookie, ctx);
 		}
 

@@ -63,10 +63,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.RemoteContextManagement;
 import sorcer.core.provider.cataloger.ui.BrowserModel;
 import sorcer.netlet.ScriptExerter;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.ui.util.JIconButton;
 import sorcer.ui.util.WindowUtilities;
 import sorcer.util.StringUtils;
@@ -499,11 +496,11 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		}
 	}
 
-	private void processExerion(Exertion exertion) {
+	private void processExerion(Exertion exertion) throws ContextException {
 		String codebase = System.getProperty("java.rmi.server.codebase");
 		logger.finer("Using exertlet codebase: " + codebase);
 		
-		if (((ServiceExertion) exertion).getStatus() == ExecState.DONE) {
+		if (((ServiceExertion) exertion).getStatus() == Exec.DONE) {
 			// logger.finer(">>> done by Groovy Shell");
 			showResults(exertion);
 			return;
@@ -546,7 +543,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		showResults(out);
 	}
 
-	private void showResults(Exertion exertion) {
+	private void showResults(Exertion exertion)  throws ContextException {
 		if (exertion == null) {
 			openOutPanel("Failed to process the exertlet!");
 			return;
@@ -555,6 +552,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			openOutPanel(exertion.getExceptions().toString());
 		}
 		else {
+
 			StringBuilder sb = new StringBuilder(exertion.getContext().toString());
 			if (debug) {
 				sb.append("\n");

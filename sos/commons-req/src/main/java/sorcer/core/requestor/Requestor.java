@@ -30,10 +30,10 @@ public interface Requestor {
 
     public Transaction getTransaction();
 
-    public void preprocess(String... args);
+    public void preprocess(String... args) throws ExertionException, ContextException;
 
-    public void process(String... args) throws Exception;
+    public void process(String... args) throws ExertionException, ContextException;
 
-    public void postprocess(String... args);
+    public void postprocess(String... args) throws ExertionException, ContextException;
 
 }

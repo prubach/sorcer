@@ -25,7 +25,18 @@ import java.util.*;
 
 public class StringUtils {
 	private static Calendar calendar = null;
+    final static String CPS = "/";
 
+    public static String[] pathToArray(String arg) {
+        StringTokenizer token = new StringTokenizer(arg, CPS);
+        String[] array = new String[token.countTokens()];
+        int i = 0;
+        while (token.hasMoreTokens()) {
+            array[i] = token.nextToken();
+            i++;
+        }
+        return (array);
+    }
 
     public static String arrayToString(Object array) {
         return arrayToString(array, 20);
@@ -84,6 +95,17 @@ public class StringUtils {
             objs.add(e.nextElement());
         }
         return objs.toArray();
+    }
+
+    public static String toPath(String[] array) {
+        if (array.length > 0) {
+            StringBuilder sb = new StringBuilder(array[0]);
+            for (int i = 1; i < array.length; i++) {
+                sb.append(CPS).append(array[i]);
+            }
+            return sb.toString();
+        } else
+            return null;
     }
 
     /**

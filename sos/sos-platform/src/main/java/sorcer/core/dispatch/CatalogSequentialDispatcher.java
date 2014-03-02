@@ -24,12 +24,7 @@ import java.util.Set;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 
 public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
@@ -44,8 +39,13 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		inputXrts = Jobs.getInputExertions(((Job)xrt));
-		reconcileInputExertions(xrt);
+        checkAndDispatchExertions();
+		try {
+			inputXrts = Jobs.getInputExertions(((Job)xrt));
+			reconcileInputExertions(xrt);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
 		collectResults();
 	}
 
@@ -65,6 +65,9 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 				} catch (RemoteException e) {
 					// ignore it, local call
 				}
+				fe = new ExertionException(pn
+						+ " received a job with no component exertions or alreday executed: "  
+						+ xrt.getName(), xrt);
 				xrt.reportException(fe);
 				dispatchers.remove(xrt.getId());
 				throw fe;
@@ -73,13 +76,18 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 			ServiceExertion se = null;
 			xrt.startExecTime();
 			for (int i = 0; i < inputXrts.size(); i++) {
-				se = (ServiceExertion) inputXrts.elementAt(i);
-				// Provider is expecting exertion to be in dataContext
-				se.getDataContext().setExertion(se);
+				se = (ServiceExertion) inputXrts.get(i);
+				// Provider is expecting exertion to be in context
+				try {
+					se.getContext().setExertion(se);
+				
 				// support for continuous pre and post execution of task
 				// signatures
 				if (i > 0 && se.isTask() && ((Task) se).isContinous())
-					se.setContext(inputXrts.elementAt(i - 1).getDataContext());
+					se.setContext(inputXrts.get(i - 1).getContext());
+				} catch (ContextException ex) {
+					throw new ExertionException(ex);
+				}
 				if (isInterupted(se)) {
 					se.stopExecTime();
 					dispatchers.remove(xrt.getId());
@@ -93,14 +101,14 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 						pn = provider.getProviderName();
 						if (pn == null) 
 							pn = provider.getClass().getName();
-						fe = new ExertionException(pn
-								+ " received failed task: " + se.getName(), se);
 					} catch (RemoteException e) {
 						// ignore it, local call
 					}
-					xrt.reportException(fe);
+					ExertionException ef = new ExertionException(pn
+							+ " received failed task: " + se.getName(), se);
+					xrt.reportException(ef);
 					dispatchers.remove(xrt.getId());
-					throw fe;
+					throw ef;
 				} else if (se.getStatus() == SUSPENDED
 						|| xrt.getControlContext().isReview(se)) {
 					xrt.setStatus(SUSPENDED);
@@ -130,6 +138,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 				state = DONE;
 			dispatchers.remove(xrt.getId());
 			xrt.stopExecTime();
+			xrt.setStatus(DONE);
 		} finally {
 			dThread.stop = true;
 		}

@@ -872,7 +872,7 @@ public class ProviderDelegate {
 			try {
 				task.startExecTime();
 				exertionStateTable.put(task.getId(), new Integer(
-						ExecState.RUNNING));
+						Exec.RUNNING));
 				if (((ServiceProvider) provider).isValidTask(task)) {
 					// append context from Contexters
 					if (task.getApdProcessSignatures().size() > 0) {
@@ -930,7 +930,7 @@ public class ProviderDelegate {
 							"Unacceptable task received, requested provider: "
 									+ providerId + " Name:" + task.getName());
 					task.reportException(ex);
-					task.setStatus(ExecState.FAILED);
+					task.setStatus(Exec.FAILED);
 					return (Task) forwardTask(task, provider);
 				}
 			} finally {
@@ -941,22 +941,22 @@ public class ProviderDelegate {
 		return (Task) forwardTask(task, provider);
 	}
 
-    private Context apdProcess(Task task) throws ExertionException, SignatureException {
+    private Context apdProcess(Task task) throws ExertionException, SignatureException, ContextException {
         return processContinousely(task, task.getApdProcessSignatures());
     }
 
 	private Context preprocess(Task task) throws ExertionException,
-			SignatureException {
+			SignatureException, ContextException {
 		return processContinousely(task, task.getPreprocessSignatures());
 	}
 
 	private Context postprocess(Task task) throws ExertionException,
-			SignatureException {
+			SignatureException, ContextException {
 		return processContinousely(task, task.getPostprocessSignatures());
 	}
 
 	private Context processContinousely(Task task, List<Signature> signatures)
-			throws ExertionException {
+			throws ExertionException, ContextException {
 		ControlFlowManager cfm = new ControlFlowManager(task, this);
 		return cfm.processContinousely(task, signatures);
 	}
@@ -1078,18 +1078,19 @@ public class ProviderDelegate {
 				// clear task in the context
 				result.setExertion(null);
 				task.setContext(result);
-				task.setStatus(ExecState.DONE);
+				task.setStatus(Exec.DONE);
 				return task;
 			} catch (Exception e) {
 				task.reportException(e);
 				e.printStackTrace();
 			}
 		}
-		task.setStatus(ExecState.FAILED);
+		task.setStatus(Exec.FAILED);
 		return task;
 	}
 
-	private Context execContextualBean(Method m, Task task, Object impl) {
+	private Context execContextualBean(Method m, Task task, Object impl) throws ContextException, IllegalArgumentException,
+            IllegalAccessException, InvocationTargetException {
 		Context result = task.getContext();
 		try {
 			String selector = task.getProcessSignature().getSelector();
@@ -1194,7 +1195,7 @@ public class ProviderDelegate {
 				visited.remove(serviceID);
 				return result;
 			} else {
-				task.setStatus(ExecState.ERROR);
+				task.setStatus(Exec.ERROR);
 				return task;
 			}
 		}
@@ -1265,8 +1266,8 @@ public class ProviderDelegate {
 			throw new ExertionException("transaction failure", te);
 		}
 
-		if (((ControlContext) job.getContext()).isNodeReferencePreserved()) {
-			Jobs.preserveNodeReferences(job, outJob);
+/*		if (((ControlContext) job.getContext()).isNodeReferencePreserved()) {
+			Jobs.preserveNodeReferences (job, outJob);
 			// copy DataNodes to object passed in
 			// job.copyNodes(outJob);
 			// job.setStatus(outJob.getStatus());
@@ -1287,7 +1288,8 @@ public class ProviderDelegate {
 			}
 			return job;
 		} else
-			return outJob;
+			return outJob;*/
+        return outJob;
 	}
 
 	public Job dropJob(Job job) throws RemoteException, ExertionException {
@@ -1317,7 +1319,7 @@ public class ProviderDelegate {
 		return false;
 	}
 
-	public Task execTask(Task task) throws ExertionException,
+	public Task execTask(Task task) throws ContextException, ExertionException,
 			SignatureException, RemoteException {
 		ServiceContext cxt = (ServiceContext) task.getContext();
 		try {
@@ -1334,14 +1336,14 @@ public class ProviderDelegate {
 
 				if (sig instanceof NetSignature)
 					((NetSignature) sig).setProvider(provider);
-				task.setStatus(ExecState.FAILED);
+				task.setStatus(Exec.FAILED);
 				logger.info("DELEGATE EXECUTING TASK: " + task + " by sig: "
 						+ task.getProcessSignature() + " for context: " + cxt);
 				cxt = (ServiceContext) invokeMethod(sig.getSelector(), cxt);
 				logger.info("doTask: TASK DONE BY DELEGATE OF ="
 						+ provider.getProviderName());
 				task.setContext(cxt);
-				task.setStatus(ExecState.DONE);
+				task.setStatus(Exec.DONE);
  if (cxt.getReturnPath() != null)
                     cxt.setReturnValue(cxt.getValue(cxt.getReturnPath().path));
 				// clear the exertion and the context
@@ -1876,7 +1878,7 @@ public class ProviderDelegate {
 		provider.fireEvent();
 	}
 
-	public boolean isValidTask(Exertion servicetask) throws RemoteException,
+	public boolean isValidTask(Exertion servicetask) throws ContextException, RemoteException,
 	ExertionException {
 		//try {
 			if (servicetask.getContext() == null) {
@@ -2068,7 +2070,7 @@ public class ProviderDelegate {
 								+ ueid.asString());
 
 			exertionStateTable.put(ueid.exertionID, new Integer(
-					ExecState.STOPPED));
+					Exec.STOPPED));
 		}
 	}
 
@@ -2086,7 +2088,7 @@ public class ProviderDelegate {
 								+ ueid.asString());
 
 			exertionStateTable.put(ueid.exertionID, new Integer(
-					ExecState.SUSPENDED));
+					Exec.SUSPENDED));
 		}
 
 		return true;

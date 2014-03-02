@@ -21,18 +21,23 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.rmi.RemoteException;
+import java.util.*;
 
 import net.jini.admin.Administrable;
 import net.jini.admin.JoinAdmin;
+import net.jini.core.entry.Entry;
+import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
+import net.jini.core.lookup.ServiceTemplate;
+import net.jini.lookup.entry.Name;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
 public class DiscoCmd extends ShellCmd {
+
+    protected static final int MAX_MATCHES = 64;
 
 	{
 		COMMAND_NAME = "disco";
@@ -165,5 +170,57 @@ public class DiscoCmd extends ShellCmd {
 			NetworkShell.printLookupAttributes(jAdmin.getLookupAttributes());
 		}
 	}
+
+
+    public static ServiceItem[] lookup(ServiceRegistrar registrar,
+                                       Class[] serviceTypes, String serviceName) throws RemoteException {
+        ServiceRegistrar regie = null;
+        if (registrar == null) {
+            regie = getSelectedRegistrar();
+            if (regie == null)
+                return null;
+        } else {
+            regie = registrar;
+        }
+
+        ArrayList<ServiceItem> serviceItems = new ArrayList<ServiceItem>();
+        ServiceMatches matches = null;
+        Entry myAttrib[] = null;
+        if (serviceName != null) {
+            myAttrib = new Entry[1];
+            myAttrib[0] = new Name(serviceName);
+        }
+        ServiceTemplate myTmpl = new ServiceTemplate(null, serviceTypes,
+                myAttrib);
+
+        matches = regie.lookup(myTmpl, MAX_MATCHES);
+        for (int j = 0; j < Math.min(MAX_MATCHES, matches.totalMatches); j++) {
+            serviceItems.add(matches.items[j]);
+        }
+        ServiceItem[] sItems = new ServiceItem[serviceItems.size()];
+        return serviceItems.toArray(sItems);
+    }
+
+    public static ServiceItem[] lookup(
+            Class[] serviceTypes) throws RemoteException {
+        return lookup(serviceTypes, (String)null);
+    }
+
+    public static ServiceItem[] lookup(
+            Class[] serviceTypes, String serviceName) throws RemoteException {
+        return lookup(null, serviceTypes, serviceName);
+    }
+
+
+
+    public static ServiceRegistrar getSelectedRegistrar() {
+        if (NetworkShell.getRegistrars() != null && NetworkShell.getRegistrars().size() > 0
+                && NetworkShell.selectedRegistrar >= 0)
+            return NetworkShell.getRegistrars().get(NetworkShell.selectedRegistrar);
+        else if (NetworkShell.selectedRegistrar < 0 && NetworkShell.getRegistrars().size() > 0) {
+            return NetworkShell.getRegistrars().get(0);
+        } else
+            return null;
+    }
 
 }

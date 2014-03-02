@@ -18,6 +18,7 @@ package sorcer.core.dispatch;
 
 import net.jini.core.lease.Lease;
 import net.jini.space.JavaSpace05;
+import sorcer.core.Dispatcher;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
@@ -57,6 +58,12 @@ public class ProvisionManager {
         Thread pThread = new Thread(provGroup, new ProvisionThread(), "Provisioner");
         pThread.start();
 	}
+
+    public void deployServices() throws DispatcherException {
+        throw new DispatcherException(" DEPLOYMENT NOT YET IMPLEMENTEED");
+    }
+
+
 
     public void add(Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
@@ -152,8 +159,8 @@ public class ProvisionManager {
         ExertionEnvelop result = null;
         result = sigEl.getSpaceExertDispatcher().takeEnvelop(ee);
         if (result!=null) {
-            result.state = ExecState.FAILED;
-            ((ServiceExertion)result.exertion).setStatus(ExecState.FAILED);
+            result.state = Exec.FAILED;
+            ((ServiceExertion)result.exertion).setStatus(Exec.FAILED);
             ((ServiceExertion)result.exertion).reportException(exc);
             try {
 

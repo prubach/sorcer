@@ -2039,9 +2039,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		MonitoredTaskDispatcher dispatcher = null;
 		try {
 			dispatcher = new MonitoredTaskDispatcher(task, null, false, this);
-			while (dispatcher.getState() != ExecState.DONE
-					&& dispatcher.getState() != ExecState.FAILED
-					&& dispatcher.getState() != ExecState.SUSPENDED) {
+			while (dispatcher.getState() != Exec.DONE
+					&& dispatcher.getState() != Exec.FAILED
+					&& dispatcher.getState() != Exec.SUSPENDED) {
 				Thread.sleep(SLEEP_TIME);
 			}
         } catch (Throwable e) {

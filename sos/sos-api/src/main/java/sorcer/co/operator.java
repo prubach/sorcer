@@ -1,8 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import sorcer.co.tuple.AnnotatedEntry;
 import sorcer.co.tuple.Entry;
 import sorcer.co.tuple.StrategyEntry;
 import sorcer.co.tuple.Tuple1;
@@ -149,6 +149,13 @@ public class operator {
 	public static <T2> Entry<T2> entry(String x1, T2 x2) {
 		return new Entry<T2>(x1, x2);
 	}
+	public static <T2> Entry<T2> entry(String x1) {
+		return new Entry<T2>(x1, null);
+	}
+	
+	public static <T> AnnotatedEntry<T> entry(String x1, String tag, T x2) {
+		return new AnnotatedEntry<T>(x1, tag, x2);
+	}
 	
 	public static <T2> Entry<T2> dbEntry(String x1, T2 x2) {
 		Entry<T2> t2 = new Entry<T2>(x1, x2);
@@ -166,7 +173,7 @@ public class operator {
 	public static <T1, T2, T3> Tuple3<T1, T2, T3> entry(T1 x1, T2 x2, T3 x3) {
 		return new Tuple3<T1, T2, T3>(x1, x2, x3);
 	}
-
+	
 	public static StrategyEntry entry(String x1, Strategy x2) {
 		return new StrategyEntry(x1, x2);
 	}
@@ -203,27 +210,35 @@ public class operator {
 		}
 		return map;
 	}
+	
+	public static Loop loop(int to) {
+		Loop loop = new Loop(to);
+		return loop;
+	}
 
-//	@SuppressWarnings("unchecked")
-//	public static <T extends Object> Context dataContext(T... entries)
-//			throws ContextException {
-//		String name = getUnknown("cxt-");
-//		List<Tuple2<String, ?>> pairs = new ArrayList<Tuple2<String, ?>>();
-//
-//		for (T o : entries) {
-//			if (o instanceof String) {
-//				name = (String) o;
-//			} else if (o instanceof Tuple2<?, ?>) {
-//				pairs.add((Tuple2<String, ?>) o);
-//			}
-//		}
-//		Context cxt = new ServiceContext(name);
-//
-//		for (Tuple2<String, ?> entry : pairs) {
-//			cxt.putValue((java.lang.String) entry._1, entry._2);
-//		}
-//		return cxt;
-//	}
+	public static Loop loop(int from, int to) {
+		Loop loop = new Loop(from, to);
+		return loop;
+	}
+	
+	public static Loop loop(String template, int to) {
+		Loop loop = new Loop(template, 1, to);
+		return loop;
+	}
+	
+	public static Loop loop(List<String> templates, int to) {
+		Loop loop = new Loop(templates, to);
+		return loop;
+	}
+	
+	public static Loop loop(String template, int from, int to) {
+		Loop loop = new Loop(template, from, to);
+		return loop;
+	}
+	
+	public static List<String> names(Loop loop, String prefix) {
+		return loop.getNames(prefix);
+	}
 	
 	public static String[] names(String name, int size, int from) {
 		List<String> out = new ArrayList<String>();
@@ -238,6 +253,7 @@ public class operator {
 	private static String getUnknown() {
 		return "unknown" + count++;
 	}
+	
 	private static String getUnknown(String name) {
 		return name + count++;
 	}

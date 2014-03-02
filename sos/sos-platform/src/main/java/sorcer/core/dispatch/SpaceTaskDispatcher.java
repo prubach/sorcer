@@ -26,6 +26,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.Context;
+import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
@@ -66,7 +67,12 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		reconcileInputExertions(xrt);
+		checkAndDispatchExertions();
+		try {
+			reconcileInputExertions(xrt);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
 		logger.finer("space task: " + xrt);
 		try {
 			writeEnvelop(xrt);
@@ -96,15 +102,21 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 				+ temp.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(temp);
-		logger.finer("collected result envelope  <===================== \n"
-				+ resultEnvelop.describe());
-
-		NetTask result = (NetTask) resultEnvelop.exertion;
-		state = DONE;
-		notifyExertionExecution(xrt, xrt, result);
-		result.setStatus(DONE);
+		if (resultEnvelop != null) {
+			logger.finer("collected result envelope  <===================== \n"
+					+ resultEnvelop.describe());
+			
+			NetTask result = (NetTask) resultEnvelop.exertion;
+			state = DONE;
+			try {
+				notifyExertionExecution(xrt, xrt, result);
+			} catch (ContextException e) {
+				throw new ExertionException(e);
+			}
+			result.setStatus(DONE);
+			xrt = result;
+		}
 		dispatchers.remove(xrt.getId());
-		xrt = result;
 	}
 	
 	public void collectFails() throws ExertionException {
@@ -120,7 +132,11 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		if (resultEnvelop != null) {
 			NetTask result = (NetTask) resultEnvelop.exertion;
 			state = FAILED;
-			notifyExertionExecution(xrt, xrt, result);
+			try {
+				notifyExertionExecution(xrt, xrt, result);
+			} catch (ContextException e) {
+				throw new ExertionException(e);
+			}
 			result.setStatus(FAILED);
 			xrt = result;
 		}
@@ -140,7 +156,11 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		if (resultEnvelop != null) {
 			NetTask result = (NetTask) resultEnvelop.exertion;
 			state = ERROR;
-			notifyExertionExecution(xrt, xrt, result);
+			try {
+				notifyExertionExecution(xrt, xrt, result);
+			} catch (ContextException e) {
+				throw new ExertionException(e);
+			}
 			result.setStatus(ERROR);
 			xrt = result;
 		}

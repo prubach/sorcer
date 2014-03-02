@@ -81,7 +81,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 	
 	/**
-	 * Returns the value at the specified position in this dataContext (v - Value).
+	 * Returns the value at the specified position in this context (v - Value).
 	 * 
 	 * @param index
 	 *            index of value to return.
@@ -94,7 +94,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Replaces the value at the specified position in this dataContext with the
+	 * Replaces the value at the specified position in this context with the
 	 * specified value (v - Value).
 	 * 
 	 * @param index
@@ -112,7 +112,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Returns the input value at the specified position in this dataContext (iv -
+	 * Returns the input value at the specified position in this context (iv -
 	 * Input Value).
 	 * 
 	 * @param index
@@ -126,7 +126,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Replaces the input value at the specified position in this dataContext with
+	 * Replaces the input value at the specified position in this context with
 	 * the specified value (iv - Input Value).
 	 * 
 	 * @param index
@@ -145,7 +145,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Returns the output value at the specified position in this dataContext (ov -
+	 * Returns the output value at the specified position in this context (ov -
 	 * Output Value).
 	 * 
 	 * @param index
@@ -159,7 +159,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Replaces the output value at the specified position in this dataContext with
+	 * Replaces the output value at the specified position in this context with
 	 * the specified value (ov - Output Value).
 	 * 
 	 * @param index
@@ -179,10 +179,10 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the comment associated directly with the root node at in this
-	 * dataContext (c - Comment).
+	 * context (c - Comment).
 	 * 
 	 * @param comment
-	 *            a root dataContext node comment
+	 *            a root context node comment
 	 * @throws ContextException
 	 */
 	public void c(String comment) throws ContextException {
@@ -191,7 +191,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the comment associated directly with the root node at in this
-	 * dataContext (c - Comment).
+	 * context (c - Comment).
 	 * 
 	 * @return comment for the root node
 	 * 
@@ -203,7 +203,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the comment associated with a value at the specified position in
-	 * this dataContext (c - Comment).
+	 * this context (c - Comment).
 	 * 
 	 * @param index
 	 *            index of comment to return.
@@ -217,7 +217,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the comment associated with an input value at the specified
-	 * position in this dataContext (c - Comment).
+	 * position in this context (c - Comment).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
@@ -230,7 +230,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the comment associated with an input value at the specified
-	 * position in this dataContext (ivc - Input Value Comment).
+	 * position in this context (ivc - Input Value Comment).
 	 * 
 	 * @param index
 	 *            index of comment to return.
@@ -244,7 +244,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the comment associated with an input value at the specified
-	 * position in this dataContext (ivc - Input Value Comment).
+	 * position in this context (ivc - Input Value Comment).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
@@ -257,7 +257,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the comment associated with an output value at the specified
-	 * position in this dataContext (ovc - Output Value Comment).
+	 * position in this context (ovc - Output Value Comment).
 	 * 
 	 * @param index
 	 *            index of comment to return.
@@ -271,7 +271,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the comment associated with an output value at the specified
-	 * position in this dataContext (ovc - Output Value Comment).
+	 * position in this context (ovc - Output Value Comment).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
@@ -284,10 +284,10 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the description associated directly with the root node at in this
-	 * dataContext (d - Description).
+	 * context (d - Description).
 	 * 
 	 * @param description
-	 *            a root dataContext node description
+	 *            a root context node description
 	 * @throws ContextException
 	 */
 	public void d(String description) throws ContextException {
@@ -296,7 +296,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the description associated directly with the root node at in this
-	 * dataContext (d - Description).
+	 * context (d - Description).
 	 * 
 	 * @return description for the root node
 	 * 
@@ -308,7 +308,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the description associated with a value at the specified position
-	 * in this dataContext (d - Description).
+	 * in this context (d - Description).
 	 * 
 	 * @param index
 	 *            index of description to return.
@@ -322,12 +322,12 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the description associated with a value at the specified position
-	 * in this dataContext (d - Description).
+	 * in this context (d - Description).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
 	 * @param description
-	 *            a dataContext node description
+	 *            a context node description
 	 * @throws ContextException
 	 */
 	public void vd(int index, String description) throws ContextException {
@@ -336,7 +336,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the description associated with an input value at the specified
-	 * position in this dataContext (ivd - Input Value Description).
+	 * position in this context (ivd - Input Value Description).
 	 * 
 	 * @param index
 	 *            index of description to return.
@@ -350,7 +350,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the description associated with an input value at the specified
-	 * position in this dataContext (ivd - Input Value Description).
+	 * position in this context (ivd - Input Value Description).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
@@ -363,7 +363,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Returns the description associated with an output value at the specified
-	 * position in this dataContext (ovd - Output Value Description).
+	 * position in this context (ovd - Output Value Description).
 	 * 
 	 * @param index
 	 *            index of description to return.
@@ -377,7 +377,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 
 	/**
 	 * Assigns the description associated with an output value at the specified
-	 * position in this dataContext (ovd - Output Value Description).
+	 * position in this context (ovd - Output Value Description).
 	 * 
 	 * @param index
 	 *            index of comment to replace.
@@ -389,9 +389,9 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Returns a list of input dataContext values marked as data input.
+	 * Returns a list of input context values marked as data input.
 	 * 
-	 * @return a list of input values of this dataContext
+	 * @return a list of input values of this context
 	 * @throws ContextException
 	 * @throws ContextException
 	 */
@@ -442,7 +442,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 		return list;
 	}
 
-	// utility methods defining paths of this dataContext
+	// utility methods defining paths of this context
 	public static String civp(int index) {
 		return (ii(index) + CPS + COMMENT).intern();
 	}
@@ -503,11 +503,11 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	}
 
 	/**
-	 * Return an index of this indexed dataContext path.
+	 * Return an index of this indexed context path.
 	 * 
 	 * @param path
-	 *            IndexedContext dataContext path
-	 * @return an index of the given service dataContext path
+	 *            IndexedContext context path
+	 * @return an index of the given service context path
 	 */
 	public int getIndex(String path) {
 		int i1 = path.indexOf('[');
@@ -518,7 +518,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 		return -1;
 	}
 
-	// constants used for this dataContext
+	// constants used for this context
 	public final static String IDEX = "index";
 
 	public final static String VAL = "value";
@@ -540,7 +540,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.dataContext.IndexedContext#getValue(int)
+	 * @see sorcer.core.context.IndexedContext#getValue(int)
 	 */
 	@Override
 	public Object getValue(int i) throws ContextException {
@@ -550,7 +550,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see sorcer.core.dataContext.IndexedContext#putValue(int, java.lang.Object)
+	 * @see sorcer.core.context.IndexedContext#putValue(int, java.lang.Object)
 	 */
 	@Override
 	public Object putValue(int i, Object value) throws ContextException {

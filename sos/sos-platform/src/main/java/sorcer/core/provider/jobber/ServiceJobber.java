@@ -259,7 +259,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 					.setId(UuidFactory.generate());
 			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
-					replaceNullExertionIDs(((Job) ex).exertionAt(i));
+					replaceNullExertionIDs(((Job) ex).get(i));
 			}
 		}
 	}
@@ -311,7 +311,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 
 	private void prepareToStep(Job job) {
 		for (int i = 0; i < job.size(); i++) {
-			Exertion e = job.exertionAt(i);
+			Exertion e = job.get(i);
 			(job.getControlContext()).setReview(e, true);
 			if (e.isJob())
 				prepareToStep((Job) e);
