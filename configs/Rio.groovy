@@ -35,12 +35,12 @@ deployment(name: 'Sorcer') {
 
     codebase 'http://' + SorcerEnv.localHost.hostAddress + ":9010/"
 
-    artifact id: 'monitor-service', 'org.rioproject.monitor:monitor-service:5.0-M4-S5'
-    artifact id: 'monitor-proxy',   'org.rioproject.monitor:monitor-proxy:5.0-M4-S5'
+    artifact id: 'monitor-service', 'org.rioproject.monitor:monitor-service:5.0-M4-S6'
+    artifact id: 'monitor-proxy',   'org.rioproject.monitor:monitor-proxy:5.0-M4-S6'
 
-    artifact id: 'cybernode-service', 'org.rioproject.cybernode:cybernode-service:5.0-M4-S5'
-    artifact id: 'cybernode-proxy',   'org.rioproject.cybernode:cybernode-proxy:5.0-M4-S5'
-    artifact id: 'cybernode-api',     'org.rioproject.cybernode:cybernode-api:5.0-M4-S5'
+    artifact id: 'cybernode-service', 'org.rioproject.cybernode:cybernode-service:5.0-M4-S6'
+    artifact id: 'cybernode-proxy',   'org.rioproject.cybernode:cybernode-proxy:5.0-M4-S6'
+    artifact id: 'cybernode-api',     'org.rioproject.cybernode:cybernode-api:5.0-M4-S6'
 
 
     service(name: 'Cybernode') {
