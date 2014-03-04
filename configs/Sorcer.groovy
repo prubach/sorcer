@@ -34,6 +34,11 @@ deployment(name: 'Sorcer') {
 
     codebase getCodebase()
 
+    def sorcer = [
+            api: "org.sorcersoft.sorcer:sorcer-api:" + getSorcerVersion(),
+            platform:"org.sorcersoft.sorcer:sos-platform:" + getSorcerVersion()
+    ]
+
     artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
     artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.2'
     artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
@@ -55,9 +60,11 @@ deployment(name: 'Sorcer') {
     artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
-    artifact id: 'blitz-cfg', "org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion()
-    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.2.1-1'
-    //artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:2.2.1-1'
+    def blitz = [
+        impl:"org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion(),
+        api: 'org.sorcersoft.blitz:blitz-proxy:2.2.1-1',
+        //impl: 'org.sorcersoft.blitz:blitz-service:2.2.1-1'
+    ]
 
 
     service(name: 'Mahalo') {
@@ -111,10 +118,10 @@ deployment(name: 'Sorcer') {
     service(name: "BlitzSpace") {
         interfaces {
             classes 'net.jini.space.JavaSpace05'
-            artifact ref: 'blitz-dl'
+            artifact blitz.api
         }
         implementation(class: 'org.dancres.blitz.remote.BlitzServiceImpl') {
-            artifact ref: 'blitz-cfg'
+            artifact blitz.impl
         }
         configuration file: 'classpath:blitz.config'
         maintain 1
@@ -123,7 +130,7 @@ deployment(name: 'Sorcer') {
     service(name: "Jobber") {
         interfaces {
             classes 'sorcer.core.provider.Jobber'
-            artifact ref: 'sos-exertlet-sui'
+            artifact sorcer.platform
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
             artifact ref: 'jobber-cfg'

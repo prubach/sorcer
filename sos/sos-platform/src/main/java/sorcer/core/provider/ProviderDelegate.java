@@ -16,7 +16,6 @@
  */
 package sorcer.core.provider;
 
-import com.sun.jini.admin.DestroyAdmin;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -96,21 +95,17 @@ import sorcer.service.*;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.dispatch.JobThread;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.exertion.ObjectJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
-import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.provider.logger.RemoteHandler;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ObjectSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;

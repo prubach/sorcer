@@ -16,16 +16,15 @@
 
 package sorcer.launcher;
 
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.FileUtils;
-import sorcer.util.HostUtil;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.*;
 
 import static sorcer.core.SorcerConstants.*;
@@ -151,7 +150,7 @@ public abstract class Launcher implements ILauncher {
 
     protected Map<String, String> getProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
-        String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S6");
+        String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:" + RIO_VERSION);
 
         try {
             IOUtils.ensureFile(policyPath, IOUtils.FileCheck.readable);
@@ -182,11 +181,7 @@ public abstract class Launcher implements ILauncher {
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
 
-        try {
-            sysProps.put("org.rioproject.codeserver", "http://" + HostUtil.getInetAddress() + ":9010");
-        } catch (UnknownHostException e) {
-            throw new RuntimeException("Unable to read host address", e);
-        }
+        sysProps.put("org.rioproject.codeserver", SorcerEnv.getWebsterUrl());
 
         return sysProps;
     }

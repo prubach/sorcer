@@ -20,7 +20,7 @@
  * @author Pawel Rubach based on Dennis Reedy's example
  */
 import sorcer.core.SorcerEnv;
-
+import static sorcer.core.SorcerConstants.RIO_VERSION
 
 String[] getInitialMemberGroups() {
     return SorcerEnv.lookupGroups as String[];
@@ -33,14 +33,14 @@ def getSorcerHome() {
 deployment(name: 'Sorcer') {
     groups getInitialMemberGroups();
 
-    codebase 'http://' + SorcerEnv.localHost.hostAddress + ":9010/"
+    codebase SorcerEnv.websterUrl
 
-    artifact id: 'monitor-service', 'org.rioproject.monitor:monitor-service:5.0-M4-S6'
-    artifact id: 'monitor-proxy',   'org.rioproject.monitor:monitor-proxy:5.0-M4-S6'
+    artifact id: 'monitor-service', 'org.rioproject.monitor:monitor-service:' + RIO_VERSION
+    artifact id: 'monitor-proxy',   'org.rioproject.monitor:monitor-proxy:' + RIO_VERSION
 
-    artifact id: 'cybernode-service', 'org.rioproject.cybernode:cybernode-service:5.0-M4-S6'
-    artifact id: 'cybernode-proxy',   'org.rioproject.cybernode:cybernode-proxy:5.0-M4-S6'
-    artifact id: 'cybernode-api',     'org.rioproject.cybernode:cybernode-api:5.0-M4-S6'
+    artifact id: 'cybernode-service', 'org.rioproject.cybernode:cybernode-service:' + RIO_VERSION
+    artifact id: 'cybernode-proxy',   'org.rioproject.cybernode:cybernode-proxy:' + RIO_VERSION
+    artifact id: 'cybernode-api',     'org.rioproject.cybernode:cybernode-api:' + RIO_VERSION
 
 
     service(name: 'Cybernode') {

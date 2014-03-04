@@ -58,6 +58,7 @@ public class UtilTest {
 	}
 	
 	@Test
+    @Ignore("test depends on sorcer.env contents (service name suffix)")
 	public void spaceSuffixTest() throws ExertionException, ContextException,
 			SignatureException {
 
