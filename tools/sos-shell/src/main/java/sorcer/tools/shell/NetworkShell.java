@@ -77,19 +77,7 @@ import sorcer.netlet.util.ScriptExertException;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
-import sorcer.tools.shell.cmds.ChgrpCmd;
-import sorcer.tools.shell.cmds.DataStorageCmd;
-import sorcer.tools.shell.cmds.DirCmd;
-import sorcer.tools.shell.cmds.DiscoCmd;
-import sorcer.tools.shell.cmds.EmxCmd;
-import sorcer.tools.shell.cmds.ExecCmd;
-import sorcer.tools.shell.cmds.ExertCmd;
-import sorcer.tools.shell.cmds.GroovyCmd;
-import sorcer.tools.shell.cmds.GroupsCmd;
-import sorcer.tools.shell.cmds.LookupCmd;
-import sorcer.tools.shell.cmds.SetPortCmd;
-import sorcer.tools.shell.cmds.StartStopCmd;
-import sorcer.tools.shell.cmds.SorcerCmd;
+import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
 import sorcer.util.TimeUtil;
 import sorcer.util.exec.ExecUtils;
@@ -1578,14 +1566,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
     static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
 			"groups", "lup", "chgrp", "chport", "help", "exert", "http", "emx",
 //			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
-			"gvy", "edit", "clear", "exec", "about", "ig", "ds" };
+			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "sp" };
 	
 	static final Class[] shellCmdClasses = { StartStopCmd.class, DiscoCmd.class,
 			DirCmd.class, ChgrpCmd.class, GroupsCmd.class, LookupCmd.class,
 			ChgrpCmd.class, SetPortCmd.class, HelpCmd.class, ExertCmd.class,
 			HttpCmd.class, EmxCmd.class, GroovyCmd.class, EditCmd.class,
 //			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class, VarModelCmd.class };
-			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class };
+			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class, SpaceCmd.class };
 	// a map of application name/ filename
 	static private Map<String, String> appMap = new TreeMap<String, String>();
 	// non interactive shell apps - used with nsh --<app name>

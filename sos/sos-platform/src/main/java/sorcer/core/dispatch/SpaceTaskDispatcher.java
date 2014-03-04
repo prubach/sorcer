@@ -37,9 +37,11 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
             final Set<Context> sharedContexts,
             final boolean isSpawned, 
             final LokiMemberUtil myMemberUtil,
-            final ProvisionManager provisionManager) throws ExertionException, SignatureException {
+            final ProvisionManager provisionManager,
+            final ProviderProvisionManager providerProvisionManager) throws ExertionException, SignatureException {
 
-		this.provisionManager = provisionManager;
+		this.providerProvisionManager = providerProvisionManager;
+        this.provisionManager = provisionManager;
         this.xrt = task;
 		subject = task.getSubject();
 		this.sharedContexts = sharedContexts;

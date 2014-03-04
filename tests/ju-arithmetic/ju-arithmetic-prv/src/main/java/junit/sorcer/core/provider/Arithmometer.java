@@ -44,6 +44,8 @@ public class Arithmometer implements Serializable {
 
 	public static final String DIVIDE = "divide";
 	
+	public static final String AVERAGE = "average";
+
 	public static final String RESULT_PATH = "result/value";
 			
 	public final static Logger logger = Logger.getLogger(Arithmometer.class
@@ -53,8 +55,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Adder} interface.
 	 * 
 	 * @param context
-	 *            input dataContext for this operation
-	 * @return an output service dataContext
+	 *            input context for this operation
+	 * @return an output service context
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -71,8 +73,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Subtractor} interface.
 	 * 
 	 * @param context
-	 *            input dataContext for this operation
-	 * @return an output service dataContext
+	 *            input context for this operation
+	 * @return an output service context
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -89,8 +91,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Multiplier} interface.
 	 * 
 	 * @param context
-	 *            input dataContext for this operation
-	 * @return an output service dataContext
+	 *            input context for this operation
+	 * @return an output service context
 	 * @throws RemoteException
 	 * @throws ContextException 
 	 */
@@ -107,8 +109,8 @@ public class Arithmometer implements Serializable {
 	 * Implements the {@link Divider} interface.
 	 * 
 	 * @param context
-	 *            input dataContext for this operation
-	 * @return an output service dataContext
+	 *            input context for this operation
+	 * @return an output service context
 	 * @throws ContextException 
 	 * @throws RemoteException
 	 */
@@ -120,6 +122,14 @@ public class Arithmometer implements Serializable {
 		}
 	}
 
+	public Context average(Context context) throws RemoteException, ContextException {
+		if (context instanceof ArrayContext) {
+			return calculateFromArrayContext(context, AVERAGE);
+		} else {
+			return calculateFromPositionalContext(context, AVERAGE);
+		}
+	}
+	
 	/**
 	 * Calculates the result of arithmetic operation specified by a selector
 	 * (add, subtract, multiply, or divide) from the instance of ArrayContext.
@@ -158,6 +168,12 @@ public class Arithmometer implements Serializable {
 				result = inputs.get(0);
 				for (int i = 1; i < inputs.size(); i++)
 					result /= inputs.get(i);
+			} else if (selector.equals(AVERAGE)) {
+				result = inputs.get(0);
+				for (int i = 1; i < inputs.size(); i++)
+					result += inputs.get(i);
+				
+				result = result / inputs.size();
 			}
 
 			logger.info(selector + " result: \n" + result);
@@ -192,8 +208,8 @@ public class Arithmometer implements Serializable {
 	 * Calculates the result of arithmetic operation specified by a selector
 	 * (add, subtract, multiply, or divide) from the instance of ServiceContext.
 	 * 
-	 * @param context
-	 *            service dataContext
+	 * @param input
+	 *            service context
 	 * @param selector
 	 *            a name of arithmetic operation
 	 * @return
@@ -245,6 +261,12 @@ public class Arithmometer implements Serializable {
 					throw new ContextException("more than two arguments for division");
 				result = (Double)revalue(cxt.getInValueAt(1));
 				result /= (Double)revalue(cxt.getInValueAt(2));
+			} else if (selector.equals(AVERAGE)) {				
+				result = (Double)revalue(inputs.get(0));
+				for (int i = 1; i < inputs.size(); i++) 
+					result += (Double)revalue(inputs.get(i));
+				
+				result = result / inputs.size();	
 			}
 
 			logger.info(selector + " result: \n" + result);

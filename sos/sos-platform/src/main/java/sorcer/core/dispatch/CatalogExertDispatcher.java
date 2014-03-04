@@ -43,8 +43,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   Set<Context> sharedContext,
                                   boolean isSpawned,
                                   Provider provider,
-                                  ProvisionManager provisionManager) throws Throwable {
-        super(job, sharedContext, isSpawned, provider, provisionManager);
+                                  ProvisionManager provisionManager,
+                                  ProviderProvisionManager providerProvisionManager) throws Throwable {
+        super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
         dThread = new DispatchThread();
         try {
             dThread.start();

@@ -38,9 +38,10 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 	 * @throws Throwable
 	 */
 	public MonitoredTaskDispatcher(Exertion exertion,
-			Set<Context> sharedContext, boolean isSpawned, Provider provider)
+			Set<Context> sharedContext, boolean isSpawned, Provider provider,
+            ProvisionManager provisionManager, ProviderProvisionManager providerProvisionManager)
 			throws Throwable {
-		super(exertion, sharedContext, isSpawned, provider);
+		super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 	
 	/* (non-Javadoc)

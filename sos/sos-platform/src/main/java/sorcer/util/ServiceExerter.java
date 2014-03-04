@@ -25,19 +25,17 @@ import java.util.logging.Logger;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-import net.jini.core.transaction.server.TransactionManager;
 
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
-import sorcer.core.dispatch.ExertionSorter;
-import sorcer.core.dispatch.SortingException;
+import sorcer.core.deploy.Deployment;
+import sorcer.core.dispatch.*;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.dispatch.ProvisionManager;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.Jobber;
@@ -62,7 +60,7 @@ public class ServiceExerter implements Exerter, Callable {
     private ServiceExertion exertion;
     private Transaction transaction;
     private static MutualExclusion locker;
-    private ProvisionManager provisionManager;
+    private ProviderProvisionManager providerProvisionManager;
 
     public ServiceExerter() {
     }
@@ -151,20 +149,21 @@ public class ServiceExerter implements Exerter, Callable {
             if (entries != null && entries.length > 0) {
                 exertion.substitute(entries);
             }
+            // PROVISIONING for TASKS using Deployment
+            // TODO PROVISIONING
 			if (exertion.isTask() && exertion.isProvisionable()) {
-				/*try {
-					List<Deployment> deploymnets = ((ServiceExertion) exertion)
-							.getDeploymnets();
-					if (deploymnets.size() > 0) {
-                        //TODO MERGE
-						ProvisionManager provisionManager = new ProvisionManager(exertion);
-						provisionManager.deployServices();
+				try {
+					List<Deployment> deployments = ((ServiceExertion) exertion)
+							.getDeployments();
+					if (deployments.size() > 0) {
+						ProvisionManager ProvisionManager = new ProvisionManager(exertion);
+						ProvisionManager.deployServices();
 					}
 				} catch (DispatcherException e) {
 					throw new ExertionException(
 							"Unable to deploy services for: "
 									+ exertion.getName(), e);
-				}*/
+				}
 			}
 			if (exertion instanceof Job && ((Job) exertion).size() == 1) {
 				return processAsTask();

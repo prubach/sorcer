@@ -92,7 +92,8 @@ abstract public class ExertDispatcher implements Dispatcher,
 
 	protected ThreadGroup disatchGroup;
 	protected DispatchThread dThread;
-	protected ProvisionManager provisionManager;
+	protected ProviderProvisionManager providerProvisionManager;
+    protected ProvisionManager provisionManager;
 
 	public static Hashtable<Uuid, ExertDispatcher> getDispatchers() {
 		return dispatchers;
@@ -117,7 +118,8 @@ abstract public class ExertDispatcher implements Dispatcher,
                            Set<Context> sharedContexts,
                            boolean isSpawned,
                            Provider provider,
-                           ProvisionManager provisionManager) {
+                           ProvisionManager provisionManager,
+                           ProviderProvisionManager providerProvisionManager) {
         ServiceExertion sxrt = (ServiceExertion)exertion;
 		this.xrt = sxrt;
         this.subject = sxrt.getSubject();
@@ -127,6 +129,7 @@ abstract public class ExertDispatcher implements Dispatcher,
         this.provider = provider;
         sxrt.setStatus(RUNNING);
         this.provisionManager = provisionManager;
+        this.providerProvisionManager = providerProvisionManager;
         initialize();
     }
 
@@ -148,7 +151,7 @@ abstract public class ExertDispatcher implements Dispatcher,
      * @throws ExertionException if there are issues dispatching the {@code Exertion}
      */
     protected void checkAndDispatchExertions() throws ExertionException {
-        if(xrt.isProvisionable()) {
+        if(xrt.isProvisionable() && xrt.getDeployments().size()>0) {
             try {
                 getProvisionManager().deployServices();
             } catch (DispatcherException e) {
@@ -629,6 +632,10 @@ abstract public class ExertDispatcher implements Dispatcher,
             e.printStackTrace();
         }
         return catalog;
+    }
+
+    public ProviderProvisionManager getProviderProvisionManager() {
+        return providerProvisionManager;
     }
 
     public ProvisionManager getProvisionManager() {

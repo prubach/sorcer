@@ -20,7 +20,6 @@ package sorcer.core.dispatch;
 import java.rmi.RemoteException;
 import java.util.Set;
 
-import sorcer.core.Dispatcher;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.ParModel;
@@ -36,7 +35,6 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-import sorcer.service.Strategy.Access;
 import sorcer.service.Task;
 
 /**
@@ -51,8 +49,9 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 
 	public CatalogBlockDispatcher(Block block, Set<Context> sharedContext,
 			boolean isSpawned, Provider provider,
-			ProvisionManager provisionManager) throws Throwable {
-		super(block, sharedContext, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+			ProviderProvisionManager providerProvisionManager) throws Throwable {
+		super(block, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 	
 	public void dispatchExertions() throws ExertionException,

@@ -34,9 +34,10 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
             Set<Context> sharedContexts,
             boolean isSpawned, 
             LokiMemberUtil myMemberUtil, 
-            Provider provider, 
-            ProvisionManager provisionManager) throws ExertionException, ContextException {
-		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
+            Provider provider,
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException {
+		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

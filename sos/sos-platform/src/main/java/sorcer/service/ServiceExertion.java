@@ -211,16 +211,16 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		try {
 			Object obj = null;
 			Exertion xrt = exert(entries);
-			Context cxt = xrt.getContext();
-			if (rp != null) {
+			if (rp == null) {
+				obj =  xrt.getReturnValue();
+			} else {
+				Context cxt = xrt.getContext();
 				if (rp.path == null)
 					obj = cxt;
 				else if (rp.path.equals("self"))
 					obj = xrt;
 				else
 					obj = xrt.getContext().getValue(rp.path);
-			} else {
-				obj = xrt.getReturnValue();
 			}
 			return obj;
 		} catch (Exception e) {
@@ -623,6 +623,16 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	public void setSessionId(Uuid id) {
 		sessionId = id;
+		if (this instanceof Job) {
+			logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob");
+			List<Exertion> v = ((Job) this).getExertions();
+			logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob2");
+			for (int i = 0; i < v.size(); i++) {
+				logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob3");
+				((ServiceExertion) v.get(i)).setSessionId(id);
+			}
+
+		}
 	}
 
 	public Uuid getSessionId() {
@@ -631,7 +641,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	public ServiceExertion setContext(Context context) {
 		this.dataContext = (ServiceContext)context;
-		dataContext.setExertion(this);
+        ((ServiceContext)context).setExertion(this);
 		return this;
 	}
 
@@ -980,17 +990,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
         }
 		Collections.sort(netSignatures);
 		return netSignatures;
-	}	
-	
-	public List<Deployment> getDeploymnets() {
-		List<NetSignature> nsigs = getAllNetSignatures();
-		List<Deployment> deploymnets = new ArrayList<Deployment>();
-		for (Signature s : nsigs) {
-			Deployment d = ((ServiceSignature)s).getDeployment();
-			if (d != null)
-				deploymnets.add(d);
-		}
-		return deploymnets;
 	}
 	
 	/*

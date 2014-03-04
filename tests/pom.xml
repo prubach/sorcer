@@ -15,7 +15,9 @@
 	<modules>
 		<module>ju-arithmetic</module>
 		<module>int-tests</module>
-	</modules>
+        <module>par-model</module>
+        <module>model-beans</module>
+    </modules>
 
     <build>
         <pluginManagement>

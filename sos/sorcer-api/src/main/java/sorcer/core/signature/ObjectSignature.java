@@ -33,13 +33,13 @@ public class ObjectSignature extends ServiceSignature {
 
 	static final long serialVersionUID = 8042346568722803852L;
 
-	private MethodInvoking invoker;
+    private MethodInvoking invoker;
 
 	Class<?> providerType;
 
 	private Object target;
 
-	// list of initialization arguments for the constructor
+    // list of initialization arguments for the constructor
 	private Object[] args;	
 
 	private Class<?>[] argTypes;
@@ -75,6 +75,17 @@ public class ObjectSignature extends ServiceSignature {
 	public ObjectSignature(Class<?> providerClass) {
 		this(null, providerClass);
 	}
+
+    // Added to enable moving createEvaluator to ObjectTask
+    //
+    public void setInvoker(MethodInvoking invoker) {
+        this.invoker = invoker;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
+    //
 
 	/**
 	 * <p>
@@ -136,18 +147,6 @@ public class ObjectSignature extends ServiceSignature {
 	public void setEvaluator(MethodInvoking evaluator) {
 		this.invoker = evaluator;
 	}
-
-    //TODO MERGE
-/*	public MethodInvoking<?> createEvaluator() throws InstantiationException,
-	IllegalAccessException {
-		if (target == null && providerType != null) {
-			invoker = new MethodInvoker(providerType.newInstance(),
-					selector);
-		} else
-			invoker = new MethodInvoker(target, selector);
-		this.invoker.setParameters(args);
-		return invoker;
-	}*/
 
 	public Class<?>[] getTypes() throws ContextException {
 		return argTypes;

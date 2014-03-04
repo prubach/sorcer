@@ -36,8 +36,9 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
             boolean isSpawned, 
             LokiMemberUtil myMemberUtil, 
             Provider provider,
-            ProvisionManager provisionManager) throws ExertionException, ContextException  {
-		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException  {
+		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

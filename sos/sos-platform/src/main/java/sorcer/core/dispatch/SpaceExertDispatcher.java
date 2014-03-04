@@ -27,14 +27,11 @@ import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.provider.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
-import sorcer.core.signature.NetSignature;
-import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
@@ -54,8 +51,9 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
             boolean isSpawned,
             LokiMemberUtil memUtil,
             Provider provider,
-            ProvisionManager provisionManager) throws ExertionException, ContextException {
-		super(exertion, sharedContext, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException {
+		super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	
 		space = SpaceAccessor.getSpace();
 		if (space == null) {
@@ -91,7 +89,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
             Set<Context> sharedContext,
             boolean isSpawned, 
             Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider, null);
+		super(job, sharedContext, isSpawned, provider, null, null);
 
 	}
 
@@ -151,7 +149,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	}
 
     private void provisionProviderForExertion(Exertion exertion) throws ProvisioningException {
-        provisionManager.add(exertion, this);
+        providerProvisionManager.add(exertion, this);
     }
 
 

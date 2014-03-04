@@ -29,6 +29,9 @@ import net.jini.core.entry.Entry;
 import net.jini.core.entry.UnusableEntryException;
 import net.jini.core.lease.Lease;
 import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceMatches;
+import net.jini.core.lookup.ServiceRegistrar;
+import net.jini.core.lookup.ServiceTemplate;
 import net.jini.id.Uuid;
 import net.jini.lookup.entry.Name;
 import net.jini.space.JavaSpace;
@@ -36,12 +39,9 @@ import net.jini.space.JavaSpace05;
 import net.jini.space.MatchSet;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.jini.lookup.AttributesUtil;
-import sorcer.service.ContextException;
-import sorcer.service.Exec;
+import sorcer.service.*;
 import sorcer.service.Exec.State;
-import sorcer.service.Exertion;
-import sorcer.service.MonitorException;
-import sorcer.service.ServiceExertion;
+import sorcer.service.space.SpaceAccessor;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
@@ -89,7 +89,7 @@ public class SpaceCmd extends ShellCmd {
 	static private Map<Uuid, ServiceItem> monitorMap = new HashMap<Uuid, ServiceItem>();
 
 	static private List<Entry> instanceList = new ArrayList<Entry>();
-	static private JavaSpace05 javaSpace;
+	static private JavaSpace javaSpace;
 	
 	public SpaceCmd() {
 	}
@@ -106,7 +106,10 @@ public class SpaceCmd extends ShellCmd {
 		if (numTokens == 0) {
 			showSpaces();
 			if (spaces != null) {
-				javaSpace = (JavaSpace05)spaces[0].service;
+                //BlitzProxy bp = javaSpace = (JavaSpace)spaces[0].service;
+
+
+                javaSpace = (JavaSpace)spaces[0].service;
 				selectedSpace = 0;
 			}
 			isSpaceMode = true;
@@ -306,7 +309,7 @@ public class SpaceCmd extends ShellCmd {
 		Entry e = null;
 
 		try {
-			MatchSet iter = javaSpace.contents(templateList, null, 5L * 60000L, Integer.MAX_VALUE);
+			MatchSet iter = ((JavaSpace05)javaSpace).contents(templateList, null, 5L * 60000L, Integer.MAX_VALUE);
 			while (iter != null) {
 				try {
 					e = iter.next();
@@ -376,7 +379,11 @@ public class SpaceCmd extends ShellCmd {
 	}
 	
 	static ServiceItem[] findSpaces() throws RemoteException {
-		spaces = DiscoCmd.lookup(new Class[] { JavaSpace05.class });
+		//spaces = DiscoCmd.lookup(new Class[] { JavaSpace05.class });
+        //spaces = Accessor.getServiceItems(JavaSpace05.class, null);
+        spaces = lookup(DiscoCmd.getSelectedRegistrar(),  new Class[] { JavaSpace05.class }, null);
+
+        //SpaceAccessor.getSpace();
 		return spaces;
 	}
 	
@@ -445,4 +452,34 @@ public class SpaceCmd extends ShellCmd {
 		}
 	}
 
+
+
+    public static ServiceItem[] lookup(ServiceRegistrar registrar,
+                                       Class[] serviceTypes, String serviceName) throws RemoteException {
+        ServiceRegistrar regie = null;
+        if (registrar == null) {
+            regie = DiscoCmd.getSelectedRegistrar();
+            if (regie == null)
+                return null;
+        } else {
+            regie = registrar;
+        }
+
+        ArrayList<ServiceItem> serviceItems = new ArrayList<ServiceItem>();
+        ServiceMatches matches = null;
+        Entry myAttrib[] = null;
+        if (serviceName != null) {
+            myAttrib = new Entry[1];
+            myAttrib[0] = new Name(serviceName);
+        }
+        ServiceTemplate myTmpl = new ServiceTemplate(null, serviceTypes,
+                myAttrib);
+
+        matches = regie.lookup(myTmpl, 64);
+        for (int j = 0; j < Math.min(64, matches.totalMatches); j++) {
+            serviceItems.add(matches.items[j]);
+        }
+        ServiceItem[] sItems = new ServiceItem[serviceItems.size()];
+        return serviceItems.toArray(sItems);
+    }
 }

@@ -30,7 +30,7 @@ public interface DispatcherFactory {
      * This method returns an instance of the appropriate subclass of
      * Dispatcher as determined from information provided by the given
      * instance of ServiceJob.
-     * @param job The SORCER job that will be used to perform a collection 
+     * @param exertion The SORCER job that will be used to perform a collection
      * of SERVICE tasks.
      */
 	 public Dispatcher createDispatcher(Exertion exertion, Provider provider) throws DispatcherException;

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import net.jini.config.ConfigurationException;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
@@ -42,7 +41,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     private static ExertionDispatcherFactory factory;
     public static Cataloger catalog; // The service catalog object
     private final static Logger logger = Logger.getLogger(ExertionDispatcherFactory.class.getName());
-    private ProvisionManager provisionManager = ProvisionManager.getInstance();
+    private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
 	public static ExertionDispatcherFactory getFactory() {
 		if (factory == null)
@@ -79,10 +78,10 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                                        Provider provider,
                                        String... config) throws DispatcherException {
         Dispatcher dispatcher = null;
-        DeploymentProvisionManager deployProvisionManager = null;
-        List<Deployment> deploymnets = ((ServiceExertion)exertion).getDeploymnets();
-        if (deploymnets.size() > 0)
-            deployProvisionManager = new DeploymentProvisionManager(exertion);
+        ProvisionManager provisionManager = null;
+        List<Deployment> deployments = ((ServiceExertion)exertion).getDeployments();
+        if (deployments.size() > 0)
+            provisionManager = new ProvisionManager(exertion);
         try {
 			if (exertion instanceof NetTask) {
 				logger.info("Running Space Task Dispatcher...");
@@ -90,14 +89,16 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 						                                    sharedContexts, 
 						                                    isSpawned, 
 						                                    myMemberUtil,
-						                                    provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
 			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
 				 return dispatcher = new CatalogBlockDispatcher((Block)exertion,
 						                                  sharedContexts, 
 						                                  isSpawned, 
 						                                  provider,
-						                                  provisionManager);
+                         provisionManager,
+                         providerProvisionManager);
 			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
 				return dispatcher = new SpaceBlockDispatcher((Block)exertion,
@@ -105,7 +106,8 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 						                                  isSpawned, 
 						                                  myMemberUtil, 
 						                                  provider,
-						                                  provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
 			}
             Job job = (Job)exertion;
             ExertionSorter es = new ExertionSorter(job);
@@ -117,7 +119,8 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         isSpawned,
                         myMemberUtil,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isSpaceParallel(job)) {
                 logger.info("Running Space Parallel Dispatcher...");
                 dispatcher = new SpaceParallelDispatcher(job,
@@ -125,7 +128,8 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         isSpawned,
                         myMemberUtil,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isSpaceSequential(job)) {
                 logger.info("Running Space Sequential Dispatcher ...");
                 dispatcher = new SpaceSequentialDispatcher(job,
@@ -133,35 +137,40 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         isSpawned,
                         myMemberUtil,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isCatalogSingleton(job)) {
                 logger.info("Running Catalog Singleton Dispatcher...");
                 dispatcher = new CatalogSingletonDispatcher(job,
                         sharedContexts,
                         isSpawned,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isCatalogParallel(job)) {
                 logger.info("Running Catalog Parallel Dispatcher...");
                 dispatcher = new CatalogParallelDispatcher(job,
                         sharedContexts,
                         isSpawned,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isCatalogSequential(job)) {
                 logger.info("Running Catalog Sequential Dispatcher...");
                 dispatcher = new CatalogSequentialDispatcher(job,
                         sharedContexts,
                         isSpawned,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             } else if (Jobs.isSWIFSequential(job)) {
                 logger.info("Running SWIF Sequential Dispatcher...");
                 dispatcher = new SWIFSequentialDispatcher(job,
                         sharedContexts,
                         isSpawned,
                         provider,
-                        provisionManager);
+                        provisionManager,
+                        providerProvisionManager);
             }
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (Throwable e) {

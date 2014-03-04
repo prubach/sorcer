@@ -644,7 +644,7 @@ public class operator {
 			job.setContext(data);
 
 		if (rp != null) {
-			((ServiceContext) job.getDataContext()).setReturnJobPath(rp);
+			((ServiceContext) job.getDataContext()).setReturnPath(rp);
 		}
 
 		if (job instanceof NetJob && control != null) {

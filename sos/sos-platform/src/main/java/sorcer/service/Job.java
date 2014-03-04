@@ -580,7 +580,8 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	@Override
 	public Object getReturnValue(Arg... entries) throws ContextException,
 			RemoteException {
-		ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
+		//ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
+        ReturnPath rp = ((ServiceContext) dataContext).getReturnPath();
 		Object obj = null;
 		if (rp != null) {
 			if (rp.path == null || rp.path.equals("self")) {

@@ -2673,7 +2673,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	@Override
 	public void appendTrace(String footprint) {
-		exertion.getControlContext().appendTrace(footprint);
+		if (exertion!=null)
+            exertion.getControlContext().appendTrace(footprint);
 	}
 
 	/*

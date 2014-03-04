@@ -32,7 +32,6 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
-import sorcer.util.ProviderAccessor;
 
 /**
  * A dispatching class for exertion blocks in the PULL mode.
@@ -46,8 +45,9 @@ public class SpaceBlockDispatcher extends SpaceExertDispatcher {
             boolean isSpawned, 
             LokiMemberUtil myMemberUtil, 
             Provider provider,
-            ProvisionManager provisionManager) throws ExertionException, ContextException  {
-		super(exertion, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException  {
+		super(exertion, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

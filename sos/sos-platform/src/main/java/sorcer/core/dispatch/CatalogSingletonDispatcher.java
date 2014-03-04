@@ -18,7 +18,6 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.provider.Provider;
@@ -34,8 +33,9 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
             Set<Context> sharedContexts,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager) throws Throwable {
-		super(job, sharedContexts, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws Throwable {
+		super(job, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws SignatureException,

@@ -219,17 +219,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-/*
-    // Needed for the implementation of Rio's MonitorableService interface
-    private LandlordLessor monitorLandlord;
-    // Needed for the implementation of Rio's MonitorableService interface
-    */
-/** The HeartbeatClient, which will manage sending heartbeat announcements *//*
-
-    private HeartbeatClient heartbeatClient;
-*/
-
-
     protected ServiceProvider() {
 		providers.add(this);
 		delegate = new ProviderDelegate();
@@ -1516,6 +1505,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			cfm = new ControlFlowManager(exertion, delegate, (Jobber) this);
 		} else if (this instanceof Spacer) {
 			cfm = new ControlFlowManager(exertion, delegate, (Spacer) this);
+		} else if (this instanceof Concatenator) {
+			cfm = new ControlFlowManager(exertion, delegate, (Concatenator) this);
 		} else if (exertion instanceof Task && exertion.isMonitorable()) {
 			if (exertion.isWaitable())
 				return doMonitoredTask(exertion, null);
@@ -2038,7 +2029,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	public Exertion doMonitoredTask(Exertion task, Transaction txn) {
 		MonitoredTaskDispatcher dispatcher = null;
 		try {
-			dispatcher = new MonitoredTaskDispatcher(task, null, false, this);
+			dispatcher = new MonitoredTaskDispatcher(task, null, false, this, null, null);
 			while (dispatcher.getState() != Exec.DONE
 					&& dispatcher.getState() != Exec.FAILED
 					&& dispatcher.getState() != Exec.SUSPENDED) {

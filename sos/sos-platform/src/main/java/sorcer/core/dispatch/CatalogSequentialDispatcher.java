@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.provider.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
 
@@ -33,8 +32,9 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             Set<Context> sharedContext,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager) throws Throwable {
-		super(job, sharedContext, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws Throwable {
+		super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

@@ -22,6 +22,8 @@ import java.rmi.RemoteException;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.invoker.MethodInvoker;
+import sorcer.core.invoker.MethodInvoking;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
@@ -62,35 +64,17 @@ public class ObjectJob extends Job {
 		if (context != null)
 			this.dataContext = (ServiceContext) context;
 	}
-
-    public Job doJob(Transaction txn) throws ExertionException,
-            SignatureException, RemoteException {
-        // return (Job) new ServiceJobber().exec(job, txn);
-        Job result = null;
-        try {
-            Class[] paramTypes = new Class[] { Exertion.class };
-            Object[] parameters = new Object[] { this };
-            result = (Job)((ObjectSignature) getProcessSignature())
-                    .initInstance(parameters, paramTypes);
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (controlContext != null)
-                controlContext.addException(e);
-        }
-        return result;
-    }
-
-    // TODO VFE related
-	/*public Job doJob(Transaction txn) throws ExertionException,
+	
+	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
 		// return (Job) new ServiceJobber().exec(job, txn);
 		Job result = null;
 		try {
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
-			MethodEvaluator evaluator = ((ObjectSignature) getProcessSignature())
+			MethodInvoking evaluator = ((ObjectSignature) getProcessSignature())
 					.getEvaluator();
 			if (evaluator == null) {
-				evaluator = new MethodEvaluator(os.newInstance(),
+				evaluator = new MethodInvoker(os.newInstance(),
 						os.getSelector());
 			}
 			evaluator.setParameterTypes(new Class[] { Exertion.class });
@@ -103,6 +87,6 @@ public class ObjectJob extends Job {
 				controlContext.addException(e);
 		}
 		return result;
-	}*/
+	}
 	
 }

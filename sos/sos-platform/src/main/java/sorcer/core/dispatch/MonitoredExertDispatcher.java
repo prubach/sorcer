@@ -57,8 +57,10 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     protected int doneExertionIndex = 0;
 
     public MonitoredExertDispatcher(Exertion exertion,
-                                    Set<Context> sharedContext, boolean isSpawned, Provider provider) throws Exception {
-        super(exertion, sharedContext, isSpawned, provider, null);
+                                    Set<Context> sharedContext, boolean isSpawned, Provider provider,
+                                    ProvisionManager provisionManager,
+                                    ProviderProvisionManager providerProvisionManager) throws Exception {
+        super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 
         if (sessionMonitor == null)
             sessionMonitor = Accessor.getService(MonitoringManagement.class);

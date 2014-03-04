@@ -31,7 +31,6 @@ import javax.xml.rpc.ServiceFactory;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
-import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.service.Context;
@@ -50,8 +49,9 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
                                Set<Context> sharedContext,
                                boolean isSpawned,
                                Provider provider,
-                               ProvisionManager provisionManager) {
-        super(job, sharedContext, isSpawned, provider, provisionManager);
+                               ProvisionManager provisionManager,
+                               ProviderProvisionManager providerProvisionManager) {
+        super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
         DispatchThread gthread = new DispatchThread();
         gthread.start();
         try {

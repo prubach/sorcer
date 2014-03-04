@@ -32,8 +32,9 @@ public class SWIFSequentialDispatcher extends SWIFExertDispatcher {
             Set<Context> sharedContext,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager) throws Throwable {
-		super(job, sharedContext, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws Throwable {
+		super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,

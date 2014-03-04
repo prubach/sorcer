@@ -440,6 +440,10 @@ public class ControlFlowManager {
         return false;
     }
 
+    public void setConcatenator(ServiceConcatenator concatenator) {
+        this.concatenator = concatenator;
+    }
+
     public void setJobber(ServiceJobber jobber) {
         this.jobber = jobber;
     }
