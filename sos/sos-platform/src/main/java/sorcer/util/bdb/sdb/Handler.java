@@ -40,7 +40,9 @@ public class Handler extends URLStreamHandler {
 	        return new SdbConnection(url);
 	}
 
+/*
     public static void register() {
         ProtocolHandlerRegistry.get().register("sos", Handler.class);
     }
+*/
 }

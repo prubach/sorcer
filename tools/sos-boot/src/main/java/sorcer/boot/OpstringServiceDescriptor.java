@@ -43,7 +43,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.SorcerResolverHelper;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -70,7 +69,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         try {
             resolver = ResolverHelper.getResolver();
         } catch (ResolverException e) {
-            throw new RuntimeException("Could not initialize RIO Aether resolver",e);
+            throw new RuntimeException("Could not initialize RIO Aether resolver", e);
         }
     }
 
@@ -92,7 +91,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         security(cl);
 
         Class<?> implClass = cl.loadClass(serviceElement.getComponentBundle().getClassName());
-        if(logger.isTraceEnabled())
+        if (logger.isTraceEnabled())
             ClassLoaderUtil.displayClassLoaderTree(cl);
         Object impl;
         Object proxy;
@@ -102,8 +101,8 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         try {
             Configuration config = ConfigurationProvider.getInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), cl);
             ProxyPreparer servicePreparer = (ProxyPreparer) Config.getNonNullEntry(
-                          config, COMPONENT, "servicePreparer", ProxyPreparer.class,
-                          new BasicProxyPreparer());
+                    config, COMPONENT, "servicePreparer", ProxyPreparer.class,
+                    new BasicProxyPreparer());
 
             logger.trace("Attempting to get implementation constructor");
             Constructor constructor = implClass.getDeclaredConstructor(actTypes);
@@ -145,7 +144,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                         globalPolicy);
             }
 
-            if (this.policyFile!=null) {
+            if (this.policyFile != null) {
                 String policyFile = this.policyFile.toExternalForm();
                 DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
                         new PolicyFileProvider(policyFile));
@@ -195,6 +194,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
     private static List<URL> artifactToUrl(URL codebase, String artifact) throws MalformedURLException, ResolverException, URISyntaxException {
         List<URL> result = new ArrayList<URL>();
+/*
         String urlBase = codebase.toExternalForm();
         String mvnRootFileUrl = new File(SorcerEnv.getRepoDir()).toURI().toString();
 
@@ -203,10 +203,9 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
             logger.debug("{} -> {}", file, replace);
             result.add(new URL(replace));
         }
-/*
-        artifact = artifact.replace(':', '/');
-        result.add(new URL("artifact:" + artifact + ";" + codebase.getHost() + "@" + codebase.toExternalForm()));
 */
+        artifact = artifact.replace(':', '/');
+        result.add(new URL("artifact:" + artifact + ";" + codebase.toExternalForm() + "@" + codebase.getHost()));
         return result;
     }
 

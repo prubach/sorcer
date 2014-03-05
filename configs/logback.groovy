@@ -182,6 +182,8 @@ logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("org.dancres.blitz", WARN)
+logger("org.dancres.blitz.disk.SleeveCache", OFF)
+//logger("sorcer.rmi.ArtifactRmiLoader", DEBUG)
 
 root(INFO, appenders)
 

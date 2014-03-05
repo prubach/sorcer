@@ -54,7 +54,7 @@ public abstract class Launcher implements ILauncher {
     final protected static String[] CLASS_PATH = {
             "org.apache.river:start",
             "net.jini:jsk-resources",
-            "net.jini:jsk-platform",
+            //"net.jini:jsk-platform",
             "net.jini:jsk-lib",
             "net.jini.lookup:serviceui",
 
@@ -171,7 +171,8 @@ public abstract class Launcher implements ILauncher {
 //        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_CLASS_LOADER, "sorcer.rmi.ArtifactRmiLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
-        sysProps.put(RMI_SERVER_CODEBASE, "artifact:org.sorcersoft.sorcer/sos-platform/"+SORCER_VERSION+";"+SorcerEnv.getWebsterUrl()+"/@sorcer");
+        //sysProps.put(RMI_SERVER_CODEBASE, "artifact:org.sorcersoft.sorcer/sos-platform/"+SORCER_VERSION+";"+SorcerEnv.getWebsterUrl()+"/@sorcer");
+        sysProps.put(RMI_SERVER_CODEBASE, "artifact:net.jini/jsk-platform/2.2.2;"+SorcerEnv.getWebsterUrl()+"/@sorcer");
 
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
@@ -189,6 +190,8 @@ public abstract class Launcher implements ILauncher {
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
 
         sysProps.put("org.rioproject.codeserver", SorcerEnv.getWebsterUrl());
+        sysProps.put("org.rioproject.resolver.prune.platform", Boolean.FALSE.toString());
+
 
         return sysProps;
     }
