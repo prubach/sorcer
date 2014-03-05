@@ -29,6 +29,12 @@
         <v.lockmgr>0.2-3</v.lockmgr>
         <v.slf4j>1.7.5</v.slf4j>
         <v.logback>1.0.13</v.logback>
+        <v.junit>4.11</v.junit>
+        <v.plexus>3.0.15</v.plexus>
+        <v.guava>15.0</v.guava>
+        <v.clang>3.2.1</v.clang>
+        <v.ccli>1.2</v.ccli>
+        <v.cio>2.4</v.cio>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

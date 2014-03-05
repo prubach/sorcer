@@ -23,8 +23,14 @@ import net.jini.core.transaction.TransactionException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.ParModel;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
+import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.resolver.Resolver;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -38,6 +44,11 @@ import sorcer.util.Sorcer;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-prv"})
+@SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelServicesTest {
 	private final static Logger logger = Logger.getLogger(ParModelServicesTest.class
 			.getName());

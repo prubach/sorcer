@@ -78,5 +78,9 @@ public class ObjectBlock extends Block {
 		}
 		return result;
 	}
-	
+
+    public boolean isNet() {
+        return false;
+    }
+
 }

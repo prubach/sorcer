@@ -67,6 +67,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-start\%v.rio%\
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-lib\%v.rio%\rio-lib-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-api\%v.rio%\rio-api-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-proxy\%v.rio%\rio-proxy-%v.rio%.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\monitor\monitor-api\%v.rio%\monitor-api-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\guava\guava\15.0\guava-15.0.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar

@@ -180,6 +180,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		setComponentAttribute(PRIORITY);
 		setComponentAttribute(NOTIFY_EXEC);
 		setMonitorable(false);
+        // DEFAULT PROVISIONING DISABLED, but ENABLED on NetJobs and NetTasks
 		setProvisionable(false);
 		setNotifierEnabled(false);
 		setExecTimeRequested(true);
@@ -190,13 +191,17 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public ControlContext(Exertion exertion) {
 		this();
-//DELETED ON MERGE		this.exertion = exertion;
-		subjectValue = exertion.getName();
+        //DELETED ON MERGE		this.exertion = exertion;
+		//subjectValue = exertion.getName();
 		// make it visible via the path EXERTION
 		try {
-			Exertion erxt = (Exertion) getValue(EXERTION);
+			//Exertion erxt = (Exertion) getValue(EXERTION);
 			if (exertion != null) {
 				putValue(EXERTION, exertion);
+                //
+                if (exertion.isNet())
+                    setProvisionable(true);
+
 			}
 		} catch (ContextException e) {
 			e.printStackTrace();

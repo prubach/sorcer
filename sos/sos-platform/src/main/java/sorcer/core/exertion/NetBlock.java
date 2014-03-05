@@ -82,5 +82,8 @@ public class NetBlock extends Block implements Evaluation<Object>, Invocation<Ob
 		ServiceExerter se = new ServiceExerter(this);
 		return (Block)se.exert(txn, null);
 	}
-	
+
+    public boolean isNet() {
+        return true;
+    }
 }

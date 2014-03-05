@@ -23,8 +23,11 @@ import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceBeanConfig;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.ResolverHelper;
+import sorcer.core.SorcerEnv;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.lookup.entry.DeployInfo;
+import sorcer.resolver.ArtifactResolver;
 import sorcer.util.Sorcer;
 
 import java.io.BufferedReader;
@@ -41,16 +44,21 @@ import java.util.logging.Logger;
  */
 public final class ServiceElementFactory {
     static final Logger logger = Logger.getLogger(ServiceElementFactory.class.getName());
+    static final List<String> commonDLJars = Arrays.asList(
+            "artifact:org.sorcersoft.sorcer/sorcer-api/" + SorcerEnv.getSorcerVersion());
     /* The default provider codebase jars */
-    static final List<String> commonDLJars = Arrays.asList("sorcer-prv-dl.jar",
+    /*static final List<String> commonDLJars = Arrays.asList("sorcer-prv-dl.jar",
                                                            "jsk-dl.jar",
                                                            "rio-api-"+ RioVersion.VERSION+".jar",
                                                            "serviceui.jar",
                                                            "jmx-lookup.jar",
                                                            "provider-ui.jar",
-                                                           "exertlet-ui.jar");
+                                                           "exertlet-ui.jar");*/
     /* The default provider implementation jar */
-    static final List<String> commonImplJars = Arrays.asList("sorcer-prv.jar");
+    //static final List<String> commonImplJars = Arrays.asList("sorcer-prv.jar");
+    static final List<String> commonImplJars = Arrays.asList(
+            "artifact:org.sorcersoft.sorcer/commons-prv/" + SorcerEnv.getSorcerVersion());
+                //Arrays.asList("sorcer-prv.jar");
 
     private ServiceElementFactory(){}
 

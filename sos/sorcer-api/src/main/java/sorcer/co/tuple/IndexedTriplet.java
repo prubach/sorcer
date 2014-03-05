@@ -15,9 +15,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package junit.sorcer.core.provider;
+package sorcer.co.tuple;
 
+public class IndexedTriplet<T> extends Tuple3<String, T, Object> {
 
-public interface Arithmetic extends Adder, Averager, Subtractor, Multiplier, Divider {
+	public int index;
+	
+	public IndexedTriplet() {}
+	
+	public IndexedTriplet(Object extention) {
+		_3 = extention;
+	}
+	
+	public IndexedTriplet(String x1, T value) {
+		_1 = x1;
+		_2 = value;
+	}
 
+	public IndexedTriplet(String x1, T value, Object extention) {
+		_1 = x1;
+		_2 = value;
+		_3 = extention;
+	}
+	
+	public Object extention () {
+		return _3;
+	}
+	
+	public void ext(Object extention) {
+		_3 = extention;
+	}
 }

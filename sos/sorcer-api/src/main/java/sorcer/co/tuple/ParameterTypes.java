@@ -1,6 +1,7 @@
+package sorcer.co.tuple;
 /**
  *
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package junit.sorcer.core.provider;
 
 
-public interface Arithmetic extends Adder, Averager, Subtractor, Multiplier, Divider {
+import java.util.Arrays;
 
+/**
+* @author Rafał Krupiński
+*/
+public class ParameterTypes extends Path {
+    private static final long serialVersionUID = 1L;
+    public Class[] parameterTypes;
+
+    public ParameterTypes(Class... parameterTypes) {
+        this.parameterTypes = parameterTypes;
+    }
+
+@Override
+    public String toString() {
+        return "parameterTypes: " + Arrays.toString(parameterTypes);
+    }
 }

@@ -1,6 +1,7 @@
+package sorcer.co.tuple;
 /**
  *
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 Rafał Krupiński.
  * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package junit.sorcer.core.provider;
 
+/**
+ * Extracted from operator
+ *
+ * @author Rafał Krupiński
+ */
+public class Complement<T2> extends Entry<T2> {
+    private static final long serialVersionUID = 1L;
 
-public interface Arithmetic extends Adder, Averager, Subtractor, Multiplier, Divider {
-
+    public Complement(String path, T2 value) {
+        this._1 = path;
+        this._2 = value;
+    }
 }

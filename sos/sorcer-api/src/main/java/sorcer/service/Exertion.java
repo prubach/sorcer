@@ -325,6 +325,8 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	public boolean isBlock();
 
 	public boolean isCmd();
+
+    public boolean isNet();
 	
 	public void setProvisionable(boolean state);
 		

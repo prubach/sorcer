@@ -50,6 +50,7 @@ import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
 import sorcer.util.ServiceExerter;
+import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;
@@ -911,12 +912,13 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		StringBuilder info = new StringBuilder().append(
 				this.getClass().getName()).append(": ").append(name);
 		info.append("\n  process sig=").append(getProcessSignature());
-		info.append("\n  status=").append(status);
+		info.append("\n  status=").append(Exec.State.name(status));
 		info.append(", exertion ID=").append(exertionId);
 		String time = getControlContext().getExecTime();
 		if (time != null && time.length() > 0) {
 			info.append("\n  Execution Time = ").append(time);
 		}
+
 		return info.toString();
 	}
 

@@ -138,4 +138,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 		return temp;
 	}
 
+    public boolean isNet() {
+        return true;
+    }
 }

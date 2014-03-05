@@ -194,4 +194,7 @@ public class ObjectTask extends Task {
 		return dataContext.getArgs();
 	}
 
+    public boolean isNet() {
+        return false;
+    }
 }

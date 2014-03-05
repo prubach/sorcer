@@ -369,4 +369,7 @@ public class Task extends ServiceExertion {
 		status = state;
 	}
 
+    public boolean isNet() {
+        return true;
+    }
 }

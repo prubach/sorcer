@@ -144,12 +144,12 @@ public class ExertCmd extends ShellCmd {
 				return;
 			}
 			Exertion xrt = (Exertion) result;
-			if (xrt.getExceptions().size() > 0) {
+			if (!xrt.getAllExceptions().isEmpty()) {
 				if (commandLine) {
 					out.println("Exceptions: ");
-					out.println(xrt.getExceptions());
+					out.println(xrt.getAllExceptions());
 				} else {
-					List<ThrowableTrace> ets = xrt.getExceptions();
+					List<ThrowableTrace> ets = xrt.getAllExceptions();
                     out.println("Exceptions: ");
 					for (ThrowableTrace t : ets) {
                         out.println(t.message);

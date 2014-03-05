@@ -39,8 +39,10 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.OperationalStringManager;
 import org.rioproject.opstring.ServiceElement;
 
+import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.deploy.OperationalStringFactory;
+import sorcer.service.Accessor;
 import sorcer.service.Exertion;
 import sorcer.util.ProviderLookup;
 
@@ -75,7 +77,8 @@ public class ProvisionManager {
             return false;
         }
         try {
-            ProvisionMonitor provisionMonitor = (ProvisionMonitor)ProviderLookup.getService(ProvisionMonitor.class);
+            ProvisionMonitor provisionMonitor = Accessor.getService(ProvisionMonitor.class);
+            //ProvisionMonitor provisionMonitor = (ProvisionMonitor)ProviderLookup.getService(ProvisionMonitor.class);
             if (provisionMonitor != null) {
                 for (Map.Entry<Deployment.Unique, List<OperationalString>> entry : deployments.entrySet()) {
                     for (OperationalString deployment : entry.getValue()) {

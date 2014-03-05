@@ -77,5 +77,8 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 		ServiceExerter se = new ServiceExerter(this);
 		return (Job)se.exert(txn, null);
 	}
-	
+
+    public boolean isNet() {
+        return true;
+    }
 }

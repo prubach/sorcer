@@ -88,5 +88,8 @@ public class ObjectJob extends Job {
 		}
 		return result;
 	}
-	
+
+    public boolean isNet() {
+        return false;
+    }
 }

@@ -63,7 +63,7 @@ public final class OperationalStringFactory {
         if(exertion==null)
             throw new IllegalArgumentException("exertion is null");
 
-        OperationalString iGridDeployment = getIGridDeployment();
+        //OperationalString iGridDeployment = getIGridDeployment();
         Iterable<NetSignature> netSignatures = getNetSignatures(exertion);
         List<NetSignature> selfies = new ArrayList<NetSignature>();
         List<NetSignature> federated = new ArrayList<NetSignature>();
@@ -88,7 +88,8 @@ public final class OperationalStringFactory {
             service.setOperationalStringName(opString.getName());
             opString.addService(service);
             opString.setUndeployOption(getUndeployOption(self.getDeployment()));
-            opString.addOperationalString(iGridDeployment);
+
+            //opString.addOperationalString(iGridDeployment);
             if(self.getDeployment().getUnique()== Deployment.Unique.YES) {
                 uniqueOperationalStrings.add(opString);
             } else {
@@ -115,7 +116,7 @@ public final class OperationalStringFactory {
             opString.addService(service);
         }
         opString.setUndeployOption(getUndeployOption(idle));
-        opString.addOperationalString(iGridDeployment);
+        //opString.addOperationalString(iGridDeployment);
         Deployment eDeployment = ((ServiceSignature) exertion.getProcessSignature()).getDeployment();
         Deployment.Unique unique = eDeployment==null? Deployment.Unique.NO:eDeployment.getUnique();
         if(unique == Deployment.Unique.YES) {
@@ -166,7 +167,7 @@ public final class OperationalStringFactory {
     }
 
     private static OperationalString getIGridDeployment() throws Exception {
-        File iGridDeployment = new File(SorcerEnv.getHomeDir(), "configs/opstrings/iGridBoot.groovy");
+        File iGridDeployment = new File(SorcerEnv.getHomeDir(), "configs/Sorcer.groovy");
         OpStringLoader opStringLoader = new OpStringLoader(OperationalStringFactory.class.getClassLoader());
         OperationalString[] loaded = opStringLoader.parseOperationalString(iGridDeployment);
         return loaded[0];
