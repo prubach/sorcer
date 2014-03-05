@@ -28,9 +28,11 @@ import sorcer.launcher.process.DestroyingListener;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class Sorcer {
     private static final String DEBUG = "debug";
     private static final String PROFILE = "P";
     public static final String MODE = "M";
+    private static final String RIO = "rio";
 
     /**
      * This method calls {@link java.lang.System#exit(int)} before returning, in case of any remaining non-daemon threads running.
@@ -67,11 +70,11 @@ public class Sorcer {
                 HelpFormatter helpFormatter = new HelpFormatter();
                 helpFormatter.printHelp(160,
                         "sorcer-boot [options] [service list files]\n"
-                        +"Service list file may be:\n" +
+                                + "Service list file may be:\n" +
                                 "- a .config file with list of service descriptors,\n"
-                        +"- an .opstring or .groovy Operational String file,\n"
-                        +"- an .oar or .jar file compliant with OAR specification,\n"
-                        +"- an :artifactId of a module that output is compliant with OAR specification (artifact*jar file is searched under $SORCER_HOME)",
+                                + "- an .opstring or .groovy Operational String file,\n"
+                                + "- an .oar or .jar file compliant with OAR specification,\n"
+                                + "- an :artifactId of a module that output is compliant with OAR specification (artifact*jar file is searched under $SORCER_HOME)",
                         "Start sorcer", options, null);
                 return;
             }
@@ -133,6 +136,12 @@ public class Sorcer {
         options.addOption(mode);
         options.addOption("h", "help", false, "Print this help");
 
+        Option rio = new Option(RIO, "List of opstrings to be started by the Rio Monitor (opstring) separated by the system path separator (" + File.pathSeparator + ")");
+        rio.setArgs(1);
+        rio.setArgName("opstrings");
+        rio.setType(String.class);
+        options.addOption(rio);
+
         return options;
     }
 
@@ -177,7 +186,7 @@ public class Sorcer {
                         throw new IllegalArgumentException("Cannot run in force-direct mode");
                     else
                         LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode");
-                else if(wait != ILauncher.WaitMode.start)
+                else if (wait != ILauncher.WaitMode.start)
                     if (mode.force)
                         throw new IllegalArgumentException("Cannot run in force-direct mode with 'wait' other than 'start'");
                     else
@@ -237,6 +246,11 @@ public class Sorcer {
 
         if (cmd.hasOption(PROFILE))
             launcher.setProfile(cmd.getOptionValue(PROFILE));
+
+        if(cmd.hasOption(RIO)){
+            String[] rioConfigs = StringUtils.tokenizerSplit(cmd.getOptionValue(RIO), File.pathSeparator);
+            launcher.setRioConfigs(new ArrayList<String>(Arrays.asList(rioConfigs)));
+        }
 
         return launcher;
     }

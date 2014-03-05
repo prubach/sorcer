@@ -54,6 +54,7 @@ public class SorcerLauncher extends Launcher {
             throw new IllegalStateException("This instance has already created an object");
 
         super.preConfigure();
+        updateMonitorConfig();
 
         try {
             Installer installer = new Installer();
@@ -81,8 +82,6 @@ public class SorcerLauncher extends Launcher {
     }
 
     protected void configure() {
-        updateMonitorConfig();
-
         //TODO RKR check grant
         Properties defaults = new Properties();
         defaults.putAll(properties);
@@ -98,19 +97,22 @@ public class SorcerLauncher extends Launcher {
     }
 
     private void updateMonitorConfig() {
-        if (profile == null) {
+        if (profile != null && profile.getMonitorConfigPaths() != null)
+            if (rioConfigs == null)
+                rioConfigs = Arrays.asList(profile.getMonitorConfigPaths());
+            else
+                Collections.addAll(rioConfigs, profile.getMonitorConfigPaths());
+
+        if (rioConfigs == null || rioConfigs.isEmpty())
             return;
+
+        List<String> paths = new ArrayList<String>(rioConfigs.size());
+        for (String path : rioConfigs) {
+            path = evaluator.eval(path);
+            if (new File(path).exists())
+                paths.add(path);
         }
-        String[] monitorConfigPaths = profile.getMonitorConfigPaths();
-        if (monitorConfigPaths != null && monitorConfigPaths.length != 0) {
-            List<String> paths = new ArrayList<String>(monitorConfigPaths.length);
-            for (String path : monitorConfigPaths) {
-                path = evaluator.eval(path);
-                if (new File(path).exists())
-                    paths.add(path);
-            }
-            properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
-        }
+        properties.put(P_MONITOR_INITIAL_OPSTRINGS, StringUtils.join(paths, File.pathSeparator));
     }
 
     public static boolean checkEnvironment() throws MalformedURLException {

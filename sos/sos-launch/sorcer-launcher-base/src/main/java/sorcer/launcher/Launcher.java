@@ -41,6 +41,11 @@ public abstract class Launcher implements ILauncher {
     protected File logDir;
     protected File configDir;
     protected List<String> configs = Collections.emptyList();
+
+    /**
+     * list of configuration files for the Rio Monitor (opstrings)
+     */
+    protected List<String> rioConfigs;
     protected SorcerListener sorcerListener;
 
     protected Map<String, String> properties;
@@ -75,7 +80,7 @@ public abstract class Launcher implements ILauncher {
             //"org.sorcersoft.sorcer:sorcer-launcher",
 
             //required for sos.Handler to work
-            "org.sorcersoft.sorcer:sos-platform",
+//            "org.sorcersoft.sorcer:sos-platform",
 
             "org.codehaus.groovy:groovy-all",
             "org.apache.commons:commons-lang3",
@@ -165,6 +170,7 @@ public abstract class Launcher implements ILauncher {
 //        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_CLASS_LOADER, "sorcer.rmi.ArtifactRmiLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
+        sysProps.put(RMI_SERVER_CODEBASE, "artifact:org.sorcersoft.sorcer/sos-platform/"+SORCER_VERSION+";"+SorcerEnv.getWebsterUrl()+"/@sorcer");
 
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
@@ -231,4 +237,8 @@ public abstract class Launcher implements ILauncher {
         this.waitMode = waitMode;
     }
 
+    @Override
+    public void setRioConfigs(List<String> rioConfigs) {
+        this.rioConfigs = rioConfigs;
+    }
 }

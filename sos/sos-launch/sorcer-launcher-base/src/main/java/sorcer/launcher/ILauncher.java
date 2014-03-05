@@ -44,6 +44,8 @@ public interface ILauncher {
 
     void setWaitMode(WaitMode waitMode);
 
+    void setRioConfigs(List<String> rioConfigs);
+
     public enum WaitMode {
         no, start, end
     }
