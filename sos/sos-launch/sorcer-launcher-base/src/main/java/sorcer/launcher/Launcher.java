@@ -163,8 +163,8 @@ public abstract class Launcher implements ILauncher {
         Map<String, String> sysProps = new HashMap<String, String>();
         sysProps.put(MAX_DATAGRAM_SOCKETS, "1024");
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-//        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
-        sysProps.put(RMI_SERVER_CLASS_LOADER, "sorcer.rmi.ArtifactRmiLoader");
+        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
+        //sysProps.put(RMI_SERVER_CLASS_LOADER, "sorcer.rmi.ArtifactRmiLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
 
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
@@ -198,6 +198,7 @@ public abstract class Launcher implements ILauncher {
                 String p = Resolver.resolveAbsolute(artifact);
                 IOUtils.ensureFile(new File(p));
                 result.add(p);
+
             }
             result.add(new File(System.getProperty("java.home"), "lib/tools.jar").getPath());
             return result;

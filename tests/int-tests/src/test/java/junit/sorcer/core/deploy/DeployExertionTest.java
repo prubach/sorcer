@@ -60,8 +60,8 @@ public class DeployExertionTest extends DeploySetup implements SorcerConstants {
         //t0 = System.currentTimeMillis();
         //Util.waitForDeployment(manager);
         //System.out.println("Waited "+(System.currentTimeMillis()-t0)+" millis for [Sorcer OS] provisioning");
-        //Job f1 = Util.createJob();
-        Task f1 = Util.createTaskt();
+        Job f1 = Util.createJob();
+        //Task f1 = Util.createTaskt();
         assertTrue(f1.isProvisionable());
         verifyExertion(f1);
         /* Run it again to make sure that the existing deployment is used */

@@ -76,7 +76,7 @@ public class Deployment implements Arg, Serializable {
     // to be associated with signatures
     private String serviceType;
     private String providerName;
-    private String impl = "ServiceTasker";
+    private String impl = "sorcer.core.provider.ServiceTasker";
     private String websterUrl = Sorcer.getWebsterUrl();
     private String[] configs;
 
