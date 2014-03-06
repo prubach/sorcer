@@ -79,13 +79,13 @@ class AdderDeploymentConfig {
     //ResolverHelper.getResolver().getClassPathFor()
     //String[] codebaseJars = [Resolver.resolveRelative("org.sorcersoft.sorcer:sorcer-api"), Resolver.resolveRelative("org.sorcersoft.sorcer:ju-arithmetic-api")]
     String[] codebaseJars = ["org.sorcersoft.sorcer:ju-arithmetic-api:" + SorcerEnv.getSorcerVersion() ]
-    String[] implJars = ["org.sorcersoft.sorcer:ju-arithmetic-prv:" + SorcerEnv.getSorcerVersion() ]
+    String[] implJars = ["org.sorcersoft.sorcer:ju-arithmetic-cfg-all:" + SorcerEnv.getSorcerVersion() ]
     //String[] implJars = ResolverHelper.getResolver().getClassPathFor("org.sorcersoft.sorcer:ju-arithmetic-prv:" + SorcerEnv.getSorcerVersion());
-    /*String[] implJars = [ Resolver.resolveRelative("org.sorcersoft.sorcer:ju-arithmetic-api"),
-            Resolver.resolveRelative("org.sorcersoft.sorcer:ju-arithmetic-prv"),
-            Resolver.resolveRelative("org.sorcersoft.sorcer:commons-prv"),
-            Resolver.resolveRelative("org.sorcersoft.sorcer:sos-api"),
-            Resolver.resolveRelative("org.sorcersoft.sorcer:sorcer-api"),
-            Resolver.resolveRelative("org.sorcersoft.sorcer:sos-platform")];*/
-
+    /*String[] implJars = [ Resolver.resolveAbsolute("org.sorcersoft.sorcer:ju-arithmetic-api"),
+            Resolver.resolveAbsolute("org.sorcersoft.sorcer:ju-arithmetic-prv"),
+            Resolver.resolveAbsolute("org.sorcersoft.sorcer:commons-prv"),
+            Resolver.resolveAbsolute("org.sorcersoft.sorcer:sos-api"),
+            Resolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-api"),
+            Resolver.resolveAbsolute("org.sorcersoft.sorcer:sos-platform")];
+    */
 }

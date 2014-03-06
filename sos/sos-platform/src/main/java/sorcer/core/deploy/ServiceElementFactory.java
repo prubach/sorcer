@@ -169,7 +169,9 @@ public final class ServiceElementFactory {
 
 		/* Set ClassBundles to ServiceElement */
         service.setComponentBundle(main);
+        logger.info("Creating ServiceElement classpath: " + Arrays.toString(service.getComponentBundle().getJARs()));
         service.setExportBundles(exports.toArray(new ClassBundle[exports.size()]));
+        logger.info("Creating ServiceElement codebase: " + Arrays.toString(service.getExportURLs()));
 
         String serviceName;
         if(serviceDetails.name==null) {
@@ -205,7 +207,7 @@ public final class ServiceElementFactory {
 		/* Create simple ServiceBeanConfig */
         Map<String, Object> configMap = new HashMap<String, Object>();
         configMap.put(ServiceBeanConfig.NAME, serviceName);
-        configMap.put(ServiceBeanConfig.GROUPS, Sorcer.getLookupGroups());
+        configMap.put(ServiceBeanConfig.GROUPS, SorcerEnv.getLookupGroups());
         ServiceBeanConfig sbc = new ServiceBeanConfig(configMap,
                                                       new String[]{getConfigurationAsString(deployment.getConfigs())});
         sbc.addAdditionalEntries(new DeployInfo(deployment.getType().name(), deployment.getUnique().name(), deployment.getIdle()));
