@@ -33,7 +33,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -137,32 +136,27 @@ public class SorcerLauncher extends Launcher {
         for (String file : CLASS_PATH) {
             requiredClassPath.add(new File(Resolver.resolveAbsolute(file)).toURI().toURL());
         }
-        List<URL> actualClassPath = new ArrayList<URL>();
-        for (ClassLoader cl = SorcerLauncher.class.getClassLoader(); cl != null; cl = cl.getParent()) {
+        List<URL> actualClassPath = getClassPath(SorcerLauncher.class.getClassLoader());
+        List<URL> missingClassPath = new LinkedList<URL>(requiredClassPath);
+        missingClassPath.removeAll(actualClassPath);
+
+        // use logger, we won't be able to start in direct mode anyway
+        for (URL entry : missingClassPath)
+            log.warn("Missing required ClassPath element {}", entry);
+
+        return missingClassPath.isEmpty();
+    }
+
+    static List<URL> getClassPath(ClassLoader classLoader) {
+        List<URL> result = new ArrayList<URL>();
+        ClassLoader cl = classLoader;
+        do {
             if (cl instanceof URLClassLoader) {
                 URL[] urls = ((URLClassLoader) cl).getURLs();
-                Collections.addAll(actualClassPath, urls);
-                Comparator<URL> c = new Comparator<URL>() {
-                    @Override
-                    public int compare(URL o1, URL o2) {
-                        return o1.toExternalForm().compareTo(o2.toExternalForm());
-                    }
-                };
-                Arrays.sort(urls, c);
-
-                List<URL> commonUrls = new LinkedList<URL>();
-                for (URL url : requiredClassPath) {
-                    int i = Arrays.binarySearch(urls, url, c);
-                    if (i >= 0)
-                        commonUrls.add(url);
-                }
-                requiredClassPath.removeAll(commonUrls);
+                Collections.addAll(result, urls);
             }
-        }
-        // use logger, we won't be able to start in direct mode anyway
-        for (URL entry : requiredClassPath)
-            log.warn("Missing required ClassPath element {}", entry);
-        return requiredClassPath.isEmpty();
+        } while ((cl = cl.getParent()) != null);
+        return result;
     }
 
     protected List<String> getConfigs() {

@@ -24,6 +24,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 import sorcer.launcher.process.DestroyingListener;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
@@ -181,20 +182,12 @@ public class Sorcer {
             if (envOk && debugPort == null && wait == ILauncher.WaitMode.start) {
                 launcher = createSorcerLauncher();
             } else {
-                if (debugPort == null)
-                    if (mode.force)
-                        throw new IllegalArgumentException("Cannot run in force-direct mode");
-                    else
-                        LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode");
-                else if (wait != ILauncher.WaitMode.start)
-                    if (mode.force)
-                        throw new IllegalArgumentException("Cannot run in force-direct mode with 'wait' other than 'start'");
-                    else
-                        LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode with 'wait' other than 'start'");
-                else if (mode.force)
-                    throw new IllegalArgumentException("Cannot run in force-direct mode with debug");
+                if (wait != ILauncher.WaitMode.start)
+                    report(mode, "Cannot run in {} mode with 'wait' other than 'start'", mode.paramValue);
+                else if (debugPort != null)
+                    report(mode, "Cannot run in {} mode with debug", mode.paramValue);
                 else
-                    LoggerFactory.getLogger(Sorcer.class).warn("Cannot run in force-direct mode with debug");
+                    report(mode, "Cannot run in {} because of the environment", mode.paramValue);
             }
         }
 
@@ -253,6 +246,13 @@ public class Sorcer {
         }
 
         return launcher;
+    }
+
+    private static void report(Mode mode, String message, Object...args){
+        if(mode.force)
+            throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).getMessage());
+        else
+            LoggerFactory.getLogger(Sorcer.class).warn(message, args);
     }
 
     private static IForkingLauncher createForkingLauncher(Integer debugPort, ILauncher.WaitMode mode) {

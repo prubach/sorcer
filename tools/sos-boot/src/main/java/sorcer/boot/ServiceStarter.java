@@ -164,8 +164,15 @@ public class ServiceStarter {
         URL policyFileUrl = new File(policyFile).toURI().toURL();
         OpStringLoader loader = new OpStringLoader();
         for (File opString : files) {
-            OperationalString[] operationalStrings = loader.parseOperationalString(opString);
-            result.addAll(createServiceDescriptors(operationalStrings, policyFileUrl));
+            try {
+                OperationalString[] operationalStrings = loader.parseOperationalString(opString);
+                result.addAll(createServiceDescriptors(operationalStrings, policyFileUrl));
+            } catch (Exception x) {
+                log.warn("Could not parse Operational String {}", opString, x);
+            }catch (NoClassDefFoundError x){
+                log.warn("Could not parse Operational String {}", opString, x);
+                throw x;
+            }
         }
         return result;
     }
