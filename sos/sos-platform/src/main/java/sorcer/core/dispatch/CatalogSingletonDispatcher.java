@@ -18,7 +18,6 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.provider.Provider;
@@ -34,12 +33,14 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
             Set<Context> sharedContexts,
             boolean isSpawned, 
             Provider provider,
-            ProvisionManager provisionManager) throws Throwable {
-		super(job, sharedContexts, isSpawned, provider, provisionManager);
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws Throwable {
+		super(job, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws SignatureException,
 			ExertionException {
+        checkAndDispatchExertions();
 		// boolean isPersisted = (job.getStatus() != INITIAL)?false:true;
 		xrt.setStatus(RUNNING);
 		collectResults();
@@ -47,11 +48,11 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 
 	public void collectResults() throws ExertionException, SignatureException {
 		Task result = null;
-		Task exertion = (Task) ((Job) xrt).exertionAt(0);
+		Task exertion = (Task) ((Job) xrt).get(0);
 		exertion.startExecTime();
 		// Provider is expecting exertion field in Context to be set.
-		exertion.getDataContext().setExertion(exertion);
 		try {
+			exertion.getContext().setExertion(exertion);
 			result = execTask(exertion);
 			if (result.getStatus() <= FAILED) {
 				xrt.setStatus(FAILED);
@@ -69,7 +70,7 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 				xrt.setStatus(DONE);
 				dispatchers.remove(xrt.getId());
 			}
-		} catch (RemoteException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExertionException(e);
 

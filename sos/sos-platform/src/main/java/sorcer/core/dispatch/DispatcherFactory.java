@@ -19,7 +19,7 @@ package sorcer.core.dispatch;
 
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
-import sorcer.service.Job;
+import sorcer.service.Exertion;
 
 /**
  * This interface must be implemented by all factory classes used to
@@ -30,10 +30,10 @@ public interface DispatcherFactory {
      * This method returns an instance of the appropriate subclass of
      * Dispatcher as determined from information provided by the given
      * instance of ServiceJob.
-     * @param job The SORCER job that will be used to perform a collection 
+     * @param exertion The SORCER job that will be used to perform a collection
      * of SERVICE tasks.
      */
-	 public Dispatcher createDispatcher(Job job, Provider provider) throws DispatcherException;
+	 public Dispatcher createDispatcher(Exertion exertion, Provider provider) throws DispatcherException;
 	    
-	 public Dispatcher createDispatcher(Job job, Provider provider, String... config) throws DispatcherException;
+	 public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException;
 }

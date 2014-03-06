@@ -23,7 +23,7 @@ import net.jini.core.entry.Entry;
 import net.jini.id.Uuid;
 import net.jini.lookup.entry.Name;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.ExecState;
+import sorcer.service.Exec;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 
@@ -47,6 +47,7 @@ public class ExertionEnvelop implements Entry {
 
 	public Exertion exertion;
 
+	// used by the loki framework
 	public Entry entry;
 	
 	public byte[] encryptedExertion;
@@ -55,7 +56,7 @@ public class ExertionEnvelop implements Entry {
 
 	public static ExertionEnvelop getTemplate() {
 		ExertionEnvelop ee = new ExertionEnvelop();
-		ee.state = new Integer(ExecState.INITIAL);
+		ee.state = new Integer(Exec.INITIAL);
 
 		return ee;
 	}
@@ -129,7 +130,7 @@ public class ExertionEnvelop implements Entry {
 		ExertionEnvelop ee = ExertionEnvelop.getTemplate();
 		ee.parentID = parentID;
 		ee.exertionID = childID;
-		ee.state = new Integer(ExecState.DONE); // must be set to DONE (completed)
+		ee.state = new Integer(Exec.DONE); // must be set to DONE (completed)
 
 		return ee;
 	}
@@ -141,6 +142,29 @@ public class ExertionEnvelop implements Entry {
 
 	public long resultLeaseTime() {
 		return Long.MAX_VALUE;
+	}
+	
+//	public Class serviceType;
+//	public String providerName;
+//	public Uuid exertionID;
+//	public Uuid parentID;
+//	public Boolean isEncrypted;
+//	public Boolean isJob;
+//	public Integer state;
+//	public Exertion exertion;
+//	public Entry entry;
+//	public byte[] encryptedExertion;
+//	public Subject providerSubject;
+	
+	public String toString() {
+		StringBuffer sb = new StringBuffer(exertion.getClass().getName());
+		sb.append("id=").append(exertionID)
+		.append(", name=").append(exertion.getName())
+		.append(", state=").append(state)
+		.append(", serviceType=").append(serviceType)
+		.append(", providerName=").append(providerName);
+//		.append(", exertion=").append(exertion);
+		return sb.toString();
 	}
 	
 	public String describe() {

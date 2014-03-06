@@ -1,8 +1,7 @@
-/**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
- *
+/*
+ * Copyright 2011 the original author or authors.
+ * Copyright 2011 SorcerSoft.org.
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package sorcer.tools.shell.cmds;
 
 import java.io.PrintStream;
@@ -29,13 +29,13 @@ import net.jini.id.Uuid;
 import sorcer.core.monitor.MonitorUIManagement;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.jini.lookup.AttributesUtil;
-import sorcer.service.ExecState.Category;
+import sorcer.service.ContextException;
+import sorcer.service.Exec.State;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionInfo;
 import sorcer.service.MonitorException;
 import sorcer.service.ServiceExertion;
 import sorcer.tools.shell.NetworkShell;
-import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 
 public class EmxCmd extends ShellCmd {
@@ -45,7 +45,7 @@ public class EmxCmd extends ShellCmd {
 
 		NOT_LOADED_MSG = "***command not loaded due to conflict";
 
-		COMMAND_USAGE = "emx [-xrt | - emx | <EMX/exertion index> | -v | -x]"
+		COMMAND_USAGE = "emx [-xrt | -emx | <EMX/exertion index> | -v | -x]"
 			+ "\n\t\t\t  | [ -a | -d | -f | -r | -y | <exertion index>] "
 			+ "\n\t\t\t  | (-e | -c | -cc | -ccc) [<exertion index>] [-s <filename>]";
 
@@ -61,8 +61,8 @@ public class EmxCmd extends ShellCmd {
 				+ "\n  -y   show asynchronous monitored exertions"
 				+ "\n  -e   print the selected exertion"
 				+ "\n  <exertion index>   select the exertion given <exertion index>"
-				+ "\n  -c   print the data dataContext of selected exertion"
-				+ "\n  -cc   print the control dataContext of selected exertion"
+				+ "\n  -c   print the data context of selected exertion"
+				+ "\n  -cc   print the control context of selected exertion"
 				+ "\n  -ccc   print both data and control contexts of selected exertion"
 				+ "\n  -s   save the selected exertion in a given file ";
 
@@ -79,13 +79,13 @@ public class EmxCmd extends ShellCmd {
 	public EmxCmd() {
 	}
 
-	public void execute() throws RemoteException, MonitorException {
+	public void execute() throws RemoteException, MonitorException, ContextException {
 		out = NetworkShell.getShellOutputStream();
 		StringTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		int myIdx = 0;
 		String next = null;
-		Category xetType = null;
+		State xrtType = null;
 
 		if (numTokens == 0) {
 			showEmxServices();
@@ -112,8 +112,8 @@ public class EmxCmd extends ShellCmd {
 			} else if (next.equals("-d") || next.equals("-r")
 					|| next.equals("-f") || next.equals("-f")
 					|| next.equals("-a") || next.equals("-y")) {
-				xetType = getStatus(next);
-				printMonitoredExertions(xetType);
+				xrtType = getStatus(next);
+				printMonitoredExertions(xrtType);
 			} else if (next.equals("-x")) {
 				// clear monitor selection
 				selectedMonitor = -1;
@@ -129,7 +129,7 @@ public class EmxCmd extends ShellCmd {
 					ExertionInfo xrtInfo = exertionInfos[selectedExertion];
 					printExertion(xrtInfo.getStoreId(), true, false);
 				}
-			} else if (next.equals("-controlContext")) {
+			} else if (next.equals("-cc")) {
 				isEmxMode = false;
 				if (selectedExertion >= 0) {
 					ExertionInfo xrtInfo = exertionInfos[selectedExertion];
@@ -174,13 +174,13 @@ public class EmxCmd extends ShellCmd {
 		} else if (numTokens == 2) {
 			next = myTk.nextToken();
 			if (next.equals("-e") || next.equals("-c")
-					|| next.equals("-controlContext") || next.equals("-ccc")) {
+					|| next.equals("-cc") || next.equals("-ccc")) {
 				isEmxMode = false;
 				boolean isContext = false;
 				boolean isControlContext = false;
 				if (next.equals("-c"))
 					isContext = true;
-				if (next.equals("-controlContext"))
+				if (next.equals("-cc"))
 					isControlContext = true;
 				if (next.equals("-ccc")) {
 					isContext = true;
@@ -209,7 +209,7 @@ public class EmxCmd extends ShellCmd {
 	}
 
 	private void printExertion(Uuid id, boolean isContext,
-			boolean isControlContext) throws RemoteException, MonitorException {
+			boolean isControlContext) throws RemoteException, MonitorException, ContextException {
 		Exertion xrt = null;
 		if (selectedMonitor >= 0) {
 			xrt = ((MonitorUIManagement) emxMonitors[selectedMonitor].service)
@@ -223,7 +223,7 @@ public class EmxCmd extends ShellCmd {
 		out.println(((ServiceExertion) xrt).describe());
 		if (isContext) {
 			out.println("\nData Context:");
-			out.println(xrt.getDataContext());
+			out.println(xrt.getContext());
 		}
 		if (isControlContext) {
 			out.print("\nControl Context:");
@@ -231,7 +231,7 @@ public class EmxCmd extends ShellCmd {
 		}
 	}
 
-	private void printMonitoredExertions(Category xetType)
+	private void printMonitoredExertions(State xetType)
 			throws RemoteException, MonitorException {
 		if (emxMonitors == null || emxMonitors.length == 0) {
 			findMonitors();
@@ -369,7 +369,7 @@ public class EmxCmd extends ShellCmd {
 	}
 
 	static ServiceItem[] findMonitors() throws RemoteException {
-		emxMonitors = ReggieHelper.lookup(new Class[]{MonitoringManagement.class});
+		emxMonitors = DiscoCmd.lookup(new Class[] { MonitoringManagement.class });
 		return emxMonitors;
 	}
 
@@ -381,26 +381,26 @@ public class EmxCmd extends ShellCmd {
 		return emxList;
 	}
 
-	private Category getStatus(String option) {
+	private State getStatus(String option) {
 		if (option.equals("-r"))
-			return Category.RUNNING;
+			return State.RUNNING;
 		else if (option.equals("-a"))
-			return Category.ALL;
+			return State.NULL;
 		else if (option.equals("-f"))
-			return Category.FAILED;
+			return State.FAILED;
 		else if (option.equals("-d"))
-			return Category.DONE;
+			return State.DONE;
 		else if (option.equals("-i"))
-			return Category.INITIAL;
+			return State.INITIAL;
 		else if (option.equals("-u"))
-			return Category.SUSPENDED;
+			return State.SUSPENDED;
 		else if (option.equals("-p"))
-			return Category.STOPPED;
+			return State.STOPPED;
 		else if (option.equals("-s"))
-			return Category.INSPACE;
+			return State.INSPACE;
 		else if (option.equals("-y"))
-			return Category.ASYNC;
+			return State.ASYNC;
 
-		return Category.ALL;
+		return State.NULL;
 	}
 }

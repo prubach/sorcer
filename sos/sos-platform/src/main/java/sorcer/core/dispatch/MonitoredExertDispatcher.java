@@ -37,19 +37,11 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
 import sorcer.core.monitor.MonitorSessionManagement;
-import sorcer.service.Monitorable;
+import sorcer.service.*;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
 import sorcer.core.signature.NetSignature;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.MonitorException;
 import sorcer.core.monitor.MonitoringSession;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Service;
-import sorcer.service.SignatureException;
 
 public abstract class MonitoredExertDispatcher extends ExertDispatcher
         implements SorcerConstants {
@@ -65,8 +57,10 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     protected int doneExertionIndex = 0;
 
     public MonitoredExertDispatcher(Exertion exertion,
-                                    Set<Context> sharedContext, boolean isSpawned, Provider provider) throws Exception {
-        super(exertion, sharedContext, isSpawned, provider, null);
+                                    Set<Context> sharedContext, boolean isSpawned, Provider provider,
+                                    ProvisionManager provisionManager,
+                                    ProviderProvisionManager providerProvisionManager) throws Exception {
+        super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 
         if (sessionMonitor == null)
             sessionMonitor = Accessor.getService(MonitoringManagement.class);
@@ -108,20 +102,21 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         return registeredExertion;
     }
 
-    protected void preExecExertion(Exertion exertion) throws ExertionException {
-        try {
-            exertion.getControlContext().appendTrace(provider.getProviderName()
-                    + " dispatcher: " + getClass().getName());
-        } catch (RemoteException e) {
-            // ignore it, local call
-        }
-        ExertionSessionInfo.add((ServiceExertion)exertion);
-        //Provider is expecting exertion field in Context to be set.
-        xrt.getContext().setExertion(xrt);
-        updateInputs(exertion);
-        ((ServiceExertion)exertion).startExecTime();
-        ((ServiceExertion) exertion).setStatus(RUNNING);
-    }
+	protected void preExecExertion(Exertion exertion) throws ExertionException {
+		try {
+			exertion.getControlContext().appendTrace(provider.getProviderName() 
+					+ " dispatcher: " + getClass().getName());
+
+			ExertionSessionInfo.add((ServiceExertion)exertion);
+			//Provider is expecting exertion field in Context to be set.
+			xrt.getContext().setExertion(xrt); 
+			updateInputs(exertion);
+		} catch (Exception e) {
+			throw new ExertionException(e);
+		}
+		((ServiceExertion)exertion).startExecTime();
+		((ServiceExertion) exertion).setStatus(RUNNING);
+	}
 
     protected void postExecExertion(Exertion result) throws ExertionException {
         ServiceExertion sxrt = (ServiceExertion)result;
@@ -129,25 +124,25 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             ((NetJob)xrt).setExertionAt(result, ((ServiceExertion) result).getIndex());
         else
             xrt = sxrt;
-
-        if (sxrt.getStatus() > ERROR && sxrt.getStatus() != SUSPENDED) {
-            sxrt.setStatus(DONE);
-            collectOutputs(result);
+        try {
+            if (sxrt.getStatus() > ERROR && sxrt.getStatus() != SUSPENDED) {
+                sxrt.setStatus(DONE);
+                collectOutputs(result);
+            }
+        } catch (ContextException e) {
+            throw new ExertionException(e);
         }
         if (sxrt.getStatus() != DONE)
             state = sxrt.getStatus();
-
         xrt.stopExecTime();
         dispatchers.remove(xrt.getId());
         ExertionSessionInfo.removeLease();
         dThread.stop = true;
     }
-
     protected void execExertion(Exertion exertion) throws ExertionException,
             SignatureException, RemoteException {
         ServiceExertion ei = (ServiceExertion) exertion;
         preExecExertion(exertion);
-
         logger.log(Level.INFO,
                 "Prexec Exertion done .... noe executing exertion");
         try {
@@ -161,7 +156,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             try {
                 if (ei.isTask())
                     ((MonitoringSession) ((ServiceExertion) exertion).getMonitorSession())
-                            .changed(((NetTask) exertion).getContext(), Category.FAILED);
+                            .changed(((NetTask) exertion).getContext(), State.FAILED);
             } catch (Exception ex0) {
                 ex0.printStackTrace();
             } finally {

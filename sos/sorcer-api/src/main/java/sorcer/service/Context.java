@@ -32,6 +32,7 @@ import sorcer.core.SorcerConstants;
 //import sorcer.core.context.ArrayContext;
 //import sorcer.core.context.ContextLink;
 //import sorcer.core.context.model.par.Par;
+import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.Provider;
 import sorcer.security.util.SorcerPrincipal;
 
@@ -85,6 +86,9 @@ import sorcer.security.util.SorcerPrincipal;
 public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 		Invocation<T>, Contexter<T>, Revaluation {
 
+	/** parameter (par) */
+	final static String PATH_PAR = "par";
+	
 	/** context parameter (cp) */
 	final static String CONTEXT_PARAMETER = "cp";
 
@@ -230,6 +234,15 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 *            The identifier to set.
 	 */
 	public void setId(Uuid contextId);
+
+	/**
+	 * Returns a value at the path if exists, otherwise a value of the path that
+	 * ends with the last attribute of the given path.
+	 * 
+	 * @param path
+	 *            The path of a context value.
+	 */
+	public T getWeakValue(String path) throws ContextException;
 
 	/**
      */
@@ -513,13 +526,10 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	public Object addValue(Identifiable value) throws ContextException;
 
-    // TODO PAR related
-	/*public Par addPar(Par value) throws ContextException;
-	
 	public Par addPar(String path, Object value) throws ContextException;
 
 	public Par getPar(String path) throws ContextException;
-*/
+
 	public Object putValue(String path, Object value, String association)
 			throws ContextException;
 
@@ -1119,6 +1129,8 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	public int size();
 
+	String getUserName();
+	 
 	public enum Type {
 		ASSOCIATIVE, SHARED, POSITIONAL, LIST, INDEXED, ARRAY
 	}

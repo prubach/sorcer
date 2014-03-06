@@ -31,37 +31,22 @@ import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
-import sorcer.core.dispatch.ExertionSorter;
-import sorcer.core.dispatch.SortingException;
+import sorcer.core.deploy.Deployment;
+import sorcer.core.dispatch.*;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
-import sorcer.core.dispatch.ProvisionManager;
-import sorcer.core.exertion.NetJob;
+import sorcer.core.context.model.par.Par;
+import sorcer.core.exertion.ObjectJob;
 import sorcer.core.provider.ControlFlowManager;
+import sorcer.core.provider.Jobber;
+import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
 import sorcer.jini.lookup.ProviderID;
-import sorcer.service.Accessor;
-import sorcer.service.Arg;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
-import sorcer.service.ExecState;
-import sorcer.service.Exerter;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.core.provider.Jobber;
-import sorcer.service.Service;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Setter;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.core.provider.Spacer;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
-import sorcer.service.Task;
 import sorcer.service.txmgr.TransactionManagerAccessor;
 
 /**
@@ -75,7 +60,7 @@ public class ServiceExerter implements Exerter, Callable {
     private ServiceExertion exertion;
     private Transaction transaction;
     private static MutualExclusion locker;
-    private ProvisionManager provisionManager;
+    private ProviderProvisionManager providerProvisionManager;
 
     public ServiceExerter() {
     }
@@ -146,22 +131,50 @@ public class ServiceExerter implements Exerter, Callable {
         }
     }
 
+	private void initExecState() {
+		Exec.State state = exertion.getControlContext().getExecState();
+		if (state == Exec.State.INITIAL) {
+			for (Exertion e : exertion.getAllExertions()) {
+				if (((ControlContext)e.getControlContext()).getExecState() == Exec.State.INITIAL) { ;
+					((ServiceExertion)e).setStatus(Exec.INITIAL);
+				}
+			}
+		}
+	}
+	
     public Exertion exert0(Transaction txn, String providerName, Arg... entries)
             throws TransactionException, ExertionException, RemoteException {
+		initExecState();
         try {
             if (entries != null && entries.length > 0) {
                 exertion.substitute(entries);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ExertionException(ex);
-        }
-        if (exertion instanceof Job && ((Job) exertion).size() == 1) {
-            return processAsTask();
-        }
-        transaction = txn;
-        Context<?> cxt = exertion.getDataContext();
+            // PROVISIONING for TASKS using Deployment
+            // TODO PROVISIONING
+			if (exertion.isTask() && exertion.isProvisionable()) {
+				try {
+					List<Deployment> deployments = ((ServiceExertion) exertion)
+							.getDeployments();
+					if (deployments.size() > 0) {
+						ProvisionManager ProvisionManager = new ProvisionManager(exertion);
+						ProvisionManager.deployServices();
+					}
+				} catch (DispatcherException e) {
+					throw new ExertionException(
+							"Unable to deploy services for: "
+									+ exertion.getName(), e);
+				}
+			}
+			if (exertion instanceof Job && ((Job) exertion).size() == 1) {
+				return processAsTask();
+			}
+			transaction = txn;
+			Context<?> cxt = exertion.getDataContext();
         cxt.setExertion(exertion);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new ExertionException(ex);
+		}
         Signature signature = exertion.getProcessSignature();
         Service provider = null;
         try {
@@ -185,8 +198,11 @@ public class ServiceExerter implements Exerter, Callable {
                         }
                     }
                 }
-                else if (!(exertion instanceof NetJob))
-                    return ((Job) exertion).doJob(txn);
+				else if (exertion instanceof ObjectJob) {
+					return ((Job) exertion).doJob(txn);
+				} else if (exertion instanceof Block) {
+					return ((Block) exertion).doBlock(txn);
+				}
             }
             // check for missing signature of inconsistent PULL/PUSH cases
             signature = correctProcessSignature();
@@ -207,6 +223,8 @@ public class ServiceExerter implements Exerter, Callable {
         } catch (SignatureException e) {
             e.printStackTrace();
             throw new ExertionException(e);
+        } catch (ContextException se) {
+            throw new ExertionException(se);
         } catch (SortingException se) {
             throw new ExertionException(se);
         }
@@ -227,7 +245,7 @@ public class ServiceExerter implements Exerter, Callable {
                     }
                 } catch (ProvisioningException pe) {
                     logger.warning("* Provider not available and not provisioned: " + pe.getMessage());
-                    exertion.setStatus(ExecState.FAILED);
+                    exertion.setStatus(Exec.FAILED);
                     exertion.reportException(new RuntimeException(
                             "Cannot find provider and provisioning returned error: " + pe.getMessage()));
                     return exertion;
@@ -239,7 +257,7 @@ public class ServiceExerter implements Exerter, Callable {
         // .getServiceType());
         if (provider == null) {
             logger.warning("* Provider not available for: " + signature);
-            exertion.setStatus(ExecState.FAILED);
+            exertion.setStatus(Exec.FAILED);
             exertion.reportException(new RuntimeException(
                     "Cannot find provider for: " + signature));
             return exertion;
@@ -260,20 +278,18 @@ public class ServiceExerter implements Exerter, Callable {
 //			 } catch (Exception e) {
 //				 e.printStackTrace();
 //			 }
-            Exertion result = null;
-            try {
-                result = provider.service(exertion, transaction);
-            } finally {
-                /*if (provisionManager != null) {
-                    provisionManager.undeploy();
-                } */
-            }
+			Exertion result = provider.service(exertion, transaction);
             if (result != null && result.getExceptions().size() > 0) {
                 for (ThrowableTrace et : result.getExceptions()) {
                     if (et.getThrowable() instanceof Error)
-                        ((ServiceExertion) result).setStatus(ExecState.ERROR);
+                        ((ServiceExertion) result).setStatus(Exec.ERROR);
                 }
-                ((ServiceExertion)result).setStatus(ExecState.FAILED);
+				((ServiceExertion)result).setStatus(Exec.FAILED);
+			} else if (result == null) {
+				exertion.reportException(new ExertionException("ServiceExerter failed calling: " 
+						+ exertion.getProcessSignature()));
+				exertion.setStatus(Exec.FAILED);
+				result = exertion;
             }
             return result;
         }
@@ -293,8 +309,9 @@ public class ServiceExerter implements Exerter, Callable {
             TransactionException, ExertionException {
         ServiceID mutexId = provider.getProviderID();
         if (locker == null) {
-			locker = Accessor.getService(MutualExclusion.class);
-        }
+			locker = (MutualExclusion) ProviderLookup
+					.getService(MutualExclusion.class);
+		}
 		TransactionManagerAccessor.getTransactionManager();
         Transaction txn = null;
 
@@ -362,26 +379,25 @@ public class ServiceExerter implements Exerter, Callable {
         for (Exertion xrt : exertions) {
             List<Setter> ps = ((ServiceExertion) xrt).getPersisters();
             if (ps != null) {
-/*
-                for (Setter p : ps) {
-                    if (p != null && (p instanceof Par) && ((Par) p).isMappable()) {
-                        String from = (String) ((Par) p).getName();
-                        Object obj = null;
-                        if (xrt instanceof Job)
-                            obj = ((Job) xrt).getJobContext().getValue(from);
-                        else {
-                            obj = xrt.getContext().getValue(from);
-                        }
 
-                        if (obj != null)
-                            p.setValue(obj);
-                    }
-                }
-*/
-            }
-        }
-        return exertion;
-    }
+				for (Setter p : ps) {
+					if (p != null && (p instanceof Par) && ((Par) p).isMappable()) {
+						String from = (String) ((Par) p).getName();
+						Object obj = null;
+						if (xrt instanceof Job)
+							obj = ((Job) xrt).getJobContext().getValue(from);
+						else {
+							obj = xrt.getContext().getValue(from);
+						}
+						
+						if (obj != null)
+							p.setValue(obj);
+					}
+				}
+			}
+		}
+		return exertion;
+	}
 
     public Transaction getTransaction() {
         return transaction;

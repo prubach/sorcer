@@ -30,12 +30,7 @@ import java.util.logging.Logger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.signature.ServiceSignature;
-import sorcer.service.ComplexExertion;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.Signature;
-import sorcer.service.Strategy;
+import sorcer.service.*;
 import sorcer.util.Stopwatch;
 
 import static sorcer.core.SorcerConstants.*;
@@ -60,8 +55,10 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public final static String EXERTION_FLOW = "exertion" + CPS + "flow";
 
 	public final static String EXERTION_PROVISIONABLE = "exertion" + CPS + "provisionable";
+		
+	public final static String EXERTION_OPTI = "exertion" + CPS + "opti";
 
-    public final static String EXERTION_OPTI = "exertion" + CPS + "opti";
+	public final static String EXEC_STATE = "exertion" + CPS + "exec" + CPS + "state";
 
 	// exertion monitor state
 	public final static String EXERTION_MONITORABLE = "exertion" + CPS + "monitorable";
@@ -75,7 +72,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	// a rendezovous provider is either Jobber or Spacer
 	public final static String RENDEZVOUS_NAME = "rendezvous" + CPS + "name";
-
+	
 	public final static String NOTIFY_EXEC = "notify" + CPS + "execution" + CPS
 			+ "to:";
 
@@ -141,7 +138,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public final static String EXERTION_MONITORING = "exertion/monitor/enabled";
 
 	public final static String EXERTION_WAITABLE = "exertion/waitable";
-
+	
 	public final static String EXERTION_WAITED_FROM = "exertion/waited/from";
 
 	public final static String NOTIFICATION_MANAGEMENT = "exertion/notifications/enabled";
@@ -176,13 +173,15 @@ public class ControlContext extends ServiceContext implements Strategy {
         //setFlowType(Flow.SEQ);
 
 		setAccessType(Access.PUSH);
+		setExecState(Exec.State.INITIAL);
 		setComponentAttribute(GET_EXEC_TIME);
 		setComponentAttribute(SKIPPED_);
 		setComponentAttribute(EXERTION_REVIEW);
 		setComponentAttribute(PRIORITY);
 		setComponentAttribute(NOTIFY_EXEC);
 		setMonitorable(false);
-		setProvisionable(true);
+        // DEFAULT PROVISIONING DISABLED, but ENABLED on NetJobs and NetTasks
+		setProvisionable(false);
 		setNotifierEnabled(false);
 		setExecTimeRequested(true);
 		setWaitable(true);
@@ -192,12 +191,18 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public ControlContext(Exertion exertion) {
 		this();
-		this.exertion = exertion;
-		subjectValue = exertion.getName();
+        //DELETED ON MERGE		this.exertion = exertion;
+		//subjectValue = exertion.getName();
 		// make it visible via the path EXERTION
 		try {
-			if (exertion != null)
+			//Exertion erxt = (Exertion) getValue(EXERTION);
+			if (exertion != null) {
 				putValue(EXERTION, exertion);
+                //
+                if (exertion.isNet())
+                    setProvisionable(true);
+
+			}
 		} catch (ContextException e) {
 			e.printStackTrace();
 		}
@@ -250,7 +255,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		return PARALLEL.equals(get(EXERTION_FLOW));
 	}
 
-	public boolean isExertionMaster(Exertion exertion) {
+	public boolean isExertionMaster(Exertion exertion) throws ContextException {
 		return (exertion != null && exertion.getContext().getName().equals(
 				get(MASTER_EXERTION)));
 	}
@@ -309,37 +314,39 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public void setMonitorable(boolean state) {
 		put(EXERTION_MONITORABLE, new Boolean(state));
 	}
-
-	public void isProvisionable(Provision value) {
-		if (Provision.YES.equals(value) || Provision.TRUE.equals(value))
-				put(EXERTION_PROVISIONABLE, true);
-		else if (Provision.NO.equals(value) || Provision.FALSE.equals(value))
-			put(EXERTION_PROVISIONABLE, false);
+	
+	public boolean isProvisionable() {
+		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
 
 	public void setProvisionable(boolean state) {
 		put(EXERTION_PROVISIONABLE, new Boolean(state));
 	}
-
-    public void setOpti(Opti optiType) {
-        put(EXERTION_OPTI, optiType);
-    }
-
-    public Opti getOpti() {
-        return (Opti)get(EXERTION_OPTI);
-    }
-
-    public boolean isProvisionable() {
-		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
+	
+	public void setOpti(Opti optiType) {
+		put(EXERTION_OPTI, optiType);
+	}
+	
+	public Opti getOpti() {
+		return (Opti)get(EXERTION_OPTI);
 	}
 
-    public MonitoringManagement getMonitor() {
-        return (MonitoringManagement) get(EXERTION_MONITORING);
+    public void setExecState(Exec.State state) {
+        put(EXEC_STATE, state);
     }
+	
+	public Exec.State getExecState() {
+		return (Exec.State) get(EXEC_STATE);
+	}
+		
+	public MonitoringManagement getMonitor() {
+		return (MonitoringManagement) get(EXERTION_MONITORING);
+	}
 
-    public void setMonitor(MonitoringManagement monitor) {
-        put(EXERTION_MONITORING, monitor);
-    }
+	public void setMonitor(MonitoringManagement monitor) {
+		put(EXERTION_MONITORING, monitor);
+	}
+
 
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)
@@ -411,7 +418,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 			addAttributeValue(exertion, GET_EXEC_TIME, FALSE);
 	}
 
-	public boolean isExecTimeRequested(Exertion exertion) {
+	public boolean isExecTimeRequested(Exertion exertion) throws ContextException {
 		boolean result;
 		try {
 			String b = getAttributeValue(exertion, GET_EXEC_TIME);
@@ -434,18 +441,13 @@ public class ControlContext extends ServiceContext implements Strategy {
 			addAttributeValue(exertion, SKIPPED_, FALSE);
 	}
 
-	public boolean isSkipped(Exertion exertion) {
+	public boolean isSkipped(Exertion exertion) throws ContextException {
 		boolean result;
 		try {
 			String b = getAttributeValue(exertion, SKIPPED_);
 			result = TRUE.equals(b);
-		} catch (ClassCastException ex) {
-			// v04 control context
-			Hashtable table = (Hashtable) metacontext.get(SKIPPED_);
-			result = ((Boolean) table.get(exertion.getContext().getName()))
-					.booleanValue();
-			// upgrade to v05
-			setSkipped(exertion, result);
+		} catch (java.lang.ClassCastException e) {
+			throw new ContextException(e);
 		}
 		return result;
 	}
@@ -509,17 +511,17 @@ public class ControlContext extends ServiceContext implements Strategy {
 		return getAttributeValue(ex, NOTIFY_EXEC);
 	}
 
-	public void registerExertion(Exertion ex) {
-		if (ex instanceof ComplexExertion)
+	public void registerExertion(Exertion ex) throws ContextException  {
+		if (ex instanceof Job)
 			put(ex.getControlContext().getName(), ex.getId());
 		else {
 			put(ex.getContext().getName(), ex.getId());
 		}
-		setPriority(ex, MAX_PRIORITY - ex.getIndex());
+		setPriority(ex, MAX_PRIORITY - ((ServiceExertion)ex).getIndex());
 		setExecTimeRequested(ex, true);
 	}
 
-	public void deregisterExertion(ComplexExertion job, Exertion exertion) {
+	public void deregisterExertion(Job job, Exertion exertion) throws ContextException {
 		String path = exertion.getContext().getName();
 		// String datafileid = (String)getPathIds().get(path);
 
@@ -544,10 +546,10 @@ public class ControlContext extends ServiceContext implements Strategy {
 		// ((Hashtable)getMetacontext().get((String)e.nextElement())).remove(path
 		// );
 
-		for (int i = exertion.getIndex(); i < job.size(); i++) {
-			String oldPath = job.exertionAt(i).getContext().getName();
-			job.exertionAt(i).setIndex(i);
-			put(job.exertionAt(i).getContext().getName(), remove(oldPath));
+		for (int i = ((ServiceExertion) exertion).getIndex(); i < job.size(); i++) {
+			String oldPath = job.get(i).getContext().getName();
+			((ServiceExertion) job.get(i)).setIndex(i);
+			put(job.get(i).getContext().getName(), remove(oldPath));
 			Hashtable map;
 			Hashtable imc = getMetacontext();
 			String key;
@@ -556,7 +558,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 				key = (String) e2.nextElement();
 				map = (Hashtable) getMetacontext().get(key);
 				if (map != null && map.size() > 0 && map.containsKey(oldPath))
-					map.put(job.exertionAt(i).getContext().getName(), map
+					map.put(job.get(i).getContext().getName(), map
 							.remove(oldPath));
 			}
 		}
@@ -608,26 +610,26 @@ public class ControlContext extends ServiceContext implements Strategy {
 		}
 	}
 
-    public void updateExertionName(Exertion exertion) {
-        String key, oldPath = null;
-        Enumeration e = keys();
-        while (e.hasMoreElements()) {
-            key = (String) e.nextElement();
-            if (key.endsWith("[" + exertion.getIndex()
-                    + "]" + ID)) {
-                oldPath = key;
-                break;
-            }
-        }
-        String newPath = exertion.getContext().getName();
-        Hashtable map;
-        Hashtable imc = getMetacontext();
-        e = ((Hashtable) imc.get(CONTEXT_ATTRIBUTES)).keys();
-        while (e.hasMoreElements()) {
-            key = (String) e.nextElement();
-            map = (Hashtable) imc.get(key);
-            if (map != null && map.size() > 0 && map.containsKey(oldPath))
-                map.put(newPath, map.remove(oldPath));
+	public void updateExertionName(Exertion exertion) throws ContextException {
+		String key, oldPath = null;
+		Enumeration e = keys();
+		while (e.hasMoreElements()) {
+			key = (String) e.nextElement();
+			if (key.endsWith("[" + ((ServiceExertion)exertion).getIndex()
+					+ "]" + ID)) {
+				oldPath = key;
+				break;
+			}
+		}
+		String newPath = exertion.getContext().getName();
+		Hashtable map;
+		Hashtable imc = getMetacontext();
+		e = ((Hashtable) imc.get(CONTEXT_ATTRIBUTES)).keys();
+		while (e.hasMoreElements()) {
+			key = (String) e.nextElement();
+			map = (Hashtable) imc.get(key);
+			if (map != null && map.size() > 0 && map.containsKey(oldPath))
+				map.put(newPath, map.remove(oldPath));
 		}
 	}
 
@@ -650,6 +652,15 @@ public class ControlContext extends ServiceContext implements Strategy {
 
 	public List<ThrowableTrace> getExceptions() {
 		return exceptions;
+	}
+	
+	public static String getStackTrace(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw, true);
+		if (t.getStackTrace() != null) t.printStackTrace(pw);
+		pw.flush();
+		sw.flush();
+		return sw.toString();
 	}
 
 	public String describeExceptions() {

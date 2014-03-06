@@ -18,8 +18,6 @@
 package sorcer.service;
 
 import net.jini.id.Uuid;
-import sorcer.service.ExecState.Category;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class ExertionInfo implements Serializable {
 
 	private Uuid id;
 
-	private Integer status = ExecState.INITIAL;
+	private Integer status = Exec.INITIAL;
 
 	private List<String> trace;
 	
@@ -111,7 +109,7 @@ public class ExertionInfo implements Serializable {
 	public String describe() {
 		StringBuilder info = new StringBuilder().append("name: ").append(name);
 		info.append("  ID: ").append(id);
-		info.append("  state: ").append(Category.name(status));
+		info.append("  state: ").append(Exec.State.name(status));
 		info.append("\nsignature: ").append(signature);
 		info.append("\ntrace: ").append(trace);
 		return info.toString();

@@ -18,15 +18,14 @@
 package sorcer.core.exertion;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Condition;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.core.context.ThrowableTrace;
+import sorcer.service.*;
 
 /**
  * The alternative Exertion that executes sequentially a collection of optional
@@ -35,12 +34,18 @@ import sorcer.service.Task;
  * 
  * @author Mike Sobolewski
  */
-public class AltExertion extends Task {
+@SuppressWarnings("unchecked")
+public class AltExertion extends Task implements ConditionalExertion {
 
 	private static final long serialVersionUID = 4012356285896459828L;
 	
 	protected List<OptExertion> optExertions;
 
+	public AltExertion(OptExertion... optExertions) {
+		super();
+		this.optExertions = Arrays.asList(optExertions);
+	}
+	
 	public AltExertion(String name, OptExertion... optExertions) {
 		super(name);
 		this.optExertions = Arrays.asList(optExertions);
@@ -59,9 +64,11 @@ public class AltExertion extends Task {
 			for (int i = 0; i < optExertions.size(); i++) {
 				opt = optExertions.get(i);
 				if (opt.condition.isTrue()) {
-					optExertions.set(i, (OptExertion) opt.exert(txn));
-					dataContext = (ServiceContext)optExertions.get(i).getContext();
-					controlContext = optExertions.get(i).getControlContext();
+					opt.isActive = true;
+					opt.getTarget().getDataContext().append(opt.condition.getConditionalContext());					
+					opt.setTarget(opt.getTarget().exert(txn));
+					dataContext = (ServiceContext)opt.getTarget().getContext();
+					controlContext.append(opt.getTarget().getControlContext());
 					dataContext.putValue(Condition.CONDITION_VALUE, true);
 					dataContext.putValue(Condition.CONDITION_TARGET, opt.getName());
 					return this;
@@ -69,10 +76,28 @@ public class AltExertion extends Task {
 			}
 			dataContext.putValue(Condition.CONDITION_VALUE, false);
 			dataContext.putValue(Condition.CONDITION_TARGET, opt.getName());
+			dataContext.setExertion(null);
 		} catch (Exception e) {
 			throw new ExertionException(e);
 		}
 		return this;
+	}
+	
+	public OptExertion getActiveOptExertion() {
+		OptExertion active = null;
+		for (OptExertion oe : optExertions) {
+			if (oe.isActive())
+				return oe;
+		}
+		return active;
+	}
+		
+	public List<OptExertion> getOptExertions() {
+		return optExertions;
+	}
+
+	public void setOptExertions(List<OptExertion> optExertions) {
+		this.optExertions = optExertions;
 	}
 
 	public OptExertion getOptExertion(int index) {
@@ -82,4 +107,70 @@ public class AltExertion extends Task {
 	public boolean isConditional() {
 		return true;
 	}
+	
+	public void reset(int state) {
+		for(ServiceExertion e : optExertions)
+			e.reset(state);
+		
+		this.setStatus(state);
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Conditional#getConditions()
+	 */
+	@Override
+	public List<Conditional> getConditions() {
+		List<Conditional> cs = new ArrayList<Conditional>(optExertions.size());
+		for (OptExertion oe : optExertions)
+			cs.add(oe.getCondition());
+		return cs;
+	}
+
+	@Override
+	public List<ThrowableTrace> getExceptions(List<ThrowableTrace> exceptions) {
+		for (Exertion ext : optExertions) {
+			exceptions.addAll(((ServiceExertion)ext).getExceptions(exceptions));
+		}
+		exceptions.addAll(this.getExceptions());
+		return exceptions;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see sorcer.service.Exertion#getExertions()
+	 */
+	@Override
+	public List<Exertion> getExertions() {
+		ArrayList<Exertion> list = new ArrayList<Exertion>(1);
+		list.addAll(optExertions);
+		return list;
+	}
+	
+	public List<Exertion> getExertions(List<Exertion> exs) {
+		for (Exertion e : optExertions)
+			((ServiceExertion) e).getExertions(exs);
+		exs.add(this);
+		return exs;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.ConditionalExertion#getTargets()
+	 */
+	@Override
+	public List<Exertion> getTargets() {
+		List<Exertion> tl = new ArrayList<Exertion>(optExertions.size());
+		for (OptExertion oe : optExertions)
+			tl.add(oe.getTarget());
+		return tl;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exertion#isCompound()
+	 */
+	@Override
+	public boolean isCompound() {
+		return false;
+	}
+
 }

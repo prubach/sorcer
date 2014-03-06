@@ -18,15 +18,12 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.jini.config.ConfigurationException;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.ContextException;
-import sorcer.service.ExecState;
+import sorcer.service.Exec;
 import sorcer.service.Job;
 
 public class JobThread extends Thread {
@@ -47,29 +44,11 @@ public class JobThread extends Thread {
 	}
 
 	public void run() {
-		logger.finer("*** Exertion dispatcher started with control dataContext ***\n"
+		logger.finer("*** Exertion dispatcher started with control context ***\n"
 				+ job.getControlContext());
 		Dispatcher dispatcher = null;
 		try {
-			String exertionDeploymentConfig = null;
-/*
-			if (job.isProvisionable()) {
-				try {
-					exertionDeploymentConfig = 
-							(String)((ServiceProvider)provider).getProviderConfiguration().getEntry("sorcer.core.provider.ServiceProvider",
-									"exertionDeploymentConfig", 
-									String.class, 
-									null);
-				} catch (ConfigurationException e1) {
-					logger.log(Level.WARNING, "Unable to read property from configuration", e1);
-				}
-			}
-*/
-			if (exertionDeploymentConfig != null)
-				dispatcher = ExertionDispatcherFactory.getFactory().createDispatcher((Job) job, provider, exertionDeploymentConfig);
-			else
-				dispatcher = ExertionDispatcherFactory.getFactory().createDispatcher((Job) job, provider);
-							
+			dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(job, provider);
 			try {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());
@@ -78,9 +57,9 @@ public class JobThread extends Thread {
 			}
 			 int COUNT = 1000;
 			 int count = COUNT;
-			while (dispatcher.getState() != ExecState.DONE
-					&& dispatcher.getState() != ExecState.FAILED
-					&& dispatcher.getState() != ExecState.SUSPENDED) {
+			while (dispatcher.getState() != Exec.DONE
+					&& dispatcher.getState() != Exec.FAILED
+					&& dispatcher.getState() != Exec.SUSPENDED) {
 				 count--;
 				 if (count < 0) {
 				 logger.finer("*** Jobber's Exertion Dispatcher waiting in state: "

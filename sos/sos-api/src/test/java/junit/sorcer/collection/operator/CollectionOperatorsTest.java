@@ -18,9 +18,12 @@
 package junit.sorcer.collection.operator;
 
 import org.junit.Test;
+import sorcer.co.tuple.StrategyEntry;
+import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.ListContext;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
+import sorcer.service.Strategy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +33,7 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 import static sorcer.co.operator.*;
+import static sorcer.eo.operator.strategy;
 
 /**
  * @author Mike Sobolewski
@@ -138,8 +142,23 @@ public class CollectionOperatorsTest {
         assertTrue(context.add(30.0));
 		assertEquals(30.0, context.get(5));
 	}
-	
-	
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void entriesTest() throws ContextException {
+        Tuple2 e2 = entry("x1", 10.0);
+        //logger.info("tuple e2: " + e2);
+        assertEquals("x1", e2.key());
+        assertEquals(10.0, e2.value());
+
+        StrategyEntry se = entry("j1/j2", strategy(Strategy.Access.PULL, Strategy.Flow.PAR));
+        //logger.info("tuple se: " + se);
+        assertEquals(Strategy.Flow.PAR, se.strategy().getFlowType());
+        assertEquals(Strategy.Access.PULL, se.strategy().getAccessType());
+    }
+
+
+
 //	@SuppressWarnings("rawtypes")
 //	@Test
 //	public void entriesTest() throws ContextException {

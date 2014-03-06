@@ -58,7 +58,7 @@ import static sorcer.core.SorcerConstants.CPS;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public abstract class Job extends ServiceExertion implements ComplexExertion{
+public abstract class Job extends ServiceExertion implements CompoundExertion {
 
 	private static final long serialVersionUID = -6161435179772214884L;
 
@@ -97,7 +97,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	 * @param exertion
 	 *            The first Exertion of the job.
 	 */
-	public Job(Exertion exertion) {
+	public Job(Exertion exertion) throws ExertionException {
 		addExertion(exertion);
 	}
 
@@ -126,9 +126,10 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	}
 
 	public List<Signature> getSignatures() {
-		if (signatures != null)
-			for (int i = 0; i < signatures.size(); i++)
-				signatures.get(i).setProviderName(controlContext.getRendezvousName());
+//TODO check...
+//		if (signatures != null)
+//			for (int i = 0; i < signatures.size(); i++)
+//				signatures.get(i).setProviderName(controlContext.getRendezvousName());
 		return signatures;
 	}
 
@@ -137,8 +138,15 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exertion#isCompound()
+	 */
 	@Override
-    public boolean hasChild(String childName) {
+	public boolean isCompound() {
+		return true;
+	}
+	
+	public boolean hasChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return true;
@@ -169,7 +177,6 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return exertions.size();
 	}
 
-	@Override
     public int indexOf(Exertion ex) {
 		return exertions.indexOf(ex);
 	}
@@ -197,12 +204,12 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		if (contextId == null
 				&& (controlContext.getFlowType().equals(ControlContext.SEQUENTIAL)
                 || controlContext.getFlowType().equals(ControlContext.AUTO))) {
-			return (size() > 0) ? exertionAt(size() - 1) : null;
+			return (size() > 0) ? get(size() - 1) : null;
 		} else {
 			Exertion master = null;
 			for (int i = 0; i < size(); i++) {
-				if (exertionAt(i).getId().equals(contextId)) {
-					master = exertionAt(i);
+				if (get(i).getId().equals(contextId)) {
+					master = get(i);
 					break;
 				}
 			}
@@ -225,18 +232,18 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	}
 	
 	@Override
-    public Job addExertion(Exertion ex) {
+	public Exertion addExertion(Exertion ex) throws ExertionException {
 		exertions.add(ex);
-		// default Jobber signature
-//		if (exertions.size()==2)
-//			signatures.add(new NetSignature("service", RemoteJobber.class));
 		((ServiceExertion) ex).setIndex(exertions.indexOf(ex));
-		controlContext.registerExertion(ex);
+		try {
+			controlContext.registerExertion(ex);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
 		((ServiceExertion) ex).setParentId(getId());
 		return this;
 	}
 
-	@Override
     public void addExertions(List<Exertion> exertions) {
 		if (this.exertions != null)
 			this.exertions.addAll(exertions);
@@ -246,30 +253,26 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		}
 	}
 
-	@Override
     public void setExertions(List<Exertion> exertions) {
 		this.exertions = exertions;
 
 	}
 
-	@Override
-    public Job addExertion(Exertion exertion, int priority) {
+	public Job addExertion(Exertion exertion, int priority) throws ExertionException {
 		addExertion(exertion);
 		controlContext.setPriority(exertion, priority);
 		return this;
 	}
 
-	@Override
-    public Exertion removeExertion(Exertion exertion) {
+	public Exertion removeExertion(Exertion exertion) throws ContextException {
 		// int index = ((ExertionImpl)exertion).getIndex();
 		exertions.remove(exertion);
 		controlContext.deregisterExertion(this, exertion);
 		return exertion;
 	}
 
-	@Override
-    public void removeExertionAt(int index) {
-		removeExertion(exertionAt(index));
+	public void remove(int index) throws ContextException {
+		removeExertion(get(index));
 	}
 
 	/**
@@ -283,9 +286,8 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	 *                if the <tt>index</tt> is negative or not less than the
 	 *                current size of this <tt>Job</tt> object.
 	 */
-	@Override
-    public Exertion exertionAt(int index) {
-		return exertions.get(index);
+	public Exertion get(int index) {
+		return (Exertion) exertions.get(index);
 	}
 
 	public abstract Job doJob(Transaction txn) throws ExertionException,
@@ -328,7 +330,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	public void setSubject(Subject subject) {
 		this.subject = subject;
 		for (int i = 0; i < size(); i++) {
-			((ServiceExertion) exertionAt(i)).setSubject(subject);
+			((ServiceExertion) get(i)).setSubject(subject);
 		}
 	}
 
@@ -356,10 +358,10 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 	public String jobContextToString() throws ExertionException {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < exertions.size(); i++) {
-			if (((ServiceExertion) exertionAt(i)).isJob())
-				sb.append(((Job) exertionAt(i)).jobContextToString());
+			if (((ServiceExertion) get(i)).isJob())
+				sb.append(((Job) get(i)).jobContextToString());
 			else
-				sb.append(((ServiceExertion) exertionAt(i)).contextToString());
+				sb.append(((ServiceExertion) get(i)).contextToString());
 		}
 		return sb.toString();
 	}
@@ -373,7 +375,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		if (controlContext != null)
 			controlContext.setOwnerID(id);
 		for (int i = 0; i < exertions.size(); i++)
-			(((ServiceExertion) exertionAt(i))).setOwnerId(id);
+			(((ServiceExertion) get(i))).setOwnerId(id);
 	}
 
 	public String getContextName() {
@@ -388,7 +390,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		for (int i = 0; i < size(); i++) {
 			desc.append("\n===========\n Exertion ").append(i).append(
 					"\n===========\n").append(
-					((ServiceExertion) exertionAt(i)).describe());
+					((ServiceExertion) get(i)).describe());
 		}
 		desc.append("\n=== DONE PRINTING JOB ===\n");
 		return desc.toString();
@@ -571,14 +573,15 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return value;
 	}
 	
-	public ReturnPath getReturnJobPath() {
-		return dataContext.getReturnJobPath();
+	public ReturnPath getReturnPath() {
+		return dataContext.getReturnPath();
 	}
 	
 	@Override
 	public Object getReturnValue(Arg... entries) throws ContextException,
 			RemoteException {
-		ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
+		//ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
+        ReturnPath rp = ((ServiceContext) dataContext).getReturnPath();
 		Object obj = null;
 		if (rp != null) {
 			if (rp.path == null || rp.path.equals("self")) {
@@ -594,7 +597,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return obj;
 	}
 	
-	public Context getComponentContext(String path) {
+	public Context getComponentContext(String path) throws ContextException {
 		Exertion xrt = getComponentExertion(path);
 		return xrt.getContext();
 	}
@@ -616,7 +619,7 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		Exertion exti = this;
 		for (String attribute : attributes) {
 			if (((ServiceExertion) exti).hasChild(attribute)) {
-				exti = ((Job) exti).getChild(attribute);
+				exti = ((CompoundExertion) exti).getChild(attribute);
 				if (exti instanceof Task) {
 					break;
 				}
@@ -627,27 +630,32 @@ public abstract class Job extends ServiceExertion implements ComplexExertion{
 		return exti;
 	}
 	
-	public void substitute(Entry... entries) throws EvaluationException {
+	public void reset(int state) {
+		for(Exertion e : exertions)
+			((ServiceExertion)e).reset(state);
+		
+		this.setStatus(state);
+	}
+	
+	@Override
+	public ServiceExertion substitute(Arg... entries)
+			throws EvaluationException {
 		try {
-			for (Entry e : entries) {
-				if (e.path().indexOf(name) >= 0)
-					putJobValue(e.path(), e.value());
+			if (entries != null) {
+				for (Arg e : entries) {
+					if (e instanceof Entry)
+						if (((Entry) e).path().indexOf(name) >= 0)
+							putJobValue(((Entry) e).path(), ((Entry) e).value());
 
-				else
-					super.putValue(e.path(), e.value());
+						else
+							super.putValue(((Entry) e).path(),
+									((Entry) e).value());
+				}
 			}
 		} catch (ContextException ex) {
 			ex.printStackTrace();
 			throw new EvaluationException(ex);
 		}
-	}
-
-	@Override
-	public void setSessionId(Uuid id) {
-		super.setSessionId(id);
-		List<Exertion> v = getExertions();
-		for (Exertion aV : v) {
-			((ServiceExertion) aV).setSessionId(id);
-		}
+		return this;
 	}
 }

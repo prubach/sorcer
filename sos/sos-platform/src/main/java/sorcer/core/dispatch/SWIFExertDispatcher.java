@@ -31,7 +31,6 @@ import javax.xml.rpc.ServiceFactory;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
-import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.service.Context;
@@ -50,8 +49,9 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
                                Set<Context> sharedContext,
                                boolean isSpawned,
                                Provider provider,
-                               ProvisionManager provisionManager) {
-        super(job, sharedContext, isSpawned, provider, provisionManager);
+                               ProvisionManager provisionManager,
+                               ProviderProvisionManager providerProvisionManager) {
+        super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
         DispatchThread gthread = new DispatchThread();
         gthread.start();
         try {
@@ -73,9 +73,13 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
         // the jobExertion But in space, all inputs to a new job are to be
         // updated before
         // dropping.
-        if (((ServiceExertion) exertion).isTask()) {
-            updateInputs(exertion);
-        }
+		try {
+			if (((ServiceExertion) exertion).isTask()) {
+				updateInputs(exertion);
+			}
+		} catch (Exception e) {
+			throw new ExertionException(e);
+		}
         ((ServiceExertion) exertion).startExecTime();
         ((ServiceExertion) exertion).setStatus(RUNNING);
     }
@@ -109,29 +113,25 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
         return (ServiceExertion) result;
     }
 
-    protected void postExecExertion(Exertion ex, Exertion result)
-            throws SignatureException, ExertionException {
-        ((ServiceExertion) result).stopExecTime();
-        ServiceExertion ser = (ServiceExertion) result;
-        ((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
-        if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
-            ser.setStatus(DONE);
-            if ((xrt.getControlContext()).isNodeReferencePreserved())
-                try {
-                    Jobs.preserveNodeReferences(ex, result);
-                } catch (ContextException ce) {
-                    ce.printStackTrace();
-                    throw new ExertionException("ContextException caught: "
-                            + ce.getMessage());
-                }
-            // update all outputs to sharedcontext only for tasks.For jobs,
-            // spawned dispatcher does it.
-            if (((ServiceExertion) result).isTask()) {
-                collectOutputs(result);
-            }
-            notifyExertionExecution(ex, result);
-        }
-    }
+	protected void postExecExertion(Exertion ex, Exertion result)
+			throws SignatureException, ExertionException {
+		((ServiceExertion) result).stopExecTime();
+		ServiceExertion ser = (ServiceExertion) result;
+		((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
+			ser.setStatus(DONE);
+			// update all outputs to sharedcontext only for tasks.For jobs,
+			// spawned dispatcher does it.
+			try {
+				if (((ServiceExertion) result).isTask()) {
+					collectOutputs(result);
+				}	
+				notifyExertionExecution(ex, result);
+			} catch (ContextException e) {
+				throw new ExertionException(e);
+			}
+		}
+	}
 
     // Made private so that other classes just calls execExertion and not
     // execTask

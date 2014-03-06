@@ -19,30 +19,31 @@
 package sorcer.core.exertion;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jini.core.transaction.Transaction;
-import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Condition;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.core.context.ThrowableTrace;
+import sorcer.service.*;
 
 /**
- * The option Exertion. There is a single target exertion that executes if the condition is true (like if... then).
+ * The option Exertion. There is a single target exertion that executes if the
+ * condition is true (like if... then).
  * 
  * @author Mike Sobolewski
  * 
  */
 @SuppressWarnings("rawtypes")
-public class OptExertion extends Task {
+public class OptExertion extends Task implements ConditionalExertion {
 
 	private static final long serialVersionUID = 172930501527871L;
 
 	protected Condition condition;
-	
+
 	protected Exertion target;
+	
+	protected boolean isActive = false;
 	
 	public OptExertion(String name) {
 		super(name);
@@ -51,6 +52,11 @@ public class OptExertion extends Task {
 	public OptExertion(String name, Exertion exertion) {
 		super(name);
 		this.condition = new Condition(true);
+		this.target = exertion;
+	}
+	public OptExertion(Condition condition, Exertion exertion) {
+		super();
+		this.condition = condition;
 		this.target = exertion;
 	}
 	
@@ -71,12 +77,16 @@ public class OptExertion extends Task {
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
 		try {
+
 			if (condition.isTrue()) {
+				isActive = true;
 				target = target.exert(txn);
 				dataContext = (ServiceContext)target.getContext();
-				controlContext = (ControlContext)target.getControlContext();
+				controlContext.append(target.getControlContext());
 				dataContext.putValue(Condition.CONDITION_VALUE, true);
 				dataContext.putValue(Condition.CONDITION_TARGET, target.getName());
+				target.getContext().setExertion(null);
+				dataContext.setExertion(null);
 				return this;
 			} else {
 				dataContext.putValue(Condition.CONDITION_VALUE, false);
@@ -88,8 +98,53 @@ public class OptExertion extends Task {
 		}
 	}
 		
+	public boolean isActive() {
+		return isActive;
+	}
+	
+	public Condition getCondition() {
+		return condition;
+	}
+	
 	public boolean isConditional() {
 		return true;
 	}
 
+	public void reset(int state) {
+		((ServiceExertion)target).reset(state);
+		this.setStatus(state);
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Conditional#getConditions()
+	 */
+	@Override
+	public List<Conditional> getConditions() {
+		List<Conditional> cs = new ArrayList<Conditional>();
+		cs.add(condition);
+		return cs;
+	}
+	
+	public List<Exertion> getExertions(List<Exertion> exs) {
+		exs.add(target);
+		exs.add(this);
+		return exs;
+	}
+	
+	@Override
+	public List<ThrowableTrace> getExceptions(List<ThrowableTrace> exceptions) {
+		exceptions.addAll(target.getExceptions());
+		exceptions.addAll(this.getExceptions());
+		return exceptions;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.ConditionalExertion#getTargets()
+	 */
+	@Override
+	public List<Exertion> getTargets() {
+		List<Exertion> tl = new ArrayList<Exertion>();
+		tl.add(target);
+		return tl;
+	}
 }

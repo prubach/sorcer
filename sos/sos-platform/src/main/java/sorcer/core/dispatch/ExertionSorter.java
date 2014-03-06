@@ -32,7 +32,7 @@ public class ExertionSorter {
     /**
      * Construct the ExertionSorter
      */
-    public ExertionSorter(Exertion topLevelJob) throws SortingException {
+    public ExertionSorter(Exertion topLevelJob) throws ContextException, SortingException {
 
         dag = new DAG();
         projectMap = new HashMap();
@@ -162,7 +162,7 @@ public class ExertionSorter {
      * @param topXrt
      * @throws SortingException
      */
-    private void addVertex(Exertion topXrt) throws SortingException {
+    private void addVertex(Exertion topXrt) throws ContextException, SortingException {
 
         String id = topXrt.getId().toString();
         dag.addVertex(id);
@@ -198,7 +198,7 @@ public class ExertionSorter {
      * @throws CycleDetectedException
      * @throws SortingException
      */
-    private void getMapping(Exertion topXrt) throws CycleDetectedException, SortingException {
+    private void getMapping(Exertion topXrt) throws CycleDetectedException, ContextException, SortingException {
         for (Iterator i = topXrt.getExertions().iterator(); i.hasNext(); ) {
             Exertion project = (Exertion) i.next();
             String id = project.getId().toString();
@@ -231,7 +231,7 @@ public class ExertionSorter {
      * @throws CycleDetectedException
      * @throws SortingException
      */
-    private void checkParentCycle(Exertion topXrt) throws CycleDetectedException, SortingException {
+    private void checkParentCycle(Exertion topXrt) throws CycleDetectedException, ContextException, SortingException {
         if (topXrt.getDataContext().getParentID() != null) {
             String parentId = topXrt.getDataContext().getParentID().toString();
             if (dag.getVertex(parentId) != null) {

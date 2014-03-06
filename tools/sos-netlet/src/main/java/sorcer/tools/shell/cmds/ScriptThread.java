@@ -19,9 +19,11 @@ package sorcer.tools.shell.cmds;
 
 import groovy.lang.GroovyShell;
 import net.jini.config.Configuration;
+import net.jini.config.ConfigurationException;
 import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
+import sorcer.core.deploy.Deployment;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.RootLoader;
@@ -123,18 +125,22 @@ public class ScriptThread extends Thread {
             if (target instanceof Exertion) {
                 ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {
-/*
+
                     if (((Exertion) target).isProvisionable()) {
-                        String configFile = (String) config.getEntry(
-                                        "sorcer.tools.shell.NetworkShell",
-                                        "exertionDeploymentConfig", String.class,
-                                        null);
-                        if (configFile != null)
-                            result = esh.exert(new Deployment(configFile));
-                        else
+                        String configFile = null;
+                        try {
+                            configFile = (String) config.getEntry(
+                                            "sorcer.tools.shell.NetworkShell",
+                                            "exertionDeploymentConfig", String.class,
+                                            null);
+                            if (configFile != null)
+                                result = esh.exert(new Deployment(configFile));
+                            else
+                                result = esh.exert();
+                        } catch (ConfigurationException e) {
                             result = esh.exert();
+                        }
                     } else
-*/
                         result = esh.exert();
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -142,11 +148,7 @@ public class ScriptThread extends Thread {
                     e.printStackTrace();
                 } catch (ExertionException e) {
                     e.printStackTrace();
-//                } catch (ConfigurationException e) {
-//                    e.printStackTrace();
                 }
-            } else {
-                result = target;
             }
 		}
 

@@ -44,4 +44,3 @@ public class Args extends Path {
         return "args: " + Arrays.toString(args);
     }
 }
-

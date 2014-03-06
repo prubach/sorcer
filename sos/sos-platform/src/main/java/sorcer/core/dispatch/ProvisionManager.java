@@ -16,249 +16,195 @@
  */
 package sorcer.core.dispatch;
 
-import net.jini.core.lease.Lease;
-import net.jini.space.JavaSpace05;
-import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.provider.Spacer;
-import sorcer.core.signature.NetSignature;
-import sorcer.ext.Provisioner;
-import sorcer.ext.ProvisioningException;
-import sorcer.service.*;
-import sorcer.service.space.SpaceAccessor;
-
 import java.rmi.RemoteException;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.rmi.server.ExportException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.jini.export.Exporter;
+import net.jini.jeri.BasicILFactory;
+import net.jini.jeri.BasicJeriExporter;
+import net.jini.jeri.tcp.TcpServerEndpoint;
+
+import org.rioproject.deploy.DeployAdmin;
+import org.rioproject.deploy.ServiceBeanInstance;
+import org.rioproject.deploy.ServiceProvisionListener;
+import org.rioproject.impl.opstring.OpString;
+import org.rioproject.monitor.ProvisionMonitor;
+import org.rioproject.opstring.OperationalString;
+import org.rioproject.opstring.OperationalStringManager;
+import org.rioproject.opstring.ServiceElement;
+
+import org.rioproject.resolver.ResolverHelper;
+import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.OperationalStringFactory;
+import sorcer.service.Accessor;
+import sorcer.service.Exertion;
+import sorcer.util.ProviderLookup;
+
 /**
- * @author Pawel Rubach
+ * The {@code ProviderProvisionManager} handles the dynamic creation of {@link OperationalString}s created
+ * from {@link Exertion}s.
+ *
+ * @author Dennis Reedy
+ * @author Mike Sobolewski
  */
 public class ProvisionManager {
-	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
-	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
-    private static ProvisionManager instance = null;
-    private static final int MAX_ATTEMPTS = 2;
-    boolean keepGoing = true;
-
-
-    public static ProvisionManager getInstance() {
-        if (instance==null)
-            instance = new ProvisionManager();
-        return instance;
-    }
-
+	private static final Logger logger = Logger.getLogger(ProviderProvisionManager.class.getName());
+	private final Exertion exertion;
+	private OperationalStringManager opStringManager;
+	private DeployAdmin deployAdmin;
+	private String opStringName;
 	
-	protected ProvisionManager() {
-        ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
-        provGroup.setDaemon(true);
-        provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-        Thread pThread = new Thread(provGroup, new ProvisionThread(), "Provisioner");
-        pThread.start();
+	public ProvisionManager(final Exertion exertion) {
+		this.exertion = exertion;
 	}
-
-    public void add(Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
-        NetSignature sig = (NetSignature) exertion.getProcessSignature();
-        Service service = (Service) Accessor.getService(sig);
-        // A hack to disable provisioning spacer itself
-        if (service==null && !sig.getServiceType().getName().equals(Spacer.class.getName())) {
-            synchronized (servicesToProvision) {
-                servicesToProvision.add(
-                        new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
-                                sig.getVersion(), sig, exertion, spaceExertDispatcher));
-            }
+	
+    public boolean deployServices() throws DispatcherException {
+        Map<Deployment.Unique, List<OperationalString>> deployments;
+        try {
+            deployments = OperationalStringFactory.create(exertion);
+        } catch (Exception e) {
+            throw new DispatcherException(String.format("While trying to create deployment for exertion %s",
+                                                        exertion.getName()),
+                                          e);
         }
-    }
-
-    public void destroy() {
-        keepGoing = false;
-    }
-
-
-    protected class ProvisionThread implements Runnable {
-
-        public void run() {
-            Provisioner provisioner = Accessor.getService(Provisioner.class);
-            while (keepGoing) {
-                if (!servicesToProvision.isEmpty()) {
-                    LinkedHashSet<SignatureElement> copy ;
-                    synchronized (servicesToProvision){
-                        copy = new LinkedHashSet<SignatureElement>(servicesToProvision);
-                    }
-                    Iterator<SignatureElement> it = copy.iterator();
-                    Set<SignatureElement> sigsToRemove = new LinkedHashSet<SignatureElement>();
-                    logger.fine("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
-
-                    while (it.hasNext()) {
-                        SignatureElement sigEl = it.next();
-
-                        // Catalog lookup or use Lookup Service for the particular
-                        // service
-                        Service service = (Service) Accessor.getService(sigEl.getSignature());
-                        if (service == null ) {
-                            sigEl.incrementProvisionAttempts();
-                            if (provisioner != null) {
-                                try {
-                                    logger.info("Provisioning: "+ sigEl.getSignature());
-                                    service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
-                                    if (service!=null) sigsToRemove.add(sigEl);
-                                } catch (ProvisioningException pe) {
-                                    logger.severe("Problem provisioning: " +pe.getMessage());
-                                } catch (RemoteException re) {
-                                    provisioner = Accessor.getService(Provisioner.class);
-                                    String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
-                                            + " (" + sigEl.getSignature().getProviderName() + ")"
-                                            + " " +re.getMessage();
-                                    logger.severe(msg);
-                                }
-                            } else
-                                provisioner = Accessor.getService(Provisioner.class);
-
-                            if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {
-                                String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
-                                        + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";
-                                logger.severe(logMsg);
-                                try {
-                                    failExertionInSpace(sigEl, new ProvisioningException(logMsg));
-                                    sigsToRemove.add(sigEl);
-                                } catch (ExertionException ile) {
-                                    logger.severe("Problem trying to remove exception after reattempting to provision");
-                                }
+        if(deployments.isEmpty()) {
+            return false;
+        }
+        try {
+            ProvisionMonitor provisionMonitor = Accessor.getService(ProvisionMonitor.class);
+            //ProvisionMonitor provisionMonitor = (ProvisionMonitor)ProviderLookup.getService(ProvisionMonitor.class);
+            if (provisionMonitor != null) {
+                for (Map.Entry<Deployment.Unique, List<OperationalString>> entry : deployments.entrySet()) {
+                    for (OperationalString deployment : entry.getValue()) {
+                        logger.info(String.format("Processing deployment %s", deployment.getName()));
+                        deployAdmin = (DeployAdmin) provisionMonitor.getAdmin();
+                        if(deployAdmin.hasDeployed(deployment.getName())) {
+                            if (entry.getKey() == Deployment.Unique.YES) {
+                                String newName = createDeploymentName(deployment.getName(),
+                                                                      deployAdmin.getOperationalStringManagers());
+                                logger.info(String.format("Deployment for %s already exists, created new name [%s], " +
+                                                          "proceed with autonomic deployment",
+                                                          deployment.getName(), newName));
+                                ((OpString)deployment).setName(newName);
+                            } else {
+                                logger.info(String.format("Deployment for %s already exists", deployment.getName()));
+                                continue;
                             }
-                        } else
-                            sigsToRemove.add(sigEl);
-                    }
-                    if (!sigsToRemove.isEmpty()) {
-                        synchronized (servicesToProvision) {
-                            servicesToProvision.removeAll(sigsToRemove);
+                        } else {
+                            logger.info(String.format("Deployment for %s not found, proceed with autonomic deployment",
+                                                      deployment.getName()));
+                        }
+                        ServiceProvisionListener serviceProvisionListener = null;
+                        DeployListener deployListener = new DeployListener(deployment.getServices().length);
+                        try {
+                            serviceProvisionListener = deployListener.export();
+                        } catch (ExportException e) {
+                            logger.log(Level.WARNING, "Unable to export the ServiceProvisionListener", e);
+                        }
+                        deployAdmin.deploy(deployment, serviceProvisionListener);
+                        opStringName = deployment.getName();
+                        opStringManager = deployAdmin.getOperationalStringManager(opStringName);
+                        if (!deployListener.await()) {
+                            throw new DispatcherException(String.format("Failed to provision exertion %s",
+                                                                        exertion.getName()));
                         }
                     }
                 }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                }
+            } else {
+                logger.warning(String.format("Unable to obtain a ProvisionMonitor for %s", exertion.getName()));
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING,
+                       String.format("Unable to process deployment for %s", exertion.getName()),
+                       e);
+            throw new DispatcherException(String.format("While trying to provision exertion %s", exertion.getName()), e);
+        }
+        return true;
+    }
+
+    public void undeploy() {
+		if(deployAdmin!=null) {
+			try {
+				deployAdmin.undeploy(opStringName);
+			} catch (Exception e) {
+				logger.log(Level.WARNING, "Unable to undeploy "+opStringName, e);
+			}
+		} 
+	}
+	
+	public OperationalStringManager getOperationalStringManager() {
+		return opStringManager;
+	}
+
+    class DeployListener implements ServiceProvisionListener {
+        private final Exporter exporter;
+        private ServiceProvisionListener remoteRef;
+        private final CountDownLatch countDownLatch;
+        private final AtomicBoolean success = new AtomicBoolean(true);
+
+        DeployListener(final int numServices) {
+            exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0),
+                                             new BasicILFactory(),
+                                             false,
+                                             true);
+            countDownLatch = new CountDownLatch(numServices);
+        }
+
+        ServiceProvisionListener export() throws ExportException {
+            if(remoteRef==null) {
+                remoteRef = (ServiceProvisionListener) exporter.export(this);
+            }
+            return remoteRef;
+        }
+
+        void unexport() {
+            exporter.unexport(true);
+            remoteRef = null;
+        }
+
+        boolean await() throws InterruptedException {
+            countDownLatch.await();
+            return success.get();
+        }
+
+        public void succeeded(ServiceBeanInstance serviceBeanInstance) throws RemoteException {
+            logger.info(String.format("Service [%s/%s] provisioned on machine %s",
+                                      serviceBeanInstance.getServiceBeanConfig().getOperationalStringName(),
+                                      serviceBeanInstance.getServiceBeanConfig().getName(),
+                                      serviceBeanInstance.getHostName()));
+            countDownLatch.countDown();
+            if(countDownLatch.getCount()==0) {
+                unexport();
+            }
+        }
+
+        public void failed(ServiceElement serviceElement, boolean resubmitted) throws RemoteException {
+            logger.warning(String.format("Service [%s/%s] failed, undeploy",
+                                         serviceElement.getServiceBeanConfig().getOperationalStringName(),
+                                         serviceElement.getServiceBeanConfig().getName()));
+            success.set(false);
+            undeploy();
+            unexport();
+            while(countDownLatch.getCount()>0) {
+                countDownLatch.countDown();
             }
         }
     }
 
-
-    private void failExertionInSpace(SignatureElement sigEl, Exception exc) throws ExertionException {
-        logger.info("Setting Failed state for service type: " + sigEl.getServiceType() + " exertion ID: " +
-                "" + sigEl.getExertion().getId());
-        ExertionEnvelop ee = ExertionEnvelop.getTemplate(sigEl.getExertion());
-
-        ExertionEnvelop result = null;
-        result = sigEl.getSpaceExertDispatcher().takeEnvelop(ee);
-        if (result!=null) {
-            result.state = ExecState.FAILED;
-            ((ServiceExertion)result.exertion).setStatus(ExecState.FAILED);
-            ((ServiceExertion)result.exertion).reportException(exc);
-            try {
-
-                JavaSpace05 space = SpaceAccessor.getSpace();
-                if (space == null) {
-                    throw new ExertionException("NO exertion space available!");
-                }
-                space.write(result, null, Lease.FOREVER);
-                logger.finer("===========================> written failure envelop: "
-                        + ee.describe() + "\n to: " + space);
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.throwing(this.getClass().getName(), "faileExertionInSpace", e);
-                throw new ExertionException("Problem writing exertion back to space");
+    private String createDeploymentName(final String baseName, OperationalStringManager... managers) throws RemoteException {
+        int known = 0;
+        for(OperationalStringManager manager : managers) {
+            if(manager.getOperationalString().getName().startsWith(baseName)) {
+                known++;
             }
         }
-    }
-
-    private class SignatureElement {
-        String serviceType;
-        String providerName;
-        String version;
-        Signature signature;
-        int provisionAttempts=0;
-        Exertion exertion;
-        SpaceExertDispatcher spaceExertDispatcher;
-
-        private String getServiceType() {
-            return serviceType;
-        }
-
-        private void setServiceType(String serviceType) {
-            this.serviceType = serviceType;
-        }
-
-        private String getProviderName() {
-            return providerName;
-        }
-
-        private void setProviderName(String providerName) {
-            this.providerName = providerName;
-        }
-
-        private String getVersion() {
-            return version;
-        }
-
-        private void setVersion(String version) {
-            this.version = version;
-        }
-
-        private Signature getSignature() {
-            return signature;
-        }
-
-        private void setSignature(Signature signature) {
-            this.signature = signature;
-        }
-
-
-        public int getProvisionAttempts() {
-            return provisionAttempts;
-        }
-
-        public void incrementProvisionAttempts() {
-            this.provisionAttempts++;
-        }
-
-        public Exertion getExertion() {
-            return exertion;
-        }
-
-        public SpaceExertDispatcher getSpaceExertDispatcher() {
-            return spaceExertDispatcher;
-        }
-
-        private SignatureElement(String serviceType, String providerName, String version, Signature signature,
-                                 Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
-            this.serviceType = serviceType;
-            this.providerName = providerName;
-            this.version = version;
-            this.signature = signature;
-            this.exertion = exertion;
-            this.spaceExertDispatcher = spaceExertDispatcher;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SignatureElement that = (SignatureElement) o;
-            if (!providerName.equals(that.providerName)) return false;
-            if (!serviceType.equals(that.serviceType)) return false;
-            if (!exertion.equals(that.exertion)) return false;
-            if (version != null ? !version.equals(that.version) : that.version != null) return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = serviceType.hashCode();
-            result = 31 * result + providerName.hashCode();
-            result = 31 * result + (version != null ? version.hashCode() : 0);
-            return result;
-        }
+        return String.format("%s-(%s)", baseName, known);
     }
 
 }

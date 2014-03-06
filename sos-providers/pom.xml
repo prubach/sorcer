@@ -16,6 +16,7 @@
 	<modules>
         <module>other-configs</module>
         <module>jobber</module>
+        <module>concatenator</module>
 		<module>cataloger</module>
 		<module>spacer</module>
 		<module>logger</module>

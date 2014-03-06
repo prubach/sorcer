@@ -14,16 +14,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sos-platform</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>sorcer-api</artifactId>
+			<artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -33,6 +24,11 @@
 		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>commons-req</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -40,8 +36,15 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+            <scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>

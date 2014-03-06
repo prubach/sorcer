@@ -66,7 +66,7 @@ public class Task extends ServiceExertion {
 	protected Task innerTask;
 	
 	public Task() {
-		// do nothing
+		super();
 	}
 
 	public Task(String name) {
@@ -347,7 +347,7 @@ public class Task extends ServiceExertion {
 	}
 
 	protected Task doBatchTask(Transaction txn) throws RemoteException,
-			ExertionException, SignatureException {
+			ExertionException, SignatureException, ContextException {
 		ControlFlowManager ep = new ControlFlowManager();
 		return ep.doBatchTask(this);
 	}
@@ -364,4 +364,12 @@ public class Task extends ServiceExertion {
 		}
 	}
 	
+	@Override
+	public void reset(int state) {
+		status = state;
+	}
+
+    public boolean isNet() {
+        return true;
+    }
 }

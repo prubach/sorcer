@@ -124,7 +124,7 @@ abstract public class
         return jobberName;
     }
 
-    public void preprocess(String... args) {
+    public void preprocess(String... args) throws ContextException {
         Exertion in = null;
         try {
             in = requestor.getExertion(args);
@@ -147,7 +147,7 @@ abstract public class
             logger.info(">>>>>>>>>> Input context: \n" + exertion.getContext());
     }
 
-	public void process(String... args) throws Exception {
+	public void process(String... args) throws ContextException {
         try {
             exertion = ((ServiceExertion) exertion).exert(
                     requestor.getTransaction(), requestor.getJobberName());
@@ -160,7 +160,7 @@ abstract public class
         }
     }
 
-    public void postprocess(String... args) {
+    public void postprocess(String... args) throws ContextException {
         if (exertion != null) {
             logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
             logger.info("<<<<<<<<<< Traces: \n" + ((ControlContext)exertion.getControlContext()).getTrace());

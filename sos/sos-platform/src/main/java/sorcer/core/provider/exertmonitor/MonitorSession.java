@@ -110,7 +110,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		runtimeExertion = (ServiceExertion) ObjectCloner.cloneAnnotated(ex);
 		this.listener = listener;
 		init();
-		runtimeExertion.setStatus(ExecState.INITIAL);
+		runtimeExertion.setStatus(Exec.INITIAL);
 
 		// Set the epiration for the root Resource
 		// get the lease and stick it
@@ -156,8 +156,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void addSessions(Job initial, Job runtime, MonitorSession parent) {
 		for (int i = 0; i < initial.size(); i++)
-			add(new MonitorSession(initial.exertionAt(i),
-					runtime.exertionAt(i), parent));
+			add(new MonitorSession(initial.get(i),
+					runtime.get(i), parent));
 	}
 
 	public RemoteEventListener getListener() {
@@ -196,7 +196,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Session already active and is in state =" + getState());
 		}
 
-		runtimeExertion.setStatus(ExecState.RUNNING);
+		runtimeExertion.setStatus(Exec.RUNNING);
 		this.provider = executor;
 		setExpiration(mLandlord.getExpiration(duration));
 		setTimeout(System.currentTimeMillis() + timeout);
@@ -217,7 +217,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		setExpiration(mLandlord.getExpiration(duration));
 		setTimeout(System.currentTimeMillis() + timeout);
 
-		runtimeExertion.setStatus(ExecState.INSPACE);
+		runtimeExertion.setStatus(Exec.INSPACE);
 		persist();
 		lease = mLandlord.newLease(this);
 	}
@@ -235,7 +235,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 							+ getState());
 		}
 
-		runtimeExertion.setStatus(ExecState.RUNNING);
+		runtimeExertion.setStatus(Exec.RUNNING);
 		this.provider = executor;
 		persist();
 		return lease;
@@ -246,8 +246,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
 
-		if (runtimeExertion != null)
-			runtimeExertion.setContext(ctx);
+        if (runtimeExertion instanceof ServiceExertion)
+            runtimeExertion.setContext(ctx);
 		persist();
 	}
 
@@ -265,8 +265,9 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		logger.log(Level.INFO,
 				" This exertion is completed " + runtimeExertion.getName());
 
-		runtimeExertion.setStatus(ExecState.DONE);
-		runtimeExertion.setContext(ctx);
+		runtimeExertion.setStatus(Exec.DONE);
+        if (runtimeExertion instanceof ServiceExertion)
+            runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -286,7 +287,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					+ getState());
 		}
 
-		runtimeExertion.setStatus(ExecState.FAILED);
+		runtimeExertion.setStatus(Exec.FAILED);
 		runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
@@ -302,7 +303,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			// so error has propogated to the top.
 			// check if we are done. If so then remove yourself from
 			// leasemanager
-			if (getState() != ExecState.RUNNING)
+			if (getState() != Exec.RUNNING)
 				mLandlord.remove(this);
 		}
 	}
@@ -369,12 +370,12 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				+ suspendedCount + " doneCount=" + doneCount);
 
 		if (doneCount == size())
-			runtimeExertion.setStatus(ExecState.DONE);
+			runtimeExertion.setStatus(Exec.DONE);
 		else if (failedCount != 0
 				&& failedCount + doneCount + suspendedCount == size())
-			runtimeExertion.setStatus(ExecState.FAILED);
+			runtimeExertion.setStatus(Exec.FAILED);
 		else if (suspendedCount != 0 && doneCount + suspendedCount == size())
-			runtimeExertion.setStatus(ExecState.SUSPENDED);
+			runtimeExertion.setStatus(Exec.SUSPENDED);
 
 	}
 
@@ -383,31 +384,31 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	}
 
 	public boolean isInitial() {
-		return (runtimeExertion.getStatus() == ExecState.INITIAL);
+		return (runtimeExertion.getStatus() == Exec.INITIAL);
 	}
 
 	public boolean isInSpace() {
-		return (runtimeExertion.getStatus() == ExecState.INSPACE);
+		return (runtimeExertion.getStatus() == Exec.INSPACE);
 	}
 
 	public boolean isRunning() {
-		return (runtimeExertion.getStatus() == ExecState.RUNNING);
+		return (runtimeExertion.getStatus() == Exec.RUNNING);
 	}
 
 	public boolean isDone() {
-		return (runtimeExertion.getStatus() == ExecState.DONE);
+		return (runtimeExertion.getStatus() == Exec.DONE);
 	}
 
 	public boolean isSuspended() {
-		return (runtimeExertion.getStatus() == ExecState.SUSPENDED);
+		return (runtimeExertion.getStatus() == Exec.SUSPENDED);
 	}
 
 	public boolean isError() {
-		return (runtimeExertion.getStatus() == ExecState.ERROR);
+		return (runtimeExertion.getStatus() == Exec.ERROR);
 	}
 
 	public boolean isFailed() {
-		return (runtimeExertion.getStatus() <= ExecState.FAILED);
+		return (runtimeExertion.getStatus() <= Exec.FAILED);
 	}
 
 	/**
@@ -456,7 +457,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	// If the object is in space, the lease
 	// never expires
 	public long getExpiration() {
-		if (runtimeExertion.getStatus() == ExecState.INSPACE)
+		if (runtimeExertion.getStatus() == Exec.INSPACE)
 			return Long.MAX_VALUE;
 		else
 			return expiration;
@@ -467,7 +468,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			runtimeExertion
 					.reportException(new Exception(
 							"Lease was cancelled..The provider did not renew the lease"));
-			runtimeExertion.setStatus(ExecState.FAILED);
+			runtimeExertion.setStatus(Exec.FAILED);
 
 			fireRemoteEvent();
 			notifyParent();
@@ -484,7 +485,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		try {
 			runtimeExertion.reportException(new Exception(
 					"This exertion was timedout."));
-			runtimeExertion.setStatus(ExecState.FAILED);
+			runtimeExertion.setStatus(Exec.FAILED);
 
 			fireRemoteEvent();
 			notifyParent();

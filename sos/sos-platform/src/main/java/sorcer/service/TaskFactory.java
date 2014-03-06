@@ -20,11 +20,12 @@ package sorcer.service;
 
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.par.Par;
+import sorcer.core.exertion.AntTask;
+import sorcer.core.exertion.EvaluationTask;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
-import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ObjectSignature;
-import sorcer.core.signature.ServiceSignature;
+import sorcer.core.signature.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +46,26 @@ public class TaskFactory {
             return new NetTask(name, signature, context);
         } else if (signature instanceof ObjectSignature) {
             return new ObjectTask(name, signature, context);
+        } else if (signature instanceof EvaluationSignature) {
+            return new EvaluationTask(name, (EvaluationSignature) signature, context);
+        } else if (signature instanceof AntSignature) {
+            return new AntTask((AntSignature) signature, context);
         } else
             return new Task(name, signature, context);
+    }
+
+    public static Task task(Signature signature, Context context)
+            throws SignatureException {
+        if (signature instanceof NetSignature) {
+            return new NetTask(null, (NetSignature) signature, context);
+        } else if (signature instanceof ObjectSignature) {
+            return new ObjectTask(null, (ObjectSignature) signature, context);
+        } else if (signature instanceof EvaluationSignature) {
+            return new EvaluationTask((EvaluationSignature) signature, context);
+        } else if (signature instanceof AntSignature) {
+            return new AntTask((AntSignature) signature, context);
+        } else
+            return new Task(null, signature, context);
     }
 
     public static <T> Task task(String name, T... elems)
@@ -102,19 +121,35 @@ public class TaskFactory {
                     throw new ExertionException(e);
                 }
                 task.setName(tname);
+            } else if (ss instanceof EvaluationSignature) {
+                task = new EvaluationTask(tname, (EvaluationSignature) ss);
             } else if (ss instanceof ServiceSignature) {
                 task = new Task(tname, ss);
             }
             ops.remove(ss);
-        }
-        for (Signature signature : ops) {
-            task.addSignature(signature);
         }
 
         if (context == null) {
             context = new ServiceContext();
         }
         task.setContext(context);
+
+        // set scope for evaluation task
+        for (Signature signature : ops) {
+            task.addSignature(signature);
+            if (signature instanceof EvaluationSignature) {
+                if (((EvaluationSignature) signature).getEvaluator() instanceof Par) {
+                    ((Par) ((EvaluationSignature) signature).getEvaluator())
+                            .setScope(context);
+                }
+            }
+        }
+        if (ss instanceof EvaluationSignature) {
+            if (((EvaluationSignature) ss).getEvaluator() instanceof Par) {
+                ((Par) ((EvaluationSignature) ss).getEvaluator())
+                        .setScope(context);
+            }
+        }
 
         if (access != null) {
             task.setAccess(access);

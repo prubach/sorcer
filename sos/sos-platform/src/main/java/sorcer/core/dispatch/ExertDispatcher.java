@@ -47,15 +47,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.misc.MsgRef;
-import sorcer.service.Conditional;
-import sorcer.service.Accessor;
-import sorcer.service.Context;
-import sorcer.service.ExecState;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.util.EmailCmd;
 import sorcer.util.Log;
 import sorcer.util.Sorcer;
@@ -65,16 +57,16 @@ import static sorcer.core.SorcerConstants.*;
 
 @SuppressWarnings("rawtypes")
 abstract public class ExertDispatcher implements Dispatcher,
-		ExecState {
+		Exec {
     protected final static Logger logger = Log.getDispatchLog();
 
     protected ServiceExertion xrt;
 
     protected ServiceExertion masterXrt;
 
-    protected Vector<Exertion> inputXrts;
+    protected List<Exertion> inputXrts;
 
-    protected int state = INITIAL;
+	protected volatile int state = INITIAL;
 
     protected boolean isMonitored;
 
@@ -98,15 +90,14 @@ abstract public class ExertDispatcher implements Dispatcher,
     protected static Hashtable<Uuid, ExertDispatcher> dispatchers
             = new Hashtable<Uuid, ExertDispatcher>();
 
-    protected ThreadGroup disatchGroup;
-
-    protected DispatchThread dThread;
-
+	protected ThreadGroup disatchGroup;
+	protected DispatchThread dThread;
+	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
-    public static Hashtable<Uuid, ExertDispatcher> getDispatchers() {
-        return dispatchers;
-    }
+	public static Hashtable<Uuid, ExertDispatcher> getDispatchers() {
+		return dispatchers;
+	}
 
     public static void setDispatchers(Hashtable<Uuid, ExertDispatcher> dispatchers) {
         ExertDispatcher.dispatchers = dispatchers;
@@ -121,13 +112,14 @@ abstract public class ExertDispatcher implements Dispatcher,
     }
 
     public ExertDispatcher() {
-    }
+	}
 
-    public ExertDispatcher(Exertion exertion,
+	public ExertDispatcher(Exertion exertion,
                            Set<Context> sharedContexts,
                            boolean isSpawned,
                            Provider provider,
-                           ProvisionManager provisionManager) {
+                           ProvisionManager provisionManager,
+                           ProviderProvisionManager providerProvisionManager) {
         ServiceExertion sxrt = (ServiceExertion)exertion;
 		this.xrt = sxrt;
         this.subject = sxrt.getSubject();
@@ -137,6 +129,7 @@ abstract public class ExertDispatcher implements Dispatcher,
         this.provider = provider;
         sxrt.setStatus(RUNNING);
         this.provisionManager = provisionManager;
+        this.providerProvisionManager = providerProvisionManager;
         initialize();
     }
 
@@ -151,6 +144,21 @@ abstract public class ExertDispatcher implements Dispatcher,
 
     abstract public void dispatchExertions() throws ExertionException,
             SignatureException;
+
+    /**
+     * If the {@code Exertion} is provisionable, deploy services.
+     *
+     * @throws ExertionException if there are issues dispatching the {@code Exertion}
+     */
+    protected void checkAndDispatchExertions() throws ExertionException {
+        if(xrt.isProvisionable() && xrt.getDeployments().size()>0) {
+            try {
+                getProvisionManager().deployServices();
+            } catch (DispatcherException e) {
+                throw new ExertionException("Unable to deploy services", e);
+            }
+        }
+    }
 
     abstract public void collectResults() throws ExertionException,
             SignatureException;
@@ -196,8 +204,11 @@ abstract public class ExertDispatcher implements Dispatcher,
                 }
             } catch (Exception e) {
                 logger.finer("Exertion dispatcher thread killed by exception");
-                interrupt();
-                e.printStackTrace();
+				interrupt();
+				e.printStackTrace();
+				xrt.setStatus(FAILED);
+				state = FAILED;
+				xrt.reportException(e);
             }
             dispatchers.remove(xrt.getId());
         }
@@ -234,7 +245,7 @@ abstract public class ExertDispatcher implements Dispatcher,
     }
 
     // Recursively collect shared contexts for inner jobs
-    protected void collectSharedContexts(Exertion ex) {
+    protected void collectSharedContexts(Exertion ex) throws ContextException {
         for (Exertion innerEx: ex.getExertions()) {
             if (!innerEx.isJob())
                 collectOutputs(innerEx);
@@ -243,7 +254,7 @@ abstract public class ExertDispatcher implements Dispatcher,
         }
     }
 
-    protected void collectOutputs(Exertion ex) {
+    protected void collectOutputs(Exertion ex) throws ContextException {
         List<Context> contexts = Jobs.getTaskContexts(ex);
         for (int i = 0; i < contexts.size(); i++) {
 //			if (!sharedContexts.contains(contexts.get(i)))
@@ -253,36 +264,36 @@ abstract public class ExertDispatcher implements Dispatcher,
         }
     }
 
-    protected void updateInputs(Exertion ex) throws ExertionException {
+    protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
         List<Context> inputContexts = Jobs.getTaskContexts(ex);
         for (int i = 0; i < inputContexts.size(); i++)
             updateInputs((ServiceContext) inputContexts.get(i));
     }
 
-    protected void updateInputs(ServiceContext toContext)
-            throws ExertionException {
-        ServiceContext fromContext;
-        String toPath = null, newToPath = null, toPathcp, fromPath = null;
-        int argIndex = -1;
-        try {
-            Hashtable toInMap = Contexts.getInPathsMap(toContext);
-//			logger.info("**************** updating inputs in dataContext toContext = " + toContext);
+	protected void updateInputs(ServiceContext toContext)
+			throws ExertionException {
+		ServiceContext fromContext;
+		String toPath = null, newToPath = null, toPathcp, fromPath = null;
+		int argIndex = -1;
+		try {
+			Hashtable toInMap = Contexts.getInPathsMap(toContext);
+//			logger.info("**************** updating inputs in context toContext = " + toContext);
 //			logger.info("**************** updating based on = " + toInMap);
-            for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
-                toPath = (String) e.nextElement();
-				// find argument for parametric dataContext
-                if (toPath.endsWith("]")) {
-                    Tuple2<String, Integer> pair = getPathIndex(toPath);
-                    argIndex = pair._2;
-                    if	(argIndex >=0) {
-                        newToPath = pair._1;
-                    }
-                }
-                toPathcp = (String) toInMap.get(toPath);
+			for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
+				toPath = (String) e.nextElement();
+				// find argument for parametric context
+				if (toPath.endsWith("]")) {
+					Tuple2<String, Integer> pair = getPathIndex(toPath);
+					argIndex = pair._2;
+					if	(argIndex >=0) {
+						newToPath = pair._1;
+					}
+				}
+				toPathcp = (String) toInMap.get(toPath);
 //				logger.info("**************** toPathcp = " + toPathcp);
-                fromPath = Contexts.getContextParameterPath(toPathcp);
-//				logger.info("**************** dataContext ID = " + Contexts.getContextParameterID(toPathcp));
-                fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
+				fromPath = Contexts.getContextParameterPath(toPathcp);
+//				logger.info("**************** context ID = " + Contexts.getContextParameterID(toPathcp));
+				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
 //				logger.info("**************** fromContext = " + fromContext);
 //				logger.info("**************** before updating toContext: " + toContext
 //						+ "\n>>> TO path: " + toPath + "\nfromContext: "
@@ -385,11 +396,11 @@ abstract public class ExertDispatcher implements Dispatcher,
         mail.doIt();
     }
 
-    public void notifyExertionExecution(Exertion inex, Exertion outex) {
+    public void notifyExertionExecution(Exertion inex, Exertion outex) throws ContextException {
         notifyExertionExecution(xrt, inex, outex);
     }
 
-    public void notifyExertionExecution(Exertion parent, Exertion inex, Exertion outex) {
+    public void notifyExertionExecution(Exertion parent, Exertion inex, Exertion outex) throws ContextException {
         if (inex instanceof Conditional && outex instanceof Conditional) {
             // do nothing for now
         } else if (inex.isTask()
@@ -398,7 +409,7 @@ abstract public class ExertDispatcher implements Dispatcher,
     }
 
     private void notifyTaskExecution(Exertion parent, ServiceExertion inTask,
-                                     ServiceExertion outTask) {
+                                     ServiceExertion outTask) throws ContextException {
         // notify o MASTER task completion
         Vector recipients = null;
         String notifyees = ((ControlContext)parent.getControlContext()).getNotifyList(inTask);
@@ -608,7 +619,7 @@ abstract public class ExertDispatcher implements Dispatcher,
         ServiceExertion exi = (ServiceExertion) ex;
         if (exi.isJob()) {
             for (int j = 0; j < ((Job) ex).size(); j++) {
-                setExertionFlags(((Job) ex).exertionAt(j));
+                setExertionFlags(((Job) ex).get(j));
             }
         }
     }
@@ -621,6 +632,10 @@ abstract public class ExertDispatcher implements Dispatcher,
             e.printStackTrace();
         }
         return catalog;
+    }
+
+    public ProviderProvisionManager getProviderProvisionManager() {
+        return providerProvisionManager;
     }
 
     public ProvisionManager getProvisionManager() {
@@ -669,34 +684,34 @@ abstract public class ExertDispatcher implements Dispatcher,
         // to);
     }
 
-    protected void reconcileInputExertions(Exertion ex) {
+    protected void reconcileInputExertions(Exertion ex) throws ContextException {
         ServiceExertion ext = (ServiceExertion)ex;
         if (ext.getStatus() == DONE) {
             collectOutputs(ex);
             if (inputXrts != null)
-                inputXrts.removeElement(ex);
+                inputXrts.remove(ex);
         } else {
             ext.setStatus(INITIAL);
-            if (ex.isJob()) {
-                for (int i = 0; i < ((Job) ex).size(); i++)
-                    reconcileInputExertions(((Job) ex).exertionAt(i));
-            }
+			if (!ex.isTask()) {
+				for (int i = 0; i < ((CompoundExertion) ex).size(); i++)
+					reconcileInputExertions(((CompoundExertion) ex).get(i));
+			}
         }
     }
 
-    protected void prepareJob() throws ExertionException {
+    protected void prepareJob() throws ExertionException, ContextException {
         Jobs.removeExceptions((Job)xrt);
         if (xrt != null
                 && ((xrt.getStatus() == SUSPENDED)
                 || (xrt.getStatus() == INITIAL) || (xrt.getStatus() <= ERROR))) {
             ServiceExertion ft = null;
             for (int i = 0; i < ((Job)xrt).size() - 1; i++) {
-                if (((Job)xrt).exertionAt(i).isTask()) {
-                    ft = (ServiceExertion) ((Job)xrt).exertionAt(i);
+                if (((Job)xrt).get(i).isTask()) {
+                    ft = (ServiceExertion) ((Job)xrt).get(i);
                     if (ft.getStatus() != DONE
                             && xrt.getControlContext().isReview(ft)
                             && (ft != ((Job)xrt).getMasterExertion())) {
-                        ((ServiceExertion) ((Job)xrt).exertionAt(i + 1))
+                        ((ServiceExertion) ((Job)xrt).get(i + 1))
                                 .setStatus(SUSPENDED);
                         return;
                     }

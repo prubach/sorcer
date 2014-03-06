@@ -1407,36 +1407,42 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 	private JComponent getGraphics(DefaultMutableTreeNode selectedNode) {
 		// _logger.info("getGraphics");
-		GlyphView gv = new GlyphView(this);
-		_glyphView = gv;
-		// get the services
-		ServiceNode sn = (ServiceNode) selectedNode.getUserObject();
-		// IX04.01
-		String label = sn.toString();// TreeRenderer.getJiniName(sn.getServiceItem().service,sn.toString());
-		/*
-		 * try{ ServiceRegistrar
-		 * reggie=(ServiceRegistrar)sn.getServiceItem().service;
-		 * label=""+reggie.getLocator(); label=label.substring(7);
-		 * }catch(Exception ex){ }
-		 */
-		Rectangle rect = new Rectangle(50, 50, 350, 350);
-		Glyph lus = new Glyph(label,/* TreeRenderer._lusGlyphIcon.getImage() */
-		null, rect);
-		lus.setAsRoot();
-		// modified v4.5 [ix-02]
-		lus.setUserObject(sn);// .getServiceItem());
+        ServiceNode sn = null;
+        JPanel p = new JPanel();
+        try {
+            GlyphView gv = new GlyphView(this);
+            _glyphView = gv;
+            // get the services
+            sn = (ServiceNode) selectedNode.getUserObject();
+            // IX04.01
+            String label = sn.toString();// TreeRenderer.getJiniName(sn.getServiceItem().service,sn.toString());
+            /*
+             * try{ ServiceRegistrar
+             * reggie=(ServiceRegistrar)sn.getServiceItem().service;
+             * label=""+reggie.getLocator(); label=label.substring(7);
+             * }catch(Exception ex){ }
+             */
+            Rectangle rect = new Rectangle(50, 50, 350, 350);
+            Glyph lus = new Glyph(label,/* TreeRenderer._lusGlyphIcon.getImage() */
+            null, rect);
+            lus.setAsRoot();
+            // modified v4.5 [ix-02]
+            lus.setUserObject(sn);// .getServiceItem());
 
-		_lusGlyph = lus;
+            _lusGlyph = lus;
 
-		label = addServicesToGlyph(lus, selectedNode, label);
+            label = addServicesToGlyph(lus, selectedNode, label);
 
-		gv.add(lus);
-		// _serviceUIPanel.add(gv,BorderLayout.CENTER);
-		JPanel p = new JPanel();
-		p.setLayout(new BorderLayout());
-		p.add(gv, BorderLayout.CENTER);
+            gv.add(lus);
+            // _serviceUIPanel.add(gv,BorderLayout.CENTER);
+            p.setLayout(new BorderLayout());
+            p.add(gv, BorderLayout.CENTER);
 
-		// _logger.info("getGraphics - end");
+            // _logger.info("getGraphics - end");
+        } catch (Exception e) {
+            _logger.severe("SN: " + sn);
+            _logger.severe(e.getMessage());
+        }
 
 		return p;
 	}
@@ -2668,6 +2674,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		// invoked when new LookupService discovered
 		int n = _root.getChildCount();
 		for (int i = 0; i < n; i++) {
+            try {
 			DefaultMutableTreeNode lusNode = (DefaultMutableTreeNode) _root
 					.getChildAt(i);
 			ServiceNode lsn = (ServiceNode) lusNode.getUserObject();
@@ -2693,6 +2700,11 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 				// ServiceID sid=sn.getServiceItem().serviceID;
 				addIfNew(sn, sNode);
 			}
+            } catch (Exception e) {
+
+                _logger.severe("PROBLEM WITH ARRAY - updateServicesTree");
+                _logger.severe("ROOT: " + _root.toString() + "\ni: " + i);
+            }
 
 		}
 	}

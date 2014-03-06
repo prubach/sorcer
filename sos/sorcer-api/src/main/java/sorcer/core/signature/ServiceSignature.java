@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;
+import sorcer.core.deploy.Deployment;
 import sorcer.service.*;
 
 import static sorcer.core.SorcerConstants.*;
@@ -46,10 +47,9 @@ public class ServiceSignature implements Signature {
 	protected String ownerID;
 
 	protected ReturnPath<?> returnPath;
-
-    // the indicated usage of this signature
-    protected Set<Kind> rank = new HashSet<Kind>();
-
+	
+	// the indicated usage of this signature
+	protected Set<Kind> rank = new HashSet<Kind>();
 
 
     // Must initialize to ANY to have correct JavaSpace workers behavior
@@ -76,7 +76,7 @@ public class ServiceSignature implements Signature {
 	protected boolean isActive = true;
 
 	/**
-	 * a dataContext template to define the dataContext appended from a provider
+	 * a context template to define the context appended from a provider
 	 * identified by this method
 	 */
 	private String[] contextTemplateIDs;
@@ -100,6 +100,8 @@ public class ServiceSignature implements Signature {
 
 	private String portalURL;
 
+	private Deployment deployment;
+
 	public ServiceSignature() {
 		providerName = ANY;
 	}
@@ -122,39 +124,39 @@ public class ServiceSignature implements Signature {
 		return exertion;
 	}
 
-    public Class<?> getServiceType() {
-        return serviceType;
-    }
+	public Class<?> getServiceType() {
+		return serviceType;
+	}
 
-    public Signature addRank(Kind... kinds) {
-        rank.addAll(Arrays.asList(kinds));
-        return this;
-    }
+	public Signature addRank(Kind... kinds) {
+		rank.addAll(Arrays.asList(kinds));
+		return this;
+	}
+	
+	public void addRank(List<Kind> kinds) {
+		for (Kind k : kinds)
+			rank.add(k);
+	}
+	
+	public boolean isKindOf(Kind kind) {
+		return rank.contains(kind);
+	}
+	
+	public Set<Kind> getRank() {
+		return rank;
+	}
 
-    public void addRank(List<Kind> kinds) {
-        for (Kind k : kinds)
-            rank.add(k);
-    }
-
-    public boolean isKindOf(Kind kind) {
-        return rank.contains(kind);
-    }
-
-    public Set<Kind> getRank() {
-        return rank;
-    }
-
-    public void removeKind(Kind kind) {
-        rank.remove(kind);
-    }
-
-    public void setServiceType(Class<?> serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public String getSelector() {
-        return selector;
-    }
+	public void removeKind(Kind kind) {
+		rank.remove(kind);
+	}
+	
+	public void setServiceType(Class<?> serviceType) {
+		this.serviceType = serviceType;
+	}	
+	
+	public String getSelector() {
+		return selector;
+	}
 
 	public String getProviderName() {
 		return providerName;
@@ -357,12 +359,22 @@ public class ServiceSignature implements Signature {
 		serviceID = id;
 	}
 
-	public boolean equals(ServiceSignature method) {
-		return (method != null) ? toString().equals(method.toString()) : false;
+	@Override
+	public boolean equals(Object signature) {
+		if (!(signature instanceof ServiceSignature))
+			return false;
+		else if (!(signature.getClass() == this.getClass()))
+			return false;
+		ServiceSignature sig = (ServiceSignature) signature;
+		return ("" + sig.serviceType).equals("" + serviceType)
+				&& ("" + sig.selector).equals("" + selector)
+				&& ("" + sig.providerName).equals("" + providerName);
 	}
 
+	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		return 31 * ("" + serviceType).hashCode() + ("" + selector).hashCode()
+				+ ("" + providerName).hashCode();
 	}
 
 	public String getCodebase() {
@@ -442,7 +454,7 @@ public class ServiceSignature implements Signature {
 		this.returnPath = returnPath;
 	}
 
-    @Override
+	@Override
      public void setReturnPath(String path) {
         returnPath = new ReturnPath<Object>(path);
     }
@@ -451,8 +463,33 @@ public class ServiceSignature implements Signature {
      public void setReturnPath(String path, Direction direction) {
         returnPath = new ReturnPath<Object>(path, direction);
      }
-
-     public ReturnPath getReturnPath() {
-	    return returnPath;
+	public ReturnPath getReturnPath() {
+		return returnPath;
 	}
+	
+	public Deployment getDeployment() {
+		return deployment;
+	}
+
+	public void setDeployment(Deployment deployment) {
+		this.deployment = deployment;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Object signature) {
+		if (!(signature instanceof ServiceSignature))
+			return -1;
+		int typeComp = (""+serviceType)
+				.compareTo(""+((ServiceSignature) signature).serviceType);
+		if (typeComp == 0) {
+			typeComp = (""+selector)
+				.compareTo(""+((ServiceSignature) signature).selector);
+		}
+		return (typeComp != 0 ? typeComp : (""+providerName)
+				.compareTo(""+((ServiceSignature) signature).providerName));
+	}
+
 }

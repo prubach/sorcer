@@ -18,6 +18,6 @@
 package junit.sorcer.core.provider;
 
 
-public interface Arithmetic extends Adder, Subtractor, Multiplier, Divider {
+public interface Arithmetic extends Adder, Averager, Subtractor, Multiplier, Divider {
 
 }

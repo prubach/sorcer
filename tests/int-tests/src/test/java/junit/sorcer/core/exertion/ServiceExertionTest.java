@@ -18,25 +18,12 @@
 package junit.sorcer.core.exertion;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.list;
 import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
-import static sorcer.eo.operator.context;
-import static sorcer.eo.operator.cxt;
-import static sorcer.eo.operator.exert;
-import static sorcer.eo.operator.exertion;
-import static sorcer.eo.operator.exertions;
-import static sorcer.eo.operator.get;
-import static sorcer.eo.operator.in;
-import static sorcer.eo.operator.job;
-import static sorcer.eo.operator.jobContext;
-import static sorcer.eo.operator.name;
-import static sorcer.eo.operator.names;
-import static sorcer.eo.operator.out;
-import static sorcer.eo.operator.path;
-import static sorcer.eo.operator.pipe;
-import static sorcer.eo.operator.sig;
-import static sorcer.eo.operator.task;
-import static sorcer.eo.operator.xrt;
+import static sorcer.eo.operator.*;
+import static sorcer.po.operator.invoker;
+import static sorcer.po.operator.par;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
@@ -50,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -142,7 +130,17 @@ public class ServiceExertionTest {
 		assertEquals("Wrong value for 400.0", 400.0, get(eJob, "t3", "result/y"));
 	}
 
-	@Test
+    @Test
+    public void taskExertParTest() throws EvaluationException, RemoteException, ExertionException {
+        // System.setSecurityManager(new RMISecurityManager());
+        Par<?> par1 = par("par1", invoker(eTask));
+//		logger.info("exertion evaluator: " + invoker(eTask).getValue());
+//		logger.info("par1 value = " + value((Context)value(par1), "result/y"));
+        assertTrue("Wrong par1 value for 100", value((Context)value(par1), "result/y").equals(100.0));
+    }
+
+
+    @Test
 	public void accessingComponentExertionsTest() throws EvaluationException,
 			RemoteException, ExertionException {
 		//logger.info("eJob exertions: " + names(exertions(eJob)));

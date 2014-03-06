@@ -22,19 +22,23 @@ import java.rmi.RemoteException;
 
 /**
  * A functionality required by all evaluators in SORCER.
- *
+ * 
  * @author Mike Sobolewski
  */
 public interface  Evaluator <T> extends Evaluation<T> {
 
-
-    /**
-     * Returns the current value of this evaluation.
-     *
-     * @return the current value of this evaluation
-     * @throws EvaluationException
-     * @throws RemoteException
-     */
-    public T evaluate(Arg... entries) throws EvaluationException, RemoteException;
-
+	
+	/**
+	 * Returns the current value of this evaluation.
+	 * 
+	 * @return the current value of this evaluation
+	 * @throws EvaluationException
+	 * @throws RemoteException
+	 */
+	public T evaluate(Arg... entries) throws EvaluationException, RemoteException;
+	
+	
+	public void addArgs(ArgSet set) throws EvaluationException, RemoteException;
+	
+	public ArgSet getArgs();
 }

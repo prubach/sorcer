@@ -26,7 +26,9 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.context.SharedAssociativeContext;
 import sorcer.core.context.SharedIndexedContext;
 import sorcer.core.context.model.par.Par;
+import sorcer.core.context.model.par.ParImpl;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class ContextFactory {
                         (String) entries[0]).getContext();
             }
         }
+
         String name = getUnknown();
         List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
         List<Par> parList = new ArrayList<Par>();
@@ -201,6 +204,14 @@ public class ContextFactory {
                                                  List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
+                Object par = ((InEntry)entryList.get(i)).value();
+                if (par instanceof Scopable) {
+                    try {
+                        ((Scopable)par).setScope(pcxt);
+                    } catch (RemoteException e) {
+                        throw new ContextException(e);
+                    }
+                }
                 if (((InEntry) entryList.get(i)).isPersistant) {
                     setPar(pcxt, (InEntry) entryList.get(i), i);
                 } else {
@@ -307,7 +318,7 @@ public class ContextFactory {
     private static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
             throws ContextException {
 
-        Par p = new Par(entry.path(), entry.value());
+        Par p = new ParImpl(entry.path(), entry.value());
         p.setPersistent(true);
         if (entry.datastoreURL != null)
             p.setDbURL(entry.datastoreURL);
@@ -321,11 +332,10 @@ public class ContextFactory {
             pcxt.putValueAt(entry.path(), p, i + 1);
     }
 
-
     private static void setPar(Context cxt, Tuple2 entry)
             throws ContextException {
 
-        Par p = new Par(entry.path(), entry.value());
+        Par p = new ParImpl(entry.path(), entry.value());
         p.setPersistent(true);
         if (entry.datastoreURL != null)
             p.setDbURL(entry.datastoreURL);

@@ -17,7 +17,7 @@
  */
 package sorcer.core.monitor;
 
-import sorcer.service.ExecState;
+import sorcer.service.Exec;
 import sorcer.service.Exertion;
 import sorcer.service.RemoteServiceEvent;
 
@@ -28,7 +28,7 @@ import java.io.Serializable;
  * about any monitoring events.
  */
 public class MonitorEvent extends RemoteServiceEvent implements Serializable,
-		ExecState {
+        Exec {
 
 	static final long serialVersionUID = -5433981459997252761L;
 	public static final long ID = 9999699999899L;

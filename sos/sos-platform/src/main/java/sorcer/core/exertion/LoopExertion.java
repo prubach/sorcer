@@ -18,13 +18,12 @@
 package sorcer.core.exertion;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jini.core.transaction.Transaction;
-import sorcer.service.Condition;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.core.context.ThrowableTrace;
+import sorcer.service.*;
 
 /**
  * The loop Exertion executes its target exertion while its condition is true.
@@ -32,10 +31,8 @@ import sorcer.service.Task;
  * each LoopExertion constructor.
  * 
  * @author Mike Sobolewski
- * 
- * @param <V>
  */
-public class LoopExertion extends Task {
+public class LoopExertion extends Task implements ConditionalExertion {
 
 	private static final long serialVersionUID = 8538804142085766935L;
 	
@@ -51,7 +48,7 @@ public class LoopExertion extends Task {
 	 * Loop: while(true) { operand }
 	 * 
 	 * @param name
-	 * @param var
+	 * @param exertion
 	 */
 	public LoopExertion(String name, Exertion exertion) {
 		super(name);
@@ -65,7 +62,7 @@ public class LoopExertion extends Task {
 	 * @param name
 	 * @param min
 	 * @param max
-	 * @param var
+	 * @param exertion
 	 */
 	public LoopExertion(String name, int min, int max, Exertion exertion) {
 		super(name);
@@ -79,7 +76,7 @@ public class LoopExertion extends Task {
 	 * 
 	 * @param name
 	 * @param condition
-	 * @param var
+	 * @param exertion
 	 */
 	public LoopExertion(String name, Condition condition, Exertion exertion) {
 		super(name);
@@ -95,7 +92,7 @@ public class LoopExertion extends Task {
 	 * @param min
 	 * @param max
 	 * @param condition
-	 * @param var
+	 * @param invoker
 	 */
 	public LoopExertion(String name, int min, int max, Condition condition,
 			Exertion invoker) {
@@ -138,7 +135,48 @@ public class LoopExertion extends Task {
 		return this;
 	}
 	
+	public Exertion getTarget() {
+		return target;
+	}
+	
+	public Condition getCondition() {
+		return condition;
+	}
+	
 	public boolean isConditional() {
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Conditional#getConditions()
+	 */
+	@Override
+	public List<Conditional> getConditions() {
+		List<Conditional> cs = new ArrayList<Conditional>();
+		cs.add(condition);
+		return cs;
+	}
+
+	@Override
+	public List<ThrowableTrace> getExceptions(List<ThrowableTrace> exceptions) {
+		exceptions.addAll(target.getExceptions());
+		exceptions.addAll(this.getExceptions());
+		return exceptions;
+	}
+	
+	public List<Exertion> getExertions(List<Exertion> exs) {
+		exs.add(target);
+		exs.add(this);
+		return exs;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.ConditionalExertion#getTargets()
+	 */
+	@Override
+	public List<Exertion> getTargets() {
+		List<Exertion> tl = new ArrayList<Exertion>();
+		tl.add(target);
+		return tl;
 	}
 }

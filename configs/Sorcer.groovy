@@ -51,13 +51,13 @@ deployment(name: 'Sorcer') {
     artifact id: 'cataloger-cfg', "org.sorcersoft.sorcer:cataloger-cfg:" + getSorcerVersion()
     artifact id: 'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:" + getSorcerVersion()
     artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
+    artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
     artifact id: 'logger-cfg', "org.sorcersoft.sorcer:logger-cfg:" + getSorcerVersion()
     artifact id: 'logger-sui', "org.sorcersoft.sorcer:logger-sui:" + getSorcerVersion()
     artifact id: 'dbp-api', "org.sorcersoft.sorcer:dbp-api:" + getSorcerVersion()
     artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
     artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
-    artifact id: 'commons-prv', "org.sorcersoft.sorcer:commons-prv:" + getSorcerVersion()
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
     def blitz = [
@@ -67,7 +67,7 @@ deployment(name: 'Sorcer') {
     ]
 
 
-    service(name: 'Mahalo') {
+    service(name: 'Mahalo') { fork:'yes'
         interfaces {
             classes 'com.sun.jini.mahalo.TxnManager'
             artifact ref: 'mahalo-dl'
@@ -115,7 +115,7 @@ deployment(name: 'Sorcer') {
     }
 */
 
-    service(name: "BlitzSpace") {
+    service(name: "BlitzSpace") { fork:'yes'
         interfaces {
             classes 'net.jini.space.JavaSpace05'
             artifact blitz.api
@@ -127,7 +127,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Jobber") {
+    service(name: "Jobber") { fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Jobber'
             artifact sorcer.platform
@@ -139,7 +139,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Spacer") {
+    service(name: "Spacer") { fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Spacer'
             artifact ref: 'sos-exertlet-sui'
@@ -151,7 +151,19 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Cataloger") {
+    service(name: "Concatenator") { fork:'yes'
+        interfaces {
+            classes 'sorcer.core.provider.Concatenator'
+            artifact ref: 'sos-exertlet-sui'
+        }
+        implementation(class: 'sorcer.core.provider.jobber.ServiceConcatenator') {
+            artifact ref: 'concatenator-cfg'
+        }
+        configuration file: 'classpath:concatenator.config'
+        maintain 1
+    }
+
+    service(name: "Cataloger") { fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Cataloger'
             artifact ref: 'cataloger-sui'
@@ -163,7 +175,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Logger") {
+    service(name: "Logger") { fork:'yes'
         interfaces {
             classes 'sorcer.core.RemoteLogger'
             artifact ref: 'logger-sui'
@@ -175,7 +187,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "ExertMonitor") {
+    service(name: "ExertMonitor") { fork:'yes'
         interfaces {
             classes 'sorcer.core.monitor.MonitoringManagement'
             artifact ref: 'sos-exertlet-sui'
@@ -187,7 +199,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "DatabaseStorer") {
+    service(name: "DatabaseStorer") { fork:'yes'
         interfaces {
             classes 'sorcer.service.DatabaseStorer'
             artifact ref: 'dbp-api'
@@ -199,7 +211,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Exerter") {
+    service(name: "Exerter") { fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.ServiceTasker'
             artifact ref: 'sos-exertlet-sui'

@@ -18,10 +18,14 @@
 package junit.sorcer.core.context;
 
 import org.junit.Test;
+import sorcer.core.context.ContextLink;
+import sorcer.core.context.PositionalContext;
+import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 
+import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -30,6 +34,23 @@ import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.entry;
 import static sorcer.co.operator.map;
 import static sorcer.eo.operator.*;
+import static sorcer.eo.operator.context;
+import static sorcer.eo.operator.get;
+import static sorcer.eo.operator.in;
+import static sorcer.eo.operator.name;
+import static sorcer.eo.operator.out;
+import static sorcer.eo.operator.put;
+import static sorcer.eo.operator.result;
+import static sorcer.eo.operator.revaluable;
+import static sorcer.eo.operator.revalue;
+import static sorcer.eo.operator.value;
+import static sorcer.po.operator.args;
+import static sorcer.po.operator.in;
+import static sorcer.po.operator.invoker;
+import static sorcer.po.operator.par;
+import static sorcer.po.operator.pars;
+
+
 
 /**
  * @author Mike Sobolewski
@@ -79,53 +100,105 @@ public class ContextTest {
 		assertEquals(2.0, get(cxt, "k2"));
 		assertEquals(3.0, get(cxt, "k3"));
 	}
-	
-//	@Test
-//	public void contextClosureTest() throws ExertionException, ContextException, RemoteException {
-//		Context<?> cxt = dataContext(in("x1"), in("x2"),
-//				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))));
-//		revaluable(cxt);
-//		//logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//		assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//	}
-	
-//	@Test
-//	public void evaluatedContextTest() throws ExertionException, ContextException {
-//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
-//				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))));
-//		revaluable(cxt);
+
+    @Test
+    public void contextClosureTest() throws ExertionException, ContextException, RemoteException {
+        Context<?> cxt = context(in("x1"), in("x2"),
+                in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))));
+        revaluable(cxt);
+
+//		logger.info("x1 value: " + value(cxt, "x1", entry("x1", 10.0), entry("x2", 50.0)));
+//		logger.info("x2 value: " + value(cxt, "x2"));
+//		logger.info("y value: " + value(cxt, "y"));
+
+        logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+        assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+    }
+
+    @Test
+    public void evaluatedContextTest() throws ExertionException, ContextException {
+        Context<?> cxt = context(in(par("x1")), in(par("x2")),
+                in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))));
+        revaluable(cxt);
 //		logger.info("cxt: " + cxt);
-//
-//		//logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//		assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
-//	}
-	
-//	@Test
-//	public void evaluatedContextWithResultTest() throws ExertionException, ContextException {
-//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
-//				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))),
-//				result("y"));
+
+        //logger.info("cxt value:  " + value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+        assertEquals(500.0, value(cxt, "y", entry("x1", 10.0), entry("x2", 50.0)));
+    }
+
+    @Test
+    public void evaluatedContextWithResultTest() throws ExertionException, ContextException {
+        Context<?> cxt = context(in(par("x1")), in(par("x2")),
+                in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))),
+                result("y"));
 //		logger.info("cxt: " + cxt);
 //		logger.info("return path: " + cxt.getReturnPath());
-//		revaluable(cxt);
+        revaluable(cxt);
 //		logger.info("cxt2: " + cxt);
 //		logger.info("cxt value:  " + value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
-//		
-//		// No path for the evaluation is specified in the dataContext cxt
-//		assertEquals(500.0, value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
-//	}
-	
-//	@Test
-//	public void evaluateAcrossContextsTest() throws ExertionException, ContextException {
-//		Context<?> cxt = dataContext(in(var("x1")), in(var("x2")),
-//				in(var("y", evaluators(expr("e1", "x1 * x2", vars("x1", "x2"))))),
-//				result("y"));
-//		revaluable(cxt);
-//		Context<?> cxt0 = dataContext(in(var("x11", 10.0)), in(var("x21", 50.0)));
-////		logger.info("x11: " + value(var("x11", cxt0)));
-////		logger.info("x21: " + value(var("x21", cxt0)));
-//		
-//		//logger.info("cxt value:  " + value(cxt, entry("x1", var("x11", cxt0)), entry("x2", var("x21", cxt0))));
-//		assertEquals(500.0, value(cxt, entry("x1", var("x11", cxt0)), entry("x2", var("x21", cxt0))));
-//	}
+
+        // No path for the evaluation is specified in the context cxt
+        assertEquals(500.0, value(cxt, entry("x1", 10.0), entry("x2", 50.0)));
+    }
+
+    @Test
+    public void evaluateAcrossContextsTest() throws ExertionException, ContextException {
+        Context<?> cxt = context(in(par("x1")), in(par("x2")),
+                in(par("y", invoker("e1", "x1 * x2", pars("x1", "x2")))),
+                result("y"));
+        revaluable(cxt);
+        Context<?> cxt0 = context(in(par("x11", 10.0)), in(par("x21", 50.0)));
+        logger.info("x11: " + value(cxt0, "x11"));
+        logger.info("x21: " + value(cxt0,"x21"));
+
+//		logger.info("cxt value:  " + value(cxt, entry("x1", value(cxt0, "x11")), entry("x2", value(cxt0,"x21"))));
+        assertEquals(500.0, value(cxt, entry("x1", value(cxt0, "x11")), entry("x2", value(cxt0,"x21"))));
+    }
+
+    @Test
+    public void linkedContext() throws Exception {
+        Context addContext = new PositionalContext("add");
+        addContext.putInValue("arg1/value", 90.0);
+        addContext.putInValue("arg2/value", 110.0);
+
+        Context multiplyContext = new PositionalContext("multiply");
+        multiplyContext.putInValue("arg1/value", 10.0);
+        multiplyContext.putInValue("arg2/value", 70.0);
+
+        ServiceContext invokeContext = new ServiceContext("invoke");
+//		add additional tests with offset
+//		invokeContext.putLink("add", addContext, "offset");
+//		invokeContext.putLink("multiply", multiplyContext, "offset");
+
+        invokeContext.putLink("add", addContext);
+        invokeContext.putLink("multiply", multiplyContext);
+
+        ContextLink addLink = (ContextLink)invokeContext.getLink("add");
+        ContextLink multiplyLink = (ContextLink)invokeContext.getLink("multiply");
+
+//		logger.info("invoke context: " + invokeContext);
+
+//		logger.info("path arg1/value: " + addLink.getContext().getValue("arg1/value"));
+        assertEquals(90.0, addLink.getContext().getValue("arg1/value"));
+//		logger.info("path arg2/value: " + multiplyLink.getContext().getValue("arg2/value"));
+        assertEquals(70.0, multiplyLink.getContext().getValue("arg2/value"));
+//		logger.info("path add/arg1/value: " + invokeContext.getValue("add/arg1/value"));
+        assertEquals(90.0, invokeContext.getValue("add/arg1/value"));
+//		logger.info("path multiply/arg2/value: " + invokeContext.getValue("multiply/arg2/value"));
+        assertEquals(70.0, invokeContext.getValue("multiply/arg2/value"));
+
+    }
+
+    @Test
+    public void weakValueTest() throws Exception {
+        Context cxt = context("add", in("arg/x1", 20.0), in("arg/x2", 80.0));
+
+//		logger.info("arg/x1 = " + cxt.getValue("arg/x1"));
+        assertEquals(20.0, cxt.getValue("arg/x1"));
+//		logger.info("val x1 = " + cxt.getValue("x1"));
+        assertEquals(null, cxt.getValue("x1"));
+//		logger.info("weak x1 = " + cxt.getWeakValue("arg/var/x1"));
+        assertEquals(20.0, cxt.getWeakValue("arg/var/x1"));
+    }
+
 }

@@ -25,14 +25,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
-import sorcer.service.Context;
-import sorcer.service.Evaluation;
-import sorcer.service.ExertionException;
-import sorcer.service.Invocation;
-import sorcer.service.Service;
-import sorcer.service.Signature;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 import sorcer.util.ServiceExerter;
 
 /**
@@ -122,9 +115,9 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		ServiceExerter esh = new ServiceExerter(this);
+		ServiceExerter se = new ServiceExerter(this);
 		try {
-			return (Task) esh.exert();
+			return (Task) se.exert();
 		} catch (TransactionException e) {
 			throw new ExertionException(e);
 		}
@@ -132,7 +125,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 
 	public static NetTask getTemplate() {
 		NetTask temp = new NetTask();
-		temp.status = INITIAL;
+		temp.status = Exec.INITIAL;
 		temp.priority = null;
 		temp.index = null;
 		temp.signatures = null;
@@ -145,4 +138,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 		return temp;
 	}
 
+    public boolean isNet() {
+        return true;
+    }
 }

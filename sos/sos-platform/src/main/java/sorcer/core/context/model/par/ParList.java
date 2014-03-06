@@ -117,7 +117,7 @@ public class ParList extends ArrayList<Par> {
 	}
 
 	public boolean containsParName(String name) {
-		return contains(new Par(name));
+		return contains(new ParImpl(name));
 	}
 
 	@Override

@@ -44,7 +44,7 @@ import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.service.ExecState;
+import sorcer.service.Exec;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
@@ -374,7 +374,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 		if (space != null) {
 			ExertionEnvelop ee = new ExertionEnvelop();
 			ee.parentID = ((ServiceExertion) exertion).getParentId();
-			ee.state = ExecState.POISONED;
+			ee.state = Exec.POISONED;
 			try {
 				if (space.readIfExists(ee, null, JavaSpace.NO_WAIT) != null) {
 					logger.info("...............dropped poisoned entry...............");
@@ -529,12 +529,12 @@ public class SpaceTaker implements Runnable, LeaseListener {
 							transaction);
 				}
 				if (out != null) {
-					out.setStatus(ExecState.DONE);
-					ee.state = ExecState.DONE;
+					out.setStatus(Exec.DONE);
+					ee.state = Exec.DONE;
 					ee.exertion = out;
 				} else {
-					se.setStatus(ExecState.ERROR);
-					ee.state = ExecState.ERROR;
+					se.setStatus(Exec.ERROR);
+					ee.state = Exec.ERROR;
 					ee.exertion = se;
 				}
 			} catch (Throwable th) {	
@@ -542,11 +542,11 @@ public class SpaceTaker implements Runnable, LeaseListener {
 						"doEnvelope", th);
 				//th.printStackTrace();
 				if (th instanceof Exception) {
-					ee.state = ExecState.FAILED;
-					((ServiceExertion) ee.exertion).setStatus(ExecState.FAILED);
+					ee.state = Exec.FAILED;
+					((ServiceExertion) ee.exertion).setStatus(Exec.FAILED);
 				} else if (th instanceof Error) {
-					ee.state = ExecState.ERROR;
-					((ServiceExertion) ee.exertion).setStatus(ExecState.ERROR);
+					ee.state = Exec.ERROR;
+					((ServiceExertion) ee.exertion).setStatus(Exec.ERROR);
 				}
 				((ServiceExertion) ee.exertion).reportException(th);
 			}

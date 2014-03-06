@@ -20,6 +20,7 @@ package sorcer.service;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import net.jini.core.transaction.Transaction;
@@ -27,6 +28,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.monitor.MonitoringSession;
+import sorcer.core.signature.NetSignature;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
@@ -96,11 +98,20 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	public Uuid getId();
 	
 	/**
+	 * Returns a deployment ID for this exertion.
+	 * 
+	 * @return a deployment identifier 
+	 * @throws NoSuchAlgorithmException 
+	 */
+	public String getDeploymentId() throws NoSuchAlgorithmException;
+	
+	/**
 	 * Appends the specified component exertion to the end of its list of exertions.
 	 * 
 	 * @return an added component exertion
+	 * @throws ExertionException 
 	 */
-	public Exertion addExertion(Exertion component);
+	public Exertion addExertion(Exertion component) throws ExertionException;
 	
 	/**
 	 * Returns a service dataContext (service data) of this exertion to be processed
@@ -109,15 +120,16 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * @return a service dataContext
 	 * @see #getSignatures
 	 */
-    public Context getDataContext();
+	public Context getDataContext() throws ContextException;
 
 	/**
 	 * Returns a composite data context (service data for all component
 	 * exertions) of this exertion to be processed by all exertion's signatures.
 	 * 
 	 * @return a service context
+	 * @throws ContextException 
 	 */
-	public Context getContext();
+	public Context getContext() throws ContextException;
 	
 	/**
 	 * Returns a value associated with a path (key) in this exertion's context.
@@ -138,17 +150,18 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * Returns a service context (service data) of the component exertion.
 	 * 
 	 * @return a service context
+	 * @throws ContextException 
 	 * @see #getSignatures
 	 */
-	public Context getContext(String componentExertionName);
+	public Context getContext(String componentExertionName) throws ContextException;
 	
 	public List<String> getTrace();
 	
 	/**
-	 * Returns a control dataContext (service control strategy) of this exertion to be
+	 * Returns a control context (service control strategy) of this exertion to be 
 	 * realized by a tasker, jobber or spacer.
 	 * 
-	 * @return a control dataContext
+	 * @return a control context
 	 * @see #getSignatures
 	 */
 	public Context getControlContext();
@@ -163,6 +176,8 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 */
 	public List<Signature> getSignatures();
 
+	public Arg getPar(String path);
+	
 	/**
 	 * Returns a signature of the <code>PROCESS</code> type for this exertion.
 	 * 
@@ -175,7 +190,7 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * Returns a flow type for this exertion execution. A flow type indicates if
 	 * this exertion can be executed sequentially, in parallel, or concurrently
 	 * with other component exertions within this exertion. The concurrent
-	 * execution requires all mapped inputs in the exertion dataContext to be
+	 * execution requires all mapped inputs in the exertion context to be
 	 * assigned before this exertion can be executed.
 	 * 
 	 * @return a flow type
@@ -215,23 +230,52 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 			RemoteException;
 	
 	/**
-	 * Returns the list of direct component exertions.
-	 * @return Exertion list
-	 */ 
-	public List<Exertion> getExertions();
-	
-	/**
 	 * Returns the list of traces of thrown exceptions.
 	 * @return ThrowableTrace list
 	 */ 
 	public List<ThrowableTrace> getExceptions();
 	
 	/**
+	 * Returns the list of all signatures of component exertions.
+	 * 
+	 * @return Signature list
+	 */
+	public List<Signature> getAllSignatures();
+
+	/**
+	 * Returns the list of all net signatures of component exertions.
+	 * 
+	 * @return Signature list
+	 */
+	public List<NetSignature> getAllNetSignatures();
+	
+	/**
+	 * Returns the list of all net task signatures of component exertions.
+	 * 
+	 * @return Signature list
+	 */
+	public List<NetSignature> getAllNetTaskSignatures();
+	
+	/**
+	 * Returns the list of all traces of thrown exceptions including from all
+	 * component.
+	 * 
+	 * @return ThrowableTrace list
+	 */
+	public List<ThrowableTrace> getAllExceptions();
+
+	/**
 	 * Returns a component exertion with a given name.
 	 * @return Exertion list
 	 */ 
 	public Exertion getExertion(String name);
 
+	/**
+	 * Returns the list of direct component exertions.
+	 * @return Exertion list
+	 */ 
+	public List<Exertion> getExertions();
+	
 	/**
 	 * Returns the list of all nested component exertions/
 	 * @return Exertion list
@@ -276,10 +320,18 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 */
 	public boolean isJob();
 
-    public boolean isTask();
+	public boolean isTask();
+	
+	public boolean isBlock();
 
-    public boolean isCmd();
+	public boolean isCmd();
 
+    public boolean isNet();
+	
+	public void setProvisionable(boolean state);
+		
+	public Exertion substitute(Arg... entries) throws EvaluationException;
+	
 	/**
 	 * Returns true if this exertion is atop an acyclic graph in which no node
 	 * has two parents (two references to it).
@@ -293,6 +345,11 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * Returns true if this exertion is a branching or looping exertion.
 	 */
 	public boolean isConditional();
+	
+	/**
+	 * Returns true if this exertion is composed of other exertions.
+	 */
+	public boolean isCompound();
 	
 	/**
 	 * The exertion format for thin exertions (no RMI and Jini classes)

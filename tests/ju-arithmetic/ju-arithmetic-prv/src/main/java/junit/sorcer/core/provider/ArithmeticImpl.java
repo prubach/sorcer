@@ -74,4 +74,11 @@ public class ArithmeticImpl implements Arithmetic {
 		return arithmometer.divide(context);
 	}
 
+
+    @SuppressWarnings("rawtypes")
+    public Context average(Context context) throws RemoteException,
+            ContextException {
+        return arithmometer.average(context);
+    }
+
 }

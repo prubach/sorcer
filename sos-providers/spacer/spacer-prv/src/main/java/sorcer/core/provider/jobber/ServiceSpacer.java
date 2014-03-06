@@ -47,17 +47,8 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExecState;
-import sorcer.service.Executor;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
+import sorcer.service.*;
 import sorcer.core.provider.Spacer;
-import sorcer.service.Task;
 
 import com.sun.jini.start.LifeCycle;
 import sorcer.util.StringUtils;
@@ -287,7 +278,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                     .setId(UuidFactory.generate());
             if (((ServiceExertion) ex).isJob()) {
                 for (int i = 0; i < ((Job) ex).size(); i++)
-                    replaceNullExertionIDs(((Job) ex).exertionAt(i));
+                    replaceNullExertionIDs(((Job) ex).get(i));
             }
         }
     }
@@ -359,9 +350,9 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 dispatcher = ExertionDispatcherFactory.getFactory()
                         .createDispatcher((NetJob) job,
                                 new HashSet<Context>(), false, myMemberUtil, provider);
-                while (dispatcher.getState() != ExecState.DONE
-                        && dispatcher.getState() != ExecState.FAILED
-                        && dispatcher.getState() != ExecState.SUSPENDED) {
+                while (dispatcher.getState() != Exec.DONE
+                        && dispatcher.getState() != Exec.FAILED
+                        && dispatcher.getState() != Exec.SUSPENDED) {
                     logger.fine("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
                     Thread.sleep(250);
                 }
@@ -423,9 +414,9 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 } catch (RemoteException e) {
                     //ignore it, local call
                 }
-                while (dispatcher.getState() != ExecState.DONE
-                        && dispatcher.getState() != ExecState.FAILED
-                        && dispatcher.getState() != ExecState.SUSPENDED) {
+                while (dispatcher.getState() != Exec.DONE
+                        && dispatcher.getState() != Exec.FAILED
+                        && dispatcher.getState() != Exec.SUSPENDED) {
                     logger.fine("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
                     Thread.sleep(250);
                 }
@@ -458,8 +449,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     private void prepareToStep(Job job) {
         Exertion e = null;
         for (int i = 0; i < job.size(); i++) {
-            e = job.exertionAt(i);
-			((ControlContext) job.getDataContext()).setReview(e, true);
+            e = job.get(i);
+			((ControlContext) job.getContext()).setReview(e, true);
 			if (e.isJob())
                 prepareToStep((Job) e);
         }

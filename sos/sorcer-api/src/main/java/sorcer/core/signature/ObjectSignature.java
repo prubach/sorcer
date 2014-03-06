@@ -20,9 +20,7 @@ package sorcer.core.signature;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-//import org.apache.tools.ant.taskdefs.Length;
-
-//import sorcer.core.context.model.var.ParametricModel;
+import sorcer.core.invoker.MethodInvoking;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Contexter;
@@ -35,13 +33,13 @@ public class ObjectSignature extends ServiceSignature {
 
 	static final long serialVersionUID = 8042346568722803852L;
 
-	//private MethodEvaluator evaluator;
+    private MethodInvoking invoker;
 
 	Class<?> providerType;
 
 	private Object target;
 
-	// list of initialization arguments for the constructor
+    // list of initialization arguments for the constructor
 	private Object[] args;	
 
 	private Class<?>[] argTypes;
@@ -77,6 +75,17 @@ public class ObjectSignature extends ServiceSignature {
 	public ObjectSignature(Class<?> providerClass) {
 		this(null, providerClass);
 	}
+
+    // Added to enable moving createEvaluator to ObjectTask
+    //
+    public void setInvoker(MethodInvoking invoker) {
+        this.invoker = invoker;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
+    //
 
 	/**
 	 * <p>
@@ -121,35 +130,23 @@ public class ObjectSignature extends ServiceSignature {
 		this.providerType = providerType;
 	}
 
-/* // TODO VFE related
-	*  *//**
+	/**
 	    <p> Returns the evaluator for this signature. </p>
 
 	    @return the evaluation
-	 *//*
-	public MethodEvaluator getEvaluator() {
-		return evaluator;
+	 */
+	public MethodInvoking getEvaluator() {
+		return invoker;
 	}
 
-	*//**
+	/**
 	    <p> Sets the evaluator for this signature. </p>
 
 	    @param evaluator the evaluation to set
-	 *//*
-	public void setEvaluator(MethodEvaluator evaluator) {
-		this.evaluator = evaluator;
+	*/
+	public void setEvaluator(MethodInvoking evaluator) {
+		this.invoker = evaluator;
 	}
-
-	public ServiceEvaluator<?> createEvaluator() throws InstantiationException,
-	IllegalAccessException {
-		if (target == null && providerType != null) {
-			evaluator = new MethodEvaluator(providerType.newInstance(),
-					selector);
-		} else
-			evaluator = new MethodEvaluator(target, selector);
-		this.evaluator.setParameters(args);
-		return evaluator;
-	}*/
 
 	public Class<?>[] getTypes() throws ContextException {
 		return argTypes;
@@ -245,7 +242,7 @@ public class ObjectSignature extends ServiceSignature {
 		return obj;
 	}
 
-	public boolean isSelectable() {
+	/*public boolean isSelectable() {
 		if (selector == null && providerType == null) {
 			return false;
 		}
@@ -256,7 +253,7 @@ public class ObjectSignature extends ServiceSignature {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	public Object initInstance(Object[] args) throws SignatureException {
 		this.args = args;
@@ -309,8 +306,7 @@ public class ObjectSignature extends ServiceSignature {
 	}
 
 	public String toString() {
-		String provider = providerType.toString();
-        //String provider = providerType == null ? ""+evaluator : ""+providerType;
+		String provider = providerType == null ? ""+invoker : ""+providerType;
 
 		return this.getClass() + ";" + providerName + ";" + execType + ";" + isActive + ";"
 		+ provider + ";" + selector;

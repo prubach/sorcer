@@ -25,11 +25,7 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.ext.ProvisioningException;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
 public class SpaceParallelDispatcher extends SpaceExertDispatcher {
@@ -38,20 +34,26 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
             Set<Context> sharedContexts,
             boolean isSpawned, 
             LokiMemberUtil myMemberUtil, 
-            Provider provider, 
-            ProvisionManager provisionManager) throws Throwable {
-		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager);
+            Provider provider,
+            ProvisionManager provisionManager,
+            ProviderProvisionManager providerProvisionManager) throws ExertionException, ContextException {
+		super(job, sharedContexts, isSpawned, myMemberUtil, provider, provisionManager, providerProvisionManager);
 	}
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		reconcileInputExertions(xrt);
+        checkAndDispatchExertions();
+		try {
+			reconcileInputExertions(xrt);
+		} catch (ContextException ex) {
+			throw new ExertionException(ex);
+		}
 
 		int index = inputXrts.size() - 1;
 		ServiceExertion exertion = null;
 		try {
 			while (index >= 0) {
-				exertion = (ServiceExertion) inputXrts.elementAt(index);
+				exertion = (ServiceExertion) inputXrts.get(index);
 				logger
 						.info("generateTasks ==> SPACE PARALLEL EXECUTE EXERTION: "
 								+ exertion.getName());
@@ -96,7 +98,7 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(template);
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.exertionAt(((ServiceExertion) resultEnvelop.exertion)
+						.get(((ServiceExertion) resultEnvelop.exertion)
 								.getIndex());
 				logger
 						.finer("collected result envelope  <===================== \n"

@@ -19,6 +19,7 @@ package sorcer.core.signature;
 
 import sorcer.service.Evaluation;
 
+@SuppressWarnings("rawtypes")
 public class EvaluationSignature extends ServiceSignature {
 
 	static final long serialVersionUID = -7142818720710405999L;
@@ -47,6 +48,20 @@ public class EvaluationSignature extends ServiceSignature {
 		this.evaluator = evaluator;
 	}
 
+	@Override
+	public boolean equals(Object signature) {
+		if (!(signature instanceof EvaluationSignature))
+			return false;
+		return ("" + ((EvaluationSignature) signature).evaluator).equals(""
+				+ evaluator);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return 31 * toString().hashCode();
+	}
+	
 	public String toString() {
 		return this.getClass() + ":" + providerName + ";" + execType + ";" + isActive + ";"
 				+ evaluator;

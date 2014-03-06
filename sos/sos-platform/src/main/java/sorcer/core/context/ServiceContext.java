@@ -30,10 +30,9 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.context.model.par.EntryList;
-import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParList;
+import sorcer.core.context.model.par.*;
 import sorcer.core.invoker.InvokeContextPassing;
+import sorcer.core.invoker.Invoker;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
@@ -41,7 +40,6 @@ import sorcer.core.context.node.ContextNodeException;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.service.ExecState.Category;
 import sorcer.util.*;
 
 /**
@@ -124,34 +122,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	
 	protected String dbUrl;
 
-    protected String prefix = "";
-
-    protected List<EntryList> entryLists;
-
-	/**
-	 * <p>
-	 * Returns <code>true</code> if this context is revaluable, otherwise
-	 * <code>false</code>. If context is revaluable then the values of this
-	 * context that implement the {@link Evaluation} interface are evaluated for
-	 * its requested evaluated values.
-	 * </p>
-	 *
-	 * @return the <code>true</code> if this context is revaluable.
-	 */
-	public boolean isRevaluable() {
-		return isRevaluable;
-	}
-
-	/**
-	 * <p>
-	 * Assign revaluability of this context.
-	 * </p>
-	 *
-	 * @param isRevaluable
-	 */
-	public void setRevaluable(boolean isRevaluable) {
-		this.isRevaluable = isRevaluable;
-	}
+	protected String prefix = "";
 
 	protected float version;
 
@@ -166,6 +137,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 * path/metapath entries
 	 */
 	protected Hashtable metacontext;
+
+	protected Context blockScope;
 
 	/** The exertion that uses this context */
 	protected Exertion exertion;
@@ -182,6 +155,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	protected SorcerPrincipal principal = null;
 
+    private final String userName = System.getProperty("user.name");
+
 	public static ContextAccessor cntxtAccessor;
 
 	/** EMPTY LEAF NODE ie. node with no data and not empty string */
@@ -192,9 +167,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			.getName());
 
 	/**
-	 * Default constructor for the ServiceContext class. The constructor calls the method init,
-	 * defines the the service context name sets the root name to a blank string creates a new
-	 * hash tables for path identifications, delPath, and linked paths. The constructor creates the
+	 * Default constructor for the ServiceContext class. The constructor calls the method init, 
+	 * defines the the service context name sets the root name to a blank string creates a new 
+	 * hash tables for path identifications, delPath, and linked paths. The constructor creates the 
 	 * context identification number via the UUID factory generate method.
 	 */
 	public ServiceContext() {
@@ -309,6 +284,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 		// specify four SORCER standard composite attributes
 		try {
+			// context path tag
+			setAttribute(PATH_PAR);
 			// annotating input output files associated with source applications
 			setCompositeAttribute(DATA_NODE_TYPE + APS + APPLICATION + APS
 					+ FORMAT + APS + MODIFIER);
@@ -329,6 +306,10 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 	}
 
+    public String getUserName() {
+        return userName;
+    }
+    
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -620,6 +601,22 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return outpaths.elements();
 	}
 
+	@Override
+	public T getWeakValue(String path) throws ContextException {
+		T val = getValue(path);
+		if (val == null) {
+			try {
+				int index = path.lastIndexOf(SorcerConstants.CPS);
+				String attribute = path.substring(index+1);
+				return getValueEndsWith(attribute);
+			} catch (Exception e) {
+				throw new ContextException(e);
+			}
+		} else {
+			return val;
+		}
+	}
+	
 	// we assume that a path ending with name refers to its value
 	public T getValueEndsWith(String name) throws EvaluationException,
 			RemoteException {
@@ -812,7 +809,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (offset == null)
 			throw new ContextException(
 					"Failed to create ContextLink:  offset is null");
-
+		
 		String extendedLinkPath = path;
 		if (offset.length() > 0)
 			extendedLinkPath = path + CPS + offset;
@@ -1568,7 +1565,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Enumeration<String> e = keys();
 		String key, path;
 		ContextLink link;
-		Context subcntxt;
+		Context subcntxt = null;
 
 		while (e.hasMoreElements()) {
 			key = e.nextElement();
@@ -1638,12 +1635,50 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return null;
 	}
 	
+	public Context appendNewEntries(Context context) throws ContextException {
+		if (context != null) {
+			Map<String, Object> contextMap = (Map) context;
+			Iterator it = contextMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry<String, Object> pairs = (Map.Entry) it.next();
+				if (!containsKey(pairs.getKey())) {
+					put(pairs.getKey(), (T)pairs.getValue());
+				}
+			}
+			if (containsKey(Condition._closure_))
+				remove(Condition._closure_);
+		}
+		return this;
+	}
+		
 	/* (non-Javadoc)
 	 * @see sorcer.service.Context#append(sorcer.service.Context)
 	 */
 	public Context append(Context context) throws ContextException {
-		if (context != null)
-			putAll((ServiceContext)context);
+		if (context != null) {
+			putAll((ServiceContext) context);
+			if (containsKey(Condition._closure_))
+				remove(Condition._closure_);
+		}
+
+//		Iterator<Map.Entry<String, T>> i = this.entrySet().iterator();
+//		List<String> pl = new ArrayList<String>();
+//		Object val;
+//		while (i.hasNext()) {
+//			Map.Entry<String, T> e = i.next();
+//			val = e.getValue();
+//			if (val != null && val instanceof Par) {
+//				ServiceContext cxt = (ServiceContext) ((Par) val).getScope();
+//				if (cxt != null && cxt.containsKey(Condition._closure_)) 
+//					pl.add(e.getKey());
+//			}
+//		}
+//		for (String key : pl) {
+//			((Par)get(key)).getScope().remove(Condition._closure_);
+//			// remove potential loops
+//			((Par)get(key)).getScope().remove(key);
+//			((ServiceContext)((Par)get(key)).getScope()).clear();
+//		}
 		return this;
 	}
 	
@@ -1651,7 +1686,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 * @see sorcer.service.Contexter#appendContext(sorcer.service.Context)
 	 */
 	@Override
-	public Context<T> appendContext(Context<T> cntxt) throws ContextException,
+	public Context<T> appendContext(Context<T> context) throws ContextException,
 			RemoteException {
 		// get the whole context, with the context root name as the
 		// path prefix
@@ -1659,7 +1694,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Vector vec = new Vector();
 		int index;
 		// pick off all top-level nodes to append
-		Enumeration e = cntxt.contextPaths();
+		Enumeration e = context.contextPaths();
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
 			index = key.indexOf(CPS);
@@ -1670,7 +1705,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 		e = vec.elements();
 		while (e.hasMoreElements()) {
-			appendContext(cntxt, (String) e.nextElement(), true);
+			appendContext(context, (String) e.nextElement(), true);
 		}
 		return this;
 	}
@@ -1877,7 +1912,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		int count = 0;
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
-			val = get(path);
+			val = get(path);					
 			if (!(val instanceof ContextLink)) {
 				if (count >= 1)
 					sb.append(cr);
@@ -1887,14 +1922,15 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// sb.append(val.toString() + " ");
 			// }
 			try {
-				if (val instanceof Par)
-					val = val.toString();
+				if (val instanceof Par) 
+					val = "par: " + ((Par)val).getName();
 				else
 					val = getValue(path);
 			} catch (Exception ex) {
 				sb.append("\nUnable to retrieve value: " + ex.getMessage());
 				ex.printStackTrace();
-				continue;
+				val = Context.none;;
+//				continue;
 			}
 			// if (val == null)
 			// sb.append("null");
@@ -1929,7 +1965,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		}
 		if (withMetacontext)
 			sb.append("metacontext: " + metacontext);
-
+		
 		// sb.append(cr);
 		// sb.append(cr);
 		if (cr.equals("<br>"))
@@ -2056,7 +2092,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see sorcer.service.Context#pipe(java.lang.String, java.lang.String,
 	 * sorcer.service.Context)
 	 */
@@ -2097,7 +2133,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public ServiceContext setArgs(Object... args) throws ContextException {
-		if (argsPath == null)
+		if (argsPath == null) 
 			argsPath = Context.PARAMETER_VALUES;
 		putInValue(argsPath, (T)args);
 		return this;
@@ -2121,12 +2157,12 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public ServiceContext setParameterTypes(Class... types) throws ContextException {
-		if (parameterTypesPath == null)
+		if (parameterTypesPath == null) 
 			parameterTypesPath = Context.PARAMETER_TYPES;
 		putValue(parameterTypesPath, (T)types);
 		return this;
 	}
-
+	
 	public String getParameterTypesPath() {
 		return parameterTypesPath;
 	}
@@ -2136,7 +2172,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		parameterTypesPath = targetPath;
 		return this;
 	}
-
+	
 	public Object getTarget() throws ContextException {
 		try {
 			return getValue(targetPath);
@@ -2168,7 +2204,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		this.returnPath = new ReturnPath();
 		return this;
 	}
-
+	
 	public ServiceContext setReturnPath(String path) throws ContextException {
 		this.returnPath = new ReturnPath(path);
 		return this;
@@ -2214,7 +2250,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		this.returnJobPath = new ReturnPath();
 		return this;
 	}
-
+	
 	public ServiceContext setReturnJobPath(String path) throws ContextException {
 		this.returnJobPath = new ReturnPath(path);
 		return this;
@@ -2244,7 +2280,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 		return value;
 	}
-
+	
 	public T putInoutValue(String path, T value)
 			throws ContextException {
 		putValue(path, value);
@@ -2267,7 +2303,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		mark(path, association);
 		return value;
 	}
-
+	
 	public T putInoutValue(String path, T value, String association)
 			throws ContextException {
 		putValue(path, value);
@@ -2311,7 +2347,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public boolean isLinked() {
-		Set entries = entrySet();
+		Set entries = entrySet(); 
 		Iterator i = entries.iterator();
 		while (i.hasNext()) {
 			Map.Entry e = (Map.Entry)i.next();
@@ -2637,7 +2673,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	@Override
 	public void appendTrace(String footprint) {
-		exertion.getControlContext().appendTrace(footprint);
+		if (exertion!=null)
+            exertion.getControlContext().appendTrace(footprint);
 	}
 
 	/*
@@ -2741,7 +2778,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
                 && mxrt.getMonitorSession() != null) {
             try {
                 putValue("context/checkpoint/time", StringUtils.getDateTime());
-                mxrt.getMonitorSession().changed(this, Category.UPDATED);
+                mxrt.getMonitorSession().changed(this, Exec.State.UPDATED);
             } catch (Exception e) {
                 throw new ContextException(e);
             }
@@ -2755,7 +2792,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
      * @throws java.rmi.RemoteException
      * @throws sorcer.service.MonitorException
      */
-    public void changed(Category aspect) throws RemoteException,
+    public void changed(Exec.State aspect) throws RemoteException,
             MonitorException {
         Exertion mxrt = getExertion();
         if (mxrt != null && mxrt.isMonitorable()
@@ -2788,12 +2825,12 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public Par getPar(String path) throws ContextException  {
-		return new Par(path, this);
-    }
+		return new ParImpl(path, this);
+	}
 	
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see sorcer.service.Evaluation#getValue(sorcer.core.context.Path.Entry[])
 	 */
 	@Override
@@ -2828,12 +2865,14 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 				return (T) ((Par)obj).getValue(entries);
 			else
 				return (T) obj;
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			logger.warning(e.getMessage());
 			e.printStackTrace();
-			throw new EvaluationException(e);
+			return (T) Context.none;
+//			throw new EvaluationException(e);
 		}
 	}
-
+	
 	public String getCurrentSelector() {
 		return currentSelector;
 	}
@@ -2910,7 +2949,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	@Override
 	public Object putDbValue(String path, Object value) throws ContextException {
-        Par par = new Par(path, value);
+		Par par = new ParImpl(path, value);
 		par.setPersistent(true);
 		return putValue(path, par);
 	}
@@ -2921,7 +2960,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public Object putDbValue(String path, Object value, URL datastoreUrl)
 			throws ContextException {
-        Par par = new Par(path, value);
+		Par par = new ParImpl(path, value);
 		par.setPersistent(true);
 		par.setDbURL(datastoreUrl);
 		return putValue(path, par);
@@ -2952,25 +2991,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public void setDbUrl(String dbUrl) {
 		this.dbUrl = dbUrl;
 	}
-
-    public List<EntryList> getEntryLists() {
-		return entryLists;
-	}
-
-	public void setEntryLists(List<EntryList> entryLists) {
-		this.entryLists = entryLists;
-	}
-	
-	public EntryList getEntryList(EntryList.Type type) {
-		if (entryLists != null) {
-			for (EntryList el : entryLists) {
-				if (el.getType().equals(type))
-					return el;
-			}
-		}
-		return null;
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see sorcer.service.Contexter#getContext(sorcer.service.Context)
 	 */
@@ -2991,11 +3012,26 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	public Par addPar(Par p) throws ContextException {
 		put(p.getName(), (T)p);
-		if (p.getScope() == null)
+		if (p.getScope() == null || p.getScope().size() == 0)
 			p.setScope(this);
 		try {
-			if (p.asis() instanceof InvokeContextPassing) {
-				((InvokeContextPassing) p.asis()).setInvokeContext(this);
+			if (p.asis() instanceof Invoker) {
+				((Invoker) p.asis()).setScope(this);
+			}
+		} catch (RemoteException e) {
+			throw new ContextException(e);
+		} 
+		contextChanged = true;
+		return p;
+	}
+	
+	public Par appendPar(Par p) throws ContextException {
+		put(p.getName(), (T)p);
+		if (p.getScope() == null)
+			p.setScope(new ParModel(p.getName()).append(this));
+		try {
+			if (p.asis() instanceof Invoker) {
+				((Invoker) p.asis()).setScope(this);
 			}
 		} catch (RemoteException e) {
 			throw new ContextException(e);
@@ -3007,12 +3043,43 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	/* (non-Javadoc)
 	 * @see sorcer.service.Context#addPar(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public Par addPar(String path, Object value) throws ContextException {
-		Par par = new Par(path, value, this);
+		Par par;
+		try {
+			par = new ParImpl(path, value, this);
+		} catch (RemoteException e) {
+			throw new ContextException(e);
+		}
 		return par;
 	}
+	
+	/**
+	 * <p>
+	 * Returns <code>true</code> if this context is revaluable, otherwise
+	 * <code>false</code>. If context is revaluable then the values of this
+	 * context that implement the {@link Evaluation} interface are evaluated for
+	 * its requested evaluated values.
+	 * </p>
+	 * 
+	 * @return the <code>true</code> if this context is revaluable.
+	 */
+	public boolean isRevaluable() {
+		return isRevaluable;
+	}
 
-    /* (non-Javadoc)
+	/**
+	 * <p>
+	 * Assign revaluability of this context.
+	 * </p>
+	 * 
+	 * @param isRevaluable
+	 */
+	public void setRevaluable(boolean isRevaluable) {
+		this.isRevaluable = isRevaluable;
+	}
+
+	/* (non-Javadoc)
 	 * @see sorcer.service.Invocation#invoke(sorcer.service.Arg[])
 	 */
 	//@Override
@@ -3032,6 +3099,14 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return null;
 	}
 
+	public Context getBlockScope() {
+		return blockScope;
+	}
+
+	public void setBlockScope(Context blockScope) {
+		this.blockScope = blockScope;
+	}
+	
 //	/* (non-Javadoc)
 //	 * @see sorcer.service.Service#service(sorcer.service.Exertion, net.jini.core.transaction.Transaction)
 //	 */

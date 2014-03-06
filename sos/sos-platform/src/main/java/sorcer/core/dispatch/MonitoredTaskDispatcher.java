@@ -38,9 +38,10 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 	 * @throws Throwable
 	 */
 	public MonitoredTaskDispatcher(Exertion exertion,
-			Set<Context> sharedContext, boolean isSpawned, Provider provider)
+			Set<Context> sharedContext, boolean isSpawned, Provider provider,
+            ProvisionManager provisionManager, ProviderProvisionManager providerProvisionManager)
 			throws Throwable {
-		super(exertion, sharedContext, isSpawned, provider);
+		super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 	
 	/* (non-Javadoc)
@@ -48,6 +49,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 	 */
 	@Override
 	public void dispatchExertions() throws ExertionException {
+        checkAndDispatchExertions();
 		preExecExertion(xrt);
 		collectResults();
 	}
@@ -70,7 +72,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				xrt.setStatus(FAILED);
 				state = FAILED;
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						Category.FAILED);
+						State.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
 				result.reportException(fe);
@@ -80,7 +82,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				state = DONE;
 				xrt.setStatus(DONE);
 				xrt.getMonitorSession().changed(result.getDataContext(),
-						Category.DONE);
+						State.DONE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

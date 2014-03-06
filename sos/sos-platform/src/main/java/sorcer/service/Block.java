@@ -17,14 +17,24 @@
 
 package sorcer.service;
 
+import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.jini.core.transaction.Transaction;
+import net.jini.core.transaction.TransactionException;
+import sorcer.co.tuple.Entry;
 import sorcer.core.SorcerConstants;
+import sorcer.core.context.ServiceContext;
+import sorcer.core.context.model.par.ParModel;
+import sorcer.core.exertion.AltExertion;
+import sorcer.core.exertion.LoopExertion;
+import sorcer.core.exertion.OptExertion;
+import sorcer.util.StringUtils;
 import sorcer.util.bdb.sdb.DbpUtil;
 import sorcer.util.bdb.sdb.SdbUtil;
 
@@ -32,27 +42,64 @@ import sorcer.util.bdb.sdb.SdbUtil;
 /**
  * @author Mike Sobolewski
  */
-public class Block extends ServiceExertion {
+public abstract class Block extends ServiceExertion implements CompoundExertion {
 
 	private List<Exertion> exertions = new ArrayList<Exertion>();
 	
 	private URL contextURL;
 	
+	public Block(String name) {
+		super(name);
+	}
+	
+	public Block(String name, Signature signature) {
+		super(name);
+		try {
+			signatures.add(signature);
+			try {
+				setContext(new ParModel("block context: " + getName()));
+//				persistContext();
+			} catch (Exception e) {
+				throw new ExertionException(e);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Block(String name, Signature signature, Context context)
+			throws SignatureException {
+		this(name, signature);
+		if (context != null)
+			this.dataContext = (ServiceContext) context;
+	}
+	
+	public abstract Block doBlock(Transaction txn) throws ExertionException,
+		SignatureException, RemoteException, TransactionException;
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#addExertion(sorcer.service.Exertion)
 	 */
 	@Override
-	public Exertion addExertion(Exertion component) {
-		exertions.add(component);
-		return component;
+	public Exertion addExertion(Exertion ex) throws ExertionException {
+		exertions.add(ex);
+		((ServiceExertion) ex).setIndex(exertions.indexOf(ex));
+		try {
+			controlContext.registerExertion(ex);
+		} catch (ContextException e) {
+			throw new ExertionException(e);
+		}
+		((ServiceExertion) ex).setParentId(getId());
+		return this;
 	}
 
 	public void setExertions(List<Exertion> exertions) {
 		this.exertions = exertions;
 	}
 
-	public void setExertions(Exertion[] exertions) {
-		this.exertions = Arrays.asList(exertions);
+	public void setExertions(Exertion[] exertions) throws ExertionException {
+		for (Exertion e :exertions)
+			addExertion(e);
 	}
 	
 	/* (non-Javadoc)
@@ -64,6 +111,19 @@ public class Block extends ServiceExertion {
 		return null;
 	}
 
+	@Override
+	public Context getDataContext() throws ContextException {
+		if (contextURL != null) {
+			try {
+				return (Context)contextURL.getContent();
+			} catch (IOException e) {
+				throw new ContextException(e);
+			}
+		} else {
+			return dataContext;
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see sorcer.service.Exertion#getExertions()
 	 */
@@ -72,6 +132,10 @@ public class Block extends ServiceExertion {
 		return exertions;
 	}
 
+	public List<Exertion> getAllExertions() {
+		return exertions;
+	}
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.ServiceExertion#linkContext(sorcer.service.Context, java.lang.String)
 	 */
@@ -92,6 +156,10 @@ public class Block extends ServiceExertion {
 		return context;
 	}
 
+	public boolean isBlock() {
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.ServiceExertion#isTree(java.util.Set)
 	 */
@@ -120,12 +188,142 @@ public class Block extends ServiceExertion {
 	}
 	
 	public URL persistContext() throws ExertionException, SignatureException, ContextException {
-        if (contextURL == null) {
+		if (contextURL == null) {
 			contextURL = DbpUtil.store(dataContext);
 			dataContext = null;
 		} else {
             DbpUtil.update(dataContext);
 		}
 		return contextURL;
+	}
+
+	/**
+	 * Returns the number of exertions in this Block.
+	 * 
+	 * @return the number of exertions in this Block.
+	 */
+	public int size() {
+		return exertions.size();
+	}
+
+	public void remove(int index) {
+		new RuntimeException().printStackTrace();
+		exertions.remove(index);
+	}
+
+	/**
+	 * Replaces the exertion at the specified position in this list with the
+     * specified element.
+	 */
+	public void setExertionAt(Exertion ex, int i) {
+		exertions.set(i, ex);
+	}
+	
+	/**
+	 * Returns the exertion at the specified index.
+	 */
+	public Exertion get(int index) {
+		return (Exertion) exertions.get(index);
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.CompoundExertion#isCompound()
+	 */
+	@Override
+	public boolean isCompound() {
+		return true;
+	}
+	
+	public boolean hasChild(String childName) {
+		for (Exertion ext : exertions) {
+			if (ext.getName().equals(childName))
+				return true;
+		}
+		return false;
+	}
+
+	public Exertion getChild(String childName) {
+		for (Exertion ext : exertions) {
+			if (ext.getName().equals(childName))
+				return ext;
+		}
+		return null;
+	}
+
+	public Object putBlockValue(String path, Object value) throws ContextException {
+		String[] attributes = StringUtils.pathToArray(path);
+		// remove the leading attribute of the current exertion
+		if (attributes[0].equals(getName())) {
+			// updated this context
+			if ((attributes.length >= 2) && !hasChild(attributes[1])) {
+				dataContext.putValue(path.substring(name.length() + 1), value);
+				return value;
+			}
+			String[] attributes1 = new String[attributes.length - 1];
+			System.arraycopy(attributes, 1, attributes1, 0,
+					attributes.length - 1);
+			attributes = attributes1;
+		}
+		String last = attributes[0];
+		Exertion exti = this;
+		for (String attribute : attributes) {
+			if (((ServiceExertion) exti).hasChild(attribute)) {
+				exti = ((CompoundExertion) exti).getChild(attribute);
+				if (exti instanceof Task) {
+					last = attribute;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		int index = path.indexOf(last);
+		String contextPath = path.substring(index + last.length() + 1);
+		exti.getContext().putValue(contextPath, value);
+		return value;
+	}
+	
+	public void reset(int state) {
+		for(Exertion e : exertions)
+			((ServiceExertion)e).reset(state);
+		
+		this.setStatus(state);
+	}
+	
+	@Override
+	public ServiceExertion substitute(Arg... entries)
+			throws EvaluationException {
+		try {
+			for (Arg e : entries) {
+				if (e instanceof Entry) {
+					if (((Entry) e).path().indexOf(name) >= 0)
+						putBlockValue(((Entry) e).path(), ((Entry) e).value());
+
+					else
+						super.putValue(((Entry) e).path(), ((Entry) e).value());
+				}
+			}
+			updateConditions();
+		} catch (ContextException ex) {
+			ex.printStackTrace();
+			throw new EvaluationException(ex);
+		}
+		return this;
+	}
+	
+	private void updateConditions() throws ContextException {
+		for (Exertion e : exertions) {
+			if (e.isConditional()) {
+				if (e instanceof OptExertion) { 
+					((OptExertion)e).getCondition().getConditionalContext().append(dataContext);
+				} else if (e instanceof LoopExertion) {
+					((LoopExertion) e).getCondition().getConditionalContext().append(dataContext);
+				} else if (e instanceof AltExertion) {
+					for (OptExertion oe : ((AltExertion) e).getOptExertions()) {
+						oe.getCondition().getConditionalContext().append(dataContext);
+					}
+				}
+			}
+		}
 	}
 }

@@ -52,12 +52,26 @@
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-lib</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject.monitor</groupId>
+            <artifactId>monitor-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
         <!-- Added for ExertionSorter tests -->
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.15</version>
+            <version>${v.plexus}</version>
         </dependency>
         <!-- -->
         <dependency>

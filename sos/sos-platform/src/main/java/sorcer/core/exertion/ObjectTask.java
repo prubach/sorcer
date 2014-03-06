@@ -21,6 +21,8 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.invoker.MethodInvoker;
+import sorcer.core.invoker.MethodInvoking;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -63,16 +65,28 @@ public class ObjectTask extends Task {
 			throw new SignatureException("Object task requires ObjectSignature: "
 					+ signature);
         // TODO VFE related
-
-		/*if (((ObjectSignature)signature).getEvaluator() == null)
+        ObjectSignature os = (ObjectSignature)signature;
+		if (os.getEvaluator() == null)
 			try {
-				((ObjectSignature)signature).createEvaluator();
+                // METHOD moved from ObjectSignature
+                // MERGE 04.03.2014
+                MethodInvoking invoker = null;
+                if (os.getTarget() == null && os.getProviderType() != null) {
+                    invoker = new MethodInvoker(os.getProviderType().newInstance(),
+                            os.getSelector());
+                } else
+                    invoker = new MethodInvoker(os.getTarget(), os.getSelector());
+
+                invoker.setParameters(os.getArgs());
+                os.setInvoker(invoker);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new SignatureException(e);
-			}*/
+			}
 		this.description = description;
 	}
+
+
 	
 	public ObjectTask(String name, Signature signature, Context context)
 			throws SignatureException {
@@ -80,36 +94,55 @@ public class ObjectTask extends Task {
 		this.dataContext = (ServiceContext) context;
 	}
 
-    public Task doTask(Transaction txn) throws ExertionException,
-            SignatureException, RemoteException {
-        dataContext.setCurrentSelector(getProcessSignature().getSelector());
-        dataContext.setCurrentPrefix(getProcessSignature().getPrefix());
+    public Task doTask(Transaction txn) throws ExertionException, SignatureException, RemoteException {
+        ObjectSignature os = (ObjectSignature) getProcessSignature();
+        dataContext.setCurrentSelector(os.getSelector());
+        dataContext.setCurrentPrefix(os.getPrefix());
+        MethodInvoker invoker = (MethodInvoker) ((ObjectSignature) getProcessSignature())
+                .getEvaluator();
         try {
-            if (getProcessSignature().getReturnPath() != null)
-                dataContext.setReturnPath(getProcessSignature().getReturnPath());
-
-            ObjectSignature os = (ObjectSignature) getProcessSignature();
-            Class[] paramTypes = new Class[] { Context.class };
-            Object[] parameters = new Object[] { dataContext };
-            if (dataContext.getArgsPath() != null) {
-                paramTypes = os.getTypes();
-                parameters = (Object[]) dataContext.getArgs();
+            if (invoker == null) {
+                if (os.getTarget() != null)
+                    invoker = new MethodInvoker(os.getTarget(), os.getSelector());
+                else
+                    invoker = new MethodInvoker(os.newInstance(), os.getSelector());
             }
-            Object result = ((ObjectSignature) getProcessSignature())
-                    .initInstance(parameters, paramTypes);
+            logger.info("ZZZZZZZZZZZZZZZZZZ ObjectTask  invoker: " + invoker);
+            logger.info("ZZZZZZZZZZZZZZZZZZ ObjectTask  getArgs(): " + getArgs());
+            logger.info("ZZZZZZZZZZZZZZZZZZ ObjectTask  os.getTypes(): " + os.getTypes());
+            logger.info("ZZZZZZZZZZZZZZZZZZ ObjectTask  dataContext: " + dataContext);
 
-            if (dataContext.getReturnPath() != null) {
-                if (result instanceof Context) {
+            if (os.getReturnPath() != null)
+                dataContext.setReturnPath(os.getReturnPath());
+            if (getArgs() == null  && os.getTypes() == null) {
+                // assume this task context is used by the signature's provider
+                invoker.setParameterTypes(new Class[] { Context.class });
+                invoker.setContext(dataContext);
+            }
+            else if (dataContext.getArgsPath() != null) {
+                invoker.setArgs(os.getTypes(), (Object[]) getArgs());
+            }
+            Object result = invoker.invoke(dataContext);
+            if (result instanceof Context) {
+                if (dataContext.getReturnPath() != null) {
                     dataContext.setReturnValue(((Context) result).getValue(dataContext
                             .getReturnPath().path));
                 } else {
-                    dataContext.setReturnValue(result);
+                    dataContext.append((Context)result);
                 }
+            } else {
+                dataContext.setReturnValue(result);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             dataContext.reportException(e);
+            if (e instanceof Exception)
+                setStatus(FAILED);
+            else
+                setStatus(ERROR);
         }
+        setStatus(DONE);
+        dataContext.appendTrace(invoker.toString());
         return this;
     }
 
@@ -161,4 +194,7 @@ public class ObjectTask extends Task {
 		return dataContext.getArgs();
 	}
 
+    public boolean isNet() {
+        return false;
+    }
 }
