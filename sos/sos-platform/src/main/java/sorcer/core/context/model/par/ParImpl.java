@@ -50,12 +50,12 @@ public class ParImpl<T> extends Par {
 
     @Override
     public void setValue(Object value) throws EvaluationException {
-        if (persistent) {
+        if (isPersistent()) {
             try {
                 if (SdbUtil.isSosURL(value)) {
                     if (((URL)value).getRef() == null) {
                         value = DbpUtil.store(value);
-                    } else if (persistent){
+                    } else if (isPersistent()){
                         DbpUtil.update((URL)value, value);
                     }
                     return;
@@ -69,7 +69,7 @@ public class ParImpl<T> extends Par {
                 Object val = mappable.asis((String)this.value);
                 if (val instanceof Par) {
                     ((Par)val).setValue(value);
-                } else if (persistent) {
+                } else if (isPersistent()) {
                     if (SdbUtil.isSosURL(val)) {
                         DbpUtil.update((URL)val, value);
                     } else {
@@ -134,7 +134,7 @@ public class ParImpl<T> extends Par {
                 val = ((Evaluation<T>) val).getValue(entries);
             }
 
-            if (persistent) {
+            if (isPersistent()) {
                 if (SdbUtil.isSosURL(val))
                     val = (T) ((URL) val).getContent();
                 else {

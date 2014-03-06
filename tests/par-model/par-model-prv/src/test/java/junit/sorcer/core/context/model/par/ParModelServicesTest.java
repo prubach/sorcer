@@ -46,8 +46,7 @@ import sorcer.util.Sorcer;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-prv"})
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api" })
 @SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelServicesTest {
 	private final static Logger logger = Logger.getLogger(ParModelServicesTest.class
@@ -75,6 +74,7 @@ public class ParModelServicesTest {
 		assertEquals(get(exert(pmt), "invoke/result"), 60.0);
 	}
 
+    @Ignore
 	@Test
 	public void parNetModelServiceTest() throws RemoteException, ContextException, 
 			ExertionException, SignatureException {
@@ -88,8 +88,9 @@ public class ParModelServicesTest {
 //		logger.info("result: " + exert(pmt));
 		assertEquals(get(exert(pmt), "invoke/result"), 60.0);
 	}
-	
-	@Test
+
+    @Ignore
+    @Test
 	public void parNetVarModelServiceTest() throws RemoteException, ContextException, 
 			ExertionException, SignatureException {
 		// the provider in ex6/bin varparmodel-prv-run.xml

@@ -66,7 +66,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 
 	protected Context<T> scope;
 	
-	boolean persistent = false;
+	private boolean persistent = false;
 				
 	// data store URL for this par
 	protected URL dbURL;
@@ -453,5 +453,4 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		this.scope = (Context)scope;
 		
 	}
-
 }
