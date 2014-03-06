@@ -1,8 +1,6 @@
 package sorcer.util;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +15,13 @@ package sorcer.util;
  * limitations under the License.
  */
 
-
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Rafał Krupiński
@@ -71,5 +71,27 @@ public class Collections {
             if (!src.hasNext()) throw new IndexOutOfBoundsException();
             target[i] = src.next();
         }
+    }
+
+    public static Map<String, String> toMap(Properties properties) {
+        Map<String, String> result = new HashMap<String, String>();
+        toMap(properties, result);
+        return result;
+    }
+
+    public static void toMap(Properties properties, Map<String, String> result) {
+        for (String key : properties.stringPropertyNames())
+            result.put(key, properties.getProperty(key));
+    }
+
+    public static Properties toProperties(Map<String, String> source) {
+        Properties p;
+        if ((Map) source instanceof Properties)
+            p = (Properties) (Map) source;
+        else {
+            p = new Properties();
+            p.putAll(source);
+        }
+        return p;
     }
 }

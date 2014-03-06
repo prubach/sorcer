@@ -15,9 +15,11 @@ package sorcer.util.eval;
  * limitations under the License.
  */
 
+import sorcer.util.Collections;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Rafał Krupiński
@@ -25,7 +27,7 @@ import java.util.Map;
 public class PropertyEvaluator {
     private static final String PREFIX = "${";
     private static final String SUFFIX = "}";
-    private Map<String, Map<String, String>> sources = new HashMap<String, Map<String, String>>();
+    private Map<String, Properties> sources = new HashMap<String, Properties>();
 
     public void addDefaultSources() {
         addDefaultSources("sys", "env");
@@ -33,11 +35,15 @@ public class PropertyEvaluator {
 
     @SuppressWarnings("unchecked")
     public void addDefaultSources(String sys, String env) {
-        addSource(sys, (Map) System.getProperties());
+        addSource(sys, System.getProperties());
         addSource(env, System.getenv());
     }
 
     public void addSource(String prefix, Map<String, String> source) {
+        addSource(prefix, Collections.toProperties(source));
+    }
+
+    public void addSource(String prefix, Properties source) {
         sources.put(prefix, source);
     }
 
@@ -52,21 +58,21 @@ public class PropertyEvaluator {
     }
 
     public String eval(String value) {
-        Map<String,String>data=new HashMap<String, String>();
+        Map<String, String> data = new HashMap<String, String>();
         String key = "--KEY--";
-        data.put(key,value);
+        data.put(key, value);
         eval(data);
         return data.get(key);
     }
 
-    private boolean eval(String key, String value, Map<String, String> data, Map<String, Map<String, String>> sources) {
+    private boolean eval(String key, String value, Map<String, String> data, Map<String, Properties> sources) {
         int[] variable = findVar(value);
         if (variable == null) return false;
         String var = value.substring(variable[0], variable[1]);
-        if(var.equals(key))return false;
+        if (var.equals(key)) return false;
 
         int prefEnd = var.indexOf('.');
-        Map<String, String> source = null;
+        Properties source = null;
         String useKey = null;
         if (prefEnd >= 0) {
             String sourceKey = var.substring(0, prefEnd);
@@ -76,11 +82,11 @@ public class PropertyEvaluator {
             }
         }
         if (source == null) {
-            source = data;
+            source = Collections.toProperties(data);
             useKey = var;
         }
         if (source.containsKey(useKey)) {
-            String varValue = source.get(useKey);
+            String varValue = source.getProperty(useKey);
             String newValue = replaceAll(value, variable[2], variable[3], varValue);
             data.put(key, newValue);
             return true;
@@ -111,6 +117,4 @@ public class PropertyEvaluator {
 
         return new int[]{open + PREFIX.length(), close, open, close + SUFFIX.length()};
     }
-
-
 }

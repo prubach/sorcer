@@ -48,8 +48,8 @@ public abstract class Launcher implements ILauncher {
     protected List<String> rioConfigs;
     protected SorcerListener sorcerListener;
 
-    protected Map<String, String> properties;
-    protected Map<String, String> environment;
+    protected Properties properties;
+    protected Properties environment;
 
     final protected static String[] CLASS_PATH = {
             "org.apache.river:start",
@@ -98,6 +98,7 @@ public abstract class Launcher implements ILauncher {
     protected PropertyEvaluator evaluator;
 
     @Override
+    @SuppressWarnings("unchecked")
     public void preConfigure() {
         if (sorcerListener == null)
             sorcerListener = new NullSorcerListener();
@@ -115,7 +116,7 @@ public abstract class Launcher implements ILauncher {
         evaluator.addSource("env", environment);
     }
 
-    abstract protected Map<String, String> getEnvironment();
+    abstract protected Properties getEnvironment();
 
     protected void ensureDirConfig() {
         if (home == null)
@@ -153,7 +154,7 @@ public abstract class Launcher implements ILauncher {
         }
     }
 
-    protected Map<String, String> getProperties() {
+    protected Properties getProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
         String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:" + RIO_VERSION);
 
@@ -164,7 +165,7 @@ public abstract class Launcher implements ILauncher {
             throw new RuntimeException(e);
         }
 
-        Map<String, String> sysProps = new HashMap<String, String>();
+        Properties sysProps = new Properties();
         sysProps.put(MAX_DATAGRAM_SOCKETS, "1024");
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
 //        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");

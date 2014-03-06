@@ -30,9 +30,8 @@ import java.nio.channels.Channels;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.core.SorcerConstants.E_SORCER_EXT;
@@ -143,8 +142,8 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
     }
 
     @Override
-    protected Map<String, String> getEnvironment() {
-        Map<String, String> sysEnv = new HashMap<String, String>();
+    protected Properties getEnvironment() {
+        Properties sysEnv = new Properties();
         sysEnv.put(E_SORCER_HOME, home.getPath());
         sysEnv.put(E_RIO_HOME, rio.getPath());
         sysEnv.put(E_SORCER_EXT, ext.getPath());

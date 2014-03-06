@@ -35,6 +35,7 @@ import java.util.concurrent.ThreadFactory;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
+import static sorcer.util.Collections.toProperties;
 
 /**
  * @author Rafał Krupiński
@@ -55,6 +56,8 @@ public class SorcerLauncher extends Launcher {
 
         super.preConfigure();
         updateMonitorConfig();
+        configure();
+        configureBdbHandler();
 
         try {
             Installer installer = new Installer();
@@ -66,7 +69,10 @@ public class SorcerLauncher extends Launcher {
             throw new RuntimeException("Error while installing SORCER", x);
         }
 
-        configure();
+    }
+
+    private void configureBdbHandler() {
+        configs.add(0, new File(home, "configs/sos.groovy").getPath());
     }
 
     public void start() {
@@ -170,8 +176,8 @@ public class SorcerLauncher extends Launcher {
     }
 
     @Override
-    protected Map<String, String> getEnvironment() {
-        return System.getenv();
+    protected Properties getEnvironment() {
+        return toProperties(System.getenv());
     }
 
     @Override

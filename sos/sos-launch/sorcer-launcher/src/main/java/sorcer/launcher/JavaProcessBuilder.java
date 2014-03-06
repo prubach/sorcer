@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static sorcer.util.Collections.toMap;
 
 /**
  * @author Rafał Krupiński
@@ -40,8 +41,8 @@ import static java.util.Arrays.asList;
 public class JavaProcessBuilder {
     protected Logger log = LoggerFactory.getLogger(getClass());
     protected String name;
-    protected Map<String, String> properties;
-    protected Map<String, String> environment = new HashMap<String, String>();
+    protected Properties properties;
+    protected Properties environment = new Properties();
     protected Collection<String> classPathList;
     protected String mainClass;
     protected List<String> parameters = new LinkedList<String>();
@@ -85,12 +86,13 @@ public class JavaProcessBuilder {
         }
         builder.directory(workingDir);
 
-        for (Map.Entry<String, String> e : environment.entrySet()) {
-            log.info("{}", e);
-        }
+        if (log.isInfoEnabled())
+            for (String key : environment.stringPropertyNames()) {
+                log.info("{} -> {}", key, environment.getProperty(key));
+            }
 
         Map<String, String> procEnv = builder.environment();
-        procEnv.putAll(environment);
+        procEnv.putAll(toMap(environment));
 
         if (log.isInfoEnabled()) {
             StringBuilder cmdStr = new StringBuilder("[").append(workingDir.getPath()).append("]");
@@ -206,11 +208,10 @@ public class JavaProcessBuilder {
         return method.invoke(target, args);
     }
 
-    private List<String> _D(Map<String, String> d) {
+    private List<String> _D(Properties d) {
         List<String> result = new ArrayList<String>(d.size());
-        for (Map.Entry<String, String> e : d.entrySet()) {
-            result.add(_D(e.getKey(), e.getValue()));
-        }
+        for (String key : d.stringPropertyNames())
+            result.add(_D(key, d.getProperty(key)));
         return result;
     }
 
@@ -226,8 +227,8 @@ public class JavaProcessBuilder {
         this.err = err;
     }
 
-    public void setProperties(Map<String, String> environment) {
-        this.properties = environment;
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public void setClassPath(Collection<String> classPath) {
@@ -267,11 +268,11 @@ public class JavaProcessBuilder {
         this.errFile = errFile;
     }
 
-    public Map<String, String> getEnvironment() {
+    public Properties getEnvironment() {
         return environment;
     }
 
-    public void setEnvironment(Map<String, String> environment) {
+    public void setEnvironment(Properties environment) {
         this.environment = environment;
     }
 
