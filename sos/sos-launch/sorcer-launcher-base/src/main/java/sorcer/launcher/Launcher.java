@@ -54,7 +54,7 @@ public abstract class Launcher implements ILauncher {
     final protected static String[] CLASS_PATH = {
             "org.apache.river:start",
             "net.jini:jsk-resources",
-            //"net.jini:jsk-platform",
+            "net.jini:jsk-platform",
             "net.jini:jsk-lib",
             "net.jini.lookup:serviceui",
 
@@ -78,9 +78,6 @@ public abstract class Launcher implements ILauncher {
 
             // optional: required only in fork mode
             //"org.sorcersoft.sorcer:sorcer-launcher",
-
-            //required for sos.Handler to work
-//            "org.sorcersoft.sorcer:sos-platform",
 
             "org.codehaus.groovy:groovy-all",
             "org.apache.commons:commons-lang3",
@@ -150,7 +147,7 @@ public abstract class Launcher implements ILauncher {
         try {
             org.apache.commons.io.FileUtils.forceMkdir(logDir);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not create logs directory",e);
+            throw new IllegalStateException("Could not create logs directory", e);
         }
     }
 
@@ -168,12 +165,8 @@ public abstract class Launcher implements ILauncher {
         Properties sysProps = new Properties();
         sysProps.put(MAX_DATAGRAM_SOCKETS, "1024");
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-//        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
-        sysProps.put(RMI_SERVER_CLASS_LOADER, "sorcer.rmi.ArtifactRmiLoader");
+        sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
-        //sysProps.put(RMI_SERVER_CODEBASE, "artifact:org.sorcersoft.sorcer/sos-platform/"+SORCER_VERSION+";"+SorcerEnv.getWebsterUrl()+"/@sorcer");
-        sysProps.put(RMI_SERVER_CODEBASE, "artifact:net.jini/jsk-platform/2.2.2;"+SorcerEnv.getWebsterUrl()+"/@sorcer");
-
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
         sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());
@@ -188,10 +181,7 @@ public abstract class Launcher implements ILauncher {
         sysProps.put("RIO_HOME", rio.getPath());
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
-
         sysProps.put("org.rioproject.codeserver", SorcerEnv.getWebsterUrl());
-        sysProps.put("org.rioproject.resolver.prune.platform", Boolean.FALSE.toString());
-
 
         return sysProps;
     }
