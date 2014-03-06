@@ -33,6 +33,7 @@ import sorcer.launcher.SorcerLauncher;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.bdb.HandlerInstaller;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,11 +58,12 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
             home = new File(homePath);
 
         JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
-        JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|org.rioproject.url");
         JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
         //JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
         //JavaSystemProperties.ensure(RMI_SERVER_CODEBASE, SorcerEnv.getWebsterUrl());
         log = LoggerFactory.getLogger(SorcerRunner.class);
+        new HandlerInstaller(null, null);
     }
 
     public SorcerRunner(Class<?> klass) throws InitializationError {
