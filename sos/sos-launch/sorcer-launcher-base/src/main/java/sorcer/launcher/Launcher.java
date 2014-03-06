@@ -151,7 +151,7 @@ public abstract class Launcher implements ILauncher {
 
     protected Map<String, String> getProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
-        String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S5");
+        String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:5.0-M4-S6");
 
         try {
             IOUtils.ensureFile(policyPath, IOUtils.FileCheck.readable);

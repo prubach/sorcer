@@ -17,13 +17,10 @@
  */
 package sorcer.provider.boot;
 
-import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
-import sorcer.resolver.VersionResolver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,18 +70,9 @@ public class Booter {
 	 */
 	private static Properties props = new Properties();
 
-    private static final VersionResolver versionResolver = new VersionResolver();
-    private static final org.rioproject.resolver.Resolver resolver;
-
     private static final String localRepo;
 
 	static {
-		try {
-            resolver = ResolverHelper.getResolver();
-        } catch (ResolverException e) {
-            throw new IllegalStateException("could not initialize Aether resolver", e);
-        }
-
 		try {
 			loadEnvironment();
 		} catch (IOException e) {
