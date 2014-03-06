@@ -30,12 +30,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-resolver</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.jini</groupId>
-                    <artifactId>jsk-lib</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

@@ -386,13 +386,6 @@
             <groupId>org.rioproject</groupId>
             <artifactId>rio-start</artifactId>
             <version>${v.rio}</version>
-            <exclusions>
-                <!-- use org.apache.river:start:${v.jini} instead -->
-                <exclusion>
-                    <groupId>net.jini</groupId>
-                    <artifactId>start</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.rioproject.monitor</groupId>
