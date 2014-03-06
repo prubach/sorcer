@@ -18,8 +18,6 @@
 package junit.sorcer.util.bdb.objects;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
@@ -34,13 +32,11 @@ import static sorcer.eo.operator.value;
 /**
  * @author Mike Sobolewski
  */
-@Ignore
 public class SosUrlsTest {
 
 	private final static Logger logger = Logger.getLogger(SosUrlsTest.class
 			.getName());
 
-    @Test
 	public void storedValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException, InterruptedException {
 		URL url1 = dbURL("Test1");
