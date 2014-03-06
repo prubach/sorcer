@@ -17,48 +17,30 @@
  */
 package junit.sorcer.util.bdb.objects;
 
-import static sorcer.eo.operator.dbURL;
-import static sorcer.eo.operator.value;
-
-import java.io.IOException;
-import java.net.URL;
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Assert;
-
-import sorcer.core.SorcerEnv;
+import org.junit.Ignore;
+import org.junit.Test;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
-//import sorcer.util.bdb.sdb.Handler;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Logger;
+
+import static sorcer.eo.operator.dbURL;
+import static sorcer.eo.operator.value;
 
 /**
  * @author Mike Sobolewski
  */
+@Ignore
 public class SosUrlsTest {
 
 	private final static Logger logger = Logger.getLogger(SosUrlsTest.class
 			.getName());
 
-	static {
-        //Handler.register();
-		if (System.getProperty("java.security.policy") == null) {
-			System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-		}
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setSecurityManager(new RMISecurityManager());
-		System.out.println("CLASSPATH :"
-				+ System.getProperty("java.class.path"));
-		SorcerEnv.debug = true;
-	}
-
-	public void sosUrlsTest() throws SignatureException,
-			ExertionException, ContextException, IOException, InterruptedException {
-        storedValuesTest();
-    }
-
+    @Test
 	public void storedValuesTest() throws SignatureException,
 			ExertionException, ContextException, IOException, InterruptedException {
 		URL url1 = dbURL("Test1");
@@ -68,9 +50,5 @@ public class SosUrlsTest {
 		Thread.sleep(1000);
 		Assert.assertEquals("Test1", value(url1));
 		Assert.assertEquals(21.0, value(url2));
-	}
-
-	public static void main(String[]args) throws Exception {
-		new SosUrlsTest().sosUrlsTest();
 	}
 }

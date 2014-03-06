@@ -30,10 +30,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ThreadFactory;
 
-import static sorcer.core.SorcerConstants.*;
+import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
 import static sorcer.util.Collections.i;
 import static sorcer.util.Collections.toProperties;
 
