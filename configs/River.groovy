@@ -16,7 +16,7 @@ def getSorcerVersion() {
 deployment(name: 'Sorcer') {
     groups SorcerEnv.getLookupGroups() as String[];
 
-    codebase "http://${SorcerEnv.getLocalHost().getHostAddress()}:9010/".toString()
+    codebase SorcerEnv.websterUrl;
 
     artifact id: 'webster-srv', 'org.sorcersoft.sorcer:sos-webster:' + getSorcerVersion()
 

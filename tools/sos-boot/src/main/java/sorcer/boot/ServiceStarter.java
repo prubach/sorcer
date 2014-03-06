@@ -375,14 +375,8 @@ public class ServiceStarter {
             } catch (RemoteException e) {
                 log.warn("Error", e);
             }
-// this stops Rio services, but it has it's own shutdown hook
-/*
-        }else if(impl instanceof ServiceBean){
-            ServiceBean sb= (ServiceBean) impl;
-            sb.destroy(false);
-*/
         } else {
-            log.warn("Unable to stop {}", impl);
+            log.debug("Unable to stop {}", impl);
         }
     }
 }
