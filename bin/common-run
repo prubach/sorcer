@@ -415,23 +415,16 @@ $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
 startShell ( ) {
 SR_CP=$(createSorcerRioCp)
-#echo "SORCER RIO CP:"$SR_CP
-
       	SHELL_CLASSPATH="$LOG_CP:$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
-$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
-$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
-$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
-$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar"
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"
 
     CLASS=$1
     shift

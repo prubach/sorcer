@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+    <artifactId>account</artifactId>
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <version>1.0-M4-SNAPSHOT</version>
+  </parent>
+
+	<artifactId>account-prv</artifactId>
+	<name>SORCER :: account :: provider</name>
+	<description>SORCER</description>
+	<url>http://sorcersoft.org/</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>account-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>commons-prv</artifactId>
+			<version>${v.sorcer}</version>
+		</dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${v.slf4j}</version>
+        </dependency>
+
+        <!-- tests -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${v.slf4j}</version>
+        </dependency>
+
+    </dependencies>
+</project>

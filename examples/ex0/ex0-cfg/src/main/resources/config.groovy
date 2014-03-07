@@ -11,19 +11,21 @@ import sorcer.ui.serviceui.UIDescriptorFactory
 import static sorcer.core.SorcerConstants.SORCER_VERSION
 
 @Component('sorcer.core.provider.ServiceProvider')
-class HelloWorld {
+class HelloWorldProviderConfig {
     /* service provider generic properties */
     String name = "HelloWorld";
     String description = "HelloWorld Service";
-    Class[] publishedInterfaces = [sorcer.ex0.HelloWorld.class]
-    // service beans
-    Class[] beanClasses = [sorcer.ex0.HelloWorldImpl.class]
     String iconName = "/config/sorcer.png";
-
     Entry[] entries = [
-            UIDescriptorFactory.getUIDescriptor(MainUI.ROLE, new UIComponentFactory(new URL("artifact:org.sorcersoft.sorcer:ex0-sui:" + SORCER_VERSION), "sorcer.ex0.HelloWorldImplUI"))
+            UIDescriptorFactory.getUIDescriptor(MainUI.ROLE, new UIComponentFactory(new URL("artifact:org.sorcersoft.sorcer:ex0-sui:" + SORCER_VERSION),
+                    "sorcer.ex0.HelloWorldImplUI"))
     ]
-
+    Class[] getBeanClasses() {
+        return [sorcer.ex0.HelloWorldImpl.class]
+    }
+    Class[] getPublishedInterfaces() {
+        return [Thread.currentThread().contextClassLoader.loadClass(sorcer.ex0.HelloWorld.class.getName())]
+    }
     boolean monitorEnabled = false;
     boolean spaceEnabled = false;
 }

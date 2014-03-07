@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name ="Account Requestor" default="run.requestor" basedir=".">
+	<!-- set property values here -->
+	<property name="requestor.name" value="account-req" />
+	<property name="requestor.version" value="1.0-M4-SNAPSHOT" />
+	<property name="requestor.class" value="sorcer.account.requestor.AccountTester" />
+
+	<property name="requestor.api" value="account-api"/>
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer"/>
+	<property name="requestor.policy" value="src/main/resources/policy/req.policy"/>
+
+	<!-- loads system environment variables -->
+	<property environment="env" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+	<echo message="webster: ${provider.webster.url}" />
+
+	<!-- provider codebase jars -->
+	<property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
+	<property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
+
+	<property name="requestor.webster.codebase" value="${j1} ${j2}" />
+    <property name="webster.internal" value="true" />
+
+</project>
+

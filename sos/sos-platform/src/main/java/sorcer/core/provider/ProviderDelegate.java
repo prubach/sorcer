@@ -393,7 +393,10 @@ public class ProviderDelegate {
 			}
 		}
 		restore();
-		// set provider's ID persistance flag if defined in provider's
+        // Intialize hostName and hostAddress
+        getHostName();
+        getHostAddress();
+        // set provider's ID persistance flag if defined in provider's
 		// properties
 		idPersistent = SorcerEnv.getProperty(P_SERVICE_ID_PERSISTENT, "false")
 				.equals("true");
@@ -419,13 +422,7 @@ public class ProviderDelegate {
 	void initSpaceSupport() throws ConfigurationException, RemoteException {
 		if (!spaceEnabled)
 			return;
-		
-/*		try {
-			hostName = SorcerEnv.getLocalHost().getHostName();
-			hostAddress = SorcerEnv.getHostAddress();
-		} catch (UnknownHostException e) {
-			// ignore it
-		}*/
+
 		space = SpaceAccessor.getSpace(spaceName, spaceGroup);
 		if (space == null) {
 			int ctr = 0;
@@ -1680,10 +1677,10 @@ public class ProviderDelegate {
 			logger.warning("Some problem in accessing attributes");
             logger.warning(StringUtils.stackTraceToString(ex));
 		}
-		String hostName = null, hostAddress = null;
-		hostName = SorcerEnv.getHostName();
-		hostAddress = SorcerEnv.getHostAddress();
-
+/*        String hostName = null, hostAddress = null;
+        hostName = SorcerEnv.getHostName();
+        hostAddress = SorcerEnv.getHostAddress();
+  */
 		if (hostName != null) {
 			serviceType.hostName = hostName;
 		} else {
@@ -2322,7 +2319,7 @@ public class ProviderDelegate {
 		public void loadConfiguration(String filename) {
 			try {
 				// check the class resource
-				InputStream is = provider.getClass().getResourceAsStream(
+				InputStream is = provider.getClass().getClassLoader().getResourceAsStream(
 						filename);
 				// next check local resource
 				if (is == null) {

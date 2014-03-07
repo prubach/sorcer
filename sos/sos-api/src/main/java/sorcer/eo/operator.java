@@ -1454,25 +1454,6 @@ public class operator {
 		return new ParameterTypes(parameterTypes);
 	}
 
-	public static class ParameterTypes extends Path {
-		private static final long serialVersionUID = 1L;
-		Class[] parameterTypes;
-
-		public ParameterTypes(Class... parameterTypes) {
-			this.parameterTypes = parameterTypes;
-		}
-
-		public ParameterTypes(String path, Class... parameterTypes) {
-			this.parameterTypes = parameterTypes;
-			this._1 = path;
-		}
-
-		@Override
-		public String toString() {
-			return "parameterTypes: " + Arrays.toString(parameterTypes);
-		}
-	}
-
 	public static Args parameterValues(Object... args) {
 		return new Args(args);
 	}

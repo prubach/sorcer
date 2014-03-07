@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>account</artifactId>
+    <groupId>org.sorcersoft.sorcer</groupId>
+    <version>1.0-M4-SNAPSHOT</version>
+  </parent>
+
+    <artifactId>account-cfg-1</artifactId>
+    <name>SORCER :: account :: config 1</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>account-prv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-platform</artifactId>
+            <version>${v.sorcer}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <OAR-OperationalString>account.groovy</OAR-OperationalString>
+                            <OAR-Name>AccountBoot</OAR-Name>
+                            <OAR-Version>${project.version}</OAR-Version>
+                            <OAR-Activation>Automatic</OAR-Activation>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

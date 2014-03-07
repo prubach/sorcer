@@ -282,17 +282,19 @@ public class SpaceCmd extends ShellCmd {
 	}
 
 	private void printExertion(int index, boolean isContext, boolean isControlContext) throws ContextException {
-		Exertion xrt = ((ExertionEnvelop)instanceList.get(index)).exertion;
-		out.println("--------- EXERTION # " + index + " ---------");
-		out.println(((ServiceExertion) xrt).describe());
-		if (isContext) {
-			out.println("\nData Context:");
-			out.println(xrt.getContext());
-		}
-		if (isControlContext) {
-			out.print("\nControl Context:");
-			out.println(xrt.getControlContext());
-		}
+        if (instanceList.size()>0) {
+            Exertion xrt = ((ExertionEnvelop)instanceList.get(index)).exertion;
+            out.println("--------- EXERTION # " + index + " ---------");
+            out.println(((ServiceExertion) xrt).describe());
+            if (isContext) {
+                out.println("\nData Context:");
+                out.println(xrt.getContext());
+            }
+            if (isControlContext) {
+                out.print("\nControl Context:");
+                out.println(xrt.getControlContext());
+            }
+        }
 	}
 
 	private void getSpaceEntries(Entry entry) {
