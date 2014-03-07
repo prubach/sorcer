@@ -1,4 +1,4 @@
-/*
+package junit.sorcer.core.resolver;/*
  * Copyright 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ public class ResolverTest {
     @Test
     public void testResolver() throws ResolverException {
         Resolver resolver = ResolverHelper.getResolver();
-        String[] cp = resolver.getClassPathFor("org.sorcersoft.sorcer:ex0-cfg:" + SorcerConstants.SORCER_VERSION);
+        String[] cp = resolver.getClassPathFor("org.sorcersoft.sorcer:ju-arithmetic-cfg-all:" + SorcerConstants.SORCER_VERSION);
         Assert.assertTrue(cp != null);
         for (String cpe : cp) {
             System.out.println(cpe);
