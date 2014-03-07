@@ -39,7 +39,10 @@ set LOG_CP=%LOG_CP%;%MVN_REPO%\org\slf4j\jul-to-slf4j\%v.slf4j%\jul-to-slf4j-%v.
 set LOG_CP=%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-core\%v.logback%\logback-core-%v.logback%.jar
 set LOG_CP=%LOG_CP%;%MVN_REPO%\ch\qos\logback\logback-classic\%v.logback%\logback-classic-%v.logback%.jar
 
-set JINI_BASE=%MVN_REPO%\net\jini\jsk-platform\%v.jini%\jsk-platform-%v.jini%.jar;%MVN_REPO%\net\jini\jsk-lib\%v.jini%\jsk-lib-%v.jini%.jar;%MVN_REPO%\net\jini\lookup\serviceui\%v.jini%\serviceui-%v.jini%.jar
+set JINI_BASE=%MVN_REPO%\net\jini\jsk-platform\%v.jini%\jsk-platform-%v.jini%.jar;
+set JINI_BASE=%JINI_BASE%;%MVN_REPO%\net\jini\jsk-lib\%v.jini%\jsk-lib-%v.jini%.jar;
+set JINI_BASE=%JINI_BASE%;%MVN_REPO%\net\jini\lookup\serviceui\%v.jini%\serviceui-%v.jini%.jar
+set JINI_BASE=%JINI_BASE%;%MVN_REPO%\net\jini\jsk-resources\%v.jini%\jsk-resources-%v.jini%.jar
 set JINI_START=%MVN_REPO%\org\apache\river\start\%v.jini%\start-%v.jini%.jar
 
 set SORCER_COMMON=%MVN_REPO%\org\sorcersoft\sorcer\sorcer-api\%v.sorcer%\sorcer-api-%v.sorcer%.jar
@@ -50,15 +53,15 @@ set SORCER_COMMON=%SORCER_COMMON%;%MVN_REPO%\org\sorcersoft\sorcer\sos-util\%v.s
 set JINI_CLASSPATH=%JINI_BASE%;%JINI_START%;%LOG_CP%
 
 set BOOT_CLASSPATH=%JINI_CLASSPATH%;%SORCER_COMMON%
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-start\%v.sorcer%\sos-start-%v.sorcer%.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher-base\%v.sorcer%\sorcer-launcher-base-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-installer\%v.sorcer%\sorcer-installer-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher-base\%v.sorcer%\sorcer-launcher-base-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-start\%v.sorcer%\sos-start-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-lib\%v.sorcer%\sorcer-rio-lib-%v.sorcer%.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\net\jini\jsk-resources\%v.jini%\jsk-resources-%v.jini%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
+::set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\net\jini\jsk-resources\%v.jini%\jsk-resources-%v.jini%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-logging-support\%v.rio%\rio-logging-support-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-start\%v.rio%\rio-start-%v.rio%.jar
@@ -68,10 +71,10 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-proxy\%v.rio%\
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\monitor\monitor-api\%v.rio%\monitor-api-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\guava\guava\15.0\guava-15.0.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commons-cli-1.2.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
 
 set SHELL_CLASSPATH=%JINI_BASE%;%LOG_CP%;%SORCER_COMMON%
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
