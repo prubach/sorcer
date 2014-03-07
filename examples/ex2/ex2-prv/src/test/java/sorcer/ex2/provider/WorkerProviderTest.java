@@ -22,19 +22,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-
-import com.gargoylesoftware.base.testing.TestUtil;
 
 /**
  * @author Mike Sobolewski
@@ -71,17 +67,6 @@ public class WorkerProviderTest implements Serializable {
         context.putValue("to/provider/name", "Testing Provider");
 	}
 
-	@Test
-    @Ignore("MyWork hashcode is different after deserialization")
-	public void contextTest() throws IOException,
-			IllegalAccessException, InvocationTargetException {
-		// test serialization of the provider's context
-		TestUtil.testSerialization(context, true);
-
-		// test serialization of the provider's context
-		//TestUtil.testClone(context, true);
-	}
-
 	/**
 	 * Test method for {@link sorcer.ex2.provider.WorkerProvider#sayHi(sorcer.service.Context)}.
 	 * @throws IOException 
@@ -91,7 +76,6 @@ public class WorkerProviderTest implements Serializable {
 		Context result = provider.sayHi(context);
 		//logger.info("result: " + result);
 		// test serialization of the returned context
-		//TestUtil.testSerialization(result, true);
 		assertEquals("Hi " + hostName + "!", result.getValue("provider/message"));
 	}
 

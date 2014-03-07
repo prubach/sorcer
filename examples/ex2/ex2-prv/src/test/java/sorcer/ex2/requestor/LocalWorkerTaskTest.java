@@ -20,14 +20,12 @@ package sorcer.ex2.requestor;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.TransactionException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
@@ -42,8 +40,6 @@ import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
-
-import com.gargoylesoftware.base.testing.TestUtil;
 
 /**
  * @author Mike Sobolewski
@@ -77,13 +73,6 @@ public class LocalWorkerTaskTest {
         context.putValue("requestor/operand/2", 101);
         context.putValue("requestor/work", work);
         context.putValue("to/provider/name", "Testing Provider");
-    }
-
-    @Test
-    @Ignore("MyWork hashcode is different after deserialization")
-    public void contextSerializationTest() throws IOException {
-        // test serialization of the requestor's context
-        TestUtil.testSerialization(context, true);
     }
 
     @Test
