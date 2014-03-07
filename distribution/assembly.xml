@@ -259,6 +259,31 @@
                 <destName>lockmgr-${v.lockmgr}.pom</destName>
             </file>
             <file>
+                <source>${user.home}/.m2/repository/org/rioproject/main/${v.rio}/main-${v.rio}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>main-${v.rio}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/32/commons-parent-32.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>commons-parent-32.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/ant/ant/1.9.3/ant-1.9.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ant-1.9.3.pom.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/ant/ant-parent/1.9.3/ant-parent-1.9.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ant-parent-1.9.3.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/ant/ant-launcher/1.9.3/ant-launcher-1.9.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ant-launcher-1.9.3.pom</destName>
+            </file>
+            <file>
                 <source>${user.home}/.m2/repository/org/slf4j/slf4j-parent/${v.slf4j}/slf4j-parent-${v.slf4j}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>slf4j-parent-${v.slf4j}.pom</destName>
