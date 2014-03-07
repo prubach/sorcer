@@ -497,10 +497,10 @@ public class InvokerTest {
 		Runnable update = new Runnable() {
 			public void run() {
 				try {
-					while ((Integer) value(pm, "x") < 25) {
+					while ((Integer) value(pm, "x") < 30) {
 						set(pm, "x", (Integer) value(pm, "x") + 1);
 						 System.out.println("running ... " + value(pm, "x"));
-						Thread.sleep(100);
+						Thread.sleep(300);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -515,8 +515,8 @@ public class InvokerTest {
 				loop("loop", condition(pm, "{ x -> x < 20 }", "x"),
 						(Invoker) asis((Par) asis(pm, "y"))));
 
-		// logger.info("loop value: " + value(pm, "loop"));
-		assertTrue((Integer) value(pm, "loop") == 20);
+		logger.info("loop value: " + value(pm, "loop"));
+		assertEquals(new Integer(20), (Integer) value(pm, "loop"));
 	}
 
 	@Test
