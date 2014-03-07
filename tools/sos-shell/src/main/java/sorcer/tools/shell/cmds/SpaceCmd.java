@@ -105,7 +105,7 @@ public class SpaceCmd extends ShellCmd {
 
 		if (numTokens == 0) {
 			showSpaces();
-			if (spaces != null) {
+			if (spaces != null && spaces.length>0) {
                 //BlitzProxy bp = javaSpace = (JavaSpace)spaces[0].service;
 
 
