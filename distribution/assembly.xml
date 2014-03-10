@@ -82,6 +82,11 @@
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/concatenator/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>concatenator-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-${v.sorcer}.pom</destName>

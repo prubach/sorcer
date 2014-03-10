@@ -29,6 +29,7 @@ public class Process2 extends Process {
 
 	final private Process process;
     private String name;
+    private int pid;
 
     private ThreadGroup helperThreads;
 
@@ -56,7 +57,7 @@ public class Process2 extends Process {
 
     public Process2(Process process, String name) {
         this.process = process;
-        int pid = getUnixPid(process);
+        this.pid = getUnixPid(process);
         this.name = (pid == -1) ? name : name + '@' + pid;
     }
 
@@ -159,6 +160,10 @@ public class Process2 extends Process {
     @Override
     public InputStream getErrorStream() {
         return process.getErrorStream();
+    }
+
+    public int getPid() {
+        return pid;
     }
 
     @Override

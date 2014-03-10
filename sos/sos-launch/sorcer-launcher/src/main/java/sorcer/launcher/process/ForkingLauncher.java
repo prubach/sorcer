@@ -19,6 +19,7 @@ package sorcer.launcher.process;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
 import sorcer.launcher.*;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
@@ -134,6 +135,20 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
             }
         }
 
+        String pidFile = null;
+        if ((profile!=null) && (process.getPid()!=-1) &&
+                (waitMode== WaitMode.start || waitMode== WaitMode.no)) {
+            try
+            {
+                pidFile = SorcerEnv.getHomeDir() + File.separator + "logs" + File.separator + "sorcer.pid";
+                File fPidFile = new File(pidFile);
+                BufferedWriter writer = new BufferedWriter(new FileWriter(fPidFile));
+                writer.write(new Integer(process.getPid()).toString() + "\n");
+                writer.close();
+            } catch(Exception e) {
+                log.warn("Cannot write pid to file: " + pidFile);
+            }
+        }
     }
 
     @Override

@@ -47,19 +47,26 @@ if [ -z "$SORCER_USER" ]; then
   SORCER_USER=$(stat -c %U $SORCER_HOME)
 fi
 
+if [ -z "$SORCER_PROFILE" ]; then
+  SORCER_PROFILE=sorcer
+fi
+
 col=`expr $(tput cols) - 25`
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
 #echo "executing SORCER_STARTER, SH: $SORCER_HOME" > /tmp/sorcer-starter.log
+chmod -R a+rwx $SORCER_HOME/logs
+chmod -R a+rwx $SORCER_HOME/databases
+PID_FILE=$SORCER_HOME/logs/sorcer.pid
 
 do_start()
-{       
-       echo -n " * Starting SORCER..."              
-       check_status
-        if [ ! -f $SORCER_HOME/pid ]; then
-            su -c "$SORCER_HOME/bin/sorcer-boot -d" $SORCER_USER
+{
+        echo -n " * Starting SORCER..."
+        check_status
+        if [ ! -f $PID_FILE ]; then
+            su -c "$SORCER_HOME/bin/sorcer-boot -w start -Mprefer-fork -P$SORCER_PROFILE >  $SORCER_HOME/logs/sorcer-starter.log" $SORCER_USER
 	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
 	    echo " "
         else
@@ -70,13 +77,13 @@ do_start()
 do_stop()
 {
        check_status
-       if [ -f $SORCER_HOME/pid ]; then
-            PID=$(cat $SORCER_HOME/pid);
+       if [ -f $PID_FILE ]; then
+            PID=$(cat $PID_FILE);
             echo -n " * Stopping SORCER..."
             kill $PID;
 	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
 	    echo " "
-            rm $SORCER_HOME/pid
+            rm $PID_FILE
         else
             echo " SORCER is not running..."
         fi
@@ -84,11 +91,11 @@ do_stop()
 
 check_status()
 {
-    if [ -f $SORCER_HOME/pid ]; then
-	PID=$(cat $SORCER_HOME/pid);	
+    if [ -f $PID_FILE ]; then
+	PID=$(cat $PID_FILE);
         PS=$(ps aux | grep $PID | grep -v grep);        
         if [ -z "$PS" ]; then	  
-	  rm $SORCER_HOME/pid
+	  rm $PID_FILE
 	fi
     fi      
 }
@@ -96,7 +103,7 @@ check_status()
 do_status()
 {
     check_status
-    if [ -f $SORCER_HOME/pid ]; then
+    if [ -f $PID_FILE ]; then
 	echo " SORCER is running"
     else
 	echo " SORCER is not running"	  
