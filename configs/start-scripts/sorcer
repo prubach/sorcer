@@ -48,7 +48,7 @@ if [ -z "$SORCER_USER" ]; then
 fi
 
 if [ -z "$SORCER_PROFILE" ]; then
-  SORCER_PROFILE=sorcer
+  SORCER_PROFILE=mix
 fi
 
 col=`expr $(tput cols) - 25`
