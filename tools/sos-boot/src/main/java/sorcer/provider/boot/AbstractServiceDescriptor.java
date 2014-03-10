@@ -99,6 +99,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
      */
     public Service create(Configuration config) throws Exception {
         try {
+            logger.info("Creating service from {}", this);
             return doCreate(config);
         } catch (Exception x) {
             erredServices.incrementAndGet();

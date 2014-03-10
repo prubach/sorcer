@@ -91,7 +91,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         security(cl);
 
         Class<?> implClass = cl.loadClass(serviceElement.getComponentBundle().getClassName());
-        if (logger.isTraceEnabled())
+        if (logger.isDebugEnabled())
             ClassLoaderUtil.displayClassLoaderTree(cl);
         Object impl;
         Object proxy;
@@ -214,5 +214,10 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         public boolean unregister(Object impl) {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "OpstringServiceDescriptor " + serviceElement.getOperationalStringName() + "/" + serviceElement.getName();
     }
 }
