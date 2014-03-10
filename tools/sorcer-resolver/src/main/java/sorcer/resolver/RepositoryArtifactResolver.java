@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sorcer.util.ArtifactCoordinates;
 
 /**
@@ -61,7 +59,7 @@ public class RepositoryArtifactResolver extends AbstractArtifactResolver {
 		if (classifier != null) {
 			result.append('-').append(classifier);
 		}
-		result.append('.').append(artifactCoordinates.getPackaging());
+		result.append('.').append(artifactCoordinates.getType());
         return result.toString();
 	}
 

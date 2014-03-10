@@ -76,7 +76,7 @@ public class MappedFlattenedArtifactResolver extends AbstractArtifactResolver {
 		} else {
 			groupDir = GROUPDIR_DEFAULT;
 		}
-		File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier() != null ? '-' + coords.getClassifier() : "") + '.' + coords.getPackaging());
+		File relFile = new File(groupDir, coords.getArtifactId() + (coords.getClassifier() != null ? '-' + coords.getClassifier() : "") + '.' + coords.getType());
         return relFile.getPath();
 	}
 

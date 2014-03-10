@@ -1,7 +1,5 @@
 /**
- *
- * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +15,17 @@
  */
 package sorcer.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Rafał Krupiński
  */
 public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	final public static String DEFAULT_PACKAGING = "jar";
+    public static final Map<String,String> PACKAGINGS = new HashMap<String, String>();
 	private static final String MVN_SEP = ":";
+
 	private String groupId;
 	private String artifactId;
 	private String version;
@@ -30,6 +33,26 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	private String packaging;
 
 	/**
+     * Type is usually derived from the packaging, this field allows to override it.
+     */
+    private String type;
+
+    static {
+        PACKAGINGS.put("pom", "pom");
+        PACKAGINGS.put("jar", "jar");
+        PACKAGINGS.put("maven-plugin", "jar");
+        PACKAGINGS.put("ejb", "jar");
+        PACKAGINGS.put("war", "war");
+        PACKAGINGS.put("ear", "ear");
+        PACKAGINGS.put("rar", "rar");
+        PACKAGINGS.put("par", "par");
+
+        PACKAGINGS.put("maven-archetype", "jar");
+        PACKAGINGS.put("eclispse-plugin", "jar");
+        PACKAGINGS.put("bundle", "jar");
+    }
+
+    /**
 	 * @param coords artifact coordinates in the form of
 	 *               groupId:artifactId[[:packaging[:classifier]]:version]
 	 * @throws IllegalArgumentException
@@ -195,5 +218,18 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 
     public boolean isVersionSnapshot(){
         return version.endsWith("-SNAPSHOT");
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        if (type != null)
+            return type;
+        if (PACKAGINGS.containsKey(packaging))
+            return PACKAGINGS.get(packaging);
+        //the default
+        return DEFAULT_PACKAGING;
     }
 }
