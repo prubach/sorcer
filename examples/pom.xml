@@ -5,8 +5,9 @@
 
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>sorcer</artifactId>
+		<artifactId>provider-root</artifactId>
 		<version>1.0-M4-SNAPSHOT</version>
+        <relativePath>../tools/provider-root</relativePath>
 	</parent>
 
 	<artifactId>examples</artifactId>
@@ -21,8 +22,8 @@
 		<module>ex4</module>
 		<module>ex5</module>
 		<module>ex6</module>
-    <module>account</module>
-  </modules>
+        <module>account</module>
+    </modules>
 
     <build>
         <pluginManagement>

@@ -19,6 +19,10 @@
     <inceptionYear>2013</inceptionYear>
 
     <properties>
+        <surefire.includedGroups/>
+        <surefire.excludedGroups>sorcer.junit.SorcerClient</surefire.excludedGroups>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <v.sorcer>1.0-M4-SNAPSHOT</v.sorcer>
         <v.jini>2.2.2</v.jini>
         <v.blitz>2.2.1-1</v.blitz>
@@ -35,7 +39,6 @@
         <v.clang>3.2.1</v.clang>
         <v.ccli>1.2</v.ccli>
         <v.cio>2.4</v.cio>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +83,11 @@
                 <groupId>org.rioproject</groupId>
                 <artifactId>rio-platform</artifactId>
                 <version>${v.rio}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sorcersoft.sorcer</groupId>
+                <artifactId>sorcer-junit</artifactId>
+                <version>${v.sorcer}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

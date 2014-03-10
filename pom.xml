@@ -53,9 +53,9 @@
     </properties>
 
 	<modules>
+        <module>tools</module>
 		<module>sos</module>
 		<module>sos-providers</module>
-		<module>tools</module>
 		<module>tests</module>
 		<module>examples</module>
         <module>sorcer-rio</module>

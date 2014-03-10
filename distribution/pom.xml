@@ -60,6 +60,16 @@
             <artifactId>sorcer-rio-lib</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-launcher</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 <!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -422,6 +432,11 @@
             <artifactId>resolver-project</artifactId>
             <version>${v.rio}</version>
         </dependency>
+        <dependency>
+            <groupId>org.rioproject.event-collector</groupId>
+            <artifactId>event-collector-service</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
 
         <!--other-->
 
@@ -429,6 +444,13 @@
             <groupId>ant-contrib</groupId>
             <artifactId>ant-contrib</artifactId>
             <version>1.0b3</version>
+            <exclusions>
+                <!-- use org.apache.ant:ant:1.9.3-->
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.ant</groupId>
@@ -495,9 +517,19 @@
             <artifactId>xz</artifactId>
             <version>1.2</version>
         </dependency>
-
-
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Assembly uses managed scope even if it's overriden in the dependencies -->
+            <dependency>
+                <groupId>org.sorcersoft.sorcer</groupId>
+                <artifactId>sorcer-junit</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

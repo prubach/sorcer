@@ -14,7 +14,8 @@
     limitations under the License.
 
 -->
-<assembly>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
         <formats>
             <format>dir</format>
             <format>zip</format>
@@ -119,9 +120,14 @@
                 <destName>sorcer-provider-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/src/main/examples/pom.xml</source>
+                <source>${basedir}/../examples/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>examples-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/pom.xml</source>
+                <outputDirectory>/examples</outputDirectory>
+                <destName>pom.xml</destName>
             </file>
             <file>
                 <source>${basedir}/../examples/ex0/pom.xml</source>
@@ -643,13 +649,13 @@
                 <exclude>org.rioproject.resolver:*</exclude>
                 <exclude>org.rioproject:*</exclude>
 
-                <exclude>ant:*</exclude>
                 <exclude>jline:*</exclude>
                 <exclude>org.codehaus.izpack:*</exclude>
                 <exclude>*:zip</exclude>
                 </excludes>
             <outputDirectory>lib/commons</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+           <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Apache River libs -->
@@ -660,6 +666,7 @@
             </includes>
             <outputDirectory>lib/${org.apache.river}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Jini libs -->
@@ -670,6 +677,7 @@
             </includes>
             <outputDirectory>lib/${net.jini}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Jini libs -->
@@ -680,6 +688,7 @@
             </includes>
             <outputDirectory>lib/${net.jini.lookup}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Blitz libs -->
@@ -690,6 +699,7 @@
             </includes>
             <outputDirectory>lib/${org.sorcersoft.blitz}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- SORCER libs -->
@@ -698,8 +708,13 @@
             <includes>
                 <include>org.sorcersoft.sorcer:*</include>
             </includes>
+            <excludes>
+                <exclude>org.sorcersoft.sorcer:sorcer-rio-config</exclude>
+            </excludes>
             <outputDirectory>lib/${org.sorcersoft.sorcer}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
+            <scope>runtime</scope>
         </dependencySet>
 
         <!-- Sigar - necessary for the integrated Rio -->
@@ -710,6 +725,7 @@
             </includes>
             <outputDirectory>lib/${org.sorcersoft.sigar}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <dependencySet>
@@ -724,6 +740,7 @@
             </excludes>
             <outputDirectory>lib/${org.rioproject}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <dependencySet>
@@ -734,6 +751,7 @@
             </includes>
             <outputDirectory>lib/${org.rioproject.resolver}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <dependencySet>
@@ -744,6 +762,7 @@
             </includes>
             <outputDirectory>lib/${org.rioproject.monitor}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <dependencySet>
@@ -754,6 +773,7 @@
             </includes>
             <outputDirectory>lib/${org.rioproject.cybernode}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
     </dependencySets>
