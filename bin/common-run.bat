@@ -61,6 +61,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar
 ::set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\net\jini\jsk-resources\%v.jini%\jsk-resources-%v.jini%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-logging-support\%v.rio%\rio-logging-support-%v.rio%.jar
@@ -129,7 +130,18 @@ set SOS_START_CMD=java %JAVA_OPTS% -Dprogram.name=SORCER -classpath %BOOT_CLASSP
 
 :: Call the Sorcer installer to install Sorcer jars to local repo
 if exist "%LIB_DIR%\sorcer\sorcer-api.jar" if not exist "%SORCER_HOME%\logs\sorcer_jars_installed_user_%USERNAME%.tmp" (
-	call "%JAVACMD%" -cp %LIB_DIR%\sorcer\sorcer-resolver.jar;%LIB_DIR%\sorcer\sorcer-installer.jar;%LIB_DIR%\sorcer\sorcer-api.jar;%LIB_DIR%\sorcer\sos-util.jar;%LIB_DIR%\commons\slf4j-api.jar;%LIB_DIR%\commons\slf4j-simple.jar;%LIB_DIR%\commons\commons-io.jar;%LIB_DIR%\commons\xercesImpl.jar;%LIB_DIR%\commons\xml-apis.jar sorcer.installer.Installer
+set INST_CP=%LIB_DIR%\sorcer\sorcer-installer.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\sorcer\sorcer-resolver.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\sorcer\sorcer-api.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\sorcer\sos-util.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\commons\slf4j-api.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\commons\slf4j-simple.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\commons\commons-io.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\commons\xercesImpl.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\commons\xml-apis.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-aether.jar
+set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-api.jar
+	call "%JAVACMD%" -cp  sorcer.installer.Installer
 )
 
 rem ECHO %WEBSTER_URL%

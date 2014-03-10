@@ -22,7 +22,10 @@ import java.util.Map;
  * @author Rafał Krupiński
  */
 public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
-	final public static String DEFAULT_PACKAGING = "jar";
+	final public static String PCKG_POM = "pom";
+	final public static String PCKG_JAR = "jar";
+    final public static String DEFAULT_PACKAGING = PCKG_JAR;
+    
     public static final Map<String,String> PACKAGINGS = new HashMap<String, String>();
 	private static final String MVN_SEP = ":";
 
@@ -38,18 +41,19 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
     private String type;
 
     static {
-        PACKAGINGS.put("pom", "pom");
-        PACKAGINGS.put("jar", "jar");
-        PACKAGINGS.put("maven-plugin", "jar");
-        PACKAGINGS.put("ejb", "jar");
+        PACKAGINGS.put(PCKG_POM, PCKG_POM);
+        PACKAGINGS.put(PCKG_JAR, PCKG_JAR);
+        PACKAGINGS.put("maven-plugin", PCKG_JAR);
+        PACKAGINGS.put("ejb", PCKG_JAR);
         PACKAGINGS.put("war", "war");
         PACKAGINGS.put("ear", "ear");
         PACKAGINGS.put("rar", "rar");
         PACKAGINGS.put("par", "par");
+        PACKAGINGS.put("zip", "zip");
 
-        PACKAGINGS.put("maven-archetype", "jar");
-        PACKAGINGS.put("eclispse-plugin", "jar");
-        PACKAGINGS.put("bundle", "jar");
+        PACKAGINGS.put("maven-archetype", PCKG_JAR);
+        PACKAGINGS.put("eclispse-plugin", PCKG_JAR);
+        PACKAGINGS.put("bundle", PCKG_JAR);
     }
 
     /**
