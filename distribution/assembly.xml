@@ -349,6 +349,36 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>janino-2.5.16.pom</destName>
             </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/google/guava/guava-parent/${v.guava}/guava-parent-${v.guava}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>guava-parent-${v.guava}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/sonatype/oss/oss-parent/7/oss-parent-7.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>oss-parent-7.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/junit/junit/${v.junit}/junit-${v.junit}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>junit-${v.junit}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>hamcrest-core-1.3.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>hamcrest-parent-1.3.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/ch/qos/logback/logback-parent/1.0.13/logback-parent-1.0.13.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logback-parent-1.0.13.pom</destName>
+            </file>
 
             <!-- sigar -->
             <!-- TODO RKR add poms to sigar jar and zip, remove below -->
