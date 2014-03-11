@@ -10,18 +10,21 @@ import java.util.Properties;
  * @author Rafał Krupiński
  */
 public class JavaSystemProperties {
+    public static final String CLASS_PATH = "java.class.path";
+    public static final String LIBRARY_PATH = "java.library.path";
+    public static final String NET_PREFER_IPV4_STACK = "java.net.preferIPv4Stack";
+    public static final String PROTOCOL_HANDLER_PKGS = "java.protocol.handler.pkgs";
     public static final String RMI_SERVER_CODEBASE = "java.rmi.server.codebase";
     public static final String RMI_SERVER_USE_CODEBASE_ONLY = "java.rmi.server.useCodebaseOnly";
     public static final String RMI_SERVER_CLASS_LOADER = "java.rmi.server.RMIClassLoaderSpi";
+    public static final String RMI_SERVER_HOSTNAME = "java.rmi.server.hostname";
     public static final String SECURITY_POLICY = "java.security.policy";
     public static final String UTIL_LOGGING_CONFIG_FILE = "java.util.logging.config.file";
-    public static final String NET_PREFER_IPV4_STACK = "java.net.preferIPv4Stack";
-    public static final String PROTOCOL_HANDLER_PKGS = "java.protocol.handler.pkgs";
-    public static final String CLASS_PATH = "java.class.path";
+
     public static final String USER_DIR = "user.dir";
-    public static final String LIBRARY_PATH = "java.library.path";
-    public static final String MAX_DATAGRAM_SOCKETS = "sun.net.maxDatagramSockets";
     public static final String USER_NAME = "user.name";
+
+    public static final String MAX_DATAGRAM_SOCKETS = "sun.net.maxDatagramSockets";
 
     /**
      * Get the property from map or from system properties.

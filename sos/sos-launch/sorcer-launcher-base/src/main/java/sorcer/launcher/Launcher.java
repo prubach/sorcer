@@ -25,6 +25,7 @@ import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import static sorcer.core.SorcerConstants.*;
@@ -170,6 +171,11 @@ public abstract class Launcher implements ILauncher {
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
         sysProps.put(S_SORCER_EXT, ext.getPath());
+        try {
+            sysProps.put(RMI_SERVER_HOSTNAME, SorcerEnv.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            throw new IllegalStateException("Could not obtain system IP address", e);
+        }
 
         //sorcer
         sysProps.put(SORCER_HOME, home.getPath());

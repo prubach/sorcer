@@ -34,11 +34,9 @@ import sorcer.ex1.provider.WhoIsItProvider1;
 import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.util.HostUtil;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
-
 
 import java.net.InetAddress;
 import java.util.logging.Logger;
@@ -68,7 +66,7 @@ public class WhoIsItTest {
 
     @Test
     public void localhost() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -79,7 +77,7 @@ public class WhoIsItTest {
 
     @Test
     public void helloObjectTask() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -104,7 +102,7 @@ public class WhoIsItTest {
     @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
 
         Context context = new ServiceContext("Who Is It?");
@@ -132,7 +130,7 @@ public class WhoIsItTest {
 	@Test
     @Ignore
 	public void execBatchTask() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
@@ -157,7 +155,7 @@ public class WhoIsItTest {
 
     @Test
     public void exertBatchTask() throws Exception {
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
         String providername = "*";
@@ -192,7 +190,7 @@ public class WhoIsItTest {
         String providerName2 = SorcerEnv.getSuffixedName("XYZ");
 
         // define requestor data
-        InetAddress inetAddress = HostUtil.getInetAddress();
+        InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 

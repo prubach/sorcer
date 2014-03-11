@@ -15,8 +15,6 @@
  */
 import org.rioproject.config.Component
 import org.rioproject.config.Constants
-import net.jini.export.Exporter
-import org.rioproject.net.HostUtil
 import net.jini.core.discovery.LookupLocator
 import org.rioproject.impl.client.JiniClient
 import sorcer.core.SorcerEnv
