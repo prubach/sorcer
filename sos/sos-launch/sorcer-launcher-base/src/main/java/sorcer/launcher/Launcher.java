@@ -62,6 +62,7 @@ public abstract class Launcher implements ILauncher {
             "org.rioproject:rio-platform",
             "org.rioproject:rio-logging-support",
             "org.rioproject.resolver:resolver-api",
+            "org.rioproject.resolver:resolver-aether",
             "org.rioproject:rio-lib",
             "org.rioproject:rio-api",
             "org.rioproject:rio-proxy",
