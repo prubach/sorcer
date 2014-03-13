@@ -125,15 +125,13 @@ public abstract class Launcher implements ILauncher {
             throw new IllegalStateException("No SORCER home defined");
 
         if (ext == null)
-            ext = FileUtils.getDir(System.getenv(E_SORCER_EXT));
+            ext = FileUtils.getDir(System.getProperty(S_SORCER_EXT, System.getenv(E_SORCER_EXT)));
         if (ext == null)
             ext = home;
 
         if (rio == null)
-            rio = FileUtils.getDir(System.getenv(E_RIO_HOME));
-        if (rio == null)
             // note that rio home system property is named just as the env variable - RIO_HOME
-            rio = FileUtils.getDir(System.getProperty(E_RIO_HOME));
+            rio = FileUtils.getDir(System.getProperty(E_RIO_HOME, System.getenv(E_RIO_HOME)));
         if (rio == null)
             rio = new File(home, "lib/rio");
 
@@ -164,25 +162,30 @@ public abstract class Launcher implements ILauncher {
         }
 
         Properties sysProps = new Properties();
+        //system
         sysProps.put(MAX_DATAGRAM_SOCKETS, "1024");
         sysProps.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         sysProps.put(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         sysProps.put(RMI_SERVER_USE_CODEBASE_ONLY, Boolean.FALSE.toString());
         sysProps.put(SECURITY_POLICY, policyPath.getPath());
         sysProps.put(UTIL_LOGGING_CONFIG_FILE, new File(configDir, "sorcer.logging").getPath());
-        sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());
+        sysProps.put(S_SORCER_EXT, ext.getPath());
 
+        //sorcer
         sysProps.put(SORCER_HOME, home.getPath());
         sysProps.put(S_WEBSTER_TMP_DIR, new File(home, "databases").getPath());
         sysProps.put(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
         //sysProps.put(S_WEBSTER_INTERFACE, getInetAddress());
 
-        //rio specific
+        //rio
         sysProps.put("org.rioproject.service", "all");
         sysProps.put("RIO_HOME", rio.getPath());
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
         sysProps.put("org.rioproject.codeserver", SorcerEnv.getWebsterUrl());
+
+        //other
+        sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());
 
         return sysProps;
     }

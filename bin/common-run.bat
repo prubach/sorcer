@@ -16,8 +16,6 @@ IF NOT DEFINED SORCER_HOME (
     )
 )
 
-SET SORCER_EXT=%SORCER_HOME%
-
 rem read sorcer.env to get the local repo location
 FOR /F "tokens=1,2 delims==" %%G IN (%SORCER_HOME%\configs\sorcer.env) DO (set %%G=%%H)
 set MVN_REPO=%sorcer.local.repo.location%

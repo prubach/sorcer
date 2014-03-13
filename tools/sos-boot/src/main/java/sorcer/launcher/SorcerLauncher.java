@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ThreadFactory;
 
@@ -160,10 +159,9 @@ public class SorcerLauncher extends Launcher {
     }
 
     protected List<String> getConfigs() {
-        ArrayList<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<String>(configs);
         if (profile != null) {
             String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
-            result.ensureCapacity(sorcerConfigPaths.length + configs.size());
 
             for (String cfg : sorcerConfigPaths) {
                 String path = evaluator.eval(cfg);
@@ -171,8 +169,6 @@ public class SorcerLauncher extends Launcher {
                     result.add(path);
             }
         }
-        if (!configs.isEmpty())
-            result.addAll(configs);
         return result;
     }
 

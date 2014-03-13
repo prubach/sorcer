@@ -1802,9 +1802,14 @@ public class SorcerEnv {
     }
 
     public String getSorcerExt() {
-        String sorcerExt = System.getenv(E_SORCER_EXT);
-        if (sorcerExt == null || "".equals(sorcerExt)) {
-            sorcerExt = getSorcerHome();
+        String sorcerExt = properties.getProperty(S_SORCER_EXT);
+        if (sorcerExt == null) {
+            sorcerExt = System.getProperty(S_SORCER_EXT);
+            if (sorcerExt == null)
+                sorcerExt = System.getenv(E_SORCER_EXT);
+            if (sorcerExt == null)
+                sorcerExt = getSorcerHome();
+            properties.setProperty(S_SORCER_EXT, sorcerExt);
         }
         return sorcerExt;
     }

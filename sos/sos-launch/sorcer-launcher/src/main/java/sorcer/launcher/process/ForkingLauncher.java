@@ -160,8 +160,6 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
     protected Properties getEnvironment() {
         Properties sysEnv = new Properties();
         sysEnv.put(E_SORCER_HOME, home.getPath());
-        sysEnv.put(E_RIO_HOME, rio.getPath());
-        sysEnv.put(E_SORCER_EXT, ext.getPath());
         return sysEnv;
     }
 

@@ -40,6 +40,8 @@ public interface SorcerConstants {
 
 	public static final String E_SORCER_EXT = "SORCER_EXT";
 
+	public static final String S_SORCER_EXT = "sorcer.ext";
+
 	public static final String P_UNDEFINED = "undefined";
 
 	public static final String P_PROVIDER_NAME = "provider.name";

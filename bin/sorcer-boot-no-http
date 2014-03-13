@@ -28,11 +28,7 @@ DIRNAME=`dirname "$PRG"`
 
 STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 
-if [ -f $SORCER_EXT/configs/sorcer-ext-boot.config ]; then
-  startSos $SORCER_HOME/configs/sorcer-boot-no-http.config $SORCER_EXT/configs/sorcer-ext-boot.config "$@"
-else
-  startSos $SORCER_HOME/configs/sorcer-boot-no-http.config "$@"
-fi
+startSos $SORCER_HOME/configs/sorcer-boot-no-http.config "$@"
 
 
 

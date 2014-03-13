@@ -13,7 +13,7 @@
                     <string>${sys.sorcer.home}/configs/Sorcer.groovy</string>
                 </void>
                 <void index="2">
-                    <string>${env.SORCER_EXT}/configs/SorcerExtBoot.groovy</string>
+                    <string>${sys.sorcer.ext}/configs/SorcerExtBoot.groovy</string>
                 </void>
             </array>
         </void>
