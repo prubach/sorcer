@@ -12,7 +12,7 @@
 	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>account</artifactId>
 	<packaging>pom</packaging>
-	<name>SORCER :: account</name>
+	<name>SORCER :: examples :: account</name>
 	<description>Account Service</description>
 
 	<properties>

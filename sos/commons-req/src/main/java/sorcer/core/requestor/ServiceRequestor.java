@@ -331,6 +331,7 @@ abstract public class
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
         System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
+        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
         System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
         System.setSecurityManager(new SecurityManager());
     }

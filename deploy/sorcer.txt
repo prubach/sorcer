@@ -14,3 +14,5 @@ org.sorcersoft.sorcer:ex6-cfg-divider:1.0-M4-SNAPSHOT
 org.sorcersoft.sorcer:ex6-cfg-multiplier:1.0-M4-SNAPSHOT
 org.sorcersoft.sorcer:ex6-cfg-subtractor:1.0-M4-SNAPSHOT
 org.sorcersoft.sorcer:ex6-cfg-all:1.0-M4-SNAPSHOT
+org.sorcersoft.sorcer:account-cfg-1:1.0-M4-SNAPSHOT
+org.sorcersoft.sorcer:account-cfg-2:1.0-M4-SNAPSHOT

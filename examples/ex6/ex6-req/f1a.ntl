@@ -8,7 +8,7 @@ import sorcer.arithmetic.provider.Subtractor;
 import sorcer.arithmetic.provider.Divider;
 import sorcer.service.Task
 
-println "Codebase: " + System.getProperty("java.rmi.server.codebase");
+//println "Codebase: " + System.getProperty("java.rmi.server.codebase");
 
 // Service Composition f1(f2(f4, f5), f3)
 

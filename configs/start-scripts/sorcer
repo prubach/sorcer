@@ -66,7 +66,7 @@ do_start()
         echo -n " * Starting SORCER..."
         check_status
         if [ ! -f $PID_FILE ]; then
-            su -c "$SORCER_HOME/bin/sorcer-boot -w start -Mprefer-fork -P$SORCER_PROFILE >  $SORCER_HOME/logs/sorcer-starter.log" $SORCER_USER
+            su -c "$SORCER_HOME/bin/sorcer-boot -w start -Mforce-fork -P$SORCER_PROFILE >  $SORCER_HOME/logs/sorcer-starter.log" $SORCER_USER
 	    printf '%s%*s%s' "$GREEN" $col "[ OK ]" "$NORMAL"            
 	    echo " "
         else

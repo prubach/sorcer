@@ -8,7 +8,7 @@
   </parent>
 
 	<artifactId>account-sui</artifactId>
-	<name>SORCER :: account :: service UI</name>
+	<name>SORCER :: examples :: account :: service UI</name>
 
 	<dependencies>
 		<dependency>
