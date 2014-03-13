@@ -2181,7 +2181,7 @@ public class ProviderDelegate {
 		private void fillInProviderHost() {
 			String hostname = null, hostaddress = null;
 			try {
-				hostname = SorcerEnv.getLocalHost().getHostAddress();
+				hostname = SorcerEnv.getLocalHost().getHostName();
 				if (hostname == null) {
 					logger.warning("Could not aquire hostname");
 					hostname = "[unknown]";
