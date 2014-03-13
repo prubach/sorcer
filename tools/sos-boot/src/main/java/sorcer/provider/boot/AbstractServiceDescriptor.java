@@ -25,12 +25,14 @@ import org.rioproject.config.PlatformLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
+import sorcer.boot.util.LifeCycleMultiplexer;
 import sorcer.core.SorcerConstants;
 import sorcer.util.ClassPath;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,6 +51,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     protected static AtomicInteger erredServices = new AtomicInteger(0);
     protected static String COMPONENT = "sorcer.provider.boot";
     private static Activator activator = new Activator();
+    protected LifeCycle lifeCycle;
 
     private static Logger logger = LoggerFactory.getLogger(AbstractServiceDescriptor.class);
 
@@ -167,6 +170,17 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         public Service(Object impl, Object proxy, ServiceDescriptor descriptor, Exception exception) {
             this(impl, proxy, descriptor);
             this.exception = exception;
+        }
+    }
+
+    public synchronized void addLifeCycle(LifeCycle lifeCycle) {
+        if(this.lifeCycle==null)
+            this.lifeCycle = lifeCycle;
+        else{
+            if(this.lifeCycle instanceof LifeCycleMultiplexer)
+                ((LifeCycleMultiplexer) this.lifeCycle).add(lifeCycle);
+            else
+                this.lifeCycle=new LifeCycleMultiplexer(new HashSet<LifeCycle>(Arrays.asList(this.lifeCycle, lifeCycle)));
         }
     }
 }

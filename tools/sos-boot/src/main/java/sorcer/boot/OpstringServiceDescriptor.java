@@ -61,7 +61,6 @@ import java.util.List;
  * @author Rafał Krupiński
  */
 public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
-    public static final NoOpLifeCycle NOOP = new NoOpLifeCycle();
     private static final Logger logger = LoggerFactory.getLogger(OpstringServiceDescriptor.class);
     private static Resolver resolver;
 
@@ -108,7 +107,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
             Constructor constructor = implClass.getDeclaredConstructor(actTypes);
             logger.trace("Obtained implementation constructor: {}", constructor.toString());
             constructor.setAccessible(true);
-            impl = constructor.newInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), NOOP);
+            impl = constructor.newInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), lifeCycle);
             logger.trace("Obtained implementation instance: {}", impl.toString());
             if (impl instanceof ServiceProxyAccessor) {
                 proxy = ((ServiceProxyAccessor) impl).getServiceProxy();

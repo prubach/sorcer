@@ -1,7 +1,7 @@
 /*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
- * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,6 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	private String classpath;
 	private String implClassName;
 	private String[] serverConfigArgs;
-	private LifeCycle lifeCycle;
 	private static LifeCycle NoOpLifeCycle = new LifeCycle() { // default, no-op
 		// object
 		public boolean unregister(Object impl) {

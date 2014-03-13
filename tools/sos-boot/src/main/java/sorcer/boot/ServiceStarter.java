@@ -15,6 +15,7 @@
  */
 package sorcer.boot;
 
+import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
@@ -53,11 +54,11 @@ import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 /**
  * @author Rafał Krupiński
  */
-public class ServiceStarter {
+public class ServiceStarter implements LifeCycle {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
     final private static String START_PACKAGE = "com.sun.jini.start";
 
-    private Deque<Service> services = new LinkedList<Service>();
+    private final Deque<Service> services = new LinkedList<Service>();
     private volatile boolean bootInterrupted;
 
     /**
@@ -114,6 +115,50 @@ public class ServiceStarter {
             stop(service);
 
         log.info("******* Sorcersoft.com SORCER stopped *******");
+    }
+
+    private void stop(Service service) {
+        Object impl = service.impl;
+        if (impl == null) {
+            log.warn("Service didn't start {}", service.descriptor, service.exception);
+            return;
+        }
+        if (impl instanceof DestroyAdmin) {
+            DestroyAdmin da = (DestroyAdmin) impl;
+            try {
+                log.debug("Stopping {}", da);
+                da.destroy();
+            } catch (RemoteException e) {
+                log.warn("Error", e);
+            }
+        } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
+            com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
+            try {
+                log.info("Stopping {}", da);
+                da.destroy();
+            } catch (RemoteException e) {
+                log.warn("Error", e);
+            }
+        } else {
+            log.debug("Unable to stop {}", impl);
+        }
+    }
+
+    @Override
+    public boolean unregister(Object impl) {
+        List<Service> copy;
+        synchronized (services) {
+            copy = new ArrayList<Service>(services);
+        }
+        for (Service service : copy) {
+            if (service.impl == impl) {
+                synchronized (services) {
+                    services.remove(service);
+                }
+                return true;
+            }
+        }
+        return true;
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
@@ -257,13 +302,17 @@ public class ServiceStarter {
             if (desc != null) {
                 AbstractServiceDescriptor.Service service = null;
                 try {
-                    if (desc instanceof AbstractServiceDescriptor)
+                    if (desc instanceof AbstractServiceDescriptor) {
+                        ((AbstractServiceDescriptor) desc).addLifeCycle(this);
                         service = (Service) desc.create(config);
-                    else if (desc instanceof RioServiceDescriptor) {
+                    } else if (desc instanceof RioServiceDescriptor) {
+                        log.info("Starting RIO service");
                         RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) desc.create(config);
                         service = new Service(created.impl, created.proxy, desc);
-                    } else
-                        service = new AbstractServiceDescriptor.Service(desc.create(config), null, desc);
+                    } else {
+                        log.info("Starting UNKNOWN service");
+                        service = new Service(desc.create(config), null, desc);
+                    }
                 } catch (Exception e) {
                     service = new Service(null, null, desc, e);
                 } finally {
@@ -335,7 +384,6 @@ public class ServiceStarter {
             }
         }
     }
-
     private static class ArtifactIdFileFilter extends AbstractFileFilter {
         private String artifactId;
 
@@ -357,33 +405,6 @@ public class ServiceStarter {
                             //check distribution structure
                             || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
                     ;
-        }
-    }
-
-    private void stop(Service service) {
-        Object impl = service.impl;
-        if (impl == null) {
-            log.warn("Service didn't start {}", service.descriptor, service.exception);
-            return;
-        }
-        if (impl instanceof DestroyAdmin) {
-            DestroyAdmin da = (DestroyAdmin) impl;
-            try {
-                log.debug("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
-        } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
-            com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
-            try {
-                log.info("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
-        } else {
-            log.debug("Unable to stop {}", impl);
         }
     }
 }
