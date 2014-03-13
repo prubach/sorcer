@@ -515,6 +515,7 @@
                 <exclude>nsh</exclude>
                 <exclude>setenv</exclude>
                 <exclude>sorcer-boot</exclude>
+                <exclude>sorcer-browser</exclude>
                 <exclude>terminal_sorcer</exclude>
                 <exclude>create-provider</exclude>
                 <exclude>sorcer-boot-no-http</exclude>
@@ -534,6 +535,7 @@
                 <include>setenv</include>
                 <include>create-provider</include>
                 <include>sorcer-boot</include>
+                <include>sorcer-browser</include>
                 <include>terminal_sorcer</include>
                 <include>sorcer-boot-no-http</include>
                 <include>rio</include>
@@ -570,7 +572,6 @@
             <directory>${basedir}/src/main/bin</directory>
             <outputDirectory>/bin</outputDirectory>
             <excludes>
-                <exclude>sorcer-browser</exclude>
                 <exclude>uninstall</exclude>
             </excludes>
             <includes>
