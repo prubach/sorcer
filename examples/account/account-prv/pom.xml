@@ -10,7 +10,7 @@
   </parent>
 
 	<artifactId>account-prv</artifactId>
-	<name>SORCER :: examples :: account :: provider</name>
+	<name>SORCER examples :: account :: provider</name>
 	<description>SORCER</description>
 	<url>http://sorcersoft.org/</url>
 

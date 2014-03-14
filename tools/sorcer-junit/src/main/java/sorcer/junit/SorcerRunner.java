@@ -61,7 +61,8 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
         JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|org.rioproject.url");
         JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
-        JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
+        //JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
+        JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "sorcer.rio.rmi.SorcerResolvingLoader");
         //JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
         //JavaSystemProperties.ensure(RMI_SERVER_CODEBASE, SorcerEnv.getWebsterUrl());
         log = LoggerFactory.getLogger(SorcerRunner.class);

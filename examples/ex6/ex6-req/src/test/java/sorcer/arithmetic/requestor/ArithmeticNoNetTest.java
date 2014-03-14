@@ -31,11 +31,8 @@ public class ArithmeticNoNetTest {
 			.getLogger(ArithmeticNoNetTest.class.getName());
 
     static {
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
+        ServiceRequestor.prepareEnvironment();
         ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-prv",
                 "org.sorcersoft.sorcer:ex6-api"});
         System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));

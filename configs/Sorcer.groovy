@@ -115,7 +115,7 @@ deployment(name: 'Sorcer') {
     }
 */
 
-    service(name: "BlitzSpace") { fork:'yes'
+    service(name: "BlitzSpace") { //fork:'yes'
         interfaces {
             classes 'net.jini.space.JavaSpace05'
             artifact blitz.api

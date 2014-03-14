@@ -78,6 +78,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons
 set SHELL_CLASSPATH=%JINI_BASE%;%LOG_CP%;%SORCER_COMMON%
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.rio%\rio-platform-%v.rio%.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-shell\%v.sorcer%\sos-shell-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-netlet\%v.sorcer%\sos-netlet-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-api\%v.sorcer%\sos-api-%v.sorcer%.jar
@@ -111,7 +112,7 @@ set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.env.file=%SORCER_HOME%\configs\sorcer.env
 rem set JAVA_OPTS=%JAVA_OPTS% -Djava.net.preferIPv4Stack=true
 set JAVA_OPTS=%JAVA_OPTS% -Djava.security.policy=%SORCER_HOME%\configs\sorcer.policy
 set JAVA_OPTS=%JAVA_OPTS% "-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url"
-set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=org.rioproject.rmi.ResolvingLoader
+set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.useCodebaseOnly=false
 set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir=%SORCER_HOME%\databases
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home=%SORCER_HOME%

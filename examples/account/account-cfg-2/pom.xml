@@ -8,7 +8,7 @@
   </parent>
 
     <artifactId>account-cfg-2</artifactId>
-    <name>SORCER :: examples :: account :: config 2</name>
+    <name>SORCER examples :: account :: config 2</name>
 
     <dependencies>
         <dependency>

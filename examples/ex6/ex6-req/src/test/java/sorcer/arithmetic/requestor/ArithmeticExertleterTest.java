@@ -43,17 +43,10 @@ public class ArithmeticExertleterTest {
 			.getLogger(NetArithmeticReqTest.class.getName());
 
 	static {
-
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-
-		System.setSecurityManager(new RMISecurityManager());
-
+		ServiceRequestor.prepareEnvironment();
         ServiceRequestor.setCodeBaseByArtifacts(new String[]{
                 "org.sorcersoft.sorcer:sorcer-api",
                 "org.sorcersoft.sorcer:ex6-api"});
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.rmi.server.RMIClassLoaderSpi", "org.rioproject.rmi.ResolvingLoader");
 		System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
         System.out.println("CODEBASE :" + System.getProperty("java.rmi.server.codebase"));
 	}

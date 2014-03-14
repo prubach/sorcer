@@ -167,7 +167,8 @@ def createWatchAppender() {
 //logger("org.rioproject.monitor.managers.FixedServiceManager", INFO)
 //logger("org.rioproject.resolver.aether", DEBUG)
 //logger("sorcer.boot.OpstringServiceDescriptor", DEBUG)
-logger("org.rioproject.rmi.ResolvingLoader", OFF)
+//logger("org.rioproject.rmi.ResolvingLoader", OFF)
+logger("sorcer.rio.rmi.SorcerResolvingLoader", INFO);
 //logger("org.rioproject.resolver.ResolverHelper", DEBUG)
 
 //logger("org.rioproject.gnostic", INFO)

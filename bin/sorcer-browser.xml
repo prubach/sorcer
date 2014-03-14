@@ -54,7 +54,7 @@
 			</classpath>
             <sysproperty key="RIO_HOME" value="${rio.home}" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
-            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
             <sysproperty key="java.security.policy" value="${basedir}/../configs/browser/policy/ssb.policy" />
             <sysproperty key="ssb.logFile" value="${basedir}/../configs/browser/logs/browser.log" />
 			<sysproperty key="ssb.logLen" value="300" />
@@ -70,7 +70,7 @@
             </classpath>
             <sysproperty key="RIO_HOME" value="${rio.home}" />
             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|org.rioproject.url" />
-            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
+            <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
             <!--<jvmarg value="-Djava.net.preferIPv4Stack=true" />
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>-->
