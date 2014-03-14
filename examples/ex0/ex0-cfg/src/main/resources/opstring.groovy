@@ -35,7 +35,8 @@ deployment(name: 'ex0-provider') {
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
              artifact ref:'ex0-cfg'
          }
-         configuration file: 'classpath:config.groovy'
+         //configuration file: 'classpath:config.groovy'
+         configuration file: 'classpath:service.config'
          maintain 1
      }
 }

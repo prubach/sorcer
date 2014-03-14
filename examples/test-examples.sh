@@ -43,7 +43,7 @@ if [ "$USE_RIO" == "1" ]; then
 else
   export SOS_PROFILE=sorcer
 fi
-$SORCER_HOME/bin/sorcer-boot -P${SOS_PROFILE} -Mforce-direct -wstart 2>&1 > $1 &
+$SORCER_HOME/bin/sorcer-boot -P${SOS_PROFILE} -Mforce-fork -wstart 2>&1 > $1 &
 }
 
 restartSorcer ( ) {
@@ -65,6 +65,26 @@ cleanLogs ( ) {
   mkdir $LOG_DIR  
 }
 
+account ( ) {
+  EX=account
+  _mkdir $LOG_DIR/$EX
+  startSorcer $LOG_DIR/$EX/socer-$EX$1.log
+  cd $SORCER_HOME
+  if [ "$1" == "rio" ]; then
+    $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/account/account-cfg-1/src/main/resources/account.groovy
+    $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/account/account-cfg-2/src/main/resources/account.groovy
+  else
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :account-cfg-1 :account-cfg-2 > $LOG_DIR/$EX/ex0-prv-run.log &
+    #$SORCER_HOME/bin/sorcer-boot :ex0-cfg 2>&1 > $LOG_DIR/$EX/ex0-prv-run.log &
+  fi
+
+  cd $EX_DIR/$EX
+  ant -f $EX-req/run.xml > $LOG_DIR/$EX/req$1.log
+  $EX-req/run.ntl >> $LOG_DIR/$EX/req$1.log
+  stopSorcer $LOG_DIR/$EX/
+  cd $SORCER_HOME
+}
+
 ex0 ( ) {
   EX=ex0
   _mkdir $LOG_DIR/$EX
@@ -73,13 +93,13 @@ ex0 ( ) {
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex0/ex0-cfg/src/main/resources/opstring.groovy
   else
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex0-cfg > $LOG_DIR/$EX/ex0-prv-run.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex0-cfg > $LOG_DIR/$EX/ex0-prv-run.log &
     #$SORCER_HOME/bin/sorcer-boot :ex0-cfg 2>&1 > $LOG_DIR/$EX/ex0-prv-run.log &
   fi
 
   cd $EX_DIR/$EX
   ant -f $EX-req/run.xml > $LOG_DIR/$EX/req$1.log
-  ex0-prv/src/test/netlet/run.ntl >> $LOG_DIR/$EX/req$1.log
+  $EX-req/run.ntl >> $LOG_DIR/$EX/req$1.log
   stopSorcer $LOG_DIR/$EX/
   cd $SORCER_HOME
 }
@@ -94,15 +114,15 @@ ex6 ( ) {
   if [ "$1" == "rio" ]; then
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/ex6/ex6-cfg-all/src/main/resources/AllEx6Boot.groovy
   elif [ "$1" == "prov" ]; then
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex6-cfg-adder 2>&1 > $LOG_DIR/$EX/adder-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex6-cfg-multiplier 2>&1 > $LOG_DIR/$EX/multiplier-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex6-cfg-subtractor 2>&1 > $LOG_DIR/$EX/subtractor-arithmetic.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex6-cfg-divider 2>&1 > $LOG_DIR/$EX/divider-arithmetic.log &
   else
-      $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-direct :ex6-cfg-$TYPE > $LOG_DIR/$EX/$TYPE-arithmetic.log &
+      $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :ex6-cfg-$TYPE > $LOG_DIR/$EX/$TYPE-arithmetic.log &
   fi
   cd $EX_DIR/$EX/$EX-req/
-  ant -f arithmetic-ter-run.xml > $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &
+  ant -f arithmetic-ter-run.xml >   $LOG_DIR/$EX/$TYPE-arithmetic-ter-run.log &
 
   mvn -Dmaven.test.skip=false -DskipTests=false test > $LOG_DIR/$EX/$TYPE-req.log 
   ant -f f5-req-run.xml > $LOG_DIR/$EX/$TYPE-f5-req.log
@@ -129,6 +149,7 @@ if [ "$1" == "rio" ]; then
 fi
 
 cleanLogs
+account
 ex0
 if [ "$1" == "rio" ]; then
   ex0 rio
@@ -140,5 +161,4 @@ if [ "$1" == "rio" ]; then
   ex6 rio
 fi
 
-#stopSorcer
 showExceptions

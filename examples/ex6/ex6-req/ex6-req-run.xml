@@ -37,9 +37,12 @@
 	<property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
 
 
-	<target name="run.requestor" depends="mvn-init">
-		<java classname="${requestor.class}" fork="yes">
-
+    <target name="run.requestor" depends="mvn-init">
+        <property name="runtime.classpath.string" refid="run-req.classpath"/>
+<!--
+        <echo message="Runtime Classpath = ${runtime.classpath.string}"/>
+-->
+		<java classname="${requestor.class}" fork="true">
 <!--
             <jvmarg value="-Xdebug"/>
             <jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>

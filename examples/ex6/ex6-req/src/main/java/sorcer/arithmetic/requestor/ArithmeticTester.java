@@ -25,8 +25,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.arithmetic.provider.Adder;
 import sorcer.arithmetic.provider.Multiplier;
 import sorcer.arithmetic.provider.RemoteAdder;
@@ -47,7 +49,6 @@ import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Provision;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.Task;
-import sorcer.util.Log;
 
 /**
  * Testing parameter passing between tasks within the same service job. Two
@@ -63,7 +64,7 @@ import sorcer.util.Log;
 
 public class ArithmeticTester implements SorcerConstants {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(ArithmeticTester.class.getName());
 	
 	public static void main(String[] args) throws Exception {
 		System.setSecurityManager(new RMISecurityManager());

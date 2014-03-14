@@ -92,7 +92,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
             <arg value="-wend" />
-            <arg value="-Mforce-direct" />
+            <arg value="-Mforce-fork" />
             <arg value="${sorcer.home}/configs/startup-prv.config" />
         </java>
     </target>

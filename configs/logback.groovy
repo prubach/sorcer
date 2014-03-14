@@ -185,6 +185,8 @@ logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
+
+logger("sorcer.arithmetic", DEBUG)
 //logger("sorcer.rmi.ArtifactRmiLoader", DEBUG)
 
 root(INFO, appenders)

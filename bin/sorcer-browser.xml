@@ -33,6 +33,8 @@
         <path refid="jini.classpath"/>
         <pathelement location="${lib.dir}/sorcer/browser.jar" />
         <pathelement location="${lib.dir}/sorcer/sos-netlet.jar" />
+        <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-rio-start/${v.sorcer}/sorcer-rio-start-${v.sorcer}.jar"/>
+        <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar" />
 	    <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/browser/${v.sorcer}/browser-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-netlet/${v.sorcer}/sos-netlet-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar" />

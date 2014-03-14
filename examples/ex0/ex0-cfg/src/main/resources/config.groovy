@@ -15,7 +15,7 @@ class HelloWorldProviderConfig {
     /* service provider generic properties */
     String name = "HelloWorld";
     String description = "HelloWorld Service";
-    String iconName = "/config/sorcer.png";
+    String iconName = "config/sorcer.png";
     Entry[] entries = [
             UIDescriptorFactory.getUIDescriptor(MainUI.ROLE, new UIComponentFactory(new URL("artifact:org.sorcersoft.sorcer:ex0-sui:" + SORCER_VERSION),
                     "sorcer.ex0.HelloWorldImplUI"))
