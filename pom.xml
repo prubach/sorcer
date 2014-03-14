@@ -35,7 +35,7 @@
         <v_sorcer>${project.version}</v_sorcer>
         <v_sos_release>1.0-M3</v_sos_release>
 		<v.jini>2.2.2</v.jini>
-		<v.blitz>2.2.1-1</v.blitz>
+		<v.blitz>2.3</v.blitz>
 		<!--<v.sleepycat>5.0.103</v.sleepycat>-->
 		<v.sleepycat>4.0.92</v.sleepycat>
 		<v.rio>5.0-M4-S6</v.rio>

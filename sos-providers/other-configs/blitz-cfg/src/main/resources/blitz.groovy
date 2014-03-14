@@ -7,7 +7,6 @@ import net.jini.lookup.ui.MainUI
 import net.jini.security.BasicProxyPreparer
 import net.jini.security.ProxyPreparer
 import org.dancres.blitz.config.Persistent
-import org.dancres.blitz.config.Transient
 import org.dancres.blitz.stats.InstanceSwitch
 import org.dancres.blitz.stats.OpSwitch
 import org.dancres.blitz.stats.Switch
@@ -84,7 +83,7 @@ class BlitzConfig {
 
     Entry[] getInitialAttrs() {
         String uiClass = 'org.dancres.blitz.tools.dash.DashBoardFrame'
-        URL url = new URL("artifact:org.sorcersoft.blitz:blitz-ui:2.2.1-1")
+        URL url = new URL("artifact:org.sorcersoft.blitz:blitz-ui:${v.blitz}")
         def entry = [UIDescriptorFactory.getUIDescriptor(MainUI.ROLE, new UIFrameFactory(url, uiClass))]
         return entry as Entry[]
     }

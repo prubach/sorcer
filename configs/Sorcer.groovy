@@ -62,8 +62,8 @@ deployment(name: 'Sorcer') {
 
     def blitz = [
         impl:"org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion(),
-        api: 'org.sorcersoft.blitz:blitz-proxy:2.2.1-1',
-        //impl: 'org.sorcersoft.blitz:blitz-service:2.2.1-1'
+        api: 'org.sorcersoft.blitz:blitz-proxy:2.3',
+        //impl: 'org.sorcersoft.blitz:blitz-service:2.3'
     ]
 
 
