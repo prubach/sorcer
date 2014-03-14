@@ -23,9 +23,9 @@ public class AccountTester {
 	String CPS = "/";
 	
 	public static void main(String[] args) throws Exception {
-      /*  ServiceRequestor.prepareEnvironment();
+        ServiceRequestor.prepareEnvironment();
         ServiceRequestor.prepareCodebase(new String[] { "org.sorcersoft.sorcer:account-api" });
-        System.setSecurityManager(new RMISecurityManager());*/
+        System.setSecurityManager(new RMISecurityManager());
 		Job result = new AccountTester().test();
 		logger.info("job context: \n" + result.getJobContext());
 	}

@@ -12,7 +12,7 @@
 // - on Unix you can simply run the script by invoking: ./run.ntl
 //
 //
-codebase mvn://org.sorcersoft.sorcer:account-api:1.0.0-SNAPSHOT
+codebase mvn://org.sorcersoft.sorcer:account-api:1.0-M4-SNAPSHOT
 
 // If you want to run the codebase from an external codeserver please add @computer:port to point to the
 // codeserver (webster) that serves the account-api.jar file.
@@ -28,6 +28,21 @@ codebase mvn://org.sorcersoft.sorcer:account-api:1.0.0-SNAPSHOT
 //
 //      load file:///opt/sorcer/lib/*.jar
 
-import sorcer.account.Account;
+import sorcer.account.provider.Account;
+import sorcer.account.provider.Money;
+import sorcer.account.provider.ServiceAccount;
+import sorcer.core.SorcerEnv;
 
-t1 = task("hello1", sig("sayHelloWorld", Account.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));
+//t1 = task("hello1", sig("sayHelloWorld", Account.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));
+
+
+
+Task t2 = task("Deposit-Account-1", sig("makeDeposit", ServiceAccount.class, null, SorcerEnv.getActualName("Account1")),
+        context(ServiceAccount.ACCOUNT, input(path(ServiceAccount.DEPOSIT + "/" + ServiceAccount.AMOUNT), new Money(10000)),
+         out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), Context.none), null));
+
+Task t1 = task("Withdrawal-Account-2", sig("makeWithdrawal", ServiceAccount.class, null, SorcerEnv.getActualName("Account2")),
+        context(ServiceAccount.ACCOUNT, input(path(ServiceAccount.WITHDRAWAL + "/" + ServiceAccount.AMOUNT), new Money(10000)),
+         out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), Context.none), null));
+
+job("j1",t1, t2);
