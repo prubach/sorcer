@@ -242,7 +242,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                 }
             }
             logger.finer("\n*** got result: ***\n" + result);
-        } catch (Exception re) {
+        }
+        catch (Exception re) {
             task.reportException(re);
             throw new ExertionException("Dispatcher failed for task: "
                     + xrt.getName(), re);
@@ -250,7 +251,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         return result;
     }
 
-    private Job execJob(Job job)
+    protected Job execJob(Job job)
             throws DispatcherException, InterruptedException,
             ClassNotFoundException, ExertionException, RemoteException {
 

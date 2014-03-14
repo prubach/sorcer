@@ -21,11 +21,7 @@ package sorcer.core.dispatch;
 import java.util.Set;
 
 import sorcer.core.provider.Provider;
-import sorcer.service.Context;
-import sorcer.service.ExertionException;
-import sorcer.service.Job;
-import sorcer.service.SignatureException;
-import sorcer.service.Task;
+import sorcer.service.*;
 
 public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 
@@ -47,13 +43,18 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 	}
 
 	public void collectResults() throws ExertionException, SignatureException {
-		Task result = null;
-		Task exertion = (Task) ((Job) xrt).get(0);
-		exertion.startExecTime();
+		ServiceExertion result = null;
+        ServiceExertion exertion = (ServiceExertion)((Job) xrt).get(0);
+        exertion.startExecTime();
 		// Provider is expecting exertion field in Context to be set.
 		try {
-			exertion.getContext().setExertion(exertion);
-			result = execTask(exertion);
+            exertion.getContext().setExertion(exertion);
+            // Added support for job to enable running single job in another job
+            if (exertion.isTask())
+			    result = execTask((Task)exertion);
+            else
+                result = execJob((Job)exertion);
+
 			if (result.getStatus() <= FAILED) {
 				xrt.setStatus(FAILED);
 				state = FAILED;

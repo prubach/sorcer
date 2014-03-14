@@ -165,12 +165,13 @@ public class ServiceExerter implements Exerter, Callable {
 									+ exertion.getName(), e);
 				}
 			}
-			if (exertion instanceof Job && ((Job) exertion).size() == 1) {
-				return processAsTask();
-			}
+            // This is disabled due to bugs with a job containing only one job
+            /* if (exertion instanceof Job && ((Job) exertion).size() == 1) {
+                return processAsTask();
+            }*/
 			transaction = txn;
 			Context<?> cxt = exertion.getDataContext();
-        cxt.setExertion(exertion);
+            cxt.setExertion(exertion);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new ExertionException(ex);
@@ -295,14 +296,21 @@ public class ServiceExerter implements Exerter, Callable {
         }
     }
 
-    private Exertion processAsTask() throws RemoteException,
+/*    private Exertion processAsTask() throws RemoteException,
             TransactionException, ExertionException {
+        Exertion xrt = exertion.getExertions().get(0);
+        xrt.exert();
+        exertion.getExertions().set(0, xrt);
+        exertion.setStatus(xrt.getStatus());
+*//*
+
         Task task = (Task) exertion.getExertions().get(0);
         task = (Task) task.exert();
         exertion.getExertions().set(0, task);
         exertion.setStatus(task.getStatus());
+*//*
         return exertion;
-    }
+    }*/
 
     private Exertion serviceMutualExclusion(Provider provider,
                                             Exertion exertion, Transaction transaction) throws RemoteException,
