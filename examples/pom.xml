@@ -46,4 +46,15 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>run-its</id>
+            <properties>
+                <run-its>true</run-its>
+                <surefire.excludedGroups/>
+                <surefire.includedGroups>sorcer.junit.SorcerClient</surefire.includedGroups>
+            </properties>
+        </profile>
+    </profiles>
 </project>

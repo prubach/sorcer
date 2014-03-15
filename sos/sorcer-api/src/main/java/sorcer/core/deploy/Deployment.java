@@ -24,8 +24,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import net.jini.id.Uuid;
+import sorcer.core.SorcerEnv;
 import sorcer.service.Arg;
+import sorcer.util.GenericUtil;
 import sorcer.util.Sorcer;
+import sorcer.util.eval.PropertyEvaluator;
 
 /**
  * Attributes related to signature based deployment.
@@ -95,13 +98,23 @@ public class Deployment implements Arg, Serializable {
     }
 
     public void setConfigs(final String... configs) {
-        for (int i = 0; i < configs.length; i++)
-            if (!configs[i].startsWith("/"))
-                configs[i] = System.getenv("SORCER_HOME") + File.separatorChar + configs[i];
+/*        for (int i = 0; i < configs.length; i++)
+            if (!configs[i].startsWith("/") && !configs[i].startsWith("${"))
+                configs[i] = SorcerEnv.getHomeDir().toString() + File.separatorChar + configs[i];*/
         this.configs = configs;
     }
 
     public String[] getConfigs() {
+        // Workround for running deployment on another machine where SORCER_HOME is different - in fact this
+        // should be done in RIO, not here, so it won't help when provision monitor is yet on another machine
+        // with another filesystem locations
+        PropertyEvaluator propsEval = new PropertyEvaluator();
+        propsEval.addDefaultSources();
+        for (int i=0;i<configs.length;i++) {
+            configs[i] = propsEval.eval(configs[i]);
+            if (!GenericUtil.isWindows() && !configs[i].startsWith("/") && !configs[i].startsWith("${"))
+                configs[i] = SorcerEnv.getHomeDir().toString() + File.separatorChar + configs[i];
+        }
         return configs;
     }
 

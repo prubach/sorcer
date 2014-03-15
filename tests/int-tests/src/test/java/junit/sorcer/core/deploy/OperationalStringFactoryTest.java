@@ -41,17 +41,20 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 
 import org.rioproject.opstring.UndeployOption;
+import sorcer.core.SorcerEnv;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.deploy.OperationalStringFactory;
 import sorcer.service.Job;
 import sorcer.service.Service;
 import sorcer.service.Strategy;
 import sorcer.service.Task;
+import sorcer.util.JavaSystemProperties;
 
 /**
  * @author Dennis Reedy
  */
 public class OperationalStringFactoryTest {
+
     @Test
     public void testOperationalStringCreation() throws Exception {
         Job job = Util.createJob();
@@ -94,7 +97,7 @@ public class OperationalStringFactoryTest {
         Task task = task("f5",
                 sig("Foo",
                         Service.class,
-                        deploy(configuration("tests/int-tests/target/test-classes/TestConfig.groovy"))),
+                        deploy(configuration("${env.SORCER_HOME}/configs/int-tests/deployment/TestConfig.groovy"))),
                 context("foo", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
                         output("result/y2", null)));
 

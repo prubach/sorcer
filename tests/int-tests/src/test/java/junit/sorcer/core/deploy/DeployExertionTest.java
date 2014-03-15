@@ -43,7 +43,9 @@ import static sorcer.eo.operator.*;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"})
+        "org.sorcersoft.sorcer:ju-arithmetic-api",
+        "org.rioproject.monitor:monitor-api"
+})
 //@SorcerServiceConfiguration(":ex6-cfg-all")
 public class DeployExertionTest extends DeploySetup implements SorcerConstants {
 
@@ -54,7 +56,7 @@ public class DeployExertionTest extends DeploySetup implements SorcerConstants {
     	long t0 = System.currentTimeMillis();
     	ProvisionMonitor monitor = Util.waitForService(ProvisionMonitor.class);
         Assert.assertNotNull(monitor);
-        System.out.println("Waited "+(System.currentTimeMillis()-t0)+" millis for ProvisionMonitor discovery");
+        logger.info("Waited "+(System.currentTimeMillis()-t0)+" millis for ProvisionMonitor discovery");
         DeployAdmin deployAdmin = (DeployAdmin) monitor.getAdmin();
         //OperationalStringManager manager = deployAdmin.getOperationalStringManager("Sorcer OS");
         //t0 = System.currentTimeMillis();
@@ -69,7 +71,7 @@ public class DeployExertionTest extends DeploySetup implements SorcerConstants {
     }
 
     private void verifyExertion(Exertion job) throws ExertionException, ContextException {
-        System.out.println("Verifying "+job.getName());
+        logger.info("Verifying "+job.getName());
     	long t0 = System.currentTimeMillis();
         Exertion out = exert(job);
         System.out.println("Waited "+(System.currentTimeMillis()-t0)+" millis for exerting: " + out.getName());

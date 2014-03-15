@@ -26,6 +26,7 @@ deployment(name: 'exertmonitor-provider') {
 
     artifact id:'exertmonitor-api', 'org.sorcersoft.sorcer:exertmonitor-api:'+getSorcerVersion()
     artifact id:'exertmonitor-cfg', 'org.sorcersoft.sorcer:exertmonitor-cfg:'+getSorcerVersion()
+    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
 
     service(name: "ExertMonitor") {
         interfaces {

@@ -26,6 +26,7 @@ deployment(name: 'jobber-provider') {
 
     artifact id:'jobber-api', 'org.sorcersoft.sorcer:jobber-api:'+getSorcerVersion()
     artifact id:'jobber-cfg', 'org.sorcersoft.sorcer:jobber-cfg:'+getSorcerVersion()
+    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
 
     service(name: "Jobber") {
         interfaces {

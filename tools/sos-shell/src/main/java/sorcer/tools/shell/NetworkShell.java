@@ -434,7 +434,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			if (ingroups == null || ingroups.length == 0) {
 				// System.out.println("SORCER groups: " +
 				// Arrays.toString(SorcerEnv.getGroups()));
-				// disco.setGroups(SorcerEnv.getGroups());
+				 disco.setGroups(SorcerEnv.getLookupGroups());
 				// disco.setGroups(LookupDiscovery.ALL_GROUPS);
 				disco.setGroups(LookupDiscovery.ALL_GROUPS);
 			} else {

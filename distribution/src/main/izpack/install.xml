@@ -16,7 +16,7 @@
         <url>http://www.sorcersoft.com/</url>
         <uninstaller name="Uninstaller.jar" write="yes"/>
         <javaversion>1.6</javaversion>
-        <requiresjdk>yes</requiresjdk>
+        <requiresjdk>no</requiresjdk>
         <writeinstallationinformation>yes</writeinstallationinformation>
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
     </info>
@@ -73,7 +73,6 @@
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@" targetdir="$INSTALL_PATH"
                      defaultexcludes="yes">
                 <include name="bin/sorcer-boot" os="unix"/>
-                <include name="bin/sorcer-boot-no-http" os="unix"/>
                 <include name="bin/sorcer-browser" os="unix"/>
                 <include name="bin/common-run" os="unix"/>
                 <include name="bin/create-provider" os="unix"/>
@@ -115,7 +114,6 @@
 
             <executable targetfile="$INSTALL_PATH/bin/sorcer-boot" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/sorcer-browser" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/bin/sorcer-boot-no-http" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/nsh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/setenv" os="unix"/>
             <executable targetfile="$INSTALL_PATH/bin/terminal_sorcer" os="unix"/>

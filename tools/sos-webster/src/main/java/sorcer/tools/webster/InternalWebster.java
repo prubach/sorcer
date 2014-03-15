@@ -16,7 +16,9 @@
  */
 package sorcer.tools.webster;
 
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,9 +156,11 @@ public class InternalWebster {
         sb.append("http://").append(localIPAddress).append(":").append(port)
                 .append("/").append(jars[jars.length - 1]);
         codebase = sb.toString();
-        System.setProperty("java.rmi.server.codebase", codebase);
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
+        System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase);
+        System.setProperty(SorcerConstants.P_WEBSTER_PORT, new Integer(webster.getPort()).toString());
+        System.setProperty(SorcerConstants.P_WEBSTER_INTERFACE, webster.getAddress());
+        logger.fine("Setting 'webster URL': " + SorcerEnv.getWebsterUrl());
+        logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
 
         return webster;
     }

@@ -40,6 +40,7 @@ import java.net.InetAddress;
 @RunWith(SorcerSuite.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex1-api",
         "org.sorcersoft.sorcer:ex1-rdl"
 })

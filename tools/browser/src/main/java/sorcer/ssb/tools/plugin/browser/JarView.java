@@ -71,10 +71,7 @@ public class JarView extends JPanel implements Runnable {
 
 	public void run() {
 		try {
-			File jarDir = new File("tmp");
-			jarDir.mkdirs();
-			File tmpJar = new File(jarDir.getAbsolutePath() + File.separator
-					+ "tmp.jar");
+            File tmpJar = File.createTempFile("tmp.jar", Long.toString(System.nanoTime()));
 			FileOutputStream fos = new FileOutputStream(tmpJar);
 
 			InputStream is = url.openStream();
@@ -118,6 +115,7 @@ public class JarView extends JPanel implements Runnable {
 				}
 			}
 			jarFile.close();
+            tmpJar.deleteOnExit();
 
 			final JEditorPane output = new JEditorPane();
 			output.setEditable(false);

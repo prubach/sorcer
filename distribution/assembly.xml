@@ -130,6 +130,11 @@
                 <destName>pom.xml</destName>
             </file>
             <file>
+                <source>${basedir}/../examples/account/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>account-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../examples/ex0/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex0-${v.sorcer}.pom</destName>
@@ -163,6 +168,18 @@
                 <source>${basedir}/../examples/ex6/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex6-${v.sorcer}.pom</destName>
+            </file>
+
+            <!-- top level poms for int-tests -->
+            <file>
+                <source>${basedir}/../tests/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>tests-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../tests/ju-arithmetic/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ju-arithmetic-${v.sorcer}.pom</destName>
             </file>
 
             <!-- River -->
@@ -518,7 +535,6 @@
                 <exclude>sorcer-browser</exclude>
                 <exclude>terminal_sorcer</exclude>
                 <exclude>create-provider</exclude>
-                <exclude>sorcer-boot-no-http</exclude>
                 <exclude>common-build.xml</exclude>
                 <exclude>rio</exclude>
                 <exclude>rio-ui</exclude>
@@ -537,7 +553,6 @@
                 <include>sorcer-boot</include>
                 <include>sorcer-browser</include>
                 <include>terminal_sorcer</include>
-                <include>sorcer-boot-no-http</include>
                 <include>rio</include>
                 <include>rio-ui</include>
                 <include>sorcer-browser</include>

@@ -46,7 +46,8 @@ import sorcer.util.Sorcer;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api" })
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:model-beans"})
 @SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelServicesTest {
 	private final static Logger logger = Logger.getLogger(ParModelServicesTest.class

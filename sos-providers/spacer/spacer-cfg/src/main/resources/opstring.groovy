@@ -26,6 +26,7 @@ deployment(name: 'spacer-provider') {
 
     artifact id:'spacer-api', 'org.sorcersoft.sorcer:spacer-api:'+getSorcerVersion()
     artifact id:'spacer-cfg', 'org.sorcersoft.sorcer:spacer-cfg:'+getSorcerVersion()
+    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
 
     service(name: "Spacer") {
         interfaces {

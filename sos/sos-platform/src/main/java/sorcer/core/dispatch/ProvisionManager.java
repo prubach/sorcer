@@ -54,7 +54,7 @@ import sorcer.util.ProviderLookup;
  * @author Mike Sobolewski
  */
 public class ProvisionManager {
-	private static final Logger logger = Logger.getLogger(ProviderProvisionManager.class.getName());
+	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
 	private final Exertion exertion;
 	private OperationalStringManager opStringManager;
 	private DeployAdmin deployAdmin;

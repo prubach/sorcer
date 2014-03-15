@@ -25,12 +25,14 @@ import org.junit.runners.model.InitializationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.ILauncher;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
 import sorcer.resolver.Resolver;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.bdb.HandlerInstaller;
@@ -61,10 +63,8 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         JavaSystemProperties.ensure("logback.configurationFile", new File(home, "configs/logback.groovy").getPath());
         JavaSystemProperties.ensure(JavaSystemProperties.PROTOCOL_HANDLER_PKGS, "net.jini.url|org.rioproject.url");
         JavaSystemProperties.ensure("org.rioproject.resolver.jar", Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether"));
-        //JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "org.rioproject.rmi.ResolvingLoader");
         JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "sorcer.rio.rmi.SorcerResolvingLoader");
-        //JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
-        //JavaSystemProperties.ensure(RMI_SERVER_CODEBASE, SorcerEnv.getWebsterUrl());
+        JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
         log = LoggerFactory.getLogger(SorcerRunner.class);
         new HandlerInstaller(null, null);
     }
@@ -106,12 +106,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
         String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
         if (codebase != null && codebase.length > 0) {
-            try {
-                JavaSystemProperties.ensure(JavaSystemProperties.RMI_SERVER_CODEBASE, Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), codebase));
-            } catch (MalformedURLException e) {
-                throw new InitializationError(e);
-            }
-            ServiceRequestor.prepareCodebase();
+            ServiceRequestor.prepareCodebase(codebase);
         }
     }
 

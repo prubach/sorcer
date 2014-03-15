@@ -25,6 +25,7 @@ deployment(name: 'concatenator-provider') {
     codebase getCodebase()
 
     //artifact id:'concatenator-api', 'org.sorcersoft.sorcer:concatenator-api:'+getSorcerVersion()
+    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
     artifact id:'concatenator-cfg', 'org.sorcersoft.sorcer:concatenator-cfg:'+getSorcerVersion()
 
     service(name: "Concatenator") {

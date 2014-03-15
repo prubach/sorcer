@@ -12,5 +12,5 @@ task("f5",
 		input("arg/x1", 20.0d),
 		input("arg/x2", 80.0d), 
 		output("result/y")),
-	strategy(Monitor.NO, Wait.YES));
+	strategy(Monitor.NO, Wait.YES, Provision.TRUE));
 				

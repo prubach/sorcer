@@ -28,13 +28,13 @@ deployment(name: 'ex1-all') {
 
     codebase getCodebase()
 
-    artifact id:'ex1-api', 'org.sorcersoft.sorcer:ex1-api:'+getSorcerVersion()
+    artifact id:'ex1-rdl', 'org.sorcersoft.sorcer:ex1-rdl:'+getSorcerVersion()
     artifact id:'ex1-prv', 'org.sorcersoft.sorcer:ex1-cfg-all:'+getSorcerVersion()
 
     service(name:'ex1-whoIsItBean-2') {
          interfaces {
              classes 'sorcer.ex1.WhoIsIt'
-             artifact ref:'ex1-api'
+             artifact ref:'ex1-rdl'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
              artifact ref:'ex1-prv'

@@ -126,7 +126,7 @@ public class ScriptThread extends Thread {
                 ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {
 
-                    if (((Exertion) target).isProvisionable()) {
+                    if (((Exertion) target).isProvisionable() && config!=null) {
                         String configFile = null;
                         try {
                             configFile = (String) config.getEntry(

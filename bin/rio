@@ -19,17 +19,28 @@
 # This script provides the command and control utility for starting
 # Rio services and the Rio command line interface.
 
-scriptDir="`dirname $0`"
-. "$scriptDir/common-run"
+
+# resolve links - $0 may be a soft-link
+PRG="$0"
+
+while [ -h "$PRG" ] ; do
+    ls=`ls -ld "$PRG"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        PRG="$link"
+    else
+        PRG=`dirname "$PRG"`/"$link"
+    fi
+done
+
+DIRNAME=`dirname "$PRG"`
+
+. "$DIRNAME/common-run"
 
 scriptName=`basename "$0"`
 scriptPath="$scriptDir/$scriptName"
 command_line=$*
-
 if [ "$1" = "start" ]; then
-    if [ "$3" = "-d" ]; then
-        daem=1
-    fi
     start=1
     shift
     command_line=$*
@@ -141,11 +152,7 @@ if [ "$start" = "1" ]; then
     else
         starter_arg=$1
         getStarterConfig $1
-        if [ "$daem" = "1" ]; then
-	  echo "INFO  $(date +%T) starter config [$starterConfig]" > $SORCER_HOME/logs/rio-boot.log
-	else 
-	  echo "INFO  $(date +%T) starter config [$starterConfig]"
-	fi	
+	    echo "INFO  $(date +%T) starter config [$starterConfig]"
         shift
         command_line=$*
     fi
@@ -159,25 +166,6 @@ if [ "$start" = "1" ]; then
     # o To set common locators that all services should use, add the following system property
     #     -Dorg.rioproject.locators="jini://localhost:10500" \
     # -------------------
-
-    if [ "$daem" = "1" ]; then
-      nohup ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
-	  -XX:+HeapDumpOnOutOfMemoryError \
-	  -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
-	  -XX:HeapDumpPath=$RIO_HOME/../../logs/ \
-	  $classpath $agentpath $libpath $RIO_OPTS \
-	  -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
-	  '-Djava.protocol.handler.pkgs=net.jini.url|org.rioproject.url' \
-	  $loggingConfig \
-	  -Dorg.rioproject.service=$service \
-	  -Djava.rmi.server.useCodebaseOnly=false \
-	  -DRIO_HOME=$RIO_HOME \
-	  -DRIO_LOG_DIR=$RIO_HOME/../../logs/ \
-	  -Drio.script.mainClass="$launchTarget" \
-	  $USER_OPTS \
-	  $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line > $SORCER_HOME/logs/rio-boot.log 2>&1 &
-      echo $! > $SORCER_HOME/pid
-    else
         ""$JAVACMD"" -server $JAVA_MEM_OPTIONS $JAVA_RMI_OPTIONS $JAVA_GC_OPTIONS \
         -XX:+HeapDumpOnOutOfMemoryError \
         -XX:OnOutOfMemoryError="$RIO_HOME/../../bin/rio restart %p $service" \
@@ -193,7 +181,6 @@ if [ "$start" = "1" ]; then
         -Drio.script.mainClass="$launchTarget" \
         $USER_OPTS \
         $NETWORK $JAVA_OPTS $launchTarget $starterConfig $command_line
-    fi
 elif [ "$project" = "1" ] ;then
     echo "Create project"
     mvn archetype:generate \

@@ -299,7 +299,7 @@ abstract public class
             codebaseJars = toArray(codebase.toString());
         }
 
-        if (isWebsterInt) {
+        if (isWebsterInt && codebaseJars!=null && codebaseJars.length>0) {
             String roots = System.getProperty(SorcerConstants.WEBSTER_ROOTS);
             String[] tokens = null;
             if (roots != null)

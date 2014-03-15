@@ -24,13 +24,13 @@ deployment(name: 'cataloger-provider') {
 
     codebase getCodebase()
 
-    artifact id:'cataloger-api', 'org.sorcersoft.sorcer:cataloger-api:'+getSorcerVersion()
+    artifact id:'cataloger-sui', 'org.sorcersoft.sorcer:cataloger-sui:'+getSorcerVersion()
     artifact id:'cataloger-cfg', 'org.sorcersoft.sorcer:cataloger-cfg:'+getSorcerVersion()
 
     service(name:'cataloger-prv') {
          interfaces {
              classes 'sorcer.core.provider.Cataloger'
-             artifact ref:'cataloger-api'
+             artifact ref:'cataloger-sui'
          }
          implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
              artifact ref:'cataloger-cfg'

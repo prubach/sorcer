@@ -96,7 +96,9 @@ import sorcer.util.Sorcer;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-                 "org.sorcersoft.sorcer:ju-arithmetic-prv"})
+                 "org.sorcersoft.sorcer:ju-arithmetic-prv",
+                 "org.sorcersoft.sorcer:model-beans"
+})
 @SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelTest {
 	private final static Logger logger = Logger.getLogger(ParModelTest.class

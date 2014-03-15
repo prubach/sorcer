@@ -26,6 +26,7 @@ deployment(name: 'exerter-provider') {
 
     artifact id:'exerter-api', 'org.sorcersoft.sorcer:exerter-api:'+getSorcerVersion()
     artifact id:'exerter-cfg', 'org.sorcersoft.sorcer:exerter-cfg:'+getSorcerVersion()
+    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
 
     service(name: "Exerter") {
         interfaces {
