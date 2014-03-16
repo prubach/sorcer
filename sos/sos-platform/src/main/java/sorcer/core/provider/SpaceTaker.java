@@ -283,6 +283,8 @@ public class SpaceTaker implements Runnable, LeaseListener {
 							if (txnCreated == null) {
 //								doLog("\t***warning: space taker did not get TRANSACTION.",
 //										threadId, null);
+
+                                logger.warning("SpaceTaker did not get TRANSACTION thread: " + threadId);
 								Thread.sleep(spaceTimeout / 6);
 								continue;
 							}
@@ -332,6 +334,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 			} catch (Exception ex) {
 				//logger.info("END LOOP SPACE TAKER EXCEPTION");
 				//ex.printStackTrace();
+                logger.severe("Problem with SpaceTaker: " + ex.getMessage());
 				continue;
 			}
 		}
@@ -356,7 +359,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 			}
 			Transaction.Created created = TransactionFactory.create(tManager,
 					transactionLeaseTimeout);
-
+            logger.fine("Transaction created for thread: " + threadId + " " + created);
 //			doLog("\tcreated transaction", threadId, created);
 
 			leaseManager.renewFor(created.lease, Lease.FOREVER, transactionLeaseTimeout, this);
