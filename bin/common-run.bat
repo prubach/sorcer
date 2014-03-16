@@ -148,7 +148,7 @@ IF DEFINED DEBUG (
 ) 
 rem echo %JAVA_OPTS%
 
-set SOS_START_CMD=%JAVACMD% %JAVA_OPTS% -Dprogram.name=SORCER -classpath %BOOT_CLASSPATH% %STARTER_MAIN_CLASS% %CONFIG%
+set SOS_START_CMD="%JAVACMD%" %JAVA_OPTS% -Dprogram.name=SORCER -classpath %BOOT_CLASSPATH% %STARTER_MAIN_CLASS% %CONFIG%
 
 rem echo %SOS_START_CMD%
 :: Call the Sorcer installer to install Sorcer jars to local repo
