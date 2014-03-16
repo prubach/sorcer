@@ -38,6 +38,11 @@
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.river</groupId>
+            <artifactId>mahalo-dl</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
     </dependencies>
 
     <build>
