@@ -260,10 +260,9 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 			logger.info("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
-			
-			// ((ServiceContext)context).setCurrentSelector(selector);
+			// ((ServiceContext)context).setCurrentSelector(selector); */
 			val = m.invoke(target, parameters);
-			logger.info("val: " + val);*/
+			logger.info("val: " + val);
 
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);
@@ -271,11 +270,11 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
             logger.severe("method: " + m);
             logger.severe("selector: " + selector);
             logger.severe("paramTypes: "
-					+ (paramTypes == null ? "null" : StringUtils
-							.arrayToString(paramTypes)));
+                    + (paramTypes == null ? "null" : StringUtils
+                    .arrayToString(paramTypes)));
             logger.severe("parameters: "
-					+ (parameters == null ? "null" : StringUtils
-							.arrayToString(parameters)));
+                    + (parameters == null ? "null" : StringUtils
+                    .arrayToString(parameters)));
 			e.printStackTrace();
 			throw new EvaluationException(e);
 		}
