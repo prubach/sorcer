@@ -30,15 +30,7 @@ import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.Variability;
 import sorcer.core.invoker.Invoker;
-import sorcer.service.Arg;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Identifiable;
-import sorcer.service.Invocation;
-import sorcer.service.InvocationException;
-import sorcer.service.Scopable;
+import sorcer.service.*;
 
 /*
  * Copyright 2013 the original author or authors.

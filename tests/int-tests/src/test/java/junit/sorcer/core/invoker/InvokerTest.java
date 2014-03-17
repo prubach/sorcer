@@ -41,13 +41,13 @@ import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
 import junit.sorcer.core.invoker.service.Volume;
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.MultiplierImpl;
 import junit.sorcer.core.provider.SubtractorImpl;
 import net.jini.core.transaction.TransactionException;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -99,10 +99,10 @@ public class InvokerTest {
 			x.setValue((Double) arg.getValue("x"));
 			y.setValue((Double) context.getValue("y"));
 			// x set from 'arg'
-			Assert.assertEquals((Double) value(x), 200.0);
+			Assert.assertEquals((Double)200.0d, value(x));
 			// y set from construtor's context 'in'
-			Assert.assertEquals((Double) value(y), 30.0);
-			Assert.assertEquals((Double) value(z), 170.0);
+			Assert.assertEquals((Double) 30.0, value(y));
+			Assert.assertEquals((Double)170.0,  value(z));
 			return value(x) + value(y) + (Double) value(pm, "z");
 		}
 	};

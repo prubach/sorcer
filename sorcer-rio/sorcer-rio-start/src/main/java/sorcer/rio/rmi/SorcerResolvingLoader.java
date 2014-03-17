@@ -1,5 +1,6 @@
 package sorcer.rio.rmi;
 
+import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
@@ -110,13 +111,27 @@ public class SorcerResolvingLoader extends ResolvingLoader {
             for (String artf: artifacts) {
                 adaptedCodebase = artifactToCodebase.get(artf);
                 if(adaptedCodebase==null) {
+
                     try {
                         logger.debug("Resolve {} ", artf);
                         StringBuilder builder = new StringBuilder();
                         String path =  artf.substring(artf.indexOf(":")+1);
                         ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
-                        String[] cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                        String[] cp = null;
+                        // Workaround for problems resolving only remotely available resources
+                        try {
+                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
                                 artifactURLConfiguration.getRepositories());
+                        } catch (ResolverException re) {
+                            for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
+                                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                                rr.setSnapshotUpdatePolicy(RemoteRepository.UPDATE_POLICY_NEVER);
+                                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                                rr.setReleaseUpdatePolicy(RemoteRepository.UPDATE_POLICY_NEVER);
+                            }
+                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                                    artifactURLConfiguration.getRepositories());
+                        }
                         for(String s : cp) {
                             if(builder.length()>0)
                                 builder.append(" ");

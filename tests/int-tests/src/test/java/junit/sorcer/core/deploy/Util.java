@@ -73,7 +73,7 @@ public class Util {
                        sig("multiply",
                            Multiplier.class,
                //            deploy(configuration("tests/int-tests/target/test-classes/multiplier-prv.config"),
-                               deploy(configuration("${env.SORCER_HOME}/configs/int-tests/deployment/multiplier-prv.config"),
+                               deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/multiplier-prv.config"),
                                   idle(1),
                                   Deployment.Type.SELF)),
                        context("multiply", input("arg/x1", 10.0d),
@@ -82,7 +82,7 @@ public class Util {
         Task f5 = task("f5",
                        sig("add",
                            Adder.class,
-                           deploy(configuration("${env.SORCER_HOME}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
+                           deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
                        context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
                                output("result/y2")));
 
@@ -90,7 +90,7 @@ public class Util {
                        sig("subtract", Subtractor.class,
                            deploy(maintain(2, perNode(2)),
                                   idle(1),
-                                  configuration("${env.SORCER_HOME}/configs/int-tests/deployment/subtractor-prv.config"))),
+                                  configuration("${sys.sorcer.home}/configs/int-tests/deployment/subtractor-prv.config"))),
                        context("subtract", input("arg/x5"),
                                input("arg/x6"), output("result/y3")));
 
@@ -104,7 +104,7 @@ public class Util {
     static Task createTaskt() throws SignatureException, ContextException, ExertionException {
     	return task("f5",
     			sig("add", Adder.class,
-    					deploy(configuration("${env.SORCER_HOME}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
+    					deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
     				context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
     							output("result/y2")),
     				strategy(Provision.YES));

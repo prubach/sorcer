@@ -249,7 +249,7 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 				}
 			}
 			
-/*			logger.info("**error in object invoker; target = " + target);
+			logger.info("**error in object invoker; target = " + target);
 			logger.info("class: " + evalClass);
 			logger.info("context: " + context);
 			logger.info("method: " + m);
@@ -260,7 +260,7 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 			logger.info("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
-			// ((ServiceContext)context).setCurrentSelector(selector); */
+			// ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
 			logger.info("val: " + val);
 

@@ -2902,12 +2902,13 @@ public class ProviderDelegate {
 		return serviceComponents;
 	}
 
+    //TODO no tests..
 	private Object instantiateScriplet(String scripletFilename)
 			throws Exception {
 		String[] tokens = StringUtils.tokenize(scripletFilename, "|");
 		Object bean = null;
 		Object configurator = null;
-		GroovyShell shell = null;
+		GroovyShell shell = new GroovyShell();
 		bean = shell.evaluate(new File(tokens[0]));
 		for (int i = 1; i < tokens.length; i++) {
 			configurator = shell.evaluate(new File(tokens[i]));

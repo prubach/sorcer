@@ -45,7 +45,7 @@ deployment(name: 'ex1-all') {
      service(name:'ex1-whoIsItBean-1') {
         interfaces {
             classes 'sorcer.ex1.WhoIsIt'
-            artifact ref:'ex1-api'
+            artifact ref:'ex1-rdl'
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
             artifact ref:'ex1-prv'

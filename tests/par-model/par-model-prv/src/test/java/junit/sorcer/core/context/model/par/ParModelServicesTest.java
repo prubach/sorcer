@@ -75,12 +75,13 @@ public class ParModelServicesTest {
 		assertEquals(get(exert(pmt), "invoke/result"), 60.0);
 	}
 
-    @Ignore
-	@Test
+    @Test
 	public void parNetModelServiceTest() throws RemoteException, ContextException, 
 			ExertionException, SignatureException {
 		// the provider in ex6/bin parmodel-prv-run.xml
-		Task pmt = task(sig("invoke", Invocation.class, "ParModel Service"), 
+        // Signature - actualName...
+		Task pmt = task(sig("invoke", Invocation.class,
+               "ParModel Service"),
 				context(entry("par", "expr"), result("invoke/result")));
 		
 //		logger.info("result: " + value(pmt));
@@ -90,7 +91,6 @@ public class ParModelServicesTest {
 		assertEquals(get(exert(pmt), "invoke/result"), 60.0);
 	}
 
-    @Ignore
     @Test
 	public void parNetVarModelServiceTest() throws RemoteException, ContextException, 
 			ExertionException, SignatureException {
@@ -106,7 +106,6 @@ public class ParModelServicesTest {
 	}
 
     //TODO MERGE
-    @Ignore
 	@Test
 	public void parObjectModelAgentTest() throws RemoteException, ContextException, ExertionException, 
 			SignatureException, MalformedURLException {
