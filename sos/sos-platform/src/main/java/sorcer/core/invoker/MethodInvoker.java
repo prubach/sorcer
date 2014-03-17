@@ -249,31 +249,31 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 				}
 			}
 			
-			logger.severe("**error in object invoker; target = " + target);
-			System.out.println("ZZZZZZZZZZZZZZZ class: " + evalClass);
-			System.out.println("ZZZZZZZZZZZZZZZ context: " + context);
-			System.out.println("ZZZZZZZZZZZZZZZ method: " + m);
-			System.out.println("ZZZZZZZZZZZZZZZ selector: " + selector);
-			System.out.println("ZZZZZZZZZZZZZZZ paramTypes: "
+/*			logger.info("**error in object invoker; target = " + target);
+			logger.info("class: " + evalClass);
+			logger.info("context: " + context);
+			logger.info("method: " + m);
+			logger.info("selector: " + selector);
+			logger.info("paramTypes: "
                     + (paramTypes == null ? "null" : StringUtils.
 							arrayToString(paramTypes)));
-			System.out.println("ZZZZZZZZZZZZZZZ parameters: "
+			logger.info("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
 			
 			// ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
-			System.out.println("ZZZZZZZZZZZZZZZ val: " + val);
+			logger.info("val: " + val);*/
 
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);
-			System.out.println("class: " + evalClass);
-			System.out.println("method: " + m);
-			System.out.println("selector: " + selector);
-			System.out.println("paramTypes: "
+            logger.severe("class: " + evalClass);
+            logger.severe("method: " + m);
+            logger.severe("selector: " + selector);
+            logger.severe("paramTypes: "
 					+ (paramTypes == null ? "null" : StringUtils
 							.arrayToString(paramTypes)));
-			System.out.println("parameters: "
+            logger.severe("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
 			e.printStackTrace();

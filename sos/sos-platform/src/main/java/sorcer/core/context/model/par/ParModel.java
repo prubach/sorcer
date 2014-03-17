@@ -231,8 +231,8 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 			if (context != null) {
 				this.append(context);
 				if (context.getValue("par") != Context.none) {
-					logger.info("ZZZZZZZZZZZZZZZZZZZZ value key: " + getValue("par"));
-					logger.info("ZZZZZZZZZZZZZZZZZZZZ value at: " + getValue((String)context.getValue("par"), entries));
+					logger.info("value key: " + getValue("par"));
+					logger.info("value at: " + getValue((String)context.getValue("par"), entries));
 					return (T)getValue((String)context.getValue("par"));
 				}
 			}
