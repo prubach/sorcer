@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
  *
@@ -37,7 +38,6 @@ import java.security.Policy;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 import java.util.Arrays;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +48,7 @@ import net.jini.security.policy.PolicyFileProvider;
 import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.SharedActivationPolicyPermission;
+import org.rioproject.loader.ClassAnnotator;
 
 /**
  * A wrapper for activatable objects, providing separation of the import
@@ -235,8 +236,7 @@ public class ActivateWrapper implements Remote, Serializable {
             
             cl = new ServiceClassLoader(ServiceClassLoader.getURIs(
                                                            desc.importLocation),
-                                        new ClassAnnotator(desc.exportLocation,
-                                                           new Properties()),
+                                        new ClassAnnotator(desc.exportLocation),
                                         commonCL);
 
             /*

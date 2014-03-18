@@ -27,7 +27,6 @@ import java.security.Permission;
 import java.security.Policy;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import net.jini.config.Configuration;
@@ -44,6 +43,7 @@ import com.sun.jini.start.HTTPDStatus;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.LoaderSplitPolicyProvider;
 import com.sun.jini.start.ServiceProxyAccessor;
+import org.rioproject.loader.ClassAnnotator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.util.ClassPathVerifier;
@@ -288,7 +288,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
         if (getCodebase() != null) {
 
             annotator = new ClassAnnotator(ClassLoaderUtil
-                    .getCodebaseURLs(getCodebase()), new Properties());
+                    .getCodebaseURLs(getCodebase()));
         }
 
 		ServiceClassLoader jsbCL = new ServiceClassLoader(ServiceClassLoader

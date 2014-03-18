@@ -1,7 +1,7 @@
 /*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  * Copyright 2008 the original author or authors.
  * Copyright 2005 Sun Microsystems, Inc.
- * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package sorcer.provider.boot;
 
 import edu.emory.mathcs.util.classloader.URIClassLoader;
 import net.jini.loader.ClassAnnotation;
+import org.rioproject.loader.ClassAnnotator;
 
 import java.io.File;
 import java.net.URI;
@@ -52,7 +53,7 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
      */
     public ServiceClassLoader(URI[] searchPath,
                               ClassAnnotator annotator,
-                              ClassLoader parent) {
+                              ClassLoader parent) throws URISyntaxException {
         this(searchPath, annotator, parent, null);
     }
 
@@ -70,7 +71,7 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
     public ServiceClassLoader(URI[] searchPath,
                               ClassAnnotator annotator,
                               ClassLoader parent,
-                              Properties metaData) {
+                              Properties metaData) throws URISyntaxException {
         super(searchPath, parent);
         //if(annotator==null)
         //    throw new NullPointerException("annotator is null");
@@ -81,7 +82,7 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
     }
 
     /**
-     * Get the {@link sorcer.provider.boot.ClassAnnotator} created at construction
+     * Get the {@link ClassAnnotator} created at construction
      * time
      *
      * @return The ClassAnnotator
@@ -115,7 +116,7 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
 
     /**
      * Get the URLs to be used for class annotations as determined by the
-     * {@link sorcer.provider.boot.ClassAnnotator}
+     * {@link ClassAnnotator}
      */
     public URL[] getURLs() {
     	if (annotator != null)
@@ -165,7 +166,7 @@ public class ServiceClassLoader extends URIClassLoader implements ClassAnnotatio
 
     /**
      * Get the class annotations as determined by the
-     * {@link sorcer.provider.boot.ClassAnnotator}
+     * {@link ClassAnnotator}
      *
      * @see net.jini.loader.ClassAnnotation#getClassAnnotation
      */
