@@ -67,7 +67,7 @@ deployment(name: 'Sorcer') {
     ]
 
 
-    service(name: 'Mahalo') { fork:'yes'
+    service(name: 'Mahalo') { //fork:'yes'
         interfaces {
             classes 'com.sun.jini.mahalo.TxnManager'
             artifact ref: 'mahalo-dl'
@@ -115,7 +115,7 @@ deployment(name: 'Sorcer') {
     }
 */
 
-    service(name: "BlitzSpace") { //fork:'yes'
+    service(name: "BlitzSpace") { fork:'yes'
         interfaces {
             classes 'net.jini.space.JavaSpace05'
             artifact blitz.api
@@ -127,7 +127,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Jobber") { fork:'yes'
+    service(name: "Jobber") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Jobber'
             artifact sorcer.platform
@@ -139,7 +139,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Spacer") { fork:'yes'
+    service(name: "Spacer") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Spacer'
             artifact ref: 'sos-exertlet-sui'
@@ -151,7 +151,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Concatenator") { fork:'yes'
+    service(name: "Concatenator") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Concatenator'
             artifact ref: 'sos-exertlet-sui'
@@ -163,7 +163,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Cataloger") { fork:'yes'
+    service(name: "Cataloger") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Cataloger'
             artifact ref: 'cataloger-sui'
@@ -175,7 +175,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Logger") { fork:'yes'
+    service(name: "Logger") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.RemoteLogger'
             artifact ref: 'logger-sui'
@@ -211,7 +211,7 @@ deployment(name: 'Sorcer') {
         maintain 1
     }
 
-    service(name: "Exerter") { fork:'yes'
+    service(name: "Exerter") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.ServiceTasker'
             artifact ref: 'sos-exertlet-sui'

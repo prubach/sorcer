@@ -27,14 +27,19 @@ import javax.security.auth.login.LoginContext;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.resolver.Resolver;
 import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.tools.webster.InternalWebster;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.util.Artifact;
 
 public class StartSorcerBrowser {
 	public static boolean isWebsterInt = false;
+    static Logger logger = LoggerFactory.getLogger(StartSorcerBrowser.class.getName());
 	
 	public static void main(String[] args) {
 		System.setSecurityManager(new RMISecurityManager());
@@ -48,14 +53,14 @@ public class StartSorcerBrowser {
 		if (val != null && val.length() != 0) {
 			isWebsterInt = val.equals("true");
 		}
-		String codebase = System.getProperty("java.rmi.server.codebase");
-		System.out.println("Using codebase: " + codebase);
-		
 		if (isWebsterInt) {
-			String roots = System.getProperty(SorcerConstants.WEBSTER_ROOTS);
+            String codebase = System.getProperty("java.rmi.server.codebase");
+            logger.info("Using codebase: " + codebase);
 			String[] tokens = null;
-			if (roots != null)
-				tokens = toArray(roots);
+			if (codebase!= null)
+				tokens = toArray(codebase);
+            else
+                tokens = new String[] { Artifact.getSorcerApi().toString() };
 			try {
 				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir()});
 			} catch (IOException e) {
