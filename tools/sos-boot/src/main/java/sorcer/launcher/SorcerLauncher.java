@@ -16,7 +16,7 @@
 
 package sorcer.launcher;
 
-import org.rioproject.start.LogManagementHelper;
+import org.rioproject.logging.ServiceLogEventHandlerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -198,7 +198,7 @@ public class SorcerLauncher extends Launcher {
         //redirect java.util.logging to slf4j/logback
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-        LogManagementHelper.setup();
+        ServiceLogEventHandlerHelper.addServiceLogEventHandler();
     }
 
     private class SorcerRunnable implements Runnable {

@@ -17,6 +17,7 @@ package sorcer.boot;
 
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
+import net.jini.admin.Administrable;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -102,7 +103,7 @@ public class ServiceStarter implements LifeCycle {
         serviceDescriptors.addAll(createFromOar(cfgJars));
         descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
 
-        instantiateServices(descs, services);
+        instantiateServices(descs);
         log.debug("*** Sorcersoft.com SORCER started ***");
     }
 
@@ -115,33 +116,30 @@ public class ServiceStarter implements LifeCycle {
             stop(service);
 
         log.info("******* Sorcersoft.com SORCER stopped *******");
+        killVM();
     }
 
     private void stop(Service service) {
-        Object impl = service.impl;
-        if (impl == null) {
-            log.warn("Service didn't start {}", service.descriptor, service.exception);
-            return;
-        }
-        if (impl instanceof DestroyAdmin) {
-            DestroyAdmin da = (DestroyAdmin) impl;
-            try {
-                log.debug("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
-        } else if (impl instanceof com.sun.jini.admin.DestroyAdmin) {
-            com.sun.jini.admin.DestroyAdmin da = (com.sun.jini.admin.DestroyAdmin) impl;
-            try {
-                log.info("Stopping {}", da);
-                da.destroy();
-            } catch (RemoteException e) {
-                log.warn("Error", e);
-            }
+        if (service.destroyer != null) {
+            log.info("Stopping {}", service.impl);
+            service.destroyer.destroy();
         } else {
-            log.debug("Unable to stop {}", impl);
+            log.debug("Unable to stop {}", service.impl);
         }
+    }
+
+    protected ServiceDestroyer getDestroyer(Object service){
+        if (service instanceof DestroyAdmin) {
+            return new SorcerServiceDestroyer((DestroyAdmin) service);
+        } else if (service instanceof com.sun.jini.admin.DestroyAdmin) {
+            return new RiverServiceDestroyer((com.sun.jini.admin.DestroyAdmin) service);
+        } else if(service instanceof Administrable)
+            try {
+                return getDestroyer(((Administrable) service).getAdmin());
+            } catch (RemoteException e) {
+                log.warn("Error while calling local object {}", service, e);
+            }
+        return null;
     }
 
     @Override
@@ -150,15 +148,28 @@ public class ServiceStarter implements LifeCycle {
         synchronized (services) {
             copy = new ArrayList<Service>(services);
         }
+        boolean result = false;
         for (Service service : copy) {
             if (service.impl == impl) {
                 synchronized (services) {
                     services.remove(service);
                 }
-                return true;
+                result = true;
             }
         }
-        return true;
+        if (result)
+            killVM();
+        return result;
+    }
+
+    protected void killVM() {
+        synchronized (services) {
+            if (services.isEmpty()) {
+                log.info("No services left; shutting down SORCER");
+                System.exit(0);
+            }
+            log.info("Service count: {}", services.size());
+        }
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
@@ -214,7 +225,7 @@ public class ServiceStarter implements LifeCycle {
                 result.addAll(createServiceDescriptors(operationalStrings, policyFileUrl));
             } catch (Exception x) {
                 log.warn("Could not parse Operational String {}", opString, x);
-            }catch (NoClassDefFoundError x){
+            } catch (NoClassDefFoundError x) {
                 log.warn("Could not parse Operational String {}", opString, x);
                 throw x;
             }
@@ -250,7 +261,7 @@ public class ServiceStarter implements LifeCycle {
      *
      * @throws Exception
      */
-    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap, Collection<AbstractServiceDescriptor.Service> result) throws Exception {
+    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap) throws Exception {
         for (Configuration config : descriptorMap.keySet()) {
             Collection<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
             ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
@@ -259,10 +270,10 @@ public class ServiceStarter implements LifeCycle {
                     config.getEntry(START_PACKAGE, "loginContext",
                             LoginContext.class, null);
             if (loginContext != null)
-                createWithLogin(descs, config, loginContext, result);
+                createWithLogin(descs, config, loginContext);
             else
-                create(descs, config, result);
-            checkResultFailures(result);
+                create(descs, config);
+            checkResultFailures(services);
         }
     }
 
@@ -295,7 +306,7 @@ public class ServiceStarter implements LifeCycle {
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
      */
-    public void create(ServiceDescriptor[] descs, Configuration config, Collection<AbstractServiceDescriptor.Service> proxies) throws Exception {
+    public void create(ServiceDescriptor[] descs, Configuration config) throws Exception {
         for (ServiceDescriptor desc : descs) {
             if (bootInterrupted)
                 break;
@@ -313,11 +324,12 @@ public class ServiceStarter implements LifeCycle {
                         log.info("Starting UNKNOWN service");
                         service = new Service(desc.create(config), null, desc);
                     }
+                    service.destroyer = getDestroyer(service.impl);
                 } catch (Exception e) {
                     service = new Service(null, null, desc, e);
                 } finally {
                     if (service != null)
-                        proxies.add(service);
+                        services.add(service);
                 }
             }
         }
@@ -343,8 +355,7 @@ public class ServiceStarter implements LifeCycle {
      */
     private void createWithLogin(
             final ServiceDescriptor[] descs, final Configuration config,
-            final LoginContext loginContext,
-            final Collection<AbstractServiceDescriptor.Service> result)
+            final LoginContext loginContext)
             throws Exception {
         loginContext.login();
 
@@ -354,7 +365,7 @@ public class ServiceStarter implements LifeCycle {
                     new PrivilegedExceptionAction() {
                         public Object run()
                                 throws Exception {
-                            create(descs, config, result);
+                            create(descs, config);
                             return null;
                         }
                     },
@@ -384,6 +395,7 @@ public class ServiceStarter implements LifeCycle {
             }
         }
     }
+
     private static class ArtifactIdFileFilter extends AbstractFileFilter {
         private String artifactId;
 

@@ -24,6 +24,7 @@ import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.config.PlatformLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.boot.ServiceDestroyer;
 import sorcer.boot.load.Activator;
 import sorcer.boot.util.LifeCycleMultiplexer;
 import sorcer.core.SorcerConstants;
@@ -154,6 +155,8 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         public final ServiceDescriptor descriptor;
 
         public Exception exception;
+
+        public ServiceDestroyer destroyer;
         /**
          * Constructs an instance of this class.
          *
