@@ -1,4 +1,17 @@
 #!/bin/sh
 cd /opt/sorcer/configs/start-scripts/
 ./install_script -s
+if [ ! -e /opt/sorcer/logs ]; then
+    mkdir /opt/sorcer/logs
+fi
+chmod -R a+rwx /opt/sorcer/logs
 chmod a+w /opt/sorcer/logs
+if [ ! -e /opt/sorcer/databases ]; then
+    mkdir /opt/sorcer/databases
+fi
+chmod -R a+rwx /opt/sorcer/databases
+if [ ! -e /opt/sorcer/lib/rio/system ]; then
+    mkdir /opt/sorcer/lib/rio/system
+    mkdir /opt/sorcer/lib/rio/system/external
+fi
+chmod -R a+rwx /opt/sorcer/lib/rio/system/external

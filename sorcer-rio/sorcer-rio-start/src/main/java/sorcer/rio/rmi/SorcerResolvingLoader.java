@@ -118,20 +118,12 @@ public class SorcerResolvingLoader extends ResolvingLoader {
                         String path =  artf.substring(artf.indexOf(":")+1);
                         ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
                         String[] cp = null;
-                        // Workaround for problems resolving only remotely available resources
-                        try {
-                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                                artifactURLConfiguration.getRepositories());
-                        } catch (ResolverException re) {
-                            for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
-                                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                                rr.setSnapshotUpdatePolicy(RemoteRepository.UPDATE_POLICY_NEVER);
-                                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                                rr.setReleaseUpdatePolicy(RemoteRepository.UPDATE_POLICY_NEVER);
-                            }
-                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                                    artifactURLConfiguration.getRepositories());
+                        for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
+                            rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                            rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                         }
+                        cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                            artifactURLConfiguration.getRepositories());
                         for(String s : cp) {
                             if(builder.length()>0)
                                 builder.append(" ");

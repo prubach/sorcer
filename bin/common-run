@@ -499,6 +499,7 @@ else
         -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" \
 	    -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader \
         -Djava.rmi.server.useCodebaseOnly=false \
+        -Dwebster.internal="true" \
         -Dwebster.tmp.dir="$SORCER_HOME"/databases \
         -Dprogram.name="$PROGNAME" \
         -Dsorcer.home="$SORCER_HOME" \

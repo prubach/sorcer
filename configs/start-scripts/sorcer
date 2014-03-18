@@ -59,13 +59,13 @@ NORMAL=$(tput sgr0)
 PID_FILE=$SORCER_HOME/logs/sorcer.pid
 
 #echo "executing SORCER_STARTER, SH: $SORCER_HOME" > /tmp/sorcer-starter.log
-if [ -f $SORCER_HOME/logs ]; then
+if [ -e $SORCER_HOME/logs ]; then
     chmod -R a+rwx $SORCER_HOME/logs
 fi
-if [ -f $SORCER_HOME/databases ]; then
+if [ -e $SORCER_HOME/databases ]; then
     chmod -R a+rwx $SORCER_HOME/databases
 fi
-if [ -f $SORCER_HOME/lib/rio/system/external ]; then
+if [ -e $SORCER_HOME/lib/rio/system/external ]; then
     chmod -R a+rwx $SORCER_HOME/lib/rio/system/external
 fi
 
