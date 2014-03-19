@@ -182,26 +182,31 @@
 
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-resolver.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-rio-lib.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-platform.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-resolver.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-launcher.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-launcher-base.jar"/>               
+                <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-rio-lib.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-rio-start.jar"/>
-                <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>
-		        <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
+                <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>		
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
-                <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
-                <pathelement location="${lib.dir}/rio/rio-api.jar"/>
-                <pathelement location="${lib.dir}/rio/rio-proxy.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-api.jar"/>
+                <pathelement location="${lib.dir}/rio/rio-proxy.jar"/>
                 <pathelement location="${lib.dir}/commons/groovy-all.jar"/>
                 <pathelement location="${lib.dir}/commons/guava.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-lang3.jar"/>
                 <pathelement location="${lib.dir}/commons/commons-io.jar"/>
+                <pathelement location="${lib.dir}/commons/commons-cli.jar"/>
+                <pathelement location="${lib.dir}/commons/google-collections.jar"/>
                 <pathelement location="${lib.dir}/commons/plexus-utils.jar"/>
             </path>
             <path id="runtime.classpath">
@@ -230,8 +235,7 @@
             </path>
 
             <path id="boot.classpath">
-                <path refid="jini.classpath"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-start/${v.sorcer}/sos-start-${v.sorcer}.jar"/>
+                <path refid="jini.classpath"/>                
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>

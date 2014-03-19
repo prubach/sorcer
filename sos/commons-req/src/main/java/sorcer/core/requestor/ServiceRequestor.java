@@ -160,7 +160,7 @@ abstract public class
         }
     }
 
-    public void postprocess(String... args) throws ContextException {
+    public void postprocess(String... args) throws ExertionException, ContextException {
         if (exertion != null) {
             logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
             logger.info("<<<<<<<<<< Traces: \n" + ((ControlContext)exertion.getControlContext()).getTrace());

@@ -694,6 +694,7 @@
                 <exclude>org.sorcersoft.sigar:*</exclude>
                 <exclude>org.rioproject.resolver:*</exclude>
                 <exclude>org.rioproject:*</exclude>
+                <exclude>junit:*</exclude>
 
                 <exclude>jline:*</exclude>
                 <exclude>org.codehaus.izpack:*</exclude>
@@ -702,6 +703,17 @@
             <outputDirectory>lib/commons</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
            <fileMode>0644</fileMode>
+        </dependencySet>
+
+        <!-- adding junit to support -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>junit:junit</include>
+            </includes>
+            <outputDirectory>lib/buildsupport</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Apache River libs -->
