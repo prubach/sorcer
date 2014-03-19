@@ -1,8 +1,6 @@
 package sorcer.util;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +15,6 @@ package sorcer.util;
  * limitations under the License.
  */
 
-
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,12 +25,15 @@ public class ConfigurableThreadFactory implements ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final static String defaultNameFormat = "pool-%d-thread-%d";
     private final static Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = new LoggingExceptionHandler();
+
     private final int thisPoolNumber;
-    private final ThreadGroup group;
+    private ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private boolean daemon = false;
     private Thread.UncaughtExceptionHandler uncaughtExceptionHandler = defaultUncaughtExceptionHandler;
     private String nameFormat = defaultNameFormat;
+    private ClassLoader classLoader;
+    private int priority = Thread.currentThread().getPriority();
 
     public ConfigurableThreadFactory() {
         SecurityManager s = System.getSecurityManager();
@@ -47,8 +47,10 @@ public class ConfigurableThreadFactory implements ThreadFactory {
         String name = String.format(nameFormat, thisPoolNumber, threadNumber.getAndIncrement());
         Thread thread = new Thread(group, runnable, name);
         thread.setDaemon(daemon);
-        //thread.setContextClassLoader();
-        //thread.setPriority();
+
+        if (classLoader != null)
+            thread.setContextClassLoader(classLoader);
+        thread.setPriority(priority);
 
         thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
@@ -65,5 +67,17 @@ public class ConfigurableThreadFactory implements ThreadFactory {
 
     public void setNameFormat(String nameFormat) {
         this.nameFormat = nameFormat;
+    }
+
+    public void setThreadGroup(ThreadGroup group) {
+        this.group = group;
+    }
+
+    public void setContextClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

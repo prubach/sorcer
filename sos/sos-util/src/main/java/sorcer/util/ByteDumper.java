@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * Copyright 2014 Sorcersoft.com S.A.
  * Copyright 2003-2013 the original author or authors.
- * 2014 copied from groovy
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,13 @@ import java.io.OutputStream;
  * limitations under the License.
  */
 
-
 public class ByteDumper implements Runnable {
     private InputStream in;
     private OutputStream out;
 
     public ByteDumper(InputStream in, OutputStream out) {
+        assert in != null;
+        assert out != null;
         this.in = new BufferedInputStream(in);
         this.out = out;
     }
@@ -37,11 +38,12 @@ public class ByteDumper implements Runnable {
         int next;
         try {
             while ((next = in.read(buf)) != -1) {
-                if (out != null) out.write(buf, 0, next);
+                out.write(buf, 0, next);
+                out.flush();
             }
         } catch (IOException e) {
             if (!"Stream closed".equals(e.getMessage()))
-                throw new RuntimeException("exception while dumping process stream", e);
+                throw new RuntimeException("Exception while dumping process stream", e);
         }
     }
 }
