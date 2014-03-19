@@ -23,13 +23,9 @@ import sorcer.util.Process2;
 import sorcer.util.StringUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -52,8 +48,6 @@ public class JavaProcessBuilder {
     protected int debugPort = 8000;
     protected Map<String, String> javaAgent = new HashMap<String, String>();
 
-    protected File outFile;
-    protected File errFile;
     protected OutputStream out;
     protected OutputStream err;
 
@@ -99,18 +93,12 @@ public class JavaProcessBuilder {
             for (String s : builder.command()) {
                 cmdStr.append(' ').append(s);
             }
-            if (outFile != null) {
-                cmdStr.append(" > ").append(outFile);
-            }
-            if (errFile != null)
-                cmdStr.append(" 2> ").append(errFile);
-
             log.info("{}", cmdStr);
         }
 
-        redirectIO();
-
         Process proc = builder.start();
+        Process2 p = new Process2(proc, name, ioThreads);
+        redirectOutputs(p);
 
         try {
             // give it a moment to exit on error
@@ -119,11 +107,9 @@ public class JavaProcessBuilder {
             //ignore
         }
 
-        Process2 p = new Process2(proc, name, ioThreads);
         if (!p.running())
             throw new IllegalStateException("Process exited with value " + proc.exitValue());
 
-        redirectOutputs(p);
         return p;
     }
 
@@ -161,51 +147,6 @@ public class JavaProcessBuilder {
         Thread t = new Thread(ioThreads, new ByteDumper(inputStream, outputStream), name);
         t.setDaemon(true);
         t.start();
-    }
-
-    /**
-     * Redirect output and error to ours IF the method
-     * {@link ProcessBuilder#inheritIO()} is available (since jdk 1.7)
-     */
-    private void redirectIO() throws FileNotFoundException {
-        if (out == null && outFile != null)
-            redirectOutput(outFile);
-        if (err == null && errFile != null) {
-            redirectError(errFile);
-        } else if (err == null && outFile != null)
-            redirectErrorStream(true);
-    }
-
-    protected JavaProcessBuilder redirectOutput(File file) throws FileNotFoundException {
-        try {
-            invokeIgnoreErrors(builder, "redirectOutput", new Class[]{File.class}, file);
-        } catch (Exception ignore) {
-            out = new FileOutputStream(file);
-        }
-        return this;
-    }
-
-    protected JavaProcessBuilder redirectError(File file) throws FileNotFoundException {
-        try {
-            invokeIgnoreErrors(builder, "redirectError", new Class[]{File.class}, file);
-        } catch (Exception ignore) {
-            err = new FileOutputStream(file);
-        }
-        return this;
-    }
-
-    protected JavaProcessBuilder redirectErrorStream(boolean redirect) {
-        try {
-            invokeIgnoreErrors(builder, "redirectErrorStream", new Class[]{Boolean.TYPE}, redirect);
-        } catch (Exception ignore) {
-            err = out;
-        }
-        return this;
-    }
-
-    protected Object invokeIgnoreErrors(Object target, String methodName, Class[] argTypes, Object... args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = target.getClass().getDeclaredMethod(methodName, argTypes);
-        return method.invoke(target, args);
     }
 
     private List<String> _D(Properties d) {
@@ -253,19 +194,6 @@ public class JavaProcessBuilder {
 
     public void setDebugPort(int debugPort) {
         this.debugPort = debugPort;
-    }
-
-    /**
-     * Set standard and error output
-     *
-     * @param output output file
-     */
-    public void setOutFile(File output) {
-        this.outFile = output;
-    }
-
-    public void setErrFile(File errFile) {
-        this.errFile = errFile;
     }
 
     public Properties getEnvironment() {

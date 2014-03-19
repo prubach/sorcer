@@ -28,18 +28,17 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.requestor.ServiceRequestor;
-import sorcer.launcher.ILauncher;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
+import sorcer.launcher.WaitMode;
+import sorcer.launcher.WaitingListener;
 import sorcer.resolver.Resolver;
-import sorcer.util.ArtifactCoordinates;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.bdb.HandlerInstaller;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.security.Policy;
 import java.util.Arrays;
 
@@ -143,9 +142,11 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     }
 
     private Launcher startSorcer(String[] serviceConfigPaths) throws IOException {
+        WaitingListener listener = new WaitingListener();
+
         Launcher launcher = new SorcerLauncher();
         launcher.setConfigs(Arrays.asList(serviceConfigPaths));
-        launcher.setWaitMode(ILauncher.WaitMode.start);
+        launcher.addSorcerListener(listener);
         launcher.setHome(home);
         File logDir = new File("/tmp/logs");
         logDir.mkdir();
@@ -153,6 +154,8 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
 
         log.info("Starting SORCER instance for test {}", getDescription());
         launcher.start();
+
+        listener.wait(WaitMode.start);
 
         return launcher;
     }

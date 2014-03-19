@@ -16,34 +16,13 @@
 
 package sorcer.launcher;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 /**
- * @author Rafał Krupiński
- */
-public interface ILauncher {
-    void start() throws IOException;
+* @author Rafał Krupiński
+*/
+public enum WaitMode {
+    no, start, end;
 
-    void stop();
-
-    void preConfigure();
-
-    void setLogDir(File logDir);
-
-    void setHome(File home);
-
-    void setConfigs(List<String> configs);
-
-    void setConfigDir(File config);
-
-    void addSorcerListener(SorcerListener listener);
-
-    void setProfile(String profile) throws IOException;
-
-    void removeSorcerListener(SorcerListener listener);
-
-    void setRioConfigs(List<String> rioConfigs);
-
+    public boolean isBefore(WaitMode other){
+        return ordinal() < other.ordinal();
+    }
 }

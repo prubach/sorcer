@@ -26,6 +26,7 @@ import org.apache.commons.cli.PosixParser;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 import sorcer.launcher.process.DestroyingListener;
+import sorcer.launcher.process.ExitingCallback;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
 import sorcer.util.JavaSystemProperties;
@@ -50,17 +51,16 @@ public class Sorcer {
     public static final String MODE = "M";
     private static final String RIO = "rio";
 
+    private WaitMode waitMode;
+
     /**
-     * This method calls {@link java.lang.System#exit(int)} before returning, in case of any remaining non-daemon threads running.
      * There is a java API for starting SORCER in in-process or forked modes with WAIT options, so there shouldn't be any need to call this method from java code.
-     * <p/>
-     * -wait=[no,start,end]
-     * -logDir {}
-     * -home {}
-     * <p/>
-     * {}... config files for ServiceStarter
      */
     public static void main(String[] args) {
+        new Sorcer().run(args);
+    }
+
+    private void run(String[] args) {
         try {
             JavaSystemProperties.ensure(SORCER_HOME);
             Options options = buildOptions();
@@ -76,19 +76,19 @@ public class Sorcer {
                                 + "- an .opstring or .groovy Operational String file,\n"
                                 + "- an .oar or .jar file compliant with OAR specification,\n"
                                 + "- an :artifactId of a module that output is compliant with OAR specification (artifact*jar file is searched under $SORCER_HOME)",
-                        "Start sorcer", options, null);
+                        "Start sorcer", options, null
+                );
                 return;
             }
 
             ILauncher launcher = parseCommandLine(cmd);
-
+            WaitingListener listener = new WaitingListener();
+            launcher.addSorcerListener(listener);
             launcher.preConfigure();
 
-            if (launcher instanceof SorcerLauncher) {
-                SorcerLauncher.installSecurityManager();
-            }
-
             launcher.start();
+            listener.wait(waitMode);
+            System.exit(0);
         } catch (Exception x) {
             x.printStackTrace();
             System.exit(-1);
@@ -101,7 +101,7 @@ public class Sorcer {
                 + "'no' - exit immediately, forces forked mode\n"
                 + "'start' - wait until sorcer starts, then exit, forces forked mode\n"
                 + "'end' - wait until sorcer finishes, stopping launcher also stops SORCER");
-        wait.setType(Launcher.WaitMode.class);
+        wait.setType(WaitMode.class);
         wait.setArgs(1);
         wait.setArgName("wait-mode");
         options.addOption(wait);
@@ -146,19 +146,15 @@ public class Sorcer {
         return options;
     }
 
-    private static ILauncher parseCommandLine(CommandLine cmd) throws ParseException, IOException {
-        Mode mode;
+    private ILauncher parseCommandLine(CommandLine cmd) throws ParseException, IOException {
+        Mode mode = null;
         if (cmd.hasOption(MODE)) {
             String modeValue = cmd.getOptionValue(MODE);
-            if (Mode.forceFork.paramValue.equalsIgnoreCase(modeValue))
-                mode = Mode.forceFork;
-            else if (Mode.preferFork.paramValue.equalsIgnoreCase(modeValue))
-                mode = Mode.preferFork;
-            else if (Mode.forceDirect.paramValue.equalsIgnoreCase(modeValue))
-                mode = Mode.forceDirect;
-            else if (Mode.preferDirect.paramValue.equalsIgnoreCase(modeValue))
-                mode = Mode.preferDirect;
-            else
+            for (Mode m : Mode.values()) {
+                if (m.paramValue.equalsIgnoreCase(modeValue))
+                    mode = m;
+            }
+            if (mode == null)
                 throw new IllegalAccessError("Illegal mode " + modeValue);
         } else
             mode = Mode.preferDirect;
@@ -168,48 +164,36 @@ public class Sorcer {
             debugPort = Integer.parseInt(cmd.getOptionValue(DEBUG));
         }
 
-        ILauncher.WaitMode wait;
         try {
-            wait = cmd.hasOption(WAIT) ? ILauncher.WaitMode.valueOf(cmd.getOptionValue(WAIT)) : ILauncher.WaitMode.start;
+            waitMode = cmd.hasOption(WAIT) ? WaitMode.valueOf(cmd.getOptionValue(WAIT)) : WaitMode.end;
         } catch (IllegalArgumentException x) {
-            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(ILauncher.WaitMode.values()), x);
+            throw new IllegalArgumentException("Illegal wait option " + cmd.getOptionValue(WAIT) + ". Use one of " + Arrays.toString(WaitMode.values()), x);
         }
 
         ILauncher launcher = null;
         if (!mode.fork) {
             boolean envOk = SorcerLauncher.checkEnvironment();
-            //TODO remove checking waitMode when other modes are supported by SorcerLauncher
-            if (envOk && debugPort == null && wait == ILauncher.WaitMode.start) {
+            if (envOk && debugPort == null) {
+                if (waitMode != WaitMode.end)
+                    System.err.println("WARN Starting SORCER with " + waitMode + " mode will result with early exit.");
                 launcher = createSorcerLauncher();
             } else {
-                if (wait != ILauncher.WaitMode.start)
-                    report(mode, "Cannot run in {} mode with 'wait' other than 'start'", mode.paramValue);
-                else if (debugPort != null)
+                if (debugPort != null)
                     report(mode, "Cannot run in {} mode with debug", mode.paramValue);
                 else
-                    report(mode, "Cannot run in {} because of the environment", mode.paramValue);
+                    report(mode, "Cannot run in {} mode; see above", mode.paramValue);
             }
         }
 
         if (launcher == null) {
             IForkingLauncher forkingLauncher = null;
             try {
-                forkingLauncher = createForkingLauncher(debugPort, wait);
+                forkingLauncher = createForkingLauncher(debugPort, waitMode);
             } catch (IllegalStateException e) {
                 if ((mode.fork && mode.force) || (!mode.fork))
                     throw e;
             }
             launcher = forkingLauncher;
-/*
-            File outFile = new File(logDir, "output.log");
-            File errFile = new File(logDir, "error.log");
-            if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_7)) {
-                forkingLauncher.setOutFile(outFile);
-                forkingLauncher.setErrFile(errFile);
-            }
-            forkingLauncher.setOut(new PrintStream(outFile));
-            forkingLauncher.setErr(new PrintStream(errFile));
-*/
         }
 
         // called prefer-fork but didn't make it
@@ -231,8 +215,6 @@ public class Sorcer {
 
         launcher.setLogDir(logDir);
 
-        launcher.setWaitMode(wait);
-
         @SuppressWarnings("unchecked")
         List<String> userConfigFiles = cmd.getArgList();
         launcher.setConfigs(userConfigFiles);
@@ -240,7 +222,7 @@ public class Sorcer {
         if (cmd.hasOption(PROFILE))
             launcher.setProfile(cmd.getOptionValue(PROFILE));
 
-        if(cmd.hasOption(RIO)){
+        if (cmd.hasOption(RIO)) {
             String[] rioConfigs = StringUtils.tokenizerSplit(cmd.getOptionValue(RIO), File.pathSeparator);
             launcher.setRioConfigs(new ArrayList<String>(Arrays.asList(rioConfigs)));
         }
@@ -248,21 +230,21 @@ public class Sorcer {
         return launcher;
     }
 
-    private static void report(Mode mode, String message, Object...args){
-        if(mode.force)
+    private static void report(Mode mode, String message, Object... args) {
+        if (mode.force)
             throw new IllegalArgumentException(MessageFormatter.arrayFormat(message, args).getMessage());
         else
             LoggerFactory.getLogger(Sorcer.class).warn(message, args);
     }
 
-    private static IForkingLauncher createForkingLauncher(Integer debugPort, ILauncher.WaitMode mode) {
+    private static IForkingLauncher createForkingLauncher(Integer debugPort, WaitMode mode) {
         IForkingLauncher forkingLauncher;
         try {
             forkingLauncher = (IForkingLauncher) Class.forName("sorcer.launcher.process.ForkingLauncher").newInstance();
             if (debugPort != null)
                 forkingLauncher.setDebugPort(debugPort);
 
-            forkingLauncher.setSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook(), mode == ILauncher.WaitMode.start));
+            forkingLauncher.addSorcerListener(new DestroyingListener(ProcessDestroyer.installShutdownHook(), mode == WaitMode.start));
         } catch (InstantiationException e) {
             throw new IllegalStateException("Could not instantiate ForkingLauncher", e);
         } catch (IllegalAccessException e) {
@@ -270,13 +252,17 @@ public class Sorcer {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Could not instantiate ForkingLauncher", e);
         }
+        forkingLauncher.setOut(System.out);
+        forkingLauncher.setErr(System.err);
         return forkingLauncher;
     }
 
     private static ILauncher createSorcerLauncher() {
-        ILauncher launcher;
         SorcerLauncher.installLogging();
-        launcher = new SorcerLauncher();
+        SorcerLauncher launcher = new SorcerLauncher();
+        launcher.addSorcerListener(new ExitingCallback());
+
+        SorcerLauncher.installSecurityManager();
         return launcher;
     }
 }

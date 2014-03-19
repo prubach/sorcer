@@ -36,6 +36,11 @@ public class NullSorcerListener implements SorcerListener {
     }
 
     @Override
+    public void sorcerEnded() {
+
+    }
+
+    @Override
     public void processDown(Process process) {
 
     }

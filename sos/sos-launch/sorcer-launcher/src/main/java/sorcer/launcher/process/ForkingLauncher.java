@@ -16,10 +16,11 @@
 
 package sorcer.launcher.process;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.SorcerEnv;
 import sorcer.launcher.*;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
@@ -27,15 +28,11 @@ import sorcer.util.ProcessDownCallback;
 import sorcer.util.ProcessMonitor;
 
 import java.io.*;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
-import static sorcer.core.SorcerConstants.E_RIO_HOME;
-import static sorcer.core.SorcerConstants.E_SORCER_EXT;
 import static sorcer.core.SorcerConstants.E_SORCER_HOME;
 
 /**
@@ -55,6 +52,27 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
     private String profile;
 
     @Override
+    public void preConfigure() {
+        super.preConfigure();
+        configureDebug();
+    }
+
+    private void configureDebug() {
+        if (debugPort != null)
+            return;
+        String debugEnv = System.getenv("LAUNCHER_DEBUG");
+        if (debugEnv != null) {
+            try {
+                debugPort = Integer.parseInt(debugEnv);
+                if (debugPort < 1024)
+                    debugPort = 8000;
+            } catch (NumberFormatException x) {
+                debugPort = 8000;
+            }
+        }
+    }
+
+    @Override
     public void start() throws IOException {
         if (process != null)
             throw new IllegalStateException("This instance has already started a process");
@@ -63,17 +81,10 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
 
         bld.getEnvironment().putAll(environment);
 
-        Pipe pipe = Pipe.open();
-        if (waitMode != WaitMode.no) {
-            out = getStream(out, outFile, System.out);
-            err = getStream(err, errFile, System.err);
-            OutputStream pipeStream = Channels.newOutputStream(pipe.sink());
-            bld.setOut(new TeeOutputStream(out, pipeStream));
-            bld.setErr(new TeeOutputStream(err, pipeStream));
-        } else {
-            bld.setOutFile(outFile);
-            bld.setErrFile(errFile);
-        }
+        WriterOutputStream startMonitor = new WriterOutputStream(new SorcerOutputConsumer(sorcerListener), Charset.defaultCharset(), 1024, true);
+
+        bld.setOut(getStream(new OutputStream[]{out, startMonitor}, outFile, System.out));
+        bld.setErr(getStream(new OutputStream[]{err, startMonitor}, errFile, System.err));
 
         bld.setProperties(properties);
 
@@ -107,47 +118,21 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
         process = bld.startProcess();
         sorcerListener.processLaunched(process);
 
-        if (waitMode == WaitMode.no) {
-            if (!process.running()) {
-                throw new IllegalStateException("SORCER has not started properly; exit value: " + process.exitValue());
-            } else
-                return;
-        }
+        if (!process.running())
+            throw new IllegalStateException("SORCER has not started properly; exit value: " + process.exitValue());
 
         installProcessMonitor(sorcerListener, process);
 
-        BufferedReader reader = new BufferedReader(Channels.newReader(pipe.source(), Charset.defaultCharset().name()));
-        OutputConsumer consumer = new SorcerOutputConsumer();
+        writePid();
+    }
 
-        String line;
-        while ((line = reader.readLine()) != null) {
-            boolean keepGoing = consumer.consume(line);
-            if (!keepGoing) break;
-        }
-        sorcerListener.sorcerStarted();
-        log.info("{} has started", process);
-
-        if (waitMode == WaitMode.end) {
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-                log.warn("Interrupted", e);
-            }
-        }
-
-        String pidFile = null;
-        if ((profile!=null) && (process.getPid()!=-1) &&
-                (waitMode== WaitMode.start || waitMode== WaitMode.no)) {
-            try
-            {
-                pidFile = SorcerEnv.getHomeDir() + File.separator + "logs" + File.separator + "sorcer.pid";
-                File fPidFile = new File(pidFile);
-                BufferedWriter writer = new BufferedWriter(new FileWriter(fPidFile));
-                writer.write(new Integer(process.getPid()).toString() + "\n");
-                writer.close();
-            } catch(Exception e) {
-                log.warn("Cannot write pid to file: " + pidFile);
-            }
+    private void writePid() {
+        if (process.getPid() == -1) return;
+        File pidFile = new File(logDir, "sorcer.pid");
+        try {
+            FileUtils.write(pidFile, Integer.toString(process.getPid()) + "\n");
+        } catch (Exception e) {
+            log.warn("Cannot write pid to file: {}", pidFile);
         }
     }
 
@@ -163,13 +148,30 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
         return sysEnv;
     }
 
-    private static OutputStream getStream(OutputStream stream, File file, OutputStream defaultStream) throws FileNotFoundException {
-        if (stream != null)
-            return stream;
-        if (file != null) {
-            return new FileOutputStream(file);
+    private static OutputStream getStream(OutputStream[] stream, File file, OutputStream defaultStream) throws FileNotFoundException {
+        OutputStream result = null;
+        for (OutputStream outputStream : stream)
+            result = joinOutputStreams(result, outputStream);
+        if (file != null)
+            result = joinOutputStreams(result, new FileOutputStream(file));
+        if (result == null)
+            return defaultStream;
+        else
+            return result;
+    }
+
+    private static OutputStream joinOutputStreams(OutputStream a, OutputStream b) {
+        if (a == null) {
+            if (b == null)
+                return null;
+            else
+                return b;
+        } else {
+            if (b == null)
+                return a;
+            else
+                return new TeeOutputStream(a, b);
         }
-        return defaultStream;
     }
 
     private void installProcessMonitor(ProcessDownCallback callback, Process2 process) {

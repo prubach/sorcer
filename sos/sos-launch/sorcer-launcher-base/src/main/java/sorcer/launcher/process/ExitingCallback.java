@@ -19,22 +19,24 @@ package sorcer.launcher.process;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.launcher.NullSorcerListener;
 
 /**
- * Shutdown application by calling System.exit(-1) when processDown is called
+ * Shutdown application by calling System.exit(0) when sorcerEnded is called
  *
  * @author Rafał Krupiński
  */
-public class ExitingCallback extends DestroyingListener {
+public class ExitingCallback extends NullSorcerListener {
     private static final Logger log = LoggerFactory.getLogger(ExitingCallback.class);
-
-    public ExitingCallback(ProcessDestroyer processDestroyer) {
-        super(processDestroyer, false);
-    }
+    private volatile boolean closing;
 
     @Override
-    public void processDown(Process process) {
-        log.info("{} is down, closing launching application", process);
-        System.exit(-1);
+    public synchronized void sorcerEnded() {
+        if (!closing) {
+            closing = true;
+            log.info("Closing this SORCER JVM process");
+            Runtime.getRuntime().halt(0);
+        } else
+            log.warn("Exiting callback called again from {}");
     }
 }

@@ -84,6 +84,7 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import sorcer.config.BeanListener;
 import sorcer.config.ServiceBeanListener;
 import sorcer.core.ContextManagement;
@@ -96,7 +97,6 @@ import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
@@ -138,6 +138,8 @@ import static sorcer.core.SorcerConstants.*;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ProviderDelegate {
+
+    private BasicThreadFactory.Builder threadFactoryBuilder = new BasicThreadFactory.Builder();
 
 	static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
 
@@ -753,9 +755,8 @@ public class ProviderDelegate {
 		}
 		for (int i = 0; i < publishedServiceTypes.length; i++) {
 			// spaceWorkerPool = Executors.newFixedThreadPool(workerCount);
-            ConfigurableThreadFactory factory = new ConfigurableThreadFactory();
-            factory.setNameFormat("SpaceTaker-" + spaceName + "-thread-%2$d");
-			spaceWorkerPool = new ThreadPoolExecutor(workerCount,
+            BasicThreadFactory factory = threadFactoryBuilder.namingPattern("SpaceTaker-" + spaceName + "-thread-%2$d").build();
+            spaceWorkerPool = new ThreadPoolExecutor(workerCount,
 					maximumPoolSize > workerCount ? maximumPoolSize
 							: workerCount, 0L, TimeUnit.MILLISECONDS,
 					new LinkedBlockingQueue<Runnable>(

@@ -21,6 +21,7 @@ import sorcer.resolver.Resolver;
 import sorcer.util.FileUtils;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.Process2;
 import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
@@ -35,7 +36,6 @@ import static sorcer.util.JavaSystemProperties.*;
  * @author Rafał Krupiński
  */
 public abstract class Launcher implements ILauncher {
-    public WaitMode waitMode = WaitMode.no;
     protected File home;
     protected File ext;
     protected File rio;
@@ -47,7 +47,9 @@ public abstract class Launcher implements ILauncher {
      * list of configuration files for the Rio Monitor (opstrings)
      */
     protected List<String> rioConfigs;
-    protected SorcerListener sorcerListener;
+
+    private Set<SorcerListener> sorcerListeners = new HashSet<SorcerListener>();
+    protected SorcerListener sorcerListener = new SorcerListenerMultiplexer(sorcerListeners);
 
     protected Properties properties;
     protected Properties environment;
@@ -99,9 +101,6 @@ public abstract class Launcher implements ILauncher {
     @Override
     @SuppressWarnings("unchecked")
     public void preConfigure() {
-        if (sorcerListener == null)
-            sorcerListener = new NullSorcerListener();
-
         ensureDirConfig();
 
         //needed by Resolver to read repoRoot from sorcer.env
@@ -233,17 +232,45 @@ public abstract class Launcher implements ILauncher {
     }
 
     @Override
-    public void setSorcerListener(SorcerListener listener) {
-        this.sorcerListener = listener;
+    public void addSorcerListener(SorcerListener listener) {
+        this.sorcerListeners.add(listener);
     }
 
     @Override
-    public void setWaitMode(WaitMode waitMode) {
-        this.waitMode = waitMode;
+    public void removeSorcerListener(SorcerListener listener) {
+        this.sorcerListeners.remove(listener);
     }
 
     @Override
     public void setRioConfigs(List<String> rioConfigs) {
         this.rioConfigs = rioConfigs;
+    }
+
+    private class SorcerListenerMultiplexer implements SorcerListener {
+        private Set<SorcerListener> sorcerListeners;
+
+        public SorcerListenerMultiplexer(Set<SorcerListener> sorcerListeners) {
+            this.sorcerListeners = sorcerListeners;
+        }
+
+        @Override
+        public void processLaunched(Process2 process) {
+            for (SorcerListener l : sorcerListeners) l.processLaunched(process);
+        }
+
+        @Override
+        public void sorcerStarted() {
+            for (SorcerListener l : sorcerListeners) l.sorcerStarted();
+        }
+
+        @Override
+        public void sorcerEnded() {
+            for (SorcerListener l : sorcerListeners) l.sorcerEnded();
+        }
+
+        @Override
+        public void processDown(Process process) {
+            for (SorcerListener l : sorcerListeners) l.processDown(process);
+        }
     }
 }

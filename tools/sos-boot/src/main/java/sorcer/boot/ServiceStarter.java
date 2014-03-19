@@ -60,7 +60,17 @@ public class ServiceStarter implements LifeCycle {
     final private static String START_PACKAGE = "com.sun.jini.start";
 
     private final Deque<Service> services = new LinkedList<Service>();
+
+    //just to keep the references
+    private final Set<Service> nonDestroyServices = new HashSet<Service>();
+
     private volatile boolean bootInterrupted;
+
+    private final LifeCycle exitMonitor;
+
+    public ServiceStarter(LifeCycle exitMonitor) {
+        this.exitMonitor = exitMonitor;
+    }
 
     /**
      * Start services from the configs
@@ -116,7 +126,7 @@ public class ServiceStarter implements LifeCycle {
             stop(service);
 
         log.info("******* Sorcersoft.com SORCER stopped *******");
-        killVM();
+        exitSorcer();
     }
 
     private void stop(Service service) {
@@ -128,12 +138,16 @@ public class ServiceStarter implements LifeCycle {
         }
     }
 
-    protected ServiceDestroyer getDestroyer(Object service){
+    private void exitSorcer() {
+        exitMonitor.unregister(this);
+    }
+
+    protected ServiceDestroyer getDestroyer(Object service) {
         if (service instanceof DestroyAdmin) {
             return new SorcerServiceDestroyer((DestroyAdmin) service);
         } else if (service instanceof com.sun.jini.admin.DestroyAdmin) {
             return new RiverServiceDestroyer((com.sun.jini.admin.DestroyAdmin) service);
-        } else if(service instanceof Administrable)
+        } else if (service instanceof Administrable)
             try {
                 return getDestroyer(((Administrable) service).getAdmin());
             } catch (RemoteException e) {
@@ -157,19 +171,19 @@ public class ServiceStarter implements LifeCycle {
                 result = true;
             }
         }
-        if (result)
-            killVM();
-        return result;
-    }
-
-    protected void killVM() {
-        synchronized (services) {
-            if (services.isEmpty()) {
-                log.info("No services left; shutting down SORCER");
-                System.exit(0);
+        if (result) {
+            boolean exit;
+            synchronized (services) {
+                if (log.isInfoEnabled())
+                    log.debug("Service count: {}", services.size());
+                exit = services.isEmpty();
             }
-            log.info("Service count: {}", services.size());
+            if (exit) {
+                log.info("No services left; shutting down SORCER");
+                exitSorcer();
+            }
         }
+        return result;
     }
 
     private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
@@ -311,7 +325,7 @@ public class ServiceStarter implements LifeCycle {
             if (bootInterrupted)
                 break;
             if (desc != null) {
-                AbstractServiceDescriptor.Service service = null;
+                AbstractServiceDescriptor.Service service;
                 try {
                     if (desc instanceof AbstractServiceDescriptor) {
                         ((AbstractServiceDescriptor) desc).addLifeCycle(this);
@@ -324,12 +338,15 @@ public class ServiceStarter implements LifeCycle {
                         log.info("Starting UNKNOWN service");
                         service = new Service(desc.create(config), null, desc);
                     }
-                    service.destroyer = getDestroyer(service.impl);
-                } catch (Exception e) {
-                    service = new Service(null, null, desc, e);
-                } finally {
-                    if (service != null)
+                    ServiceDestroyer destroyer = getDestroyer(service.impl);
+                    if (destroyer == null)
+                        nonDestroyServices.add(service);
+                    else {
+                        service.destroyer = destroyer;
                         services.add(service);
+                    }
+                } catch (Exception e) {
+                    log.warn("Error while creating a service from {}", desc, e);
                 }
             }
         }

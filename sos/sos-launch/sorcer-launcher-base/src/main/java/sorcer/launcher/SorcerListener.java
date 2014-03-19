@@ -26,4 +26,6 @@ public interface SorcerListener extends ProcessDownCallback{
     void processLaunched(Process2 process);
 
     void sorcerStarted();
+
+    void sorcerEnded();
 }

@@ -16,6 +16,7 @@
 
 package sorcer.launcher;
 
+import com.sun.jini.start.LifeCycle;
 import org.rioproject.logging.ServiceLogEventHandlerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
 import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
+import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.StringUtils;
 
 import java.io.File;
@@ -46,8 +48,6 @@ import static sorcer.util.Collections.toProperties;
  * @author Rafał Krupiński
  */
 public class SorcerLauncher extends Launcher {
-    //TODO remove checking waitMode in Sorcer when other modes are supported
-
     final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
 
     private ThreadFactory threadFactory;
@@ -63,7 +63,22 @@ public class SorcerLauncher extends Launcher {
         updateMonitorConfig();
         configure();
         configureBdbHandler();
+        configureThreadFactory();
+        postInstall();
+    }
 
+    private void configureThreadFactory() {
+        if (threadFactory == null)
+            threadFactory = getDefaultThreadFactory();
+    }
+
+    public static ThreadFactory getDefaultThreadFactory() {
+        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
+        tf.setThreadGroup(new ThreadGroup("SORCER parent"));
+        return tf;
+    }
+
+    private void postInstall() {
         try {
             Installer installer = new Installer();
             if (installer.isInstallRequired(logDir))
@@ -73,7 +88,6 @@ public class SorcerLauncher extends Launcher {
         } catch (Exception x) {
             throw new RuntimeException("Error while installing SORCER", x);
         }
-
     }
 
     private void configureBdbHandler() {
@@ -81,15 +95,10 @@ public class SorcerLauncher extends Launcher {
     }
 
     public void start() {
-        SorcerRunnable sorcerRun = new SorcerRunnable(getConfigs());
-
         SorcerShutdownHook.instance.add(this);
 
-        if (threadFactory != null) {
-            threadFactory.newThread(sorcerRun).start();
-        } else {
-            sorcerRun.run();
-        }
+        Thread thread = threadFactory.newThread(new SorcerRunnable(getConfigs()));
+        thread.start();
     }
 
     protected void configure() {
@@ -211,8 +220,20 @@ public class SorcerLauncher extends Launcher {
         @Override
         public void run() {
             try {
-                serviceStarter = new ServiceStarter();
+                serviceStarter = new ServiceStarter(new LifeCycle() {
+                    private boolean closing;
+
+                    @Override
+                    synchronized public boolean unregister(Object o) {
+                        if (closing)
+                            return false;
+                        sorcerListener.sorcerEnded();
+                        closing = true;
+                        return true;
+                    }
+                });
                 serviceStarter.start(configs);
+                sorcerListener.sorcerStarted();
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {

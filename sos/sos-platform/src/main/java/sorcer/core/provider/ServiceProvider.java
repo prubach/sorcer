@@ -202,11 +202,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	private LookupDiscoveryManager ldmgr;
 
-	// the current number of shared providers
-	protected static int tally = 0;
-	// the size of this service node
-	protected static int size = 0;
-	
 	/** Object to notify when this service is destroyed, or null. */
 	private LifeCycle lifeCycle;
 
@@ -234,9 +229,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	public ServiceProvider(String[] args, LifeCycle lifeCycle) throws Exception {
 		this();
-		// count initialized shared providers
-		tally = tally + 1;
-		size = tally;
 		// load Sorcer environment properties via static initializer
 		SorcerEnv.getProperties();
 		serviceClassLoader = Thread.currentThread().getContextClassLoader();
@@ -544,26 +536,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				re.printStackTrace();
 			}
 		return true;
-	}
-
-	/**
-	 * This method spawns a separate thread to destroy this provider after 2
-	 * sec, should make a reasonable attempt to let this remote call return
-	 * successfully.
-	 */
-	private class DestroyThread implements Runnable {
-		public void run() {
-			try {
-				// allow for remaining cleanup
-				Thread.sleep(1000);
-			} catch (Throwable t) {
-			} finally {
-				// allow other shared providers to quit
-				if (tally <= 0) {
-					System.exit(0);
-				}
-			}
-		}
 	}
 
 	/**
@@ -1816,8 +1788,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             ldmgr.terminate();
         if (joinManager != null)
             joinManager.terminate();
-        tally = tally - 1;
-        logger.info("destroyd provider: " + getProviderName() + ", providers left: " + tally);
+
         if (threadManager != null)
             threadManager.terminate();
 
@@ -1827,16 +1798,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             lifeCycle.unregister(this);
         }
 
-        if (tally == 0) {
-            //ProviderAccessor.terminateDiscovery();
-            // option for service nodes size > 1
-            // allows for discarding cpmplementarory, not SORCER services
-
-            // Commented to disable shutting down the whole RIO
-
-            //if (SorcerEnv.isBootable() && size > 1)
-            //    System.exit(0);
-        }
         // stop KeepAwake thread
         running = false;
     }
