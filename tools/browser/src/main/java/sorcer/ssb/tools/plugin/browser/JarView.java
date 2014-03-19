@@ -115,7 +115,7 @@ public class JarView extends JPanel implements Runnable {
 				}
 			}
 			jarFile.close();
-            tmpJar.deleteOnExit();
+            tmpJar.delete();
 
 			final JEditorPane output = new JEditorPane();
 			output.setEditable(false);
