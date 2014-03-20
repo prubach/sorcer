@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <!--
-
-
+    Copyright 2013, 2014 Sorcersoft.com S.A.
     Copyright 2013 the original author or authors.
-    Copyright 2013 Sorcersoft.com S.A.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,7 +14,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 -->
 <project name="SorcerCommon" default="" basedir="." xmlns:ac="http://ant-contrib.sourceforge.net">
 
@@ -190,7 +187,6 @@
                 <pathelement location="${lib.dir}/sorcer/sorcer-launcher.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-launcher-base.jar"/>               
                 <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-rio-lib.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-rio-start.jar"/>
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>		
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>

@@ -352,7 +352,6 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-lib/$V_SORCER/sorcer-rio-lib-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-aether/$V_RIO/resolver-aether-$V_RIO.jar:\

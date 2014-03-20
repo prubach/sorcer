@@ -60,7 +60,6 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-start\%
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher-base\%v.sorcer%\sorcer-launcher-base-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-installer\%v.sorcer%\sorcer-installer-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-lib\%v.sorcer%\sorcer-rio-lib-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
