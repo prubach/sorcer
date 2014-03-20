@@ -1034,25 +1034,23 @@ public class SorcerEnv {
     }
 
     public static String getSuffixedName(String name) {
-        String suffix = getProperty(S_NAME_SUFFIX,
-                getDefaultNameSuffix(3));
-        return name + "-" + suffix;
+        return getSuffixedName(name, 3);
     }
 
     public static String getActualName(String name) {
-		if (nameSuffixed()) {
-			String suffix = sorcerEnv.properties.getProperty(S_NAME_SUFFIX,
-					getDefaultNameSuffix(3));
-			if (name.indexOf(suffix) > 0)
-				return name;
-			else
-				return name + "-" + suffix;
-		}
-        return name;
+        return getSuffixedName(name);
     }
 
     public static String getSuffixedName(String name, int suffixLength) {
-        return name + "-" + getDefaultNameSuffix(suffixLength);
+        if (nameSuffixed()) {
+            String suffix = sorcerEnv.properties.getProperty(S_NAME_SUFFIX,
+                    getDefaultNameSuffix(suffixLength));
+            if (name.indexOf(suffix) > 0)
+                return name;
+            else
+                return name + "-" + suffix;
+        }
+        return name;
     }
 
     /**
