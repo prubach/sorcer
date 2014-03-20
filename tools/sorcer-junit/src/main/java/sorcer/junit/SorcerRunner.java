@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Policy;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static sorcer.core.SorcerConstants.SORCER_HOME;
 import static sorcer.util.JavaSystemProperties.RMI_SERVER_CLASS_LOADER;
@@ -126,7 +127,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         try {
             sorcerLauncher = startSorcer(configs);
             super.run(notifier);
-        } catch (IOException e) {
+        } catch (Exception e) {
             notifier.fireTestFailure(new Failure(getDescription(), new Exception("Error while starting SORCER with configs: " + Arrays.toString(configs), e)));
         } finally {
             if (sorcerLauncher != null)
@@ -145,7 +146,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         WaitingListener listener = new WaitingListener();
 
         Launcher launcher = new SorcerLauncher();
-        launcher.setConfigs(Arrays.asList(serviceConfigPaths));
+        launcher.setConfigs(new LinkedList<String>(Arrays.asList(serviceConfigPaths)));
         launcher.addSorcerListener(listener);
         launcher.setHome(home);
         File logDir = new File("/tmp/logs");
@@ -153,6 +154,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         launcher.setLogDir(logDir);
 
         log.info("Starting SORCER instance for test {}", getDescription());
+        launcher.preConfigure();
         launcher.start();
 
         listener.wait(WaitMode.start);
