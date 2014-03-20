@@ -66,7 +66,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         JavaSystemProperties.ensure(RMI_SERVER_CLASS_LOADER, "sorcer.rio.rmi.SorcerResolvingLoader");
         JavaSystemProperties.ensure(SorcerConstants.SORCER_WEBSTER_INTERNAL, Boolean.TRUE.toString());
         log = LoggerFactory.getLogger(SorcerRunner.class);
-        new HandlerInstaller(null, null);
     }
 
     public SorcerRunner(Class<?> klass) throws InitializationError {
@@ -118,6 +117,8 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     @Override
     public void run(final RunNotifier notifier) {
         if (configuration == null) {
+            // handler is installed by the SorcerLauncher, here we must do it ourselves
+            HandlerInstaller.install();
             super.run(notifier);
             return;
         }

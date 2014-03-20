@@ -15,6 +15,7 @@ package sorcer.protocol;
  * limitations under the License.
  */
 
+import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.HashMap;
@@ -33,5 +34,21 @@ public class ProtocolHandlerRegistry implements URLStreamHandlerFactory {
 
     public void register(String protocol, URLStreamHandler handler) {
         handlers.put(protocol, handler);
+    }
+
+    private static ProtocolHandlerRegistry instance;
+    private static boolean installed;
+
+    public static synchronized ProtocolHandlerRegistry get() {
+        if (!installed)
+            try {
+                ProtocolHandlerRegistry registry = new ProtocolHandlerRegistry();
+                URL.setURLStreamHandlerFactory(registry);
+                instance = registry;
+                installed = true;
+            } catch (Error e) {
+                throw new IllegalStateException("Could not install URLStreamHandlerFactory", e);
+            }
+        return instance;
     }
 }

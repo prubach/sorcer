@@ -74,7 +74,8 @@ public class SorcerLauncher extends Launcher {
 
     public static ThreadFactory getDefaultThreadFactory() {
         ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
-        tf.setThreadGroup(new ThreadGroup("SORCER parent"));
+        tf.setNameFormat("SORCER boot");
+        tf.setThreadGroup(new ThreadGroup("SORCER group"));
         return tf;
     }
 
