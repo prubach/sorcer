@@ -25,7 +25,9 @@ import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 import sorcer.service.Strategy;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,10 +93,13 @@ public class CollectionOperatorsTest {
 		
 		// check map keys
 		assertEquals(bag("name", "height"), map1.keySet());
-		// check map values
-		assertArrayEquals(array(174.0, "Mike"), map1.values().toArray());
-		
-	}
+
+        // check map values
+        Collection<? extends Serializable> c1 = Arrays.asList(174.0, "Mike");
+        Collection<Object> c2 = map1.values();
+        assertTrue(c1.containsAll(c2) && c2.containsAll(c1));
+
+    }
 	
 	@Test
 	public void bagOperatorTest() throws EvaluationException {
