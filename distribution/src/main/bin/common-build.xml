@@ -108,6 +108,7 @@ A "src" property should be set and point to the directory containing the module'
 		<pathelement location="${sorcer.lib}/commons-prv.jar" />
 		<pathelement location="${sorcer.lib}/sos-util.jar" />
 		<pathelement location="${sorcer.lib}/sos-platform.jar" />
+        <pathelement location="${sorcer.lib}/sos-webster.jar" />
 		<pathelement location="${sorcer.lib}/sos-api.jar" />
 		<pathelement location="${sorcer.lib}/sorcer-api.jar" />
         <pathelement location="${sorcer.lib}/logger-api.jar" />
