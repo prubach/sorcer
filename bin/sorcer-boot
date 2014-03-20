@@ -30,6 +30,8 @@ STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 if [ "x$1" != "x" ]; then
 	args=$@
 else
+	echo 'INFO Running SORCER without arguments; implying -Pmix'
+	echo
 	args=-Pmix
 fi
 

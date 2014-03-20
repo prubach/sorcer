@@ -5,6 +5,7 @@ set STARTER_MAIN_CLASS=sorcer.launcher.Sorcer
 IF NOT "%1"=="" (
 	set CONFIG=%*
 ) ELSE (
+	echo "INFO Running SORCER without arguments; implying -Pmix"
     set CONFIG=-Pmix
 )
 
