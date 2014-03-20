@@ -4,6 +4,7 @@
  * @author Pawel Rubach based on Dennis Reedy's example
  */
 import sorcer.core.SorcerEnv;
+import static sorcer.core.SorcerConstants.SORCER_VERSION;
 
 
 String[] getInitialMemberGroups() {
@@ -48,8 +49,12 @@ deployment(name: 'Sorcer') {
     artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
     artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.2'
     artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
-    artifact id: 'cataloger-cfg', "org.sorcersoft.sorcer:cataloger-cfg:" + getSorcerVersion()
-    artifact id: 'cataloger-sui', "org.sorcersoft.sorcer:cataloger-sui:" + getSorcerVersion()
+
+    def cataloger = [
+            impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
+            api : 'org.sorcersoft.sorcer:cataloger-api:' + SORCER_VERSION
+    ]
+
     artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
     artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
@@ -62,8 +67,7 @@ deployment(name: 'Sorcer') {
 
     def blitz = [
         impl:"org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion(),
-        api: 'org.sorcersoft.blitz:blitz-proxy:2.3',
-        //impl: 'org.sorcersoft.blitz:blitz-service:2.3'
+        api: 'org.sorcersoft.blitz:blitz-proxy:2.3'
     ]
 
 
@@ -166,10 +170,10 @@ deployment(name: 'Sorcer') {
     service(name: "Cataloger") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Cataloger'
-            artifact ref: 'cataloger-sui'
+            artifact cataloger.api
         }
         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
-            artifact ref: 'cataloger-cfg'
+            artifact cataloger.impl
         }
         configuration file: 'classpath:cataloger.config'
         maintain 1

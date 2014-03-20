@@ -1,16 +1,30 @@
+/*
+ * Copyright 2014 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package sorcer.rio.rmi;
 
 import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
-import org.rioproject.rmi.ResolvingLoader;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
@@ -22,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * User: prubach
  * Date: 13.03.14
  */
-public class SorcerResolvingLoader extends ResolvingLoader {
+public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     /**
      * A table of artifacts to derived codebases. This improves performance by resolving the classpath once per
      * artifact.
@@ -35,7 +49,8 @@ public class SorcerResolvingLoader extends ResolvingLoader {
      */
     private final Map<String, String> classAnnotationMap = new ConcurrentHashMap<String, String>();
     private static final Resolver resolver;
-    private static final Logger logger = LoggerFactory.getLogger(ResolvingLoader.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(SorcerResolvingLoader.class);
+
     static {
         try {
             resolver = ResolverHelper.getResolver();
@@ -43,18 +58,19 @@ public class SorcerResolvingLoader extends ResolvingLoader {
             throw new RuntimeException(e);
         }
     }
+
     private static final RMIClassLoaderSpi loader = RMIClassLoader.getDefaultProviderInstance();
 
     @Override
     public Class<?> loadClass(final String codebase,
                               final String name,
                               final ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
-        if(logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled()) {
             logger.trace("codebase: {}, name: {}, defaultLoader: {}",
-                    codebase, name, defaultLoader==null?"NULL":defaultLoader.getClass().getName());
+                    codebase, name, defaultLoader == null ? "NULL" : defaultLoader.getClass().getName());
         }
         String resolvedCodebase = resolveCodebase(codebase);
-        if(codebase!=null && codebase.startsWith("artifact:") && classAnnotationMap.get(name)==null) {
+        if (codebase != null && codebase.startsWith("artifact:") && classAnnotationMap.get(name) == null) {
             classAnnotationMap.put(name, codebase);
             logger.trace("class: {}, codebase: {}, size now {}", name, codebase, classAnnotationMap.size());
         }
@@ -66,28 +82,17 @@ public class SorcerResolvingLoader extends ResolvingLoader {
     public Class<?> loadProxyClass(final String codebase,
                                    final String[] interfaces,
                                    final ClassLoader defaultLoader) throws MalformedURLException, ClassNotFoundException {
-        if(logger.isTraceEnabled()) {
-            logger.trace("codebase: {}, interfaces: {}, defaultLoader: {}",
-                    codebase, Arrays.toString(interfaces), defaultLoader==null?"NULL":defaultLoader.getClass().getName());
-        }
+
+        logger.trace("codebase: {}, interfaces: {}, defaultLoader: {}", codebase, interfaces, defaultLoader);
         String resolvedCodebase = resolveCodebase(codebase);
-        if(logger.isTraceEnabled()) {
-            StringBuilder builder = new StringBuilder();
-            for(String s : interfaces) {
-                if(builder.length()>0) {
-                    builder.append(" ");
-                }
-                builder.append(s);
-            }
-            logger.trace("Load proxy classes {} using codebase {}, resolved to {}, defaultLoader: {}",
-                    builder.toString(), codebase, resolvedCodebase, defaultLoader);
-        }
+        logger.trace("Load proxy classes {} using codebase {}, resolved to {}, defaultLoader: {}",
+                interfaces, codebase, resolvedCodebase, defaultLoader);
         return loader.loadProxyClass(resolvedCodebase, interfaces, defaultLoader);
     }
 
     @Override
     public ClassLoader getClassLoader(String codebase) throws MalformedURLException {
-        if(logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled()) {
             logger.trace("codebase: {}", codebase);
         }
         String resolvedCodebase = resolveCodebase(codebase);
@@ -97,7 +102,7 @@ public class SorcerResolvingLoader extends ResolvingLoader {
     @Override
     public String getClassAnnotation(final Class<?> aClass) {
         String annotation = classAnnotationMap.get(aClass.getName());
-        if(annotation == null)
+        if (annotation == null)
             annotation = loader.getClassAnnotation(aClass);
         return annotation;
     }
@@ -105,44 +110,41 @@ public class SorcerResolvingLoader extends ResolvingLoader {
     private String resolveCodebase(final String codebase) {
         String adaptedCodebase;
         StringBuilder resolvedCodebaseBuilder = new StringBuilder();
-        if(codebase!=null && codebase.startsWith("artifact:")) {
+        if (codebase != null && codebase.startsWith("artifact:")) {
             String[] artifacts = codebase.split(" ");
             Set<String> jarsSet = new HashSet<String>();
-            for (String artf: artifacts) {
+            for (String artf : artifacts) {
                 adaptedCodebase = artifactToCodebase.get(artf);
-                if(adaptedCodebase==null) {
-
+                if (adaptedCodebase == null) {
                     try {
                         logger.debug("Resolve {} ", artf);
                         StringBuilder builder = new StringBuilder();
-                        String path =  artf.substring(artf.indexOf(":")+1);
+                        String path = artf.substring(artf.indexOf(":") + 1);
                         ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
-                        String[] cp = null;
                         for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
                             rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                             rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                         }
-                        cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                            artifactURLConfiguration.getRepositories());
-                        for(String s : cp) {
-                            if(builder.length()>0)
+                        String[] cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                                artifactURLConfiguration.getRepositories());
+                        for (String s : cp) {
+                            if (builder.length() > 0)
                                 builder.append(" ");
                             builder.append(new File(s).toURI().toURL().toExternalForm());
                         }
                         adaptedCodebase = builder.toString();
                         artifactToCodebase.put(artf, adaptedCodebase);
                     } catch (ResolverException e) {
-                        logger.warn("Unable to resolve {}", artf);
+                        logger.warn("Unable to resolve {}", artf, e);
                     } catch (MalformedURLException e) {
                         logger.warn("The codebase {} is malformed", artf, e);
                     }
                 }
-                if (adaptedCodebase!=null)
-                    for (String jar : adaptedCodebase.split(" "))
-                        jarsSet.add(jar);
+                if (adaptedCodebase != null)
+                    Collections.addAll(jarsSet, adaptedCodebase.split(" "));
             }
-            for (String jar: jarsSet) {
-                if (resolvedCodebaseBuilder.length()>0)
+            for (String jar : jarsSet) {
+                if (resolvedCodebaseBuilder.length() > 0)
                     resolvedCodebaseBuilder.append(" ");
                 resolvedCodebaseBuilder.append(jar);
             }

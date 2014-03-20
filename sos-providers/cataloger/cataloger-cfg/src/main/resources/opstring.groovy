@@ -3,39 +3,38 @@
  *
  * @author Pawel Rubach
  */
+
 import sorcer.core.SorcerEnv;
+import static sorcer.core.SorcerConstants.SORCER_VERSION;
 
 String[] getInitialMemberGroups() {
     def groups = SorcerEnv.getLookupGroups();
     return groups as String[]
 }
 
-def getSorcerVersion() {
-    return sorcerVersion = SorcerEnv.getSorcerVersion();
-}
-
 def String getCodebase() {
     return SorcerEnv.getWebsterUrl();
 }
-
 
 deployment(name: 'cataloger-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
-    artifact id:'cataloger-sui', 'org.sorcersoft.sorcer:cataloger-sui:'+getSorcerVersion()
-    artifact id:'cataloger-cfg', 'org.sorcersoft.sorcer:cataloger-cfg:'+getSorcerVersion()
+    def cataloger = [
+            impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
+            api : 'org.sorcersoft.sorcer:cataloger-api:' + SORCER_VERSION
+    ]
 
-    service(name:'cataloger-prv') {
-         interfaces {
-             classes 'sorcer.core.provider.Cataloger'
-             artifact ref:'cataloger-sui'
-         }
-         implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
-             artifact ref:'cataloger-cfg'
-         }
-         configuration file: 'classpath:cataloger.config'
-         maintain 1
-     }
+    service(name: 'cataloger-prv') {
+        interfaces {
+            classes 'sorcer.core.provider.Cataloger'
+            artifact cataloger.api
+        }
+        implementation(class: 'sorcer.core.provider.cataloger.ServiceCataloger') {
+            artifact cataloger.impl
+        }
+        configuration file: 'classpath:cataloger.config'
+        maintain 1
+    }
 }
