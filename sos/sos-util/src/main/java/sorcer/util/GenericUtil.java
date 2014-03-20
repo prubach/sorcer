@@ -3839,11 +3839,11 @@ public class GenericUtil implements Serializable {
             // + " Time = "
             // + totalElapsedTime
             // + " Seconds ***************");
-            logger.info("***************** Total Clock Time Elapsed During Run for Job Id = "
+            logger.info("Total Clock Time Elapsed During Run for Job Id = "
                     + jobID
                     + " Time = "
                     + totalElapsedTime
-                    + " Seconds ***************");
+                    + " Seconds");
             if (totalElapsedTime >= maxWaitTime.longValue()) {
                 jobDone = true;
                 callqstat = true;
@@ -3854,8 +3854,8 @@ public class GenericUtil implements Serializable {
                 callqstat = false;
                 // System.out.println("***************** qstat for job Id = "+
                 // jobID + "***************");
-                logger.info("***************** qstat for job Id = " + jobID
-                        + "***************");
+                logger.info("qstat for job Id = " + jobID
+                        );
                 // Process qstatStatus = null;
                 int exitValue = 1;
                 synchronized (GenericUtil.class) {

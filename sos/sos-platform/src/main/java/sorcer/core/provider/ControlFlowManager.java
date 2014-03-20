@@ -180,28 +180,28 @@ public class ControlFlowManager {
      *             exception from other methods
      */
     public Exertion process(TaskManager exertionManager) throws ExertionException {
-        logger.info("********************************************* process exertion: " + exertion.getName());
+        logger.info("process exertion: " + exertion.getName());
         Exertion result = null;
         if (exertionManager == null) {
-            logger.info("********************************************* exertionManager is NULL");
+            logger.info("exertionManager is NULL");
 
             try {
                 if (exertion.isConditional()) {
-                    logger.info("********************************************* exertion Conditional");
+                    logger.info("exertion Conditional");
                     result = doConditional(exertion);
-                    logger.info("********************************************* exertion Conditional; result: " + result);
+                    logger.info("exertion Conditional; result: " + result);
                 } else if (((ServiceExertion) exertion).isJob()) {
-                    logger.info("********************************************* exertion isJob()");
+                    logger.info("exertion isJob()");
                     result = doRendezvousExertion((Job) exertion);
-                    logger.info("********************************************* exertion isJob(); result: " + result);
+                    logger.info("exertion isJob(); result: " + result);
                 } else if (((ServiceExertion) exertion).isBlock()) {
-					logger.info("********************************************* exertion isBlock()");
+					logger.info("exertion isBlock()");
 					result = doBlock((Block) exertion);
-					logger.info("********************************************* exertion isBlock(); result: " + result);
+					logger.info("exertion isBlock(); result: " + result);
 				} else if (((ServiceExertion) exertion).isTask()) {
-                    logger.info("********************************************* exertion isTask()");
+                    logger.info("exertion isTask()");
                     result = doTask((Task) exertion);
-                    logger.info("********************************************* exertion isTask(); result: " + result);
+                    logger.info("exertion isTask(); result: " + result);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -209,7 +209,7 @@ public class ControlFlowManager {
             }
             return result;
         } else {
-            logger.info("********************************************* exertionManager is *NOT* null");
+            logger.info("exertionManager is *NOT* null");
             ExertionRunnable ethread = new ExertionRunnable(exertion);
             exertionManager.add(ethread);
             while (!ethread.stopped && ethread.result == null) {
@@ -277,7 +277,7 @@ public class ControlFlowManager {
     public Exertion doRendezvousExertion(ServiceExertion xrt) throws RemoteException, ExertionException {
         try {
             if (xrt.isSpacable()) {
-                logger.info("********************************************* exertion isSpacable");
+                logger.info("exertion isSpacable");
 
                 if (spacer == null) {
                     String spacerName = xrt.getRendezvousName();
@@ -298,11 +298,11 @@ public class ControlFlowManager {
                     }
                 }
 				Exertion job = ((Executor)spacer).execute(xrt, null);
-                logger.info("********************************************* spacable exerted = " + job);
+                logger.info("spacable exerted = " + job);
                 return job;
             }
             else {
-                logger.info("********************************************* exertion NOT Spacable");
+                logger.info("exertion NOT Spacable");
                 if (jobber == null) {
                     // return delegate.doJob(job);
                     String jobberName = xrt.getRendezvousName();
@@ -321,7 +321,7 @@ public class ControlFlowManager {
                     }
                 }
 				Exertion job = ((Executor)jobber).execute(xrt, null);
-                logger.info("********************************************* job exerted = " + job);
+                logger.info("job exerted = " + job);
                 return job;
             }
         } catch (TransactionException e) {
