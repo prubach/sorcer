@@ -44,24 +44,6 @@ public class HybridJobTest {
 	private final static Logger logger = Logger.getLogger(HybridJobTest.class
 			.getName());
 
-	static {
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        System.setProperty("java.util.logging.config.file",
-                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-        SorcerEnv.debug = true;
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sorcer-api"});
-	}
-
-	@Before
-	public void setUp() throws Exception {
-
-	}
-
 	@SuppressWarnings("unchecked")
 	@Test
 	public void exertHybridJob1Test() throws Exception {

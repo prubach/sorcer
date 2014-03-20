@@ -249,20 +249,20 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 				}
 			}
 			
-			logger.info("**error in object invoker; target = " + target);
-			logger.info("class: " + evalClass);
-			logger.info("context: " + context);
-			logger.info("method: " + m);
-			logger.info("selector: " + selector);
-			logger.info("paramTypes: "
+			logger.fine("**inovking; target = " + target);
+			logger.fine("class: " + evalClass);
+			logger.fine("context: " + context);
+			logger.fine("method: " + m);
+			logger.fine("selector: " + selector);
+			logger.fine("paramTypes: "
                     + (paramTypes == null ? "null" : StringUtils.
 							arrayToString(paramTypes)));
-			logger.info("parameters: "
+			logger.fine("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
 			// ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
-			logger.info("val: " + val);
+			logger.fine("val: " + val);
 
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);
