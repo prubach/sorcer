@@ -15,6 +15,8 @@ package sorcer.boot;
  * limitations under the License.
  */
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.sun.jini.config.Config;
 import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.ClassLoaderUtil;
@@ -36,16 +38,14 @@ import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.SorcerResolverHelper;
 
+import javax.inject.Inject;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,15 +62,9 @@ import java.util.List;
  */
 public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
     private static final Logger logger = LoggerFactory.getLogger(OpstringServiceDescriptor.class);
-    private static Resolver resolver;
 
-    static {
-        try {
-            resolver = ResolverHelper.getResolver();
-        } catch (ResolverException e) {
-            throw new RuntimeException("Could not initialize RIO Aether resolver", e);
-        }
-    }
+    @Inject
+    protected Resolver resolver;
 
     private ServiceElement serviceElement;
     private URL policyFile;
@@ -85,7 +79,9 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
 
     @Override
     protected Service doCreate(Configuration globalConfig) throws Exception {
-        ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, getCommonClassLoader(globalConfig));
+        Thread currentThread = Thread.currentThread();
+        ClassLoader currentClassLoader = currentThread.getContextClassLoader();
+        ClassLoader cl = getClassLoader(serviceElement.getComponentBundle(), serviceElement, currentClassLoader);
 
         security(cl);
 
@@ -94,8 +90,6 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
             ClassLoaderUtil.displayClassLoaderTree(cl);
         Object impl;
         Object proxy;
-        Thread currentThread = Thread.currentThread();
-        ClassLoader currentClassLoader = currentThread.getContextClassLoader();
         currentThread.setContextClassLoader(cl);
         try {
             Configuration config = ConfigurationProvider.getInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), cl);
@@ -103,11 +97,15 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                     config, COMPONENT, "servicePreparer", ProxyPreparer.class,
                     new BasicProxyPreparer());
 
-            logger.trace("Attempting to get implementation constructor");
-            Constructor constructor = implClass.getDeclaredConstructor(actTypes);
-            logger.trace("Obtained implementation constructor: {}", constructor.toString());
-            constructor.setAccessible(true);
-            impl = constructor.newInstance(serviceElement.getServiceBeanConfig().getConfigArgs(), lifeCycle);
+            Injector injector = parentInjector.createChildInjector(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bind(String[].class).toInstance(serviceElement.getServiceBeanConfig().getConfigArgs());
+                    bind(LifeCycle.class).toInstance(lifeCycle);
+                }
+            });
+
+            impl = injector.getInstance(implClass);
             logger.trace("Obtained implementation instance: {}", impl.toString());
             if (impl instanceof ServiceProxyAccessor) {
                 proxy = ((ServiceProxyAccessor) impl).getServiceProxy();
@@ -120,13 +118,6 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                 proxy = servicePreparer.prepareProxy(proxy);
             }
             logger.trace("Proxy:  {}", proxy == null ? "<NULL>" : proxy.toString());
-
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getCause() == null ? e.getTargetException() : e.getCause();
-            if (t != null && t instanceof Exception)
-                throw (Exception) t;
-            throw e;
-
         } finally {
             currentThread.setContextClassLoader(currentClassLoader);
         }
@@ -163,8 +154,7 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         }
     }
 
-
-    private static URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
+    private URLClassLoader getClassLoader(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws ResolverException, URISyntaxException, IOException {
         URI[] uris = SorcerResolverHelper.toURIs(resolver.getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
 
         URL codebaseRoot = SorcerEnv.getCodebaseRoot();
@@ -206,13 +196,6 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         artifact = artifact.replace(':', '/');
         result.add(new URL("artifact:" + artifact + ";" + codebase.toExternalForm() + "@" + codebase.getHost()));
         return result;
-    }
-
-    private static class NoOpLifeCycle implements LifeCycle {
-        @Override
-        public boolean unregister(Object impl) {
-            return false;
-        }
     }
 
     @Override

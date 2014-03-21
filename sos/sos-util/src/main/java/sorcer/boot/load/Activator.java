@@ -1,8 +1,6 @@
 package sorcer.boot.load;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +15,10 @@ package sorcer.boot.load;
  * limitations under the License.
  */
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.ServiceActivator;
+import sorcer.tools.ActivationProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +36,8 @@ import java.util.jar.Manifest;
 public class Activator {
 
     private static final Logger log = LoggerFactory.getLogger(Activator.class);
+
+    private ActivationProcessor activationProcessor;
 
     public void activate(ClassLoader cl, URL[] jars) throws Exception {
         for (URL jar : jars) {
@@ -95,6 +95,12 @@ public class Activator {
         }
         log.info("Activating {} with class {}", jarFile, activatorClassName);
         ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
+        if (activationProcessor != null)
+            activationProcessor.process(activator);
         activator.activate();
+    }
+
+    public void setActivationProcessor(ActivationProcessor activationProcessor) {
+        this.activationProcessor = activationProcessor;
     }
 }

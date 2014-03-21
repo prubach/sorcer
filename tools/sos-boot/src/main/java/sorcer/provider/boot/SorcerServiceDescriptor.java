@@ -18,10 +18,8 @@
 package sorcer.provider.boot;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.net.UnknownHostException;
 import java.rmi.MarshalledObject;
-import java.rmi.RMISecurityManager;
 import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Policy;
@@ -29,20 +27,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.sun.jini.config.Config;
+import com.sun.jini.start.*;
 import net.jini.config.Configuration;
 import net.jini.export.ProxyAccessor;
 import net.jini.security.BasicProxyPreparer;
 import net.jini.security.ProxyPreparer;
 import net.jini.security.policy.DynamicPolicyProvider;
 import net.jini.security.policy.PolicyFileProvider;
-
-import com.sun.jini.config.Config;
-import com.sun.jini.start.AggregatePolicyProvider;
-import com.sun.jini.start.ClassLoaderUtil;
-import com.sun.jini.start.HTTPDStatus;
-import com.sun.jini.start.LifeCycle;
-import com.sun.jini.start.LoaderSplitPolicyProvider;
-import com.sun.jini.start.ServiceProxyAccessor;
 import org.rioproject.loader.ClassAnnotator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -261,15 +255,8 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 		return (serverConfigArgs != null) ? serverConfigArgs.clone() : null;
 	}
 
-	synchronized void ensureSecurityManager() {
-		if (System.getSecurityManager() == null) {
-			System.setSecurityManager(new RMISecurityManager());
-		}
-	}
-
     @Override
     protected Service doCreate(Configuration config) throws Exception {
-		ensureSecurityManager();
 		Object proxy = null;
 
         {
@@ -278,7 +265,6 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
             if (codebase != null && codebase.startsWith("http"))
                 HTTPDStatus.httpdWarning(codebase);
         }
-        CommonClassLoader commonCL = getCommonClassLoader(config);
 
         Thread currentThread = Thread.currentThread();
 		ClassLoader currentClassLoader = currentThread.getContextClassLoader();
@@ -293,7 +279,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 
 		ServiceClassLoader jsbCL = new ServiceClassLoader(ServiceClassLoader
 				.getURIs(ClassLoaderUtil.getClasspathURLs(getClasspath())),
-				annotator, commonCL);
+				annotator, currentClassLoader);
 		if (logger.isDebugEnabled())
 			ClassLoaderUtil.displayClassLoaderTree(jsbCL);
 		new ClassPathVerifier().verifyClassPaths(jsbCL);
@@ -317,33 +303,38 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
                 logger.debug("Global policy set: {}",
                     globalPolicy);
 			}
-			DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
-					new PolicyFileProvider(getPolicy()));
-			LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
-					jsbCL, service_policy, new DynamicPolicyProvider(
-							initialGlobalPolicy));
+            String policyFilePath = getPolicy();
+            if (policyFilePath != null) {
+                DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
+                        new PolicyFileProvider(policyFilePath));
+                LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
+                        jsbCL, service_policy, new DynamicPolicyProvider(
+                        initialGlobalPolicy)
+                );
 			/*
 			 * Grant "this" code enough permission to do its work under the
 			 * service policy, which takes effect (below) after the context
 			 * loader is (re)set.
 			 */
-			splitServicePolicy.grant(SorcerServiceDescriptor.class, null,
-					new Permission[] { new AllPermission() });
-			globalPolicy.setPolicy(jsbCL, splitServicePolicy);
+                splitServicePolicy.grant(SorcerServiceDescriptor.class, null,
+                        new Permission[]{new AllPermission()});
+                globalPolicy.setPolicy(jsbCL, splitServicePolicy);
+            }
 		}
-		Object impl;
+
+        Injector injector = parentInjector.createChildInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(String[].class).toInstance(getServerConfigArgs());
+                bind(LifeCycle.class).toInstance(lifeCycle);
+            }
+        });
+
+        Object impl;
+
 		try {
-
-			Class implClass;
-			implClass = Class.forName(getImplClassName(), false, jsbCL);
-            logger.debug("Attempting to get implementation constructor");
-			Constructor constructor = implClass
-					.getDeclaredConstructor(actTypes);
-            logger.debug("Obtained implementation constructor: ",
-                    constructor);
-            constructor.setAccessible(true);
-			impl = constructor.newInstance(getServerConfigArgs(), lifeCycle);
-
+			Class implClass = Class.forName(getImplClassName(), false, jsbCL);
+            impl = injector.getInstance(implClass);
             logger.debug("Obtained implementation instance: {}", impl);
 			if (impl instanceof ServiceProxyAccessor) {
 				proxy = ((ServiceProxyAccessor) impl).getServiceProxy();

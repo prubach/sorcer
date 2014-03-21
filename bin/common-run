@@ -367,6 +367,8 @@ $MVN_REPO/com/google/guava/guava/15.0/guava-15.0.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
+$MVN_REPO/com/google/inject/guice/4.0-beta4/guice-4.0-beta4-no_aop.jar:\
+$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
 $MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
 
 

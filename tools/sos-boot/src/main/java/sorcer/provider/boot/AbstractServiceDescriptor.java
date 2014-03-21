@@ -16,26 +16,18 @@ package sorcer.provider.boot;
  * limitations under the License.
  */
 
-
+import com.google.inject.Injector;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.Configuration;
-import org.rioproject.config.PlatformCapabilityConfig;
-import org.rioproject.config.PlatformLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.ServiceDestroyer;
-import sorcer.boot.load.Activator;
 import sorcer.boot.util.LifeCycleMultiplexer;
-import sorcer.core.SorcerConstants;
-import sorcer.util.ClassPath;
 
-import java.io.File;
-import java.net.URL;
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,56 +38,19 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 	 * The parameter types for the "activation constructor".
 	 */
 	protected static final Class[] actTypes = { String[].class, LifeCycle.class };
-    protected static boolean platformLoaded = false;
     protected static AtomicInteger allDescriptors = new AtomicInteger(0);
     protected static AtomicInteger startedServices = new AtomicInteger(0);
     protected static AtomicInteger erredServices = new AtomicInteger(0);
     protected static String COMPONENT = "sorcer.provider.boot";
-    private static Activator activator = new Activator();
     protected LifeCycle lifeCycle;
+
+    @Inject
+    protected Injector parentInjector;
 
     private static Logger logger = LoggerFactory.getLogger(AbstractServiceDescriptor.class);
 
     {
         allDescriptors.incrementAndGet();
-    }
-
-    protected void loadPlatform(Configuration config, String defaultDir, CommonClassLoader commonCL) throws Exception {
-        PlatformLoader platformLoader = new PlatformLoader();
-        List<URL> urlList = new LinkedList<URL>();
-
-        String platformDir = (String) config.getEntry(COMPONENT, "platformDir",
-                String.class, defaultDir);
-        logger.debug("Platform dir: {}", platformDir);
-        PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir);
-
-        logger.debug("Capabilities: {}", Arrays.toString(caps));
-        for (PlatformCapabilityConfig cap : caps) {
-            if (cap.getCommon()) {
-                for (URL url : cap.getClasspathURLs()) {
-                    if(!ClassPath.contains(commonCL.getParent(), url))
-                        urlList.add(url);
-                }
-            }
-        }
-
-        logger.debug("commonJARs = {}", urlList);
-        URL[] commonJARs = urlList.toArray(new URL[urlList.size()]);
-
-        commonCL.addCommonJARs(commonJARs);
-
-        activate(commonCL, commonJARs);
-    }
-
-    private void activate(CommonClassLoader commonCL, URL[] commonJARs) throws Exception {
-        Thread thread = Thread.currentThread();
-        ClassLoader contextClassLoader = thread.getContextClassLoader();
-        try {
-            thread.setContextClassLoader(commonCL);
-            activator.activate(commonJARs);
-        } finally {
-            thread.setContextClassLoader(contextClassLoader);
-        }
     }
 
     /**
@@ -116,25 +71,6 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     }
 
     protected abstract Service doCreate(Configuration config) throws Exception;
-
-    protected CommonClassLoader getCommonClassLoader(Configuration config) throws Exception {
-    /* Set common JARs to the CommonClassLoader */
-        String defaultDir = null;
-        String rioHome = System.getProperty(SorcerConstants.E_RIO_HOME);
-        if (rioHome != null) {
-            defaultDir = new File(rioHome, "config/platform").getPath();
-        } else {
-            logger.warn("No RIO_HOME defined, no default platformDir");
-        }
-
-        CommonClassLoader commonCL = CommonClassLoader.getInstance();
-        // Don't load Platform Class Loader when it was already loaded before
-        if (!platformLoaded) {
-            loadPlatform(config, defaultDir, commonCL);
-            platformLoaded = true;
-        }
-        return commonCL;
-    }
 
     /**
      * Object returned by

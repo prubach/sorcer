@@ -15,6 +15,10 @@
  */
 package sorcer.boot;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.name.Names;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.admin.Administrable;
@@ -32,6 +36,8 @@ import org.rioproject.resolver.Artifact;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.boot.platform.PlatformLoader;
+import sorcer.boot.util.ReferenceHolder;
 import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
@@ -50,6 +56,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
 
+import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
 /**
@@ -67,6 +74,7 @@ public class ServiceStarter implements LifeCycle {
     private volatile boolean bootInterrupted;
 
     private final LifeCycle exitMonitor;
+    private Injector injector;
 
     public ServiceStarter(LifeCycle exitMonitor) {
         this.exitMonitor = exitMonitor;
@@ -79,6 +87,25 @@ public class ServiceStarter implements LifeCycle {
      */
     public void start(Collection<String> configs) throws Exception {
         log.info("******* Starting Sorcersoft.com SORCER *******");
+
+        injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                try {
+                    File rioHome = getRioHome();
+
+                    File rioPlatform = new File(rioHome, "config/platform");
+                    File sorcerPlatform = new File(rioPlatform, "service");
+                    bind(ClassLoader.class).annotatedWith(Names.named("platformClassLoader")).toProvider(new PlatformLoader(rioPlatform, sorcerPlatform));
+
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+
+                bind(Resolver.class).toProvider(new ReferenceHolder<Resolver>());
+            }
+        });
+
         log.debug("Starting from {}", configs);
 
         List<String> riverServices = new LinkedList<String>();
@@ -115,6 +142,13 @@ public class ServiceStarter implements LifeCycle {
 
         instantiateServices(descs);
         log.debug("*** Sorcersoft.com SORCER started ***");
+    }
+
+    protected File getRioHome() {
+        String rioHomePath = System.getProperty(E_RIO_HOME, System.getenv(E_RIO_HOME));
+        if (rioHomePath == null)
+            throw new IllegalStateException("No RIO_HOME defined, no platform");
+        return new File(rioHomePath);
     }
 
     public void stop() {
@@ -262,7 +296,9 @@ public class ServiceStarter implements LifeCycle {
         List<OpstringServiceDescriptor> descriptors = new LinkedList<OpstringServiceDescriptor>();
         for (OperationalString op : operationalStrings) {
             for (ServiceElement se : op.getServices()) {
-                descriptors.add(new OpstringServiceDescriptor(se, policyFile));
+                OpstringServiceDescriptor desc = new OpstringServiceDescriptor(se, policyFile);
+                injector.injectMembers(desc);
+                descriptors.add(desc);
             }
 
             descriptors.addAll(createServiceDescriptors(op.getNestedOperationalStrings(), policyFile));
@@ -291,7 +327,7 @@ public class ServiceStarter implements LifeCycle {
         }
     }
 
-    public static Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
+    public Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
         Map<Configuration, List<ServiceDescriptor>> result = new HashMap<Configuration, List<ServiceDescriptor>>();
         for (Configuration config : configs) {
             ServiceDescriptor[] descs = (ServiceDescriptor[])
@@ -324,30 +360,32 @@ public class ServiceStarter implements LifeCycle {
         for (ServiceDescriptor desc : descs) {
             if (bootInterrupted)
                 break;
-            if (desc != null) {
-                AbstractServiceDescriptor.Service service;
-                try {
-                    if (desc instanceof AbstractServiceDescriptor) {
-                        ((AbstractServiceDescriptor) desc).addLifeCycle(this);
-                        service = (Service) desc.create(config);
-                    } else if (desc instanceof RioServiceDescriptor) {
-                        log.info("Starting RIO service");
-                        RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) desc.create(config);
-                        service = new Service(created.impl, created.proxy, desc);
-                    } else {
-                        log.info("Starting UNKNOWN service");
-                        service = new Service(desc.create(config), null, desc);
-                    }
-                    ServiceDestroyer destroyer = getDestroyer(service.impl);
-                    if (destroyer == null)
-                        nonDestroyServices.add(service);
-                    else {
-                        service.destroyer = destroyer;
-                        services.add(service);
-                    }
-                } catch (Exception e) {
-                    log.warn("Error while creating a service from {}", desc, e);
+            if (desc == null)
+                continue;
+
+            injector.injectMembers(desc);
+            Service service;
+            try {
+                if (desc instanceof AbstractServiceDescriptor) {
+                    ((AbstractServiceDescriptor) desc).addLifeCycle(this);
+                    service = (Service) desc.create(config);
+                } else if (desc instanceof RioServiceDescriptor) {
+                    log.info("Starting RIO service");
+                    RioServiceDescriptor.Created created = (RioServiceDescriptor.Created) desc.create(config);
+                    service = new Service(created.impl, created.proxy, desc);
+                } else {
+                    log.info("Starting UNKNOWN service");
+                    service = new Service(desc.create(config), null, desc);
                 }
+                ServiceDestroyer destroyer = getDestroyer(service.impl);
+                if (destroyer == null)
+                    nonDestroyServices.add(service);
+                else {
+                    service.destroyer = destroyer;
+                    services.add(service);
+                }
+            } catch (Exception e) {
+                log.warn("Error while creating a service from {}", desc, e);
             }
         }
     }

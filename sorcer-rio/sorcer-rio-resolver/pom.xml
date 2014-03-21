@@ -21,19 +21,29 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>sorcer</artifactId>
+        <artifactId>sorcer-rio</artifactId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sorcer-rio</artifactId>
-    <packaging>pom</packaging>
-    <name>SORCER :: Rio</name>
+    <artifactId>sorcer-rio-resolver</artifactId>
 
-    <modules>
-        <module>sorcer-rio-config</module>
-        <module>sorcer-rio-lib</module>
-        <module>sorcer-rio-start</module>
-        <module>sorcer-rio-cli</module>
-        <module>sorcer-rio-resolver</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-aether</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-boot</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+    </dependencies>
+
+
 </project>
