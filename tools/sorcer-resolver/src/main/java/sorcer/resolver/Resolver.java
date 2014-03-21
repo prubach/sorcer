@@ -46,6 +46,10 @@ public class Resolver {
 		return resolveAbsolute(ArtifactCoordinates.coords(coords));
 	}
 
+	public static File resolveAbsoluteFile(String coords) {
+		return new File(resolveAbsolute(ArtifactCoordinates.coords(coords)));
+	}
+
 	/**
 	 * Resolve artifact coordinates to absolute path
 	 *

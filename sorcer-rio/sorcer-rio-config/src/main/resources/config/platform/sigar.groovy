@@ -1,5 +1,5 @@
 /*
-* Copyright 2013 SorcerSoft.com S.A.
+* Copyright 2013, 2014 SorcerSoft.com S.A.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -13,18 +13,32 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+package config.platform
 
 import sorcer.rio.util.SorcerCapabilityDescriptor
-import sorcer.rio.util.MavenLibraryHelper
+import sorcer.resolver.Resolver;
+import sorcer.util.Zip
 
 def getPlatformCapabilityConfig() {
-    MavenLibraryHelper.installLibFromArtifact("org.sorcersoft.sigar:sigar-native:zip:1.6.4-2", "lib")
+    def version = "1.6.4-2";
+    installLibFromArtifact("org.sorcersoft.sigar:sigar-native:zip:" + version, "lib")
 
     return new SorcerCapabilityDescriptor(
             "Sigar",
-            "1.6.4-2",
+            version,
             "Hyperic SIGAR",
             "Hyperic",
             "org.sorcersoft.sigar:sigar"
     )
+}
+
+def installLibFromArtifact(String coords, String targetDir) throws IOException {
+    File artifact = Resolver.resolveAbsoluteFile(coords)
+    File target = new File(artifact.parentFile, targetDir);
+
+//if the directory exists, assume it was properly unzipped
+    if (!target.exists())
+        Zip.unzip(artifact, target);
+
+    sorcer.util.LibraryPathHelper.getLibraryPath().add(target.getPath());
 }
