@@ -17,31 +17,19 @@
  */
 package sorcer.provider.boot;
 
+import javax.inject.Inject;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.net.UnknownHostException;
-import java.rmi.MarshalledObject;
-import java.security.AllPermission;
-import java.security.Permission;
-import java.security.Policy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.sun.jini.config.Config;
-import com.sun.jini.start.*;
-import net.jini.config.Configuration;
-import net.jini.export.ProxyAccessor;
-import net.jini.security.BasicProxyPreparer;
-import net.jini.security.ProxyPreparer;
-import net.jini.security.policy.DynamicPolicyProvider;
-import net.jini.security.policy.PolicyFileProvider;
-import org.rioproject.loader.ClassAnnotator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sorcer.boot.util.ClassPathVerifier;
+import com.sun.jini.start.LifeCycle;
 import sorcer.boot.util.JarClassPathHelper;
+import sorcer.util.StringUtils;
 
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
@@ -60,38 +48,31 @@ import sorcer.boot.util.JarClassPathHelper;
  * <P>
  * Services need to implement the following "non-activatable constructor":
  * <blockquote>
- * 
+ *
  * <pre>
  * &lt;impl&gt;(String[] args, LifeCycle lc)
  * </pre>
- * 
+ *
  * </blockquote>
- * 
+ *
  * where,
  * <UL>
  * <LI>args - are the service configuration arguments
  * <LI>lc - is the hosting environment's {@link LifeCycle} reference.
  * </UL>
- * 
+ *
  * @author Dennis Reedy, updated for SORCER by M. Sobolewski
+ * @author Rafał Krupiński (SorcerSoft version)
  */
 public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
-    private static final Logger logger = LoggerFactory.getLogger(SorcerServiceDescriptor.class);
 	private String codebase;
 	private String policy;
 	private String classpath;
 	private String implClassName;
 	private String[] serverConfigArgs;
-	private static LifeCycle NoOpLifeCycle = new LifeCycle() { // default, no-op
-		// object
-		public boolean unregister(Object impl) {
-			return false;
-		}
-	};
-	private static AggregatePolicyProvider globalPolicy = null;
-	private static Policy initialGlobalPolicy = null;
 
-	private static JarClassPathHelper classPathHelper = new JarClassPathHelper();
+    @Inject
+    private JarClassPathHelper classPathHelper;
 
     /**
 	 * Create a SorcerServiceDescriptor, assigning given parameters to their
@@ -120,28 +101,24 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 			String classpath, String implClassName, String address,
 			// Optional Args
 			LifeCycle lifeCycle, String... serverConfigArgs) {
-//		if (descCodebase == null || policy == null || classpath == null
-//				|| implClassName == null)
-//			throw new NullPointerException("Codebase, policy, classpath, and "
-//					+ "implementation cannot be null");
-		if (descCodebase != null && descCodebase.indexOf("http://") < 0) {
-			String[] jars = Booter.toArray(descCodebase);
-			try {
-				if (address == null)
-					this.codebase = Booter.getCodebase(jars, "" + Booter.getPort());
-				else
-					this.codebase = Booter.getCodebase(jars, address, "" + Booter.getPort());
-			} catch (UnknownHostException e) {
-				logger.error("Cannot get hostanme for: " + codebase);
-			}
-		}
-		else
-			this.codebase = descCodebase;
+        if (descCodebase != null)
+            if (!descCodebase.contains("http://")) {
+                String[] jars = Booter.toArray(descCodebase);
+                try {
+                    if (address == null)
+                        address = Booter.getHostAddress();
+                    this.codebase = Booter.getCodebase(jars, address, Integer.toString(Booter.getPort()));
+    			} catch (UnknownHostException e) {
+                    logger.warn("Cannot get hostname for: {}", codebase);
+                }
+            } else {
+		    	this.codebase = descCodebase;
+            }
 		this.policy = policy;
-		this.classpath = setClasspath(classpath);
+		this.classpath = classpath;
 		this.implClassName = implClassName;
 		this.serverConfigArgs = serverConfigArgs;
-		this.lifeCycle = (lifeCycle == null) ? NoOpLifeCycle : lifeCycle;
+		this.lifeCycle = lifeCycle;
 	}
 
 	public SorcerServiceDescriptor(String descCodebase, String policy,
@@ -155,7 +132,7 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	 * Create a SorcerServiceDescriptor. Equivalent to calling the other
 	 * overloaded constructor with <code>null</code> for the
 	 * <code>LifeCycle</code> reference.
-	 * 
+	 *
 	 * @param codebase
 	 *            location where clients can download required service-related
 	 *            classes (for example, stubs, proxies, etc.). Codebase
@@ -179,32 +156,23 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	}
 
 	/**
-     * Create a SorcerServiceDescriptor. Equivalent to calling the other
-     * overloaded constructor with new String[]{sorcerConfig}
-     *
-     * @param codebase      location where clients can download required service-related
-     *                      classes (for example, stubs, proxies, etc.). Codebase
-     *                      components must be separated by spaces in which each component
-     *                      is in <code>URL</code> format.
-     * @param policy        server policy filename or URL
-     * @param classpath     location where server implementation classes can be found.
-     *                      Classpath components must be separated by path separators.
-     * @param implClassName name of server implementation class
-     * @param serverConfig  service configuration file path
-     */
-    public SorcerServiceDescriptor(String codebase, String policy,
-                                   String classpath, String implClassName,
-                                   String serverConfig) {
-        this(codebase, policy, classpath, implClassName, new String[]{serverConfig});
-    }
-
-    /**
 	 * Codebase accessor method.
-	 * 
+	 *
 	 * @return The codebase string associated with this service descriptor.
 	 */
-	public String getCodebase() {
-		return codebase;
+	public Set<URL> getCodebase() {
+        if (codebase == null)
+            return null;
+        String[] codebaseArray = StringUtils.tokenizerSplit(codebase, " ");
+        Set<URL> result = new HashSet<URL>();
+        for (String aCodebaseArray : codebaseArray) {
+            try {
+                result.add(new URL(aCodebaseArray));
+            } catch (MalformedURLException e) {
+                throw new IllegalStateException("Malformed URL in configuration: " + aCodebaseArray, e);
+            }
+        }
+        return result;
 	}
 
 	/**
@@ -217,23 +185,24 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	}
 
 	/**
-	 * <code>LifeCycle</code> accessor method.
-	 *
-	 * @return The <code>LifeCycle</code> object associated with this service
-	 *         descriptor.
-	 */
-	public LifeCycle getLifeCycle() {
-		return lifeCycle;
-	}
-
-	/**
 	 * LifCycle accessor method.
 	 *
 	 * @return The classpath string associated with this service descriptor.
 	 */
-	public String getClasspath() {
-		return classpath;
-	}
+    public Set<URI> getClasspath() {
+        if (classpath == null)
+            return null;
+        Set<String>paths = new HashSet<String>();
+        for (String s : StringUtils.tokenizerSplit(classpath, File.pathSeparator)) {
+            paths.add(s);
+            paths.addAll(classPathHelper.getClassPathFromJar(new File(s)));
+        }
+
+        Set<URI> result = new HashSet<URI>();
+        for (String aClasspathArray : paths)
+            result.add(new File(aClasspathArray).toURI());
+        return result;
+    }
 
 	/**
 	 * Implementation class accessor method.
@@ -251,123 +220,8 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	 * @return The service configuration arguments associated with this service
 	 *         descriptor.
 	 */
-	public String[] getServerConfigArgs() {
+    public String[] getServiceConfigArgs() {
 		return (serverConfigArgs != null) ? serverConfigArgs.clone() : null;
-	}
-
-    @Override
-    protected Service doCreate(Configuration config) throws Exception {
-		Object proxy = null;
-
-        {
-        /* Warn user of inaccessible codebase(s) */
-            String codebase = getCodebase();
-            if (codebase != null && codebase.startsWith("http"))
-                HTTPDStatus.httpdWarning(codebase);
-        }
-
-        Thread currentThread = Thread.currentThread();
-		ClassLoader currentClassLoader = currentThread.getContextClassLoader();
-
-
-		ClassAnnotator annotator = null;
-        if (getCodebase() != null) {
-
-            annotator = new ClassAnnotator(ClassLoaderUtil
-                    .getCodebaseURLs(getCodebase()));
-        }
-
-		ServiceClassLoader jsbCL = new ServiceClassLoader(ServiceClassLoader
-				.getURIs(ClassLoaderUtil.getClasspathURLs(getClasspath())),
-				annotator, currentClassLoader);
-		if (logger.isDebugEnabled())
-			ClassLoaderUtil.displayClassLoaderTree(jsbCL);
-		new ClassPathVerifier().verifyClassPaths(jsbCL);
-
-		/*
-		 * ServiceClassLoader jsbCL = new
-		 * ServiceClassLoader(ClassLoaderUtil.getClasspathURLs(getClasspath()),
-		 * annotator, commonCL);
-		 */
-		currentThread.setContextClassLoader(jsbCL);
-		/* Get the ProxyPreparer */
-		ProxyPreparer servicePreparer = (ProxyPreparer) Config.getNonNullEntry(
-				config, COMPONENT, "servicePreparer", ProxyPreparer.class,
-				new BasicProxyPreparer());
-		synchronized (SorcerServiceDescriptor.class) {
-			/* supplant global policy 1st time through */
-			if (globalPolicy == null) {
-				initialGlobalPolicy = Policy.getPolicy();
-				globalPolicy = new AggregatePolicyProvider(initialGlobalPolicy);
-				Policy.setPolicy(globalPolicy);
-                logger.debug("Global policy set: {}",
-                    globalPolicy);
-			}
-            String policyFilePath = getPolicy();
-            if (policyFilePath != null) {
-                DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
-                        new PolicyFileProvider(policyFilePath));
-                LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
-                        jsbCL, service_policy, new DynamicPolicyProvider(
-                        initialGlobalPolicy)
-                );
-			/*
-			 * Grant "this" code enough permission to do its work under the
-			 * service policy, which takes effect (below) after the context
-			 * loader is (re)set.
-			 */
-                splitServicePolicy.grant(SorcerServiceDescriptor.class, null,
-                        new Permission[]{new AllPermission()});
-                globalPolicy.setPolicy(jsbCL, splitServicePolicy);
-            }
-		}
-
-        Injector injector = parentInjector.createChildInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(String[].class).toInstance(getServerConfigArgs());
-                bind(LifeCycle.class).toInstance(lifeCycle);
-            }
-        });
-
-        Object impl;
-
-		try {
-			Class implClass = Class.forName(getImplClassName(), false, jsbCL);
-            impl = injector.getInstance(implClass);
-            logger.debug("Obtained implementation instance: {}", impl);
-			if (impl instanceof ServiceProxyAccessor) {
-				proxy = ((ServiceProxyAccessor) impl).getServiceProxy();
-			} else if (impl instanceof ProxyAccessor) {
-				proxy = ((ProxyAccessor) impl).getProxy();
-			} else {
-				proxy = null; // just for insurance
-			}
-			if (proxy != null) {
-				proxy = servicePreparer.prepareProxy(proxy);
-			}
-            logger.debug("Proxy =  {}", proxy);
-			// TODO - factor in code integrity for MO
-            proxy = (new MarshalledObject(proxy)).get();
-            currentThread.setContextClassLoader(currentClassLoader);
-        } finally {
-			currentThread.setContextClassLoader(currentClassLoader);
-		}
-		return (new Service(impl, proxy, this));
-	}
-
-    /*
-	 * Iterate through the classpath, for each jar see if there is a ClassPath
-	 * manifest setting. If there is, append the settings to the classpath
-	 */
-	private String setClasspath(String cp) {
-		String[] inClassPathArr = cp.split(File.pathSeparator);
-		Set<String> paths = new HashSet<String>();
-		for (String s : inClassPathArr) {
-			paths.add(s);
-			paths.addAll(classPathHelper.getClassPathFromJar(new File(s)));
-		}
-		return Booter.getClasspath(paths.toArray(new String[paths.size()]));
 	}
 
     public String toString() {

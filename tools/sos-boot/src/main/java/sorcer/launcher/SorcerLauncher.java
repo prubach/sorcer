@@ -62,7 +62,6 @@ public class SorcerLauncher extends Launcher {
         super.preConfigure();
         updateMonitorConfig();
         configure();
-        configureBdbHandler();
         configureThreadFactory();
         postInstall();
     }
@@ -89,10 +88,6 @@ public class SorcerLauncher extends Launcher {
         } catch (Exception x) {
             throw new RuntimeException("Error while installing SORCER", x);
         }
-    }
-
-    private void configureBdbHandler() {
-        configs.add(0, new File(home, "configs/sos.groovy").getPath());
     }
 
     public void start() {
@@ -235,10 +230,9 @@ public class SorcerLauncher extends Launcher {
                 });
                 serviceStarter.start(configs);
                 sorcerListener.sorcerStarted();
-            } catch (RuntimeException e) {
-                throw e;
             } catch (Exception e) {
-                throw new RuntimeException("Error while starting SORCER", e);
+                log.error("Error while starting SORCER", e);
+                sorcerListener.sorcerEnded();
             }
         }
     }

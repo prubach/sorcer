@@ -32,16 +32,15 @@ import sorcer.util.ClassPath;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Rafał Krupiński
  */
-@Singleton
 public class PlatformLoader implements Provider<ClassLoader> {
     private static Logger logger = LoggerFactory.getLogger(PlatformLoader.class);
 
@@ -97,7 +96,9 @@ public class PlatformLoader implements Provider<ClassLoader> {
         cfg.setScriptBaseClass(PlatformDescriptor.class.getName());
         GroovyShell shell = new GroovyShell(parent, new Binding(), cfg);
 
-        for (File file : dir.listFiles()) {
+        File[] files = dir.listFiles();
+        Arrays.sort(files);
+        for (File file : files) {
             if (!file.getName().endsWith("groovy")) {
                 logger.debug("Ignoring {}", file);
                 continue;
@@ -121,9 +122,8 @@ public class PlatformLoader implements Provider<ClassLoader> {
     protected void loadPlatform(File platformDir, CommonClassLoader commonCL) {
         List<URL> urlList = new LinkedList<URL>();
 
-        PlatformCapabilityConfig[] caps = new PlatformCapabilityConfig[0];
         try {
-            caps = platformLoader.parsePlatform(platformDir.getPath());
+            PlatformCapabilityConfig[] caps = platformLoader.parsePlatform(platformDir.getPath());
 
             logger.debug("Capabilities: {}", caps);
             for (PlatformCapabilityConfig cap : caps) {

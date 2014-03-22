@@ -18,8 +18,8 @@ package sorcer.util.rio;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
+import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import sorcer.util.SorcerResolverHelper;
 
 import java.io.IOException;
@@ -32,6 +32,8 @@ import java.net.URLClassLoader;
  * @author Rafał Krupiński
  */
 public class OpStringUtil {
+    private static Resolver resolver;
+
     public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement) throws MalformedURLException, ResolverException, ClassNotFoundException {
         return loadClass(bundle, serviceElement, Thread.currentThread().getContextClassLoader());
     }
@@ -47,7 +49,7 @@ public class OpStringUtil {
      */
     public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws MalformedURLException, ResolverException, ClassNotFoundException {
         try {
-            URL[] urls = SorcerResolverHelper.toURLs(ResolverHelper.getResolver().getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
+            URL[] urls = SorcerResolverHelper.toURLs(resolver.getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
             URLClassLoader cl = new URLClassLoader(urls, parentCL);
             return Class.forName(bundle.getClassName(), false, cl);
         } catch (URISyntaxException e) {

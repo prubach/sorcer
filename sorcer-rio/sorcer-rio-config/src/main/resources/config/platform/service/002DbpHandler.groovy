@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
+package config.platform.service
+
+import sorcer.boot.ResolvingServiceDescriptor
+
 import static sorcer.core.SorcerConstants.SORCER_VERSION
 
-deployment(name: 'Dbp') {
-    def dbp = [
-            impl: "org.sorcersoft.sorcer:dbp-handler:" + SORCER_VERSION,
-            api:  "org.sorcersoft.sorcer:dbp-api:" + SORCER_VERSION
-    ]
-    service(name: 'Handler') {
-        interfaces {
-            artifact dbp.api
-        }
-        implementation(class: 'sorcer.util.bdb.HandlerInstaller') {
-            artifact dbp.impl
-        }
-    }
+ResolvingServiceDescriptor getPlatformService() {
+    return new ResolvingServiceDescriptor(
+            "org.sorcersoft.sorcer:dbp-api:" + SORCER_VERSION,
+            "org.sorcersoft.sorcer:dbp-handler:" + SORCER_VERSION,
+            "sorcer.util.bdb.HandlerInstaller",
+            null
+    );
 }

@@ -39,7 +39,7 @@ public class Activator {
         if (resolver != null)
             throw new IllegalStateException("Global Resolver instance already set");
         resolver = ResolverHelper.getResolver();
-        log.info("{} Setting global Resolver instance in {} to {}", this, resolverHolder, resolver);
+        log.info("Setting global Resolver instance to {}", resolver);
         resolverHolder.set(resolver);
     }
 }

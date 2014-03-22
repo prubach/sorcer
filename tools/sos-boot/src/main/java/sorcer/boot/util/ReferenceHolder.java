@@ -17,12 +17,10 @@
 package sorcer.boot.util;
 
 import javax.inject.Provider;
-import javax.inject.Singleton;
 
 /**
  * @author Rafał Krupiński
  */
-@Singleton
 public class ReferenceHolder<T> implements Provider<T> {
     private T resolver;
 

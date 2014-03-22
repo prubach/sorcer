@@ -20,11 +20,8 @@ package sorcer.util.bdb;
  * @author Rafał Krupiński
  */
 public class HandlerInstaller {
-    public HandlerInstaller(String[] config, com.sun.jini.start.LifeCycle lifeCycle) {
-        install();
-    }
-
-    public static void install() {
-        sorcer.protocol.ProtocolHandlerRegistry.get().register("sos", new sorcer.util.bdb.sdb.Handler());
+    @javax.inject.Inject
+    public HandlerInstaller(sorcer.protocol.ProtocolHandlerRegistry protocolHandlerRegistry) {
+        protocolHandlerRegistry.register("sos", new sorcer.util.bdb.sdb.Handler());
     }
 }

@@ -85,9 +85,9 @@ public abstract class Launcher implements ILauncher {
             "org.codehaus.groovy:groovy-all",
             "org.apache.commons:commons-lang3",
             "com.google.guava:guava",
+            "com.google.inject:guice",
             "commons-io:commons-io",
             "commons-cli:commons-cli",
-            "org.codehaus.plexus:plexus-utils",
 
             "org.slf4j:slf4j-api",
             "org.slf4j:jul-to-slf4j",
