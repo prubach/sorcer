@@ -109,6 +109,7 @@ set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-w
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-netlet\%v.sorcer%\sos-netlet-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-api\%v.sorcer%\sos-api-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-resolver\%v.sorcer%\sorcer-resolver-%v.sorcer%.jar
+set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-ui\%v.sorcer%\sorcer-ui-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-api\%v.rio%\rio-api-%v.rio%.jar

@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
-import sorcer.installer.Installer;
 import sorcer.resolver.Resolver;
 import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.StringUtils;
@@ -32,12 +31,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.ThreadFactory;
 
 import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
@@ -63,7 +57,6 @@ public class SorcerLauncher extends Launcher {
         updateMonitorConfig();
         configure();
         configureThreadFactory();
-        postInstall();
     }
 
     private void configureThreadFactory() {
@@ -76,18 +69,6 @@ public class SorcerLauncher extends Launcher {
         tf.setNameFormat("SORCER boot");
         tf.setThreadGroup(new ThreadGroup("SORCER group"));
         return tf;
-    }
-
-    private void postInstall() {
-        try {
-            Installer installer = new Installer();
-            if (installer.isInstallRequired(logDir))
-                installer.install();
-        } catch (RuntimeException x) {
-            throw x;
-        } catch (Exception x) {
-            throw new RuntimeException("Error while installing SORCER", x);
-        }
     }
 
     public void start() {

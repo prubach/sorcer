@@ -19,38 +19,36 @@ package sorcer.boot;
 import org.rioproject.resolver.Artifact;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
+import sorcer.core.SorcerEnv;
 import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.GenericUtil;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Rafał Krupiński
  */
 public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
-
-    private Set<Artifact> codebase;
-
-    private Set<Artifact> classpath;
-
-    private String implClassName;
-
-    private String configFile;
-
     @Inject
     protected Resolver resolver;
 
-    public ResolvingServiceDescriptor(String codebase, String classpath, String implClassName, String configFile) {
-        this.codebase = asArtifacts(codebase);
-        this.classpath = asArtifacts(classpath);
+    private Set<Artifact> classpath;
 
-        this.implClassName = implClassName;
-        this.configFile = configFile;
+    protected ResolvingServiceDescriptor() {
+    }
+
+    public ResolvingServiceDescriptor(String codebase, String policyFile, String classpath, String implClassName, String configFile) {
+        setCodebase(codebase(asArtifacts(codebase)));
+        this.classpath = asArtifacts(classpath);
+        setImplClassName(implClassName);
+        setServiceConfigArgs(Arrays.asList(configFile));
+        setPolicyFile(policyFile);
     }
 
     protected static Set<Artifact> asArtifacts(String artifact) {
@@ -60,38 +58,13 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
         return result;
     }
 
-    @Override
-    protected String getImplClassName() {
-        return implClassName;
-    }
-
-    @Override
-    protected String[] getServiceConfigArgs() {
-        return new String[]{configFile};
-    }
-
-    @Override
-    protected String getPolicy() {
-        return null;
-    }
-
-    @Override
-    protected Set<URL> getCodebase() {
-        if (codebase == null)
-            return null;
+    public static Set<URL> codebase(Set<Artifact> codebase) {
         Set<URL> result = new HashSet<URL>();
-        try {
-            for (Artifact artifact : codebase)
-                result.add(toArtifactUri(artifact).toURL());
-            return result;
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("Error while creating URL", e);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Error while creating URL", e);
-        }
+        for (Artifact artifact : codebase)
+            result.add(GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), artifact.getGAV()));
+        return result;
     }
 
-    @Override
     protected Set<URI> getClasspath() {
         if (classpath == null)
             return null;
@@ -106,9 +79,5 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
             throw new IllegalArgumentException("Could not resolve classpath", e);
         }
         return results;
-    }
-
-    public static URI toArtifactUri(Artifact a) throws URISyntaxException {
-        return new URI("artifact", a.getGAV().replace(':', '/'), null);
     }
 }

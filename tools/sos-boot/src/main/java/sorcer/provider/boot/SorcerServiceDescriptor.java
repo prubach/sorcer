@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.jini.start.LifeCycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.util.StringUtils;
 
@@ -65,14 +67,12 @@ import sorcer.util.StringUtils;
  * @author Rafał Krupiński (SorcerSoft version)
  */
 public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
-	private String codebase;
-	private String policy;
-	private String classpath;
-	private String implClassName;
-	private String[] serverConfigArgs;
+    private static final Logger log = LoggerFactory.getLogger(SorcerServiceDescriptor.class);
 
     @Inject
     private JarClassPathHelper classPathHelper;
+
+    private String classpath;
 
     /**
 	 * Create a SorcerServiceDescriptor, assigning given parameters to their
@@ -101,25 +101,13 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 			String classpath, String implClassName, String address,
 			// Optional Args
 			LifeCycle lifeCycle, String... serverConfigArgs) {
-        if (descCodebase != null)
-            if (!descCodebase.contains("http://")) {
-                String[] jars = Booter.toArray(descCodebase);
-                try {
-                    if (address == null)
-                        address = Booter.getHostAddress();
-                    this.codebase = Booter.getCodebase(jars, address, Integer.toString(Booter.getPort()));
-    			} catch (UnknownHostException e) {
-                    logger.warn("Cannot get hostname for: {}", codebase);
-                }
-            } else {
-		    	this.codebase = descCodebase;
-            }
-		this.policy = policy;
-		this.classpath = classpath;
-		this.implClassName = implClassName;
-		this.serverConfigArgs = serverConfigArgs;
-		this.lifeCycle = lifeCycle;
-	}
+        super(serverConfigArgs, lifeCycle);
+        setCodebase(getCodebase(descCodebase, address));
+        setImplClassName(implClassName);
+        setServiceConfigArgs(Arrays.asList(serverConfigArgs));
+        setPolicyFile(policy);
+        this.classpath = classpath;
+    }
 
 	public SorcerServiceDescriptor(String descCodebase, String policy,
 			String classpath, String implClassName,
@@ -160,10 +148,20 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
 	 *
 	 * @return The codebase string associated with this service descriptor.
 	 */
-	public Set<URL> getCodebase() {
+	protected static Set<URL> getCodebase(String codebase, String address) {
         if (codebase == null)
-            return null;
+            return new HashSet<URL>();
+
         String[] codebaseArray = StringUtils.tokenizerSplit(codebase, " ");
+        if (!codebase.contains("http://"))
+            try {
+                if (address == null)
+                    address = Booter.getHostAddress();
+                codebase = Booter.getCodebase(codebaseArray, address, Integer.toString(Booter.getPort()));
+                codebaseArray = StringUtils.tokenizerSplit(codebase, " ");
+            } catch (UnknownHostException e) {
+                log.warn("Cannot get hostname for: {}", codebase);
+            }
         Set<URL> result = new HashSet<URL>();
         for (String aCodebaseArray : codebaseArray) {
             try {
@@ -173,15 +171,6 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
             }
         }
         return result;
-	}
-
-	/**
-	 * Policy accessor method.
-	 *
-	 * @return The policy string associated with this service descriptor.
-	 */
-	public String getPolicy() {
-		return policy;
 	}
 
 	/**
@@ -202,45 +191,5 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
         for (String aClasspathArray : paths)
             result.add(new File(aClasspathArray).toURI());
         return result;
-    }
-
-	/**
-	 * Implementation class accessor method.
-	 *
-	 * @return The implementation class string associated with this service
-	 *         descriptor.
-	 */
-	public String getImplClassName() {
-		return implClassName;
-	}
-
-	/**
-	 * Service configuration arguments accessor method.
-	 *
-	 * @return The service configuration arguments associated with this service
-	 *         descriptor.
-	 */
-    public String[] getServiceConfigArgs() {
-		return (serverConfigArgs != null) ? serverConfigArgs.clone() : null;
-	}
-
-    public String toString() {
-		return "SorcerServiceDescriptor{"
-				+ "codebase='"
-				+ codebase
-				+ '\''
-				+ ", policy='"
-				+ policy
-				+ '\''
-				+ ", classpath='"
-				+ classpath
-				+ '\''
-				+ ", implClassName='"
-				+ implClassName
-				+ '\''
-				+ ", serverConfigArgs="
-				+ (serverConfigArgs == null ? null : Arrays
-						.asList(serverConfigArgs)) + ", lifeCycle=" + lifeCycle
-				+ '}';
 	}
 }

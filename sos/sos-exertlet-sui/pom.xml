@@ -14,16 +14,19 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-boot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-            <version>${v.jini}</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
@@ -40,6 +43,10 @@
 			<artifactId>groovy-all</artifactId>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <version>4.0-beta4</version>
+        </dependency>
     </dependencies>
-
 </project>

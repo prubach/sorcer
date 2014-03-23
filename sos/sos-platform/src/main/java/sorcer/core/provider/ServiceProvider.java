@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2009-2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,7 @@ import java.security.Policy;
 import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -70,14 +63,11 @@ import net.jini.id.Uuid;
 import net.jini.lookup.JoinManager;
 import net.jini.lookup.ServiceIDListener;
 import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
 import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
-/*import org.rioproject.admin.MonitorableService;
-import org.rioproject.impl.fdh.HeartbeatClient;
-import org.rioproject.impl.service.LandlordLessor;
-import org.rioproject.impl.service.ServiceResource;*/
+import sorcer.config.BeanListener;
+import sorcer.config.ServiceBeanListener;
 import sorcer.core.AdministratableProvider;
 import sorcer.core.SorcerEnv;
 import sorcer.core.UEID;
@@ -89,12 +79,7 @@ import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
-import sorcer.resolver.Resolver;
 import sorcer.service.*;
-import sorcer.ui.serviceui.UIComponentFactory;
-import sorcer.ui.serviceui.UIDescriptorFactory;
-import sorcer.ui.serviceui.UIFrameFactory;
-import sorcer.util.Artifact;
 import sorcer.util.ObjectLogger;
 
 import com.sun.jini.config.Config;
@@ -102,6 +87,7 @@ import com.sun.jini.start.LifeCycle;
 import com.sun.jini.thread.TaskManager;
 import sorcer.util.StringUtils;
 
+import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
 
 /**
@@ -214,6 +200,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
+    private BeanListener beanListener = ServiceBeanListener.getBeanListener();
+
     protected ServiceProvider() {
 		providers.add(this);
 		delegate = new ProviderDelegate();
@@ -234,10 +222,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		serviceClassLoader = Thread.currentThread().getContextClassLoader();
 		final Configuration config = ConfigurationProvider.getInstance(args, serviceClassLoader);
 		delegate.setJiniConfig(config);
-		// inspect class loader tree
-		// com.sun.jini.start.ClassLoaderUtil.displayContextClassLoaderTree();
-		// System.out.println("service provider class loader: " +
-		// serviceClassLoader);
 		String providerProperties = null;
 		try {
 			providerProperties = (String) Config.getNonNullEntry(config,
@@ -625,21 +609,19 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			throws Exception {
 		logger.entering(this.getClass().toString(), "init");
 		this.lifeCycle = lifeCycle;
+
+        if (beanListener != null)
+            beanListener.preProcess(this);
+
 		try {
 			// Take the login context entry from the configuration file, if this
 			// entry is null, server will start without a subject
 			loginContext = (LoginContext) delegate.getDeploymentConfig().getEntry(
 					PROVIDER, "loginContext", LoginContext.class, null);
-			logger.finer("loginContext " + loginContext);
 			if (loginContext == null) {
-				logger.finer("Login Context was null when the service was Started");
-				// Starting the Service with NO subject provided
 				initAsSubject();
 			} else {
-				logger.finer("Login Context was not null when the service was Started");
 				loginContext.login();
-				logger.finer("Login Context subject= "
-						+ loginContext.getSubject());
 
 				try {
 					// Starting the Service with a subject
@@ -651,13 +633,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 								}
 							}, null);
 				} catch (PrivilegedActionException e) {
-					logger.warning("######## Priviledged Exception Occured ########");
 					throw e.getCause();
 				}
 			}
 			logger.log(Level.INFO, "Provider service started: "
-					+ getProviderName(), this);
-			
+                    + getProviderName(), this);
+
 			// allow for enough time to export the provider's proxy and stay alive
 			new Thread(ProviderDelegate.threadGroup, new KeepAwake()).start();
 		} catch (Throwable e) {
@@ -758,11 +739,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 							.toString(accessorGroups)));
 
 			Entry[] serviceAttributes = getAttributes();
-			serviceAttributes = addServiceUIDesciptors(serviceAttributes);
 
-			logger.finer("service attributes: "
-					+ Arrays.toString(serviceAttributes));
-			ServiceID sid = getProviderID();
+            ServiceID sid = getProviderID();
 			if (sid != null) {
 				delegate.setProviderUuid(sid);
 			} else {
@@ -877,20 +855,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return null;
 	}
 
-	public static UIDescriptor getProviderUIDescriptor() {
-		UIDescriptor descriptor = null;
-		try {
-			descriptor = UIDescriptorFactory.getUIDescriptor(
-					MainUI.ROLE,
-					new UIComponentFactory(Resolver.resolveAbsoluteURL(new URL(SorcerEnv.getWebsterUrl()), Artifact.sorcer("sos-exertlet-sui")),
-							"sorcer.core.provider.ui.ProviderUI"));
-		} catch (Exception ex) {
-			logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
-		}
-		return descriptor;
-	}
-
-	/**
+    /**
 	 * Returns an array of additional service UI descriptors to be included in a
 	 * Jini service item that is registerd with lookup services. By default a
 	 * generic ServiceProvider service UI is provided with: attribute viewer,
@@ -899,67 +864,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @return an array of service UI descriptors
 	 */
 	public UIDescriptor[] getServiceUIEntries() {
-//		UIDescriptor uiDesc1 = null;
-//		try {
-//			uiDesc1 = UIDescriptorFactory.getUIDescriptor(
-//					MainUI.ROLE,
-//					new UIComponentFactory(new URL[] { new URL(Sorcer
-//							.getWebsterUrl() + "/exertlet-ui.jar") },
-//							NetletEditor.class.getName()));
-//		} catch (Exception ex) {
-//			logger.throwing(ServiceProvider.class.getName(), "getServiceUI", ex);
-//		}
-
-        UIDescriptor uiDesc2 = null;
-        try {
-            URL uiUrl = Resolver.resolveAbsoluteURL(new URL(SorcerEnv.getWebsterUrl() + "/"), Artifact.sorcer("sos-exertlet-sui"));
-            URL helpUrl = new URL(SorcerEnv.getWebsterUrl()
-                    + "/exertlet/sos-exertlet-sui.html");
-
-            // URL exportUrl, String className, String name, String helpFilename
-            uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                    new UIFrameFactory(new URL[] { uiUrl },
-                            "sorcer.ui.exertlet.NetletUI", "Exertlet Editor",
-                            helpUrl));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return new UIDescriptor[] { getProviderUIDescriptor(), uiDesc2 };
-	}
-
-	/**
-	 * Returns an appended list of entries that includes UI descriptors of this
-	 * provider.
-	 * 
-	 * @param serviceAttributes
-	 * @return an array of UI descriptors
-	 */
-	private Entry[] addServiceUIDesciptors(Entry[] serviceAttributes) {
-		if (delegate.getSmartProxy() != null || delegate.getPartner() != null) {
-			return serviceAttributes;
-		}
-
-		Entry[] attrs = serviceAttributes;
-		Entry uiDescriptor = getMainUIDescriptor();
-		UIDescriptor[] uiDescriptors = getServiceUIEntries();
-		int tally = 0;
-		if (uiDescriptor != null)
-			tally++;
-		if (uiDescriptors != null)
-			tally = tally + uiDescriptors.length;
-		if (tally == 0)
-			return attrs;
-		attrs = new Entry[serviceAttributes.length + tally];
-		System.arraycopy(serviceAttributes, 0, attrs, 0,
-				serviceAttributes.length);
-		if (uiDescriptors != null)
-			for (int i = 0; i < uiDescriptors.length; i++)
-				attrs[serviceAttributes.length + i] = uiDescriptors[i];
-
-		if (uiDescriptor != null)
-			attrs[serviceAttributes.length + tally - 1] = uiDescriptor;
-		return attrs;
+        return new UIDescriptor[0];
 	}
 
 	public Map<?, ?> getServiceComponents() {
@@ -1562,9 +1467,21 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return delegate.dropJob(job);
 	}
 
-	public Entry[] getAttributes() throws RemoteException {
-		return delegate.getAttributes();
-	}
+    protected Set<Entry> attributes = new HashSet<Entry>();
+
+    public void addAttribute(Entry attributes) {
+        this.attributes.add(attributes);
+    }
+
+    public Entry[] getAttributes() throws RemoteException {
+        Set<Entry> result = new HashSet<Entry>(attributes);
+        addAll(result, delegate.getAttributes());
+        Entry uiDescriptor = getMainUIDescriptor();
+        if (uiDescriptor != null)
+            result.add(uiDescriptor);
+        addAll(result, getServiceUIEntries());
+        return result.toArray(new Entry[result.size()]);
+    }
 
 	public List<Object> getProperties() throws RemoteException {
 		return delegate.getProperties();

@@ -14,6 +14,7 @@
 
     <modules>
         <module>sorcer-api</module>
+        <module>sorcer-ui</module>
         <module>sos-platform</module>
         <module>sos-util</module>
         <module>sos-exertlet-sui</module>

@@ -125,8 +125,16 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                             rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                             rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                         }
-                        String[] cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                                artifactURLConfiguration.getRepositories());
+                        //TODO Resolver error
+                        String[] cp;
+                        try {
+                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                                    artifactURLConfiguration.getRepositories());
+                        } catch(ResolverException e) {
+                            logger.warn("Error", e);
+                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                                    artifactURLConfiguration.getRepositories());
+                        }
                         for (String s : cp) {
                             if (builder.length() > 0)
                                 builder.append(" ");

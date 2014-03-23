@@ -1,6 +1,5 @@
-package sorcer.config;
 /*
- * Copyright 2013, 2014 Sorcersoft.com S.A.
+ * Copyright 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +14,33 @@ package sorcer.config;
  * limitations under the License.
  */
 
-
-import net.jini.config.ConfigurationException;
-import sorcer.core.provider.ServiceProvider;
+package sorcer.util;
 
 /**
  * @author Rafał Krupiński
  */
-public abstract class AbstractBeanListener implements BeanListener {
-    @Override
-    public void preProcess(ServiceProvider provider) {
-
+public class InjectionHelper {
+    public static Injector getInstance() {
+        return instance;
     }
 
-    @Override
-    public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
-
+    public static void setInstance(Injector instance) {
+        InjectionHelper.instance = instance;
     }
 
-    @Override
-    public void destroy(Object[] serviceBeans) {
+    public static interface Injector {
+        public void injectMembers(Object target);
 
+        public <T> T create(Class<T> type);
+    }
+
+    private static Injector instance;
+
+    public static void injectMembers(Object target) {
+        instance.injectMembers(target);
+    }
+
+    public static <T> T create(Class<T> type) {
+        return instance.create(type);
     }
 }

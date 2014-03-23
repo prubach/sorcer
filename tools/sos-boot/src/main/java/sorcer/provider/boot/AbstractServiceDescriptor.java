@@ -45,10 +45,20 @@ import java.util.*;
  */
 public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
+    private Set<URL> codebase;
+
+    private Set<URI> classpath;
+
+    private String implClassName;
+
+    private List<String> configArgs;
+
     /**
      * The parameter types for the "activation constructor".
      */
-    protected LifeCycle lifeCycle;
+    private LifeCycle lifeCycle;
+
+    private String policyFile;
 
     @Inject
     @Named("globalPolicy")
@@ -63,6 +73,23 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected AbstractServiceDescriptor() {
+    }
+
+    protected AbstractServiceDescriptor(Set<URL>codebase, Set<URI>casspath,String className, List<String> configArgs, String policyFile){
+        this.codebase = codebase;
+        this.classpath = casspath;
+        this.implClassName = className;
+        this.configArgs = configArgs;
+        this.policyFile = policyFile;
+    }
+
+    public AbstractServiceDescriptor(String[] serverConfigArgs, LifeCycle lifeCycle) {
+        this.configArgs = new ArrayList<String>();
+        Collections.addAll(configArgs, serverConfigArgs);
+        this.lifeCycle = lifeCycle;
+    }
+
     /**
      * @see com.sun.jini.start.ServiceDescriptor#create
      */
@@ -76,44 +103,47 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
             annotator = new ClassAnnotator(codebase.toArray(new URL[codebase.size()]));
         }
 
-        Set<URI> classpath = getClasspath();
-        ClassLoader classLoader;
-        if (classpath != null) {
-            classLoader = new ServiceClassLoader(classpath.toArray(new URI[classpath.size()]), annotator, currentClassLoader);
-            currentThread.setContextClassLoader(classLoader);
-            if (logger.isDebugEnabled())
-                ClassLoaderUtil.displayClassLoaderTree(classLoader);
-            new ClassPathVerifier().verifyClassPaths(classLoader);
-        } else {
-            classLoader = currentClassLoader;
-        }
+        try {
+            Set<URI> classpath = getClasspath();
+            ClassLoader classLoader;
+            if (classpath != null && !classpath.isEmpty()) {
+                classLoader = new ServiceClassLoader(classpath.toArray(new URI[classpath.size()]), annotator, currentClassLoader);
+                currentThread.setContextClassLoader(classLoader);
+                if (logger.isDebugEnabled())
+                    try {
+                        ClassLoaderUtil.displayClassLoaderTree(classLoader);
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                new ClassPathVerifier().verifyClassPaths(classLoader);
+            } else {
+                classLoader = currentClassLoader;
+            }
 
-        String policyFilePath = getPolicy();
-        if (policyFilePath != null && classpath != null)
-            synchronized (AbstractServiceDescriptor.class) {
+            String policyFilePath = getPolicyFile();
+            if (policyFilePath != null && classpath != null)
+                synchronized (AbstractServiceDescriptor.class) {
             /*
              * Grant "this" code enough permission to do its work under the
 			 * service policy, which takes effect (below) after the context
 			 * loader is (re)set.
 			 */
-                DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
-                        new PolicyFileProvider(policyFilePath));
-                LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
-                        classLoader, service_policy, new DynamicPolicyProvider(
-                        initialGlobalPolicy)
-                );
-                splitServicePolicy.grant(AbstractServiceDescriptor.class, null,
-                        new Permission[]{new AllPermission()});
-                globalPolicy.setPolicy(classLoader, splitServicePolicy);
-            }
+                    DynamicPolicyProvider service_policy = new DynamicPolicyProvider(
+                            new PolicyFileProvider(policyFilePath));
+                    LoaderSplitPolicyProvider splitServicePolicy = new LoaderSplitPolicyProvider(
+                            classLoader, service_policy, new DynamicPolicyProvider(
+                            initialGlobalPolicy)
+                    );
+                    splitServicePolicy.grant(AbstractServiceDescriptor.class, null,
+                            new Permission[]{new AllPermission()});
+                    globalPolicy.setPolicy(classLoader, splitServicePolicy);
+                }
 
-        Injector injector = parentInjector;
-        List<Module> modules = new LinkedList<Module>();
-        Module module = getInjectorModule();
-        if (module != null)
-            modules.add(module);
+            Injector injector = parentInjector;
+            List<Module> modules = new LinkedList<Module>();
+            Module module = getInjectorModule();
+            if (module != null)
+                modules.add(module);
 
-        try {
             Class implClass = Class.forName(getImplClassName(), true, classLoader);
             module = createFactoryModule(implClass);
             if (module != null)
@@ -153,8 +183,11 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     }
 
     protected Module getInjectorModule() {
-        LifeCycle lc = lifeCycle != null ? lifeCycle : defaultLifeCycle;
-        return new ServiceModule(lc, getServiceConfigArgs());
+        LifeCycle lc = getLifeCycle();
+        if (lc == null)
+            lc = defaultLifeCycle;
+        List<String> serviceConfigArgs = getServiceConfigArgs();
+        return new ServiceModule(lc, serviceConfigArgs.toArray(new String[serviceConfigArgs.size()]));
     }
 
     private static class ServiceModule extends AbstractModule {
@@ -173,15 +206,45 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    protected abstract String getImplClassName();
+    protected void setImplClassName(String className){
+        this.implClassName = className;
+    }
 
-    protected abstract String[] getServiceConfigArgs();
+    public String getImplClassName() {
+        return implClassName;
+    }
 
-    protected abstract String getPolicy();
+    protected List<String> getServiceConfigArgs(){
+        return configArgs;
+    }
 
-    protected abstract Set<URL> getCodebase();
+    protected void setServiceConfigArgs(List<String> configFile) {
+        this.configArgs = configFile;
+    }
 
-    protected abstract Set<URI> getClasspath();
+    protected String getPolicyFile(){
+        return policyFile;
+    }
+
+    protected void setPolicyFile(String policyFile) {
+        this.policyFile = policyFile;
+    }
+
+    public Set<URL> getCodebase(){
+        return codebase;
+    }
+
+    protected void setCodebase(Set<URL> codebase) {
+        this.codebase = codebase;
+    }
+
+    protected Set<URI> getClasspath(){
+        return classpath;
+    }
+
+    protected void setClasspath(Set<URI> classpath) {
+        this.classpath = classpath;
+    }
 
     /**
      * Object returned by
@@ -235,9 +298,33 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
+    public LifeCycle getLifeCycle() {
+        return lifeCycle;
+    }
+
     protected static LifeCycle defaultLifeCycle = new LifeCycle() {
         public boolean unregister(Object impl) {
             return false;
         }
     };
+    public String toString() {
+        List<String> _configArgs = getServiceConfigArgs();
+        return "SorcerServiceDescriptor{"
+				+ "codebase='"
+				+ getCodebase()
+				+ '\''
+				+ ", policy='"
+				+ getPolicyFile()
+				+ '\''
+				+ ", classpath='"
+				+ getClasspath()
+				+ '\''
+				+ ", implClassName='"
+				+ getImplClassName()
+				+ '\''
+				+ ", serverConfigArgs="
+				+ (_configArgs == null ? null : _configArgs)
+                + ", lifeCycle=" + getLifeCycle()
+				+ '}';
+	}
 }

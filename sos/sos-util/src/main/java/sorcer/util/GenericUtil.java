@@ -1,7 +1,8 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -39,10 +40,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -3929,6 +3927,14 @@ public class GenericUtil implements Serializable {
             GenericUtil.appendFileContents(file, new String[] {msg});
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static URL toArtifactUrl(URL codebaseRoot, String artifactCoordinates) {
+        try {
+            return new URL("artifact:" + artifactCoordinates.replace(':', '/') + ";" + codebaseRoot);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Invalid artifact " + artifactCoordinates, e);
         }
     }
 }

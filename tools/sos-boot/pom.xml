@@ -30,19 +30,7 @@
 			<artifactId>sorcer-launcher-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-installer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
-        <!-- SerializedOpstringParser -->
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>sorcer-rio-lib</artifactId>
-			<version>${project.version}</version>
-            <scope>runtime</scope>
-		</dependency>
 		<dependency>
             <groupId>org.apache.river</groupId>
             <artifactId>start</artifactId>
@@ -90,20 +78,5 @@
             <version>${v.sorcer}</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- required by configs of services with UI -->
-        <dependency>
-            <groupId>net.jini.lookup</groupId>
-            <artifactId>serviceui</artifactId>
-            <version>${v.jini}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!--ServiceStarter, Installer-->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-        </dependency>
-
 	</dependencies>
 </project>

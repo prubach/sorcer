@@ -17,14 +17,16 @@
 package config.platform.service
 
 import sorcer.boot.ResolvingServiceDescriptor
+import sorcer.core.SorcerEnv
 
 import static sorcer.core.SorcerConstants.SORCER_VERSION
 
 ResolvingServiceDescriptor getPlatformService() {
     return new ResolvingServiceDescriptor(
-            "org.sorcersoft.sorcer:dbp-api:" + SORCER_VERSION,
-            "org.sorcersoft.sorcer:dbp-handler:" + SORCER_VERSION,
-            "sorcer.util.bdb.HandlerInstaller",
+            "org.sorcersoft.sorcer:sos-exertlet-sui:" + SORCER_VERSION,
+            new File(SorcerEnv.homeDir, "configs/sorcer.policy").path,
+            "org.sorcersoft.sorcer:sos-exertlet-sui:" + SORCER_VERSION,
+            "sorcer.ui.exertlet.ExertletUiModule",
             null
     );
 }

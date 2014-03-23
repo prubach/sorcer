@@ -18,12 +18,13 @@ package sorcer.boot.load;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.ServiceActivator;
-import sorcer.tools.ActivationProcessor;
+import sorcer.tools.ActivationFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -37,19 +38,66 @@ public class Activator {
 
     private static final Logger log = LoggerFactory.getLogger(Activator.class);
 
-    private ActivationProcessor activationProcessor;
+    public abstract class AbstractClassEntryHandler {
+        public void handle(String value) {
+            try {
+                Class<?> klass = Class.forName(value, false, Thread.currentThread().getContextClassLoader());
+                handle(activationFactory.create(klass));
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(value, e);
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(value, e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(value, e);
+            }
+        }
 
-    public void activate(ClassLoader cl, URL[] jars) throws Exception {
-        for (URL jar : jars) {
-            activate(cl, jar);
+        public abstract void handle(Object instance);
+    }
+
+    public final class EntryHandlerEntry {
+        public final String key;
+        public final AbstractClassEntryHandler entryHandler;
+
+        public EntryHandlerEntry(String key, AbstractClassEntryHandler entryHandler) {
+            this.key = key;
+            this.entryHandler = entryHandler;
         }
     }
 
-    public void activate(URL[] jars) throws Exception {
-        activate(Thread.currentThread().getContextClassLoader(), jars);
+    public final List<EntryHandlerEntry> entryHandlers;
+
+    {
+        entryHandlers = new LinkedList<EntryHandlerEntry>();
+        entryHandlers.add(new EntryHandlerEntry(
+                ServiceActivator.KEY_ACTIVATOR,
+                new AbstractClassEntryHandler() {
+                    @Override
+                    public void handle(Object activator) {
+                        if (activator instanceof ServiceActivator)
+                            try {
+                                ((ServiceActivator) activator).activate();
+                            } catch (Exception e) {
+                                log.error("Activating {}", activator, e);
+                            }
+                    }
+                }
+        ));
     }
 
-    public void activate(ClassLoader cl, URL jarUrl) throws Exception {
+    private ActivationFactory activationFactory = new ActivationFactory() {
+        @Override
+        public Object create(Class c) throws IllegalAccessException, InstantiationException {
+            return c.newInstance();
+        }
+    };
+
+    public void activate(URL[] jars) throws Exception {
+        for (URL jar : jars)
+            activate(jar);
+    }
+
+    public void activate(URL jarUrl) throws Exception {
         JarFile jar;
         try {
             File jarFile = new File(jarUrl.getFile());
@@ -69,38 +117,17 @@ public class Activator {
                 return;
             }
             Attributes mainAttributes = manifest.getMainAttributes();
-            String activatorClassName = mainAttributes.getValue(ServiceActivator.KEY_ACTIVATOR);
-            if (activatorClassName == null) return;
-
-            activate(cl, jarFile, activatorClassName);
-
+            for (EntryHandlerEntry e : entryHandlers) {
+                String activatorClassName = mainAttributes.getValue(e.key);
+                if (activatorClassName != null)
+                    e.entryHandler.handle(activatorClassName);
+            }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not open jar file " + jarUrl, e);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find Sorcer-Activator class from " + jarUrl, e);
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Could not instantiate Sorcer-Activator class from " + jarUrl, e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not instantiate Sorcer-Activator class from " + jarUrl, e);
         }
     }
 
-    private void activate(ClassLoader cl, File jarFile, String activatorClassName) throws Exception {
-        Class<?> activatorClass = Class.forName(activatorClassName, true, cl);
-        if (!ServiceActivator.class.isAssignableFrom(activatorClass)) {
-            throw new IllegalArgumentException("Activator class " + activatorClassName + " must implement ServiceActivator");
-        }
-        if (activatorClass.isInterface() || Modifier.isAbstract(activatorClass.getModifiers())) {
-            throw new IllegalArgumentException("Activator class " + activatorClassName + " must be concrete");
-        }
-        log.info("Activating {} with class {}", jarFile, activatorClassName);
-        ServiceActivator activator = (ServiceActivator) activatorClass.newInstance();
-        if (activationProcessor != null)
-            activationProcessor.process(activator);
-        activator.activate();
-    }
-
-    public void setActivationProcessor(ActivationProcessor activationProcessor) {
-        this.activationProcessor = activationProcessor;
+    public void setActivationFactory(ActivationFactory activationFactory) {
+        this.activationFactory = activationFactory;
     }
 }

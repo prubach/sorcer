@@ -32,6 +32,7 @@ import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
 import sorcer.launcher.WaitMode;
 import sorcer.launcher.WaitingListener;
+import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.resolver.Resolver;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
@@ -118,7 +119,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
     public void run(final RunNotifier notifier) {
         if (configuration == null) {
             // handler is installed by the SorcerLauncher, here we must do it ourselves
-            HandlerInstaller.install();
+            new HandlerInstaller(ProtocolHandlerRegistry.get());
             super.run(notifier);
             return;
         }

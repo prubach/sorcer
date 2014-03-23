@@ -1,8 +1,6 @@
 package sorcer.config;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +23,8 @@ import sorcer.core.provider.ServiceProvider;
  * @author Rafał Krupiński
  */
 public interface BeanListener {
+
+    void preProcess(ServiceProvider provider);
 
     public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException;
 

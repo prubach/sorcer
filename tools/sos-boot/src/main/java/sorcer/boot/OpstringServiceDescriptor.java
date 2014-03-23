@@ -18,13 +18,11 @@ package sorcer.boot;
 import org.rioproject.impl.opstring.OpStringUtil;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceElement;
-import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import sorcer.core.SorcerEnv;
-import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.GenericUtil;
 import sorcer.util.SorcerResolverHelper;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -35,27 +33,25 @@ import java.util.*;
 /**
  * @author Rafał Krupiński
  */
-public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
-    @Inject
-    protected Resolver resolver;
+public class OpstringServiceDescriptor extends ResolvingServiceDescriptor {
+    private String name;
 
     private ServiceElement serviceElement;
-    private URL policyFile;
 
     public OpstringServiceDescriptor(ServiceElement serviceElement, URL policyFile) {
         this.serviceElement = serviceElement;
-        this.policyFile = policyFile;
+        try {
+            setCodebase(getCodebase(serviceElement));
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException("Error while processing codebase of " + serviceElement.getName(), e);
+        }
+        setPolicyFile(policyFile.toExternalForm());
+        String[] configArgs = serviceElement.getServiceBeanConfig().getConfigArgs();
+        setServiceConfigArgs(Arrays.asList(configArgs));
+        setImplClassName(serviceElement.getComponentBundle().getClassName());
+        name = serviceElement.getOperationalStringName() + "/" + serviceElement.getName();
     }
 
-    protected String[] getServiceConfigArgs() {
-        return serviceElement.getServiceBeanConfig().getConfigArgs();
-    }
-
-    protected String getImplClassName() {
-        return serviceElement.getComponentBundle().getClassName();
-    }
-
-    @Override
     protected Set<URI> getClasspath() {
         String artifact = serviceElement.getComponentBundle().getArtifact();
         try {
@@ -69,19 +65,14 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
         }
     }
 
-    @Override
-    protected Set<URL> getCodebase() {
-        URL codebaseRoot = SorcerEnv.getCodebaseRoot();
+    private static Set<URL> getCodebase(ServiceElement serviceElement) throws MalformedURLException {
         try {
+            URL codebaseRoot = SorcerEnv.getCodebaseRoot();
             OpStringUtil.checkCodebase(serviceElement, codebaseRoot.toExternalForm());
-            return getCodebase(serviceElement);
         } catch (IOException e) {
             throw new IllegalStateException("Malformed URL", e);
         }
-    }
 
-
-    private static Set<URL> getCodebase(ServiceElement serviceElement) throws MalformedURLException {
         Set<URL> result = new HashSet<URL>();
         URL[] exportURLs = serviceElement.getExportURLs();
         if (exportURLs.length != 0) {
@@ -93,36 +84,14 @@ public class OpstringServiceDescriptor extends AbstractServiceDescriptor {
                 URL codebaseRoot = new URL(exportBundle.getCodebase());
                 String artifact = exportBundle.getArtifact();
                 if (artifact != null)
-                    result.addAll(artifactToUrl(codebaseRoot, artifact));
+                    result.add(GenericUtil.toArtifactUrl(codebaseRoot, artifact));
             }
         }
         return result;
     }
 
-    private static List<URL> artifactToUrl(URL codebase, String artifact) throws MalformedURLException {
-        List<URL> result = new ArrayList<URL>();
-/*
-        String urlBase = codebase.toExternalForm();
-        String mvnRootFileUrl = new File(SorcerEnv.getRepoDir()).toURI().toString();
-
-        for (String file : resolver.getClassPathFor(artifact)) {
-            String replace = new File(file).toURI().toString().replace(mvnRootFileUrl, urlBase);
-            logger.debug("{} -> {}", file, replace);
-            result.add(new URL(replace));
-        }
-*/
-        artifact = artifact.replace(':', '/');
-        result.add(new URL("artifact:" + artifact + ";" + codebase.toExternalForm() + "@" + codebase.getHost()));
-        return result;
-    }
-
     @Override
     public String toString() {
-        return "OpstringServiceDescriptor " + serviceElement.getOperationalStringName() + "/" + serviceElement.getName();
-    }
-
-    @Override
-    protected String getPolicy() {
-        return policyFile.toExternalForm();
+        return "OpstringServiceDescriptor " + name;
     }
 }

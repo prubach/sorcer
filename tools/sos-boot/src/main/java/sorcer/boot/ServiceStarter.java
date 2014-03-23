@@ -40,11 +40,13 @@ import org.slf4j.LoggerFactory;
 import sorcer.boot.platform.PlatformLoader;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.boot.util.ReferenceHolder;
+import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerEnv;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.IOUtils;
+import sorcer.util.InjectionHelper;
 import sorcer.util.JavaSystemProperties;
 
 import javax.inject.Named;
@@ -94,6 +96,13 @@ public class ServiceStarter implements LifeCycle {
         log.info("******* Starting Sorcersoft.com SORCER *******");
 
         injector = createInjector();
+
+        // force creation of platform by PlatformLoader
+        injector.getInstance(ClassLoader.class);
+
+        Injector platformInjector = injector.getInstance(Key.get(new TypeLiteral<ReferenceHolder<Injector>>() {})).get();
+        if (platformInjector != null)
+            injector = platformInjector;
 
         log.debug("Starting from {}", configs);
 
@@ -169,6 +178,7 @@ public class ServiceStarter implements LifeCycle {
                     }
                 }).in(Scopes.SINGLETON);
                 bind(JarClassPathHelper.class).in(Scopes.SINGLETON);
+                bind(new TypeLiteral<ReferenceHolder<Injector>>(){}).in(Scopes.SINGLETON);
                 binder().requestStaticInjection(OpStringUtil.class);
             }
         });
@@ -361,6 +371,10 @@ public class ServiceStarter implements LifeCycle {
         Thread thread = Thread.currentThread();
         ClassLoader classLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(injector.getInstance(ClassLoader.class));
+        Binding<Set<ServiceDescriptorProcessor>> existingBinding = injector.getExistingBinding(Key.get(new TypeLiteral<Set<ServiceDescriptorProcessor>>() {}));
+        Set<ServiceDescriptorProcessor> processors = null;
+        if (existingBinding != null)
+            processors = existingBinding.getProvider().get();
 
         ServiceStatHolder stat = new ServiceStatHolder();
 
@@ -376,9 +390,9 @@ public class ServiceStarter implements LifeCycle {
                         config.getEntry(START_PACKAGE, "loginContext",
                                 LoginContext.class, null);
                 if (loginContext != null)
-                    createWithLogin(descs, config, loginContext, stat);
+                    createWithLogin(descs, config, loginContext, stat, processors);
                 else
-                    create(descs, config, stat);
+                    create(descs, config, stat, processors);
             }
         } finally {
             thread.setContextClassLoader(classLoader);
@@ -399,7 +413,7 @@ public class ServiceStarter implements LifeCycle {
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
      */
-    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat) throws Exception {
+    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat, Set<ServiceDescriptorProcessor> processors) throws Exception {
         for (ServiceDescriptor desc : descs) {
             if (bootInterrupted)
                 break;
@@ -408,6 +422,12 @@ public class ServiceStarter implements LifeCycle {
 
             injector.injectMembers(desc);
             log.info("Creating service from {}", desc);
+
+            if (processors != null)
+                for (ServiceDescriptorProcessor processor : processors) {
+                    processor.process(desc);
+                }
+
             Service service;
             try {
                 if (desc instanceof AbstractServiceDescriptor) {
@@ -458,7 +478,7 @@ public class ServiceStarter implements LifeCycle {
      */
     private void createWithLogin(
             final ServiceDescriptor[] descs, final Configuration config,
-            final LoginContext loginContext, final ServiceStatHolder stat)
+            final LoginContext loginContext, final ServiceStatHolder stat, final Set<ServiceDescriptorProcessor> processors)
             throws Exception {
         loginContext.login();
 
@@ -468,7 +488,7 @@ public class ServiceStarter implements LifeCycle {
                     new PrivilegedExceptionAction() {
                         public Object run()
                                 throws Exception {
-                            create(descs, config, stat);
+                            create(descs, config, stat, processors);
                             return null;
                         }
                     },

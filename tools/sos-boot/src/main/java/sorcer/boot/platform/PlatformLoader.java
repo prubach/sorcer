@@ -17,6 +17,7 @@
 package sorcer.boot.platform;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.sun.jini.start.ServiceDescriptor;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -26,8 +27,11 @@ import org.rioproject.config.PlatformCapabilityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
+import sorcer.boot.util.ReferenceHolder;
+import sorcer.core.ServiceActivator;
+import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.provider.boot.CommonClassLoader;
-import sorcer.tools.ActivationProcessor;
+import sorcer.tools.ActivationFactory;
 import sorcer.util.ClassPath;
 
 import javax.inject.Inject;
@@ -51,32 +55,48 @@ public class PlatformLoader implements Provider<ClassLoader> {
     @Inject
     protected Injector injector;
 
+    @Inject
+    protected ReferenceHolder<Injector> platformInjectorHolder;
+
     private File platformRoot;
     private File servicePlatformRoot;
+    private final List<Module> modules = new LinkedList<Module>();
 
     public PlatformLoader(File platformRoot, File servicePlatformRoot) {
-        //this.injector = injector;
         this.platformRoot = platformRoot;
         this.servicePlatformRoot = servicePlatformRoot;
         activator = new Activator();
-        activator.setActivationProcessor(new ActivationProcessor() {
+        activator.setActivationFactory(new ActivationFactory() {
             @Override
-            public void process(Object o) {
-                PlatformLoader.this.injector.injectMembers(o);
+            public Object create(Class c) {
+                return PlatformLoader.this.injector.getInstance(c);
             }
         });
+        activator.entryHandlers.add(0, activator.new EntryHandlerEntry("Sorcer-Activation-Module", activator.new AbstractClassEntryHandler() {
+            public void handle(Object instance) {
+                if (instance instanceof Module)
+                    modules.add((Module) instance);
+            }
+        }));
     }
 
     public ClassLoader get() {
         CommonClassLoader commonCL = CommonClassLoader.getInstance();
         loadPlatform(platformRoot, commonCL);
 
-        loadPlatformServices(servicePlatformRoot, commonCL);
+        Thread current = Thread.currentThread();
+        ClassLoader original = current.getContextClassLoader();
+        current.setContextClassLoader(commonCL);
+        try {
+            loadPlatformServices(servicePlatformRoot);
+        } finally {
+            current.setContextClassLoader(original);
+        }
 
         return commonCL;
     }
 
-    private void loadPlatformServices(File dir, ClassLoader parent) {
+    private void loadPlatformServices(File dir) {
         if (dir == null)
             throw new IllegalArgumentException("directory is null");
         if (!dir.exists()) {
@@ -94,10 +114,11 @@ public class PlatformLoader implements Provider<ClassLoader> {
 
         CompilerConfiguration cfg = new CompilerConfiguration();
         cfg.setScriptBaseClass(PlatformDescriptor.class.getName());
-        GroovyShell shell = new GroovyShell(parent, new Binding(), cfg);
+        GroovyShell shell = new GroovyShell(Thread.currentThread().getContextClassLoader(), new Binding(), cfg);
 
         File[] files = dir.listFiles();
         Arrays.sort(files);
+        List<ServiceActivator>activators = new LinkedList<ServiceActivator>();
         for (File file : files) {
             if (!file.getName().endsWith("groovy")) {
                 logger.debug("Ignoring {}", file);
@@ -109,7 +130,18 @@ public class PlatformLoader implements Provider<ClassLoader> {
                 for (ServiceDescriptor descriptor : platform.getPlatformServices()) {
                     injector.injectMembers(descriptor);
                     Object service = descriptor.create(EmptyConfiguration.INSTANCE);
-                    injector.injectMembers(service);
+                    if(service instanceof AbstractServiceDescriptor.Service){
+                        AbstractServiceDescriptor.Service srvc = (AbstractServiceDescriptor.Service) service;
+                        if (srvc.exception != null) {
+                            logger.warn("Error while creating platform service {}", descriptor, srvc.exception);
+                            continue;
+                        } else
+                            service = srvc.impl;
+                    }
+                    if(service instanceof Module)
+                        modules.add((Module) service);
+                    if(service instanceof ServiceActivator)
+                        activators.add((ServiceActivator) service);
                 }
             } catch (Exception e) {
                 Throwable t = e.getCause() == null ? e : e.getCause();
@@ -117,6 +149,15 @@ public class PlatformLoader implements Provider<ClassLoader> {
             }
         }
 
+        Injector platform = injector.createChildInjector(modules);
+        platformInjectorHolder.set(platform);
+
+        for (ServiceActivator activator : activators)
+            try {
+                activator.activate();
+            } catch (Exception e) {
+                logger.warn("Error during platform service activation");
+            }
     }
 
     protected void loadPlatform(File platformDir, CommonClassLoader commonCL) {

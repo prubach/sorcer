@@ -84,7 +84,6 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import sorcer.config.BeanListener;
 import sorcer.config.ServiceBeanListener;
 import sorcer.core.ContextManagement;
@@ -138,9 +137,6 @@ import static sorcer.core.SorcerConstants.*;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ProviderDelegate {
-
-    private BasicThreadFactory.Builder threadFactoryBuilder = new BasicThreadFactory.Builder();
-
 	static ThreadGroup threadGroup = new ThreadGroup(PROVIDER_THREAD_GROUP);
 
 	static final int TRY_NUMBER = 5;
@@ -755,7 +751,8 @@ public class ProviderDelegate {
 		}
 		for (int i = 0; i < publishedServiceTypes.length; i++) {
 			// spaceWorkerPool = Executors.newFixedThreadPool(workerCount);
-            BasicThreadFactory factory = threadFactoryBuilder.namingPattern("SpaceTaker-" + spaceName + "-thread-%2$d").build();
+            ConfigurableThreadFactory factory = new ConfigurableThreadFactory();
+            factory.setNameFormat("SpaceTaker-" + spaceName + "-thread-%2$d");
             spaceWorkerPool = new ThreadPoolExecutor(workerCount,
 					maximumPoolSize > workerCount ? maximumPoolSize
 							: workerCount, 0L, TimeUnit.MILLISECONDS,
@@ -1864,7 +1861,8 @@ public class ProviderDelegate {
                 }
             }
 		}
-        beanListener.destroy(serviceBeans);
+        if (beanListener != null)
+            beanListener.destroy(serviceBeans);
 	}
 
 	public void fireEvent() throws RemoteException {
@@ -2927,7 +2925,8 @@ public class ProviderDelegate {
         for (Class beanClass : beanClasses) {
             allBeans.add(beanClass.newInstance());
         }
-        beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
+        if (beanListener != null)
+            beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
         for (Object bean : allBeans) {
             initBean(bean);
         }

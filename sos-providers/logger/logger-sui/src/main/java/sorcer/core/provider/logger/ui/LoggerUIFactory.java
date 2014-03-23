@@ -1,8 +1,6 @@
 package sorcer.core.provider.logger.ui;
 /**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +15,13 @@ package sorcer.core.provider.logger.ui;
  * limitations under the License.
  */
 
-
 import net.jini.lookup.entry.UIDescriptor;
 import net.jini.lookup.ui.MainUI;
-import sorcer.core.SorcerEnv;
-import sorcer.resolver.Resolver;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Artifact;
+import sorcer.util.GenericUtil;
+import sorcer.util.Sorcer;
 
 import java.net.URL;
 
@@ -35,14 +32,12 @@ public class LoggerUIFactory {
     /**
      * Returns a service UI descriptor for LoggerManagerUI. The service
      * UI allows for viewing remote logs of selected providers.
-     *
-     * @see sorcer.core.provider.ServiceProvider#getMainUIDescriptor()
      */
     public static UIDescriptor getMainUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = Resolver.resolveAbsoluteURL(new URL(SorcerEnv.getWebsterUrl()), Artifact.sorcer("logger-sui"));
-            URL helpUrl = new URL(SorcerEnv.getWebsterUrl() + "/logger.html");
+            URL uiUrl = GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("logger-sui").toString());
+            URL helpUrl = null;//new URL(SorcerEnv.getWebsterUrl() + "/logger.html");
 
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIFrameFactory(new URL[]{uiUrl},

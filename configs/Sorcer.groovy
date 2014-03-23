@@ -146,7 +146,7 @@ deployment(name: 'Sorcer') {
     service(name: "Spacer") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Spacer'
-            artifact ref: 'sos-exertlet-sui'
+            artifact sorcer.api
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
             artifact ref: 'spacer-cfg'
@@ -158,7 +158,7 @@ deployment(name: 'Sorcer') {
     service(name: "Concatenator") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Concatenator'
-            artifact ref: 'sos-exertlet-sui'
+            artifact sorcer.api
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceConcatenator') {
             artifact ref: 'concatenator-cfg'
