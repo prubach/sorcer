@@ -17,11 +17,8 @@
  */
 package sorcer.core.provider.cataloger.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.Observable;
 
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 /**

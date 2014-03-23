@@ -36,10 +36,8 @@ import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Condition;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski

@@ -20,7 +20,6 @@ package sorcer.util;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;

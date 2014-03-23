@@ -24,17 +24,13 @@ import java.util.logging.Logger;
 import junit.sorcer.core.provider.Multiply;
 import junit.sorcer.core.provider.SubtractorImpl;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.jobber.ServiceJobber;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski

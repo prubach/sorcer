@@ -41,14 +41,12 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 
 import org.rioproject.opstring.UndeployOption;
-import sorcer.core.SorcerEnv;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.deploy.OperationalStringFactory;
 import sorcer.service.Job;
 import sorcer.service.Service;
 import sorcer.service.Strategy;
 import sorcer.service.Task;
-import sorcer.util.JavaSystemProperties;
 
 /**
  * @author Dennis Reedy

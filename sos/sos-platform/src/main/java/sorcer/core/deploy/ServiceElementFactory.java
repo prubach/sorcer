@@ -16,18 +16,15 @@
 package sorcer.core.deploy;
 
 import net.jini.config.ConfigurationException;
-import org.rioproject.RioVersion;
 import org.rioproject.config.Configuration;
 import org.rioproject.exec.ExecDescriptor;
 import org.rioproject.opstring.ClassBundle;
 import org.rioproject.opstring.ServiceBeanConfig;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
-import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerEnv;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.jini.lookup.entry.DeployInfo;
-import sorcer.resolver.ArtifactResolver;
 import sorcer.util.Sorcer;
 
 import java.io.BufferedReader;

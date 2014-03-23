@@ -26,7 +26,6 @@ import static sorcer.eo.operator.url;
 import static sorcer.eo.operator.value;
 import static sorcer.po.operator.add;
 import static sorcer.po.operator.agent;
-import static sorcer.po.operator.args;
 import static sorcer.po.operator.callableInvoker;
 import static sorcer.po.operator.dbPar;
 import static sorcer.po.operator.invoke;
@@ -50,7 +49,6 @@ import groovy.lang.Closure;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
@@ -83,10 +81,8 @@ import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski

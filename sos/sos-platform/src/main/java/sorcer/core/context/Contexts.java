@@ -37,7 +37,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
-import sorcer.util.GenericUtil;
 import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;

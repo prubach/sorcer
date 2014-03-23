@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -13,11 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.jini.core.lookup.ServiceItem;
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
 import sorcer.account.provider.Account;
 import sorcer.account.provider.Money;
-import sorcer.util.Sorcer;
 
 public class AccountUI extends JPanel {
 

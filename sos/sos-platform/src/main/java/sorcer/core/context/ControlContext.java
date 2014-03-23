@@ -19,7 +19,6 @@
 package sorcer.core.context;
 
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;

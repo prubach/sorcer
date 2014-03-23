@@ -15,26 +15,15 @@
  */
 package junit.sorcer.core.deploy;
 
-import net.jini.core.lookup.ServiceRegistrar;
-import net.jini.core.lookup.ServiceTemplate;
-import net.jini.discovery.DiscoveryEvent;
-import net.jini.discovery.DiscoveryListener;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.rioproject.deploy.DeployAdmin;
 import org.rioproject.monitor.ProvisionMonitor;
-import org.rioproject.opstring.OperationalStringManager;
-import sorcer.core.dispatch.ProvisionManager;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
-import sorcer.service.Job;
-import sorcer.util.Sorcer;
-
-import java.rmi.RemoteException;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Dennis Reedy

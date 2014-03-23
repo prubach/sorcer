@@ -36,7 +36,6 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
-import sorcer.util.Sorcer;
 
 /**
  * Create an {@link OperationalString} from an {@link Exertion}.

@@ -17,7 +17,6 @@
  */
 package sorcer.ex1.bean;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 

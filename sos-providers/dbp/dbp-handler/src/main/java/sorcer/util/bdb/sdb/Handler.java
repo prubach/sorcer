@@ -17,8 +17,6 @@
  */
 package sorcer.util.bdb.sdb;
 
-import sorcer.protocol.ProtocolHandlerRegistry;
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,10 +37,4 @@ public class Handler extends URLStreamHandler {
 	protected URLConnection openConnection(URL url) throws IOException {
 	        return new SdbConnection(url);
 	}
-
-/*
-    public static void register() {
-        ProtocolHandlerRegistry.get().register("sos", Handler.class);
-    }
-*/
 }

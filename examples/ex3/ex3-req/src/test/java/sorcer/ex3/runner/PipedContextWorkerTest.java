@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.core.signature.NetSignature;
 import sorcer.ex2.requestor.Works;
 import sorcer.junit.*;

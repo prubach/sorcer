@@ -31,8 +31,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
 
 import sorcer.ssb.browser.api.SSBrowserFilter;
-import sorcer.ssb.jini.studio.CodeServer;
-
 
 public class FiltersView extends JPanel{
 	private JTabbedPane _tp=new JTabbedPane();

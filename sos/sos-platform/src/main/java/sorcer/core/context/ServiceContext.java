@@ -31,7 +31,6 @@ import net.jini.id.UuidFactory;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.model.par.*;
-import sorcer.core.invoker.InvokeContextPassing;
 import sorcer.core.invoker.Invoker;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
@@ -42,13 +41,15 @@ import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
 import sorcer.util.*;
 
+import static sorcer.core.SorcerConstants.*;
+
 /**
  * Implements the base-level service context interface {@link Context}.
  */
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ServiceContext<T> extends Hashtable<String, T> implements
 		Context<T>, AssociativeContext<T>, Evaluation<T>, Invocation<T>,
-		Contexter<T>, SorcerConstants {
+		Contexter<T> {
 
 	private static final long serialVersionUID = 3311956866023311727L;
 

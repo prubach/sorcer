@@ -1,17 +1,8 @@
 package junit.sorcer.core.deploy;
 
-import java.io.File;
-import java.io.IOException;
-import java.rmi.RMISecurityManager;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.rioproject.deploy.DeployAdmin;
 import org.rioproject.monitor.ProvisionMonitor;
-import org.rioproject.opstring.OperationalStringManager;
-
-import sorcer.util.Sorcer;
-import sorcer.util.exec.ExecUtils;
 
 /**
  * Class

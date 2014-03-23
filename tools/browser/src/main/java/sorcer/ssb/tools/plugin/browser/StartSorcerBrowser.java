@@ -29,7 +29,6 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.resolver.Resolver;
 import sorcer.ssb.jini.studio.CodeServer;
 import sorcer.tools.webster.InternalWebster;
 

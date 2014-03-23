@@ -33,7 +33,6 @@ import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Job;
 import sorcer.service.Strategy;
 import sorcer.service.Task;
-import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski

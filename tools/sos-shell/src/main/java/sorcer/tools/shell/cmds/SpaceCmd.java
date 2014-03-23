@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 the original author or authors.
  * Copyright 2011 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -41,7 +41,6 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.jini.lookup.AttributesUtil;
 import sorcer.service.*;
 import sorcer.service.Exec.State;
-import sorcer.service.space.SpaceAccessor;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 

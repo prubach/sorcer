@@ -17,14 +17,12 @@ package sorcer.tools.shell;
  * limitations under the License.
  */
 
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
-import sorcer.service.Accessor;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

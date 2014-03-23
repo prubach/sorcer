@@ -2,8 +2,6 @@ package sorcer.util;
 
 import sorcer.core.SorcerEnv;
 
-import java.util.Map;
-
 /**
  * For compatibility with older scripts
  * User: prubach

@@ -27,8 +27,6 @@ import sorcer.service.Evaluation;
 import sorcer.service.Invocation;
 import sorcer.service.Task;
 
-
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;

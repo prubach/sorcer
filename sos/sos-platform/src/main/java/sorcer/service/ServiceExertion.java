@@ -50,7 +50,6 @@ import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
 import sorcer.util.ServiceExerter;
-import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;

@@ -17,10 +17,8 @@ package sorcer.config;
  * limitations under the License.
  */
 
-
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
-import net.jini.config.NoSuchEntryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.provider.ServiceProvider;

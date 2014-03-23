@@ -2,7 +2,6 @@ package sorcer.account.provider.ui.mvc;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
@@ -13,11 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.jini.core.lookup.ServiceItem;
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
 import sorcer.account.provider.Account;
 import sorcer.account.provider.Money;
-import sorcer.util.Sorcer;
 
 public class AccountView extends JPanel implements Observer {
 	

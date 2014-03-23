@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,6 @@ package sorcer.service;
 import sorcer.core.deploy.Deployment;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * A service <code>Signature</code> is an indirect behavioral feature of

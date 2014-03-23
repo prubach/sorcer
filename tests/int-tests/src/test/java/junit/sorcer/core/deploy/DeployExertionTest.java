@@ -16,21 +16,16 @@
 package junit.sorcer.core.deploy;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.rioproject.deploy.DeployAdmin;
 import org.rioproject.monitor.ProvisionMonitor;
-import org.rioproject.opstring.OperationalStringManager;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
-import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.*;
-import sorcer.util.Sorcer;
 
 import java.util.logging.Logger;
 

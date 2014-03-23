@@ -16,7 +16,6 @@
 package junit.sorcer.core.deploy;
 
 import junit.framework.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -28,7 +27,6 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 import sorcer.util.ProviderLookup;
-import sorcer.util.Sorcer;
 
 import java.util.logging.Logger;
 

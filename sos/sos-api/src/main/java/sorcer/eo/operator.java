@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
  */
 package sorcer.eo;
 
-import static sorcer.eo.operator.store;
 import static sorcer.util.UnknownName.getUnknown;
 
 import java.io.IOException;
@@ -52,13 +51,11 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Provision;
 import sorcer.service.Strategy.Wait;
-import sorcer.util.ObjectCloner;
 import sorcer.util.ObjectClonerAdv;
 import sorcer.util.ServiceExerter;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.DbpUtil;
-import sorcer.util.bdb.sdb.SdbUtil;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {

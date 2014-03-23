@@ -26,10 +26,8 @@ import static sorcer.po.operator.pars;
 
 import java.util.logging.Logger;
 
-import junit.sorcer.core.provider.Adder;
 import junit.sorcer.core.provider.AdderImpl;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
