@@ -44,8 +44,10 @@ public class PlatformModule extends AbstractModule {
             @Override
             public ServiceBeanListener get() {
                 ServiceBeanListener instance = (ServiceBeanListener) ServiceBeanListener.getBeanListener();
-                if (instance != null)
-                    throw new IllegalStateException("ServiceBeanListener already created");
+                if (instance != null) {
+                    log.warn("ServiceBeanListener already created");
+                    return instance;
+                }
                 log.info("Creating ServiceBeanListener");
                 instance = new ServiceBeanListener(beanListeners);
                 ServiceBeanListener.setBeanListener(instance);

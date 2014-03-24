@@ -86,6 +86,7 @@ public abstract class Launcher implements ILauncher {
             "org.apache.commons:commons-lang3",
             "com.google.guava:guava",
             "com.google.inject:guice:jar:no_aop:4.0-beta4",
+            "javax.inject:javax.inject:1",
             "commons-io:commons-io",
             "commons-cli:commons-cli",
 

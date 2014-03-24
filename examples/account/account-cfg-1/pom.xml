@@ -17,16 +17,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.rioproject</groupId>
-            <artifactId>rio-platform</artifactId>
-            <version>${v.rio}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
+            <artifactId>sorcer-ui</artifactId>
             <version>${v.sorcer}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

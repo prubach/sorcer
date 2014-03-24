@@ -74,7 +74,7 @@ account ( ) {
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/account/account-cfg-1/src/main/resources/account.groovy
     $SORCER_HOME/bin/rio deploy $SORCER_HOME/examples/account/account-cfg-2/src/main/resources/account.groovy
   else
-    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :account-cfg-1 :account-cfg-2 > $LOG_DIR/$EX/ex0-prv-run.log &
+    $SORCER_HOME/bin/sorcer-boot -wstart -Mforce-fork :account-cfg-1 :account-cfg-2 > $LOG_DIR/$EX/account-prv-run.log &
     #$SORCER_HOME/bin/sorcer-boot :ex0-cfg 2>&1 > $LOG_DIR/$EX/ex0-prv-run.log &
   fi
 

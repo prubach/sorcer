@@ -75,6 +75,8 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 
     <!-- start provider -->
     <target name="run.exertleter" depends="mvn-init">
+        <property name="boot.classpath.string" refid="boot.classpath"/>
+        <echo message="${boot.classpath.string}"/>
         <java classname="sorcer.launcher.Sorcer" fork="yes">
             <classpath refid="boot.classpath"/>
             <sysproperty key="java.security.manager" value="" />

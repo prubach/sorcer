@@ -180,6 +180,7 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sos-start.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-platform.jar"/>
@@ -209,7 +210,9 @@
             <path id="runtime.classpath">
             </path>
 
-            <path id="requstor.classpath">
+            <path id="requestor.classpath">
+                <pathelement location="${lib.dir}/commons/guice.jar"/>
+                <pathelement location="${lib.dir}/commons/javax.inject-1.jar"/>
             </path>
 
             <path id="rio-resolver.classpath">
@@ -237,6 +240,7 @@
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar"/>
+                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-start/${v.sorcer}/sos-start-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-resolver/${v.sorcer}/sorcer-resolver-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher-base/${v.sorcer}/sorcer-launcher-base-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher/${v.sorcer}/sorcer-launcher-${v.sorcer}.jar"/>
@@ -265,6 +269,10 @@
             <path id="rio-resolver.classpath">
                 <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-rio-start/${v.sorcer}/sorcer-rio-start-${v.sorcer}.jar"/>
+            </path>
+            <path id="requestor.classpath">
+                <pathelement location="${mvn.repo}/com/google/inject/guice/4.0-beta4/guice-4.0-beta4-no_aop.jar"/>
+                <pathelement location="${mvn.repo}/javax/inject/javax.inject/1/javax.inject-1.jar"/>
             </path>
         </ac:else>
     </ac:if>
@@ -325,12 +333,13 @@
             <ac:if>
                 <isset property="requestor.groupId"/>
                 <ac:then>
-                    <artifact:dependencies pathId="requestor.classpath">
+                    <artifact:dependencies pathId="req-depend.classpath">
                         <dependency groupId="${requestor.groupId}" artifactId="${requestor.name}"
                                     version="${requestor.version}"/>
                     </artifact:dependencies>
                     <path id="run-req.classpath">
                         <path refid="runtime.classpath"/>
+                        <path refid="req-depend.classpath"/>
                         <path refid="requestor.classpath"/>
                         <path refid="jini.classpath"/>
                         <path refid="rio-resolver.classpath"/>
@@ -340,6 +349,7 @@
                     <path id="run-req.classpath">
                         <path refid="runtime.classpath"/>
                         <path refid="jini.classpath"/>
+                        <path refid="requestor.classpath"/>
                         <path refid="rio-resolver.classpath"/>
                     </path>
                 </ac:else>

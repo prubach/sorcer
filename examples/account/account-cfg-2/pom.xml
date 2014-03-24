@@ -16,6 +16,11 @@
             <artifactId>account-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-ui</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
     </dependencies>
 
     <build>
