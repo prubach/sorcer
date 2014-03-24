@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jini.config.Configuration;
@@ -322,8 +323,12 @@ public class SpaceTaker implements Runnable, LeaseListener {
 						//doLog("\taborting txn...", threadId, txnCreated);
 						abortTransaction(txnCreated);
 						//doLog("\tDONE aborting txn.", threadId, txnCreated);
-						
-						Thread.sleep(spaceTimeout / 2);
+						try {
+                            Thread.sleep(spaceTimeout / 2);
+                        } catch (InterruptedException ie) {
+                            keepGoing = false;
+                            break;
+                        }
 					}
 					
 					txnCreated = null;
@@ -334,7 +339,7 @@ public class SpaceTaker implements Runnable, LeaseListener {
 			} catch (Exception ex) {
 				//logger.info("END LOOP SPACE TAKER EXCEPTION");
 				//ex.printStackTrace();
-                logger.severe("Problem with SpaceTaker: " + ex.getMessage());
+                logger.log(Level.SEVERE, "Problem with SpaceTaker: ", ex);
 				continue;
 			}
 		}
