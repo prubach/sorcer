@@ -16,6 +16,8 @@
 
 package sorcer.launcher;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.FileUtils;
@@ -30,12 +32,14 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.Collections.i;
 import static sorcer.util.JavaSystemProperties.*;
 
 /**
  * @author Rafał Krupiński
  */
 public abstract class Launcher implements ILauncher {
+    final protected Logger log = LoggerFactory.getLogger(getClass());
     protected File home;
     protected File ext;
     protected File rio;
@@ -150,7 +154,21 @@ public abstract class Launcher implements ILauncher {
         }
     }
 
+    /**
+     * Create a new set of system properties using the result of getDefaultProperties() as he defaults
+     * and the system properties as overrides
+     * @return Properties to be used as a system properties of the new sorcer
+     */
     protected Properties getProperties() {
+        Properties overrides = new Properties(getDefaultProperties());
+        overrides.putAll(System.getProperties());
+        if (log.isDebugEnabled())
+            for (Object key : i(overrides.propertyNames()))
+                log.debug("{} = {}", key, overrides.getProperty((String) key));
+        return overrides;
+    }
+
+    protected Properties getDefaultProperties() {
         File policyPath = new File(configDir, "sorcer.policy");
         String resolverPath = Resolver.resolveAbsolute("org.rioproject.resolver:resolver-aether:" + RIO_VERSION);
 

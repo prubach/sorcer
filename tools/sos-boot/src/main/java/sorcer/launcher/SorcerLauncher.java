@@ -35,7 +35,6 @@ import java.util.*;
 import java.util.concurrent.ThreadFactory;
 
 import static sorcer.core.SorcerConstants.P_MONITOR_INITIAL_OPSTRINGS;
-import static sorcer.util.Collections.i;
 import static sorcer.util.Collections.toProperties;
 
 /**
@@ -80,17 +79,7 @@ public class SorcerLauncher extends Launcher {
 
     protected void configure() {
         //TODO RKR check grant
-        Properties defaults = new Properties();
-        defaults.putAll(properties);
-
-        Properties overrides = new Properties(defaults);
-        overrides.putAll(System.getProperties());
-
-        if (log.isDebugEnabled())
-            for (Object key : i(overrides.propertyNames()))
-                log.debug("{} = {}", key, overrides.getProperty((String) key));
-
-        System.setProperties(overrides);
+        System.setProperties(properties);
     }
 
     private void updateMonitorConfig() {
