@@ -27,15 +27,12 @@ import org.rioproject.config.PlatformCapabilityConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
-import sorcer.boot.util.ReferenceHolder;
 import sorcer.core.ServiceActivator;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.provider.boot.CommonClassLoader;
 import sorcer.tools.ActivationFactory;
 import sorcer.util.ClassPath;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
@@ -45,26 +42,23 @@ import java.util.List;
 /**
  * @author Rafał Krupiński
  */
-public class PlatformLoader implements Provider<ClassLoader> {
+public class PlatformLoader {
     private static Logger logger = LoggerFactory.getLogger(PlatformLoader.class);
 
     private org.rioproject.config.PlatformLoader platformLoader = new org.rioproject.config.PlatformLoader();
-
     private Activator activator;
-
-    @Inject
     protected Injector injector;
-
-    @Inject
-    protected ReferenceHolder<Injector> platformInjectorHolder;
 
     private File platformRoot;
     private File servicePlatformRoot;
     private final List<Module> modules = new LinkedList<Module>();
+    private Injector platformInjctor;
+    private CommonClassLoader platformClassLoader;
 
-    public PlatformLoader(File platformRoot, File servicePlatformRoot) {
+    public PlatformLoader(Injector injector, File platformRoot, File servicePlatformRoot) {
         this.platformRoot = platformRoot;
         this.servicePlatformRoot = servicePlatformRoot;
+        this.injector = injector;
         activator = new Activator();
         activator.setActivationFactory(new ActivationFactory() {
             @Override
@@ -80,37 +74,37 @@ public class PlatformLoader implements Provider<ClassLoader> {
         }));
     }
 
-    public ClassLoader get() {
-        CommonClassLoader commonCL = CommonClassLoader.getInstance();
-        loadPlatform(platformRoot, commonCL);
+    public Injector getInjector(){
+        return platformInjctor;
+    }
+
+    public ClassLoader getClassLoader(){
+        return platformClassLoader;
+    }
+
+    public void create() {
+        platformClassLoader = CommonClassLoader.getInstance();
+        loadPlatform(platformRoot, platformClassLoader);
 
         Thread current = Thread.currentThread();
         ClassLoader original = current.getContextClassLoader();
-        current.setContextClassLoader(commonCL);
+        current.setContextClassLoader(platformClassLoader);
         try {
-            loadPlatformServices(servicePlatformRoot);
+            platformInjctor = loadPlatformServices(servicePlatformRoot);
         } finally {
             current.setContextClassLoader(original);
         }
-
-        return commonCL;
     }
 
-    private void loadPlatformServices(File dir) {
+    private Injector loadPlatformServices(File dir) {
         if (dir == null)
             throw new IllegalArgumentException("directory is null");
-        if (!dir.exists()) {
-            logger.warn("Platform directory [{}] not found", dir);
-            return;
-        }
-        if (!dir.isDirectory()) {
-            logger.warn("Platform directory [{}] is not a directory", dir);
-            return;
-        }
-        if (!dir.canRead()) {
-            logger.warn("No read permissions for platform directory [{}]", dir);
-            return;
-        }
+        if (!dir.exists())
+            throw new IllegalArgumentException("Platform path " + dir + " does not exist");
+        if (!dir.isDirectory())
+            throw new IllegalArgumentException("Platform path " + dir + " is not a directory");
+        if (!dir.canRead())
+            throw new IllegalArgumentException("No read permissions for platform directory " + dir + " is not a directory");
 
         CompilerConfiguration cfg = new CompilerConfiguration();
         cfg.setScriptBaseClass(PlatformDescriptor.class.getName());
@@ -118,7 +112,7 @@ public class PlatformLoader implements Provider<ClassLoader> {
 
         File[] files = dir.listFiles();
         Arrays.sort(files);
-        List<ServiceActivator>activators = new LinkedList<ServiceActivator>();
+        List<ServiceActivator> activators = new LinkedList<ServiceActivator>();
         for (File file : files) {
             if (!file.getName().endsWith("groovy")) {
                 logger.debug("Ignoring {}", file);
@@ -130,7 +124,7 @@ public class PlatformLoader implements Provider<ClassLoader> {
                 for (ServiceDescriptor descriptor : platform.getPlatformServices()) {
                     injector.injectMembers(descriptor);
                     Object service = descriptor.create(EmptyConfiguration.INSTANCE);
-                    if(service instanceof AbstractServiceDescriptor.Service){
+                    if (service instanceof AbstractServiceDescriptor.Service) {
                         AbstractServiceDescriptor.Service srvc = (AbstractServiceDescriptor.Service) service;
                         if (srvc.exception != null) {
                             logger.warn("Error while creating platform service {}", descriptor, srvc.exception);
@@ -138,9 +132,9 @@ public class PlatformLoader implements Provider<ClassLoader> {
                         } else
                             service = srvc.impl;
                     }
-                    if(service instanceof Module)
+                    if (service instanceof Module)
                         modules.add((Module) service);
-                    if(service instanceof ServiceActivator)
+                    if (service instanceof ServiceActivator)
                         activators.add((ServiceActivator) service);
                 }
             } catch (Exception e) {
@@ -150,14 +144,14 @@ public class PlatformLoader implements Provider<ClassLoader> {
         }
 
         Injector platform = injector.createChildInjector(modules);
-        platformInjectorHolder.set(platform);
 
         for (ServiceActivator activator : activators)
             try {
                 activator.activate();
             } catch (Exception e) {
-                logger.warn("Error during platform service activation");
+                logger.warn("Error during platform service activation", e);
             }
+        return platform;
     }
 
     protected void loadPlatform(File platformDir, CommonClassLoader commonCL) {

@@ -24,12 +24,10 @@ import org.slf4j.LoggerFactory;
 import sorcer.boot.util.ReferenceHolder;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * @author Rafał Krupiński
  */
-@Singleton
 public class Activator {
     private static final Logger log = LoggerFactory.getLogger(Activator.class);
 

@@ -34,6 +34,7 @@ import junit.sorcer.core.provider.Adder;
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.Multiply;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sorcer.core.SorcerEnv;
@@ -341,6 +342,7 @@ public class TaskTest {
     }
 
     @Test
+    @Ignore
     public void deployTest() throws Exception {
         Task t5 = task("f5",
                 sig("add", Adder.class,

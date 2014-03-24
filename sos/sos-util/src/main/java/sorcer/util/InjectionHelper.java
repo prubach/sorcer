@@ -16,10 +16,15 @@
 
 package sorcer.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Rafał Krupiński
  */
 public class InjectionHelper {
+    private static final Logger log = LoggerFactory.getLogger(InjectionHelper.class);
+
     public static Injector getInstance() {
         return instance;
     }
@@ -37,10 +42,22 @@ public class InjectionHelper {
     private static Injector instance;
 
     public static void injectMembers(Object target) {
-        instance.injectMembers(target);
+        if (instance != null)
+            instance.injectMembers(target);
+        else
+            log.debug("NOT injecting members, InjectorHelper not initialized while injecting members to {}", target);
     }
 
-    public static <T> T create(Class<T> type) {
-        return instance.create(type);
+    public static <T> T create(Class<T> type) throws IllegalAccessException, InstantiationException {
+        if (instance != null)
+            return instance.create(type);
+        else {
+            log.debug("InjectorHelper not initialized while creating an instance of {}", type);
+            return type.newInstance();
+        }
+    }
+
+    public static boolean valid() {
+        return instance != null;
     }
 }

@@ -2923,7 +2923,7 @@ public class ProviderDelegate {
 
     private void instantiate(List<Object> allBeans, Class[] beanClasses) throws Exception {
         for (Class beanClass : beanClasses) {
-            allBeans.add(beanClass.newInstance());
+            allBeans.add(InjectionHelper.create(beanClass));
         }
         if (beanListener != null)
             beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());

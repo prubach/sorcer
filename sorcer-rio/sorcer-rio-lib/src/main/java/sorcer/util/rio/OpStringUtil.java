@@ -32,22 +32,21 @@ import java.net.URLClassLoader;
  * @author Rafał Krupiński
  */
 public class OpStringUtil {
-    private static Resolver resolver;
-
-    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement) throws MalformedURLException, ResolverException, ClassNotFoundException {
-        return loadClass(bundle, serviceElement, Thread.currentThread().getContextClassLoader());
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, Resolver resolver) throws MalformedURLException, ResolverException, ClassNotFoundException {
+        return loadClass(bundle, serviceElement, Thread.currentThread().getContextClassLoader(), resolver);
     }
 
     /**
      * Load a class from Rio ClassBundle
      *
      * @param bundle The part of OpString describing a class and required jars
+     * @param resolver
      * @return class referred by the class bundle
      * @throws MalformedURLException
      * @throws ResolverException
      * @throws ClassNotFoundException
      */
-    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL) throws MalformedURLException, ResolverException, ClassNotFoundException {
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL, Resolver resolver) throws MalformedURLException, ResolverException, ClassNotFoundException {
         try {
             URL[] urls = SorcerResolverHelper.toURLs(resolver.getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
             URLClassLoader cl = new URLClassLoader(urls, parentCL);
@@ -71,10 +70,10 @@ public class OpStringUtil {
      *
      * @throws IOException
      */
-    public static Class loadClass2(ClassBundle bundle, ServiceElement serviceElement) throws IOException {
+    public static Class loadClass2(ClassBundle bundle, ServiceElement serviceElement, Resolver resolver) throws IOException {
         String type = bundle.getClassName();
         try {
-            return loadClass(bundle, serviceElement);
+            return loadClass(bundle, serviceElement, resolver);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Class " + type + " was not found in " + bundle, e);
         } catch (ResolverException e) {

@@ -29,7 +29,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.rioproject.impl.opstring.OpStringLoader;
-import org.rioproject.impl.opstring.OpStringUtil;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
@@ -46,7 +45,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.IOUtils;
-import sorcer.util.InjectionHelper;
 import sorcer.util.JavaSystemProperties;
 
 import javax.inject.Named;
@@ -81,7 +79,8 @@ public class ServiceStarter implements LifeCycle {
     private volatile boolean bootInterrupted;
 
     private final LifeCycle exitMonitor;
-    private Injector injector;
+    protected Injector injector;
+    private PlatformLoader platformLoader;
 
     public ServiceStarter(LifeCycle exitMonitor) {
         this.exitMonitor = exitMonitor;
@@ -95,14 +94,14 @@ public class ServiceStarter implements LifeCycle {
     public void start(Collection<String> configs) throws Exception {
         log.info("******* Starting Sorcersoft.com SORCER *******");
 
-        injector = createInjector();
+        Injector rootInjector = createInjector();
 
-        // force creation of platform by PlatformLoader
-        injector.getInstance(ClassLoader.class);
-
-        Injector platformInjector = injector.getInstance(Key.get(new TypeLiteral<ReferenceHolder<Injector>>() {})).get();
-        if (platformInjector != null)
-            injector = platformInjector;
+        File rioHome = getRioHome();
+        File rioPlatform = new File(rioHome, "config/platform");
+        File sorcerPlatform = new File(rioPlatform, "service");
+        platformLoader = new PlatformLoader(rootInjector, rioPlatform, sorcerPlatform);
+        platformLoader.create();
+        injector = platformLoader.getInjector();
 
         log.debug("Starting from {}", configs);
 
@@ -146,20 +145,17 @@ public class ServiceStarter implements LifeCycle {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                /*
+                * This is a hack against Guice injector hierarchy. We want Resolver, which is loaded by the platform
+                * in it's own class loader, be accessible by the whole system. For this we ensure that resolver platform
+                * service is loaded first, and keep artificial reference here in the root injector.
+                * ReferenceHolder object is used by the resolver Activator to inject the value, which is then accessible
+                * to other clients thanks to singleton bind of Resolver class.
+                */
                 ReferenceHolder<Resolver> resolverHolder = new ReferenceHolder<Resolver>();
                 bind(Resolver.class).toProvider(resolverHolder).in(Scopes.SINGLETON);
                 bind(new TypeLiteral<ReferenceHolder<Resolver>>() {
                 }).toInstance(resolverHolder);
-
-                try {
-                    File rioHome = getRioHome();
-
-                    File rioPlatform = new File(rioHome, "config/platform");
-                    File sorcerPlatform = new File(rioPlatform, "service");
-                    bind(ClassLoader.class).toProvider(new PlatformLoader(rioPlatform, sorcerPlatform)).in(Scopes.SINGLETON);
-                } catch (Exception e) {
-                    throw new IllegalStateException(e);
-                }
 
                 bind(ProtocolHandlerRegistry.class).toInstance(ProtocolHandlerRegistry.get());
                 bind(Policy.class).annotatedWith(Names.named("initialGlobalPolicy")).toInstance(Policy.getPolicy());
@@ -178,8 +174,6 @@ public class ServiceStarter implements LifeCycle {
                     }
                 }).in(Scopes.SINGLETON);
                 bind(JarClassPathHelper.class).in(Scopes.SINGLETON);
-                bind(new TypeLiteral<ReferenceHolder<Injector>>(){}).in(Scopes.SINGLETON);
-                binder().requestStaticInjection(OpStringUtil.class);
             }
         });
     }
@@ -370,8 +364,9 @@ public class ServiceStarter implements LifeCycle {
     public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap) throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader classLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(injector.getInstance(ClassLoader.class));
-        Binding<Set<ServiceDescriptorProcessor>> existingBinding = injector.getExistingBinding(Key.get(new TypeLiteral<Set<ServiceDescriptorProcessor>>() {}));
+        thread.setContextClassLoader(platformLoader.getClassLoader());
+        Binding<Set<ServiceDescriptorProcessor>> existingBinding = injector.getExistingBinding(Key.get(new TypeLiteral<Set<ServiceDescriptorProcessor>>() {
+        }));
         Set<ServiceDescriptorProcessor> processors = null;
         if (existingBinding != null)
             processors = existingBinding.getProvider().get();
