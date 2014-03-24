@@ -206,6 +206,8 @@
                 <pathelement location="${lib.dir}/commons/google-collections.jar"/>
                 <pathelement location="${lib.dir}/commons/guice.jar"/>
                 <pathelement location="${lib.dir}/commons/javax.inject-1.jar"/>
+                <pathelement location="${lib.dir}/commons/plexus-utils.jar"/>
+                <pathelement location="${lib.dir}/commons/sigar.jar"/>
             </path>
             <path id="runtime.classpath">
             </path>
@@ -263,6 +265,8 @@
                 <pathelement location="${mvn.repo}/commons-io/commons-io/2.4/commons-io-2.4.jar"/>
                 <pathelement location="${mvn.repo}/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"/>
                 <pathelement location="${mvn.repo}/com/google/collections/google-collections/1.0/google-collections-1.0.jar"/>
+                <pathelement location="${mvn.repo}/org/codehaus/plexus/plexus-utils/${v.plexus}/plexus-utils-${v.plexus}.jar"/>
+                <pathelement location="${mvn.repo}/org/sorcersoft/sigar/sigar/${v.sigar}/sigar-${v.sigar}.jar"/>
                 <pathelement location="${mvn.repo}/com/google/inject/guice/4.0-beta4/guice-4.0-beta4-no_aop.jar"/>
                 <pathelement location="${mvn.repo}/javax/inject/javax.inject/1/javax.inject-1.jar"/>
             </path>

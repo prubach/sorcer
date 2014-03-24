@@ -368,8 +368,8 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar:\
 $MVN_REPO/com/google/inject/guice/4.0-beta4/guice-4.0-beta4-no_aop.jar:\
 $MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
-$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar"
-
+$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
+$MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
 
     # Determine webster url
 
@@ -464,7 +464,6 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"
 startBrowser(){
 BROWSER_CLASSPATH=$JINI_CLASSPATH:$LOG_CP:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
-$MVN_REPO/org/sorcersoft/sorcer/sorcer-ui/$V_SORCER/sorcer-ui-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\

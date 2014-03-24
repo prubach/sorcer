@@ -80,6 +80,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commo
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\inject\guice\4.0-beta4\guice-4.0-beta4-no_aop.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\javax\inject\javax.inject\1\javax.inject-1.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sigar\sigar\%v.sigar%\sigar-%v.sigar%.jar
 
 set SHELL_CLASSPATH=
 set SHELL_CLASSPATH=%JINI_BASE%;%LOG_CP%;%SORCER_COMMON%
