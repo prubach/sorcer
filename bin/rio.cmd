@@ -24,7 +24,6 @@ setLocal EnableDelayedExpansion
 :: Set local variables
 if "%RIO_HOME%" == "" set RIO_HOME=%~dp0..\lib\rio
 
-set SLF4J_CLASSPATH="%RIO_HOME%\lib\logging\*";"%RIO_HOME%\..\..\configs\rio\logging"
 set RIO_LIB=%RIO_HOME%\lib
 
 :: Sorcer basic jars added to classpath
@@ -48,6 +47,9 @@ IF defined SORCER_HOME (
   )
 )
 
+set SLF4J_CLASSPATH=%LOG_CP%;%MVN_REPO%\org\rioproject\rio-logging-support\%v.rio%\rio-logging-support-%v.rio%.jar
+set rioVersion=%v.rio%
+
 if "%JAVA_MEM_OPTIONS%" == "" set JAVA_MEM_OPTIONS="-XX:MaxPermSize=256m"
 
 :: Parse command line
@@ -62,7 +64,7 @@ set command_line=%*
 set launchTarget=org.rioproject.tools.cli.CLI
 set classpath=-cp "%RIO_HOME%\lib\rio-cli-%rioVersion%.jar";"%SLF4J_CLASSPATH%";"%SORCER_RIO_CP%"
 set props="-DRIO_HOME=%RIO_HOME%"
-"%JAVACMD%" %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%"\policy\policy.all %launchTarget% %cliExt% %command_line%
+"%JAVACMD%" %JAVA_OPTS% %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy  %launchTarget% %cliExt% %command_line%
 goto end
 
 :create-project

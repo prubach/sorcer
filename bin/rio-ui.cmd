@@ -44,9 +44,9 @@ IF defined SORCER_HOME (
     call %CD%\bin\common-run.bat
   )
 )
+set rioVersion=%v.rio%
 
 set RIOUI_CLASSPATH="%SORCER_RIOUI_CP%;%RIO_HOME%/lib/rio-ui-%rioVersion%.jar"
 set MAIN_CLASS=org.rioproject.tools.ui.Main
 
-call "%JAVA_HOME%\bin\java" -cp %RIOUI_CLASSPATH% -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%
-
+call "%JAVA_HOME%\bin\java" %JAVA_OPTS% -cp %RIOUI_CLASSPATH% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.tools.ui.logDir="%RIO_HOME%"\..\..\logs -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%

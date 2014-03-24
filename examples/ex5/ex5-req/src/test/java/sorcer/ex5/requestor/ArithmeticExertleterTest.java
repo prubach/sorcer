@@ -82,7 +82,7 @@ public class ArithmeticExertleterTest {
         assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
     }
 
-        @Test
+    @Test
 	public void exertArithmeticExertleter() throws Exception {
 
         // invoke exertleter with the current contexts

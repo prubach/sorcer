@@ -129,11 +129,6 @@
             <artifactId>concatenator-cfg</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ju-arithmetic-cfg-all</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!-- config modules for Jini/Blitz -->
         <dependency>
