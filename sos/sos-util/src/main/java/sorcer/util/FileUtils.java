@@ -16,14 +16,9 @@
 
 package sorcer.util;
 
-import sorcer.org.apache.commons.io.input.ClassLoaderObjectInputStream;
+import sorcer.org.apache.commons.lang3.ClassLoaderAwareObjectInputStream;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * @author Rafał Krupiński
@@ -54,16 +49,18 @@ public class FileUtils {
         return file.exists() ? file : null;
     }
 
+    @SuppressWarnings({"unchecked", "unused"})
     public static <T> T fromFile(File serialized) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = null;
         try {
-            ois = new ClassLoaderObjectInputStream(Thread.currentThread().getContextClassLoader(), new FileInputStream(serialized));
+            ois = new ClassLoaderAwareObjectInputStream(new FileInputStream(serialized), Thread.currentThread().getContextClassLoader());
             return (T) ois.readObject();
         } finally {
             IOUtils.closeQuietly(ois);
         }
     }
 
+    @SuppressWarnings("unused")
     public static void toFile(Object o, File f) throws IOException {
         File parent = f.getParentFile();
         if (!parent.exists() && !parent.mkdirs())
