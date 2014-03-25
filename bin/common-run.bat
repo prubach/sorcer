@@ -92,6 +92,7 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-netle
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-api\%v.sorcer%\sos-api-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-platform\%v.sorcer%\sos-platform-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-webster\%v.sorcer%\sos-webster-%v.sorcer%.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\dbp-api\%v.sorcer%\dbp-api-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
@@ -134,25 +135,25 @@ IF DEFINED %SORCER_WEBSTER_INTERFACE% IF DEFINED %SORCER_WEBSTER_PORT% (
 IF NOT DEFINED RIO_HOME SET RIO_HOME=%SORCER_HOME%\lib\rio
 set JAVA_OPTS=
 set JAVA_OPTS=%JAVA_OPTS% -Dsun.net.maxDatagramSockets=1024
-set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.env.file=%SORCER_HOME%\configs\sorcer.env
+set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.env.file="%SORCER_HOME%"\configs\sorcer.env
 rem set JAVA_OPTS=%JAVA_OPTS% -Djava.net.preferIPv4Stack=true
-set JAVA_OPTS=%JAVA_OPTS% -Djava.security.policy=%SORCER_HOME%\configs\sorcer.policy
+set JAVA_OPTS=%JAVA_OPTS% -Djava.security.policy="%SORCER_HOME%"\configs\sorcer.policy
 set JAVA_OPTS=%JAVA_OPTS% "-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url"
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.useCodebaseOnly=false
-set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir=%SORCER_HOME%\databases
-set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home=%SORCER_HOME%
-set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME=%RIO_HOME%
-set JAVA_OPTS=%JAVA_OPTS% -Dorg.rioproject.resolver.jar=%MVN_REPO%\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar
-set JAVA_OPTS=%JAVA_OPTS% -Dlogback.configurationFile=%SORCER_HOME%\configs\logback.groovy
+set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir="%SORCER_HOME%"\databases
+set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home="%SORCER_HOME%"
+set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME="%RIO_HOME%"
+set JAVA_OPTS=%JAVA_OPTS% -Dorg.rioproject.resolver.jar="%MVN_REPO%"\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar
+set JAVA_OPTS=%JAVA_OPTS% -Dlogback.configurationFile="%SORCER_HOME%"\configs\logback.groovy
 
 REM Turn on debugging if DEBUG is set in env
 IF DEFINED DEBUG (
   SET JAVA_OPTS=%JAVA_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000
 ) 
 rem echo %JAVA_OPTS%
-
-set SOS_START_CMD="%JAVACMD%" %JAVA_OPTS% -Dprogram.name=SORCER -classpath %BOOT_CLASSPATH% %STARTER_MAIN_CLASS% %CONFIG%
+rem echo %BOOT_CLASSPATH%
+set SOS_START_CMD="%JAVACMD%" %JAVA_OPTS% -Dprogram.name=SORCER -classpath "%BOOT_CLASSPATH%" %STARTER_MAIN_CLASS% %CONFIG%
 
 rem echo %SOS_START_CMD%
 :: Call the Sorcer installer to install Sorcer jars to local repo
@@ -169,7 +170,7 @@ set INST_CP=%INST_CP%;%LIB_DIR%\commons\xml-apis.jar
 set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-aether.jar
 set INST_CP=%INST_CP%;%LIB_DIR%\rio-resolver\resolver-api.jar
 if exist "%LIB_DIR%\sorcer\sorcer-api.jar" if not exist "%SORCER_HOME%\logs\sorcer_jars_installed_user_%USERNAME%.tmp" (
-	call "%JAVACMD%" -cp %INST_CP% sorcer.installer.Installer
+	call "%JAVACMD%" -cp "%INST_CP%" sorcer.installer.Installer
 )
 rem echo %SOS_START_CMD%
 rem ECHO %WEBSTER_URL%

@@ -396,6 +396,28 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>logback-parent-1.0.13.pom</destName>
             </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/google/inject/extensions/guice-multibindings/4.0-beta4/guice-multibindings-4.0-beta4.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>guice-multibindings-4.0-beta4.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/google/inject/guice/4.0-beta4/guice-4.0-beta4.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>guice-4.0-beta4.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/google/inject/guice-parent/4.0-beta4/guice-parent-4.0-beta4.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>guice-parent-4.0-beta4.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/com/google/google/5/google-5.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>google-5.pom</destName>
+            </file>
+
+
 
             <!-- sigar -->
             <!-- TODO RKR add poms to sigar jar and zip, remove below -->

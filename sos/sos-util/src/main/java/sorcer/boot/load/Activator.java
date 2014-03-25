@@ -22,6 +22,7 @@ import sorcer.tools.ActivationFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,7 +101,12 @@ public class Activator {
     public void activate(URL jarUrl) throws Exception {
         JarFile jar;
         try {
-            File jarFile = new File(jarUrl.getFile());
+            File jarFile = null;
+            try {
+                jarFile = new File(jarUrl.toURI());
+            } catch (URISyntaxException ue) {
+                jarFile = new File(jarUrl.getPath());
+            }
             if (!jarFile.exists()) {
                 log.info("Skip non-existent dir {}", jarFile);
                 return;

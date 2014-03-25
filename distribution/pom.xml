@@ -17,6 +17,11 @@
         <!-- sos -->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-installer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-start</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -422,6 +427,11 @@
             <version>${v.sorcer}</version>
         </dependency>
         <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-rio-resolver</artifactId>
+            <version>${v.sorcer}</version>
+        </dependency>
+        <dependency>
             <groupId>org.rioproject</groupId>
             <artifactId>rio-api</artifactId>
             <version>${v.rio}</version>
@@ -554,6 +564,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.0-beta4</version>
+            <classifier>no_aop</classifier>
         </dependency>
     </dependencies>
 

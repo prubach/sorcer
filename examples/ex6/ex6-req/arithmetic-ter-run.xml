@@ -60,6 +60,7 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
         <path refid="compile.classpath"/>
         <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${provider.prv}/${v.sorcer}/${provider.prv}-${v.sorcer}.jar" />
         <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/${provider.req}/${v.sorcer}/${provider.req}-${v.sorcer}.jar" />
+        <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/commons-prv/${v.sorcer}/commons-prv-${v.sorcer}.jar" />
     </path>
 
     <!-- provider codebase jars -->
