@@ -10,10 +10,6 @@ String[] getInitialMemberGroups() {
     return groups as String[]
 }
 
-def getSorcerHome() {
-    return sorcerHome = SorcerEnv.getHomeDir();
-}
-
 def getSorcerVersion() {
     return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
@@ -28,7 +24,7 @@ deployment(name: 'ex6-multiplier') {
 
     codebase getCodebase()
 
-    artifact id:'ex6-api', 'org.sorcersoft.sorcer:ex6-api:'+getSorcerVersion()
+    artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-multiplier:'+getSorcerVersion()
 
     service(name:'ex6-multiplier-prv') {

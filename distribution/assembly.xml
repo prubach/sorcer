@@ -38,6 +38,11 @@
                 <destName>sos-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos/exertlet/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertlet-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sos-providers-${v.sorcer}.pom</destName>

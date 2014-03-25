@@ -25,5 +25,6 @@
         <module>ex6-cfg-subtractor</module>
         <module>ex6-cfg-one-bean</module>
         <module>ex6-cfg-all</module>
-	</modules>
+        <module>ex6-dl</module>
+    </modules>
 </project>

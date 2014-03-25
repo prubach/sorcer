@@ -22,5 +22,6 @@
         <module>commons-prv</module>
         <module>sos-api</module>
         <module>exertlet</module>
+        <module>default-codebase</module>
     </modules>
 </project>
