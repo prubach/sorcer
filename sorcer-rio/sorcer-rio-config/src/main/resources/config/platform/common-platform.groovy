@@ -21,22 +21,13 @@ import sorcer.rio.util.SorcerCapabilityDescriptor
  * Declare common platform jars
  */
 class CommonPlatformConfig {
-    def getPlatformCapabilityConfigs() {
-        return [
-                new SorcerCapabilityDescriptor(
-                        "Commons Compress",
-                        "1.0",
-                        "Apache Commons Compress",
-                        "Apache Software Foundation",
-                        ["org.apache.commons:commons-compress:1.0"]
-                ),
-                new SorcerCapabilityDescriptor(
-                        "plexus-utils",
-                        '3.0.15',
-                        'Plexus utils - graph traverse',
-                        'codehaus.org',
-                        'org.codehaus.plexus:plexus-utils'
-                )
-        ]
+    def getPlatformCapabilityConfig() {
+        return new SorcerCapabilityDescriptor(
+                "Commons Compress",
+                "1.0",
+                "Apache Commons Compress",
+                "Apache Software Foundation",
+                ["org.apache.commons:commons-compress:1.0"]
+        )
     }
 }

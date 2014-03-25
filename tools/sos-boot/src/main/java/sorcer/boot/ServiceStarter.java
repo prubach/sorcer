@@ -16,6 +16,7 @@
 package sorcer.boot;
 
 import com.google.inject.*;
+import com.google.inject.Inject;
 import com.google.inject.name.Names;
 import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.LifeCycle;
@@ -33,12 +34,13 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Artifact;
 import org.rioproject.resolver.Resolver;
+import org.rioproject.resolver.ResolverException;
+import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.platform.PlatformLoader;
 import sorcer.boot.util.JarClassPathHelper;
-import sorcer.boot.util.ReferenceHolder;
 import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.core.DestroyAdmin;
 import sorcer.core.SorcerEnv;
@@ -47,7 +49,8 @@ import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
-import javax.inject.Named;
+import javax.inject.*;
+import javax.inject.Provider;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -145,18 +148,16 @@ public class ServiceStarter implements LifeCycle {
         return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                /*
-                * This is a hack against Guice injector hierarchy. We want Resolver, which is loaded by the platform
-                * in it's own class loader, be accessible by the whole system. For this we ensure that resolver platform
-                * service is loaded first, and keep artificial reference here in the root injector.
-                * ReferenceHolder object is used by the resolver Activator to inject the value, which is then accessible
-                * to other clients thanks to singleton bind of Resolver class.
-                */
-                ReferenceHolder<Resolver> resolverHolder = new ReferenceHolder<Resolver>();
-                bind(Resolver.class).toProvider(resolverHolder).in(Scopes.SINGLETON);
-                bind(new TypeLiteral<ReferenceHolder<Resolver>>() {
-                }).toInstance(resolverHolder);
-
+                bind(Resolver.class).toProvider(new Provider<Resolver>() {
+                    @Override
+                    public Resolver get() {
+                        try {
+                            return ResolverHelper.getResolver();
+                        } catch (ResolverException e) {
+                            throw new IllegalStateException(e);
+                        }
+                    }
+                }).in(Scopes.SINGLETON);
                 bind(ProtocolHandlerRegistry.class).toInstance(ProtocolHandlerRegistry.get());
                 bind(Policy.class).annotatedWith(Names.named("initialGlobalPolicy")).toInstance(Policy.getPolicy());
                 bind(AggregatePolicyProvider.class).annotatedWith(Names.named("globalPolicy")).toProvider(new Provider<AggregatePolicyProvider>() {
