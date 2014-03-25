@@ -672,7 +672,7 @@ public class operator {
 						p.inPath, ((Exertion) p.in).getContext());
 			}
 		} else
-			throw new ExertionException("No component exertion defined.");
+			throw new ExertionException("No component exertion defined for job: " + job.getName());
 
 		return job;
 	}

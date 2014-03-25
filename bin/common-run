@@ -222,6 +222,7 @@ lateInit ( ) {
 	V_JINI=$(getVersion v.jini)
 	V_GROOVY=$(getVersion v.groovy)
 	V_PLEXUS=$(getVersion v.plexus)
+	V_SIGAR=$(getVersion v.sigar)
 
 	if [ "x$RIO_HOME" = "x" ]; then
 		rioHome=${SORCER_HOME}/lib/rio
