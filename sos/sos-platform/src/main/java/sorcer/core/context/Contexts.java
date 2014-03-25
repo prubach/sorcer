@@ -554,6 +554,11 @@ public class Contexts {
 
                     ((ContextNode)val).setDA(dire);
                     nodes.add(val);
+                } else if (val!=null && val instanceof ContextLink) {
+                    ContextLink cl = (ContextLink)val;
+                    ContextNode[] cns = getContextNodes(cl.getContext());
+                    for (ContextNode cn : cns)
+                        nodes.add(cn);
                 }
             }
 		}
@@ -581,16 +586,13 @@ public class Contexts {
 				if (((ContextNode) obj).getData() instanceof Context) {
 					additional = Arrays
 							.asList(getAllContextNodes((Context) obj));
-					if (additional.size() > 0)
-						allNodes.addAll(additional);
-				} else if (obj instanceof ServiceExertion) {
-					additional = Arrays
-							.asList(getTaskContextNodes((ServiceExertion) obj));
-				} else if (obj instanceof Job) {
+				} else if (obj instanceof ServiceExertion || obj instanceof Job) {
 					additional = Arrays
 							.asList(getTaskContextNodes((ServiceExertion) obj));
 				}
-			}
+                if (additional!=null && additional.size() > 0)
+                    allNodes.addAll(additional);
+            }
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

@@ -73,9 +73,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         }
         logger.finest("preExecExertions>>>...UPDATING INPUTS...");
 		try {
-			if (exertion.isTask()) {
+			//if (exertion.isTask()) {
 				updateInputs(exertion);
-			}
+			//}
 		} catch (ContextException e) {
 			throw new ExertionException(e);
 		}        
