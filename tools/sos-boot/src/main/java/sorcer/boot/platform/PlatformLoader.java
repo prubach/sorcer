@@ -24,14 +24,15 @@ import groovy.lang.GroovyShell;
 import net.jini.config.EmptyConfiguration;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.rioproject.config.PlatformCapabilityConfig;
+import org.rioproject.loader.CommonClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
 import sorcer.core.ServiceActivator;
 import sorcer.provider.boot.AbstractServiceDescriptor;
-import sorcer.provider.boot.CommonClassLoader;
 import sorcer.tools.ActivationFactory;
 import sorcer.util.ClassPath;
+import sorcer.util.InjectionHelper;
 
 import java.io.File;
 import java.net.URL;
@@ -47,12 +48,12 @@ public class PlatformLoader {
 
     private org.rioproject.config.PlatformLoader platformLoader = new org.rioproject.config.PlatformLoader();
     private Activator activator;
-    protected Injector injector;
+    private Injector injector;
 
     private File platformRoot;
     private File servicePlatformRoot;
     private final List<Module> modules = new LinkedList<Module>();
-    private Injector platformInjctor;
+    protected Injector platformInjctor;
     private CommonClassLoader platformClassLoader;
 
     public PlatformLoader(Injector injector, File platformRoot, File servicePlatformRoot) {
@@ -91,6 +92,17 @@ public class PlatformLoader {
         current.setContextClassLoader(platformClassLoader);
         try {
             platformInjctor = loadPlatformServices(servicePlatformRoot);
+            InjectionHelper.setInstance(new InjectionHelper.Injector() {
+                @Override
+                public void injectMembers(Object target) {
+                    platformInjctor.injectMembers(target);
+                }
+
+                @Override
+                public <T> T create(Class<T> type) {
+                    return platformInjctor.getInstance(type);
+                }
+            });
         } finally {
             current.setContextClassLoader(original);
         }

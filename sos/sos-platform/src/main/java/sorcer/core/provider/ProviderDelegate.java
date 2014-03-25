@@ -16,6 +16,7 @@
  */
 package sorcer.core.provider;
 
+import com.sun.jini.config.Config;
 import groovy.lang.GroovyShell;
 
 import java.io.File;
@@ -60,6 +61,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 
 import net.jini.admin.Administrable;
@@ -84,14 +86,8 @@ import net.jini.lookup.entry.Name;
 import net.jini.security.AccessPermission;
 import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
-import sorcer.config.BeanListener;
 import sorcer.config.ServiceBeanListener;
-import sorcer.core.ContextManagement;
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
-import sorcer.core.SorcerNotifierProtocol;
-import sorcer.core.UEID;
-import sorcer.service.*;
+import sorcer.core.*;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -112,13 +108,11 @@ import sorcer.security.sign.SignedServiceTask;
 import sorcer.security.sign.SignedTaskInterface;
 import sorcer.security.sign.TaskAuditor;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.UnknownExertionException;
+import sorcer.service.*;
 import sorcer.service.jobber.JobberAccessor;
 import sorcer.service.space.SpaceAccessor;
 import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
-
-import com.sun.jini.config.Config;
 
 import static sorcer.core.SorcerConstants.*;
 
@@ -316,7 +310,8 @@ public class ProviderDelegate {
 
 	private ContextManagement contextManager;
 
-    private BeanListener beanListener = ServiceBeanListener.getBeanListener();
+    @Inject
+    private ServiceBeanListener beanListener;
 
 	/*
 	 * A nested class to hold the state information of the executing thread for
@@ -368,6 +363,7 @@ public class ProviderDelegate {
 	}
 
 	public ProviderDelegate() {
+        InjectionHelper.injectMembers(this);
 	}
 
 	public void init(Provider provider) throws RemoteException,
