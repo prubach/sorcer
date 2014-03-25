@@ -24,14 +24,13 @@ deployment(name: 'spacer-provider') {
 
     codebase getCodebase()
 
-    artifact id:'spacer-api', 'org.sorcersoft.sorcer:spacer-api:'+getSorcerVersion()
+    artifact id:'spacer-api', 'org.sorcersoft.sorcer:default-codebase:'+getSorcerVersion()
     artifact id:'spacer-cfg', 'org.sorcersoft.sorcer:spacer-cfg:'+getSorcerVersion()
-    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
 
     service(name: "Spacer") {
         interfaces {
             classes 'sorcer.core.provider.Spacer'
-            artifact ref: 'sos-exertlet-sui'
+            artifact ref: 'spacer-api'
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
             artifact ref: 'spacer-cfg'

@@ -23,7 +23,7 @@ deployment(name: 'cataloger-provider') {
 
     def cataloger = [
             impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
-            api : 'org.sorcersoft.sorcer:cataloger-api:' + SORCER_VERSION
+            api : 'org.sorcersoft.sorcer:cataloger-dl:pom:' + SORCER_VERSION
     ]
 
     service(name: 'cataloger-prv') {

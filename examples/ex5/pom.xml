@@ -23,5 +23,6 @@
         <module>ex5-cfg-one-bean</module>
         <module>ex5-job</module>
         <module>ex5-req</module>
+        <module>ex5-dl</module>
 	</modules>
 </project>

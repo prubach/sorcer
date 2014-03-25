@@ -15,6 +15,7 @@
         <module>cataloger-cfg</module>
         <module>cataloger-prv</module>
         <module>cataloger-sui</module>
+        <module>cataloger-dl</module>
     </modules>
 
 

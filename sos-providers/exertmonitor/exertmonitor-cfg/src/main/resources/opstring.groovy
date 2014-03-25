@@ -3,15 +3,13 @@
  *
  * @author Pawel Rubach
  */
+
+import sorcer.core.SorcerConstants
 import sorcer.core.SorcerEnv;
 
 String[] getInitialMemberGroups() {
     def groups = SorcerEnv.getLookupGroups();
     return groups as String[]
-}
-
-def getSorcerVersion() {
-    return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
 
 def String getCodebase() {
@@ -24,17 +22,18 @@ deployment(name: 'exertmonitor-provider') {
 
     codebase getCodebase()
 
-    artifact id:'exertmonitor-api', 'org.sorcersoft.sorcer:exertmonitor-api:'+getSorcerVersion()
-    artifact id:'exertmonitor-cfg', 'org.sorcersoft.sorcer:exertmonitor-cfg:'+getSorcerVersion()
-    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
+    def monitor = [
+            'impl': 'org.sorcersoft.sorcer:exertmonitor-cfg:' + SorcerConstants.SORCER_VERSION,
+            'dl'  : 'org.sorcersoft.sorcer:default-codebase:' + SorcerConstants.SORCER_VERSION
+    ]
 
     service(name: "ExertMonitor") {
         interfaces {
             classes 'sorcer.core.monitor.MonitoringManagement'
-            artifact ref: 'sos-exertlet-sui'
+            artifact monitor.dl
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
-            artifact ref: 'exertmonitor-cfg'
+            artifact monitor.impl
         }
         configuration file: 'classpath:exertmonitor.config'
         maintain 1

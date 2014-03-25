@@ -19,7 +19,7 @@ deployment(name: 'account2-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'account-api', 'org.sorcersoft.sorcer:account-api:' + SorcerEnv.getSorcerVersion()
+    artifact id: 'account-api', 'org.sorcersoft.sorcer:account-dl:pom:' + SorcerEnv.getSorcerVersion()
     artifact id: 'account-cfg', 'org.sorcersoft.sorcer:account-cfg-2:' + SorcerEnv.getSorcerVersion()
 
     service(name: 'account2-prv') {

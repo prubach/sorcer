@@ -3,15 +3,13 @@
  *
  * @author Pawel Rubach
  */
+
+import sorcer.core.SorcerConstants
 import sorcer.core.SorcerEnv;
 
 String[] getInitialMemberGroups() {
     def groups = SorcerEnv.getLookupGroups();
     return groups as String[]
-}
-
-def getSorcerVersion() {
-    return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
 
 def String getCodebase() {
@@ -24,17 +22,18 @@ deployment(name: 'exerter-provider') {
 
     codebase getCodebase()
 
-    artifact id:'exerter-api', 'org.sorcersoft.sorcer:exerter-api:'+getSorcerVersion()
-    artifact id:'exerter-cfg', 'org.sorcersoft.sorcer:exerter-cfg:'+getSorcerVersion()
-    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
+    def exerter = [
+            'impl': 'org.sorcersoft.sorcer:exerter-cfg:' + SorcerConstants.SORCER_VERSION,
+            'dl'  : 'org.sorcersoft.sorcer:default-codebase:' + SorcerConstants.SORCER_VERSION
+    ]
 
     service(name: "Exerter") {
         interfaces {
             classes 'sorcer.core.provider.ServiceTasker'
-            artifact ref: 'sos-exertlet-sui'
+            artifact exerter.dl
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
-            artifact ref: 'exerter-cfg'
+            artifact exerter.impl
         }
         configuration file: 'classpath:exerter.config'
         maintain 1

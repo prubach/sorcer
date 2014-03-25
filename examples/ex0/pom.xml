@@ -19,7 +19,8 @@
 		<module>ex0-sui</module>
         <module>ex0-cfg</module>
         <module>ex0-req</module>
-	</modules>
+        <module>ex0-dl</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>

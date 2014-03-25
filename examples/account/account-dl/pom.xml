@@ -21,25 +21,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <artifactId>ex6</artifactId>
+        <artifactId>account</artifactId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ex6-dl</artifactId>
+    <artifactId>account-dl</artifactId>
     <packaging>pom</packaging>
-	<name>SORCER examples :: ex6 :: codebase</name>
+    <name>SORCER examples :: account :: codebase</name>
 
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex6-api</artifactId>
-            <version>${v.sorcer}</version>
+            <artifactId>account-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>default-codebase</artifactId>
+            <artifactId>sorcer-api</artifactId>
             <version>${v.sorcer}</version>
-            <type>pom</type>
         </dependency>
     </dependencies>
 </project>

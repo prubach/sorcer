@@ -26,6 +26,7 @@
     </parent>
 
     <artifactId>sorcer-ui</artifactId>
+    <name>SORCER OS :: UI</name>
 
     <dependencies>
         <dependency>

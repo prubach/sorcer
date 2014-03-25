@@ -9,7 +9,6 @@
 		<version>1.0-M4-SNAPSHOT</version>
 	</parent>
 
-	<groupId>org.sorcersoft.sorcer</groupId>
 	<artifactId>account</artifactId>
 	<packaging>pom</packaging>
 	<name>SORCER examples :: account</name>
@@ -28,7 +27,8 @@
 
         <!-- optional modules -->
 		<module>account-sui</module>
-	</modules>
+        <module>account-dl</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>

@@ -24,13 +24,13 @@ deployment(name: 'logger-provider') {
 
     codebase getCodebase()
 
-    artifact id:'logger-sui', 'org.sorcersoft.sorcer:logger-sui:'+getSorcerVersion()
+    artifact id:'logger-dl', 'org.sorcersoft.sorcer:default-codebase:'+getSorcerVersion()
     artifact id:'logger-cfg', 'org.sorcersoft.sorcer:logger-cfg:'+getSorcerVersion()
 
     service(name: "Logger") {
         interfaces {
             classes 'sorcer.core.RemoteLogger'
-            artifact ref: 'logger-sui'
+            artifact ref: 'logger-dl'
         }
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
             artifact ref: 'logger-cfg'

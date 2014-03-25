@@ -5,36 +5,34 @@
  */
 import sorcer.core.SorcerEnv;
 
+import static sorcer.core.SorcerConstants.SORCER_VERSION
+
 String[] getInitialMemberGroups() {
     def groups = SorcerEnv.getLookupGroups();
     return groups as String[]
-}
-
-def getSorcerVersion() {
-    return sorcerVersion = SorcerEnv.getSorcerVersion();
 }
 
 def String getCodebase() {
     return SorcerEnv.getWebsterUrl();
 }
 
-
 deployment(name: 'concatenator-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
-    //artifact id:'concatenator-api', 'org.sorcersoft.sorcer:concatenator-api:'+getSorcerVersion()
-    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
-    artifact id:'concatenator-cfg', 'org.sorcersoft.sorcer:concatenator-cfg:'+getSorcerVersion()
+    def concatenator = [
+            impl: 'org.sorcersoft.sorcer:concatenator-cfg:' + SORCER_VERSION,
+            dl  : "org.sorcersoft.sorcer:default-codebase:" + SORCER_VERSION
+    ]
 
     service(name: "Concatenator") {
         interfaces {
             classes 'sorcer.core.provider.Concatenator'
-            artifact ref: 'sos-exertlet-sui'
+            artifact concatenator.dl
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceConcatenator') {
-            artifact ref: 'concatenator-cfg'
+            artifact concatenator.impl
         }
         configuration file: 'classpath:concatenator.config'
         maintain 1

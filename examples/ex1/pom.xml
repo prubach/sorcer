@@ -21,5 +21,6 @@
         <module>ex1-cfg1</module>
         <module>ex1-cfg2</module>
         <module>ex1-cfg-all</module>
+        <module>ex1-dl</module>
     </modules>
 </project>

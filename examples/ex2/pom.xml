@@ -22,5 +22,6 @@
         <module>ex2-cfg1</module>
         <module>ex2-cfg2</module>
         <module>ex2-cfg3</module>
+        <module>ex2-dl</module>
 	</modules>
 </project>
