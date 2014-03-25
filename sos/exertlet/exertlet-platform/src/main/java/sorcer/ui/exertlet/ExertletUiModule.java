@@ -37,8 +37,6 @@ import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Set;
 
@@ -83,10 +81,6 @@ public class ExertletUiModule extends AbstractModule {
                 log.error("getServiceUI", ex);
             }
 
-        }
-
-        public static URI toArtifactUri(ArtifactCoordinates ac) throws URISyntaxException {
-            return new URI("artifact", ac.toString().replace(':', '/'), null);
         }
 
         @Override

@@ -25,7 +25,7 @@ ResolvingServiceDescriptor getPlatformService() {
     return new ResolvingServiceDescriptor(
             "org.sorcersoft.sorcer:sos-exertlet-sui:" + SORCER_VERSION,
             new File(SorcerEnv.homeDir, "configs/sorcer.policy").path,
-            "org.sorcersoft.sorcer:sos-exertlet-sui:" + SORCER_VERSION,
+            "org.sorcersoft.sorcer:exertlet-platform:" + SORCER_VERSION,
             "sorcer.ui.exertlet.ExertletUiModule",
             null
     );
