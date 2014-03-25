@@ -60,7 +60,6 @@ public class ServiceExerter implements Exerter, Callable {
     private ServiceExertion exertion;
     private Transaction transaction;
     private static MutualExclusion locker;
-    private ProviderProvisionManager providerProvisionManager;
 
     public ServiceExerter() {
     }

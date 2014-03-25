@@ -8,7 +8,7 @@ def getPlatformCapabilityConfig() {
             "SORCER OS",
             "SorcerSoft.com",
             [
-//                    'org.sorcersoft.sorcer:sos-api',
+                    'org.sorcersoft.lockmgr:lockmgr-api:0.2-3',
                     'org.sorcersoft.sorcer:sos-platform',
                     'org.sorcersoft.sorcer:logger-api',
                     'org.sorcersoft.sorcer:commons-prv',
