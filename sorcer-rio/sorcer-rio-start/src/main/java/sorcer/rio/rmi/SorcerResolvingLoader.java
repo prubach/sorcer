@@ -131,7 +131,11 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                             cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
                                     artifactURLConfiguration.getRepositories());
                         } catch (Exception e) {
-                            logger.warn("Error", e);
+                            logger.warn("Trying again to resolve: " + artifactURLConfiguration.getArtifact().toString());
+                            /*for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
+                                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                            }*/
                             cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
                                     artifactURLConfiguration.getRepositories());
                         }

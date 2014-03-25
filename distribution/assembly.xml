@@ -407,6 +407,11 @@
                 <destName>guice-4.0-beta4.pom</destName>
             </file>
             <file>
+                <source>${user.home}/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>aopalliance-1.0.pom</destName>
+            </file>
+            <file>
                 <source>${user.home}/.m2/repository/com/google/inject/guice-parent/4.0-beta4/guice-parent-4.0-beta4.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>guice-parent-4.0-beta4.pom</destName>
@@ -416,8 +421,6 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>google-5.pom</destName>
             </file>
-
-
 
             <!-- sigar -->
             <!-- TODO RKR add poms to sigar jar and zip, remove below -->
