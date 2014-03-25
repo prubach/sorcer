@@ -33,7 +33,6 @@ import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Artifact;
-import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 
 import java.io.IOException;
@@ -53,12 +52,12 @@ public class ExertletUiModule extends AbstractModule {
     static class MyBeanListener extends AbstractBeanListener implements ServiceDescriptorProcessor {
         private static Logger log = LoggerFactory.getLogger(MyBeanListener.class);
 
-        private ArtifactCoordinates sosExertletUi = Artifact.sorcer("sos-exertlet-sui");
-
         private URL sosExertletSuiUrl;
+        private URL sorcerUi;
 
         public MyBeanListener() {
-            sosExertletSuiUrl = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), sosExertletUi.toString());
+            sosExertletSuiUrl = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sos-exertlet-sui").toString());
+            sorcerUi = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString());
         }
 
         @Override
@@ -102,7 +101,7 @@ public class ExertletUiModule extends AbstractModule {
                 if (url.toExternalForm().startsWith(myUrl))
                     return;
             }
-            codebase.add(sosExertletSuiUrl);
+            codebase.add(sorcerUi);
         }
     }
 }
