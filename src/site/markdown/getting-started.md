@@ -54,16 +54,11 @@ The Sorcer installation directory (<tt>SORCER_HOME</tt>) contains the following 
     <li><tt>configs</tt> - configuration files
         <ul>
             <li><tt>\ sorcer.env</tt> - the main SORCER environment config file</li>
-            <li><tt>\ sorcer.logging</tt> - SORCER logging levels config</li>
+            <li><tt>\ logback.groovy</tt> - SORCER logging levels config</li>
         </ul>
     </li>
     <li><tt>docs</tt> - documentation and license files</li>
     <li><tt>examples</tt> - examples that demonstrate how to create services in SORCER
-        <ul>
-            <li><tt>\ prepare-repository or prepare-repository.bat</tt> - a script that should be invoked before starting to play with
-                examples.
-            </li>
-        </ul>
     </li>
     <li><tt>lib</tt> - directory with all sorcer and third-party jar files</li>
     <li><tt>logs</tt> - empty directory for logs</li>

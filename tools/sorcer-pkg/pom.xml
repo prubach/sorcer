@@ -164,7 +164,6 @@
                                     <include>**/*</include>
                                     <include>pom.xml</include>
                                     <include>setenv</include>
-                                    <include>prepare-repository</include>
                                 </includes>
                                 <excludes>
                                     <exclude>*.bat</exclude>
@@ -271,7 +270,7 @@
                             <data>
                                 <type>directory</type>
                                 <src>../../distribution/target/sorcer-${project.version}/sorcer-${project.version}</src>
-                                <includes>configs/start-scripts/**,bin/**,examples/setenv,examples/prepare-repository</includes>
+                                <includes>configs/start-scripts/**,bin/**,examples/setenv</includes>
                                 <excludes>bin/*.bat,examples/*.bat,bin/*.cmd,bin/uninstall,bin/tmp,logs/**,logs</excludes>
                                 <mapper>
                                     <type>perm</type>

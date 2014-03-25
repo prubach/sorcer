@@ -20,20 +20,18 @@
 **      setenv.bat (on Windows)
 **      To set the environment variables permanently on Unix add this line to your
 **      .profile, .bashrc or /etc/environment file
-**   4. Before building examples for the first time please run:
-**      ./prepare-repository
-**   5. Then run: mvn install to build the examples.
-**   6. If all builds succeed you are ready to go.
+**   4. Then run: mvn install to build the examples.
+**   5. If all builds succeed you are ready to go.
 **      You can start providers by executing:
 **      sorcer-boot :ex0-cfg or
 **      sorcer-boot ex0/ex0-cfg/target/ex0-cfg.jar
 **      Run sorcer-boot -h to see all options
 **      or
 **      look for xml ant scripts to start providers
-**   7. You can run an NTL script by executing:
+**   6. You can run an NTL script by executing:
 **      ./run.ntl or
 **      Starting the nsh shell: nsh
 **      and then running: exert path/to/file.ntl
-**   8. Some examples have precompiled requestors. In that case look for
+**   7. Some examples have precompiled requestors. In that case look for
 **      ant scripts and start them by running:
 **      ant -f script.xml

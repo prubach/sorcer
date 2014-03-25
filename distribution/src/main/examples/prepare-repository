@@ -1,3 +1,0 @@
-#!/bin/bash
-mvn archetype:crawl -Dcatalog="~/.m2/archetype-catalog.xml"
-

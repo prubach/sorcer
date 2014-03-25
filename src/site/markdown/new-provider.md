@@ -10,7 +10,7 @@
 ##Creating the project
 
 1. Go to directory which will be the parent of your new project
-1. Call maven to use the archetype <pre>mvn archetype:generate -DarchetypeGroupId=org.sorcersoft.sorcer -DarchetypeArtifactId=sorcer-provider</pre> or <pre>mvn archetype:generate -Dfilter=org.sorcersoft.sorcer:</pre>
+1. Run <pre>$SORCER_HOME/bin/create-provider </pre>
 1. Answer questions:
  1. groupId: This will usually be your organization's reversed domain name, e.g. com.sorcersoft
  1. artifactId: The project name and the project directory name, e.g. myprovider
@@ -55,7 +55,7 @@
 
 ##cfg modules
 
-A cfg module is a module (jar file) that consists only from configuration files: opstring, service configuration and policy file. It's purpose is encapsulate configurations of a service provider (or a group of).
+A cfg module is a module (jar file) that consists only of configuration files: opstring, service configuration and policy file. It's purpose is encapsulate configurations of a service provider (or a group of).
 
 Cfg module must have manifest file with these entries (names are compatible with Rio OAR):
 - OAR-OperationalString path of opstring file inside cfg module

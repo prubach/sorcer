@@ -155,14 +155,12 @@
                 <exclude name="**/target/**/*"/>
                 <exclude name="README.txt"/>
                 <exclude name="setenv"/>
-                <exclude name="prepare-repository"/>
                 <os family="windows"/>
             </fileset>
             <fileset dir="../../sorcer-@v_sorcer@/sorcer-@v_sorcer@/examples"
                      targetdir="$INSTALL_PATH/examples" defaultexcludes="yes">
                 <include name="**/*"/>
                 <exclude name="**/target/**/*"/>
-                <exclude name="prepare-repository.bat"/>
                 <exclude name="setenv.bat"/>
                 <os family="unix"/>
                 <os family="mac"/>
@@ -173,7 +171,6 @@
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f1a.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/ex6/ex6-req/f4.ntl" os="unix"/>
             <executable targetfile="$INSTALL_PATH/examples/setenv" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/examples/prepare-repository" os="unix"/>
         </pack>
     </packs>
 

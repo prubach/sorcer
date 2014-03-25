@@ -8,4 +8,9 @@ done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source $DIR/setenv
 
+if [ ! -f "$SORCER_HOME/logs/sorcer_archetype_installed_user_$USER.tmp" ]; then
+    mvn archetype:crawl -Dcatalog="$HOME/.m2/archetype-catalog.xml"
+    touch $SORCER_HOME/logs/sorcer_archetype_installed_user_$USER.tmp
+fi
+
 mvn archetype:generate -DarchetypeGroupId=org.sorcersoft.sorcer -DarchetypeArtifactId=sorcer-provider

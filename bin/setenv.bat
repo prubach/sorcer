@@ -73,21 +73,19 @@ echo ##   1. Source the script to prepare your environment using:
 echo ##      source ./setenv
 echo ##      To set the environment variables permanently add this line to your
 echo ##      .profile, .bashrc or /etc/environment file
-echo ##   2. Before building examples for the first time please run:
-echo ##      ./prepare-repository
-echo ##   3. Then run: mvn install to build the examples.
-echo ##   4. If all builds succeed you are ready to go.
+echo ##   2. Then run: mvn install to build the examples.
+echo ##   3. If all builds succeed you are ready to go.
 echo ##      You can start providers by executing:
 echo ##      sorcer-boot :ex0-cfg or
 echo ##      sorcer-boot ex0/ex0-cfg/target/ex0-cfg.jar
 echo ##      Run sorcer-boot -h to see all options
 echo ##      or
 echo ##      look for xml ant scripts to start providers
-echo ##   5. You can run an NTL script by executing:
+echo ##   4. You can run an NTL script by executing:
 echo ##      ./run.ntl or
 echo ##      Starting the nsh shell: nsh
 echo ##      and then running: exert path/to/file.ntl
-echo ##   6. Some examples have precompiled requestors. In that case look for
+echo ##   5. Some examples have precompiled requestors. In that case look for
 echo ##      ant scripts and start them by running:
 echo ##      ant -f script.xml
 echo ##
