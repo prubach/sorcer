@@ -85,8 +85,8 @@ public class PropertyEvaluator {
             source = Collections.toProperties(data);
             useKey = var;
         }
-        if (source.containsKey(useKey)) {
-            String varValue = source.getProperty(useKey);
+        String varValue = source.getProperty(useKey);
+        if (varValue != null) {
             String newValue = replaceAll(value, variable[2], variable[3], varValue);
             data.put(key, newValue);
             return true;
