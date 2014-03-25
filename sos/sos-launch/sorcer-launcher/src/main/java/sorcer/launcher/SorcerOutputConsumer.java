@@ -42,14 +42,16 @@ public class SorcerOutputConsumer extends LineWriter {
         if (!m.find()) {
             return;
         }
-        String started = m.group(1);
-        String all = m.group(2);
-        String errors = m.group(3);
-        log.debug("Started {} of {} with {} errors", started, all, errors);
-        if (!"0".equals(errors))
-            log.error("Errors while starting services");
+        int started = Integer.parseInt(m.group(1));
+        int all = Integer.parseInt(m.group(2));
+        int erred = Integer.parseInt(m.group(3));
 
-        if(started.equals(all))
+        log.debug("Started {} of {} with {} erred", started, all, erred);
+
+        if (all == started + erred) {
+            if (erred != 0)
+                log.warn("Errors while starting services");
             sorcerListener.sorcerStarted();
+        }
     }
 }
