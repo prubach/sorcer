@@ -498,12 +498,12 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		public List<ServiceItem> get(InterfaceList interfaceList) {
-			for (InterfaceList keyToGet : keySet()) {
-				InterfaceList list = (InterfaceList) keyToGet;
-				if (list.containsAllInterfaces(interfaceList)) {
-                    logger.info("Cataloger found matching interface list: " + Arrays.toString(list.toArray()));
+            for (Enumeration e = keys(); e.hasMoreElements();) {
+                InterfaceList key = (InterfaceList) e.nextElement();
+                if (key.containsAllInterfaces(interfaceList)) {
+                    logger.info("Cataloger found matching interface list: " + Arrays.toString(key.toArray()));
 
-					return super.get(keyToGet);
+					return super.get(key);
 				}
 			}
 			return null;
@@ -511,11 +511,11 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public List<ServiceItem> getAll(InterfaceList interfaceList) {
 			List<ServiceItem> sItems = new ArrayList<ServiceItem>();
-			for (InterfaceList keyToGet : keySet()) {
-				InterfaceList list = keyToGet;
-				if (list.containsAllInterfaces(interfaceList)) {
-					logger.info("Cataloger found matching interface list: " + list);
-					sItems.addAll(super.get(keyToGet));
+            for (Enumeration e = keys(); e.hasMoreElements();) {
+                InterfaceList key = (InterfaceList) e.nextElement();
+				if (key.containsAllInterfaces(interfaceList)) {
+					logger.info("Cataloger found matching interface list: " + key);
+					sItems.addAll(super.get(key));
 				}
 			}
 			return sItems;
@@ -570,11 +570,9 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			InterfaceList key;
 			List<ServiceItem> sItems;
-			Iterator<InterfaceList> it = keySet().iterator();
-			while (it.hasNext()) {
-				key = it.next();
+            for (Enumeration e = keys(); e.hasMoreElements();) {
+                InterfaceList key = (InterfaceList) e.nextElement();
 				sItems = get(key);
 				sb.append("\n");
 				if (sItems != null && sItems.size() > 0
