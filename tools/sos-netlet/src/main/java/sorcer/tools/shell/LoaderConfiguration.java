@@ -19,10 +19,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.netlet.util.LoaderConfigurationHelper;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -143,8 +140,9 @@ public class LoaderConfiguration {
      * by using the * wildcard like in any shell.
      */
     private void loadUrls(List<URL> urls) {
-        for (URL url : urls)
+        for (URL url : urls) {
             addUrl(url);
+        }
     }
 
 
@@ -195,8 +193,15 @@ public class LoaderConfiguration {
                 } catch (IOException e) {
                     logger.severe("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
                 }
-            } else if (url.getProtocol().equalsIgnoreCase("file") && new File(url.getFile()).exists()) {
-                classPath.add(url);
+            } else if (url.getProtocol().equalsIgnoreCase("file")) {
+                File jarFile = null;
+                try {
+                    jarFile = new File(url.toURI());
+                } catch (URISyntaxException ue) {
+                    jarFile = new File(url.getPath());
+                }
+                if (jarFile!=null && jarFile.exists())
+                    classPath.add(url);
             } else {
                 logger.severe("Unsupported protocol to be added to classpath: " + url.toString());
             }
