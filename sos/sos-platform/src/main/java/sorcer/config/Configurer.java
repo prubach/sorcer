@@ -21,11 +21,12 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.provider.ServiceProvider;
+import sorcer.core.provider.Provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.rmi.RemoteException;
 
 /**
  * Configure object of which class is annotated with @Component and methods or fields annotated with ConfigEntry
@@ -36,13 +37,15 @@ public class Configurer extends AbstractBeanListener {
 
     final private static Logger log = LoggerFactory.getLogger(Configurer.class);
 
-    public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
+    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
         for (Object serviceBean : serviceBeans) {
             try {
                 process(serviceBean, provider.getProviderConfiguration());
             } catch (IllegalArgumentException x) {
                 log.error("Error while processing {}", serviceBean);
                 throw x;
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -78,7 +81,7 @@ public class Configurer extends AbstractBeanListener {
         if (ptypes.length != 1) return;
         Class<?> type = ptypes[0];
 
-        Object defaultValue = null;
+        Object defaultValue;
         if (!ConfigEntry.NONE.equals(configEntry.defaultValue())) {
             defaultValue = configEntry.defaultValue();
         } else {
@@ -163,7 +166,6 @@ public class Configurer extends AbstractBeanListener {
     }
 
     private String getEntryKey(String propertyName, ConfigEntry entry) {
-        String key;
         if (ConfigEntry.DEFAULT_KEY.equals(entry.value())) {
             return propertyName;
         } else {

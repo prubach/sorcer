@@ -27,7 +27,7 @@ import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.config.AbstractBeanListener;
 import sorcer.config.BeanListener;
 import sorcer.core.SorcerEnv;
-import sorcer.core.provider.ServiceProvider;
+import sorcer.core.provider.Provider;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
@@ -61,7 +61,7 @@ public class ExertletUiModule extends AbstractModule {
         }
 
         @Override
-        public void preProcess(ServiceProvider provider) {
+        public void preProcess(Provider provider) {
             try {
                 // URL exportUrl, String className, String name, String helpFilename
                 UIDescriptor uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
@@ -79,20 +79,18 @@ public class ExertletUiModule extends AbstractModule {
             } catch (IOException ex) {
                 log.error("getServiceUI", ex);
             }
-
         }
 
         @Override
-        public void process(ServiceDescriptor descriptor) throws Exception {
+        public void process(ServiceDescriptor descriptor) {
             if (descriptor instanceof AbstractServiceDescriptor)
                 process((AbstractServiceDescriptor) descriptor);
         }
 
         /**
          * @param descriptor AbstractSorcerDescriptor
-         * @throws Exception
          */
-        public void process(AbstractServiceDescriptor descriptor) throws Exception {
+        public void process(AbstractServiceDescriptor descriptor) {
             Set<URL> codebase = descriptor.getCodebase();
             if (codebase == null || codebase.isEmpty())
                 return;

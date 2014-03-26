@@ -18,14 +18,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>exertlet</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>exertlet</artifactId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>exertlet-platform</artifactId>
+    <name>SORCER OS :: platform :: exertlet UI installer</name>
 
     <dependencies>
         <dependency>
@@ -35,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
+            <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

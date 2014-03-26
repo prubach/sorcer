@@ -16,7 +16,7 @@ package sorcer.config;
  */
 
 import net.jini.config.ConfigurationException;
-import sorcer.core.provider.ServiceProvider;
+import sorcer.core.provider.Provider;
 
 import javax.inject.Inject;
 import java.util.LinkedList;
@@ -53,13 +53,13 @@ public class ServiceBeanListener implements BeanListener {
     }
 
     @Override
-    public void preProcess(ServiceProvider provider) {
+    public void preProcess(Provider provider) {
         for (BeanListener activator : activators)
             activator.preProcess(provider);
     }
 
     @Override
-    public void activate(Object[] serviceBeans, ServiceProvider provider) throws ConfigurationException {
+    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
         for (BeanListener activator : activators) {
             activator.activate(serviceBeans, provider);
         }

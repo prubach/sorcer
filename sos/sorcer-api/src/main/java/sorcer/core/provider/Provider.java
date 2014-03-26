@@ -147,5 +147,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	public Logger getProviderLogger() throws RemoteException;
 
 	public Logger getRemoteLogger() throws RemoteException;
-	
+
+    // for private use
+    public void addAttribute(Entry attribute) throws RemoteException;
 }
