@@ -23,13 +23,18 @@ import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
 
 /**
  * SORCER class
@@ -41,7 +46,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
      * A table of artifacts to derived codebases. This improves performance by resolving the classpath once per
      * artifact.
      */
-    private final Map<String, String> artifactToCodebase = new ConcurrentHashMap<String, String>();
+    private final Map<String, Set<String>> artifactToCodebase = new ConcurrentHashMap<String, Set<String>>();
     /**
      * A table of classes to artifact: codebase. This will ensure that if the annotation is requested for a class that
      * has it's classpath resolved from an artifact, that the artifact URL is passed back instead of the resolved
@@ -108,61 +113,59 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     }
 
     private String resolveCodebase(final String codebase) {
-        String adaptedCodebase;
-        StringBuilder resolvedCodebaseBuilder = new StringBuilder();
         if (codebase != null && codebase.startsWith("artifact:")) {
-            String[] artifacts = codebase.split(" ");
+            String[] artifacts = codebase.split(CODEBASE_SEPARATOR);
             Set<String> jarsSet = new HashSet<String>();
             for (String artf : artifacts) {
-                adaptedCodebase = artifactToCodebase.get(artf);
-                if (adaptedCodebase == null) {
-                    try {
-                        logger.debug("Resolve {} ", artf);
-                        StringBuilder builder = new StringBuilder();
-                        String path = artf.substring(artf.indexOf(":") + 1);
-                        ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
-                        for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
-                            rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                            rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                        }
-                        //TODO Resolver error
-                        String[] cp;
+                Set<String> adaptedCodebase;
+                synchronized (artf.intern()) {
+                    adaptedCodebase = artifactToCodebase.get(artf);
+                    if (adaptedCodebase == null)
                         try {
-                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                                    artifactURLConfiguration.getRepositories());
-                        } catch (Exception e) {
-                            logger.warn("Trying again to resolve: " + artifactURLConfiguration.getArtifact().toString());
-                            /*for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
-                                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
-                            }*/
-                            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
-                                    artifactURLConfiguration.getRepositories());
-                        }
-                        for (String s : cp) {
-                            if (builder.length() > 0)
-                                builder.append(" ");
-                            builder.append(new File(s).toURI().toURL().toExternalForm());
-                        }
-                        adaptedCodebase = builder.toString();
-                        artifactToCodebase.put(artf, adaptedCodebase);
+                            adaptedCodebase = new HashSet<String>();
+                            for (String path : doResolve(artf)) {
+                                // ignore pom files
+                                if(path.endsWith(".pom"))
+                                    continue;
+                                adaptedCodebase.add(new File(path).toURI().toURL().toExternalForm());
+                            }
+                            artifactToCodebase.put(artf, adaptedCodebase);
                     } catch (ResolverException e) {
                         logger.warn("Unable to resolve {}", artf, e);
                     } catch (MalformedURLException e) {
                         logger.warn("The codebase {} is malformed", artf, e);
                     }
                 }
-                if (adaptedCodebase != null)
-                    Collections.addAll(jarsSet, adaptedCodebase.split(" "));
+                jarsSet.addAll(adaptedCodebase);
             }
-            for (String jar : jarsSet) {
-                if (resolvedCodebaseBuilder.length() > 0)
-                    resolvedCodebaseBuilder.append(" ");
-                resolvedCodebaseBuilder.append(jar);
-            }
+            return StringUtils.join(jarsSet, CODEBASE_SEPARATOR);
         } else {
             return codebase;
         }
-        return resolvedCodebaseBuilder.toString();
+    }
+
+    private String[] doResolve(String artifact) throws ResolverException {
+        logger.debug("Resolve {} ", artifact);
+        String path = artifact.substring(artifact.indexOf(":") + 1);
+        ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
+        for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
+            rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+            rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+        }
+        //TODO Resolver error
+        String[] cp;
+        try {
+            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                    artifactURLConfiguration.getRepositories());
+        } catch (Exception e) {
+            logger.warn("Trying again to resolve: {}", artifactURLConfiguration.getArtifact());
+            /*for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
+                rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+                rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
+            }*/
+            cp = resolver.getClassPathFor(artifactURLConfiguration.getArtifact(),
+                    artifactURLConfiguration.getRepositories());
+        }
+        return cp;
     }
 }
