@@ -23,7 +23,7 @@ deployment(name: 'concatenator-provider') {
 
     def concatenator = [
             impl: 'org.sorcersoft.sorcer:concatenator-cfg:' + SORCER_VERSION,
-            dl  : "org.sorcersoft.sorcer:default-codebase:" + SORCER_VERSION
+            dl  : "org.sorcersoft.sorcer:default-codebase:pom:" + SORCER_VERSION
     ]
 
     service(name: "Concatenator") {

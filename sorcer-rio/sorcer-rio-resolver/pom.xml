@@ -26,7 +26,7 @@
     </parent>
 
     <artifactId>sorcer-rio-resolver</artifactId>
-    <name>SORCER OS :: Rio :: Resolver</name>
+    <name>SORCER :: Rio :: Resolver</name>
 
     <dependencies>
         <dependency>

@@ -24,7 +24,7 @@ deployment(name: 'spacer-provider') {
 
     codebase getCodebase()
 
-    artifact id:'spacer-api', 'org.sorcersoft.sorcer:default-codebase:'+getSorcerVersion()
+    artifact id:'spacer-api', 'org.sorcersoft.sorcer:default-codebase:pom:'+getSorcerVersion()
     artifact id:'spacer-cfg', 'org.sorcersoft.sorcer:spacer-cfg:'+getSorcerVersion()
 
     service(name: "Spacer") {

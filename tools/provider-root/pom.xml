@@ -88,6 +88,7 @@
                 <groupId>org.sorcersoft.sorcer</groupId>
                 <artifactId>sorcer-junit</artifactId>
                 <version>${v.sorcer}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

@@ -24,7 +24,7 @@ deployment(name: 'logger-provider') {
 
     codebase getCodebase()
 
-    artifact id:'logger-dl', 'org.sorcersoft.sorcer:default-codebase:'+getSorcerVersion()
+    artifact id:'logger-dl', 'org.sorcersoft.sorcer:default-codebase:pom:'+getSorcerVersion()
     artifact id:'logger-cfg', 'org.sorcersoft.sorcer:logger-cfg:'+getSorcerVersion()
 
     service(name: "Logger") {

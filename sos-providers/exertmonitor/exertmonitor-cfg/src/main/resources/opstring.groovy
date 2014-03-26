@@ -24,7 +24,7 @@ deployment(name: 'exertmonitor-provider') {
 
     def monitor = [
             'impl': 'org.sorcersoft.sorcer:exertmonitor-cfg:' + SorcerConstants.SORCER_VERSION,
-            'dl'  : 'org.sorcersoft.sorcer:default-codebase:' + SorcerConstants.SORCER_VERSION
+            'dl'  : 'org.sorcersoft.sorcer:default-codebase:pom:' + SorcerConstants.SORCER_VERSION
     ]
 
     service(name: "ExertMonitor") {

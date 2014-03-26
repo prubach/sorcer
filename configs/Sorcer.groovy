@@ -12,10 +12,6 @@ String[] getInitialMemberGroups() {
     return groups as String[]
 }
 
-def getSorcerHome() {
-    return SorcerEnv.getHomeDir().path;
-}
-
 def fs() {
     return File.separator;
 }
@@ -35,11 +31,6 @@ deployment(name: 'Sorcer') {
 
     codebase getCodebase()
 
-    def sorcer = [
-            api: "org.sorcersoft.sorcer:sorcer-api:" + getSorcerVersion(),
-            platform:"org.sorcersoft.sorcer:sos-platform:" + getSorcerVersion()
-    ]
-
     artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
     artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.2'
     artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
@@ -48,27 +39,34 @@ deployment(name: 'Sorcer') {
     artifact id: 'norm-dl', 'org.apache.river:norm-dl:2.2.2'
     artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
     artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.2'
-    artifact id: 'sos-exertlet-sui', "org.sorcersoft.sorcer:sos-exertlet-sui:" + getSorcerVersion()
-
-    def cataloger = [
-            impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
-            api : 'org.sorcersoft.sorcer:cataloger-api:' + SORCER_VERSION
-    ]
-
-    artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
-    artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
-    artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
-    artifact id: 'logger-cfg', "org.sorcersoft.sorcer:logger-cfg:" + getSorcerVersion()
-    artifact id: 'logger-sui', "org.sorcersoft.sorcer:logger-sui:" + getSorcerVersion()
-    artifact id: 'dbp-api', "org.sorcersoft.sorcer:dbp-api:" + getSorcerVersion()
-    artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
-    artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
-    artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
     def blitz = [
         impl:"org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion(),
         api: 'org.sorcersoft.blitz:blitz-proxy:2.3'
     ]
+
+    def sorcer = [
+            api: "org.sorcersoft.sorcer:sorcer-api:" + getSorcerVersion(),
+            codebase : 'org.sorcersoft.sorcer:default-codebase:pom:' + SORCER_VERSION,
+    ]
+
+    def cataloger = [
+            impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
+            api : 'org.sorcersoft.sorcer:cataloger-dl:pom:' + SORCER_VERSION
+    ]
+
+    artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
+    artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
+    artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
+
+    def logger = [
+            codebase : sorcer.codebase,
+            classpath : 'org.sorcersoft.sorcer:logger-cfg:' + SORCER_VERSION
+    ]
+
+    artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
+    artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
+    artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
 
     service(name: 'Mahalo') { //fork:'yes'
@@ -134,7 +132,7 @@ deployment(name: 'Sorcer') {
     service(name: "Jobber") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Jobber'
-            artifact sorcer.platform
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
             artifact ref: 'jobber-cfg'
@@ -146,7 +144,7 @@ deployment(name: 'Sorcer') {
     service(name: "Spacer") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Spacer'
-            artifact sorcer.api
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
             artifact ref: 'spacer-cfg'
@@ -158,7 +156,7 @@ deployment(name: 'Sorcer') {
     service(name: "Concatenator") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.Concatenator'
-            artifact sorcer.api
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.jobber.ServiceConcatenator') {
             artifact ref: 'concatenator-cfg'
@@ -182,10 +180,10 @@ deployment(name: 'Sorcer') {
     service(name: "Logger") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.RemoteLogger'
-            artifact ref: 'logger-sui'
+            artifact logger.codebase
         }
         implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
-            artifact ref: 'logger-cfg'
+            artifact logger.classpath
         }
         configuration file: 'classpath:logger.config'
         maintain 1
@@ -194,7 +192,7 @@ deployment(name: 'Sorcer') {
     service(name: "ExertMonitor") { fork:'yes'
         interfaces {
             classes 'sorcer.core.monitor.MonitoringManagement'
-            artifact ref: 'sos-exertlet-sui'
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
             artifact ref: 'exertmonitor-cfg'
@@ -206,7 +204,7 @@ deployment(name: 'Sorcer') {
     service(name: "DatabaseStorer") { fork:'yes'
         interfaces {
             classes 'sorcer.service.DatabaseStorer'
-            artifact ref: 'dbp-api'
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact ref: 'dbp-cfg'
@@ -218,7 +216,7 @@ deployment(name: 'Sorcer') {
     service(name: "Exerter") { //fork:'yes'
         interfaces {
             classes 'sorcer.core.provider.ServiceTasker'
-            artifact ref: 'sos-exertlet-sui'
+            artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
             artifact ref: 'exerter-cfg'

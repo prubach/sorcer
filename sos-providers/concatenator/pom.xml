@@ -1,17 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
-		<artifactId>sos-providers</artifactId>
-		<version>1.0-M4-SNAPSHOT</version>
+        <artifactId>sos-providers</artifactId>
+        <version>1.0-M4-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>concatenator</artifactId>
     <name>SORCER OS :: providers :: concatenator</name>
     <packaging>pom</packaging>
+
     <modules>
-	<module>concatenator-cfg</module>
-	<module>concatenator-prv</module>
+        <module>concatenator-cfg</module>
     </modules>
 </project>

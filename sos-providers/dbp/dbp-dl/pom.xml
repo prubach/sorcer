@@ -39,6 +39,7 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>default-codebase</artifactId>
             <version>${v.sorcer}</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
 </project>

@@ -28,7 +28,7 @@ deployment(name: 'ex2-worker-3') {
 
     codebase getCodebase()
 
-    artifact id:'ex2-rdl', 'org.sorcersoft.sorcer:ex2-rdl:'+getSorcerVersion()
+    artifact id: 'ex2-rdl', 'org.sorcersoft.sorcer:ex2-dl:pom:' + getSorcerVersion()
     artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg3:'+getSorcerVersion()
 
     service(name:'ex2-worker-3') {

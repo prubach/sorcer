@@ -23,7 +23,7 @@ deployment(name: 'jobber-provider') {
 
     def jobber = [
             'impl': 'org.sorcersoft.sorcer:jobber-cfg:' + SorcerConstants.SORCER_VERSION,
-            'dl'  : 'org.sorcersoft.sorcer:default-codebase:' + SorcerConstants.SORCER_VERSION
+            'dl'  : 'org.sorcersoft.sorcer:default-codebase:pom:' + SorcerConstants.SORCER_VERSION
     ]
 
     service(name: "Jobber") {

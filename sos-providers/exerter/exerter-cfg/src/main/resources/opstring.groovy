@@ -24,7 +24,7 @@ deployment(name: 'exerter-provider') {
 
     def exerter = [
             'impl': 'org.sorcersoft.sorcer:exerter-cfg:' + SorcerConstants.SORCER_VERSION,
-            'dl'  : 'org.sorcersoft.sorcer:default-codebase:' + SorcerConstants.SORCER_VERSION
+            'dl'  : 'org.sorcersoft.sorcer:default-codebase:pom:' + SorcerConstants.SORCER_VERSION
     ]
 
     service(name: "Exerter") {

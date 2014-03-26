@@ -38,7 +38,7 @@ import sorcer.service.Task;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase(
-        "org.sorcersoft.sorcer:ex2-api"
+        "org.sorcersoft.sorcer:ex2-rdl"
 )
 @SorcerServiceConfiguration({
         ":ex2-cfg1",

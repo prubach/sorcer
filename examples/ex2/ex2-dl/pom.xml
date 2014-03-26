@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>ex2-rdl</artifactId>
+            <artifactId>ex2-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

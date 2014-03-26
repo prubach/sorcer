@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jobber-prv</artifactId>
+            <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
         </dependency>
     </dependencies>

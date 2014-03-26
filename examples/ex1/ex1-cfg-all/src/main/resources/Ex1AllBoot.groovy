@@ -28,7 +28,7 @@ deployment(name: 'ex1-all') {
 
     codebase getCodebase()
 
-    artifact id:'ex1-rdl', 'org.sorcersoft.sorcer:ex1-rdl:'+getSorcerVersion()
+    artifact id:'ex1-rdl', 'org.sorcersoft.sorcer:ex1-dl:pom:'+getSorcerVersion()
     artifact id:'ex1-prv', 'org.sorcersoft.sorcer:ex1-cfg-all:'+getSorcerVersion()
 
     service(name:'ex1-whoIsItBean-2') {

@@ -24,7 +24,7 @@ deployment(name: 'ex0-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'ex0-api', 'org.sorcersoft.sorcer:ex0-dl:' + getSorcerVersion()
+    artifact id: 'ex0-api', 'org.sorcersoft.sorcer:ex0-dl:pom:' + getSorcerVersion()
     artifact id:'ex0-cfg', 'org.sorcersoft.sorcer:ex0-cfg:'+getSorcerVersion()
 
     service(name:'ex0-prv') {
