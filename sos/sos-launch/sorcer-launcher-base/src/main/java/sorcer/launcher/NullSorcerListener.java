@@ -36,7 +36,7 @@ public class NullSorcerListener implements SorcerListener {
     }
 
     @Override
-    public void sorcerEnded() {
+    public void sorcerEnded(Exception e) {
 
     }
 

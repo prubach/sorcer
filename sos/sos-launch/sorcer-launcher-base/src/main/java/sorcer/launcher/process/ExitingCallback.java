@@ -31,7 +31,9 @@ public class ExitingCallback extends NullSorcerListener {
     private volatile boolean closing;
 
     @Override
-    public synchronized void sorcerEnded() {
+    public synchronized void sorcerEnded(Exception e) {
+        if (e != null)
+            log.error("Exception while starting SORCER", e);
         if (!closing) {
             closing = true;
             log.info("Closing this SORCER JVM process");

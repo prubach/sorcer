@@ -27,5 +27,5 @@ public interface SorcerListener extends ProcessDownCallback{
 
     void sorcerStarted();
 
-    void sorcerEnded();
+    void sorcerEnded(Exception exception);
 }

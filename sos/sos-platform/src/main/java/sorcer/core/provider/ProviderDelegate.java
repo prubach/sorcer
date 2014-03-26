@@ -674,7 +674,7 @@ public class ProviderDelegate {
 				outerProxy = outerExporter.export(provider);
 				logger.fine("outerProxy: " + outerProxy);
 		} catch (Exception ee) {
-			logger.throwing(ProviderDelegate.class.getName(), "deploymnet failed", ee);
+			logger.log(Level.SEVERE, "deploymnet failed", ee);
 		}
 		adminProxy = createAdmin();
 		providerProxy = getProxy();

@@ -193,7 +193,7 @@ public class SorcerLauncher extends Launcher {
                     synchronized public boolean unregister(Object o) {
                         if (closing)
                             return false;
-                        sorcerListener.sorcerEnded();
+                        sorcerListener.sorcerEnded(null);
                         closing = true;
                         return true;
                     }
@@ -202,7 +202,7 @@ public class SorcerLauncher extends Launcher {
                 sorcerListener.sorcerStarted();
             } catch (Exception e) {
                 log.error("Error while starting SORCER", e);
-                sorcerListener.sorcerEnded();
+                sorcerListener.sorcerEnded(e);
             }
         }
     }

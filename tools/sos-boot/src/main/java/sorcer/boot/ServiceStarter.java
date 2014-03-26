@@ -29,6 +29,7 @@ import net.jini.config.EmptyConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.rioproject.impl.opstring.OARException;
 import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
@@ -56,6 +57,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Policy;
@@ -94,7 +96,7 @@ public class ServiceStarter implements LifeCycle {
      *
      * @param configs file path or URL of the services.config configuration
      */
-    public void start(Collection<String> configs) throws Exception {
+    public void start(Collection<String> configs)  {
         log.info("******* Starting Sorcersoft.com SORCER *******");
 
         Injector rootInjector = createInjector();
@@ -111,27 +113,30 @@ public class ServiceStarter implements LifeCycle {
         List<String> riverServices = new LinkedList<String>();
         List<File> cfgJars = new LinkedList<File>();
         List<File> opstrings = new LinkedList<File>();
-
         for (String path : configs) {
-            File file = null;
-            if (path.startsWith(":")) {
-                file = findArtifact(path.substring(1));
-            } else if (Artifact.isArtifact(path))
-                file = new File(resolveAbsolute(path));
-            if (file == null) file = new File(path);
+            try {
+                File file = null;
+                if (path.startsWith(":")) {
+                    file = findArtifact(path.substring(1));
+                } else if (Artifact.isArtifact(path))
+                    file = new File(resolveAbsolute(path));
+                if (file == null) file = new File(path);
 
-            IOUtils.ensureFile(file, IOUtils.FileCheck.readable);
-            path = file.getPath();
-            String ext = path.substring(path.lastIndexOf('.') + 1);
+                IOUtils.ensureFile(file, IOUtils.FileCheck.readable);
+                path = file.getPath();
+                String ext = path.substring(path.lastIndexOf('.') + 1);
 
-            if ("config".equals(ext))
-                riverServices.add(path);
-            else if ("oar".equals(ext) || "jar".equals(ext))
-                cfgJars.add(file);
-            else if ("opstring".equals(ext) || "groovy".equals(ext))
-                opstrings.add(file);
-            else
-                throw new IllegalArgumentException("Unrecognized file " + path);
+                if ("config".equals(ext))
+                    riverServices.add(path);
+                else if ("oar".equals(ext) || "jar".equals(ext))
+                    cfgJars.add(file);
+                else if ("opstring".equals(ext) || "groovy".equals(ext))
+                    opstrings.add(file);
+                else
+                    throw new IllegalArgumentException("Unrecognized file " + path);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read configuration files " + path, e);
+            }
         }
         Map<Configuration, Collection<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, Collection<? extends ServiceDescriptor>>();
         descs.putAll(instantiateDescriptors(riverServices));
@@ -289,10 +294,15 @@ public class ServiceStarter implements LifeCycle {
         return result;
     }
 
-    protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) throws Exception {
+    protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) {
         List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
         String policyFile = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
-        URL policyFileUrl = new File(policyFile).toURI().toURL();
+        URL policyFileUrl = null;
+        try {
+            policyFileUrl = new File(policyFile).toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Invalid path " + policyFile, e);
+        }
         OpStringLoader loader = new OpStringLoader();
         for (File opString : files) {
             try {
@@ -308,13 +318,21 @@ public class ServiceStarter implements LifeCycle {
         return result;
     }
 
-    private List<OpstringServiceDescriptor> createFromOar(Iterable<File> oarFiles) throws Exception {
+    private List<OpstringServiceDescriptor> createFromOar(Iterable<File> oarFiles) {
         List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
         for (File oarFile : oarFiles) {
-            SorcerOAR oar = new SorcerOAR(oarFile);
-            OperationalString[] operationalStrings = oar.loadOperationalStrings();
-            URL policyFile = oar.getPolicyFile();
-            result.addAll(createServiceDescriptors(operationalStrings, policyFile));
+            try {
+                SorcerOAR oar = new SorcerOAR(oarFile);
+                OperationalString[] operationalStrings = oar.loadOperationalStrings();
+                URL policyFile = oar.getPolicyFile();
+                result.addAll(createServiceDescriptors(operationalStrings, policyFile));
+            } catch (OARException e) {
+                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
+            } catch (ConfigurationException e) {
+                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
+            }
         }
         return result;
     }
@@ -329,24 +347,32 @@ public class ServiceStarter implements LifeCycle {
         return descriptors;
     }
 
-    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices) throws ConfigurationException {
+    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices)  {
         List<Configuration> configs = new ArrayList<Configuration>(riverServices.size());
         for (String s : riverServices) {
-            configs.add(ConfigurationProvider.getInstance(new String[]{s}));
+            try {
+                configs.add(ConfigurationProvider.getInstance(new String[]{s}));
+            } catch (ConfigurationException e) {
+                throw new IllegalArgumentException("Could not process configuration file " + s, e);
+            }
         }
         return instantiateDescriptors(configs);
     }
 
-    public Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) throws ConfigurationException {
+    public Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) {
         Map<Configuration, List<ServiceDescriptor>> result = new HashMap<Configuration, List<ServiceDescriptor>>();
         for (Configuration config : configs) {
-            ServiceDescriptor[] descs = (ServiceDescriptor[])
-                    config.getEntry(START_PACKAGE, "serviceDescriptors",
-                            ServiceDescriptor[].class, null);
-            if (descs == null || descs.length == 0) {
-                return result;
+            try {
+                ServiceDescriptor[] descs = (ServiceDescriptor[])
+                        config.getEntry(START_PACKAGE, "serviceDescriptors",
+                                ServiceDescriptor[].class, null);
+                if (descs == null || descs.length == 0) {
+                    return result;
+                }
+                result.put(config, Arrays.asList(descs));
+            } catch (ConfigurationException e) {
+                throw new IllegalArgumentException("Could not read serviceDescriptors from " + config, e);
             }
-            result.put(config, Arrays.asList(descs));
         }
         return result;
     }
@@ -362,7 +388,7 @@ public class ServiceStarter implements LifeCycle {
      *
      * @throws Exception
      */
-    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap) throws Exception {
+    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap)  {
         Thread thread = Thread.currentThread();
         ClassLoader classLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(platformLoader.getClassLoader());
@@ -379,16 +405,26 @@ public class ServiceStarter implements LifeCycle {
 
         try {
             for (Configuration config : descriptorMap.keySet()) {
-                Collection<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
-                ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
+                try {
+                    Collection<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
+                    ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
 
-                LoginContext loginContext = (LoginContext)
-                        config.getEntry(START_PACKAGE, "loginContext",
-                                LoginContext.class, null);
-                if (loginContext != null)
-                    createWithLogin(descs, config, loginContext, stat, processors);
-                else
-                    create(descs, config, stat, processors);
+                    LoginContext loginContext = (LoginContext)
+                            config.getEntry(START_PACKAGE, "loginContext",
+                                    LoginContext.class, null);
+                    if (loginContext != null)
+                        try {
+                            createWithLogin(descs, config, loginContext, stat, processors);
+                        }catch (RuntimeException e){
+                            throw e;
+                        } catch (Exception e) {
+                            log.warn("Error creating service with login context {}", loginContext, e);
+                        }
+                    else
+                        create(descs, config, stat, processors);
+                } catch (ConfigurationException e) {
+                    log.warn("Error reading loginContext from {}", config, e);
+                }
             }
         } finally {
             thread.setContextClassLoader(classLoader);
@@ -409,7 +445,7 @@ public class ServiceStarter implements LifeCycle {
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
      */
-    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat, Set<ServiceDescriptorProcessor> processors) throws Exception {
+    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat, Set<ServiceDescriptorProcessor> processors)  {
         for (ServiceDescriptor desc : descs) {
             if (bootInterrupted)
                 break;

@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.sun.jini.start.*;
+import edu.emory.mathcs.util.classloader.URIClassLoader;
 import net.jini.config.Configuration;
 import net.jini.security.policy.DynamicPolicyProvider;
 import net.jini.security.policy.PolicyFileProvider;
@@ -34,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Constructor;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AllPermission;
 import java.security.Permission;
@@ -99,7 +101,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
         ClassAnnotator annotator = null;
         Set<URL> codebase = getCodebase();
-        if (codebase != null) {
+        if (codebase != null && !codebase.isEmpty()) {
             annotator = new ClassAnnotator(codebase.toArray(new URL[codebase.size()]));
         }
 
@@ -107,7 +109,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
             Set<URI> classpath = getClasspath();
             ClassLoader classLoader;
             if (classpath != null && !classpath.isEmpty()) {
-                classLoader = new ServiceClassLoader(classpath.toArray(new URI[classpath.size()]), annotator, currentClassLoader);
+                classLoader = getServiceClassLoader(currentClassLoader, annotator, classpath);
                 currentThread.setContextClassLoader(classLoader);
                 if (logger.isDebugEnabled())
                     try {
@@ -155,6 +157,14 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         } finally {
             currentThread.setContextClassLoader(currentClassLoader);
         }
+    }
+
+    private ClassLoader getServiceClassLoader(ClassLoader parentLoader, ClassAnnotator annotator, Set<URI> classpath) throws URISyntaxException {
+        URI[] classpathArr = classpath.toArray(new URI[classpath.size()]);
+        if (annotator != null)
+            return new ServiceClassLoader(classpathArr, annotator, parentLoader);
+        else
+            return new URIClassLoader(classpathArr, parentLoader);
     }
 
     private static class FactoryModule extends AbstractModule {

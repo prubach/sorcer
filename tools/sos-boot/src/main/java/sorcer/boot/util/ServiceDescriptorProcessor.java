@@ -22,5 +22,5 @@ import com.sun.jini.start.ServiceDescriptor;
  * @author Rafał Krupiński
  */
 public interface ServiceDescriptorProcessor {
-    void process(ServiceDescriptor descriptor) throws Exception;
+    void process(ServiceDescriptor descriptor);
 }

@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * @author Rafał Krupiński
  */
 public class WaitingListener extends NullSorcerListener {
+    private static final Logger log = LoggerFactory.getLogger(WaitingListener.class);
 
     /**
      * no - before start
@@ -30,7 +31,7 @@ public class WaitingListener extends NullSorcerListener {
      * end - after end
      */
     private WaitMode state = WaitMode.no;
-    private static final Logger log = LoggerFactory.getLogger(WaitingListener.class);
+    private Exception exception;
 
     @Override
     public void sorcerStarted() {
@@ -41,14 +42,14 @@ public class WaitingListener extends NullSorcerListener {
     }
 
     @Override
-    public void sorcerEnded() {
+    public void sorcerEnded(Exception e) {
         state = WaitMode.end;
         synchronized (this) {
             notify();
         }
     }
 
-    public void wait(WaitMode mode) {
+    public void wait(WaitMode mode) throws Exception {
         if (mode == WaitMode.no)
             return;
         synchronized (this) {
@@ -58,7 +59,8 @@ public class WaitingListener extends NullSorcerListener {
                 } catch (InterruptedException e) {
                     log.warn("Interrupted");
                 }
-
         }
+        if (exception != null)
+            throw exception;
     }
 }

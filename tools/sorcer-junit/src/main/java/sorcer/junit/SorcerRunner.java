@@ -39,7 +39,6 @@ import sorcer.util.JavaSystemProperties;
 import sorcer.util.bdb.HandlerInstaller;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.Policy;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -144,7 +143,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         super.runChild(method, notifier);
     }
 
-    private Launcher startSorcer(String[] serviceConfigPaths) throws IOException {
+    private Launcher startSorcer(String[] serviceConfigPaths) throws Exception {
         WaitingListener listener = new WaitingListener();
 
         Launcher launcher = new SorcerLauncher();

@@ -283,8 +283,8 @@ public abstract class Launcher implements ILauncher {
         }
 
         @Override
-        public void sorcerEnded() {
-            for (SorcerListener l : sorcerListeners) l.sorcerEnded();
+        public void sorcerEnded(Exception e) {
+            for (SorcerListener l : sorcerListeners) l.sorcerEnded(e);
         }
 
         @Override
