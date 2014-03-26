@@ -130,6 +130,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                                 adaptedCodebase.add(new File(path).toURI().toURL().toExternalForm());
                             }
                             artifactToCodebase.put(artf, adaptedCodebase);
+                            logger.debug("Resolved {} to {}", artf, adaptedCodebase);
                     } catch (ResolverException e) {
                         logger.warn("Unable to resolve {}", artf, e);
                     } catch (MalformedURLException e) {
@@ -145,7 +146,6 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     }
 
     private String[] doResolve(String artifact) throws ResolverException {
-        logger.debug("Resolve {} ", artifact);
         String path = artifact.substring(artifact.indexOf(":") + 1);
         ArtifactURLConfiguration artifactURLConfiguration = new ArtifactURLConfiguration(path);
         for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {

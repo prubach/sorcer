@@ -145,6 +145,10 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 		this.packaging = packaging;
 	}
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
 	@Override
 	public boolean equals(Object obj) {
 		return obj != null && (obj == this || obj instanceof ArtifactCoordinates && equals((ArtifactCoordinates) obj));

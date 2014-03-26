@@ -37,6 +37,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ControlContext;
 import sorcer.resolver.Resolver;
+import sorcer.resolver.VersionResolver;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -46,6 +47,7 @@ import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
 import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
+import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;
 
 import static sorcer.util.ArtifactCoordinates.coords;
@@ -257,8 +259,10 @@ abstract public class
         ArtifactCoordinates[] acc = new ArtifactCoordinates[artifactCoords.length];
         int i = 0;
         for (String ac : artifactCoords) {
-            acc[i] = ArtifactCoordinates.coords(ac);
-            i++;
+            ArtifactCoordinates coords = ArtifactCoordinates.coords(ac);
+            if (coords.getVersion() == null)
+                coords.setVersion(VersionResolver.instance.resolveVersion(coords.getGroupId(), coords.getArtifactId()));
+            acc[i++] = coords;
         }
         return prepareCodebase(acc);
     }
@@ -285,10 +289,10 @@ abstract public class
                 for (ArtifactCoordinates artCord : artifactCoords) {
                     codebase.append(' ').append(resolve(artCord));
                 }
-
-            // Add default codebase sos-platform and sorcer-api
-            codebase.append(' ').append(resolve(Artifact.getSorcerApi()));
-            codebase.append(' ').append(resolve(Artifact.getSosPlatform()));
+            else {
+                // Add default codebase sos-platform and sorcer-api
+                codebase.append(' ').append(resolve(Artifact.getSorcerApi()));
+            }
 
             logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
             if (isWebsterInt)
@@ -315,9 +319,7 @@ abstract public class
     }
 
     private static String resolve(ArtifactCoordinates coords) {
-        return isWebsterInt
-                ? Resolver.resolveRelative(coords)
-                : Resolver.resolveAbsolute(SorcerEnv.getWebsterUrlURL(), coords);
+        return GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), coords.toString()).toExternalForm();
     }
     // Utility for setting the basic environment properties
     // It is required by scilab script that invokes exertions from scilab

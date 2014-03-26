@@ -18,7 +18,7 @@ public class VersionResolver {
     // groupId_artifactId -> version
     protected Map<String, String> versions = new HashMap<String, String>();
     static PropertiesLoader propertiesLoader = new PropertiesLoader();
-    static File VERSIONS_PROPS_FILE = new File(SorcerEnv.getHomeDir() , "configs/groupversions.properties");
+    static File VERSIONS_PROPS_FILE = new File(SorcerEnv.getHomeDir(), "configs/groupversions.properties");
 
     {
         versions = propertiesLoader.loadAsMap("META-INF/maven/groupversions.properties", Thread.currentThread()
@@ -29,6 +29,8 @@ public class VersionResolver {
             log.warn("Could not load versions from {}", VERSIONS_PROPS_FILE, e);
         }
     }
+
+    static public final VersionResolver instance = new VersionResolver();
 
     /**
      * Resolve version of artifact using groupversions.properties or pom.properties
