@@ -27,22 +27,25 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.core.requestor.ServiceRequestor;
 import sorcer.launcher.Launcher;
 import sorcer.launcher.SorcerLauncher;
 import sorcer.launcher.WaitMode;
 import sorcer.launcher.WaitingListener;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.resolver.Resolver;
-import sorcer.util.IOUtils;
-import sorcer.util.JavaSystemProperties;
+import sorcer.resolver.VersionResolver;
+import sorcer.util.*;
 import sorcer.util.bdb.HandlerInstaller;
 
 import java.io.File;
+import java.net.URL;
 import java.security.Policy;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
+import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
 import static sorcer.core.SorcerConstants.SORCER_HOME;
 import static sorcer.util.JavaSystemProperties.RMI_SERVER_CLASS_LOADER;
 
@@ -104,9 +107,19 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         SorcerEnv.debug = true;
         ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
         String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
-        if (codebase != null && codebase.length > 0) {
-            ServiceRequestor.prepareCodebase(codebase);
+        if (codebase != null && codebase.length > 0)
+            prepareCodebase(codebase);
+    }
+
+    private void prepareCodebase(String[] codebase) {
+        Set<URL> codebaseUrls = new HashSet<URL>();
+        for (String cbentry : codebase) {
+            ArtifactCoordinates artifact = ArtifactCoordinates.coords(cbentry);
+            if (artifact.getVersion() == null)
+                artifact.setVersion(VersionResolver.instance.resolveVersion(artifact.getGroupId(), artifact.getArtifactId()));
+            codebaseUrls.add(GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), artifact.toString()));
         }
+        System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, StringUtils.join(codebaseUrls, CODEBASE_SEPARATOR));
     }
 
     private void checkAnnotations(Class<?> klass) throws InitializationError {
