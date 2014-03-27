@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.io.File;
 
 /**
  * @author Rafał Krupiński
@@ -45,7 +46,8 @@ public class OpstringServiceDescriptor extends ResolvingServiceDescriptor {
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Error while processing codebase of " + serviceElement.getName(), e);
         }
-        setPolicyFile(policyFile.toExternalForm());
+        //TODO Policy files cannot be read from jar
+        setPolicyFile(SorcerEnv.getHomeDir() + File.separator + "configs" + File.separator + "sorcer.policy");
         String[] configArgs = serviceElement.getServiceBeanConfig().getConfigArgs();
         setServiceConfigArgs(Arrays.asList(configArgs));
         setImplClassName(serviceElement.getComponentBundle().getClassName());
