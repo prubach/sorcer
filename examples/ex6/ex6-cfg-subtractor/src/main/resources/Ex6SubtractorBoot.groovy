@@ -24,7 +24,7 @@ deployment(name: 'ex6-subtractor') {
 
     codebase getCodebase()
 
-    artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom' + getSorcerVersion()
+    artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom:' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-subtractor:'+getSorcerVersion()
 
     service(name:'ex6-subtractor-prv') {

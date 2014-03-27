@@ -15,81 +15,51 @@ package sorcer.util.rio;
  * limitations under the License.
  */
 
+import edu.emory.mathcs.util.classloader.URIClassLoader;
 import org.rioproject.opstring.ClassBundle;
-import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import sorcer.util.SorcerResolverHelper;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
+import java.util.Arrays;
 
 /**
  * @author Rafał Krupiński
  */
 public class OpStringUtil {
-    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, Resolver resolver) throws MalformedURLException, ResolverException, ClassNotFoundException {
+    public static Class loadServiceClass(ServiceElement serviceElement, Resolver resolver) throws ResolverException {
+        return loadClass(serviceElement.getComponentBundle(), serviceElement, resolver);
+    }
+
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, Resolver resolver) throws ResolverException {
         return loadClass(bundle, serviceElement, Thread.currentThread().getContextClassLoader(), resolver);
     }
 
     /**
      * Load a class from Rio ClassBundle
      *
-     * @param bundle The part of OpString describing a class and required jars
+     * @param bundle   The part of OpString describing a class and required jars
      * @param resolver
      * @return class referred by the class bundle
-     * @throws MalformedURLException
      * @throws ResolverException
-     * @throws ClassNotFoundException
      */
-    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader parentCL, Resolver resolver) throws MalformedURLException, ResolverException, ClassNotFoundException {
+    public static Class loadClass(ClassBundle bundle, ServiceElement serviceElement, ClassLoader classLoader, Resolver resolver) throws ResolverException {
+        String className = bundle.getClassName();
         try {
-            URL[] urls = SorcerResolverHelper.toURLs(resolver.getClassPathFor(bundle.getArtifact(), serviceElement.getRemoteRepositories()));
-            URLClassLoader cl = new URLClassLoader(urls, parentCL);
-            return Class.forName(bundle.getClassName(), false, cl);
-        } catch (URISyntaxException e) {
-            throw new ResolverException("Error in resulting URLs", e);
-        }
-    }
-
-    /**
-     * Ensure that list of bundles is exactly one element and return that element.
-     */
-    public static ClassBundle getClassBundle(ClassBundle... bundles) {
-        if (bundles.length != 1)
-            throw new IllegalArgumentException("OpString service with no codebase is not supported");
-        return bundles[0];
-    }
-
-    /**
-     * Resolve exported class from a bundle, handle Rio exceptions
-     *
-     * @throws IOException
-     */
-    public static Class loadClass2(ClassBundle bundle, ServiceElement serviceElement, Resolver resolver) throws IOException {
-        String type = bundle.getClassName();
-        try {
-            return loadClass(bundle, serviceElement, resolver);
+            return Class.forName(className, false, getClassLoader(serviceElement, bundle, classLoader, resolver));
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Class " + type + " was not found in " + bundle, e);
-        } catch (ResolverException e) {
-            throw new IllegalArgumentException("Class " + type + " was not found in " + bundle, e);
+            throw new IllegalArgumentException(className, e);
         }
     }
 
-    /**
-     * Return single service from operational string
-     * @throws IllegalArgumentException when there is zero or more than 1 services in the opstring
-     */
-    public static ServiceElement getServiceElement(OperationalString operationalString) {
-        ServiceElement[] services = operationalString.getServices();
-        if (services.length != 1)
-            throw new IllegalArgumentException("OpString with more than 1 services are not supported");
-        return services[0];
+    public static ClassLoader getClassLoader(ServiceElement serviceElement, ClassBundle classBundle, ClassLoader parentCL, Resolver resolver) throws ResolverException {
+        String[] classPath = resolver.getClassPathFor(classBundle.getArtifact(), serviceElement.getRemoteRepositories());
+        try {
+            return new URIClassLoader(SorcerResolverHelper.toURIs(classPath), parentCL);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(Arrays.toString(classPath), e);
+        }
     }
-
 }

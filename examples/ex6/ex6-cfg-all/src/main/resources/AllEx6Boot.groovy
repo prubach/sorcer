@@ -19,7 +19,7 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex6-provider') {
+deployment(name: 'ex6-all') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()

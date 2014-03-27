@@ -19,12 +19,12 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex6-provider') {
+deployment(name: 'ex6-1bean') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
-    artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom' + getSorcerVersion()
+    artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom:' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-one-bean:'+getSorcerVersion()
 
     service(name:'ex6-prv') {
