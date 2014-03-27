@@ -23,9 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -275,23 +273,21 @@ abstract public class
             isWebsterInt = val.equals("true");
         }
         String exertrun = System.getProperty(SorcerConstants.R_CODEBASE);
-        StringBuilder codebase = new StringBuilder();
+        List<String> codebase = new LinkedList<String>();
         if (exertrun!=null || artifactCoords!=null) {
             if (exertrun!=null && !exertrun.isEmpty()) {
                 String[] artifacts = exertrun.split(" ");
                 for (String artifact : artifacts) {
-                    if (codebase.length() > 0)
-                        codebase.append(" ");
-                    codebase.append(resolve(coords(artifact)));
+                    codebase.add(resolve(coords(artifact)));
                 }
             }
             if (artifactCoords!=null)
                 for (ArtifactCoordinates artCord : artifactCoords) {
-                    codebase.append(' ').append(resolve(artCord));
+                    codebase.add(resolve(artCord));
                 }
             else {
                 // Add default codebase sos-platform and sorcer-api
-                codebase.append(' ').append(resolve(Artifact.getSorcerApi()));
+                codebase.add(resolve(Artifact.getSorcerApi()));
             }
 
             logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
@@ -300,7 +296,7 @@ abstract public class
             else
                 System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase.toString());
 
-            codebaseJars = toArray(codebase.toString());
+            codebaseJars = codebase.toArray(new String[codebase.size()]);
         }
 
         if (isWebsterInt && codebaseJars!=null && codebaseJars.length>0) {

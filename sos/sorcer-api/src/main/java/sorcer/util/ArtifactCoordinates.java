@@ -17,6 +17,7 @@ package sorcer.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author Rafał Krupiński
@@ -28,6 +29,7 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
     
     public static final Map<String,String> PACKAGINGS = new HashMap<String, String>();
 	private static final String MVN_SEP = ":";
+    private static Pattern artifactPattern = Pattern.compile("([^: /\\\\]+):([^: /\\\\]+)((:([^: /\\\\]+)?(:([^: /\\\\]+))?)?:([^: /\\\\]+))?");
 
 	private String groupId;
 	private String artifactId;
@@ -62,12 +64,12 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	 * @throws IllegalArgumentException
 	 */
 	public static ArtifactCoordinates coords(String coords) {
+        if(!isArtifact(coords))
+            throw new IllegalArgumentException(
+                    "Artifact coordinates must be in a form of groupId:artifactId[[:packaging[:classifier]]:version] " + coords);
+
 		String[] coordSplit = coords.split(MVN_SEP);
 		int length = coordSplit.length;
-		if (length < 2 || length > 5) {
-			throw new IllegalArgumentException(
-					"Artifact coordinates must be in a form of groupId:artifactId[[:packaging[:classifier]]:version]");
-		}
 		String groupId = coordSplit[0];
 		String artifactId = coordSplit[1];
 		String packaging = DEFAULT_PACKAGING;
@@ -87,6 +89,10 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 		}
 
 		return new ArtifactCoordinates(groupId, artifactId, packaging, version, classifier);
+	}
+
+    public static boolean isArtifact(String coords){
+        return artifactPattern.matcher(coords).find();
 	}
 
 	public ArtifactCoordinates(String groupId, String artifactId, String packaging, String version, String classifier) {

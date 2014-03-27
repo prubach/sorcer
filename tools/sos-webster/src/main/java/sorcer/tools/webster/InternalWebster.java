@@ -18,16 +18,22 @@ package sorcer.tools.webster;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.util.ArtifactCoordinates;
+import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;
+import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static sorcer.core.SorcerConstants.CODEBASE_JARS;
+import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
 import static sorcer.core.SorcerConstants.S_WEBSTER_INTERFACE;
 
 /**
@@ -72,9 +78,9 @@ public class InternalWebster {
      */
     public static Webster startWebster(String[] exportJars, String[] websterRoots) throws IOException {
         String codebase = System.getProperty("java.rmi.server.codebase");
-//		if (codebase != null)
-//			throw new RuntimeException("Codebase is alredy specified: "
-//					+ codebase);
+		if (codebase != null)
+			logger.fine("Codebase is alredy specified: "
+                    + codebase);
 
         String d = System.getProperty("webster.debug");
         if (d != null && d.equals("true"))
@@ -147,22 +153,26 @@ public class InternalWebster {
                 jars = toArray(jarsList);
         }
 
-        codebase = "";
-        sb = new StringBuffer();
-        for (int i = 0; i < jars.length - 1; i++) {
-            sb.append("http://").append(localIPAddress).append(":")
-                    .append(port).append("/").append(jars[i]).append(" ");
-        }
-        sb.append("http://").append(localIPAddress).append(":").append(port)
-                .append("/").append(jars[jars.length - 1]);
-        codebase = sb.toString();
+        Set<String> codebaseSet = new HashSet<String>();
+        for (String export : jars)
+            if (export.startsWith("artifact:"))
+                codebaseSet.add(export);
+            else if (ArtifactCoordinates.isArtifact(export))
+                codebaseSet.add(GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), export).toExternalForm());
+            else
+                codebaseSet.add(pathToHttpUrl(export, localIPAddress, port));
+        codebase = StringUtils.join(codebaseSet, CODEBASE_SEPARATOR);
         System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase);
-        System.setProperty(SorcerConstants.P_WEBSTER_PORT, new Integer(webster.getPort()).toString());
+        System.setProperty(SorcerConstants.P_WEBSTER_PORT, Integer.toString(webster.getPort()));
         System.setProperty(SorcerConstants.P_WEBSTER_INTERFACE, webster.getAddress());
         logger.fine("Setting 'webster URL': " + SorcerEnv.getWebsterUrl());
         logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
 
         return webster;
+    }
+
+    private static String pathToHttpUrl(String path, String address, int port){
+        return "http://" + address + ":" + port + "/" + path;
     }
 
     private static String[] toArray(String arg) {
