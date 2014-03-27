@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
+            <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
