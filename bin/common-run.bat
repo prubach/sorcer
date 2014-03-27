@@ -120,7 +120,7 @@ set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set BROWSER_CLASSPATH=%BROWSER_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 
-set SORCER_RIOUI_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\slf4j\jul-to-slf4j\%v.slf4j%/jul-to-slf4j-%v.slf4j%.jar
+set SORCER_RIOUI_CP=%SORCER_RIO_CP%;%MVN_REPO%\org\slf4j\jul-to-slf4j\%v.slf4j%\jul-to-slf4j-%v.slf4j%.jar
  
 rem Determine webster url
 IF "%provider.webster.interface%"=="${localhost}" (

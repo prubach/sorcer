@@ -57,4 +57,13 @@ if [ $opSys = "Darwin" ] ; then
 	JAVA_OPTS=$JAVA_OPTS -Xdock:name="Rio"
 fi
 
-java $JAVA_OPTS -cp $RIOUI_CLASSPATH -DRIO_HOME=$RIO_HOME -Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs -Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url $MAIN_CLASS $*
+echo $RIOUI_CLASSPATH
+
+exec "$JAVACMD" \
+$JAVA_OPTS \
+-cp $RIOUI_CLASSPATH \
+-DRIO_HOME=$RIO_HOME \
+-Dorg.rioproject.tools.ui.logDir=$RIO_HOME/../../logs \
+-Djava.security.policy=$RIO_HOME/../../configs/rio/rio.policy \
+$MAIN_CLASS \
+$*
