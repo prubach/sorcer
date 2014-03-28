@@ -161,7 +161,8 @@ public class LusTree {
 						}
 
 					}
-				}
+                } else
+                    _logger.warning("Null service " + items[i].serviceID);
 			} catch (Exception ex) {
 				System.err.println(ex);
 			}

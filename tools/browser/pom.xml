@@ -22,11 +22,6 @@
          </dependency>
          <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-platform</artifactId>
-            <version>${project.version}</version>
-         </dependency>
-         <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
          </dependency>
@@ -49,20 +44,17 @@
             <artifactId>AppleJavaExtensions</artifactId>
             <version>1.4</version>
 		</dependency>
+
+        <!-- required for artifact url -->
 		<dependency>
 			<groupId>org.rioproject</groupId>
 			<artifactId>rio-platform</artifactId>
             <scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>net.jini</groupId>
 			<artifactId>jsk-platform</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.jini.lookup</groupId>
-			<artifactId>serviceui</artifactId>
-			<version>${v.jini}</version>
-            <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

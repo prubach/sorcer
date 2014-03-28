@@ -17,6 +17,7 @@
 package sorcer.ui.exertlet;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.lookup.entry.UIDescriptor;
@@ -45,17 +46,18 @@ import java.util.Set;
 public class ExertletUiModule extends AbstractModule {
     @Override
     protected void configure() {
-        Multibinder.newSetBinder(binder(), BeanListener.class).addBinding().to(MyBeanListener.class);
-        Multibinder.newSetBinder(binder(), ServiceDescriptorProcessor.class).addBinding().to(MyBeanListener.class);
+        bind(NetletInjector.class).in(Scopes.SINGLETON);
+        Multibinder.newSetBinder(binder(), BeanListener.class).addBinding().to(NetletInjector.class);
+        Multibinder.newSetBinder(binder(), ServiceDescriptorProcessor.class).addBinding().to(NetletInjector.class);
     }
 
-    static class MyBeanListener extends AbstractBeanListener implements ServiceDescriptorProcessor {
-        private static Logger log = LoggerFactory.getLogger(MyBeanListener.class);
+    static class NetletInjector extends AbstractBeanListener implements ServiceDescriptorProcessor {
+        private static Logger log = LoggerFactory.getLogger(NetletInjector.class);
 
         private URL sosExertletSuiUrl;
         private URL sorcerUi;
 
-        public MyBeanListener() {
+        public NetletInjector() {
             sosExertletSuiUrl = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sos-exertlet-sui").toString());
             sorcerUi = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString());
         }

@@ -113,7 +113,10 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder(groupId).append(MVN_SEP).append(artifactId).append(MVN_SEP).append(packaging);
+		StringBuilder result = new StringBuilder(groupId).append(MVN_SEP).append(artifactId);
+        // don't add packaging if not necessary
+        if (classifier != null || !DEFAULT_PACKAGING.equals(packaging))
+            result.append(MVN_SEP).append(getType());
 		if (classifier != null) {
 			result.append(MVN_SEP).append(classifier);
 		}
