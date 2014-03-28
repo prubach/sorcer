@@ -28,7 +28,7 @@ public class Artifact {
 	private static final String SORCER_GROUP_ID = "org.sorcersoft.sorcer";
 
 	public static ArtifactCoordinates sorcer(String artifactId) {
-        return ArtifactCoordinates.coords(SORCER_GROUP_ID + ":" + artifactId + ":" + SorcerConstants.SORCER_VERSION);
+        return ArtifactCoordinates.coords(SORCER_GROUP_ID, artifactId, SorcerConstants.SORCER_VERSION);
 	}
 
 	public static ArtifactCoordinates getSosPlatform() {

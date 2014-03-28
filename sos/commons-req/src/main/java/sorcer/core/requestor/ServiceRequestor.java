@@ -257,10 +257,7 @@ abstract public class
         ArtifactCoordinates[] acc = new ArtifactCoordinates[artifactCoords.length];
         int i = 0;
         for (String ac : artifactCoords) {
-            ArtifactCoordinates coords = ArtifactCoordinates.coords(ac);
-            if (coords.getVersion() == null)
-                coords.setVersion(VersionResolver.instance.resolveVersion(coords.getGroupId(), coords.getArtifactId()));
-            acc[i++] = coords;
+            acc[i++] = ArtifactCoordinates.coords(ac);
         }
         return prepareCodebase(acc);
     }
@@ -315,6 +312,8 @@ abstract public class
     }
 
     private static String resolve(ArtifactCoordinates coords) {
+        if (coords.getVersion() == null)
+            coords.setVersion(VersionResolver.instance.resolveVersion(coords.getGroupId(), coords.getArtifactId()));
         return GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), coords.toString()).toExternalForm();
     }
     // Utility for setting the basic environment properties
