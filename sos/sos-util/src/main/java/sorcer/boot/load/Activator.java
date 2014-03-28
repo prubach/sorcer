@@ -18,7 +18,7 @@ package sorcer.boot.load;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.ServiceActivator;
-import sorcer.tools.ActivationFactory;
+import sorcer.util.InjectionHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,12 +43,8 @@ public class Activator {
         public void handle(String value) {
             try {
                 Class<?> klass = Class.forName(value, false, Thread.currentThread().getContextClassLoader());
-                handle(activationFactory.create(klass));
+                handle(injector.create(klass));
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(value, e);
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException(value, e);
-            } catch (IllegalAccessException e) {
                 throw new IllegalArgumentException(value, e);
             }
         }
@@ -86,10 +82,19 @@ public class Activator {
         ));
     }
 
-    private ActivationFactory activationFactory = new ActivationFactory() {
+    InjectionHelper.Injector injector = new InjectionHelper.Injector() {
         @Override
-        public Object create(Class c) throws IllegalAccessException, InstantiationException {
-            return c.newInstance();
+        public void injectMembers(Object target) {}
+
+        @Override
+        public <T> T create(Class<T> type) {
+            try {
+                return type.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     };
 
@@ -133,7 +138,7 @@ public class Activator {
         }
     }
 
-    public void setActivationFactory(ActivationFactory activationFactory) {
-        this.activationFactory = activationFactory;
+    public void setInjector(InjectionHelper.Injector injector) {
+        this.injector= injector;
     }
 }

@@ -15,7 +15,6 @@ package sorcer.config;
  * limitations under the License.
  */
 
-import com.google.inject.Inject;
 import net.jini.config.ConfigurationException;
 import sorcer.core.provider.Provider;
 
@@ -26,49 +25,32 @@ import java.util.Set;
 /**
  * @author Rafał Krupiński
  */
-public class ServiceBeanListener implements BeanListener {
-    private static ServiceBeanListener inst;
-
-    public static BeanListener getBeanListener() {
-        return inst;
-    }
-
-    public static void setBeanListener(ServiceBeanListener inst) {
-        ServiceBeanListener.inst = inst;
-    }
-
+public class ServiceBeanListener {
     private List<BeanListener> activators;
     private List<BeanListener> destroyers;
 
-    @Inject(optional = true)
-    public void setBeanListeners(Set<BeanListener> platformListeners){
-        activators.addAll(platformListeners);
-        destroyers.addAll(0, platformListeners);
-    }
-
-    public ServiceBeanListener() {
+    public ServiceBeanListener(Set<BeanListener> platformListeners) {
         activators = new LinkedList<BeanListener>();
         activators.add(new Configurer());
         activators.add(new LoggerConfigurer());
+        activators.addAll(platformListeners);
 
         destroyers = new LinkedList<BeanListener>();
+        destroyers.addAll(platformListeners);
         destroyers.add(new ServiceBeanDestroyer());
     }
 
-    @Override
     public void preProcess(Provider provider) {
         for (BeanListener activator : activators)
             activator.preProcess(provider);
     }
 
-    @Override
     public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
         for (BeanListener activator : activators) {
             activator.activate(serviceBeans, provider);
         }
     }
 
-    @Override
     public void destroy(Object[] serviceBeans) {
         for (BeanListener activator : destroyers) {
             activator.destroy(serviceBeans);

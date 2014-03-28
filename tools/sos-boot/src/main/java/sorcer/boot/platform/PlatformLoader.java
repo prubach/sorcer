@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import sorcer.boot.load.Activator;
 import sorcer.core.ServiceActivator;
 import sorcer.provider.boot.AbstractServiceDescriptor;
-import sorcer.tools.ActivationFactory;
 import sorcer.util.ClassPath;
 import sorcer.util.InjectionHelper;
 
@@ -53,7 +52,7 @@ public class PlatformLoader {
     private File platformRoot;
     private File servicePlatformRoot;
     private final List<Module> modules = new LinkedList<Module>();
-    protected Injector platformInjctor;
+    protected Injector platformInjector;
     private CommonClassLoader platformClassLoader;
 
     public PlatformLoader(Injector injector, File platformRoot, File servicePlatformRoot) {
@@ -61,10 +60,14 @@ public class PlatformLoader {
         this.servicePlatformRoot = servicePlatformRoot;
         this.injector = injector;
         activator = new Activator();
-        activator.setActivationFactory(new ActivationFactory() {
+        activator.setInjector(new InjectionHelper.Injector() {
             @Override
-            public Object create(Class c) {
+            public <T> T create(Class<T> c) {
                 return PlatformLoader.this.injector.getInstance(c);
+            }
+
+            @Override
+            public void injectMembers(Object target) {
             }
         });
         activator.entryHandlers.add(0, activator.new EntryHandlerEntry("Sorcer-Activation-Module", activator.new AbstractClassEntryHandler() {
@@ -75,11 +78,11 @@ public class PlatformLoader {
         }));
     }
 
-    public Injector getInjector(){
-        return platformInjctor;
+    public Injector getInjector() {
+        return platformInjector;
     }
 
-    public ClassLoader getClassLoader(){
+    public ClassLoader getClassLoader() {
         return platformClassLoader;
     }
 
@@ -91,20 +94,28 @@ public class PlatformLoader {
         ClassLoader original = current.getContextClassLoader();
         current.setContextClassLoader(platformClassLoader);
         try {
-            platformInjctor = loadPlatformServices(servicePlatformRoot);
-            InjectionHelper.setInstance(new InjectionHelper.Injector() {
-                @Override
-                public void injectMembers(Object target) {
-                    platformInjctor.injectMembers(target);
-                }
-
-                @Override
-                public <T> T create(Class<T> type) {
-                    return platformInjctor.getInstance(type);
-                }
-            });
+            platformInjector = loadPlatformServices(servicePlatformRoot);
+            InjectionHelper.setInstance(new PlatformInjector(platformInjector));
         } finally {
             current.setContextClassLoader(original);
+        }
+    }
+
+    private static class PlatformInjector implements InjectionHelper.Injector {
+        private Injector platformInjector;
+
+        private PlatformInjector(Injector platformInjector) {
+            this.platformInjector = platformInjector;
+        }
+
+        @Override
+        public void injectMembers(Object target) {
+            platformInjector.injectMembers(target);
+        }
+
+        @Override
+        public <T> T create(Class<T> type) {
+            return platformInjector.getInstance(type);
         }
     }
 

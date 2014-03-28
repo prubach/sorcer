@@ -61,7 +61,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import javax.inject.Inject;
 import javax.security.auth.Subject;
 
 import net.jini.admin.Administrable;
@@ -310,7 +309,6 @@ public class ProviderDelegate {
 
 	private ContextManagement contextManager;
 
-    @Inject
     private ServiceBeanListener beanListener;
 
 	/*
@@ -362,8 +360,8 @@ public class ProviderDelegate {
 		}
 	}
 
-	public ProviderDelegate() {
-        InjectionHelper.injectMembers(this);
+	public ProviderDelegate(ServiceBeanListener beanListener) {
+        this.beanListener = beanListener;
 	}
 
 	public void init(Provider provider) throws RemoteException,

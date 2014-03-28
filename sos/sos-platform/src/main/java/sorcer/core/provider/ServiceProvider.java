@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
+import com.google.inject.Inject;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -80,6 +81,7 @@ import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
 import sorcer.service.*;
+import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
 
 import com.sun.jini.config.Config;
@@ -200,11 +202,16 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-    private BeanListener beanListener = ServiceBeanListener.getBeanListener();
+    @Inject(optional = true)
+    private Set<BeanListener> beanListeners = Collections.emptySet();
+
+    private ServiceBeanListener beanListener;
 
     protected ServiceProvider() {
 		providers.add(this);
-		delegate = new ProviderDelegate();
+        InjectionHelper.injectMembers(this);
+        beanListener = new ServiceBeanListener(beanListeners);
+		delegate = new ProviderDelegate(beanListener);
 		delegate.provider = this;
 	}
 
