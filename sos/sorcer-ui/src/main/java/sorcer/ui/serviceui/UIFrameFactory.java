@@ -1,7 +1,6 @@
-/**
- *
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +33,11 @@ import java.util.logging.Logger;
  * The UIFrameFactory class is a helper for use with the ServiceUI
  */
 public class UIFrameFactory implements JFrameFactory, Serializable {
-	
+
 	static final long serialVersionUID = 5806535989492809459L;
 
 	private final static Logger logger = Logger.getLogger(UIFrameFactory.class.getName());
-	
+
 	private String className;
 	private URL[] exportURL;
 	//private String name;
@@ -100,16 +99,14 @@ public class UIFrameFactory implements JFrameFactory, Serializable {
 			try {
 				Class clazz = uiLoader.loadClass(className);
 				Constructor constructor = clazz
-						.getConstructor(new Class[] { Object.class });
+						.getConstructor(Object.class);
 				Object instanceObj = constructor
-						.newInstance(new Object[] { roleObject });
+						.newInstance(roleObject);
 				component = (JFrame) instanceObj;
 			} catch (Exception e) {
-				e.printStackTrace();
 				throw new IllegalArgumentException(
 						"Unable to instantiate ServiceUI " + className + ": "
-								+ e.getClass().getName() + ": "
-								+ e.getLocalizedMessage());
+								+ e.getClass().getName(), e);
 			}
 		} finally {
 			AccessController.doPrivileged(new PrivilegedAction() {
@@ -124,7 +121,7 @@ public class UIFrameFactory implements JFrameFactory, Serializable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * net.jini.lookup.ui.factory.JComponentFactory#getJComponent(java.lang.
 	 * Object)
@@ -132,7 +129,7 @@ public class UIFrameFactory implements JFrameFactory, Serializable {
 	public JComponent getJComponent(Object arg) {
 		if (helpURL == null)
 			return new JLabel("No help page available");
-		
+
 		try {
 			logger.info("help url: " + helpURL);
 			JEditorPane htmlView = new JEditorPane(helpURL);
