@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package sorcer.util.bdb;
+package sorcer.river.protocol;
+
+import net.jini.entry.AbstractEntry;
 
 /**
  * @author Rafał Krupiński
  */
-public class HandlerInstaller {
-    @javax.inject.Inject
-    public HandlerInstaller(sorcer.protocol.ProtocolHandlerRegistry protocolHandlerRegistry) {
-        protocolHandlerRegistry.register("sos", new sorcer.util.bdb.sdb.Handler());
+public class ProtocolEntry extends AbstractEntry {
+    private static final long serialVersionUID = -315600339177952724L;
+
+    /**
+     * All the URL protocols supported by the handler service
+     */
+    public String[] protocols;
+
+    public ProtocolEntry() {
+    }
+
+    public ProtocolEntry(String[] protocols) {
+        this.protocols = protocols;
     }
 }

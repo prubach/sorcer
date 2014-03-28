@@ -61,6 +61,7 @@
 		<module>tests</module>
 		<module>examples</module>
         <module>sorcer-rio</module>
+        <module>sorcer-river</module>
     </modules>
 
     <licenses>
