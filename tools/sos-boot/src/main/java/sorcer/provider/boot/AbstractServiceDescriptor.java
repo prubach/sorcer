@@ -25,6 +25,7 @@ import net.jini.config.Configuration;
 import net.jini.security.policy.DynamicPolicyProvider;
 import net.jini.security.policy.PolicyFileProvider;
 import org.rioproject.loader.ClassAnnotator;
+import org.rioproject.loader.ServiceClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.ServiceDestroyer;
