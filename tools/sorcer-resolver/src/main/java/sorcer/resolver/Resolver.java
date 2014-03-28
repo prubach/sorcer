@@ -81,9 +81,14 @@ public class Resolver {
     }
 
     public static URL resolveAbsoluteURL(URL baseUrl, ArtifactCoordinates coords) {
+        // artifact: Handler doasn't work properly if codebase ends with "/"
+        // allow it not to end with one.
 		try {
-			return new URL(baseUrl, resolveRelative(coords));
-		} catch (MalformedURLException e) {
+            String relative = resolveRelative(coords);
+            if (!baseUrl.getPath().endsWith("/") && !relative.startsWith("/"))
+                relative = "/" + relative;
+            return new URL(baseUrl, relative);
+        } catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
 	}
