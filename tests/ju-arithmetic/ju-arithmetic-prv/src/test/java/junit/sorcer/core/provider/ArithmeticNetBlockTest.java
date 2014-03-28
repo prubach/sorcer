@@ -31,6 +31,7 @@ import static sorcer.po.operator.*;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:sos-platform",
         "org.sorcersoft.sorcer:ju-arithmetic-api"})
 @SorcerServiceConfiguration(":ju-arithmetic-cfg-all")
 public class ArithmeticNetBlockTest implements SorcerConstants {

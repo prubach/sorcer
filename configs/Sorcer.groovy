@@ -215,7 +215,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "Exerter") { //fork:'yes'
         interfaces {
-            classes 'sorcer.core.provider.ServiceTasker'
+            classes 'sorcer.service.Exerter'
             artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {

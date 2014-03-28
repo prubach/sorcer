@@ -17,6 +17,7 @@
  */
 package sorcer.ex5.requestor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -66,6 +67,7 @@ public class ArithmeticExertleterTest {
 	private final static Logger logger = LoggerFactory
 			.getLogger(NetArithmeticReqTest.class);
 
+    @Ignore("The same as the one below")
     @Test
     public void exertExertleter() throws Exception {
 

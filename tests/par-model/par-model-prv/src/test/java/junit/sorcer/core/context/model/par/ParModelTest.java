@@ -91,9 +91,11 @@ import sorcer.service.Task;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-                 "org.sorcersoft.sorcer:ju-arithmetic-prv",
-                 "org.sorcersoft.sorcer:model-beans"
+@ExportCodebase({
+                "org.sorcersoft.sorcer:dbp-api",
+                "org.sorcersoft.sorcer:sorcer-api",
+                "org.sorcersoft.sorcer:ju-arithmetic-prv",
+                "org.sorcersoft.sorcer:model-beans"
 })
 @SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelTest {
