@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
+import sorcer.resolver.VersionResolver;
+import sorcer.util.ArtifactCoordinates;
+import sorcer.util.GenericUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -229,6 +232,16 @@ public class Booter {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Could not build base URL", e);
 		}
+	}
+
+    public static URL artifactURL(String coords){
+        return artifactURL(ArtifactCoordinates.coords(coords));
+    }
+
+    public static URL artifactURL(ArtifactCoordinates coords){
+        if (coords.getVersion() == null)
+            coords.setVersion(VersionResolver.instance.resolveVersion(coords.getGroupId(), coords.getArtifactId()));
+        return GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), coords.toString());
 	}
 
     /**

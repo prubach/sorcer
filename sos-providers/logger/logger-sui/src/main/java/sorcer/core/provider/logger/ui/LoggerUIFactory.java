@@ -20,6 +20,7 @@ import net.jini.lookup.ui.MainUI;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Artifact;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 import sorcer.util.Sorcer;
 
@@ -36,15 +37,20 @@ public class LoggerUIFactory {
     public static UIDescriptor getMainUIDescriptor() {
         UIDescriptor uiDesc = null;
         try {
-            URL uiUrl = GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("logger-sui").toString());
-            URL helpUrl = null;//new URL(SorcerEnv.getWebsterUrl() + "/logger.html");
+            URL[] uiUrls = new URL[]{
+                    GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("logger-sui").toString()),
+                    GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString()),
+                    GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), ArtifactCoordinates.coords("net.jini.lookup:serviceui:2.2.2").toString())
+            };
 
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                    new UIFrameFactory(new URL[]{uiUrl},
+                    new UIFrameFactory(uiUrls,
                             LoggerFrameUI.class
                                     .getName(),
                             "Log Viewer",
-                            helpUrl));
+                            //new URL(SorcerEnv.getWebsterUrl() + "/logger.html")
+                            null
+                    ));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

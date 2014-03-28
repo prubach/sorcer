@@ -19,7 +19,6 @@ deployment(name: 'SorcerCommon') {
 
     codebase getCodebase()
 
-    artifact id: 'sos-exertlet-sui', sorcer('sos-exertlet-sui')
     artifact id: 'cataloger-prv', sorcer('cataloger-prv')
     artifact id: 'cataloger-api', sorcer('cataloger-api')
     artifact id: 'jobber-prv', sorcer('jobber-prv')

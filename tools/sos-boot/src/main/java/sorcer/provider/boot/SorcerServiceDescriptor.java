@@ -36,7 +36,7 @@ import sorcer.util.StringUtils;
 /**
  * The SorcerServiceDescriptor class is a utility that conforms to the
  * Jini&trade; technology ServiceStarter framework, and will start a service
- * using the {@link sorcer.provider.boot.CommonClassLoader} as a shared,
+ * using the {@link org.rioproject.loader.CommonClassLoader} as a shared,
  * non-activatable, in-process service. Clients construct this object with the
  * details of the service to be launched, then call <code>create</code> to
  * launch the service in invoking object's VM.

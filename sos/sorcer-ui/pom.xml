@@ -39,6 +39,18 @@
             <artifactId>jsk-platform</artifactId>
             <version>${v.jini}</version>
         </dependency>
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>rio-platform</artifactId>
+            <version>${v.rio}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

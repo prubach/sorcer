@@ -18,6 +18,7 @@ package sorcer.tools.webster;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.resolver.VersionResolver;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;
@@ -155,12 +156,18 @@ public class InternalWebster {
 
         Set<String> codebaseSet = new HashSet<String>();
         for (String export : jars)
-            if (export.startsWith("artifact:"))
+            if (export.startsWith("artifact:")) {
+                logger.fine("adding artifact as is: " + export);
                 codebaseSet.add(export);
-            else if (ArtifactCoordinates.isArtifact(export))
-                codebaseSet.add(GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), export).toExternalForm());
-            else
-                codebaseSet.add(pathToHttpUrl(export, localIPAddress, port));
+            } else if (ArtifactCoordinates.isArtifact(export)) {
+                String url = resolve(export);
+                logger.fine("Adding " + export + " as " + url);
+                codebaseSet.add(url);
+            } else {
+                String url = pathToHttpUrl(export, localIPAddress, port);
+                logger.fine("Adding " + export + " as " + url);
+                codebaseSet.add(url);
+            }
         codebase = StringUtils.join(codebaseSet, CODEBASE_SEPARATOR);
         System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase);
         System.setProperty(SorcerConstants.P_WEBSTER_PORT, Integer.toString(webster.getPort()));
@@ -169,6 +176,13 @@ public class InternalWebster {
         logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
 
         return webster;
+    }
+
+    private static String resolve(String coords) {
+        ArtifactCoordinates artifact = ArtifactCoordinates.coords(coords);
+        if (artifact.getVersion() == null)
+            artifact.setVersion(VersionResolver.instance.resolveVersion(artifact.getGroupId(), artifact.getArtifactId()));
+        return GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), artifact.toString()).toExternalForm();
     }
 
     private static String pathToHttpUrl(String path, String address, int port){
@@ -185,13 +199,4 @@ public class InternalWebster {
         }
         return (array);
     }
-
-    public static void main(String[] args) {
-        try {
-            startWebster(new String[] { "sorcer-prv-dl.jar" });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
 }
