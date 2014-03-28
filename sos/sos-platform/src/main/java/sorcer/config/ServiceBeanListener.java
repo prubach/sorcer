@@ -15,10 +15,10 @@ package sorcer.config;
  * limitations under the License.
  */
 
+import com.google.inject.Inject;
 import net.jini.config.ConfigurationException;
 import sorcer.core.provider.Provider;
 
-import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -40,15 +40,18 @@ public class ServiceBeanListener implements BeanListener {
     private List<BeanListener> activators;
     private List<BeanListener> destroyers;
 
-    @Inject
-    public ServiceBeanListener(Set<BeanListener> platformListeners) {
+    @Inject(optional = true)
+    public void setBeanListeners(Set<BeanListener> platformListeners){
+        activators.addAll(platformListeners);
+        destroyers.addAll(0, platformListeners);
+    }
+
+    public ServiceBeanListener() {
         activators = new LinkedList<BeanListener>();
         activators.add(new Configurer());
         activators.add(new LoggerConfigurer());
-        activators.addAll(platformListeners);
 
         destroyers = new LinkedList<BeanListener>();
-        destroyers.addAll(platformListeners);
         destroyers.add(new ServiceBeanDestroyer());
     }
 

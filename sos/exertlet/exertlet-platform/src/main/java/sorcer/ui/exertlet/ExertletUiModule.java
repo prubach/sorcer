@@ -34,6 +34,7 @@ import sorcer.ui.serviceui.UIComponentFactory;
 import sorcer.ui.serviceui.UIDescriptorFactory;
 import sorcer.ui.serviceui.UIFrameFactory;
 import sorcer.util.Artifact;
+import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 
 import java.io.IOException;
@@ -54,12 +55,14 @@ public class ExertletUiModule extends AbstractModule {
     static class NetletInjector extends AbstractBeanListener implements ServiceDescriptorProcessor {
         private static Logger log = LoggerFactory.getLogger(NetletInjector.class);
 
-        private URL sosExertletSuiUrl;
-        private URL sorcerUi;
+        private final URL serviceui = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), ArtifactCoordinates.coords("net.jini.lookup:serviceui:2.2.2").toString());
+        private URL[] urls = new URL[]{
+                GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sos-exertlet-sui").toString()),
+                GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString()),
+                serviceui
+        };
 
         public NetletInjector() {
-            sosExertletSuiUrl = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sos-exertlet-sui").toString());
-            sorcerUi = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString());
         }
 
         @Override
@@ -67,7 +70,7 @@ public class ExertletUiModule extends AbstractModule {
             try {
                 // URL exportUrl, String className, String name, String helpFilename
                 UIDescriptor uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                        new UIFrameFactory(sosExertletSuiUrl, "sorcer.ui.exertlet.NetletUI", "Exertlet Editor", null)
+                        new UIFrameFactory(urls, "sorcer.ui.exertlet.NetletUI", "Exertlet Editor", null)
                 );
                 provider.addAttribute(uiDesc2);
             } catch (IOException ex) {
@@ -75,7 +78,7 @@ public class ExertletUiModule extends AbstractModule {
             }
             try {
                 UIDescriptor descriptor = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                        new UIComponentFactory(sosExertletSuiUrl, "sorcer.core.provider.ui.ProviderUI")
+                        new UIComponentFactory(urls, "sorcer.core.provider.ui.ProviderUI")
                 );
                 provider.addAttribute(descriptor);
             } catch (IOException ex) {
@@ -96,12 +99,7 @@ public class ExertletUiModule extends AbstractModule {
             Set<URL> codebase = descriptor.getCodebase();
             if (codebase == null || codebase.isEmpty())
                 return;
-            String myUrl = sosExertletSuiUrl.toExternalForm();
-            for (URL url : codebase) {
-                if (url.toExternalForm().startsWith(myUrl))
-                    return;
-            }
-            codebase.add(sorcerUi);
+            codebase.add(serviceui);
         }
     }
 }

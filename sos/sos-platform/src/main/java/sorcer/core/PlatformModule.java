@@ -17,42 +17,15 @@
 package sorcer.core;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sorcer.config.BeanListener;
+import com.google.inject.Scopes;
 import sorcer.config.ServiceBeanListener;
-
-import java.util.Set;
 
 /**
  * @author Rafał Krupiński
  */
 public class PlatformModule extends AbstractModule {
-    private static final Logger log = LoggerFactory.getLogger(PlatformModule.class);
-
     @Override
     protected void configure() {
-        /*
-        * Before creating a ServiceProvider or a subclass, make sure ServiceBeanListener is available
-        */
-        bind(ServiceBeanListener.class).toProvider(new Provider<ServiceBeanListener>() {
-            @Inject
-            Set<BeanListener> beanListeners;
-
-            @Override
-            public ServiceBeanListener get() {
-                ServiceBeanListener instance = (ServiceBeanListener) ServiceBeanListener.getBeanListener();
-                if (instance != null) {
-                    log.warn("ServiceBeanListener already created");
-                    return instance;
-                }
-                log.info("Creating ServiceBeanListener");
-                instance = new ServiceBeanListener(beanListeners);
-                ServiceBeanListener.setBeanListener(instance);
-                return instance;
-            }
-        }).asEagerSingleton();
+        bind(ServiceBeanListener.class).in(Scopes.SINGLETON);
     }
 }
