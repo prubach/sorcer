@@ -282,10 +282,6 @@ abstract public class
                 for (ArtifactCoordinates artCord : artifactCoords) {
                     codebase.add(resolve(artCord));
                 }
-            else {
-                // Add default codebase sos-platform and sorcer-api
-                codebase.add(resolve(Artifact.getSorcerApi()));
-            }
 
             logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
             if (isWebsterInt)

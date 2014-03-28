@@ -59,7 +59,7 @@ public class StartSorcerBrowser {
 			if (codebase!= null)
 				tokens = toArray(codebase);
             else
-                tokens = new String[] { Artifact.getSorcerApi().toString() };
+                tokens = new String[0];
 			try {
 				InternalWebster.startWebster(tokens, new String[] { SorcerEnv.getRepoDir()});
 			} catch (IOException e) {
