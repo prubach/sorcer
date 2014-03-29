@@ -173,6 +173,11 @@
             <artifactId>browser</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- maven plugins -->
 <!--

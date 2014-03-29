@@ -592,7 +592,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	public String toString() {
 		String className = getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
-		return className + "[" + delegate.getServiceID() + "]";
+		return className + "[" + (delegate!=null ? delegate.getServiceID() : "delegate not set") + "]";
 	}
 
 	/**

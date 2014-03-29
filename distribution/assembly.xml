@@ -53,9 +53,19 @@
                 <destName>dbp-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/dbp/dbp-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>dbp-dl-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/cataloger/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>cataloger-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/cataloger/cataloger-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>cataloger-dl${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos-providers/exerter/pom.xml</source>
@@ -117,6 +127,11 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>other-configs-${v.sorcer}.pom</destName>
             </file>
+            <file>
+                <source>${basedir}/../sos/default-codebase/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>default-codebase-${v.sorcer}.pom</destName>
+            </file>
 
             <!-- top-level poms for examples -->
             <file>
@@ -140,9 +155,19 @@
                 <destName>account-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../examples/account/account-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>account-dl-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../examples/ex0/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex0-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex0/ex0-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex0-dl-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../examples/ex1/pom.xml</source>
@@ -150,9 +175,19 @@
                 <destName>ex1-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../examples/ex1/ex1-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex1-dl-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../examples/ex2/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex2-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex2/ex2-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex2-dl-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../examples/ex3/pom.xml</source>
@@ -170,9 +205,19 @@
                 <destName>ex5-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../examples/ex5/ex5-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex5-dl-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../examples/ex6/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>ex6-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../examples/ex6/ex6-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>ex6-dl-${v.sorcer}.pom</destName>
             </file>
 
             <!-- top level poms for int-tests -->
