@@ -468,13 +468,14 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"
 }
 
 startBrowser(){
-BROWSER_CLASSPATH=$JINI_CLASSPATH:$LOG_CP:\
+BROWSER_CLASSPATH="$JINI_CLASSPATH:$LOG_CP:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-ui/$V_SORCER/sorcer-ui-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-api/$V_SORCER/sos-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/browser/$V_SORCER/browser-$V_SORCER.jar:\
@@ -482,7 +483,8 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_S
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
-$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar
+$MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
+$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar"
 
 
 

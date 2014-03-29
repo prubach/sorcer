@@ -57,7 +57,7 @@ if [ $opSys = "Darwin" ] ; then
 	JAVA_OPTS=$JAVA_OPTS -Xdock:name="Rio"
 fi
 
-echo $RIOUI_CLASSPATH
+#echo $RIOUI_CLASSPATH
 
 exec "$JAVACMD" \
 $JAVA_OPTS \
