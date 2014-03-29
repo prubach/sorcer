@@ -33,6 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -342,7 +343,11 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			String url;
 			if (event.getSource() == urlField) {
 				url = urlField.getText();
-				displayUrl(url);
+                try {
+                    displayUrl(new URL(url));
+                } catch (MalformedURLException me) {
+                    warnUser("can't load: " + url);
+                }
 				return;
 			}
 
@@ -409,7 +414,11 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			// Clicked "home" button instead of entering URL
 			// url = initialURL;
 			url = "http://sorcersoft.org";
-			displayUrl(url);
+            try {
+			    displayUrl(new URL(url));
+            } catch (MalformedURLException me) {
+                warnUser("can't load: " + url);
+            }
 		}
 	}
 
@@ -418,11 +427,11 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
 			if (file != null) {
-				String url = file.getAbsolutePath();
-				// logger.info("Open file: " + url);
-				if (url.startsWith("/") || url.charAt(1) == ':')
-					url = "file://" + url;
-				displayUrl(url);
+                try {
+    				displayUrl(file.toURI().toURL());
+                } catch (MalformedURLException me) {
+                    warnUser("Can't open file: " + file.getPath() + ": " + me);
+                }
 			}
 		}
 	}
@@ -552,7 +561,6 @@ public class EditorView extends JPanel implements HyperlinkListener {
 			openOutPanel(exertion.getExceptions().toString());
 		}
 		else {
-
 			StringBuilder sb = new StringBuilder(exertion.getContext().toString());
 			if (debug) {
 				sb.append("\n");
@@ -588,14 +596,14 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		}
 	}
 
-	private void displayUrl(String url) {
-		if (url == null || url.length() == 0)
+	private void displayUrl(URL url) {
+		if (url == null)
 			return;
 
 		try {
-			editPane.setPage(new URL(url));
+			editPane.setPage(url);
 			if (urlField != null)
-				urlField.setText(url);
+				urlField.setText(url.getPath());
 		} catch (IOException ioe) {
 			warnUser("Can't follow link to " + url + ": " + ioe);
 		}
