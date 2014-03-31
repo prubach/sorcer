@@ -25,6 +25,8 @@
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
 
+    <name>SORCER OS :: default-codebase</name>
+
     <artifactId>default-codebase</artifactId>
     <packaging>pom</packaging>
 

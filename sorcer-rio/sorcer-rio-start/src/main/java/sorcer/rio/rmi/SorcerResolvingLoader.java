@@ -27,6 +27,7 @@ import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.channels.FileLockInterruptionException;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
 import java.util.HashSet;
@@ -80,7 +81,12 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
             logger.trace("class: {}, codebase: {}, size now {}", name, codebase, classAnnotationMap.size());
         }
         logger.trace("Load class {} using codebase {}, resolved to {}", name, codebase, resolvedCodebase);
-        return loader.loadClass(resolvedCodebase, name, defaultLoader);
+        try {
+            return loader.loadClass(resolvedCodebase, name, defaultLoader);
+        } catch (Exception fe) {
+            logger.warn("Problem loading class: " + name + " from: " + resolvedCodebase + " " + fe.getMessage() + " - trying again");
+            return loader.loadClass(resolvedCodebase, name, defaultLoader);
+        }
     }
 
     @Override

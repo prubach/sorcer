@@ -24,6 +24,7 @@
         <artifactId>sos</artifactId>
         <version>1.0-M4-SNAPSHOT</version>
     </parent>
+    <name>SORCER OS :: exertlet</name>
 
     <artifactId>exertlet</artifactId>
     <packaging>pom</packaging>
