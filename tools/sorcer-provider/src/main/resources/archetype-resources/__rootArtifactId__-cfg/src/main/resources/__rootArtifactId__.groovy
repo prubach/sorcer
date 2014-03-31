@@ -19,13 +19,13 @@ deployment(name: '${rootArtifactId}-provider') {
 
     codebase getCodebase()
 
-    artifact id: '${rootArtifactId}-api', '${groupId}:${rootArtifactId}-api:${version}'
+    artifact id: '${rootArtifactId}-dl', '${groupId}:${rootArtifactId}-dl:pom:${version}'
     artifact id: '${rootArtifactId}-cfg', '${groupId}:${rootArtifactId}-cfg:${version}'
 
     service(name: '${rootArtifactId}-prv') {
         interfaces {
             classes '${package}.${providerInterface}'
-            artifact ref: '${rootArtifactId}-api'
+            artifact ref: '${rootArtifactId}-dl'
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {
             artifact ref: '${rootArtifactId}-cfg'

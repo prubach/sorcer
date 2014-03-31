@@ -23,22 +23,13 @@
 
 	<modules>
 		<module>${rootArtifactId}-api</module>
-		<module>${rootArtifactId}-prv</module>
+        <module>${rootArtifactId}-cfg</module>
+        <module>${rootArtifactId}-dl</module>
+        <module>${rootArtifactId}-prv</module>
 		<module>${rootArtifactId}-req</module>
-		<module>${rootArtifactId}-cfg</module>
 
         <!-- optional modules -->
 		<module>${rootArtifactId}-proxy</module>
 		<module>${rootArtifactId}-sui</module>
 	</modules>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.sorcersoft.sorcer</groupId>
-				<artifactId>sos-api</artifactId>
-				<version>${v.sorcer}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>

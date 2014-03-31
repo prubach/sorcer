@@ -3,10 +3,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>${rootArtifactId}</artifactId>
+        <groupId>${groupId}</groupId>
+        <version>${version}</version>
+    </parent>
+
 	<artifactId>${rootArtifactId}-prv</artifactId>
 	<name>SORCER :: ${rootArtifactId} :: provider</name>
-	<description>SORCER</description>
-	<url>http://sorcersoft.org/</url>
 
 	<dependencies>
 		<dependency>
@@ -20,12 +24,14 @@
 			<version>${v.sorcer}</version>
 		</dependency>
 
-        <!-- CodeBase -->
+        <!-- Optionally needed only if you want to create a fat proxy (mobile code that will be executed locally at the requestor -->
+<!--
 		<dependency>
 			<groupId>${groupId}</groupId>
 			<artifactId>${rootArtifactId}-proxy</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+-->
 
     </dependencies>
 </project>

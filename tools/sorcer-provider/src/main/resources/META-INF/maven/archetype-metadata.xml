@@ -87,6 +87,8 @@
 			</fileSets>
 		</module>
 
+        <module id="${artifactId}-dl" dir="__rootArtifactId__-dl" name="${artifactId}-dl"/>
+
 		<module id="${artifactId}-proxy" dir="__rootArtifactId__-proxy" name="${artifactId}-proxy"/>
 
 		<module id="${artifactId}-prv" dir="__rootArtifactId__-prv" name="${artifactId}-prv">
