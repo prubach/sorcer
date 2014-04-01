@@ -80,7 +80,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
-	 * @see sorcer.core.provider.base.Provider#destroy()
+	 * @see sorcer.core.provider.Provider#destroy()
 	 */
 	public void destroy() throws RemoteException;
 
@@ -88,7 +88,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	 * Destroy all services in this node (virtual machine) by calling each
 	 * destroy().
 	 * 
-	 * @see sorcer.core.provider.base.Provider#destroy()
+	 * @see sorcer.core.provider.Provider#destroy()
 	 */
 	public void destroyNode() throws RemoteException;
 	

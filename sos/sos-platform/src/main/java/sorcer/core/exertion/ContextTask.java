@@ -18,8 +18,9 @@
 package sorcer.core.exertion;
 
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.ContextManagement;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ServiceContext;
@@ -27,16 +28,15 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Signature;
-import sorcer.util.Log;
 
 /**
-* The SORCER context task extending the basic task implementation {@link Task}.
+* The SORCER context task extending the basic task implementation {@link sorcer.service.Task}.
 * 
 * @author Mike Sobolewski
 */
 public class ContextTask extends NetTask {
 	
-	private final static Logger logger = Log.getTestLog();
+	private final static Logger logger = LoggerFactory.getLogger(ContextTask.class);
 	
 	static final long serialVersionUID = -1182397620651528862L;
 	

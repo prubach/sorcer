@@ -65,8 +65,7 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
             xrt.setStatus(FAILED);
             throw new ExertionException(pe.getLocalizedMessage());
         } catch (Exception re) {
-			re.printStackTrace();
-			logger.severe("Space not reachable....resetting space");
+			logger.warn("Space not reachable....resetting space", re);
 			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				xrt.setStatus(FAILED);
@@ -91,23 +90,21 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 		// get all children of the underlying parent job
 		ExertionEnvelop template = ExertionEnvelop.getTakeTemplate(xrt.getId(),
 				null);
-		logger
-				.finer("<===================== collect exertions for template: \n"
-						+ template.describe());
+		logger.debug("collect exertions for template: {}",
+						template.describe());
 		while (count < inputXrts.size() && state != FAILED) {
 			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(template);
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
 						.get(((ServiceExertion) resultEnvelop.exertion)
 								.getIndex());
-				logger
-						.finer("collected result envelope  <===================== \n"
-								+ resultEnvelop.describe());
+				logger.debug("collected result envelope {}",
+								resultEnvelop.describe());
 				ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
 				postExecExertion(input, result);
 				count++;
 			} else {
-				logger.finest("continue for envelop: " + resultEnvelop);
+				logger.trace("continue for envelop: " + resultEnvelop);
 				continue;
 			}
 		}

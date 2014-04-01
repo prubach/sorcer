@@ -75,17 +75,16 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		} catch (ContextException e) {
 			throw new ExertionException(e);
 		}
-		logger.finer("space task: " + xrt);
+		logger.debug("space task: " + xrt);
 		try {
 			writeEnvelop(xrt);
-			logger.finer("written task ==> SPACE EXECUTE TASK: "
+			logger.debug("written task ==> SPACE EXECUTE TASK: "
 					+ xrt.getName());
 		} catch (ProvisioningException pe) {
             xrt.setStatus(FAILED);
             throw new ExertionException(pe.getLocalizedMessage());
         } catch (RemoteException re) {
-			re.printStackTrace();
-			logger.severe("Space not reachable... resetting space");
+			logger.warn("Space not reachable... resetting space", re);
 			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				xrt.setStatus(FAILED);
@@ -100,13 +99,13 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		temp.exertionID = xrt.getId();
 		temp.state = new Integer(DONE);
 
-		logger.finer("<===================== template for space task to be collected: \n"
-				+ temp.describe());
+		logger.debug("template for space task to be collected: {}",
+				temp.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(temp);
 		if (resultEnvelop != null) {
-			logger.finer("collected result envelope  <===================== \n"
-					+ resultEnvelop.describe());
+			logger.debug("collected result envelope {}",
+					resultEnvelop.describe());
 			
 			NetTask result = (NetTask) resultEnvelop.exertion;
 			state = DONE;
@@ -127,8 +126,8 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		template.exertionID = xrt.getId();
 		template.state = new Integer(FAILED);
 
-		logger.finer("<===================== template for failed task to be collected: \n"
-				+ template.describe());
+		logger.debug("template for failed task to be collected: {}",
+				template.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {
@@ -151,8 +150,8 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		template.exertionID = xrt.getId();
 		template.state = new Integer(ERROR);
 
-		logger.finer("<===================== template for error task to be collected: \n"
-				+ template.describe());
+		logger.debug("template for error task to be collected: {}",
+				template.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {

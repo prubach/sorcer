@@ -28,7 +28,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -45,18 +44,18 @@ import net.jini.security.AuthenticationPermission;
 import net.jini.security.BasicProxyPreparer;
 import net.jini.security.ProxyPreparer;
 import net.jini.security.policy.DynamicPolicyProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.Auditor;
-import sorcer.util.Log;
 
 /**
- * Implementation of a secure service UI pane. Can be to be used in association
- * with {@link SecureFrame).
+ * Implementation of a secure service UI pane.
  * 
  * @author Mike Sobolewski
  */
 abstract public class SecureContentPane extends JPanel {
 
-	final static private Logger logger = Log.getSecurityLog();
+	final static private Logger logger = LoggerFactory.getLogger(SecureContentPane.class);
 
 	final static public String COMPONENT_NAME = SecureContentPane.class
 			.getName();
@@ -90,8 +89,6 @@ abstract public class SecureContentPane extends JPanel {
 
 	public SecureContentPane(final Object serviceItem)
 			throws ConfigurationException, LoginException, IOException {
-
-		Log.initializeSecurityLoggers();
 
 		URL serviceUiConfigUrl = getClass().getResource(JINI_CONFIG);
 		logger.info("SecureContentPane>>configs/service-ui.confg: "
@@ -178,7 +175,7 @@ abstract public class SecureContentPane extends JPanel {
 	protected void prepareProxy(Object obj) {
 		ProxyPreparer preparer = null;
 		if (config == null) {
-			logger.severe("NO configuration for the requestor");
+			logger.warn("NO configuration for the requestor");
 			return;
 		}
 
@@ -229,9 +226,7 @@ abstract public class SecureContentPane extends JPanel {
 			logger.info(">>>Preparred proxy: " + preparedProxy
 					+ "\nwith preparer:" + preparer);
 		} catch (Exception ex) {
-			logger.info("prepareProxy>>>Service proxy not prepared");
-			ex.printStackTrace();
-			logger.throwing(getClass().getName(), "prepareProxy", ex);
+			logger.warn("prepareProxy>>>Service proxy not prepared", ex);
 		}
 	}
 

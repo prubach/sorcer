@@ -28,13 +28,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
 
 import net.jini.core.event.RemoteEvent;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.ControlContext;
 import sorcer.core.provider.Cataloger;
@@ -49,7 +50,6 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.misc.MsgRef;
 import sorcer.service.*;
 import sorcer.util.EmailCmd;
-import sorcer.util.Log;
 import sorcer.util.Sorcer;
 import sorcer.util.StringUtils;
 
@@ -58,7 +58,7 @@ import static sorcer.core.SorcerConstants.*;
 @SuppressWarnings("rawtypes")
 abstract public class ExertDispatcher implements Dispatcher,
 		Exec {
-    protected final static Logger logger = Log.getDispatchLog();
+    protected final static Logger logger = LoggerFactory.getLogger(ExertDispatcher.class);
 
     protected ServiceExertion xrt;
 
@@ -203,7 +203,7 @@ abstract public class ExertDispatcher implements Dispatcher,
                     dispatchExertions();
                 }
             } catch (Exception e) {
-                logger.finer("Exertion dispatcher thread killed by exception");
+                logger.info("Exertion dispatcher thread killed by exception");
 				interrupt();
 				e.printStackTrace();
 				xrt.setStatus(FAILED);

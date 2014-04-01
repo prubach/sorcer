@@ -23,8 +23,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
@@ -33,24 +34,21 @@ import sorcer.core.context.node.ContextNode;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.util.Collections;
-import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
 import static sorcer.core.SorcerConstants.*;
 
 /**
- * A set of use cases for testing the behavior of the {@link IntexedContext}
+ * A set of use cases for testing the behavior of the {@link sorcer.service.IndexedContext}
  * class and the {@link Context} API as well.
  * <ul>
- * <li>The 'array' use case tests the {@link IntexedContext} class.
- * <li>The 'arithmetic' use case test input and output parameters for the
- * {@link Arithmetic} interface
+ * <li>The 'array' use case tests the {@link sorcer.service.IndexedContext} class.
  * <li>The 'attributes' use case test usage of data attributes and associations
  * </ul>
  */
 public class IndexedContextTester {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(IndexedContextTester.class);
 
 	private ArrayContext ca;
 
@@ -64,8 +62,8 @@ public class IndexedContextTester {
 			System.setSecurityManager(new RMISecurityManager());
 		}
 		// Test the context array
-		logger.entering(IndexedContextTester.class.getName(), "main");
-		IndexedContextTester tester = new IndexedContextTester();
+        logger.trace("{}. {}", IndexedContextTester.class.getName(), "main");
+        IndexedContextTester tester = new IndexedContextTester();
 		tester.testEnv();
 
 		// get test type for the user

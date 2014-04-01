@@ -18,12 +18,11 @@
 
 package sorcer.ex2.requestor;
 
-import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
-
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
@@ -33,7 +32,6 @@ import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.Task;
-import sorcer.util.Log;
 import sorcer.util.Sorcer;
 
 @RunWith(SorcerRunner.class)
@@ -50,11 +48,10 @@ import sorcer.util.Sorcer;
 })
 public class WorkerTaskTest {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(WorkerTaskTest.class);
 
     @Test
 	public void workerTask() throws Exception {
-		System.setSecurityManager(new RMISecurityManager());
 		// initialize system properties
 		Sorcer.getEnvProperties();
         ServiceRequestor.prepareCodebase();

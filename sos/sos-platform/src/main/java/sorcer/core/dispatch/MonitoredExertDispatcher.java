@@ -20,7 +20,6 @@ package sorcer.core.dispatch;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Set;
-import java.util.logging.Level;
 
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
@@ -71,7 +70,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         this.xrt = (ServiceExertion)register(exertion);
 
         // make the monitor session of this exertion active
-        logger.log(Level.FINER, "Dispatching task now: " + xrt.getName());
+        logger.debug("Dispatching task now: " + xrt.getName());
         MonitoringSession session = (MonitoringSession) (xrt.getMonitorSession());
         session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                 DEFAULT_TIMEOUT_PERIOD);
@@ -143,8 +142,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             SignatureException, RemoteException {
         ServiceExertion ei = (ServiceExertion) exertion;
         preExecExertion(exertion);
-        logger.log(Level.INFO,
-                "Prexec Exertion done .... noe executing exertion");
+        logger.info("Prexec Exertion done .... noe executing exertion");
         try {
             if (ei.isTask())
                 execTask((NetTask) exertion);
@@ -155,8 +153,8 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             ei.reportException(ex);
             try {
                 if (ei.isTask())
-                    ((MonitoringSession) ((ServiceExertion) exertion).getMonitorSession())
-                            .changed(((NetTask) exertion).getContext(), State.FAILED);
+                    exertion.getMonitorSession()
+                            .changed(exertion.getContext(), State.FAILED);
             } catch (Exception ex0) {
                 ex0.printStackTrace();
             } finally {
@@ -171,12 +169,12 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     private void execTask(NetTask task) throws ExertionException,
             SignatureException {
 
-        logger.log(Level.INFO, "start executing task");
+        logger.info("start executing task");
         try {
             Service provider = (Service) Accessor.getService(task
                     .getProcessSignature().getProviderName(), task
                     .getServiceType());
-            logger.log(Level.INFO, "got a provider:" + provider);
+            logger.info("got a provider:" + provider);
 
             if (provider == null) {
                 String msg = null;
@@ -190,9 +188,9 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
                 throw new ExertionException(msg, task);
             } else {
                 // setTaskProvider(task, provider.getProviderName());
-                logger.log(Level.INFO, "Servicing task now ..............");
-                MonitoringSession session = (MonitoringSession) (task
-                        .getMonitorSession());
+                logger.info("Servicing task now ...");
+                MonitoringSession session = task
+                        .getMonitorSession();
                 session.init((Monitorable) provider, LEASE_RENEWAL_PERIOD,
                         DEFAULT_TIMEOUT_PERIOD);
                 lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -201,19 +199,13 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
                 provider.service(task, null);
             }
         } catch (RemoteException re) {
-            re.printStackTrace();
-            logger.log(Level.SEVERE, "dispatcher execution failed for task: "
-                    + task);
+            logger.warn("dispatcher execution failed for task: {}", task, re);
             throw new ExertionException("Remote Exception while executing task");
         } catch (MonitorException mse) {
-            mse.printStackTrace();
-            logger.log(Level.SEVERE, "dispatcher execution failed for task: "
-                    + task);
+            logger.warn("dispatcher execution failed for task: {}", task, mse);
             throw new ExertionException("Remote Exception while executing task");
         } catch (TransactionException te) {
-            te.printStackTrace();
-            logger.log(Level.SEVERE, "dispatcher execution failed for task: "
-                    + task);
+            logger.warn("dispatcher execution failed for task: {}", task, te);
             throw new ExertionException("Remote Exception while executing task");
         }
     }
@@ -235,10 +227,9 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
         public void notify(RemoteEvent re) throws RemoteException {
             try {
-                logger.log(Level.INFO, "Recieved Remote event from the exert monitor:\n"
-                        + re);
+                logger.info("Recieved Remote event from the exert monitor: {}", re);
                 if (!(((MonitorEvent) re).getExertion() instanceof Exertion))
-                    postExecExertion((ServiceExertion) ((MonitorEvent) re)
+                    postExecExertion(((MonitorEvent) re)
                             .getExertion());
             } catch (Exception e) {
                 e.printStackTrace();

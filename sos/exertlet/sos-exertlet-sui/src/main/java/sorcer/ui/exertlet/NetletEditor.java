@@ -20,7 +20,6 @@ package sorcer.ui.exertlet;
 import java.awt.BorderLayout;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -28,16 +27,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
 import net.jini.core.lookup.ServiceItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.provider.Provider;
 import sorcer.core.proxy.Outer;
 import sorcer.ui.util.WindowUtilities;
-import sorcer.util.Log;
 
 public class NetletEditor extends JPanel { 
 	
 	static final long serialVersionUID = -8967394998372233193L;
 	
-	private final static Logger logger = Log.getTestLog();
+	private final static Logger logger = LoggerFactory.getLogger(NetletEditor.class);
 	
 	final static String DELETE_BUTTON_LABEL = "Delete";
 	final static String RESET_BUTTON_LABEL = "Reset";

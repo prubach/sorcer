@@ -106,12 +106,10 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		ee.state = Exec.POISONED;
 		try {
 			space.write(ee, null, Lease.FOREVER);
-			logger.finer("==========> written poisoned envelop for: "
+			logger.debug("written poisoned envelop for: "
 					+ ee.describe() + "\n to: " + space);
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.throwing(this.getClass().getName(),
-					"writting poisoned ExertionEnvelop", e);
+			logger.warn("writting poisoned ExertionEnvelop", e);
 		}
 	}
 
@@ -170,12 +168,11 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		ee.state = new Integer(INITIAL);
 		try {
 			space.write(ee, null, Lease.FOREVER);
-			logger.finer("===========================> written envelop: "
+			logger.debug("written envelop: "
 					+ ee.describe() + "\n to: " + space);
 		} catch (Exception e) {
-			e.printStackTrace();
-			state = Exec.FAILED;
-			logger.throwing(this.getClass().getName(), "writeEnvelop", e);
+			logger.warn("writeEnvelop", e);
+            state = Exec.FAILED;
 		}
 	}
 
@@ -246,9 +243,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			}
 			if (ee != null) {
 				Exertion result = ee.exertion;
-				logger
-						.finer("collected space FAILED exertion <=========================== "
-								+ result);
+				logger.debug("collected space FAILED exertion {}", result);
 				if (result != null) {
 					handleError(result, FAILED);
 				}
@@ -274,9 +269,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			}
 			if (ee != null) {
 				Exertion result = ee.exertion;
-				logger
-						.finer("collectd space ERROR exertion <=========================== "
-								+ result);
+				logger.debug("collectd space ERROR exertion {}", result);
 				if (result != null) {
 					handleError(result, ERROR);
 				}
@@ -322,7 +315,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
             throw new ExertionException(pe.getLocalizedMessage());
         } catch (RemoteException re) {
 			re.printStackTrace();
-			logger.severe("Space died....resetting space");
+			logger.warn("Space died....resetting space");
 			space = SpaceAccessor.getSpace();
 			if (space == null) {
 				throw new ExertionException("NO exertion space available!");
@@ -330,7 +323,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			try {
 				writeEnvelop(masterXrt);
 			} catch (Exception e) {
-				logger.severe("Space died....could not recover");
+				logger.warn("Space died....could not recover", e);
 			}
 		}
 
@@ -338,8 +331,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 				masterXrt.getParentId(), masterXrt.getId());
 
 		ExertionEnvelop result = (ExertionEnvelop) takeEnvelop(template);
-		logger
-				.finer("executeMasterExertion <============== MASTER EXERTION RESULT RECIEVED");
+		logger.debug("executeMasterExertion MASTER EXERTION RESULT RECIEVED");
 		if (result != null && result.exertion != null) {
 			postExecExertion(masterXrt, result.exertion);
 		}

@@ -50,21 +50,20 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 			throw new ExertionException(ex);
 		}
 
-		logger.finer("exertion count: " + inputXrts.size());
+		logger.debug("exertion count: " + inputXrts.size());
 		for (int i = 0; i < inputXrts.size(); i++) {
 			ServiceExertion exertion = (ServiceExertion) inputXrts
 					.get(i);
-			logger.finer("exertion #: " + i + ", exertion:\n" + exertion);
+			logger.debug("exertion #: " + i + ", exertion:\n" + exertion);
 			try {
 				writeEnvelop(exertion);
-				logger.finer("generateTasks ==> SPACE SEQUENIAL EXECUTE EXERTION: "
-								+ exertion.getName());
+				logger.debug("generateTasks ==> SPACE SEQUENIAL EXECUTE EXERTION: "
+                        + exertion.getName());
 			}  catch (ProvisioningException pe) {
                 xrt.setStatus(FAILED);
                 throw new ExertionException(pe.getLocalizedMessage());
             } catch (RemoteException re) {
-				re.printStackTrace();
-				logger.severe("Space not reachable....resetting space");
+				logger.warn("Space not reachable....resetting space", re);
 				space = SpaceAccessor.getSpace();
 				if (space == null) {
 					xrt.setStatus(FAILED);
@@ -82,8 +81,8 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 					}
 				}
 			}
-			logger.finer("waiting for exertion " + i + ", id="
-					+ exertion.getId() + ".............");
+			logger.debug("waiting for exertion " + i + ", id="
+                    + exertion.getId() + "...");
 			waitForExertion(exertion.getIndex());
 		}
 		dThread.stop = true;
@@ -96,16 +95,16 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 		temp.parentID = xrt.getId();
 		temp.state = new Integer(DONE);
 
-		logger.finer("<===================== collect exertions for template: \n"
-						+ temp.describe());
+		logger.debug("collect exertions for template: \n"
+                + temp.describe());
 		while (count < inputXrts.size() && state != FAILED) {
-			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(temp);
-			logger.finer("collected result envelope  <===================== \n"
-					+ (resultEnvelop!=null ? resultEnvelop.describe() : "NULL"));
+			ExertionEnvelop resultEnvelop = takeEnvelop(temp);
+			logger.debug("collected result envelope "
+                    + (resultEnvelop != null ? resultEnvelop.describe() : "NULL"));
 
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.get(((ServiceExertion) resultEnvelop.exertion)
+						.get(resultEnvelop.exertion
 								.getIndex());
 				ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
 				postExecExertion(input, result);

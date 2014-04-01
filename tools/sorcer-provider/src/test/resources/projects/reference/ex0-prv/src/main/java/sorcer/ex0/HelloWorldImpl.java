@@ -1,14 +1,14 @@
 package sorcer.ex0;
 
-import java.rmi.RemoteException; 
-import java.util.logging.Logger;
+import java.rmi.RemoteException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.service.Context;
-import sorcer.util.Log;
 
 public class HelloWorldImpl implements HelloWorld {
 
-	private static Logger logger = Log.getTestLog();
+	private static Logger logger = LoggerFactory.getLogger(HelloWorldImpl.class);
 	
 	public Context sayHelloWorld(Context context) throws RemoteException {
 		try {

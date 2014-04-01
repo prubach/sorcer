@@ -19,13 +19,14 @@
 package sorcer.core.provider.ui;
 
 import java.awt.GridLayout;
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import net.jini.core.lookup.ServiceItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.cataloger.ui.BrowserModel;
 import sorcer.core.provider.cataloger.ui.BrowserWindow;
@@ -33,7 +34,6 @@ import sorcer.core.provider.cataloger.ui.SignatureDispatcherForProvider;
 import sorcer.core.provider.cataloger.ui.SignatureDispatchment;
 import sorcer.core.proxy.Outer;
 import sorcer.service.Tasker;
-import sorcer.util.Log;
 
 /**
  * SORCER provider attribute and context viewer. It also allows to create a
@@ -41,7 +41,7 @@ import sorcer.util.Log;
  */
 public class ProviderUI extends JPanel {
 
-	private static final Logger logger = Log.getTestLog();
+	private static final Logger logger = LoggerFactory.getLogger(ProviderUI.class);
 
 	private static final long serialVersionUID = 1L;
 

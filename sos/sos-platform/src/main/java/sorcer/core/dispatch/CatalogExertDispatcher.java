@@ -71,7 +71,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         } catch (RemoteException e) {
             // ignore it, local call
         }
-        logger.finest("preExecExertions>>>...UPDATING INPUTS...");
+        logger.trace("preExecExertions>>>...UPDATING INPUTS...");
 		try {
 			//if (exertion.isTask()) {
 				updateInputs(exertion);
@@ -104,7 +104,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			} else if (ex.isBlock()) {
 				result = execBlock((Block) ex);
 			} else {
-				logger.warning("Unknown ServiceExertion: " + ex);
+				logger.warn("Unknown ServiceExertion: {}", ex);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,7 +169,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             if (((NetSignature) task.getProcessSignature())
                     .getService()!=null && ((NetSignature) task.getProcessSignature())
                     .getService().equals(provider)) {
-                logger.finer("\n*** getting result from delegate of "
+                logger.debug("\n*** getting result from delegate of "
                         + provider.getProviderName() + "... ***\n");
                 result = ((ServiceProvider) provider).getDelegate().doTask(
                         task, null);
@@ -185,15 +185,15 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     Provisioner provisioner = Accessor.getService(Provisioner.class);
                     if (provisioner != null) {
                         try {
-                            logger.fine("Provisioning "+sig);
+                            logger.info("Provisioning "+sig);
                             service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
                         } catch (ProvisioningException pe) {
                             String msg = "PROBLEM: " +pe.getMessage();
-                            logger.severe(msg);
+                            logger.warn(msg, pe);
                             throw new ExertionException(msg, task);
                         } catch (RemoteException re) {
                             String msg = "Problem provisioning "+sig + " " +re.getMessage();
-                            logger.severe(msg);
+                            logger.warn(msg, re);
                             throw new ExertionException(msg, task);
                         }
                     }
@@ -232,7 +232,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 					 * >>>>>--------------Inside null Subject"); result =
 					 * (RemoteServiceTask)provider.service(task); }
 					 */
-                    logger.finer("\n*** getting result from provider... ***\n");
+                    logger.debug("getting result from provider...");
                     result = (NetTask) service.service(task, null);
 
 					if (result!=null)
@@ -241,7 +241,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                     + getClass().getName());
                 }
             }
-            logger.finer("\n*** got result: ***\n" + result);
+            logger.debug("got result: {}", result);
         }
         catch (Exception re) {
             task.reportException(re);
@@ -341,7 +341,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				if (concatenators[i] != null) {
 					if (!provider.getProviderID().equals(
 							concatenators[i].serviceID)) {
-						logger.finest("\n***Concatenator: " + i + " ServiceID: "
+						logger.trace("Concatenator: " + i + " ServiceID: "
 								+ concatenators[i].serviceID);
 						Provider rconcatenator = (Provider) concatenators[i].service;
 
