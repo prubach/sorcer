@@ -38,7 +38,7 @@
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip/download">Download</a></td>
                         <td>63 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip.md5/download">MD5</a></td>
-                        <td align="center">10/01/2014</td>
+                        <td align="center">01/04/2014</td>
                     </tr>
                     <tr>
 			<td>Sorcer ${v_sos_release} Windows setup</td>
@@ -46,7 +46,7 @@
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe/download">Download</a></td>
                         <td>65 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">10/01/2014</td>
+                        <td align="center">01/04/2014</td>
                     </tr>
 		    <tr>
 			<td>Sorcer ${v_sos_release} cross-platform setup</td>
@@ -54,13 +54,13 @@
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar/download">Download</a></td>
                         <td>64 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar.md5/download">MD5</a></td>
-                        <td align="center">10/01/2014</td>
+                        <td align="center">01/04/2014</td>
                     </tr>
                 </tbody>
             </table>
 	    
             
-            <h2>Download Sorcer 1.0-M2 - previous milestone version.</h2>
+            <h2>Download Sorcer 1.0-M2 - milestone version before integration with Rio.</h2>
             <table>
                 <tbody>
                     <tr>
@@ -122,9 +122,7 @@
 
 	     <h2>Sorcer ${v_sorcer}</h2>
 	                <p>
-                        If you would like to test a more feature rich but less stable version, please check our current SNAPSHOT release: Sorcer ${v_sorcer}
-                        This release is available directly from our SourceForge download site:
-                        <a href="http://sourceforge.net/projects/sorcer/files/">http://sourceforge.net/projects/sorcer/files/</a>
+                        If you would like to test a more feature rich but less stable version, please check out the current version on GitHub: <a href="https://github.com/sorcersoft/sorcer/">https://github.com/sorcersoft/sorcer</a>
                     </p>
         </section>
     </body>

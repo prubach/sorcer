@@ -4,7 +4,7 @@ Getting Started with SORCER
 Author: [Paweł Rubach](pawel.rubach@sorcersoft.com)
 
 ##Prerequisites
-### [Java JDK 1.6 or newer, preferably Oracle Java JDK 1.7](http://java.oracle.com)
+### [Java JDK 1.6 or newer, preferably Oracle Java JDK 1.7 or 1.8](http://java.oracle.com)
 
 SORCER is cross-platform, so any OS supporting Java 1.6 or higher should be ok but the current distribution
 was tested on Windows XP/7 32/64bit, Linux (Debian/Ubuntu/Centos) 32/64bit and Mac OS X 10.5.x.
@@ -37,7 +37,7 @@ manually in the
 <tt>Control Panel -> System -> Advanced System Settings -> Environment Settings </tt>
 On Windows Vista/7/8 you can also run the script below as administrator (start cmd.exe by right clicking
 it and selecting "Run as Administrator".
-<pre>setx -m SORCER_HOME "C:\sorcer"</pre>
+<pre>setx -m SORCER_HOME "C:\\sorcer"</pre>
 On UNIX there are many ways to do it depending on your OS and configuration. You can add it
 <ul>
     <li>system-wide to /etc/environment, or create a /etc/profile.d/sorcer.sh script</li>
