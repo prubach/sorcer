@@ -133,6 +133,8 @@
 
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/ant" os="unix"/>
             <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/antRun" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/complete-ant-cmd.pl" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/lib/apache-ant/bin/runant.pl" os="unix"/>
         </pack>
         <pack id="maven" name="Apache Maven" required="no">
             <description>Apache Maven - required to run Sorcer Examples</description>
