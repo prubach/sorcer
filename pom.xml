@@ -6,7 +6,7 @@
     <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>sorcer</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-M4</version>
+    <version>1.0-M5-SNAPSHOT</version>
 
     <name>SORCER Project</name>
 

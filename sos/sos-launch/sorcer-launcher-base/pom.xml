@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>sos-launch</artifactId>
-        <version>1.0-M4</version>
+        <version>1.0-M5-SNAPSHOT</version>
     </parent>
     <artifactId>sorcer-launcher-base</artifactId>
     <name>SORCER Launch :: Base</name>

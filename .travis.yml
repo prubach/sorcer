@@ -17,10 +17,6 @@ script:
   - examples/test-examples.sh
 jdk:
   - oraclejdk7
-# whitelist
-branches:
-  only:
-    - v1.0-M4
 
 notifications:
   email:

@@ -2,7 +2,7 @@
 <project name ="Account Requestor" default="run.requestor" basedir=".">
 	<!-- set property values here -->
 	<property name="requestor.name" value="account-req" />
-	<property name="requestor.version" value="1.0-M4" />
+	<property name="requestor.version" value="1.0-M5-SNAPSHOT" />
 	<property name="requestor.class" value="sorcer.account.requestor.AccountTester" />
 
 	<property name="requestor.api" value="account-api"/>

@@ -2,7 +2,7 @@
       <parent>
         <artifactId>tools</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M4</version>
+        <version>1.0-M5-SNAPSHOT</version>
     </parent>
     <artifactId>sorcer-pkg</artifactId>
     <name>SORCER UNIX distribution</name>
@@ -15,7 +15,7 @@
             <dependency>
                 <groupId>org.sorcersoft.sorcer</groupId>
                 <artifactId>distribution</artifactId>
-                <version>1.0-M4</version>
+                <version>1.0-M5-SNAPSHOT</version>
                 <type>zip</type>
             </dependency>
         </dependencies>

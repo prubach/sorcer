@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>examples</artifactId>
-		<version>1.0-M4</version>
+		<version>1.0-M5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>account</artifactId>
@@ -15,7 +15,7 @@
 	<description>Account Service</description>
 
 	<properties>
-		<v.sorcer>1.0-M4</v.sorcer>
+		<v.sorcer>1.0-M5-SNAPSHOT</v.sorcer>
 	</properties>
 
 	<modules>
