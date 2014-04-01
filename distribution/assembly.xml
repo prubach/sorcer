@@ -93,19 +93,9 @@
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
             </file>
             <file>
-                <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>exertmonitor-${v.sorcer}.pom</destName>
-            </file>
-            <file>
                 <source>${basedir}/../sos-providers/concatenator/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>concatenator-${v.sorcer}.pom</destName>
-            </file>
-            <file>
-                <source>${basedir}/../sos/pom.xml</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sos-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos/sos-launch/pom.xml</source>
@@ -457,11 +447,6 @@
                 <destName>guice-4.0-beta4.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>aopalliance-1.0.pom</destName>
-            </file>
-            <file>
                 <source>${user.home}/.m2/repository/com/google/inject/guice-parent/4.0-beta4/guice-parent-4.0-beta4.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>guice-parent-4.0-beta4.pom</destName>
@@ -488,13 +473,6 @@
                 <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar-native/${v.sigar}/sigar-native-${v.sigar}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>sigar-native-${v.sigar}.pom</destName>
-            </file>
-
-            <!-- Copy the logging configuration file -->
-            <file>
-                <source>${basedir}/../configs/sorcer.logging</source>
-                <outputDirectory>/configs/</outputDirectory>
-                <destName>sorcer.logging</destName>
             </file>
         </files>
         <fileSets>
@@ -761,7 +739,6 @@
                 <exclude>org.sorcersoft.sigar:*</exclude>
                 <exclude>org.rioproject.resolver:*</exclude>
                 <exclude>org.rioproject:*</exclude>
-                <exclude>junit:*</exclude>
 
                 <exclude>jline:*</exclude>
                 <exclude>org.codehaus.izpack:*</exclude>
@@ -770,17 +747,6 @@
             <outputDirectory>lib/commons</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
            <fileMode>0644</fileMode>
-        </dependencySet>
-
-        <!-- adding junit to support -->
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <includes>
-                <include>junit:junit</include>
-            </includes>
-            <outputDirectory>lib/buildsupport</outputDirectory>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <fileMode>0644</fileMode>
         </dependencySet>
 
         <!-- Apache River libs -->
