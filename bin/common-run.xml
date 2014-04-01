@@ -261,7 +261,7 @@
                 <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-proxy/${v.rio}/rio-proxy-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/codehaus/groovy/groovy-all/${v.groovy}/groovy-all-${v.groovy}.jar"/>
-                <pathelement location="${mvn.repo}/com/google/guava/guava/15.0/guava-15.0.jar"/>
+                <pathelement location="${mvn.repo}/com/google/guava/guava/16.0.1/guava-16.0.1.jar"/>
                 <pathelement location="${mvn.repo}/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"/>
                 <pathelement location="${mvn.repo}/commons-io/commons-io/2.4/commons-io-2.4.jar"/>
                 <pathelement location="${mvn.repo}/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"/>

@@ -79,7 +79,7 @@ A "src" property should be set and point to the directory containing the module'
 	<property name="default_manifest" value="${build.dir}/manifest.mf" />
 	<property name="sorcer_manifest" value="${build.dir}/sorcer-manifest.mf" />
 	<property name="sorcer-title" value="Sorcersoft.com" />
-	<property name="sorcer-version" value="1.0-M4-SNAPSHOT" />
+	<property name="sorcer-version" value="1.0-M4" />
 
 	<!-- Declare versions as properties -->
 	<property name="rio.version" value="5.0-M4-S6"/>

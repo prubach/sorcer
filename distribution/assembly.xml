@@ -467,6 +467,11 @@
                 <destName>guice-parent-4.0-beta4.pom</destName>
             </file>
             <file>
+                <source>${user.home}/.m2/repository/com/google/inject/extensions/extensions-parent/4.0-beta4/extensions-parent-4.0-beta4.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>extensions-parent-4.0-beta4.pom</destName>
+            </file>
+            <file>
                 <source>${user.home}/.m2/repository/com/google/google/5/google-5.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>google-5.pom</destName>
