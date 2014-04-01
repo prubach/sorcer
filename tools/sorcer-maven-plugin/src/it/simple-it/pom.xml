@@ -5,7 +5,7 @@
 
 	<groupId>org.sorcersoft.sorcer.it</groupId>
 	<artifactId>simple-it</artifactId>
-	<version>1.0-M4-SNAPSHOT</version>
+	<version>1.0-M4</version>
 
 	<description>A simple IT verifying the basic use case.</description>
 
@@ -19,7 +19,7 @@
 			<plugin>
 				<groupId>org.sorcersoft.sorcer</groupId>
 				<artifactId>sorcer-maven-plugin</artifactId>
-				<version>1.0-M4-SNAPSHOT</version>
+				<version>1.0-M4</version>
 				<goals>
 					<goal>sorcer</goal>
 				</goals>

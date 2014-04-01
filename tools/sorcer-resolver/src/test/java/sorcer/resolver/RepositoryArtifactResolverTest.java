@@ -28,7 +28,7 @@ public class RepositoryArtifactResolverTest {
 	public void testWithGuava() throws Exception {
 		String path = resolver.resolveSimpleName("guava", "jar");
 
-		String expected = resolver.resolveRelative("com.google.guava:guava:15.0");
+		String expected = resolver.resolveRelative("com.google.guava:guava:16.0.1");
 		Assert.assertEquals(expected, path);
 	}
 }

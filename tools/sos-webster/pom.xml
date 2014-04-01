@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sorcersoft.sorcer</groupId>
 		<artifactId>tools</artifactId>
-		<version>1.0-M4-SNAPSHOT</version>
+		<version>1.0-M4</version>
 	</parent>
 
 	<artifactId>sos-webster</artifactId>
@@ -19,16 +19,19 @@
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
+            <scope>provided</scope>
         </dependency>
        	<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-api</artifactId>
 			<version>${project.version}</version>
+            <scope>provided</scope>
 		</dependency>
        	<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-resolver</artifactId>
 			<version>${project.version}</version>
+            <scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

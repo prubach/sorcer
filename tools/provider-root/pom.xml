@@ -8,7 +8,7 @@
     <artifactId>provider-root</artifactId>
     <packaging>pom</packaging>
     <name>SORCER Provider Root</name>
-    <version>1.0-M4-SNAPSHOT</version>
+    <version>1.0-M4</version>
     <description>Sorcer is a federated computing platform centered on a global network and a seamless fusion of virtual services.
         Dynamically federated services integrate various science and engineering domains fostering transdisciplinary modeling and programming.
         Firstly, the platform allows the users to deploy everything in the global network as a virtualizable and federatable service.
@@ -23,9 +23,9 @@
         <surefire.excludedGroups>sorcer.junit.SorcerClient</surefire.excludedGroups>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <v.sorcer>1.0-M4-SNAPSHOT</v.sorcer>
+        <v.sorcer>1.0-M4</v.sorcer>
         <v.jini>2.2.2</v.jini>
-        <v.blitz>2.2.1-1</v.blitz>
+        <v.blitz>2.3</v.blitz>
         <v.sleepycat>4.0.92</v.sleepycat>
         <v.rio>5.0-M4-S6</v.rio>
         <v.groovy>2.2.1</v.groovy>
@@ -35,7 +35,7 @@
         <v.logback>1.0.13</v.logback>
         <v.junit>4.11</v.junit>
         <v.plexus>3.0.15</v.plexus>
-        <v.guava>15.0</v.guava>
+        <v.guava>16.0.1</v.guava>
         <v.clang>3.2.1</v.clang>
         <v.ccli>1.2</v.ccli>
         <v.cio>2.4</v.cio>

@@ -4,7 +4,7 @@
 	<parent>
         <artifactId>other-configs</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
-        <version>1.0-M4-SNAPSHOT</version>
+        <version>1.0-M4</version>
     </parent>
 
 	<artifactId>mahalo-cfg</artifactId>

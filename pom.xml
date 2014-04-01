@@ -6,7 +6,7 @@
     <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>sorcer</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-M4-SNAPSHOT</version>
+    <version>1.0-M4</version>
 
     <name>SORCER Project</name>
 
@@ -33,7 +33,8 @@
 		<v.sorcer>${project.version}</v.sorcer>
         <!-- required for site -->
         <v_sorcer>${project.version}</v_sorcer>
-        <v_sos_release>1.0-M3</v_sos_release>
+        <!-- Remember not to change it to snapshot, always make it the latest release-->
+        <v_sos_release>1.0-M4</v_sos_release>
 		<v.jini>2.2.2</v.jini>
 		<v.blitz>2.3</v.blitz>
 		<!--<v.sleepycat>5.0.103</v.sleepycat>-->
@@ -46,7 +47,7 @@
         <v.junit>4.11</v.junit>
         <v.logback>1.0.13</v.logback>
         <v.plexus>3.0.15</v.plexus>
-        <v.guava>15.0</v.guava>
+        <v.guava>16.0.1</v.guava>
         <v.clang>3.2.1</v.clang>
         <v.ccli>1.2</v.ccli>
         <v.cio>2.4</v.cio>

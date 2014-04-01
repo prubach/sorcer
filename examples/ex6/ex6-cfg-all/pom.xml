@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>ex6</artifactId>
-        <version>1.0-M4-SNAPSHOT</version>
+        <version>1.0-M4</version>
     </parent>
 
     <artifactId>ex6-cfg-all</artifactId>
