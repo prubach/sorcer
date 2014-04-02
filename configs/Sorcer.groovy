@@ -60,14 +60,25 @@ deployment(name: 'Sorcer') {
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
 
     def logger = [
-            codebase : sorcer.codebase,
-            classpath : 'org.sorcersoft.sorcer:logger-cfg:' + SORCER_VERSION
+            codebase : 'org.sorcersoft.sorcer:logger-api:' + SORCER_VERSION,
+            classpath : 'org.sorcersoft.sorcer:logger-cfg:' + SORCER_VERSION,
+            client: 'org.sorcersoft.sorcer:logger-platform:' + SORCER_VERSION,
     ]
 
     artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
     artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
+
+    service(name: 'RemoteAppender') {
+        interfaces{
+            classes 'org.rioproject.servicecore.Service'
+            artifact logger.codebase
+        }
+        implementation(class: 'sorcer.platform.logger.RemoteLoggerClient') {
+            artifact logger.client
+        }
+    }
 
     service(name: 'Mahalo') { //fork:'yes'
         interfaces {

@@ -79,6 +79,7 @@ public abstract class Launcher implements ILauncher {
             "org.sorcersoft.sorcer:sorcer-installer",
             "org.sorcersoft.sorcer:sorcer-resolver",
             "org.sorcersoft.sorcer:sorcer-rio-start",
+            "org.sorcersoft.sorcer:sorcer-service-api",
             "org.sorcersoft.sorcer:sos-util",
 
             // optional: required only in fork mode

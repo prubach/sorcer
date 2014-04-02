@@ -35,6 +35,7 @@ import net.jini.jeri.ServerCapabilities;
 import net.jini.security.proxytrust.ProxyTrust;
 import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
+import org.slf4j.MDC;
 import sorcer.core.ContextManagement;
 import sorcer.service.ExertionException;
 import sorcer.service.Service;
@@ -42,8 +43,7 @@ import sorcer.service.Service;
 /**
  * A SorcerILFactory can be used with object interfaces as its services. Those
  * services exposed as interfaces do need implement Remote. A
- * {@link sorcer.core.provider.ServiceProvider} or
- * {@link sorcer.core.provider.bean.ProviderBean} using this factory
+ * {@link sorcer.core.provider.ServiceProvider} using this factory
  * should tell the factory what objects should be exposed as services and the
  * invocation dispatcher created by this factory will manage the delegation of
  * the method calls to the right exposed object. SORCER service beans (objects
@@ -51,7 +51,6 @@ import sorcer.service.Service;
  * {@link sorcer.service.Context} can be used transparently as
  * {@link sorcer.service.Service}s with either
  * {@link sorcer.core.provider.ServiceProvider} or
- * {@link sorcer.core.provider.bean.ProviderBean}.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SorcerILFactory extends BasicILFactory {
@@ -76,7 +75,7 @@ public class SorcerILFactory extends BasicILFactory {
 	 * Creates a <code>SorcerILFactory</code> instance with no server
 	 * constraints, no permission class, and a <code>null</code> class loader.
 	 * 
-	 * @param services
+	 * @param serviceBeans
 	 *            the object to be exposed as a service by the dispatcher of
 	 *            this ILFactory
 	 * 
@@ -93,7 +92,7 @@ public class SorcerILFactory extends BasicILFactory {
 	 *            the server constraints, or <code>null</code>
 	 * @param permissionClass
 	 *            the permission class, or <code>null</code>
-	 * @param services
+	 * @param serviceBeans
 	 *            the object to be exposed as a service by the dispatcher of
 	 *            this ILFactory
 	 * @throws IllegalArgumentException
@@ -124,7 +123,7 @@ public class SorcerILFactory extends BasicILFactory {
 	 *            the permission class, or <code>null</code>
 	 * @param loader
 	 *            the class loader, or <code>null</code>
-	 * @param services
+	 * @param serviceBeans
 	 *            the object to be exposed as a service by the dispatcher of
 	 *            this ILFactory
 	 * 
@@ -217,6 +216,17 @@ public class SorcerILFactory extends BasicILFactory {
 		}
 
 		protected Object invoke(Remote impl, Method method, Object[] args,
+				Collection context) throws Throwable {
+            String key = "SORCER-REMOTE-CALL";
+            try{
+                MDC.put(key,key);
+                return doInvoke(impl, method, args, context);
+            }finally {
+                MDC.remove(key);
+            }
+        }
+
+		protected Object doInvoke(Remote impl, Method method, Object[] args,
 				Collection context) throws Throwable {
 			if (impl == null || args == null || context == null)
 				throw new NullPointerException();

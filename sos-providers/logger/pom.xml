@@ -15,5 +15,6 @@
 		<module>logger-prv</module>
 		<module>logger-sui</module>
         <module>logger-api</module>
+        <module>logger-platform</module>
     </modules>
 </project>
