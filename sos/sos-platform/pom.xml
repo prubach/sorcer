@@ -23,11 +23,13 @@
             <artifactId>dbp-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-container</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+-->
         <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-platform</artifactId>
