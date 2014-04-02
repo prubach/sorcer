@@ -74,9 +74,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 
 	public String getDescription() throws RemoteException;
 
-	public void fireEvent() throws RemoteException;
-
-	public boolean isBusy() throws RemoteException;
+    public boolean isBusy() throws RemoteException;
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 

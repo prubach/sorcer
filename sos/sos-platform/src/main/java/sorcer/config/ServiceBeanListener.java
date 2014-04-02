@@ -32,7 +32,7 @@ public class ServiceBeanListener {
     public ServiceBeanListener(Set<BeanListener> platformListeners) {
         activators = new LinkedList<BeanListener>();
         activators.add(new Configurer());
-        activators.add(new LoggerConfigurer());
+        //activators.add(new LoggerConfigurer());
         activators.addAll(platformListeners);
 
         destroyers = new LinkedList<BeanListener>();

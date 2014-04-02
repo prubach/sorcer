@@ -79,7 +79,6 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
-import sorcer.core.provider.logger.RemoteHandler;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.signature.NetSignature;
