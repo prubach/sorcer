@@ -72,7 +72,7 @@ public class ExertletUiModule extends AbstractModule {
                 UIDescriptor uiDesc2 = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                         new UIFrameFactory(urls, "sorcer.ui.exertlet.NetletUI", "Exertlet Editor", null)
                 );
-                provider.addAttribute(uiDesc2);
+                //provider.addAttribute(uiDesc2);
             } catch (IOException ex) {
                 log.error("getServiceUI", ex);
             }
@@ -80,7 +80,7 @@ public class ExertletUiModule extends AbstractModule {
                 UIDescriptor descriptor = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                         new UIComponentFactory(urls, "sorcer.core.provider.ui.ProviderUI")
                 );
-                provider.addAttribute(descriptor);
+                //provider.addAttribute(descriptor);
             } catch (IOException ex) {
                 log.error("getServiceUI", ex);
             }

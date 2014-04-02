@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import sorcer.boot.ServiceDestroyer;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.LifeCycleMultiplexer;
+import sorcer.core.service.ServiceModule;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -205,22 +206,6 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
         String[] args = serviceConfigArgs == null ? new String[0] : serviceConfigArgs.toArray(new String[serviceConfigArgs.size()]);
         return new ServiceModule(lc, args);
-    }
-
-    private static class ServiceModule extends AbstractModule {
-        private final LifeCycle lc;
-        private String[] serviceConfigArgs;
-
-        public ServiceModule(LifeCycle lc, String[] serviceConfigArgs) {
-            this.lc = lc;
-            this.serviceConfigArgs = serviceConfigArgs;
-        }
-
-        @Override
-        protected void configure() {
-            bind(String[].class).toInstance(serviceConfigArgs);
-            bind(LifeCycle.class).toInstance(lc);
-        }
     }
 
     protected void setImplClassName(String className) {

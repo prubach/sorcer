@@ -14,6 +14,9 @@
 
     <modules>
         <module>sorcer-api</module>
+        <module>sorcer-platform</module>
+        <module>sorcer-service-api</module>
+        <module>sorcer-container</module>
         <module>sorcer-ui</module>
         <module>sos-platform</module>
         <module>sos-util</module>

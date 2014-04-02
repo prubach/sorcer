@@ -30,6 +30,11 @@
 			<artifactId>sorcer-launcher-base</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.sorcersoft.sorcer</groupId>
+			<artifactId>sorcer-service-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
             <groupId>org.apache.river</groupId>
