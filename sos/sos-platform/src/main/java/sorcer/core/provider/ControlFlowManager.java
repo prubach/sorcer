@@ -129,7 +129,7 @@ public class ControlFlowManager {
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
 			Jobber jobber) {
 		this(exertion, delegate);
-		this.jobber = (ServiceJobber)jobber;
+		this.jobber = jobber;
 	}
 	/**
 	 * Overloaded constructor which takes in an Exertion, ExerterDelegate, and
@@ -145,7 +145,7 @@ public class ControlFlowManager {
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
 			Concatenator concatenator) {
 		this(exertion, delegate);
-		this.concatenator = (ServiceConcatenator)concatenator;
+		this.concatenator = concatenator;
 	}
 	
 	/**
@@ -190,15 +190,15 @@ public class ControlFlowManager {
                     logger.info("exertion Conditional");
                     result = doConditional(exertion);
                     logger.info("exertion Conditional; result: " + result);
-                } else if (((ServiceExertion) exertion).isJob()) {
+                } else if (exertion.isJob()) {
                     logger.info("exertion isJob()");
                     result = doRendezvousExertion((Job) exertion);
                     logger.info("exertion isJob(); result: " + result);
-                } else if (((ServiceExertion) exertion).isBlock()) {
+                } else if (exertion.isBlock()) {
 					logger.info("exertion isBlock()");
 					result = doBlock((Block) exertion);
 					logger.info("exertion isBlock(); result: " + result);
-				} else if (((ServiceExertion) exertion).isTask()) {
+				} else if (exertion.isTask()) {
                     logger.info("exertion isTask()");
                     result = doTask((Task) exertion);
                     logger.info("exertion isTask(); result: " + result);
@@ -528,7 +528,7 @@ public class ControlFlowManager {
         List<Signature> ts = new ArrayList<Signature>(1);
         Signature tsig = task.getProcessSignature();
         ((ServiceContext)task.getContext()).setCurrentSelector(tsig.getSelector());
-        ((ServiceContext)task.getContext()).setCurrentPrefix(((ServiceSignature)tsig).getPrefix());
+        ((ServiceContext)task.getContext()).setCurrentPrefix(tsig.getPrefix());
 
         ts.add(tsig);
         task.setSignatures(ts);
@@ -588,7 +588,7 @@ public class ControlFlowManager {
                 t = task(task.getName() + "-" + i, signatures.get(i), shared);
                 signatures.get(i).setType(Signature.SRV);
                 ((ServiceContext)shared).setCurrentSelector(signatures.get(i).getSelector());
-                ((ServiceContext)shared).setCurrentPrefix(((ServiceSignature)signatures.get(i)).getPrefix());
+                ((ServiceContext)shared).setCurrentPrefix(signatures.get(i).getPrefix());
 
                 List<Signature> tmp = new ArrayList<Signature>(1);
                 tmp.add(signatures.get(i));

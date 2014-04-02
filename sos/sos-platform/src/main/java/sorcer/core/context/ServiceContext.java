@@ -244,7 +244,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		domainName = cntxt.getDomainName();
 		subdomainName = cntxt.getSubdomainName();
 		version = cntxt.getVersion();
-		exertion = (Exertion) cntxt.getExertion();
+		exertion = cntxt.getExertion();
 		principal = cntxt.getPrincipal();
 		isPersistantTaskAssociated = ((ServiceContext) cntxt).isPersistantTaskAssociated;
 	}
@@ -837,7 +837,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			link.setName(cntxt.getName());
 		else
 			link.setName(name);
-		return putValue(path, (T)link);
+		return putValue(path, link);
 	}
 
 	public Object putLink(String path, Context cntxt, String offset)
@@ -1761,7 +1761,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 		int len = mappedKey.length();
 		String prefix;
-		Enumeration e = ((Hashtable) mappedCntxt).keys();
+		Enumeration e = mappedCntxt.keys();
 		while (e.hasMoreElements()) {
 			cntxtKey = (String) e.nextElement();
 			if (cntxtKey.startsWith(mappedKey)) {
@@ -1784,16 +1784,16 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 						if (mappedCntxt.getSubjectPath().length() > 0)
 							prefix = mappedCntxt.getSubjectPath() + CPS;
 						putValue(prefix + newKey,
-								(T)((Hashtable) mappedCntxt).get(oldKey));
+                                ((Hashtable) mappedCntxt).get(oldKey));
 					}
 					else
-						putValue(newKey, (T)((Hashtable) mappedCntxt).get(oldKey));
+						putValue(newKey, ((Hashtable) mappedCntxt).get(oldKey));
 				}
 			}
 		}
 		// replicate subcontext attributes and metaattributes
 		Hashtable table, attrTable;
-		attrTable = ((ServiceContext) mappedCntxt).metacontext;
+		attrTable = mappedCntxt.metacontext;
 		// note the metacontext contains only singleton attributes
 		// AND the SORCER.CONTEXT_ATTRIBUTES table
 		e = attrTable.keys();
@@ -2160,7 +2160,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public ServiceContext setParameterTypes(Class... types) throws ContextException {
 		if (parameterTypesPath == null) 
 			parameterTypesPath = Context.PARAMETER_TYPES;
-		putValue(parameterTypesPath, (T)types);
+		putValue(parameterTypesPath, types);
 		return this;
 	}
 	
@@ -2183,7 +2183,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public ServiceContext setTarget(Object target) throws ContextException {
-		putValue(targetPath, (T)target);
+		putValue(targetPath, target);
 		return this;
 	}
 
@@ -2231,7 +2231,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			returnPath = new ReturnPath(Context.RETURN);
 
 		if (value == null)
-			putValue(returnPath.path, (T)none);
+			putValue(returnPath.path, none);
 		else
 			putValue(returnPath.path, value);
 
@@ -2268,7 +2268,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			returnJobPath = new ReturnPath(Context.RETURN);
 
 		if (value == null)
-			putValue(returnJobPath.path, (T)none);
+			putValue(returnJobPath.path, none);
 		else
 			putValue(returnJobPath.path, value);
 
@@ -2638,7 +2638,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Enumeration en = keys();
 		while (en.hasMoreElements()) {
 			String key = (String) en.nextElement();
-			T val = (T)get(key);
+			T val = get(key);
 			if (id == null) {
 				// logger.info("initValue= "+initVal+" val = "+val);
 				if (initVal.equals(val)) {
@@ -2865,7 +2865,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
             if (obj instanceof Par)
 				return (T) ((Par)obj).getValue(entries);
 			else
-				return (T) obj;
+				return obj;
 		} catch (Throwable e) {
 			logger.warning(e.getMessage());
 			e.printStackTrace();
