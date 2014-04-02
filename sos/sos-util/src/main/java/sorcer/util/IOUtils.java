@@ -89,8 +89,10 @@ public class IOUtils {
     }
 
     public static void ensureFile(File file, FileCheck... checks) throws IOException {
+        if (file == null)
+            throw new IOException("Input file is null");
         if (!file.exists()) {
-            log.error("File {} does not exist", file.getAbsolutePath());
+            log.debug("File {} does not exist", file.getAbsolutePath());
             throw new IOException("File " + file.getAbsolutePath() + " does not exist");
         }
 

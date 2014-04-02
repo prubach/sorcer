@@ -53,9 +53,8 @@ public class Installer {
 
     protected Map<String, String> groupDirMap;
 
-    final private static String MARKER_FILENAME = "sorcer_jars_installed_user_";
-
-    final private static String MARKER_FILENAME_EXT = ".tmp";
+    private static File logDir = new File(SorcerEnv.getHomeDir(), "logs");
+    private static File markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
 
     final private static String COMMONS_LIBS = "commons";
     protected static File configDir = new File(SorcerEnv.getHomeDir(), "configs");
@@ -68,13 +67,19 @@ public class Installer {
     private Map<String, File> artifactsPoms = new HashMap<String, File>();
 
     public static void main(String[] args) throws IOException {
-        new Installer().install();
+        Installer installer = new Installer();
+        if (installer.isInstallRequired())
+            installer.install();
+        else
+            log.info("Installation not required, to force reinstallation delete file {}", markerFile);
     }
 
-    public boolean isInstallRequired(File logDir) {
-        assert logDir != null;
+    public boolean isInstallRequired() throws IOException {
+        File home = SorcerEnv.getHomeDir();
+        IOUtils.ensureFile(home, IOUtils.FileCheck.directory);
+        File logDir = new File(home, "logs");
+        IOUtils.ensureFile(logDir, IOUtils.FileCheck.directory, IOUtils.FileCheck.writable);
         File sorcerApi = new File(libResolver.resolveAbsolute("org.sorcersoft.sorcer:sorcer-api"));
-        File markerFile = new File(logDir, "sorcer_jars_installed_user_" + System.getProperty(USER_NAME) + ".tmp");
         return sorcerApi.exists() && !markerFile.exists();
     }
 
@@ -86,17 +91,6 @@ public class Installer {
 
     @SuppressWarnings("unchecked")
     public Installer() throws IOException {
-        String repoDir = SorcerEnv.getRepoDir();
-        try {
-            if (repoDir == null)
-                throw new IOException("Maven repository root directory is undefined");
-            else
-                FileUtils.forceMkdir(new File(repoDir));
-        } catch (IOException io) {
-            log.error("Problem installing jars to local maven repository - repository directory {} does not exist! ", repoDir, io);
-            System.exit(-1);
-        }
-
         groupDirMap = (Map) readProperties("META-INF/maven/repolayout.properties", REPOLAYOUT_PROPS_FILE);
 
         libResolver = new MappedFlattenedArtifactResolver(new File(SorcerEnv.getLibPath()), groupDirMap);
@@ -229,15 +223,19 @@ public class Installer {
 
         ArtifactCoordinates ac;
         File pom;
+        boolean pomInTmp = false;
 
         if (artifactsPoms.containsKey(artifactId)) {
             pom = artifactsPoms.get(artifactId);
         } else {
             pom = getPomFromJar(file, artifactId);
+            pomInTmp = true;
         }
         ac = getArtifactCoordsFromPom(pom);
 
         aetherService.install(ac.getGroupId(), ac.getArtifactId(), ac.getVersion(), ac.getClassifier(), pom, file);
+        if (pomInTmp)
+            FileUtils.forceDelete(pom);
     }
 
     private void installPom(File pom, ArtifactCoordinates ac) throws IOException, InstallationException {
@@ -289,7 +287,7 @@ public class Installer {
             result = expr.evaluate(doc, XPathConstants.NODESET);
             nodes = (NodeList) result;
             if (nodes.getLength() == 0) {
-                log.error("Problem installing file: " + file + "\n" + " could not read artifactId");
+                log.error("Problem installing file: {}: could not read artifactId", file);
                 return null;
             }
             artifactId = nodes.item(0).getTextContent();
@@ -323,14 +321,11 @@ public class Installer {
 
     private void createMarker() {
         if (errorCount == 0) {
-            String userName = System.getProperty("user.name");
-            String markerFile = SorcerEnv.getHomeDir() + "/logs/" + MARKER_FILENAME + userName + MARKER_FILENAME_EXT;
-            File f = new File(markerFile);
             try {
-                if (!f.createNewFile())
-                    log.warn("Couldn't create marker file {}", f);
+                FileUtils.touch(markerFile);
             } catch (IOException e) {
-                log.warn("Error while creating marker file {}", f, e);
+                ++errorCount;
+                log.warn("Error while creating marker file {}", markerFile, e);
             }
         }
         log.info("Installer finished with {} errors", errorCount);
