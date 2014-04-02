@@ -52,29 +52,35 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 
 	public String getProviderName() throws RemoteException;
 	
+/*
 	public Entry[] getAttributes() throws RemoteException;
+*/
 
 	public List<Object> getProperties() throws RemoteException;
 
 	public Configuration getProviderConfiguration() throws RemoteException;
 
+/*
 	public void init() throws RemoteException, ConfigurationException;
 
 	public void init(String propFile) throws RemoteException, ConfigurationException;
 
 	public void restore() throws RemoteException;
+*/
 
 	public boolean mutualExclusion() throws RemoteException;
 	
+/*
 	public String getProperty(String property) throws RemoteException;
 
 	public String[] getGroups() throws RemoteException;
 
 	public String getInfo() throws RemoteException;
+*/
 
 	public String getDescription() throws RemoteException;
 
-    public boolean isBusy() throws RemoteException;
+	public boolean isBusy() throws RemoteException;
 	/**
 	 * Destroy the service, if possible, including its persistent storage.
 	 * 
@@ -88,6 +94,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	 * 
 	 * @see sorcer.core.provider.Provider#destroy()
 	 */
+/*
 	public void destroyNode() throws RemoteException;
 	
 	public void notifyInformation(Exertion task, String message)
@@ -110,6 +117,7 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 
 	public void notifyFailure(Exertion task, String message)
 			throws RemoteException;
+*/
 
 	public Properties getJavaSystemProperties() throws RemoteException;
 
@@ -120,7 +128,9 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	 * @throws RemoteException
 	 * @throws ExertionException
 	 */
+/*
 	public void changed(Context<?> ctx, Object aspect) throws RemoteException, MonitorException;
+*/
 
 	/**
 	 * For testing purposes only in order to delay execution of service
@@ -136,16 +146,17 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 	public boolean isContextValid(Context<?> dataContext, Signature forSignature)
 			throws RemoteException;
 
+/*
 	public void updatePolicy(Policy policy) throws RemoteException;
+*/
 
 	public Logger getLogger() throws RemoteException;
 
+/*
 	public Logger getContextLogger() throws RemoteException;
 
 	public Logger getProviderLogger() throws RemoteException;
 
 	public Logger getRemoteLogger() throws RemoteException;
-
-    // for private use
-    public void addAttribute(Entry attribute) throws RemoteException;
+*/
 }
