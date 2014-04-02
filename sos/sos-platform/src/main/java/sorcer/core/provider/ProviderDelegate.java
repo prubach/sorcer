@@ -327,7 +327,7 @@ public class ProviderDelegate {
 		}
 
 		public static Uuid getID() {
-			ExertionSessionBundle esb = (ExertionSessionBundle) tl.get();
+			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.exertionID : null;
 		}
 
@@ -1117,9 +1117,9 @@ public class ProviderDelegate {
 			} else {
 				obj = m.invoke(impl, args);
 			}
-			((ServiceContext) result).setReturnValue(obj);
+			result.setReturnValue(obj);
 		} else {
-			((ServiceContext) result).setReturnValue(m.invoke(impl, args));
+			result.setReturnValue(m.invoke(impl, args));
 		}
 		return result;
 	}
@@ -1594,7 +1594,7 @@ public class ProviderDelegate {
 
 		attrVec.addAll(extraLookupAttributes);
 
-		return (Entry[]) attrVec.toArray(new Entry[] {});
+		return attrVec.toArray(new Entry[] {});
 	}
 
 	/**
@@ -2405,7 +2405,7 @@ public class ProviderDelegate {
 
 			try {
 				val = ""
-						+ (Boolean) jiniConfig.getEntry(
+						+ jiniConfig.getEntry(
 								ServiceProvider.PROVIDER,
 								J_SERVICE_ID_PERSISTENT, boolean.class);
 			} catch (ConfigurationException e) {
@@ -2434,7 +2434,7 @@ public class ProviderDelegate {
 
 			try {
 				val = ""
-						+ (Integer) jiniConfig.getEntry(
+						+ jiniConfig.getEntry(
 								ServiceProvider.PROVIDER, J_PORTAL_PORT,
 								int.class);
 			} catch (ConfigurationException e) {
@@ -2875,7 +2875,7 @@ public class ProviderDelegate {
             allBeans.add(InjectionHelper.create(beanClass));
         }
         if (beanListener != null)
-            beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), (ServiceProvider) getProvider());
+            beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), getProvider());
         for (Object bean : allBeans) {
             initBean(bean);
         }
@@ -2954,7 +2954,7 @@ public class ProviderDelegate {
 				}
 				// if partner exported use it as the primary proxy
 				if (partner != null) {
-					pp = partnerExporter.export((Remote) partner);
+					pp = partnerExporter.export(partner);
 					if (pp != null) {
 						innerProxy = outerProxy;
 						outerProxy = pp;

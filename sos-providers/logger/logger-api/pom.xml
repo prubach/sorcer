@@ -2,15 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <artifactId>logger</artifactId>
         <groupId>org.sorcersoft.sorcer</groupId>
+        <artifactId>logger</artifactId>
         <version>1.0-M5-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <name>SORCER OS :: providers :: logger :: api</name>
 
     <artifactId>logger-api</artifactId>
+    <name>SORCER OS :: providers :: logger :: api</name>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>

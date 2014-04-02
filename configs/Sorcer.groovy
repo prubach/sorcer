@@ -182,7 +182,7 @@ deployment(name: 'Sorcer') {
             classes 'sorcer.core.RemoteLogger'
             artifact logger.codebase
         }
-        implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
+        implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact logger.classpath
         }
         configuration file: 'classpath:logger.config'
