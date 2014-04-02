@@ -47,6 +47,7 @@ public class ServiceBeanDestroyer extends AbstractBeanListener {
                 log.warn("Unexpected RemoteException while destroying local service bean " + o, e);
             }
         }
+
     }
 
 }
