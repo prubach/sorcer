@@ -568,6 +568,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * Simple container for an alternative return a value so we can provide more
 	 * detailed diagnostics.
 	 */
+/*
 	class InitException extends Exception {
 		private static final long serialVersionUID = 1;
 
@@ -575,6 +576,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			super(message, nested);
 		}
 	}
+*/
 
 	/**
 	 * Portion of construction that is common between the activatable and not
@@ -630,10 +632,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	static void initFailed(Throwable throwable) throws Exception {
 		String message = null;
+/*
 		if (throwable instanceof InitException) {
 			message = throwable.getMessage();
             throwable = throwable.getCause();
 		}
+*/
 		if (logger.isWarnEnabled()) {
 			if (message != null) {
                 logger.warn("Unable to start provider service: {}", message, throwable);
@@ -1491,10 +1495,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	public void restore() throws RemoteException {
 		delegate.restore();
-	}
-
-	public void fireEvent() throws RemoteException {
-		// do noting
 	}
 
 	public void loadConfiguration(String filename) throws RemoteException {

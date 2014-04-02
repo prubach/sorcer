@@ -25,20 +25,16 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.JavaScopes;
-import sorcer.boot.ServiceStarter;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.launcher.SorcerProcessBuilder;
 import sorcer.maven.util.*;
 import sorcer.service.Accessor;
 import sorcer.tools.webster.Webster;
 import sorcer.util.Process2;
 
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

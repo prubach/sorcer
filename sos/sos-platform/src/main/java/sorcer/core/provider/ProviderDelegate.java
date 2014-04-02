@@ -36,21 +36,8 @@ import java.security.AccessControlException;
 import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -71,8 +58,7 @@ import net.jini.core.transaction.server.TransactionManager;
 import net.jini.export.Exporter;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import net.jini.jeri.BasicILFactory;
-import net.jini.jeri.BasicJeriExporter;
+import net.jini.jeri.*;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.entry.Location;
@@ -897,7 +883,6 @@ public class ProviderDelegate {
 							+ "\nreturing task; transaction = " + transaction);
 					return task;
 				} else {
-					provider.fireEvent();
 					task.stopExecTime();
 					ExertionException ex = new ExertionException(
 							"Unacceptable task received, requested provider: "
@@ -1754,10 +1739,6 @@ public class ProviderDelegate {
 		this.providerUuid = providerUuid;
 	}
 
-	public String getInfo() throws RemoteException {
-		return provider.getInfo();
-	}
-
 	private void addType(Class type, Set typeSet, boolean withSupertypes) {
 		if (type == null)
 			return;
@@ -1842,10 +1823,6 @@ public class ProviderDelegate {
 		}
         if (beanListener != null)
             beanListener.destroy(serviceBeans);
-	}
-
-	public void fireEvent() throws RemoteException {
-		provider.fireEvent();
 	}
 
 	public boolean isValidTask(Exertion servicetask) throws ContextException, RemoteException,
