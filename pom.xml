@@ -51,6 +51,7 @@
         <v.clang>3.2.1</v.clang>
         <v.ccli>1.2</v.ccli>
         <v.cio>2.4</v.cio>
+        <v.guice>4.0-beta4</v.guice>
     </properties>
 
 	<modules>
@@ -231,7 +232,12 @@
                 <artifactId>guava</artifactId>
                 <version>${v.guava}</version>
             </dependency>
-		</dependencies>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${v.guice}</version>
+            </dependency>
+        </dependencies>
 	</dependencyManagement>
 
 	<distributionManagement>
