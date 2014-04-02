@@ -35,7 +35,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -672,7 +671,7 @@ public class GenericUtil implements Serializable {
             if (file.getName().toLowerCase().endsWith("."+extension))
                 fileList.add(file);
         }
-        File[] fileListA = (File[])fileList.toArray(new File[fileList.size()]);
+        File[] fileListA = fileList.toArray(new File[fileList.size()]);
         return fileListA;
     }
     /**
@@ -723,7 +722,7 @@ public class GenericUtil implements Serializable {
         InputStreamReader iSR = new InputStreamReader(
                 myConnect.getInputStream());
 
-        BufferedReader bR = new BufferedReader((Reader) iSR);
+        BufferedReader bR = new BufferedReader(iSR);
         boolean eof = false;
         Vector<String> fileContents = new Vector<String>();
 
@@ -910,7 +909,7 @@ public class GenericUtil implements Serializable {
         Vector<Object> v = new Vector<Object>();
         for (int i = 0; i < numElements; i++) {
             // Object[] oA = (Object[]) myVect.elementAt(i);
-            Object[] oA = new Object[] { (Object) myVect.elementAt(i) };
+            Object[] oA = new Object[] { myVect.elementAt(i) };
             // printArray(oA);
             for (int j = 0; j < oA.length; j++) {
                 v.add(oA[j]);
@@ -1185,7 +1184,7 @@ public class GenericUtil implements Serializable {
             ClassNotFoundException {
         FileInputStream fIS = new FileInputStream(file);
         ObjectInputStream oIS = new ObjectInputStream(fIS);
-        Object obj = (Object) oIS.readObject();
+        Object obj = oIS.readObject();
         fIS.close();
         return obj;
     }
@@ -2774,7 +2773,7 @@ public class GenericUtil implements Serializable {
                     + ", did not complete due to an " + "io error.";
             throw new RuntimeException(errorMessage, ex);
         }
-        return (Thread) worker;
+        return worker;
     }
 
 

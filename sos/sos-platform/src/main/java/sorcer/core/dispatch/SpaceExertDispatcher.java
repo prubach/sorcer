@@ -64,7 +64,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		if (exertion instanceof Job)
 			inputXrts = Jobs.getInputExertions((Job)exertion);
 		else if (exertion instanceof Block) 
-			inputXrts = ((Block)exertion).getExertions();
+			inputXrts = exertion.getExertions();
 
 		disatchGroup = new ThreadGroup("exertion-"+ exertion.getId());
 		disatchGroup.setDaemon(true);
@@ -214,7 +214,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			result.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
 
-			((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+			((NetJob)xrt).setExertionAt(result, ex.getIndex());
 			ServiceExertion ser = (ServiceExertion) result;
 			if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
 				ser.setStatus(DONE);
@@ -224,7 +224,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		} catch (Exception e) {
 			throw new ExertionException(e);
 		}
-		changeDoneExertionIndex(((ServiceExertion) result).getIndex());
+		changeDoneExertionIndex(result.getIndex());
 	}
 
 	public void collectFails() throws ExertionException {
@@ -282,7 +282,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	protected void handleError(Exertion exertion, int state) {
 		if (exertion != xrt)
 			((NetJob)xrt).setExertionAt(exertion, 
-					((ServiceExertion) exertion).getIndex());
+					exertion.getIndex());
 		addPoison(exertion);
 		this.state = state;
 		dThread.stop = true;
@@ -330,7 +330,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		ExertionEnvelop template = ExertionEnvelop.getTakeTemplate(
 				masterXrt.getParentId(), masterXrt.getId());
 
-		ExertionEnvelop result = (ExertionEnvelop) takeEnvelop(template);
+		ExertionEnvelop result = takeEnvelop(template);
 		logger.debug("executeMasterExertion MASTER EXERTION RESULT RECIEVED");
 		if (result != null && result.exertion != null) {
 			postExecExertion(masterXrt, result.exertion);

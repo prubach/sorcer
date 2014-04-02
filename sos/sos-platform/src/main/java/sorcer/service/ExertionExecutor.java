@@ -51,7 +51,7 @@ public class ExertionExecutor {
             if (xrt instanceof Task) {
                 return xrt.getDataContext().getValue(returnPath.path);
             } else if (xrt instanceof Job) {
-                return ((Job) xrt).getValue(returnPath.path);
+                return xrt.getValue(returnPath.path);
             }
         } else {
             if (xrt instanceof Task) {

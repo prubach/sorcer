@@ -45,7 +45,6 @@ import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 import sorcer.core.provider.Spacer;
@@ -258,12 +257,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     // }
 
     private String getDataURL(String filename) {
-        return ((ProviderDelegate) getDelegate()).getProviderConfig()
+        return getDelegate().getProviderConfig()
                 .getProperty("provider.dataURL") + filename;
     }
 
     private String getDataFilename(String filename) {
-        return ((ProviderDelegate) getDelegate()).getProviderConfig()
+        return getDelegate().getProviderConfig()
                 .getDataDir() + "/" + filename;
     }
 
@@ -273,10 +272,10 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     }
 
     private void replaceNullExertionIDs(Exertion ex) {
-        if (ex != null && ((ServiceExertion) ex).getId() == null) {
+        if (ex != null && ex.getId() == null) {
             ((ServiceExertion) ex)
                     .setId(UuidFactory.generate());
-            if (((ServiceExertion) ex).isJob()) {
+            if (ex.isJob()) {
                 for (int i = 0; i < ((Job) ex).size(); i++)
                     replaceNullExertionIDs(((Job) ex).get(i));
             }
@@ -348,7 +347,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 
             try {
                 dispatcher = ExertionDispatcherFactory.getFactory()
-                        .createDispatcher((NetJob) job,
+                        .createDispatcher(job,
                                 new HashSet<Context>(), false, myMemberUtil, provider);
                 while (dispatcher.getState() != Exec.DONE
                         && dispatcher.getState() != Exec.FAILED

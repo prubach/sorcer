@@ -209,7 +209,7 @@ public class DataStorageCmd extends ShellCmd {
 					e1.printStackTrace();
 				}
 				 out.println("XXXXXXXXXXXXX service item: " + dataStorers[selectedDataStorer]);
-				 out.println("XXXXXXXXXXXXX service: " + (DatabaseStorer) dataStorers[selectedDataStorer].service);
+				 out.println("XXXXXXXXXXXXX service: " + dataStorers[selectedDataStorer].service);
 				 out.println("XXXXXXXXXXXXX interfaces: " + Arrays.toString(dataStorers[selectedDataStorer].service.getClass().getInterfaces()));
 				 out.println("XXXXXXXXXXXXX name: " + ((Provider) dataStorers[selectedDataStorer].service).getProviderName());
 				 try {

@@ -432,7 +432,7 @@ public class ArrayContext extends ServiceContext implements IndexedContext {
 			String temp = list[out]; // remove marked item
 			in = out; // start shifts at out
 			// until one is smaller
-			while (in > 0 && getIndex((String) list[in - 1]) >= getIndex(temp)) {
+			while (in > 0 && getIndex(list[in - 1]) >= getIndex(temp)) {
 				list[in] = list[in - 1]; // shift item right,
 				--in; // go left one position
 			}

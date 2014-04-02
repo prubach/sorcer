@@ -82,7 +82,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	@Override
 	public Exertion addExertion(Exertion ex) throws ExertionException {
 		exertions.add(ex);
-		((ServiceExertion) ex).setIndex(exertions.indexOf(ex));
+		ex.setIndex(exertions.indexOf(ex));
 		try {
 			controlContext.registerExertion(ex);
 		} catch (ContextException e) {
@@ -222,7 +222,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	 * Returns the exertion at the specified index.
 	 */
 	public Exertion get(int index) {
-		return (Exertion) exertions.get(index);
+		return exertions.get(index);
 	}
 	
 	/* (non-Javadoc)

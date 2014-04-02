@@ -76,7 +76,7 @@ public class ServiceExerter implements Exerter, Callable {
 
     public Exertion exert(Arg... entries) throws TransactionException,
             ExertionException, RemoteException {
-        return exert((Transaction) null, (String) null, entries);
+        return exert(null, (String) null, entries);
     }
 
     /* (non-Javadoc)
@@ -90,7 +90,7 @@ public class ServiceExerter implements Exerter, Callable {
         } catch (EvaluationException e) {
             throw new ExertionException(e);
         }
-        return exert(xrt, (Transaction) null, (String) null);
+        return exert(xrt, null, (String) null);
     }
 
     /* (non-Javadoc)
@@ -152,7 +152,7 @@ public class ServiceExerter implements Exerter, Callable {
             // TODO PROVISIONING
 			if (exertion.isTask() && exertion.isProvisionable()) {
 				try {
-					List<Deployment> deployments = ((ServiceExertion) exertion)
+					List<Deployment> deployments = exertion
 							.getDeployments();
 					if (deployments.size() > 0) {
 						ProvisionManager ProvisionManager = new ProvisionManager(exertion);
@@ -325,7 +325,7 @@ public class ServiceExerter implements Exerter, Callable {
         LockResult lr = locker.getLock(""
                 + exertion.getProcessSignature().getServiceType(),
                 new ProviderID(mutexId), txn,
-                ((ServiceExertion) exertion).getId());
+                exertion.getId());
         if (lr.didSucceed()) {
             ((ControlContext)exertion.getControlContext()).setMutexId(provider.getProviderID());
             Exertion xrt = provider.service(exertion, transaction);
@@ -389,7 +389,7 @@ public class ServiceExerter implements Exerter, Callable {
 
 				for (Setter p : ps) {
 					if (p != null && (p instanceof Par) && ((Par) p).isMappable()) {
-						String from = (String) ((Par) p).getName();
+						String from = ((Par) p).getName();
 						Object obj = null;
 						if (xrt instanceof Job)
 							obj = ((Job) xrt).getJobContext().getValue(from);

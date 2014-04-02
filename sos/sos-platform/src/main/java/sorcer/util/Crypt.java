@@ -336,8 +336,8 @@ public class Crypt {
 		// System.out.print("OUT BITS: ");
 		// pr_bits(done,64);
 
-		answer[0] = (char) salt[0];
-		answer[1] = (char) salt[1];
+		answer[0] = salt[0];
+		answer[1] = salt[1];
 		for (i = 0; i < 11; i++) {
 			char c = 0;
 			for (j = 0; j < 6; j++) {

@@ -516,7 +516,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		else {
 			put(ex.getContext().getName(), ex.getId());
 		}
-		setPriority(ex, MAX_PRIORITY - ((ServiceExertion)ex).getIndex());
+		setPriority(ex, MAX_PRIORITY - ex.getIndex());
 		setExecTimeRequested(ex, true);
 	}
 
@@ -545,9 +545,9 @@ public class ControlContext extends ServiceContext implements Strategy {
 		// ((Hashtable)getMetacontext().get((String)e.nextElement())).remove(path
 		// );
 
-		for (int i = ((ServiceExertion) exertion).getIndex(); i < job.size(); i++) {
+		for (int i = exertion.getIndex(); i < job.size(); i++) {
 			String oldPath = job.get(i).getContext().getName();
-			((ServiceExertion) job.get(i)).setIndex(i);
+			job.get(i).setIndex(i);
 			put(job.get(i).getContext().getName(), remove(oldPath));
 			Hashtable map;
 			Hashtable imc = getMetacontext();
@@ -614,7 +614,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		Enumeration e = keys();
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
-			if (key.endsWith("[" + ((ServiceExertion)exertion).getIndex()
+			if (key.endsWith("[" + exertion.getIndex()
 					+ "]" + ID)) {
 				oldPath = key;
 				break;

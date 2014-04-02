@@ -116,7 +116,7 @@ public class ServiceAccountImpl implements Account, ServiceAccount, SorcerConsta
 	 * @see sorcer.core.provider.proxy.Partnership#getPartner()
 	 */
 	public Remote getInner() throws RemoteException {
-		return (Remote) partner;
+		return partner;
 	}
 
 	/*

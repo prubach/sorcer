@@ -241,7 +241,7 @@ public class SorcerILFactory extends BasicILFactory {
 			try {
 				// handle context management by the containing provider
 				if (decl == ContextManagement.class) {
-					obj = method.invoke((ContextManagement) impl, args);
+					obj = method.invoke(impl, args);
 					return obj;
 				}
 				// Check if the invocation is to be made on provider's service

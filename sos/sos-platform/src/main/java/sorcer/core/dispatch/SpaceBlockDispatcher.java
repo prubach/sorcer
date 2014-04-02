@@ -106,12 +106,12 @@ public class SpaceBlockDispatcher extends SpaceExertDispatcher {
 		logger.debug(" collect exertions for template: \n"
 						+ temp.describe());
 		while (count < inputXrts.size() && state != FAILED) {
-			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(temp);
+			ExertionEnvelop resultEnvelop = takeEnvelop(temp);
 			logger.debug("collected result envelope {}", resultEnvelop.describe());
 
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.get(((ServiceExertion) resultEnvelop.exertion)
+						.get(resultEnvelop.exertion
 								.getIndex());
 				ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
 				postExecExertion(input, result);

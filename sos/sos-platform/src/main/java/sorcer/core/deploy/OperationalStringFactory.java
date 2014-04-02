@@ -116,7 +116,7 @@ public final class OperationalStringFactory {
         }
         opString.setUndeployOption(getUndeployOption(idle));
         //opString.addOperationalString(iGridDeployment);
-        Deployment eDeployment = ((ServiceSignature) exertion.getProcessSignature()).getDeployment();
+        Deployment eDeployment = exertion.getProcessSignature().getDeployment();
         Deployment.Unique unique = eDeployment==null? Deployment.Unique.NO:eDeployment.getUnique();
         if(unique == Deployment.Unique.YES) {
             uniqueOperationalStrings.add(opString);

@@ -18,7 +18,6 @@ package sorcer.core.context.model.par;
  */
 
 import sorcer.service.EvaluationException;
-import sorcer.service.Identity;
 import sorcer.service.VarException;
 
 import java.rmi.RemoteException;
@@ -69,7 +68,7 @@ public class ParSet extends TreeSet<Par> {
 			throws EvaluationException {
 		Par par = null;
 		for (Par<?> p : this) {
-			if (((Identity) p).getName().equals(parName))
+			if (p.getName().equals(parName))
 				par = p;
 			par.setValue(value);
 			break;

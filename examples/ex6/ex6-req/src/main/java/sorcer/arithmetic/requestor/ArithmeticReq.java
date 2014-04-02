@@ -59,7 +59,7 @@ public class ArithmeticReq extends ServiceRequestor {
 	
 	public void postprocess(String... args) throws ExertionException, ContextException {
 		super.postprocess();
-		logger.info("<<<<<<<<<< f5 context: \n" + ((Job)exertion).getExertion("f5").getContext());
+		logger.info("<<<<<<<<<< f5 context: \n" + exertion.getExertion("f5").getContext());
 	}
 
 }

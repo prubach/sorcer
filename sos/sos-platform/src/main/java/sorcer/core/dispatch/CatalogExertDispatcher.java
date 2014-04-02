@@ -138,7 +138,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             // update all outputs from sharedcontext only for tasks. For jobs,
             // spawned dispatcher does it.
 			try {
-				if (((ServiceExertion) result).isTask()) {
+				if (result.isTask()) {
 					collectOutputs(result);
 				}
 				notifyExertionExecution(ex, result);

@@ -190,7 +190,7 @@ public class LookupCmd extends ShellCmd {
 		// pass in a clone of list - command may modify it
 		ArrayList<ServiceRegistrar> registrars = (ArrayList<ServiceRegistrar>) NetworkShell.getRegistrars().clone();
 		if (index < registrars.size()) {
-			ServiceRegistrar myReg = (ServiceRegistrar) registrars.get(index);
+			ServiceRegistrar myReg = registrars.get(index);
 			if (myReg != null) {
 				lookup(myReg, index, attributeValue, serviceType);
 			}

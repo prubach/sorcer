@@ -74,7 +74,7 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
         // updated before
         // dropping.
 		try {
-			if (((ServiceExertion) exertion).isTask()) {
+			if (exertion.isTask()) {
 				updateInputs(exertion);
 			}
 		} catch (Exception e) {
@@ -117,13 +117,13 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
 			throws SignatureException, ExertionException {
 		((ServiceExertion) result).stopExecTime();
 		ServiceExertion ser = (ServiceExertion) result;
-		((NetJob)xrt).setExertionAt(result, ((ServiceExertion) ex).getIndex());
+		((NetJob)xrt).setExertionAt(result, ex.getIndex());
 		if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
 			ser.setStatus(DONE);
 			// update all outputs to sharedcontext only for tasks.For jobs,
 			// spawned dispatcher does it.
 			try {
-				if (((ServiceExertion) result).isTask()) {
+				if (result.isTask()) {
 					collectOutputs(result);
 				}	
 				notifyExertionExecution(ex, result);

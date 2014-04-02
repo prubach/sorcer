@@ -381,7 +381,7 @@ public class ContextView extends JPanel implements Observer, ActionListener {
 				// for(int i = 0; i< sortedVec.size();i++) {
 				cnt++;
 				// path = (String)sortedVec.elementAt(i);
-				path = (String) key;
+				path = key;
 				// System.out.println("path: "+path);
 				String data = "";
 				String splitPath[] = path.split("/");
@@ -433,8 +433,8 @@ public class ContextView extends JPanel implements Observer, ActionListener {
 						if (data.length() != 0)
 							treePanel.addObject(parentNode,
 									new ContextNodeType(
-											((ContextNode) theContext
-													.getValue(path)), true),
+                                            theContext
+                                                    .getValue(path), true),
 									true);
 					} else {
 						if (theContext.getValue(path).toString().length() != 0)

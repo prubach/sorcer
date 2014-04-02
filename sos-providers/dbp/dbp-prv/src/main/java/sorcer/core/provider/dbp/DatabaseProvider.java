@@ -416,7 +416,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		Object deletedObject = context
 				.getValue(StorageManagement.object_deleted);
 		if (deletedObject instanceof URL) {
-			context.putValue(StorageManagement.object_url, (URL)deletedObject);
+			context.putValue(StorageManagement.object_url, deletedObject);
 		} else {
 			Uuid id = (Uuid) ((Identifiable) deletedObject).getId();
 			context.putValue(StorageManagement.object_url,

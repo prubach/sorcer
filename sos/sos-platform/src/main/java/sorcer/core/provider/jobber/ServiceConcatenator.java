@@ -34,7 +34,6 @@ import sorcer.core.dispatch.BlockThread;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.Concatenator;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.ProviderDelegate;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Block;
 import sorcer.service.Condition;
@@ -159,13 +158,13 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	}
 
 	private String getDataURL(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig().getProperty(
+		return getDelegate().getProviderConfig().getProperty(
 				"provider.dataURL")
 				+ filename;
 	}
 
 	private String getDataFilename(String filename) {
-		return ((ProviderDelegate) getDelegate()).getProviderConfig().getDataDir() + "/"
+		return getDelegate().getProviderConfig().getDataDir() + "/"
 				+ filename;
 	}
 
@@ -176,10 +175,10 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 
 
 	private void replaceNullExertionIDs(Exertion ex) {
-		if (ex != null && ((ServiceExertion) ex).getId() == null) {
+		if (ex != null && ex.getId() == null) {
 			((ServiceExertion) ex)
 					.setId(UuidFactory.generate());
-			if (((ServiceExertion) ex).isJob()) {
+			if (ex.isJob()) {
 				for (int i = 0; i < ((Job) ex).size(); i++)
 					replaceNullExertionIDs(((Job) ex).get(i));
 			}

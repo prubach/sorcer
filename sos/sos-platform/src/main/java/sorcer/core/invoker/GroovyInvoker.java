@@ -157,7 +157,7 @@ public class GroovyInvoker<T> extends Invoker<T> {
 		while (i.hasNext()) {
 			Arg entry = i.next();
 			val = ((Evaluation)entry).getValue();
-			key = (String) entry.getName();
+			key = entry.getName();
 			if (val instanceof Evaluation) {
 				val = ((Evaluation) val).getValue();
 			}

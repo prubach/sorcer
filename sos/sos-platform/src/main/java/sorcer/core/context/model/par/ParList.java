@@ -19,7 +19,6 @@ package sorcer.core.context.model.par;
 
 import sorcer.co.tuple.Tuple2;
 import sorcer.service.EvaluationException;
-import sorcer.service.Identity;
 import sorcer.service.VarException;
 
 import java.rmi.RemoteException;
@@ -82,7 +81,7 @@ public class ParList extends ArrayList<Par> {
 			throws EvaluationException {
 		Par par = null;
 		for (Par p : this) {
-			if (((Identity) p).getName().equals(parName))
+			if (p.getName().equals(parName))
 				par = p;
 			par.setValue(value);
 			break;

@@ -91,7 +91,7 @@ public class ComprehensiveContext extends ServiceContext implements
 	 * @return Iterator iterator for this ComprehensiveContext
 	 */
 	public Iterator iterator() {
-		return (Iterator) this.compContextIterator;
+		return this.compContextIterator;
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ComprehensiveContext extends ServiceContext implements
 	 * compContext.clone() method. @ return ContextMetaData
 	 */
 	public ContextMetaData getContextMetaData() {
-		return (ContextMetaData) (new ContextMetaDataImpl(this));
+		return new ContextMetaDataImpl(this);
 	}
 
 	public void addKeyToMap(String newPath, String oldPath) {
@@ -267,7 +267,7 @@ public class ComprehensiveContext extends ServiceContext implements
 		// (String)contextMap.get(path));
 		System.out.println("request path" + path);
 		System.out.println("=====>Got path from Map = "
-				+ (String) contextMap.get(path));
+				+ contextMap.get(path));
 		if (contextMap.containsKey(path))
 			return (String) contextMap.get(path);
 		else
@@ -279,7 +279,7 @@ public class ComprehensiveContext extends ServiceContext implements
 	public void removePathFromMap(String path) {
 		try {
 			for (int i = 0; i < pathIndex.size(); i++)
-				if (((String) pathIndex.elementAt(i)).equals(path))
+				if (pathIndex.elementAt(i).equals(path))
 					pathIndex.removeElementAt(i);
 			String rPath = getRealPath(path);
 			contextMap.remove(path);
@@ -367,7 +367,7 @@ public class ComprehensiveContext extends ServiceContext implements
 					"Invalid index given:Out of Bounds: " + index + "  > "
 							+ pathIndex.size());
 
-		return (String) contextMap.get((String) pathIndex.elementAt(index));
+		return (String) contextMap.get(pathIndex.elementAt(index));
 	}
 
 	// gets the value stored for the virtual path stored at index in pathIndex
@@ -408,7 +408,7 @@ public class ComprehensiveContext extends ServiceContext implements
 
 		Object obj = null;
 		for (int i = 0; i < pathIndex.size(); i++)
-			if (((String) pathIndex.elementAt(i)).equals(path)) {
+			if (pathIndex.elementAt(i).equals(path)) {
 				obj = pathIndex.remove(i);
 				pathIndex.insertElementAt(obj, index);
 				return true;

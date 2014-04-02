@@ -71,7 +71,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
         // make the monitor session of this exertion active
         logger.debug("Dispatching task now: " + xrt.getName());
-        MonitoringSession session = (MonitoringSession) (xrt.getMonitorSession());
+        MonitoringSession session = xrt.getMonitorSession();
         session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                 DEFAULT_TIMEOUT_PERIOD);
         lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -92,7 +92,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(l,
                 exertion, LEASE_RENEWAL_PERIOD));
 
-        MonitoringSession session = (MonitoringSession) (registeredExertion.getMonitorSession());
+        MonitoringSession session = registeredExertion.getMonitorSession();
         logger.info("Session for the exertion =" + session);
         logger.info("Lease to be renewed for duration ="
                 + (session.getLease().getExpiration() - System
@@ -120,7 +120,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     protected void postExecExertion(Exertion result) throws ExertionException {
         ServiceExertion sxrt = (ServiceExertion)result;
         if (sxrt instanceof NetJob )
-            ((NetJob)xrt).setExertionAt(result, ((ServiceExertion) result).getIndex());
+            ((NetJob)xrt).setExertionAt(result, result.getIndex());
         else
             xrt = sxrt;
         try {

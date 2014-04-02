@@ -33,7 +33,6 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Entry;
-import sorcer.co.tuple.Tuple2;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.ControlContext;
@@ -625,7 +624,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		sessionId = id;
 		if (this instanceof Job) {
 			logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob");
-			List<Exertion> v = ((Job) this).getExertions();
+			List<Exertion> v = this.getExertions();
 			logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob2");
 			for (int i = 0; i < v.size(); i++) {
 				logger.info("sorcer.core.ExertionImpl::setSessionID this instanceof ServiceJob3");
@@ -735,9 +734,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public int compareByIndex(Exertion e) {
-		if (this.getIndex() > ((ServiceExertion) e).getIndex())
+		if (this.getIndex() > e.getIndex())
 			return 1;
-		else if (this.getIndex() < ((ServiceExertion) e).getIndex())
+		else if (this.getIndex() < e.getIndex())
 			return -1;
 		else
 			return 0;
@@ -866,7 +865,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			for (Arg e : entries) {
 				if (e instanceof Entry) {
 					try {
-						putValue((String) ((Entry) e).path(),
+						putValue(((Entry) e).path(),
 								((Entry) e).value());
 					} catch (ContextException ex) {
 						ex.printStackTrace();
@@ -962,7 +961,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		List<NetSignature> nsigs = getAllNetSignatures();
 		List<Deployment> deploymnets = new ArrayList<Deployment>();
 		for (Signature s : nsigs) {
-			Deployment d = ((ServiceSignature)s).getDeployment();
+			Deployment d = s.getDeployment();
 			if (d != null)
 				deploymnets.add(d);
 		}

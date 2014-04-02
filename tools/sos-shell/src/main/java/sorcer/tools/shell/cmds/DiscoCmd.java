@@ -203,7 +203,7 @@ public class DiscoCmd extends ShellCmd {
 
     public static ServiceItem[] lookup(
             Class[] serviceTypes) throws RemoteException {
-        return lookup(serviceTypes, (String)null);
+        return lookup(serviceTypes, null);
     }
 
     public static ServiceItem[] lookup(

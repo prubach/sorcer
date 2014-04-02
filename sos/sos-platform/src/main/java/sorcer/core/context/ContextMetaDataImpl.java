@@ -97,7 +97,7 @@ public class ContextMetaDataImpl implements ContextMetaData {
 	public String getColumnName(int column)
 			throws ComprehensiveContextException {
 		currentColumn = column - 1;
-		return (String) compContext.getPathAtIndex(currentColumn);
+		return compContext.getPathAtIndex(currentColumn);
 		// ContextNode cnode =
 		// (ContextNode)compContext.getValueAtIndex(currentColumn);
 		// return cnode.getName();

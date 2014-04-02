@@ -35,7 +35,7 @@ public class ParImpl<T> extends Par {
     }
 
     public ParImpl(String parname, Object argument, Context scope) throws RemoteException {
-        super(parname, (T)argument, scope);
+        super(parname, argument, scope);
     }
 
     public ParImpl(String name, String path, Mappable map) {
@@ -45,7 +45,7 @@ public class ParImpl<T> extends Par {
     @Override
     public void setClosure(Context scope) {
         if (((ServiceContext)scope).containsKey(Condition._closure_))
-            ((ServiceContext) scope).remove(Condition._closure_);
+            scope.remove(Condition._closure_);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ParImpl<T> extends Par {
                         Par p = new ParImpl((String)this.value, url);
                         p.setPersistent(true);
                         if (mappable instanceof ServiceContext)
-                            ((ServiceContext)mappable).put((String)this.value, p);
+                            ((ServiceContext)mappable).put(this.value, p);
                         else
                             mappable.putValue((String)this.value, p);
                     }
@@ -89,7 +89,7 @@ public class ParImpl<T> extends Par {
             }
         }
         else
-            this.value = (T)value;
+            this.value = value;
     }
 
     /* (non-Javadoc)
@@ -104,7 +104,7 @@ public class ParImpl<T> extends Par {
             if (mappable != null) {
                 val = (T) mappable.getValue((String) value);
             } else if (value == null && scope != null) {
-                val = (T) ((ServiceContext<T>) scope).get(name);
+                val = ((ServiceContext<T>) scope).get(name);
             } else {
                 val = (T)value;
             }
@@ -121,7 +121,7 @@ public class ParImpl<T> extends Par {
                 if (val instanceof Exertion) {
                     // TODO context binding for all exertions, works for tasks only
                     Context cxt = ((Exertion)val).getDataContext();
-                    List<String> paths =((ServiceContext)cxt).getPaths();
+                    List<String> paths = cxt.getPaths();
                     for (String an : ((Map<String, Object>)scope).keySet()) {
                         for (String p : paths) {
                             if (p.endsWith(an)) {
@@ -143,12 +143,12 @@ public class ParImpl<T> extends Par {
                         Par p = new ParImpl((String)this.value, url);
                         p.setPersistent(true);
                         if (mappable instanceof ServiceContext)
-                            ((ServiceContext)mappable).put((String)this.value, p);
+                            ((ServiceContext)mappable).put(this.value, p);
                         else
                             mappable.putValue((String)this.value, p);
                     }
                     else {
-                        value = (T) DbpUtil.store(val);
+                        value = DbpUtil.store(val);
                     }
                 }
             }
@@ -162,7 +162,7 @@ public class ParImpl<T> extends Par {
     @Override
     public void setScope(Context scope) {
         if (((ServiceContext)scope).containsKey(Condition._closure_))
-            ((ServiceContext) scope).remove(Condition._closure_);
+            scope.remove(Condition._closure_);
         this.scope = scope;
     }
 

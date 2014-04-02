@@ -142,7 +142,7 @@ public class operator {
 		
 	public static Invocation invoker(Mappable mappable, String path)
 			throws ContextException {
-		Object obj = ((ServiceContext) mappable).asis(path);
+		Object obj = mappable.asis(path);
 		while (obj instanceof Mappable || obj instanceof Par) {
 			try {
 				obj = ((Evaluation) obj).asis();
@@ -435,7 +435,7 @@ public class operator {
 
 	public static LoopInvoker loop(String name, Condition condition, Par target)
 			throws EvaluationException, RemoteException {
-		return new LoopInvoker(name, condition, (Invoker) ((Par) target).asis());
+		return new LoopInvoker(name, condition, (Invoker) target.asis());
 	}
 	
 	public static OptInvoker get(AltInvoker invoker, int index) {

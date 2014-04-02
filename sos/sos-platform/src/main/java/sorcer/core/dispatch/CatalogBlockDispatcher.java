@@ -167,7 +167,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 		if (exertion instanceof AltExertion) {
 			for (OptExertion oe : ((AltExertion)exertion).getOptExertions()) {
 				oe.getCondition().getConditionalContext().append(xrt.getContext());
-				((OptExertion)oe).getCondition().setStatus(null);
+				oe.getCondition().setStatus(null);
 			}
 		} else if (exertion instanceof OptExertion) {
 			Context pc = ((OptExertion)exertion).getCondition().getConditionalContext();
@@ -190,9 +190,9 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 	
 	private void postUpdate(ServiceExertion exertion) throws ContextException, RemoteException {
 		if (exertion instanceof AltExertion) {
-			((Block)xrt).getContext().append(((AltExertion)exertion).getActiveOptExertion().getContext());
+			xrt.getContext().append(((AltExertion)exertion).getActiveOptExertion().getContext());
 		} else if (exertion instanceof OptExertion) {
-			((Block)xrt).getContext().append(((OptExertion)exertion).getContext());
+			xrt.getContext().append(exertion.getContext());
 		}
 		
 //		if (exertion instanceof AltExertion) {
@@ -214,7 +214,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 	
 	private void reset() {
 		xrt.setStatus(INITIAL);
-		for (Exertion e : ((Block)xrt).getExertions())
+		for (Exertion e : xrt.getExertions())
 			((ServiceExertion)e).reset(INITIAL);
 	}
 }

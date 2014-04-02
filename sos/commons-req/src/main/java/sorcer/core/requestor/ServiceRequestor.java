@@ -43,7 +43,6 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.tools.webster.InternalWebster;
 import sorcer.tools.webster.Webster;
-import sorcer.util.Artifact;
 import sorcer.util.ArtifactCoordinates;
 import sorcer.util.GenericUtil;
 import sorcer.util.JavaSystemProperties;
@@ -208,7 +207,7 @@ abstract public class
                 InputStream is = this.getClass().getResourceAsStream(filename);
                 // check local resource
                 if (is == null)
-                    is = (InputStream) (new FileInputStream(filename));
+                    is = new FileInputStream(filename);
                 if (is != null) {
                     props = new Properties();
                     props.load(is);

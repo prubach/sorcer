@@ -93,10 +93,10 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 		logger.debug("collect exertions for template: {}",
 						template.describe());
 		while (count < inputXrts.size() && state != FAILED) {
-			ExertionEnvelop resultEnvelop = (ExertionEnvelop) takeEnvelop(template);
+			ExertionEnvelop resultEnvelop = takeEnvelop(template);
 			if (resultEnvelop != null && resultEnvelop.exertion != null) {
 				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.get(((ServiceExertion) resultEnvelop.exertion)
+						.get(resultEnvelop.exertion
 								.getIndex());
 				logger.debug("collected result envelope {}",
 								resultEnvelop.describe());

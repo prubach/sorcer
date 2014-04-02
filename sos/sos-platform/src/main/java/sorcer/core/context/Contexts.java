@@ -284,7 +284,7 @@ public class Contexts {
 		// remove sorcer variables from new context
 		// these objects are new objects and collide with old
 		// object IDs in original context
-		((Hashtable) toCntxt).remove(SORCER_VARIABLES_PATH);
+		toCntxt.remove(SORCER_VARIABLES_PATH);
 	}
 
     public static boolean containsContextVariables(Context cntxt) {
@@ -621,7 +621,7 @@ public class Contexts {
 		List allNodes = new ArrayList();
 		List additional = null;
 
-		List<Exertion> exertions = ((Job) job).getExertions();
+		List<Exertion> exertions = job.getExertions();
 		for (Object exertion : exertions) {
 			if (exertion instanceof ServiceExertion) {
 				additional = Arrays
@@ -1148,7 +1148,7 @@ public class Contexts {
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
 			link = (Link) cntxt.get(linkPath);
-			keysInLink = getPathsWithAttribute(((ServiceContext) cntxt)
+			keysInLink = getPathsWithAttribute(cntxt
 					.getLinkedContext(link), attribute);
 			if (keysInLink != null)
 				for (int i = 0; i < keysInLink.length; i++)
@@ -1267,7 +1267,7 @@ public class Contexts {
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
 			link = (Link) cntxt.get(linkPath);
-			keysInLink = getMarkedPaths(((ServiceContext) cntxt)
+			keysInLink = getMarkedPaths(cntxt
 					.getLinkedContext(link), association);
 			if (keysInLink != null)
 				for (int i = 0; i < keysInLink.length; i++)
@@ -1340,7 +1340,7 @@ public class Contexts {
 			while (e2.hasMoreElements()) {
 				linkPath = (String) e2.nextElement();
 				link = (Link) context.get(linkPath);
-				Enumeration associations = getAssociations(((ServiceContext) context)
+				Enumeration associations = getAssociations(context
 						.getLinkedContext(link));
 				if (associations != null)
 					while (associations.hasMoreElements()) {
@@ -1416,7 +1416,7 @@ public class Contexts {
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
 			if (values.get(key).equals(value))
-				if (((ServiceContext) context).get(key) instanceof ContextNode)
+				if (context.get(key) instanceof ContextNode)
 					return true;
 		}
 		return false;
@@ -1427,7 +1427,7 @@ public class Contexts {
 		Vector contextNodes = new Vector();
 		String[] paths = getMarkedPaths(context, association);
 		if (paths == null)
-			return (String[]) null;
+			return null;
 		for (int i = 0; i < paths.length; i++)
 			if (context.getValue(paths[i]) instanceof ContextNode)
 				contextNodes.addElement(paths[i]);

@@ -31,7 +31,6 @@ import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -284,7 +283,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			}
 			try {
 				if (commandTable.containsKey(curToken)) {
-					cmd = (ShellCmd) commandTable.get(curToken);
+					cmd = commandTable.get(curToken);
 					cmd.execute();
 				}
 				// admissible shortcuts in the 'synonyms' map
@@ -300,7 +299,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 						cmdName = new StringTokenizer(cmdName).nextToken();
 						shellTokenizer = new StringTokenizer(request);
 					}
-					cmd = (ShellCmd) commandTable.get(cmdName);
+					cmd = commandTable.get(cmdName);
 					cmd.execute();
 				} else if (request.length() > 0) {
 					if (request.equals("?")) {
@@ -398,18 +397,18 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                     shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
                             + ", JVM: " + System.getProperty("java.version"));
                 } else if (args[0].equals("-help")) {
-                    ShellCmd cmd = (HelpCmd) commandTable.get("help");
+                    ShellCmd cmd = commandTable.get("help");
                     cmd.execute();
                 } else {
                     // Added reading the file as default first argument
                     // Check if file exists
-                    ShellCmd cmd = (ShellCmd) commandTable.get("exert");
+                    ShellCmd cmd = commandTable.get("exert");
                     cmd.execute();
                 }
             } else if (args.length == 2) {
                 if (args[0].equals("-f")) {
                     // evaluate file
-                    ShellCmd cmd = (ShellCmd) commandTable.get("exert");
+                    ShellCmd cmd = commandTable.get("exert");
                     cmd.execute();
                 } else if (args[0].equals("-e")) {
                     // evaluate command line expression
@@ -497,7 +496,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		// verify that the basic minimal commands are available
 		for (int i = 0; i < shellCommands.length; i++)
 			if (!commandTable.containsKey(shellCommands[i])
-					&& ((ShellCmd) commandTable.get(shellCommands[i]))
+					&& commandTable.get(shellCommands[i])
 							.getCommandWord().indexOf(shellCommands[i]) >= 0) {
 				shellOutput.println("Missing basic command :  "
 						+ shellCommands[i]);
@@ -1143,7 +1142,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		StringBuilder buffer = new StringBuilder();
 		for (Map.Entry<String, ShellCmd> e : commandTable.entrySet()) {
 			buffer.append("\n\t" + e.getKey());
-			if (((String) e.getKey()).length() > 5)
+			if (e.getKey().length() > 5)
 				buffer.append(": \t" + e.getValue().getUsage(e.getKey()));
 			else
 				buffer.append(": \t\t" + e.getValue().getUsage(e.getKey()));
@@ -1486,7 +1485,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 					out.println("  "
 					// + attributeSets[k].getClass()
 					// + "UIDescriptor: "
-							+ ((MarshalledObject) ((UIDescriptor) attributeSets[k]).factory)
+							+ ((UIDescriptor) attributeSets[k]).factory
 									.get());
 				} else if (attributeSets[k] instanceof SorcerServiceInfo) {
 					printSorcerServiceInfo((SorcerServiceInfo) attributeSets[k]);

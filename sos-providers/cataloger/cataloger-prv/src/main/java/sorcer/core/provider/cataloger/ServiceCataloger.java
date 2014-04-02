@@ -562,7 +562,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			if (si.service == null)
 				return;
 			for (int i = 0; i < sis.size(); i++)
-				if (si.service.equals(((ServiceItem) sis.get(i)).service)) {
+				if (si.service.equals(sis.get(i).service)) {
 					sis.remove(i);
 					return;
 				}
@@ -589,7 +589,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 											.get(i).attributeSets[0])).name);
 						else
 							sb.append(",")
-									.append(((ServiceItem) sItems.get(i)).attributeSets[0]);
+									.append(sItems.get(i).attributeSets[0]);
 					}
 					sb.append("==>\n");
 					sb.append(key);
@@ -1158,7 +1158,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 								Task task = new NetTask(serviceType
 										+ methodName, method);
 								task.setContext(theContext);
-								NetTask task2 = (NetTask) ((Service) temp)
+								NetTask task2 = (NetTask) temp
 										.service(task, null);
 								return task2.getContext();
 							} catch (Exception e) {

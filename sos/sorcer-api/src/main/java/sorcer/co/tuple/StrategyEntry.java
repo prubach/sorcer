@@ -28,7 +28,7 @@ public class StrategyEntry extends Path<Strategy> implements Arg {
 	};
 	
 	public Strategy strategy() {
-		return (Strategy)_2;
+		return _2;
 	}
 	
 	/* (non-Javadoc)

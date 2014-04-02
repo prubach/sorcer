@@ -57,21 +57,21 @@ public class SorcerCmd extends ShellCmd {
 
 		if (option.equals("-h")) {
 			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME"));
-			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
+			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("-n")) {
 			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
 					+ File.separator + "netlets" + File.separator + "src");
-			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
+			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("-d")) {
 			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
 					+ File.separator + "data");
-			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
+			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("~")) {
 			NetworkShell.setRequest("cd " + System.getProperty("user.home"));
-			ShellCmd cmd = (ShellCmd) NetworkShell.getCommandTable().get("ls");
+			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		}
 	}

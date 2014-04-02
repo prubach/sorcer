@@ -144,7 +144,7 @@ public class Providers {
         for (int i = 0; i < fNA.length; i++) {
 
             if ((fNA[i].getData()) instanceof Job) {
-                fJV.addElement((Job) fNA[i].getData());
+                fJV.addElement(fNA[i].getData());
             }
         }
         Job[] fJA = new Job[fJV.size()];

@@ -57,9 +57,9 @@ public class TaskFactory {
     public static Task task(Signature signature, Context context)
             throws SignatureException {
         if (signature instanceof NetSignature) {
-            return new NetTask(null, (NetSignature) signature, context);
+            return new NetTask(null, signature, context);
         } else if (signature instanceof ObjectSignature) {
-            return new ObjectTask(null, (ObjectSignature) signature, context);
+            return new ObjectTask(null, signature, context);
         } else if (signature instanceof EvaluationSignature) {
             return new EvaluationTask((EvaluationSignature) signature, context);
         } else if (signature instanceof AntSignature) {
@@ -110,7 +110,7 @@ public class TaskFactory {
         if (ss != null) {
             if (ss instanceof NetSignature) {
                 try {
-					task = new NetTask(tname, (NetSignature) ss);
+					task = new NetTask(tname, ss);
                 } catch (SignatureException e) {
                     throw new ExertionException(e);
                 }

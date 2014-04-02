@@ -234,7 +234,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	@Override
 	public Exertion addExertion(Exertion ex) throws ExertionException {
 		exertions.add(ex);
-		((ServiceExertion) ex).setIndex(exertions.indexOf(ex));
+		ex.setIndex(exertions.indexOf(ex));
 		try {
 			controlContext.registerExertion(ex);
 		} catch (ContextException e) {
@@ -287,7 +287,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	 *                current size of this <tt>Job</tt> object.
 	 */
 	public Exertion get(int index) {
-		return (Exertion) exertions.get(index);
+		return exertions.get(index);
 	}
 
 	public abstract Job doJob(Transaction txn) throws ExertionException,
@@ -358,7 +358,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	public String jobContextToString() throws ExertionException {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < exertions.size(); i++) {
-			if (((ServiceExertion) get(i)).isJob())
+			if (get(i).isJob())
 				sb.append(((Job) get(i)).jobContextToString());
 			else
 				sb.append(((ServiceExertion) get(i)).contextToString());
@@ -581,7 +581,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	public Object getReturnValue(Arg... entries) throws ContextException,
 			RemoteException {
 		//ReturnPath rp = ((ServiceContext) dataContext).getReturnJobPath();
-        ReturnPath rp = ((ServiceContext) dataContext).getReturnPath();
+        ReturnPath rp = dataContext.getReturnPath();
 		Object obj = null;
 		if (rp != null) {
 			if (rp.path == null || rp.path.equals("self")) {

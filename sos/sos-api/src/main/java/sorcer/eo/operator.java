@@ -404,7 +404,7 @@ public class operator {
 	}
 
 	public static Signature sig(Class<?> serviceType) throws SignatureException {
-		return SignatureFactory.sig(serviceType, (ReturnPath) null);
+		return SignatureFactory.sig(serviceType, null);
 /*#SOURCE sig_class_returnpath
         Signature sig = null;
         if (serviceType.isInterface()) {
@@ -532,7 +532,7 @@ public class operator {
 	public static ObjectTask task(ObjectSignature signature, Context context)
 			throws SignatureException {
 		return new ObjectTask(signature.getSelector(),
-				(ObjectSignature) signature, context);
+                signature, context);
 	}
 
     // TODO VFE related
@@ -679,7 +679,7 @@ public class operator {
 
 	public static Object get(Context context) throws ContextException,
 			RemoteException {
-		return ((ServiceContext) context).getReturnValue();
+		return context.getReturnValue();
 	}
 
 	public static Object get(Context context, int index)
@@ -692,7 +692,7 @@ public class operator {
 
 	public static Object get(Exertion exertion) throws ContextException,
 			RemoteException {
-		return ((ServiceContext) exertion.getContext()).getReturnValue();
+		return exertion.getContext().getReturnValue();
 	}
 
 	public static <V> V asis(Object evaluation) throws EvaluationException {
@@ -729,8 +729,8 @@ public class operator {
 
 	public static Object get(Exertion exertion, String component, String path)
 			throws ExertionException {
-		Exertion c = ((Exertion) exertion).getExertion(component);
-		return get((Exertion) c, path);
+		Exertion c = exertion.getExertion(component);
+		return get(c, path);
 	}
 
 	public static Object value(URL url) throws IOException {
@@ -793,17 +793,17 @@ public class operator {
 
 	public static Object url(Context model, String name)
 			throws ContextException, RemoteException {
-		return ((ServiceContext) model).getURL(name);
+		return model.getURL(name);
 	}
 
 	public static Object asis(Mappable mappable, String path)
 			throws ContextException {
-		return ((ServiceContext) mappable).asis(path);
+		return mappable.asis(path);
 	}
 
 	public static Object get(Mappable mappable, String path)
 			throws ContextException {
-		Object obj = ((ServiceContext) mappable).asis(path);
+		Object obj = mappable.asis(path);
         while (obj instanceof Mappable || obj instanceof Par) {
 			try {
 				obj = ((Evaluation) obj).asis();
@@ -877,11 +877,11 @@ public class operator {
             }
         }
 
-        Object obj = ((ServiceExertion) xrt).getReturnValue(entries);
+        Object obj = xrt.getReturnValue(entries);
         if (obj == null) {
             ReturnPath returnPath = xrt.getDataContext().getReturnPath();
             if (returnPath != null) {
-                return ((ServiceExertion) xrt).getReturnValue(entries);
+                return xrt.getReturnValue(entries);
             } else {
                 return xrt.getContext();
             }
@@ -926,7 +926,7 @@ public class operator {
 	public static Object get(Exertion xrt, String path)
 			throws ExertionException {
 		try {
-			return ((ServiceExertion) xrt).getValue(path);
+			return xrt.getValue(path);
 		} catch (ContextException e) {
 			throw new ExertionException(e);
 		}
@@ -949,7 +949,7 @@ public class operator {
 	public static Task exert(Task input, Entry... entries)
 			throws ExertionException {
 		try {
-			return (Task) ((Task) input).exert(null, entries);
+			return (Task) input.exert(null, entries);
 		} catch (Exception e) {
 			throw new ExertionException(e);
 		}
@@ -1619,9 +1619,9 @@ public class operator {
 			throws SignatureException {
 		if (signature.getSelector() == null
 				|| signature.getSelector().equals("new"))
-			return ((ObjectSignature) signature).newInstance();
+			return signature.newInstance();
 		else
-			return ((ObjectSignature) signature).initInstance();
+			return signature.initInstance();
 	}
 
 	/**
@@ -1687,7 +1687,7 @@ public class operator {
 
 	public static Exertion exertion(Mappable mappable, String path)
 			throws ContextException {
-		Object obj = ((ServiceContext) mappable).asis(path);
+		Object obj = mappable.asis(path);
         while (obj instanceof Mappable || obj instanceof Par) {
 			try {
 				obj = ((Evaluation) obj).asis();

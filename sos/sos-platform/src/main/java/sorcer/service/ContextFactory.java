@@ -250,12 +250,12 @@ public class ContextFactory {
                 //	pcxt.putValueAt(Modeling.OUT_STREAM, entryList.get(i),
                 //			i + 1);
                 //} else {
-                if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
-                    setPar(pcxt, (Tuple2<String, ?>) entryList.get(i), i);
+                if (entryList.get(i).isPersistant) {
+                    setPar(pcxt, entryList.get(i), i);
                 } else {
                     pcxt.putValueAt(
-                            (String) ((Tuple2<String, ?>) entryList.get(i))._1,
-                            ((Tuple2<String, ?>) entryList.get(i))._2,
+                            entryList.get(i)._1,
+                            entryList.get(i)._2,
                             i + 1);
                 }
                 //}
@@ -303,12 +303,12 @@ public class ContextFactory {
 				} else if (entryList.get(i) instanceof OutTable) {
 					cxt.putValue(Modeling.OUT_STREAM, entryList.get(i));
 				} else {*/
-                if (((Tuple2<String, ?>) entryList.get(i)).isPersistant) {
-                    setPar(cxt, (Tuple2<String, ?>) entryList.get(i));
+                if (entryList.get(i).isPersistant) {
+                    setPar(cxt, entryList.get(i));
                 } else {
                     cxt.putValue(
-                            (String) ((Tuple2<String, ?>) entryList.get(i))._1,
-                            ((Tuple2<String, ?>) entryList.get(i))._2);
+                            entryList.get(i)._1,
+                            entryList.get(i)._2);
                 }
                 //}
             }

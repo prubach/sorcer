@@ -34,7 +34,6 @@ import sorcer.tools.webster.InternalWebster;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.util.Artifact;
 
 public class StartSorcerBrowser {
 	public static boolean isWebsterInt = false;

@@ -206,7 +206,7 @@ public class DbpUtil {
                 new NetSignature("contextRetrieve", DatabaseStorer.class, storageName),
                 getRetrieveContext(storeUuid, storeType));
         // It was DataspaceStorer.class in Mike's version
-        return (Context) execDbTask(objectStoreTask);
+        return execDbTask(objectStoreTask);
 
         /*
         Task objectRetrieveTask = task(

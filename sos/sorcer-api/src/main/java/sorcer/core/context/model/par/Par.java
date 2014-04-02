@@ -240,7 +240,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	@Override
 	public T getArg(String varName) throws ArgException {
 		try {
-			return (T) scope.getValue(varName, null);
+			return scope.getValue(varName, null);
 		} catch (ContextException e) {
 			throw new ArgException(e);
 		}
@@ -374,7 +374,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		if (attributes[0].equals(name)) {
 			if (attributes.length == 1)
 				try {
-					return (T)getValue(args);
+					return getValue(args);
 				} catch (RemoteException e) {
 					throw new ContextException(e);
 				}

@@ -280,7 +280,7 @@ public class ContextEditWindow extends JFrame implements ActionListener {
 					// path+=pathTo[i].toString();
 					if (((DefaultMutableTreeNode) pathTo[length - i - 1])
 							.getUserObject() instanceof ContextNodeType) {
-						if (((DefaultMutableTreeNode) pathTo[length - i - 1])
+						if (pathTo[length - i - 1]
 								.getChildCount() == 1) {
 							ContextNodeType parentNode = (ContextNodeType) ((DefaultMutableTreeNode) pathTo[length
 									- i - 1]).getUserObject();

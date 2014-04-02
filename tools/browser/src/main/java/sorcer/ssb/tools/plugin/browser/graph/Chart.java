@@ -288,12 +288,12 @@ implements ChartItemEnabler
 					if(xpos>(prevx+25))
 					{
 						g.setColor(gridColor);
-						g.drawLine((int)xpos,(int)yoff,(int)xpos,(int)yoff+hi+2);
+						g.drawLine((int)xpos, yoff,(int)xpos, yoff +hi+2);
 						g.setColor(axisColor);
 						if(labelCounter%labelEvery==0 && xpos>(lastLabelPos+labelWidth+10))
 						{
 							xTagPosition[j]=(int)xpos-5;
-							g.drawString(dataSet[i].getTag(j),xTagPosition[j],(int)yoff+hi+20);
+							g.drawString(dataSet[i].getTag(j),xTagPosition[j], yoff +hi+20);
 							lastLabelPos=xpos;
 						}
 						else

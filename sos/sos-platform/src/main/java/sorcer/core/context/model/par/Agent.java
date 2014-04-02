@@ -86,7 +86,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 						.newInstance(new Object[] { scope });
 				invoker = new MethodInvoker(name, obj, name, getPars(entries));
 				if (scope instanceof ParModel)
-					invoker.setScope((ParModel)scope);
+					invoker.setScope(scope);
 				invoker.setContext(scope);
 			} finally {
 				AccessController.doPrivileged(new PrivilegedAction() {
@@ -103,7 +103,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 							+ e.getClass().getName() + ": "
 							+ e.getLocalizedMessage());
 		}
-		value = (T)invoker.invoke(entries);
+		value = invoker.invoke(entries);
 		invoker.valueValid(true);
 		return (T)value;
 	}
@@ -113,7 +113,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 		if (value != null && invoker != null && invoker.valueValid())
 			return (T)value;
 		else
-			return (T)evaluate(entries);
+			return evaluate(entries);
 	}
 	
 	/* (non-Javadoc)
@@ -129,7 +129,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 		if (entries != null && entries.length > 0) {
 			for (Arg p : entries) {
 				if (p instanceof Par) {
-					pl.add((Par) p);
+					pl.add(p);
 				}
 			}
 		}

@@ -81,7 +81,7 @@ public class ContextUtil {
         // remove sorcer variables from new context
         // these objects are new objects and collide with old
         // object IDs in original context
-        ((Hashtable) toCntxt).remove(SORCER_VARIABLES_PATH);
+        toCntxt.remove(SORCER_VARIABLES_PATH);
     }
 
     public static ContextNode[] getContextNodes(Context context)
@@ -174,7 +174,7 @@ public class ContextUtil {
             if (localMeta!=null)
                 for (String loc : StringUtils.tokenize(localMeta, SorcerConstants.APS)) {
                     if ((hash!=null && !hash.isEmpty()) &&
-                            ((Hashtable)hash.get(loc))!=null &&
+                            hash.get(loc) !=null &&
                     (((Hashtable)hash.get(loc)).containsKey(path))) {
                         Object val = ((Hashtable)hash.get(loc)).get(path);
                         if (val!=null) markerStr.append(SorcerConstants.APS).append(val);

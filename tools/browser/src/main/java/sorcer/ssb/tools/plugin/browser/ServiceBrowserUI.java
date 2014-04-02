@@ -600,7 +600,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		if (!LOGGED_IN) {
 			return r;
 		}
-		return (Runnable) wrap((Object) r, Runnable.class);
+		return (Runnable) wrap(r, Runnable.class);
 	}
 
 	private Object wrap(Object obj, Class iface) {

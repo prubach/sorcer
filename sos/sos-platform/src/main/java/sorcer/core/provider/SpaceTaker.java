@@ -529,8 +529,8 @@ public class SpaceTaker implements Runnable, LeaseListener {
 
 				if (se instanceof Task) {
 					// task for the worker's provider
-					out = ((ProviderDelegate) ((ServiceProvider) data.provider)
-							.getDelegate()).doTask((Task) se, transaction);
+					out = ((ServiceProvider) data.provider)
+							.getDelegate().doTask((Task) se, transaction);
 				} else {
 					// delegate it to another collaborating service
 					out = (ServiceExertion) data.provider.service(se,
