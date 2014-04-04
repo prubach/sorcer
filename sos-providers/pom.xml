@@ -23,6 +23,7 @@
 		<module>exertmonitor</module>
 		<module>dbp</module>
         <module>exerter</module>
+        <module>spacetaker</module>
     </modules>
 	
     <build>
