@@ -3,11 +3,13 @@ package sorcer.rio.util;
 import org.apache.commons.lang3.StringUtils;
 import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.resolver.Artifact;
+import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
-import sorcer.resolver.Resolver;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +24,8 @@ import java.util.HashSet;
  * @author Rafał Krupiński
  */
 public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
+    private static Resolver resolver;
+
     public SorcerCapabilityDescriptor(String name, String version, String classpath) throws ResolverException {
         super(name, version, classpath);
     }
@@ -60,20 +64,33 @@ public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
     }
 
     protected static Collection<String> resolve(String entry, String version, boolean transitive) throws ResolverException {
-        if (Artifact.isArtifact(entry)) {
-            return resolve(entry, transitive);
-        } else {
-            String entryVer = entry + ":" + version;
-            if (Artifact.isArtifact(entryVer))
-                return resolve(entryVer, transitive);
-        }
+        String coords = entry;
+        if (!Artifact.isArtifact(coords))
+            coords = entry + ":" + version;
+        if (Artifact.isArtifact(coords))
+            return resolve(coords, transitive);
+
         return getClasspath0(Arrays.asList(StringUtils.split(entry, File.separatorChar)), version, transitive);
     }
 
     protected static Collection<String> resolve(String entry, boolean transitive) throws ResolverException {
         if (transitive)
-            return Arrays.asList(ResolverHelper.getResolver().getClassPathFor(entry));
-        else
-            return Collections.singleton(Resolver.resolveClassPath(new String[]{entry}));
+            return Arrays.asList(resolver.getClassPathFor(entry));
+        else {
+            URL location = resolver.getLocation(entry, new Artifact(entry).getType());
+            try {
+                return Collections.singleton(new File(location.toURI()).getPath());
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(entry + " resolved to invalid URL " + location, e);
+            }
+        }
+    }
+
+    static {
+        try {
+            resolver = ResolverHelper.getResolver();
+        } catch (ResolverException e) {
+            throw new ExceptionInInitializerError(e);
+        }
     }
 }
