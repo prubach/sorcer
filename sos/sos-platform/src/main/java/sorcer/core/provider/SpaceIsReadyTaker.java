@@ -38,7 +38,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 	}
 
 	public void run() {
-		logger.finer("................... run ... ifReady transactional = "
+		logger.debug("... run ... ifReady transactional = "
 				+ isTransactional + ", lease = " + transactionLeaseTimeout + ", timeOut: " + spaceTimeout);
 		while (keepGoing) {
 			try {
@@ -59,7 +59,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 					isReady = ((ServiceProvider) data.provider)
 							.isReady(data.entry.exertion);
 					if (!isReady) {
-						logger.finer("########### Provider is NOT ready ...");
+						logger.debug("### Provider is NOT ready ...");
 						Thread.sleep(SPACE_TIMEOUT / 2);
 						continue;
 					}
@@ -74,7 +74,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 				if (isTransactional) {
 					txnCreated = createTransaction();
 					if (txnCreated == null)
-						logger.severe("########### SpaceIsReady Worker DID NOT get transaction ...");
+						logger.warn("### SpaceIsReady Worker DID NOT get transaction ...");
 				}
 
 				ee = (ExertionEnvelop) space

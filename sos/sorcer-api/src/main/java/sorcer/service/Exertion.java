@@ -366,4 +366,6 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
     void setIndex(int i);
 
     MonitoringSession getMonitorSession();
+
+    Uuid getParentId();
 }
