@@ -23,6 +23,8 @@ import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.SorcerEnv;
+import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
 
 import java.io.File;
@@ -57,6 +59,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     private static final Logger logger = LoggerFactory.getLogger(SorcerResolvingLoader.class);
 
     static {
+        JavaSystemProperties.ensure("RIO_HOME", new File(SorcerEnv.getHomeDir(), "lib/rio").getPath());
         try {
             resolver = ResolverHelper.getResolver();
         } catch (ResolverException e) {
