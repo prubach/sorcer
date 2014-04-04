@@ -18,10 +18,13 @@ package sorcer.launcher;
 
 import com.sun.jini.start.LifeCycle;
 import org.rioproject.logging.ServiceLogEventHandlerHelper;
+import org.rioproject.resolver.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
+import sorcer.core.SorcerEnv;
+import sorcer.resolver.ArtifactResolver;
 import sorcer.resolver.Resolver;
 import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.StringUtils;
@@ -46,6 +49,27 @@ public class SorcerLauncher extends Launcher {
     private ThreadFactory threadFactory;
     private ServiceStarter serviceStarter;
     protected Profile profile;
+
+    private List<ConfigResolver> resolvers = new LinkedList<ConfigResolver>();
+
+    {
+        try {
+            resolvers.add(new ProjectResolver());
+            log.debug("Using Project Resolver");
+        } catch (Exception ignore) {
+        }
+        try {
+            resolvers.add(new OptionalResolver("sorcer.resolver.RepositoryArtifactResolver", new Class[]{String.class}, SorcerEnv.getRepoDir()));
+            log.debug("Using Repository Resolver");
+        } catch (Exception ignore) {
+        }
+        resolvers.add(new ConfigResolver() {
+            @Override
+            public File resolve(String config) {
+                return new File(config);
+            }
+        });
+    }
 
     @Override
     public void preConfigure() {
@@ -133,15 +157,25 @@ public class SorcerLauncher extends Launcher {
         return result;
     }
 
-    protected List<String> getConfigs() {
-        List<String> result = new ArrayList<String>(configs);
+    protected List<File> getConfigs() {
+        List<File> result = new ArrayList<File>(configs.size());
+        for (String path : configs)
+            for (ConfigResolver resolver : resolvers) {
+                File file = resolver.resolve(path);
+                if (file != null) {
+                    result.add(file);
+                    break;
+                } else
+                    log.warn("Couldn't resolve {}", path);
+            }
+
         if (profile != null) {
             String[] sorcerConfigPaths = profile.getSorcerConfigPaths();
-
             for (String cfg : sorcerConfigPaths) {
                 String path = evaluator.eval(cfg);
-                if (new File(path).exists())
-                    result.add(path);
+                File file = new File(path);
+                if (file.exists())
+                    result.add(file);
             }
         }
         return result;
@@ -177,9 +211,9 @@ public class SorcerLauncher extends Launcher {
     }
 
     private class SorcerRunnable implements Runnable {
-        private List<String> configs;
+        private List<File> configs;
 
-        public SorcerRunnable(List<String> configs) {
+        public SorcerRunnable(List<File> configs) {
             this.configs = configs;
         }
 
@@ -218,5 +252,44 @@ public class SorcerLauncher extends Launcher {
     public void setThreadFactory(ThreadFactory threadFactory) {
         this.threadFactory = threadFactory;
     }
+}
 
+interface ConfigResolver {
+    File resolve(String config);
+}
+
+class OptionalResolver implements ConfigResolver {
+    protected ArtifactResolver resolver;
+
+    @SuppressWarnings("unchecked")
+    protected OptionalResolver(String name, Class[] argTypes, Object... ctorArgs) throws Exception {
+        Class<ArtifactResolver> resolverType = (Class<ArtifactResolver>) Class.forName(name);
+        resolver = resolverType.getConstructor(argTypes).newInstance(ctorArgs);
+    }
+
+    @Override
+    public File resolve(String config) {
+        if (!Artifact.isArtifact(config))
+            return null;
+        String pathname = resolver.resolveAbsolute(config);
+        if (pathname == null)
+            return null;
+        return new File(pathname);
+    }
+}
+
+class ProjectResolver extends OptionalResolver {
+    protected ProjectResolver() throws Exception {
+        super("sorcer.resolver.ProjectArtifactResolver", new Class[0]);
+    }
+
+    @Override
+    public File resolve(String config) {
+        if (!config.startsWith(":"))
+            return null;
+        String pathname = resolver.resolveAbsolute(config.substring(1));
+        if (pathname == null)
+            return null;
+        return new File(pathname);
+    }
 }

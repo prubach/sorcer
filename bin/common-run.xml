@@ -193,7 +193,7 @@
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
-                <pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar"/>
+                <!--<pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar"/>-->
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-api.jar"/>

@@ -16,7 +16,6 @@
 package sorcer.boot;
 
 import com.google.inject.*;
-import com.google.inject.Inject;
 import com.google.inject.name.Names;
 import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.LifeCycle;
@@ -26,14 +25,10 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
 import net.jini.config.EmptyConfiguration;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AbstractFileFilter;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.rioproject.impl.opstring.OARException;
 import org.rioproject.impl.opstring.OpStringLoader;
 import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
-import org.rioproject.resolver.Artifact;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
@@ -44,13 +39,11 @@ import sorcer.boot.platform.PlatformLoader;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.core.DestroyAdmin;
-import sorcer.core.SorcerEnv;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
-import sorcer.util.IOUtils;
 import sorcer.util.JavaSystemProperties;
 
-import javax.inject.*;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -67,7 +60,6 @@ import java.util.*;
 
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
-import static sorcer.resolver.Resolver.resolveAbsolute;
 
 /**
  * @author Rafał Krupiński
@@ -96,7 +88,7 @@ public class ServiceStarter implements LifeCycle {
      *
      * @param configs file path or URL of the services.config configuration
      */
-    public void start(Collection<String> configs)  {
+    public void start(Collection<File> configs)  {
         log.info("******* Starting Sorcersoft.com SORCER *******");
 
         Injector rootInjector = createInjector();
@@ -110,33 +102,21 @@ public class ServiceStarter implements LifeCycle {
 
         log.debug("Starting from {}", configs);
 
-        List<String> riverServices = new LinkedList<String>();
+        List<File> riverServices = new LinkedList<File>();
         List<File> cfgJars = new LinkedList<File>();
         List<File> opstrings = new LinkedList<File>();
-        for (String path : configs) {
-            try {
-                File file = null;
-                if (path.startsWith(":")) {
-                    file = findArtifact(path.substring(1));
-                } else if (Artifact.isArtifact(path))
-                    file = new File(resolveAbsolute(path));
-                if (file == null) file = new File(path);
+        for (File file : configs) {
+            String path = file.getPath();
+            String ext = path.substring(path.lastIndexOf('.') + 1);
 
-                IOUtils.ensureFile(file, IOUtils.FileCheck.readable);
-                path = file.getPath();
-                String ext = path.substring(path.lastIndexOf('.') + 1);
-
-                if ("config".equals(ext))
-                    riverServices.add(path);
-                else if ("oar".equals(ext) || "jar".equals(ext))
-                    cfgJars.add(file);
-                else if ("opstring".equals(ext) || "groovy".equals(ext))
-                    opstrings.add(file);
-                else
-                    throw new IllegalArgumentException("Unrecognized file " + path);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Could not read configuration files " + path, e);
-            }
+            if ("config".equals(ext))
+                riverServices.add(file);
+            else if ("oar".equals(ext) || "jar".equals(ext))
+                cfgJars.add(file);
+            else if ("opstring".equals(ext) || "groovy".equals(ext))
+                opstrings.add(file);
+            else
+                throw new IllegalArgumentException("Unrecognized file " + path);
         }
         Map<Configuration, Collection<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, Collection<? extends ServiceDescriptor>>();
         descs.putAll(instantiateDescriptors(riverServices));
@@ -260,44 +240,10 @@ public class ServiceStarter implements LifeCycle {
         return result;
     }
 
-    private File findArtifact(String artifactId) throws IOException {
-        File homeDir = SorcerEnv.getHomeDir().getCanonicalFile();
-        File userDir = new File(System.getProperty(JavaSystemProperties.USER_DIR)).getCanonicalFile();
-
-        Collection<File> roots = new LinkedList<File>();
-        String homePath = homeDir.getPath();
-        String userPath = userDir.getPath();
-
-        //if one directory is ancestor of another, use only the ancestor
-        if (homeDir.equals(userDir) || homePath.startsWith(userPath))
-            roots.add(userDir);
-        else if (userPath.startsWith(homePath))
-            roots.add(homeDir);
-        else {
-            roots.add(userDir);
-            roots.add(homeDir);
-        }
-        //roots.add(new File(SorcerEnv.getRepoDir()));
-
-        File result = null;
-        for (File root : roots) {
-            Collection<File> files = FileUtils.listFiles(root, new ArtifactIdFileFilter(artifactId), DirectoryFileFilter.INSTANCE);
-            if (files.size() > 0) {
-                result = files.iterator().next();
-                if (files.size() > 1) {
-                    log.warn("Found {} files in {} possibly matching artifactId, using {}", files.size(), root, result);
-                    log.debug("Files found: {}", files);
-                }
-                break;
-            }
-        }
-        return result;
-    }
-
     protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) {
         List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
         String policyFile = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
-        URL policyFileUrl = null;
+        URL policyFileUrl;
         try {
             policyFileUrl = new File(policyFile).toURI().toURL();
         } catch (MalformedURLException e) {
@@ -347,11 +293,11 @@ public class ServiceStarter implements LifeCycle {
         return descriptors;
     }
 
-    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<String> riverServices)  {
+    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<File> riverServices)  {
         List<Configuration> configs = new ArrayList<Configuration>(riverServices.size());
-        for (String s : riverServices) {
+        for (File s : riverServices) {
             try {
-                configs.add(ConfigurationProvider.getInstance(new String[]{s}));
+                configs.add(ConfigurationProvider.getInstance(new String[]{s.getPath()}));
             } catch (ConfigurationException e) {
                 throw new IllegalArgumentException("Could not process configuration file " + s, e);
             }
@@ -385,8 +331,6 @@ public class ServiceStarter implements LifeCycle {
 
     /**
      * Create a service for each ServiceDescriptor in the map
-     *
-     * @throws Exception
      */
     public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap)  {
         Thread thread = Thread.currentThread();
@@ -440,7 +384,6 @@ public class ServiceStarter implements LifeCycle {
      *               the descriptors for the services to start.
      * @param config The associated <code>Configuration</code> object
      *               used to customize the service creation process.
-     * @throws Exception If there was a problem creating the service.
      * @see com.sun.jini.start.ServiceStarter.Result
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
@@ -534,30 +477,6 @@ public class ServiceStarter implements LifeCycle {
             } catch (LoginException le) {
                 log.warn("service.logout.exception", le);
             }
-        }
-    }
-
-    private static class ArtifactIdFileFilter extends AbstractFileFilter {
-        private String artifactId;
-
-        public ArtifactIdFileFilter(String artifactId) {
-            this.artifactId = artifactId;
-        }
-
-        @Override
-        public boolean accept(File dir, String name) {
-            String parent = dir.getName();
-            String grandParent = dir.getParentFile().getName();
-            return
-                    new File(dir, name).isFile() && name.startsWith(artifactId + "-") && name.endsWith(".jar") && (
-                            //check development structure
-                            "target".equals(parent)
-                                    //check repository just in case
-                                    || artifactId.equals(grandParent)
-                    )
-                            //check distribution structure
-                            || "lib".equals(grandParent) && (artifactId + ".jar").equals(name)
-                    ;
         }
     }
 }

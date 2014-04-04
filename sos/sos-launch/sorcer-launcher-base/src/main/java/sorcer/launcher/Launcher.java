@@ -63,7 +63,6 @@ public abstract class Launcher implements ILauncher {
             "net.jini:jsk-resources",
             "net.jini:jsk-platform",
             "net.jini:jsk-lib",
-            "net.jini.lookup:serviceui",
 
             "org.rioproject:rio-start",
             "org.rioproject:rio-platform",
