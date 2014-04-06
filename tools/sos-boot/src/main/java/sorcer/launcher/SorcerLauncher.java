@@ -165,8 +165,7 @@ public class SorcerLauncher extends Launcher {
                 if (file != null) {
                     result.add(file);
                     break;
-                } else
-                    log.warn("Couldn't resolve {}", path);
+                }
             }
 
         if (profile != null) {
