@@ -26,11 +26,6 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -44,6 +39,8 @@ import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.entry.Name;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.AdministratableProvider;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.provider.Provider;
@@ -114,7 +111,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 	/** Logger for logging information about this instance */
 	//private static Logger logger = Logger.getLogger(ServiceCataloger.class.getName());
-	private static Logger logger;
+	private static final Logger logger = LoggerFactory.getLogger(ServiceCataloger.class);
 
 	public ServiceDiscoveryManager lookupMgr;
 
@@ -180,7 +177,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 
 	public void init() {
 		try {
-			initLogger();
 			LookupLocator[] specificLocators = null;
 			String sls = getProperty(P_LOCATORS);
 
@@ -216,25 +212,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			ex.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
-		}
-	}
-
-	private void initLogger() {
-		Handler h;
-		try {
-			logger = Logger.getLogger("local."
-					+ ServiceCataloger.class.getName() + "."
-					+ getProviderName());
-			h = new FileHandler(SorcerEnv.getHomeDir()
-                    + "/logs/remote/local-Cataloger-" + delegate.getHostName()
-					+ "-" + getProviderName() + ".log", 2000000, 8, true);
-            h.setFormatter(new SimpleFormatter());
-            logger.addHandler(h);
-			logger.setUseParentHandlers(false);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -380,7 +357,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             return cinfo.getContext(providerName, interfaceName,
                     methodName);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "IRFAILED", e);
+			logger.warn("IRFAILED", e);
 		}
 		return null;
 
@@ -743,7 +720,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				String name = ((Provider) si.service).getProviderName();
                 return name != null;
 			} catch (RemoteException e) {
-				logger.warning("Service ID: " + si.serviceID
+				logger.warn("Service ID: " + si.serviceID
 						+ " is not Alive anymore");
 				// throw e;
 				return false;
@@ -1395,7 +1372,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			throws RemoteException {
         List<ServiceItem> result = new LinkedList<ServiceItem>();
         if(cinfo==null){
-            logger.warning("Cataloger not initialized");
+            logger.warn("Cataloger not initialized");
         } else
         for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : cinfo.entrySet()) {
             List<ServiceItem> serviceItems = entry.getValue();

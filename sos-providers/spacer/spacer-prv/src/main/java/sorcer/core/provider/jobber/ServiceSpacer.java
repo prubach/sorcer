@@ -17,21 +17,17 @@
  */
 package sorcer.core.provider.jobber;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Vector;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.security.auth.Subject;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
@@ -59,7 +55,7 @@ import sorcer.util.StringUtils;
  *
  */
 public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
-    private static Logger logger;
+    private static Logger logger = LoggerFactory.getLogger(ServiceSpacer.class);
     private LokiMemberUtil myMemberUtil;
 
     /**
@@ -83,32 +79,13 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
         super(args, lifeCycle);
         myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
-        initLogger();
-    }
-
-    private void initLogger() {
-        Handler h = null;
-        try {
-            logger = Logger.getLogger("local." + ServiceSpacer.class.getName()
-                    + "." + getProviderName());
-			h = new FileHandler(SorcerEnv.getHomeDir()
-                    + "/logs/remote/local-Spacer-" + delegate.getHostName()
-                    + "-" + getProviderName() + ".log", 20000, 8, true);
-                h.setFormatter(new SimpleFormatter());
-                logger.addHandler(h);
-            logger.setUseParentHandlers(false);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void setServiceID(Exertion ex) {
         // By default it's ServiceSpacer associated with this exertion.
         try {
             if (getProviderID() != null) {
-                logger.finest(getProviderID().getLeastSignificantBits() + ":"
+                logger.trace(getProviderID().getLeastSignificantBits() + ":"
                         + getProviderID().getMostSignificantBits());
                 ((ServiceExertion) ex).setLsbId(getProviderID()
                         .getLeastSignificantBits());
@@ -123,9 +100,9 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     public Exertion service(Exertion exertion) throws RemoteException,
             ExertionException {
         try {
-            logger.entering(this.getClass().getName(), "service: " + exertion.getName());
+            logger.trace("service: " + exertion.getName());
             setServiceID(exertion);
-            System.out.println("ServiceSpacer.service(): ************************************ exertion = " + exertion);
+            logger.debug("ServiceSpacer.service(): *** exertion = " + exertion);
             // create an instance of the ExertionProcessor and call on the
             // process method, returns an Exertion
             return new ControlFlowManager(exertion, delegate, this)
@@ -163,7 +140,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 jobThread.start();
                 jobThread.join();
                 Job result = jobThread.getResult();
-                logger.finest("Result: " + result);
+                logger.trace("Result: " + result);
                 return result;
             }
         } catch (Throwable e) {
@@ -342,7 +319,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         }
 
         public void run() {
-            logger.finest("*** JobThread Started ***");
+            logger.trace("*** JobThread Started ***");
             Dispatcher dispatcher = null;
 
             try {
@@ -352,10 +329,10 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 while (dispatcher.getState() != Exec.DONE
                         && dispatcher.getState() != Exec.FAILED
                         && dispatcher.getState() != Exec.SUSPENDED) {
-                    logger.fine("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
+                    logger.debug("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
                     Thread.sleep(250);
                 }
-                logger.fine("Dispatcher State: " + dispatcher.getState());
+                logger.debug("Dispatcher State: " + dispatcher.getState());
             } catch (DispatcherException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -400,7 +377,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         }
 
         public void run() {
-            logger.finest("*** TaskThread Started ***");
+            logger.trace("*** TaskThread Started ***");
             SpaceTaskDispatcher dispatcher = null;
 
             try {
@@ -416,15 +393,15 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 while (dispatcher.getState() != Exec.DONE
                         && dispatcher.getState() != Exec.FAILED
                         && dispatcher.getState() != Exec.SUSPENDED) {
-                    logger.fine("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
+                    logger.debug("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
                     Thread.sleep(250);
                 }
-                logger.fine("Dispatcher State: " + dispatcher.getState());
+                logger.debug("Dispatcher State: " + dispatcher.getState());
 				result = (NetTask) dispatcher.getExertion();
             } catch (DispatcherException e) {
-				logger.log(Level.SEVERE, "Dispatcher exception", e);
+				logger.warn("Dispatcher exception", e);
             } catch (InterruptedException e) {
-				logger.log(Level.SEVERE, "Interrupted", e);
+				logger.warn("Interrupted", e);
             }
         }
 
@@ -470,7 +447,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 taskThread.start();
                 taskThread.join();
                 Task result = taskThread.getResult();
-                logger.finest("Spacer result: " + result);
+                logger.trace("Spacer result: " + result);
                 return result;
             }
         } catch (Throwable e) {

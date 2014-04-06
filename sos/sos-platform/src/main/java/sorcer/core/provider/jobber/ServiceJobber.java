@@ -21,6 +21,8 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
@@ -33,15 +35,10 @@ import sorcer.service.*;
 import sorcer.util.StringUtils;
 
 import javax.security.auth.Subject;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import static sorcer.core.SorcerConstants.MAIL_SEP;
 
@@ -51,7 +48,7 @@ import static sorcer.core.SorcerConstants.MAIL_SEP;
  * 
  */
 public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
-	private Logger logger = Logger.getLogger(ServiceJobber.class.getName());
+	private Logger logger = LoggerFactory.getLogger(ServiceJobber.class);
 
 	public ServiceJobber() throws RemoteException {
 		// do nothing
@@ -60,25 +57,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	// require constructor for Jini 2 NonActivatableServiceDescriptor
 	public ServiceJobber(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-		initLogger();
-	}
-	
-	private void initLogger() {
-		Handler h = null;
-		try {
-			logger = Logger.getLogger("local." + ServiceJobber.class.getName() + "."
-					+ getProviderName());
-			h = new FileHandler(SorcerEnv.getHomeDir()
-					+ "/logs/remote/local-Jobber-" + delegate.getHostName() + "-" + getProviderName()
-					+ ".log", 20000, 8, true);
-			h.setFormatter(new SimpleFormatter());
-			logger.addHandler(h);
-			logger.setUseParentHandlers(false);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void setServiceID(Exertion ex) {
@@ -86,7 +64,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		// Not service.
 		try {
 			if (getProviderID() != null) {
-				logger.finest(getProviderID().getLeastSignificantBits() + ":"
+				logger.trace(getProviderID().getLeastSignificantBits() + ":"
 						+ getProviderID().getMostSignificantBits());
 				((ServiceExertion) ex).setLsbId(getProviderID()
 						.getLeastSignificantBits());
@@ -99,7 +77,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException, ExertionException {
-		logger.entering(this.getClass().getName(), "service: " + exertion.getName());
+		logger.trace("service: " + exertion.getName());
 		try {
 			// Jobber overrides SorcerProvider.service method here
 			setServiceID(exertion);
@@ -143,7 +121,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 				jobThread.start();
 				jobThread.join();
 				Job result = jobThread.getResult();
-				logger.finest("<==== Result: " + result);
+				logger.trace("<== Result: " + result);
 				return result;
 			}
 		} catch (Throwable e) {

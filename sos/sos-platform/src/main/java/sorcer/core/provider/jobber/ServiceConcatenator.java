@@ -16,20 +16,16 @@
  */
 package sorcer.core.provider.jobber;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import javax.security.auth.Subject;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
 import sorcer.core.dispatch.BlockThread;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.Concatenator;
@@ -52,7 +48,7 @@ import com.sun.jini.start.LifeCycle;
  * 
  */
 public class ServiceConcatenator extends ServiceProvider implements Concatenator, Executor, SorcerConstants {
-	private Logger logger = Logger.getLogger(ServiceConcatenator.class.getName());
+	private Logger logger = LoggerFactory.getLogger(ServiceConcatenator.class.getName());
 
 	public ServiceConcatenator() throws RemoteException {
 		// do nothing
@@ -61,33 +57,12 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	// require constructor for Jini 2 NonActivatableServiceDescriptor
 	public ServiceConcatenator(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-		initLogger();
 	}
-	
-	private void initLogger() {
-		Handler h = null;
-		try {
-			logger = Logger.getLogger("local." + ServiceConcatenator.class.getName() + "."
-					+ getProviderName());
-			h = new FileHandler(SorcerEnv.getHomeDir()
-					+ "/logs/remote/local-Concatenator-" + delegate.getHostName() + "-" + getProviderName()
-					+ "%g.log", 20000, 8, true);
-			if (h != null) {
-				h.setFormatter(new SimpleFormatter());
-				logger.addHandler(h);
-			}
-			logger.setUseParentHandlers(false);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	public void setServiceID(Exertion ex) {
 		try {
 			if (getProviderID() != null) {
-				logger.finest(getProviderID().getLeastSignificantBits() + ":"
+				logger.trace(getProviderID().getLeastSignificantBits() + ":"
 						+ getProviderID().getMostSignificantBits());
 				((ServiceExertion) ex).setLsbId(getProviderID()
 						.getLeastSignificantBits());
@@ -100,7 +75,7 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException, ExertionException {
-		logger.entering(this.getClass().getName(), "service: " + exertion.getName());
+		logger.trace("service: " + exertion.getName());
 		try {
 			// Concatenator overrides SorcerProvider.service method here
 			setServiceID(exertion);
@@ -148,7 +123,7 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 				blockThread.join();
 				Block result = blockThread.getResult();
 				Condition.cleanupScripts(result);
-				logger.finest("<==== Result: " + result);
+				logger.trace("<== Result: " + result);
 				return result;
 			}
 		} catch (Throwable e) {
