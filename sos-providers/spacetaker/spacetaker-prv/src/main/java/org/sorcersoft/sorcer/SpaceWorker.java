@@ -18,7 +18,6 @@ package org.sorcersoft.sorcer;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
-import net.jini.core.lease.UnknownLeaseException;
 import net.jini.core.transaction.Transaction;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.service.Exec;
@@ -28,20 +27,15 @@ class SpaceWorker implements Runnable {
     private Transaction.Created txnCreated;
 
 
-    SpaceWorker(ExertionEnvelop envelope,
-                Transaction.Created workerTxnCreated)
-            throws UnknownLeaseException {
+    SpaceWorker(ExertionEnvelop envelope, Transaction.Created workerTxnCreated) {
         ee = envelope;
-        if (workerTxnCreated != null) {
-            txnCreated = workerTxnCreated;
-        }
+        txnCreated = workerTxnCreated;
     }
 
     public void run() {
-        String threadId = doThreadMonitorWorker(null);
 
         Entry result = doEnvelope(ee, (txnCreated == null) ? null
-                : txnCreated.transaction, threadId, txnCreated);
+                : txnCreated.transaction);
 
         if (result != null) {
             try {
@@ -83,7 +77,7 @@ class SpaceWorker implements Runnable {
         doThreadMonitorWorker(threadId);
     }
 
-    public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction, String threadId, Transaction.Created txn) {
+    public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction) {
         ServiceExertion se;
         ServiceExertion out;
         try {
