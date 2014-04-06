@@ -1655,10 +1655,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @throws MonitorException
 	 * @throws RemoteException
 	 */
+/*
 	public void changed(Context<?> context, Object aspect) throws RemoteException,
 			MonitorException {
 		delegate.changed(context, aspect);
 	}
+*/
 
     /**
      * Destroy the service, if possible, including its persistent storage.

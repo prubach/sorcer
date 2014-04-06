@@ -189,8 +189,8 @@ public class SessionDatabaseRunner {
 	private void addSessions() {
 		StoredValueSet<MonitorSession> sessionSet = views.getSessionSet();
         try {
-			sessionSet.add(new MonitorSession(new NetTask("t1"), (RemoteEventListener)null, 10));
-			sessionSet.add(new MonitorSession(new ObjectTask("t2"), (RemoteEventListener)null, 100));
+			sessionSet.add(new MonitorSession(new NetTask("t1"), (RemoteEventListener)null, 10, null, null));
+			sessionSet.add(new MonitorSession(new ObjectTask("t2"), (RemoteEventListener)null, 100, null, null));
 //			sessionSet.add(new MonitorSession(new ResponseTask("t3"), (RemoteEventListener)null, 1000));
 		} catch (IOException e) {
 			e.printStackTrace();

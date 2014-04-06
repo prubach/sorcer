@@ -27,7 +27,6 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.context.ThrowableTrace;
-import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -365,7 +364,4 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 
     void setIndex(int i);
 
-    MonitoringSession getMonitorSession();
-
-    Uuid getParentId();
-}
+    Uuid getParentId();}

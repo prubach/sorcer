@@ -41,7 +41,6 @@ import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.deploy.Deployment;
-import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
@@ -85,8 +84,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	protected Long msbId;
 
 	protected Uuid sessionId;
-
-	protected MonitoringSession monitorSession;
 
 	/** position of Exertion in a job */
 	protected Integer index;
@@ -1103,30 +1100,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	public void reset(int state) {
 		status = state;
-	}
-
-	/**
-	 * <p>
-	 * Returns the monitor session of this exertion.
-	 * </p>
-	 * 
-	 * @return the monitorSession
-	 */
-	@Override
-	public MonitoringSession getMonitorSession() {
-		return monitorSession;
-	}
-
-	/**
-	 * <p>
-	 * Assigns a monitor session for this exertions.
-	 * </p>
-	 * 
-	 * @param monitorSession
-	 *            the monitorSession to set
-	 */
-	public void setMonitorSession(MonitoringSession monitorSession) {
-		this.monitorSession = monitorSession;
 	}
 
 	/*

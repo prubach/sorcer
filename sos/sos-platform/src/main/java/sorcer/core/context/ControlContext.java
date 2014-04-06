@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerEnv;
-import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 import sorcer.util.Stopwatch;
@@ -337,15 +336,6 @@ public class ControlContext extends ServiceContext implements Strategy {
 	public Exec.State getExecState() {
 		return (Exec.State) get(EXEC_STATE);
 	}
-		
-	public MonitoringManagement getMonitor() {
-		return (MonitoringManagement) get(EXERTION_MONITORING);
-	}
-
-	public void setMonitor(MonitoringManagement monitor) {
-		put(EXERTION_MONITORING, monitor);
-	}
-
 
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)

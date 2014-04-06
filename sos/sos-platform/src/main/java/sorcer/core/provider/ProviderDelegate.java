@@ -50,7 +50,6 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
 import net.jini.core.event.RemoteEvent;
-import net.jini.core.lease.Lease;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -78,7 +77,6 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
-import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
@@ -291,56 +289,7 @@ public class ProviderDelegate {
     private IServiceBeanListener beanListener;
     private ProviderServiceBuilder serviceBuilder;
 
-	/*
-	 * A nested class to hold the state information of the executing thread for
-	 * a served exertion.
-	 */
-	public static class ExertionSessionInfo {
-
-		static LeaseRenewalManager lrm = new LeaseRenewalManager();
-
-		private static class ExertionSessionBundle {
-			public Uuid exertionID;
-			public MonitoringSession session;
-		}
-
-		private static final ThreadLocal<ExertionSessionBundle> tl = new ThreadLocal<ExertionSessionBundle>() {
-			@Override
-			protected ExertionSessionBundle initialValue() {
-				return new ExertionSessionBundle();
-			}
-		};
-
-		public static void add(ServiceExertion ex) {
-			ExertionSessionBundle esb = tl.get();
-			esb.exertionID = ex.getId();
-			esb.session = ex.getMonitorSession();
-			if (ex.getMonitorSession() != null)
-				lrm.renewUntil(
-						ex.getMonitorSession().getLease(),
-						Lease.ANY, null);
-		}
-
-		public static MonitoringSession getSession() {
-			ExertionSessionBundle esb = tl.get();
-			return (esb != null) ? esb.session : null;
-		}
-
-		public static Uuid getID() {
-			ExertionSessionBundle esb = tl.get();
-			return (esb != null) ? esb.exertionID : null;
-		}
-
-        public static void removeLease() {
-			ExertionSessionBundle esb = tl.get();
-			try {
-				lrm.remove(esb.session.getLease());
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	public ProviderDelegate(IServiceBeanListener beanListener, ProviderServiceBuilder serviceBuilder) {
+    public ProviderDelegate(IServiceBeanListener beanListener, ProviderServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
         this.serviceBuilder = serviceBuilder;
     }
@@ -648,16 +597,14 @@ public class ProviderDelegate {
 		getExporters(jconfig);
 		logger.debug("exporting provider: {}", provider);
 		logger.info("outerExporter = {}", outerExporter);
-		try {
-			if (outerExporter == null) {
-					logger.warn("No exporter for provider: {}", getProviderName());
-					return;
-				}
-				outerProxy = outerExporter.export(provider);
-				logger.debug("outerProxy: {}", outerProxy);
-		} catch (Exception ee) {
-			logger.warn("deploymnet failed", ee);
-		}
+
+        if (outerExporter == null) {
+            logger.warn("No exporter for provider: {}", getProviderName());
+            return;
+        }
+        outerProxy = outerExporter.export(provider);
+        logger.debug("outerProxy: {}", outerProxy);
+
 		adminProxy = createAdmin();
 		providerProxy = getProxy();
 		exports.put(outerProxy, outerExporter);
@@ -1988,20 +1935,21 @@ public class ProviderDelegate {
 		notify(task, NOTIFY_WARNING, message);
 	}
 
-	/**
+	/*
 	 * Indicates the change of the monitored service context.
 	 * 
 	 * @param sc
 	 *            the service context
 	 * @throws MonitorException
 	 * @throws RemoteException
-	 */
+
 	public void changed(Context sc, Object aspect) throws RemoteException,
 			MonitorException {
 		MonitoringSession session = ExertionSessionInfo.getSession();
 		if (session != null)
 			session.changed(sc, aspect);
 	}
+*/
 
 	// task/job monitoring API
 	public void stop(UEID ueid, Subject subject)

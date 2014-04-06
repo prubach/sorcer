@@ -21,9 +21,7 @@ package sorcer.core.provider.exertmonitor.lease;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,23 +40,11 @@ import com.sun.jini.landlord.Landlord;
 import com.sun.jini.landlord.LeaseFactory;
 import com.sun.jini.landlord.LeasedResource;
 
-public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote {
+public class MonitorLandlord implements Runnable, ReferentUuid, Remote, IMonitorLandlord {
 
-	public static interface MonitorLeasedResource extends LeasedResource {
-
-		public void leaseCancelled();
-
-		public void setTimeout(long timeoutDuration);
-
-		public long getTimeout();
-
-		public void timedOut();
-
-	}
-
-	private transient LeaseFactory lFactory;
+    private transient LeaseFactory lFactory;
     private transient Uuid landlordUuid;
-    private transient Landlord proxy;
+    private transient IMonitorLandlord proxy;
 	private volatile boolean run = true;
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.lease.MonitorLandlord";
@@ -71,10 +57,10 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 
 	protected static final int DEFAULT_SLEEP_TIME = 1000 * 3;
 
-	public static Hashtable resources;
+	private Map<Uuid, MonitorLeasedResource> resources;
 
 	public MonitorLandlord() throws ExportException {
-		resources = new Hashtable();
+		resources = new HashMap<Uuid, MonitorLeasedResource>();
 		landlordUuid = UuidFactory.generate();
 		export();
 		this.lFactory = new LeaseFactory(proxy, landlordUuid);
@@ -84,17 +70,18 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 		BasicJeriExporter exporter = new BasicJeriExporter(
 				TcpServerEndpoint.getInstance(0), new BasicILFactory());
 
-		proxy = (Landlord) exporter.export(this);
+		proxy = (IMonitorLandlord) exporter.export(this);
 		Thread llt = new Thread(this);
 		llt.setDaemon(true);
 		llt.start();
 	}
 
-	public Object getServiceProxy() {
+	public IMonitorLandlord getServiceProxy() {
 		return proxy;
 	}
 
-	public Lease newLease(LeasedResource resource) {
+	@Override
+    public Lease newLease(MonitorLeasedResource resource) {
 		resources.put(resource.getCookie(), resource);
 		return lFactory
 				.newLease(resource.getCookie(), resource.getExpiration());
@@ -118,8 +105,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	public void cancel(Uuid cookie) throws UnknownLeaseException,
 			RemoteException {
 
-		MonitorLeasedResource resource;
-		resource = (MonitorLeasedResource) resources.get(cookie);
+		MonitorLeasedResource resource = resources.get(cookie);
 		if (resource != null) {
 			resource.leaseCancelled();
 			return;
@@ -129,15 +115,15 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	}
 
 	// Cancel a set of leases
-	public Map cancelAll(Uuid[] cookies) throws RemoteException {
-		Map exceptionMap = null;
+	public Map<Uuid, Exception> cancelAll(Uuid[] cookies) throws RemoteException {
+		Map<Uuid, Exception> exceptionMap = null;
 
 		for (int i = 0; i < cookies.length; i++) {
 			try {
 				cancel(cookies[i]);
 			} catch (UnknownLeaseException ex) {
 				if (exceptionMap == null) {
-					exceptionMap = new HashMap();
+					exceptionMap = new HashMap<Uuid, Exception>();
 				}
 				exceptionMap.put(cookies[i], ex);
 			}
@@ -209,13 +195,9 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 
 	public void checkLeasesAndTimeouts() {
 		// logger.log(Level.INFO,"Checking for leases and time outs");
-		MonitorLeasedResource resource;
-		Uuid cookie;
 		long now = System.currentTimeMillis();
-		for (Enumeration e = resources.keys(); e.hasMoreElements();) {
-			cookie = (Uuid) e.nextElement();
-			resource = (MonitorLeasedResource) resources.get(cookie);
 
+        for (MonitorLeasedResource resource : resources.values()) {
 			if (resource.getExpiration() < now) {
 				logger.log(Level.INFO, "Lease cancelled for resource ="
 						+ resource);
@@ -238,7 +220,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 		resources.remove(lr.getCookie());
 	}
 
-	public Hashtable getResources() {
+	public Map<Uuid, MonitorLeasedResource> getResources() {
 		return resources;
 	}
 

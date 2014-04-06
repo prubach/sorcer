@@ -105,8 +105,10 @@ public interface MonitoringSession extends Serializable {
 	 * 
 	 * */
 
+/*
 	public void init(long duration, long timeout) throws RemoteException,
 			MonitorException;
+*/
 
 	/**
 	 * 
@@ -131,13 +133,15 @@ public interface MonitoringSession extends Serializable {
 	 * 
 	 * */
 
+/*
 	public void init(Monitorable mntrbl) throws RemoteException,
 			MonitorException;
+*/
 
 	/**
 	 * Providers use this method to update the monitoring session
 	 * 
-	 * @param xtc
+	 * @param ctx
 	 *            The service context changed.
 	 * 
 	 *  * @param aspect

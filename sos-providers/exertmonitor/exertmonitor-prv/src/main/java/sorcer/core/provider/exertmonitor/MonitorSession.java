@@ -21,53 +21,39 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import sorcer.core.monitor.MonitoringManagement;
-import sorcer.core.provider.Provider;
+import net.jini.io.MarshalledInstance;
 import sorcer.core.monitor.MonitorEvent;
 import sorcer.core.monitor.MonitorableSession;
-import sorcer.core.provider.exertmonitor.lease.MonitorLandlord;
+import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.provider.Provider;
+import sorcer.core.provider.exertmonitor.lease.IMonitorLandlord;
+import sorcer.core.provider.exertmonitor.lease.MonitorLeasedResource;
 import sorcer.service.*;
-import sorcer.util.ObjectCloner;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MonitorSession extends ArrayList<MonitorSession> implements
-		MonitorLandlord.MonitorLeasedResource, Serializable, IMonitorSession {
+import static sorcer.core.provider.exertmonitor.MonitorHelper.setMonitoringSession;
+
+public class MonitorSession implements
+        MonitorLeasedResource, Serializable, IMonitorSession {
 
 	static final long serialVersionUID = -4427096084987355507L;
 
-	// ThreadPool for event processing
-	{
-		try {
-			eventPool = Executors.newFixedThreadPool(EVENT_TASK_POOL_MAX);
-		} catch (Exception e) {
-			logger.log(
-					Level.SEVERE,
-					"Error while instantiating eventPool... "
-							+ e.getMessage());
-		}
-	}
+	private MonitoringManagement sessionManager;
 
-	public transient static MonitorLandlord mLandlord;
-
-	public transient static MonitoringManagement sessionManager;
-
-	public transient static ExecutorService eventPool;
+    private IMonitorLandlord mLandlord;
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.SessionResource";
 
 	static transient final Logger logger = Logger.getLogger(LOGGER);
-
-	static transient final int EVENT_TASK_POOL_MIN = 1;
 
 	static transient final int EVENT_TASK_POOL_MAX = 5;
 
@@ -76,8 +62,6 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	private ServiceExertion initialExertion;
 
 	private ServiceExertion runtimeExertion;
-
-	private Monitorable provider;
 
 	private MonitorSession parentResource;
 
@@ -99,15 +83,20 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private Lease lease;
 
-	public MonitorSession(Exertion ex, RemoteEventListener listener,
-			long duration) throws IOException {
+    private List<MonitorSession> children = new ArrayList<MonitorSession>();
+
+    // ThreadPool for event processing
+    private static final ExecutorService eventPool = Executors.newFixedThreadPool(EVENT_TASK_POOL_MAX);
+
+    public MonitorSession(Exertion ex, RemoteEventListener listener,
+                          long duration, MonitoringManagement monitoring, IMonitorLandlord mLandlord) throws IOException {
 		super();
 		if (ex == null)
 			throw new NullPointerException(
 					"Assertion Failed: initialExertion cannot be NULL");
 
 		this.initialExertion = (ServiceExertion) ex;
-		runtimeExertion = (ServiceExertion) ObjectCloner.cloneAnnotated(ex);
+		runtimeExertion = cloneAnnotated(initialExertion);
 		this.listener = listener;
 		init();
 		runtimeExertion.setStatus(Exec.INITIAL);
@@ -115,20 +104,24 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		// Set the epiration for the root Resource
 		// get the lease and stick it
 		setTimeout(Long.MAX_VALUE);
-		if (mLandlord != null) {
-			setExpiration(mLandlord.getExpiration(duration));
-			lease = mLandlord.newLease(this);
-		}
-		runtimeExertion.setMonitorSession(new MonitorableSession(
-				sessionManager, cookie, lease));
+        sessionManager = monitoring;
+        if (mLandlord != null) {
+            this.mLandlord = mLandlord;
+            setExpiration(mLandlord.getExpiration(duration));
+            lease = mLandlord.newLease(this);
+        }
+        setMonitoringSession(runtimeExertion.getControlContext(), new MonitorableSession(
+                monitoring, cookie, lease));
 	}
 
 	private MonitorSession(Exertion xrt, Exertion runtimeXrt,
-			MonitorSession parentSession) {
+			MonitorSession parentSession, MonitoringManagement sessionManager, IMonitorLandlord mLandlord) {
 
 		super();
+        this.sessionManager = sessionManager;
+        this.mLandlord = mLandlord;
 
-		if (xrt == null || runtimeXrt == null)
+        if (xrt == null || runtimeXrt == null)
 			throw new NullPointerException(
 					"Assertion Failed: initialExertion cannot be NULL");
 
@@ -138,14 +131,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		this.listener = parentSession.getListener();
 		init();
 
-		((ServiceExertion) runtimeXrt)
-				.setMonitorSession(new MonitorableSession(sessionManager,
-						cookie));
-
-	}
-
-	public void restore() {
-
+		setMonitoringSession(
+                runtimeXrt.getControlContext(),
+                new MonitorableSession(sessionManager,
+                        cookie)
+        );
 	}
 
 	private void init() {
@@ -156,14 +146,15 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void addSessions(Job initial, Job runtime, MonitorSession parent) {
 		for (int i = 0; i < initial.size(); i++)
-			add(new MonitorSession(initial.get(i),
-					runtime.get(i), parent));
+			children.add(new MonitorSession(initial.get(i),
+                    runtime.get(i), parent, sessionManager, mLandlord));
 	}
 
 	public RemoteEventListener getListener() {
 		return listener;
 	}
 
+/*
 	public Map<Uuid, MonitorSession> getSessions() {
 		HashMap<Uuid, MonitorSession> map = new HashMap<Uuid, MonitorSession>();
 		collectSessions(map);
@@ -173,16 +164,17 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private HashMap<Uuid, MonitorSession> collectSessions(HashMap<Uuid, MonitorSession> map) {
 		MonitorSession resource;
-		for (int i = 0; i < size(); i++) {
-			resource = get(i);
+		for (int i = 0; i < children.size(); i++) {
+			resource = children.get(i);
 			map.put(cookie, resource);
 			collectSessions(map);
 		}
 		return map;
 	}
+*/
 
 	public Lease init(Monitorable executor, long duration, long timeout)
-			throws MonitorException {
+            throws MonitorException, RemoteException {
 
 		if (executor == null)
 			throw new NullPointerException(
@@ -197,13 +189,13 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
-		this.provider = executor;
 		setExpiration(mLandlord.getExpiration(duration));
 		setTimeout(System.currentTimeMillis() + timeout);
 		persist();
 		return mLandlord.newLease(this);
 	}
 
+/*
 	public void init(long duration, long timeout) throws MonitorException {
 
 		if (isRunning() || isInSpace()) {
@@ -221,6 +213,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		persist();
 		lease = mLandlord.newLease(this);
 	}
+*/
 
 	public Lease init(Monitorable executor) throws MonitorException {
 		if (executor == null)
@@ -236,7 +229,6 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
-		this.provider = executor;
 		persist();
 		return lease;
 	}
@@ -246,14 +238,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
 
-        if (runtimeExertion instanceof ServiceExertion)
+        if (runtimeExertion != null)
             runtimeExertion.setContext(ctx);
 		persist();
 	}
 
-	public void done(Context<?> ctx) throws MonitorException {
+	public void done(Context<?> ctx) throws MonitorException, RemoteException {
 		if (ctx == null)
-			new NullPointerException("Assertion Failed: ctx cannot be null");
+			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,
@@ -266,16 +258,16 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				" This exertion is completed " + runtimeExertion.getName());
 
 		runtimeExertion.setStatus(Exec.DONE);
-        if (runtimeExertion instanceof ServiceExertion)
+        if (runtimeExertion != null)
             runtimeExertion.setContext(ctx);
 
 		fireRemoteEvent();
 		notifyParent();
 		persist();
-		mLandlord.remove(this);
+        mLandlord.remove(this);
 	}
 
-	public void failed(Context<?> ctx) throws MonitorException {
+	public void failed(Context<?> ctx) throws MonitorException, RemoteException {
 		if (ctx == null)
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
@@ -293,10 +285,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		fireRemoteEvent();
 		notifyParent();
 		persist();
-		mLandlord.remove(this);
+        mLandlord.remove(this);
 	}
 
-	private void notifyParent() {
+	private void notifyParent() throws RemoteException {
 		if (parentResource != null)
 			parentResource.stateChanged();
 		else {
@@ -304,11 +296,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			// check if we are done. If so then remove yourself from
 			// leasemanager
 			if (getState() != Exec.RUNNING)
-				mLandlord.remove(this);
+                mLandlord.remove(this);
 		}
 	}
 
-	private void stateChanged() {
+	private void stateChanged() throws RemoteException {
 		int oldState = getState();
 		// logger.log(Level.INFO,
 		System.out.println("stateChanged called oldState =" + getState()
@@ -349,32 +341,30 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	 */
 	private void resetState() {
 		int failedCount = 0, suspendedCount = 0, doneCount = 0;
-		for (int i = 0; i < size(); i++) {
-			if (get(i).isFailed())
+		for (int i = 0; i < children.size(); i++) {
+			if (children.get(i).isFailed())
 				failedCount++;
-			else if (get(i).isSuspended())
+			else if (children.get(i).isSuspended())
 				suspendedCount++;
-			else if (get(i).isDone())
+			else if (children.get(i).isDone())
 				doneCount++;
 			else
-				// logger.log(Level.INFO,
-				System.out
-						.println("State not accounted for while resetting state"
-								+ i
-								+ " state="
-								+ get(i).getState());
+				logger.info("State not accounted for while resetting state"
+                        + i
+                        + " state="
+                        + children.get(i).getState());
 
 		}
 		// logger.log(Level.SEVERE,
 		System.out.println("failed count=" + failedCount + " suspended count="
 				+ suspendedCount + " doneCount=" + doneCount);
 
-		if (doneCount == size())
+		if (doneCount == children.size())
 			runtimeExertion.setStatus(Exec.DONE);
 		else if (failedCount != 0
-				&& failedCount + doneCount + suspendedCount == size())
+				&& failedCount + doneCount + suspendedCount == children.size())
 			runtimeExertion.setStatus(Exec.FAILED);
-		else if (suspendedCount != 0 && doneCount + suspendedCount == size())
+		else if (suspendedCount != 0 && doneCount + suspendedCount == children.size())
 			runtimeExertion.setStatus(Exec.SUSPENDED);
 
 	}
@@ -383,9 +373,11 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		return runtimeExertion.getStatus();
 	}
 
+/*
 	public boolean isInitial() {
 		return (runtimeExertion.getStatus() == Exec.INITIAL);
 	}
+*/
 
 	public boolean isInSpace() {
 		return (runtimeExertion.getStatus() == Exec.INSPACE);
@@ -419,7 +411,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	 * @param cookie for which corresponding to a SessionResource contained
 	 *            in this session resource
 	 * 
-	 * @returns null if no such SessionResource exists
+	 * @return null if no such SessionResource exists
 	 * 
 	 */
 	public MonitorSession getSessionResource(Uuid cookie) {
@@ -428,8 +420,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			return this;
 		else {
 			MonitorSession resource;
-			for (int i = 0; i < size(); i++)
-				if ((resource = get(i)
+			for (int i = 0; i < children.size(); i++)
+				if ((resource = children.get(i)
 						.getSessionResource(cookie)) != null)
 					return resource;
 		}
@@ -547,4 +539,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 	}
 
+    public static <T> T cloneAnnotated(T o) {
+        try {
+            return (T) new MarshalledInstance(o).get(false);
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return null;
+    }
 }

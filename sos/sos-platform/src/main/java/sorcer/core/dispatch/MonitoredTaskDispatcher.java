@@ -20,9 +20,11 @@ package sorcer.core.dispatch;
 
 import java.util.Set;
 
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.provider.ServiceProvider;
+import sorcer.core.provider.exertmonitor.MonitorHelper;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
@@ -66,12 +68,12 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 					.doTask((Task) xrt, null);
 			result.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
-//			logger.finer("\n*** got result: ***\n" + result);
 
-			if (result.getStatus() <= FAILED) {
+            MonitoringSession session = MonitorHelper.getMonitoringSession(xrt.getContext());
+            if (result.getStatus() <= FAILED) {
 				xrt.setStatus(FAILED);
 				state = FAILED;
-				xrt.getMonitorSession().changed(result.getContext(),
+				session.changed(result.getDataContext(),
 						State.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
@@ -81,7 +83,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				notifyExertionExecution(xrt, result);
 				state = DONE;
 				xrt.setStatus(DONE);
-				xrt.getMonitorSession().changed(result.getContext(),
+				session.changed(result.getDataContext(),
 						State.DONE);
 			}
 		} catch (Exception e) {

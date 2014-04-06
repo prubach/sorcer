@@ -15,6 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+       * Copyright 2010 the original author or authors.
+ * Copyright 2010 SorcerSoft.org.
+ *  
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package sorcer.core.monitor;
 
 import net.jini.core.lease.Lease;
@@ -26,16 +43,14 @@ import sorcer.service.MonitorException;
 
 import java.rmi.RemoteException;
 
-
 /**
- * A server side session manager. Clients call on session manager to manage
- * individual sessions data.
- * 
- * The session is activated by the manager when init(monitorable, duration,
- * timeout) is called by broker. From this moment, the Manager will require that
- * the monitorable renew the leases for the specified duration. If the task is
- * not complete for the specified duration, the monitor will send stop signal to
- * the monitorable and notify the Broker via RemoteEventListener.notify().
+ * A proxy for controlling the session in the server. The session is activated
+ * in server by lazy mechanism. ie, The broker should call on this session
+ * init(monitorable, duration, timeout). From this moment, the Manager will
+ * require that the monitorable renew the leases for the specified duration. If
+ * the task is not complete for the specified duration, the monitor will send
+ * stop signal to the monitorable and notify the Broker via
+ * RemoteEventListener.notify().
  * 
  * For Space based programming, since we don't know who will execute the job,
  * broker calls init(space, timeout, duration). This means that the monitor is
@@ -50,8 +65,34 @@ import java.rmi.RemoteException;
  * 
  **/
 
-public interface MonitorSessionManagement extends MonitorManagement {
+public class MonitorableSession implements MonitoringSession {
+
+	static final long serialVersionUID = -4670202889409240713L;
 	
+	private final MonitoringManagement msm;
+	private Lease lease;
+	private final Uuid cookie;
+
+	/**
+	 * This proxy object is created by the server Once created, we cannot change
+	 * the msm and cookie
+	 **/
+	public MonitorableSession(MonitoringManagement msm, Uuid cookie) {
+		this.msm = msm;
+		this.cookie = cookie;
+	}
+
+	/**
+	 * This proxy object is created by the server Once created, we cannot change
+	 * the msm and cookie
+	 **/
+	public MonitorableSession(MonitoringManagement msm, Uuid cookie,
+			Lease lease) {
+		this.msm = msm;
+		this.cookie = cookie;
+		this.lease = lease;
+	}
+
 	/**
 	 * Makes this an active session. The jobber decides the lease duration and
 	 * the timeout after which the monitor will call on monitorables that the
@@ -75,8 +116,11 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * @see TransactionConstants
 	 */
 
-	public Lease init(Uuid cookie, Monitorable mntrbl, long duration,
-			long timeout) throws RemoteException, MonitorException;
+	public void init(Monitorable mntrbl, long duration, long timeout)
+			throws RemoteException, MonitorException {
+
+		lease = msm.init(cookie, mntrbl, duration, timeout);
+	}
 
 	/**
 	 * 
@@ -84,8 +128,8 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * idea who will pick up this exertion. In that case, it doesn't make sense
 	 * for the broker to force leasing. However, it may activate the the session
 	 * with the timeout marked and the lease duration specified so that if no
-	 * provider picks out and the task gets timed out, then we can clean up the
-	 * entry from space and notify the broker.
+	 * provider picks out and the task gets timed out, then the Monitor can
+	 * clean up the entry from space and notify the broker.
 	 * 
 	 * If the provider picks up before it timesout, then the provider must
 	 * initialize this session by calling init(Monitorable) so that the monitor
@@ -106,8 +150,13 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * 
 	 * */
 
-	public void init(Uuid cookie, long duration, long timeout)
-			throws RemoteException, MonitorException;
+/*
+	public void init(long duration, long timeout) throws RemoteException,
+			MonitorException {
+
+		msm.init(cookie, duration, timeout);
+	}
+*/
 
 	/**
 	 * 
@@ -116,8 +165,8 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * already set the lease duration and timeout.
 	 * 
 	 * The provider who picks up the entry must initialize this session by
-	 * calling init(Monitorable) so that the we will now know that the task with
-	 * the monitorable and also will make sure that the leases are renewed
+	 * calling init(Monitorable) so that the monitor will now know that the task
+	 * with the monitorable and also will make sure that the leases are renewed
 	 * properly for this session.
 	 * 
 	 * @param mntrbl
@@ -132,16 +181,21 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * 
 	 * */
 
-	public Lease init(Uuid cookie, Monitorable mntrbl) throws RemoteException,
-			MonitorException;
+/*
+	public void init(Monitorable mntrbl) throws RemoteException,
+			MonitorException {
+
+		lease = msm.init(cookie, mntrbl);
+	}
+*/
 
 	/**
-	 * Providers use this method to update the state of monitorable exertion.
+	 * Providers use this method to update the monitoring session
 	 * 
 	 * @param ctx
-	 *            The service dataContext of monitorable exertion.
-	 *            
-	 * @param aspect
+	 *            The service dataContext changed.
+	 * 
+	 *  * @param aspect
 	 *            The aspect of dataContext change.
 	 * 
 	 * @throws MonitorException
@@ -151,11 +205,28 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 * @throws RemoteException
 	 *             if there is a communication error
 	 **/
-	
-	public void update(Uuid cookie, Context ctx, Object aspect)
-			throws RemoteException, MonitorException;
-	
-	public int getState(Uuid cookie) throws RemoteException,
-			MonitorException;
 
+	public void changed(Context ctx, Object aspect) throws RemoteException,
+			MonitorException {
+		msm.update(cookie, ctx, aspect);
+
+	}
+
+	/**
+	 * Providers use this method to find the state of this session
+	 * 
+	 * @throws MonitorException
+	 *             1) If there is no such session
+	 * 
+	 * @throws RemoteException
+	 *             if there is a communication error
+	 **/
+
+	public int getState() throws RemoteException, MonitorException {
+		return msm.getState(cookie);
+	}
+
+	public Lease getLease() {
+		return lease;
+	}
 }

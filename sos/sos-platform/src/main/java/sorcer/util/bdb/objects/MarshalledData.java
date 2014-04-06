@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +18,7 @@ package sorcer.util.bdb.objects;
 
 import net.jini.id.Uuid;
 import net.jini.io.MarshalledInstance;
-import sorcer.core.provider.exertmonitor.MonitorSession;
+//import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.service.Identifiable;
 import sorcer.service.SecureIdentifiable;
 
@@ -85,6 +84,7 @@ public class MarshalledData implements Serializable, Identifiable {
     	return marshalledObject.get(false);
     }
 
+/*
 	public static ArrayList<MarshalledData> getMarshalledSessions(
 			ArrayList<MonitorSession> sessions) throws IOException {
 		ArrayList<MarshalledData> md = new ArrayList<MarshalledData>(
@@ -93,7 +93,8 @@ public class MarshalledData implements Serializable, Identifiable {
 			md.add(new MarshalledData(s));
 		return md;
 	}
-	
+*/
+
 	public Date getDateCreated() {
 		return dateCreated;
 	}

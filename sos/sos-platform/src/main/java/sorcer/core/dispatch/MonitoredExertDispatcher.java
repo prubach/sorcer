@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,35 +18,26 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.Set;
-
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
-import net.jini.core.transaction.TransactionException;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
-import sorcer.core.provider.Provider;
-import sorcer.core.SorcerConstants;
 import sorcer.core.exertion.NetJob;
-import sorcer.core.exertion.NetTask;
 import sorcer.core.monitor.MonitorEvent;
-import sorcer.core.monitor.MonitorSessionManagement;
-import sorcer.service.*;
-import sorcer.core.monitor.MonitoringManagement;
-import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
-import sorcer.core.signature.NetSignature;
 import sorcer.core.monitor.MonitoringSession;
+import sorcer.core.provider.Provider;
+import sorcer.core.provider.exertmonitor.MonitorHelper;
+import sorcer.service.*;
 
-public abstract class MonitoredExertDispatcher extends ExertDispatcher
-        implements SorcerConstants {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.Set;
 
-    public static MonitorSessionManagement sessionMonitor;
+public abstract class MonitoredExertDispatcher extends ExertDispatcher {
 
     public static LeaseRenewalManager lrm;
 
@@ -61,8 +53,6 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
                                     ProviderProvisionManager providerProvisionManager) throws Exception {
         super(exertion, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 
-        if (sessionMonitor == null)
-            sessionMonitor = Accessor.getService(MonitoringManagement.class);
         if (lrm == null)
             lrm = new LeaseRenewalManager();
 
@@ -71,10 +61,10 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
         // make the monitor session of this exertion active
         logger.debug("Dispatching task now: " + xrt.getName());
-        MonitoringSession session = xrt.getMonitorSession();
+        MonitoringSession session = MonitorHelper.getMonitoringSession(xrt.getControlContext());
         session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                 DEFAULT_TIMEOUT_PERIOD);
-        lrm.renewUntil(session.getLease(), Lease.ANY, null);
+        //lrm.renewUntil(session.getLease(), Lease.ANY, null);
 
         dThread = new DispatchThread();
         try {
@@ -89,10 +79,10 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     private Exertion register(Exertion exertion) throws Exception {
         RemoteEventListener l = (RemoteEventListener) (new ResultListener()
                 .export());
-        ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(l,
-                exertion, LEASE_RENEWAL_PERIOD));
+        ServiceExertion registeredExertion = (ServiceExertion) MonitorHelper.register(l,
+                exertion, LEASE_RENEWAL_PERIOD);
 
-        MonitoringSession session = registeredExertion.getMonitorSession();
+        MonitoringSession session = MonitorHelper.getMonitoringSession(registeredExertion.getControlContext());
         logger.info("Session for the exertion =" + session);
         logger.info("Lease to be renewed for duration ="
                 + (session.getLease().getExpiration() - System
@@ -138,6 +128,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         ExertionSessionInfo.removeLease();
         dThread.stop = true;
     }
+/*
     protected void execExertion(Exertion exertion) throws ExertionException,
             SignatureException, RemoteException {
         ServiceExertion ei = (ServiceExertion) exertion;
@@ -163,9 +154,11 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         }
 
     }
+*/
 
     // Made private so that other classes just calls execExertion and not
     // execTask
+/*
     private void execTask(NetTask task) throws ExertionException,
             SignatureException {
 
@@ -209,6 +202,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             throw new ExertionException("Remote Exception while executing task");
         }
     }
+*/
 
     protected void postExecExertion(Exertion ex, Exertion result)
             throws ExertionException, SignatureException {

@@ -21,17 +21,18 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.security.Principal;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
+import com.sun.jini.landlord.LeasedResource;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
+import net.jini.core.lease.LeaseDeniedException;
+import net.jini.core.lease.UnknownLeaseException;
 import net.jini.id.Uuid;
 import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.provider.exertmonitor.lease.IMonitorLandlord;
+import sorcer.core.provider.exertmonitor.lease.MonitorLeasedResource;
 import sorcer.service.*;
 import sorcer.core.UEID;
 import sorcer.core.provider.ServiceProvider;
@@ -46,7 +47,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sun.jini.start.LifeCycle;
 
 public class ExertMonitor extends ServiceProvider implements
-        MonitoringManagement {
+        MonitoringManagement, IMonitorLandlord {
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.MonitororImpl";
 
@@ -87,8 +88,8 @@ public class ExertMonitor extends ServiceProvider implements
 		resources = views.getSessionMap();
 
 		// statically initialize
-		MonitorSession.mLandlord = landlord;
-		MonitorSession.sessionManager = (MonitoringManagement) getServiceProxy();
+		//MonitorSession.mLandlord = landlord;
+		//MonitorSession.sessionManager = (MonitoringManagement) getServiceProxy();
 	}
 
 	public void stop(UEID ref, SorcerPrincipal principal)
@@ -122,7 +123,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 		MonitorSession resource;
 		try {
-			resource = new MonitorSession(ex, lstnr, duration);
+            resource = new MonitorSession(ex, lstnr, duration, (MonitoringManagement)getProxy(), landlord.getServiceProxy());
 		} catch (IOException ioe) {
 			throw new RemoteException(ioe.getMessage());
 		}
@@ -170,24 +171,21 @@ public class ExertMonitor extends ServiceProvider implements
 
 		return resource.init(mntrbl, duration, timeout);
 	}
-	
+
 	private MonitorSession findSessionResource(Uuid cookie)
 			throws MonitorException {
 
-		MonitorSession resource;
+		MonitorSession session;
 
 		// Check if landlord is keeping it in memory
-		Hashtable lresources = landlord.getResources();
+		Map<Uuid, MonitorLeasedResource> lresources = landlord.getResources();
 		if (lresources.get(cookie) != null)
 			return (MonitorSession) lresources.get(cookie);
 
-		Uuid key;
-		for (Enumeration e = lresources.keys(); e.hasMoreElements();) {
-			key = (Uuid) e.nextElement();
-			resource = ((MonitorSession) lresources.get(key))
-			.getSessionResource(cookie);
-			if (resource != null)
-				return resource;
+        for (MonitorLeasedResource resource : lresources.values()) {
+            session = ((MonitorSession) resource).getSessionResource(cookie);
+			if (session != null)
+				return session;
 		}
 
 		// if (landlord.getResource(cookie)!=null) return
@@ -200,12 +198,12 @@ public class ExertMonitor extends ServiceProvider implements
 			while (si.hasNext()) {
 				next = si.next();
 				try {
-					resource = getSession(next.getKey()).getSessionResource(cookie);
+					session = getSession(next.getKey()).getSessionResource(cookie);
 				} catch (Exception e) {
 					throw new MonitorException(e);
 				} 
-				if (resource != null)
-					return resource;
+				if (session != null)
+					return session;
 			}
 		}
 			return null;
@@ -239,6 +237,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 * 
 	 */
 
+/*
 	public void init(Uuid cookie, long duration, long timeout)
 			throws RemoteException, MonitorException {
 		// Get the SessionResource correspoding to this cookie
@@ -249,6 +248,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 		resource.init(duration, timeout);
 	}
+*/
 
 	/**
 	 * 
@@ -273,6 +273,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 * 
 	 */
 
+/*
 	public Lease init(Uuid cookie, Monitorable mntrbl) throws RemoteException,
 			MonitorException {
 		// Get the SessionResource correspoding to this cookie
@@ -283,6 +284,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 		return resource.init(mntrbl);
 	}
+*/
 
 	/**
 	 * Providers use this method to update their current status of the executed
@@ -517,4 +519,39 @@ public class ExertMonitor extends ServiceProvider implements
 					+ ":" + entry.getValue().getInitialExertion().getName());
 		}
 	}
+
+    @Override
+    public Map cancelAll(Uuid[] cookies) throws RemoteException {
+        return landlord.cancelAll(cookies);
+    }
+
+    @Override
+    public RenewResults renewAll(Uuid[] cookies, long[] durations) throws RemoteException {
+        return landlord.renewAll(cookies, durations);
+    }
+
+    @Override
+    public void cancel(Uuid cookie) throws UnknownLeaseException, RemoteException {
+        landlord.cancel(cookie);
+    }
+
+    @Override
+    public long renew(Uuid cookie, long duration) throws LeaseDeniedException, UnknownLeaseException, RemoteException {
+        return landlord.renew(cookie, duration);
+    }
+
+    @Override
+    public Lease newLease(MonitorLeasedResource resource) {
+        return landlord.newLease(resource);
+    }
+
+    @Override
+    public long getExpiration(long request) {
+        return landlord.getExpiration(request);
+    }
+
+    @Override
+    public void remove(LeasedResource lr) {
+        landlord.remove(lr);
+    }
 }

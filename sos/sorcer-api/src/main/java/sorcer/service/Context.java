@@ -611,11 +611,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	public Object[] getContextMapping(String path) throws ContextException;
 
 	/**
-	 * Records this context in related monitoring session.
-	 **/
-	public void checkpoint() throws ContextException;
-
-	/**
 	 * Annotates the path with the tuple (value sequence) specified by a
 	 * relation in the domain of attribute product related to the context data
 	 * nodes.The relation can be either a single search attribute (property) or
