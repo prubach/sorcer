@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@
 
 package sorcer.service;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +26,8 @@ import java.util.logging.Logger;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.NetTask;
-import sorcer.core.exertion.ObjectTask;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.signature.NetSignature;
-import sorcer.core.signature.ObjectSignature;
 
 /**
  * A <code>Task</code> is an elementary service-oriented message
@@ -100,28 +95,9 @@ public class Task extends ServiceExertion {
 		}
 	}
 
-	public static Task newTask(String name, Signature signature, Context context)
-			throws SecurityException, NoSuchMethodException,
-			IllegalArgumentException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
-		Class<? extends Task> taskClass = null;
-		if (signature.getClass() == ObjectSignature.class) {
-			taskClass = ObjectTask.class;
-		} else if (signature.getClass() == ObjectSignature.class) {
-			taskClass = ObjectTask.class;
-		} else if (signature.getClass() == NetSignature.class) {
-			taskClass = NetTask.class;
-		}
-		Constructor<? extends Task> constructor;
-		constructor = taskClass.getConstructor(String.class,
-				Signature.class, Context.class);
-		if (signature.getPrefix() != null)
-            ((ServiceContext)context).setPrefix(signature.getPrefix());
-        if (signature.getReturnPath() != null)
-            ((ServiceContext) context)
-                    .setReturnPath(signature.getReturnPath());
-
-		return constructor.newInstance(name, signature, context);
+    @Override
+    public Exertion doExert(Transaction tx) throws ExertionException, SignatureException, RemoteException {
+        return doTask(tx);
 	}
 
 	public Task doTask() throws ExertionException, SignatureException,

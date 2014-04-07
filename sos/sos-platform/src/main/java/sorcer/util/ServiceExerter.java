@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -124,7 +125,9 @@ public class ServiceExerter implements Exerter, Callable {
     public Exertion exert(Transaction txn, String providerName, Arg... entries)
             throws TransactionException, ExertionException, RemoteException {
         try {
-            return postProcessExertion(exert0(txn, providerName, entries));
+            Exertion result = exert0(txn, providerName, entries);
+            logger.finest("Postprocessing exertion " + result.getName());
+            return postProcessExertion(result);
         } catch (ContextException e) {
             throw new ExertionException(e);
         }

@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.deploy.Deployment;
+import sorcer.core.provider.IExertExecutor;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
-import sorcer.util.ServiceExerter;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;
@@ -136,6 +136,14 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	public ServiceExertion(String name) {
 		init(name);
 	}
+
+    protected Exertion doExert() throws ExertionException, SignatureException, RemoteException, TransactionException {
+        return doExert(null);
+    }
+
+    public Exertion doExert(Transaction tx) throws ExertionException, SignatureException, RemoteException, TransactionException {
+        throw new UnsupportedOperationException("doExert on ServiceExertion");
+    }
 
 	protected void init(String name) {
 		if (name == null || name.length() == 0)
@@ -266,10 +274,10 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ServiceExerter se = new ServiceExerter(this);
+        IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
 		Exertion result = null;
 		try {
-			result = se.exert(txn, null, entries);
+			result = exertExecutor.exert(this, txn, null, entries);
 		} catch (Exception e) {
 			logger.log(Level.WARNING,"Error while exerting", e);
 			if (result != null)
@@ -299,8 +307,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter se = new ServiceExerter(this);
-		return se.exert(entries);
+        return Accessor.getService(IExertExecutor.class).exert(this, entries);
 	}
 
 	public Exertion exert(Transaction txn, String providerName, Arg... entries)
@@ -311,8 +318,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter se = new ServiceExerter(this);
-		return se.exert(txn, providerName);
+        return Accessor.getService(IExertExecutor.class).exert(this, txn, providerName, entries);
 	}
 
 	private void setSubject(Principal principal) {

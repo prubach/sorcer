@@ -1,6 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +40,7 @@ import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.exertion.*;
+import sorcer.core.provider.IExertExecutor;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.Spacer;
@@ -967,10 +969,10 @@ public class operator {
 	public static <T extends Exertion> T exert(T input,
 			Transaction transaction, Arg... entries) throws ExertionException {
 		try {
-			ServiceExerter esh = new ServiceExerter(input);
+            IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
 			Exertion result = null;
 			try {
-				result = esh.exert(transaction, null, entries);
+				result = exertExecutor.exert(input, transaction, null, entries);
 			} catch (Exception e) {
 				e.printStackTrace();
 				if (result != null)

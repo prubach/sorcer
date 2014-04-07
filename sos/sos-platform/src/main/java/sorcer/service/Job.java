@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -288,6 +288,11 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	 */
 	public Exertion get(int index) {
 		return exertions.get(index);
+	}
+
+    @Override
+    public Exertion doExert(Transaction tx) throws ExertionException, SignatureException, RemoteException, TransactionException {
+        return doJob(tx);
 	}
 
 	public abstract Job doJob(Transaction txn) throws ExertionException,

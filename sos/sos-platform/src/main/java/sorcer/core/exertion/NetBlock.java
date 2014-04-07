@@ -1,6 +1,6 @@
 /*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 SorcerSoft.org.
+ * Copyright 2013, 2014 SorcerSoft.org.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,12 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.Concatenator;
+import sorcer.core.provider.IExertExecutor;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Block;
-import sorcer.service.Context;
-import sorcer.service.Evaluation;
-import sorcer.service.ExertionException;
-import sorcer.service.Invocation;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.service.SignatureException;
-import sorcer.util.ServiceExerter;
 
 public class NetBlock extends Block implements Evaluation<Object>, Invocation<Object> {
 
@@ -79,8 +73,8 @@ public class NetBlock extends Block implements Evaluation<Object>, Invocation<Ob
 
 	public Block doBlock(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ServiceExerter se = new ServiceExerter(this);
-		return (Block)se.exert(txn, null);
+        IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
+		return (Block) exertExecutor.exert(this, txn);
 	}
 
     public boolean isNet() {

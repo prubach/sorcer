@@ -1,6 +1,7 @@
 /*
  * Copyright 2013 the original author or authors.
  * Copyright 2013 SorcerSoft.org.
+ * Copyright 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +51,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	public Block(String name) {
 		super(name);
 	}
-	
+
 	public Block(String name, Signature signature) {
 		super(name);
 		try {
@@ -73,6 +74,11 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 			this.dataContext = (ServiceContext) context;
 	}
 	
+    @Override
+    public Exertion doExert(Transaction tx) throws ExertionException, SignatureException, RemoteException, TransactionException {
+        return doBlock(tx);
+    }
+
 	public abstract Block doBlock(Transaction txn) throws ExertionException,
 		SignatureException, RemoteException, TransactionException;
 	

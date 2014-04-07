@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +23,12 @@ import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.deploy.Deployment;
+import sorcer.core.provider.IExertExecutor;
+import sorcer.service.Accessor;
+import sorcer.service.Arg;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.tools.shell.RootLoader;
-import sorcer.util.ServiceExerter;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,25 +124,22 @@ public class ScriptThread extends Thread {
                 }
             }
             if (target instanceof Exertion) {
-                ServiceExerter esh = new ServiceExerter((Exertion) target);
-                try {
+                Arg[] entries = new Arg[0];
+                if (((Exertion) target).isProvisionable() && config != null) {
+                    try {
+                        String configFile = (String) config.getEntry(
+                                "sorcer.tools.shell.NetworkShell",
+                                "exertionDeploymentConfig", String.class,
+                                null);
+                        if (configFile != null)
+                            entries = new Arg[]{new Deployment(configFile)};
+                    } catch (ConfigurationException ignore) {
+                    }
+                }
 
-                    if (((Exertion) target).isProvisionable() && config!=null) {
-                        String configFile = null;
-                        try {
-                            configFile = (String) config.getEntry(
-                                            "sorcer.tools.shell.NetworkShell",
-                                            "exertionDeploymentConfig", String.class,
-                                            null);
-                            if (configFile != null)
-                                result = esh.exert(new Deployment(configFile));
-                            else
-                                result = esh.exert();
-                        } catch (ConfigurationException e) {
-                            result = esh.exert();
-                        }
-                    } else
-                        result = esh.exert();
+                try {
+                    IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
+                    result = exertExecutor.exert((Exertion) target, entries);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 } catch (TransactionException e) {

@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,18 +22,13 @@ import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.provider.IExertExecutor;
 import sorcer.core.provider.Jobber;
 import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
-import sorcer.service.Evaluation;
-import sorcer.service.ExertionException;
-import sorcer.service.Invocation;
-import sorcer.service.Job;
-import sorcer.service.ServiceExertion;
+import sorcer.service.*;
 import sorcer.service.Signature.Type;
-import sorcer.service.SignatureException;
-import sorcer.util.ServiceExerter;
 
 public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 
@@ -64,8 +60,7 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 	}
 
 	public static ServiceExertion getTemplate() {
-		NetJob temp = new NetJob();
-		return temp;
+        return new NetJob();
 	}
 
 	/* (non-Javadoc)
@@ -74,8 +69,8 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 	@Override
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ServiceExerter se = new ServiceExerter(this);
-		return (Job)se.exert(txn, null);
+        IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
+		return (Job) exertExecutor.exert(this, txn);
 	}
 
     public boolean isNet() {

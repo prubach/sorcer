@@ -1,6 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +24,9 @@ import java.util.Arrays;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
+import sorcer.core.provider.IExertExecutor;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.util.ServiceExerter;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.
@@ -114,10 +115,10 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		ServiceExerter se = new ServiceExerter(this);
-		try {
-			return (Task) se.exert();
-		} catch (TransactionException e) {
+        IExertExecutor exertExecutor = Accessor.getService(IExertExecutor.class);
+        try {
+            return (Task) exertExecutor.exert(this);
+        } catch (TransactionException e) {
 			throw new ExertionException(e);
 		}
 	}
