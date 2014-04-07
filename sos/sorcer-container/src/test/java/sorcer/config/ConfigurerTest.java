@@ -1,8 +1,6 @@
 package sorcer.config;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +20,7 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
 import org.junit.Test;
+import sorcer.core.service.Configurer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

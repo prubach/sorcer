@@ -1,8 +1,6 @@
-package sorcer.config;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+package sorcer.core.service;
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +19,10 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.provider.Provider;
+import sorcer.config.AbstractBeanListener;
+import sorcer.config.Component;
+import sorcer.config.ConfigEntry;
+import sorcer.config.Configurable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +35,6 @@ import java.rmi.RemoteException;
  * @author Rafał Krupiński
  */
 public class Configurer extends AbstractBeanListener {
-
     final private static Logger log = LoggerFactory.getLogger(Configurer.class);
 
     public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
