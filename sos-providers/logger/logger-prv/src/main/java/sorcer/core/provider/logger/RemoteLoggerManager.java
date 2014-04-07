@@ -21,6 +21,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.FileAppender;
 import org.apache.commons.io.FileUtils;
@@ -68,12 +69,12 @@ public class RemoteLoggerManager implements RemoteLogger {
         return list.toArray(new String[list.size()]);
     }
 
-    public synchronized void publish(LogRecord record) throws RemoteException {
-        Level level = getSlfLevel(record.getLevel());
-        String loggerName = "remote." + record.getLoggerName().intern();
-
-        Logger logger = loggerFactory.getLogger(loggerName);
-        synchronized (loggerName) {
+    public void publish(LoggingEventVO loggingEvent) throws RemoteException {
+        String loggerName;
+        Logger logger;
+        synchronized (this) {
+            loggerName = "remote." + loggingEvent.getLoggerName().intern();
+            logger = loggerFactory.getLogger(loggerName);
             Appender<ILoggingEvent> appender = logger.getAppender(loggerName);
             if (appender == null) {
                 logger.setAdditive(false);
@@ -81,10 +82,8 @@ public class RemoteLoggerManager implements RemoteLogger {
             }
         }
 
-        logger.log(null, record.getLoggerName(), level.toInt(), record.getMessage(), record.getParameters(), record.getThrown());
-
-        String name = record.getLoggerName();
-        LoggingConfig lc = new LoggingConfig(name, null);
+        logger.callAppenders(loggingEvent);
+        LoggingConfig lc = new LoggingConfig(loggerName, null);
         if (!knownLoggers.contains(lc)) {
             lc.setLevel(java.util.logging.Level.ALL);
             knownLoggers.add(lc);
@@ -106,21 +105,6 @@ public class RemoteLoggerManager implements RemoteLogger {
         appender = fileAppender;
         appender.start();
         return appender;
-    }
-
-    private Level getSlfLevel(java.util.logging.Level level) {
-        int i = level.intValue();
-        if (i == java.util.logging.Level.FINEST.intValue()) {
-            return Level.TRACE;
-        } else if (i == java.util.logging.Level.FINE.intValue()) {
-            return Level.DEBUG;
-        } else if (i == java.util.logging.Level.WARNING.intValue()) {
-            return Level.WARN;
-        } else if (i == java.util.logging.Level.SEVERE.intValue()) {
-            return Level.ERROR;
-        } else {
-            return Level.INFO;
-        }
     }
 
     public List<String> getLog(String fileName) throws RemoteException {

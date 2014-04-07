@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,16 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.logging.LogRecord;
+
+import ch.qos.logback.classic.spi.LoggingEventVO;
 
 public interface RemoteLogger extends Remote {
 
-    public void publish(LogRecord record) throws RemoteException;
+    String LOGGER_CONTEXT_KEY = "SORCER-REMOTE-CALL";
 
-    public List<LoggingConfig> getLoggers() throws IOException,
-            RemoteException;
+    public void publish(LoggingEventVO record) throws RemoteException;
+
+    public List<LoggingConfig> getLoggers() throws IOException;
 
     public String[] getLogNames() throws RemoteException;
 

@@ -17,29 +17,26 @@
 package sorcer.platform.logger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEventVO;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.FilterReply;
+import org.slf4j.MDC;
 import sorcer.core.RemoteLogger;
-import sorcer.service.Accessor;
-
-import java.rmi.RemoteException;
 
 /**
- * publish log to remote logger service.
+ * Filter logging events based on existence of a {@link org.slf4j.MDC} key.
  *
  * @author Rafał Krupiński
  */
-public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
-    @Override
-    protected void append(ILoggingEvent eventObject) {
-        try {
-            RemoteLogger service = Accessor.getService(RemoteLogger.class);
-            if (service == null)
-                return;
+class MDCFilter extends Filter<ILoggingEvent> {
+    public final static MDCFilter instance = new MDCFilter(RemoteLogger.LOGGER_CONTEXT_KEY);
+    private String loggerContextKey;
 
-            service.publish(LoggingEventVO.build(eventObject));
-        } catch (RemoteException e) {
-            addError("Error while calling remote logger", e);
-        }
+    public MDCFilter(String loggerContextKey) {
+        this.loggerContextKey = loggerContextKey;
+    }
+
+    @Override
+    public FilterReply decide(ILoggingEvent event) {
+        return (MDC.get(loggerContextKey) == null) ? FilterReply.ACCEPT : FilterReply.DENY;
     }
 }
