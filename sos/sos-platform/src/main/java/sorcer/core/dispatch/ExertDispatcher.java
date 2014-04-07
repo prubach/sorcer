@@ -256,7 +256,7 @@ abstract public class ExertDispatcher implements Dispatcher,
 
     protected void collectOutputs(Exertion ex) throws ContextException {
         if (sharedContexts==null) {
-            logger.warning("Trying to update sharedContexts but it is null for exertion: " + ex);
+            logger.warn("Trying to update sharedContexts but it is null for exertion: " + ex);
             return;
         }
         List<Context> contexts = Jobs.getTaskContexts(ex);
