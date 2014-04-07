@@ -37,6 +37,6 @@ class MDCFilter extends Filter<ILoggingEvent> {
 
     @Override
     public FilterReply decide(ILoggingEvent event) {
-        return (MDC.get(loggerContextKey) == null) ? FilterReply.ACCEPT : FilterReply.DENY;
+        return (MDC.get(loggerContextKey) != null) ? FilterReply.ACCEPT : FilterReply.DENY;
     }
 }
