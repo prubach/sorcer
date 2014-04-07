@@ -94,11 +94,26 @@ public class PlatformLoader {
         ClassLoader original = current.getContextClassLoader();
         current.setContextClassLoader(platformClassLoader);
         try {
-            platformInjector = loadPlatformServices(servicePlatformRoot);
+            List<ServiceActivator> activators = loadPlatformServices(servicePlatformRoot);
+            modules.add(new PlatformModule());
+
+            platformInjector = injector.createChildInjector(modules);
             InjectionHelper.setInstance(new PlatformInjector(platformInjector));
+
+            activate(activators);
+
         } finally {
             current.setContextClassLoader(original);
         }
+    }
+
+    private void activate(List<ServiceActivator> activators) {
+        for (ServiceActivator activator : activators)
+            try {
+                activator.activate();
+            } catch (Exception e) {
+                logger.warn("Error during platform service activation", e);
+            }
     }
 
     private static class PlatformInjector implements InjectionHelper.Injector {
@@ -119,7 +134,7 @@ public class PlatformLoader {
         }
     }
 
-    private Injector loadPlatformServices(File dir) {
+    private List<ServiceActivator> loadPlatformServices(File dir) {
         if (dir == null)
             throw new IllegalArgumentException("directory is null");
         if (!dir.exists())
@@ -165,16 +180,7 @@ public class PlatformLoader {
                 throw new IllegalStateException("Could not load platform: The " + file + " file is in error.", t);
             }
         }
-
-        Injector platform = injector.createChildInjector(modules);
-
-        for (ServiceActivator activator : activators)
-            try {
-                activator.activate();
-            } catch (Exception e) {
-                logger.warn("Error during platform service activation", e);
-            }
-        return platform;
+        return activators;
     }
 
     protected void loadPlatform(File platformDir, CommonClassLoader commonCL) {
