@@ -47,6 +47,10 @@ import java.util.*;
  * @author Rafał Krupiński
  */
 public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
+    /*
+    * Injection works after the constructor is called, but before calling create
+    */
+
 
     private Set<URL> codebase;
 
@@ -79,7 +83,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
     protected AbstractServiceDescriptor() {
     }
 
-    protected AbstractServiceDescriptor(Set<URL>codebase, Set<URI>casspath,String className, List<String> configArgs, String policyFile){
+    protected AbstractServiceDescriptor(Set<URL> codebase, Set<URI> casspath, String className, List<String> configArgs, String policyFile) {
         this.codebase = codebase;
         this.classpath = casspath;
         this.implClassName = className;
@@ -198,7 +202,9 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         if (lc == null)
             lc = defaultLifeCycle;
         List<String> serviceConfigArgs = getServiceConfigArgs();
-        return new ServiceModule(lc, serviceConfigArgs.toArray(new String[serviceConfigArgs.size()]));
+
+        String[] args = serviceConfigArgs == null ? new String[0] : serviceConfigArgs.toArray(new String[serviceConfigArgs.size()]);
+        return new ServiceModule(lc, args);
     }
 
     private static class ServiceModule extends AbstractModule {
@@ -217,7 +223,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    protected void setImplClassName(String className){
+    protected void setImplClassName(String className) {
         this.implClassName = className;
     }
 
@@ -225,7 +231,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         return implClassName;
     }
 
-    protected List<String> getServiceConfigArgs(){
+    protected List<String> getServiceConfigArgs() {
         return configArgs;
     }
 
@@ -233,7 +239,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         this.configArgs = configFile;
     }
 
-    protected String getPolicyFile(){
+    protected String getPolicyFile() {
         return policyFile;
     }
 
@@ -241,7 +247,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         this.policyFile = policyFile;
     }
 
-    public Set<URL> getCodebase(){
+    public Set<URL> getCodebase() {
         return codebase;
     }
 
@@ -249,7 +255,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         this.codebase = codebase;
     }
 
-    protected Set<URI> getClasspath(){
+    protected Set<URI> getClasspath() {
         return classpath;
     }
 
@@ -318,24 +324,25 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
             return false;
         }
     };
+
     public String toString() {
         List<String> _configArgs = getServiceConfigArgs();
         return "SorcerServiceDescriptor{"
-				+ "codebase='"
-				+ getCodebase()
-				+ '\''
-				+ ", policy='"
-				+ getPolicyFile()
-				+ '\''
-				+ ", classpath='"
-				+ getClasspath()
-				+ '\''
-				+ ", implClassName='"
-				+ getImplClassName()
-				+ '\''
-				+ ", serverConfigArgs="
-				+ (_configArgs == null ? null : _configArgs)
+                + "codebase='"
+                + getCodebase()
+                + '\''
+                + ", policy='"
+                + getPolicyFile()
+                + '\''
+                + ", classpath='"
+                + getClasspath()
+                + '\''
+                + ", implClassName='"
+                + getImplClassName()
+                + '\''
+                + ", serverConfigArgs="
+                + (_configArgs == null ? null : _configArgs)
                 + ", lifeCycle=" + getLifeCycle()
-				+ '}';
-	}
+                + '}';
+    }
 }

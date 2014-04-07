@@ -43,12 +43,16 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
     protected ResolvingServiceDescriptor() {
     }
 
-    public ResolvingServiceDescriptor(String codebase, String policyFile, String classpath, String implClassName, String configFile) {
+    public ResolvingServiceDescriptor(String codebase, File policyFile, String classpath, String implClassName, String configFile) {
+        this(codebase, policyFile, classpath, implClassName);
+        setServiceConfigArgs(Arrays.asList(configFile));
+    }
+
+    public ResolvingServiceDescriptor(String codebase, File policyFile, String classpath, String implClassName) {
         setCodebase(codebase(asArtifacts(codebase)));
         this.classpath = asArtifacts(classpath);
         setImplClassName(implClassName);
-        setServiceConfigArgs(Arrays.asList(configFile));
-        setPolicyFile(policyFile);
+        setPolicyFile(policyFile.getPath());
     }
 
     protected static Set<Artifact> asArtifacts(String artifact) {
