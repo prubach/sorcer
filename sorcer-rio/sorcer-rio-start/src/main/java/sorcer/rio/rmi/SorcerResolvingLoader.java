@@ -121,36 +121,40 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     }
 
     private String resolveCodebase(final String codebase) {
-        if (codebase != null && codebase.startsWith("artifact:")) {
+            if (codebase==null) return null;
             String[] artifacts = codebase.split(CODEBASE_SEPARATOR);
             Set<String> jarsSet = new HashSet<String>();
             for (String artf : artifacts) {
-                Set<String> adaptedCodebase;
-                synchronized (artf.intern()) {
-                    adaptedCodebase = artifactToCodebase.get(artf);
-                    if (adaptedCodebase == null)
-                        try {
-                            adaptedCodebase = new HashSet<String>();
-                            for (String path : doResolve(artf)) {
-                                // ignore pom files
-                                if(path.endsWith(".pom"))
-                                    continue;
-                                adaptedCodebase.add(new File(path).toURI().toURL().toExternalForm());
-                            }
-                            artifactToCodebase.put(artf, adaptedCodebase);
-                            logger.debug("Resolved {} to {}", artf, adaptedCodebase);
-                    } catch (ResolverException e) {
-                        logger.warn("Unable to resolve {}", artf, e);
-                    } catch (MalformedURLException e) {
-                        logger.warn("The codebase {} is malformed", artf, e);
+                if (artf != null && artf.startsWith("artifact:")) {
+                    Set<String> adaptedCodebase;
+                    synchronized (artf.intern()) {
+                        adaptedCodebase = artifactToCodebase.get(artf);
+                        if (adaptedCodebase == null)
+                            try {
+                                adaptedCodebase = new HashSet<String>();
+                                for (String path : doResolve(artf)) {
+                                    // ignore pom files
+                                    if(path.endsWith(".pom"))
+                                        continue;
+                                    adaptedCodebase.add(new File(path).toURI().toURL().toExternalForm());
+                                }
+                                artifactToCodebase.put(artf, adaptedCodebase);
+                                logger.debug("Resolved {} to {}", artf, adaptedCodebase);
+                        } catch (ResolverException e) {
+                            logger.warn("Unable to resolve {}", artf, e);
+                        } catch (MalformedURLException e) {
+                            logger.warn("The codebase {} is malformed", artf, e);
+                        }
                     }
-                }
-                jarsSet.addAll(adaptedCodebase);
+                    jarsSet.addAll(adaptedCodebase);
+                } else if (artf != null && artf.startsWith("mvn")) {
+                    logger.info("This should never occur codebase should not be published as mvn:// url: " + artf);
+                    jarsSet.add(artf);
+                } else
+                    jarsSet.add(artf);
+
             }
             return StringUtils.join(jarsSet, CODEBASE_SEPARATOR);
-        } else {
-            return codebase;
-        }
     }
 
     private String[] doResolve(String artifact) throws ResolverException {
