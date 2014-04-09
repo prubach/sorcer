@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S. A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,126 +18,111 @@
 
 package sorcer.test.context;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Example how use the ContextLink class
- * 
+ *
  * @author Michael Alger
+ * @author Rafał Krupiński - update to junit
  */
 public class ContextLinkTester {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		ContextLinkTester.test1();
-		ContextLinkTester.test2();
-		ContextLinkTester.test3();
-		ContextLinkTester.test4();
-	}
 
 	/**
 	 * Example how to staticly attached a external data node (from another
 	 * context) to the main context by explicitly creating ContextLink
 	 */
-	public static void test1() {
+    @Test
+    @Ignore("didn't work before migrating to junit")
+    public void test1() throws ContextException {
 		Context mainContext = new ServiceContext("main");
 		Context leafContext = new ServiceContext("leaf");
-		ContextLink contextLink = null;
+        String originalPath = "leaf/message/test";
+        String linkedPath = "in/context/1";
 
-		try {
-			// insert a test node
-			leafContext.putValue("leaf/message/test",
-					"Hello from the leafContext! (test1)");
+        // insert a test node
+        leafContext.putValue(originalPath,
+                "Hello from the leafContext! (test1)");
 
-			// insert the context, and the offset.
-			// offset is the path of the data node in the leaf context which
-			// you wish to attach to the main context
-			contextLink = new ContextLink(leafContext, "leaf/message/test");
+        // insert the context, and the offset.
+        // offset is the path of the data node in the leaf context which
+        // you wish to attach to the main context
+        ContextLink contextLink = new ContextLink(leafContext, originalPath);
 
-			// insert the contextLink to the main context on a designated path
-			mainContext.putValue("in/context/1", contextLink);
+        // insert the contextLink to the main context on a designated path
+        mainContext.putValue(linkedPath, contextLink);
 
-			// retreive the data node in the leaf context automatically
-			// using the offset (path) assigned
-			System.out.println("Link Context node: "
-					+ mainContext.getValue("in/context/1"));
-
-		} catch (ContextException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        // retreive the data node in the leaf context automatically
+        // using the offset (path) assigned
+        assertEquals(leafContext.getValue(originalPath), mainContext.getValue(linkedPath));
 	}// test1
 
 	/**
 	 * Example how to staticly attached a external data node (from another
 	 * context) to the main context by using the putLink() method
 	 */
-	public static void test2() {
+    @Test
+    @Ignore("didn't work before migrating to junit")
+    public void test2() throws ContextException {
 		Context mainContext = new ServiceContext("main");
 		Context leafContext = new ServiceContext("leaf");
 
-		try {
-			// insert a test node
-			leafContext.putValue("leaf/message/test",
-					"Hello from the leafContext! (test2)");
+        // insert a test node
+        String originPath = "leaf/message/test";
+        leafContext.putValue(originPath,
+                "Hello from the leafContext! (test2)");
 
-			mainContext.putLink("in/context/2", leafContext,
-					"leaf/message/test");
+        String linkPath = "in/context/2";
+        mainContext.putLink(linkPath, leafContext,
+                originPath);
 
-			System.out.println("Link Context node: "
-					+ mainContext.getValue("in/context/2"));
-
-		} catch (ContextException e) {
-			e.printStackTrace();
-		}
-	}
+        assertEquals(leafContext.getValue(originPath), mainContext.getValue(linkPath));
+    }
 
 	/**
 	 * Example how to use the ContextList in a dynamic fashion
 	 */
-	public static void test3() {
+    @Test
+    public void test3() throws ContextException {
 		Context mainContext = new ServiceContext("main");
 		Context leafContext = new ServiceContext("leaf");
-		ContextLink contextLink = null;
+        ContextLink contextLink;
 
-		try {
-			// insert a test node
-			leafContext.putValue("attachedNode/message/test",
-					"Hello! from the leafContext! (test3)");
-			leafContext.putValue("attachedNode/message/test1",
-					"Hi! from the leafContext! (test3)");
+        // insert a test node
+        leafContext.putValue("attachedNode/message/test",
+                "Hello! from the leafContext! (test3)");
+        String inputValue1 = "Hi! from the leafContext! (test3)";
+        leafContext.putValue("attachedNode/message/test1",
+                inputValue1);
 
-			// insert the context, and the offset.
-			// offset is the path of the data node in the leaf context which
-			// you wish to attach to the main context
-			contextLink = new ContextLink(leafContext, "attachedNode");
+        // insert the context, and the offset.
+        // offset is the path of the data node in the leaf context which
+        // you wish to attach to the main context
+        contextLink = new ContextLink(leafContext, "attachedNode");
 
-			// insert the contextLink to the main context on a designated path
-			mainContext.putValue("in/context/1", contextLink);
+        // insert the contextLink to the main context on a designated path
+        mainContext.putValue("in/context/1", contextLink);
 
-			// retreive the data node in the leaf context automatically
-			// using the offset (path) assigned
-			System.out
-					.println("Link Context node: "
-							+ mainContext
-									.getValue("in/context/1/attachedNode/message/test1"));
-			
-			mainContext.putValue("in/context/1/attachedNode/message/test2", "new node(test3)");
-			
-			System.out
-			.println("Link Context node: "
-					+ leafContext
-							.getValue("attachedNode/message/test2"));
+        // retreive the data node in the leaf context automatically
+        // using the offset (path) assigned
+        System.out
+                .println("Link Context node: "
+                        + mainContext
+                        .getValue("in/context/1/attachedNode/message/test1"));
 
-		} catch (ContextException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        assertEquals(inputValue1, mainContext.getValue("in/context/1/attachedNode/message/test1"));
+
+        String inputValue2 = "new node(test3)";
+        mainContext.putValue("in/context/1/attachedNode/message/test2", inputValue2);
+
+        assertEquals(inputValue2, leafContext.getValue("attachedNode/message/test2"));
 
 	}
 
@@ -144,23 +130,18 @@ public class ContextLinkTester {
 	 * Another example how to use the ContextList in a dynamic fashion using
 	 * putLink() method
 	 */
-	public static void test4() {
-		Context mainContext = new ServiceContext("main");
-		Context leafContext = new ServiceContext("leaf");
+    @Test
+    public void test4() throws ContextException {
+        Context mainContext = new ServiceContext("main");
+        Context leafContext = new ServiceContext("leaf");
 
-		try {
-			// insert a test node
-			leafContext.putValue("leafContext/message/test",
-					"Hello from the leafContext! (test4)");
+        // insert a test node
+        String inputValue = "Hello from the leafContext! (test4)";
+        leafContext.putValue("leafContext/message/test",
+                inputValue);
 
-			mainContext.putLink("in/context/2", leafContext, "leafContext");
+        mainContext.putLink("in/context/2", leafContext, "leafContext");
 
-			System.out.println("Link Context node: "
-					+ mainContext
-							.getValue("in/context/2/leafContext/message/test"));
-
-		} catch (ContextException e) {
-			e.printStackTrace();
-		}
+        assertEquals(inputValue, mainContext.getValue("in/context/2/leafContext/message/test"));
 	}
 }
