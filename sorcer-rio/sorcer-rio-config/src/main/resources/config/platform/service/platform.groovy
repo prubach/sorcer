@@ -42,11 +42,11 @@ ServiceDescriptor[] getPlatformServices() {
                     "org.sorcersoft.sorcer:exertlet-platform:" + SORCER_VERSION,
                     "sorcer.ui.exertlet.ExertletUiModule"
             ),
-            new ResolvingServiceDescriptor(
+/*            new ResolvingServiceDescriptor(
                     "org.sorcersoft.sorcer:logger-api:" + SORCER_VERSION,
                     policy,
                     "org.sorcersoft.sorcer:logger-platform:" + SORCER_VERSION,
                     "sorcer.platform.logger.RemoteLoggerClient"
-            )
+            )*/
     ]
 }
