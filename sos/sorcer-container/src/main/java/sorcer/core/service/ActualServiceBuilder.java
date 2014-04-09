@@ -6,7 +6,6 @@ import com.google.inject.matcher.Matchers;
 import net.jini.core.entry.Entry;
 import org.aopalliance.intercept.MethodInterceptor;
 import sorcer.config.BeanListener;
-import sorcer.config.ServiceBeanListener;
 import sorcer.core.provider.Provider;
 
 import javax.annotation.PostConstruct;

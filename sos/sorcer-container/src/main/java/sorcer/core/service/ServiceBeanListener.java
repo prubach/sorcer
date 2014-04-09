@@ -1,4 +1,4 @@
-package sorcer.config;
+package sorcer.core.service;
 /*
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
@@ -16,9 +16,9 @@ package sorcer.config;
  */
 
 import net.jini.config.ConfigurationException;
+import sorcer.config.BeanListener;
+import sorcer.config.ServiceBeanDestroyer;
 import sorcer.core.provider.Provider;
-import sorcer.core.service.Configurer;
-import sorcer.core.service.IServiceBeanListener;
 
 import javax.inject.Inject;
 import java.util.LinkedList;
@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * @author Rafał Krupiński
  */
-public class ServiceBeanListener implements IServiceBeanListener{
+public class ServiceBeanListener implements IServiceBeanListener {
     private List<BeanListener> activators;
     private List<BeanListener> destroyers;
 
