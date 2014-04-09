@@ -18,6 +18,7 @@ package sorcer.boot.platform;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import sorcer.container.sdi.DiscoveryManagerRegistry;
 import com.google.inject.multibindings.Multibinder;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.lease.LeaseRenewalManager;
@@ -53,6 +54,7 @@ public class PlatformModule extends AbstractModule {
         listenerBinder.addBinding().to(Configurer.class);
 
         bind(IServiceBeanListener.class).to(ServiceBeanListener.class).in(Scopes.SINGLETON);
+        bind(DiscoveryManagerRegistry.class).in(Scopes.SINGLETON);
         bind(LeaseRenewalManager.class).in(Scopes.SINGLETON);
         bind(BeanListenerModule.class).in(Scopes.SINGLETON);
 
