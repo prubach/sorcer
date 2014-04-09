@@ -17,7 +17,10 @@ package sorcer.config;
 
 import net.jini.config.ConfigurationException;
 import sorcer.core.provider.Provider;
+import sorcer.core.service.Configurer;
+import sorcer.core.service.IServiceBeanListener;
 
+import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -25,10 +28,11 @@ import java.util.Set;
 /**
  * @author Rafał Krupiński
  */
-public class ServiceBeanListener {
+public class ServiceBeanListener implements IServiceBeanListener{
     private List<BeanListener> activators;
     private List<BeanListener> destroyers;
 
+    @Inject
     public ServiceBeanListener(Set<BeanListener> platformListeners) {
         activators = new LinkedList<BeanListener>();
         activators.add(new Configurer());

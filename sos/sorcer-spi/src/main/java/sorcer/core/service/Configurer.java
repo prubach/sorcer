@@ -23,6 +23,7 @@ import sorcer.config.AbstractBeanListener;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.config.Configurable;
+import sorcer.core.provider.Provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

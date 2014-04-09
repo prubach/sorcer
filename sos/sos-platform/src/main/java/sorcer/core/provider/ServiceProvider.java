@@ -36,10 +36,10 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
 
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
-import com.google.inject.Inject;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -66,8 +66,6 @@ import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.config.BeanListener;
-import sorcer.config.ServiceBeanListener;
 import sorcer.core.*;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -75,6 +73,7 @@ import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
+import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
@@ -197,15 +196,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-    @Inject(optional = true)
-    private Set<BeanListener> beanListeners = Collections.emptySet();
-
-    private ServiceBeanListener beanListener;
+    @Inject
+    private IServiceBeanListener beanListener;
 
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
-        beanListener = new ServiceBeanListener(beanListeners);
 		delegate = new ProviderDelegate(beanListener);
 		delegate.provider = this;
 	}

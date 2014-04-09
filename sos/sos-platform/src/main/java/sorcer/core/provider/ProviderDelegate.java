@@ -68,7 +68,6 @@ import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.config.ServiceBeanListener;
 import sorcer.core.*;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
@@ -81,6 +80,7 @@ import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
+import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
@@ -289,7 +289,7 @@ public class ProviderDelegate {
 
 	private ContextManagement contextManager;
 
-    private ServiceBeanListener beanListener;
+    private IServiceBeanListener beanListener;
 
 	/*
 	 * A nested class to hold the state information of the executing thread for
@@ -340,7 +340,7 @@ public class ProviderDelegate {
 		}
 	}
 
-	public ProviderDelegate(ServiceBeanListener beanListener) {
+	public ProviderDelegate(IServiceBeanListener beanListener) {
         this.beanListener = beanListener;
 	}
 
