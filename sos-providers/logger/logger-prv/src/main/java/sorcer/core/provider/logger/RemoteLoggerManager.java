@@ -15,10 +15,8 @@
  */
 package sorcer.core.provider.logger;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
@@ -27,16 +25,16 @@ import ch.qos.logback.core.FileAppender;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 import sorcer.core.RemoteLogger;
 import sorcer.core.SorcerEnv;
 
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.LogRecord;
 
 public class RemoteLoggerManager implements RemoteLogger {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(RemoteLoggerManager.class);
@@ -95,14 +93,14 @@ public class RemoteLoggerManager implements RemoteLogger {
         FileAppender<ILoggingEvent> fileAppender = new FileAppender<ILoggingEvent>();
         fileAppender.setName(loggerName);
         File file = new File(logDir, "remote-logger-" + loggerName + ".log");
-        fileAppender.setFile(file.getName());
+        fileAppender.setFile(file.getPath());
         fileAppender.setContext(loggerFactory);
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-        PatternLayout layout = new PatternLayout();
-        layout.setPattern("%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx");
-        encoder.setLayout(layout);
+        encoder.setContext(loggerFactory);
+        encoder.setPattern("%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx");
         fileAppender.setEncoder(encoder);
         appender = fileAppender;
+        encoder.start();
         appender.start();
         return appender;
     }
@@ -111,8 +109,9 @@ public class RemoteLoggerManager implements RemoteLogger {
         try {
             return FileUtils.readLines(new File(logDir, fileName));
         } catch (IOException e) {
-            log.warn("Error reading file {}", fileName, e);
-            return Collections.emptyList();
+            String msg = MessageFormatter.format("Error reading file {}", fileName).getMessage();
+            log.warn(msg, e);
+            return Arrays.asList(msg);
         }
     }
 

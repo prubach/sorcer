@@ -48,6 +48,7 @@ public class RemoteLoggerClient {
             throw new IllegalStateException("Appender " + appenderName + " already configured");
 
         RemoteLoggerAppender remoteAppender = new RemoteLoggerAppender();
+        remoteAppender.setContext(loggerContext);
         remoteAppender.addFilter(MDCFilter.instance);
         remoteAppender.start();
         root.addAppender(remoteAppender);

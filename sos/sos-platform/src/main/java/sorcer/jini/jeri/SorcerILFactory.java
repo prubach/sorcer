@@ -219,7 +219,7 @@ public class SorcerILFactory extends BasicILFactory {
 				Collection context) throws Throwable {
             String key = "SORCER-REMOTE-CALL";
             try{
-                MDC.put(key,key);
+                MDC.put(key, key);
                 return doInvoke(impl, method, args, context);
             }finally {
                 MDC.remove(key);

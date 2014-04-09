@@ -19,8 +19,8 @@ package sorcer.platform.logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import sorcer.client.ClientProxyFactory;
 import sorcer.core.RemoteLogger;
-import sorcer.service.Accessor;
 
 import java.rmi.RemoteException;
 
@@ -30,12 +30,17 @@ import java.rmi.RemoteException;
  * @author Rafał Krupiński
  */
 public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+    private ClientProxyFactory<RemoteLogger> remoteLogger = new ClientProxyFactory<RemoteLogger>(RemoteLogger.class);
+
     @Override
     protected void append(ILoggingEvent eventObject) {
         try {
-            RemoteLogger service = Accessor.getService(RemoteLogger.class);
-            if (service == null)
+            RemoteLogger service = remoteLogger.get();
+
+            if (service == null) {
+                addWarn("No RemoteLogger service found");
                 return;
+            }
 
             service.publish(LoggingEventVO.build(eventObject));
         } catch (RemoteException e) {
