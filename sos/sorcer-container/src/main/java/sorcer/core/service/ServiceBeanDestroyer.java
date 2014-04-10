@@ -1,8 +1,6 @@
 package sorcer.core.service;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +30,13 @@ public class ServiceBeanDestroyer extends AbstractBeanListener {
 
     /**
      * Destroy beans if they implements any known destroyable interface
+     *
+     * @param o bean to destroy
      */
     @Override
-    public void destroy(IServiceBuilder serviceBuilder, Object o) {
+    public void destroy(IServiceBuilder ierviceBuilder, Object o) {
+        if (o == null) return;
+
         try {
             if (o instanceof com.sun.jini.admin.DestroyAdmin)
                 ((com.sun.jini.admin.DestroyAdmin) o).destroy();

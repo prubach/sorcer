@@ -199,6 +199,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     private IServiceBeanListener beanListener;
     private ProviderServiceBuilder serviceBuilder;
 
+    // service processor specific configurations
+    public final Map<Object, Object> configurations = new HashMap<Object, Object>();
+
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
@@ -614,7 +617,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			logger.info("Provider service started: {} {}", getProviderName(), this);
 
 			// allow for enough time to export the provider's proxy and stay alive
-			new Thread(ProviderDelegate.threadGroup, new KeepAwake()).start();
+			//new Thread(ProviderDelegate.threadGroup, new KeepAwake()).start();
 		} catch (Throwable e) {
 			initFailed(e);
 		}
@@ -746,6 +749,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 			joinManager = new JoinManager(proxy, serviceAttributes, sid,
 					ldmgr, null);
+
+            if (beanListener != null)
+                beanListener.preProcess(serviceBuilder);
+
 			done = true;
 		} catch (Throwable e) {
 			logger.warn("Error initializing service: ", e);
@@ -1819,29 +1826,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return System.getProperties();
 	}
 
-	public class KeepAwake implements Runnable {
-
-		public void run() {
-			try {
-				delegate.initSpaceSupport();
-			} catch (Exception x) {
-				logger.warn("Error while initializing space", x);
-			}
-			try {
-				while (running) {
-					Thread.sleep(ProviderDelegate.KEEP_ALIVE_TIME);
-				}
-			} catch (Exception doNothing) {
-			}
-		}
-	}
-	
-	public void initSpaceSupport() throws RemoteException,
-			ConfigurationException {
-		delegate.spaceEnabled(true);
-		delegate.initSpaceSupport();
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
