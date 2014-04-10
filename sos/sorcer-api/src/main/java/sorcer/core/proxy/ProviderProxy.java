@@ -254,9 +254,8 @@ public class ProviderProxy implements Serializable {
 			} catch (Throwable e) {
 				// this block is for debugging, can be deleted
 				// do not report broken network connection on destruction
-				if ((selector.equals("destroyNode") || selector.equals("destroy"))) {
-					logger.log(Level.INFO, "proxy method: " + m + " for args: "+ Arrays.toString(args), e);
-				} else {
+                logger.log(Level.WARNING, "proxy method: " + m + " for args: "+ Arrays.toString(args), e);
+                if (!(selector.equals("destroyNode") || selector.equals("destroy"))) {
 					throw e;
 				}
 			}
