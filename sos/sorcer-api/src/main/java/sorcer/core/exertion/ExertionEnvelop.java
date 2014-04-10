@@ -1,7 +1,8 @@
 /*
+ * Copyright 2014 Sorcersoft.com S.A.
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,7 +26,6 @@ import net.jini.lookup.entry.Name;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Exec;
 import sorcer.service.Exertion;
-import sorcer.service.ServiceExertion;
 
 public class ExertionEnvelop implements Entry {
 
@@ -49,18 +49,18 @@ public class ExertionEnvelop implements Entry {
 
 	// used by the loki framework
 	public Entry entry;
-	
+
 	public byte[] encryptedExertion;
 
 	public Subject providerSubject;
 
 	public static ExertionEnvelop getTemplate() {
 		ExertionEnvelop ee = new ExertionEnvelop();
-		ee.state = new Integer(Exec.INITIAL);
+		ee.state = Exec.INITIAL;
 
 		return ee;
 	}
-	
+
 	public static ExertionEnvelop getTemplate(Class serviceType,
 			String providerName) {
 		ExertionEnvelop ee = getTemplate();
@@ -68,13 +68,10 @@ public class ExertionEnvelop implements Entry {
 		ee.providerName = providerName;
 		return ee;
 	}
-	
+
 	/**
 	 * Create a template with an exertionID as the exertions's parentID.
-	 * 
-	 * @param exertionID
-	 * @param providerName
-	 * @return
+	 *
 	 */
 	public static ExertionEnvelop getParentTemplate(Uuid exertionID,
 			String providerName) {
@@ -83,13 +80,10 @@ public class ExertionEnvelop implements Entry {
 		ee.providerName = providerName;
 		return ee;
 	}
-	
+
 	/**
 	 * Create a template for exertions.
-	 * 
-	 * @param exertionID
-	 * @param providerName
-	 * @return
+	 *
 	 */
 	public static ExertionEnvelop getTemplate(Uuid exertionID,
 			String providerName) {
@@ -105,13 +99,13 @@ public class ExertionEnvelop implements Entry {
 
 		ExertionEnvelop ee = getTemplate();
 		NetSignature ss = (NetSignature) ex.getProcessSignature();
-		
+
 		ee.exertion = ex;
 		ee.serviceType = ss.getServiceType();
 		ee.providerName = ss.getProviderName();
 		ee.exertionID = ex.getId();
-		ee.parentID = ((ServiceExertion) ex).getParentId();
-		ee.isJob = new Boolean(ex.isJob());
+		ee.parentID = ex.getParentId();
+		ee.isJob = ex.isJob();
 
 		return ee;
 	}
@@ -119,7 +113,7 @@ public class ExertionEnvelop implements Entry {
 	/**
 	 * Simple method that generates the basic template to retrieve a specific
 	 * completed ExertionEnvelop from the space
-	 * 
+	 *
 	 * @param parentID
 	 *            This ID  will be the basis for creating the
 	 *            template for picking up task/job from the space
@@ -130,20 +124,21 @@ public class ExertionEnvelop implements Entry {
 		ExertionEnvelop ee = ExertionEnvelop.getTemplate();
 		ee.parentID = parentID;
 		ee.exertionID = childID;
-		ee.state = new Integer(Exec.DONE); // must be set to DONE (completed)
+
+        // must be set to DONE (completed)
+        ee.state = Exec.DONE;
 
 		return ee;
 	}
 
 	public Entry[] getAttributes() {
-		Entry[] attrs = { new Name(serviceType.getName()), new Name(providerName) };
-		return attrs;
+        return new Entry[]{ new Name(serviceType.getName()), new Name(providerName) };
 	}
 
 	public long resultLeaseTime() {
 		return Long.MAX_VALUE;
 	}
-	
+
 //	public Class serviceType;
 //	public String providerName;
 //	public Uuid exertionID;
@@ -155,9 +150,9 @@ public class ExertionEnvelop implements Entry {
 //	public Entry entry;
 //	public byte[] encryptedExertion;
 //	public Subject providerSubject;
-	
+
 	public String toString() {
-		StringBuffer sb = new StringBuffer(exertion.getClass().getName());
+		StringBuilder sb = new StringBuilder(exertion.getClass().getName());
 		sb.append("id=").append(exertionID)
 		.append(", name=").append(exertion.getName())
 		.append(", state=").append(state)
@@ -166,9 +161,9 @@ public class ExertionEnvelop implements Entry {
 //		.append(", exertion=").append(exertion);
 		return sb.toString();
 	}
-	
+
 	public String describe() {
-		StringBuffer sb = new StringBuffer("\nExertionEnvelop: ");
+		StringBuilder sb = new StringBuilder("\nExertionEnvelop: ");
 		sb.append("exertionID=").append(exertionID)
 		.append(", isJob=").append(isJob)
 		.append(", state=").append(state)
