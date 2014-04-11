@@ -33,7 +33,7 @@ import java.util.*;
 /**
  * @author Rafał Krupiński
  */
-public class DiscoveryManagerRegistry {
+public class DiscoveryManagerRegistry implements IDiscoveryManagerRegistry {
     private static final Logger log = LoggerFactory.getLogger(DiscoveryManagerRegistry.class);
 
     private static LookupLocator[] lookupLocators = getLookupLocators();
@@ -45,10 +45,12 @@ public class DiscoveryManagerRegistry {
     private Map<Set<String>, LookupCache> caches = new MapMaker().weakValues().makeMap();
 
 
+    @Override
     public ServiceDiscoveryManager getManager() throws IOException {
         return getManager(LookupDiscovery.ALL_GROUPS);
     }
 
+    @Override
     public ServiceDiscoveryManager getManager(String[] groups) throws IOException {
         Set<String> key = key(groups);
         ServiceDiscoveryManager result = registry.get(key);
@@ -61,10 +63,12 @@ public class DiscoveryManagerRegistry {
         return result;
     }
 
+    @Override
     public LookupCache getLookupCache() {
         return getLookupCache(LookupDiscovery.ALL_GROUPS);
     }
 
+    @Override
     public LookupCache getLookupCache(String[] groups) {
         return caches.get(key(groups));
     }

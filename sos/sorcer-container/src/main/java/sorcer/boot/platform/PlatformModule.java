@@ -19,6 +19,7 @@ package sorcer.boot.platform;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import sorcer.container.sdi.DiscoveryManagerRegistry;
+import sorcer.container.sdi.IDiscoveryManagerRegistry;
 import com.google.inject.multibindings.Multibinder;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.lease.LeaseRenewalManager;
@@ -29,7 +30,6 @@ import sorcer.container.core.BeanListenerModule;
 import sorcer.container.discovery.ILookupManagerRegistry;
 import sorcer.container.discovery.LookupManagerRegistry;
 import sorcer.container.discovery.ServiceManagerRegistry;
-import sorcer.container.discovery.IDiscoveryManagerRegistry;
 import sorcer.core.SorcerEnv;
 import sorcer.core.service.Configurer;
 import sorcer.core.service.IServiceBeanListener;
@@ -54,6 +54,7 @@ public class PlatformModule extends AbstractModule {
         listenerBinder.addBinding().to(Configurer.class);
 
         bind(IServiceBeanListener.class).to(ServiceBeanListener.class).in(Scopes.SINGLETON);
+        bind(IDiscoveryManagerRegistry.class).to(DiscoveryManagerRegistry.class).in(Scopes.SINGLETON);
         bind(DiscoveryManagerRegistry.class).in(Scopes.SINGLETON);
         bind(LeaseRenewalManager.class).in(Scopes.SINGLETON);
         bind(BeanListenerModule.class).in(Scopes.SINGLETON);
@@ -65,9 +66,9 @@ public class PlatformModule extends AbstractModule {
                 return new LookupManagerRegistry(lookupLocators, SorcerEnv.getLookupGroups());
             }
         }).in(Scopes.SINGLETON);
-        bind(IDiscoveryManagerRegistry.class).toProvider(new Provider<IDiscoveryManagerRegistry>() {
+        bind(sorcer.container.discovery.IDiscoveryManagerRegistry.class).toProvider(new Provider<sorcer.container.discovery.IDiscoveryManagerRegistry>() {
             @Override
-            public IDiscoveryManagerRegistry get() {
+            public sorcer.container.discovery.IDiscoveryManagerRegistry get() {
                 return new ServiceManagerRegistry(lookupLocators, SorcerEnv.getLookupGroups());
             }
         }).in(Scopes.SINGLETON);
