@@ -19,7 +19,7 @@ import java.rmi.RemoteException;
  * @author Rafał Krupiński
  */
 public class TX {
-    protected static LeaseRenewalManager leaseManager;
+    protected static LeaseRenewalManager leaseManager= new LeaseRenewalManager();
     private static Logger logger = LoggerFactory.getLogger(TX.class);
 
     public static void abortTransaction(Transaction.Created txn) throws UnknownLeaseException, UnknownTransactionException, CannotAbortException, RemoteException {
@@ -33,9 +33,6 @@ public class TX {
     }
 
     synchronized public static Transaction.Created createTransaction(long transactionLeaseTimeout) {
-        if (leaseManager == null) {
-            leaseManager = new LeaseRenewalManager();
-        }
         try {
             TransactionManager tManager = Accessor.getService(TransactionManager.class);
             if (tManager == null) {
