@@ -1,8 +1,6 @@
 package sorcer.service.jobber;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +66,7 @@ public class JobberAccessor extends ServiceAccessor {
             if (Accessor.isAlive((Provider) jobber)) {
                 log.info(">>>returned cached Jobber ("
                         + ((Provider) jobber).getProviderID() + ") by "
-                        + Accessor.getAccessorType());
+                        + Accessor.getAccessor());
             } else {
                 jobber = Accessor.getService(jobberName, Jobber.class);
                 if (jobber!=null)

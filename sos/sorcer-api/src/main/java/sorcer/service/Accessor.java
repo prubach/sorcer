@@ -80,8 +80,8 @@ public class Accessor {
         }
     }
 
-    public static String getAccessorType(){
-        return accessor.getClass().getName();
+    public static DynamicAccessor getAccessor() {
+        return accessor;
     }
 
     public static <T> T getService(Class<T> type){

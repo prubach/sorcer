@@ -1,8 +1,6 @@
 package sorcer.service.spacer;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +61,7 @@ public class SpacerAccessor extends ServiceAccessor {
             if (Accessor.isAlive((Provider) spacer)) {
                 log.info(">>>returned cached Spacer ("
                         + ((Provider) spacer).getProviderID() + ") by "
-                        + Accessor.getAccessorType());
+                        + Accessor.getAccessor());
             } else {
                 spacer = Accessor.getService(spacerName, Spacer.class);
                 if (spacer!=null)
