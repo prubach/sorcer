@@ -106,13 +106,6 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin
     }
 
     @Override
-    public <I> void contributeInterface(I impl, Class<? super I>... iface) {
-        for (Class<? super I> type : iface) {
-            beanMap.put(type, impl);
-        }
-    }
-
-    @Override
     public void addAttribute(Entry attribute) {
 
     }

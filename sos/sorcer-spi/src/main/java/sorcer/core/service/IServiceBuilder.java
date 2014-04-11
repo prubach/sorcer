@@ -13,8 +13,6 @@ import java.rmi.Remote;
 public interface IServiceBuilder<T> extends Provider<T> {
     public void addInterceptor(MethodInterceptor interceptor);
 
-    <I> void contributeInterface(I impl, Class<? super I>... iface);
-
     public void addAttribute(Entry attribute);
 
     public Configuration getProviderConfiguration();

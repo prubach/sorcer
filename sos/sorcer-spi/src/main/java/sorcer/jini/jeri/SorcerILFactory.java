@@ -201,21 +201,24 @@ public class SorcerILFactory extends BasicILFactory {
 				methods.add(additionalMethods[j]);
 		}
 		return new SorcerInvocationDispatcher(methods, caps,
-				getServerConstraints(), getPermissionClass(), getClassLoader());
+				getServerConstraints(), getPermissionClass(), getClassLoader(), serviceBeanMap);
 	}
 
 	/**
 	 * Our custom dispatcher to be used for exporting SORCER service beans.
 	 */
-	private class SorcerInvocationDispatcher extends BasicInvocationDispatcher {
+	private static class SorcerInvocationDispatcher extends BasicInvocationDispatcher {
 
-		public SorcerInvocationDispatcher(Collection methods,
-				ServerCapabilities serverCapabilities,
-				MethodConstraints serverConstraints, Class permissionClass,
-				ClassLoader loader) throws ExportException {
+        private Map<Class, Object> serviceBeanMap;
+
+        public SorcerInvocationDispatcher(Collection methods,
+                                          ServerCapabilities serverCapabilities,
+                                          MethodConstraints serverConstraints, Class permissionClass,
+                                          ClassLoader loader, Map<Class, Object> serviceBeanMap) throws ExportException {
 			super(methods, serverCapabilities, serverConstraints,
 					permissionClass, loader);
-		}
+            this.serviceBeanMap = serviceBeanMap;
+        }
 
 		protected Object invoke(Remote impl, Method method, Object[] args,
 				Collection context) throws Throwable {

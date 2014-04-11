@@ -59,12 +59,6 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
     private Map<Object, Object> configurations = new HashMap<Object, Object>();
 
     @Override
-    public <I> void contributeInterface(I impl, Class<? super I>... iface) {
-        for (Class<? super I> type : iface)
-            serviceContributions.put(type, impl);
-    }
-
-    @Override
     public void addAttribute(Entry attribute) {
         serviceProvider.getDelegate().addExtraLookupAttribute(attribute);
     }
