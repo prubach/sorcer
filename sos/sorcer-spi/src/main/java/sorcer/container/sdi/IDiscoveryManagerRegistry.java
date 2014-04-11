@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package sorcer.boot.platform;
+package sorcer.container.sdi;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
-import sorcer.container.sdi.DiscoveryManagerRegistry;
-import sorcer.container.sdi.IDiscoveryManagerRegistry;
-import sorcer.core.service.IServiceBeanListener;
-import sorcer.core.service.ServiceBeanListener;
+import net.jini.lookup.LookupCache;
+import net.jini.lookup.ServiceDiscoveryManager;
+
+import java.io.IOException;
 
 /**
  * @author Rafał Krupiński
  */
-public class PlatformModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(IServiceBeanListener.class).to(ServiceBeanListener.class).in(Scopes.SINGLETON);
-        bind(IDiscoveryManagerRegistry.class).to(DiscoveryManagerRegistry.class).in(Scopes.SINGLETON);
-    }
+public interface IDiscoveryManagerRegistry {
+    ServiceDiscoveryManager getManager() throws IOException;
+
+    ServiceDiscoveryManager getManager(String[] groups) throws IOException;
+
+    LookupCache getLookupCache();
+
+    LookupCache getLookupCache(String[] groups);
 }
