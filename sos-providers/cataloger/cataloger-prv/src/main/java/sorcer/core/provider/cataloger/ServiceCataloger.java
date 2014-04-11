@@ -41,6 +41,7 @@ import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.entry.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import sorcer.core.AdministratableProvider;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.provider.Provider;
@@ -254,6 +255,8 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 */
 	public Provider lookup(String providerName, Class... serviceTypes)
 			throws RemoteException {
+        // TODO RemoteLoggerAppender may call Cataloger to look for RemoteLogger - this introduces recursion
+        MDC.remove(MDC_SORCER_REMOTE_CALL);
 		String pn = providerName;
 		if (ANY.equals(providerName))
 			pn = null;

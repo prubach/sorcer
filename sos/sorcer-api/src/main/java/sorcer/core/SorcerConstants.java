@@ -1218,6 +1218,7 @@ public interface SorcerConstants {
 	String CODEBASE_SEPARATOR = " ";
 
     String NAME_DEFAULT="___SORCER_NAME_DEFAULT___";
+    String MDC_SORCER_REMOTE_CALL = "SORCER-REMOTE-CALL";
 }
 
 

@@ -40,6 +40,8 @@ import sorcer.core.ContextManagement;
 import sorcer.service.ExertionException;
 import sorcer.service.Service;
 
+import static sorcer.core.SorcerConstants.*;
+
 /**
  * A SorcerILFactory can be used with object interfaces as its services. Those
  * services exposed as interfaces do need implement Remote. A
@@ -217,12 +219,11 @@ public class SorcerILFactory extends BasicILFactory {
 
 		protected Object invoke(Remote impl, Method method, Object[] args,
 				Collection context) throws Throwable {
-            String key = "SORCER-REMOTE-CALL";
             try{
-                MDC.put(key, key);
+                MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
                 return doInvoke(impl, method, args, context);
             }finally {
-                MDC.remove(key);
+                MDC.remove(MDC_SORCER_REMOTE_CALL);
             }
         }
 
