@@ -58,7 +58,9 @@ import net.jini.core.transaction.server.TransactionManager;
 import net.jini.export.Exporter;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import net.jini.jeri.*;
+import net.jini.jeri.BasicILFactory;
+import net.jini.jeri.BasicJeriExporter;
+import net.jini.jeri.InvocationLayerFactory;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.entry.Location;
@@ -82,7 +84,6 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.signature.NetSignature;
-import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
 import sorcer.security.sign.SignedServiceTask;
@@ -252,9 +253,7 @@ public class ProviderDelegate {
 	/** The exporter for exporting and unexporting outer proxy */
 	private Exporter outerExporter;
 
-	private SorcerILFactory ilFactory;
-
-	/** The exporter for exporting and unexporting inner proxy */
+    /** The exporter for exporting and unexporting inner proxy */
 	private Exporter partnerExporter;
 
 	/**
@@ -290,6 +289,7 @@ public class ProviderDelegate {
 	private ContextManagement contextManager;
 
     private IServiceBeanListener beanListener;
+    private ProviderServiceBuilder serviceBuilder;
 
 	/*
 	 * A nested class to hold the state information of the executing thread for
@@ -340,9 +340,10 @@ public class ProviderDelegate {
 		}
 	}
 
-	public ProviderDelegate(IServiceBeanListener beanListener) {
+	public ProviderDelegate(IServiceBeanListener beanListener, ProviderServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
-	}
+        this.serviceBuilder = serviceBuilder;
+    }
 
 	public void init(Provider provider) throws RemoteException,
 			ConfigurationException {
@@ -1821,7 +1822,8 @@ public class ProviderDelegate {
             }
 		}
         if (beanListener != null)
-            beanListener.destroy(serviceBeans);
+            for (Object bean : serviceBeans)
+                beanListener.destroy(serviceBuilder, bean);
 	}
 
 	public boolean isValidTask(Exertion servicetask) throws ContextException, RemoteException,
@@ -2779,9 +2781,11 @@ public class ProviderDelegate {
 				logger.debug("*** all beans by " + getProviderName()
                         + " for: \n" + allBeans);
 				serviceBeans = allBeans.toArray();
-				initServiceBeans(serviceBeans);
-				ilFactory = new SorcerILFactory(serviceComponents,
-						implClassLoader);
+                serviceBuilder.addContributedBeans(serviceComponents);
+
+				// convert serviceBeans to serviceComponents
+                initServiceBeans(serviceBeans);
+                InvocationLayerFactory ilFactory = serviceBuilder.getILFactory(serviceComponents, implClassLoader);
 				outerExporter = new BasicJeriExporter(
 						TcpServerEndpoint.getInstance(exporterInterface,
 								exporterPort), ilFactory);
@@ -2794,7 +2798,7 @@ public class ProviderDelegate {
 						Exporter.class,
 						new BasicJeriExporter(TcpServerEndpoint.getInstance(
 								exporterInterface, exporterPort),
-								new BasicILFactory()));
+                                serviceBuilder.getILFactory(serviceComponents, implClassLoader)));
 				if (outerExporter == null) {
 
 					logger.warn("*** NO provider exporter defined!!!");
@@ -2818,8 +2822,8 @@ public class ProviderDelegate {
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			// ignore missing exporters and use default configurations for exporters
+            logger.warn("Error getting exporters for {}", getProviderName(), ex);
+            // ignore missing exporters and use default configurations for exporters
 		}
 	}
 
@@ -2875,7 +2879,8 @@ public class ProviderDelegate {
             allBeans.add(InjectionHelper.create(beanClass));
         }
         if (beanListener != null)
-            beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), getProvider());
+            for (Object bean : allBeans)
+                beanListener.preProcess(serviceBuilder, bean);
         for (Object bean : allBeans) {
             initBean(bean);
         }

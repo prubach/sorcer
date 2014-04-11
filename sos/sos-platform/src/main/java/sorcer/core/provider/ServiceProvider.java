@@ -74,6 +74,7 @@ import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.service.IServiceBeanListener;
+import sorcer.core.service.IServiceBuilder;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
@@ -190,19 +191,19 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	// all providers in the same shared JVM
 	private static List<ServiceProvider> providers = new ArrayList<ServiceProvider>();
 
-	private ClassLoader serviceClassLoader;
-
 	private String[] accessorGroups = DiscoveryGroupManagement.ALL_GROUPS;
 	
 	private volatile boolean running = true;
 
     @Inject
     private IServiceBeanListener beanListener;
+    private ProviderServiceBuilder serviceBuilder;
 
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
-		delegate = new ProviderDelegate(beanListener);
+        serviceBuilder = new ProviderServiceBuilder(this);
+        delegate = new ProviderDelegate(beanListener, serviceBuilder);
 		delegate.provider = this;
 	}
 
@@ -217,7 +218,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		this();
 		// load Sorcer environment properties via static initializer
 		SorcerEnv.getProperties();
-		serviceClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader serviceClassLoader = Thread.currentThread().getContextClassLoader();
 		final Configuration config = ConfigurationProvider.getInstance(args, serviceClassLoader);
 		delegate.setJiniConfig(config);
 		String providerProperties = null;
@@ -585,7 +586,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		this.lifeCycle = lifeCycle;
 
         if (beanListener != null)
-            beanListener.preProcess(this);
+            beanListener.preProcess(serviceBuilder);
 
 		try {
 			// Take the login context entry from the configuration file, if this
@@ -1434,10 +1435,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	}
 
     protected Set<Entry> attributes = new HashSet<Entry>();
-
-    public void addAttribute(Entry attributes) {
-        this.attributes.add(attributes);
-    }
 
     public Entry[] getAttributes() throws RemoteException {
         Set<Entry> result = new HashSet<Entry>(attributes);

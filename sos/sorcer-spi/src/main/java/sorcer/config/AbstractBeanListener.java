@@ -16,25 +16,27 @@ package sorcer.config;
  */
 
 
-import net.jini.config.ConfigurationException;
-import sorcer.core.provider.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.core.service.IServiceBuilder;
 
 /**
  * @author Rafał Krupiński
  */
 public abstract class AbstractBeanListener implements BeanListener {
+    protected Logger log = LoggerFactory.getLogger(getClass());
+
     @Override
-    public void preProcess(Provider provider) {
+    public void preProcess(IServiceBuilder provider) {
 
     }
 
     @Override
-    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
+    public void destroy(IServiceBuilder provider, Object o) {
 
     }
 
     @Override
-    public void destroy(Object[] serviceBeans) {
-
+    public void preProcess(IServiceBuilder serviceBuilder, Object bean) {
     }
 }

@@ -15,10 +15,7 @@ package sorcer.core.service;
  * limitations under the License.
  */
 
-import net.jini.config.ConfigurationException;
 import sorcer.config.BeanListener;
-import sorcer.config.ServiceBeanDestroyer;
-import sorcer.core.provider.Provider;
 
 import javax.inject.Inject;
 import java.util.LinkedList;
@@ -43,20 +40,23 @@ public class ServiceBeanListener implements IServiceBeanListener {
         destroyers.add(new ServiceBeanDestroyer());
     }
 
-    public void preProcess(Provider provider) {
+    @Override
+    public void preProcess(IServiceBuilder provider) {
         for (BeanListener activator : activators)
             activator.preProcess(provider);
     }
 
-    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
+    @Override
+    public void preProcess(IServiceBuilder serviceBuilder, Object bean) {
         for (BeanListener activator : activators) {
-            activator.activate(serviceBeans, provider);
+            activator.preProcess(serviceBuilder, bean);
         }
     }
 
-    public void destroy(Object[] serviceBeans) {
+    @Override
+    public void destroy(IServiceBuilder serviceBuilder, Object bean) {
         for (BeanListener activator : destroyers) {
-            activator.destroy(serviceBeans);
+            activator.destroy(serviceBuilder, bean);
         }
     }
 }

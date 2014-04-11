@@ -3,6 +3,7 @@ package sorcer.core.service;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
+import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
 import org.aopalliance.intercept.MethodInterceptor;
 import sorcer.config.BeanListener;
@@ -23,7 +24,7 @@ public class ActualServiceBuilder implements IServiceBuilder {
 
     private Map<Class, Object> beanMap = new HashMap<Class, Object>();
 
-    private ServiceBeanListener beanListener;
+    private IServiceBeanListener beanListener;
 
     @Override
     public void addInterceptor(final MethodInterceptor interceptor) {
@@ -54,5 +55,10 @@ public class ActualServiceBuilder implements IServiceBuilder {
     @Inject
     protected void setBeanListeners(Set<BeanListener> beanListeners) {
         beanListener = new ServiceBeanListener(beanListeners);
+    }
+
+    @Override
+    public Configuration getProviderConfiguration() {
+        return null;
     }
 }
