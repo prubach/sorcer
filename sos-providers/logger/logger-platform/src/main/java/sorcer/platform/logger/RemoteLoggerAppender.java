@@ -45,8 +45,6 @@ public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEve
             }
 
             service.publish(vo);
-        } catch (RuntimeException e) {
-            addError("Error while calling remote logger", e);
         } catch (RemoteException e) {
             addError("Error while calling remote logger", e);
         }

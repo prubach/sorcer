@@ -16,6 +16,7 @@
 
 package sorcer.client;
 
+import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.ServiceItemFilter;
 import sorcer.river.Filters;
@@ -56,7 +57,7 @@ public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
     private long failureGracePeriod = TimeUnit.MINUTES.toMillis(1);
 
     public ClientProxyFactory(Class type) {
-        template = new ServiceTemplate(null, new Class[]{type}, null);
+        template = new ServiceTemplate(null, new Class[]{type}, new Entry[0]);
     }
 
     public T get() {
@@ -78,6 +79,7 @@ public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
         lastCheck = now;
         ClassLoaders.Callable<T, RuntimeException> getServiceCallable = new ClassLoaders.Callable<T, RuntimeException>() {
             @Override
+            @SuppressWarnings("unchecked")
             public T call() throws RuntimeException {
                 return (T) Accessor.getService(template, filter);
             }

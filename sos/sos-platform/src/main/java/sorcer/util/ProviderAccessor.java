@@ -260,7 +260,13 @@ public class ProviderAccessor extends ServiceAccessor implements
 
     @Override
     public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
+        assert template != null;
+
+        // cataloger throws NPE if attributeSetTemplates is null
+        assert template.attributeSetTemplates != null;
         assert filter != null;
+        assert minMatches <= maxMatches;
+
         if(!Arrays.asList(template.serviceTypes).contains(Cataloger.class)){
             Cataloger cataloger = getCataloger();
             if (cataloger != null) {
