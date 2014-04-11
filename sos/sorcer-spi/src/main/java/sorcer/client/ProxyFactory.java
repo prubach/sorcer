@@ -17,23 +17,24 @@
 package sorcer.client;
 
 import net.jini.core.entry.Entry;
+import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
+import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceItemFilter;
+import sorcer.container.sdi.IDiscoveryManagerRegistry;
+import sorcer.core.SorcerEnv;
 import sorcer.river.Filters;
 import sorcer.service.Accessor;
 import sorcer.util.ClassLoaders;
+import sorcer.util.InjectionHelper;
 
-import java.lang.ref.WeakReference;
+import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Factory of client proxy objects
- * <p/>
- * TODO support injection with @Inject
- *
  * @author Rafał Krupiński
  */
-public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
+public class ProxyFactory<T> implements Provider<T> {
     /**
      * The future default is preferLocal, but currently only requireRemote is supported.
      * This is only informative, as this field is now ignored.
@@ -43,40 +44,33 @@ public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
 
     private ServiceTemplate template;
 
-    private WeakReference<T> service;
-
     private boolean cache = true;
 
     private ServiceItemFilter filter = Filters.any();
 
     private long lastCheck;
 
+    private String[] groups = SorcerEnv.getLookupGroups();
+
     /**
      * Time between Accessor failure and the next retry of Accessor.getService
      */
     private long failureGracePeriod = TimeUnit.MINUTES.toMillis(1);
 
-    public ClientProxyFactory(Class type) {
+    public ProxyFactory(Class<T> type) {
         template = new ServiceTemplate(null, new Class[]{type}, new Entry[0]);
     }
 
+    @Override
     public T get() {
-        T result = service == null ? null : service.get();
-        if (result != null)
-            return result;
+        IDiscoveryManagerRegistry registry = InjectionHelper.create(IDiscoveryManagerRegistry.class);
+        LookupCache cache = registry.getLookupCache(groups);
+        if (cache != null) {
+            ServiceItem result = cache.lookup(Filters.and(filter, Filters.serviceTemplateFilter(template)));
+            if (result != null)
+                return (T) result.service;
+        }
 
-        result = doGet();
-
-        if (cache && result != null)
-            service = new WeakReference<T>(result);
-        return result;
-    }
-
-    protected T doGet() {
-        long now = System.currentTimeMillis();
-        if (now < lastCheck + failureGracePeriod)
-            return null;
-        lastCheck = now;
         ClassLoaders.Callable<T, RuntimeException> getServiceCallable = new ClassLoaders.Callable<T, RuntimeException>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -89,6 +83,7 @@ public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
             result = ClassLoaders.doWith(template.serviceTypes[0].getClassLoader(), getServiceCallable);
         else
             result = getServiceCallable.call();
+
         checkResult(result);
         return result;
     }
@@ -110,10 +105,10 @@ public class ClientProxyFactory<T> /*implements javax.inject.Provider<T>*/ {
 
     /**
      * Set the service object explicitly, intended for testing purposes
-     */
-    public void setService(WeakReference<T> service) {
+    public void setService(T service) {
         this.service = service;
     }
+     */
 
     public void setCache(boolean cache) {
         this.cache = cache;
