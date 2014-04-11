@@ -29,6 +29,7 @@ import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
+import sorcer.river.Filters;
 import sorcer.service.DynamicAccessor;
 
 import java.rmi.RemoteException;
@@ -264,6 +265,11 @@ public class ServiceAccessor implements DynamicAccessor {
                 throw new IllegalArgumentException("User requested River group other than default, this is currently unsupported");
             }
         }
+
+        ServiceItem cached = getCached(Filters.and(filter, Filters.serviceTemplateFilter(template)));
+        if (cached != null)
+            return new ServiceItem[]{cached};
+
         for (int tryNo = 0; tryNo < LUS_REAPEAT; tryNo++) {
             ServiceItem[] result = doGetServiceItems(template, minMatches, maxMatches, filter);
             if (result != null && result.length > 0)
@@ -289,4 +295,14 @@ public class ServiceAccessor implements DynamicAccessor {
         }
     }
 
+    protected ServiceItem getCached(ServiceItemFilter filter){
+        if (lookupCache != null) {
+            ServiceItem result = lookupCache.lookup(filter);
+            if (result != null) {
+                logger.fine("Using cached proxy " + result);
+                return result;
+            }
+        }
+        return null;
+    }
 }

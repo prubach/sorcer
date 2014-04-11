@@ -1,5 +1,4 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
@@ -109,6 +108,10 @@ public class ProviderAccessor extends ServiceAccessor {
         assert template.attributeSetTemplates != null;
         assert filter != null;
         assert minMatches <= maxMatches;
+
+        ServiceItem cached = getCached(Filters.and(filter, Filters.serviceTemplateFilter(template)));
+        if (cached != null)
+            return new ServiceItem[]{cached};
 
         if(!Arrays.asList(template.serviceTypes).contains(Cataloger.class)){
             Cataloger cataloger = getCataloger();
