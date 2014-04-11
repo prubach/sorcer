@@ -34,6 +34,8 @@ public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEve
 
     @Override
     protected void append(ILoggingEvent eventObject) {
+        LoggingEventVO vo = LoggingEventVO.build(eventObject);
+
         try {
             RemoteLogger service = remoteLogger.get();
 
@@ -42,7 +44,9 @@ public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEve
                 return;
             }
 
-            service.publish(LoggingEventVO.build(eventObject));
+            service.publish(vo);
+        } catch (RuntimeException e) {
+            addError("Error while calling remote logger", e);
         } catch (RemoteException e) {
             addError("Error while calling remote logger", e);
         }
