@@ -1,8 +1,7 @@
 package sorcer.river;
-/**
+/*
  *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +16,10 @@ package sorcer.river;
  * limitations under the License.
  */
 
-
+import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.ServiceItemFilter;
 
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ public class Filters {
 
     /**
      * Find and return all matching service items
+     *
      * @param items  {@link ServiceItem}s to look in
      * @param filter {@link ServiceItemFilter} to match
      * @return array of items matching the filter
@@ -88,7 +89,13 @@ public class Filters {
     }
 
     public static ServiceItemFilter serviceId(ServiceID serviceID) {
+        assert serviceID != null;
         return new ServiceIDFilter(serviceID);
+    }
+
+    public static ServiceItemFilter serviceTemplateFilter(ServiceTemplate serviceTemplate){
+        assert serviceTemplate != null;
+        return new ServiceTemplateFilter(serviceTemplate);
     }
 }
 
@@ -154,5 +161,45 @@ class ServiceIDFilter implements ServiceItemFilter {
     @Override
     public boolean check(ServiceItem item) {
         return serviceID == null || item.serviceID.equals(serviceID);
+    }
+}
+
+class ServiceTemplateFilter implements ServiceItemFilter {
+    private ServiceTemplate template;
+
+    ServiceTemplateFilter(ServiceTemplate template) {
+        this.template = template;
+    }
+
+    @Override
+    public boolean check(ServiceItem item) {
+        if (template.serviceID != null) {
+            if (template.serviceID == item.serviceID) {
+                return true;
+            }
+        }
+
+        if (template.attributeSetTemplates != null && item.attributeSets != null) {
+            for (Entry entry : template.attributeSetTemplates) {
+                if (!containsEntry(item, entry))
+                    return false;
+            }
+        }
+
+        if (template.serviceTypes != null) {
+            for (Class type : template.serviceTypes) {
+                if (!type.isInstance(item.service))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean containsEntry(ServiceItem item, Entry entry) {
+        for (Entry attribute : item.attributeSets)
+            if (attribute.equals(entry))
+                return true;
+        return false;
     }
 }
