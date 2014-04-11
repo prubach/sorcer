@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * @author Rafał Krupiński
  */
-public class ActualServiceBuilder implements IServiceBuilder {
+public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
     private Logger log = LoggerFactory.getLogger(ActualServiceBuilder.class);
 
     private Set<Module> modules = new HashSet<Module>();
@@ -45,8 +45,8 @@ public class ActualServiceBuilder implements IServiceBuilder {
     }
 
     @Override
-    public <T> void contributeInterface(T impl, Class<? super T>... iface) {
-        for (Class<? super T> type : iface) {
+    public <I> void contributeInterface(I impl, Class<? super I>... iface) {
+        for (Class<? super I> type : iface) {
             beanMap.put(type, impl);
         }
     }
@@ -85,5 +85,15 @@ public class ActualServiceBuilder implements IServiceBuilder {
     @Override
     public String getName() {
         return "TODO-UNKNOWN";
+    }
+
+    @Override
+    public Class<T> getType() {
+        return null;
+    }
+
+    @Override
+    public T get() {
+        return null;
     }
 }

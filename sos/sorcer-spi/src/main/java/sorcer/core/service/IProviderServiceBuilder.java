@@ -19,8 +19,10 @@ package sorcer.core.service;
 import sorcer.core.provider.Provider;
 
 /**
+ * Bridge between ServiceProvider and the new framework
+ *
  * @author Rafał Krupiński
  */
-public interface IProviderServiceBuilder extends IServiceBuilder {
+public interface IProviderServiceBuilder extends IServiceBuilder<Object> {
     Provider getProvider();
 }

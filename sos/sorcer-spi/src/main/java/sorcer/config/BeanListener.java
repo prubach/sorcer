@@ -15,18 +15,23 @@ package sorcer.config;
  * limitations under the License.
  */
 
-
-import net.jini.config.ConfigurationException;
 import sorcer.core.service.IServiceBuilder;
 
 /**
  * @author Rafał Krupiński
  */
 public interface BeanListener {
+    /**
+     * preprocess service builder before creating the bean
+     *
+     */
+    <T> void preProcess(IServiceBuilder<T> serviceBuilder);
 
-    void preProcess(IServiceBuilder provider);
+    /**
+     * preprocess the bean
+     *
+     */
+    <T> void preProcess(IServiceBuilder<T> serviceBuilder, T bean);
 
-    void preProcess(IServiceBuilder serviceBuilder, Object serviceBean);
-
-    public void destroy(IServiceBuilder serviceBeans, Object o);
+    public <T> void destroy(IServiceBuilder<T> serviceBuilder, T bean);
 }
