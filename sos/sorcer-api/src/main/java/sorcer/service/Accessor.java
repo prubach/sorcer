@@ -241,15 +241,15 @@ public class Accessor {
      * @return true if a provider is alive, otherwise false
      * @throws java.rmi.RemoteException
      */
-    public static boolean isAlive(Provider provider)
-            throws RemoteException {
+    public static boolean isAlive(Provider provider) {
         if (provider == null)
             return false;
         try {
             provider.getProviderName();
             return true;
         } catch (RemoteException e) {
-            throw e;
+            logger.warning("Provider is dead " + e.getMessage());
+            return false;
         }
     }
 

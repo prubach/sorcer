@@ -201,11 +201,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
     protected Cataloger getCataloger(String serviceName) {
         boolean catIsOk;
-        try {
-            catIsOk = Accessor.isAlive((Provider) cataloger);
-        } catch (Exception ignored) {
-			catIsOk = false;
-		}
+        catIsOk = Accessor.isAlive((Provider) cataloger);
 		try {
 			if (catIsOk) {
 				return cataloger;

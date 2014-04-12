@@ -21,6 +21,8 @@ package sorcer.ex4.requestor;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
@@ -47,8 +49,9 @@ import sorcer.service.Task;
 })
 public class MasterSlaveSeqPushTest {
 
-    @Test(timeout = 30000)
+    @Test(timeout = 45000)
 	public void testMasterSlaveSeqPush() throws Exception {
+        Logger logger = LoggerFactory.getLogger(MasterSlaveSeqPushTest.class);
 		String requestorName = System.getProperty("user.name");
 		// define requestors data
 
@@ -122,6 +125,7 @@ public class MasterSlaveSeqPushTest {
 	    job.setMasterExertion(task4);
 	 
         Exertion result = job.exert();
+        logger.info("Result: " + result.getDataContext());
         ExertionErrors.check(result.getExceptions());
 	}
 
