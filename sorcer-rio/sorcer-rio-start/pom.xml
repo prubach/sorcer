@@ -34,12 +34,17 @@
             <artifactId>rio-start</artifactId>
             <version>${v.rio}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
