@@ -73,6 +73,11 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+            <version>4.0-beta4</version>
+        </dependency>
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxrpc-api</artifactId>
