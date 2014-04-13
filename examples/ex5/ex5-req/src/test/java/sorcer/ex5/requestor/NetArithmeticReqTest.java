@@ -54,23 +54,25 @@ import static org.junit.Assert.assertEquals;
                 ":ex5-cfg-multiplier",
                 ":ex5-cfg-subtractor",
                 ":ex5-cfg-divider",
-                ":ex5-job"
         }),
         @SorcerServiceConfiguration({
                 ":ex5-cfg-all",
-                ":ex5-job"
         }),
         @SorcerServiceConfiguration({
                 ":ex5-cfg-one-bean",
-                ":ex5-job"
         })
 })
 public class NetArithmeticReqTest {
 
 	private final static Logger logger = LoggerFactory
 			.getLogger(NetArithmeticReqTest.class);
-	
-	@Test
+
+
+    //
+    //Failed tests:
+    //NetArithmeticReqTest.exertJobComposition:79 expected:<400.0> but was:<-100.0>
+
+    @Test
 	public void exertJobComposition() throws Exception {
 		Job job = getJobComposition();
 		Job result = (NetJob) job.exert();
@@ -79,7 +81,7 @@ public class NetArithmeticReqTest {
 		assertEquals(400.0, result.getValue("1job1task/subtract/result/value"));
 	}
 
-    @Ignore("Problems with wrong returned value - needs further testing")
+    //@Ignore("Problems with wrong returned value - needs further testing")
 	@Test
 	public void exertTaskJob() throws Exception {
 		Job job = getNetTaskJob();

@@ -84,21 +84,10 @@ public class ArithmeticExertleterTest {
         assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
     }
 
+
+    //ArithmeticExertleterTest.exertArithmeticExertleter:100 expected:<400.0> but was:<500.0>
     @Test
 	public void exertArithmeticExertleter() throws Exception {
-
-        // invoke exertleter with the current contexts
-        NetSignature signature = new NetSignature("getValue", Evaluation.class);
-        Task task = new NetTask("eval", signature);
-        Task result = (Task)task.exert();
-        Context out = (Context)result.getReturnValue();
-
-        logger.info("out context: " + out);
-
-        logger.info("1job1task/subtract/result/value: "
-                + out.getValue("1job1task/subtract/result/value"));
-        assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
-
 
         // invocation with complete contexts
         Context addContext = new PositionalContext("add");
@@ -112,12 +101,12 @@ public class ArithmeticExertleterTest {
 		ServiceContext invokeContext = new ServiceContext("invoke");
 		invokeContext.putLink("add", addContext, "");
 		invokeContext.putLink("multiply", multiplyContext, "");
+
+        NetSignature signature = new NetSignature("invoke", Invocation.class);
 		
-		signature = new NetSignature("invoke", Invocation.class);
-		
-	    task = new NetTask("invoke", signature, invokeContext);
-		result = (Task)task.exert();
-		out = result.getContext();
+	    NetTask task = new NetTask("invoke", signature, invokeContext);
+        Task result = (Task)task.exert();
+		Context out = result.getContext();
 //		logger.info("result context: " + out);
 
 		logger.info("1job1task/subtract/result/value: " + out.getValue("1job1task/subtract/result/value"));
@@ -167,6 +156,20 @@ public class ArithmeticExertleterTest {
 //		logger.info("result context: " + out);
 
         logger.info("1job1task/subtract/result/value: " + out.getValue("1job1task/subtract/result/value"));
+        assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
+
+
+
+        // invoke exertleter with the current contexts
+        signature = new NetSignature("getValue", Evaluation.class);
+        task = new NetTask("eval", signature);
+        result = (Task)task.exert();
+        out = (Context)result.getReturnValue();
+
+        logger.info("out context: " + out);
+
+        logger.info("1job1task/subtract/result/value: "
+                + out.getValue("1job1task/subtract/result/value"));
         assertEquals(400.0, out.getValue("1job1task/subtract/result/value"));
 	}
 
