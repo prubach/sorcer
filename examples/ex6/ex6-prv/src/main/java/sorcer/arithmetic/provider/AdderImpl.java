@@ -69,18 +69,4 @@ public class AdderImpl implements Adder {
 		
 		return out;
 	}
-	
-	public static UIDescriptor getCalculatorDescriptor() {
-		UIDescriptor uiDesc = null;
-		try {
-			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(SorcerEnv
-							.getWebsterUrl()
-							+ "/calculator-ui.jar") }, CalculatorUI.class
-							.getName()));
-		} catch (Exception ex) {
-			// do nothing
-		}
-		return uiDesc;
-	}
 }

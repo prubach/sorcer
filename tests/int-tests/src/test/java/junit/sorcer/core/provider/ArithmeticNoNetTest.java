@@ -29,7 +29,10 @@ import java.util.logging.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -39,7 +42,10 @@ import sorcer.service.Strategy.Wait;
 /**
  * @author Mike Sobolewski
  */
-
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class ArithmeticNoNetTest {
 
 	private final static Logger logger = Logger
@@ -91,6 +97,8 @@ public class ArithmeticNoNetTest {
 	public void arithmeticNodeTest() throws Exception {
 		
 		Task t5 = task(
+
+
 				"t5",
 				sig("add", Adder.class),
 				context("add", in("arg, x1", 20.0),
