@@ -24,7 +24,7 @@ deployment(name: 'blitz-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:${v.blitz}'
+    artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:2.3'
     artifact id: 'blitz-cfg', "org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion()
 
     service(name: "BlitzSpace") {

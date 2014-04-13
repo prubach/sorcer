@@ -71,7 +71,8 @@ public class JobberAccessor extends ServiceAccessor {
                         + Accessor.getAccessorType());
             } else {
                 jobber = Accessor.getService(jobberName, Jobber.class);
-                cache.put(Jobber.class.getName(), jobber);
+                if (jobber!=null)
+                    cache.put(Jobber.class.getName(), jobber);
             }
             return jobber;
         } catch (Exception e) {

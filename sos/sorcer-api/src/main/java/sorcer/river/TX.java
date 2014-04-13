@@ -9,6 +9,7 @@ import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.service.Accessor;
+import sorcer.service.txmgr.TransactionManagerAccessor;
 
 import java.rmi.RemoteException;
 
@@ -34,13 +35,14 @@ public class TX {
 
     synchronized public static Transaction.Created createTransaction(long transactionLeaseTimeout) {
         try {
-            TransactionManager tManager = Accessor.getService(TransactionManager.class);
+            //TransactionManager tManager = Accessor.getService(TransactionManager.class);
+            TransactionManager tManager = TransactionManagerAccessor.getTransactionManager();
             if (tManager == null) {
                 return null;
             }
             Transaction.Created created = TransactionFactory.create(tManager,
                     transactionLeaseTimeout);
-            logger.info("Transaction created {}", created);
+            logger.debug("Transaction created {}", created);
 
             leaseManager.renewFor(created.lease, Lease.FOREVER, transactionLeaseTimeout, null);
 

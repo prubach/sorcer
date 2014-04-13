@@ -66,7 +66,8 @@ public class SpacerAccessor extends ServiceAccessor {
                         + Accessor.getAccessorType());
             } else {
                 spacer = Accessor.getService(spacerName, Spacer.class);
-                cache.put(Spacer.class.getName(), spacer);
+                if (spacer!=null)
+                    cache.put(Spacer.class.getName(), spacer);
             }
             return spacer;
         } catch (Exception e) {

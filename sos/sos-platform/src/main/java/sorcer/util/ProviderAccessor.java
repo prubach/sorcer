@@ -201,13 +201,17 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
     protected Cataloger getCataloger(String serviceName) {
         boolean catIsOk;
-        catIsOk = Accessor.isAlive((Provider) cataloger);
 		try {
-			if (catIsOk) {
+            catIsOk = Accessor.isAlive((Provider) cataloger);
+            if (catIsOk) {
 				return cataloger;
 			} else {
                 ServiceItem[] serviceItems = getServiceItems(Accessor.getServiceTemplate(null, serviceName, new Class[]{Cataloger.class}, null), 1, 1, Filters.any(), SorcerEnv.getLookupGroups());
-                return cataloger = serviceItems.length == 0 ? null : (Cataloger) serviceItems[0].service;
+                cataloger = serviceItems.length == 0 ? null : (Cataloger) serviceItems[0].service;
+                if (Accessor.isAlive((Provider)cataloger))
+                    return cataloger;
+                else
+                    return null;
             }
 		} catch (Exception e) {
 			logger.throwing(ProviderAccessor.class.getName(), "getService", e);

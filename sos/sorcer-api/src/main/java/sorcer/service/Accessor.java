@@ -247,8 +247,8 @@ public class Accessor {
         try {
             provider.getProviderName();
             return true;
-        } catch (RemoteException e) {
-            logger.warning("Provider is dead " + e.getMessage());
+        } catch (Exception e) {
+            logger.finest("Provider is dead " + e.getMessage());
             return false;
         }
     }
