@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import sorcer.core.InclusiveContext;
 import sorcer.service.ContextException;

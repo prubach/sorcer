@@ -492,7 +492,7 @@ public class ControlContext extends ServiceContext implements Strategy {
 		int result;
 		try {
 			String i = getAttributeValue(exertion, PRIORITY);
-			result = (i == NULL) ? NORMAL_PRIORITY : Integer.parseInt(i);
+			result = (NULL.equals(i)) ? NORMAL_PRIORITY : Integer.parseInt(i);
 		} catch (ClassCastException ex) {
 			logger.throwing(ControlContext.class.getName(), "getPriority", ex);
 			return -1;

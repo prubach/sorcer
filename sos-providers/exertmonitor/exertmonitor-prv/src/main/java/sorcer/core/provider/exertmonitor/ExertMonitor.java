@@ -115,7 +115,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 	}
 
-	Object resourcesWriteLock = new Object();
+	final Object resourcesWriteLock = new Object();
 
 	public Exertion register(RemoteEventListener lstnr, Exertion ex,
 			long duration) throws RemoteException {

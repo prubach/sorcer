@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
@@ -271,9 +272,9 @@ public class LusTree {
 
 				newNode.add(mNode);
 			}
-		} catch (Exception ex) {
-
-		}
+		} catch (RuntimeException ex) {
+            _logger.log(Level.WARNING, "Error", ex);
+        }
 	}
 
 	private static void addMethodsToNode(Class clazz,
@@ -294,8 +295,8 @@ public class LusTree {
 
 				mNode.add(newNode);
 			}
-		} catch (Exception ex) {
-
+		} catch (RuntimeException ex) {
+            _logger.log(Level.WARNING, "Error", ex);
 		}
 
 	}
@@ -330,8 +331,8 @@ public class LusTree {
 			}
 			return buf.toString();
 
-		} catch (Exception ex) {
-
+		} catch (RuntimeException ex) {
+            _logger.log(Level.WARNING, "Error", ex);
 		}
 		return method.getName();
 	}

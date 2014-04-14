@@ -32,7 +32,7 @@ import java.util.zip.ZipFile;
 import sorcer.ssb.browser.api.SSBPluginException;
 
 public class FilterRegistry implements Runnable {
-	private ArrayList _filters = new ArrayList();
+	final private ArrayList _filters = new ArrayList();
 	private File _toolsDir;
 
 	/**

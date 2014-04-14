@@ -61,9 +61,9 @@ public class AccountDispatcher implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		String action = event.getActionCommand();
 		logger.info("actionPerformed>>action: " + action);
-		if (action == AccountModel.DEPOSIT)
+		if (AccountModel.DEPOSIT.equals(action))
 			makeDeposit();
-		else if (action == AccountModel.WITHDRAW)
+		else if (AccountModel.WITHDRAW.equals(action))
 			makeWithdrawl();
 	}
 }

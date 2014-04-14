@@ -42,7 +42,7 @@ public class ScriptThread extends Thread {
 		private File scriptFile;
 		private Object result;
 		private Object target = null;
-		private GroovyShell gShell;
+		final private GroovyShell gShell;
         private Configuration config;
         private boolean debug = false;
 

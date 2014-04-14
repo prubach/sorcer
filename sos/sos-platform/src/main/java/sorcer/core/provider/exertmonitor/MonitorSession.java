@@ -253,7 +253,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public void done(Context<?> ctx) throws MonitorException {
 		if (ctx == null)
-			new NullPointerException("Assertion Failed: ctx cannot be null");
+			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,

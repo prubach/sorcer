@@ -184,17 +184,17 @@ public class SignatureDispatcherForCataloger implements SignatureDispatchment {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String comm = e.getActionCommand();
-		if (comm == SignatureView.PROVIDER_SEARCH) {
+		if (SignatureView.PROVIDER_SEARCH.equals(comm)) {
 			String searchedProvider = ((JTextField) (e.getSource())).getText();
 			model.setProviders(processSearch(searchedProvider, model
 					.getBackupProviders()), true);
 		}
-		if (comm == SignatureView.INTERFACE_SEARCH) {
+		if (SignatureView.INTERFACE_SEARCH.equals(comm)) {
 			String searchedInterface = ((JTextField) (e.getSource())).getText();
 			model.setInterfaces(processSearch(searchedInterface, model
 					.getBackupInterfaces()), true);
 		}
-		if (comm == SignatureView.METHOD_SEARCH) {
+		if (SignatureView.METHOD_SEARCH.equals(comm)) {
 			String searchedMethod = ((JTextField) (e.getSource())).getText();
 			model.setMethods(processSearch(searchedMethod, model
 					.getBackupMethods()), true);

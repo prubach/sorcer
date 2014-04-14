@@ -129,7 +129,7 @@ public class SorcerEnv {
         try {
             port = getAnonymousPort();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "anonymous port", e);
         }
         return port;
     }
@@ -759,7 +759,7 @@ public class SorcerEnv {
                 getEnvProperties().put(P_SPACE_NAME, val);
 
         } catch (AccessControlException ae) {
-            ae.printStackTrace();
+            logger.log(Level.WARNING, "Access Error", ae);
         }
     }
 
@@ -943,7 +943,7 @@ public class SorcerEnv {
         try {
             getEnvProperties().setProperty(P_WEBSTER_INTERFACE, getHostName());
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Error", e);
             return;
         }
         try {
@@ -954,9 +954,9 @@ public class SorcerEnv {
                 getEnvProperties().store(new FileOutputStream(getEnvironment().loadedEnvFile),
                         "SORCER auto-generated environment properties");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Error", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Error", e);
         }
     }
 
@@ -984,7 +984,7 @@ public class SorcerEnv {
                 String val = codebase.replace(pattern, getHostAddress());
                 System.setProperty("java.rmi.server.codebase", val);
             } catch (UnknownHostException e1) {
-                e1.printStackTrace();
+                logger.log(Level.WARNING, "Error", e1);
             }
         }
     }
@@ -1393,6 +1393,7 @@ public class SorcerEnv {
                 System.setProperty(SORCER_HOME, hd);
                 return;
             } catch (IOException io) {
+                logger.log(Level.WARNING, "Error whils setting home dir", io);
             }
         }
         hd = System.getProperty(SORCER_HOME);
@@ -1402,6 +1403,7 @@ public class SorcerEnv {
                 this.setSorcerHome(hd);
                 return;
             } catch (IOException io) {
+                logger.log(Level.WARNING, "Error whils setting home dir", io);
             }
         }
         throw new IllegalArgumentException(hd
@@ -1594,7 +1596,7 @@ public class SorcerEnv {
                 try {
                     value = getHostAddress();
                 } catch (UnknownHostException ex) {
-                    ex.printStackTrace();
+                    logger.log(Level.WARNING, "Error", ex);
                 }
                 props.put(key, value);
             }
@@ -1618,7 +1620,7 @@ public class SorcerEnv {
                 try {
                     evalue = getHostAddress();
                 } catch (UnknownHostException e1) {
-                    e1.printStackTrace();
+                    logger.log(Level.WARNING, "Error", e1);
                 }
                 props.put(key, evalue);
             }

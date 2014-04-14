@@ -175,10 +175,6 @@ abstract public class ExertDispatcher implements Dispatcher,
         return xrt;
     }
 
-    public static ExertDispatcher getDispatcher(String jobID) {
-        return dispatchers.get(jobID);
-    }
-
     public int getState() {
         return state;
     }

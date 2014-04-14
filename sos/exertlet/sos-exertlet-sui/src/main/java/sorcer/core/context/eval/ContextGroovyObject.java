@@ -71,7 +71,7 @@ public class ContextGroovyObject implements Serializable
      */
     public Object getValue() throws Exception
     {
-        if( expression == "" )
+        if( "".equals(expression) )
             return null;
         try
         {
@@ -123,7 +123,7 @@ public class ContextGroovyObject implements Serializable
      */
     public Object getValue(HashMap<String,Object> attributes ) throws Exception
     {
-        if( expression == "" )
+        if("".equals(expression))
             return null;
         try
         {

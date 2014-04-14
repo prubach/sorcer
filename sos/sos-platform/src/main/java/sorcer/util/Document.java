@@ -60,7 +60,7 @@ public class Document implements Serializable {
 	}
 
 	public boolean isOutOfDate() {
-		return (versionID == currentVersionID);
+		return (versionID.equals(currentVersionID));
 	}
 
 	public String getAccessName() {

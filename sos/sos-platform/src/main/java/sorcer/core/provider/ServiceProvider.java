@@ -1253,15 +1253,15 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 				file.createNewFile();
 			ObjectLogger.persist(fileName, sid, true);
 		} catch (Exception e) {
-			// e.printStackTrace();
-			logger.info("Cannot write service ID to persistent storage. So writting to present directory");
+			logger.warn("Cannot write service ID to persistent storage. So writing to present directory");
 			try {
 				File file = new File("provider.sid");
 				if (!file.exists())
 					file.createNewFile();
 				ObjectLogger.persist("provider.sid", sid, true);
 			} catch (Exception ex) {
-			}
+                logger.warn("Could not save SID file", ex);
+            }
 		}
 	}
 

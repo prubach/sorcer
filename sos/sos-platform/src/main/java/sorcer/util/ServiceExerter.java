@@ -20,6 +20,7 @@ package sorcer.util;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;

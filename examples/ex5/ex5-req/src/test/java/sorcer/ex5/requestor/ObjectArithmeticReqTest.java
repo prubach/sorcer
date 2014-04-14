@@ -137,7 +137,7 @@ public class ObjectArithmeticReqTest {
 		assertEquals(((Job)job).getJobValue("1job1task/subtract/result/value"), 400.0);
 	}
 	
-	private static Task getAddTask() throws Exception {
+	protected static Task getAddTask() throws Exception {
 		Context context = new PositionalContext("add");
 		context.putInValue("arg1/value", 20.0);
 		context.putInValue("arg2/value", 80.0);
@@ -149,7 +149,7 @@ public class ObjectArithmeticReqTest {
 		return task;
 	}
 
-	private static Task getMultiplyTask() throws Exception {
+	protected static Task getMultiplyTask() throws Exception {
 		Context context = new PositionalContext("multiply");
 		context.putInValue("arg1/value", 10.0);
 		context.putInValue("arg2/value", 50.0);
@@ -161,7 +161,7 @@ public class ObjectArithmeticReqTest {
 		return task;
 	}
 
-	private static Task getSubtractTask() throws Exception {
+	protected static Task getSubtractTask() throws Exception {
 		PositionalContext context = new PositionalContext("subtract");
 		// We want to stick in the result of multiply in here
 		context.putInValueAt("arg1/value", 0.0, 1);

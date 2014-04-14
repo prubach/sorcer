@@ -36,7 +36,7 @@ import java.rmi.RMISecurityManager;
 public class ServiceDiscoveryHelper{
 
  	private LeaseRenewalManager _lrm=new LeaseRenewalManager();
- 	private Object _lock=new Object();
+ 	final private Object _lock = new Object();
  	private Object _proxy;
  	 
 	/**

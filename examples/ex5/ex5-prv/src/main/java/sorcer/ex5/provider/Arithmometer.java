@@ -24,8 +24,9 @@ import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ArrayContext;
 import sorcer.core.context.Contexts;
@@ -49,8 +50,8 @@ public class Arithmometer implements Serializable {
 
     public static final String RESULT_PATH = "result/value";
 			
-	public final static Logger logger = Logger.getLogger(Arithmometer.class
-			.getName());
+	public final static Logger logger = LoggerFactory.getLogger(Arithmometer.class
+            .getName());
 
 	/**
 	 * Implements the {@link Adder} interface.
@@ -184,7 +185,7 @@ public class Arithmometer implements Serializable {
                 result = result/inputs.size();
             } else throw new ContextException("Not supported operation: " + selector);
 
-			logger.info(selector + " result: \n" + result);
+            logger.info("{} result: {}", selector, result);
 
 			String outputMessage = "calculated by " + getHostname();
 			// set return value
@@ -277,19 +278,26 @@ public class Arithmometer implements Serializable {
                 throw new ContextException("Not supported operation: " +  selector);
             }
 
-			logger.info(selector + " result: \n" + result);
+            logger.info("{} result: {}", selector, result);
 
 			String outputMessage = "calculated by " + getHostname();
 			if (context.getReturnPath() != null) {
-				context.setReturnValue(result);
+                logger.debug("Putting {} in {} under {}", result, context.getName(), context.getReturnPath());
+                context.setReturnValue(result);
 			}
 			else if (outpaths.size() == 1) {
-				// put the result in the existing output path
+                logger.debug("Putting {} in {} under {}", result, cxt.getName(), outpaths.get(0));
+                // put the result in the existing output path
 				cxt.putValue(outpaths.get(0), result);
-				cxt.putValue(path(outpaths.get(0), ArrayContext.DESCRIPTION), outputMessage);
+                String outPath = path(outpaths.get(0), ArrayContext.DESCRIPTION);
+                logger.debug("Putting {} in {} under {}", result, cxt.getName(), outPath);
+                cxt.putValue(outPath, outputMessage);
 			} else {
+                logger.debug("Putting {} in {} under {}", result, cxt.getName(), RESULT_PATH);
 				cxt.putValue(RESULT_PATH, result);
-				cxt.putValue(path(RESULT_PATH, ArrayContext.DESCRIPTION), outputMessage);
+                String outPath = path(RESULT_PATH, ArrayContext.DESCRIPTION);
+                logger.debug("Putting {} in {} under {}", result, cxt.getName(), outPath);
+                cxt.putValue(outPath, outputMessage);
 			}
 		} catch (Exception ex) {
 			// ContextException, UnknownHostException

@@ -114,12 +114,12 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 					&& !((ControlContext)job.getControlContext()).isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
-				new JobThread((Job) job, this).start();
-				return job;
+                Job _job = (Job) job;
+                new Thread(new JobThread(_job, this), "Thread-" + _job.getContextName()).start();
+                return job;
 			} else {
 				JobThread jobThread = new JobThread((Job) job, this);
-				jobThread.start();
-				jobThread.join();
+				jobThread.run();
 				Job result = jobThread.getResult();
 				logger.trace("<== Result: " + result);
 				return result;

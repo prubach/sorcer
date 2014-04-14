@@ -155,11 +155,12 @@ public class LoaderConfigurationHelper {
         if (curCodebase!=null) codebaseSb.append(curCodebase);
         List<URL> codebaseUrls = new ArrayList<URL>();
         URL websterUrl = null;
-        try {
-            if (websterStrUrl!=null)
+        if (websterStrUrl != null)
+            try {
                 websterUrl = new URL(websterStrUrl);
-        } catch (MalformedURLException me) {
-        }
+            } catch (MalformedURLException me) {
+                logger.log(Level.WARNING, "Malformed url " + websterStrUrl, me);
+            }
         for (String codebaseStr : codebaseLines) {
             if (codebaseStr.startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX))
                 codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();

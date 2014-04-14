@@ -14,6 +14,7 @@ import sorcer.ui.serviceui.UIDescriptorFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HelloWorldImplUI extends JPanel {
@@ -43,8 +44,8 @@ public class HelloWorldImplUI extends JPanel {
 				}
 			});
 		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+            logger.log(Level.WARNING, "Error", ex);
+        }
 	}
 	
 	public void createUI() {
