@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>sorcer-container</artifactId>
+    <name>SORCER OS :: container</name>
 
     <dependencies>
         <dependency>

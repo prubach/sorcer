@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>sorcer-spi</artifactId>
+    <name>SORCER OS :: SPI</name>
 
     <dependencies>
         <dependency>

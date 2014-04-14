@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>logger-platform</artifactId>
+    <name>SORCER OS :: providers :: logger :: platform</name>
 
     <dependencies>
         <dependency>
