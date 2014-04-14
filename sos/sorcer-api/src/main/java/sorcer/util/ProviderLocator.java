@@ -290,14 +290,6 @@ public class ProviderLocator implements DynamicAccessor {
 		throw new SignatureException("Not implemented by this service accessor");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see sorcer.service.DynamicAccessor#getService(sorcer.service.Signature)
-	 */
-	public Service getServicer(Signature signature) throws SignatureException {
-		return getService(signature);
-	}
 	
 	public static Service getService(Signature signature) throws SignatureException {
 		Object proxy = null;
@@ -324,4 +316,18 @@ public class ProviderLocator implements DynamicAccessor {
 		} else
 			return (Service) proxy;
 	}
+
+
+    /*
+ * (non-Javadoc)
+ *
+ * @see sorcer.service.DynamicAccessor#getService(sorcer.service.Signature)
+ */
+    public <T> T getProvider(String serviceName, Class<T> serviceType) {
+        try {
+            return (T)getServiceImpl(serviceType, serviceName, WAIT_FOR);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

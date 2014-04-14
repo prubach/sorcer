@@ -28,4 +28,6 @@ import net.jini.lookup.ServiceItemFilter;
 public interface DynamicAccessor {
 
     ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups);
+
+    <T> T getProvider(String providerName, Class<T> serviceType);
 }

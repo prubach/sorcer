@@ -31,6 +31,8 @@ import sorcer.core.AdministratableProvider;
 import sorcer.core.RemoteContextManagement;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
+import sorcer.core.signature.ObjectSignature;
+import sorcer.core.signature.ServiceSignature;
 import sorcer.service.DynamicAccessor;
 import sorcer.service.Service;
 import sorcer.service.Signature;
@@ -108,6 +110,14 @@ import com.sun.jini.start.LifeCycle;
         @Override
         public ServiceItem[] getServiceItems(ServiceTemplate template, int minMatches, int maxMatches, ServiceItemFilter filter, String[] groups) {
             throw new UnsupportedOperationException();
+        }
+
+        public <T> T getProvider(String serviceName, Class<T> serviceType) {
+            try {
+                return (T)getService(new ObjectSignature(serviceName, serviceType));
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 

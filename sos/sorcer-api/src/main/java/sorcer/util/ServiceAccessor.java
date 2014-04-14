@@ -76,9 +76,9 @@ public class ServiceAccessor implements DynamicAccessor {
 
 	static private boolean cacheEnabled = SorcerEnv.isLookupCacheEnabled();
 
-	static long WAIT_FOR = SorcerEnv.getLookupWaitTime();
+	protected static long WAIT_FOR = SorcerEnv.getLookupWaitTime();
 
-	final static int LUS_REAPEAT = 3;
+    protected final static int LUS_REAPEAT = 3;
 
 	private DiscoveryManagement ldManager = null;
 
@@ -381,6 +381,7 @@ public class ServiceAccessor implements DynamicAccessor {
 			return null;
 	}
 
+
 	/**
 	 * Returns a service matching serviceName and serviceType using Jini lookup
 	 * service.
@@ -414,7 +415,16 @@ public class ServiceAccessor implements DynamicAccessor {
 		return proxy;
 	}
 
-	/**
+
+    /**
+     * Implements DynamicAccessor interface - provides compatibility with ProviderAccessor
+     */
+    public <T> T getProvider(String serviceName, Class<T> serviceType) {
+        return getService(serviceName, serviceType);
+    }
+
+
+    /**
 	 * Returns a service matching a given template filter, and Jini lookup
 	 * service.
 	 *
