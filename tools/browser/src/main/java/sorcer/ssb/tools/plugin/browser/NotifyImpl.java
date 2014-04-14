@@ -37,7 +37,7 @@ public class NotifyImpl implements RemoteEventListener, Remote, Runnable,
 	public NotifyImpl(RemoteEventListener impl, ServiceBrowserUI bi) {
 		_impl = impl;
 		_browserImpl = bi;
-		new Thread(_browserImpl.wrap(this)).start();
+		new Thread(_browserImpl.wrap(this), "[" + Thread.currentThread().getName() + "] Notify-" + impl.toString()).start();
 	}
 
 	public TrustVerifier getProxyVerifier() {

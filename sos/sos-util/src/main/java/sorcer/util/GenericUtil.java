@@ -86,6 +86,7 @@ public class GenericUtil implements Serializable {
          * @param process
          */
         protected Worker(final Process process) {
+            super("[" + Thread.currentThread().getName() + "] ProcessWorker-" + process.toString());
             this.process = process;
         }
 
@@ -135,6 +136,7 @@ public class GenericUtil implements Serializable {
          * @param process
          */
         protected WorkerNoBlock(final Process process) {
+            super("[" + Thread.currentThread().getName() + "] ProcessWorker-" + process.toString());
             this.process = process;
         }
 
@@ -1584,7 +1586,7 @@ public class GenericUtil implements Serializable {
      * @throws IOException
      */
     public static void redirectOutput(Process p, File file) throws IOException {
-        new Thread(new RedirectInputStreamRunnable(p.getInputStream(), file))
+        new Thread(new RedirectInputStreamRunnable(p.getInputStream(), file), "[" + Thread.currentThread().getName() + "] STDOUT-" + p.toString())
                 .run();
     }
 
@@ -1598,7 +1600,7 @@ public class GenericUtil implements Serializable {
      * @throws IOException
      */
     public static void redirectError(Process p, File file) {
-        new Thread(new RedirectInputStreamRunnable(p.getErrorStream(), file))
+        new Thread(new RedirectInputStreamRunnable(p.getErrorStream(), file), "[" + Thread.currentThread().getName() + "] STDERR-" + p.toString())
                 .run();
     }
 
@@ -3950,6 +3952,7 @@ class StreamGobbler extends Thread {
     public StreamGobbler(InputStream is, String type,
                          boolean displayStreamOutput, File logFile, File dir)
             throws FileNotFoundException {
+        super("[" + Thread.currentThread().getName() + "] StreamGobbler-" + logFile.getPath());
         this.is = is;
         this.type = type;
         this.displayStreamOutput = displayStreamOutput;
@@ -4021,6 +4024,7 @@ class StreamJobControlWriter extends Thread {
     public StreamJobControlWriter(OutputStream os, boolean displayStreamOutput, Logger logger
             , File dir)
             throws FileNotFoundException {
+        super("[" + Thread.currentThread().getName() + "] StreamJobControlWriter");
         this.os = os;
         this.ps = new PrintStream(os);
         this.displayStreamOutput = displayStreamOutput;

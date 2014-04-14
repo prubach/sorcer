@@ -39,6 +39,7 @@ public class JobThread extends Thread {
 	Provider provider;
 
 	public JobThread(Job job, Provider provider) {
+        super("[" + Thread.currentThread().getName() + "] Job-" + job.getName());
 		this.job = job;
 		this.provider = provider;
 	}

@@ -397,6 +397,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
         public ExertionThread(ServiceExertion exertion,
                               ExertDispatcher dispatcher) {
+            super("[" + Thread.currentThread().getName() + "] Exertion-" + exertion.getName());
             ex = exertion;
             this.dispatcher = dispatcher;
             if (isMonitored)

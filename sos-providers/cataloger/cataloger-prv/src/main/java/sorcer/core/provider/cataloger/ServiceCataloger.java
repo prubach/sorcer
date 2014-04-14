@@ -1323,7 +1323,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		private void refreshScreen(String msg) {
-			new Thread(new CatalogerEventListener(msg)).start();
+			new Thread(new CatalogerEventListener(msg), "[" + Thread.currentThread().getName() + "] CatalogerEventListener").start();
 		}
 
 		public void run() {

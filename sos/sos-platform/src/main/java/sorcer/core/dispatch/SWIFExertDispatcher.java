@@ -264,6 +264,7 @@ abstract public class SWIFExertDispatcher extends ExertDispatcher {
 
         public ExertionThread(ServiceExertion exertion,
                               ExertDispatcher dispatcher) {
+            super("[" + Thread.currentThread().getName() + "] Exert-" + exertion.getName());
             ex = exertion;
             this.dispatcher = dispatcher;
             if (isMonitored)

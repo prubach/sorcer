@@ -170,10 +170,10 @@ public class ExecUtils {
 		String out = null;
 		if (!outLogged) {
 			stdout = new Redir(process.getInputStream());
-			new Thread(stdout).start();
+			new Thread(stdout, "[" + Thread.currentThread().getName() + "] STDOUT-" + process.toString()).start();
 		}
 		Redir stderr = new Redir(process.getErrorStream());
-		new Thread(stderr).start();
+		new Thread(stderr, "[" + Thread.currentThread().getName() + "] STDERR-" + process.toString()).start();
 		// redirect input in the current thread
 		if (stdin != null) {
 			OutputStream pout = process.getOutputStream();
@@ -214,8 +214,8 @@ public class ExecUtils {
 		// concurrency to avoid stdio deadlocks
 		Redir stdout = new Redir(process.getInputStream());
 		Redir stderr = new Redir(process.getErrorStream());
-		new Thread(stdout).start();
-		new Thread(stderr).start();
+		new Thread(stdout, "[" + Thread.currentThread().getName() + "] STDOUT-" + process.toString()).start();
+		new Thread(stderr, "[" + Thread.currentThread().getName() + "] STDERR-" + process.toString()).start();
 		// redirect input in the current thread
 		if (stdin != null) {
 			OutputStream pout = process.getOutputStream();

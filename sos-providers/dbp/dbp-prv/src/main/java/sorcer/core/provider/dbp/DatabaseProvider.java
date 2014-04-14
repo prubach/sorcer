@@ -119,6 +119,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		Uuid uuid;
 
 		public PersistThread(Object object) {
+            super("[" + Thread.currentThread().getName() + "] PersistThread-" + ((Identifiable)object).getId());
 			this.object = object;
 			this.uuid = (Uuid)((Identifiable)object).getId();
 		}
@@ -154,6 +155,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 
 		public UpdateThread(URL url, Object object) throws InvalidObjectException {
+            super("[" + Thread.currentThread().getName() + "] UpdateThread-" + url);
 			this.object = object;
 			this.uuid = SdbUtil.getUuid(url);
 		}
@@ -183,7 +185,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		Store storeType;
 		
 		public DeleteThread(Uuid uuid, Store storeType) {
-			this.uuid = uuid;
+            super("[" + Thread.currentThread().getName() + "] DeleteThread-" + uuid);
+            this.uuid = uuid;
 			this.storeType = storeType;
 		}
 

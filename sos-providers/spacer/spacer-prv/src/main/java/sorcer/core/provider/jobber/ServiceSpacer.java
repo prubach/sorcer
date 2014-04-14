@@ -314,6 +314,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         private Provider provider;
 
         public JobThread(Job job, Provider provider) {
+            super("[" + Thread.currentThread().getName() + "] Job-" + job.getName());
             this.job = job;
             this.provider = provider;
         }
@@ -372,6 +373,7 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         private Provider provider;
 
         public TaskThread(Task task, Provider provider) {
+            super("[" + Thread.currentThread().getName() + "] Task-" + task.getName());
             this.task = task;
             this.provider = provider;
         }

@@ -24,6 +24,7 @@ public class BlockThread extends Thread {
 	Provider provider;
 
 	public BlockThread(Block block, Provider provider) {
+        super("[" + Thread.currentThread().getName() + "] Block-" + block.toString());
 		this.block = block;
 		this.provider = provider;
 	}

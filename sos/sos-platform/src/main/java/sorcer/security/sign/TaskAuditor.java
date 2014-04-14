@@ -69,7 +69,7 @@ public class TaskAuditor {
 	 */
 	public void audit(SignedServiceTask task) {
 		try {
-			Thread thread = new Thread(new AuditThread(task));
+			Thread thread = new Thread(new AuditThread(task), "[" + Thread.currentThread().getName() + "] Audit");
 			thread.start();
 		} catch (Exception ex) {
 			ex.printStackTrace();

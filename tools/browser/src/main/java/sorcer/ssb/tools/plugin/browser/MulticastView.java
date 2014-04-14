@@ -93,16 +93,16 @@ public class MulticastView extends JFrame {
 		getContentPane().add(splitter, BorderLayout.CENTER);
 		// getContentPane().add( _status,BorderLayout.SOUTH);
 
-		_updater1 = new Thread() {
+		_updater1 = new Thread(new Runnable(){
 			public void run() {
 				listen("224.0.1.84", 0);
 			}
-		};
-		_updater2 = new Thread() {
+		}, "listen-224.0.1.84");
+		_updater2 = new Thread(new Runnable() {
 			public void run() {
 				listen("224.0.1.85", 1);
 			}
-		};
+		}, "listen-224.0.1.85");
 		_updater1.start();
 		_updater2.start();
 		_output.setText("Waiting for multicast requests & announcements...\n");

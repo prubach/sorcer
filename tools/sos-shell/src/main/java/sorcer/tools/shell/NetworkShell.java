@@ -803,7 +803,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 						e.printStackTrace();
 					}
 				}
-			});
+			}, "[" + Thread.currentThread().getName() + "] exec-" + cmd);
 			edt.setDaemon(true);
 			edt.start();
 		}

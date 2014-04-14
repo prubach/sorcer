@@ -103,7 +103,7 @@ public class PluginRegistry implements Runnable {
 	public void init(File toolsDir) {
 		_toolsDir = toolsDir;
 		// System.out.println("### plugins dir="+toolsDir.getAbsolutePath());
-		new Thread(this).start();
+		new Thread(this, "[" + Thread.currentThread().getName() + "] PluginRegistry.init").start();
 	}
 
 	public void run() {

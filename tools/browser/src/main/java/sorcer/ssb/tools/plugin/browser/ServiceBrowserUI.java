@@ -677,7 +677,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 			public void run() {
 				updateFiltersImpl();
 			}
-		}));
+		}), "[" + Thread.currentThread().getName() + "] ServiceBrowser.updateFilters");
 		t.start();
 	}
 
@@ -1593,7 +1593,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 					}
 				}
-			}));
+			}), "[" + Thread.currentThread().getName() + "] ServiceBrowser-ping");
 			t.start();
 			try {
 
@@ -1988,7 +1988,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 				terminateImpl();
 			}
-		}));
+		}), "[" + Thread.currentThread().getName() + "] ServiceBrowser.terminate");
 		t.start();
 		try {
 			t.join();
@@ -2003,7 +2003,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 				terminateImpl();
 			}
-		}));
+		}), "[" + Thread.currentThread().getName() + "] ServiceBrowser.terminate");
 		t.start();
 	}
 
@@ -2057,7 +2057,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 				public void run() {
 					dicoveredImpl(reg);
 				}
-			}));
+			}), "[" + Thread.currentThread().getName() + "] ServiceBrowser-discovered");
 			t.start();
 
 		}

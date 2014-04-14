@@ -613,7 +613,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			logger.info("Provider service started: {} {}", getProviderName(), this);
 
 			// allow for enough time to export the provider's proxy and stay alive
-			new Thread(ProviderDelegate.threadGroup, new KeepAwake()).start();
+			new Thread(ProviderDelegate.threadGroup, new KeepAwake(), "[" + Thread.currentThread().getName() + "] KeepAwake-" + getName()).start();
 		} catch (Throwable e) {
 			initFailed(e);
 		}
@@ -1359,8 +1359,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					public void run() {
 						doMonitoredTask(exertion, null);
 					}
-				});
-				try {
+                }, "[" + Thread.currentThread().getName() + "] " + getName() + "-doMonitoredTask-" + exertion.getName());
+                try {
 					exertion.getContext().putValue(
 							ControlContext.EXERTION_WAITED_FROM,
 							StringUtils.getDateTime());

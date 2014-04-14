@@ -85,7 +85,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 				TcpServerEndpoint.getInstance(0), new BasicILFactory());
 
 		proxy = (Landlord) exporter.export(this);
-		Thread llt = new Thread(this);
+		Thread llt = new Thread(this, "[" + Thread.currentThread().getName() + "] MonitorLandlord.checkLeases");
 		llt.setDaemon(true);
 		llt.start();
 	}

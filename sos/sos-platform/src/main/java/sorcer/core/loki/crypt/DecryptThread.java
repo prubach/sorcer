@@ -54,6 +54,7 @@ class DecryptThread extends Thread {
 	 *            cipher text byte array to decrypt
 	 */
 	public DecryptThread(Writer out, Cipher decryptCipher, byte[] data) {
+        super("[" + Thread.currentThread().getName() + "] Decrypt");
 		this.init(out, decryptCipher, new StringReader(new String(data)));
 	}
 
@@ -66,6 +67,7 @@ class DecryptThread extends Thread {
 	 *            cipher text string to decrypt
 	 */
 	public DecryptThread(Writer out, Cipher decryptCipher, String data) {
+        super("[" + Thread.currentThread().getName() + "] Decrypt");
 		this.init(out, decryptCipher, new StringReader(data));
 	}
 

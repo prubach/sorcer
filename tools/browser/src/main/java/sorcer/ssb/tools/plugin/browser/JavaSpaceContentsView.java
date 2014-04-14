@@ -309,7 +309,7 @@ public class JavaSpaceContentsView extends JPanel implements Runnable {
 							auto.setEnabled(true);
 						}
 					}
-				}));
+				}), "[" + Thread.currentThread().getName() + "] JavaSpaceContentsView-update");
 				t.start();
 
 			}
@@ -327,7 +327,7 @@ public class JavaSpaceContentsView extends JPanel implements Runnable {
 					auto.setText("    Stop    ");
 					// maxEntries=Integer.parseInt(max.getText().trim());
 					_updater = new Thread(_sbui
-							.wrap(JavaSpaceContentsView.this));
+							.wrap(JavaSpaceContentsView.this), "JavaSpaceContents-update");
 					_updater.start();
 				}
 			}

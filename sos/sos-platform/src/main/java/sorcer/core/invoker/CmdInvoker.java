@@ -207,7 +207,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 
 		final Process process = Runtime.getRuntime().exec(cmd);				
 		final PrintWriter logOut = new PrintWriter(logFile);
-		Thread scriptLogger = new Thread() {
+		Thread scriptLogger = new Thread(new Runnable() {
 			public void run() {
 				String line;
 				BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -228,7 +228,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 									+ logFile);
 				}
 			}
-		};
+		}, Thread.currentThread().getName()+"-STDIN-"+process.toString());
 		scriptLogger.start();
 		CmdResult result = null;
 		if (stdin != null)

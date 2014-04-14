@@ -744,7 +744,7 @@ public class ProviderDelegate {
 						workerTransactional, queueSize == 0), spaceWorkerPool);
                 spaceTakers.add(worker);
 			}
-			Thread sith = new Thread(interfaceGroup, worker);
+			Thread sith = new Thread(interfaceGroup, worker, "[" + Thread.currentThread().getName() + "] SpaceTaker-" + spaceName);
 			sith.setDaemon(true);
 			sith.start();
 			logger.info("*** space worker-" + i + " started for: "
@@ -776,7 +776,7 @@ public class ProviderDelegate {
 							spaceWorkerPool);
                     spaceTakers.add(worker);
 				}
-				Thread snth = new Thread(namedGroup, worker);
+				Thread snth = new Thread(namedGroup, worker, "[" + Thread.currentThread().getName() + "] SpaceTaker-" + getProviderName());
 				snth.setDaemon(true);
 				snth.start();
 				logger.info("*** named space worker-" + i + " started for: "

@@ -187,10 +187,11 @@ abstract public class ExertDispatcher implements Dispatcher,
         volatile boolean stop = false;
 
         public DispatchThread() {
+            super("[" + Thread.currentThread().getName() + "] Dispatch");
         }
 
         public DispatchThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, "exertionDispatcher");
+            super(disatchGroup, Thread.currentThread().getName() +"-Dispatch");
         }
 
         public void run() {

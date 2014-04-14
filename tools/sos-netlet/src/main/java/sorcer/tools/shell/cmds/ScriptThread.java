@@ -50,6 +50,7 @@ public class ScriptThread extends Thread {
                 .getName());
 
         public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
+            super("[" + Thread.currentThread().getName() + "] Script");
             this.config = config;
             this.debug = debug;
             RootLoader loader = null;
@@ -89,12 +90,14 @@ public class ScriptThread extends Thread {
         }
 
         public ScriptThread(String script, ClassLoader classLoader) {
+            super("[" + Thread.currentThread().getName() + "] Script");
             this.gShell = new GroovyShell(classLoader);
             this.script = script;
             this.parseScript();
         }
 
 		public ScriptThread(File file, ClassLoader classLoader) {
+            super("[" + Thread.currentThread().getName() + "] Script-" + file.getPath());
             this.gShell = new GroovyShell(classLoader);
 			this.scriptFile = file;
             this.parseScript();

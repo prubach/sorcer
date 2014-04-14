@@ -54,6 +54,7 @@ class EncryptThread extends Thread {
 	 *            cipher text byte array to encrypt
 	 */
 	public EncryptThread(Writer out, Cipher encryptCipher, byte[] data) {
+        super("[" + Thread.currentThread().getName() + "] Encrypt");
 		this.init(out, encryptCipher, new StringReader(new String(data)));
 	}
 
@@ -66,6 +67,7 @@ class EncryptThread extends Thread {
 	 *            cipher text string to encrypt
 	 */
 	public EncryptThread(Writer out, Cipher encryptCipher, String data) {
+        super("[" + Thread.currentThread().getName() + "] Encrypt");
 		this.init(out, encryptCipher, new StringReader(data));
 	}
 

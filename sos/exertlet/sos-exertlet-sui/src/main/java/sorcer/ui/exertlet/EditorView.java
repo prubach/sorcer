@@ -483,6 +483,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		Object result;
 
 		public ExertionThread(String script) {
+            super("[" + Thread.currentThread().getName() + "] Exertion");
 			this.script = script;
 		}
 

@@ -89,7 +89,7 @@ public class ServiceBrowser {
 		}
 		setConfiguration(config);
 		try {
-			Runtime.getRuntime().addShutdownHook(new Thread() {
+			Runtime.getRuntime().addShutdownHook(new Thread("ServiceBrowser Shutdown Hook") {
 				public void run() {
 					saveSettings();
 					ServiceBrowserUI.terminateAll();
@@ -298,7 +298,7 @@ public class ServiceBrowser {
 
 			final SplashScreen splash = new SplashScreen(f, logo.getImage());
 			f.setVisible(true);
-			Thread t = new Thread() {
+			Thread t = new Thread(new Runnable(){
 				public void run() {
 
 					try {
@@ -315,7 +315,7 @@ public class ServiceBrowser {
 					}
 					f.toFront();
 				}
-			};
+			}, Thread.currentThread().getName()+"-ServiceBrowser.openWindows");
 			t.start();
 
 			// now open any other persistent views

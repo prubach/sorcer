@@ -111,7 +111,7 @@ public class ExecCmd extends ShellCmd {
 				}
 				out.println(result.getOut());
 			}
-		});
+		}, "[" + Thread.currentThread().getName() + "] exec-" + cmd);
 		execThread.start();
 	}
 }

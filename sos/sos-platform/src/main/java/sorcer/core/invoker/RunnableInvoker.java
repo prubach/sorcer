@@ -65,7 +65,7 @@ public class RunnableInvoker<T> extends Invoker<T> {
 		} catch (ContextException e) {
 			throw new InvocationException(e);
 		}
-		new Thread(runnable).start();
+		new Thread(runnable, "[" + Thread.currentThread().getName() + "] RunnableInvoker-" + runnable.toString()).start();
 		return null;
 	}
 	
