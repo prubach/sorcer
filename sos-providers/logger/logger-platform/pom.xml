@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-api</artifactId>
+            <artifactId>sorcer-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

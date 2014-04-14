@@ -37,10 +37,11 @@
             <artifactId>groovy-all</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${v.slf4j}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
