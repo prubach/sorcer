@@ -46,6 +46,7 @@ import static sorcer.eo.operator.*;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+                 "org.sorcersoft.sorcer:sos-platform",
                 "org.sorcersoft.sorcer:ex6-api"})
 @SorcerServiceConfiguration(":ex6-cfg-all")
 public class ArithmeticNetTest {
