@@ -64,7 +64,7 @@ public class TransactionManagerAccessor extends ServiceAccessor{
     }
 
     private TransactionManager doGetNewTransactionManger() {
-        TransactionManager transactionMgr = Accessor.getService(null, TransactionManager.class, false);
+        TransactionManager transactionMgr = Accessor.getService(TransactionManager.class);
         if (transactionMgr!=null)
             cache.put(TransactionManager.class.getName(), transactionMgr);
         return transactionMgr;

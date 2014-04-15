@@ -631,16 +631,6 @@ abstract public class ExertDispatcher implements Dispatcher,
         }
     }
 
-/*    protected Cataloger getCatalog() {
-        try {
-            if (catalog == null)
-                catalog = Accessor.getService(Cataloger.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return catalog;
-    }*/
-
     public ProviderProvisionManager getProviderProvisionManager() {
         return providerProvisionManager;
     }

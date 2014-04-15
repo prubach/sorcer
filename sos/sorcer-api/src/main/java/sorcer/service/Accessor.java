@@ -127,20 +127,8 @@ public class Accessor {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getService(String serviceName, Class<T> serviceType, boolean isProvider){
-        if (!isProvider) return getService(serviceName, serviceType);
-        serviceName = overrideName(serviceName, serviceType);
-        ServiceTemplate serviceTemplate = getServiceTemplate(null, serviceName, new Class[]{serviceType}, null);
-        return (T) getService(serviceTemplate, Filters.any());
-    }
-
-
-    @SuppressWarnings("unchecked")
     public static <T> T getService(String serviceName, Class<T> serviceType){
         serviceName = overrideName(serviceName, serviceType);
-        T result = accessor.getProvider(serviceName, serviceType);
-        if (result!=null)
-            return result;
         ServiceTemplate serviceTemplate = getServiceTemplate(null, serviceName, new Class[]{serviceType}, null);
         return (T) getService(serviceTemplate, Filters.any());
     }
@@ -188,9 +176,8 @@ public class Accessor {
      * @return the requested {@link Service}
      */
     public static Object getService(Signature signature) {
-        return getService(signature.getProviderName(), signature.getServiceType());
-        //ServiceItem serviceItem = getServiceItem(signature);
-        //return serviceItem == null ? null : serviceItem.service;
+        ServiceItem serviceItem = getServiceItem(signature);
+        return serviceItem == null ? null : serviceItem.service;
     }
 
     public static ServiceItem getServiceItem(ServiceTemplate template, ServiceItemFilter filter){

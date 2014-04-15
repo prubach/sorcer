@@ -47,10 +47,8 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		} catch (ContextException e) {
 			throw new ExertionException(e);
 		}
-		for (int i = 0; i < inputXrts.size(); i++) {
-			ServiceExertion exertion = (ServiceExertion) inputXrts
-					.get(i);
-			workers.add(runExertion(exertion));
+		for (Exertion exertion : inputXrts) {
+			workers.add(runExertion((ServiceExertion)exertion));
 		}
 		collectResults();
 		dThread.stop = true;
@@ -61,9 +59,10 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		boolean isSuspended = false;
 		Exertion result = null;
 		while (workers.size() > 0) {
-			for (int i = 0; i < workers.size(); i++) {
-                if (!workers.get(i).isAlive()) {
-                    result = workers.get(i).getResult();
+            List<ExertionThread> workersToRemove = new ArrayList<ExertionThread>();
+			for (ExertionThread exThread : workers) {
+                if (!exThread.isAlive()) {
+                    result = exThread.getResult();
                     if (result != null) {
                         ServiceExertion se = (ServiceExertion) result;
                         se.stopExecTime();
@@ -71,12 +70,11 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
                             isFailed = true;
                         else if (se.getStatus() == SUSPENDED)
                             isSuspended = true;
-                        synchronized (workers) {
-                            workers.remove(i);
-                        }
+                        workersToRemove.add(exThread);
                     }
                 }
 			}
+            workers.removeAll(workersToRemove);
 		}
 
 		if (isFailed) {

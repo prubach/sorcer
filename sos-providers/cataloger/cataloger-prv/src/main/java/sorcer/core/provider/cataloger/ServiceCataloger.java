@@ -39,6 +39,7 @@ import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.entry.Name;
+import org.rioproject.admin.ServiceActivityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -610,7 +611,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 							return sItem;
 						} else {
 							// not Alive anymore removing from cataloger
-							// removeServiceItem(sItem);
+							removeServiceItem(sItem);
 						}
 					}
 				} while (sItem != null);
@@ -622,8 +623,15 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 						if (et instanceof Name
 								&& providerName.equals(((Name) et).name)) {
 							sItem = list.remove(i);
-							list.add(sItem);
-							return sItem;
+                            if (sItem != null) {
+                                if (isAlive(sItem)) {
+                                    list.add(sItem);
+                                    return sItem;
+                                } else {
+                                    // not Alive anymore removing from cataloger
+                                    removeServiceItem(sItem);
+                                }
+                            }
 						}
 					}
 				}
@@ -710,25 +718,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			}
 		}
 
-		/**
-		 * Tests if provider is still alive.
-		 * 
-		 * @param si service to check
-		 * @return true if a provider is alive, otherwise false
-		 */
-		private static boolean isAlive(ServiceItem si) {
-			if (si == null)
-				return false;
-			try {
-				String name = ((Provider) si.service).getProviderName();
-                return name != null;
-			} catch (RemoteException e) {
-				logger.warn("Service ID: " + si.serviceID
-						+ " is not Alive anymore");
-				// throw e;
-				return false;
-			}
-		}
 
 		public Map<String, String> getProviderMethods() throws RemoteException {
 			logger.info("Inside GetProviderMethods");
@@ -1335,7 +1324,33 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 	}
 
-	/**
+
+    /**
+     * Tests if provider is still alive.
+     *
+     * @param si service to check
+     * @return true if a provider is alive, otherwise false
+     */
+    private static boolean isAlive(ServiceItem si) {
+        if (si == null)
+            return false;
+        try {
+            if (si.service instanceof ServiceActivityProvider) {
+                boolean result = ((ServiceActivityProvider)si.service).isActive();
+            }
+            return true;
+            //String name = ((Provider) si.service).getProviderName();
+            //return name != null;
+        } catch (IOException e) {
+            logger.warn("Service ID: " + si.serviceID
+                    + " is not Alive anymore");
+            // throw e;
+            return false;
+        }
+    }
+
+
+    /**
 	 * Returns the service Provider from an item matching the template, or null
 	 * if there is no match. If multiple items match the template, it is
 	 * arbitrary as to which service object is returned. If the returned object
@@ -1395,7 +1410,12 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
                             continue SRVITEM;
                         }
                     }
-                    result.add(serviceItem);
+                    if (isAlive(serviceItem)) {
+                        result.add(serviceItem);
+                    } else {
+                        // not Alive anymore removing from cataloger
+                        cinfo.removeServiceItem(serviceItem);
+                    }
                     if (result.size() >= maxMatches) break;
                 }
             }

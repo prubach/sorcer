@@ -60,18 +60,7 @@ public class ServiceExertionTest {
 	// to avoid spelling errors in test cases define instance variables
 	private String arg = "arg", result = "result";
 	private String x1 = "x1", x2 = "x2", y = "y";
-	
-	static {
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-		SorcerEnv.debug = true;
-        setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sorcer-api"});
-	}
-	
+
 	@Before
 	public void setUp() throws Exception {
 		// create an exertions
