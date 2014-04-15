@@ -48,9 +48,7 @@ import com.sun.jini.start.LifeCycle;
 public class ExertMonitor extends ServiceProvider implements
         MonitoringManagement {
 
-	static transient final String LOGGER = "sorcer.core.provider.monitor.MonitororImpl";
-
-	static transient final Logger logger = Logger.getLogger(LOGGER);
+	static transient final Logger logger = Logger.getLogger(ExertMonitor.class.getName());
 
 	private MonitorLandlord landlord;
 

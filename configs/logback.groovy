@@ -23,6 +23,19 @@ scan()
 jmxConfigurator()
 def appenders = prepareAppenders()
 
+def exertMonitor = "ExertMonitor"
+def cataloger = "ServiceCataloger"
+def concatenator = "ServiceConcatenator"
+def jobber = "ServiceJobber"
+def spacer = "ServiceSpacer"
+def tasker = "ServiceTasker"
+def remoteLogger = "RemoteLoggerManager";
+def databaseProvider = "DatabaseProvider";
+
+for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, tasker, remoteLogger, databaseProvider]){
+    mkAppender(service);
+}
+
 /* Set up loggers */
 //logger("org.rioproject.cybernode", INFO)
 //logger("org.rioproject.cybernode.loader", INFO)
@@ -57,6 +70,17 @@ logger("net.jini.discovery.LookupDiscovery", OFF)
 
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
+
+logger("sorcer.core.provider.exertmonitor.ExertMonitor", info, [exertMonitor])
+logger("sorcer.core.provider.jobber.ServiceConcatenator", info, [concatenator])
+logger("sorcer.core.provider.jobber.ServiceJobber", info, [jobber])
+logger("sorcer.core.provider.jobber.ServiceSpacer", info, [spacer])
+logger("sorcer.core.provider.ServiceTasker", info, [tasker])
+logger("sorcer.core.provider.logger.RemoteLoggerManager", info, [remoteLogger])
+logger("sorcer.core.provider.dbp.DatabaseProvider", info, [databaseProvider])
+
+// do not also log to the main logger
+logger("sorcer.core.provider.cataloger.ServiceCataloger", info, [cataloger], false)
 
 //logger("sorcer.core.security", OFF)
 //logger("sorcer.boot", DEBUG)
@@ -144,6 +168,21 @@ def prepareAppenders() {
     return appenders
 }
 
+def mkAppender(String service) {
+    appender(service, FileAppender) {
+        file = new File(getLogDir(), service + ".log").path;
+
+        encoder(PatternLayoutEncoder) {
+            pattern = "%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
+        }
+    }
+    return service;
+}
+
+private String getLogDir() {
+    System.getProperty("RIO_LOG_DIR", new File(System.getProperty("sorcer.home"), "logs").path)
+}
+
 /**
  * Utility to check if the passed in string ends with a File.separator
  */
@@ -162,7 +201,7 @@ def checkEndsWithFileSeparator(String s) {
  * following format: pid@hostname. If the return includes the @hostname, the @hostname is stripped off.
  */
 def getLogLocationAndName() {
-    String logDir = checkEndsWithFileSeparator(System.getProperty("RIO_LOG_DIR"))
+    String logDir = checkEndsWithFileSeparator(getLogDir())
     String name = ManagementFactory.getRuntimeMXBean().getName();
     String pid = name;
     int ndx = name.indexOf("@");
