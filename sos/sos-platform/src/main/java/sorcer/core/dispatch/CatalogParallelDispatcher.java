@@ -62,16 +62,20 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		Exertion result = null;
 		while (workers.size() > 0) {
 			for (int i = 0; i < workers.size(); i++) {
-				result = workers.get(i).getResult();
-				if (result != null) {
-					ServiceExertion se = (ServiceExertion) result;
-					se.stopExecTime();
-					if (se.getStatus() == FAILED)
-						isFailed = true;
-					else if (se.getStatus() == SUSPENDED)
-						isSuspended = true;
-					workers.remove(i);
-				}
+                if (!workers.get(i).isAlive()) {
+                    result = workers.get(i).getResult();
+                    if (result != null) {
+                        ServiceExertion se = (ServiceExertion) result;
+                        se.stopExecTime();
+                        if (se.getStatus() == FAILED)
+                            isFailed = true;
+                        else if (se.getStatus() == SUSPENDED)
+                            isSuspended = true;
+                        synchronized (workers) {
+                            workers.remove(i);
+                        }
+                    }
+                }
 			}
 		}
 

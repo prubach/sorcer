@@ -257,12 +257,18 @@ abstract public class ExertDispatcher implements Dispatcher,
             return;
         }
         List<Context> contexts = Jobs.getTaskContexts(ex);
-        for (int i = 0; i < contexts.size(); i++) {
+        logger.info("Contexts to check if shared: " + contexts.toString());
+        for (Context ctx : contexts) {
+            if (((ServiceContext)ctx).isShared())
+                sharedContexts.add(ctx);
+        }
+//      for (int i = 0; i < contexts.size(); i++) {
 //			if (!sharedContexts.contains(contexts.get(i)))
 //				sharedContexts.add(contexts.get(i));
-            if (((ServiceContext)contexts.get(i)).isShared())
-                sharedContexts.add(contexts.get(i));
-        }
+//            if (((ServiceContext)contexts.get(i)).isShared())
+//                sharedContexts.add(contexts.get(i));
+//        }
+        logger.info("Added shared contexts: " + sharedContexts.toString());
     }
 
     protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
@@ -278,8 +284,8 @@ abstract public class ExertDispatcher implements Dispatcher,
 		int argIndex = -1;
 		try {
 			Hashtable toInMap = Contexts.getInPathsMap(toContext);
-//			logger.info("**************** updating inputs in context toContext = " + toContext);
-//			logger.info("**************** updating based on = " + toInMap);
+			logger.info("**************** updating inputs in context toContext = " + toContext);
+			logger.info("**************** updating based on = " + toInMap);
 			for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
 				toPath = (String) e.nextElement();
 				// find argument for parametric context
@@ -291,18 +297,18 @@ abstract public class ExertDispatcher implements Dispatcher,
 					}
 				}
 				toPathcp = (String) toInMap.get(toPath);
-//				logger.info("**************** toPathcp = " + toPathcp);
+				logger.info("**************** toPathcp = " + toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-//				logger.info("**************** context ID = " + Contexts.getContextParameterID(toPathcp));
+				logger.info("**************** context ID = " + Contexts.getContextParameterID(toPathcp));
 				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
-//				logger.info("**************** fromContext = " + fromContext);
-//				logger.info("**************** before updating toContext: " + toContext
-//						+ "\n>>> TO path: " + toPath + "\nfromContext: "
-//						+ fromContext + "\n>>> FROM path: " + fromPath);
+				logger.info("**************** fromContext = " + fromContext);
+				logger.info("**************** before updating toContext: " + toContext
+						+ "\n>>> TO path: " + toPath + "\nfromContext: "
+						+ fromContext + "\n>>> FROM path: " + fromPath);
                 if (fromContext != null) {
-//					logger.info("**************** updating toContext: " + toContext
-//							+ "\n>>> TO path: " + toPath + "\nfromContext: "
-//							+ fromContext + "\n>>> FROM path: " + fromPath);
+					logger.info("**************** updating toContext: " + toContext
+							+ "\n>>> TO path: " + toPath + "\nfromContext: "
+							+ fromContext + "\n>>> FROM path: " + fromPath);
                     // make parametric substitution if needed
                     if (argIndex >=0 ) {
                         Object args = toContext.getValue(Context.PARAMETER_VALUES);

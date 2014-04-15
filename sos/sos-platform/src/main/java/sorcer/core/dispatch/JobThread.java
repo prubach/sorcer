@@ -54,6 +54,7 @@ public class JobThread extends Thread {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());
 			} catch (RemoteException e) {
+                logger.severe("exception in dispatcher: " + e);
 				// ignore it, locall call
 			}
 			 int COUNT = 1000;

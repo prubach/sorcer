@@ -71,7 +71,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         } catch (RemoteException e) {
             // ignore it, local call
         }
-        logger.trace("preExecExertions>>>...UPDATING INPUTS...");
+        logger.info("preExecExertions>>>...UPDATING INPUTS..." + exertion.getName());
 		try {
 			//if (exertion.isTask()) {
 				updateInputs(exertion);

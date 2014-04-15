@@ -70,8 +70,7 @@ public class ObjectJob extends Job {
 		Job result = null;
 		try {
 			ObjectSignature os = (ObjectSignature) getProcessSignature();
-			MethodInvoking evaluator = ((ObjectSignature) getProcessSignature())
-					.getEvaluator();
+			MethodInvoking evaluator = os.getEvaluator();
 			if (evaluator == null) {
 				evaluator = new MethodInvoker(os.newInstance(),
 						os.getSelector());
