@@ -495,7 +495,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             for (Enumeration e = keys(); e.hasMoreElements();) {
                 InterfaceList key = (InterfaceList) e.nextElement();
 				if (key.containsAllInterfaces(interfaceList)) {
-					logger.info("Cataloger found matching interface list: " + key);
+					logger.info("Cataloger found all matching interfaces list: " + key);
 					sItems.addAll(super.get(key));
 				}
 			}
@@ -523,12 +523,15 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 					.getClass().getInterfaces());
 			InterfaceList key;
 			List<ServiceItem> value;
+            logger.info("Removing ServiceItem from Cataloger: " + sItem.toString());
 
 			for (Enumeration e = keys(); e.hasMoreElements();) {
 				key = (InterfaceList) e.nextElement();
-				if (key.containsAllInterfaces(searchInterfaceList)) {
+
+
+                if (key.containsAllInterfaces(searchInterfaceList)) {
 					value = get(key);
-					if (value != null) {
+                    if (value != null) {
 						if (value.size() == 1)
 							remove(key);
 						else
@@ -1337,10 +1340,10 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
         try {
             if (si.service instanceof ServiceActivityProvider) {
                 boolean result = ((ServiceActivityProvider)si.service).isActive();
+            } else if (si.service instanceof Provider) {
+                String name = ((Provider) si.service).getProviderName();
             }
             return true;
-            //String name = ((Provider) si.service).getProviderName();
-            //return name != null;
         } catch (IOException e) {
             logger.warn("Service ID: " + si.serviceID
                     + " is not Alive anymore");
@@ -1419,6 +1422,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
                     if (result.size() >= maxMatches) break;
                 }
             }
+
         }
         return new ServiceMatches(result.toArray(new ServiceItem[result.size()]), result.size());
     }

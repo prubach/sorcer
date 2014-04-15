@@ -919,9 +919,14 @@ public class Contexts {
 	}
 	
 	public static void copyValue(Context fromContext, String fromPath,
-			Context toContext, String toPath) throws ContextException {
-		toContext.putValue(toPath, fromContext.getValue(fromPath));
-	}
+                                 Context toContext, String toPath) throws ContextException {
+        if (fromContext.getValue(fromPath).equals(Context.none))
+            throw new ContextException("Problem while piping Context: value - is NONE, from: "
+                    + fromContext.getName() + fromPath + " to: " + toContext.getName() + toPath
+                    + "\nFromContext: " + fromContext.toString() + "\nToContext" + toContext.toString());
+        toContext.putValue(toPath, fromContext.getValue(fromPath));
+    }
+
 
 	public static Object putOutValue(Context cntxt, String path, Object value)
 			throws ContextException {
