@@ -17,7 +17,7 @@ public interface ServiceAccount extends Remote {
 	public Context makeWithdrawal(Context account) throws RemoteException,
 			AccountException;
 
-	public final static String ACCOUNT = "accout";
+	public final static String ACCOUNT = "account";
 
 	public final static String DEPOSIT = "deposit";
 

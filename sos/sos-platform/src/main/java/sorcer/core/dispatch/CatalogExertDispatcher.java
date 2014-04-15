@@ -186,7 +186,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     if (provisioner != null) {
                         try {
                             logger.info("Provisioning "+sig);
-                            service = provisioner.provision(sig.getServiceType().getName(), sig.getName(), sig.getVersion());
+                            service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
                         } catch (ProvisioningException pe) {
                             String msg = "PROBLEM: " +pe.getMessage();
                             logger.warn(msg, pe);
