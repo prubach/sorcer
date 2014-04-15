@@ -233,7 +233,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 					 * (RemoteServiceTask)provider.service(task); }
 					 */
                     logger.debug("getting result from provider...");
-                    result = (NetTask) service.service(task, null);
+                    result = (Task) service.service(task, null);
 
 					if (result!=null)
                     result.getControlContext().appendTrace(
