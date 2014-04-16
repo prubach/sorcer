@@ -31,8 +31,10 @@ def spacer = "ServiceSpacer"
 def tasker = "ServiceTasker"
 def remoteLogger = "RemoteLoggerManager";
 def databaseProvider = "DatabaseProvider";
+def almanac = "Almanac";
+def bazaar = "Bazaar";
 
-for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, tasker, remoteLogger, databaseProvider]){
+for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, tasker, remoteLogger, databaseProvider, almanac, bazaar]){
     mkAppender(service);
 }
 
@@ -71,16 +73,20 @@ logger("net.jini.discovery.LookupDiscovery", OFF)
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
 
-logger("sorcer.core.provider.exertmonitor.ExertMonitor", info, [exertMonitor])
+logger("sorcer.core.provider.exertmonitor", info, [exertMonitor])
 logger("sorcer.core.provider.jobber.ServiceConcatenator", info, [concatenator])
 logger("sorcer.core.provider.jobber.ServiceJobber", info, [jobber])
 logger("sorcer.core.provider.jobber.ServiceSpacer", info, [spacer])
 logger("sorcer.core.provider.ServiceTasker", info, [tasker])
-logger("sorcer.core.provider.logger.RemoteLoggerManager", info, [remoteLogger])
-logger("sorcer.core.provider.dbp.DatabaseProvider", info, [databaseProvider])
+logger("sorcer.core.provider.logger", info, [remoteLogger])
+logger("sorcer.core.provider.dbp", info, [databaseProvider])
 
-// do not also log to the main logger
-logger("sorcer.core.provider.cataloger.ServiceCataloger", info, [cataloger], false)
+// do not log to the main logger ( additive=false)
+logger("sorcer.core.provider.cataloger", info, [cataloger], false)
+
+//commercial
+logger("com.sorcersoft.almanac", info, [almanac])
+logger("com.sorcersoft.bazaar", info, [bazaar])
 
 //logger("sorcer.core.security", OFF)
 //logger("sorcer.boot", DEBUG)
