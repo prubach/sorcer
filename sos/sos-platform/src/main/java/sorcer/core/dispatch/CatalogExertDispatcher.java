@@ -164,7 +164,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     protected Task execServiceTask(Task task) throws ExertionException,
             SignatureException {
-        Task result;
+        Task result = null;
         try {
             if (((NetSignature) task.getProcessSignature())
                     .getService()!=null && ((NetSignature) task.getProcessSignature())
@@ -208,37 +208,49 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     logger.info(msg);
                     throw new ExertionException(msg, task);
                 } else {
-                    // setTaskProvider(task, provider.getProviderName());
-                    task.setService(service);
-                    // client security
-					/*					
-					 * ClientSubject cs = null;
-					 * try{ // //cs =
-					 * (ClientSubject)ServerContext.getServerContextElement
-					 * (ClientSubject.class); }catch (Exception ex){
-					 * Util.debug(this, ">>>No Subject in the server call");
-					 * cs=null; } Subject client = null; if(cs!=null){
-					 * client=cs.getClientSubject(); Util.debug(this,
-					 * "Abhijit::>>>>> CS was not null"); if(client!=null){
-					 * Util.debug(this,"Abhijit::>>>>> Client Subject was not
-					 * null"+client); }else{ Util.debug(this,"Abhijit::>>>>>>
-					 * CLIENT SUBJECT WAS
-					 * NULL!!"); } }else{ Util.debug(this, "OOPS! NULL CS"); }
-					 * if(client!=null&&task.getPrincipal()!=null){
-					 * Util.debug(this,"Abhijit:: >>>>>--------------Inside
-					 * Client!=null, PRINCIPAL != NULL, subject="+client);
-					 * result = (RemoteServiceTask)provider.service(task);
-					 * }else{ Util.debug(this,"Abhijit::
-					 * >>>>>--------------Inside null Subject"); result =
-					 * (RemoteServiceTask)provider.service(task); }
-					 */
-                    logger.debug("getting result from provider...");
-                    result = (Task) service.service(task, null);
+                    int maxTries = 3;
+                    int tried=0;
+                    while (result==null && tried < maxTries) {
+                        tried++;
+                        try {
+                            // setTaskProvider(task, provider.getProviderName());
+                            task.setService(service);
+                            // client security
+                            /*
+                             * ClientSubject cs = null;
+                             * try{ // //cs =
+                             * (ClientSubject)ServerContext.getServerContextElement
+                             * (ClientSubject.class); }catch (Exception ex){
+                             * Util.debug(this, ">>>No Subject in the server call");
+                             * cs=null; } Subject client = null; if(cs!=null){
+                             * client=cs.getClientSubject(); Util.debug(this,
+                             * "Abhijit::>>>>> CS was not null"); if(client!=null){
+                             * Util.debug(this,"Abhijit::>>>>> Client Subject was not
+                             * null"+client); }else{ Util.debug(this,"Abhijit::>>>>>>
+                             * CLIENT SUBJECT WAS
+                             * NULL!!"); } }else{ Util.debug(this, "OOPS! NULL CS"); }
+                             * if(client!=null&&task.getPrincipal()!=null){
+                             * Util.debug(this,"Abhijit:: >>>>>--------------Inside
+                             * Client!=null, PRINCIPAL != NULL, subject="+client);
+                             * result = (RemoteServiceTask)provider.service(task);
+                             * }else{ Util.debug(this,"Abhijit::
+                             * >>>>>--------------Inside null Subject"); result =
+                             * (RemoteServiceTask)provider.service(task); }
+                             */
+                            logger.debug("getting result from provider...");
+                            result = (Task) service.service(task, null);
 
-					if (result!=null)
-                    result.getControlContext().appendTrace(
-                            ((Provider)service).getProviderName() + " dispatcher: "
-                                    + getClass().getName());
+                        } catch (RemoteException re) {
+                            logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
+                            service = (Service) Accessor.getService(sig);
+                            logger.warn("Got service: ");
+                            if (tried >= maxTries) throw re;
+                        }
+                    }
+                    if (result!=null)
+                        result.getControlContext().appendTrace(
+                                   ((Provider)service).getProviderName() + " dispatcher: "
+                                            + getClass().getName());
                 }
             }
             logger.debug("got result: {}", result);

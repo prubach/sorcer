@@ -1041,6 +1041,10 @@ public class SorcerEnv {
         return getSuffixedName(name);
     }
 
+    public static String getPureNameFromActual(String actualName) {
+        return actualName.replace(getNameSuffix(),"");
+    }
+
     public static String getSuffixedName(String name, int suffixLength) {
         if (nameSuffixed()) {
             String suffix = sorcerEnv.properties.getProperty(S_NAME_SUFFIX,
