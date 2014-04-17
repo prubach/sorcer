@@ -17,6 +17,7 @@
  */
 package sorcer.ex1.requestor;
 
+import com.sun.jini.start.LifeCycle;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -128,7 +129,7 @@ public class WhoIsItTest {
     }
 
 	@Test
-    @Ignore
+    //@Ignore
 	public void execBatchTask() throws Exception {
         InetAddress inetAddress = SorcerEnv.getLocalHost();
         String hostname = inetAddress.getHostName();
@@ -139,10 +140,10 @@ public class WhoIsItTest {
         context.putValue("requestor/hostname", hostname);
         context.putValue("requestor/address", ipAddress);
 
-        Signature signature1 = new ObjectSignature("getHostAddress", WhoIsItProvider1.class);
-        Signature signature2 = new ObjectSignature("getHostName", WhoIsItProvider1.class);
-        Signature signature3 = new ObjectSignature("getCanonicalHostName", WhoIsItProvider1.class);
-        Signature signature4 = new ObjectSignature("getTimestamp", WhoIsItProvider1.class);
+        Signature signature1 = new ObjectSignature("getHostAddress", new WhoIsItProvider1(null, null), null, null);
+        Signature signature2 = new ObjectSignature("getHostName", new WhoIsItProvider1(null, null), null, null);
+        Signature signature3 = new ObjectSignature("getCanonicalHostName", new WhoIsItProvider1(null, null), null, null);
+        Signature signature4 = new ObjectSignature("getTimestamp", new WhoIsItProvider1(null, null), null, null);
 
         Task task = new ObjectTask("Who Is It?", signature1, signature2, signature3, signature4);
         task.setContext(context);

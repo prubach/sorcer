@@ -42,9 +42,12 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
@@ -53,6 +56,10 @@ import sorcer.service.ExertionException;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class ContextTest {
 	private final static Logger logger = Logger
 			.getLogger(ContextTest.class.getName());

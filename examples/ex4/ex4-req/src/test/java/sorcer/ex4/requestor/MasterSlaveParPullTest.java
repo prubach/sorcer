@@ -46,7 +46,7 @@ import sorcer.service.Task;
         ":ex2-cfg2",
         ":ex2-cfg3"
 })
-@Ignore("Works only if run separately")
+//@Ignore("Works only if run separately")
 public class MasterSlaveParPullTest {
 
     @Test(timeout = 30000)

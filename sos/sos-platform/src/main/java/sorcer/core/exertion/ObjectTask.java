@@ -142,7 +142,7 @@ public class ObjectTask extends Task {
                 setStatus(ERROR);
         }
         setStatus(DONE);
-        dataContext.appendTrace(invoker.toString());
+        if (invoker!=null) dataContext.appendTrace(invoker.toString());
         return this;
     }
 

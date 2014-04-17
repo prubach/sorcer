@@ -33,7 +33,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.provider.exertmonitor.IMonitorSession;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.util.IOUtils;
 import sorcer.util.bdb.objects.UuidKey;
 
@@ -42,18 +47,15 @@ import com.sleepycat.collections.StoredMap;
 /**
  * @author Mike Sobolewski
  */
-
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:dbp-api"
+})
 public class SessionDatabaseTest {
 
 	private final static Logger logger = Logger
 			.getLogger(SessionDatabaseTest.class.getName());
-	
-	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-	}
-	
+
 	private static SessionDatabaseRunner runner;
 	private static File dbDir;
 	

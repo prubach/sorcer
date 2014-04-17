@@ -81,7 +81,6 @@ public class NetArithmeticReqTest {
 		assertEquals(400.0, result.getValue("1job1task/subtract/result/value"));
 	}
 
-    //@Ignore("Problems with wrong returned value - needs further testing")
 	@Test
 	public void exertTaskJob() throws Exception {
 		Job job = getNetTaskJob();

@@ -49,6 +49,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerEnv;
@@ -59,6 +61,9 @@ import sorcer.core.invoker.Invocable;
 import sorcer.core.invoker.Invoker;
 import sorcer.core.invoker.OptInvoker;
 import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.resolver.Resolver;
 import sorcer.service.Condition;
 import sorcer.service.Context;
@@ -74,6 +79,10 @@ import sorcer.util.exec.ExecUtils.CmdResult;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class InvokerTest {
 	private final static Logger logger = Logger.getLogger(InvokerTest.class
 			.getName());
@@ -147,7 +156,7 @@ public class InvokerTest {
 	}
 
     @Test
-    @Ignore
+    //@Ignore
 	public void invokeJobTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException, TransactionException {
 		Context c4 = context("multiply", in("arg/x1", 50.0),

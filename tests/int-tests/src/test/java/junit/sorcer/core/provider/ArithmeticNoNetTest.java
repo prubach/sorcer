@@ -30,9 +30,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -42,7 +44,7 @@ import sorcer.service.Strategy.Wait;
 /**
  * @author Mike Sobolewski
  */
-@Category(SorcerClient.class)
+@RunWith(SorcerRunner.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
@@ -91,109 +93,9 @@ public class ArithmeticNoNetTest {
 				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 	}
-	
-	@Ignore
-	@Test
-	public void arithmeticNodeTest() throws Exception {
-		
-		Task t5 = task(
-
-
-				"t5",
-				sig("add", Adder.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
-		
-		t5 = exert(t5);
-		//logger.info("t5 dataContext: " + dataContext(t5));
-		//logger.info("t5 value: " + get(t5));
-		assertEquals("Wrong value for 100.0", 100.0, value(t5));
-	}
-	
-	@Ignore
-	@Test
-	public void arithmeticMultiServiceTest() throws Exception {
-		
-		Task t5 = task(
-				"t5",
-				sig("add", Arithmetic.class),
-				context("add", in("arg, x1", 20.0),
-						in("arg, x2", 80.0), result("result, y")));
-		
-		t5 = exert(t5);
-		//logger.info("t5 dataContext: " + dataContext(t5));
-		logger.info("t5 value: " + get(t5));
-		assertEquals("Wrong value for 100.0", 100.0, get(t5));
-	}
-	
-	@Ignore
-	@Test
-	public void arithmeticSpaceTaskTest() throws Exception {
-		Task t5 = task(
-				"t5",
-				sig("add", Adder.class),
-				context("add", in("arg/x1", 20.0),
-						in("arg/x2", 80.0), out("result/y", null)),
-				strategy(Access.PULL, Wait.YES));
-		
-		logger.info("t5 init dataContext: " + context(t5));
-		
-		t5 = exert(t5);
-		logger.info("t5 dataContext: " + context(t5));
-		logger.info("t5 value: " + get(t5, "result/y"));
-		assertEquals("Wrong value for 100.0", 100.0, get(t5, "result/y"));
-	}
-	
-	@Ignore
-	@Test
-	public void exertJobPullParTest() throws Exception {
-		Job job = createJob(Flow.PAR);
-		job = exert(job);
-		//logger.info("job j1: " + job);
-		//logger.info("job j1 job dataContext: " + dataContext(job));
-		logger.info("job j1 job dataContext: " + jobContext(job));
-		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
-		assertEquals(400.00, get(job, "j1/t3/result/y"));
-	}
-	
-	@Ignore
-	@Test
-	public void exertJobPullSeqTest() throws Exception {
-		Job job = createJob(Flow.SEQ);
-		job = exert(job);
-		//logger.info("job j1: " + job);
-		//logger.info("job j1 job dataContext: " + dataContext(job));
-		logger.info("job j1 job dataContext: " + jobContext(job));
-		//logger.info("job j1 value @ j1/t3/result/y = " + get(job, "j1/t3/result/y"));
-		assertEquals(400.00, get(job, "j1/t3/result/y"));
-	}
-	
-	// two level job composition with PULL and PAR execution
-	private Job createJob(Flow flow) throws Exception {
-		Task t3 = task("t3", sig("subtract", Subtractor.class), 
-				context("subtract", in("arg/x1", null), in("arg/x2", null),
-						out("result/y", null)));
-
-		Task t4 = task("t4", sig("multiply", Multiplier.class), 
-				context("multiply", in("arg/x1", 10.0), in("arg/x2", 50.0),
-						out("result/y", null)));
-
-		Task t5 = task("t5", sig("add", Adder.class), 
-				context("add", in("arg/x1", 20.0), in("arg/x2", 80.0),
-						out("result/y", null)));
-
-		// Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
-		//Job job = job("j1",
-		return job("j1", //sig("service", RemoteJobber.class),
-				//job("j2", t4, t5),
-				job("j2", t4, t5, strategy(flow, Access.PULL)),
-				t3,
-				pipe(out(t4, "result/y"), in(t3, "arg/x1")),
-				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
-	}
 
     // TODO - Problem with context value mappings
-    @Ignore
+    //@Ignore
     @Test
     public void contexterTest() throws Exception {
         Task cxtt = task("addContext", sig("getContext", createContext()),
@@ -207,7 +109,7 @@ public class ArithmeticNoNetTest {
     }
 
     // TODO - Problem with context value mappings
-    @Ignore
+    //@Ignore
     @Test
     public void objectContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", AdderImpl.class),

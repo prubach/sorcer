@@ -26,10 +26,15 @@ import junit.sorcer.core.provider.Subtractor;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.deploy.Deployment;
 import sorcer.core.provider.Jobber;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Job;
 import sorcer.service.Strategy;
 import sorcer.service.Task;
@@ -38,22 +43,13 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class JobTest {
 	private final static Logger logger = Logger.getLogger(TaskTest.class
 			.getName());
-
-	static {
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        System.setProperty("java.util.logging.config.file",
-                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-        SorcerEnv.debug = true;
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sorcer-api"});
-	}
 
 	@SuppressWarnings("unchecked")
     @Ignore

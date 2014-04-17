@@ -36,6 +36,10 @@ public class WhoIsItProvider1 extends ServiceTasker implements WhoIsIt {
 		super(args, lifeCycle);
 	}
 
+/*    public WhoIsItProvider1() throws Exception {
+        this(null, null);
+    }
+  */
 	/* (non-Javadoc)
 	 * @see sorcer.ex1.provider.WhoIsIt#getHostName(sorcer.service.Context)
 	 */

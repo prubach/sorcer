@@ -28,11 +28,16 @@ import junit.sorcer.core.provider.SubtractorImpl;
 
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.OptExertion;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Condition;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
@@ -43,22 +48,13 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class ConditionalTaskTest {
 	private final static Logger logger = Logger
 			.getLogger(ConditionalTaskTest.class.getName());
-
-	static {
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        System.setProperty("java.util.logging.config.file",
-                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-        SorcerEnv.debug = true;
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sorcer-api"});
-	}
 
 	@Test
 	public void arithmeticTaskTest() throws ExertionException,

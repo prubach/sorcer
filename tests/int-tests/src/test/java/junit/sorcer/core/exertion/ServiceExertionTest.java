@@ -36,9 +36,14 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
@@ -51,7 +56,10 @@ import sorcer.service.Task;
 /**
  * @author Mike Sobolewski
  */
-
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class ServiceExertionTest {
 	private final static Logger logger = Logger
 			.getLogger(ServiceExertionTest.class.getName());

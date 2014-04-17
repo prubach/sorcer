@@ -30,10 +30,12 @@ import junit.sorcer.core.provider.AdderImpl;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.invoker.GroovyInvoker;
 import sorcer.core.provider.Jobber;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
 import sorcer.service.Signature;
@@ -43,6 +45,7 @@ import sorcer.service.SignatureException;
  * @author Mike Sobolewski
  */
 
+@RunWith(SorcerRunner.class)
 public class SignatureTest {
 	private final static Logger logger = Logger
 			.getLogger(SignatureTest.class.getName());

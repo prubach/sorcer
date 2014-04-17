@@ -37,11 +37,16 @@ import junit.sorcer.core.provider.Multiply;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Wait;
@@ -50,23 +55,13 @@ import sorcer.service.Strategy.Wait;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class TaskTest {
 	private final static Logger logger = Logger.getLogger(TaskTest.class
 			.getName());
-
-    static {
-        System.setProperty("java.util.logging.config.file",
-                System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-                + "/configs/sorcer.policy");
-        System.setSecurityManager(new RMISecurityManager());
-        setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ju-arithmetic-api",
-                "org.sorcersoft.sorcer:sorcer-api"});
-    }
-
 
     @Test
 	public void freeArithmeticTaskTest() throws ExertionException, SignatureException, ContextException {

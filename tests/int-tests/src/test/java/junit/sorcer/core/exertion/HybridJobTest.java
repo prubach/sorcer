@@ -26,8 +26,13 @@ import junit.sorcer.core.provider.SubtractorImpl;
 
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Exertion;
 import sorcer.service.Job;
 import sorcer.service.Task;
@@ -36,6 +41,10 @@ import sorcer.service.Task;
  * @author Mike Sobolewski
  */
 
+@RunWith(SorcerRunner.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ju-arithmetic-api"
+})
 public class HybridJobTest {
 	private final static Logger logger = Logger.getLogger(HybridJobTest.class
 			.getName());

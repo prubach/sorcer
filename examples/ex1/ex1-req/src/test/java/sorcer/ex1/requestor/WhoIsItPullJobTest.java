@@ -54,7 +54,7 @@ import java.net.InetAddress;
                 ":ex1-cfg2"
         })
 })
-//@Ignore
+
 public class WhoIsItPullJobTest {
 
     private static Logger logger = LoggerFactory.getLogger(WhoIsItPullJobTest.class);
