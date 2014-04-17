@@ -22,7 +22,7 @@ deployment(name: 'account1-provider') {
     artifact id: 'account-api', 'org.sorcersoft.sorcer:account-dl:pom:' + SorcerEnv.getSorcerVersion()
     artifact id: 'account-cfg', 'org.sorcersoft.sorcer:account-cfg-1:' + SorcerEnv.getSorcerVersion()
 
-    service(name: 'account1-prv') {
+    service(name: 'Account1') {
         interfaces {
             classes 'sorcer.account.provider.Account', 'sorcer.account.provider.ServiceAccount'
             artifact ref: 'account-api'

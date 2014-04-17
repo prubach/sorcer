@@ -36,6 +36,7 @@ import sorcer.service.Strategy.Flow;
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
+        "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex2-api",
         "org.sorcersoft.sorcer:ex2-rdl"
 })
@@ -44,7 +45,7 @@ import sorcer.service.Strategy.Flow;
         ":ex2-cfg2",
         ":ex2-cfg3"
 })
-@Ignore("Works only if run separately")
+//@Ignore("Works only if run separately")
 public class SharedContextWorkerTest {
 
     @Test(timeout = 30000)

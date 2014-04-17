@@ -78,8 +78,8 @@ public class PipedContextWorkerTest {
 
 			// pass the parameters from one context to the next context
 			// piping parameters should be annotated via in, out, or inout paths
-			context1.connect("provider/result", "requestor/operand/1", context3);
-			context2.connect("provider/result", "requestor/operand/2", context3);
+			context2.connect("provider/result", "requestor/operand/1", context3);
+			context1.connect("provider/result", "requestor/operand/2", context3);
 
 			// define required services
 			NetSignature signature1 = new NetSignature("doWork",

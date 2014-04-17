@@ -22,9 +22,12 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.ConnectException;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -227,30 +230,36 @@ public class ProviderProxy implements Serializable {
 			Object obj = null;
 			String selector = m.getName();
 			try {
-				if ("getReferentUuid".equals(selector)) {
-					return proxyID;
-				} else if ("hashCode".equals(selector)) {
-					return proxyID.hashCode();
-				} else if ("equals".equals(selector)) {
-					return !(args.length != 1 || !(args[0] instanceof ReferentUuid))
-							&& proxyID.equals(((ReferentUuid) args[0]).getReferentUuid());
-				} else if ("toString".equals(selector)) {
-					return "refID=" + proxyID + " : proxy=" + proxy;
-				} else if ("getConstraints".equals(selector)) {
-					return ((RemoteMethodControl) proxy).getConstraints();
-				} else if ("setConstraints".equals(selector)) {
-					return server;
-				} else if ("getProxyTrustIterator".equals(selector)) {
-					return new SingletonProxyTrustIterator(server);
+                if ("getReferentUuid".equals(selector)) {
+                    return proxyID;
+                } else if ("hashCode".equals(selector)) {
+                    return proxyID.hashCode();
+                } else if ("equals".equals(selector)) {
+                    return !(args.length != 1 || !(args[0] instanceof ReferentUuid))
+                            && proxyID.equals(((ReferentUuid) args[0]).getReferentUuid());
+                } else if ("toString".equals(selector)) {
+                    return "refID=" + proxyID + " : proxy=" + proxy;
+                } else if ("getConstraints".equals(selector)) {
+                    return ((RemoteMethodControl) proxy).getConstraints();
+                } else if ("setConstraints".equals(selector)) {
+                    return server;
+                } else if ("getProxyTrustIterator".equals(selector)) {
+                    return new SingletonProxyTrustIterator(server);
                 } else if ("isActive".equals(selector)) {
-                    return ((Provider)proxy).isBusy();
+                    return ((Provider) proxy).isBusy();
                 } else if ("getAdmin".equals(selector)) {
-				    return ((Administrable) proxy).getAdmin();
-                } else if (adminProxy == proxy) {
-					obj = m.invoke(adminProxy, args);
-				} else {
-					obj = m.invoke(proxy, args);
-				}
+                    return ((Administrable) proxy).getAdmin();
+                } else if (adminProxy.equals(proxy)) {
+                    obj = m.invoke(adminProxy, args);
+                } else {
+                    obj = m.invoke(proxy, args);
+                }
+            } catch (InvocationTargetException ie) {
+                if (ie.getCause() instanceof ConnectException) {
+                    logger.log(Level.WARNING, "Proxy Connection problem to : " + proxyID + " to perform: " + m + " for args: "+ Arrays.toString(args), ie);
+                }
+                throw ie;
+
 			} catch (Throwable e) {
 				// this block is for debugging, can be deleted
 				// do not report broken network connection on destruction
