@@ -23,7 +23,7 @@ import net.jini.jeri.InvocationLayerFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.service.IServiceBuilder;
+import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.jini.jeri.SorcerILFactory;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author Rafał Krupiński
  */
-public class ProviderServiceBuilder implements IServiceBuilder {
+public class ProviderServiceBuilder implements IProviderServiceBuilder {
     private static final Logger log = LoggerFactory.getLogger(ProviderServiceBuilder.class);
     private ServiceProvider serviceProvider;
 
@@ -53,6 +53,8 @@ public class ProviderServiceBuilder implements IServiceBuilder {
 
     private Map<Class, Object> serviceContributions = new HashMap<Class, Object>();
 
+    private Map<Object, Object> configurations = new HashMap<Object, Object>();
+
     @Override
     public <T> void contributeInterface(T impl, Class<? super T>... iface) {
         for (Class<? super T> type : iface)
@@ -67,6 +69,21 @@ public class ProviderServiceBuilder implements IServiceBuilder {
     @Override
     public Configuration getProviderConfiguration() {
         return serviceProvider.getProviderConfiguration();
+    }
+
+    @Override
+    public Object getConfiguration(Object key) {
+        return configurations.get(key);
+    }
+
+    @Override
+    public void putConfiguration(Object key, Object data) {
+        configurations.put(key, data);
+    }
+
+    @Override
+    public String getName() {
+        return serviceProvider.getName();
     }
 
     public InvocationLayerFactory getILFactory(Map<Class, Object> serviceComponents, ClassLoader implClassLoader) {
@@ -88,5 +105,10 @@ public class ProviderServiceBuilder implements IServiceBuilder {
             else
                 serviceBeans.put(e.getKey(), e.getValue());
         }
+    }
+
+    @Override
+    public Provider getProvider() {
+        return serviceProvider;
     }
 }

@@ -15,4 +15,10 @@ public interface IServiceBuilder {
     public void addAttribute(Entry attribute);
 
     public Configuration getProviderConfiguration();
+
+    Object getConfiguration(Object key);
+
+    void putConfiguration(Object key, Object data);
+
+    String getName();
 }
