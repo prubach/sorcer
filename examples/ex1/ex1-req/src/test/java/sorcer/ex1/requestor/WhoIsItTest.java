@@ -77,30 +77,6 @@ public class WhoIsItTest {
     }
 
     @Test
-    public void helloObjectTask() throws Exception {
-        InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
-        String ipAddress = inetAddress.getHostAddress();
-
-        Context context = new ServiceContext("Who Is It?");
-        context.putValue("requestor/message", "Hello Objects!");
-        context.putValue("requestor/hostname", hostname);
-        context.putValue("requestor/address", ipAddress);
-
-        ObjectSignature signature = new ObjectSignature("getHostName",
-                WhoIsItBean1.class);
-
-        Task task = new ObjectTask("Who Is It?", signature, context);
-        Exertion result = task.exert();
-        if (result.getExceptions().size() > 0)
-            logger.info("exceptions: " + result.getExceptions());
-        else {
-            logger.info("task context: " + result.getContext());
-            assertEquals(hostname, result.getContext().getValue("provider/hostname"));
-        }
-    }
-
-    @Test
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
         InetAddress inetAddress = SorcerEnv.getLocalHost();
@@ -126,32 +102,6 @@ public class WhoIsItTest {
 //        assertEquals(result.getContext().getValue("provider/address"), ipAddress);
         }
         assertTrue(result.getExceptions().isEmpty());
-    }
-
-	@Test
-    //@Ignore
-	public void execBatchTask() throws Exception {
-        InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
-        String ipAddress = inetAddress.getHostAddress();
-
-        Context context = new ServiceContext("Who Is It?");
-        context.putValue("requestor/message", new RequestorMessage("Hello Objects!"));
-        context.putValue("requestor/hostname", hostname);
-        context.putValue("requestor/address", ipAddress);
-
-        Signature signature1 = new ObjectSignature("getHostAddress", new WhoIsItProvider1(null, null), null, null);
-        Signature signature2 = new ObjectSignature("getHostName", new WhoIsItProvider1(null, null), null, null);
-        Signature signature3 = new ObjectSignature("getCanonicalHostName", new WhoIsItProvider1(null, null), null, null);
-        Signature signature4 = new ObjectSignature("getTimestamp", new WhoIsItProvider1(null, null), null, null);
-
-        Task task = new ObjectTask("Who Is It?", signature1, signature2, signature3, signature4);
-        task.setContext(context);
-
-        Exertion result = task.exert();
-        logger.info("task context: " + result.getContext());
-        assertEquals(hostname, result.getContext().getValue("provider/hostname"));
-        assertEquals(ipAddress, result.getContext().getValue("provider/address"));
     }
 
     @Test

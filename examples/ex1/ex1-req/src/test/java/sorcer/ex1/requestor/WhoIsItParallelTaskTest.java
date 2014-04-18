@@ -46,10 +46,7 @@ import java.util.concurrent.Future;
         "org.sorcersoft.sorcer:ex1-api",
         "org.sorcersoft.sorcer:ex1-rdl"
 })
-@SorcerServiceConfigurations(
-        @SorcerServiceConfiguration( { ":ex1-cfg1" }
-   )
-)
+@SorcerServiceConfiguration(":ex1-cfg1")
 public class WhoIsItParallelTaskTest {
 
 	private static Logger logger = LoggerFactory.getLogger(WhoIsItParallelTaskTest.class);
