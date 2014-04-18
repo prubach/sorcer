@@ -1,8 +1,6 @@
 package sorcer.config;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +16,8 @@ package sorcer.config;
  */
 
 
+import sorcer.config.convert.TypeConverter;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -27,7 +27,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
     public String DEFAULT_KEY = "ConfigEntry.DefaultKey";
-    public String NONE = "ConfigEntry.None";
 
     /**
      * Entry name. Default null value makes use of field or property name.
@@ -35,12 +34,14 @@ public @interface ConfigEntry {
     String value() default DEFAULT_KEY;
 
     /**
-     * The default value, currently only available for strings.
-     */
-    String defaultValue() default NONE;
-
-    /**
      * if true, configuration entry is required and exception is thrown if it's missing or wrong type. Warning is issued otherwise.
      */
-    boolean required() default true;
+    boolean required() default false;
+
+    /**
+     * Declare type of configuration entry. Void means the default, type of property or field
+     */
+    Class type() default Void.class;
+
+    Class<? extends TypeConverter> converter() default TypeConverter.class;
 }

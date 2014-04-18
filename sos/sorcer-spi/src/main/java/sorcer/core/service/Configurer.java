@@ -24,6 +24,7 @@ import sorcer.config.AbstractBeanListener;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.config.Configurable;
+import sorcer.config.convert.TypeConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -82,17 +83,14 @@ public class Configurer extends AbstractBeanListener {
         if (ptypes.length != 1) return;
         Class<?> type = ptypes[0];
 
-        Object defaultValue;
-        if (!ConfigEntry.NONE.equals(configEntry.defaultValue())) {
-            defaultValue = configEntry.defaultValue();
-        } else {
-            defaultValue = Configuration.NO_DEFAULT;
-        }
+        Object defaultValue = Configuration.NO_DEFAULT;
         Object value;
         String entryKey = getEntryKey(getPropertyName(method), configEntry);
         boolean required = configEntry.required();
         try {
-            value = config.getEntry(component, entryKey, type, defaultValue);
+            Class<?> entryType = getEntryType(type, configEntry);
+            value = config.getEntry(component, entryKey, entryType, defaultValue);
+            value = convert(value, type, configEntry);
         } catch (ConfigurationException e) {
             if (required)
                 throw new IllegalArgumentException("Could not configure " + method + " with " + entryKey, e);
@@ -102,7 +100,7 @@ public class Configurer extends AbstractBeanListener {
         } catch (IllegalArgumentException e) {
             if (required)
                 throw e;
-            else{
+            else {
                 log.debug("Could not configure {} with {} {}", method, entryKey, e.getMessage());
                 return;
             }
@@ -145,17 +143,18 @@ public class Configurer extends AbstractBeanListener {
                 field.setAccessible(true);
             }
         } catch (SecurityException x) {
-            log.warn("Could not set value of {} because of access restriction", field);
+            log.warn("Could not set value of {} because of access restriction", field, x);
             return;
         }
 
-        Object defaultValue = null;
-        if (!ConfigEntry.NONE.equals(configEntry.defaultValue()) && field.getType().isAssignableFrom(String.class)) {
-            defaultValue = configEntry.defaultValue();
-        }
         String entryKey = getEntryKey(field.getName(), configEntry);
         try {
-            Object value = config.getEntry(component, entryKey, field.getType(), defaultValue);
+            Object defaultValue = field.get(target);
+            Class<?> targetType = field.getType();
+            Class<?> entryType = getEntryType(targetType, configEntry);
+
+            Object value = config.getEntry(component, entryKey, entryType, defaultValue);
+            value = convert(value, targetType, configEntry);
             field.set(target, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
@@ -163,6 +162,32 @@ public class Configurer extends AbstractBeanListener {
             throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Error while reading config entry [" + component + "] " + entryKey, e);
+        }
+    }
+
+    private Class<?> getEntryType(Class targetType, ConfigEntry configEntry) {
+        Class userType = configEntry.type();
+        return userType == Void.class ? targetType : userType;
+    }
+
+    private <F, T> T convert(F value, Class<T> targetType, ConfigEntry configEntry) {
+        Class sourceType = configEntry.type();
+        if (sourceType == Void.class)
+            return (T) value;
+        Class<? extends TypeConverter> converterType = configEntry.converter();
+        if (converterType == TypeConverter.class)
+            throw new IllegalArgumentException("converter is required if type is provided");
+
+        if (targetType.isInstance(value))
+            return (T) value;
+
+        try {
+            TypeConverter<F, T> typeConverter = converterType.newInstance();
+            return (T) typeConverter.convert(value, targetType);
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

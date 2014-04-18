@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.container.sdi;
+package sorcer.container.discovery;
 
 import com.google.common.collect.MapMaker;
 import net.jini.core.discovery.LookupLocator;
@@ -25,38 +25,47 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.SorcerEnv;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
 
 /**
  * @author Rafał Krupiński
  */
-public class DiscoveryManagerRegistry implements IDiscoveryManagerRegistry {
-    private static final Logger log = LoggerFactory.getLogger(DiscoveryManagerRegistry.class);
+public class ServiceManagerRegistry implements IDiscoveryManagerRegistry {
+    private static final Logger log = LoggerFactory.getLogger(ServiceManagerRegistry.class);
 
-    private static LookupLocator[] lookupLocators = getLookupLocators();
+    @Inject
+    private ILookupManagerRegistry lookupDiscoveryManagerRegistry;
 
     /**
      * Allow ServiceDiscoveryManagers to expire if unused
      */
     private Map<Set<String>, ServiceDiscoveryManager> registry = new MapMaker().weakValues().makeMap();
     private Map<Set<String>, LookupCache> caches = new MapMaker().weakValues().makeMap();
+    private LeaseRenewalManager leaseRenewalManager = new LeaseRenewalManager();
 
+    protected LookupLocator[] lookupLocators;
+    protected String[] lookupGroups;
 
-    @Override
-    public ServiceDiscoveryManager getManager() throws IOException {
-        return getManager(LookupDiscovery.ALL_GROUPS);
+    public ServiceManagerRegistry(LookupLocator[] lookupLocators, String[] lookupGroups) {
+        this.lookupLocators = lookupLocators;
+        this.lookupGroups = lookupGroups;
     }
 
     @Override
-    public ServiceDiscoveryManager getManager(String[] groups) throws IOException {
+    public ServiceDiscoveryManager getManager() throws IOException {
+        return getManager(lookupGroups, lookupLocators);
+    }
+
+    @Override
+    public ServiceDiscoveryManager getManager(String[] groups, LookupLocator[] locs) throws IOException {
         Set<String> key = key(groups);
         ServiceDiscoveryManager result = registry.get(key);
         if (result == null) {
-            LookupDiscoveryManager ldm = new LookupDiscoveryManager(groups, lookupLocators, null);
-            result = new ServiceDiscoveryManager(ldm, new LeaseRenewalManager());
+            LookupDiscoveryManager ldm = lookupDiscoveryManagerRegistry.getManager(groups, lookupLocators);
+            result = new ServiceDiscoveryManager(ldm, leaseRenewalManager);
             registry.put(key, result);
             caches.put(key, result.createLookupCache(null, null, null));
         }
@@ -65,7 +74,7 @@ public class DiscoveryManagerRegistry implements IDiscoveryManagerRegistry {
 
     @Override
     public LookupCache getLookupCache() {
-        return getLookupCache(LookupDiscovery.ALL_GROUPS);
+        return getLookupCache(lookupGroups);
     }
 
     @Override
@@ -79,25 +88,5 @@ public class DiscoveryManagerRegistry implements IDiscoveryManagerRegistry {
         Set<String> result = new HashSet<String>();
         Collections.addAll(result, s);
         return result;
-    }
-
-    private static LookupLocator[] getLookupLocators() {
-        String[] locURLs = SorcerEnv.getLookupLocators();
-        if (locURLs == null || locURLs.length == 0) {
-            return null;
-        }
-        List<LookupLocator> locators = new ArrayList<LookupLocator>(locURLs.length);
-        log.debug("ProviderAccessor Locators: {}", locURLs);
-
-        for (String locURL : locURLs)
-            try {
-                locators.add(new LookupLocator(locURL));
-            } catch (Throwable t) {
-                log.warn("Invalid Lookup URL: {}", locURL);
-            }
-
-        if (locators.isEmpty())
-            return null;
-        return locators.toArray(new LookupLocator[locators.size()]);
     }
 }

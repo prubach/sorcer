@@ -5,6 +5,7 @@ import net.jini.core.entry.Entry;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import javax.inject.Provider;
+import java.rmi.Remote;
 
 /**
  * @author Rafał Krupiński
@@ -25,4 +26,8 @@ public interface IServiceBuilder<T> extends Provider<T> {
     String getName();
 
     Class<?> getType();
+
+    Remote getProxy();
+
+    Entry[] getAttributes();
 }

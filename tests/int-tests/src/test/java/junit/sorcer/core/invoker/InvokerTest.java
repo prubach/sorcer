@@ -156,7 +156,7 @@ public class InvokerTest {
 	}
 
     @Test
-    //@Ignore
+    @Ignore
 	public void invokeJobTest() throws RemoteException, ContextException,
 			SignatureException, ExertionException, TransactionException {
 		Context c4 = context("multiply", in("arg/x1", 50.0),

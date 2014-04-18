@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.jini.jeri.SorcerILFactory;
 
+import java.rmi.Remote;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,16 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
     @Override
     public Class<?> getType() {
         return Provider.class;
+    }
+
+    @Override
+    public Remote getProxy() {
+        return null;
+    }
+
+    @Override
+    public Entry[] getAttributes() {
+        return new Entry[0];
     }
 
     public InvocationLayerFactory getILFactory(Map<Class, Object> serviceComponents, ClassLoader implClassLoader) {

@@ -18,18 +18,67 @@ package sorcer.boot.platform;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
-import sorcer.container.sdi.DiscoveryManagerRegistry;
-import sorcer.container.sdi.IDiscoveryManagerRegistry;
+import net.jini.core.discovery.LookupLocator;
+import net.jini.lease.LeaseRenewalManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sorcer.container.discovery.ILookupManagerRegistry;
+import sorcer.container.discovery.LookupManagerRegistry;
+import sorcer.container.discovery.ServiceManagerRegistry;
+import sorcer.container.discovery.IDiscoveryManagerRegistry;
+import sorcer.core.SorcerEnv;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.service.ServiceBeanListener;
+
+import javax.inject.Provider;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rafał Krupiński
  */
 public class PlatformModule extends AbstractModule {
+    private static final Logger log = LoggerFactory.getLogger(PlatformModule.class);
+
     @Override
     protected void configure() {
+        final LookupLocator[] lookupLocators = getLookupLocators();
+
         bind(IServiceBeanListener.class).to(ServiceBeanListener.class).in(Scopes.SINGLETON);
-        bind(IDiscoveryManagerRegistry.class).to(DiscoveryManagerRegistry.class).in(Scopes.SINGLETON);
+        bind(LeaseRenewalManager.class).in(Scopes.SINGLETON);
+
+        bind(ILookupManagerRegistry.class).toProvider(new Provider<ILookupManagerRegistry>() {
+            @Override
+            public ILookupManagerRegistry get() {
+                return new LookupManagerRegistry(lookupLocators, SorcerEnv.getLookupGroups());
+            }
+        }).in(Scopes.SINGLETON);
+        bind(IDiscoveryManagerRegistry.class).toProvider(new Provider<IDiscoveryManagerRegistry>() {
+            @Override
+            public IDiscoveryManagerRegistry get() {
+                return new ServiceManagerRegistry(lookupLocators, SorcerEnv.getLookupGroups());
+            }
+        }).in(Scopes.SINGLETON);
+    }
+
+    private LookupLocator[] getLookupLocators() {
+        String[] locURLs = SorcerEnv.getLookupLocators();
+        if (locURLs == null || locURLs.length == 0) {
+            return null;
+        }
+        List<LookupLocator> locators = new ArrayList<LookupLocator>(locURLs.length);
+        log.debug("ProviderAccessor Locators: {}", locURLs);
+
+        for (String locURL : locURLs)
+            try {
+                locators.add(new LookupLocator(locURL));
+            } catch (MalformedURLException e) {
+                log.warn("Invalid Lookup URL: {}", locURL, e);
+            }
+
+        if (locators.isEmpty())
+            return null;
+        return locators.toArray(new LookupLocator[locators.size()]);
     }
 }

@@ -16,6 +16,7 @@
 
 package sorcer.core.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ActualServiceBuilderTest {
     @Test
+    @Ignore
     public void testContributeInterface() throws Exception {
         ActualServiceBuilder builder = new ActualServiceBuilder("sorcer.core.service.ServiceBean");
         builder.contributeInterface(new PingServiceContribution(), IServiceContribution.class);

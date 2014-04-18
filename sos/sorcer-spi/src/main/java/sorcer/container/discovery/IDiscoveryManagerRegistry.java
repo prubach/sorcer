@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package sorcer.container.sdi;
+package sorcer.container.discovery;
 
+import net.jini.core.discovery.LookupLocator;
 import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryManager;
 
@@ -27,7 +28,7 @@ import java.io.IOException;
 public interface IDiscoveryManagerRegistry {
     ServiceDiscoveryManager getManager() throws IOException;
 
-    ServiceDiscoveryManager getManager(String[] groups) throws IOException;
+    ServiceDiscoveryManager getManager(String[] groups, LookupLocator[] locs) throws IOException;
 
     LookupCache getLookupCache();
 

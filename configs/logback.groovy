@@ -67,8 +67,9 @@ logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
 //logger("org.rioproject.gnostic.DroolsCEPManager", INFO)
 //logger("org.rioproject.config.GroovyConfig", INFO)
 
-logger("net.jini.discovery.LookupDiscovery", OFF)
-//logger("net.jini.lookup.JoinManager", OFF)
+logger("net.jini.discovery.LookupDiscovery", debug)
+logger("net.jini.lookup.JoinManager", debug)
+logger("net.jini.reggie", debug)
 
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
@@ -93,7 +94,8 @@ logger("com.sorcersoft.bazaar", info, [bazaar])
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
-//logger("sorcer.rio.rmi.SorcerResolvingLoader", debug)
+logger("sorcer.core.service.ActualServiceBuilder", debug)
+logger("sorcer.core.service.ServiceRegistrar", debug)
 
 root(INFO, appenders)
 
