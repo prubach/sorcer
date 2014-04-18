@@ -74,6 +74,7 @@ import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.service.IServiceBeanListener;
+import sorcer.core.service.IServiceBuilder;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
@@ -199,10 +200,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     @Inject
     private IServiceBeanListener beanListener;
 
+    private IServiceBuilder serviceBuilder = new ProviderServiceBuilder(this);
+
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
-		delegate = new ProviderDelegate(beanListener);
+		delegate = new ProviderDelegate(beanListener, serviceBuilder);
 		delegate.provider = this;
 	}
 
@@ -585,7 +588,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		this.lifeCycle = lifeCycle;
 
         if (beanListener != null)
-            beanListener.preProcess(this);
+            beanListener.preProcess(serviceBuilder);
 
 		try {
 			// Take the login context entry from the configuration file, if this

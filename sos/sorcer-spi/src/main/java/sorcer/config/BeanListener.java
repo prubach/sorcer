@@ -17,16 +17,16 @@ package sorcer.config;
 
 
 import net.jini.config.ConfigurationException;
-import sorcer.core.provider.Provider;
+import sorcer.core.service.IServiceBuilder;
 
 /**
  * @author Rafał Krupiński
  */
 public interface BeanListener {
 
-    void preProcess(Provider provider);
+    void preProcess(IServiceBuilder provider);
 
-    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException;
+    void preProcess(IServiceBuilder serviceBuilder, Object serviceBean);
 
-    public void destroy(Object[]serviceBeans);
+    public void destroy(IServiceBuilder serviceBeans, Object o);
 }

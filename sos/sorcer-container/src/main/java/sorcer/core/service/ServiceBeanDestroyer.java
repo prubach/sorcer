@@ -1,4 +1,4 @@
-package sorcer.config;
+package sorcer.core.service;
 /**
  *
  * Copyright 2013 Rafał Krupiński.
@@ -20,6 +20,7 @@ package sorcer.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.config.AbstractBeanListener;
 
 import java.rmi.RemoteException;
 
@@ -31,23 +32,16 @@ public class ServiceBeanDestroyer extends AbstractBeanListener {
 
     /**
      * Destroy beans if they implements any known destroyable interface
-     *
-     * @param serviceBeans beans to destroy
      */
     @Override
-    public void destroy(Object[] serviceBeans) {
-        if (serviceBeans == null) return;
-        for (Object o : serviceBeans) {
-            try {
-                if (o instanceof com.sun.jini.admin.DestroyAdmin)
-                    ((com.sun.jini.admin.DestroyAdmin) o).destroy();
-                else if (o instanceof sorcer.core.DestroyAdmin)
-                    ((sorcer.core.DestroyAdmin) o).destroy();
-            } catch (RemoteException e) {
-                log.warn("Unexpected RemoteException while destroying local service bean " + o, e);
-            }
+    public void destroy(IServiceBuilder serviceBuilder, Object o) {
+        try {
+            if (o instanceof com.sun.jini.admin.DestroyAdmin)
+                ((com.sun.jini.admin.DestroyAdmin) o).destroy();
+            else if (o instanceof sorcer.core.DestroyAdmin)
+                ((sorcer.core.DestroyAdmin) o).destroy();
+        } catch (RemoteException e) {
+            log.warn("Unexpected RemoteException while destroying local service bean " + o, e);
         }
-
     }
-
 }

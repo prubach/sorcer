@@ -19,16 +19,15 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 import sorcer.config.AbstractBeanListener;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.config.Configurable;
-import sorcer.core.provider.Provider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.rmi.RemoteException;
 
 /**
  * Configure object of which class is annotated with @Component and methods or fields annotated with ConfigEntry
@@ -38,16 +37,17 @@ import java.rmi.RemoteException;
 public class Configurer extends AbstractBeanListener {
     final private static Logger log = LoggerFactory.getLogger(Configurer.class);
 
-    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
-        for (Object serviceBean : serviceBeans) {
-            try {
-                process(serviceBean, provider.getProviderConfiguration());
-            } catch (IllegalArgumentException x) {
-                log.error("Error while processing {}", serviceBean);
-                throw x;
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+    @Override
+    public void preProcess(IServiceBuilder provider, Object serviceBean) {
+        try {
+            process(serviceBean, provider.getProviderConfiguration());
+        } catch (IllegalArgumentException x) {
+            log.error("Error while processing {}", serviceBean, x);
+            throw x;
+        } catch (ConfigurationException e) {
+            String message = MessageFormatter.format("Error while processing {}", serviceBean).getMessage();
+            log.error(message, e);
+            throw new IllegalArgumentException(message, e);
         }
     }
 

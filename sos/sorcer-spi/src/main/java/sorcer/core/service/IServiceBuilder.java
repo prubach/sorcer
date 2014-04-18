@@ -1,5 +1,6 @@
 package sorcer.core.service;
 
+import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -12,4 +13,6 @@ public interface IServiceBuilder {
     <T> void contributeInterface(T impl, Class<? super T>... iface);
 
     public void addAttribute(Entry attribute);
+
+    public Configuration getProviderConfiguration();
 }
