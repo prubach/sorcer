@@ -31,7 +31,7 @@ deployment(name: 'ex5-provider') {
     artifact id: 'ex5-api', 'org.sorcersoft.sorcer:ex5-dl:pom:' + getSorcerVersion()
     artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg-all:'+getSorcerVersion()
 
-    service(name:'ex5-prv') {
+    service(name:'Arithmetic') {
          interfaces {
              classes 'sorcer.ex5.provider.Arithmetic'
              artifact ref:'ex5-api'

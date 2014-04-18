@@ -31,7 +31,7 @@ deployment(name: 'ex2-worker-1') {
     artifact id: 'ex2-rdl', 'org.sorcersoft.sorcer:ex2-dl:pom:' + getSorcerVersion()
     artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg1:'+getSorcerVersion()
 
-    service(name:'ex2-worker-1') {
+    service(name:'Worker1') {
          interfaces {
              classes 'sorcer.ex2.provider.Worker'
              artifact ref:'ex2-rdl'

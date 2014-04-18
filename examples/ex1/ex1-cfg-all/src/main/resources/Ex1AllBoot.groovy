@@ -31,7 +31,7 @@ deployment(name: 'ex1-all') {
     artifact id:'ex1-rdl', 'org.sorcersoft.sorcer:ex1-dl:pom:'+getSorcerVersion()
     artifact id:'ex1-prv', 'org.sorcersoft.sorcer:ex1-cfg-all:'+getSorcerVersion()
 
-    service(name:'ex1-whoIsItBean-2') {
+    service(name:'XYZ') {
          interfaces {
              classes 'sorcer.ex1.WhoIsIt'
              artifact ref:'ex1-rdl'
@@ -42,7 +42,7 @@ deployment(name: 'ex1-all') {
          configuration file: "classpath:whoIsIt2-prv.config"
          maintain 1
      }
-     service(name:'ex1-whoIsItBean-1') {
+     service(name:'ABC') {
         interfaces {
             classes 'sorcer.ex1.WhoIsIt'
             artifact ref:'ex1-rdl'

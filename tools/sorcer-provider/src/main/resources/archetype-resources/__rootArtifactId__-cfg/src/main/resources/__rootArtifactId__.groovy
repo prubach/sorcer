@@ -22,7 +22,7 @@ deployment(name: '${rootArtifactId}-provider') {
     artifact id: '${rootArtifactId}-dl', '${groupId}:${rootArtifactId}-dl:pom:${version}'
     artifact id: '${rootArtifactId}-cfg', '${groupId}:${rootArtifactId}-cfg:${version}'
 
-    service(name: '${rootArtifactId}-prv') {
+    service(name: '${serviceName}') {
         interfaces {
             classes '${package}.${providerInterface}'
             artifact ref: '${rootArtifactId}-dl'

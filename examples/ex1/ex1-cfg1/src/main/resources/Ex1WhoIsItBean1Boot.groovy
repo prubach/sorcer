@@ -27,7 +27,7 @@ deployment(name: 'ex1-whoIsIt-1') {
     artifact id:'ex1-rdl', 'org.sorcersoft.sorcer:ex1-dl:pom:'+getSorcerVersion()
     artifact id:'ex1-cfg', 'org.sorcersoft.sorcer:ex1-cfg1:'+getSorcerVersion()
 
-    service(name:'ex1-whoIsItBean-1') {
+    service(name:'ABC') {
          interfaces {
              classes 'sorcer.ex1.WhoIsIt'
              artifact ref:'ex1-rdl'

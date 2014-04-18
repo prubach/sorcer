@@ -31,7 +31,7 @@ deployment(name: 'ex5-subtractor') {
     artifact id: 'ex5-api', 'org.sorcersoft.sorcer:ex5-dl:pom:' + getSorcerVersion()
     artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg-subtractor:'+getSorcerVersion()
 
-    service(name:'ex5-subtractor-prv') {
+    service(name:'Subtractor') {
          interfaces {
              classes 'sorcer.ex5.provider.Subtractor'
              artifact ref:'ex5-api'

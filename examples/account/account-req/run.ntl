@@ -1,5 +1,6 @@
 #!/usr/bin/env nsh
 
+codebase artifact:org.sorcersoft.sorcer/account-dl/pom/1.0-M5-SNAPSHOT
 ////
 // This is an example of a SORCER netlet script.
 // Before testing this script please make sure that the 'nsh' (UNIX) or 'nsh.bat' (Windows) file is available in your
@@ -37,12 +38,13 @@ import sorcer.core.SorcerEnv;
 
 
 
-Task t2 = task("Deposit-Account-1", sig("makeDeposit", ServiceAccount.class, null, SorcerEnv.getActualName("Account1")),
-        context(ServiceAccount.ACCOUNT, input(path(ServiceAccount.DEPOSIT + "/" + ServiceAccount.AMOUNT), new Money(10000)),
-         out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), Context.none), null));
+Task t2 = task("Deposit-Account-1", sig("makeDeposit", ServiceAccount.class, "1.0-M5-SNAPSHOT", "Account1"),
+        context("deposit", input(path(ServiceAccount.DEPOSIT + "/" + ServiceAccount.AMOUNT), new Money(10000)),
+         out(path("balance/amount1"), Context.none), null));
 
-Task t1 = task("Withdrawal-Account-2", sig("makeWithdrawal", ServiceAccount.class, null, SorcerEnv.getActualName("Account2")),
-        context(ServiceAccount.ACCOUNT, input(path(ServiceAccount.WITHDRAWAL + "/" + ServiceAccount.AMOUNT), new Money(10000)),
-         out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), Context.none), null));
+Task t1 = task("Withdrawal-Account-2", sig("makeWithdrawal", ServiceAccount.class, "1.0-M5-SNAPSHOT", "Account2"),
+        context("withdrawal", input(path(ServiceAccount.WITHDRAWAL + "/" + ServiceAccount.AMOUNT), new Money(10000)),
+         out(path("balance/amount1"), Context.none), null));
+         //out(path(ServiceAccount.BALANCE + "/" + ServiceAccount.AMOUNT), null), null));
 
 job("j1",t1, t2);

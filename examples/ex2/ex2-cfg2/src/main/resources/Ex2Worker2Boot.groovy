@@ -23,7 +23,7 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex2-worker-2') {
+deployment(name: 'Worker2') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
@@ -31,7 +31,7 @@ deployment(name: 'ex2-worker-2') {
     artifact id: 'ex2-rdl', 'org.sorcersoft.sorcer:ex2-dl:pom:' + getSorcerVersion()
     artifact id:'ex2-cfg', 'org.sorcersoft.sorcer:ex2-cfg2:'+getSorcerVersion()
 
-    service(name:'ex2-worker-2') {
+    service(name:'Worker2') {
          interfaces {
              classes 'sorcer.ex2.provider.Worker'
              artifact ref:'ex2-rdl'

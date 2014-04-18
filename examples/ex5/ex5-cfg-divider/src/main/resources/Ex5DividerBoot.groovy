@@ -31,7 +31,7 @@ deployment(name: 'ex5-divider') {
     artifact id:'ex5-api', 'org.sorcersoft.sorcer:ex5-dl:pom:'+getSorcerVersion()
     artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg-divider:'+getSorcerVersion()
 
-    service(name:'ex5-divider-prv') {
+    service(name:'Divider') {
          interfaces {
              classes 'sorcer.ex5.provider.Divider'
              artifact ref:'ex5-api'

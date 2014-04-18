@@ -27,7 +27,7 @@ deployment(name: 'ex6-adder') {
     artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom:' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-adder:'+getSorcerVersion()
 
-    service(name:'ex6-adder-prv') {
+    service(name:'Adder') {
          interfaces {
              classes 'sorcer.arithmetic.provider.Adder'
              artifact ref:'ex6-api'

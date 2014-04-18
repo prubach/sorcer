@@ -31,7 +31,7 @@ deployment(name: 'ex5-multiplier') {
     artifact id:'ex5-api', 'org.sorcersoft.sorcer:ex5-dl:pom:'+getSorcerVersion()
     artifact id:'ex5-cfg', 'org.sorcersoft.sorcer:ex5-cfg-multiplier:'+getSorcerVersion()
 
-    service(name:'ex5-multiplier-prv') {
+    service(name:'Multiplier') {
          interfaces {
              classes 'sorcer.ex5.provider.Multiplier'
              artifact ref:'ex5-api'

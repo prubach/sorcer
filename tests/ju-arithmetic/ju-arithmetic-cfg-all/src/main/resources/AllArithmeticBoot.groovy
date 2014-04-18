@@ -31,7 +31,7 @@ deployment(name: 'ex5-provider') {
     artifact id: 'api', 'org.sorcersoft.sorcer:ju-arithmetic-api:'+getSorcerVersion()
     artifact id: 'cfg', 'org.sorcersoft.sorcer:ju-arithmetic-cfg-all:'+getSorcerVersion()
 
-    service(name:'ju-arithmetic-prv') {
+    service(name:'Arithmetic') {
          interfaces {
              classes 'junit.sorcer.core.provider.Arithmetic'
              artifact ref:'api'

@@ -27,7 +27,7 @@ deployment(name: 'ex6-multiplier') {
     artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom:' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-multiplier:'+getSorcerVersion()
 
-    service(name:'ex6-multiplier-prv') {
+    service(name:'Multiplier') {
          interfaces {
              classes 'sorcer.arithmetic.provider.Multiplier'
              artifact ref:'ex6-api'

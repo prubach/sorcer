@@ -27,7 +27,7 @@ deployment(name: 'ex6-divider') {
     artifact id: 'ex6-api', 'org.sorcersoft.sorcer:ex6-dl:pom:' + getSorcerVersion()
     artifact id:'ex6-cfg', 'org.sorcersoft.sorcer:ex6-cfg-divider:'+getSorcerVersion()
 
-    service(name:'ex6-divider-prv') {
+    service(name:'Divider') {
          interfaces {
              classes 'sorcer.arithmetic.provider.Divider'
              artifact ref:'ex6-api'

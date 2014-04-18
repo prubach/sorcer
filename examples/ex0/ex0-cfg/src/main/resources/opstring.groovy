@@ -27,7 +27,7 @@ deployment(name: 'ex0-provider') {
     artifact id: 'ex0-api', 'org.sorcersoft.sorcer:ex0-dl:pom:' + getSorcerVersion()
     artifact id:'ex0-cfg', 'org.sorcersoft.sorcer:ex0-cfg:'+getSorcerVersion()
 
-    service(name:'ex0-prv') {
+    service(name:'HelloWorld') {
          interfaces {
              classes 'sorcer.ex0.HelloWorld'
              artifact ref:'ex0-api'
