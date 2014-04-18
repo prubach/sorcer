@@ -56,8 +56,8 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
     private Map<Object, Object> configurations = new HashMap<Object, Object>();
 
     @Override
-    public <T> void contributeInterface(T impl, Class<? super T>... iface) {
-        for (Class<? super T> type : iface)
+    public <I> void contributeInterface(I impl, Class<? super I>... iface) {
+        for (Class<? super I> type : iface)
             serviceContributions.put(type, impl);
     }
 
@@ -86,6 +86,11 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
         return serviceProvider.getName();
     }
 
+    @Override
+    public Class<?> getType() {
+        return Provider.class;
+    }
+
     public InvocationLayerFactory getILFactory(Map<Class, Object> serviceComponents, ClassLoader implClassLoader) {
         if (serviceComponents == null || serviceComponents.isEmpty())
             if (interceptors.isEmpty())
@@ -110,5 +115,10 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
     @Override
     public Provider getProvider() {
         return serviceProvider;
+    }
+
+    @Override
+    public Object get() {
+        return getProvider();
     }
 }

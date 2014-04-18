@@ -15,7 +15,6 @@ package sorcer.config;
  * limitations under the License.
  */
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.service.IServiceBuilder;
@@ -27,16 +26,14 @@ public abstract class AbstractBeanListener implements BeanListener {
     protected Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void preProcess(IServiceBuilder provider) {
-
+    public <T> void preProcess(IServiceBuilder<T> provider) {
     }
 
     @Override
-    public void destroy(IServiceBuilder provider, Object o) {
-
+    public <T> void destroy(IServiceBuilder<T> serviceBuilder, T bean) {
     }
 
     @Override
-    public void preProcess(IServiceBuilder serviceBuilder, Object bean) {
+    public <T> void preProcess(IServiceBuilder<T> serviceBuilder, T bean) {
     }
 }
