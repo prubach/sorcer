@@ -1396,8 +1396,13 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             logger.warn("Cataloger not initialized");
         } else
         for (Map.Entry<CatalogerInfo.InterfaceList, List<ServiceItem>> entry : cinfo.entrySet()) {
-            List<ServiceItem> serviceItems = entry.getValue();
+            List<ServiceItem> serviceItems;
+            List<ServiceItem> down = new LinkedList<ServiceItem>();
+            synchronized (entry) {
+                serviceItems = new LinkedList<ServiceItem>(entry.getValue());
+            }
             SRVITEM:
+
             for (ServiceItem serviceItem : serviceItems) {
                 if (tmpl.serviceID != null && tmpl.serviceID.equals(serviceItem.serviceID)) {
                     result.add(serviceItem);
@@ -1417,10 +1422,14 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
                         result.add(serviceItem);
                     } else {
                         // not Alive anymore removing from cataloger
-                        cinfo.removeServiceItem(serviceItem);
+                        down.add(serviceItem);
                     }
                     if (result.size() >= maxMatches) break;
                 }
+            }
+            synchronized (cinfo){
+                for(ServiceItem serviceItem: down)
+                    cinfo.removeServiceItem(serviceItem);
             }
 
         }
