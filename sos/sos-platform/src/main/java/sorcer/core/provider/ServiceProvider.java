@@ -225,7 +225,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			providerProperties = (String) Config.getNonNullEntry(config,
 					COMPONENT, "properties", String.class, "");
 		} catch (ConfigurationException e) {
-			logger.warn(e.getMessage());
+			logger.warn("Error while reading configuration of {}", getName(), e);
 		}
 		// configure the provider's delegate
 		delegate.getProviderConfig().init(true, providerProperties);

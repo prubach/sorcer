@@ -61,7 +61,7 @@ public class NetArithmeticReqTest {
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReqTest.class.getName());
 
-    //@Ignore
+    @Ignore("hangs")
     @Test
     public void batchTaskTest() throws Exception {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
@@ -78,7 +78,7 @@ public class NetArithmeticReqTest {
         assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
     }
 
-    //@Ignore
+    @Ignore("hangs")
     @Test
     public void batchPrefixedTaskTest() throws Exception {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
