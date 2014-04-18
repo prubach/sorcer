@@ -78,13 +78,14 @@ public class Configurer extends AbstractBeanListener {
         }
     }
 
-    private void updateProperty(Object object, Method method, Configuration config, String component, ConfigEntry configEntry) {
+    private void updateProperty(Object object, Method method, Configuration config, String defComponent, ConfigEntry configEntry) {
         Class<?>[] ptypes = method.getParameterTypes();
         if (ptypes.length != 1) return;
         Class<?> type = ptypes[0];
 
         Object defaultValue = Configuration.NO_DEFAULT;
         Object value;
+        String component = ConfigEntry.DEFAULT_COMPONENT.equals(configEntry.component()) ? defComponent : configEntry.component();
         String entryKey = getEntryKey(getPropertyName(method), configEntry);
         boolean required = configEntry.required();
         try {
@@ -137,7 +138,7 @@ public class Configurer extends AbstractBeanListener {
         return name;
     }
 
-    private void updateField(Object target, Field field, Configuration config, String component, ConfigEntry configEntry) {
+    private void updateField(Object target, Field field, Configuration config, String defComponent, ConfigEntry configEntry) {
         try {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
@@ -148,6 +149,7 @@ public class Configurer extends AbstractBeanListener {
         }
 
         String entryKey = getEntryKey(field.getName(), configEntry);
+        String component = ConfigEntry.DEFAULT_COMPONENT.equals(configEntry.component()) ? defComponent : configEntry.component();
         try {
             Object defaultValue = field.get(target);
             Class<?> targetType = field.getType();

@@ -27,11 +27,14 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
     public String DEFAULT_KEY = "ConfigEntry.DefaultKey";
+    public String DEFAULT_COMPONENT = "ConfigEntry.DefaultComponent";
 
     /**
      * Entry name. Default null value makes use of field or property name.
      */
     String value() default DEFAULT_KEY;
+
+    String component() default DEFAULT_COMPONENT;
 
     /**
      * if true, configuration entry is required and exception is thrown if it's missing or wrong type. Warning is issued otherwise.
