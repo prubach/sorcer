@@ -748,6 +748,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 			joinManager = new JoinManager(proxy, serviceAttributes, sid,
 					ldmgr, null);
+
+            if (beanListener != null)
+                beanListener.preProcess(serviceBuilder);
+
 			done = true;
 		} catch (Throwable e) {
 			logger.warn("Error initializing service: ", e);

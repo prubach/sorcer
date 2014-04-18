@@ -2873,6 +2873,8 @@ public class ProviderDelegate {
 			}
 		}
 		initBean(bean);
+        if (beanListener != null)
+            beanListener.preProcess(serviceBuilder, bean);
 		return bean;
 	}
 
@@ -2889,14 +2891,6 @@ public class ProviderDelegate {
     }
 
 	private Object initBean(Object serviceBean) {
-        try {
-			Method m = serviceBean.getClass().getMethod(
-					"init", new Class[] { Provider.class });
-			m.invoke(serviceBean, new Object[] { provider });
-		} catch (Exception e) {
-			logger.info("No 'init' method for this service bean: "
-                    + serviceBean.getClass().getName());
-		}
 		exports.put(serviceBean, this);
 		logger.debug("exported service bean: \n" + serviceBean
                 + "\n by provider: " + provider);

@@ -33,6 +33,7 @@ public class ServiceBeanListener implements IServiceBeanListener {
     public ServiceBeanListener(Set<BeanListener> platformListeners) {
         activators = new LinkedList<BeanListener>();
         activators.add(new Configurer());
+        activators.add(new LegacyInitializer());
         activators.addAll(platformListeners);
 
         destroyers = new LinkedList<BeanListener>();
