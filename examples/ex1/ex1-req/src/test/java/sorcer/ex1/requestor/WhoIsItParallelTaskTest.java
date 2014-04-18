@@ -39,31 +39,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@RunWith(SorcerSuite.class)
+@RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
 @ExportCodebase({
         "org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex1-api",
         "org.sorcersoft.sorcer:ex1-rdl"
 })
-@SorcerServiceConfigurations({
-/*
-        @SorcerServiceConfiguration(
-                ":ex1-cfg-all"
-        ),
-*/
-        @SorcerServiceConfiguration({
-                ":ex1-cfg1",
-       //         ":ex1-cfg2"
-        })
-})
+@SorcerServiceConfigurations(
+        @SorcerServiceConfiguration( { ":ex1-cfg1" }
+   )
+)
 public class WhoIsItParallelTaskTest {
 
 	private static Logger logger = LoggerFactory.getLogger(WhoIsItParallelTaskTest.class);
 
     @Test
 	public void whoIsItParallel() throws Exception {
-		int tally = 15;
+		int tally = 5;
 
 		List<Future<Exertion>> fList = new ArrayList<Future<Exertion>>(tally);
 		ExecutorService pool = Executors.newFixedThreadPool(tally);

@@ -827,6 +827,7 @@ public class ProviderDelegate {
 		 * actions); }
 		 */
 		if (isValidTask(task)) {
+            logger.info("Task " + task.getName() + " is valid");
 			try {
 				task.startExecTime();
 				exertionStateTable.put(task.getId(), new Integer(

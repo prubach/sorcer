@@ -111,7 +111,7 @@ public class WhoIsItTest {
         context.putValue("requestor/hostname", hostname);
 
         NetSignature signature = new NetSignature("getHostName",
-                sorcer.ex1.WhoIsIt.class, (String) null);
+                sorcer.ex1.WhoIsIt.class);
 
         Task task = new NetTask("Who Is It?", signature, context);
         Exertion result = task.exert();
