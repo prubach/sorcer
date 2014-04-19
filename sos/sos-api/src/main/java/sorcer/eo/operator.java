@@ -433,6 +433,30 @@ public class operator {
 		return component.getProcessSignature();
 	}
 
+    public static SigBuilder mkSig(Class type, String selector) throws SignatureException {
+        return new SigBuilder(SignatureFactory.sig(selector, type, null));
+    }
+
+    public static SigBuilder mkSig(String selector, Class type) throws SignatureException {
+        return new SigBuilder(SignatureFactory.sig(selector, type, null));
+    }
+
+    public static TaskBuilder mkTask(String name){
+        return new TaskBuilder(new Task(name));
+    }
+
+    public static CtxBuilder mkCtx(Context.Type type) throws ContextException {
+        return mkCtx(type, "unknown-" + count++);
+    }
+
+    private static CtxBuilder mkCtx(Context.Type type, String name) throws ContextException {
+        return new CtxBuilder(ContextFactory.context(type, name));
+    }
+
+    public static Task exert(TaskBuilder task) throws ExertionException {
+        return exert(task.get());
+    }
+
     public static <T> Task task(String name, T... elems)
             throws ExertionException {
         return TaskFactory.task(name, elems);
