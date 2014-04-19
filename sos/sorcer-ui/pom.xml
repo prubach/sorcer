@@ -39,6 +39,11 @@
             <artifactId>jsk-platform</artifactId>
             <version>${v.jini}</version>
         </dependency>
+        <dependency>
+            <groupId>net.jini</groupId>
+            <artifactId>jsk-lib</artifactId>
+            <version>${v.jini}</version>
+        </dependency>
     </dependencies>
 
 </project>
