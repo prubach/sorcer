@@ -1006,7 +1006,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	public List<ThrowableTrace> getExceptions(List<ThrowableTrace> exs) {
 		if (controlContext != null)
 			exs.addAll(controlContext.getExceptions());
-		return exs;
+        for (Exertion innerXrt : getExertions())
+            exs.addAll(innerXrt.getExceptions());
+        return exs;
 	}
 	
 	public List<Signature> getAllSignatures() {

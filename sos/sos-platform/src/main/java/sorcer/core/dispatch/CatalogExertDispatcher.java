@@ -110,7 +110,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			e.printStackTrace();
 			// return original exertion with exception
 			result = (ServiceExertion) ex;
-			result.getControlContext().addException(e);
+            result.reportException(e);
 			result.setStatus(FAILED);
 			setState(Exec.FAILED);
 			return result;
@@ -188,11 +188,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                             logger.info("Provisioning "+sig);
                             service = provisioner.provision(sig.getServiceType().getName(), sig.getProviderName(), sig.getVersion());
                         } catch (ProvisioningException pe) {
-                            String msg = "PROBLEM: " +pe.getMessage();
+                            String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +pe.getMessage();
                             logger.warn(msg, pe);
                             throw new ExertionException(msg, task);
                         } catch (RemoteException re) {
-                            String msg = "Problem provisioning "+sig + " " +re.getMessage();
+                            String msg = "Problem provisioning " + sig + " in task " + task.getName() + ": " +re.getMessage();
                             logger.warn(msg, re);
                             throw new ExertionException(msg, task);
                         }
@@ -254,8 +254,11 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                 }
             }
             logger.debug("got result: {}", result);
-        }
-        catch (Exception re) {
+        //}
+        //catch (ExertionException ee) {
+        //    task.reportException(ee);
+        //    throw ee;
+        } catch (Exception re) {
             task.reportException(re);
             throw new ExertionException("Dispatcher failed for task: "
                     + xrt.getName(), re);
