@@ -224,92 +224,92 @@
 
             <!-- River -->
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/fiddler/${v.jini}/fiddler-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/fiddler/${v.jini}/fiddler-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>fiddler-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/fiddler-dl/${v.jini}/fiddler-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/fiddler-dl/${v.jini}/fiddler-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>fiddler-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/jsk-dl/${v.jini}/jsk-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/jsk-dl/${v.jini}/jsk-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jsk-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/jsk-lib/${v.jini}/jsk-lib-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/jsk-lib/${v.jini}/jsk-lib-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jsk-lib-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/jsk-platform/${v.jini}/jsk-platform-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/jsk-platform/${v.jini}/jsk-platform-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jsk-platform-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/jsk-resources/${v.jini}/jsk-resources-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/jsk-resources/${v.jini}/jsk-resources-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>jsk-resources-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/mahalo/${v.jini}/mahalo-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/mahalo/${v.jini}/mahalo-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>mahalo-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/mahalo-dl/${v.jini}/mahalo-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/mahalo-dl/${v.jini}/mahalo-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>mahalo-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/mercury/${v.jini}/mercury-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/mercury/${v.jini}/mercury-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>mercury-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/mercury-dl/${v.jini}/mercury-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/mercury-dl/${v.jini}/mercury-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>mercury-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/norm/${v.jini}/norm-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/norm/${v.jini}/norm-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>norm-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/norm-dl/${v.jini}/norm-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/norm-dl/${v.jini}/norm-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>norm-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/outrigger/${v.jini}/outrigger-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/outrigger/${v.jini}/outrigger-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>outrigger-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/outrigger-dl/${v.jini}/outrigger-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/outrigger-dl/${v.jini}/outrigger-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>outrigger-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/reggie/${v.jini}/reggie-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/reggie/${v.jini}/reggie-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>reggie-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/reggie-dl/${v.jini}/reggie-dl-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/reggie-dl/${v.jini}/reggie-dl-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>reggie-dl-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/net/jini/lookup/serviceui/${v.jini}/serviceui-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/serviceui/${v.jini}/serviceui-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>serviceui-${v.jini}.pom</destName>
             </file>
             <file>
-                <source>${user.home}/.m2/repository/org/apache/river/start/${v.jini}/start-${v.jini}.pom</source>
+                <source>${user.home}/.m2/repository/com/sorcersoft/river/start/${v.jini}/start-${v.jini}.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>start-${v.jini}.pom</destName>
             </file>
@@ -731,9 +731,7 @@
        <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <excludes>
-                <exclude>net.jini:*</exclude>
-                <exclude>net.jini.lookup:*</exclude>
-                <exclude>org.apache.river:*</exclude>
+                <exclude>com.sorcersoft.river:*</exclude>
                 <exclude>org.sorcersoft.sorcer:*</exclude>
                 <exclude>org.sorcersoft.blitz:*</exclude>
                 <exclude>org.sorcersoft.sigar:*</exclude>
@@ -753,31 +751,9 @@
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>org.apache.river:*</include>
-            </includes>
-            <outputDirectory>lib/${org.apache.river}</outputDirectory>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <fileMode>0644</fileMode>
-        </dependencySet>
-
-        <!-- Jini libs -->
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <includes>
-                <include>net.jini:*</include>
+                <include>com.sorcersoft.river:*</include>
             </includes>
             <outputDirectory>lib/${net.jini}</outputDirectory>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <fileMode>0644</fileMode>
-        </dependencySet>
-
-        <!-- Jini libs -->
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <includes>
-                <include>net.jini.lookup:*</include>
-            </includes>
-            <outputDirectory>lib/${net.jini.lookup}</outputDirectory>
             <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
             <fileMode>0644</fileMode>
         </dependencySet>

@@ -32,13 +32,13 @@ deployment(name: 'Sorcer') {
     codebase getCodebase()
 
     artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
-    artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.2'
+    artifact id: 'mahalo-dl', 'com.sorcersoft.river:mahalo-dl:3.0-M1'
     artifact id: 'fiddler-cfg', "org.sorcersoft.sorcer:fiddler-cfg:" + getSorcerVersion()
-    artifact id: 'fiddler-dl', 'org.apache.river:fiddler-dl:2.2.2'
+    artifact id: 'fiddler-dl', 'com.sorcersoft.river:fiddler-dl:3.0-M1'
     artifact id: 'norm-cfg', "org.sorcersoft.sorcer:norm-cfg:" + getSorcerVersion()
-    artifact id: 'norm-dl', 'org.apache.river:norm-dl:2.2.2'
+    artifact id: 'norm-dl', 'com.sorcersoft.river:norm-dl:3.0-M1'
     artifact id: 'mercury-cfg', "org.sorcersoft.sorcer:mercury-cfg:" + getSorcerVersion()
-    artifact id: 'mercury-dl', 'org.apache.river:mercury-dl:2.2.2'
+    artifact id: 'mercury-dl', 'com.sorcersoft.river:mercury-dl:3.0-M1'
 
     def blitz = [
         impl:"org.sorcersoft.sorcer:blitz-cfg:" + getSorcerVersion(),

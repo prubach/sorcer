@@ -249,10 +249,11 @@ $MVN_REPO/org/slf4j/jul-to-slf4j/$V_SLF4J/jul-to-slf4j-$V_SLF4J.jar:\
 $MVN_REPO/ch/qos/logback/logback-core/$V_LOGBACK/logback-core-$V_LOGBACK.jar:\
 $MVN_REPO/ch/qos/logback/logback-classic/$V_LOGBACK/logback-classic-$V_LOGBACK.jar"
 
-	JINI_CLASSPATH="$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar"
+	JINI_CLASSPATH="$MVN_REPO/com/sorcersoft/river/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
+$MVN_REPO/au/net/Zeus/custard-apple/1.0.3/custard-apple-1.0.3.jar"
 
     # For Darwin, add NSH_APP_NAME to the JAVA_OPTS as -Xdock:name
     if $darwin; then
@@ -331,10 +332,10 @@ $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SOR
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
-$MVN_REPO/net/jini/lookup/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
-$MVN_REPO/net/jini/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
+$MVN_REPO/com/sorcersoft/river/serviceui/$V_JINI/serviceui-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/jsk-resources/$V_JINI/jsk-resources-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/jsk-platform/$V_JINI/jsk-platform-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/jsk-lib/$V_JINI/jsk-lib-$V_JINI.jar"
 
     echo $SORCER_RIO_CP
 }
@@ -348,7 +349,7 @@ createSorcerRioUICp ( ) {
 
 startSos ( ) {
      BOOT_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
-$MVN_REPO/org/apache/river/start/$V_JINI/start-$V_JINI.jar:\
+$MVN_REPO/com/sorcersoft/river/start/$V_JINI/start-$V_JINI.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-start/$V_SORCER/sos-start-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-boot/$V_SORCER/sos-boot-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-util/$V_SORCER/sos-util-$V_SORCER.jar:\

@@ -34,7 +34,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.jini</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>

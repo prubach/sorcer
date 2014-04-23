@@ -3,7 +3,7 @@ def getSorcerVersion() {
 }
 
 def getRiverVersion() {
-    return "2.2.2";
+    return "3.0-M1";
 }
 
 def getBlitzVersion() {
@@ -29,8 +29,8 @@ deployment(name: 'SorcerCommon') {
     artifact id: 'exertmonitor-prv', sorcer('exertmonitor-prv')
     artifact id: 'commons-prv', sorcer('commons-prv')
 
-    artifact id: 'mahalo', 'org.apache.river:mahalo:' + getRiverVersion()
-    artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:' + getRiverVersion()
+    artifact id: 'mahalo', 'com.sorcersoft.river:mahalo:' + getRiverVersion()
+    artifact id: 'mahalo-dl', 'com.sorcersoft.river:mahalo-dl:' + getRiverVersion()
 
     artifact id: 'blitz-dl', 'org.sorcersoft.blitz:blitz-proxy:' + getBlitzVersion()
     artifact id: 'blitz-impl', 'org.sorcersoft.blitz:blitz-service:' + getBlitzVersion()

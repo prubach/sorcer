@@ -35,7 +35,7 @@
         <v_sorcer>${project.version}</v_sorcer>
         <!-- Remember not to change it to snapshot, always make it the latest release-->
         <v_sos_release>1.0-M4</v_sos_release>
-		<v.jini>2.2.2</v.jini>
+		<v.jini>3.0-M1</v.jini>
 		<v.blitz>2.3</v.blitz>
 		<!--<v.sleepycat>5.0.103</v.sleepycat>-->
 		<v.sleepycat>4.0.92</v.sleepycat>
@@ -155,7 +155,7 @@
 				<version>${v.groovy}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.jini</groupId>
+				<groupId>com.sorcersoft.river</groupId>
 				<artifactId>jsk-platform</artifactId>
 				<version>${v.jini}</version>
 			</dependency>

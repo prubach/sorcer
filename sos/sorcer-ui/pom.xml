@@ -30,17 +30,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.jini.lookup</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>serviceui</artifactId>
             <version>${v.jini}</version>
         </dependency>
         <dependency>
-            <groupId>net.jini</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>jsk-platform</artifactId>
             <version>${v.jini}</version>
         </dependency>
         <dependency>
-            <groupId>net.jini</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
         </dependency>

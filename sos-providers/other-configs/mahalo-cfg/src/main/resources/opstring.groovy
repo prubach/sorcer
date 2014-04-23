@@ -24,7 +24,7 @@ deployment(name: 'mahalo-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:2.2.2'
+    artifact id: 'mahalo-dl', 'com.sorcersoft.river:mahalo-dl:3.0-M1'
     artifact id: 'mahalo-cfg', "org.sorcersoft.sorcer:mahalo-cfg:" + getSorcerVersion()
 
     service(name: 'Mahalo') {

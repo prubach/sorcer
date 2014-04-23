@@ -39,7 +39,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.river</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
         </dependency>

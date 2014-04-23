@@ -16,7 +16,7 @@
 
 	<dependencies>
         <dependency>
-            <groupId>net.jini</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>
             <scope>provided</scope>

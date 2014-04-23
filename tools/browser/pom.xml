@@ -53,7 +53,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.jini</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>jsk-platform</artifactId>
 		</dependency>
 		<dependency>

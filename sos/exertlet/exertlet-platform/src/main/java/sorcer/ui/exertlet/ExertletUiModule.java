@@ -55,7 +55,7 @@ public class ExertletUiModule extends AbstractModule {
     static class NetletInjector extends AbstractBeanListener implements ServiceDescriptorProcessor {
         private static Logger log = LoggerFactory.getLogger(NetletInjector.class);
 
-        private final URL serviceui = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), ArtifactCoordinates.coords("net.jini.lookup:serviceui:2.2.2").toString());
+        private final URL serviceui = GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), ArtifactCoordinates.coords("com.sorcersoft.river:serviceui:3.0-M1").toString());
         private URL[] urls = new URL[]{
                 GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sos-exertlet-sui").toString()),
                 GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString()),

@@ -17,7 +17,7 @@ public class MappedFlattenedArtifactResolverTest {
 	public void testResolveSimpleName() throws Exception {
 		String path = resolver.resolveSimpleName("serviceui", "jar");
 
-		String expected = Resolver.resolveRelative("net.jini.lookup:serviceui");
+		String expected = Resolver.resolveRelative("com.sorcersoft.river:serviceui");
 		Assert.assertEquals(expected, path);
 	}
 

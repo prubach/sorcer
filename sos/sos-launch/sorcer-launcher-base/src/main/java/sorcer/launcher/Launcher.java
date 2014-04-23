@@ -59,11 +59,11 @@ public abstract class Launcher implements ILauncher {
     protected Properties environment;
 
     final protected static String[] CLASS_PATH = {
-            "org.apache.river:start",
-            "net.jini:jsk-resources",
-            "net.jini:jsk-platform",
-            "net.jini:jsk-lib",
-            "net.jini.lookup:serviceui",
+            "com.sorcersoft.river:start",
+            "com.sorcersoft.river:jsk-resources",
+            "com.sorcersoft.river:jsk-platform",
+            "com.sorcersoft.river:jsk-lib",
+            "com.sorcersoft.river:serviceui",
 
             "org.rioproject:rio-start",
             "org.rioproject:rio-platform",
@@ -95,6 +95,7 @@ public abstract class Launcher implements ILauncher {
             "commons-io:commons-io",
             "commons-cli:commons-cli",
             "org.sorcersoft.sigar:sigar:1.6.4-3",
+            "au.net.Zeus:custard-apple:1.0.3",
 
             "org.slf4j:slf4j-api",
             "org.slf4j:jul-to-slf4j",

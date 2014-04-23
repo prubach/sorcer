@@ -57,34 +57,6 @@ public class RemoteServiceEvent extends RemoteEvent implements Serializable {
     }
 
     /**
-     * Set the eventID
-     * 
-     * @param eventID The eventID for the RemoteEvent
-     */
-    public void setEventID(long eventID) {
-        super.eventID = eventID;
-    }
-
-    /**
-     * Set the sequence number
-     * 
-     * @param seqNum The sequence number of the RemoteEvent
-     */
-    public void setSequenceNumber(long seqNum) {
-        super.seqNum = seqNum;
-    }
-
-    /**
-     * Set the Handback Object
-     * 
-     * @param handback A MarshalledObject providing a handback mechanism 
-     * for the RemoteEvent
-     */
-    public void setHandback(MarshalledObject handback) {
-        super.handback = handback;
-    }
-
-    /**
      * Get the Date object that represents the time of the event
      *
      * @return The Date object that represents the time

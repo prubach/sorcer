@@ -23,7 +23,7 @@
             <version>${v.sorcer}</version>
         </dependency>
         <dependency>
-            <groupId>net.jini.lookup</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>serviceui</artifactId>
             <version>${v.jini}</version>
         </dependency>

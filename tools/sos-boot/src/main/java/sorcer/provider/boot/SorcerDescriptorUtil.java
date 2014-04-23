@@ -51,7 +51,7 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates JOBBER_PRV = sorcer("jobber-prv");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je");
-    public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
+    public static final ArtifactCoordinates SERVICEUI = coords("com.sorcersoft.river:serviceui");
 
 	private static String sorcerHome = SorcerEnv.getHomeDir().getAbsolutePath();
 
@@ -1058,9 +1058,9 @@ public class SorcerDescriptorUtil {
 		if (sorcerHome == null)
 			throw new RuntimeException("'sorcer.home' system property not declared");
 		String reggieClasspath = Resolver.resolveClassPath(
-				coords("org.apache.river:reggie"));
+				coords("com.sorcersoft.river:reggie"));
 		String reggieCodebase = getCodebase(new ArtifactCoordinates[]{
-				coords("org.apache.river:reggie-dl")
+				coords("com.sorcersoft.river:reggie-dl")
 		}, hostAddress, Integer.toString(port));
  		String implClass = "com.sun.jini.reggie.TransientRegistrarImpl";
 		return (new SorcerServiceDescriptor(reggieCodebase, policy,

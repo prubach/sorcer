@@ -19,7 +19,7 @@ public class RepositoryArtifactResolverTest {
 	public void testResolveSimpleName() throws Exception {
 		String path = resolver.resolveSimpleName("serviceui", "jar");
 
-		String expected = resolver.resolveRelative("net.jini.lookup:serviceui");
+		String expected = resolver.resolveRelative("com.sorcersoft.river:serviceui");
 		Assert.assertEquals(expected, path);
 	}
 

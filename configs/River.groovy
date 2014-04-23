@@ -20,8 +20,8 @@ deployment(name: 'Sorcer') {
 
     artifact id: 'webster-srv', 'org.sorcersoft.sorcer:sos-webster:' + getSorcerVersion()
 
-    artifact id: 'reggie', 'org.apache.river:reggie:2.2.2'
-    artifact id: 'reggie-dl', 'org.apache.river:reggie-dl:2.2.2'
+    artifact id: 'reggie', 'com.sorcersoft.river:reggie:3.0-M1'
+    artifact id: 'reggie-dl', 'com.sorcersoft.river:reggie-dl:3.0-M1'
 
     service(name: 'Webster') {
         implementation(class: 'sorcer.tools.webster.Webster') {

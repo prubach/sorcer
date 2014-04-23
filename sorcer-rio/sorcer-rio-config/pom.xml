@@ -50,10 +50,10 @@
                                 }
 
                                 [
-                                    'jsk-dl':      resolve('net.jini',        'jsk-dl',      'v.jini'),
-                                    'jsk-platform':resolve('net.jini',        'jsk-platform','v.jini'),
-                                    'reggie-dl':   resolve('org.apache.river','reggie-dl',   'v.jini'),
-                                    'serviceui':   resolve('net.jini.lookup', 'serviceui',   'v.jini'),
+                                    'jsk-dl':      resolve('com.sorcersoft.river',        'jsk-dl',      'v.jini'),
+                                    'jsk-platform':resolve('com.sorcersoft.river',        'jsk-platform','v.jini'),
+                                    'reggie-dl':   resolve('com.sorcersoft.river','reggie-dl',   'v.jini'),
+                                    'serviceui':   resolve('com.sorcersoft.river', 'serviceui',   'v.jini'),
                                     'rio-gnostic': resolve('org.rioproject',  'gnostic',     'v.rio'),
                                     'rio-main':    resolve('org.rioproject',  'main',        'v.rio'),
                                 ].each(){
@@ -146,27 +146,27 @@
                                     <version>${v.groovy}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>net.jini</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>jsk-lib</artifactId>
                                     <version>${v.jini}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>net.jini</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>jsk-platform</artifactId>
                                     <version>${v.jini}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>net.jini</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>jsk-resources</artifactId>
                                     <version>${v.jini}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.apache.river</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>reggie</artifactId>
                                     <version>${v.jini}</version>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.apache.river</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>start</artifactId>
                                     <version>${v.jini}</version>
                                     <outputDirectory>${rioLib}</outputDirectory>
@@ -252,19 +252,19 @@
                                     <outputDirectory>${rioLibDl}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>net.jini</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>jsk-dl</artifactId>
                                     <version>${v.jini}</version>
                                     <outputDirectory>${rioLibDl}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.apache.river</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>reggie-dl</artifactId>
                                     <version>${v.jini}</version>
                                     <outputDirectory>${rioLibDl}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>net.jini.lookup</groupId>
+                                    <groupId>com.sorcersoft.river</groupId>
                                     <artifactId>serviceui</artifactId>
                                     <version>${v.jini}</version>
                                     <outputDirectory>${rioLibDl}</outputDirectory>

@@ -45,73 +45,73 @@
         <!--  / -->
 		<!-- RIVER -->
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>outrigger</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>outrigger-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>reggie</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>reggie-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>mahalo</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>mahalo-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>fiddler</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>fiddler-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>mercury</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>mercury-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>norm</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.river</groupId>
+			<groupId>com.sorcersoft.river</groupId>
 			<artifactId>norm-dl</artifactId>
 			<version>${v.jini}</version>
 			<scope>runtime</scope>

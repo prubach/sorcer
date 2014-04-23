@@ -42,12 +42,12 @@
 		</dependency>
 
 		<dependency>
-            <groupId>org.apache.river</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>start</artifactId>
             <version>${v.jini}</version>
         </dependency>
         <dependency>
-            <groupId>net.jini</groupId>
+            <groupId>com.sorcersoft.river</groupId>
             <artifactId>jsk-platform</artifactId>
         </dependency>
 

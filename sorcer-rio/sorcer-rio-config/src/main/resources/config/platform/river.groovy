@@ -3,12 +3,12 @@ import sorcer.rio.util.SorcerCapabilityDescriptor
 def getPlatformCapabilityConfig() {
     return new SorcerCapabilityDescriptor(
             "River",
-            "2.2.2",
+            "3.0-M1",
             "Apache River",
             "Apache.org",
             [
-                    'net.jini:jsk-lib',
-                    'net.jini.lookup:serviceui',
+                    'com.sorcersoft.river:jsk-lib',
+                    'com.sorcersoft.river:serviceui',
             ]
     )
 }

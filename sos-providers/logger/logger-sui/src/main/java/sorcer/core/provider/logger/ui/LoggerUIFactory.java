@@ -40,7 +40,7 @@ public class LoggerUIFactory {
             URL[] uiUrls = new URL[]{
                     GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("logger-sui").toString()),
                     GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), Artifact.sorcer("sorcer-ui").toString()),
-                    GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), ArtifactCoordinates.coords("net.jini.lookup:serviceui:2.2.2").toString())
+                    GenericUtil.toArtifactUrl(Sorcer.getCodebaseRoot(), ArtifactCoordinates.coords("com.sorcersoft.river:serviceui:3.0-M1").toString())
             };
 
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
