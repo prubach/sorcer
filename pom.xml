@@ -285,6 +285,7 @@
                         <systemPropertyVariables>
                             <RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>
                             <sorcer.home>${env.SORCER_HOME}</sorcer.home>
+                            <java.rmi.server.RMIClassLoaderSpi>sorcer.rio.rmi.SorcerResolvingLoader</java.rmi.server.RMIClassLoaderSpi>
                         </systemPropertyVariables>
 
                         <!-- reuse forks should work after all integration tests are migrated to SorcerRunner -->
