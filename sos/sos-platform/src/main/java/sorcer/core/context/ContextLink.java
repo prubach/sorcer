@@ -64,15 +64,16 @@ public class ContextLink implements Link {
 		this.version = version;
 		if (principal != null)
 			linkedContext = getContext(principal);
-		if (linkedContext == null) {
-		} else if (offset == null) {
-			this.name = linkedContext.getName();
-			fetched = true;
-		} else {
-			this.name = linkedContext.getName();
-			setOffset(offset);
-			fetched = true;
-		}
+		if (linkedContext != null) {
+            if (offset == null) {
+                this.name = linkedContext.getName();
+                fetched = true;
+            } else {
+                this.name = linkedContext.getName();
+                setOffset(offset);
+                fetched = true;
+            }
+        }
 	}
 
 	/**
@@ -83,8 +84,19 @@ public class ContextLink implements Link {
 	 * 
 	 */
 	public ContextLink(Context context, String offset) throws ContextException {
-		this(UuidFactory.generate(), 1.0f, "", null);
+		//this(UuidFactory.generate(), 1.0f, "", null);
+        this(UuidFactory.generate(), 1.0f, offset, null);
 		linkedContext = context;
+        if (linkedContext != null) {
+            if (offset == null) {
+                this.name = linkedContext.getName();
+                fetched = true;
+            } else {
+                this.name = linkedContext.getName();
+                setOffset(offset);
+                fetched = true;
+            }
+        }
 	}
 
 	public ContextLink(Context context) throws ContextException {

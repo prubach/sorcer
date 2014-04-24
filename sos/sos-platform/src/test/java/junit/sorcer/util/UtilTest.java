@@ -22,6 +22,7 @@ import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
 import net.jini.space.JavaSpace05;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,6 @@ public class UtilTest {
 	private final static Logger logger = Logger.getLogger(UtilTest.class
 			.getName());
 
-
 	@BeforeClass
 	public static void envSettingsTest() throws ExertionException, ContextException,
 			SignatureException {
@@ -58,7 +58,7 @@ public class UtilTest {
 	}
 	
 	@Test
-    @Ignore("test depends on sorcer.env contents (service name suffix)")
+    //@Ignore("test depends on sorcer.env contents (service name suffix)")
 	public void spaceSuffixTest() throws ExertionException, ContextException,
 			SignatureException {
 
@@ -76,17 +76,4 @@ public class UtilTest {
 
 		assertEquals(SorcerEnv.getSuffixedName(SorcerEnv.getSpaceName()), SorcerEnv.getActualSpaceName());
 	}
-
-	@Ignore
-	@Test
-	public void getSpaceTest() throws ExertionException, ContextException,
-			SignatureException {
-		logger.info("exert space:" + SpaceAccessor.getSpace());
-		
-		ServiceTemplate tmpl = new ServiceTemplate(null, new Class[] { JavaSpace05.class }, new Entry[] { new Name(SorcerEnv.getActualSpaceName())});
-		ServiceItem si = Accessor.getServiceItem(tmpl, null, new String[]{SorcerEnv.getSpaceGroup()});
-		logger.info("got service: serviceID=" + si.serviceID + " template="
-				+ tmpl + " groups=" + SorcerEnv.getSpaceGroup());
-	}
-		
 }

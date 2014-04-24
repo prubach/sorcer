@@ -48,9 +48,9 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 	
 	public T evaluate(Arg... entries)
 			throws EvaluationException, RemoteException {
-		if (invoker != null)
-			return (T)invoker.invoke(getPars(entries));
-					
+		if (invoker != null) {
+            return (T) invoker.invoke(getPars(entries));
+        }
 		if (className == null)
 			className = getClassName(entries);
 

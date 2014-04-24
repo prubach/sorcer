@@ -337,11 +337,11 @@ public class TaskTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void deployTest() throws Exception {
         Task t5 = task("f5",
                 sig("add", Adder.class,
-                        deploy(configuration("AdderProviderConfig.groovy"))),
+                        deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/AdderProviderConfig.groovy"))),
                 context("add", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
                         output("result/y")),
                 strategy(Strategy.Provision.YES));

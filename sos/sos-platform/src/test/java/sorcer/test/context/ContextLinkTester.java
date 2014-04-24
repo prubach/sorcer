@@ -40,7 +40,6 @@ public class ContextLinkTester {
 	 * context) to the main context by explicitly creating ContextLink
 	 */
     @Test
-    @Ignore("didn't work before migrating to junit")
     public void test1() throws ContextException {
 		Context mainContext = new ServiceContext("main");
 		Context leafContext = new ServiceContext("leaf");
@@ -69,7 +68,6 @@ public class ContextLinkTester {
 	 * context) to the main context by using the putLink() method
 	 */
     @Test
-    @Ignore("didn't work before migrating to junit")
     public void test2() throws ContextException {
 		Context mainContext = new ServiceContext("main");
 		Context leafContext = new ServiceContext("leaf");

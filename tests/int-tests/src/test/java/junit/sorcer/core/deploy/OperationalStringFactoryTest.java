@@ -95,7 +95,7 @@ public class OperationalStringFactoryTest {
         Task task = task("f5",
                 sig("Foo",
                         Service.class,
-                        deploy(configuration("${env.SORCER_HOME}/configs/int-tests/deployment/TestConfig.groovy"))),
+                        deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/TestConfig.groovy"))),
                 context("foo", input("arg/x3", 20.0d), input("arg/x4", 80.0d),
                         output("result/y2", null)));
 

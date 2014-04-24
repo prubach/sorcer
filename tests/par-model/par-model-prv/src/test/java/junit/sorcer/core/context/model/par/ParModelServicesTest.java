@@ -105,16 +105,15 @@ public class ParModelServicesTest {
 		assertEquals(get(exert(pmt), "invoke/result"), 60.0);
 	}
 
-    //TODO MERGE
-    @Ignore
 	@Test
 	public void parObjectModelAgentTest() throws RemoteException, ContextException, ExertionException, 
 			SignatureException, MalformedURLException {
 		
 		ParModel pm = ParModeler.getParModel();
-        logger.info("CP: " + new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans").toString()));
+        logger.info("CP: " + new URL(SorcerEnv.getWebsterUrl() + "/" + Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans")));
 		Task pmt = task(sig("invoke", pm), context(
-				entry("par", "getSphereVolume"),
+				//entry("par", "getSphereVolume"),
+                invoker("getSphereVolume", invoker("getSphereVolume")),
 				result("sphere/volume"),
 				entry("sphere/radius", 20.0),
 				agent("getSphereVolume",
@@ -126,8 +125,6 @@ public class ParModelServicesTest {
 		assertEquals(value(pmt), 33510.32163829113);
 	}
 
-    // TODO MERGE
-	@Ignore
 	@Test
 	public void parObjectModelMultiAgentTest() throws RemoteException, ContextException, ExertionException, 
 			SignatureException, MalformedURLException {
@@ -136,49 +133,59 @@ public class ParModelServicesTest {
 		
 		// invoking non existing agent and the return value specified
 		Task pmt = task(sig("invoke", pm), context(
-				entry("par", "getSphereVolume"),
+				//entry("par", "getSphereVolume"),
+                invoker("getSphereVolume", invoker("getSphereVolume")),
 				result("sphere/volume"),
 				entry("sphere/radius", 20.0),
 				agent("getSphereVolume",
-					"junit.sorcer.vfe.evaluator.service.Volume",
-					new URL(Sorcer.getWebsterUrl()
-							+ "/ju-volume-bean.jar")),
+                        "junit.sorcer.core.invoker.service.Volume",
+                        new URL(SorcerEnv.getWebsterUrl() + "/" +
+                                Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))),
                 agent("getCylinderSurface",
                         "junit.sorcer.core.invoker.service.Volume",
                         new URL(SorcerEnv.getWebsterUrl() + "/" +
                                 Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))
-                )));
+                )
+                ));
 		
 		logger.info("result: " + value(pmt));
 		assertEquals(value(pmt), 33510.32163829113);
 		
 		// the existing agent and the return value specified
 		pmt = task(sig("invoke", pm), context(
-				entry("par","getCylinderSurface"),
+				//entry("par","getCylinderSurface"),
+                invoker("getCylinderSurface", invoker("getCylinderSurface")),
 				result("cylinder/surface"),
 				entry("cylinder/radius", 1.0), 
-				entry("cylinder/height", 2.0)));
+				entry("cylinder/height", 2.0),
+                agent("getCylinderSurface",
+                        "junit.sorcer.core.invoker.service.Volume",
+                        new URL(SorcerEnv.getWebsterUrl() + "/" +
+                                Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))
+                )));
 		
 		assertEquals(value(pmt), 18.84955592153876);
 
 		// the existing agent and no return value specified
 		pmt = task(sig("invoke", pm), context(
-				entry("par", "getCylinderSurface"),
-				entry("cylinder/radius", 1.0), 
-				entry("cylinder/height", 2.0)));
+				//entry("par", "getCylinderSurface"),
+                invoker("getCylinderSurface", invoker("getCylinderSurface")),
+                entry("cylinder/radius", 1.0),
+				entry("cylinder/height", 2.0),
+                agent("getCylinderSurface",
+                        "junit.sorcer.core.invoker.service.Volume",
+                        new URL(SorcerEnv.getWebsterUrl() + "/" +
+                                Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))
+                )));
 
 		assertEquals(get((Context)value(pmt), "cylinder/surface"), 18.84955592153876);
 	}
 
-    // TODO MERGE
-    @Ignore
 	@Test
 	public void parNetModelAgentTest() throws RemoteException, ContextException, ExertionException, 
 			SignatureException, MalformedURLException, TransactionException {
-		// the provider in ex6/bin parmodel-prv-run.xml
-		Task pmt = task(sig("invoke", Invocation.class, "ParModel Service"), 
-				context(invoker("getSphereVolume"),
-//						result("sphere/volume"),
+		Task pmt = task(sig("invoke", Invocation.class, "ParModel Service"),
+				context(invoker("getSphereVolume", invoker("getSphereVolume")),
 						entry("sphere/radius", 20.0),
                         agent("getSphereVolume",
                                 "junit.sorcer.core.invoker.service.Volume",
@@ -187,15 +194,13 @@ public class ParModelServicesTest {
                                         ))));
 	
 		
-
-//		logger.info("result: " + pmt.exert());
 		Context cxt = (Context)value(pmt);
 		logger.info("result cxt: " + cxt);
 		assertEquals(get(cxt, "sphere/radius"), 20.0);
 		assertEquals(get(cxt, "sphere/volume"), 33510.32163829113);
 		
 		pmt = task(sig("invoke", Invocation.class, "ParModel Service"), 
-				context(invoker("getSphereVolume"),
+				context(invoker("getSphereVolume", invoker("getSphereVolume")),
 						result("sphere/volume"),
 						entry("sphere/radius", 20.0),
                         agent("getSphereVolume",
@@ -204,24 +209,21 @@ public class ParModelServicesTest {
                                         Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))
                                 )));
 		
-//		logger.info("result: " + value(pmt));
-		assertEquals(value(pmt), 33510.32163829113);
+		assertEquals( 33510.32163829113, value(pmt));
 	}
 
-    // TODO MERGE
-    @Ignore
 	@Test
 	public void parNetModelMultiAgentTest() throws RemoteException, ContextException, ExertionException, 
 			SignatureException, MalformedURLException, TransactionException {
 		// the provider in ex6/bin parmodel-prv-run.xml
 		Task pmt = task(sig("invoke", Invocation.class, "ParModel Service"), 
-				context(invoker("getSphereVolume"),
+				context(invoker("getSphereVolume", invoker("getSphereVolume")),
 						result("sphere/volume"),
 						entry("sphere/radius", 20.0),
 						agent("getSphereVolume",
-							"junit.sorcer.vfe.evaluator.service.Volume",
-							new URL(Sorcer.getWebsterUrl()
-									+ "/ju-volume-bean.jar")),
+							"junit.sorcer.core.invoker.service.Volume",
+                                new URL(SorcerEnv.getWebsterUrl() + "/" +
+                                        Resolver.getResolver().resolveRelative("org.sorcersoft.sorcer:model-beans"))),
                         agent("getCylinderSurface",
                                 "junit.sorcer.core.invoker.service.Volume",
                                 new URL(SorcerEnv.getWebsterUrl() + "/" +
@@ -231,9 +233,9 @@ public class ParModelServicesTest {
 		assertEquals(value(pmt), 33510.32163829113);
 		
 		pmt = task(sig("invoke", Invocation.class, "ParModel Service"), 
-				context(invoker("getCylinderSurface"),
+				context(invoker("getCylinderSurface", invoker("getCylinderSurface")),
 						result("cylinder/surface"),
-						invoker("getCylinderSurface"),
+						//invoker("getCylinderSurface"),
 						result("cylinder/surface"),
 						entry("cylinder/radius", 1.0), 
 						entry("cylinder/height", 2.0)));

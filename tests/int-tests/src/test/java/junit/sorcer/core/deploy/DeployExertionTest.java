@@ -42,7 +42,7 @@ import static sorcer.eo.operator.*;
         "org.rioproject.monitor:monitor-api"
 })
 //@SorcerServiceConfiguration(":ex6-cfg-all")
-public class DeployExertionTest extends DeploySetup implements SorcerConstants {
+public class DeployExertionTest extends DeploySetup {
 
     private final static Logger logger = Logger.getLogger(DeployExertionTest.class.getName());
 
