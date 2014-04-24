@@ -199,7 +199,26 @@ public class SorcerLauncher extends Launcher {
 
     public static void installSecurityManager() {
         if (System.getSecurityManager() == null)
-            System.setSecurityManager(new SecurityManager());
+            System.setSecurityManager(new SecurityManager()/*{
+                @Override
+                public void checkPermission(Permission perm) {
+                    String name = perm.getName();
+                    if (name.startsWith("exitVM") && !(hasCaller(ExitingCallback.class) || hasCaller("sorcer.launcher.Sorcer")))
+                        throw new SecurityException("Exit forbidden");
+                }
+
+                private boolean hasCaller(Class type){
+                    return hasCaller(type.getName());
+                }
+
+                private boolean hasCaller(String type){
+                    for (Class caller : getClassContext()) {
+                        if(type.equals(caller.getName()))
+                            return true;
+                    }
+                    return false;
+                }
+            }*/);
     }
 
     public static void installLogging() {

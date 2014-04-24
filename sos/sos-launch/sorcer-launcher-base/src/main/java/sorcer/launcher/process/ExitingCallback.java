@@ -34,11 +34,29 @@ public class ExitingCallback extends NullSorcerListener {
     public synchronized void sorcerEnded(Exception e) {
         if (e != null)
             log.error("Exception while starting SORCER", e);
+        if (isShuttingDown()) {
+            closing = true;
+            log.warn("ExitingCallback called when JVM is already shutting down");
+            return;
+        }
         if (!closing) {
             closing = true;
             log.info("Closing this SORCER JVM process");
-            Runtime.getRuntime().halt(0);
+            Runtime.getRuntime().exit(0);
         } else
-            log.warn("Exiting callback called again from {}");
+            log.warn("Exiting callback called again");
+    }
+
+    public static boolean isShuttingDown() {
+        try {
+            Thread thread = new Thread();
+            Runtime runtime = Runtime.getRuntime();
+            runtime.addShutdownHook(thread);
+            runtime.removeShutdownHook(thread);
+        } catch (IllegalStateException ignored) {
+            return true;
+        }
+
+        return false;
     }
 }

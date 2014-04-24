@@ -26,7 +26,6 @@ import org.apache.commons.cli.PosixParser;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 import sorcer.launcher.process.DestroyingListener;
-import sorcer.launcher.process.ExitingCallback;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
 import sorcer.util.JavaSystemProperties;
@@ -260,7 +259,6 @@ public class Sorcer {
     private static ILauncher createSorcerLauncher() {
         SorcerLauncher.installLogging();
         SorcerLauncher launcher = new SorcerLauncher();
-        launcher.addSorcerListener(new ExitingCallback());
 
         SorcerLauncher.installSecurityManager();
         return launcher;
