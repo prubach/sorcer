@@ -67,7 +67,12 @@ public class RemoteLoggerManager implements RemoteLogger {
         return list.toArray(new String[list.size()]);
     }
 
-    public void publish(LoggingEventVO loggingEvent) throws RemoteException {
+    public void publish(List<LoggingEventVO> loggingEvents) {
+        for (LoggingEventVO vo : loggingEvents)
+            publish(vo);
+    }
+
+    protected void publish(ILoggingEvent loggingEvent) {
         String loggerName;
         Logger logger;
         synchronized (this) {

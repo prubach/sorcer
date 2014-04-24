@@ -65,6 +65,9 @@ public class ConfigurableThreadFactory implements ThreadFactory {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
     }
 
+    /**
+     * @param nameFormat    format taking 2 parameters - global pool number and thread number per thread factory instance
+     */
     public void setNameFormat(String nameFormat) {
         this.nameFormat = nameFormat;
     }

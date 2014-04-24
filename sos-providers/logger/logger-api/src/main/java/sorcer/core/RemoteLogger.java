@@ -30,7 +30,7 @@ public interface RemoteLogger extends Remote {
 
     String LOGGER_CONTEXT_KEY = "SORCER-REMOTE-CALL";
 
-    public void publish(LoggingEventVO record) throws RemoteException;
+    public void publish(List<LoggingEventVO> record) throws RemoteException;
 
     public List<LoggingConfig> getLoggers() throws IOException;
 

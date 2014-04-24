@@ -69,14 +69,16 @@ deployment(name: 'Sorcer') {
     artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
-
+    /*
+    * RemoteLogger service configuration
+    */
     service(name: 'RemoteAppender') {
         interfaces{
-            classes 'org.rioproject.servicecore.Service'
+            classes 'sorcer.core.RemoteLogger'
             artifact logger.codebase
         }
-        implementation(class: 'sorcer.platform.logger.RemoteLoggerClient') {
-            artifact logger.client
+        implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
+            artifact logger.classpath
         }
     }
 

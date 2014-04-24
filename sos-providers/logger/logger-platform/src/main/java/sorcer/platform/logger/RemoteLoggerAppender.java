@@ -17,36 +17,25 @@
 package sorcer.platform.logger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import sorcer.client.ClientProxyFactory;
-import sorcer.core.RemoteLogger;
 
-import java.rmi.RemoteException;
+import java.util.Queue;
 
 /**
- * publish log to remote logger service.
+ * Publish log to remote logger service through a queue.
  *
  * @author Rafał Krupiński
  */
 public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
-    private ClientProxyFactory<RemoteLogger> remoteLogger = new ClientProxyFactory<RemoteLogger>(RemoteLogger.class);
+    private Queue<ILoggingEvent> queue;
+
+    public RemoteLoggerAppender(Queue<ILoggingEvent> queue) {
+        assert queue != null;
+        this.queue = queue;
+    }
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-        LoggingEventVO vo = LoggingEventVO.build(eventObject);
-
-        try {
-            RemoteLogger service = remoteLogger.get();
-
-            if (service == null) {
-                addWarn("No RemoteLogger service found");
-                return;
-            }
-
-            service.publish(vo);
-        } catch (RemoteException e) {
-            addError("Error while calling remote logger", e);
-        }
+        queue.add(eventObject);
     }
 }
