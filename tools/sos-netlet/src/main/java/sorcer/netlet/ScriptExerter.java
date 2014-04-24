@@ -119,7 +119,15 @@ public class ScriptExerter {
             }
         }
         // Process "codebase" and set codebase variable
-        urlsToLoad.addAll(LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out));
+        LoaderConfigurationHelper.setCodebase(codebaseLines, websterStrUrl, out);
+
+        // resolve codebase and add to classpath
+        for (String codebaseStr : codebaseLines) {
+            if (codebaseStr.startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX))
+                codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
+            urlsToLoad.addAll(LoaderConfigurationHelper.load(codebaseStr));
+        }
+
         try {
             scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
             this.target = scriptThread.getTarget();

@@ -36,7 +36,7 @@ public class SorcerResolverHelper {
         return result;
     }
 
-    public static URL[] toURLs(String[] filePaths) throws URISyntaxException, MalformedURLException {
+    public static URL[] toURLs(String[] filePaths) throws MalformedURLException {
         URL[] result = new URL[filePaths.length];
         for (int i = 0; i < filePaths.length; i++) {
             result[i] = toURI(filePaths[i]).toURL();

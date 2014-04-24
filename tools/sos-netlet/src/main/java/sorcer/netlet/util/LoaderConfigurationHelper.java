@@ -25,9 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -105,8 +103,6 @@ public class LoaderConfigurationHelper {
                 } catch (ResolverException e) {
                     logger.log(Level.SEVERE, "Could not resolve " + str, e);
                 } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
             }
