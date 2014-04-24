@@ -46,7 +46,7 @@ ServiceDescriptor[] getPlatformServices() {
                     "org.sorcersoft.sorcer:logger-api:" + SORCER_VERSION,
                     policy,
                     "org.sorcersoft.sorcer:logger-platform:" + SORCER_VERSION,
-                    "sorcer.platform.logger.RemoteLoggerClient"
+                    "sorcer.platform.logger.RemoteLoggerInstaller"
             )*/
     ]
 }

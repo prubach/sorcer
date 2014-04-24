@@ -19,7 +19,6 @@ package sorcer.platform.logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import com.sun.jini.start.LifeCycle;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +28,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Rafał Krupiński
  */
-public class RemoteLoggerClient {
+public class RemoteLoggerInstaller {
 
-    public RemoteLoggerClient(String[] args, LifeCycle lifeCycle) {
+    public RemoteLoggerInstaller() {
         init();
     }
 
