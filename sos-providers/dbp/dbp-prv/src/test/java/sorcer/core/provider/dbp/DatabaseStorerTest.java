@@ -1,5 +1,5 @@
 package sorcer.core.provider.dbp;
-/**
+/*
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ public class DatabaseStorerTest {
     @Test(/*timeout = 5000*/)
     public void testDbp() throws Exception {
         IDatabaseProvider databaseProvider = Accessor.getService(IDatabaseProvider.class);
-        assertNotNull(databaseProvider);
+        assertNotNull("No IDatabaseProvider found", databaseProvider);
 
         URL url = null;
         try {
