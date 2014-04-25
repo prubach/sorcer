@@ -372,9 +372,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		this.signatures.addAll(signatures);
 	}
 
-	public boolean isBatch() {
+	public boolean isNotCorrectBatch() {
 		for (Signature s : signatures) {
-			if (s.getType() != Type.SRV)
+			if (!s.getType().equals(Type.SRV))
 				return false;
 		}
 		return true;
@@ -386,7 +386,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	public void setProcessSignature(Signature signature) {
 		for (Signature sig : this.signatures) {
-			if (sig.getType() != Type.SRV) {
+			if (!sig.getType().equals(Type.SRV)) {
 				this.signatures.remove(sig);
 			}
 		}

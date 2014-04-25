@@ -796,7 +796,7 @@ public class ProviderDelegate {
 		// and make the last signature as master SRV type only.
 		List<Signature> alls = task.getSignatures();
 		Signature lastSig = alls.get(alls.size() - 1);
-		if (alls.size() > 1 && task.isBatch()
+		if (alls.size() > 1 && task.isNotCorrectBatch()
 				&& (lastSig instanceof NetSignature)) {
 			for (int i = 0; i < alls.size() - 1; i++) {
 				alls.get(i).setType(Signature.PRE);
@@ -804,8 +804,8 @@ public class ProviderDelegate {
 		}
 		task.getControlContext().appendTrace(
 				provider.getProviderName() + " execute: "
-						+ task.getProcessSignature().getSelector() + ":"
-						+ task.getProcessSignature().getServiceType() + ":"
+						+ (task.getProcessSignature()!=null ? task.getProcessSignature().getSelector() : "null") + ":"
+						+ (task.getProcessSignature()!=null ? task.getProcessSignature().getServiceType() : "null") + ":"
 						+ getHostName());
 
 		if (task instanceof SignedTaskInterface) {

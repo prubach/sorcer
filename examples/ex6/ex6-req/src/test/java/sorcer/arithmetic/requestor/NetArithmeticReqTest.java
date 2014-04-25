@@ -28,15 +28,12 @@ import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
-import sorcer.junit.SorcerServiceConfiguration;
+import sorcer.junit.*;
 import sorcer.service.Context;
 import sorcer.service.Direction;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Task;
-import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
-import sorcer.junit.SorcerRunner;
 
 
 import java.util.logging.Logger;
@@ -50,8 +47,15 @@ import static sorcer.eo.operator.*;
  */
 @SuppressWarnings({ "rawtypes" })
 @Category(SorcerClient.class)
-@RunWith(SorcerRunner.class)
-@SorcerServiceConfiguration(":ex6-cfg-all")
+@RunWith(SorcerSuite.class)
+//@SorcerServiceConfiguration(":ex6-cfg-all")
+@SorcerServiceConfigurations({
+        @SorcerServiceConfiguration(":ex6-cfg-adder"),
+        @SorcerServiceConfiguration(":ex6-cfg-multiplier"),
+        @SorcerServiceConfiguration(":ex6-cfg-subtractor")
+}
+)
+
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex6-api",
         "org.sorcersoft.sorcer:sorcer-api"
@@ -61,7 +65,8 @@ public class NetArithmeticReqTest {
 	private final static Logger logger = Logger
 			.getLogger(NetArithmeticReqTest.class.getName());
 
-    @Ignore("hangs")
+    //@Ignore("hangs")
+    // This type of tasks only work if there is a separate provider for the SRV signature and others for other sigs
     @Test
     public void batchTaskTest() throws Exception {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))
@@ -78,7 +83,8 @@ public class NetArithmeticReqTest {
         assertEquals("Wrong value for 400.0", 400.0, get(batch3, "result/y"));
     }
 
-    @Ignore("hangs")
+    //@Ignore("hangs")
+    // This type of tasks only work if there is a separate provider for the SRV signature and others for other sigs
     @Test
     public void batchPrefixedTaskTest() throws Exception {
         // batch for the composition f1(f2(f3((x1, x2), f4(x1, x2)), f5(x1, x2))

@@ -69,6 +69,7 @@ import net.jini.lookup.entry.UIDescriptor;
 
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
+import org.rioproject.impl.config.DynamicConfiguration;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
@@ -428,7 +429,12 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	static public void setLookupDiscovery(String... ingroups) {
 		disco = null;
 		try {
-			disco = new LookupDiscovery(LookupDiscovery.NO_GROUPS);
+            DynamicConfiguration config = new DynamicConfiguration();
+            config.setEntry("net.jini.discovery.LookupDiscovery", "multicastRequestHost",
+                    String.class, SorcerEnv.getLocalHost().getHostAddress());
+			disco = new LookupDiscovery(LookupDiscovery.NO_GROUPS, config);
+
+
 			disco.addDiscoveryListener(instance);
 			if (ingroups == null || ingroups.length == 0) {
 				// System.out.println("SORCER groups: " +
@@ -443,7 +449,11 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			System.err.println(e.toString());
 			e.printStackTrace();
 			System.exit(1);
-		}
+		}  catch (ConfigurationException e) {
+            System.err.println(e.toString());
+            e.printStackTrace();
+            System.exit(1);
+        }
 	}
 
     public ServiceRegistrar getSelectedRegistrar() {
