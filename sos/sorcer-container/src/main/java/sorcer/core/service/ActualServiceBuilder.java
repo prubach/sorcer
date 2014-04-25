@@ -1,11 +1,7 @@
 package sorcer.core.service;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.inject.*;
-import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.ProvisionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.sun.jini.start.LifeCycle;
@@ -19,6 +15,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.config.BeanListener;
+import sorcer.container.core.ConfigurationInjector;
+import sorcer.container.core.TypeMatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.util.ClassLoaders;
@@ -110,24 +108,20 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
         modules.add(new AbstractModule() {
             @Override
             protected void configure() {
-                bindListener(new AbstractMatcher<Binding<?>>() {
+                // request binding in the current injetor, so the bean is visible to our bean listeners
+                bind(getType()).in(Scopes.SINGLETON);
+
+                bindListener(new TypeMatcher(getType()), new TypeListener() {
                     @Override
-                    public boolean matches(Binding<?> typeLiteral) {
-                        return Key.get(getType()).equals(typeLiteral.getKey());
-                    }
-                }, new ProvisionListener() {
-                    @Override
-                    public <I> void onProvision(ProvisionInvocation<I> provision) {
-                        I injectee = provision.provision();
-                        beanListener.preProcess(ActualServiceBuilder.this, (T) injectee);
+                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+                        log.debug("hear {} {}", type, encounter);
+                        encounter.register(new ConfigurationInjector<I>(configurer, jiniConfig));
                     }
                 });
             }
         });
 
         bean = get();
-
-        //beanListener.preProcess(this, bean);
 
         if (builderConfig.export) {
             log.debug("Exporting {}", bean);
@@ -190,4 +184,5 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
     public T get() {
         return (T) injector.createChildInjector(modules).getInstance(builderConfig.type);
     }
+
 }

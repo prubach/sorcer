@@ -122,6 +122,7 @@ public class Configurer extends AbstractBeanListener {
         }
 
         try {
+            log.debug("Configure {} to {}", method.getName(), value);
             method.invoke(object, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -157,6 +158,7 @@ public class Configurer extends AbstractBeanListener {
 
             Object value = config.getEntry(component, entryKey, entryType, defaultValue);
             value = convert(value, targetType, configEntry);
+            log.debug("Configure {} to {}", field.getName(), value);
             field.set(target, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);

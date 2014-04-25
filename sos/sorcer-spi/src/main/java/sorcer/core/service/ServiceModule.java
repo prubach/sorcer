@@ -7,6 +7,8 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.sun.jini.start.LifeCycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
@@ -43,26 +45,24 @@ class HasInitMethod extends AbstractMatcher<TypeLiteral<?>> {
     }
 
     private boolean check(Class<?> type) {
-        for (Method method : type.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(PostConstruct.class))
-                return true;
-        }
-        Class<?> superclass = type.getSuperclass();
-
-        return superclass != Object.class && check(superclass);
+        return InitInvoker.find(type) != null;
     }
 
     public static final HasInitMethod INSTANCE = new HasInitMethod();
 }
 
 class InitInvoker implements InjectionListener {
+    private final static Logger log = LoggerFactory.getLogger(InitInvoker.class);
+
     public void afterInjection(Object injectee) {
         try {
             Method init = find(injectee.getClass());
             if (init == null)
                 throw new IllegalArgumentException("No init method found");
-            else
+            else {
+                log.info("Initializing {}", injectee);
                 init.invoke(injectee);
+            }
         } catch (InvocationTargetException e) {
             throw new IllegalArgumentException(e.getCause());
         } catch (IllegalAccessException e) {
@@ -70,7 +70,7 @@ class InitInvoker implements InjectionListener {
         }
     }
 
-    private Method find(Class<?> type) {
+    public static Method find(Class<?> type) {
         for (Method method : type.getDeclaredMethods()) {
             if (method.isAnnotationPresent(PostConstruct.class))
                 return method;

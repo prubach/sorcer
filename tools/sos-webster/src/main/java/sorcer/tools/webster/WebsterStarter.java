@@ -57,14 +57,16 @@ public class WebsterStarter implements DestroyAdmin {
                 throw new IllegalArgumentException(String.format("No port configured port:%d startPort:%d endPort:%d", port, startPort, endPort));
         }
 
-        if (port == 0) {
+        // treat {start,end}Port == 0 specially
+        if (startPort <= 0 && endPort <= 0) {
             startPort = port;
             endPort = port;
         }
 
-        for (int i = startPort; i <= endPort && webster != null; i++) {
+        for (int i = startPort; i < endPort + 1 && webster == null; i++) {
+            log.debug("Trying {}:{}", websterAddress, i);
             try {
-                webster = start(i);
+                webster = new Webster(i, roots, websterAddress, isDaemon);
             } catch (BindException ex) {
                 log.debug("Error while starting Webster", ex);
             }
@@ -90,10 +92,6 @@ public class WebsterStarter implements DestroyAdmin {
                 return result;
         }
         return null;
-    }
-
-    private Webster start(int port) throws BindException {
-        return new Webster(port, roots, websterAddress, isDaemon);
     }
 
     @Override
@@ -122,6 +120,9 @@ public class WebsterStarter implements DestroyAdmin {
     @ConfigEntry
     String[] roots;
 
+    /**
+     * Use the default executor service to call AsyncPinger on a remote webster
+     */
     @Inject
     private ExecutorService executor;
 }

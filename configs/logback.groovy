@@ -61,6 +61,7 @@ for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, taske
 //logger("org.rioproject.rmi.ResolvingLoader", OFF)
 //logger("org.rioproject.resolver.ResolverHelper", DEBUG)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
+logger("org.rioproject.impl.opstring", WARN)
 
 //logger("org.rioproject.gnostic", INFO)
 //logger("org.rioproject.gnostic.drools", INFO)
@@ -95,8 +96,13 @@ logger("com.sorcersoft.bazaar", info, [bazaar])
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
+
+/*
+logger("sorcer.core.service.Configurer", debug)
 logger("sorcer.core.service.ActualServiceBuilder", debug)
+logger("sorcer.tools.webster.WebsterStarter", debug)
 logger("sorcer.core.service.ServiceRegistrar", debug)
+*/
 
 root(INFO, appenders)
 
