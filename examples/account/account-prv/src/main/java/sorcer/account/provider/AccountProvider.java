@@ -3,37 +3,28 @@ package sorcer.account.provider;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.config.ConfigEntry;
+import sorcer.config.convert.PropertiesPathConverter;
 import sorcer.core.SorcerConstants;
-import sorcer.core.provider.ServiceTasker;
 import sorcer.service.Context;
 
-import com.sun.jini.start.LifeCycle;
-
 @SuppressWarnings("rawtypes")
-public class AccountProvider extends ServiceTasker implements Account,
+public class AccountProvider implements Account,
 		ServiceAccount, SorcerConstants {
 
     private static Logger logger = LoggerFactory.getLogger(AccountProvider.class.getName());
 
 	private Money balance;
 
-	/**
-	 * Constructs an instance of the SORCER account provider implementing
-	 * SorcerAccount and Account. This constructor is required by Jini 2 life
-	 * cycle management.
-	 * 
-	 * @param args
-	 * @param lifeCycle
-	 * @throws Exception
-	 */
-	public AccountProvider(String[] args, LifeCycle lifeCycle) throws Exception {
-		super(args, lifeCycle);
-		String cents = getProperty("provider.balance");
-		balance = new Money(Integer.parseInt(cents));
-	}
+    @ConfigEntry(type = String.class, converter = PropertiesPathConverter.class)
+    public void setProperties(Properties props){
+        String cents = props.getProperty("provider.balance");
+        balance = new Money(Integer.parseInt(cents));
+    }
 
 	public Context getBalance(Context context) throws RemoteException,
 			AccountException {

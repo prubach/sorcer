@@ -62,5 +62,9 @@ public class ClassLoaders {
     public static interface Callable<V, E extends Throwable> {
         V call() throws E;
     }
+
+    public static ClassLoader current() {
+        return Thread.currentThread().getContextClassLoader();
+    }
 }
 

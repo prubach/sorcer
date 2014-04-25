@@ -27,7 +27,7 @@ deployment(name: 'account1-provider') {
             classes 'sorcer.account.provider.Account', 'sorcer.account.provider.ServiceAccount'
             artifact ref: 'account-api'
         }
-        implementation(class: 'sorcer.account.provider.AccountProvider') {
+        implementation(class: 'sorcer.core.service.ServiceBuilder') {
             artifact ref: 'account-cfg'
         }
         //configuration file: 'classpath:config1.groovy'

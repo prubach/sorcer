@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import sorcer.boot.ServiceDestroyer;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.LifeCycleMultiplexer;
+import sorcer.container.core.ConfiguringModule;
+import sorcer.core.service.Configurer;
 import sorcer.core.service.ServiceModule;
 
 import javax.inject.Inject;
@@ -43,6 +45,8 @@ import java.security.AllPermission;
 import java.security.Permission;
 import java.security.Policy;
 import java.util.*;
+
+import static sorcer.container.core.InitializingModule.INIT_MODULE;
 
 /**
  * @author Rafał Krupiński
@@ -78,6 +82,9 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
     @Inject
     protected Injector parentInjector;
+
+    @Inject
+    protected Configurer configurer;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -148,12 +155,13 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
             Injector injector = parentInjector;
             List<Module> modules = new LinkedList<Module>();
-            Module module = getInjectorModule();
-            if (module != null)
-                modules.add(module);
 
             Class implClass = Class.forName(getImplClassName(), true, classLoader);
-            module = createFactoryModule(implClass);
+            modules.add(new ConfiguringModule(config, configurer, implClass));
+            modules.add(getInjectorModule());
+            modules.add(INIT_MODULE);
+
+            Module module = createFactoryModule(implClass);
             if (module != null)
                 modules.add(module);
 
