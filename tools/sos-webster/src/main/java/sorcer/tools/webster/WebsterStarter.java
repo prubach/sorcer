@@ -17,15 +17,14 @@
 package sorcer.tools.webster;
 
 import com.sun.jini.admin.DestroyAdmin;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
+import sorcer.util.io.AsyncPinger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.io.IOException;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
@@ -47,7 +46,7 @@ public class WebsterStarter implements DestroyAdmin {
 
         if (!start) {
             log.info("Webster configured on a remote address");
-            if (!ping(websterAddress, websterPort))
+            if (!AsyncPinger.ping(websterAddress, websterPort, executor, 2, TimeUnit.SECONDS))
                 throw new IllegalStateException("Remote webster down");
             return;
         }
@@ -94,29 +93,8 @@ public class WebsterStarter implements DestroyAdmin {
     }
 
     private Webster start(int port) throws BindException {
-        return new Webster(port, roots, websterAddress, true);
-
+        return new Webster(port, roots, websterAddress, isDaemon);
     }
-
-    private boolean ping(String address, int port) {
-        Future<Boolean> ping = executor.submit(new Pinger(address, port));
-        try {
-            return ping.get(2, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            log.warn("Interrupted", e);
-            return false;
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException)
-                throw ((RuntimeException) cause);
-            else
-                throw ((Error) cause);
-        } catch (TimeoutException e) {
-            log.debug("Timeout exception", e);
-            return false;
-        }
-    }
-
 
     @Override
     public void destroy() throws RemoteException {
@@ -127,7 +105,7 @@ public class WebsterStarter implements DestroyAdmin {
     private Webster webster;
 
     @ConfigEntry
-    int websterPort = 9010;
+    int websterPort = 0;
 
     @ConfigEntry
     String websterAddress;
@@ -146,29 +124,4 @@ public class WebsterStarter implements DestroyAdmin {
 
     @Inject
     private ExecutorService executor;
-
-
-    private static class Pinger implements Callable<Boolean> {
-        private final String address;
-        private final int port;
-
-        public Pinger(String address, int port) {
-            this.address = address;
-            this.port = port;
-        }
-
-        @Override
-        public Boolean call() {
-            Socket socket = null;
-            try {
-                socket = new Socket(address, 80);
-                return true;
-            } catch (IOException e) {
-                log.debug("Error pinging {}:{}", address, port, e);
-                return false;
-            } finally {
-                IOUtils.closeQuietly(socket);
-            }
-        }
-    }
 }

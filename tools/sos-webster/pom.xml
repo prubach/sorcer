@@ -27,6 +27,11 @@
 			<version>${project.version}</version>
             <scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sos-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
        	<dependency>
 			<groupId>org.sorcersoft.sorcer</groupId>
 			<artifactId>sorcer-resolver</artifactId>
