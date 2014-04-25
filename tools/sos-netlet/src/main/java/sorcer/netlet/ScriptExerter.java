@@ -6,10 +6,13 @@ import net.jini.config.Configuration;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.netlet.util.LoaderConfigurationHelper;
 import sorcer.netlet.util.ScriptExertException;
+import sorcer.resolver.Resolver;
 import sorcer.tools.shell.LoaderConfiguration;
 import sorcer.tools.shell.cmds.ScriptThread;
+import sorcer.util.Artifact;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -69,6 +72,8 @@ public class ScriptExerter {
 
     private Configuration config;
 
+    private List<URL> urlsToLoad = new ArrayList<URL>();
+
     private boolean debug = false;
 
     public ScriptExerter() {
@@ -77,8 +82,15 @@ public class ScriptExerter {
 
     public ScriptExerter(PrintStream out, ClassLoader classLoader, String websterStrUrl, boolean debug) {
         this.out = out;
+        if (out==null) out = System.out;
         this.debug = debug;
         this.classLoader = classLoader;
+        try {
+            File f = new File(Resolver.resolveAbsolute(Artifact.sorcer("sos-api")));
+            urlsToLoad.add(f.toURI().toURL());
+        } catch (MalformedURLException me) {
+            out.println("Problem loading default classpath for scripts in ScriptExerter: " + me);
+        }
         this.websterStrUrl = websterStrUrl;
         if (staticImports == null) {
             staticImports = readTextFromJar("static-imports.txt");
@@ -112,18 +124,10 @@ public class ScriptExerter {
 
     public Object parse() throws Throwable {
         // Process "load" and generate a list of URLs for the classloader
-        List<URL> urlsToLoad = new ArrayList<URL>();
-        // Add default load lines from shell config file
-        String configFile = System.getProperty("nsh.starter.config", null);
-        LoaderConfiguration lc = new LoaderConfiguration();
-        lc.configure(new FileInputStream(configFile));
-        for (URL url : lc.getClassPathUrls())
-            urlsToLoad.add(url);
-        //
         if (!loadLines.isEmpty()) {
             for (String jar : loadLines) {
                 String loadPath = jar.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
-                urlsToLoad = LoaderConfigurationHelper.load(loadPath);
+                urlsToLoad.addAll(LoaderConfigurationHelper.load(loadPath));
             }
         }
         // Process "codebase" and set codebase variable
@@ -137,7 +141,9 @@ public class ScriptExerter {
         }
 
         try {
-            scriptThread = new ScriptThread(script, null, new URLClassLoader(urlsToLoad.toArray(new URL[urlsToLoad.size()]), getClass().getClassLoader()), out, config, debug);
+            scriptThread = new ScriptThread(script, null,
+                    new URLClassLoader(urlsToLoad.toArray(new URL[0]), (classLoader!=null ? classLoader : getClass().getClassLoader())),
+                    out, config, debug);
             this.target = scriptThread.getTarget();
             return target;
         }

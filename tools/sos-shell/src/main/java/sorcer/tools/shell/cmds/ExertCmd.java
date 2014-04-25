@@ -19,6 +19,7 @@
 package sorcer.tools.shell.cmds;
 
 import java.io.*;
+import java.net.URL;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -73,7 +74,7 @@ public class ExertCmd extends ShellCmd {
         shell = NetworkShell.getInstance();
         scriptExerter = new ScriptExerter(out, null, NetworkShell.getWebsterUrl(), shell.isDebug());
         // TODO - an ugly workaround for problems with noninteractive loading of scripts that contain artifact codebase
-        if (!NetworkShell.isInteractive()) Thread.sleep(1000);
+        //if (!NetworkShell.isInteractive()) Thread.sleep(1000);
         //
         scriptExerter.setConfig(config);
         input = shell.getCmd();

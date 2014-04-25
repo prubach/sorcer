@@ -30,20 +30,6 @@ DIRNAME=`dirname "$PRG"`
 
 . "$DIRNAME/common-run"
 
-# Use SORCER default if still not found
-if [ -z "$NSH_CONF" ] ; then
-    NSH_CONF="$SORCER_HOME/configs/shell/configs/nsh-start.config"
-fi
-
-# Use the user nsh start-config file if exists.
-startConfigFile="$HOME/.nsh/configs/nsh-start.config"
-if [ -e $startConfigFile ] ; then
-    NSH_CONF="$HOME/.nsh/configs/nsh-start.config"
-fi
-#STARTER_MAIN_CLASS=sorcer.tools.shell.ShellStarter
-#startShell sorcer.tools.shell.NetworkShell "$@"
-
-
 STARTER_MAIN_CLASS=sorcer.tools.shell.NetworkShell
 
 startShell "$@"

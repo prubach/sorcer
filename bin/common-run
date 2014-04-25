@@ -442,7 +442,6 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar"
 
 
-    CLASS=$1
     #shift
     # Use rlwrap if installed to enable history in nsh
     if [ -n "$(which rlwrap)" ]; then
@@ -461,17 +460,9 @@ $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar"
 			-Djava.rmi.server.useCodebaseOnly=false \
 			-Dscript.name="$SCRIPT_PATH" \
             -Dprogram.name="$PROGNAME" \
-            -Dnsh.starter.config="$NSH_CONF" \
 			-classpath $SHELL_CLASSPATH \
             $STARTER_MAIN_CLASS \
             "$@"
-
-            # -Dsorcer.home=$SORCER_HOME \
-            # -Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
-            #--main $CLASS \
-            #--config "$NSH_CONF" \
-            #--classpath "$CP" \
-
     fi
 }
 
