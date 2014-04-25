@@ -18,16 +18,21 @@ package sorcer.boot.platform;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import com.google.inject.multibindings.Multibinder;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.config.BeanListener;
+import sorcer.container.core.BeanListenerModule;
 import sorcer.container.discovery.ILookupManagerRegistry;
 import sorcer.container.discovery.LookupManagerRegistry;
 import sorcer.container.discovery.ServiceManagerRegistry;
 import sorcer.container.discovery.IDiscoveryManagerRegistry;
 import sorcer.core.SorcerEnv;
+import sorcer.core.service.Configurer;
 import sorcer.core.service.IServiceBeanListener;
+import sorcer.core.service.ServiceBeanDestroyer;
 import sorcer.core.service.ServiceBeanListener;
 
 import javax.inject.Provider;
@@ -43,11 +48,15 @@ public class PlatformModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        final LookupLocator[] lookupLocators = getLookupLocators();
+        Multibinder<BeanListener> listenerBinder = Multibinder.newSetBinder(binder(), BeanListener.class);
+        listenerBinder.addBinding().to(ServiceBeanDestroyer.class);
+        listenerBinder.addBinding().to(Configurer.class);
 
         bind(IServiceBeanListener.class).to(ServiceBeanListener.class).in(Scopes.SINGLETON);
         bind(LeaseRenewalManager.class).in(Scopes.SINGLETON);
+        bind(BeanListenerModule.class).in(Scopes.SINGLETON);
 
+        final LookupLocator[] lookupLocators = getLookupLocators();
         bind(ILookupManagerRegistry.class).toProvider(new Provider<ILookupManagerRegistry>() {
             @Override
             public ILookupManagerRegistry get() {

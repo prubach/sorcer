@@ -102,6 +102,7 @@ logger("sorcer.core.service.Configurer", debug)
 logger("sorcer.core.service.ActualServiceBuilder", debug)
 logger("sorcer.tools.webster.WebsterStarter", debug)
 logger("sorcer.core.service.ServiceRegistrar", debug)
+logger("sorcer.container.core", debug)
 */
 
 root(INFO, appenders)

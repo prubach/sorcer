@@ -18,27 +18,17 @@ package sorcer.core.service;
 import sorcer.config.BeanListener;
 
 import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Rafał Krupiński
  */
 public class ServiceBeanListener implements IServiceBeanListener {
     private List<BeanListener> activators;
-    private List<BeanListener> destroyers;
 
     @Inject
     public ServiceBeanListener(Set<BeanListener> platformListeners) {
-        activators = new LinkedList<BeanListener>();
-        activators.add(new Configurer());
-        activators.add(new LegacyInitializer());
-        activators.addAll(platformListeners);
-
-        destroyers = new LinkedList<BeanListener>();
-        destroyers.addAll(platformListeners);
-        destroyers.add(new ServiceBeanDestroyer());
+        activators = new LinkedList<BeanListener>(platformListeners);
     }
 
     @Override
@@ -56,6 +46,8 @@ public class ServiceBeanListener implements IServiceBeanListener {
 
     @Override
     public void destroy(IServiceBuilder serviceBuilder, Object bean) {
+        List<BeanListener> destroyers = new ArrayList<BeanListener>(activators);
+        Collections.reverse(destroyers);
         for (BeanListener activator : destroyers) {
             activator.destroy(serviceBuilder, bean);
         }

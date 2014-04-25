@@ -77,6 +77,7 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commons-cli-1.2.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\commons-io\commons-io\2.4\commons-io-2.4.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\inject\guice\4.0-beta4\guice-4.0-beta4.jar
+set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\com\google\inject\extensions\guice-multibindings\4.0-beta4\guice-multibindings-4.0-beta4.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\aopalliance\aopalliance\1.0\aopalliance-1.0.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\javax\inject\javax.inject\1\javax.inject-1.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sigar\sigar\%v.sigar%\sigar-%v.sigar%.jar

@@ -70,6 +70,8 @@ import sorcer.core.*;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.dispatch.MonitoredTaskDispatcher;
+import sorcer.core.provider.container.ProviderServiceBuilder;
+import sorcer.core.provider.container.ServiceProviderBeanListener;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
@@ -197,7 +199,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-    @Inject
     private IServiceBeanListener beanListener;
 
     private IServiceBuilder serviceBuilder = new ProviderServiceBuilder(this);
@@ -1446,7 +1447,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         this.attributes.add(attributes);
     }
 
-    public Entry[] getAttributes() throws RemoteException {
+    public Entry[] getAttributes() {
         Set<Entry> result = new HashSet<Entry>(attributes);
         addAll(result, delegate.getAttributes());
         Entry uiDescriptor = getMainUIDescriptor();
@@ -1885,6 +1886,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return dispatcher.getExertion();
 	}
 
+    @Inject
+    public void setServiceBeanListener(IServiceBeanListener serviceBeanListener) {
+        beanListener = new ServiceProviderBeanListener(serviceBeanListener);
+    }
 
 /*    // Implement RIO's MonitorableService interface to allow Rio's ProvisionMonitor to check if provider is alive
     @Override

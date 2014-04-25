@@ -22,8 +22,6 @@ import net.jini.discovery.LookupDiscoveryManager;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.JoinManager;
 import net.jini.lookup.ServiceIDListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sorcer.config.AbstractBeanListener;
 import sorcer.container.discovery.ILookupManagerRegistry;
 
@@ -33,11 +31,6 @@ import javax.inject.Inject;
  * @author Rafał Krupiński
  */
 public class ServiceRegistrar extends AbstractBeanListener {
-    private static final Logger logger = LoggerFactory.getLogger(ServiceRegistrar.class);
-
-    @Inject
-    protected Configurer configurer;
-
     @Inject
     protected ILookupManagerRegistry lookupManagerRegistry;
 

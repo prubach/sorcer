@@ -1,9 +1,27 @@
+/*
+ * Copyright 2014 Sorcersoft.com S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package sorcer.core.service;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
+import com.sun.jini.admin.DestroyAdmin;
 import com.sun.jini.start.LifeCycle;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
@@ -14,9 +32,7 @@ import net.jini.lookup.entry.Name;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.config.BeanListener;
-import sorcer.container.core.ConfigurationInjector;
-import sorcer.container.core.TypeMatcher;
+import sorcer.container.core.ConfiguringModule;
 import sorcer.core.provider.Provider;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.util.ClassLoaders;
@@ -24,20 +40,21 @@ import sorcer.util.ClassLoaders;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
 import java.util.*;
+
+import static sorcer.container.core.InitializingModule.INIT_MODULE;
 
 /**
  * @author Rafał Krupiński
  */
-public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
+public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin {
     private static Logger log = LoggerFactory.getLogger(ActualServiceBuilder.class);
 
     private Set<Module> modules = new HashSet<Module>();
 
     private Map<Class, Object> beanMap = new LinkedHashMap<Class, Object>();
-
-    private IServiceBeanListener beanListener;
 
     private ClassLoader serviceClassLoader = ClassLoaders.current();
 
@@ -48,14 +65,15 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
 
     protected ServiceBuilderConfig builderConfig = new ServiceBuilderConfig();
 
-    @Inject
-    protected Configurer configurer;
     private T bean;
     private Remote proxy;
+    private String[] configArgs;
+
+    @Inject
+    protected Configurer configurer;
 
     @Inject
     private ServiceRegistrar serviceRegistrar;
-    private String[] configArgs;
 
     @Inject
     protected void setConfigArgs(String[] args) throws ConfigurationException {
@@ -103,21 +121,13 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
 
     @PostConstruct
     public void init() throws ExportException {
-        beanListener.preProcess(this);
-
+        modules.add(INIT_MODULE);
+        modules.add(new ConfiguringModule(jiniConfig, configurer, getType()));
         modules.add(new AbstractModule() {
             @Override
             protected void configure() {
-                // request binding in the current injetor, so the bean is visible to our bean listeners
+                // request binding in the current injector, so the bean is visible to our bean listeners
                 bind(getType()).in(Scopes.SINGLETON);
-
-                bindListener(new TypeMatcher(getType()), new TypeListener() {
-                    @Override
-                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                        log.debug("hear {} {}", type, encounter);
-                        encounter.register(new ConfigurationInjector<I>(configurer, jiniConfig));
-                    }
-                });
             }
         });
 
@@ -136,11 +146,6 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
                 builderConfig.exporter.unexport(true);
                 throw x;
             }
-    }
-
-    @Inject
-    protected void setBeanListeners(Set<BeanListener> beanListeners) {
-        beanListener = new ServiceBeanListener(beanListeners);
     }
 
     @Override
@@ -185,4 +190,9 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
         return (T) injector.createChildInjector(modules).getInstance(builderConfig.type);
     }
 
+    @Override
+    public void destroy() throws RemoteException {
+        if(bean instanceof DestroyAdmin)
+            ((DestroyAdmin) bean).destroy();
+    }
 }

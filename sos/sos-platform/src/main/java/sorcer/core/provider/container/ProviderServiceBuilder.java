@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.core.provider;
+package sorcer.core.provider.container;
 
 import net.jini.config.Configuration;
 import net.jini.core.entry.Entry;
@@ -23,6 +23,8 @@ import net.jini.jeri.InvocationLayerFactory;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.provider.Provider;
+import sorcer.core.provider.ServiceProvider;
 import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.jini.jeri.SorcerILFactory;
 
@@ -94,12 +96,12 @@ public class ProviderServiceBuilder implements IProviderServiceBuilder {
 
     @Override
     public Remote getProxy() {
-        return null;
+        return (Remote) serviceProvider.getProxy();
     }
 
     @Override
     public Entry[] getAttributes() {
-        return new Entry[0];
+        return serviceProvider.getAttributes();
     }
 
     public InvocationLayerFactory getILFactory(Map<Class, Object> serviceComponents, ClassLoader implClassLoader) {

@@ -39,6 +39,7 @@ import sorcer.boot.platform.PlatformLoader;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.core.DestroyAdmin;
+import sorcer.core.service.Configurer;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.util.ConfigurableThreadFactory;
@@ -173,6 +174,7 @@ public class ServiceStarter implements LifeCycle {
                     }
                 };
                 bind(ExecutorService.class).toProvider(executorServiceProvider).in(Scopes.SINGLETON);
+                bind(Configurer.class).in(Scopes.SINGLETON);
             }
         });
     }

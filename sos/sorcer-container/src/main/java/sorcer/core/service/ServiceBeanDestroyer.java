@@ -40,6 +40,8 @@ public class ServiceBeanDestroyer extends AbstractBeanListener {
                 ((com.sun.jini.admin.DestroyAdmin) o).destroy();
             else if (o instanceof sorcer.core.DestroyAdmin)
                 ((sorcer.core.DestroyAdmin) o).destroy();
+            else
+                log.debug("Unknown bean type {}", o);
         } catch (RemoteException e) {
             log.warn("Unexpected RemoteException while destroying local service bean " + o, e);
         }

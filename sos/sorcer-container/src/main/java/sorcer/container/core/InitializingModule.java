@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.core.service;
+package sorcer.container.core;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -22,7 +22,6 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.sun.jini.start.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,40 +32,39 @@ import java.lang.reflect.Method;
 import static sorcer.util.reflect.Methods.findFirst;
 
 /**
+ * Guice module that calls method annotated with {@link javax.annotation.PostConstruct} after the injection
+ *
  * @author Rafał Krupiński
  */
-public class ServiceModule extends AbstractModule {
-    private final LifeCycle lc;
-    private String[] serviceConfigArgs;
+public class InitializingModule extends AbstractModule {
+    public static final AbstractModule INIT_MODULE = new InitializingModule(new HasInitMethod(), new InitInvoker());
 
-    public ServiceModule(LifeCycle lc, String[] serviceConfigArgs) {
-        this.lc = lc;
-        this.serviceConfigArgs = serviceConfigArgs;
+    private HasInitMethod hasInitMethod;
+    private InitInvoker initInvoker;
+
+    public InitializingModule(HasInitMethod hasInitMethod, InitInvoker initInvoker) {
+        this.hasInitMethod = hasInitMethod;
+        this.initInvoker = initInvoker;
     }
 
     @Override
     protected void configure() {
-        bind(String[].class).toInstance(serviceConfigArgs);
-        bind(LifeCycle.class).toInstance(lc);
-
-        bindListener(HasInitMethod.INSTANCE, new TypeListener() {
+        bindListener(hasInitMethod, new TypeListener() {
             public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                encounter.register(InitInvoker.INSTANCE);
+                encounter.register(initInvoker);
             }
         });
     }
 }
 
 class HasInitMethod extends AbstractMatcher<TypeLiteral<?>> {
+    private final static Logger log = LoggerFactory.getLogger(HasInitMethod.class);
+
     public boolean matches(TypeLiteral<?> tpe) {
-        return check(tpe.getRawType());
+        Method method = findFirst(tpe.getRawType(), PostConstruct.class);
+        log.debug("Found {}", method);
+        return method != null;
     }
-
-    private boolean check(Class<?> type) {
-        return findFirst(type, PostConstruct.class) != null;
-    }
-
-    public static final HasInitMethod INSTANCE = new HasInitMethod();
 }
 
 class InitInvoker implements InjectionListener {
@@ -78,7 +76,10 @@ class InitInvoker implements InjectionListener {
             if (init == null)
                 throw new IllegalArgumentException("No init method found");
             else {
-                log.info("Initializing {}", injectee);
+                if (log.isDebugEnabled())
+                    log.debug("Initializing {} with {}", injectee, init);
+                else
+                    log.info("Initializing {}", injectee);
                 init.invoke(injectee);
             }
         } catch (InvocationTargetException e) {
@@ -87,7 +88,4 @@ class InitInvoker implements InjectionListener {
             throw new IllegalArgumentException(e.getCause());
         }
     }
-
-    public static final InitInvoker INSTANCE = new InitInvoker();
 }
-

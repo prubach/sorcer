@@ -17,6 +17,7 @@ package sorcer.core.service;
 
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
+import net.jini.config.EmptyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
@@ -55,6 +56,8 @@ public class Configurer extends AbstractBeanListener {
     }
 
     public void process(Object object, Configuration config) throws ConfigurationException {
+        if (config instanceof EmptyConfiguration)
+            return;
         log.debug("Processing {} with {}", object, config);
         if (object instanceof Configurable) {
             ((Configurable) object).configure(config);
