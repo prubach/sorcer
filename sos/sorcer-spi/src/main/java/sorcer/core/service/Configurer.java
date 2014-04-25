@@ -25,6 +25,8 @@ import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.config.Configurable;
 import sorcer.config.convert.TypeConverter;
+import sorcer.util.reflect.Fields;
+import sorcer.util.reflect.Methods;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -63,18 +65,12 @@ public class Configurer extends AbstractBeanListener {
 
         String component = configurable.value();
 
-        for (Field field : targetClass.getDeclaredFields()) {
-            ConfigEntry configEntry = field.getAnnotation(ConfigEntry.class);
-            if (configEntry != null) {
-                updateField(object, field, config, component, configEntry);
-            }
+        for (Field field : Fields.findAll(targetClass, ConfigEntry.class)) {
+            updateField(object, field, config, component, field.getAnnotation(ConfigEntry.class));
         }
 
-        for (Method method : targetClass.getDeclaredMethods()) {
-            ConfigEntry configEntry = method.getAnnotation(ConfigEntry.class);
-            if (configEntry != null) {
-                updateProperty(object, method, config, component, configEntry);
-            }
+        for (Method method : Methods.findAll(targetClass, ConfigEntry.class)) {
+            updateProperty(object, method, config, component, method.getAnnotation(ConfigEntry.class));
         }
     }
 
