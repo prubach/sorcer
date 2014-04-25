@@ -48,6 +48,7 @@ import sorcer.service.Strategy.Flow;
 //@Ignore("Works only if run separately")
 public class SharedContextWorkerTest {
 
+    @Ignore("Problem on Windows and Linux with Java 1.6")
     @Test(timeout = 30000)
 	public void testSharedContextWorker() throws Exception {
         SharedAssociativeContext context = new SharedAssociativeContext(SorcerEnv.getActualSpaceName());

@@ -30,7 +30,12 @@ abstract public class ShellCmd {
 
 	protected String COMMAND_HELP;
 
-    abstract public void execute() throws Throwable;
+    public void execute() throws Throwable {
+    }
+
+    public void execute(INetworkShell shell) throws Throwable {
+        execute();
+    }
 
     protected Configuration config;
 

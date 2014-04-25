@@ -20,13 +20,7 @@ package sorcer.tools.shell;
 
 import groovy.lang.GroovyRuntimeException;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.URL;
@@ -72,6 +66,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.rioproject.impl.config.DynamicConfiguration;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
+import sorcer.core.context.Contexts;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.netlet.util.ScriptExertException;
 import sorcer.security.util.SorcerPrincipal;
@@ -79,6 +74,7 @@ import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
 import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
+import sorcer.util.ClassLoaders;
 import sorcer.util.TimeUtil;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
@@ -91,7 +87,13 @@ import com.sun.jini.config.Config;
  */
 public class NetworkShell implements DiscoveryListener, INetworkShell {
 
+    public static final String CONFIG_EXT_PATH = SorcerEnv.getEnvironment().getSorcerExtDir() + "/configs/shell/configs/nsh-start-ext.config";
+    public static final String CONFIG_PATH = SorcerEnv.getEnvironment().getSorcerHome() + "/configs/shell/configs/nsh-start.config";
+
+    public static final String[] CONFIG_FILES = { CONFIG_EXT_PATH, CONFIG_PATH };
+
     public static int selectedRegistrar = 0;
+
     private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
 
     static private boolean debug = false;
@@ -234,12 +236,18 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 execNoninteractiveCommand(argv);
                 System.exit(0);
             }
-
+            // Process config files to load extensions - i.e. external commands and activate them
             try {
-                ClassLoader cl = Thread.currentThread().getContextClassLoader();
-                if (cl instanceof URLClassLoader) {
-                    new Activator().activate(((URLClassLoader) cl).getURLs());
+                LoaderConfiguration lc = new LoaderConfiguration();
+                for (String configFile : CONFIG_FILES) {
+                    File cfgFile = new File(configFile);
+                    if (cfgFile.exists()) {
+                        lc.configure(new FileInputStream(cfgFile));
+                    }
                 }
+                final ClassLoader cl = new URLClassLoader(lc.getClassPathUrls(), NetworkShell.class.getClassLoader());
+                Thread.currentThread().setContextClassLoader(cl);
+                new Activator().activate(((URLClassLoader) Thread.currentThread().getContextClassLoader()).getURLs());
             } catch (Exception e) {
                 e.printStackTrace(shellOutput);
                 System.exit(-1);
@@ -285,7 +293,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			try {
 				if (commandTable.containsKey(curToken)) {
 					cmd = commandTable.get(curToken);
-					cmd.execute();
+					cmd.execute(NetworkShell.getInstance());
 				}
 				// admissible shortcuts in the 'synonyms' map
 				else if (aliases.containsKey(curToken)) {
@@ -301,7 +309,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 						shellTokenizer = new StringTokenizer(request);
 					}
 					cmd = commandTable.get(cmdName);
-					cmd.execute();
+					cmd.execute(NetworkShell.getInstance());
 				} else if (request.length() > 0) {
 					if (request.equals("?")) {
 						instance.listCommands();
@@ -399,24 +407,24 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                             + ", JVM: " + System.getProperty("java.version"));
                 } else if (args[0].equals("-help")) {
                     ShellCmd cmd = commandTable.get("help");
-                    cmd.execute();
+                    cmd.execute(NetworkShell.getInstance());
                 } else {
                     // Added reading the file as default first argument
                     // Check if file exists
                     ShellCmd cmd = commandTable.get("exert");
-                    cmd.execute();
+                    cmd.execute(NetworkShell.getInstance());
                 }
             } else if (args.length == 2) {
                 if (args[0].equals("-f")) {
                     // evaluate file
                     ShellCmd cmd = commandTable.get("exert");
-                    cmd.execute();
+                    cmd.execute(NetworkShell.getInstance());
                 } else if (args[0].equals("-e")) {
                     // evaluate command line expression
                     ExertCmd cmd = (ExertCmd) commandTable.get("exert");
 				// cmd.setScript(instance.getText(args[1]));
 				cmd.setScript(ExertCmd.readFile(huntForTheScriptFile(args[1])));
-                    cmd.execute();
+                    cmd.execute(NetworkShell.getInstance());
                 }
             }
         } catch (IOException io) {
