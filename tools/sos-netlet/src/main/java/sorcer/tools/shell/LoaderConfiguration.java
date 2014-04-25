@@ -111,11 +111,9 @@ public class LoaderConfiguration {
                 // Webster is not yet started so this will work only if we use jars from external websters
                 // specified using: http://.... or mvn://... @address:port
                 // or if the environment points to a running system webster
-                String loadPath = line.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
-                loadUrls(LoaderConfigurationHelper.load(loadPath));
                 List<String> codebasePaths = new ArrayList<String>();
                 codebasePaths.add(line);
-                LoaderConfigurationHelper.setCodebase(codebasePaths, SorcerEnv.getWebsterUrl(), System.out);
+                loadUrls(LoaderConfigurationHelper.setCodebase(codebasePaths, SorcerEnv.getWebsterUrl(), System.out));
             } else if (line.startsWith(MAIN_PREFIX)) {
                 if (main != null)
                     throw new IOException("duplicate definition of main in line " + lineNumber + " : " + line);
