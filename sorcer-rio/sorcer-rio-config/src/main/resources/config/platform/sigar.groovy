@@ -20,7 +20,7 @@ import sorcer.resolver.Resolver;
 import sorcer.util.Zip
 
 def getPlatformCapabilityConfig() {
-    def version = "1.6.4-2";
+    def version = "1.6.4-3";
     installLibFromArtifact("org.sorcersoft.sigar:sigar-native:zip:" + version, "lib")
 
     return new SorcerCapabilityDescriptor(

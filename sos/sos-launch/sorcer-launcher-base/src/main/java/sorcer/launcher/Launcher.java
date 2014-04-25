@@ -94,7 +94,7 @@ public abstract class Launcher implements ILauncher {
             "javax.inject:javax.inject:1",
             "commons-io:commons-io",
             "commons-cli:commons-cli",
-            "org.sorcersoft.sigar:sigar:1.6.4-2",
+            "org.sorcersoft.sigar:sigar:1.6.4-3",
 
             "org.slf4j:slf4j-api",
             "org.slf4j:jul-to-slf4j",
