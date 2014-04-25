@@ -40,7 +40,11 @@ startConfigFile="$HOME/.nsh/configs/nsh-start.config"
 if [ -e $startConfigFile ] ; then
     NSH_CONF="$HOME/.nsh/configs/nsh-start.config"
 fi
-STARTER_MAIN_CLASS=sorcer.tools.shell.ShellStarter
+#STARTER_MAIN_CLASS=sorcer.tools.shell.ShellStarter
+#startShell sorcer.tools.shell.NetworkShell "$@"
 
-startShell sorcer.tools.shell.NetworkShell "$@"
+
+STARTER_MAIN_CLASS=sorcer.tools.shell.NetworkShell
+
+startShell "$@"
 

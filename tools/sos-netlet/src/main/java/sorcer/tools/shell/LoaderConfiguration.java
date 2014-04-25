@@ -82,7 +82,7 @@ public class LoaderConfiguration {
      * creates a new loader configuration
      */
     public LoaderConfiguration() {
-        this.requireMain = true;
+        this.requireMain = false;
     }
 
     /**

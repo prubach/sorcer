@@ -71,7 +71,7 @@ public class ExertCmd extends ShellCmd {
 	public void execute() throws Throwable {
         out = NetworkShell.getShellOutputStream();
         shell = NetworkShell.getInstance();
-        scriptExerter = new ScriptExerter(out, ShellStarter.getLoader(), NetworkShell.getWebsterUrl(), shell.isDebug());
+        scriptExerter = new ScriptExerter(out, null, NetworkShell.getWebsterUrl(), shell.isDebug());
         // TODO - an ugly workaround for problems with noninteractive loading of scripts that contain artifact codebase
         if (!NetworkShell.isInteractive()) Thread.sleep(1000);
         //

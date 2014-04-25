@@ -1,14 +1,17 @@
 package sorcer.netlet;
 
+import edu.emory.mathcs.util.classloader.URIClassLoader;
 import groovy.lang.GroovyRuntimeException;
 import net.jini.config.Configuration;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.netlet.util.LoaderConfigurationHelper;
 import sorcer.netlet.util.ScriptExertException;
+import sorcer.tools.shell.LoaderConfiguration;
 import sorcer.tools.shell.cmds.ScriptThread;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Sorcer Script Exerter - this class handles parsing an ntl (Netlet) script and executing it or returning its
  * content as an object
- *
+ * <p/>
  * User: prubach
  * Date: 02.07.13
  */
@@ -34,7 +37,7 @@ public class ScriptExerter {
 
     private final static String SHELL_LINE = "#!";
 
-    private final static String[] GROOVY_ERR_MSG_LINE = new String[] { "groovy: ", "@ line " };
+    private final static String[] GROOVY_ERR_MSG_LINE = new String[]{"groovy: ", "@ line "};
 
     private boolean startsWithShellLine = false;
 
@@ -99,9 +102,7 @@ public class ScriptExerter {
 
 
     public Object execute() throws Throwable {
-        if (scriptThread!=null) {
-            //scriptThread.start();
-            //scriptThread.join();
+        if (scriptThread != null) {
             scriptThread.run();
             result = scriptThread.getResult();
             return result;
@@ -112,6 +113,13 @@ public class ScriptExerter {
     public Object parse() throws Throwable {
         // Process "load" and generate a list of URLs for the classloader
         List<URL> urlsToLoad = new ArrayList<URL>();
+        // Add default load lines from shell config file
+        String configFile = System.getProperty("nsh.starter.config", null);
+        LoaderConfiguration lc = new LoaderConfiguration();
+        lc.configure(new FileInputStream(configFile));
+        for (URL url : lc.getClassPathUrls())
+            urlsToLoad.add(url);
+        //
         if (!loadLines.isEmpty()) {
             for (String jar : loadLines) {
                 String loadPath = jar.substring(LoaderConfigurationHelper.LOAD_PREFIX.length()).trim();
@@ -129,33 +137,32 @@ public class ScriptExerter {
         }
 
         try {
-            scriptThread = new ScriptThread(script, urlsToLoad.toArray(new URL[urlsToLoad.size()]),  classLoader, out, config, debug);
+            scriptThread = new ScriptThread(script, null, new URLClassLoader(urlsToLoad.toArray(new URL[urlsToLoad.size()]), getClass().getClassLoader()), out, config, debug);
             this.target = scriptThread.getTarget();
             return target;
         }
-            // Parse Groovy errors and replace line numbers to adjust according to show the actual line number with an error
-            catch (GroovyRuntimeException e) {
-                int lineNum = 0;
-                if (e instanceof CompilationFailedException) {
-                    String msg = e.getMessage();
-                    for (String groovyErrMsg : GROOVY_ERR_MSG_LINE) {
-                        lineNum = findLineNumAfterText(msg, groovyErrMsg);
-                        if (lineNum>0) msg = msg.replace(groovyErrMsg + lineNum,
-                                groovyErrMsg + (lineNum- getLineOffsetForGroovyErrors()));
-                    }
-                    throw new ScriptExertException(msg, e, lineNum - getLineOffsetForGroovyErrors());
+        // Parse Groovy errors and replace line numbers to adjust according to show the actual line number with an error
+        catch (GroovyRuntimeException e) {
+            int lineNum = 0;
+            if (e instanceof CompilationFailedException) {
+                String msg = e.getMessage();
+                for (String groovyErrMsg : GROOVY_ERR_MSG_LINE) {
+                    lineNum = findLineNumAfterText(msg, groovyErrMsg);
+                    if (lineNum > 0) msg = msg.replace(groovyErrMsg + lineNum,
+                            groovyErrMsg + (lineNum - getLineOffsetForGroovyErrors()));
                 }
-                for (StackTraceElement st : e.getStackTrace()) {
-                    if (st.getClassName().equals("Script1")) {
-                        lineNum = st.getLineNumber();
-                        break;
-                    }
-                }
-                throw new ScriptExertException(e.getLocalizedMessage(),e, lineNum - getLineOffsetForGroovyErrors());
+                throw new ScriptExertException(msg, e, lineNum - getLineOffsetForGroovyErrors());
             }
-        catch (Exception e) {
-            logger.log(Level.SEVERE,"error while parsing", e);
-            throw new ScriptExertException(e.getLocalizedMessage(),e, - getLineOffsetForGroovyErrors());
+            for (StackTraceElement st : e.getStackTrace()) {
+                if (st.getClassName().equals("Script1")) {
+                    lineNum = st.getLineNumber();
+                    break;
+                }
+            }
+            throw new ScriptExertException(e.getLocalizedMessage(), e, lineNum - getLineOffsetForGroovyErrors());
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "error while parsing", e);
+            throw new ScriptExertException(e.getLocalizedMessage(), e, -getLineOffsetForGroovyErrors());
         }
     }
 
@@ -195,7 +202,7 @@ public class ScriptExerter {
                 this.loadLines.add(line.trim());
             } else if (line.trim().startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX)) {
                 this.codebaseLines.add(line.trim());
-            } else if (!line.startsWith(SHELL_LINE)){
+            } else if (!line.startsWith(SHELL_LINE)) {
                 sb.append(line);
                 sb.append(LINE_SEP);
             } else
@@ -271,13 +278,13 @@ public class ScriptExerter {
         this.config = config;
     }
 
-    public int getLineOffsetForGroovyErrors()  {
-        int staticLines = staticImports.toString().split("\n",-1).length-1;
+    public int getLineOffsetForGroovyErrors() {
+        int staticLines = staticImports.toString().split("\n", -1).length - 1;
         return staticLines - codebaseLines.size() - (startsWithShellLine ? 1 : 0);
     }
 
     public int findLineNumAfterText(String msg, String needle) {
-        Pattern p= Pattern.compile(needle+"+([0-9]+).*");
+        Pattern p = Pattern.compile(needle + "+([0-9]+).*");
         Matcher m = p.matcher(msg);
         if (m.find()) {
             return Integer.parseInt(m.group(1));

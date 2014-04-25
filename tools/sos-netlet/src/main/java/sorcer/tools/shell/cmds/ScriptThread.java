@@ -26,7 +26,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.deploy.Deployment;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.tools.shell.RootLoader;
+//import sorcer.tools.shell.RootLoader;
 import sorcer.util.ServiceExerter;
 
 import java.io.File;
@@ -53,12 +53,16 @@ public class ScriptThread extends Thread {
             super("[" + Thread.currentThread().getName() + "] Script");
             this.config = config;
             this.debug = debug;
-            RootLoader loader = null;
+         /*   RootLoader loader = null;
             if (classLoader==null) {
-                loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
-                if (out!=null) out.println("New Script classloader: " + printUrls(loader.getURLs()));
+                if (this.getClass().getClassLoader() instanceof RootLoader)
+                    classLoader = (RootLoader)this.getClass().getClassLoader();
+                else {
+                    loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
+                    if (out != null) out.println("New Script classloader: " + printUrls(loader.getURLs()));
+                }
             }
-            else if (classLoader instanceof RootLoader) {
+            if (classLoader instanceof RootLoader) {
                 loader = (RootLoader)classLoader;
                 for (URL url : jarsToAdd)
                     loader.addURL(url);
@@ -66,8 +70,8 @@ public class ScriptThread extends Thread {
             } else if (classLoader instanceof URLClassLoader) {
                 loader = new RootLoader(jarsToAdd, classLoader);
                 if (debug && out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
-            }
-            gShell = new GroovyShell(loader!=null ? loader : classLoader);
+            }*/
+            gShell = new GroovyShell(classLoader);
 			this.script = script;
             this.parseScript();
 		}
@@ -107,24 +111,18 @@ public class ScriptThread extends Thread {
             synchronized (gShell) {
                 if (script != null) {
                     target = gShell.evaluate(script);
+                }  else {
+                    try {
+                        target = gShell.evaluate(scriptFile);
+                    } catch (IOException e) {
+                        logger.severe("Problem evaluating Script file: " + scriptFile + ": " + e.getMessage());
+                   }
                 }
             }
         }
 
 		public void run() {
-            synchronized (gShell) {
-                if (script != null) {
-                    target = gShell.evaluate(script);
-                } else {
-                    try {
-                        target = gShell.evaluate(scriptFile);
-                    } catch (CompilationFailedException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            if (target==null) parseScript();
             if (target instanceof Exertion) {
                 ServiceExerter esh = new ServiceExerter((Exertion) target);
                 try {

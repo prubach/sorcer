@@ -422,7 +422,13 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
 
 startShell ( ) {
 SR_CP=$(createSorcerRioCp)
-      	SHELL_CLASSPATH="$LOG_CP:$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+      	SHELL_CLASSPATH="$LOG_CP:$JINI_CLASSPATH:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-shell/$V_SORCER/sos-shell-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sos-webster/$V_SORCER/sos-webster-$V_SORCER.jar:\
+$MVN_REPO/org/rioproject/rio-api/$V_RIO/rio-api-$V_RIO.jar:\
+$MVN_REPO/org/rioproject/rio-lib/$V_RIO/rio-lib-$V_RIO.jar:\
+$MVN_REPO/commons-io/commons-io/2.4/commons-io-2.4.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-netlet/$V_SORCER/sos-netlet-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-api/$V_SORCER/sorcer-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-resolver/$V_SORCER/sorcer-resolver-$V_SORCER.jar:\
@@ -432,10 +438,12 @@ $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.ja
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
 $MVN_REPO/org/codehaus/groovy/groovy-all/$V_GROOVY/groovy-all-$V_GROOVY.jar:\
-$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"
+$MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
+$MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar"
+
 
     CLASS=$1
-    shift
+    #shift
     # Use rlwrap if installed to enable history in nsh
     if [ -n "$(which rlwrap)" ]; then
         RLWRAP="rlwrap "
@@ -456,13 +464,13 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar"
             -Dnsh.starter.config="$NSH_CONF" \
 			-classpath $SHELL_CLASSPATH \
             $STARTER_MAIN_CLASS \
-            --main $CLASS \
-            --config "$NSH_CONF" \
-            --classpath "$CP" \
             "$@"
 
             # -Dsorcer.home=$SORCER_HOME \
             # -Dlogback.configurationFile=$SORCER_HOME/configs/logback.groovy \
+            #--main $CLASS \
+            #--config "$NSH_CONF" \
+            #--classpath "$CP" \
 
     fi
 }
