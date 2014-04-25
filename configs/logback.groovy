@@ -74,6 +74,7 @@ logger("net.jini.reggie", debug)
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
 
+logger("sorcer.tools.webster.WebsterStarter", trace)
 logger("sorcer.core.provider.exertmonitor", info, [exertMonitor])
 logger("sorcer.core.provider.jobber.ServiceConcatenator", info, [concatenator])
 logger("sorcer.core.provider.jobber.ServiceJobber", info, [jobber])

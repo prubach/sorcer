@@ -33,5 +33,19 @@
 			<version>${project.version}</version>
             <scope>provided</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-spi</artifactId>
+            <version>1.0-M5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${v.guava}</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 </project>

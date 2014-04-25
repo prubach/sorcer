@@ -24,7 +24,7 @@ deployment(name: 'Sorcer') {
     artifact id: 'reggie-dl', 'org.apache.river:reggie-dl:2.2.2'
 
     service(name: 'Webster') {
-        implementation(class: 'sorcer.tools.webster.Webster') {
+        implementation(class: 'sorcer.core.service.ServiceBuilder') {
             artifact ref: 'webster-srv'
         }
         configuration file: getSorcerHome() + "/configs/webster/configs/webster-prv.config"

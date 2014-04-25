@@ -41,6 +41,7 @@ import sorcer.boot.util.ServiceDescriptorProcessor;
 import sorcer.core.DestroyAdmin;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.JavaSystemProperties;
 
 import javax.inject.Named;
@@ -57,6 +58,8 @@ import java.security.Policy;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
@@ -160,6 +163,16 @@ public class ServiceStarter implements LifeCycle {
                     }
                 }).in(Scopes.SINGLETON);
                 bind(JarClassPathHelper.class).in(Scopes.SINGLETON);
+                Provider<ExecutorService>executorServiceProvider = new Provider<ExecutorService>() {
+                    @Override
+                    public ExecutorService get() {
+                        ConfigurableThreadFactory tf=new ConfigurableThreadFactory();
+                        tf.setDaemon(true);
+                        tf.setNameFormat("SORCER-%2$d");
+                        return Executors.newCachedThreadPool(tf);
+                    }
+                };
+                bind(ExecutorService.class).toProvider(executorServiceProvider).in(Scopes.SINGLETON);
             }
         });
     }

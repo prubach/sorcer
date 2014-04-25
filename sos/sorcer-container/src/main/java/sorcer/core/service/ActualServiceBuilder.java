@@ -1,8 +1,14 @@
 package sorcer.core.service;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Module;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.inject.*;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.ProvisionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import com.sun.jini.start.LifeCycle;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -51,12 +57,17 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
 
     @Inject
     private ServiceRegistrar serviceRegistrar;
+    private String[] configArgs;
 
     @Inject
     protected void setConfigArgs(String[] args) throws ConfigurationException {
+        configArgs = args;
         jiniConfig = ConfigurationProvider.getInstance(args, serviceClassLoader);
         configurer.process(builderConfig, jiniConfig);
     }
+
+    @Inject
+    private LifeCycle lifeCycle;
 
     public ActualServiceBuilder() {
     }
@@ -95,21 +106,42 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
     @PostConstruct
     public void init() throws ExportException {
         beanListener.preProcess(this);
+
+        modules.add(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bindListener(new AbstractMatcher<Binding<?>>() {
+                    @Override
+                    public boolean matches(Binding<?> typeLiteral) {
+                        return Key.get(getType()).equals(typeLiteral.getKey());
+                    }
+                }, new ProvisionListener() {
+                    @Override
+                    public <I> void onProvision(ProvisionInvocation<I> provision) {
+                        I injectee = provision.provision();
+                        beanListener.preProcess(ActualServiceBuilder.this, (T) injectee);
+                    }
+                });
+            }
+        });
+
         bean = get();
-        beanListener.preProcess(this, bean);
+
+        //beanListener.preProcess(this, bean);
 
         if (builderConfig.export) {
             log.debug("Exporting {}", bean);
             proxy = builderConfig.exporter.export((Remote) bean);
         }
 
-        try {
-            serviceRegistrar.preProcess(this, bean);
-        } catch (RuntimeException x) {
-            log.warn("Error registering {}", bean, x);
-            builderConfig.exporter.unexport(true);
-            throw x;
-        }
+        if (builderConfig.register)
+            try {
+                serviceRegistrar.preProcess(this, bean);
+            } catch (RuntimeException x) {
+                log.warn("Error registering {}", bean, x);
+                builderConfig.exporter.unexport(true);
+                throw x;
+            }
     }
 
     @Inject
@@ -151,14 +183,11 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T> {
         };
     }
 
+    @Inject
+    Injector injector;
+
     @Override
     public T get() {
-        try {
-            return (T) builderConfig.type.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Could not create bean of type " + builderConfig.type, e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Could not create bean of type " + builderConfig.type, e);
-        }
+        return (T) injector.createChildInjector(modules).getInstance(builderConfig.type);
     }
 }
