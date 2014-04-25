@@ -49,48 +49,30 @@ public class ScriptThread extends Thread {
         private final static Logger logger = Logger.getLogger(ScriptThread.class
                 .getName());
 
-        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
+        public ScriptThread(String script, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
             super("[" + Thread.currentThread().getName() + "] Script");
             this.config = config;
             this.debug = debug;
-         /*   RootLoader loader = null;
-            if (classLoader==null) {
-                if (this.getClass().getClassLoader() instanceof RootLoader)
-                    classLoader = (RootLoader)this.getClass().getClassLoader();
-                else {
-                    loader = new RootLoader(jarsToAdd, this.getClass().getClassLoader());
-                    if (out != null) out.println("New Script classloader: " + printUrls(loader.getURLs()));
-                }
-            }
-            if (classLoader instanceof RootLoader) {
-                loader = (RootLoader)classLoader;
-                for (URL url : jarsToAdd)
-                    loader.addURL(url);
-                if (debug && out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
-            } else if (classLoader instanceof URLClassLoader) {
-                loader = new RootLoader(jarsToAdd, classLoader);
-                if (debug && out!=null) out.println("Existing Script classloader: " + printUrls(loader.getURLs()));
-            }*/
             gShell = new GroovyShell(classLoader);
 			this.script = script;
             this.parseScript();
 		}
 
-        public ScriptThread(String script, URL[] jarsToAdd, ClassLoader classLoader, PrintStream out, Configuration config) {
-            this(script, jarsToAdd, classLoader, out, config, false);
+        public ScriptThread(String script, ClassLoader classLoader, PrintStream out, Configuration config) {
+            this(script, classLoader, out, config, false);
         }
 
 
-        public ScriptThread(String script, URL[] urls, ClassLoader classLoader, PrintStream out) {
-            this(script, urls, classLoader, out, EmptyConfiguration.INSTANCE);
+        public ScriptThread(String script, ClassLoader classLoader, PrintStream out) {
+            this(script, classLoader, out, EmptyConfiguration.INSTANCE);
         }
 
-        public ScriptThread(String script, URL[] jarsToAdd, PrintStream out) {
-            this(script, jarsToAdd, null, out);
+        public ScriptThread(String script, PrintStream out) {
+            this(script, null, out);
         }
 
-        public ScriptThread(String script, URL[] jarsToAdd) {
-            this(script, jarsToAdd, null, null);
+        public ScriptThread(String script) {
+            this(script, null, null);
         }
 
         public ScriptThread(String script, ClassLoader classLoader) {

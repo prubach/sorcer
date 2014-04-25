@@ -49,12 +49,11 @@ import static sorcer.eo.operator.*;
 @Category(SorcerClient.class)
 @RunWith(SorcerSuite.class)
 //@SorcerServiceConfiguration(":ex6-cfg-all")
-@SorcerServiceConfigurations({
-        @SorcerServiceConfiguration(":ex6-cfg-adder"),
-        @SorcerServiceConfiguration(":ex6-cfg-multiplier"),
-        @SorcerServiceConfiguration(":ex6-cfg-subtractor")
-}
-)
+@SorcerServiceConfiguration({
+        ":ex6-cfg-adder",
+        ":ex6-cfg-multiplier",
+        ":ex6-cfg-subtractor"
+})
 
 @ExportCodebase({
         "org.sorcersoft.sorcer:ex6-api",

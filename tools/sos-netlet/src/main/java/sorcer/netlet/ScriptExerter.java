@@ -141,7 +141,7 @@ public class ScriptExerter {
         }
 
         try {
-            scriptThread = new ScriptThread(script, null,
+            scriptThread = new ScriptThread(script,
                     new URLClassLoader(urlsToLoad.toArray(new URL[0]), (classLoader!=null ? classLoader : getClass().getClassLoader())),
                     out, config, debug);
             this.target = scriptThread.getTarget();
