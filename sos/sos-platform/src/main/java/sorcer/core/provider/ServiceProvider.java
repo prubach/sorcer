@@ -70,10 +70,13 @@ import sorcer.core.*;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.dispatch.MonitoredTaskDispatcher;
+import sorcer.core.provider.container.ProviderServiceBuilder;
+import sorcer.core.provider.container.ServiceProviderBeanListener;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.service.IServiceBeanListener;
+import sorcer.core.service.IServiceBuilder;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
@@ -196,13 +199,14 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	private volatile boolean running = true;
 
-    @Inject
     private IServiceBeanListener beanListener;
+
+    private IServiceBuilder serviceBuilder = new ProviderServiceBuilder(this);
 
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
-		delegate = new ProviderDelegate(beanListener);
+		delegate = new ProviderDelegate(beanListener, serviceBuilder);
 		delegate.provider = this;
 	}
 
@@ -585,7 +589,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		this.lifeCycle = lifeCycle;
 
         if (beanListener != null)
-            beanListener.preProcess(this);
+            beanListener.preProcess(serviceBuilder);
 
 		try {
 			// Take the login context entry from the configuration file, if this
@@ -745,6 +749,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 			joinManager = new JoinManager(proxy, serviceAttributes, sid,
 					ldmgr, null);
+
+            if (beanListener != null)
+                beanListener.preProcess(serviceBuilder);
+
 			done = true;
 		} catch (Throwable e) {
 			logger.warn("Error initializing service: ", e);
@@ -1439,7 +1447,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         this.attributes.add(attributes);
     }
 
-    public Entry[] getAttributes() throws RemoteException {
+    public Entry[] getAttributes() {
         Set<Entry> result = new HashSet<Entry>(attributes);
         addAll(result, delegate.getAttributes());
         Entry uiDescriptor = getMainUIDescriptor();
@@ -1878,6 +1886,10 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return dispatcher.getExertion();
 	}
 
+    @Inject
+    public void setServiceBeanListener(IServiceBeanListener serviceBeanListener) {
+        beanListener = new ServiceProviderBeanListener(serviceBeanListener);
+    }
 
 /*    // Implement RIO's MonitorableService interface to allow Rio's ProvisionMonitor to check if provider is alive
     @Override

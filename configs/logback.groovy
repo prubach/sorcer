@@ -61,18 +61,21 @@ for (def service : [exertMonitor, cataloger, concatenator, jobber, spacer, taske
 //logger("org.rioproject.rmi.ResolvingLoader", OFF)
 //logger("org.rioproject.resolver.ResolverHelper", DEBUG)
 logger("org.rioproject.resolver.aether.util.ConsoleRepositoryListener", WARN)
+logger("org.rioproject.impl.opstring", WARN)
 
 //logger("org.rioproject.gnostic", INFO)
 //logger("org.rioproject.gnostic.drools", INFO)
 //logger("org.rioproject.gnostic.DroolsCEPManager", INFO)
 //logger("org.rioproject.config.GroovyConfig", INFO)
 
-logger("net.jini.discovery.LookupDiscovery", OFF)
-//logger("net.jini.lookup.JoinManager", OFF)
+logger("net.jini.discovery.LookupDiscovery", debug)
+logger("net.jini.lookup.JoinManager", debug)
+logger("net.jini.reggie", debug)
 
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
 
+logger("sorcer.tools.webster.WebsterStarter", trace)
 logger("sorcer.core.provider.exertmonitor", info, [exertMonitor])
 logger("sorcer.core.provider.jobber.ServiceConcatenator", info, [concatenator])
 logger("sorcer.core.provider.jobber.ServiceJobber", info, [jobber])
@@ -93,7 +96,14 @@ logger("com.sorcersoft.bazaar", info, [bazaar])
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
-//logger("sorcer.rio.rmi.SorcerResolvingLoader", debug)
+
+/*
+logger("sorcer.core.service.Configurer", debug)
+logger("sorcer.core.service.ActualServiceBuilder", debug)
+logger("sorcer.tools.webster.WebsterStarter", debug)
+logger("sorcer.core.service.ServiceRegistrar", debug)
+logger("sorcer.container.core", debug)
+*/
 
 root(INFO, appenders)
 

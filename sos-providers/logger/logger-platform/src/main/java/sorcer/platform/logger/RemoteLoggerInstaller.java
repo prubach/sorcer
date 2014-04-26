@@ -79,7 +79,7 @@ public class RemoteLoggerInstaller implements DestroyAdmin {
     private void installClient(BlockingQueue<ILoggingEvent> queue) {
         ConfigurableThreadFactory threadFactory = new ConfigurableThreadFactory();
         threadFactory.setDaemon(true);
-        threadFactory.setNameFormat("RemoteLoggerClient-$2%d");
+        threadFactory.setNameFormat("RemoteLoggerClient-%2$d");
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(threadFactory);
         scheduledFuture = scheduler.scheduleAtFixedRate(new RemoteLoggerClient(queue), 0, rate, TimeUnit.MILLISECONDS);

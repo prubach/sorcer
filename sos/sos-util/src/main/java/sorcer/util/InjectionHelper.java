@@ -48,12 +48,18 @@ public class InjectionHelper {
             log.debug("NOT injecting members, InjectorHelper not initialized while injecting members to {}", target);
     }
 
-    public static <T> T create(Class<T> type) throws IllegalAccessException, InstantiationException {
+    public static <T> T create(Class<T> type) {
         if (instance != null)
             return instance.create(type);
         else {
             log.debug("InjectorHelper not initialized while creating an instance of {}", type);
-            return type.newInstance();
+            try {
+                return type.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("Could not create " + type);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("Could not create " + type);
+            }
         }
     }
 

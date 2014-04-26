@@ -15,48 +15,41 @@ package sorcer.core.service;
  * limitations under the License.
  */
 
-import net.jini.config.ConfigurationException;
 import sorcer.config.BeanListener;
-import sorcer.config.ServiceBeanDestroyer;
-import sorcer.core.provider.Provider;
 
 import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Rafał Krupiński
  */
 public class ServiceBeanListener implements IServiceBeanListener {
     private List<BeanListener> activators;
-    private List<BeanListener> destroyers;
 
     @Inject
     public ServiceBeanListener(Set<BeanListener> platformListeners) {
-        activators = new LinkedList<BeanListener>();
-        activators.add(new Configurer());
-        activators.addAll(platformListeners);
-
-        destroyers = new LinkedList<BeanListener>();
-        destroyers.addAll(platformListeners);
-        destroyers.add(new ServiceBeanDestroyer());
+        activators = new LinkedList<BeanListener>(platformListeners);
     }
 
-    public void preProcess(Provider provider) {
+    @Override
+    public void preProcess(IServiceBuilder provider) {
         for (BeanListener activator : activators)
             activator.preProcess(provider);
     }
 
-    public void activate(Object[] serviceBeans, Provider provider) throws ConfigurationException {
+    @Override
+    public void preProcess(IServiceBuilder serviceBuilder, Object bean) {
         for (BeanListener activator : activators) {
-            activator.activate(serviceBeans, provider);
+            activator.preProcess(serviceBuilder, bean);
         }
     }
 
-    public void destroy(Object[] serviceBeans) {
+    @Override
+    public void destroy(IServiceBuilder serviceBuilder, Object bean) {
+        List<BeanListener> destroyers = new ArrayList<BeanListener>(activators);
+        Collections.reverse(destroyers);
         for (BeanListener activator : destroyers) {
-            activator.destroy(serviceBeans);
+            activator.destroy(serviceBuilder, bean);
         }
     }
 }

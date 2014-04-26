@@ -81,6 +81,7 @@ import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.service.IServiceBeanListener;
+import sorcer.core.service.IServiceBuilder;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
@@ -291,6 +292,8 @@ public class ProviderDelegate {
 
     private IServiceBeanListener beanListener;
 
+    private IServiceBuilder serviceBuilder;
+
 	/*
 	 * A nested class to hold the state information of the executing thread for
 	 * a served exertion.
@@ -340,9 +343,10 @@ public class ProviderDelegate {
 		}
 	}
 
-	public ProviderDelegate(IServiceBeanListener beanListener) {
+	public ProviderDelegate(IServiceBeanListener beanListener, IServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
-	}
+        this.serviceBuilder = serviceBuilder;
+    }
 
 	public void init(Provider provider) throws RemoteException,
 			ConfigurationException {
@@ -1822,7 +1826,8 @@ public class ProviderDelegate {
             }
 		}
         if (beanListener != null)
-            beanListener.destroy(serviceBeans);
+            for (Object serviceBean : serviceBeans)
+                beanListener.destroy(serviceBuilder, serviceBean);
 	}
 
 	public boolean isValidTask(Exertion servicetask) throws ContextException, RemoteException,
@@ -2868,6 +2873,8 @@ public class ProviderDelegate {
 			}
 		}
 		initBean(bean);
+        if (beanListener != null)
+            beanListener.preProcess(serviceBuilder, bean);
 		return bean;
 	}
 
@@ -2876,21 +2883,14 @@ public class ProviderDelegate {
             allBeans.add(InjectionHelper.create(beanClass));
         }
         if (beanListener != null)
-            beanListener.activate(allBeans.toArray(new Object[allBeans.size()]), getProvider());
+            for (Object bean : allBeans)
+                beanListener.preProcess(serviceBuilder, bean);
         for (Object bean : allBeans) {
             initBean(bean);
         }
     }
 
 	private Object initBean(Object serviceBean) {
-        try {
-			Method m = serviceBean.getClass().getMethod(
-					"init", new Class[] { Provider.class });
-			m.invoke(serviceBean, new Object[] { provider });
-		} catch (Exception e) {
-			logger.info("No 'init' method for this service bean: "
-                    + serviceBean.getClass().getName());
-		}
 		exports.put(serviceBean, this);
 		logger.debug("exported service bean: \n" + serviceBean
                 + "\n by provider: " + provider);

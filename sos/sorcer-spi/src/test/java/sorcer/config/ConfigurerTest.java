@@ -82,21 +82,21 @@ class ConfigureTest {
 
 @Component
 class WrongType {
-    @ConfigEntry("booleanValue")
+    @ConfigEntry(value = "booleanValue", required=true)
     void setString(String s) {
     }
 }
 
 @Component
 class MissingEntry {
-    @ConfigEntry(value = "missingEntry", required = false)
+    @ConfigEntry(value = "missingEntry")
     void setString(String s) {
     }
 }
 
 @Component
 class MissingRequiredEntry {
-    @ConfigEntry("missingEntry")
+    @ConfigEntry(value = "missingEntry", required = true)
     void setString(String s) {
     }
 }
