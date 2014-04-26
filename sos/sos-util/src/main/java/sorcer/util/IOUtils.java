@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.zip.ZipFile;
 
 public class IOUtils {
@@ -214,6 +215,19 @@ public class IOUtils {
 	 * @since Commons IO 2.0
 	 */
 	public static void closeQuietly(Closeable closeable) {
+		try {
+			if (closeable != null) {
+				closeable.close();
+			}
+		} catch (IOException ioe) {
+			// ignore
+		}
+	}
+
+    /**
+     * For compatibility with Java 6, where Socket isn't Closeable
+     */
+    public static void closeQuietly(Socket closeable) {
 		try {
 			if (closeable != null) {
 				closeable.close();
