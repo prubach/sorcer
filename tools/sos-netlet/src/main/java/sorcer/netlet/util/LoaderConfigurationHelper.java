@@ -17,6 +17,7 @@ package sorcer.netlet.util;
 
 import org.rioproject.resolver.*;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
+import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.SorcerResolverHelper;
@@ -95,9 +96,9 @@ public class LoaderConfigurationHelper {
             if ("artifact".equals(scheme)) {
                 ArtifactURLConfiguration artifactConf = new ArtifactURLConfiguration(uri.getSchemeSpecificPart());
                 try {
+                    urlsList.add(uri.toURL());
                     org.rioproject.resolver.Resolver resolver = getResolver();
                     RemoteRepository[] repos = artifactConf.getRepositories();
-
                     URL[] classpath = SorcerResolverHelper.toURLs(resolver.getClassPathFor(artifactConf.getArtifact(), repos));
                     Collections.addAll(urlsList, classpath);
                 } catch (ResolverException e) {

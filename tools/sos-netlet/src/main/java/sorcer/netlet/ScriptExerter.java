@@ -80,14 +80,20 @@ public class ScriptExerter {
         this(null, null, null, false);
     }
 
+    public static String[] localJars = new String[] {
+            "org.sorcersoft.sorcer:sos-api"
+    };
+
     public ScriptExerter(PrintStream out, ClassLoader classLoader, String websterStrUrl, boolean debug) {
         this.out = out;
         if (out==null) out = System.out;
         this.debug = debug;
         this.classLoader = classLoader;
         try {
-            File f = new File(Resolver.resolveAbsolute(Artifact.sorcer("sos-api")));
-            urlsToLoad.add(f.toURI().toURL());
+            for (String jar : localJars) {
+                File f = new File(Resolver.resolveAbsolute(jar));
+                urlsToLoad.add(f.toURI().toURL());
+            }
         } catch (MalformedURLException me) {
             out.println("Problem loading default classpath for scripts in ScriptExerter: " + me);
         }
@@ -298,4 +304,5 @@ public class ScriptExerter {
         return -1;
     }
 }
+
 
