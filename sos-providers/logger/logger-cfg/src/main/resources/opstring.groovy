@@ -32,7 +32,7 @@ deployment(name: 'logger-provider') {
             classes 'sorcer.core.RemoteLogger'
             artifact ref: 'logger-dl'
         }
-        implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
+        implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact ref: 'logger-cfg'
         }
         configuration file: 'classpath:logger.config'

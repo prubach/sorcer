@@ -44,9 +44,6 @@ public class RemoteLoggerInstaller implements DestroyAdmin {
     @ConfigEntry(required = false)
     public long rate = 200;
 
-    @ConfigEntry("loggerDir")
-    public String logDir = new File(SorcerEnv.getHomeDir(),"logs/remote").getPath();
-
     private ScheduledFuture<?> scheduledFuture;
 
     public RemoteLoggerInstaller() {

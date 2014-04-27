@@ -62,7 +62,6 @@ deployment(name: 'Sorcer') {
     def logger = [
             codebase : 'org.sorcersoft.sorcer:logger-api:' + SORCER_VERSION,
             classpath : 'org.sorcersoft.sorcer:logger-cfg:' + SORCER_VERSION,
-            client: 'org.sorcersoft.sorcer:logger-platform:' + SORCER_VERSION,
     ]
 
     artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
@@ -72,14 +71,16 @@ deployment(name: 'Sorcer') {
     /*
     * RemoteLogger service configuration
     */
-    service(name: 'RemoteAppender') {
+    service(name: 'Logger') {
         interfaces{
             classes 'sorcer.core.RemoteLogger'
             artifact logger.codebase
         }
-        implementation(class: 'sorcer.core.provider.logger.RemoteLoggerManager') {
+        implementation(class: 'sorcer.core.provider.ServiceProvider') {
             artifact logger.classpath
         }
+        configuration file: 'classpath:logger.config'
+        maintain 1
     }
 
     service(name: 'Mahalo') { //fork:'yes'
@@ -187,18 +188,6 @@ deployment(name: 'Sorcer') {
             artifact cataloger.impl
         }
         configuration file: 'classpath:cataloger.config'
-        maintain 1
-    }
-
-    service(name: "Logger") { //fork:'yes'
-        interfaces {
-            classes 'sorcer.core.RemoteLogger'
-            artifact logger.codebase
-        }
-        implementation(class: 'sorcer.core.provider.ServiceProvider') {
-            artifact logger.classpath
-        }
-        configuration file: 'classpath:logger.config'
         maintain 1
     }
 
