@@ -157,14 +157,14 @@ public class Configurer extends AbstractBeanListener {
 
             Object value = config.getEntry(component, entryKey, entryType, defaultValue);
             value = convert(value, targetType, configEntry);
+            if (configEntry.required() && value == null)
+                throw new IllegalArgumentException("Null required value for " + field);
             log.debug("Configure {} to {}", field.getName(), value);
             field.set(target, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
+            throw new IllegalArgumentException("Error while writing config entry " + entryKey + " to " + field, e);
         } catch (ConfigurationException e) {
-            throw new RuntimeException("Error while writing config entry " + entryKey + " to " + field, e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error while reading config entry [" + component + "] " + entryKey, e);
+            throw new IllegalArgumentException("Error while writing config entry " + entryKey + " to " + field, e);
         }
     }
 

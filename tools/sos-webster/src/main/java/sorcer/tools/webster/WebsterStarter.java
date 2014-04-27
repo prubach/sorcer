@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
+import sorcer.core.SorcerEnv;
 import sorcer.util.io.AsyncPinger;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +31,7 @@ import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.concurrent.*;
 
+import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
 
 /**
@@ -40,7 +42,7 @@ public class WebsterStarter implements DestroyAdmin {
     private static final Logger log = LoggerFactory.getLogger(WebsterStarter.class);
 
     @PostConstruct
-    public void init() throws SocketException {
+    public void init() throws SocketException, MalformedURLException {
         boolean start = isLocal(websterAddress);
         log.debug("address = {}, local = {}", websterAddress, start);
 
@@ -67,6 +69,7 @@ public class WebsterStarter implements DestroyAdmin {
             log.debug("Trying {}:{}", websterAddress, i);
             try {
                 webster = new Webster(i, roots, websterAddress, isDaemon);
+                SorcerEnv.setWebsterUrl(new URL("http", websterAddress, i, ""));
             } catch (BindException ex) {
                 log.debug("Error while starting Webster", ex);
             }
@@ -100,12 +103,102 @@ public class WebsterStarter implements DestroyAdmin {
             webster.terminate();
     }
 
+
+    /**
+     * Checks which port to use for a SORCER class server.
+     *
+     * @return a port number
+     */
+    public static int getWebsterPort() {
+        return firstInteger(0,
+                System.getenv("SORCER_WEBSTER_PORT"),
+                System.getenv("WEBSTER_PORT"),
+                System.getProperty(P_WEBSTER_PORT),
+                System.getProperty(S_WEBSTER_PORT),
+                SorcerEnv.getProperty(P_WEBSTER_PORT)
+        );
+    }
+
+    /**
+   	 * Returns the start port to use for a SORCER code server.
+   	 *
+   	 * @return a port number
+   	 */
+   	public static int getWebsterStartPort() {
+        return firstInteger(
+                -1,
+                System.getenv("WEBSTER_START_PORT"),
+                System.getProperty(S_WEBSTER_START_PORT),
+                SorcerEnv.getProperty(P_WEBSTER_START_PORT)
+        );
+   	}
+
+    /**
+   	 * Returns the end port to use for a SORCER code server.
+   	 *
+   	 * @return a port number
+   	 */
+    public static int getWebsterEndPort() {
+        return firstInteger(-1,
+                System.getenv("WEBSTER_END_PORT"),
+                System.getProperty(S_WEBSTER_END_PORT),
+                SorcerEnv.getProperty(P_WEBSTER_END_PORT)
+        );
+    }
+
+    private static int firstInteger(int defVal, String... strings) {
+        for (String string : strings) {
+            try {
+                return Integer.parseInt(string);
+            } catch (NumberFormatException x) {
+                log.debug("Error parsing {} {}", string, x.getMessage());
+            }
+        }
+        return defVal;
+    }
+
+    /**
+     * Return the interface of a SORCER class server.
+     *
+     * @return a webster network interface address
+     */
+    public static String getWebsterInterface() throws UnknownHostException {
+        String intf = System.getenv("WEBSTER_INTERFACE");
+
+        if (intf != null && intf.length() > 0) {
+            log.debug("webster interface as the system environment value: {}", intf);
+            return intf;
+        }
+
+        intf = System.getProperty(P_WEBSTER_INTERFACE);
+        if (intf != null && intf.length() > 0) {
+            log.debug("webster interface as 'provider.webster.interface' system property value: {}", intf);
+            return intf;
+        }
+
+        intf = SorcerEnv.getProperty(P_WEBSTER_INTERFACE);
+        if (intf != null && intf.length() > 0) {
+            log.debug("webster interface as 'provider.webster.interface' property value: {}", intf);
+            return intf;
+        }
+        log.debug("webster interface  as the local host value: " + intf);
+        return SorcerEnv.getLocalHost().getHostAddress();
+    }
+
+    public static String[] getWebsterRoots() {
+        return SorcerEnv.getWebsterRoots(new String[0]);
+    }
+
+    public static String[] getWebsterRoots(String[] additional) {
+        return SorcerEnv.getWebsterRoots(additional);
+    }
+
     private Webster webster;
 
     @ConfigEntry
     int websterPort = 0;
 
-    @ConfigEntry
+    @ConfigEntry(required = true)
     String websterAddress;
 
     @ConfigEntry

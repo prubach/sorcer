@@ -68,14 +68,15 @@ logger("org.rioproject.impl.opstring", WARN)
 //logger("org.rioproject.gnostic.DroolsCEPManager", INFO)
 //logger("org.rioproject.config.GroovyConfig", INFO)
 
+/*
 logger("net.jini.discovery.LookupDiscovery", debug)
 logger("net.jini.lookup.JoinManager", debug)
 logger("net.jini.reggie", debug)
+*/
 
 logger("org.dancres.blitz", WARN)
 logger("org.dancres.blitz.disk.SleeveCache", OFF)
 
-logger("sorcer.tools.webster.WebsterStarter", trace)
 logger("sorcer.core.provider.exertmonitor", info, [exertMonitor])
 logger("sorcer.core.provider.jobber.ServiceConcatenator", info, [concatenator])
 logger("sorcer.core.provider.jobber.ServiceJobber", info, [jobber])
@@ -98,10 +99,8 @@ logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
 
 /*
-logger("sorcer.core.service.Configurer", debug)
-logger("sorcer.core.service.ActualServiceBuilder", debug)
+logger("sorcer.core.service", debug)
 logger("sorcer.tools.webster.WebsterStarter", debug)
-logger("sorcer.core.service.ServiceRegistrar", debug)
 logger("sorcer.container.core", debug)
 */
 

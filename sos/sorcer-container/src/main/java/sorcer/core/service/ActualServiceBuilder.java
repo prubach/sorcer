@@ -33,6 +33,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.container.core.ConfiguringModule;
+import sorcer.container.core.SingletonModule;
 import sorcer.core.provider.Provider;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.util.ClassLoaders;
@@ -123,13 +124,8 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin
     public void init() throws ExportException {
         modules.add(INIT_MODULE);
         modules.add(new ConfiguringModule(jiniConfig, configurer, getType()));
-        modules.add(new AbstractModule() {
-            @Override
-            protected void configure() {
-                // request binding in the current injector, so the bean is visible to our bean listeners
-                bind(getType()).in(Scopes.SINGLETON);
-            }
-        });
+        // request binding in the current injector, so the bean is visible to our bean listeners
+        modules.add(new SingletonModule(getType()));
 
         bean = get();
 

@@ -39,6 +39,7 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
     protected Resolver resolver;
 
     private Set<Artifact> classpath;
+    private Set<Artifact> codebase;
 
     protected ResolvingServiceDescriptor() {
     }
@@ -48,8 +49,13 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
         setServiceConfigArgs(Arrays.asList(configFile));
     }
 
+    public ResolvingServiceDescriptor(String codebase, String policyFile, String classpath, String implClassName, String configFile) {
+        this(codebase, new File(policyFile), classpath, implClassName, configFile);
+    }
+
     public ResolvingServiceDescriptor(String codebase, File policyFile, String classpath, String implClassName) {
-        setCodebase(codebase(asArtifacts(codebase)));
+        this.codebase = asArtifacts(codebase);
+        setCodebase(codebase(this.codebase));
         this.classpath = asArtifacts(classpath);
         setImplClassName(implClassName);
         setPolicyFile(policyFile.getPath());
@@ -83,5 +89,18 @@ public class ResolvingServiceDescriptor extends AbstractServiceDescriptor {
             throw new IllegalArgumentException("Could not resolve classpath", e);
         }
         return results;
+    }
+
+    public String toString() {
+        return "ResolvingServiceDescriptor{"
+                + "codebase='"
+                + codebase
+                + '\''
+                + ", classpath='"
+                + classpath
+                + '\''
+                + ", implClassName='"
+                + getImplClassName()
+                + '}';
     }
 }

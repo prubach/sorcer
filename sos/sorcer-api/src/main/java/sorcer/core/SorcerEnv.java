@@ -41,6 +41,7 @@ public class SorcerEnv {
     // This is copied from Context
     final static String DATA_NODE_TYPE = "dnt";
     final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
+    private static final String WEBSTER_URL = "webster.url";
     public static boolean debug = false;
     /**
      * Default name 'provider.properties' for a file defining provider
@@ -246,7 +247,7 @@ public class SorcerEnv {
      * @return the current URL for the SORCER class server.
      */
     public static String getWebsterUrl() {
-        return "http://" + getWebsterInterface() + ':' + getWebsterPort();
+        return sorcerEnv.properties.getProperty(WEBSTER_URL);
     }
 
     /**
@@ -256,10 +257,17 @@ public class SorcerEnv {
      */
     public static URL getWebsterUrlURL() {
         try {
-            return new URL("http", getWebsterInterface(), getWebsterPort(), "");
+            return new URL(getWebsterUrl());
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
+    }
+
+    public static void setWebsterUrl(URL url){
+        assert url != null : "null webster url";
+        String urlString = url.toExternalForm();
+        sorcerEnv.properties.setProperty(WEBSTER_URL, urlString);
+        System.setProperty("org.rioproject.codeserver", urlString);
     }
 
     public static String getDatabaseStorerUrl() {
@@ -1375,10 +1383,6 @@ public class SorcerEnv {
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Could not prepare codebase root URL", e);
         }
-    }
-
-    public static String getWebsterInterface() {
-        return sorcerEnv.getProperty(P_WEBSTER_INTERFACE);
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
  * Copyright 2008 the original author or authors.
- * Copyright 2013 Sorersoft.com S.A.
+ * Copyright 2013, 2014 Sorersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,12 @@
 package sorcer.provider.boot;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
-import com.sun.jini.start.NonActivatableServiceDescriptor;
 import com.sun.jini.start.ServiceDescriptor;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
 import sorcer.util.ArtifactCoordinates;
-import sorcer.util.StringUtils;
 
 import static sorcer.util.Artifact.sorcer;
 import static sorcer.util.ArtifactCoordinates.coords;
@@ -46,7 +43,6 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates CATALOGER_PRV = sorcer("cataloger-prv");
     public static final ArtifactCoordinates LOGGER_PRV = sorcer("logger-prv");
     public static final ArtifactCoordinates LOGGER_SUI = sorcer("logger-sui");
-    public static final ArtifactCoordinates WEBSTER = sorcer("sos-webster");
     public static final ArtifactCoordinates SPACER_PRV = sorcer("spacer-prv");
     public static final ArtifactCoordinates JOBBER_PRV = sorcer("jobber-prv");
 
@@ -54,176 +50,6 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
 
 	private static String sorcerHome = SorcerEnv.getHomeDir().getAbsolutePath();
-
-    /**
-     * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-     * Webster.
-     *
-     * @param policy
-     *            The security policy file to use
-     *            The roots webster should serve
-     * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-     *         webster using an anonymous port. The <tt>webster.jar</tt> file
-     *         will be loaded from <tt>sorcer.home/common/sorcer/webster.com</tt>
-     *
-     * @throws IOException
-     *             If there are problems getting the anonymous port
-     * @throws RuntimeException
-     *             If the <tt>sorcer.home</tt> system property is not set
-     */
-    public static ServiceDescriptor getWebster(String policy, int port)
-            throws IOException {
-        return (getWebster(policy, port, Booter.getWebsterRoots()));
-    }
-
-
-
-    public static ServiceDescriptor getWebster(String policy)
-            throws IOException {
-            return (getWebster(policy, 0));
-    }
-
-    /**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.tools.webster.Webster}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param roots
-	 *            The roots webster should serve
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 *         webster using an anonymous port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/common/sorcer/webster.com</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getWebster(String policy, String[] roots)
-			throws IOException {
-		return (getWebster(policy, 0, roots));
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.tools.webster.Webster}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param port
-	 *            The port webster should use
-	 * @param roots
-	 *            The roots webster should serve
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>sorcer.home/common/sorcer</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 * @throws RuntimeException
-	 *             If the <tt>sorcer.home</tt> system property is not set
-	 */
-	public static ServiceDescriptor getWebster(String policy, int port,
-			String[] roots) throws IOException {
-		return (getWebster(policy, port, roots, null, false));
-	}
-
-	public static ServiceDescriptor getWebster(String policy, int port,
-			String[] roots, boolean isDaemon) throws IOException {
-		return (getWebster(policy, port, roots, null, false, isDaemon));
-	}
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.tools.webster.Webster}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param port
-	 *            The port webster should use
-	 * @param roots
-	 *            The roots webster should serve
-	 * @param debug
-	 *            If true, set the <tt>sorcer.tools.debug</tt> property
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>${sorcer.home}/common/sorcer</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 */
-	public static ServiceDescriptor getWebster(String policy, int port,
-			String[] roots, String address, boolean debug) throws IOException {
-		return (getWebster(policy, port, roots, address, 0, 0, debug, true));
-	}
-
-    public static ServiceDescriptor getWebster(String policy, int port,
-                                               String[] roots, String address, boolean debug, boolean isDaemon) throws IOException {
-        return (getWebster(policy, port, roots, address, 0, 0, debug, isDaemon));
-    }
-
-	/**
-	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 * {@link sorcer.tools.webster.Webster}.
-	 * 
-	 * @param policy
-	 *            The security policy file to use
-	 * @param port
-	 *            The port webster should use
-	 * @param roots
-	 *            The roots webster should serve
-	 * @param debug
-	 *            If true, set the <tt>sorcer.tools.debug</tt> property
-	 * @return The {@link com.sun.jini.start.ServiceDescriptor} instance for
-	 *         webster using a specified port. The <tt>webster.jar</tt> file
-	 *         will be loaded from <tt>${sorcer.home}/common/sorcer</tt>
-	 * 
-	 * @throws IOException
-	 *             If there are problems getting the anonymous port
-	 */
-	public static ServiceDescriptor getWebster(String policy, int port,
-			String[] roots, String address, int startPort, int endPort,
-			boolean debug, boolean isDaemon) throws IOException {
-		logger.info("policy: " + policy + ", port: " + port + ", roots: "
-				+ Arrays.toString(roots) + ", address: " + "startPort: "
-				+ startPort + ", endPort:" + endPort 
-				+ ", debug: " + debug + ", isDaemon: " + isDaemon);
-		int websterPort = 0;
-		if (sorcerHome == null)
-			throw new RuntimeException("'sorcer.home' property not declared");
-		// anonymous case
-		if (port == 0) {
-			websterPort = Booter.getAnonymousPort(); 
-			System.setProperty("webster.port", "" + port);
-		}
-		else if (port > 0) {
-			websterPort = port;
-		} else {
-			// use SORCER environment configuration
-			websterPort = Booter.getPort();
-		}
-		
-		String importCodeBase = Resolver.resolveAbsolute(WEBSTER);
-		String websterRoots = StringUtils.join(roots, ';');
-		String websterClass = "sorcer.tools.webster.Webster";
-		if (debug) {
-			System.setProperty("sorcer.tools.webster.debug", "true");
-		}
-		String websterAddress = address;
-		if (address == null || address.length() == 0) {
-			websterAddress = Booter.getWebsterInterface();
-			//Booter.getHostAddressFromProperty("java.rmi.server.hostname");
-		}
-		System.setProperty("provider.webster.interface", websterAddress);
-		logger.fine("webster started at: " + websterAddress + ":" + websterPort + ", hostname: " + address);
-		return (new NonActivatableServiceDescriptor("", policy, importCodeBase,
-				websterClass,
-				new String[] { "-port", "" + websterPort, "-roots", websterRoots,
-						"-bindAddress", websterAddress, "-startPort",
-						"" + startPort, "-endPort", "" + endPort, 
-						"-isDaemon", "" + isDaemon, "-debug", "" + debug}));
-	}
 
 	/**
 	 * Get the {@link com.sun.jini.start.ServiceDescriptor} instance for

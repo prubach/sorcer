@@ -19,14 +19,15 @@ package sorcer.container.core;
 import com.google.inject.AbstractModule;
 import com.google.inject.MembersInjector;
 import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
-import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.config.Component;
 import sorcer.core.service.Configurer;
 
 /**
@@ -47,7 +48,12 @@ public class ConfiguringModule extends AbstractModule {
     public ConfiguringModule(Configuration config, Configurer configurer) {
         this.config = config;
         this.configurer = configurer;
-        matcher = (Matcher) Matchers.any();
+        matcher = new AbstractMatcher<TypeLiteral<?>>() {
+            @Override
+            public boolean matches(TypeLiteral<?> typeLiteral) {
+                return typeLiteral.getRawType().isAnnotationPresent(Component.class);
+            }
+        };
     }
 
     @Override
@@ -55,7 +61,7 @@ public class ConfiguringModule extends AbstractModule {
         bindListener(matcher, new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                log.debug("hear {} {}", type, encounter);
+                log.debug("Will configure {} instance with {}", type, config);
                 encounter.register(new ConfigurationInjector<I>(configurer, config));
             }
         });

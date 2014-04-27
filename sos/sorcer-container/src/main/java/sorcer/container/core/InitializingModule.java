@@ -83,9 +83,19 @@ class InitInvoker implements InjectionListener {
                 init.invoke(injectee);
             }
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e.getCause());
+            handle(e);
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e.getCause());
+            handle(e);
         }
+    }
+
+    private void handle(Exception e) {
+        Throwable cause = e.getCause();
+        if (cause instanceof Error)
+            throw (Error) cause;
+        else if (cause instanceof RuntimeException)
+            throw (RuntimeException) cause;
+        else
+            throw new IllegalArgumentException(cause);
     }
 }

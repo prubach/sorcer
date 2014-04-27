@@ -21,17 +21,20 @@
             <array class="java.lang.String" length="0"/>
         </void>
         <void property="sorcerConfigPaths">
-            <array class="java.lang.String" length="4">
+            <array class="java.lang.String" length="5">
                 <void index="0">
-                    <string>${sys.sorcer.home}/configs/River.groovy</string>
+                    <string>${sys.sorcer.home}/configs/webster-start.config</string>
                 </void>
                 <void index="1">
-                    <string>${sys.sorcer.home}/configs/Sorcer.groovy</string>
+                    <string>${sys.sorcer.home}/configs/Reggie.groovy</string>
                 </void>
                 <void index="2">
-                    <string>${sys.sorcer.ext}/configs/SorcerExtBoot.groovy</string>
+                    <string>${sys.sorcer.home}/configs/Sorcer.groovy</string>
                 </void>
                 <void index="3">
+                    <string>${sys.sorcer.ext}/configs/SorcerExtBoot.groovy</string>
+                </void>
+                <void index="4">
                     <string>${sys.sorcer.home}/configs/Rio.groovy</string>
                 </void>
             </array>

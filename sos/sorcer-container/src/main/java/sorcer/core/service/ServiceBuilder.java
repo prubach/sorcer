@@ -22,6 +22,7 @@ import com.sun.jini.start.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.container.core.BeanListenerModule;
+import sorcer.container.core.SingletonModule;
 import sorcer.util.InjectionHelper;
 
 import javax.inject.Inject;
@@ -48,7 +49,8 @@ public class ServiceBuilder implements DestroyAdmin{
         instance = injector.createChildInjector(
                 injector.getInstance(BeanListenerModule.class),
                 INIT_MODULE,
-                new ServiceModule(lifeCycle, args)
+                new ServiceModule(lifeCycle, args),
+                new SingletonModule(ActualServiceBuilder.class)
         ).getInstance(ActualServiceBuilder.class);
         log.debug("Created instance {}", instance);
     }

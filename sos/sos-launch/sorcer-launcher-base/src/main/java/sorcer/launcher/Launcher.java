@@ -209,7 +209,6 @@ public abstract class Launcher implements ILauncher {
         sysProps.put("RIO_HOME", rio.getPath());
         sysProps.put("RIO_LOG_DIR", logDir.getPath());
         sysProps.put("org.rioproject.resolver.jar", resolverPath);
-        sysProps.put("org.rioproject.codeserver", SorcerEnv.getWebsterUrl());
 
         //other
         sysProps.put("logback.configurationFile", new File(configDir, "logback.groovy").getPath());

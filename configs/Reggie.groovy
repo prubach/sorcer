@@ -16,20 +16,8 @@ def getSorcerVersion() {
 deployment(name: 'Sorcer') {
     groups SorcerEnv.getLookupGroups() as String[];
 
-    codebase SorcerEnv.websterUrl;
-
-    artifact id: 'webster-srv', 'org.sorcersoft.sorcer:sos-webster:' + getSorcerVersion()
-
     artifact id: 'reggie', 'org.apache.river:reggie:2.2.2'
     artifact id: 'reggie-dl', 'org.apache.river:reggie-dl:2.2.2'
-
-    service(name: 'Webster') {
-        implementation(class: 'sorcer.core.service.ServiceBuilder') {
-            artifact ref: 'webster-srv'
-        }
-        configuration file: getSorcerHome() + "/configs/webster/configs/webster-prv.config"
-        maintain 1
-    }
 
     service(name: 'Reggie') {
         interfaces {

@@ -30,11 +30,14 @@
         </void>
 -->
         <void property="sorcerConfigPaths">
-            <array class="java.lang.String" length="2">
+            <array class="java.lang.String" length="3">
                 <void index="0">
-                    <string>${sys.sorcer.home}/configs/River.groovy</string>
+                    <string>${sys.sorcer.home}/configs/webster-start.config</string>
                 </void>
                 <void index="1">
+                    <string>${sys.sorcer.home}/configs/Reggie.groovy</string>
+                </void>
+                <void index="2">
                     <string>${sys.sorcer.home}/configs/Cybernode.groovy</string>
                 </void>
             </array>

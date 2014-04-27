@@ -32,6 +32,7 @@ import sorcer.boot.ServiceDestroyer;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.LifeCycleMultiplexer;
 import sorcer.container.core.ConfiguringModule;
+import sorcer.container.core.SingletonModule;
 import sorcer.core.service.Configurer;
 import sorcer.core.service.ServiceModule;
 
@@ -153,19 +154,15 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
                     globalPolicy.setPolicy(classLoader, splitServicePolicy);
                 }
 
-            Injector injector = parentInjector;
             List<Module> modules = new LinkedList<Module>();
 
             Class implClass = Class.forName(getImplClassName(), true, classLoader);
             modules.add(new ConfiguringModule(config, configurer, implClass));
             modules.add(getInjectorModule());
             modules.add(INIT_MODULE);
+            modules.add(createFactoryModule(implClass));
 
-            Module module = createFactoryModule(implClass);
-            if (module != null)
-                modules.add(module);
-
-            injector = injector.createChildInjector(modules);
+            Injector injector = parentInjector.createChildInjector(modules);
             Object impl = injector.getInstance(implClass);
             return (new Service(impl, null, this));
         } finally {
@@ -181,11 +178,11 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
             return new URIClassLoader(classpathArr, parentLoader);
     }
 
-    private static class FactoryModule extends AbstractModule {
-        private Class<Object> implClass;
-        private java.lang.reflect.Constructor<java.lang.Object> constructor;
+    private static class FactoryModule<T> extends AbstractModule {
+        private Class<T> implClass;
+        private java.lang.reflect.Constructor<T> constructor;
 
-        private FactoryModule(Class<Object> implClass, Constructor<Object> constructor) {
+        private FactoryModule(Class<T> implClass, Constructor<T> constructor) {
             this.implClass = implClass;
             this.constructor = constructor;
         }
@@ -196,13 +193,15 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    private Module createFactoryModule(Class<Object> implClass) {
+    @SuppressWarnings("unchecked")
+    private Module createFactoryModule(Class<?> implClass) {
         try {
             return new FactoryModule(implClass, implClass.getDeclaredConstructor(new Class[]{String[].class, LifeCycle.class}));
         } catch (NoSuchMethodException ignore) {
             // Class has no required constructor, assume it has the default one
             // or one annotated with @Inject
-            return null;
+            // Also make sure the type is bound to current injector
+            return new SingletonModule(implClass);
         }
     }
 
