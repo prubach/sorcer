@@ -36,7 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.rmi.RemoteException;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
 import junit.sorcer.core.invoker.service.Volume;
@@ -49,7 +49,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.rioproject.resolver.ResolverException;
 import org.rioproject.resolver.ResolverHelper;
@@ -62,7 +61,6 @@ import sorcer.core.invoker.Invoker;
 import sorcer.core.invoker.OptInvoker;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.resolver.Resolver;
 import sorcer.service.Condition;

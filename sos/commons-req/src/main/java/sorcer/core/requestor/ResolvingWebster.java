@@ -40,7 +40,7 @@ public class ResolvingWebster {
         try {
             webster = new Webster(roots, true);
 
-            URL root = SorcerEnv.getCodebaseRoot(SorcerEnv.getHostAddress(), webster.getPort());
+            URL root = SorcerEnv.getWebsterUrlURL();
             String codebase;
             if (userCodebase == null || userCodebase.isEmpty()) {
                 codebase = Resolver.resolveCodeBase(root, Artifact.getSorcerApi(), Artifact.getSosPlatform());
@@ -52,8 +52,6 @@ public class ResolvingWebster {
             return webster;
         } catch (BindException e) {
             throw new IllegalStateException("Could not bind to " + Webster.getWebster().getAddress() + ":" + webster.getPort(), e);
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException("Could not obtain local address", e);
         }
     }
 }

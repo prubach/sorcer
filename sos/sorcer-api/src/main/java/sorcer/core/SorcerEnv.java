@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.firstInteger;
 
 public class SorcerEnv {
 
@@ -109,80 +110,13 @@ public class SorcerEnv {
      * @return a port number
      */
     public static int getWebsterPort() {
-        if (port != 0)
-            return port;
-
-        String wp = System.getenv("SORCER_WEBSTER_PORT");
-        if (wp != null && wp.length() > 0) {
-            return new Integer(wp);
-        }
-
-        wp = System.getProperty(P_WEBSTER_PORT);
-        if (wp != null && wp.length() > 0) {
-            return new Integer(wp);
-        }
-
-        wp = getProperty(P_WEBSTER_PORT);
-        if (wp != null && wp.length() > 0) {
-            return new Integer(wp);
-        }
-
-        try {
-            port = getAnonymousPort();
-        } catch (IOException e) {
-            logger.log(Level.INFO, "anonymous port", e);
-        }
-        return port;
-    }
-
-    /**
-     * Returns the start port to use for a SORCER code server.
-     *
-     * @return a port number
-     */
-    public static int getWebsterStartPort() {
-        String hp = System.getenv("SORCER_WEBSTER_START_PORT");
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-        }
-
-        hp = System.getProperty(P_WEBSTER_START_PORT);
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-        }
-
-        hp = getProperty(P_WEBSTER_START_PORT);
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-
-        }
-
-        return 0;
-    }
-
-    /**
-     * Returns the end port to use for a SORCER code server.
-     *
-     * @return a port number
-     */
-    public static int getWebsterEndPort() {
-        String hp = System.getenv("SORCER_WEBSTER_END_PORT");
-
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-        }
-
-        hp = System.getProperty(P_WEBSTER_END_PORT);
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-        }
-
-        hp = getProperty(P_WEBSTER_END_PORT);
-        if (hp != null && hp.length() > 0) {
-            return new Integer(hp);
-        }
-
-        return 0;
+        return firstInteger(0,
+                System.getenv("SORCER_WEBSTER_PORT"),
+                System.getenv("WEBSTER_PORT"),
+                System.getProperty(P_WEBSTER_PORT),
+                System.getProperty(S_WEBSTER_PORT),
+                SorcerEnv.getProperty(P_WEBSTER_PORT)
+        );
     }
 
     /**
@@ -247,7 +181,49 @@ public class SorcerEnv {
      * @return the current URL for the SORCER class server.
      */
     public static String getWebsterUrl() {
-        return sorcerEnv.properties.getProperty(WEBSTER_URL);
+        String result = sorcerEnv.properties.getProperty(WEBSTER_URL);
+        if (result == null) {
+            try {
+                URL url = new URL("http", getWebsterInterface() , getWebsterPort(),"");
+                setWebsterUrl(url);
+                return url.toExternalForm();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Return the interface of a SORCER class server.
+     *
+     * @return a webster network interface address
+     */
+    public static String getWebsterInterface() {
+        String intf = System.getenv("WEBSTER_INTERFACE");
+
+        if (intf != null && intf.length() > 0) {
+            logger.finer("webster interface as the system environment value: " + intf);
+            return intf;
+        }
+
+        intf = System.getProperty(P_WEBSTER_INTERFACE);
+        if (intf != null && intf.length() > 0) {
+            logger.finer("webster interface as 'provider.webster.interface' system property value: " + intf);
+            return intf;
+        }
+
+        intf = SorcerEnv.getProperty(P_WEBSTER_INTERFACE);
+        if (intf != null && intf.length() > 0) {
+            logger.finer("webster interface as 'provider.webster.interface' property value: " + intf);
+            return intf;
+        }
+        logger.finer("webster interface  as the local host value: " + intf);
+        try {
+            return getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -1362,27 +1338,7 @@ public class SorcerEnv {
     }
 
     public static URL getCodebaseRoot() {
-        try {
-            // TODO: allow to override hostAddress from sorcer.env
-            return getCodebaseRoot(getHostAddress(), sorcerEnv.getWebsterPortProperty());
-        } catch (UnknownHostException e) {
-            throw new IllegalStateException("Could not obtain local address", e);
-        }
-    }
-
-    /**
-     * Prepare codebase root URL - URL with only hostname and port
-     *
-     * @param address
-     * @param port
-     * @return
-     */
-    public static URL getCodebaseRoot(String address, int port) {
-        try {
-            return new URL("http", address, port, "");
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Could not prepare codebase root URL", e);
-        }
+        return getWebsterUrlURL();
     }
 
     /**
@@ -1758,10 +1714,6 @@ public class SorcerEnv {
 
     public void setRequestorWebsterCodebase(String codebase) {
         properties.setProperty(R_CODEBASE, codebase);
-    }
-
-    public int getWebsterPortProperty() {
-        return Integer.parseInt(properties.getProperty(P_WEBSTER_PORT, "0"));
     }
 
     public void setWebsterPortProperty(int port) {

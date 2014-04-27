@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -600,4 +599,14 @@ public class StringUtils {
         return obj == null ? "" : obj.toString();
     }
 
+    public static int firstInteger(int defVal, String... strings) {
+        for (String string : strings) {
+            try {
+                return Integer.parseInt(string);
+            } catch (NumberFormatException ignored) {
+                //deliberately ignored, return the first string that parses cleanly
+            }
+        }
+        return defVal;
+    }
 }

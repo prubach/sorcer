@@ -33,6 +33,7 @@ import java.util.concurrent.*;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
+import static sorcer.util.StringUtils.firstInteger;
 
 /**
  * @author Rafał Krupiński
@@ -103,22 +104,6 @@ public class WebsterStarter implements DestroyAdmin {
             webster.terminate();
     }
 
-
-    /**
-     * Checks which port to use for a SORCER class server.
-     *
-     * @return a port number
-     */
-    public static int getWebsterPort() {
-        return firstInteger(0,
-                System.getenv("SORCER_WEBSTER_PORT"),
-                System.getenv("WEBSTER_PORT"),
-                System.getProperty(P_WEBSTER_PORT),
-                System.getProperty(S_WEBSTER_PORT),
-                SorcerEnv.getProperty(P_WEBSTER_PORT)
-        );
-    }
-
     /**
    	 * Returns the start port to use for a SORCER code server.
    	 *
@@ -144,45 +129,6 @@ public class WebsterStarter implements DestroyAdmin {
                 System.getProperty(S_WEBSTER_END_PORT),
                 SorcerEnv.getProperty(P_WEBSTER_END_PORT)
         );
-    }
-
-    private static int firstInteger(int defVal, String... strings) {
-        for (String string : strings) {
-            try {
-                return Integer.parseInt(string);
-            } catch (NumberFormatException x) {
-                log.debug("Error parsing {} {}", string, x.getMessage());
-            }
-        }
-        return defVal;
-    }
-
-    /**
-     * Return the interface of a SORCER class server.
-     *
-     * @return a webster network interface address
-     */
-    public static String getWebsterInterface() throws UnknownHostException {
-        String intf = System.getenv("WEBSTER_INTERFACE");
-
-        if (intf != null && intf.length() > 0) {
-            log.debug("webster interface as the system environment value: {}", intf);
-            return intf;
-        }
-
-        intf = System.getProperty(P_WEBSTER_INTERFACE);
-        if (intf != null && intf.length() > 0) {
-            log.debug("webster interface as 'provider.webster.interface' system property value: {}", intf);
-            return intf;
-        }
-
-        intf = SorcerEnv.getProperty(P_WEBSTER_INTERFACE);
-        if (intf != null && intf.length() > 0) {
-            log.debug("webster interface as 'provider.webster.interface' property value: {}", intf);
-            return intf;
-        }
-        log.debug("webster interface  as the local host value: " + intf);
-        return SorcerEnv.getLocalHost().getHostAddress();
     }
 
     public static String[] getWebsterRoots() {
