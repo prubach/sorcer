@@ -1825,7 +1825,7 @@ public class ProviderDelegate {
                 }
             }
 		}
-        if (beanListener != null)
+        if (beanListener != null && serviceBeans != null)
             for (Object serviceBean : serviceBeans)
                 beanListener.destroy(serviceBuilder, serviceBean);
 	}

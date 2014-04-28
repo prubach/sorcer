@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.boot;
+package sorcer.boot.destroy;
 /**
  * @author Rafał Krupiński
  */

@@ -28,7 +28,7 @@ import org.rioproject.loader.ClassAnnotator;
 import org.rioproject.loader.ServiceClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.boot.ServiceDestroyer;
+import sorcer.boot.destroy.ServiceDestroyer;
 import sorcer.boot.util.ClassPathVerifier;
 import sorcer.boot.util.LifeCycleMultiplexer;
 import sorcer.container.core.ConfiguringModule;

@@ -20,7 +20,6 @@ import com.google.inject.name.Names;
 import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
-import net.jini.admin.Administrable;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -35,10 +34,10 @@ import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.boot.destroy.ServiceDestroyer;
 import sorcer.boot.platform.PlatformLoader;
 import sorcer.boot.util.JarClassPathHelper;
 import sorcer.boot.util.ServiceDescriptorProcessor;
-import sorcer.core.DestroyAdmin;
 import sorcer.core.service.Configurer;
 import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.provider.boot.AbstractServiceDescriptor;
@@ -54,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.security.Policy;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -62,6 +60,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static sorcer.boot.destroy.ServiceDestroyerFactory.getDestroyer;
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
 import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
 
@@ -209,20 +208,6 @@ public class ServiceStarter implements LifeCycle {
 
     private void exitSorcer() {
         exitMonitor.unregister(this);
-    }
-
-    protected ServiceDestroyer getDestroyer(Object service) {
-        if (service instanceof DestroyAdmin) {
-            return new SorcerServiceDestroyer((DestroyAdmin) service);
-        } else if (service instanceof com.sun.jini.admin.DestroyAdmin) {
-            return new RiverServiceDestroyer((com.sun.jini.admin.DestroyAdmin) service);
-        } else if (service instanceof Administrable)
-            try {
-                return getDestroyer(((Administrable) service).getAdmin());
-            } catch (RemoteException e) {
-                log.warn("Error while calling local object {}", service, e);
-            }
-        return null;
     }
 
     @Override
@@ -432,6 +417,7 @@ public class ServiceStarter implements LifeCycle {
                     service = new Service(desc.create(config), null, desc);
                 }
                 ServiceDestroyer destroyer = getDestroyer(service.impl);
+                log.debug("Service destroyer for {} => {}", service.impl, destroyer);
                 if (destroyer == null)
                     nonDestroyServices.add(service);
                 else {

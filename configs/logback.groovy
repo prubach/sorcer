@@ -93,7 +93,7 @@ logger("com.sorcersoft.almanac", info, [almanac])
 logger("com.sorcersoft.bazaar", info, [bazaar])
 
 //logger("sorcer.core.security", OFF)
-//logger("sorcer.boot", DEBUG)
+logger("sorcer.boot", DEBUG)
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)

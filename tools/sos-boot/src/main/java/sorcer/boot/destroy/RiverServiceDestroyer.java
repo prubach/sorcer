@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package sorcer.boot;
+package sorcer.boot.destroy;
 
-import sorcer.core.DestroyAdmin;
+import com.sun.jini.admin.DestroyAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 
 /**
  * @author Rafał Krupiński
  */
-public class SorcerServiceDestroyer implements ServiceDestroyer {
+public class RiverServiceDestroyer implements ServiceDestroyer {
+    private static final Logger log = LoggerFactory.getLogger(RiverServiceDestroyer.class);
     private DestroyAdmin backend;
 
-    public SorcerServiceDestroyer(DestroyAdmin backend) {
+    public RiverServiceDestroyer(DestroyAdmin backend) {
         this.backend = backend;
     }
 
@@ -34,6 +37,8 @@ public class SorcerServiceDestroyer implements ServiceDestroyer {
     public void destroy() {
         try {
             backend.destroy();
+        } catch (NullPointerException e) {
+            log.debug("Error while destroying local object {}", backend, e);
         } catch (RemoteException e) {
             throw new IllegalStateException("Error while destroying local object " + backend, e);
         }
