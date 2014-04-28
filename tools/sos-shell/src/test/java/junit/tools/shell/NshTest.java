@@ -96,7 +96,7 @@ public class NshTest {
     @Test
     public void batchCmdTest() throws Exception {
         sb.append(" -b");
-        sb.append(" ${sys.sorcer.home}/tools/sos-shell/target/test-classes/batch.nsh");
+        sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batch.nsh");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
         assertEquals(0,result.getExitValue());
@@ -112,7 +112,7 @@ public class NshTest {
     @Test
     public void batchExertCmdTest() throws Exception {
         sb.append(" -b");
-        sb.append(" ${sys.sorcer.home}/tools/sos-shell/target/test-classes/batchExert.nsh");
+        sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
         logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
