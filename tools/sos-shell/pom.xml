@@ -54,6 +54,11 @@
             <artifactId>commons-cli</artifactId>
             <version>${v.ccli}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

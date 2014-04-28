@@ -201,7 +201,7 @@ public class ExertCmd extends ShellCmd {
 		if (nextLine.indexOf("#!") < 0) {
 			sb.append(nextLine);
 			sb.append(lineSep);
-    }
+        }
 		while ((nextLine = br.readLine()) != null) {
 			sb.append(nextLine);
 			sb.append(lineSep);

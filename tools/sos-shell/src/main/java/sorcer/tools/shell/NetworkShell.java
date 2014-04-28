@@ -76,6 +76,7 @@ import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
 import sorcer.util.ClassLoaders;
 import sorcer.util.TimeUtil;
+import sorcer.util.eval.PropertyEvaluator;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
@@ -416,6 +417,11 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 shellOutput.println("No such internal command available: " + args[0].substring(2));
 			System.exit(0);
 		}
+        PropertyEvaluator propsEval = new PropertyEvaluator();
+        propsEval.addDefaultSources();
+        for (int i=0; i<args.length ;i++) {
+            args[i] = propsEval.eval(args[i]);
+        }
 		request = arrayToRequest(args);
         shellTokenizer = new StringTokenizer(request);
         try {
@@ -456,7 +462,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 } else if (args[0].equals("-b")) {
 
                     File batchFile = huntForTheScriptFile(args[1], new String[] { "nsh", "nbat" });
-                    String batchCmds = ExertCmd.readFile(batchFile);
+                    String batchCmds = readScript(batchFile);
                     shellOutput.println("Executing batch file: " + batchFile.getAbsolutePath());
                     for (String batchCmd : batchCmds.split("\n")) {
                         StringTokenizer tok = new StringTokenizer(batchCmd);
@@ -464,17 +470,19 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                         while (tok.hasMoreElements()) {
                             argsList.add(tok.nextToken());
                         }
-                        //String[] batchCmd
+                        String originalRequest = request;
                         ShellCmd cmd = commandTable.get(argsList.get(0));
                         if (argsList.size() > 1)
                             shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length() +1));
                         else
                             shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length()));
+                        request = batchCmd;
                         if (cmd!=null)
                             cmd.execute(NetworkShell.getInstance());
                         else
                             shellOutput.println("Command: " + args[1] + " not found. " +
                                     "Please run 'nsh -help' to see the list of available commands");
+                        request = originalRequest;
                     }
                 }
             }
@@ -1538,6 +1546,23 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		}
 		return scriptFile;
 	}
+
+    public static String readScript(File file) throws IOException {
+        PropertyEvaluator propsEval = new PropertyEvaluator();
+        propsEval.addDefaultSources();
+        String lineSep = "\n";
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String nextLine = br.readLine();
+        StringBuffer sb = new StringBuffer();
+        while ((nextLine = br.readLine()) != null) {
+            if (!nextLine.startsWith("#")) {
+                nextLine = propsEval.eval(nextLine);
+                sb.append(nextLine);
+                sb.append(lineSep);
+            }
+        }
+        return sb.toString();
+    }
 
 	public static TreeMap<String, ShellCmd> getCommandTable() {
 		return commandTable;
