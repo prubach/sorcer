@@ -424,6 +424,11 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
         }
 		request = arrayToRequest(args);
         shellTokenizer = new StringTokenizer(request);
+
+        // Wait for DiscoveryListener to find Reggies
+        int i=0;
+        while (getRegistrars().isEmpty() && i<20)
+            Thread.sleep(100);
         try {
             if (args.length == 1) {
                 if (args[0].equals("-version")) {
