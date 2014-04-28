@@ -100,7 +100,7 @@ logger("sorcer.arithmetic", DEBUG)
 
 /*
 logger("sorcer.core.service", debug)
-logger("sorcer.tools.webster.WebsterStarter", debug)
+logger("sorcer.tools.webster.start.WebsterStarter", debug)
 logger("sorcer.container.core", debug)
 */
 

@@ -34,7 +34,7 @@ ServiceDescriptor[] getPlatformServices() {
                     null,
                     policy,
                     "org.sorcersoft.sorcer:sos-webster:" + SORCER_VERSION,
-                    "sorcer.tools.webster.WebsterStarter",
+                    "sorcer.tools.webster.start.WebsterStarter",
                     new File(SorcerEnv.homeDir, "configs/webster/configs/webster-prv.config").path
             ),
             new ResolvingServiceDescriptor(
