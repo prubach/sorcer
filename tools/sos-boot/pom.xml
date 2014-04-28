@@ -11,8 +11,6 @@
     <artifactId>sos-boot</artifactId>
 
     <name>SORCER tools :: booter</name>
-    <description>SORCER</description>
-    <url>http://sorcersoft.org/</url>
 
     <dependencies>
 		<dependency>

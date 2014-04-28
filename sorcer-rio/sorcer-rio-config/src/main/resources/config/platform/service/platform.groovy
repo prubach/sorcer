@@ -20,16 +20,30 @@ package config.platform.service
 import com.sun.jini.start.ServiceDescriptor
 import sorcer.boot.ResolvingServiceDescriptor
 import sorcer.core.SorcerEnv
+import sorcer.provider.boot.SorcerServiceDescriptor
+import sorcer.provider.boot.Booter;
 
 import static sorcer.core.SorcerConstants.SORCER_VERSION
 
 /**
- * this script defines a class that implicitly extends {@link sorcer.boot.platform.PlatformDescriptor}
+ * This script defines a class that implicitly extends {@link sorcer.boot.platform.PlatformDescriptor}
+ * Either ServiceDescriptor[] getPlatformServices()
+ * or
+ * ServiceDescriptor getPlatformService() method is required
  */
 
 ServiceDescriptor[] getPlatformServices() {
     def policy = new File(SorcerEnv.homeDir, "configs/sorcer.policy")
     return [
+            new SorcerServiceDescriptor(
+                    null,
+                    policy,
+                    Booter.resolveClasspath([
+                            "org.sorcersoft.sorcer:sorcer-rio-resolver",
+                            "org.rioproject.resolver:resolver-aether"
+                    ] as String[]),
+                    "org.sorcersoft.sorcer.resolver.RioResolverActivator"
+            ),
             new ResolvingServiceDescriptor(
                     null,
                     policy,

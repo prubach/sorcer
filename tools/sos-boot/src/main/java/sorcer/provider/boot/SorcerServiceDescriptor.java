@@ -109,11 +109,30 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
         this.classpath = classpath;
     }
 
+	public SorcerServiceDescriptor(String descCodebase, File policy,
+			String classpath, String implClassName, String address,
+			// Optional Args
+			LifeCycle lifeCycle, String... serverConfigArgs) {
+        super(serverConfigArgs, lifeCycle);
+        setCodebase(getCodebase(descCodebase, address));
+        setImplClassName(implClassName);
+        setServiceConfigArgs(Arrays.asList(serverConfigArgs));
+        setPolicyFile(policy.getPath());
+        this.classpath = classpath;
+    }
+
 	public SorcerServiceDescriptor(String descCodebase, String policy,
 			String classpath, String implClassName,
 			// Optional Args
 			LifeCycle lifeCycle, String... serverConfigArgs) {
 		this(descCodebase, policy, classpath, implClassName, null, lifeCycle, serverConfigArgs);
+	}
+
+	public SorcerServiceDescriptor(String descCodebase, File policy,
+			String classpath, String implClassName,
+			// Optional Args
+			String... serverConfigArgs) {
+		this(descCodebase, policy.getPath(), classpath, implClassName, serverConfigArgs);
 	}
 
 	/**
