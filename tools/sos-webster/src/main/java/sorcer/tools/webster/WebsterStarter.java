@@ -22,14 +22,18 @@ import org.slf4j.LoggerFactory;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.core.SorcerEnv;
-import sorcer.util.io.AsyncPinger;
+import sorcer.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
-import java.util.concurrent.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
@@ -40,43 +44,139 @@ import static sorcer.util.StringUtils.firstInteger;
  */
 @Component("sorcer.tools.codeserver")
 public class WebsterStarter implements DestroyAdmin {
-    private static final Logger log = LoggerFactory.getLogger(WebsterStarter.class);
+    static final Logger log = LoggerFactory.getLogger(WebsterStarter.class);
 
     @PostConstruct
-    public void init() throws SocketException, MalformedURLException {
-        boolean start = isLocal(websterAddress);
-        log.debug("address = {}, local = {}", websterAddress, start);
+    public void init() throws IOException {
+        boolean local = isLocal(websterAddress);
+        log.debug("address = {}, local = {}", websterAddress, local);
 
-        if (!start) {
+
+        boolean portRanged = !(startPort > endPort || startPort < 0 || endPort < 0);
+
+        if (websterPort < 0 && !portRanged)
+            throw new IllegalArgumentException(String.format("No port configured port:%d startPort:%d endPort:%d", websterPort, startPort, endPort));
+
+        if (portRanged && !local)
+            throw new IllegalArgumentException("Illegal Webster configuration: port range and remote address defined");
+
+        if (local) {
+            startWebster();
+            // error if port range is defined and webster didn't start
+            if (webster == null && portRanged)
+                throw new IllegalStateException("Could not start Webster");
+            // if port is defined use monitor() below to determine if local webster is running in another JVM
+
+        } else
             log.info("Webster configured on a remote address");
-            if (!AsyncPinger.ping(websterAddress, websterPort, executor, 2, TimeUnit.SECONDS))
-                throw new IllegalStateException("Remote webster down");
-            return;
-        }
 
-        int port = websterPort;
-        if (port == -1) {
-            if (startPort > endPort || startPort < 0 || endPort < 0)
-                throw new IllegalArgumentException(String.format("No port configured port:%d startPort:%d endPort:%d", port, startPort, endPort));
-        }
+        // if webster didn't start and specific port is configured, check if it's Webster in another JVM on local host
+        if (webster == null || !local)
+            monitor(local);
+    }
 
+    protected void startWebster() throws MalformedURLException {
         // treat {start,end}Port == 0 specially
         if (startPort <= 0 && endPort <= 0) {
-            startPort = port;
-            endPort = port;
+            startPort = websterPort;
+            endPort = websterPort;
         }
 
         for (int i = startPort; i < endPort + 1 && webster == null; i++) {
             log.debug("Trying {}:{}", websterAddress, i);
             try {
-                webster = new Webster(i, roots, websterAddress, isDaemon);
-                SorcerEnv.setWebsterUrl(new URL("http", websterAddress, i, ""));
+                webster = new org.rioproject.tools.webster.Webster(i, StringUtils.join(roots, ';'), websterAddress);
+                SorcerEnv.setWebsterUrl(websterAddress, i);
             } catch (BindException ex) {
                 log.debug("Error while starting Webster", ex);
             }
         }
-        if (webster == null)
-            throw new IllegalStateException("Could not start Webster");
+    }
+
+    private void monitor(boolean startOnError) throws IOException {
+        URL url = SorcerEnv.getWebsterUrlURL();
+        // throw IllegalStateException if the remote server is up but not a Webster
+        try {
+            ping(url);
+            WebsterMonitor websterMonitor = new WebsterMonitor(url, startOnError);
+            ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(websterMonitor, 2, 2, TimeUnit.SECONDS);
+            websterMonitor.setFuture(scheduledFuture);
+        } catch (IOException e) {
+            log.debug("Error pinging {}", url, e);
+            if (startOnError)
+                startWebster();
+            else
+                throw e;
+        } catch (IllegalStateException e) {
+            log.debug("Error pinging {}", url, e);
+            if (startOnError)
+                startWebster();
+            else
+                throw e;
+        }
+    }
+
+    protected static void ping(URL url) throws IOException, IllegalStateException {
+        log.debug("ping {}", url);
+        URLConnection conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+
+        String server = conn.getHeaderField("Server");
+        log.debug("ping server = {}", server);
+        if (!org.rioproject.tools.webster.Webster.class.getName().equals(server) && !Webster.class.getName().equals(server)) {
+            throw new IllegalStateException("Remote server on " + url + ":" + SorcerEnv.getWebsterPort() + " not a Webster, " + server);
+        }
+    }
+
+    class WebsterMonitor implements Runnable {
+        private URL websterUrl;
+        private Future<?> self;
+        private boolean start;
+
+        WebsterMonitor(URL websterUrl, boolean start) {
+            this.websterUrl = websterUrl;
+            this.start = start;
+        }
+
+        @Override
+        public void run() {
+            try {
+                ping(websterUrl);
+            } catch (IllegalStateException x) {
+                log.error("Error", x);
+                startInternal();
+            } catch (IOException e) {
+                log.debug("Error", e);
+                startInternal();
+            }
+        }
+
+        protected void startInternal() {
+            try {
+                if (start)
+                    WebsterStarter.this.startWebster();
+                if (self != null)
+                    self.cancel(false);
+            } catch (MalformedURLException x) {
+                throw new RuntimeException(x);
+            }
+        }
+
+        public void setFuture(Future<?> myFutureSelf) {
+            self = myFutureSelf;
+        }
+    }
+
+/*
+    public static org.rioproject.tools.webster.Webster startInternal() throws UnknownHostException, BindException, MalformedURLException {
+        org.rioproject.tools.webster.Webster result = new org.rioproject.tools.webster.Webster(0, getWebsterRootsStr(), HostUtil.getInetAddress().getHostAddress());
+        SorcerEnv.setWebsterUrl(result.getAddress(), result.getPort());
+        return result;
+    }
+*/
+
+    private static String getWebsterRootsStr() {
+        return StringUtils.join(getWebsterRoots(), ';');
     }
 
     private boolean isLocal(String address) throws SocketException {
@@ -105,24 +205,24 @@ public class WebsterStarter implements DestroyAdmin {
     }
 
     /**
-   	 * Returns the start port to use for a SORCER code server.
-   	 *
-   	 * @return a port number
-   	 */
-   	public static int getWebsterStartPort() {
+     * Returns the start port to use for a SORCER code server.
+     *
+     * @return a port number
+     */
+    public static int getWebsterStartPort() {
         return firstInteger(
                 -1,
                 System.getenv("WEBSTER_START_PORT"),
                 System.getProperty(S_WEBSTER_START_PORT),
                 SorcerEnv.getProperty(P_WEBSTER_START_PORT)
         );
-   	}
+    }
 
     /**
-   	 * Returns the end port to use for a SORCER code server.
-   	 *
-   	 * @return a port number
-   	 */
+     * Returns the end port to use for a SORCER code server.
+     *
+     * @return a port number
+     */
     public static int getWebsterEndPort() {
         return firstInteger(-1,
                 System.getenv("WEBSTER_END_PORT"),
@@ -139,7 +239,7 @@ public class WebsterStarter implements DestroyAdmin {
         return SorcerEnv.getWebsterRoots(additional);
     }
 
-    private Webster webster;
+    private org.rioproject.tools.webster.Webster webster;
 
     @ConfigEntry
     int websterPort = 0;
@@ -163,5 +263,5 @@ public class WebsterStarter implements DestroyAdmin {
      * Use the default executor service to call AsyncPinger on a remote webster
      */
     @Inject
-    private ExecutorService executor;
+    private ScheduledExecutorService executor;
 }

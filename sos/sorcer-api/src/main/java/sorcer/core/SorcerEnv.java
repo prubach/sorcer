@@ -184,9 +184,8 @@ public class SorcerEnv {
         String result = sorcerEnv.properties.getProperty(WEBSTER_URL);
         if (result == null) {
             try {
-                URL url = new URL("http", getWebsterInterface() , getWebsterPort(),"");
-                setWebsterUrl(url);
-                return url.toExternalForm();
+                setWebsterUrl(getWebsterInterface(), getWebsterPort());
+                return sorcerEnv.properties.getProperty(WEBSTER_URL);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -239,8 +238,12 @@ public class SorcerEnv {
         }
     }
 
-    public static void setWebsterUrl(URL url){
-        assert url != null : "null webster url";
+    public static void setWebsterUrl(String host, int port) throws MalformedURLException {
+        assert host != null : "null webster address";
+        assert !host.trim().isEmpty() : "empty webster address";
+        assert port > 0 : "Illegal port";
+        URL url = new URL("http", host, port, "");
+        logger.finer("New Webster URL: " + url);
         String urlString = url.toExternalForm();
         sorcerEnv.properties.setProperty(WEBSTER_URL, urlString);
         System.setProperty("org.rioproject.codeserver", urlString);

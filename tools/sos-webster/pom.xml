@@ -16,6 +16,17 @@
 
 	<dependencies>
         <dependency>
+            <groupId>org.rioproject</groupId>
+            <artifactId>webster</artifactId>
+            <version>${v.rio}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.rioproject</groupId>
+                    <artifactId>rio-start</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>net.jini</groupId>
             <artifactId>jsk-lib</artifactId>
             <version>${v.jini}</version>

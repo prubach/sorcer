@@ -19,7 +19,6 @@ package sorcer.core.service;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
 import com.sun.jini.admin.DestroyAdmin;
 import com.sun.jini.start.LifeCycle;
