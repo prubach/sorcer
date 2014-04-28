@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,49 +16,28 @@
 package sorcer.boot;
 
 import com.google.inject.*;
-import com.google.inject.name.Names;
-import com.sun.jini.start.AggregatePolicyProvider;
 import com.sun.jini.start.LifeCycle;
 import com.sun.jini.start.ServiceDescriptor;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
-import net.jini.config.ConfigurationProvider;
 import net.jini.config.EmptyConfiguration;
-import org.rioproject.impl.opstring.OARException;
-import org.rioproject.impl.opstring.OpStringLoader;
-import org.rioproject.opstring.OperationalString;
-import org.rioproject.opstring.ServiceElement;
-import org.rioproject.resolver.Resolver;
-import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.start.RioServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.destroy.ServiceDestroyer;
 import sorcer.boot.platform.PlatformLoader;
-import sorcer.boot.util.JarClassPathHelper;
 import sorcer.boot.util.ServiceDescriptorProcessor;
-import sorcer.core.service.Configurer;
-import sorcer.protocol.ProtocolHandlerRegistry;
+import sorcer.core.SorcerConstants;
 import sorcer.provider.boot.AbstractServiceDescriptor;
-import sorcer.util.ConfigurableThreadFactory;
-import sorcer.util.JavaSystemProperties;
+import sorcer.util.ClassLoaders;
 
-import javax.inject.Named;
-import javax.inject.Provider;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.Policy;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import static sorcer.boot.destroy.ServiceDestroyerFactory.getDestroyer;
 import static sorcer.core.SorcerConstants.E_RIO_HOME;
@@ -69,7 +48,6 @@ import static sorcer.provider.boot.AbstractServiceDescriptor.Service;
  */
 public class ServiceStarter implements LifeCycle {
     final private static Logger log = LoggerFactory.getLogger(ServiceStarter.class);
-    final private static String START_PACKAGE = "com.sun.jini.start";
 
     private final Deque<Service> services = new LinkedList<Service>();
 
@@ -91,10 +69,10 @@ public class ServiceStarter implements LifeCycle {
      *
      * @param configs file path or URL of the services.config configuration
      */
-    public void start(Collection<File> configs)  {
+    public void start(Collection<File> configs) throws ConfigurationException {
         log.info("******* Starting Sorcersoft.com SORCER *******");
 
-        Injector rootInjector = createInjector();
+        Injector rootInjector = Guice.createInjector(new CoreModule());
 
         File rioHome = getRioHome();
         File rioPlatform = new File(rioHome, "config/platform");
@@ -105,77 +83,17 @@ public class ServiceStarter implements LifeCycle {
 
         log.debug("Starting from {}", configs);
 
-        List<File> riverServices = new LinkedList<File>();
-        List<File> cfgJars = new LinkedList<File>();
-        List<File> opstrings = new LinkedList<File>();
+        ServiceDescriptorFactory descriptorFactory = injector.getInstance(ServiceDescriptorFactory.class);
+        List<ServiceDescriptor> descs = new LinkedList<ServiceDescriptor>();
         for (File file : configs) {
-            String path = file.getPath();
-            String ext = path.substring(path.lastIndexOf('.') + 1);
-
-            if ("config".equals(ext))
-                riverServices.add(file);
-            else if ("oar".equals(ext) || "jar".equals(ext))
-                cfgJars.add(file);
-            else if ("opstring".equals(ext) || "groovy".equals(ext))
-                opstrings.add(file);
-            else
-                throw new IllegalArgumentException("Unrecognized file " + path);
+            Collection<? extends ServiceDescriptor> e = descriptorFactory.create(file);
+            if (e == null)
+                throw new IllegalArgumentException("Unrecognized file " + file);
+            descs.addAll(e);
         }
-        Map<Configuration, Collection<? extends ServiceDescriptor>> descs = new LinkedHashMap<Configuration, Collection<? extends ServiceDescriptor>>();
-        descs.putAll(instantiateDescriptors(riverServices));
 
-        List<OpstringServiceDescriptor> serviceDescriptors = createFromOpStrFiles(opstrings);
-        serviceDescriptors.addAll(createFromOar(cfgJars));
-        descs.put(EmptyConfiguration.INSTANCE, serviceDescriptors);
-
-        instantiateServices(descs);
+        instantiateServices(EmptyConfiguration.INSTANCE, descs);
         log.debug("*** Sorcersoft.com SORCER started ***");
-    }
-
-    private Injector createInjector() {
-        return Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(Resolver.class).toProvider(new Provider<Resolver>() {
-                    @Override
-                    public Resolver get() {
-                        try {
-                            return ResolverHelper.getResolver();
-                        } catch (ResolverException e) {
-                            throw new IllegalStateException(e);
-                        }
-                    }
-                }).in(Scopes.SINGLETON);
-                bind(ProtocolHandlerRegistry.class).toInstance(ProtocolHandlerRegistry.get());
-                bind(Policy.class).annotatedWith(Names.named("initialGlobalPolicy")).toInstance(Policy.getPolicy());
-                bind(AggregatePolicyProvider.class).annotatedWith(Names.named("globalPolicy")).toProvider(new Provider<AggregatePolicyProvider>() {
-                    @Inject
-                    @Named("initialGlobalPolicy")
-                    Policy initialGlobalPolicy;
-
-                    @Override
-                    public AggregatePolicyProvider get() {
-                        AggregatePolicyProvider globalPolicy = new AggregatePolicyProvider(initialGlobalPolicy);
-                        Policy.setPolicy(globalPolicy);
-                        log.debug("Global policy set: {}",
-                                globalPolicy);
-                        return globalPolicy;
-                    }
-                }).in(Scopes.SINGLETON);
-                bind(JarClassPathHelper.class).in(Scopes.SINGLETON);
-                Provider<ScheduledExecutorService> executorServiceProvider = new Provider<ScheduledExecutorService>() {
-                    @Override
-                    public ScheduledExecutorService get() {
-                        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
-                        tf.setDaemon(true);
-                        tf.setNameFormat("SORCER-%2$d");
-                        return Executors.newScheduledThreadPool(1, tf);
-                    }
-                };
-                bind(ScheduledExecutorService.class).toProvider(executorServiceProvider).in(Scopes.SINGLETON);
-                bind(Configurer.class).in(Scopes.SINGLETON);
-            }
-        });
     }
 
     protected File getRioHome() {
@@ -240,102 +158,26 @@ public class ServiceStarter implements LifeCycle {
         return result;
     }
 
-    protected List<OpstringServiceDescriptor> createFromOpStrFiles(Collection<File> files) {
-        List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
-        String policyFile = System.getProperty(JavaSystemProperties.SECURITY_POLICY);
-        URL policyFileUrl;
-        try {
-            policyFileUrl = new File(policyFile).toURI().toURL();
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid path " + policyFile, e);
-        }
-        OpStringLoader loader = new OpStringLoader();
-        for (File opString : files) {
-            try {
-                OperationalString[] operationalStrings = loader.parseOperationalString(opString);
-                result.addAll(createServiceDescriptors(operationalStrings, policyFileUrl));
-            } catch (Exception x) {
-                log.warn("Could not parse Operational String {}", opString, x);
-            } catch (NoClassDefFoundError x) {
-                log.warn("Could not parse Operational String {}", opString, x);
-                throw x;
-            }
-        }
-        return result;
-    }
-
-    private List<OpstringServiceDescriptor> createFromOar(Iterable<File> oarFiles) {
-        List<OpstringServiceDescriptor> result = new LinkedList<OpstringServiceDescriptor>();
-        for (File oarFile : oarFiles) {
-            try {
-                SorcerOAR oar = new SorcerOAR(oarFile);
-                OperationalString[] operationalStrings = oar.loadOperationalStrings();
-                URL policyFile = oar.getPolicyFile();
-                result.addAll(createServiceDescriptors(operationalStrings, policyFile));
-            } catch (OARException e) {
-                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
-            } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Problem with loading OAR " + oarFile, e);
-            }
-        }
-        return result;
-    }
-
-    private List<OpstringServiceDescriptor> createServiceDescriptors(OperationalString[] operationalStrings, URL policyFile) throws ConfigurationException {
-        List<OpstringServiceDescriptor> descriptors = new LinkedList<OpstringServiceDescriptor>();
-        for (OperationalString op : operationalStrings) {
-            for (ServiceElement se : op.getServices())
-                descriptors.add(new OpstringServiceDescriptor(se, policyFile));
-            descriptors.addAll(createServiceDescriptors(op.getNestedOperationalStrings(), policyFile));
-        }
-        return descriptors;
-    }
-
-    private Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(List<File> riverServices)  {
-        List<Configuration> configs = new ArrayList<Configuration>(riverServices.size());
-        for (File s : riverServices) {
-            try {
-                configs.add(ConfigurationProvider.getInstance(new String[]{s.getPath()}));
-            } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Could not process configuration file " + s, e);
-            }
-        }
-        return instantiateDescriptors(configs);
-    }
-
-    public Map<Configuration, List<ServiceDescriptor>> instantiateDescriptors(Collection<Configuration> configs) {
-        Map<Configuration, List<ServiceDescriptor>> result = new HashMap<Configuration, List<ServiceDescriptor>>();
-        for (Configuration config : configs) {
-            try {
-                ServiceDescriptor[] descs = (ServiceDescriptor[])
-                        config.getEntry(START_PACKAGE, "serviceDescriptors",
-                                ServiceDescriptor[].class, null);
-                if (descs == null || descs.length == 0) {
-                    return result;
-                }
-                result.put(config, Arrays.asList(descs));
-            } catch (ConfigurationException e) {
-                throw new IllegalArgumentException("Could not read serviceDescriptors from " + config, e);
-            }
-        }
-        return result;
-    }
-
     private static class ServiceStatHolder {
         public int started;
         public int erred;
         public int all;
     }
 
+    protected void instantiateServices(final Configuration config, final Collection<ServiceDescriptor> descriptors) throws ConfigurationException {
+        ClassLoaders.doWith(platformLoader.getClassLoader(), new ClassLoaders.Callable<Void, ConfigurationException>() {
+            @Override
+            public Void call() throws ConfigurationException {
+                instantiateServices0(config, descriptors);
+                return null;
+            }
+        });
+    }
+
     /**
      * Create a service for each ServiceDescriptor in the map
      */
-    public void instantiateServices(Map<Configuration, Collection<? extends ServiceDescriptor>> descriptorMap)  {
-        Thread thread = Thread.currentThread();
-        ClassLoader classLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(platformLoader.getClassLoader());
+    public void instantiateServices0(Configuration config, Collection<ServiceDescriptor> descriptors) throws ConfigurationException {
         Binding<Set<ServiceDescriptorProcessor>> existingBinding = injector.getExistingBinding(Key.get(new TypeLiteral<Set<ServiceDescriptorProcessor>>() {
         }));
         Set<ServiceDescriptorProcessor> processors = null;
@@ -343,36 +185,22 @@ public class ServiceStarter implements LifeCycle {
             processors = existingBinding.getProvider().get();
 
         ServiceStatHolder stat = new ServiceStatHolder();
+        stat.all = descriptors.size();
+        ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
 
-        for (Collection<? extends ServiceDescriptor> descs : descriptorMap.values())
-            stat.all += descs.size();
-
-        try {
-            for (Configuration config : descriptorMap.keySet()) {
-                try {
-                    Collection<? extends ServiceDescriptor> descriptors = descriptorMap.get(config);
-                    ServiceDescriptor[] descs = descriptors.toArray(new ServiceDescriptor[descriptors.size()]);
-
-                    LoginContext loginContext = (LoginContext)
-                            config.getEntry(START_PACKAGE, "loginContext",
-                                    LoginContext.class, null);
-                    if (loginContext != null)
-                        try {
-                            createWithLogin(descs, config, loginContext, stat, processors);
-                        }catch (RuntimeException e){
-                            throw e;
-                        } catch (Exception e) {
-                            log.warn("Error creating service with login context {}", loginContext, e);
-                        }
-                    else
-                        create(descs, config, stat, processors);
-                } catch (ConfigurationException e) {
-                    log.warn("Error reading loginContext from {}", config, e);
-                }
+        LoginContext loginContext = (LoginContext)
+                config.getEntry(SorcerConstants.START_PACKAGE, "loginContext",
+                        LoginContext.class, null);
+        if (loginContext != null)
+            try {
+                createWithLogin(descs, config, loginContext, stat, processors);
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                log.warn("Error creating service with login context {}", loginContext, e);
             }
-        } finally {
-            thread.setContextClassLoader(classLoader);
-        }
+        else
+            create(descs, config, stat, processors);
     }
 
     /**
@@ -388,7 +216,7 @@ public class ServiceStarter implements LifeCycle {
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
      */
-    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat, Set<ServiceDescriptorProcessor> processors)  {
+    public void create(ServiceDescriptor[] descs, Configuration config, ServiceStatHolder stat, Set<ServiceDescriptorProcessor> processors) {
         for (ServiceDescriptor desc : descs) {
             if (bootInterrupted)
                 break;
@@ -445,8 +273,8 @@ public class ServiceStarter implements LifeCycle {
      *                     used to customize the service creation process.
      * @param loginContext The associated <code>LoginContext</code> object
      *                     used to login/logout.
-     * @throws Exception If there was a problem logging in/out or
-     *                   a problem creating the service.
+     * @throws LoginException If there was a problem logging in/out or
+     *                        a problem creating the service.
      * @see com.sun.jini.start.ServiceStarter.Result
      * @see com.sun.jini.start.ServiceDescriptor
      * @see net.jini.config.Configuration
@@ -455,15 +283,14 @@ public class ServiceStarter implements LifeCycle {
     private void createWithLogin(
             final ServiceDescriptor[] descs, final Configuration config,
             final LoginContext loginContext, final ServiceStatHolder stat, final Set<ServiceDescriptorProcessor> processors)
-            throws Exception {
+            throws LoginException {
         loginContext.login();
 
         try {
             Subject.doAsPrivileged(
                     loginContext.getSubject(),
                     new PrivilegedExceptionAction() {
-                        public Object run()
-                                throws Exception {
+                        public Object run() {
                             create(descs, config, stat, processors);
                             return null;
                         }
@@ -471,7 +298,13 @@ public class ServiceStarter implements LifeCycle {
                     null
             );
         } catch (PrivilegedActionException pae) {
-            throw pae.getException();
+            try {
+                throw pae.getException();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         } finally {
             try {
                 loginContext.logout();

@@ -39,15 +39,14 @@ public class OpstringServiceDescriptor extends ResolvingServiceDescriptor {
 
     private ServiceElement serviceElement;
 
-    public OpstringServiceDescriptor(ServiceElement serviceElement, URL policyFile) {
+    public OpstringServiceDescriptor(ServiceElement serviceElement, File policyFile) {
         this.serviceElement = serviceElement;
         try {
             setCodebase(getCodebase(serviceElement));
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Error while processing codebase of " + serviceElement.getName(), e);
         }
-        //TODO Policy files cannot be read from jar
-        setPolicyFile(SorcerEnv.getHomeDir() + File.separator + "configs" + File.separator + "sorcer.policy");
+        setPolicyFile(policyFile.getPath());
         String[] configArgs = serviceElement.getServiceBeanConfig().getConfigArgs();
         setServiceConfigArgs(Arrays.asList(configArgs));
         setImplClassName(serviceElement.getComponentBundle().getClassName());
