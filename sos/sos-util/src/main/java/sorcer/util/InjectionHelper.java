@@ -45,7 +45,7 @@ public class InjectionHelper {
         if (instance != null)
             instance.injectMembers(target);
         else
-            log.debug("NOT injecting members, InjectorHelper not initialized while injecting members to {}", target);
+            log.warn("NOT injecting members, InjectorHelper not initialized while injecting members to {}", target);
     }
 
     public static <T> T create(Class<T> type) {

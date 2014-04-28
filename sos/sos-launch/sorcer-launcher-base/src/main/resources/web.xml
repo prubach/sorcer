@@ -15,26 +15,14 @@
   ~ limitations under the License.
   -->
 
+<!-- This empty profile serves as a "zero config" starting only the platform services. See config/platform/service/platform.groovy -->
 <java version="1.7.0_45" class="java.beans.XMLDecoder">
     <object class="sorcer.launcher.Profile">
         <void property="monitorConfigPaths">
             <array class="java.lang.String" length="0"/>
         </void>
         <void property="sorcerConfigPaths">
-            <array class="java.lang.String" length="4">
-                <void index="0">
-                    <string>${sys.sorcer.home}/configs/Reggie.groovy</string>
-                </void>
-                <void index="1">
-                    <string>${sys.sorcer.home}/configs/Sorcer.groovy</string>
-                </void>
-                <void index="2">
-                    <string>${sys.sorcer.ext}/configs/SorcerExtBoot.groovy</string>
-                </void>
-                <void index="3">
-                    <string>${sys.sorcer.home}/configs/Rio.groovy</string>
-                </void>
-            </array>
+            <array class="java.lang.String" length="0"/>
         </void>
     </object>
 </java>

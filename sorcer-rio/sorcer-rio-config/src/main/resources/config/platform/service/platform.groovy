@@ -31,6 +31,13 @@ ServiceDescriptor[] getPlatformServices() {
     def policy = new File(SorcerEnv.homeDir, "configs/sorcer.policy")
     return [
             new ResolvingServiceDescriptor(
+                    null,
+                    policy,
+                    "org.sorcersoft.sorcer:sos-webster:" + SORCER_VERSION,
+                    "sorcer.tools.webster.WebsterStarter",
+                    new File(SorcerEnv.homeDir, "configs/webster/configs/webster-prv.config").path
+            ),
+            new ResolvingServiceDescriptor(
                     "org.sorcersoft.sorcer:dbp-api:" + SORCER_VERSION,
                     policy,
                     "org.sorcersoft.sorcer:dbp-handler:" + SORCER_VERSION,

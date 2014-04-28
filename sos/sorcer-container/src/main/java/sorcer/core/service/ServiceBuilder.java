@@ -37,7 +37,7 @@ import static sorcer.container.core.InitializingModule.INIT_MODULE;
  *
  * @author Rafał Krupiński
  */
-public class ServiceBuilder implements DestroyAdmin{
+public class ServiceBuilder implements DestroyAdmin {
     private static final Logger log = LoggerFactory.getLogger(ServiceBuilder.class);
 
     @Inject
@@ -46,6 +46,7 @@ public class ServiceBuilder implements DestroyAdmin{
 
     public ServiceBuilder(String[] args, LifeCycle lifeCycle) {
         InjectionHelper.injectMembers(this);
+        assert injector != null : "Null injector";
         instance = injector.createChildInjector(
                 injector.getInstance(BeanListenerModule.class),
                 INIT_MODULE,

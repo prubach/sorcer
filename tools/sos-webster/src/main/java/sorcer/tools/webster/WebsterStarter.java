@@ -17,11 +17,14 @@
 package sorcer.tools.webster;
 
 import com.sun.jini.admin.DestroyAdmin;
+import net.jini.config.ConfigurationException;
+import net.jini.config.ConfigurationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.core.SorcerEnv;
+import sorcer.core.service.Configurer;
 import sorcer.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -47,10 +50,11 @@ public class WebsterStarter implements DestroyAdmin {
     static final Logger log = LoggerFactory.getLogger(WebsterStarter.class);
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() throws IOException, ConfigurationException {
+        configurer.process(this, ConfigurationProvider.getInstance(args));
+
         boolean local = isLocal(websterAddress);
         log.debug("address = {}, local = {}", websterAddress, local);
-
 
         boolean portRanged = !(startPort > endPort || startPort < 0 || endPort < 0);
 
@@ -65,13 +69,14 @@ public class WebsterStarter implements DestroyAdmin {
             // error if port range is defined and webster didn't start
             if (webster == null && portRanged)
                 throw new IllegalStateException("Could not start Webster");
-            // if port is defined use monitor() below to determine if local webster is running in another JVM
-
-        } else
+            // if port is defined, use monitor() below to determine if local webster is running in another JVM
+        } else {
             log.info("Webster configured on a remote address");
+            ping(SorcerEnv.getWebsterUrlURL());
+        }
 
         // if webster didn't start and specific port is configured, check if it's Webster in another JVM on local host
-        if (webster == null || !local)
+        if (webster == null)
             monitor(local);
     }
 
@@ -238,6 +243,12 @@ public class WebsterStarter implements DestroyAdmin {
     public static String[] getWebsterRoots(String[] additional) {
         return SorcerEnv.getWebsterRoots(additional);
     }
+
+    @Inject
+    Configurer configurer;
+
+    @Inject
+    String[] args;
 
     private org.rioproject.tools.webster.Webster webster;
 
