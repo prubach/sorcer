@@ -93,12 +93,12 @@ logger("com.sorcersoft.almanac", info, [almanac])
 logger("com.sorcersoft.bazaar", info, [bazaar])
 
 //logger("sorcer.core.security", OFF)
-logger("sorcer.boot", DEBUG)
 logger("sorcer.test", DEBUG)
 logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
 
 /*
+logger("sorcer.boot", DEBUG)
 logger("sorcer.core.service", debug)
 logger("sorcer.tools.webster.start.WebsterStarter", debug)
 logger("sorcer.container.core", debug)
