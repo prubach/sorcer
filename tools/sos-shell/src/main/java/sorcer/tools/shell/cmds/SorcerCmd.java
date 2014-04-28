@@ -27,11 +27,11 @@ import sorcer.tools.shell.ShellCmd;
 
 public class SorcerCmd extends ShellCmd {
 	{
-		COMMAND_NAME = "ig";
+		COMMAND_NAME = "sh";
 
 		NOT_LOADED_MSG = "***command not loaded due to conflict";
 
-		COMMAND_USAGE = "ig -h | -n | -d";
+		COMMAND_USAGE = "sh -h | -n | -d";
 
 		COMMAND_HELP = "Display SORCER_HOME \n  -h  cd to SORCER_HOME\n"
 				+"-n  cd to the netlets directory\n  -d  cd to http data root directory.";
@@ -51,7 +51,7 @@ public class SorcerCmd extends ShellCmd {
 			return;
 		}
 		String option = myTk.nextToken();
-		if (option.equals("ig")) {
+		if (option.equals("sh")) {
 			option = myTk.nextToken();
 		}
 
@@ -61,12 +61,12 @@ public class SorcerCmd extends ShellCmd {
 			cmd.execute();
 		} else if (option.equals("-n")) {
 			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
-					+ File.separator + "netlets" + File.separator + "src");
+					+ File.separator + "netlets");
 			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("-d")) {
 			NetworkShell.setRequest("cd " + System.getenv("SORCER_HOME")
-					+ File.separator + "data");
+					+ File.separator + "deploy");
 			ShellCmd cmd = NetworkShell.getCommandTable().get("ls");
 			cmd.execute();
 		} else if (option.equals("~")) {

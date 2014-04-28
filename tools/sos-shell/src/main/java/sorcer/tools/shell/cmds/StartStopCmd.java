@@ -33,14 +33,15 @@ import com.sun.jini.admin.DestroyAdmin;
 
 public class StartStopCmd extends ShellCmd {
 	{
-		COMMAND_NAME = "start, stop";
+		COMMAND_NAME = "start";
 
 		NOT_LOADED_MSG = "***command not loaded due to conflict";
 
-		COMMAND_USAGE = "start <application name> or stop <registrar index> | all";
+		COMMAND_USAGE = "start <application name>";
+        //or stop <registrar index> | all";
 
-		COMMAND_HELP = "Start application. " 
-			+ "\nStop a single lookup service or all lookup services.";
+		COMMAND_HELP = "Start application using ant script or shell script. ";
+			//+ "\nStop a single lookup service or all lookup services.";
 		
 	}
 
@@ -67,34 +68,6 @@ public class StartStopCmd extends ShellCmd {
 			} else {
 				out.print("No such application " + app);
 			}
-		} else {
-			// pass in a clone of list - command may modify it
-			ArrayList registrars = (ArrayList) NetworkShell.getRegistrars()
-					.clone();
-			String nxtToken;
-			if (myTk.hasMoreTokens()) {
-				nxtToken = myTk.nextToken();
-				if (nxtToken.equals("all")) {
-					out.println("  Shutting down all lookup services now");
-					Iterator it = registrars.iterator();
-					while (it.hasNext()) {
-						ServiceRegistrar myReg = (ServiceRegistrar) it.next();
-						shutdown(myReg, registrars.indexOf(myReg));
-						ld.discard(myReg);
-					}
-				} else {
-					int myIdx = Integer.parseInt(nxtToken);
-					if (myIdx < registrars.size()) {
-						ServiceRegistrar myReg = (ServiceRegistrar) registrars
-								.get(myIdx);
-
-						if (myReg != null) {
-							shutdown(myReg, myIdx);
-							ld.discard(myReg);
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -107,20 +80,4 @@ public class StartStopCmd extends ShellCmd {
 			return COMMAND_USAGE;
 		}
 	}
-	
-	private void shutdown(ServiceRegistrar registrar, int Idx) {
-		try {
-			if (registrar instanceof Administrable) {
-				Administrable admin = (Administrable) registrar;
-				DestroyAdmin destroyAdmin = (DestroyAdmin) admin.getAdmin();
-
-				out.println("  Shutting down lookup service # " + Idx + " now!");
-				destroyAdmin.destroy();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	}
-
 }

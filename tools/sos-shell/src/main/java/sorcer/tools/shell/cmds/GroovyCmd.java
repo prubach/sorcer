@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
-import sorcer.tools.shell.ShellStarter;
 
 public class GroovyCmd extends ShellCmd {
 
@@ -116,7 +115,7 @@ public class GroovyCmd extends ShellCmd {
 			out.println("Missing script input filename!");
 			return;
 		}
-		ScriptThread et = new ScriptThread(sb.toString(), ShellStarter.getLoader());
+		ScriptThread et = new ScriptThread(sb.toString(), getClass().getClassLoader());
 		et.start();
 		et.join();
 		Object outObject = et.getResult();

@@ -87,6 +87,20 @@ import com.sun.jini.config.Config;
  */
 public class NetworkShell implements DiscoveryListener, INetworkShell {
 
+    public static final String NSH_HELP="SORCER Network Shell - command line options:\n" +
+             "\t<file[.ext]> \t\t- exert the netlet script provided in the specified file\n" +
+             "\t-b <file[.ext]> \t- run batch file - start non-interactive shell\n" +
+             "\t\t\t\tand execute commands specified in file\n" +
+             "\t-c <command [args]> \t- start non-interactive shell and run <command> with arguments\n" +
+             "\t\t\t\tto see the full list of available commands run 'nsh -c help'\n" +
+             "\t-e <file[.ext]> \t- evaluate groovy script contained in specified file\n" +
+             "\t-f <file[.ext]> \t- exert the netlet script provided in the specified file\n"+
+             "\t-help \t\t\t- show this help\n" +
+             "\t-version \t\t- show NSH version info";
+
+
+
+
     public static final String CONFIG_EXT_PATH = SorcerEnv.getEnvironment().getSorcerExtDir() + "/configs/shell/configs/nsh-start-ext.config";
     public static final String CONFIG_PATH = SorcerEnv.getEnvironment().getSorcerHome() + "/configs/shell/configs/nsh-start.config";
 
@@ -167,9 +181,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	private Webster webster;
 
 	private String[] httpJars;
-	
+
 	private String[] httpRoots;
-	
+
 	// true for interactive shell
 	private static boolean interactive = true;
 
@@ -212,6 +226,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             if ((argv.length == 1 && argv[0].startsWith("--"))
 					|| (argv.length == 2 && (argv[0].equals("-e"))
 							|| argv[0].equals("-f")
+                            || argv[0].equals("-c")
+                            || argv[0].equals("-b")
 							|| argv[0].equals("-version") || argv[0]
 							.equals("-help")) || argv.length == 1) {
 				interactive = false;
@@ -224,18 +240,13 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			// default shellOutput
 			shellOutput = System.out;
 			if (interactive) {
-				shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
+				shellOutput.println("SORCER Network Shell (nsh " + SorcerEnv.getSorcerVersion()
 						+ ", JVM: " + System.getProperty("java.version"));
 				shellOutput.println("Type 'quit' to terminate the shell");
 				shellOutput.println("Type 'help' for command help");
 			}
 			
 			argv = buildInstance(argv);
-            if (!instance.interactive) {
-                // System.out.println("main appMap: " + appMap);
-                execNoninteractiveCommand(argv);
-                System.exit(0);
-            }
             // Process config files to load extensions - i.e. external commands and activate them
             try {
                 LoaderConfiguration lc = new LoaderConfiguration();
@@ -251,6 +262,12 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             } catch (Exception e) {
                 e.printStackTrace(shellOutput);
                 System.exit(-1);
+            }
+
+            if (!instance.interactive) {
+                // System.out.println("main appMap: " + appMap);
+                execNoninteractiveCommand(argv);
+                System.exit(0);
             }
 
 			if (argv.length == 1 && argv[0].indexOf("-") == 0) {
@@ -400,21 +417,21 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			System.exit(0);
 		}
 		request = arrayToRequest(args);
+        shellTokenizer = new StringTokenizer(request);
         try {
             if (args.length == 1) {
                 if (args[0].equals("-version")) {
-                    shellOutput.println("SORCER Network Shell (nsh " + CUR_VERSION
+                    shellOutput.println("SORCER Network Shell (nsh " + SorcerEnv.getSorcerVersion()
                             + ", JVM: " + System.getProperty("java.version"));
                 } else if (args[0].equals("-help")) {
-                    ShellCmd cmd = commandTable.get("help");
-                    cmd.execute(NetworkShell.getInstance());
+                    shellOutput.println(NSH_HELP);
                 } else {
                     // Added reading the file as default first argument
                     // Check if file exists
                     ShellCmd cmd = commandTable.get("exert");
                     cmd.execute(NetworkShell.getInstance());
                 }
-            } else if (args.length == 2) {
+            } else if (args.length > 1) {
                 if (args[0].equals("-f")) {
                     // evaluate file
                     ShellCmd cmd = commandTable.get("exert");
@@ -422,9 +439,43 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 } else if (args[0].equals("-e")) {
                     // evaluate command line expression
                     ExertCmd cmd = (ExertCmd) commandTable.get("exert");
-				// cmd.setScript(instance.getText(args[1]));
-				cmd.setScript(ExertCmd.readFile(huntForTheScriptFile(args[1])));
+                    // cmd.setScript(instance.getText(args[1]));
+                    cmd.setScript(ExertCmd.readFile(huntForTheScriptFile(args[1])));
                     cmd.execute(NetworkShell.getInstance());
+                } else if (args[0].equals("-c")) {
+                    ShellCmd cmd = commandTable.get(args[1]);
+                    if (args.length > 2)
+                        shellTokenizer = new StringTokenizer(request.substring(4 + args[1].length()));
+                    else
+                        shellTokenizer = new StringTokenizer(request.substring(3 + args[1].length()));
+                    if (cmd!=null)
+                        cmd.execute(NetworkShell.getInstance());
+                    else
+                        shellOutput.println("Command: " + args[1] + " not found. " +
+                                "Please run 'nsh -help' to see the list of available commands");
+                } else if (args[0].equals("-b")) {
+
+                    File batchFile = huntForTheScriptFile(args[1], new String[] { "nsh", "nbat" });
+                    String batchCmds = ExertCmd.readFile(batchFile);
+                    shellOutput.println("Executing batch file: " + batchFile.getAbsolutePath());
+                    for (String batchCmd : batchCmds.split("\n")) {
+                        StringTokenizer tok = new StringTokenizer(batchCmd);
+                        List<String> argsList = new ArrayList<String>();
+                        while (tok.hasMoreElements()) {
+                            argsList.add(tok.nextToken());
+                        }
+                        //String[] batchCmd
+                        ShellCmd cmd = commandTable.get(argsList.get(0));
+                        if (argsList.size() > 1)
+                            shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length() +1));
+                        else
+                            shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length()));
+                        if (cmd!=null)
+                            cmd.execute(NetworkShell.getInstance());
+                        else
+                            shellOutput.println("Command: " + args[1] + " not found. " +
+                                    "Please run 'nsh -help' to see the list of available commands");
+                    }
                 }
             }
         } catch (IOException io) {
@@ -434,7 +485,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     }
 
-	static public void setLookupDiscovery(String... ingroups) {
+    static public void setLookupDiscovery(String... ingroups) {
 		disco = null;
 		try {
             DynamicConfiguration config = new DynamicConfiguration();
@@ -538,7 +589,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	 * Initialize runtime settings
 	 */
 	private void initSettings(String[] groups, LookupLocator[] locators,
-			long discoTimeout) throws ConfigurationException {
+			long discoTimeout, String args[]) throws ConfigurationException {
 		settings.put(GROUPS, groups);
 		settings.put(LOCATORS, locators);
 		Properties props = new Properties();
@@ -557,7 +608,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			homeDir = System.getProperty("user.dir");
 		currentDir = new File(homeDir);
 
-		if (!interactive) {
+		if (!interactive && (args.length==0 || (!args[0].equals("-c")
+                && !args[0].equals("-help") && !args[0].equals("-version")))) {
 			String logDirPath = System.getProperty(COMPONENT + "logDir",
 					sorcerHome + File.separator + "logs" + File.separator
 							+ "shell");
@@ -872,7 +924,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				throw new NullPointerException(
 						"Must have an output PrintStream");
 			long currentTime = System.currentTimeMillis();
-			shellOutput.println("Network Shell  nsh " + CUR_VERSION);
+			shellOutput.println("Network Shell  nsh " + SorcerEnv.getSorcerVersion());
 			shellOutput.println("  User: " + System.getProperty("user.name"));
 			shellOutput.println("  Home directory: " + instance.getHomeDir());
 			shellOutput.println("  Current directory: " + currentDir);
@@ -939,7 +991,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 			COMMAND_USAGE = "http [port=<port-num>] [roots=<roots>] [jars=<codebase jars>] | stop";
 
-			COMMAND_HELP = "Start and stop the nsf shell's code server;" 
+			COMMAND_HELP = "Start and stop the nsf shell's code server;"
 					+ "  <roots> is semicolon separated list of directories.\n"
 					+ "  If not provided the root directory will be:\n"
 					+ "  [" + debugGetDefaultRoots() + "]";
@@ -1024,14 +1076,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 		/**
 		 * Create a Webster instance
-		 * 
+		 *
 		 * @param port
 		 *            The port to use
 		 * @param roots
 		 *            Webster's roots
 		 * @param out
 		 *            A print stream for output
-		 * 
+		 *
 		 * @return True if created
 		 */
 		public boolean createWebster(final int port, final String[] roots,
@@ -1055,7 +1107,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 		/**
 		 * Create a Webster instance
-		 * 
+		 *
 		 * @param port
 		 *            The port to use
 		 * @param roots
@@ -1064,7 +1116,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		 *            Run without output
 		 * @param out
 		 *            A print stream for output
-		 * 
+		 *
 		 * @return True if created
 		 */
 		public static boolean createWebster(final int port, final String[] roots,
@@ -1086,14 +1138,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				*/
 
 				String[] systemRoots = {SorcerEnv.getRepoDir() };
-				
+
 				String[] realRoots = (roots == null ? systemRoots : roots);
 
                 if (debug)
                     System.setProperty("webster.debug", "true");
                 else
                     System.setProperty("webster.debug", "false");
-				
+
 				instance.webster = new Webster(port, realRoots,
 						instance.hostAddress, true);
 				//System.out.println("webster: " + instance.hostAddress + ":"
@@ -1104,7 +1156,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				out.println("Problem creating HTTP server, " + "Exception :"
 						+ e.getClass().getName() + ": "
 						+ e.getLocalizedMessage() + "\n");
-				
+
 				return (false);
 			}
 
@@ -1117,7 +1169,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 			}
 			return (true);
 		}
-		
+
 		public static void setCodeBase(String[] jars) {
 			int port = instance.webster.getPort();
 			String localIPAddress = instance.webster.getAddress();
@@ -1354,7 +1406,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 		/* Reset the args parameter, removing the config parameter */
 		args = commandArgs.toArray(new String[commandArgs.size()]);
-		instance.initSettings(groups, locators, discoveryTimeout);
+		instance.initSettings(groups, locators, discoveryTimeout, args);
 		setLookupDiscovery(groups);
 
 		if (homeDir != null) {
@@ -1452,6 +1504,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				|| urlOrFilename.startsWith("file:");
 	}
 
+
+    static public File huntForTheScriptFile(String input) throws IOException {
+        String[] standardExtensions = { ".ntl", ".xrt", ".exertlet", ".netlet", ".net",
+                ".groovy", ".gvy", ".gy", ".gsh" };
+        return huntForTheScriptFile(input, standardExtensions);
+    }
+
+
 	/**
 	 * Hunt for the script file, doesn't bother if it is named precisely.
 	 * 
@@ -1460,11 +1520,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	 * 
 	 * @throws IOException
 	 */
-	static public File huntForTheScriptFile(String input) throws IOException {
+	static public File huntForTheScriptFile(String input, String[] standardExtensions) throws IOException {
 		String scriptFileName = input.trim();
 		File scriptFile = new File(scriptFileName);
-		String[] standardExtensions = { ".ntl", ".xrt", ".exertlet", ".netlet", ".net",
-				".groovy", ".gvy", ".gy", ".gsh" };
 		int i = 0;
 		while (i < standardExtensions.length && !scriptFile.exists()) {
 			scriptFile = new File(scriptFileName + standardExtensions[i]);
@@ -1567,12 +1625,14 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		aliases.put("xrt", "exert");
 		aliases.put("cls", "clear");
 		aliases.put("ed", "edit");
-		aliases.put("igh", "ig -h");
-		aliases.put("ign", "ig -n");
-		aliases.put("igd", "ig -d");
+		aliases.put("shh", "sh -h");
+		aliases.put("shn", "sh -n");
+		aliases.put("shd", "sh -d");
 		aliases.put("more", "exec");
 		aliases.put("cat", "exec");
 		aliases.put("less", "exec");
+        aliases.put("sb", "boot");
+        aliases.put("sorcer-boot", "boot");
 	}
 
     public void addAlias(String alias, String command) {
@@ -1580,17 +1640,16 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
         aliases.put(alias, command);
     }
 
-    static final String[] shellCommands = { "stop", "disco", "ls", "chgrp",
+    static final String[] shellCommands = { "start", "disco", "ls", "chgrp",
 			"groups", "lup", "chgrp", "chport", "help", "exert", "http", "emx",
-//			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "vm" };
-			"gvy", "edit", "clear", "exec", "about", "ig", "ds", "sp" };
+			"gvy", "edit", "clear", "exec", "about", "sh", "ds", "sp", "boot"};
 	
 	static final Class[] shellCmdClasses = { StartStopCmd.class, DiscoCmd.class,
 			DirCmd.class, ChgrpCmd.class, GroupsCmd.class, LookupCmd.class,
 			ChgrpCmd.class, SetPortCmd.class, HelpCmd.class, ExertCmd.class,
 			HttpCmd.class, EmxCmd.class, GroovyCmd.class, EditCmd.class,
-//			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class, VarModelCmd.class };
-			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class, SpaceCmd.class };
+            //  VarModelCmd.class
+			ClearCmd.class, ExecCmd.class, InfoCmd.class, SorcerCmd.class, DataStorageCmd.class, SpaceCmd.class, BootCmd.class };
 	// a map of application name/ filename
 	static private Map<String, String> appMap = new TreeMap<String, String>();
 	// non interactive shell apps - used with nsh --<app name>
@@ -1600,13 +1659,15 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		String sorcerHome = System.getenv("SORCER_HOME");
 		String[] apps = new String[] { 
 				"browser", 
-				sorcerHome + "/bin/service-browser-run.xml",
+				sorcerHome + "/bin/sorcer-browser &",
 				"webster", 
-				sorcerHome + "/bin/webster-run.xml",
-				"sorcer", 
-				sorcerHome + "/bin/sorcer-boot.xml",
+				sorcerHome + "/bin/sorcer-boot",
+                "sorcer",
+                sorcerHome + "/bin/sorcer-boot",
+				"sb",
+				sorcerHome + "/bin/sorcer-boot -w no",
 				"sos", 
-				sorcerHome + "/bin/sorcer-boot-spawn.xml",
+				sorcerHome + "/bin/sorcer-boot -w no",
 				"jobber",
 				sorcerHome + "/bin/sorcer/jobber/bin/jeri-jobber-boot-spawn.xml",
 				"spacer",
@@ -1621,30 +1682,13 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				sorcerHome + "/bin/sorcer/blitz/bin/blitz-boot-spawn.xml" };
 		
 			appendApps(apps);
-			
-			String[] nishApps = new String[] { 
-					"browser", 
-					sorcerHome + "/bin/service-browser-run.xml",
-					"webster", 
-					sorcerHome + "/bin/webster-run.xml",
-					"sorcer", 
-					sorcerHome + "/bin/sorcer-boot.xml",
-					"sos", 
-					sorcerHome + "/bin/sorcer-boot-spawn.xml",
-					"jobber",
-					sorcerHome + "/bin/sorcer/jobber/bin/jeri-jobber-boot.xml",
-					"spacer",
-					sorcerHome + "/bin/sorcer/jobber/bin/jeri-spacer-boot.xml",
-					"cataloger",
-					sorcerHome + "/bin/sorcer/cataloger/bin/jeri-cataloger-boot.xml",
-					"logger",
-					sorcerHome + "/bin/sorcer/logger/bin/jeri-logger-boot.xml",
-					"locker", 
-					sorcerHome + "/bin/sorcer/blitz/bin/locker-boot.xml",
-					"blitz",
-					sorcerHome + "/bin/sorcer/blitz/bin/blitz-boot.xml" };
-			
-				appendNishApps(nishApps);
+
+            appendNishApps(apps);
+
+            // Place holder for commands only available in non-interactive shell
+			String[] nishApps = new String[] { };
+
+            appendNishApps(nishApps);
 	}
 
 

@@ -104,7 +104,7 @@ public class DataStorageCmd extends ShellCmd {
 			} else if (next.equals("-l")) {
 				printRecords(Store.all);
 			} else if (next.equals("-s")) {
-				showStorageServices();
+                printStorageServices();
 				selectedDataStorer = -1;
 				// remove storage selection
 			} else if (next.equals("-x")) {
@@ -280,12 +280,14 @@ public class DataStorageCmd extends ShellCmd {
 		}
 	}
 
-	private void showStorageServices() throws RemoteException {
-		findStorers();
-		printStorageServices();
-	}
-
 	private void printStorageServices() {
+        if (dataStorers==null || dataStorers.length==0) {
+            try {
+                findStorers();
+            } catch (RemoteException re) {
+                out.println("Problem retrieving data storers: " + re.getMessage());
+            }
+        }
 		if ((dataStorers != null) && (dataStorers.length > 0)) {
 			for (int i = 0; i < dataStorers.length; i++) {
 				describeStorer(i);

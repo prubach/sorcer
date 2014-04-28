@@ -136,6 +136,12 @@ public class ForkingLauncher extends Launcher implements IForkingLauncher {
         }
     }
 
+
+    public int getPid() {
+        if (process!=null) return process.getPid();
+        else return -2;
+    }
+
     @Override
     public void stop() {
         process.destroy();

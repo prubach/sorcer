@@ -60,7 +60,6 @@ set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-start\%
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher-base\%v.sorcer%\sorcer-launcher-base-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
-set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-spi\%v.sorcer%\sorcer-spi-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-container\%v.sorcer%\sorcer-container-%v.sorcer%.jar
 set BOOT_CLASSPATH=%BOOT_CLASSPATH%;%MVN_REPO%\org\rioproject\resolver\resolver-api\%v.rio%\resolver-api-%v.rio%.jar
@@ -98,6 +97,11 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-platf
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher-base\%v.sorcer%\sorcer-launcher-base-%v.sorcer%.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-launcher\%v.sorcer%\sorcer-launcher-%v.sorcer%.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\commons-cli\commons-cli\1.2\commons-cli-1.2.jar
+
+
 
 set SORCER_RIO_CP=
 set SORCER_RIO_CP=%SORCER_COMMON%;%JINI_BASE%
