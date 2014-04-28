@@ -319,8 +319,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
 
     public String toString() {
         List<String> _configArgs = getServiceConfigArgs();
-        return "SorcerServiceDescriptor{"
-                + "codebase='"
+        return getClass().getSimpleName()+"{codebase='"
                 + getCodebase()
                 + '\''
                 + ", policy='"

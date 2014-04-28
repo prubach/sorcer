@@ -25,5 +25,6 @@
         <module>sos-api</module>
         <module>exertlet</module>
         <module>default-codebase</module>
+        <module>platform/sorcer-boot-rio</module>
     </modules>
 </project>

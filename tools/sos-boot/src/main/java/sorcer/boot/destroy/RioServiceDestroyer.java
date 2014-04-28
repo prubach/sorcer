@@ -16,7 +16,10 @@
 
 package sorcer.boot.destroy;
 
-import org.rioproject.servicebean.ServiceBean;
+import com.sun.jini.admin.DestroyAdmin;
+import net.jini.admin.Administrable;
+
+import java.rmi.RemoteException;
 
 /**
  * @author Rafał Krupiński
@@ -34,15 +37,20 @@ public class RioServiceDestroyer implements ServiceDestroyer {
     }
 
     public static class Runnable implements java.lang.Runnable {
-        private ServiceBean service;
+        private DestroyAdmin service;
 
-        public Runnable(ServiceBean service) {
-            this.service = service;
+        public Runnable(Administrable service) throws RemoteException {
+            this.service = (DestroyAdmin) service.getAdmin();
         }
 
         @Override
         public void run() {
-            service.destroy(true);
+            try {
+                service.destroy();
+            } catch (RemoteException e) {
+                Thread c = Thread.currentThread();
+                c.getUncaughtExceptionHandler().uncaughtException(c, e);
+            }
         }
     }
 }

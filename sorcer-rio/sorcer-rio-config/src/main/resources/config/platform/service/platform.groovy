@@ -47,6 +47,12 @@ ServiceDescriptor[] getPlatformServices() {
             new ResolvingServiceDescriptor(
                     null,
                     policy,
+                    "org.sorcersoft.sorcer:sorcer-boot-rio:" + SORCER_VERSION,
+                    "sorcer.boot.rio.BootRioModule"
+            ),
+            new ResolvingServiceDescriptor(
+                    null,
+                    policy,
                     "org.sorcersoft.sorcer:sos-webster:" + SORCER_VERSION,
                     "sorcer.tools.webster.start.WebsterStarter",
                     new File(SorcerEnv.homeDir, "configs/webster/configs/webster-prv.config").path

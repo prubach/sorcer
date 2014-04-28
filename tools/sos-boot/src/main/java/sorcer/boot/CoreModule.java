@@ -20,7 +20,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
-import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import com.sun.jini.start.AggregatePolicyProvider;
 import org.rioproject.resolver.Resolver;
@@ -54,10 +53,11 @@ class CoreModule extends AbstractModule {
          ReferenceHolder object is used by the resolver Activator to inject the value, which is then accessible
          to other clients thanks to singleton bind of Resolver class.
         */
+        TypeLiteral<ReferenceHolder<Resolver>> resolverType = new TypeLiteral<ReferenceHolder<Resolver>>() {
+        };
         ReferenceHolder<Resolver> resolverHolder = new ReferenceHolder<Resolver>();
         bind(Resolver.class).toProvider(resolverHolder).in(Scopes.SINGLETON);
-        bind(new TypeLiteral<ReferenceHolder<Resolver>>() {
-        }).toInstance(resolverHolder);
+        bind(resolverType).toInstance(resolverHolder);
 
         bind(ProtocolHandlerRegistry.class).toInstance(ProtocolHandlerRegistry.get());
         bind(Policy.class).annotatedWith(Names.named("initialGlobalPolicy")).toInstance(Policy.getPolicy());
@@ -89,10 +89,5 @@ class CoreModule extends AbstractModule {
         };
         bind(ScheduledExecutorService.class).toProvider(executorServiceProvider).in(Scopes.SINGLETON);
         bind(Configurer.class).in(Scopes.SINGLETON);
-
-        Multibinder<IServiceDescriptorFactory> descriptorFactories = Multibinder.newSetBinder(binder(), IServiceDescriptorFactory.class);
-        descriptorFactories.addBinding().to(RiverDescriptorFactory.class);
-        descriptorFactories.addBinding().to(OpstringServiceDescriptorFactory.class);
-        descriptorFactories.addBinding().to(OarServiceDescriptorFactory.class);
     }
 }

@@ -16,8 +16,10 @@
 
 package sorcer.boot.platform;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
 import com.sun.jini.start.ServiceDescriptor;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -27,9 +29,12 @@ import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.loader.CommonClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.boot.IServiceDescriptorFactory;
+import sorcer.boot.RiverDescriptorFactory;
 import sorcer.boot.load.Activator;
 import sorcer.core.ServiceActivator;
 import sorcer.provider.boot.AbstractServiceDescriptor;
+import sorcer.util.ClassLoaders;
 import sorcer.util.ClassPath;
 import sorcer.util.InjectionHelper;
 
@@ -90,21 +95,24 @@ public class PlatformLoader {
         platformClassLoader = CommonClassLoader.getInstance();
         loadPlatform(platformRoot, platformClassLoader);
 
-        Thread current = Thread.currentThread();
-        ClassLoader original = current.getContextClassLoader();
-        current.setContextClassLoader(platformClassLoader);
-        try {
-            List<ServiceActivator> activators = loadPlatformServices(servicePlatformRoot);
-            modules.add(new PlatformModule());
+        ClassLoaders.doWith(platformClassLoader, new Runnable() {
+            public void run() {
+                List<ServiceActivator> activators = loadPlatformServices(servicePlatformRoot);
+                modules.add(new PlatformModule());
+                modules.add(new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        Multibinder<IServiceDescriptorFactory> descriptorFactories = Multibinder.newSetBinder(binder(), IServiceDescriptorFactory.class);
+                        descriptorFactories.addBinding().to(RiverDescriptorFactory.class);
+                    }
+                });
 
-            platformInjector = injector.createChildInjector(modules);
-            InjectionHelper.setInstance(new PlatformInjector(platformInjector));
+                platformInjector = injector.createChildInjector(modules);
+                InjectionHelper.setInstance(new PlatformInjector(platformInjector));
 
-            activate(activators);
-
-        } finally {
-            current.setContextClassLoader(original);
-        }
+                activate(activators);
+            }
+        });
     }
 
     private void activate(List<ServiceActivator> activators) {
@@ -163,6 +171,7 @@ public class PlatformLoader {
                     injector.injectMembers(descriptor);
                     Object service = descriptor.create(EmptyConfiguration.INSTANCE);
                     if (service instanceof AbstractServiceDescriptor.Service) {
+                        logger.debug("{} is a ServiceDescriptor", service);
                         AbstractServiceDescriptor.Service srvc = (AbstractServiceDescriptor.Service) service;
                         if (srvc.exception != null) {
                             logger.warn("Error while creating platform service {}", descriptor, srvc.exception);
@@ -170,10 +179,14 @@ public class PlatformLoader {
                         } else
                             service = srvc.impl;
                     }
-                    if (service instanceof Module)
+                    if (service instanceof Module) {
+                        logger.debug("{} is a Module", service);
                         modules.add((Module) service);
-                    if (service instanceof ServiceActivator)
+                    }
+                    if (service instanceof ServiceActivator) {
+                        logger.debug("{} is a ServiceActivator", service);
                         activators.add((ServiceActivator) service);
+                    }
                 }
             } catch (Exception e) {
                 Throwable t = e.getCause() == null ? e : e.getCause();

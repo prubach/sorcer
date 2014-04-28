@@ -17,10 +17,10 @@
 package sorcer.boot.destroy;
 
 import net.jini.admin.Administrable;
-import org.rioproject.servicebean.ServiceBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.DestroyAdmin;
+import sorcer.util.reflect.Classes;
 
 import java.rmi.RemoteException;
 
@@ -33,8 +33,12 @@ public class ServiceDestroyerFactory {
     private static final Logger log = LoggerFactory.getLogger(ServiceDestroyerFactory.class);
 
     public static ServiceDestroyer getDestroyer(Object service) {
-        if (service instanceof ServiceBean)
-            return new RioServiceDestroyer(new Thread(new RioServiceDestroyer.Runnable((ServiceBean) service)));
+        if (Classes.isInstanceOf("org.rioproject.servicebean.ServiceBean", service))
+            try {
+                return new RioServiceDestroyer(new Thread(new RioServiceDestroyer.Runnable((Administrable) service)));
+            } catch (RemoteException e) {
+                throw new IllegalStateException("Remote exception while calling local object", e);
+            }
         if (service instanceof DestroyAdmin) {
             return new SorcerServiceDestroyer((DestroyAdmin) service);
         } else if (service instanceof com.sun.jini.admin.DestroyAdmin) {

@@ -193,7 +193,6 @@
                 <pathelement location="${lib.dir}/rio/rio-platform.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-logging-support.jar"/>
                 <pathelement location="${lib.dir}/rio-resolver/resolver-api.jar"/>
-                <!--<pathelement location="${lib.dir}/rio-resolver/resolver-aether.jar"/>-->
                 <pathelement location="${lib.dir}/rio/rio-start.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-lib.jar"/>
                 <pathelement location="${lib.dir}/rio/rio-api.jar"/>
@@ -248,7 +247,6 @@
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-resolver/${v.sorcer}/sorcer-resolver-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher-base/${v.sorcer}/sorcer-launcher-base-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher/${v.sorcer}/sorcer-launcher-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-installer/${v.sorcer}/sorcer-installer-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-spi/${v.sorcer}/sorcer-spi-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-container/${v.sorcer}/sorcer-container-${v.sorcer}.jar"/>
@@ -258,7 +256,6 @@
                 <pathelement location="${mvn.repo}/org/rioproject/rio-platform/${v.rio}/rio-platform-${v.rio}.jar"/>
 		        <pathelement location="${mvn.repo}/org/rioproject/rio-logging-support/${v.rio}/rio-logging-support-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-api/${v.rio}/resolver-api-${v.rio}.jar"/>
-                <pathelement location="${mvn.repo}/org/rioproject/resolver/resolver-aether/${v.rio}/resolver-aether-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-start/${v.rio}/rio-start-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-lib/${v.rio}/rio-lib-${v.rio}.jar"/>
                 <pathelement location="${mvn.repo}/org/rioproject/rio-api/${v.rio}/rio-api-${v.rio}.jar"/>
