@@ -8,6 +8,7 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.util.exec.ExecUtils;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -37,11 +38,11 @@ public class NshTest {
         sb.append(" disco");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        assertTrue(result.getOut().contains("LOOKUP SERVICE"));
-        assertTrue(result.getOut().contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!result.getOut().contains("Exception"));
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        logger.info("Result running: " + sb.toString() +":\n" + res);
+        assertTrue(res.contains("LOOKUP SERVICE"));
+        assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
+        assertTrue(!res.contains("Exception"));
     }
 
     @Test
@@ -53,12 +54,12 @@ public class NshTest {
         logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        assertTrue(result.getOut().contains(SorcerEnv.getActualName("Jobber")));
-        assertTrue(result.getOut().contains(SorcerEnv.getActualSpacerName()));
-        assertTrue(result.getOut().contains(SorcerEnv.getActualDatabaseStorerName()));
-        assertTrue(result.getOut().contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!result.getOut().contains("Exception"));
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
+        assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
+        assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
+        assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
+        assertTrue(!res.contains("Exception"));
     }
 
     @Test
@@ -67,10 +68,11 @@ public class NshTest {
         sb.append(" sp");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
-        assertTrue(result.getOut().contains(SorcerEnv.getActualSpaceName()));
-        assertTrue(!result.getOut().contains("Exception"));
+        // getting around a problem with out and err mixed up.
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        logger.info("Result running: " + sb.toString() +":\n" + res);
+        assertTrue(res.contains(SorcerEnv.getActualSpaceName()));
+        assertTrue(!res.contains("Exception"));
     }
 
     @Test
@@ -79,10 +81,10 @@ public class NshTest {
         sb.append(" ds");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
-        assertTrue(result.getOut().contains(SorcerEnv.getActualDatabaseStorerName()));
-        assertTrue(!result.getOut().contains("Exception"));
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        logger.info("Result running: " + sb.toString() +":\n" + res);
+        assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
+        assertTrue(!res.contains("Exception"));
     }
 
     @Test
@@ -91,15 +93,15 @@ public class NshTest {
         sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batch.nsh");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        logger.info("Result running: " + sb.toString() +":\n" + res);
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        assertTrue(result.getOut().contains(SorcerEnv.getActualName("Jobber")));
-        assertTrue(result.getOut().contains(SorcerEnv.getActualSpacerName()));
-        assertTrue(result.getOut().contains(SorcerEnv.getActualDatabaseStorerName()));
-        assertTrue(result.getOut().contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!result.getOut().contains("Exception"));
+        assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
+        assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
+        assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
+        assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
+        assertTrue(!res.contains("Exception"));
     }
 
     @Test(timeout = 90000)
@@ -108,9 +110,9 @@ public class NshTest {
         sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh");
         logger.info("Running: " + sb.toString());
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
-        assertTrue(result.getErr()==null || result.getErr().isEmpty());
-        assertTrue(!result.getOut().contains("ExertionException:"));
-        assertTrue(result.getOut().contains("f1/f3/result/y3 = 400.0"));
+        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        logger.info("Result running: " + sb.toString() +":\n" + res);
+        assertTrue(!res.contains("ExertionException:"));
+        assertTrue(res.contains("f1/f3/result/y3 = 400.0"));
     }
 }
