@@ -142,7 +142,7 @@ public class PlatformLoader {
         }
     }
 
-    private List<ServiceActivator> loadPlatformServices(File dir) {
+    protected List<ServiceActivator> loadPlatformServices(File dir) {
         if (dir == null)
             throw new IllegalArgumentException("directory is null");
         if (!dir.exists())

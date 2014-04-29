@@ -44,6 +44,17 @@ public class WaitingListener extends NullSorcerListener {
     @Override
     public void sorcerEnded(Exception e) {
         state = WaitMode.end;
+        exception = e;
+        synchronized (this) {
+            notify();
+        }
+    }
+
+    @Override
+    public void processDown(Process process) {
+        if (state == WaitMode.no)
+            exception = new IllegalStateException("SORCER down before started " + process);
+        state = WaitMode.end;
         synchronized (this) {
             notify();
         }

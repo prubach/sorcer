@@ -18,7 +18,6 @@
 package sorcer.tools.shell.cmds;
 
 import org.apache.commons.cli.*;
-import org.apache.commons.io.output.WriterOutputStream;
 import sorcer.core.SorcerEnv;
 import sorcer.launcher.*;
 import sorcer.launcher.process.DestroyingListener;
@@ -29,15 +28,11 @@ import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.FileUtils;
 import sorcer.util.StringUtils;
-import sorcer.util.exec.ExecUtils;
-import sorcer.util.exec.ExecUtils.CmdResult;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
-
-import static sorcer.core.SorcerConstants.SORCER_HOME;
 
 /**
  * Handles system commands
@@ -161,10 +156,6 @@ public class BootCmd extends ShellCmd {
         launcher.setHome(SorcerEnv.getHomeDir());
         launcher.setErr(out);
         launcher.setOut(out);
-
-
-        if (launcher == null)
-            throw new IllegalStateException("Could not start SORCER");
 
         File logDir = FileUtils.getFile(SorcerEnv.getHomeDir(), cmd.hasOption(LOGS) ? cmd.getOptionValue(LOGS) : "logs");
 
