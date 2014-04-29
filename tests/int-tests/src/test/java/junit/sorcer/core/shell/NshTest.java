@@ -1,14 +1,11 @@
-package junit.tools.shell;
+package junit.sorcer.core.shell;
 
-import groovy.lang.Category;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
-import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
-import sorcer.junit.SorcerServiceConfiguration;
-import sorcer.service.Task;
 import sorcer.util.exec.ExecUtils;
 
 import java.util.logging.Logger;
@@ -16,7 +13,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static sorcer.eo.operator.*;
 import static sorcer.eo.operator.value;
 
 /**
@@ -26,8 +22,6 @@ import static sorcer.eo.operator.value;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-//@SorcerServiceConfiguration(":ju-arithmetic-cfg-all")
-
 public class NshTest {
 
     private final static Logger logger = Logger

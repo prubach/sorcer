@@ -282,6 +282,7 @@ public class ServiceExerter implements Exerter, Callable {
 			Exertion result = provider.service(exertion, transaction);
             if (result != null && result.getExceptions().size() > 0) {
                 for (ThrowableTrace et : result.getExceptions()) {
+                    logger.warning("Got exception running " +exertion.getName() + " : " + et.describe());
                     if (et.getThrowable() instanceof Error)
                         ((ServiceExertion) result).setStatus(Exec.ERROR);
                 }
