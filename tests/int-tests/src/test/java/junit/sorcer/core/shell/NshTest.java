@@ -102,11 +102,11 @@ public class NshTest {
         assertTrue(!result.getOut().contains("Exception"));
     }
 
-    @Test
+    @Test(timeout = 60000)
     public void batchExertCmdTest() throws Exception {
         sb.append(" -b");
         sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh");
-
+        logger.info("Running: " + sb.toString());
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
         logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
         assertTrue(result.getErr().isEmpty());

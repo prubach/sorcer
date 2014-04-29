@@ -449,7 +449,7 @@ $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"
 
     #shift
     # Use rlwrap if installed to enable history in nsh
-    if [ -n "$(which rlwrap)" ]; then
+    if [ -n "$(which rlwrap 2>&1 | egrep -v 'no ')" ]; then
         RLWRAP="rlwrap "
     else
         RLWRAP=""
