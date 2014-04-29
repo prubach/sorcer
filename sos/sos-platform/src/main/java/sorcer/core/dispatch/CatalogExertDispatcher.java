@@ -18,6 +18,7 @@
 
 package sorcer.core.dispatch;
 
+import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Set;
 
@@ -240,7 +241,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                             logger.debug("getting result from provider...");
                             result = (Task) service.service(task, null);
 
-                        } catch (RemoteException re) {
+                        } catch (Exception re) {
                             logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             service = (Service) Accessor.getService(sig);
                             logger.warn("Got service: ");

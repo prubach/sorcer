@@ -35,6 +35,8 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
+import java.util.logging.Logger;
+
 @SuppressWarnings("rawtypes")
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
@@ -49,6 +51,8 @@ import sorcer.service.Task;
 })
 public class PipedContextWorkerTest {
 
+    private final static Logger logger = Logger
+            .getLogger(PipedContextWorkerTest.class.getName());
     @Test
 	public void testPipedContextWorker() throws Exception {
         String requestorName = System.getProperty("user.name", "local-user");
@@ -112,6 +116,7 @@ public class PipedContextWorkerTest {
 		job.setExecTimeRequested(true);
 
         Exertion result = job.exert();
+        logger.info("Result: " + result);
         ExertionErrors.check(result.getExceptions());
 	}
 
