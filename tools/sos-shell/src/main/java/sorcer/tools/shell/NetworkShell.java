@@ -424,6 +424,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
         }
 		request = arrayToRequest(args);
         shellTokenizer = new StringTokenizer(request);
+        System.err.println("----------------------------------------------------");
+        System.err.println("Starting non-interactive exec of request: " + request);
 
         // Wait for DiscoveryListener to find Reggies
         int i=0;
@@ -465,8 +467,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                         shellOutput.println("Command: " + args[1] + " not found. " +
                                 "Please run 'nsh -help' to see the list of available commands");
                 } else if (args[0].equals("-b")) {
-
                     File batchFile = huntForTheScriptFile(args[1], new String[] { "nsh", "nbat" });
+                    System.err.println("Processing batch request on file: " + batchFile.getAbsolutePath());
                     String batchCmds = readScript(batchFile);
                     shellOutput.println("Executing batch file: " + batchFile.getAbsolutePath());
                     for (String batchCmd : batchCmds.split("\n")) {
@@ -482,20 +484,23 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                         else
                             shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length()));
                         request = batchCmd;
+                        System.err.println("Starting command: '" + batchCmd + "'");
                         if (cmd!=null)
                             cmd.execute(NetworkShell.getInstance());
                         else
                             shellOutput.println("Command: " + args[1] + " not found. " +
                                     "Please run 'nsh -help' to see the list of available commands");
+                        System.err.println("Execution of command: '" + batchCmd + "' finished");
                         request = originalRequest;
                     }
                 }
             }
         } catch (IOException io) {
             shellOutput.println(io.getMessage());
+            System.err.println(io.getMessage());
             // Do nothing since an error message was already printed out by th huntForTheScriptFile method
         }
-
+        System.err.println("----------------------------------------------------");
     }
 
     static public void setLookupDiscovery(String... ingroups) {
