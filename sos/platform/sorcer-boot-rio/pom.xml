@@ -23,6 +23,7 @@
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>sos</artifactId>
         <version>1.0-M5-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>sorcer-boot-rio</artifactId>
