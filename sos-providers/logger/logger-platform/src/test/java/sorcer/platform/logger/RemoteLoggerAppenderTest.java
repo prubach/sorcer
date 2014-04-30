@@ -17,11 +17,13 @@
 package sorcer.platform.logger;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import sorcer.core.RemoteLogger;
 import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.junit.SorcerServiceConfiguration;
 
@@ -29,6 +31,7 @@ import sorcer.junit.SorcerServiceConfiguration;
  * @author Rafał Krupiński
  */
 @RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
 @ExportCodebase("org.sorcersoft.sorcer:logger-api")
 @SorcerServiceConfiguration(":logger-cfg")
 public class RemoteLoggerAppenderTest {
