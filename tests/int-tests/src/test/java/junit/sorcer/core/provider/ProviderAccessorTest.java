@@ -25,7 +25,13 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceItem;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.river.Filters;
 import sorcer.service.Accessor;
 import sorcer.service.DynamicAccessor;
@@ -39,28 +45,27 @@ import sorcer.util.Stopwatch;
 /**
  * @author Mike Sobolewski
  */
-
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class ProviderAccessorTest {
 
     public static final net.jini.core.lookup.ServiceTemplate jobberTemplate = Accessor.getServiceTemplate(null, ANY, new Class[]{Jobber.class}, null);
     private final static Logger logger = Logger
 			.getLogger(ProviderAccessorTest.class.getName());
 
-	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-		System.setSecurityManager(new RMISecurityManager());
-	}
-
+    @Test
 	public void providerAccessorTest() throws Exception {
         checkAccessor(new ProviderAccessor());
 	}
 
-	public void providerLookupTest() throws Exception {
+    @Test
+    public void providerLookupTest() throws Exception {
         checkAccessor(new ProviderLookup());
 	}
 
-	public void providerLocatorTest() throws Exception {
+    @Test
+    public void providerLocatorTest() throws Exception {
         checkAccessor(new ProviderLocator());
 	}
 
@@ -73,11 +78,4 @@ public class ProviderAccessorTest {
         logger.info(Stopwatch.getTimeString(System.currentTimeMillis() - startTime));
         assertNotNull(provider);
     }
-
-	public static void main(String[] args) throws Exception {
-		ProviderAccessorTest test = new ProviderAccessorTest();
-		test.providerAccessorTest();
-        test.providerLocatorTest();
-		test.providerLookupTest();
-	}
 }

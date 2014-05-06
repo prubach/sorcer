@@ -18,6 +18,7 @@
 package sorcer.ex5.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.exertion.ObjectJob;
 import sorcer.core.exertion.ObjectTask;
@@ -26,6 +27,8 @@ import sorcer.core.signature.ObjectSignature;
 import sorcer.ex5.provider.AdderImpl;
 import sorcer.ex5.provider.MultiplierImpl;
 import sorcer.ex5.provider.SubtractorImpl;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -38,20 +41,14 @@ import static org.junit.Assert.assertEquals;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex5-api"
+})
 public class ObjectArithmeticReqTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ObjectArithmeticReqTest.class.getName());
-
-	static {
-        ServiceRequestor.prepareEnvironment();
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ex5-prv",
-                "org.sorcersoft.sorcer:ex5-api"});
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-	}
-
 	@Test
 	public void exertTaskJob() throws Exception {
 		Task task1 = getAddTask();

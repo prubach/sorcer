@@ -31,7 +31,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("store",
-                new NetSignature("contextStore", DatabaseStorer.class, storageName),
+                new NetSignature("contextStore", DatabaseStorer.class, null, storageName),
                 ctx);
         return (URL) execDbTask(objectStoreTask);
     }
@@ -58,7 +58,7 @@ public class DbpUtil {
         String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
         Exertion objectUpdateTask = new Task("update",
-                new NetSignature("contextUpdate", DatabaseStorer.class, storageName),
+                new NetSignature("contextUpdate", DatabaseStorer.class, null, storageName),
                 getUpdateContext(value, storeUuid));
         try {
             objectUpdateTask.exert(null);
@@ -76,7 +76,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.store_size));
         ctx.putInValue(StorageManagement.store_type, type);
         Task objectStoreTask = new Task("clear",
-                new NetSignature("contextClear", DatabaseStorer.class, storageName),
+                new NetSignature("contextClear", DatabaseStorer.class, null, storageName),
                 ctx);
         return (Integer) execDbTask(objectStoreTask);
 /*
@@ -99,7 +99,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.store_size));
         ctx.putInValue(StorageManagement.store_type, type);
         Task objectStoreTask = new Task("size",
-                new NetSignature("contextSize", DatabaseStorer.class, storageName),
+                new NetSignature("contextSize", DatabaseStorer.class, null, storageName),
                 ctx);
         return (Integer) execDbTask(objectStoreTask);
     }
@@ -121,7 +121,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.object_url));
         ctx.putInValue(StorageManagement.object_deleted, object);
         Task objectStoreTask = new Task("delete",
-                new NetSignature("contextDelete", DatabaseStorer.class, storageName),
+                new NetSignature("contextDelete", DatabaseStorer.class, null, storageName),
                 ctx);
         return (URL) execDbTask(objectStoreTask);
 
@@ -147,7 +147,7 @@ public class DbpUtil {
             ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.object_url));
             ctx.putInValue(StorageManagement.object_deleted, url);
             objectStoreTask = new Task("delete",
-                    new NetSignature("contextDelete", Class.forName(serviceTypeName), storageName),
+                    new NetSignature("contextDelete", Class.forName(serviceTypeName), null, storageName),
                     ctx);
         } catch (ClassNotFoundException e) {
             throw new SignatureException("No such service type: "
@@ -184,7 +184,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("write",
-                new NetSignature("contextWrite", DatabaseStorer.class, storageName),
+                new NetSignature("contextWrite", DatabaseStorer.class, null, storageName),
                 ctx);
         // It was DataspaceStorer.class in Mike's version
         return (URL) execDbTask(objectStoreTask);
@@ -203,7 +203,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("retrieve",
-                new NetSignature("contextRetrieve", DatabaseStorer.class, storageName),
+                new NetSignature("contextRetrieve", DatabaseStorer.class, null, storageName),
                 getRetrieveContext(storeUuid, storeType));
         // It was DataspaceStorer.class in Mike's version
         return execDbTask(objectStoreTask);
@@ -242,13 +242,11 @@ public class DbpUtil {
                 type = Store.object;
             }
         }
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
         Context ctx = new PositionalContext("list");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("list",
-                new NetSignature("contextList", DatabaseStorer.class, providerName),
+                new NetSignature("contextList", DatabaseStorer.class, null, providerName),
                 getListContext(type));
         // It was DataspaceStorer.class in Mike's version
         return (List<String>) execDbTask(objectStoreTask);
@@ -270,7 +268,7 @@ public class DbpUtil {
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         //ctx.putInValue(StorageManagement.object_stored, object);
         Task objectStoreTask = new Task("contextList",
-                new NetSignature("contextList", DatabaseStorer.class, storageName),
+                new NetSignature("contextList", DatabaseStorer.class, null, storageName),
                 getListContext(storeType));
         // It was DataspaceStorer.class in Mike's version
         return (List<String>) execDbTask(objectStoreTask);

@@ -36,6 +36,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.IOUtils;
@@ -50,21 +55,13 @@ import com.sleepycat.je.DatabaseException;
  * @author Mike Sobolewski
  */
 
+@RunWith(SorcerRunner.class)
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class SorcerDatabaseTest {
 
 	private final static Logger logger = Logger
 			.getLogger(SorcerDatabaseTest.class.getName());
-	
-	static {
-		System.setProperty("java.security.policy", System.getenv("SORCER_HOME")
-				+ "/configs/sorcer.policy");
-        System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
-        System.setSecurityManager(new RMISecurityManager());
-		setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:sorcer-api",
-                "org.sorcersoft.sorcer:ju-arithmetic-api"});
-	}
 	
 	private static SorcerDatabaseRunner runner;
 	private static File dbDir;

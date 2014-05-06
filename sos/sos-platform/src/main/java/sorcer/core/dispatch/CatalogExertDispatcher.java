@@ -166,6 +166,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
     protected Task execServiceTask(Task task) throws ExertionException,
             SignatureException {
         Task result = null;
+        int maxTries = 3;
+        int tried=0;
         try {
             if (((NetSignature) task.getProcessSignature())
                     .getService()!=null && ((NetSignature) task.getProcessSignature())
@@ -209,8 +211,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     logger.info(msg);
                     throw new ExertionException(msg, task);
                 } else {
-                    int maxTries = 3;
-                    int tried=0;
+                    tried=0;
                     while (result==null && tried < maxTries) {
                         tried++;
                         try {
@@ -261,7 +262,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         //    throw ee;
         } catch (Exception re) {
             task.reportException(re);
-            throw new ExertionException("Dispatcher failed for task: "
+            throw new ExertionException("Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName(), re);
         }
         return result;

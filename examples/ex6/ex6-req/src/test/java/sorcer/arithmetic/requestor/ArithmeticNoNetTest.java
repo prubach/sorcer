@@ -1,12 +1,15 @@
 package sorcer.arithmetic.requestor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
 import sorcer.arithmetic.provider.SubtractorImpl;
 import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.requestor.ServiceRequestor;
+import sorcer.junit.ExportCodebase;
+import sorcer.junit.SorcerClient;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Direction;
@@ -25,18 +28,14 @@ import static sorcer.eo.operator.*;
 /**
  * @author Mike Sobolewski
  */
+@Category(SorcerClient.class)
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
+        "org.sorcersoft.sorcer:ex6-api"
+})
 public class ArithmeticNoNetTest {
 
 	private final static Logger logger = Logger
 			.getLogger(ArithmeticNoNetTest.class.getName());
-
-    static {
-        ServiceRequestor.prepareEnvironment();
-        ServiceRequestor.setCodeBaseByArtifacts(new String[]{
-                "org.sorcersoft.sorcer:ex6-prv",
-                "org.sorcersoft.sorcer:ex6-api"});
-        System.out.println("CLASSPATH :" + System.getProperty("java.class.path"));
-    }
 
 	@Test
 	public void adderTaskTest() throws Exception {

@@ -36,13 +36,6 @@
             <artifactId>sorcer-api</artifactId>
             <version>${v.sorcer}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sos-api</artifactId>
-            <version>${v.sorcer}</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>cataloger-api</artifactId>
