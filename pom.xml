@@ -647,5 +647,33 @@
                 <surefire.includedGroups>sorcer.junit.SorcerClient</surefire.includedGroups>
             </properties>
         </profile>
+        <profile>
+            <id>graph</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>mvnplugins.fusesource.org</id>
+                    <url>http://mvnplugins.fusesource.org/repo/release</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </pluginRepository>
+            </pluginRepositories>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.fusesource.mvnplugins</groupId>
+                        <artifactId>maven-graph-plugin</artifactId>
+                        <version>1.10</version>
+                        <configuration>
+                            <hideExternal>true</hideExternal>
+                            <hideOptional>true</hideOptional>
+                            <hideScopes>test,provided,runtime</hideScopes>
+                            <hideVersion>true</hideVersion>
+                            <hideGroupId>true</hideGroupId>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
