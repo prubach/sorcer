@@ -5,20 +5,28 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
+import com.sun.jini.start.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.config.ConfigEntry;
 import sorcer.config.convert.PropertiesPathConverter;
 import sorcer.core.SorcerConstants;
+import sorcer.core.provider.ServiceTasker;
 import sorcer.service.Context;
 
 @SuppressWarnings("rawtypes")
-public class AccountProvider implements Account,
+public class AccountProvider extends ServiceTasker implements Account,
 		ServiceAccount, SorcerConstants {
 
     private static Logger logger = LoggerFactory.getLogger(AccountProvider.class.getName());
 
 	private Money balance;
+
+    public AccountProvider(String[] args, LifeCycle lifeCycle) throws Exception {
+        super(args, lifeCycle);
+        String cents = getProperty("provider.balance");
+        balance = new Money(Integer.parseInt(cents));
+    }
 
     @ConfigEntry(type = String.class, converter = PropertiesPathConverter.class)
     public void setProperties(Properties props){

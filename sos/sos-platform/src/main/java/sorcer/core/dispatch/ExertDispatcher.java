@@ -259,8 +259,10 @@ abstract public class ExertDispatcher implements Dispatcher,
         List<Context> contexts = Jobs.getTaskContexts(ex);
         logger.info("Contexts to check if shared: " + contexts.toString());
         for (Context ctx : contexts) {
-            if (((ServiceContext)ctx).isShared())
+            if (((ServiceContext)ctx).isShared()) {
                 sharedContexts.add(ctx);
+                logger.debug("Added shared context: " + ctx);
+            }
         }
 //      for (int i = 0; i < contexts.size(); i++) {
 //			if (!sharedContexts.contains(contexts.get(i)))
@@ -268,7 +270,6 @@ abstract public class ExertDispatcher implements Dispatcher,
 //            if (((ServiceContext)contexts.get(i)).isShared())
 //                sharedContexts.add(contexts.get(i));
 //        }
-        logger.info("Added shared contexts: " + sharedContexts.toString());
     }
 
     protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
