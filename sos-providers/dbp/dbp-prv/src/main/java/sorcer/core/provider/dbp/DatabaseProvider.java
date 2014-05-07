@@ -221,7 +221,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			pn = "";
 		else
 			pn = "/" + pn;
-		return new URL("sos://" + StorageManagement.class.getName() + pn + "#"
+		return new URL("sos://" + DatabaseStorer.class.getName() + pn + "#"
 				+ storeType + "=" + uuid);
 	}
 	

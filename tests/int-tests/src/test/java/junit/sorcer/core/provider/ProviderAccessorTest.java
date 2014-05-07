@@ -25,6 +25,7 @@ import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceItem;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -65,6 +66,7 @@ public class ProviderAccessorTest {
 	}
 
     @Test
+    @Ignore
     public void providerLocatorTest() throws Exception {
         checkAccessor(new ProviderLocator());
 	}

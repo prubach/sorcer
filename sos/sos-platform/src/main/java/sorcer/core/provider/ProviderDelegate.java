@@ -1151,7 +1151,7 @@ public class ProviderDelegate {
 		}
 		visited.add(serviceID);
 		if (serviceComponents != null) {
-			NetTask result = (NetTask) useServiceComponents((Task) task, null);
+			Task result = useServiceComponents((Task) task, null);
 			logger.info("forwardTask executed by a service bean: " + result);
 			if (result != null) {
 				visited.remove(serviceID);

@@ -23,6 +23,7 @@ import java.net.URL;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.core.SorcerEnv;
 import sorcer.util.bdb.objects.Store;
 
 /**
@@ -62,8 +63,12 @@ public class SdbUtil {
     public static String getProviderName(URL url) {
         if (url == null)
             return null;
-        else
-            return url.getPath().substring(1);
+        else {
+            String shortName = url.getPath().substring(1);
+            if (shortName.endsWith(SorcerEnv.getNameSuffix())) return shortName;
+            else return SorcerEnv.getActualName(shortName);
+        }
+
     }
 
     public static String getServiceType(URL url) {

@@ -25,8 +25,7 @@ public class DbpUtil {
 
     public static URL store(Object object) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("store");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         ctx.putInValue(StorageManagement.object_stored, object);
@@ -55,8 +54,7 @@ public class DbpUtil {
     static public URL update(Uuid storeUuid, Object value)
             throws ExertionException, SignatureException, ContextException {
 
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Exertion objectUpdateTask = new Task("update",
                 new NetSignature("contextUpdate", DatabaseStorer.class, null, storageName),
                 getUpdateContext(value, storeUuid));
@@ -70,8 +68,7 @@ public class DbpUtil {
 
     public static int clear(Store type) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("clear");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.store_size));
         ctx.putInValue(StorageManagement.store_type, type);
@@ -93,8 +90,7 @@ public class DbpUtil {
 
     public static int size(Store type) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("size");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.store_size));
         ctx.putInValue(StorageManagement.store_type, type);
@@ -115,8 +111,7 @@ public class DbpUtil {
 
     public static URL deleteObject(Object object) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("delete");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath(StorageManagement.object_url));
         ctx.putInValue(StorageManagement.object_deleted, object);
@@ -178,8 +173,7 @@ public class DbpUtil {
 
     public static URL write(Object object) throws ExertionException,
             SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("write");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         ctx.putInValue(StorageManagement.object_stored, object);
@@ -197,8 +191,7 @@ public class DbpUtil {
 
     static public Object retrieve(Uuid storeUuid, Store storeType)
             throws ExertionException, SignatureException, ContextException {
-        String storageName = SorcerEnv.getActualName(SorcerEnv
-                .getDatabaseStorerName());
+        String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("retrieve");
         ((ServiceContext) ctx).setReturnPath(new ReturnPath("result, stored/object/url"));
         //ctx.putInValue(StorageManagement.object_stored, object);
