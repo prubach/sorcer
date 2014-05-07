@@ -2,6 +2,7 @@ package sorcer.arithmetic.requestor;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
 import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
@@ -10,6 +11,7 @@ import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
+import sorcer.junit.SorcerRunner;
 import sorcer.service.Job;
 import sorcer.service.Signature;
 import sorcer.service.Direction;
@@ -28,7 +30,7 @@ import static sorcer.eo.operator.*;
 /**
  * @author Mike Sobolewski
  */
-@Category(SorcerClient.class)
+@RunWith(SorcerRunner.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ex6-api"
 })

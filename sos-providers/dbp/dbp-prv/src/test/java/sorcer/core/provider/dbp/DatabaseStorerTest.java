@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase("org.sorcersoft.sorcer:dbp-api")
+@ExportCodebase({"org.sorcersoft.sorcer:sorcer-api", "org.sorcersoft.sorcer:dbp-api"})
 public class DatabaseStorerTest {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseStorerTest.class);

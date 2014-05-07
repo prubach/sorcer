@@ -42,9 +42,11 @@ public class ProjectArtifactResolver implements ArtifactResolver {
     public ProjectArtifactResolver() throws IOException {
         File homeDir = SorcerEnv.getHomeDir().getCanonicalFile();
         File userDir = new File(System.getProperty(JavaSystemProperties.USER_DIR)).getCanonicalFile();
+        File extDir = SorcerEnv.getExtDir().getCanonicalFile();
 
         String homePath = homeDir.getPath();
         String userPath = userDir.getPath();
+        String extPath = extDir.getPath();
 
         //if one directory is ancestor of another, use only the ancestor
         if (homeDir.equals(userDir) || homePath.startsWith(userPath))
@@ -55,6 +57,9 @@ public class ProjectArtifactResolver implements ArtifactResolver {
             roots.add(userDir);
             roots.add(homeDir);
         }
+        //if SORCER_EXT points to a different directory add it
+        if (!extPath.equals(homePath))
+            roots.add(extDir);
     }
 
     @Override
