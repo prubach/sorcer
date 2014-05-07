@@ -66,7 +66,6 @@ public class ProviderAccessorTest {
 	}
 
     @Test
-    @Ignore
     public void providerLocatorTest() throws Exception {
         checkAccessor(new ProviderLocator());
 	}

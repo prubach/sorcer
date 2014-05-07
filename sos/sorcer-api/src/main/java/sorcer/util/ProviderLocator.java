@@ -223,7 +223,7 @@ public class ProviderLocator implements DynamicAccessor {
                 //SorcerDiscoveryListener listener = new SorcerDiscoveryListener(template, minMatches, maxMatches, filter);
                 //disco.addDiscoveryListener(listener);
                 //result.addAll(listener.get(WAIT_FOR, TimeUnit.MILLISECONDS));
-                Thread.sleep(WAIT_FOR);
+                Thread.sleep(WAIT_FOR*MAX_TRIES);
                 for (ServiceRegistrar registrar : disco.getRegistrars()) {
                     ServiceMatches matches = registrar.lookup(template, maxMatches);
                     result.addAll(Arrays.asList(matches.items));
