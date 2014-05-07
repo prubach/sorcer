@@ -31,81 +31,50 @@ public class AttributesUtil {
         return null;
     }
 
+    static public SorcerServiceInfo getSorcerServiceInfo(Entry[] attributeSets) {
+        if (attributeSets != null && attributeSets.length > 0) {
+            for (Entry entry : attributeSets) {
+                if (entry instanceof SorcerServiceInfo) {
+                    return ((SorcerServiceInfo) entry);
+                }
+            }
+        }
+        return null;
+    }
+
 	static public String getGroups(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).groups;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.groups;
+        else return null;
 	}
 
 	static public String getProviderName(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).providerName;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.providerName;
+        else return null;
 	}
 
 	static public String getHostName(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).hostName;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.hostName;
+        else return null;
 	}
 
 	static public String getHostAddress(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).hostAddress;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.hostAddress;
+        else return null;
 	}
 
 	static public String getUserDir(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).serviceHome;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.serviceHome;
+        else return null;
 	}
 
 	static public String[] getPublishedServices(Entry[] attributeSets) {
-		if (attributeSets != null) {
-			if (attributeSets.length > 0) {
-				for (int i = 0; i < attributeSets.length - 1; i++) {
-					if (attributeSets[i] instanceof SorcerServiceInfo) {
-						return ((SorcerServiceInfo) attributeSets[i]).publishedServices;
-					}
-				}
-			}
-		}
-		return null;
+        SorcerServiceInfo ssi = getSorcerServiceInfo(attributeSets);
+        if (ssi!=null) return ssi.publishedServices;
+        else return null;
 	}
 }
