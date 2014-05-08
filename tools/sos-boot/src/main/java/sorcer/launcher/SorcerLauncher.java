@@ -31,6 +31,7 @@ import sorcer.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -56,12 +57,18 @@ public class SorcerLauncher extends Launcher {
         try {
             resolvers.add(new ProjectResolver());
             log.debug("Using Project Resolver");
-        } catch (Exception ignore) {
+        } catch (InvocationTargetException e) {
+            log.debug("Error", e.getCause());
+        } catch (Exception e) {
+            log.debug("Error", e);
         }
         try {
             resolvers.add(new OptionalResolver("sorcer.resolver.RepositoryArtifactResolver", new Class[]{String.class}, SorcerEnv.getRepoDir()));
             log.debug("Using Repository Resolver");
-        } catch (Exception ignore) {
+        } catch (InvocationTargetException e) {
+            log.debug("Error", e.getCause());
+        } catch (Exception e) {
+            log.debug("Error", e);
         }
         resolvers.add(new ConfigResolver() {
             @Override

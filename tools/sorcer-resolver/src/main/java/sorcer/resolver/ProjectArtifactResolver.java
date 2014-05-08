@@ -63,9 +63,11 @@ public class ProjectArtifactResolver implements ArtifactResolver {
                 continue;
             for (File other : result) {
                 //replace child with its parent
-                if (isParent(file, other))
+                if (isParent(file, other)) {
                     result.remove(other);
-                else if (isParent(other, file))
+                    result.add(file);
+                    continue FILE;
+                } else if (isParent(other, file))
                     // don't add file if its parent is in the result.
                     continue FILE;
             }
