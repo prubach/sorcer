@@ -27,9 +27,7 @@ import sorcer.util.JavaSystemProperties;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Rafał Krupiński
@@ -37,29 +35,53 @@ import java.util.List;
 public class ProjectArtifactResolver implements ArtifactResolver {
     private static final Logger log = LoggerFactory.getLogger(ProjectArtifactResolver.class);
 
-    private List<File> roots = new ArrayList<File>();
+    private Collection<File> roots;
 
     public ProjectArtifactResolver() throws IOException {
         File homeDir = SorcerEnv.getHomeDir().getCanonicalFile();
         File userDir = new File(System.getProperty(JavaSystemProperties.USER_DIR)).getCanonicalFile();
-        File extDir = SorcerEnv.getExtDir().getCanonicalFile();
-
-        String homePath = homeDir.getPath();
-        String userPath = userDir.getPath();
-        String extPath = extDir.getPath();
-
-        //if one directory is ancestor of another, use only the ancestor
-        if (homeDir.equals(userDir) || homePath.startsWith(userPath))
-            roots.add(userDir);
-        else if (userPath.startsWith(homePath))
-            roots.add(homeDir);
-        else {
-            roots.add(userDir);
-            roots.add(homeDir);
+        File extDir;
+        try {
+            extDir = SorcerEnv.getExtDir().getCanonicalFile();
+        } catch (IOException e) {
+            log.debug("Error canonizing path {}", SorcerEnv.getExtDir(), e);
+            extDir = null;
         }
-        //if SORCER_EXT points to a different directory add it
-        if (!extPath.equals(homePath))
-            roots.add(extDir);
+
+        roots = buildRoots(homeDir, userDir, extDir);
+
+        if (log.isDebugEnabled())
+            for (File root : roots)
+                log.debug("Artifact search root: {}", root);
+    }
+
+    private Collection<File> buildRoots(File... roots) {
+        Set<File> result = new HashSet<File>();
+        FILE:
+        for (File file : roots) {
+            if (file == null || !file.exists() || !file.isDirectory())
+                continue;
+            for (File other : result) {
+                //replace child with its parent
+                if (isParent(file, other))
+                    result.remove(other);
+                else if (isParent(other, file))
+                    // don't add file if its parent is in the result.
+                    continue FILE;
+            }
+            result.add(file);
+        }
+        return result;
+    }
+
+    private boolean isParent(File parent, File child) {
+        File f = child;
+        while ((f = f.getParentFile()) != null) {
+            if (f.equals(parent))
+                return true;
+
+        }
+        return false;
     }
 
     @Override
@@ -89,7 +111,7 @@ public class ProjectArtifactResolver implements ArtifactResolver {
 
     @Override
     public String getRootDir() {
-        return roots.get(0).getPath();
+        throw new UnsupportedOperationException();
     }
 
     @Override
