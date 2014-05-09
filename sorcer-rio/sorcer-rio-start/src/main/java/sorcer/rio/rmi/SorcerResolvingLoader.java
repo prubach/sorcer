@@ -91,6 +91,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         } catch (Exception fe) {
             logger.warn("Problem loading class: " + name + " from: " + resolvedCodebase + " " + fe.getMessage() + " - trying again");
+            logger.debug("Resolver error", fe);
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         }
     }
@@ -175,6 +176,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                     artifactURLConfiguration.getRepositories());
         } catch (Exception e) {
             logger.warn("Trying again to resolve: {}", artifactURLConfiguration.getArtifact());
+            logger.debug("Resolver error", e);
             /*for (RemoteRepository rr : artifactURLConfiguration.getRepositories()) {
                 rr.setSnapshotChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
                 rr.setReleaseChecksumPolicy(RemoteRepository.CHECKSUM_POLICY_IGNORE);
