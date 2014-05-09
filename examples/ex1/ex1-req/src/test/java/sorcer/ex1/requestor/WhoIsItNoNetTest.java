@@ -17,26 +17,16 @@
  */
 package sorcer.ex1.requestor;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
-import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.exertion.NetJob;
-import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.ObjectTask;
-import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.ex1.bean.WhoIsItBean1;
 import sorcer.ex1.provider.WhoIsItProvider1;
-import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
-import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.*;
-import sorcer.service.Signature.Type;
 
 import java.net.InetAddress;
 import java.util.logging.Logger;
@@ -67,7 +57,7 @@ public class WhoIsItNoNetTest {
     @Test
     public void helloObjectTask() throws Exception {
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
         Context context = new ServiceContext("Who Is It?");
@@ -82,16 +72,15 @@ public class WhoIsItNoNetTest {
         Exertion result = task.exert();
         if (result.getExceptions().size() > 0)
             logger.info("exceptions: " + result.getExceptions());
-        else {
-            logger.info("task context: " + result.getContext());
-            assertEquals(hostname, result.getContext().getValue("provider/hostname"));
-        }
+        assertTrue(result.getExceptions().isEmpty());
+        logger.info("task context: " + result.getContext());
+        assertEquals(hostname, result.getContext().getValue("provider/hostname"));
     }
 
 	@Test
 	public void execBatchTask() throws Exception {
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
         Context context = new ServiceContext("Who Is It?");

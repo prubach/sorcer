@@ -31,12 +31,12 @@ public class WorkerProvider extends ServiceTasker implements Worker {
 	private String hostName;
 	
 	public WorkerProvider() throws Exception {
-		hostName = SorcerEnv.getLocalHost().getHostName();
+		hostName = SorcerEnv.getHostName();
 	}
 	
 	public WorkerProvider(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
-		hostName = SorcerEnv.getLocalHost().getHostName();
+		hostName = SorcerEnv.getHostName();
 	}
 
 	public Context sayHi(Context context) throws RemoteException,
