@@ -52,6 +52,7 @@
         <v.ccli>1.2</v.ccli>
         <v.cio>2.4</v.cio>
         <v.guice>4.0-beta4</v.guice>
+        <v.maven>3.1.1</v.maven>
     </properties>
 
 	<modules>

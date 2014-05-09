@@ -98,6 +98,11 @@ logger("private", DEBUG)
 logger("sorcer.arithmetic", DEBUG)
 
 /*
+logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
+logger("sorcer.launcher.SorcerLauncher", DEBUG)
+*/
+
+/*
 logger("sorcer.boot", DEBUG)
 logger("sorcer.core.service", debug)
 logger("sorcer.tools.webster.start.WebsterStarter", debug)

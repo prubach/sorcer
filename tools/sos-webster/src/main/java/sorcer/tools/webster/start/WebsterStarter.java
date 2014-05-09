@@ -72,7 +72,7 @@ public class WebsterStarter implements DestroyAdmin {
                 throw new IllegalStateException("Could not start Webster");
             // if port is defined, use monitor() below to determine if local webster is running in another JVM
         } else {
-            log.info("Webster configured on a remote address");
+            log.info("Webster configured on a remote address: " + SorcerEnv.getWebsterUrlURL());
             ping(SorcerEnv.getWebsterUrlURL());
         }
 
@@ -130,7 +130,7 @@ public class WebsterStarter implements DestroyAdmin {
         String server = conn.getHeaderField("Server");
         log.debug("ping server = {}", server);
         if (!Webster.class.getName().equals(server) && !sorcer.tools.webster.Webster.class.getName().equals(server)) {
-            throw new IllegalStateException("Remote server on " + url + ":" + SorcerEnv.getWebsterPort() + " not a Webster, " + server);
+            throw new IllegalStateException("Remote server on " + url + " not a Webster, " + server);
         }
     }
 
@@ -186,6 +186,12 @@ public class WebsterStarter implements DestroyAdmin {
     }
 
     private boolean isLocal(String address) throws SocketException {
+        try {
+            boolean isLocal = InetAddress.getByName(address).isLoopbackAddress();
+            if (isLocal) return true;
+        } catch (UnknownHostException ue) {
+            log.warn("Problem checking if localhost: " + ue);
+        }
         return find(address, NetworkInterface.getNetworkInterfaces()) != null;
     }
 

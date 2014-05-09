@@ -122,6 +122,16 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>default-codebase-${v.sorcer}.pom</destName>
             </file>
+            <file>
+                <source>${basedir}/../sos/exertlet/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertlet-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos/sos-launch/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>sos-launch-${v.sorcer}.pom</destName>
+            </file>
 
             <!-- top-level poms for examples -->
             <file>
@@ -332,9 +342,34 @@
                 <destName>main-${v.rio}.pom</destName>
             </file>
             <file>
+                <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/5/commons-parent-5.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>commons-parent-5.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/20/commons-parent-20.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>commons-parent-20.pom</destName>
+            </file>
+            <file>
                 <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/32/commons-parent-32.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>commons-parent-32.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/maven/maven/${v.maven}/maven-${v.maven}.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>maven-${v.maven}.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/maven/maven-parent/23/maven-parent-23.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>maven-parent-23.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/codehaus/plexus/plexus/3.3/plexus-3.3.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>plexus-3.3.pom</destName>
             </file>
             <file>
                 <source>${user.home}/.m2/repository/org/apache/ant/ant/1.9.3/ant-1.9.3.pom</source>

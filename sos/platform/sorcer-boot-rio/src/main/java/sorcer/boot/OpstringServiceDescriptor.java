@@ -62,7 +62,7 @@ public class OpstringServiceDescriptor extends ResolvingServiceDescriptor {
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Malformed URI", e);
         } catch (ResolverException e) {
-            throw new IllegalStateException("Could not resolve artifact " + artifact);
+            throw new IllegalStateException("Could not resolve artifact " + artifact, e);
         }
     }
 
