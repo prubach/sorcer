@@ -67,7 +67,7 @@ import com.sun.jini.admin.DestroyAdmin;
 @SuppressWarnings("rawtypes")
 public class ProviderProxy implements Serializable {
 	private static final long serialVersionUID = -242006752320266252L;
-	protected final static Logger logger = Logger.getLogger("sorcer.test");
+	protected final static Logger logger = Logger.getLogger(ProviderProxy.class.getName());
 
 	/**
 	 * Public static factory method that creates and returns an instance of
