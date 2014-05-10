@@ -68,7 +68,7 @@ public class WhoIsItTest {
     @Test
     public void localhost() throws Exception {
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
         logger.info("inetAddress: " + inetAddress);
@@ -80,7 +80,7 @@ public class WhoIsItTest {
     public void helloNetworkTask() throws Exception {
         // using requestor/provider message types
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
 
         Context context = new ServiceContext("Who Is It?");
         context.putValue("requestor/message", new RequestorMessage("Hello Network!"));
@@ -107,7 +107,7 @@ public class WhoIsItTest {
     @Test
     public void exertBatchTask() throws Exception {
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
         String ipAddress = inetAddress.getHostAddress();
         String providername = "*";
 
@@ -142,7 +142,7 @@ public class WhoIsItTest {
 
         // define requestor data
         InetAddress inetAddress = SorcerEnv.getLocalHost();
-        String hostname = inetAddress.getHostName();
+        String hostname = SorcerEnv.getHostName();
         String ipAddress = inetAddress.getHostAddress();
 
         Context context1 = new ServiceContext("Who is it?");
