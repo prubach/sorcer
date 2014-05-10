@@ -122,6 +122,7 @@ public class ProviderDelegate {
 	private static Set visited;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProviderDelegate.class);
+	private static final Logger threadLogger = LoggerFactory.getLogger(ProviderDelegate.class.getName()+".threads");
 
 	private Logger remoteLogger;
 
@@ -1821,7 +1822,8 @@ public class ProviderDelegate {
                 }
                 for (Thread thread : spaceTakerThreads) {
                     if (thread.isAlive())
-                        thread.interrupt();
+//                        thread.interrupt();
+                        threadLogger.warn("Thread alive {}", thread);
                 }
             }
 		}
