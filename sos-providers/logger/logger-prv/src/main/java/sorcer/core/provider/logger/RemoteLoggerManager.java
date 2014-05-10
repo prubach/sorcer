@@ -35,6 +35,7 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class RemoteLoggerManager implements RemoteLogger {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(RemoteLoggerManager.class);
@@ -76,12 +77,19 @@ public class RemoteLoggerManager implements RemoteLogger {
         String loggerName;
         Logger logger;
         synchronized (this) {
-            loggerName = "remote." + loggingEvent.getLoggerName().intern();
+            loggerName = loggingEvent.getLoggerName();
             logger = loggerFactory.getLogger(loggerName);
             Appender<ILoggingEvent> appender = logger.getAppender(loggerName);
             if (appender == null) {
+                String hostname;
+                Map<String, String> mdc = loggingEvent.getMDCPropertyMap();
+                if (mdc.containsKey(KEY_HOSTNAME))
+                    hostname = mdc.get(KEY_HOSTNAME);
+                else
+                    hostname = "remote";
+
                 logger.setAdditive(false);
-                logger.addAppender(createAppender(loggerName));
+                logger.addAppender(createAppender(loggerName, hostname));
             }
         }
 
@@ -93,11 +101,11 @@ public class RemoteLoggerManager implements RemoteLogger {
         }
     }
 
-    private Appender<ILoggingEvent> createAppender(String loggerName) {
+    private Appender<ILoggingEvent> createAppender(String loggerName, String prefix) {
         Appender<ILoggingEvent> appender;
         FileAppender<ILoggingEvent> fileAppender = new FileAppender<ILoggingEvent>();
         fileAppender.setName(loggerName);
-        File file = new File(logDir, "remote-logger-" + loggerName + ".log");
+        File file = new File(logDir, prefix + "-" + loggerName + ".log");
         fileAppender.setFile(file.getPath());
         fileAppender.setContext(loggerFactory);
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();

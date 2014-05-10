@@ -29,6 +29,7 @@ import ch.qos.logback.classic.spi.LoggingEventVO;
 public interface RemoteLogger extends Remote {
 
     String LOGGER_CONTEXT_KEY = "SORCER-REMOTE-CALL";
+    String KEY_HOSTNAME = "hostname";
 
     public void publish(List<LoggingEventVO> record) throws RemoteException;
 
