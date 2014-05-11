@@ -6,7 +6,7 @@
     <groupId>org.sorcersoft.sorcer</groupId>
     <artifactId>sorcer</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-M5-SNAPSHOT</version>
+    <version>1.0-M5</version>
 
     <name>SORCER Project</name>
 
@@ -34,7 +34,8 @@
         <!-- required for site -->
         <v_sorcer>${project.version}</v_sorcer>
         <!-- Remember not to change it to snapshot, always make it the latest release-->
-        <v_sos_release>1.0-M4</v_sos_release>
+        <v_sos_release>1.0-M5</v_sos_release>
+        <v_sos_snapshot>1.0-M6-SNAPSHOT</v_sos_snapshot>
 		<v.jini>2.2.2</v.jini>
 		<v.blitz>2.3</v.blitz>
 		<!--<v.sleepycat>5.0.103</v.sleepycat>-->

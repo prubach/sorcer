@@ -36,25 +36,25 @@
 			<td>Sorcer ${v_sos_release} ZIP release</td>
 			<td>zip</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip/download">Download</a></td>
-                        <td>63 MB</td>
+                        <td>72 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}.zip.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
+                        <td align="center">11/05/2014</td>
                     </tr>
                     <tr>
 			<td>Sorcer ${v_sos_release} Windows setup</td>
 			<td>exe</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe/download">Download</a></td>
-                        <td>65 MB</td>
+                        <td>74 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.exe.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
+                        <td align="center">11/05/2014</td>
                     </tr>
 		    <tr>
 			<td>Sorcer ${v_sos_release} cross-platform setup</td>
 			<td>jar</td> 
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar/download">Download</a></td>
-                        <td>64 MB</td>
+                        <td>74 MB</td>
                         <td><a href="http://sourceforge.net/projects/sorcer/files/sorcer-${v_sos_release}/sorcer-${v_sos_release}-setup.jar.md5/download">MD5</a></td>
-                        <td align="center">01/04/2014</td>
+                        <td align="center">11/05/2014</td>
                     </tr>
                 </tbody>
             </table>
@@ -120,7 +120,7 @@
 	      </ul>
 	    </p>
 
-	     <h2>Sorcer ${v_sorcer}</h2>
+	     <h2>Sorcer ${v_sos_snapshot}</h2>
 	                <p>
                         If you would like to test a more feature rich but less stable version, please check out the current version on GitHub: <a href="https://github.com/sorcersoft/sorcer/">https://github.com/sorcersoft/sorcer</a>
                     </p>
