@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ import static sorcer.core.SorcerConstants.*;
 @SuppressWarnings("rawtypes")
 abstract public class ExertDispatcher implements Dispatcher,
 		Exec {
-    protected final static Logger logger = LoggerFactory.getLogger(ExertDispatcher.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected ServiceExertion xrt;
 
@@ -200,9 +200,8 @@ abstract public class ExertDispatcher implements Dispatcher,
                     dispatchExertions();
                 }
             } catch (Exception e) {
-                logger.info("Exertion dispatcher thread killed by exception");
+                logger.info("Exertion dispatcher thread killed by exception", e);
 				interrupt();
-				e.printStackTrace();
 				xrt.setStatus(FAILED);
 				state = FAILED;
 				xrt.reportException(e);
@@ -285,8 +284,8 @@ abstract public class ExertDispatcher implements Dispatcher,
 		int argIndex = -1;
 		try {
 			Hashtable toInMap = Contexts.getInPathsMap(toContext);
-			logger.info("**************** updating inputs in context toContext = " + toContext);
-			logger.info("**************** updating based on = " + toInMap);
+			logger.info("updating inputs in context toContext = {}", toContext);
+			logger.info("updating based on = {}", toInMap);
 			for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
 				toPath = (String) e.nextElement();
 				// find argument for parametric context
@@ -298,16 +297,16 @@ abstract public class ExertDispatcher implements Dispatcher,
 					}
 				}
 				toPathcp = (String) toInMap.get(toPath);
-				logger.info("**************** toPathcp = " + toPathcp);
+				logger.info("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-				logger.info("**************** context ID = " + Contexts.getContextParameterID(toPathcp));
+				logger.info("context ID = {}", Contexts.getContextParameterID(toPathcp));
 				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
-				logger.info("**************** fromContext = " + fromContext);
-				logger.info("**************** before updating toContext: " + toContext
+				logger.info("fromContext = {}", fromContext);
+				logger.info("before updating toContext: {}", toContext
 						+ "\n>>> TO path: " + toPath + "\nfromContext: "
 						+ fromContext + "\n>>> FROM path: " + fromPath);
                 if (fromContext != null) {
-					logger.info("**************** updating toContext: " + toContext
+					logger.info("updating toContext: {}", toContext
 							+ "\n>>> TO path: " + toPath + "\nfromContext: "
 							+ fromContext + "\n>>> FROM path: " + fromPath);
                     // make parametric substitution if needed
@@ -327,7 +326,7 @@ abstract public class ExertDispatcher implements Dispatcher,
                         // make contextual substitution
                         Contexts.copyValue(fromContext, fromPath, toContext, toPath);
                     }
-//					logger.info("**************** updated dataContext:\n" + toContext);
+//					logger.info("updated dataContext:\n" + toContext);
                 }
             }
         } catch (Exception ex) {

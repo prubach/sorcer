@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -87,15 +88,15 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
     }
 
     private Exertion register(Exertion exertion) throws Exception {
-        RemoteEventListener l = (RemoteEventListener) (new ResultListener()
-                .export());
+        RemoteEventListener l = (RemoteEventListener) new ResultListener()
+                .export();
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(l,
                 exertion, LEASE_RENEWAL_PERIOD));
 
         MonitoringSession session = registeredExertion.getMonitorSession();
-        logger.info("Session for the exertion =" + session);
-        logger.info("Lease to be renewed for duration ="
-                + (session.getLease().getExpiration() - System
+        logger.info("Session for the exertion = {}", session);
+        logger.info("Lease to be renewed for duration = {}",
+                (session.getLease().getExpiration() - System
                 .currentTimeMillis()));
         lrm.renewUntil(session.getLease(), Lease.ANY, null);
         return registeredExertion;
@@ -221,19 +222,13 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
         }
 
-        public ResultListener(String type) {
-
-        }
-
         public void notify(RemoteEvent re) throws RemoteException {
             try {
-                logger.info("Recieved Remote event from the exert monitor: {}", re);
-                if (!(((MonitorEvent) re).getExertion() instanceof Exertion))
-                    postExecExertion(((MonitorEvent) re)
-                            .getExertion());
-            } catch (Exception e) {
-                e.printStackTrace();
+                logger.info("Received Remote event from the exert monitor: {}", re);
+                postExecExertion(((MonitorEvent)re).getExertion());
+            } catch (ExertionException e) {
                 xrt.setStatus(FAILED);
+                xrt.reportException(e);
                 state = FAILED;
             }
         }
