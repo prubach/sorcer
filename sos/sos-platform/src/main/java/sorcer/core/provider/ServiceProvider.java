@@ -1582,7 +1582,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	// task/job monitoring API
 	public void stop(UEID ref, Subject subject) throws RemoteException,
-			UnknownExertionException, AccessDeniedException {
+			UnknownExertionException {
 		delegate.stop(ref, subject);
 	}
 
@@ -1598,21 +1598,14 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 *             if there is a communication error
 	 * 
 	 */
-
 	public void suspend(UEID ref, Subject subject) throws RemoteException,
-			UnknownExertionException, AccessDeniedException {
+			UnknownExertionException {
 		delegate.suspend(ref, subject);
 	}
 
 	/**
 	 * Resume if the resume functionality is supported by the provider Else
 	 * start from the begining.
-	 * 
-	 * @throws sorcer.service.UnknownExertionException
-	 *             if the exertion is not executed by this provider.
-	 * 
-	 * @throws java.rmi.RemoteException
-	 *             if there is a communication error
 	 * 
 	 */
 	public void resume(Exertion ex) throws RemoteException, ExertionException {
@@ -1622,28 +1615,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	/**
 	 * Step if the step functionality is supported by the provider Else start
 	 * from the begining.
-	 * 
-	 * @throws sorcer.service.UnknownExertionException
-	 *             if the exertion is not executed by this provider.
-	 * 
-	 * @throws java.rmi.RemoteException
-	 *             if there is a communication error
-	 * 
 	 */
 	public void step(Exertion ex) throws RemoteException, ExertionException {
 		service(ex);
-	}
-
-	/**
-	 * Calls the delegate to update the monitor with the current context.
-	 * 
-	 * @param context
-	 * @throws MonitorException
-	 * @throws RemoteException
-	 */
-	public void changed(Context<?> context, Object aspect) throws RemoteException,
-			MonitorException {
-        getMonitoringSession(context.getExertion().getControlContext()).changed(context, aspect);
 	}
 
     /**

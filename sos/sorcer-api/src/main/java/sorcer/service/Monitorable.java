@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -48,7 +49,7 @@ public interface Monitorable {
 	 */
 
 	public void stop(UEID ref, Subject subject) throws RemoteException,
-			UnknownExertionException, AccessDeniedException;
+			UnknownExertionException;
 
 	/**
 	 * MonitorManagers call suspend a MonitorableService. Once suspend is
@@ -64,13 +65,13 @@ public interface Monitorable {
 	 */
 
 	public void suspend(UEID ref, Subject subject) throws RemoteException,
-			UnknownExertionException, AccessDeniedException;
+			UnknownExertionException;
 
 	/**
 	 * Resume if the resume functionality is supported by the monitorables. Else
 	 * start from the begining.
 	 * 
-	 * @throws UnknownExertionException
+	 * @throws ExertionException
 	 *             if the exertion is not executed by this provider.
 	 * 
 	 * @throws RemoteException
@@ -83,7 +84,7 @@ public interface Monitorable {
 	 * Step if the step functionality is supported by the monitorables. Else
 	 * start from the begining.
 	 * 
-	 * @throws UnknownExertionException
+	 * @throws ExertionException
 	 *             if the exertion is not executed by this provider.
 	 * 
 	 * @throws RemoteException

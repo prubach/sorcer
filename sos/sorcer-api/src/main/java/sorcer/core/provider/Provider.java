@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,8 +28,6 @@ import java.util.logging.Logger;
 import net.jini.admin.Administrable;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.MonitorException;
 import sorcer.service.Monitorable;
 import sorcer.service.Service;
 import sorcer.service.Signature;
@@ -112,15 +111,6 @@ public interface Provider extends Service, Monitorable, Administrable, Remote {
 			throws RemoteException;
 
 	public Properties getJavaSystemProperties() throws RemoteException;
-
-	/**
-	 * Updates the monitor with the current context.
-	 * 
-	 * @param ctx
-	 * @throws RemoteException
-	 * @throws ExertionException
-	 */
-	public void changed(Context<?> ctx, Object aspect) throws RemoteException, MonitorException;
 
 	/**
 	 * For testing purposes only in order to delay execution of service

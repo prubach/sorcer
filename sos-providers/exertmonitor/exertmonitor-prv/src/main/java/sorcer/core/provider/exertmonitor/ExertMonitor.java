@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class ExertMonitor extends ServiceProvider implements
 				}
 			}
 		}
-        logger.fine("Opening BDBJE environment in: " + dbHomeFile.getAbsolutePath());
+        logger.fine("Opening BDBJE environment in: " + dbHomeFile);
 		db = new SessionDatabase(dbHome);
 		SessionDatabaseViews views = new SessionDatabaseViews(db);
 		resources = views.getSessionMap();
@@ -87,30 +87,6 @@ public class ExertMonitor extends ServiceProvider implements
 		// statically initialize
 		MonitorSession.mLandlord = landlord;
 		MonitorSession.sessionManager = (MonitoringManagement) getServiceProxy();
-	}
-
-	public void stop(UEID ref, SorcerPrincipal principal)
-			throws RemoteException, UnknownExertionException,
-			AccessDeniedException {
-
-	}
-
-	public void suspend(UEID ref, SorcerPrincipal principal)
-			throws RemoteException, UnknownExertionException,
-			AccessDeniedException {
-
-	}
-
-	public void resume(UEID ref, SorcerPrincipal principal)
-			throws RemoteException, UnknownExertionException,
-			AccessDeniedException {
-
-	}
-
-	public void step(UEID ref, SorcerPrincipal principal)
-			throws RemoteException, UnknownExertionException,
-			AccessDeniedException {
-
 	}
 
 	final Object resourcesWriteLock = new Object();
@@ -373,7 +349,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 * 
 	 * @throws RemoteException
 	 *             if there is a communication error
-	 * @throws ExertionException
+	 * @throws MonitorException
 	 * 
 	 */
 	public Map<Uuid, ExertionInfo> getMonitorableExertionInfo(
@@ -381,13 +357,6 @@ public class ExertMonitor extends ServiceProvider implements
 			MonitorException {
 		Map<Uuid, ExertionInfo> table = new HashMap<Uuid, ExertionInfo>();
 		try {
-			Iterator<Map.Entry<UuidKey, IMonitorSession>> si = resources.entrySet().iterator();
-//			Map.Entry<Uuid, MonitorSession> next;
-//			while (si.hasNext()) {
-//				next = si.next();
-//				System.out.println("session cookie: " + next.getKey());
-//				System.out.println("session info: " + next.getValue());
-//			}
 			Iterator<UuidKey> ki = resources.keySet().iterator();
 			UuidKey key;
 			while (ki.hasNext()) {
@@ -421,9 +390,6 @@ public class ExertMonitor extends ServiceProvider implements
 	/**
 	 * For this reference ID, which references a exertion in a monitor, get the
 	 * exertion if the client has enough credentials.
-	 * 
-	 * @throws AccessDeniedException
-	 *             if the client does not have enough credentials.
 	 * 
 	 * @throws RemoteException
 	 *             if there is a communication error
@@ -501,18 +467,6 @@ public class ExertMonitor extends ServiceProvider implements
 			return (MonitorSession) resources.get(new UuidKey(key));
 		} catch (Exception e) {
 			throw new MonitorException(e);
-		}
-	}
-	
-	private void printSessions() throws IOException, ClassNotFoundException {
-		// testing
-		Iterator<Map.Entry<UuidKey, IMonitorSession>> mei = resources
-				.entrySet().iterator();
-		Map.Entry<UuidKey, IMonitorSession> entry = null;
-		while (mei.hasNext()) {
-			entry = mei.next();
-			logger.fine("session cookie: " + entry.getKey().getId()
-					+ ":" + entry.getValue().getInitialExertion().getName());
 		}
 	}
 }

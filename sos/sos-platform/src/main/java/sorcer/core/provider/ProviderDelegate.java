@@ -1949,7 +1949,7 @@ public class ProviderDelegate {
 
 	// task/job monitoring API
 	public void stop(UEID ueid, Subject subject)
-			throws UnknownExertionException, AccessDeniedException {
+			throws UnknownExertionException {
 
 		// if (ueid.sid == null || !ueid.sid.equals(serviceID))
 		// throw new UnknownExertionException(" ServiceID does not match
@@ -1961,8 +1961,7 @@ public class ProviderDelegate {
 						" No exertion exists corresponding to "
 								+ ueid.asString());
 
-			exertionStateTable.put(ueid.exertionID, new Integer(
-					Exec.STOPPED));
+			exertionStateTable.put(ueid.exertionID, Exec.STOPPED);
 		}
 	}
 
@@ -1979,8 +1978,7 @@ public class ProviderDelegate {
 						" No exertion exists corresponding to "
 								+ ueid.asString());
 
-			exertionStateTable.put(ueid.exertionID, new Integer(
-					Exec.SUSPENDED));
+			exertionStateTable.put(ueid.exertionID, Exec.SUSPENDED);
 		}
 
 		return true;
