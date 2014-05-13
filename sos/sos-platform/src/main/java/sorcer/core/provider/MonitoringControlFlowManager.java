@@ -18,6 +18,7 @@ package sorcer.core.provider;
 
 import com.sun.jini.thread.TaskManager;
 import net.jini.core.lease.Lease;
+import net.jini.core.lease.UnknownLeaseException;
 import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +54,8 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
     @Override
     public Exertion process(TaskManager taskManager) throws ExertionException {
-        ProviderDelegate.ExertionSessionInfo.add((ServiceExertion) exertion);
         try {
-            super.exertion = register(exertion);
+            exertion = register(exertion);
         } catch (RemoteException e) {
             throw new ExertionException(e);
         }
@@ -87,7 +87,11 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
             log.error(msg,e);
             throw new IllegalStateException(msg, e);
         } finally {
-            ProviderDelegate.ExertionSessionInfo.removeLease();
+            try {
+                lrm.remove(monSession.getLease());
+            } catch (UnknownLeaseException e) {
+                log.debug("Error while removing lease for {}", exertion.getName(), e);
+            }
         }
     }
 

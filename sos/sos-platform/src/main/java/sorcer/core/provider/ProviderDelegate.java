@@ -297,51 +297,6 @@ public class ProviderDelegate {
 
     private IServiceBuilder serviceBuilder;
 
-	/*
-	 * A nested class to hold the state information of the executing thread for
-	 * a served exertion.
-	 */
-	public static class ExertionSessionInfo {
-
-		static LeaseRenewalManager lrm = new LeaseRenewalManager();
-
-		private static class ExertionSessionBundle {
-			public Uuid exertionID;
-			public MonitoringSession session;
-		}
-
-		private static final ThreadLocal<ExertionSessionBundle> tl = new ThreadLocal<ExertionSessionBundle>() {
-			@Override
-			protected ExertionSessionBundle initialValue() {
-				return new ExertionSessionBundle();
-			}
-		};
-
-		public static void add(ServiceExertion ex) {
-			ExertionSessionBundle esb = tl.get();
-			esb.exertionID = ex.getId();
-            MonitoringSession monSession = getMonitoringSession(ex);
-            esb.session = monSession;
-			if (monSession != null)
-				lrm.renewUntil(
-						monSession.getLease(),
-						Lease.ANY, null);
-		}
-
-		public static Uuid getID() {
-			ExertionSessionBundle esb = tl.get();
-			return (esb != null) ? esb.exertionID : null;
-		}
-
-        public static void removeLease() {
-			ExertionSessionBundle esb = tl.get();
-			try {
-				lrm.remove(esb.session.getLease());
-			} catch (Exception e) {
-			}
-		}
-	}
-
 	public ProviderDelegate(IServiceBeanListener beanListener, IServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
         this.serviceBuilder = serviceBuilder;
