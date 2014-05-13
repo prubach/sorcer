@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Task;
+
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 
@@ -71,7 +73,7 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 			if (result.getStatus() <= FAILED) {
 				xrt.setStatus(FAILED);
 				state = FAILED;
-				xrt.getMonitorSession().changed(result.getContext(),
+				getMonitoringSession(xrt).changed(result.getContext(),
 						State.FAILED);
 				ExertionException fe = new ExertionException(this.getClass()
 						.getName() + " received failed task", result);
@@ -81,13 +83,14 @@ public class MonitoredTaskDispatcher extends MonitoredExertDispatcher {
 				notifyExertionExecution(xrt, result);
 				state = DONE;
 				xrt.setStatus(DONE);
-				xrt.getMonitorSession().changed(result.getContext(),
+				getMonitoringSession(xrt).changed(result.getContext(),
 						State.DONE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExertionException ne = new ExertionException(e);
-			result.reportException(ne);
+            if (result != null)
+			    result.reportException(ne);
 			throw ne;
 		}
 		postExecExertion(xrt);

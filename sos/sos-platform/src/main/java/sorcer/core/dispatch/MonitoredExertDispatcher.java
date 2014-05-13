@@ -43,6 +43,8 @@ import sorcer.core.provider.ProviderDelegate.ExertionSessionInfo;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.monitor.MonitoringSession;
 
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
+
 public abstract class MonitoredExertDispatcher extends ExertDispatcher
         implements SorcerConstants {
 
@@ -72,7 +74,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
 
         // make the monitor session of this exertion active
         logger.debug("Dispatching task now: " + xrt.getName());
-        MonitoringSession session = xrt.getMonitorSession();
+        MonitoringSession session = getMonitoringSession(xrt);
         session.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                 DEFAULT_TIMEOUT_PERIOD);
         lrm.renewUntil(session.getLease(), Lease.ANY, null);
@@ -93,7 +95,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(l,
                 exertion, LEASE_RENEWAL_PERIOD));
 
-        MonitoringSession session = registeredExertion.getMonitorSession();
+        MonitoringSession session = getMonitoringSession(registeredExertion);
         logger.info("Session for the exertion = {}", session);
         logger.info("Lease to be renewed for duration = {}",
                 (session.getLease().getExpiration() - System
@@ -152,14 +154,14 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
         } catch (Exception ex) {
             ex.printStackTrace();
             ei.reportException(ex);
+            if (ei.isTask())
             try {
-                if (ei.isTask())
-                    exertion.getMonitorSession()
+                    getMonitoringSession(exertion.getControlContext())
                             .changed(exertion.getContext(), State.FAILED);
             } catch (Exception ex0) {
-                ex0.printStackTrace();
+                logger.warn("Error while updating monitor", ex0);
             } finally {
-                ((ServiceExertion)exertion).setStatus(FAILED);
+                ei.setStatus(FAILED);
             }
         }
 
@@ -190,8 +192,7 @@ public abstract class MonitoredExertDispatcher extends ExertDispatcher
             } else {
                 // setTaskProvider(task, provider.getProviderName());
                 logger.info("Servicing task now ...");
-                MonitoringSession session = task
-                        .getMonitorSession();
+                MonitoringSession session = getMonitoringSession(task);
                 session.init((Monitorable) provider, LEASE_RENEWAL_PERIOD,
                         DEFAULT_TIMEOUT_PERIOD);
                 lrm.renewUntil(session.getLease(), Lease.ANY, null);

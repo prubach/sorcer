@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import sorcer.util.Stopwatch;
 import static sorcer.core.SorcerConstants.*;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class ControlContext extends ServiceContext implements Strategy {
+public class ControlContext extends ServiceContext<Object> implements Strategy, IControlContext {
 
 	private static final long serialVersionUID = 7280700425027799253L;
 
@@ -299,34 +299,41 @@ public class ControlContext extends ServiceContext implements Strategy {
 			put(EXERTION_FLOW, type);
 	}
 
-	public boolean isMonitorable() {
+	@Override
+    public boolean isMonitorable() {
 		return Boolean.TRUE.equals(get(EXERTION_MONITORABLE));
 	}
 
-	public void isMonitorable(Monitor value) {
+	@Override
+    public void isMonitorable(Monitor value) {
 		if (Monitor.YES.equals(value) || Monitor.TRUE.equals(value))
 				put(EXERTION_MONITORABLE, true);
 		else if (Monitor.NO.equals(value) || Monitor.FALSE.equals(value))
 			put(EXERTION_MONITORABLE, false);
 	}
 
-	public void setMonitorable(boolean state) {
+	@Override
+    public void setMonitorable(boolean state) {
 		put(EXERTION_MONITORABLE, new Boolean(state));
 	}
 	
-	public boolean isProvisionable() {
+	@Override
+    public boolean isProvisionable() {
 		return Boolean.TRUE.equals(get(EXERTION_PROVISIONABLE));
 	}
 
-	public void setProvisionable(boolean state) {
+	@Override
+    public void setProvisionable(boolean state) {
 		put(EXERTION_PROVISIONABLE, new Boolean(state));
 	}
 	
-	public void setOpti(Opti optiType) {
+	@Override
+    public void setOpti(Opti optiType) {
 		put(EXERTION_OPTI, optiType);
 	}
 	
-	public Opti getOpti() {
+	@Override
+    public Opti getOpti() {
 		return (Opti)get(EXERTION_OPTI);
 	}
 
@@ -342,7 +349,8 @@ public class ControlContext extends ServiceContext implements Strategy {
 		return (MonitoringManagement) get(EXERTION_MONITORING);
 	}
 
-	public void setMonitor(MonitoringManagement monitor) {
+	@Override
+    public void setMonitor(MonitoringManagement monitor) {
 		put(EXERTION_MONITORING, monitor);
 	}
 

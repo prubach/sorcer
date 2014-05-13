@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +38,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static sorcer.service.monitor.MonitorUtil.setMonitorSession;
 
 public class MonitorSession extends ArrayList<MonitorSession> implements
 		MonitorLandlord.MonitorLeasedResource, Serializable, IMonitorSession {
@@ -119,7 +120,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			setExpiration(mLandlord.getExpiration(duration));
 			lease = mLandlord.newLease(this);
 		}
-		runtimeExertion.setMonitorSession(new MonitorableSession(
+        setMonitorSession(runtimeExertion, new MonitorableSession(
 				sessionManager, cookie, lease));
 	}
 
@@ -137,11 +138,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		this.parentResource = parentSession;
 		this.listener = parentSession.getListener();
 		init();
-
-		((ServiceExertion) runtimeXrt)
-				.setMonitorSession(new MonitorableSession(sessionManager,
+        setMonitorSession(runtimeXrt, new MonitorableSession(sessionManager,
 						cookie));
-
 	}
 
 	public void restore() {

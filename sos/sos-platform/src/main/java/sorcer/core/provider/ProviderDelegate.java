@@ -1,7 +1,8 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -97,6 +98,7 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * There are two types of SORCER service servers: generic service servers -
@@ -318,10 +320,11 @@ public class ProviderDelegate {
 		public static void add(ServiceExertion ex) {
 			ExertionSessionBundle esb = tl.get();
 			esb.exertionID = ex.getId();
-			esb.session = ex.getMonitorSession();
-			if (ex.getMonitorSession() != null)
+            MonitoringSession monSession = getMonitoringSession(ex);
+            esb.session = monSession;
+			if (monSession != null)
 				lrm.renewUntil(
-						ex.getMonitorSession().getLease(),
+						monSession.getLease(),
 						Lease.ANY, null);
 		}
 

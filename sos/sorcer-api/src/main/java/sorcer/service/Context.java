@@ -2,6 +2,7 @@
  * Copyright 2009 the original author or authors.
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -609,11 +610,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * @see #getValue
 	 */
 	public Object[] getContextMapping(String path) throws ContextException;
-
-	/**
-	 * Records this context in related monitoring session.
-	 **/
-	public void checkpoint() throws ContextException;
 
 	/**
 	 * Annotates the path with the tuple (value sequence) specified by a

@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import java.util.List;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
+import sorcer.core.context.IControlContext;
 import sorcer.core.context.ThrowableTrace;
-import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
@@ -164,7 +164,7 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * @return a control context
 	 * @see #getSignatures
 	 */
-	public Context getControlContext();
+	public IControlContext getControlContext();
 	
 	/**
 	 * Returns a process signature, all pre-processing, post-processing, and
@@ -364,8 +364,6 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
     int getIndex();
 
     void setIndex(int i);
-
-    MonitoringSession getMonitorSession();
 
     Uuid getParentId();
 }

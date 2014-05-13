@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1107,33 +1107,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		status = state;
 	}
 
-	/**
-	 * <p>
-	 * Returns the monitor session of this exertion.
-	 * </p>
-	 * 
-	 * @return the monitorSession
-	 */
-	@Override
-	public MonitoringSession getMonitorSession() {
-		return monitorSession;
-	}
-
-	/**
-	 * <p>
-	 * Assigns a monitor session for this exertions.
-	 * </p>
-	 * 
-	 * @param monitorSession
-	 *            the monitorSession to set
-	 */
-	public void setMonitorSession(MonitoringSession monitorSession) {
-		this.monitorSession = monitorSession;
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see sorcer.service.Evaluation#getValue()
 	 */
 	public Object getValue(Arg... entries) throws EvaluationException,

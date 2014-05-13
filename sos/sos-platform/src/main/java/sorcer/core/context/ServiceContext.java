@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2765,41 +2765,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public T get(String path) {
 		return super.get(path);
-	}
-
-    /**
-     * Record this context as updated if the related exertion is monitored.
-     *
-     * @throws java.rmi.RemoteException
-     * @throws sorcer.service.MonitorException
-     */
-    public void checkpoint() throws ContextException {
-        Exertion mxrt = getExertion();
-        if (mxrt != null && mxrt.isMonitorable()
-                && mxrt.getMonitorSession() != null) {
-            try {
-                putValue("context/checkpoint/time", StringUtils.getDateTime());
-                mxrt.getMonitorSession().changed(this, Exec.State.UPDATED);
-            } catch (Exception e) {
-                throw new ContextException(e);
-            }
-        }
-    }
-
-    /**
-     * Record this context acording to the corresponding aspect if the related
-     * exertion is monitored.
-     *
-     * @throws java.rmi.RemoteException
-     * @throws sorcer.service.MonitorException
-     */
-    public void changed(Exec.State aspect) throws RemoteException,
-            MonitorException {
-        Exertion mxrt = getExertion();
-        if (mxrt != null && mxrt.isMonitorable()
-                && mxrt.getMonitorSession() != null) {
-            mxrt.getMonitorSession().changed(this, aspect);
-        }
     }
 
 	public T asis(String path) throws ContextException {

@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,38 +17,21 @@
  */
 package sorcer.arithmetic.provider;
 
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
-import sorcer.arithmetic.provider.ui.CalculatorUI;
 import sorcer.core.provider.Provider;
-import sorcer.core.SorcerEnv;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.MonitorException;
-import sorcer.ui.serviceui.UIComponentFactory;
-import sorcer.ui.serviceui.UIDescriptorFactory;
 
+import static sorcer.service.monitor.MonitorUtil.checkpoint;
 
 public class AdderImpl implements Adder {
 	private Arithmometer arithmometer = new Arithmometer();
 	private Provider provider;
 	private Logger logger = Logger.getLogger(AdderImpl.class.getName());
 	
-	public void init(Provider provider) {
-		this.provider = provider;
-		try {
-			logger = provider.getLogger();
-		} catch (RemoteException e) {
-			// ignore it, local call
-		}
-	}
-	
-	public Context add(Context context) throws RemoteException,
-			ContextException, MonitorException {
+	public Context add(Context context) throws RemoteException, ContextException {
 		Context out = arithmometer.add(context);
 		logger.info("add result: " + out);
 		
@@ -63,7 +46,7 @@ public class AdderImpl implements Adder {
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
-//		out.checkpoint();
+		checkpoint(out);
 //		Logger remoteLogger =  provider.getRemoteLogger();
 //		remoteLogger.info("remote logging; add result: " + out);
 		
