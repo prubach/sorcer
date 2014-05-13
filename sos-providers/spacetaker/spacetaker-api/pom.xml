@@ -33,13 +33,13 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-api</artifactId>
-            <version>1.0-M5-SNAPSHOT</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <parent>
         <groupId>org.sorcersoft.sorcer</groupId>
         <artifactId>spacetaker</artifactId>
-        <version>1.0-M5-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>spacetaker-api</artifactId>
