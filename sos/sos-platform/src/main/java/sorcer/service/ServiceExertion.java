@@ -86,8 +86,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	protected Uuid sessionId;
 
-	protected MonitoringSession monitorSession;
-
 	/** position of Exertion in a job */
 	protected Integer index;
 

@@ -328,11 +328,6 @@ public class ProviderDelegate {
 						Lease.ANY, null);
 		}
 
-		public static MonitoringSession getSession() {
-			ExertionSessionBundle esb = tl.get();
-			return (esb != null) ? esb.session : null;
-		}
-
 		public static Uuid getID() {
 			ExertionSessionBundle esb = tl.get();
 			return (esb != null) ? esb.exertionID : null;
@@ -1995,21 +1990,6 @@ public class ProviderDelegate {
 	public void notifyWarning(Exertion task, String message)
 			throws RemoteException {
 		notify(task, NOTIFY_WARNING, message);
-	}
-
-	/**
-	 * Indicates the change of the monitored service context.
-	 * 
-	 * @param sc
-	 *            the service context
-	 * @throws MonitorException
-	 * @throws RemoteException
-	 */
-	public void changed(Context sc, Object aspect) throws RemoteException,
-			MonitorException {
-		MonitoringSession session = ExertionSessionInfo.getSession();
-		if (session != null)
-			session.changed(sc, aspect);
 	}
 
 	// task/job monitoring API

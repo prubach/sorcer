@@ -255,8 +255,14 @@ public class ProviderProxy implements Serializable {
                     obj = m.invoke(proxy, args);
                 }
             } catch (InvocationTargetException ie) {
-                if (ie.getCause() instanceof ConnectException) {
+                Throwable cause = ie.getCause();
+                if (cause instanceof ConnectException) {
                     logger.log(Level.WARNING, "Proxy Connection problem to : " + proxyID + " to perform: " + m + " for args: "+ Arrays.toString(args), ie);
+                }
+                List<Class<?>> throwableTypes = Arrays.asList(m.getExceptionTypes());
+                for (Class<?> throwableType : throwableTypes) {
+                    if(throwableType.isInstance(cause))
+                        throw cause;
                 }
                 throw ie;
 
