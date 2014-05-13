@@ -516,7 +516,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	// Event firing mechanism
 	private void fireRemoteEvent() {
-		try {			
+        if (listener != null)
+        try {
 			MonitorEvent event = new MonitorEvent(sessionManager,
 					runtimeExertion, runtimeExertion.getStatus());
 			eventPool.submit(new MonitorEventTask(event, listener));

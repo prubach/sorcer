@@ -69,7 +69,6 @@ import org.slf4j.LoggerFactory;
 import sorcer.core.*;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.dispatch.MonitoredTaskDispatcher;
 import sorcer.core.provider.container.ProviderServiceBuilder;
 import sorcer.core.provider.container.ServiceProviderBeanListener;
 import sorcer.core.proxy.Outer;
@@ -88,6 +87,7 @@ import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency
@@ -1358,31 +1358,13 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			cfm = new ControlFlowManager(exertion, delegate, (Spacer) this);
 		} else if (this instanceof Concatenator) {
 			cfm = new ControlFlowManager(exertion, delegate, (Concatenator) this);
-		} else if (exertion instanceof Task && exertion.isMonitorable()) {
-			if (exertion.isWaitable())
-				return doMonitoredTask(exertion, null);
-			else {
-				// asynchronous execution
-				Thread dt = new Thread(new Runnable() {
-					public void run() {
-						doMonitoredTask(exertion, null);
-					}
-                }, "[" + Thread.currentThread().getName() + "] " + getName() + "-doMonitoredTask-" + exertion.getName());
-                try {
-					exertion.getContext().putValue(
-							ControlContext.EXERTION_WAITED_FROM,
-							StringUtils.getDateTime());
-				} catch (ContextException e) {
-					// ignore it
-					e.printStackTrace();
-				}
-				dt.setDaemon(true);
-				dt.start();
-				return exertion;
-			}
-		} else {
-			cfm = new ControlFlowManager(exertion, delegate);
-		}
+		} else if (exertion instanceof Task) {
+            if (exertion.isMonitorable())
+                cfm = new MonitoringControlFlowManager(exertion, delegate);
+            else
+                cfm = new ControlFlowManager(exertion, delegate);
+        } else
+            throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
 		return cfm.process(threadManager);
 	}
 
@@ -1661,7 +1643,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	public void changed(Context<?> context, Object aspect) throws RemoteException,
 			MonitorException {
-		delegate.changed(context, aspect);
+        getMonitoringSession(context.getExertion().getControlContext()).changed(context, aspect);
 	}
 
     /**
@@ -1869,22 +1851,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	}
 
 	private final int SLEEP_TIME = 250;
-
-	public Exertion doMonitoredTask(Exertion task, Transaction txn) {
-		MonitoredTaskDispatcher dispatcher = null;
-		try {
-			dispatcher = new MonitoredTaskDispatcher(task, null, false, this, null, null);
-			while (dispatcher.getState() != Exec.DONE
-					&& dispatcher.getState() != Exec.FAILED
-					&& dispatcher.getState() != Exec.SUSPENDED) {
-				Thread.sleep(SLEEP_TIME);
-			}
-        } catch (Throwable e) {
-            logger.warn("Error while dispatching task", e);
-            ((ControlContext)task.getControlContext()).addException(e);
-		}
-		return dispatcher.getExertion();
-	}
 
     @Inject
     public void setServiceBeanListener(IServiceBeanListener serviceBeanListener) {
