@@ -37,6 +37,7 @@ class SpaceWorker implements Runnable {
         Entry result = doEnvelope(ee, (txnCreated == null) ? null
                 : txnCreated.transaction);
 
+/*
         if (result != null) {
             try {
                 space.write(result, null, Lease.FOREVER);
@@ -75,9 +76,11 @@ class SpaceWorker implements Runnable {
             }
         }
         doThreadMonitorWorker(threadId);
+*/
     }
 
     public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction) {
+/*
         ServiceExertion se;
         ServiceExertion out;
         try {
@@ -116,6 +119,7 @@ class SpaceWorker implements Runnable {
             }
             ((ServiceExertion) ee.exertion).reportException(th);
         }
+*/
         return ee;
     }
 }

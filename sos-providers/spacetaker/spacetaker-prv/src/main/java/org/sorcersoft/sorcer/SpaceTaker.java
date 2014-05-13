@@ -18,8 +18,6 @@ package org.sorcersoft.sorcer;
 
 import com.sun.jini.admin.DestroyAdmin;
 import net.jini.core.transaction.Transaction;
-import net.jini.core.transaction.TransactionException;
-import net.jini.entry.UnusableEntriesException;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +25,6 @@ import sorcer.config.ConfigEntry;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.outrigger.SpaceTakerConfiguration2;
-import sorcer.core.service.ThreadFactoryConfig;
 import sorcer.river.TX;
 import sorcer.service.ConfigurationException;
 
@@ -49,7 +46,8 @@ public class SpaceTaker implements DestroyAdmin {
 
     private ThreadPoolExecutor spaceExecutor;
 
-    @ThreadFactoryConfig
+    //@ThreadFactoryConfig
+    @Inject
     private ThreadFactory threadFactory;
 
     @ConfigEntry(value = "workerCount", required = false)
@@ -77,23 +75,22 @@ public class SpaceTaker implements DestroyAdmin {
     }
 
     public void startSpaceTakers() throws ConfigurationException, RemoteException {
+/*
         if (workerTransactional && tManager == null) {
-            msg = "ERROR: no transactional manager found....";
-            logger.warn(msg);
+            log.warn("ERROR: no transactional manager found....");
         }
         if (publishedServiceTypes == null || publishedServiceTypes.length == 0) {
-            msg = "ERROR: no published interfaces found....";
-            logger.warn(msg);
+
+            log.warn("ERROR: no published interfaces found....");
         }
 
-        initThreadGroups();
         ExertionEnvelop envelop;
 
-        logger.debug("*** provider worker count: " + workerCount
+        log.debug("*** provider worker count: " + workerCount
                 + ", spaceTransactional: " + workerTransactional);
-        logger.info("publishedServiceTypes.length = "
+        log.info("publishedServiceTypes.length = "
                 + publishedServiceTypes.length);
-        logger.info(Arrays.toString(publishedServiceTypes));
+        log.info(Arrays.toString(publishedServiceTypes));
 
         // create a pair of taker threads for each published interface
         SpaceTaker worker = null;
@@ -167,6 +164,7 @@ public class SpaceTaker implements DestroyAdmin {
                         + publishedServiceTypes[i] + ":" + getProviderName());
             }
         }
+*/
     }
 
     public void addService(Object bean, SpaceTakerConfiguration2 cfg, Set<Class> publicIfaces) {
@@ -222,28 +220,20 @@ public class SpaceTaker implements DestroyAdmin {
 
 
             try {
-                TX.TxRunnable<UnusableEntriesException> txRunnable = new TX.TxRunnable<UnusableEntriesException>() {
-                    @Override
-                    public boolean run(Transaction.Created txnCreated, Transaction transaction) throws UnusableEntriesException, RemoteException, TransactionException {
-                        Collection<ExertionEnvelop> taken = space.take(getAvailableProviders2(), transaction, rate, 1);
-                        if (taken.isEmpty())
-                            return true;
+                Collection<ExertionEnvelop> taken = space.take(getAvailableProviders2(), transaction, rate, 1);
+                if (taken.isEmpty())
+                    return;
 
-                        ExertionEnvelop ee;
-                        ee = taken.iterator().next();
+                ExertionEnvelop ee;
+                ee = taken.iterator().next();
 
 
-                        // after 'take' timeout abort transaction and sleep for a while
-                        // before 'taking' the next exertion
-                        if (ee == null) {
-                            return true;
-                        }
-                        spaceExecutor.execute(new SpaceWorker(ee, txnCreated));
-
-
-                        return false;
-                    }
-                };
+                // after 'take' timeout abort transaction and sleep for a while
+                // before 'taking' the next exertion
+                if (ee == null) {
+                    return;
+                }
+                spaceExecutor.execute(new SpaceWorker(ee, txnCreated));
             } catch (Exception ex) {
                 logger.warn("Problem with SpaceTaker: ", ex);
             }
