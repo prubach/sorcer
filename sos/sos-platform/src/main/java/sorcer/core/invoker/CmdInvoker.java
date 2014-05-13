@@ -1,7 +1,8 @@
 /*
  * Copyright 2013 the original author or authors.
  * Copyright 2013 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -168,7 +169,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 				if (cmd != null) {
 					if (stdin != null) {
 						out = ExecUtils.execCommand(Runtime.getRuntime().exec(
-								cmd), stdin);      
+								cmd), stdin);
 					} else {
 						out = ExecUtils.execCommand(cmd);
 					}
@@ -232,10 +233,10 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 		scriptLogger.start();
 		CmdResult result = null;
 		if (stdin != null)
-			result = ExecUtils.execCommand(process, stdin, true);
+			result = ExecUtils.execCommand(process, stdin);
 		else
 			result = ExecUtils
-					.execCommand(process, new NullInputStream(), true);
+					.execCommand(process, new NullInputStream());
 
 		logOut.close();
 		logger.info(Arrays.toString(cmdarray) + " completed with status = "
