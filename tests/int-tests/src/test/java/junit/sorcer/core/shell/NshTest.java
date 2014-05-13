@@ -8,13 +8,9 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.util.exec.ExecUtils;
 
-import java.io.PrintStream;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static sorcer.eo.operator.value;
+import static org.junit.Assert.*;
 
 /**
  * SORCER class
@@ -27,6 +23,7 @@ public class NshTest {
 
     private final static Logger logger = Logger
             .getLogger(NshTest.class.getName());
+    private static final String EXCEPTION = "Exception";
 
     private StringBuilder sb = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
             "bin"+ java.io.File.separator + "nsh").getAbsolutePath());
@@ -38,11 +35,12 @@ public class NshTest {
         sb.append(" disco");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res =  result.getOut();
         logger.info("Result running: " + sb.toString() +":\n" + res);
         assertTrue(res.contains("LOOKUP SERVICE"));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!res.contains("Exception"));
+        assertFalse(res.contains(EXCEPTION));
+        assertFalse(result.getErr().contains(EXCEPTION));
     }
 
     @Test
@@ -54,12 +52,13 @@ public class NshTest {
         logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res = result.getOut();
         assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
         assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!res.contains("Exception"));
+        assertFalse(res.contains(EXCEPTION));
+        assertFalse(result.getErr().contains(EXCEPTION));
     }
 
     @Test
@@ -69,10 +68,11 @@ public class NshTest {
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
         // getting around a problem with out and err mixed up.
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res = result.getOut();
         logger.info("Result running: " + sb.toString() +":\n" + res);
         assertTrue(res.contains(SorcerEnv.getActualSpaceName()));
-        assertTrue(!res.contains("Exception"));
+        assertFalse(res.contains(EXCEPTION));
+        assertFalse(result.getErr().contains(EXCEPTION));
     }
 
     @Test
@@ -81,10 +81,11 @@ public class NshTest {
         sb.append(" ds");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res = result.getOut();
         logger.info("Result running: " + sb.toString() +":\n" + res);
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
-        assertTrue(!res.contains("Exception"));
+        assertFalse(res.contains(EXCEPTION));
+        assertFalse(result.getErr().contains(EXCEPTION));
     }
 
     @Test
@@ -93,7 +94,7 @@ public class NshTest {
         sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batch.nsh");
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res = result.getOut();
         logger.info("Result running: " + sb.toString() +":\n" + res);
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
@@ -101,7 +102,8 @@ public class NshTest {
         assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
-        assertTrue(!res.contains("Exception"));
+        assertFalse(res.contains(EXCEPTION));
+        assertFalse(result.getErr().contains(EXCEPTION));
     }
 
     @Test(timeout = 90000)
@@ -110,9 +112,10 @@ public class NshTest {
         sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh");
         logger.info("Running: " + sb.toString());
         ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = (result.getOut()!=null && ! result.getOut().isEmpty() ? result.getOut() : result.getErr());
+        String res = result.getOut();
         logger.info("Result running: " + sb.toString() +":\n" + res);
-        assertTrue(!res.contains("ExertionException:"));
+        assertFalse(res.contains("ExertionException:"));
         assertTrue(res.contains("f1/f3/result/y3 = 400.0"));
+        assertFalse(result.getErr().contains("ExertionException:"));
     }
 }
