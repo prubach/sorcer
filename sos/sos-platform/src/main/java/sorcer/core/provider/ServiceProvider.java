@@ -74,8 +74,8 @@ import sorcer.core.provider.container.ServiceProviderBeanListener;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
+import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
-import sorcer.core.service.IServiceBuilder;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
@@ -87,7 +87,6 @@ import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
-import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency
@@ -193,19 +192,18 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	// all providers in the same shared JVM
 	private static List<ServiceProvider> providers = new ArrayList<ServiceProvider>();
 
-	private ClassLoader serviceClassLoader;
-
 	private String[] accessorGroups = DiscoveryGroupManagement.ALL_GROUPS;
 	
 	private volatile boolean running = true;
 
     private IServiceBeanListener beanListener;
 
-    private IServiceBuilder serviceBuilder = new ProviderServiceBuilder(this);
+    private IProviderServiceBuilder serviceBuilder;
 
     protected ServiceProvider() {
 		providers.add(this);
         InjectionHelper.injectMembers(this);
+        serviceBuilder = new ProviderServiceBuilder(this);
 		delegate = new ProviderDelegate(beanListener, serviceBuilder);
 		delegate.provider = this;
 	}
@@ -221,7 +219,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		this();
 		// load Sorcer environment properties via static initializer
 		SorcerEnv.getProperties();
-		serviceClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader serviceClassLoader = Thread.currentThread().getContextClassLoader();
 		final Configuration config = ConfigurationProvider.getInstance(args, serviceClassLoader);
 		delegate.setJiniConfig(config);
 		String providerProperties = null;

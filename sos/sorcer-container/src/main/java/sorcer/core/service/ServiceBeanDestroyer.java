@@ -35,6 +35,8 @@ public class ServiceBeanDestroyer extends AbstractBeanListener {
      */
     @Override
     public void destroy(IServiceBuilder serviceBuilder, Object o) {
+        if (o == null) return;
+
         try {
             if (o instanceof com.sun.jini.admin.DestroyAdmin)
                 ((com.sun.jini.admin.DestroyAdmin) o).destroy();

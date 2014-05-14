@@ -79,8 +79,8 @@ import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.provider.container.SorcerExporterFactory;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
+import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
-import sorcer.core.service.IServiceBuilder;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
@@ -289,11 +289,11 @@ public class ProviderDelegate {
 
     private IServiceBeanListener beanListener;
 
-    private IServiceBuilder serviceBuilder;
+    private IProviderServiceBuilder serviceBuilder;
 
     protected javax.inject.Provider<? extends Exporter> exporterFactory;
 
-	public ProviderDelegate(IServiceBeanListener beanListener, IServiceBuilder serviceBuilder) {
+	public ProviderDelegate(IServiceBeanListener beanListener, IProviderServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
         this.serviceBuilder = serviceBuilder;
     }
@@ -898,24 +898,15 @@ public class ProviderDelegate {
 		if (serviceComponents == null || serviceComponents.size() == 0)
 			return false;
 		Class serviceType = task.getProcessSignature().getServiceType();
-		Iterator i = serviceComponents.entrySet().iterator();
-		Map.Entry next;
-        while (i.hasNext()) {
-			next = (Map.Entry) i.next();
-			logger.debug("match serviceType: " + serviceType + " against: "
-                    + next.getKey());
-			// check declared interfaces
-			if (next.getKey() == serviceType)
-				return true;
+		logger.debug("match serviceType: {}", serviceType);
+        // check declared interfaces
+        if(serviceComponents.containsKey(serviceType))
+            return true;
 
+        for (Class next: serviceComponents.keySet()) {
 			// check implemented interfaces
-			Class[] supertypes = ((Class)next.getKey()).getInterfaces();			
-			for (Class st : supertypes) {
-				logger.debug("match serviceType: " + serviceType
-                        + " against: " + st);
-				if (st == serviceType)
-					return true;
-			}
+            if(next.isAssignableFrom(serviceType))
+                return true;
 		}
 		return false;
 	}
