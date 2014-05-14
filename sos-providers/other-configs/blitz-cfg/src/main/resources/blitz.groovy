@@ -1,8 +1,5 @@
 import net.jini.core.entry.Entry
 import net.jini.export.Exporter
-import net.jini.jeri.BasicJeriExporter
-import net.jini.jeri.ProxyTrustILFactory
-import net.jini.jeri.tcp.TcpServerEndpoint
 import net.jini.lookup.ui.MainUI
 import net.jini.security.BasicProxyPreparer
 import net.jini.security.ProxyPreparer
@@ -13,6 +10,7 @@ import org.dancres.blitz.stats.Switch
 import org.rioproject.config.Component
 import org.rioproject.entry.UIDescriptorFactory
 import org.rioproject.serviceui.UIFrameFactory
+import sorcer.container.jeri.ExporterFactories
 import sorcer.core.SorcerConstants
 import sorcer.core.SorcerEnv
 
@@ -72,8 +70,7 @@ class BlitzConfig {
         return stats as Switch[]
     }
 
-    Exporter serverExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0),
-            new ProxyTrustILFactory(null, null), false, true);
+    Exporter serverExporter = ExporterFactories.getTrustedTcp();
     ProxyPreparer notifyPreparer = new BasicProxyPreparer();
     ProxyPreparer recoveredNotifyPreparer = new BasicProxyPreparer();
     ProxyPreparer txnPreparer = new BasicProxyPreparer();

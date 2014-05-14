@@ -51,7 +51,6 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.entry.Entry;
 import net.jini.core.event.RemoteEvent;
-import net.jini.core.lease.Lease;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -59,8 +58,6 @@ import net.jini.core.transaction.server.TransactionManager;
 import net.jini.export.Exporter;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
-import net.jini.jeri.*;
-import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lease.LeaseRenewalManager;
 import net.jini.lookup.entry.Location;
 import net.jini.lookup.entry.Name;
@@ -69,6 +66,7 @@ import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.container.jeri.ExporterFactories;
 import sorcer.core.*;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ControlContext;
@@ -77,14 +75,13 @@ import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
-import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
+import sorcer.core.provider.container.SorcerExporterFactory;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.service.IServiceBuilder;
 import sorcer.core.signature.NetSignature;
-import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
 import sorcer.security.sign.SignedServiceTask;
@@ -98,7 +95,6 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
 
 import static sorcer.core.SorcerConstants.*;
-import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * There are two types of SORCER service servers: generic service servers -
@@ -256,8 +252,6 @@ public class ProviderDelegate {
 	/** The exporter for exporting and unexporting outer proxy */
 	private Exporter outerExporter;
 
-	private SorcerILFactory ilFactory;
-
 	/** The exporter for exporting and unexporting inner proxy */
 	private Exporter partnerExporter;
 
@@ -296,6 +290,8 @@ public class ProviderDelegate {
     private IServiceBeanListener beanListener;
 
     private IServiceBuilder serviceBuilder;
+
+    protected javax.inject.Provider<? extends Exporter> exporterFactory;
 
 	public ProviderDelegate(IServiceBeanListener beanListener, IServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
@@ -382,7 +378,7 @@ public class ProviderDelegate {
 		}
 	}
 
-	protected void configure(Configuration jconfig) throws ExportException {
+	protected void configure(Configuration jconfig) throws Exception {
 		final Thread currentThread = Thread.currentThread();
 		implClassLoader = currentThread.getContextClassLoader();
 		Class partnerType = null;
@@ -2637,8 +2633,7 @@ public class ProviderDelegate {
 	 * @throws ConfigurationException
 	 *             if a problem occurs retrieving entries from the configuration
 	 */
-	private void getExporters(Configuration config) {
-		try {
+	private void getExporters(Configuration config) throws Exception {
 			String exporterInterface = SorcerEnv.getProperty(P_EXPORTER_INTERFACE);
 			try {
 				exporterInterface = (String) config.getEntry(
@@ -2653,13 +2648,10 @@ public class ProviderDelegate {
 			String port = SorcerEnv.getProperty(P_EXPORTER_PORT);
 			if (port != null)
 				exporterPort = Integer.parseInt(port);
-			try {
-				exporterPort = (Integer) config.getEntry(
-						ServiceProvider.COMPONENT, EXPORTER_PORT,
-						Integer.class, null);
-			} catch (Exception e) {
-				// do nothng
-			}
+            else
+                exporterPort = (Integer) config.getEntry(
+                    ServiceProvider.COMPONENT, EXPORTER_PORT,
+                    Integer.class, 0);
 			logger.info(">>>>> exporterPort: " + exporterPort);
 
 			try {
@@ -2719,52 +2711,39 @@ public class ProviderDelegate {
 					allBeans.add(instantiateScriplet(scriptlets[i]));
 			}
 
+        exporterFactory = (javax.inject.Provider<Exporter>) config.getEntry(ServiceProvider.COMPONENT, "exporterFactory", javax.inject.Provider.class, null);
+            if (exporterFactory == null)
+                exporterFactory = ExporterFactories.EXPORTER;
+
 			if (allBeans.size() > 0) {
 				logger.debug("*** all beans by " + getProviderName()
                         + " for: \n" + allBeans);
 				serviceBeans = allBeans.toArray();
 				initServiceBeans(serviceBeans);
-				ilFactory = new SorcerILFactory(serviceComponents,
-						implClassLoader);
-				outerExporter = new BasicJeriExporter(
-						TcpServerEndpoint.getInstance(exporterInterface,
-								exporterPort), ilFactory);
+				outerExporter = new SorcerExporterFactory(serviceComponents, implClassLoader).get();
 			} else {
 				logger.info("*** NO beans used by " + getProviderName());
-				outerExporter = (Exporter) Config.getNonNullEntry(
-						config,
+				outerExporter = (Exporter) config.getEntry(
 						ServiceProvider.COMPONENT,
 						EXPORTER,
 						Exporter.class,
-						new BasicJeriExporter(TcpServerEndpoint.getInstance(
-								exporterInterface, exporterPort),
-								new BasicILFactory()));
+						null);
 				if (outerExporter == null) {
-
-					logger.warn("*** NO provider exporter defined!!!");
-				} else {
-					logger.info("current exporter: "
-                            + outerExporter.toString());
+                    outerExporter = exporterFactory.get();
 				}
+                logger.info("current exporter: "
+                        + outerExporter.toString());
 
-				try {
-					partnerExporter = (Exporter) Config.getNonNullEntry(config,
-							ServiceProvider.COMPONENT, SERVER_EXPORTER,
-							Exporter.class);
-					if (partnerExporter == null) {
-						logger.warn("NO provider inner exporter defined!!!");
-					} else {
-						logger.info("your partner exporter: "
-                                + partnerExporter);
-					}
-				} catch (ConfigurationException e) {
-					// do nothing
-				}
+                partnerExporter = (Exporter) config.getEntry(
+                        ServiceProvider.COMPONENT, SERVER_EXPORTER,
+                        Exporter.class, null);
+                if (partnerExporter == null) {
+                    logger.warn("NO provider inner exporter defined!!!");
+                } else {
+                    logger.info("your partner exporter: "
+                            + partnerExporter);
+                }
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			// ignore missing exporters and use default configurations for exporters
-		}
 	}
 
     /**
@@ -2906,15 +2885,8 @@ public class ProviderDelegate {
 			}
 		} else {
 			// if partner exported use it as the primary proxy
-			if (partner != null) {
 				if (partnerExporter == null)
-					 try {
-                        partnerExporter = new BasicJeriExporter(
-                                TcpServerEndpoint.getInstance(Sorcer.getHostAddress(), 0),
-                                new BasicILFactory());
-                    } catch (UnknownHostException e) {
-                        throw new ExportException("Could not obtain local address", e);
-                    }
+                    partnerExporter = exporterFactory.get();
 				pp = partnerExporter.export(partner);
 				if (pp != null) {
 					innerProxy = outerProxy;
@@ -2922,9 +2894,7 @@ public class ProviderDelegate {
 				} else
 					// use partner as this provider's inner proxy
 					innerProxy = partner;
-			}
-			logger.info(">>>>> got innerProxy: " + innerProxy + "\nfor: "
-					+ partner + "\nusing exporter: " + partnerExporter);
+            logger.info("Got innerProxy: {} for: {} using exporter: {}", innerProxy, partner, partnerExporter);
 		}
 		return partner;
 	}

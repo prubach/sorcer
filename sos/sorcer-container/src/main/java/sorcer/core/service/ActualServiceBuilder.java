@@ -27,6 +27,7 @@ import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
 import net.jini.config.EmptyConfiguration;
 import net.jini.core.entry.Entry;
+import net.jini.export.Exporter;
 import net.jini.lookup.entry.Name;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
@@ -68,6 +69,8 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin
     private T bean;
     private Remote proxy;
     private String[] configArgs;
+
+    private Exporter proxyExporter;
 
     @Inject
     protected Configurer configurer;
@@ -130,7 +133,8 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin
 
         if (builderConfig.export) {
             log.debug("Exporting {}", bean);
-            proxy = builderConfig.exporter.export((Remote) bean);
+            proxyExporter = builderConfig.exporterFactory.get();
+            proxy = proxyExporter.export((Remote) bean);
         }
 
         if (builderConfig.register)
@@ -138,7 +142,7 @@ public class ActualServiceBuilder<T> implements IServiceBuilder<T>, DestroyAdmin
                 serviceRegistrar.preProcess(this, bean);
             } catch (RuntimeException x) {
                 log.warn("Error registering {}", bean, x);
-                builderConfig.exporter.unexport(true);
+                proxyExporter.unexport(true);
                 throw x;
             }
     }

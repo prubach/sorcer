@@ -31,7 +31,7 @@ import org.rioproject.impl.config.ExporterConfig
 @Component('org.rioproject')
 class ExporterConfiguration {
     static  Exporter getDefaultExporter() {
-        return new BasicJeriExporter(ExporterConfig.getServerEndpoint(), new BasicILFactory())
+        return sorcer.container.jeri.ExporterFactories.getBasicTcp()
     }
 }
 
@@ -41,10 +41,7 @@ class ExporterConfiguration {
 @Component('org.rioproject.bean')
 class POJOExporter extends ExporterConfiguration {
     Exporter getServerExporter() {
-        return new BasicJeriExporter(ExporterConfig.getServerEndpoint(),
-                new BeanInvocationLayerFactory(),
-                false,
-                true)
+        return new sorcer.container.jeri.ExporterFactory(new BeanInvocationLayerFactory()).get();
     }
 }
 

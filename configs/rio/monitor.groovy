@@ -103,7 +103,7 @@ class MonitorConfig {
         String portRange = System.getProperty(Constants.PORT_RANGE)
         if(portRange!=null)
             port = PortUtil.getPortFromRange(portRange)
-        return new BasicJeriExporter(TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0), new BasicILFactory());
+        return sorcer.container.jeri.ExporterFactories.getBasicTcp();
         //return new JrmpExporter(port)
     }
     

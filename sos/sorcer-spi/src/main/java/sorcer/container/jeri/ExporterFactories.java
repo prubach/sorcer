@@ -14,36 +14,25 @@
  * limitations under the License.
  */
 
-package sorcer.core.service;
+package sorcer.container.jeri;
 
-import net.jini.export.Exporter;
-import sorcer.config.Component;
-import sorcer.config.ConfigEntry;
-import sorcer.core.SorcerEnv;
+import net.jini.jeri.BasicJeriExporter;
 
 import javax.inject.Provider;
-
-import static sorcer.container.jeri.ExporterFactories.EXPORTER;
 
 /**
  * @author Rafał Krupiński
  */
-@Component("sorcer.core.service.ServiceBuilder")
-public class ServiceBuilderConfig {
-    @ConfigEntry
-    public Class type;
+public class ExporterFactories {
+    public static final Provider<BasicJeriExporter> EXPORTER = new ExporterFactory();
+    public static final Provider<BasicJeriExporter> TRUSTED = ExporterFactory.trusted(null, null);
 
-    @ConfigEntry
-    public boolean export = true;
+    public static BasicJeriExporter getBasicTcp() {
+        return EXPORTER.get();
+    }
 
-    @ConfigEntry
-    public boolean register = true;
-
-    @ConfigEntry
-    public Provider<? extends Exporter> exporterFactory = EXPORTER;
-
-    @ConfigEntry
-    public String[] lookupGroups = SorcerEnv.getLookupGroups();
-
+    public static BasicJeriExporter getTrustedTcp() {
+        return TRUSTED.get();
+    }
 
 }

@@ -26,9 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jini.export.Exporter;
-import net.jini.jeri.BasicILFactory;
-import net.jini.jeri.BasicJeriExporter;
-import net.jini.jeri.tcp.TcpServerEndpoint;
 
 import org.rioproject.deploy.DeployAdmin;
 import org.rioproject.deploy.ServiceBeanInstance;
@@ -43,6 +40,8 @@ import sorcer.core.deploy.Deployment;
 import sorcer.core.deploy.OperationalStringFactory;
 import sorcer.service.Accessor;
 import sorcer.service.Exertion;
+
+import static sorcer.container.jeri.ExporterFactories.EXPORTER;
 
 /**
  * The {@code ProviderProvisionManager} handles the dynamic creation of {@link OperationalString}s created
@@ -147,10 +146,7 @@ public class ProvisionManager {
         private final AtomicBoolean success = new AtomicBoolean(true);
 
         DeployListener(final int numServices) {
-            exporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(0),
-                                             new BasicILFactory(),
-                                             false,
-                                             true);
+            exporter = EXPORTER.get();
             countDownLatch = new CountDownLatch(numServices);
         }
 
