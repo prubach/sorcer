@@ -16,9 +16,12 @@
 
 package sorcer.core.provider.outrigger;
 
+import com.google.inject.Injector;
 import net.jini.config.Configuration;
 import org.sorcersoft.sorcer.SpaceTaker;
 import sorcer.config.AbstractBeanListener;
+import sorcer.container.core.ConfiguringModule;
+import sorcer.core.service.Configurer;
 import sorcer.core.service.IServiceBuilder;
 
 import javax.inject.Inject;
@@ -39,19 +42,26 @@ public class SpaceTakerProcessor extends AbstractBeanListener {
     @Inject
     private SpaceTaker spaceTaker;
 
+    @Inject
+    private Configurer configurer;
+
+    @Inject
+    private Injector injector;
+
     private final Class[] exclude = new Class[]{Serializable.class, Remote.class};
 
     @Override
-    public <T> void preProcess(IServiceBuilder<T> provider, T bean) {
-        SpaceTakerConfiguration2 cfg = getConfiguration(SpaceTakerConfiguration2.class, provider.getProviderConfiguration());
+    public <T> void preProcess(IServiceBuilder<T> builder, T bean) {
+        SpaceTakerConfiguration cfg = getConfiguration(SpaceTakerConfiguration.class, builder.getProviderConfiguration());
         if (!cfg.spaceEnabled)
             return;
 
         Set<Class> excludeInterfaces = new HashSet<Class>(Arrays.asList(exclude));
-        Set<Class> allInterfaces = getAllInterfaces(provider.getType(), excludeInterfaces);
+        Set<Class> allInterfaces = getAllInterfaces(builder.getType(), excludeInterfaces);
         allInterfaces.removeAll(excludeInterfaces);
+        cfg.interfaces = allInterfaces;
 
-        spaceTaker.addService(bean, cfg, allInterfaces);
+        spaceTaker.addService(builder, bean, cfg);
     }
 
     @Override
@@ -59,14 +69,14 @@ public class SpaceTakerProcessor extends AbstractBeanListener {
         spaceTaker.removeService(bean);
     }
 
-    protected static Set<Class> getAllInterfaces(Class type, Set<Class>excluded) {
+    protected static Set<Class> getAllInterfaces(Class type, Set<Class> excluded) {
         Set<Class> result = new HashSet<Class>();
-        getAllInterfaces(type, result);
+        getAllInterfaces(type, result, excluded);
         return result;
     }
 
     protected static void getAllInterfaces(Class type, Set<Class> result, Set<Class> excluded) {
-        if(excluded.contains(type))
+        if (excluded.contains(type))
             return;
         result.add(type);
         Class superclass = type.getSuperclass();
@@ -76,8 +86,7 @@ public class SpaceTakerProcessor extends AbstractBeanListener {
             getAllInterfaces(iface, result);
     }
 
-    //TODO RKR implement
-    protected static <T> T getConfiguration(Class<T> configurableType, Configuration configuration) {
-        return null;
+    protected <T> T getConfiguration(Class<T> configurableType, Configuration configuration) {
+        return injector.createChildInjector(new ConfiguringModule(configuration, configurer, configurableType)).getInstance(configurableType);
     }
 }

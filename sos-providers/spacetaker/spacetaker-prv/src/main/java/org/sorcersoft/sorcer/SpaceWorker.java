@@ -19,70 +19,70 @@ package org.sorcersoft.sorcer;
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.Lease;
 import net.jini.core.transaction.Transaction;
+import net.jini.space.JavaSpace05;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.exertion.ExertionEnvelop;
+import sorcer.core.provider.Provider;
+import sorcer.core.provider.ProviderDelegate;
+import sorcer.river.TX;
 import sorcer.service.Exec;
+import sorcer.service.ServiceExertion;
+import sorcer.service.Task;
 
 class SpaceWorker implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(SpaceWorker.class);
     private ExertionEnvelop ee;
-    private Transaction.Created txnCreated;
+    private Transaction.Created tx;
+    private JavaSpace05 space;
 
 
-    SpaceWorker(ExertionEnvelop envelope, Transaction.Created workerTxnCreated) {
+    public SpaceWorker(JavaSpace05 space, ExertionEnvelop envelope, Transaction.Created workerTxnCreated) {
+        this.space = space;
         ee = envelope;
-        txnCreated = workerTxnCreated;
+        tx = workerTxnCreated;
     }
 
     public void run() {
+        Entry result = doEnvelope(ee, (tx == null) ? null
+                : tx.transaction);
 
-        Entry result = doEnvelope(ee, (txnCreated == null) ? null
-                : txnCreated.transaction);
-
-/*
         if (result != null) {
             try {
                 space.write(result, null, Lease.FOREVER);
             } catch (Exception e) {
                 logger.warn("Error while writing the result", e);
                 try {
-                    abortTransaction(txnCreated);
+                    TX.abortTransaction(tx);
                 } catch (Exception e1) {
                     logger.warn("Error while aborting transaction", e1);
-                    doThreadMonitorWorker(threadId);
                     return;
                 }
-                doThreadMonitorWorker(threadId);
                 return;
             }
 
-            if (txnCreated != null) {
+            if (tx != null) {
                 try {
-                    commitTransaction(txnCreated);
+                    TX.commitTransaction(tx);
                 } catch (Exception e) {
                     logger.warn("Error while committing transaction", e);
-                    doThreadMonitorWorker(threadId);
-                    return;
                 }
             }
 
         } else {
-            if (txnCreated != null) {
+            if (tx != null) {
                 try {
-                    abortTransaction(txnCreated);
+                    TX.abortTransaction(tx);
                 } catch (Exception e) {
                     logger.warn("Error while aborting transaction", e);
-                    doThreadMonitorWorker(threadId);
-                    return;
                 }
             }
         }
-        doThreadMonitorWorker(threadId);
-*/
     }
 
     public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction) {
-/*
         ServiceExertion se;
-        ServiceExertion out;
+        ServiceExertion out = null;
         try {
             ee.exertion.getControlContext().appendTrace(
                     "taken by: " + data.provider.getProviderName() + ":"
@@ -91,13 +91,9 @@ class SpaceWorker implements Runnable {
             se = (ServiceExertion) ee.exertion;
 
             if (se instanceof Task) {
+
                 // task for the worker's provider
-                out = ((ServiceProvider) data.provider)
-                        .getDelegate().doTask((Task) se, transaction);
-            } else {
-                // delegate it to another collaborating service
-                out = (ServiceExertion) data.provider.service(se,
-                        transaction);
+                out = new ProviderDelegate(null, null).doTask((Task) se, transaction);
             }
             if (out != null) {
                 out.setStatus(Exec.DONE);
@@ -119,7 +115,6 @@ class SpaceWorker implements Runnable {
             }
             ((ServiceExertion) ee.exertion).reportException(th);
         }
-*/
         return ee;
     }
 }

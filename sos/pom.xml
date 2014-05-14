@@ -26,5 +26,6 @@
         <module>exertlet</module>
         <module>default-codebase</module>
         <module>platform/sorcer-boot-rio</module>
+        <module>sorcer-container-api</module>
     </modules>
 </project>
