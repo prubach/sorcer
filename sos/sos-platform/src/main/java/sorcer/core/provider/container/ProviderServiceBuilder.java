@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.ServiceProvider;
-import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.jini.jeri.SorcerILFactory;
 
 import java.rmi.Remote;

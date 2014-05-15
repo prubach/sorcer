@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package sorcer.core.service;
+package sorcer.core.provider.container;
 
 import sorcer.core.provider.Provider;
+import sorcer.core.service.IServiceBuilder;
 
 /**
  * Bridge between ServiceProvider and the new framework

@@ -18,7 +18,6 @@ package sorcer.core.provider.container;
 
 import sorcer.config.AbstractBeanListener;
 import sorcer.core.provider.Provider;
-import sorcer.core.service.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBuilder;
 
 import java.lang.reflect.Method;

@@ -79,7 +79,7 @@ import sorcer.core.provider.ServiceProvider.ProxyVerifier;
 import sorcer.core.provider.container.SorcerExporterFactory;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
-import sorcer.core.service.IProviderServiceBuilder;
+import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.signature.NetSignature;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
@@ -1247,7 +1247,7 @@ public class ProviderDelegate {
 						+ provider.getProviderName());
 				task.setContext(cxt);
 				task.setStatus(Exec.DONE);
- if (cxt.getReturnPath() != null)
+                if (cxt.getReturnPath() != null)
                     cxt.setReturnValue(cxt.getValue(cxt.getReturnPath().path));
 				// clear the exertion and the context
 				cxt.setExertion(null);

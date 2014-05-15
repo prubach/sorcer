@@ -74,7 +74,7 @@ import sorcer.core.provider.container.ServiceProviderBeanListener;
 import sorcer.core.proxy.Outer;
 import sorcer.core.proxy.Partner;
 import sorcer.core.proxy.Partnership;
-import sorcer.core.service.IProviderServiceBuilder;
+import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
 import sorcer.util.InjectionHelper;
