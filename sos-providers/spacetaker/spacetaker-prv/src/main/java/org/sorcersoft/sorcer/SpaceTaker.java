@@ -105,10 +105,11 @@ public class SpaceTaker implements DestroyAdmin {
 
         @Override
         public void run() {
-            int freeProviders = getFreeProviders();
-            if (freeProviders <= 0)
-                return;
+            while (getFreeProviders() > 0)
+                handleSpace();
+        }
 
+        private void handleSpace() {
             Transaction.Created tx = null;
             Transaction transaction = null;
             if (isTransactional) {
@@ -128,7 +129,7 @@ public class SpaceTaker implements DestroyAdmin {
                         return;
 
                     ee = taken.iterator().next();
-
+                    executor.submit(new SpaceTaskWorker(space, ee, tx));
                 } catch (Exception ex) {
                     logger.warn("Problem with SpaceTaker: ", ex);
                     if (tx != null) {
