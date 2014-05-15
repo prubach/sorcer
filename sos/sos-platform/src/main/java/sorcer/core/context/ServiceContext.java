@@ -216,9 +216,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
 			obj = cntxt.getValue(path);
-			if (obj instanceof ContextLink
-					&& ((ContextLink) obj).isFetched())
-				updateLinkedContext((ContextLink) obj);
+			if (obj instanceof Link
+					&& ((Link) obj).isFetched())
+				updateLinkedContext((Link) obj);
 			if (obj == null)
 				put(path, (T)none);
 			else
@@ -536,8 +536,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			int len;
 			while (e.hasMoreElements()) {
 				linkPath = (String) e.nextElement();
-				ContextLink link = null;
-				link = (ContextLink) get(linkPath);
+				Link link;
+				link = (Link) get(linkPath);
 				String offset = link.getOffset();
 				int index = offset.lastIndexOf(CPS);
 				String extendedLinkPath = linkPath;
@@ -677,15 +677,14 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public T putValue(String path, Object value) throws ContextException {
 		// first test if path is in a linked context
-		Enumeration e = null;
+		Enumeration e;
 		e = localLinkPaths();
 		String linkPath;
 		int len;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
 			// path has to start with linkPath+last_piece_of_offset
-			ContextLink link = null;
-			link = (ContextLink) get(linkPath);
+			Link link = (Link) get(linkPath);
 			String offset = link.getOffset();
 			int index = offset.lastIndexOf(CPS);
 			// extendedLinkPath is the linkPath + the last piece of
@@ -776,7 +775,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Object[] map = getContextMapping(path);// , true); // don't descend
 		ServiceContext cntxt = (ServiceContext) map[0];
 		String mappedKey = (String) map[1];
-		if (cntxt.get(mappedKey) instanceof ContextLink) {
+		if (cntxt.get(mappedKey) instanceof Link) {
 			cntxt.remove(mappedKey);
 			cntxt.put(mappedKey, Context.EMPTY_LEAF);
 		} else
@@ -831,7 +830,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		// ...
 
 		// using map will collapse redundant links
-		ContextLink link = new ContextLink((Context) map[0], (String) map[1]);
+		Link link = new ContextLink((Context) map[0], (String) map[1]);
 		// Put the link count against the path in the context
 		if (name == null || name.length() == 0)
 			link.setName(cntxt.getName());
@@ -872,22 +871,22 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public Link getLink(String path) throws ContextException {
-		ContextLink result = null;
+		Link result = null;
 		Object value;
 		if (path == null)
 			return null;
 		value = get(path);
 		if (value != null) {
-			if (value instanceof ContextLink)
-				result = (ContextLink) value;
-		} else if (value == null) {
+			if (value instanceof Link)
+				result = (Link) value;
+		} else {
 			// could be in a linked context
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
 			while (e.hasMoreElements()) {
 				linkPath = (String) e.nextElement();
-				ContextLink link = (ContextLink) get(linkPath);
+				Link link = (Link) get(linkPath);
 				String offset = link.getOffset();
 				int index = offset.lastIndexOf(CPS);
 				String extendedLinkPath = linkPath;
@@ -906,7 +905,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 					else
 						keyInLinkedCntxt = offset + path.substring(len);
 					Context linkedCntxt = getLinkedContext(link);
-					result = (ContextLink) linkedCntxt
+					result = linkedCntxt
 							.getLink(keyInLinkedCntxt);
 					break;
 				}
@@ -928,13 +927,13 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (value != null) {
 			result[0] = this;
 			result[1] = path;
-		} else if (value == null) {
+		} else {
 			Enumeration e = localLinkPaths();
 			String linkPath;
 			int len;
 			while (e.hasMoreElements()) {
 				linkPath = (String) e.nextElement();
-				ContextLink link = (ContextLink) get(linkPath);
+				Link link = (Link) get(linkPath);
 				String offset = link.getOffset();
 				int index = offset.lastIndexOf(CPS);
 				String extendedLinkPath;
@@ -1048,9 +1047,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// all contexts are exhausted )
 			Enumeration e = null;
 			e = localLinks();
-			ContextLink link;
+			Link link;
 			while (e.hasMoreElements()) {
-				link = (ContextLink) e.nextElement();
+				link = (Link) e.nextElement();
 				result = getLinkedContext(link).isAttribute(attributeName);
 				if (result)
 					break;
@@ -1072,9 +1071,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// their top-level contexts, etc. until a match is found or
 			// all contexts are exhausted)
 			Enumeration e = localLinks();
-			ContextLink link;
+			Link link;
 			while (e.hasMoreElements()) {
-				link = (ContextLink) e.nextElement();
+				link = (Link) e.nextElement();
 				result = getLinkedContext(link).isSingletonAttribute(
 						attributeName);
 				if (result)
@@ -1098,9 +1097,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// their top-level contexts, etc. until a match is found or
 			// all contexts are exhausted)
 			Enumeration e = localLinks();
-			ContextLink link;
+			Link link;
 			while (e.hasMoreElements()) {
-				link = (ContextLink) e.nextElement();
+				link = (Link) e.nextElement();
 				result = getLinkedContext(link).isMetaattribute(attributeName);
 				if (result)
 					break;
@@ -1331,12 +1330,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		// all the top-level LINKED contexts (which in turn will check
 		// all their top-level linked contexts, etc.)
 		Enumeration e = localLinkPaths();
-		ContextLink link;
 		String linkPath;
 		Enumeration keysInLinks;
 		while (e.hasMoreElements()) {
 			linkPath = (String) e.nextElement();
-			link = (ContextLink) get(linkPath);
+            Link link = (Link) get(linkPath);
 			ServiceContext lcxt = (ServiceContext) getLinkedContext(link);
 			keysInLinks = lcxt.markedPaths(association);
 			if (keysInLinks != null)
@@ -1429,13 +1427,12 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		ArrayList<String> paths = new ArrayList<String>();
 		Enumeration e = keys();
 		String key, path;
-		ContextLink link;
 		Context subcntxt;
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
-			if (get(key) instanceof ContextLink) {
+			if (get(key) instanceof Link) {
 				// follow link, add paths
-				link = (ContextLink) get(key);
+                Link link = (Link) get(key);
 				try {
 					subcntxt = getLinkedContext(link)
 							.getContext(link.getOffset());
@@ -1479,7 +1476,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 		while (e.hasMoreElements()) {
 			key = (String) e.nextElement();
-			if (get(key) instanceof ContextLink)
+			if (get(key) instanceof Link)
 				keys.addElement(key);
 		}
 		StringUtils.bubbleSort(keys);
@@ -1565,14 +1562,13 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Vector<String> keys = new Vector<String>();
 		Enumeration<String> e = keys();
 		String key, path;
-		ContextLink link;
 		Context subcntxt = null;
 
 		while (e.hasMoreElements()) {
 			key = e.nextElement();
-			if (get(key) instanceof ContextLink) {
+			if (get(key) instanceof Link) {
 				keys.addElement(key);
-				link = (ContextLink) get(key);
+                Link link = (Link) get(key);
 				// get subcontext for recursion
 				try {
 					subcntxt = getLinkedContext(link)
@@ -1914,14 +1910,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		while (e.hasMoreElements()) {
 			path = (String) e.nextElement();
 			val = get(path);					
-			if (!(val instanceof ContextLink)) {
+			if (!(val instanceof Link)) {
 				if (count >= 1)
 					sb.append(cr);
 				sb.append("  " + path).append(" = ");
 			}
-			// if (val instanceof ContextLink) {
-			// sb.append(val.toString() + " ");
-			// }
 			try {
 				if (val instanceof Par) 
 					val = "par: " + ((Par)val).getName();
@@ -2352,7 +2345,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Iterator i = entries.iterator();
 		while (i.hasNext()) {
 			Map.Entry e = (Map.Entry)i.next();
-			if (e.getValue() instanceof ContextLink)
+			if (e.getValue() instanceof Link)
 				return true;
 		}
 		return false;
@@ -2362,14 +2355,14 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		Object result;
 		// System.out.println("getValue: path = \""+path+"\"");
 		result = get(path);
-		if (result instanceof ContextLink) {
+		if (result instanceof Link) {
 			return true;
 		} else
 			return false;
 	}
 
 	public boolean isLinkedPath(String path) throws ContextException {
-		if (!(getValue(path) instanceof ContextLink))
+		if (!(getValue(path) instanceof Link))
 			return false;
 		Object result[] = getContextMapping(path);
 		if (result[0] == null)
@@ -2445,7 +2438,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public Enumeration simpleAttributes() throws ContextException {
 		Enumeration e = links();
 		Enumeration e0, e1;
-		ContextLink link;
 		ServiceContext linkedCntxt;
 		Vector attrs = new Vector();
 		String attr;
@@ -2456,7 +2448,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			attrs.addElement(e0.nextElement());
 
 		while (e.hasMoreElements()) {
-			link = (ContextLink) e.nextElement();
+            Link link = (Link) e.nextElement();
 			linkedCntxt = (ServiceContext) link.getContext(principal);
 			e1 = linkedCntxt.getDataAttributeMap().keys();
 			while (e1.hasMoreElements()) {
@@ -2491,7 +2483,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public Enumeration compositeAttributes() throws ContextException {
 		Enumeration e = links();
 		Enumeration e0, e1;
-		ContextLink link;
 		ServiceContext linkedCntxt;
 		Vector attrs = new Vector();
 		String attr;
@@ -2502,7 +2493,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			attrs.addElement(e0.nextElement());
 
 		while (e.hasMoreElements()) {
-			link = (ContextLink) e.nextElement();
+            Link link = (Link) e.nextElement();
 			linkedCntxt = (ServiceContext) link.getContext(principal);
 			e1 = linkedCntxt.getDataAttributeMap().keys();
 			while (e1.hasMoreElements()) {
