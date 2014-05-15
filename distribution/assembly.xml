@@ -491,19 +491,6 @@
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>google-5.pom</destName>
             </file>
-
-            <!-- sigar -->
-            <!-- TODO RKR add poms to sigar jar and zip, remove below -->
-            <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar/${v.sigar}/sigar-${v.sigar}.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sigar-${v.sigar}.pom</destName>
-            </file>
-            <file>
-                <source>${user.home}/.m2/repository/org/sorcersoft/sigar/sigar-native/${v.sigar}/sigar-native-${v.sigar}.pom</source>
-                <outputDirectory>/configs/poms</outputDirectory>
-                <destName>sigar-native-${v.sigar}.pom</destName>
-            </file>
         </files>
         <fileSets>
 
