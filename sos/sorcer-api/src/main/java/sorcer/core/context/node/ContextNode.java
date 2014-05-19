@@ -1180,7 +1180,7 @@ public class ContextNode implements Serializable {
 	}
 
 	private void setFileContents(Vector fC) throws ContextNodeException,
-			MalformedURLException, IOException {
+            IOException {
 
 		writeVectorToFile(getFile(), fC);
 	}

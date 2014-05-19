@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerEnv;
-import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 import sorcer.util.Stopwatch;
@@ -264,7 +263,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public void setWaitable(boolean state) {
-		put(EXERTION_WAITABLE, new Boolean(state));
+		put(EXERTION_WAITABLE, state);
 	}
 
 	public void isWait(Wait value) {
@@ -275,7 +274,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public void setNotifierEnabled(boolean state) {
-		put(NOTIFICATION_MANAGEMENT, new Boolean(state));
+		put(NOTIFICATION_MANAGEMENT, state);
 	}
 
 	public boolean isNotifierEnabled() {
@@ -283,7 +282,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public void setNodeReferencePreserved(boolean state) {
-		put(NODE_REFERENCE_PRESERVED, new Boolean(state));
+		put(NODE_REFERENCE_PRESERVED, state);
 	}
 
 	public boolean isNodeReferencePreserved() {
@@ -314,7 +313,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 
 	@Override
     public void setMonitorable(boolean state) {
-		put(EXERTION_MONITORABLE, new Boolean(state));
+		put(EXERTION_MONITORABLE, state);
 	}
 	
 	@Override
@@ -324,7 +323,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 
 	@Override
     public void setProvisionable(boolean state) {
-		put(EXERTION_PROVISIONABLE, new Boolean(state));
+		put(EXERTION_PROVISIONABLE, state);
 	}
 	
 	@Override
@@ -344,16 +343,6 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	public Exec.State getExecState() {
 		return (Exec.State) get(EXEC_STATE);
 	}
-		
-	public MonitoringManagement getMonitor() {
-		return (MonitoringManagement) get(EXERTION_MONITORING);
-	}
-
-	@Override
-    public void setMonitor(MonitoringManagement monitor) {
-		put(EXERTION_MONITORING, monitor);
-	}
-
 
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)
@@ -378,10 +367,10 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public void setExecTimeRequested(boolean state) {
-		if (state == false)
+		if (!state)
 			remove(GET_EXEC_TIME);
 		else
-			put(GET_EXEC_TIME, new Boolean(state));
+			put(GET_EXEC_TIME, state);
 	}
 
 	public boolean isExecTimeRequested() {
@@ -433,8 +422,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 		} catch (ClassCastException ex) {
 			// v04 control context
 			Hashtable table = (Hashtable) metacontext.get(GET_EXEC_TIME);
-			result = ((Boolean) table.get(exertion.getContext().getName()))
-					.booleanValue();
+			result = (Boolean) table.get(exertion.getContext().getName());
 			// upgrade to v05
 			setExecTimeRequested(exertion, result);
 		}
@@ -481,10 +469,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public void setReview(Exertion ex, boolean b) {
-		if (b)
-			addAttributeValue(ex, EXERTION_REVIEW, TRUE);
-		else
-			addAttributeValue(ex, EXERTION_REVIEW, FALSE);
+        addAttributeValue(ex, EXERTION_REVIEW, Boolean.toString(b));
 	}
 
 	public boolean isReview(Exertion exertion) {
@@ -674,7 +659,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 		if (exceptions.size() == 0)
 			return "no exceptions thrown\n";
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (ThrowableTrace exceptionTrace : exceptions) {
 			sb.append(exceptionTrace.stackTrace).append("\n");
 		}
@@ -719,7 +704,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
 		if (SorcerEnv.debug) {
 			sb.append("\nControl Context Exceptions: \n");

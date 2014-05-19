@@ -16,14 +16,13 @@
 
 package sorcer.core.context;
 
-import sorcer.core.monitor.MonitoringManagement;
 import sorcer.service.Context;
 import sorcer.service.Strategy;
 
 /**
  * @author Rafał Krupiński
  */
-public interface IControlContext extends Context<Object> {
+public interface IControlContext extends Context<Object>, Strategy {
     boolean isMonitorable();
 
     void isMonitorable(Strategy.Monitor value);
@@ -37,6 +36,4 @@ public interface IControlContext extends Context<Object> {
     void setOpti(Strategy.Opti optiType);
 
     Strategy.Opti getOpti();
-
-    void setMonitor(MonitoringManagement monitor);
 }

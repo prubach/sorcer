@@ -38,13 +38,13 @@ public class Differentiation implements Serializable {
 		for (Gradient g : derivation.gradients)
 			gradients.add(new Gradient(g));
 		wrtNames = new ArrayList<String>(derivation.wrtNames.size());
-		wrtNames.addAll(derivation.wrtNames);;
+		wrtNames.addAll(derivation.wrtNames);
 	}
 	
 	public Differentiation(String evaluator, String gradient, List<String> wrt) {
 		evaluatorName = evaluator;
 		gradients.add(new Gradient(gradient, wrt));
-		wrtNames.addAll(wrt);;
+		wrtNames.addAll(wrt);
 	}
 	
 	public String getEvaluatorName() {

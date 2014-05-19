@@ -21,8 +21,6 @@ import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Vector;
 
-import javax.security.auth.Subject;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
@@ -68,13 +66,10 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     }
 
     /**
-     * ServiceSpacer - Constructor
+     * Require ctor for Jini 2 NonActivatableServiceDescriptor
      *
-     * @param args
-     * @param lifeCycle
      * @throws RemoteException
      *
-     *             Require ctor for Jini 2 NonActivatableServiceDescriptor
      */
     public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
         super(args, lifeCycle);
@@ -129,8 +124,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     public Exertion doJob(Exertion job) {
         setServiceID(job);
         try {
-            if (((ControlContext)job.getControlContext()).isMonitorable()
-                    && !((ControlContext)job.getControlContext()).isWaitable()) {
+            if (job.getControlContext().isMonitorable()
+                    && !job.getControlContext().isWaitable()) {
                 replaceNullExertionIDs(job);
                 notifyViaEmail(job);
                 new JobThread((Job) job, this).start();
@@ -241,11 +236,6 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
     private String getDataFilename(String filename) {
         return getDelegate().getProviderConfig()
                 .getDataDir() + "/" + filename;
-    }
-
-    /** {@inheritDoc} */
-    public boolean isAuthorized(Subject subject, Signature signature) {
-        return true;
     }
 
     private void replaceNullExertionIDs(Exertion ex) {
@@ -420,19 +410,14 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         }
     }
 
-    private void prepareToResume(Job job) {
-        return;
-    }
-
     private void prepareToStep(Job job) {
-        Exertion e = null;
+        Exertion e;
         for (int i = 0; i < job.size(); i++) {
             e = job.get(i);
 			((ControlContext) job.getContext()).setReview(e, true);
 			if (e.isJob())
                 prepareToStep((Job) e);
         }
-        return;
     }
 
     public Exertion doTask(Exertion task) throws RemoteException {

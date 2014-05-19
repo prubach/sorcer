@@ -345,13 +345,8 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * Returns true if this exertion is a branching or looping exertion.
 	 */
 	public boolean isConditional();
-	
-	/**
-	 * Returns true if this exertion is composed of other exertions.
-	 */
-	public boolean isCompound();
-	
-	/**
+
+    /**
 	 * The exertion format for thin exertions (no RMI and Jini classes)
 	 */
 	public static final int THIN = 0;

@@ -25,7 +25,7 @@ public class StrategyEntry extends Path<Strategy> implements Arg {
 	public StrategyEntry(String path, Strategy strategy) {
 		_1 = path;
 		_2 = strategy;
-	};
+	}
 	
 	public Strategy strategy() {
 		return _2;

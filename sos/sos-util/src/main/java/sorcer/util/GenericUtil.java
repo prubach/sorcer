@@ -121,47 +121,6 @@ public class GenericUtil implements Serializable {
     }
 
     /**
-     * This is a class used for running shell scripts without blocking I/O
-     *
-     * @author S. A. Burton April 2011
-     *
-     */
-    private static class WorkerNoBlock extends Thread {
-        private Integer exitValue;
-        private final Process process;
-
-        /**
-         * Constructor
-         *
-         * @param process
-         */
-        protected WorkerNoBlock(final Process process) {
-            super("[" + Thread.currentThread().getName() + "] ProcessWorker-" + process.toString());
-            this.process = process;
-        }
-
-        /**
-         * This method gets the exit value of the shell script
-         *
-         * @return
-         */
-        public Integer getExitValue() {
-            return exitValue = process.exitValue();
-        }
-
-        /**
-         * Implementation is commented out
-         */
-        public void run() {
-            // try {
-            // //exitValue = process.waitFor();
-            // } catch (InterruptedException e) {
-            // return;
-            // }
-        }
-    }
-
-    /**
      * Logger
      */
     private static Logger logger = Logger
@@ -177,7 +136,6 @@ public class GenericUtil implements Serializable {
      */
     public static void addToArchive(File fileObj, JarOutputStream jarOut) {
         addToArchive(fileObj, null, jarOut);
-        return;
     }
 
     /**
@@ -484,11 +442,10 @@ public class GenericUtil implements Serializable {
      * jar archive. the list of File objects can be files and or directories
      * @param fileList List of files and directories
      * @param jarArchive File path of the jar archive
-     * @throws FileNotFoundException
      * @throws IOException
      */
     public static void createArchive(List<File> fileList, File jarArchive)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         System.out.println("Creating archive: " + jarArchive.getAbsolutePath());
         JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(
                 jarArchive));
@@ -2398,11 +2355,10 @@ public class GenericUtil implements Serializable {
      *            JAR archive file path
      * @param destinationPath
      *            Destination file path
-     * @throws FileNotFoundException
      * @throws IOException
      */
     public static void unpackArchive(File jarArchive, File destinationPath)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
         JarInputStream jarInputStream = null;
@@ -2710,74 +2666,6 @@ public class GenericUtil implements Serializable {
             throw new RuntimeException(errorMessage, ex);
         }
     }
-
-    public static Thread executeCommandWithWorkerNoBlocking(
-            String[] command, final boolean printOutput,
-            final boolean printError, final long timeOut, File dir,
-            File logFile, boolean doSynchronizedLaunch) {
-
-        Runtime runtime;
-        WorkerNoBlock worker;
-        Process process;
-        StreamGobbler outputGobbler, errorGobbler;
-
-        // windows platform independent
-        //
-        if (GenericUtil.isWindows()) {
-            String[] ncmdarray = new String[command.length + 2];
-            ncmdarray[0] = "cmd";
-            ncmdarray[1] = "/C";
-            int ctr = 2;
-            for (int i = 0; i < command.length; i++) {
-                ncmdarray[ctr] = command[i];
-                ctr++;
-            }
-            command = ncmdarray;
-        }
-
-        // mkdirs
-        //
-        if (!dir.exists()) dir.mkdirs();
-
-        try {
-            if (doSynchronizedLaunch) {
-                synchronized (GenericUtil.class) {
-                    runtime = Runtime.getRuntime();
-                    process = runtime.exec(command, null, dir);
-                    outputGobbler = new StreamGobbler(process.getInputStream(),
-                            "STD OUT", printOutput, logFile, dir);
-                    errorGobbler = new StreamGobbler(process.getErrorStream(),
-                            "STD ERR", printError, logFile, dir);
-                    outputGobbler.start();
-                    errorGobbler.start();
-                    worker = new WorkerNoBlock(process);
-                    worker.start();
-                }
-            } else {
-                runtime = Runtime.getRuntime();
-                process = runtime.exec(command, null, dir);
-                outputGobbler = new StreamGobbler(process.getInputStream(),
-                        "STD OUT", printOutput, logFile, dir);
-                errorGobbler = new StreamGobbler(process.getErrorStream(),
-                        "STD ERR", printError, logFile, dir);
-                outputGobbler.start();
-                errorGobbler.start();
-                worker = new WorkerNoBlock(process);
-                worker.start();
-            }
-
-        } catch (FileNotFoundException ex) {
-            String errorMessage = "the log file was not found.";
-            throw new RuntimeException(errorMessage, ex);
-
-        } catch (IOException ex) {
-            String errorMessage = "the command: " + command
-                    + ", did not complete due to an " + "io error.";
-            throw new RuntimeException(errorMessage, ex);
-        }
-        return worker;
-    }
-
 
     private static boolean hasArg(String test, String[] args) {
         for (int ctr = 0; ctr < args.length; ctr++) {

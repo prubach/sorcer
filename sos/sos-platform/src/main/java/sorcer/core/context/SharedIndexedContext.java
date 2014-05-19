@@ -33,7 +33,7 @@ import java.util.*;
  * with the dataContext root <code>List</code>;
  */
 @SuppressWarnings({ "serial", "unchecked" })
-public class SharedIndexedContext<T extends Object> extends ServiceContext implements IndexedContext, SpaceContext {
+public class SharedIndexedContext<T> extends ServiceContext implements IndexedContext, SpaceContext {
 	private List<T> elements = new ArrayList<T>();
 	private DistribArray05 spaceElements;
 	private String spaceName;
@@ -197,17 +197,6 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 	}
 
 	/* (non-Javadoc)
-	 * @see java.util.List#removeAll(java.util.Collection)
-	 */
-	public boolean removeAll(Collection c) {
-		int i;
-		for (Object o : c) {
-			i = elements.indexOf(o);
-		}
-		return removeAll(c);
-	}
-
-	/* (non-Javadoc)
 	 * @see java.util.List#retainAll(java.util.Collection)
 	 */
 	public boolean retainAll(Collection c) {
@@ -310,31 +299,4 @@ public class SharedIndexedContext<T extends Object> extends ServiceContext imple
 		spaceElements.setSpace(space);
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#aliasValue(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public Object aliasValue(String path, String alias)
-			throws ContextException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#share()
-	 */
-	@Override
-	public void share() throws ContextException, RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.core.dataContext.SpaceContext#unshare()
-	 */
-	@Override
-	public void unshare() throws ContextException, RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
 }

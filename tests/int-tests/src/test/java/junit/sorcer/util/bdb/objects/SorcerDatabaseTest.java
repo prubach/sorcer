@@ -67,7 +67,7 @@ public class SorcerDatabaseTest {
 	private static File dbDir;
 	
 	@BeforeClass 
-	public static void setUpOnce() throws IOException, DatabaseException, Exception {
+	public static void setUpOnce() throws Exception {
 		dbDir = new File("tmp/ju-sorcer-db");
         IOUtils.deleteDir(dbDir);
         System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());

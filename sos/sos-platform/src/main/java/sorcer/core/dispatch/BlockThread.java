@@ -4,7 +4,6 @@ import net.jini.config.ConfigurationException;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.service.Block;
-import sorcer.service.ContextException;
 import sorcer.service.Exec;
 
 import java.rmi.RemoteException;
@@ -86,7 +85,7 @@ public class BlockThread extends Thread {
 		return block;
 	}
 
-	public Block getResult() throws ContextException {
+	public Block getResult() {
 		return result;
 	}
 }

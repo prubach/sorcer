@@ -1,6 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
+ * Copyright 2014 SorcerSoft.com S.A.
  *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +20,10 @@ package sorcer.core.context.model;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.Set;
 
 import sorcer.core.context.ApplicationDescription;
-import sorcer.service.ArgException;
-import sorcer.service.ArgSet;
-import sorcer.service.Context;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Identifiable;
-import sorcer.service.Perturbation;
+import sorcer.service.*;
 
 /**
  * A variable has id, name and value. Its value can be evaluated by a related
@@ -84,7 +80,7 @@ public interface Variability<T> extends Identifiable, Evaluation<T>, Perturbatio
 
 	public ApplicationDescription getDescription();
 
-	public void setValue(Object varValue) throws EvaluationException, RemoteException;
+	public void setValue(T varValue) throws EvaluationException, RemoteException;
 
 	public Class<?> getValueType();
 

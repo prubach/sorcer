@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1350,25 +1350,6 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             // throw e;
             return false;
         }
-    }
-
-
-    /**
-	 * Returns the service Provider from an item matching the template, or null
-	 * if there is no match. If multiple items match the template, it is
-	 * arbitrary as to which service object is returned. If the returned object
-	 * cannot be deserialized, an UnmarshalException is thrown with the standard
-	 * RMI semantics.
-	 * 
-	 * @param tmpl
-	 *            - the template to match
-	 * @return an object that represents a service that matches the specified
-	 *         template
-	 * @throws RemoteException
-	 */
-	public Object lookup(ServiceTemplate tmpl) throws RemoteException {
-		// TODO
-		return null;
 	}
 
 	/**

@@ -35,8 +35,6 @@ public abstract class Identity implements Serializable, Identifiable {
 	//Value used for default finite difference calculations
 	protected Object characteristicValue;
 
-	protected boolean hasCharacteristicValue = false;
-
 	/**
 	 *  Identity - Class constructor
 	 */
@@ -56,7 +54,7 @@ public abstract class Identity implements Serializable, Identifiable {
 	 * Assign a unique identifier
 	 */
 	public void setId(Uuid uuid) {
-		 this.id = uuid;;
+		 this.id = uuid;
 	}
 	
 	/**
@@ -81,7 +79,6 @@ public abstract class Identity implements Serializable, Identifiable {
 
 	public void setCharacteristicValue(Object characteristicValue) {
 		this.characteristicValue = characteristicValue;
-		hasCharacteristicValue = true;
 	}
 
 	public String toString() {

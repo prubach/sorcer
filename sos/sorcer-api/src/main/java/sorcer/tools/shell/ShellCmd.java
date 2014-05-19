@@ -59,12 +59,6 @@ abstract public class ShellCmd {
 		return NOT_LOADED_MSG;
 	}
 
-	public void initializeSubsystem() {
-	}
-
-	public void endSubsystem() {
-	}
-
 	public String toString() {
 		return getClass().getName() + ": " + COMMAND_NAME;
 	}

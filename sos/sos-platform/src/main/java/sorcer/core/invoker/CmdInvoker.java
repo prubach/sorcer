@@ -73,7 +73,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 	}
 
 	public CmdInvoker(String shcmd, File scriptFile, boolean background,
-			File logFile, Par... pars) throws EvaluationException {
+			File logFile, Par... pars) {
 		cmd = shcmd;
 		this.scriptFile = scriptFile;
 		this.logFile = logFile;
@@ -101,7 +101,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 	 * @throws EvaluationException
 	 */
 	public CmdInvoker(String argarray[], File script, boolean background,
-			InputStream stdin, File logFile, Par... pars) throws EvaluationException {
+			InputStream stdin, File logFile, Par... pars) {
 		cmdarray = new String[argarray.length + 1];
 		this.scriptFile = script;
 		this.pars = new ArgSet(pars);
@@ -140,8 +140,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 	/**
 	 * Feed specified standard input to the command executing process.
 	 */
-	public CmdInvoker(String cmd, InputStream stdin)
-			throws EvaluationException {
+	public CmdInvoker(String cmd, InputStream stdin) {
 		this(cmd);
 		this.stdin = stdin;
 	}
@@ -190,7 +189,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 		return out;
 	}
 
-	public CmdResult execScript() throws IOException, InterruptedException, ContextException {
+	public CmdResult execScript() throws IOException, InterruptedException {
 		if (cmdarray != null) {
 			StringBuilder sb = new StringBuilder(cmdarray[0]);
 			for (int i = 1; i < cmdarray.length; i++)

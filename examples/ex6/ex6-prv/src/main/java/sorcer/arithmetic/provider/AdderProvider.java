@@ -16,21 +16,12 @@
 
 package sorcer.arithmetic.provider;
 
-import java.net.URL;
-import java.rmi.RemoteException;
-
-import net.jini.lookup.entry.UIDescriptor;
-import net.jini.lookup.ui.MainUI;
-import sorcer.arithmetic.provider.ui.CalculatorUI;
-import sorcer.core.SorcerEnv;
+import com.sun.jini.start.LifeCycle;
 import sorcer.core.provider.ServiceTasker;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.MonitorException;
-import sorcer.ui.serviceui.UIComponentFactory;
-import sorcer.ui.serviceui.UIDescriptorFactory;
 
-import com.sun.jini.start.LifeCycle;
+import java.rmi.RemoteException;
 
 import static sorcer.service.monitor.MonitorUtil.checkpoint;
 
@@ -42,7 +33,7 @@ public class AdderProvider extends ServiceTasker implements RemoteAdder {
 	}
 	
 	public Context add(Context context) throws RemoteException,
-			ContextException, MonitorException {
+			ContextException {
 		Context out = arithmometer.add(context);		
 		try {
 			Thread.sleep(1000);
@@ -54,19 +45,5 @@ public class AdderProvider extends ServiceTasker implements RemoteAdder {
 //		remoteLogger.info("remote logging; add result: " + out);
 		
 		return out;
-	}
-	
-	public static UIDescriptor getCalculatorDescriptor() {
-		UIDescriptor uiDesc = null;
-		try {
-			uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-					new UIComponentFactory(new URL[] { new URL(SorcerEnv
-							.getWebsterUrl()
-							+ "/calculator-ui.jar") }, CalculatorUI.class
-							.getName()));
-		} catch (Exception ex) {
-			// do nothing
-		}
-		return uiDesc;
 	}
 }

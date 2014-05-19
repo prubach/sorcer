@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-//import java.util.logging.Logger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,6 @@ import sorcer.service.ContextException;
 import sorcer.service.Exerter;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionCallable;
-import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.SignatureException;
 import sorcer.service.Strategy.Access;
@@ -472,7 +470,7 @@ private Exertion f1SEQpull() throws Exception {
 		return out;
 	}
 	
-	private Task getTask() throws ExertionException, SignatureException,
+	private Task getTask() throws SignatureException,
 			ContextException {
 		
 		Task f5 = task(

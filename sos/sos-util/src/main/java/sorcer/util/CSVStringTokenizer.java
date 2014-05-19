@@ -32,7 +32,7 @@ public class CSVStringTokenizer implements Enumeration {
 	private String str;
 	private String delimiters;
 	private String quote;
-	private boolean isQuote, isLastEmpty = false;;
+	private boolean isQuote, isLastEmpty = false;
 
 	public CSVStringTokenizer(String str, String delim, String quotes) {
 		currentPosition = 0;

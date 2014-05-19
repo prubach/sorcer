@@ -124,16 +124,15 @@ public class Crypt {
 			for (j = 0; j < 8; j++) {
 				x |= s[i * 8 + j] << (7 - j);
 			}
-			Integer integ = new Integer(x);
-			System.out.print(integ.toString(x, 16) + " ");
+			System.out.print(Integer.toString(x, 16) + " ");
 		}
 		System.out.println();
-	};
+	}
 
 	private void permute(int[] by, int amt, int[] in, int[] out) {
 		for (amt--; amt >= 0; amt--)
 			out[amt] = in[by[amt] - 1];
-	};
+	}
 
 	private void do_sblocks(int[] in, int[] out) {
 		int i, j, val;
@@ -151,7 +150,7 @@ public class Crypt {
 		// pr_bits(in,48);
 		// System.out.println("After SB : ");
 		// pr_bits(out,32);
-	};
+	}
 
 	private int ascii_to_bin(char c) {
 		if (c >= 'a')
@@ -160,7 +159,7 @@ public class Crypt {
 			return (c - 53);
 		else
 			return (c - '.');
-	};
+	}
 
 	private char bin_to_ascii(int c) {
 		if (c >= 38)
@@ -169,7 +168,7 @@ public class Crypt {
 			return ((char) (c - 12 + 'A'));
 		else
 			return ((char) (c + '.'));
-	};
+	}
 
 	private void load_salt(int[] saltmask, char[] salt) {
 		int tot, i;
@@ -180,7 +179,7 @@ public class Crypt {
 		tot = ascii_to_bin(salt[0]) | (ascii_to_bin(salt[1]) << 6);
 		for (i = 0; i < 12; i++)
 			saltmask[i] = tot >> i & 1;
-	};
+	}
 
 	private void do_salt(int[] bits, int[] saltmask) {
 		int i, t;
@@ -194,7 +193,7 @@ public class Crypt {
 				bits[24 + i] = t;
 			}
 		}
-	};
+	}
 
 	private void load_key(int[] ikey, char[] password) {
 		int i, j;
@@ -213,7 +212,7 @@ public class Crypt {
 		// System.out.print("Loaded (after PC 1): ");
 		// pr_bits(ikey,56);
 
-	};
+	}
 
 	private void subkey(int[] ikey, int iter) {
 		int rots, i, tmp0l, tmp1l, tmp0r, tmp1r;
@@ -239,14 +238,14 @@ public class Crypt {
 		}
 
 		permute(PC2_p, 48, ikey, sub);
-	};
+	}
 
 	private void xor(int[] src1, int[] src2, int index, int num) {
 		int i;
 		for (i = 0; i < num; i++) {
 			src1[i] = (src1[i] ^ src2[index + i]) & 1;
 		}
-	};
+	}
 
 	private void print_bits(int[] s, int amt) {
 
@@ -254,7 +253,7 @@ public class Crypt {
 		for (i = 0; i < amt; i++)
 			System.out.print("" + s[i]);
 		System.out.println("");
-	};
+	}
 
 	private void do_f(int[] in, int index, int[] out, int iter, int[] ikey,
 			int[] saltmask) {
@@ -278,7 +277,7 @@ public class Crypt {
 		xor(tmp48, skey, 0, 48); // Goed
 		do_sblocks(tmp48, tmp32);
 		permute(P_p, 32, tmp32, out);
-	};
+	}
 
 	private char[] mycrypt(char[] password, char[] salt) {
 		int bits[] = new int[64];
@@ -347,7 +346,7 @@ public class Crypt {
 		}
 		// anwser[i+2]='\0';
 		return answer;
-	};
+	}
 
 	/**
 	 * This method decodes the given password Encryption is based on the one way
@@ -369,7 +368,7 @@ public class Crypt {
 				password, 0);
 		s.getChars(0, 2, salt, 0);
 
-		uitkomst = new String().valueOf(mycrypt(password, salt));
+		uitkomst = String.valueOf(mycrypt(password, salt));
 		return (uitkomst.substring(0, 13));
 	}
 
@@ -379,8 +378,8 @@ public class Crypt {
 	 */
 	public static void main(String argv[]) {
 		Crypt c = new Crypt();
-		String pw = null;
-		String sa = null;
+		String pw;
+		String sa;
 		try {
 			pw = argv[0];
 			sa = argv[1];

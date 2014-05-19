@@ -170,7 +170,7 @@ public abstract class AbstractServiceDescriptor implements ServiceDescriptor {
         }
     }
 
-    private ClassLoader getServiceClassLoader(ClassLoader parentLoader, ClassAnnotator annotator, Set<URI> classpath) throws URISyntaxException {
+    private ClassLoader getServiceClassLoader(ClassLoader parentLoader, ClassAnnotator annotator, Set<URI> classpath) {
         URI[] classpathArr = classpath.toArray(new URI[classpath.size()]);
         if (annotator != null)
             return new ServiceClassLoader(classpathArr, annotator, parentLoader);

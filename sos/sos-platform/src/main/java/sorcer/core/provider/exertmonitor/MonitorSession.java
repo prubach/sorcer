@@ -142,10 +142,6 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 						cookie));
 	}
 
-	public void restore() {
-
-	}
-
 	private void init() {
 		cookie = UuidFactory.generate();
 		if (initialExertion.isJob())
@@ -417,7 +413,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	 * @param cookie for which corresponding to a SessionResource contained
 	 *            in this session resource
 	 * 
-	 * @returns null if no such SessionResource exists
+	 * @return null if no such SessionResource exists
 	 * 
 	 */
 	public MonitorSession getSessionResource(Uuid cookie) {

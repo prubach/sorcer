@@ -109,14 +109,14 @@ public class operator {
 	}
 	
 	public static ParModel model(String name, Identifiable... Objects)
-			throws EvaluationException, RemoteException, ContextException {
+			throws RemoteException, ContextException {
 		ParModel pm = new ParModel(name);
 		pm.add(Objects);
 		return pm;
 	}
 	
 	public static ParModel model(Identifiable... Objects)
-			throws EvaluationException, RemoteException, ContextException {
+			throws RemoteException, ContextException {
 		ParModel pm = new ParModel();
 		pm.add(Objects);
 		return pm;

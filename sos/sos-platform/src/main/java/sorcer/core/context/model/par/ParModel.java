@@ -128,7 +128,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 			return null;
 	}
 	
-	public ParModel add(List<Identifiable> objects) throws EvaluationException,
+	public ParModel add(List<Identifiable> objects) throws
 			RemoteException, ContextException {
 		Identifiable[] objs = new Identifiable[objects.size()];
 		objects.toArray(objs);

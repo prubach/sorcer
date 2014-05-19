@@ -133,5 +133,6 @@ public class RemoteLoggerManager implements RemoteLogger {
     }
 
     public void deleteLog(String loggerName) throws RemoteException {
+        // TODO implement
     }
 }

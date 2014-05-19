@@ -23,7 +23,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import sorcer.core.InclusiveContext;
 import sorcer.service.ContextException;
@@ -131,11 +130,10 @@ public class ComprehensiveContextIterator implements Iterator, Serializable {
 		// not implemented
 	}
 
-	private boolean disconnect() {
+	private void disconnect() {
 		tupleCount = -2;
 		// for(int i=0;i<ciSet.length;i++)
 		// ciSet[i].close();
-		return true;
 	}
 
 	public Object next() throws NoSuchElementException {

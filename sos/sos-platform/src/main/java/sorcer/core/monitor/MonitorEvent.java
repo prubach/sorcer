@@ -31,7 +31,6 @@ public class MonitorEvent extends RemoteServiceEvent implements Serializable,
         Exec {
 
 	static final long serialVersionUID = -5433981459997252761L;
-	public static final long ID = 9999699999899L;
 	private int cause;
 	private Exertion ex;
 

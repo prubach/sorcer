@@ -205,7 +205,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			}
 		}
 		try {
-			Object obj = null;
+			Object obj;
 			Exertion xrt = exert(entries);
 			if (rp == null) {
 				obj =  xrt.getReturnValue();
@@ -1191,14 +1191,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public boolean isConditional() {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#isCompound()
-	 */
-	@Override
-	public boolean isCompound() {
 		return false;
 	}
 

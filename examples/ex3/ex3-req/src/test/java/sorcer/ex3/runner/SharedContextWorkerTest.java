@@ -69,8 +69,6 @@ public class SharedContextWorkerTest {
             context.putValue("requestor/work", Works.work2);
 			context.writeValue("provider/result/0", Context.none);
 			
-			context.aliasValue("requestor/operand/1", "provider/result/0");
-			context.aliasValue("requestor/operand/2", "provider/result/0");
             context.putValue("requestor/work", Works.work3);
 			context.putValue("provider/result/0", 0);
 

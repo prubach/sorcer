@@ -37,7 +37,6 @@ import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -286,12 +285,12 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 	}
 
 	public ServiceBrowserUI(BrowserFrame frame, FiltersView fv)
-			throws RemoteException, Exception {
+			throws Exception {
 		_filtersView = fv;
 		init(frame);
 	}
 
-	public ServiceBrowserUI(BrowserFrame frame) throws RemoteException,
+	public ServiceBrowserUI(BrowserFrame frame) throws
 			Exception {
 		init(frame);
 	}
@@ -356,7 +355,6 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 					new LeaseRenewalManager(_config));
 		} catch (ConfigurationException e) {
 		}
-		;
 
 		try {
 			_leasePreparer = (ProxyPreparer) Config.getNonNullEntry(_config,
@@ -364,7 +362,6 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 					new BasicProxyPreparer());
 		} catch (ConfigurationException e) {
 		}
-		;
 
 		try {
 			_servicePreparer = (ProxyPreparer) Config.getNonNullEntry(_config,
@@ -372,7 +369,6 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 					new BasicProxyPreparer());
 		} catch (ConfigurationException e) {
 		}
-		;
 
 		try {
 			_adminPreparer = (ProxyPreparer) Config.getNonNullEntry(_config,
@@ -380,7 +376,6 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 					new BasicProxyPreparer());
 		} catch (ConfigurationException e) {
 		}
-		;
 
 		try {
 			_locatorConstraints = (MethodConstraints) _config.getEntry(
@@ -389,7 +384,6 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		} catch (ConfigurationException e) {
 			_locatorConstraints = null;
 		}
-		;
 
 		try {
 			_exporter = (Exporter) Config.getNonNullEntry(_config,
@@ -399,13 +393,12 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		} catch (ConfigurationException e) {
 		} catch (UnknownHostException e) {
         }
-        ;
 		if (_exporter instanceof BasicJeriExporter)
 			System.out.println("exporter endpoint: "
 					+ ((BasicJeriExporter) _exporter).getServerEndpoint());
 	}
 
-	private void init(final BrowserFrame frame) throws RemoteException,
+	private void init(final BrowserFrame frame) throws
 			Exception {
 
 		if (_config != null) {

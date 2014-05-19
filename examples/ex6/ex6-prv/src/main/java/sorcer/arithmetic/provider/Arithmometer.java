@@ -1,5 +1,4 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
  * Copyright 2013 Sorcersoft.com S.A.
  *
@@ -147,11 +146,10 @@ public class Arithmometer implements Serializable {
      *            service context
      * @param selector
      *            a name of arithmetic operation
-     * @throws RemoteException
      * @throws ContextException
      */
     private Context calculateFromArrayContext(Context context, String selector)
-            throws RemoteException, ContextException {
+            throws ContextException {
         ArrayContext cxt = (ArrayContext) context;
         try {
             // get sorted list of input values
@@ -220,11 +218,10 @@ public class Arithmometer implements Serializable {
      *            service context
      * @param selector
      *            a name of arithmetic operation
-     * @throws RemoteException
      * @throws ContextException
      */
     private Context calculateFromPositionalContext(Context context, String selector)
-            throws RemoteException, ContextException {
+            throws ContextException {
         PositionalContext cxt = (PositionalContext) context;
         try {
             //logger.info("selector: " + ((ServiceContext)context).getCurrentSelector());

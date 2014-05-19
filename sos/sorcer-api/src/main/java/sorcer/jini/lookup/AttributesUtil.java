@@ -23,7 +23,7 @@ import sorcer.jini.lookup.entry.SorcerServiceInfo;
 public class AttributesUtil {
 
     public static <T extends Entry> T getFirstByType(Entry[] attributeSets, Class<T> type) {
-        if (attributeSets != null && attributeSets.length > 0) {
+        if (attributeSets != null) {
             for (Entry attributeSet : attributeSets) {
                 if (type.isInstance(attributeSet)) return (T) attributeSet;
             }
@@ -32,14 +32,7 @@ public class AttributesUtil {
     }
 
     static public SorcerServiceInfo getSorcerServiceInfo(Entry[] attributeSets) {
-        if (attributeSets != null && attributeSets.length > 0) {
-            for (Entry entry : attributeSets) {
-                if (entry instanceof SorcerServiceInfo) {
-                    return ((SorcerServiceInfo) entry);
-                }
-            }
-        }
-        return null;
+        return getFirstByType(attributeSets, SorcerServiceInfo.class);
     }
 
 	static public String getGroups(Entry[] attributeSets) {

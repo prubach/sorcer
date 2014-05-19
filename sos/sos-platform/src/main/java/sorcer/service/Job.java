@@ -137,16 +137,8 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	public boolean isJob() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#isCompound()
-	 */
-	@Override
-	public boolean isCompound() {
-		return true;
-	}
-	
-	public boolean hasChild(String childName) {
+
+    public boolean hasChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return true;

@@ -44,8 +44,6 @@ public class BootCmd extends ShellCmd {
     private static final String RIO = "rio";
     private static final String ALL = "all";
 
-    private Options options;
-
 	{
 		COMMAND_NAME = "boot, stop";
 
@@ -151,7 +149,7 @@ public class BootCmd extends ShellCmd {
 
 	}
 
-    private ILauncher parseCommandLine(CommandLine cmd) throws ParseException, IOException {
+    private ILauncher parseCommandLine(CommandLine cmd) {
         ForkingLauncher launcher = new ForkingLauncher();
         launcher.setHome(SorcerEnv.getHomeDir());
         launcher.setErr(out);

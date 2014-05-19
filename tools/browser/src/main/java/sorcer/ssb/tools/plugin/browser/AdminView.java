@@ -229,7 +229,6 @@ public class AdminView {
 			}
 			JOptionPane.showMessageDialog(_view, msg, "SSB",
 					JOptionPane.ERROR_MESSAGE);
-			;
 		}
 	}
 

@@ -31,20 +31,4 @@ public interface SpaceContext {
 	public Object readValue(String path) throws ContextException, RemoteException;
 	
 	public Object takeValue(String path) throws ContextException, RemoteException;
-	
-	public Object aliasValue(String path, String alias) throws ContextException, RemoteException;
-	
-	/**
-	 * Makes JavaSpace resources unavailable for using in this ServiceContext.
-	 * @throws ContextException
-	 * @throws RemoteException
-	 */
-	public void unshare() throws ContextException, RemoteException;
-	
-	/**
-	 * Makes JavaSpace resources available for using in this ServiceContext.
-	 * @throws ContextException
-	 * @throws RemoteException
-	 */
-	public void share() throws ContextException, RemoteException;
 }

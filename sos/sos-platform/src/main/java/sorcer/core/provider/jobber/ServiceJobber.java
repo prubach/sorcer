@@ -34,7 +34,6 @@ import sorcer.service.*;
 
 import sorcer.util.StringUtils;
 
-import javax.security.auth.Subject;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -225,12 +224,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 				+ filename;
 	}
 
-	/** {@inheritDoc} */
-	public boolean isAuthorized(Subject subject, Signature signature) {
-		return true;
-	}
-
-
 	private void replaceNullExertionIDs(Exertion ex) {
 		if (ex != null && ex.getId() == null) {
 			((ServiceExertion) ex)
@@ -281,10 +274,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 					.getDataContext(), Context.JOB_COMMENTS);
 
 		}
-	}
-
-	private void prepareToResume(Job job) {
-
 	}
 
 	private void prepareToStep(Job job) {

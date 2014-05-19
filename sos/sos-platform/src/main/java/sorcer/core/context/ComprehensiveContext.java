@@ -129,7 +129,7 @@ public class ComprehensiveContext extends ServiceContext implements
 	}
 
 	public Object put(int location, String path, Object value)
-			throws ContextException, ComprehensiveContextException {
+			throws ComprehensiveContextException {
 		if (!(value instanceof ContextNode))
 			throw new ComprehensiveContextException(
 					"The value inserted should always be a ContextNode"
@@ -153,7 +153,7 @@ public class ComprehensiveContext extends ServiceContext implements
 	}
 
 	public Object put(int location, String newPath, String oldPath, Object value)
-			throws ContextException, ComprehensiveContextException {
+			throws ComprehensiveContextException {
 		if (!(value instanceof ContextNode))
 			throw new ComprehensiveContextException(
 					"The value inserted should always be a ContextNode"

@@ -84,45 +84,6 @@ public class ContextUtil {
         toCntxt.remove(SORCER_VARIABLES_PATH);
     }
 
-    public static ContextNode[] getContextNodes(Context context)
-            throws ContextException {
-        Enumeration e = context.contextPaths();
-        java.util.Set nodes = new HashSet();
-        Object obj = null;
-        while (e.hasMoreElements()) {
-            obj = e.nextElement();
-            if (obj != null && obj instanceof ContextNode)
-                nodes.add(obj);
-        }
-        ContextNode[] nodeArray = new ContextNode[nodes.size()];
-        nodes.toArray(nodeArray);
-        return nodeArray;
-    }
-
-    public static Object putDirectionalValue(Context context, String path,
-            Object node, String attribute, String value)
-            throws ContextException {
-        Uuid contextID = context.getId();
-        if (value == null)
-            value = SorcerConstants.NULL;
-        StringBuffer sb = new StringBuffer();
-        sb
-                .append(Context.CONTEXT_PARAMETER)
-                .append(APS)
-                .append(attribute)
-                .append(APS)
-                .append(value)
-                .append(APS)
-                .append(
-                        contextID == null ? SorcerConstants.NULL
-                                : contextID);
-
-        if (node instanceof ContextNode)
-            ((ContextNode) node).setDA(attribute);
-
-        return context.putValue(path, value, sb.toString());
-    }
-
     public static boolean containsContextNodeWithMetaAssoc(Context context,
             String metaAssoc) throws ContextException {
         String attr, value, key;

@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,7 +74,7 @@ public class LusTree {
 
 	public LusTree(ServiceRegistrar lus, final JTree tree, ServiceTemplate tmpl,
 			String[] inf, String[] names, ProxyPreparer pp,
-			SSBrowserFilter plugin) throws RemoteException, Exception {
+			SSBrowserFilter plugin) throws Exception {
 
 		_tree = tree;
 		_lus = lus;

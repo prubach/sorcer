@@ -18,7 +18,6 @@
 
 package sorcer.core.dispatch;
 
-import java.net.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   boolean isSpawned,
                                   Provider provider,
                                   ProvisionManager provisionManager,
-                                  ProviderProvisionManager providerProvisionManager) throws Throwable {
+                                  ProviderProvisionManager providerProvisionManager) {
         super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
         dThread = new DispatchThread();
         try {
@@ -163,8 +162,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         }
     }
 
-    protected Task execServiceTask(Task task) throws ExertionException,
-            SignatureException {
+    protected Task execServiceTask(Task task) throws ExertionException {
         Task result = null;
         int maxTries = 3;
         int tried=0;
@@ -270,7 +268,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     protected Job execJob(Job job)
             throws DispatcherException, InterruptedException,
-            ClassNotFoundException, ExertionException, RemoteException {
+            RemoteException {
 
 /*
             // this didn't work before we fixed searching the providers.
@@ -341,7 +339,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
 	private Block execBlock(Block block)
 			throws DispatcherException, InterruptedException,
-			ClassNotFoundException, ExertionException, RemoteException {
+			ExertionException, RemoteException {
 
 		try {
 			ServiceTemplate st = Accessor.getServiceTemplate(null,

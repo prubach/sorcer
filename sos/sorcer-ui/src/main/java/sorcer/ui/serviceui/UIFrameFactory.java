@@ -141,7 +141,7 @@ public class UIFrameFactory implements JFrameFactory, Serializable {
 			return sp;
 		} catch (Exception ex) {
 			//return new JLabel(ex.toString() + " = " + helpFilename);
-			JLabel lb = new JLabel("");;
+			JLabel lb = new JLabel("");
 			lb.getAccessibleContext().setAccessibleName(accessibleName);
 			return lb;
 		}

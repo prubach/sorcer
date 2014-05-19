@@ -103,7 +103,7 @@ public class ParModelTest {
 			.getName());
 
 	@Test
-	public void adderParTest() throws EvaluationException, RemoteException,
+	public void adderParTest() throws RemoteException,
 			ContextException {
 		ParModel pm = model("par-model");
 		add(pm, par("x", 10.0), par("y", 20.0));

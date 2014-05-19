@@ -66,7 +66,7 @@ public class ArgList extends ArrayList<Arg> {
 		}
 	}
 
-	public Arg getArg(String parName) throws ParException {
+	public Arg getArg(String parName) {
 		for (Arg p : this) {
 			if (p.getName().equals(parName)) {
 				return p;

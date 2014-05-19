@@ -20,7 +20,6 @@ package sorcer.util;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;
@@ -135,7 +134,7 @@ public class ServiceExerter implements Exerter, Callable {
 		Exec.State state = exertion.getControlContext().getExecState();
 		if (state == Exec.State.INITIAL) {
 			for (Exertion e : exertion.getAllExertions()) {
-				if (((ControlContext)e.getControlContext()).getExecState() == Exec.State.INITIAL) { ;
+				if (((ControlContext)e.getControlContext()).getExecState() == Exec.State.INITIAL) {
 					((ServiceExertion)e).setStatus(Exec.INITIAL);
 				}
 			}

@@ -152,7 +152,7 @@ public class Arithmometer implements Serializable {
 	 * @throws ContextException 
 	 */
 	private Context calculateFromArrayContext(Context context, String selector)
-			throws RemoteException, ContextException {
+			throws ContextException {
 		ArrayContext cxt = (ArrayContext) context;
 		try {
 			// get sorted list of input values
@@ -221,11 +221,10 @@ public class Arithmometer implements Serializable {
 	 *            service context
 	 * @param selector
 	 *            a name of arithmetic operation
-	 * @throws java.rmi.RemoteException
 	 * @throws ContextException
 	 */
 	private Context calculateFromPositionalContext(Context context, String selector)
-			throws RemoteException, ContextException {
+			throws ContextException {
 		PositionalContext cxt = (PositionalContext) context;
 		try {
 			//logger.info("selector: " + ((ServiceContext)context).getCurrentSelector());

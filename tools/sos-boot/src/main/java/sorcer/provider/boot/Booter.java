@@ -38,8 +38,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static sorcer.core.SorcerConstants.*;
-
 /**
  * Provides static convenience methods for use in configuration files. This class cannot
  * be instantiated.
@@ -124,7 +122,7 @@ public class Booter {
 	 * API for configs
 	 * resolve codebase from artifact coordinates
 	 */
-	public static String resolveCodebase(String[] coords) throws UnknownHostException, MalformedURLException {
+	public static String resolveCodebase(String[] coords) throws MalformedURLException {
 		return Resolver.resolveCodeBase(SorcerEnv.getCodebaseRoot(), coords);
 	}
 

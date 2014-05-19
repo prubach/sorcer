@@ -66,8 +66,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 		}
 	}
 	
-	public Block(String name, Signature signature, Context context)
-			throws SignatureException {
+	public Block(String name, Signature signature, Context context) {
 		this(name, signature);
 		if (context != null)
 			this.dataContext = (ServiceContext) context;
@@ -224,16 +223,8 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	public Exertion get(int index) {
 		return exertions.get(index);
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.CompoundExertion#isCompound()
-	 */
-	@Override
-	public boolean isCompound() {
-		return true;
-	}
-	
-	public boolean hasChild(String childName) {
+
+    public boolean hasChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return true;

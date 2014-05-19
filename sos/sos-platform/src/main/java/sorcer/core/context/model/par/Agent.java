@@ -39,8 +39,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 		this.agentURLs = agentURLs;
 	}
 	
-	public Agent(String name, String className, URL... agentURLs)
-			throws EvaluationException, RemoteException {
+	public Agent(String name, String className, URL... agentURLs) {
 		super(name);
 		this.className = className;
 		this.agentURLs = agentURLs;

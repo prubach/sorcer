@@ -18,7 +18,6 @@
 package sorcer.core.proxy;
 
 import java.io.Serializable;
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 
 import net.jini.core.constraint.MethodConstraints;
@@ -46,7 +45,7 @@ public class AdminProxy implements AdministratableProvider, ReferentUuid, Remote
 			
 	private Uuid referentUuid;
 	
-	public AdminProxy(AdministratableProvider provider, Uuid referentUuid) throws UnknownHostException {	
+	public AdminProxy(AdministratableProvider provider, Uuid referentUuid) {
 		this.provider = provider;
 		this.referentUuid = referentUuid;
     }

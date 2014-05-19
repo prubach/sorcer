@@ -61,12 +61,10 @@ public class ExertionSorterTest {
                         out("result/y", null)));
 
         // Service Composition j1(j2(t4(x1, x2), t5(x1, x2)), t3(x1, x2))
-        Job j1 = job("j1", t3, // sig("service", Jobber.class),
+        return job("j1", t3, // sig("service", Jobber.class),
                 job("j2", t5, t4, strategy(flow, access)),
                 pipe(out(t4, "result/y"), in(t3, "arg/x1")),
                 pipe(out(t5, "result/y"), in(t3, "arg/x2")));
-
-        return j1;
     }
 
 
@@ -150,7 +148,7 @@ public class ExertionSorterTest {
     }
 
     @Test
-    public void testSorterSimple() throws SortingException, Exception {
+    public void testSorterSimple() throws Exception {
         System.out.println("Before sorting");
         Job job = createSrv(); //createComplexJob();
         printAllExertions(job);
@@ -163,7 +161,7 @@ public class ExertionSorterTest {
     }
 
     @Test
-    public void testSorterSimple2() throws SortingException, Exception {
+    public void testSorterSimple2() throws Exception {
         System.out.println("Before sorting");
         Job job = createJob(Strategy.Flow.AUTO, Strategy.Access.PULL);
         printAllExertions(job);
@@ -174,7 +172,7 @@ public class ExertionSorterTest {
     }
 
     @Test
-    public void testSorterComplex() throws SortingException, Exception {
+    public void testSorterComplex() throws Exception {
         System.out.println("Before sorting");
         Job job = createComplexJob();
         printAllExertions(job);

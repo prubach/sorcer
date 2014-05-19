@@ -1715,27 +1715,28 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return appendContext(cntxt, path, false);
 	}
 
+    /**
+	appendSubcontext snips the context (passed in as the first
+	argument) BEFORE the requested node and returns it appended
+	to the context object. Said another way: if the context, ctx,
+	has the following keys
+
+    a/b
+    a/b/c
+    d/e
+
+	appendSubcontext(ctx, "a/b") returns context with keys
+    b
+    b/c
+
+    appendSubcontext(ctx, "a") returns context with keys
+    a/b
+    a/b/c
+
+	key should not have a trailing slash
+	*/
 	public Context appendContext(Context cntxt, String path,
 			boolean prefixContextName) throws ContextException,  RemoteException {
-		// appendSubcontext snips the context (passed in as the first
-		// argument) BEFORE the requested node and returns it appended
-		// to the context object. Said another way: if the context, ctx,
-		// has the following keys
-		//
-		// a/b
-		// a/b/c
-		// d/e
-		//
-		// appendSubcontext(ctx, "a/b") returns context with keys
-		// b
-		// b/c
-		//
-		// appendSubcontext(ctx, "a") returns context with keys
-		// a/b
-		// a/b/c
-
-		// key should not have a trailing slash
-
 		String newKey, oldKey, cntxtKey;
 		int index;
 		Enumeration e1;
@@ -1923,7 +1924,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			} catch (Exception ex) {
 				sb.append("\nUnable to retrieve value: " + ex.getMessage());
 				ex.printStackTrace();
-				val = Context.none;;
+				val = Context.none;
 //				continue;
 			}
 			// if (val == null)
@@ -2854,15 +2855,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public T asis() throws EvaluationException, RemoteException {
 		return getValue();
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.service.Context#getData()
-	 */
-	@Override
-	public Object getData() {
-		// to reimplemented in subclasses
-		return null;
 	}
 
     public String getPrefix() {

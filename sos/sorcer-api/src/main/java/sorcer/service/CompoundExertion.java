@@ -24,10 +24,6 @@ import java.util.List;
  * @author Mike Sobolewski
  */
 public interface CompoundExertion {
-	
-
-	public boolean isCompound();
-
 	public int size();
 
 	/**

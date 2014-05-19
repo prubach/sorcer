@@ -1121,8 +1121,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 */
 	public Enumeration<?> getAttributes(String path) throws ContextException;
 
-	public Object getData();
-
 	public int size();
 
 	String getUserName();

@@ -44,6 +44,6 @@ public interface MonitorManagement extends Monitorable {
 	public Exertion register(RemoteEventListener lstnr, Exertion ex,
 			long duration) throws RemoteException;
 
-	public boolean persist(IMonitorSession session) throws RemoteException, IOException;
+	public boolean persist(IMonitorSession session) throws IOException;
 
 }

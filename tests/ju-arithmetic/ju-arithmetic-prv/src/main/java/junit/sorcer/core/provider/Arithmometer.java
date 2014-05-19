@@ -142,7 +142,7 @@ public class Arithmometer implements Serializable {
 	 * @throws ContextException 
 	 */
 	private Context calculateFromArrayContext(Context context, String selector)
-			throws RemoteException, ContextException {
+			throws ContextException {
 		ArrayContext cxt = (ArrayContext) context;
 		try {
 			// get sorted list of input values
@@ -208,17 +208,12 @@ public class Arithmometer implements Serializable {
 	 * Calculates the result of arithmetic operation specified by a selector
 	 * (add, subtract, multiply, or divide) from the instance of ServiceContext.
 	 * 
-	 * @param input
-	 *            service context
 	 * @param selector
 	 *            a name of arithmetic operation
-	 * @return
-	 * @throws RemoteException
 	 * @throws ContextException
-	 * @throws UnknownHostException
 	 */
 	private Context calculateFromPositionalContext(Context context, String selector)
-			throws RemoteException, ContextException {
+			throws ContextException {
 		PositionalContext cxt = (PositionalContext) context;
 		try {
 			//logger.info("selector: " + ((ServiceContext)dataContext).getCurrentSelector());

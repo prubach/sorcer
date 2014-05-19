@@ -20,7 +20,6 @@ package sorcer.arithmetic.provider;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
-import sorcer.core.provider.Provider;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
@@ -28,7 +27,6 @@ import static sorcer.service.monitor.MonitorUtil.checkpoint;
 
 public class AdderImpl implements Adder {
 	private Arithmometer arithmometer = new Arithmometer();
-	private Provider provider;
 	private Logger logger = Logger.getLogger(AdderImpl.class.getName());
 	
 	public Context add(Context context) throws RemoteException, ContextException {

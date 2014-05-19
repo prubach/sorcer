@@ -63,7 +63,7 @@ public class ArgSet extends TreeSet<Arg> {
 		}
 	}
 	
-	public Arg getArg(String parName) throws ParException {
+	public Arg getArg(String parName) {
 		for (Arg v : this) {
 			if (v.getName().equals(parName))
 				return v;

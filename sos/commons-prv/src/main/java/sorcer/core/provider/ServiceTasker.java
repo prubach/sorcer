@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,12 @@ package sorcer.core.provider;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import javax.security.auth.Subject;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.service.Executor;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 import sorcer.service.Task;
 import sorcer.service.Tasker;
 
@@ -69,8 +66,4 @@ public class ServiceTasker extends ServiceProvider implements Tasker, Executor, 
 				.process(threadManager);
 	}
 
-	/** {@inheritDoc} */
-	public boolean isAuthorized(Subject subject, Signature signature) {
-		return true;
-	}
 }

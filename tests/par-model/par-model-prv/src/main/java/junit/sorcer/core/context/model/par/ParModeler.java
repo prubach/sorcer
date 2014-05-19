@@ -10,7 +10,6 @@ import java.rmi.RemoteException;
 
 import sorcer.core.context.model.par.ParModel;
 import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
 
 /**
  * @author Mike Sobolewski
@@ -19,7 +18,7 @@ import sorcer.service.EvaluationException;
 @SuppressWarnings("rawtypes")
 public class ParModeler {
 
-	public static ParModel getParModel() throws EvaluationException,
+	public static ParModel getParModel() throws
 			RemoteException, ContextException {
 		ParModel pm = model("par-model");
 		add(pm, par("x", 10.0), par("y", 20.0));

@@ -256,9 +256,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return null;
 	}
 
-	public void grant(Class<?> cl, Principal[] principals, Permission[] permissions) {
-	}
-
 	public boolean grantSupported() {
 		return false;
 	}

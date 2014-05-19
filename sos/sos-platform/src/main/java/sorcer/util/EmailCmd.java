@@ -128,8 +128,4 @@ public class EmailCmd {
 		}
 		System.out.println("EmailCmd:result=" + result);
 	}
-
-	public void undoIt() {
-		// do nothing
-	}
 }

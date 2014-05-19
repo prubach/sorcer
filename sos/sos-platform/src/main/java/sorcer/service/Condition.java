@@ -157,8 +157,7 @@ import java.util.logging.Logger;
 			return false;
 	}
 
-    public static Arg[] pars(String... parnames)
-            throws ContextException {
+    public static Arg[] pars(String... parnames) {
         ArgSet ps = new ArgSet();
         for (String name : parnames) {
             ps.add(new ParImpl(name));

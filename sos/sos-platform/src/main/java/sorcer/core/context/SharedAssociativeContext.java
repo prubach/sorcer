@@ -103,31 +103,4 @@ public class SharedAssociativeContext extends ServiceContext implements SpaceCon
 		spaceElements.setSpace(space);
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#aliasValue(java.lang.String)
-	 */
-	@Override
-	public Object aliasValue(String path, String alias) throws ContextException,
-			RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#share()
-	 */
-	@Override
-	public void share() throws ContextException, RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.core.context.SpaceContext#unshare()
-	 */
-	@Override
-	public void unshare() throws ContextException, RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
 }

@@ -164,13 +164,5 @@ public class AltExertion extends Task implements ConditionalExertion {
 			tl.add(oe.getTarget());
 		return tl;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#isCompound()
-	 */
-	@Override
-	public boolean isCompound() {
-		return false;
-	}
 
 }

@@ -72,8 +72,7 @@ public class PropertiesPanel extends JPanel {
 		if (properties == null) {
 			return;
 		}
-		List<Properties> providerProps = new ArrayList();
-		;
+		List<Properties> providerProps = new ArrayList<Properties>();
 		data = new ArrayList();
 		fields = new ArrayList();
 		for (Object prop : properties) {

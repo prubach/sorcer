@@ -18,8 +18,6 @@ package sorcer.core.provider.jobber;
 
 import java.rmi.RemoteException;
 
-import javax.security.auth.Subject;
-
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
@@ -38,7 +36,6 @@ import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
-import sorcer.service.Signature;
 
 import com.sun.jini.start.LifeCycle;
 
@@ -141,11 +138,6 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	private String getDataFilename(String filename) {
 		return getDelegate().getProviderConfig().getDataDir() + "/"
 				+ filename;
-	}
-
-	/** {@inheritDoc} */
-	public boolean isAuthorized(Subject subject, Signature signature) {
-		return true;
 	}
 
 

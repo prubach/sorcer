@@ -381,30 +381,6 @@ public class Contexts {
 		return result;
 	}
 
-	public static ContextNode[] getTaskContextNodes(Job job)
-			throws ContextException {
-		List allNodes = new ArrayList();
-		List additional = null;
-
-		List<Exertion> exertions = job.getExertions();
-		for (Exertion exertion : exertions) {
-			if (exertion instanceof ServiceExertion) {
-				additional = Arrays
-						.asList(getTaskContextNodes(exertion));
-				if (additional.size() > 0)
-					allNodes.addAll(additional);
-			} else if (exertion instanceof Job) {
-				additional = Arrays.asList(getTaskContextNodes((Job) exertion));
-				if (additional.size() > 0)
-					allNodes.addAll(additional);
-			}
-		}
-		ContextNode[] result = new ContextNode[allNodes.size()];
-
-		allNodes.toArray(result);
-		return result;
-	}
-
 	public static ContextNode[] getMarkedConextNodes(Context sc,
 			String association) throws ContextException {
 		String[] paths = getMarkedPaths(sc, association);
