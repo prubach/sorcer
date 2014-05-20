@@ -47,9 +47,8 @@ public class JobThread extends Thread {
 	public void run() {
 		logger.finer("*** Exertion dispatcher started with control context ***\n"
 				+ job.getControlContext());
-		Dispatcher dispatcher = null;
 		try {
-			dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(job, provider);
+            Dispatcher dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(job, provider);
 			try {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());
@@ -72,12 +71,12 @@ public class JobThread extends Thread {
 			}
 			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatcher.getState()
 					+ " for job***\n" + job.getControlContext());
+            result = (Job) dispatcher.getExertion();
 		} catch (DispatcherException de) {
 			de.printStackTrace();
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 		}
-		result = (Job) dispatcher.getExertion();
 	}
 
 	public Job getJob() {

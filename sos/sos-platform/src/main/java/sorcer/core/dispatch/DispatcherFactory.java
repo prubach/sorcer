@@ -33,7 +33,5 @@ public interface DispatcherFactory {
      * @param exertion The SORCER job that will be used to perform a collection
      * of SERVICE tasks.
      */
-	 public Dispatcher createDispatcher(Exertion exertion, Provider provider) throws DispatcherException;
-	    
 	 public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException;
 }

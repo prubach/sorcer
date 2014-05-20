@@ -46,12 +46,8 @@ public class BlockThread extends Thread {
              				// ignore it, locall call
 				}
 			}
-            Dispatcher dispatcher;
-			if (exertionDeploymentConfig != null)
-				dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(block, provider, exertionDeploymentConfig);
-			else
-				dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(block, provider);
-							
+            Dispatcher dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(block, provider, exertionDeploymentConfig);
+
 			try {
 				block.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());

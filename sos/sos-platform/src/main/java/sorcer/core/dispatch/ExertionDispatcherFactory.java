@@ -54,23 +54,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 		return factory;
 	}
 	
-	/**
-	 * Returns an instance of the appropriate subclass of Dispatcher as
-	 * determined from information provided by the given Job instance.
-	 * 
-	 * @param exertion
-	 *            The SORCER job that will be used to perform a collection of
-	 *            components exertions
-	 */
-    public Dispatcher createDispatcher(Exertion exertion, Provider provider) throws DispatcherException {
-        return createDispatcher(exertion, new HashSet<Context>(), false, null, provider);
-    }
-    public Dispatcher createDispatcher(Exertion exertion,
-                                       Set<Context> sharedContexts,
-                                       boolean isSpawned,
-                                       Provider provider) throws DispatcherException {
-        return createDispatcher(exertion, sharedContexts, isSpawned, null, provider);
-    }
     public Dispatcher createDispatcher(Exertion exertion,
                                        Set<Context> sharedContexts,
                                        boolean isSpawned,
@@ -174,6 +157,14 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     }
 
 
+    /**
+     * Returns an instance of the appropriate subclass of Dispatcher as
+     * determined from information provided by the given Job instance.
+     *
+     * @param exertion
+     *            The SORCER job that will be used to perform a collection of
+     *            components exertions
+     */
     @Override
     public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException {
         return createDispatcher(exertion, new HashSet<Context>(), false, null, provider, config);
