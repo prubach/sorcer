@@ -163,14 +163,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provider,
                         provisionManager,
                         providerProvisionManager);
-            } else if (Jobs.isSWIFSequential(job)) {
-                logger.info("Running SWIF Sequential Dispatcher...");
-                dispatcher = new SWIFSequentialDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
             }
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (Throwable e) {

@@ -68,12 +68,6 @@ public class Jobs implements SorcerConstants {
 				&& Access.PULL.equals(cc.get(EXERTION_ACCESS));
 	}
 	
-	public static boolean isSWIFSequential(Job job) {
-		ControlContext cc = job.getControlContext();
-		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))
-				&& Access.SWIF.equals(cc.get(EXERTION_ACCESS));
-	}
-
 	public static boolean isSpaceSequential(Job job) {
 		ControlContext cc = job.getControlContext();
 		return Flow.SEQ.equals(cc.get(EXERTION_FLOW))

@@ -347,7 +347,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	public void setAccessType(Access access) {
 		if (Access.PULL.equals(access) || Access.QOS_PULL.equals(access)
 				|| Access.PUSH.equals(access) || Access.QOS_PUSH.equals(access)
-				|| Access.SWIF.equals(access) || Access.DIRECT.equals(access))
+				|| Access.DIRECT.equals(access))
 			put(EXERTION_ACCESS, access);
 	}
 

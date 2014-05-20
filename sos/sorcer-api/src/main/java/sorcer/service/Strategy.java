@@ -42,7 +42,7 @@ public interface Strategy extends Arg {
 	 * specified by the <code>SRV</code>signature.
 	 */
 	public enum Access {
-		PUSH, PULL, SWIF, QOS_PUSH, QOS_PULL, CATALOG, DIRECT
+		PUSH, PULL, QOS_PUSH, QOS_PULL, CATALOG, DIRECT
 	}
 		
 	/**
