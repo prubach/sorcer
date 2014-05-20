@@ -100,7 +100,7 @@ public class ArithmeticNetTest {
 		t5 = exert(t5);
 		logger.info("t5 dataContext: " + context(t5));
 		logger.info("t5 value: " + get(t5, "result/y"));
-		assertEquals("Wrong value for 100.0", 100.0, get(t5, "result/y"));
+		assertEquals("Wrong result", 100.0, get(t5, "result/y"));
 	}
 	
 	@Test

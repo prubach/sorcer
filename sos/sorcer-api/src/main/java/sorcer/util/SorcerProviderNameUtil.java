@@ -1,8 +1,5 @@
-package sorcer.util;
-/**
- *
- * Copyright 2013 Rafał Krupiński.
- * Copyright 2013 Sorcersoft.com S.A.
+/*
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +13,7 @@ package sorcer.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+package sorcer.util;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
@@ -42,9 +39,10 @@ public class SorcerProviderNameUtil extends ProviderNameUtil {
     @Override
     public String getName(Class<?> providerType) {
         String name = super.getName(providerType);
-        if (SorcerEnv.nameSuffixed()) {
+        if (name != null && SorcerEnv.nameSuffixed()) {
             name = SorcerEnv.getSuffixedName(name);
         }
+        log.debug("Name of {} = {}", providerType, name);
         return name;
     }
 }

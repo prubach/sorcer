@@ -17,8 +17,6 @@
  */
 package sorcer.service;
 
-import sorcer.service.ContextException;
-
 public interface Conditional {
 
     /**
@@ -26,8 +24,6 @@ public interface Conditional {
      * the Conditonal. Thus returning the boolean value true or false.
      *
      * @return boolean true or false depending on the condition
-     * @throws ExertionException
-     *             if there is any problem within the isTrue method.
      * @throws ContextException
      */
     public boolean isTrue() throws ContextException;
