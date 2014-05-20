@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.dispatch.BlockThread;
-import sorcer.core.exertion.NetJob;
 import sorcer.core.provider.Concatenator;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
@@ -79,7 +78,7 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 			setServiceID(exertion);
 			// Create an instance of the ExertionProcessor and call on the
 			// process method, returns an Exertion
-			Exertion exrt = new ControlFlowManager(exertion, delegate, this).process(threadManager);
+			Exertion exrt = new ControlFlowManager(exertion, delegate, this).process();
 			exrt.getDataContext().setExertion(null);
 			return exrt;
 		} 

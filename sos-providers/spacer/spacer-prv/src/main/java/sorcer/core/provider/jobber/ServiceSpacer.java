@@ -112,10 +112,6 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
             }
         }
 
-        public Task getTask() {
-            return task;
-        }
-
         public Task getResult() throws ContextException {
             return result;
         }
@@ -146,7 +142,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
 
 	@Override
 	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-        return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+        return new ControlFlowManager(exertion, delegate, this).process();
 	}
 
     @Override

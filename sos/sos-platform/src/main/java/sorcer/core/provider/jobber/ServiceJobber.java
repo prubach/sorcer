@@ -78,7 +78,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 			setServiceID(exertion);
 			// Create an instance of the ExertionProcessor and call on the
 			// process method, returns an Exertion
-			return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+			return new ControlFlowManager(exertion, delegate, this).process();
 
 		} 
 		catch (Exception e) {
@@ -183,6 +183,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 
 	@Override
 	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-		return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+		return new ControlFlowManager(exertion, delegate, this).process();
 	}
 }

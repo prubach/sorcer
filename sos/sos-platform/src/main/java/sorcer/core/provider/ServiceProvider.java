@@ -175,8 +175,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	static final String DEFAULT_PROVIDER_PROPERTY = "provider.properties";
 
-	protected ThreadPoolExecutor threadManager;
-
 	int loopCount = 0;
 
 	/** The login context, for logging out */
@@ -1340,14 +1338,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @see sorcer.service.Exertion
 	 * @see sorcer.service.Conditional
 	 * @see sorcer.core.provider.ControlFlowManager
-	 * @throws java.rmi.RemoteException
-	 * @throws sorcer.service.ExertionException
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
 		// create an instance of the ExertionProcessor and call on the
 		// process method, returns an Exertion
-		ControlFlowManager cfm = null;
+		ControlFlowManager cfm;
 		if (this instanceof Jobber) {
 			cfm = new ControlFlowManager(exertion, delegate, (Jobber) this);
 		} else if (this instanceof Spacer) {
@@ -1361,7 +1357,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
                 cfm = new ControlFlowManager(exertion, delegate);
         } else
             throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
-		return cfm.process(threadManager);
+		return cfm.process();
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,
@@ -1628,9 +1624,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         if (joinManager != null)
             joinManager.terminate();
 
-        if (threadManager != null)
-            threadManager.shutdown();
-
         unexport(true);
         delegate.destroy();
         if (lifeCycle != null) {
@@ -1643,8 +1636,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	
 	public boolean isBusy() {
 		boolean isBusy = false;
-		if (threadManager != null)
-			isBusy = threadManager.getActiveCount() > 0;
 		isBusy = isBusy || delegate.exertionStateTable.size() > 0;
 		return isBusy;
 	}
@@ -1707,52 +1698,11 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 					ServiceProvider.COMPONENT, THREAD_MANAGEMNT, boolean.class,
 					false);
 		logger.debug("threadManagement: " + threadManagement);
-		if (!threadManagement) {
-			return;
-		}
-
-        int maxThreads = (Integer) config.getEntry(ServiceProvider.COMPONENT,
-					MAX_THREADS, int.class, 10);
-		logger.debug("maxThreads: " + maxThreads);
-
-        long timeout = (Long) config.getEntry(ServiceProvider.COMPONENT,
-                MANAGER_TIMEOUT, long.class, 1000l * 15);
-		logger.info("timeout: " + timeout);
-
-
-        float	loadFactor = (Float) config.getEntry(ServiceProvider.COMPONENT,
-					LOAD_FACTOR, float.class, 3.0f);
-		logger.debug("loadFactor: " + loadFactor);
-
-		int	waitIncrement = (Integer) config.getEntry(
-					ServiceProvider.COMPONENT, WAIT_INCREMENT, int.class,
-					50);
-		logger.info("waitIncrement: " + waitIncrement);
-
-		ControlFlowManager.WAIT_INCREMENT = waitIncrement;
-
-        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
-        tf.setNameFormat(getName() + "-%2$d");
-		 /**
-	     * Create a task manager.
-	     *
-	     * @param maxThreads maximum number of threads to use on tasks
-	     * @param timeout idle time before a thread exits 
-	     * @param loadFactor threshold for creating new threads.  A new
-	     * thread is created if the total number of runnable tasks (both active
-	     * and pending) exceeds the number of threads times the loadFactor,
-	     * and the maximum number of threads has not been reached.
-	     */
-        threadManager = new ThreadPoolExecutor(0, maxThreads, timeout, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), tf);
+		if (threadManagement)
+            logger.warn(THREAD_MANAGEMNT + " is currently unsupported");
     }
 
-	public final static String DB_HOME = "dbHome";
 	public final static String THREAD_MANAGEMNT = "threadManagement";
-	public final static String MAX_THREADS = "maxThreads";
-	public final static String MANAGER_TIMEOUT = "threadTimeout";
-	public final static String LOAD_FACTOR = "loadFactor";
-	// wait for a TaskThread result in increments
-	public final static String WAIT_INCREMENT = "waitForResultIncrement";
 
 	/*
 	 * (non-Javadoc)

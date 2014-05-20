@@ -28,7 +28,6 @@ import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.*;
 
 import java.rmi.RemoteException;
-import java.util.concurrent.ExecutorService;
 
 import static sorcer.service.Exec.FAILED;
 import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
@@ -53,7 +52,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
     }
 
     @Override
-    public Exertion process(ExecutorService taskManager) throws ExertionException {
+    public Exertion process() throws ExertionException {
         try {
             exertion = register(exertion);
         } catch (RemoteException e) {
@@ -66,7 +65,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
                     DEFAULT_TIMEOUT_PERIOD);
             lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
 
-            NetTask result = (NetTask) super.process(taskManager);
+            NetTask result = (NetTask) super.process();
             Exec.State resultState = result.getStatus() <= FAILED ? Exec.State.FAILED : Exec.State.DONE;
             try {
                 monSession.changed(result.getContext(), resultState);

@@ -22,7 +22,6 @@ import static sorcer.service.TaskFactory.task;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,8 +82,6 @@ public class ControlFlowManager {
 	 * Reference to a spacer proxy if available.
 	 */
 	protected Spacer spacer;
-
-	static int WAIT_INCREMENT = 50;
 
 	/**
 	 * Default Constructor.
@@ -168,7 +165,7 @@ public class ControlFlowManager {
      * @throws ExertionException
      *             exception from other methods
      */
-    public Exertion process(ExecutorService ignored) throws ExertionException {
+    public Exertion process() throws ExertionException {
         logger.info("process exertion: " + exertion.getName());
         try {
             Exertion result = null;
