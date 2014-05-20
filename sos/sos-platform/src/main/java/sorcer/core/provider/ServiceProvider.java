@@ -166,7 +166,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     static final String PROVIDER = ServiceProvider.class.getName();
 
     /** Logger for logging information about this instance */
-    protected static final Logger logger = LoggerFactory.getLogger(ServiceProvider.class);
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String COMPONENT = ServiceProvider.class.getName();
 
@@ -625,7 +625,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 * @param throwable
 	 *            exception produced by the failure
 	 */
-	static void initFailed(Throwable throwable) throws Exception {
+	void initFailed(Throwable throwable) throws Exception {
 		String message = null;
 /*
 		if (throwable instanceof InitException) {

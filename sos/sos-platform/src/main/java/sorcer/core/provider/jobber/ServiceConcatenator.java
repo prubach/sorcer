@@ -1,7 +1,8 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *  
+ * Copyright 2014 Sorcersoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -95,10 +96,7 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		//logger.info("*********************************************ServiceConcatenator.exert(), exertion = " + exertion);
-		Exertion ex = doBlock(exertion, txn);
-		//logger.info("*********************************************ServiceConcatenator.exert(), ex = " + ex);
-		return ex;
+		return doBlock(exertion, txn);
 	}
 
 	public Exertion doBlock(Exertion block) {
@@ -109,8 +107,8 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
 		setServiceID(block);
 		try {
-			if (((ServiceExertion)block).getControlContext().isMonitorable()
-					&& !(((NetJob)block).getControlContext()).isWaitable()) {
+			if ((block).getControlContext().isMonitorable()
+					&& !((block).getControlContext()).isWaitable()) {
 				replaceNullExertionIDs(block);
 				new BlockThread((Block) block, this).start();
 				return block;
@@ -128,18 +126,6 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 			return null;
 		}
 	}
-
-	private String getDataURL(String filename) {
-		return getDelegate().getProviderConfig().getProperty(
-				"provider.dataURL")
-				+ filename;
-	}
-
-	private String getDataFilename(String filename) {
-		return getDelegate().getProviderConfig().getDataDir() + "/"
-				+ filename;
-	}
-
 
 	private void replaceNullExertionIDs(Exertion ex) {
 		if (ex != null && ex.getId() == null) {

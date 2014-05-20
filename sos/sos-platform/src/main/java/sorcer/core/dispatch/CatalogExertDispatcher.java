@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -373,7 +373,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			runningExertionIDs.addElement(block.getId());
 
 			// create a new instance of a dispatcher
-			dispatcher = ExertDispatcherFactory.getFactory()
+			dispatcher = ExertionDispatcherFactory.getFactory()
 					.createDispatcher(block, sharedContexts, true, provider);
 			// wait until serviceJob is done by dispatcher
 			while (dispatcher.getState() != DONE

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
-import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.*;
 
@@ -37,46 +36,45 @@ import sorcer.service.*;
  * appropriate subclass is determined by calling the ServiceJob object's
  */
 public class ExertionDispatcherFactory implements DispatcherFactory {
-
-    private static ExertionDispatcherFactory factory;
     public static Cataloger catalog; // The service catalog object
     private final static Logger logger = Logger.getLogger(ExertionDispatcherFactory.class.getName());
     private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
-	public static ExertionDispatcherFactory getFactory() {
-		if (factory == null)
-			factory = new ExertionDispatcherFactory();
-		return factory;
+    private LokiMemberUtil loki;
+
+    protected ExertionDispatcherFactory(LokiMemberUtil loki){
+        this.loki = loki;
 	}
-	public static ExertionDispatcherFactory getProvisionableFactory() {
-		if (factory == null)
-			factory = new ExertionDispatcherFactory();
-		return factory;
+
+	public static DispatcherFactory getFactory() {
+		return new ExertionDispatcherFactory(null);
 	}
-	
+
+	public static DispatcherFactory getFactory(LokiMemberUtil loki) {
+		return new ExertionDispatcherFactory(loki);
+	}
+
     public Dispatcher createDispatcher(Exertion exertion,
                                        Set<Context> sharedContexts,
                                        boolean isSpawned,
-                                       LokiMemberUtil myMemberUtil,
-                                       Provider provider,
-                                       String... config) throws DispatcherException {
+                                       Provider provider) throws DispatcherException {
         Dispatcher dispatcher = null;
         ProvisionManager provisionManager = null;
         List<Deployment> deployments = ((ServiceExertion)exertion).getDeployments();
         if (deployments.size() > 0)
             provisionManager = new ProvisionManager(exertion);
         try {
-			if (exertion instanceof NetTask) {
+			if (exertion instanceof Task) {
 				logger.info("Running Space Task Dispatcher...");
-				return dispatcher =  new SpaceTaskDispatcher((NetTask)exertion,
+				return new SpaceTaskDispatcher((Task)exertion,
 						                                    sharedContexts, 
 						                                    isSpawned, 
-						                                    myMemberUtil,
+						                                    loki,
                         provisionManager,
                         providerProvisionManager);
 			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				 return dispatcher = new CatalogBlockDispatcher((Block)exertion,
+				 return new CatalogBlockDispatcher((Block)exertion,
 						                                  sharedContexts, 
 						                                  isSpawned, 
 						                                  provider,
@@ -84,10 +82,10 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                          providerProvisionManager);
 			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				return dispatcher = new SpaceBlockDispatcher((Block)exertion,
+				return new SpaceBlockDispatcher((Block)exertion,
 						                                  sharedContexts, 
 						                                  isSpawned, 
-						                                  myMemberUtil, 
+						                                  loki,
 						                                  provider,
                         provisionManager,
                         providerProvisionManager);
@@ -100,7 +98,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                 dispatcher = new SpaceSequentialDispatcher(job,
                         sharedContexts,
                         isSpawned,
-                        myMemberUtil,
+                        loki,
                         provider,
                         provisionManager,
                         providerProvisionManager);
@@ -109,7 +107,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                 dispatcher = new SpaceParallelDispatcher(job,
                         sharedContexts,
                         isSpawned,
-                        myMemberUtil,
+                        loki,
                         provider,
                         provisionManager,
                         providerProvisionManager);
@@ -118,7 +116,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                 dispatcher = new SpaceSequentialDispatcher(job,
                         sharedContexts,
                         isSpawned,
-                        myMemberUtil,
+                        loki,
                         provider,
                         provisionManager,
                         providerProvisionManager);
@@ -167,6 +165,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
      */
     @Override
     public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException {
-        return createDispatcher(exertion, new HashSet<Context>(), false, null, provider, config);
+        return createDispatcher(exertion, new HashSet<Context>(), false, provider);
     }
 }

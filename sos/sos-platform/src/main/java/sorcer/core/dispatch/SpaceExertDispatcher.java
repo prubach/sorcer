@@ -102,7 +102,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		if (exertion == xrt)
 			ee.parentID = exertion.getId();
 		else
-			ee.parentID = ((ServiceExertion) exertion).getParentId();
+			ee.parentID = exertion.getParentId();
 		ee.state = Exec.POISONED;
 		try {
 			space.write(ee, null, Lease.FOREVER);

@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import sorcer.service.ContextException;
 import sorcer.service.Exec;
 import sorcer.service.Job;
 
-public class JobThread extends Thread {
+public class JobThread implements Runnable {
 	private final static Logger logger = Logger.getLogger(JobThread.class
 			.getName());
 
@@ -38,17 +38,19 @@ public class JobThread extends Thread {
 
 	Provider provider;
 
-	public JobThread(Job job, Provider provider) {
-        super("[" + Thread.currentThread().getName() + "] Job-" + job.getName());
+    private DispatcherFactory dispatcherFactory;
+
+	public JobThread(Job job, Provider provider, DispatcherFactory dispatcherFactory) {
 		this.job = job;
 		this.provider = provider;
+        this.dispatcherFactory = dispatcherFactory;
 	}
 
 	public void run() {
 		logger.finer("*** Exertion dispatcher started with control context ***\n"
 				+ job.getControlContext());
 		try {
-            Dispatcher dispatcher = ExertDispatcherFactory.getFactory().createDispatcher(job, provider);
+            Dispatcher dispatcher = dispatcherFactory.createDispatcher(job, provider);
 			try {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());

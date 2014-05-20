@@ -18,33 +18,20 @@
 package sorcer.core.provider.jobber;
 
 import java.rmi.RemoteException;
-import java.util.HashSet;
-import java.util.Vector;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
-import net.jini.id.UuidFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sorcer.core.Dispatcher;
+import sorcer.core.dispatch.DispatcherFactory;
 import sorcer.core.provider.Provider;
-import sorcer.core.SorcerConstants;
-import sorcer.core.SorcerEnv;
-import sorcer.core.context.Contexts;
-import sorcer.core.context.ControlContext;
-import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.SpaceTaskDispatcher;
-import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 import sorcer.core.provider.Spacer;
 
 import com.sun.jini.start.LifeCycle;
-import sorcer.util.StringUtils;
 
 /**
  * ServiceSpacer - The SORCER rendezvous service provider that provides
@@ -52,8 +39,7 @@ import sorcer.util.StringUtils;
  * exertions to be executed.
  *
  */
-public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, SorcerConstants {
-    private static Logger logger = LoggerFactory.getLogger(ServiceSpacer.class);
+public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     private LokiMemberUtil myMemberUtil;
 
     /**
@@ -76,43 +62,6 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
         myMemberUtil = new LokiMemberUtil(ServiceSpacer.class.getName());
     }
 
-    public void setServiceID(Exertion ex) {
-        // By default it's ServiceSpacer associated with this exertion.
-        try {
-            if (getProviderID() != null) {
-                logger.trace(getProviderID().getLeastSignificantBits() + ":"
-                        + getProviderID().getMostSignificantBits());
-                ((ServiceExertion) ex).setLsbId(getProviderID()
-                        .getLeastSignificantBits());
-                ((ServiceExertion) ex).setMsbId(getProviderID()
-                        .getMostSignificantBits());
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Exertion service(Exertion exertion) throws RemoteException,
-            ExertionException {
-        try {
-            logger.trace("service: " + exertion.getName());
-            setServiceID(exertion);
-            logger.debug("ServiceSpacer.service(): *** exertion = " + exertion);
-            // create an instance of the ExertionProcessor and call on the
-            // process method, returns an Exertion
-            return new ControlFlowManager(exertion, delegate, this)
-                    .process(threadManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExertionException();
-        }
-    }
-
-    public Exertion execute(Exertion exertion) throws TransactionException,
-            RemoteException {
-        return execute(exertion, null);
-    }
-
     public Exertion execute(Exertion exertion, Transaction txn)
             throws TransactionException, RemoteException {
         if (exertion.isJob())
@@ -121,244 +70,12 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
             return doTask(exertion);
     }
 
-    public Exertion doJob(Exertion job) {
-        setServiceID(job);
-        try {
-            if (job.getControlContext().isMonitorable()
-                    && !job.getControlContext().isWaitable()) {
-                replaceNullExertionIDs(job);
-                notifyViaEmail(job);
-                new JobThread((Job) job, this).start();
-                return job;
-            } else {
-                JobThread jobThread = new JobThread((Job) job, this);
-                jobThread.start();
-                jobThread.join();
-                Job result = jobThread.getResult();
-                logger.trace("Result: " + result);
-                return result;
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // public Exertion stopJob(String , Subject subject)
-    // throws RemoteException, ExertionException, ExertionMethodException {
-    // RemoteServiceJob job = getJob(jobID, subject);
-    // //If job has serviceID then call stop on the provider with serviceID
-    // if (job.getServiceID()!=null &&
-    // !job.getServiceID().equals(getProviderID())) {
-    // Provider provider =
-    // ServiceProviderAccessor.getProvider(job.getServiceID());
-    // if (provider == null)
-    // throw new ExertionException("Jobber with serviceID ="+job.getServiceID()
-    // +" Jobber Name ="+job.getJobberName()+" down!");
-    // else
-    // return provider.stopJob(jobID, subject);
-    // }
-
-    // //else assume the Jobber called on is current one.
-	// ExertDispatcher dispatcher = getDispatcher(jobID);
-    // if (dispatcher == null) {
-    // throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-    // //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-    // //return job;
-    // //return cleanIfCorrupted(job);
-    // }
-    // else {
-    // if (isAuthorized(subject,"STOPSERVICE",jobID)) {
-    // if (job.getStatus()!=RUNNING || job.getState()!=RUNNING)
-    // throw new ExertionException("Job with id="+jobID+" is not Running!");
-    // return dispatcher.stopJob();
-    // }
-    // else
-    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
-    // subject="+subject);
-    // }
-    // }
-
-    // public Exertion suspendJob(String jobID,Subject subject)
-    // throws RemoteException, ExertionException, ExertionMethodException {
-
-	// ExertDispatcher dispatcher = getDispatcher(jobID);
-    // if (dispatcher == null) {
-    // throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-    // //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-    // //return job;
-    // //return cleanIfCorrupted(job);
-    // }
-    // else {
-    // if (isAuthorized(subject,"SUSPENDJOB",jobID))
-    // return dispatcher.suspendJob();
-    // else
-    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
-    // subject="+subject);
-    // }
-    // }
-
-    // public Exertion resumeJob(String jobID,Subject subject)
-    // throws RemoteException, ExertionException, ExertionMethodException {
-    // RemoteServiceJob job = null;
-    // if (isAuthorized(subject,"RESUMEJOB",jobID)) {
-    // job = getJob(jobID, subject);
-    // if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-    // throw new ExertionException("Job with id="+jobID+" already Running!");
-    // prepareToResume(job);
-    // return doJob(job);
-    // }
-    // els
-    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
-    // subject="+subject);
-    // }
-
-    // public Exertion stepJob(String jobID,Subject subject)
-    // throws RemoteException, ExertionException, ExertionMethodException {
-    // RemoteServiceJob job = null;
-    // if (isAuthorized(subject,"STEPJOB",jobID)) {
-    // job = getJob(jobID, subject);
-    // if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-    // throw new ExertionException("Job with id="+jobID+" already Running!");
-    // prepareToStep(job);
-    // return doJob(job);
-    // }
-    // else
-    // throw new ExertionException("Access Denied to step Job id ="+jobID+"
-    // subject="+subject);
-    // }
-
-    private String getDataURL(String filename) {
-        return getDelegate().getProviderConfig()
-                .getProperty("provider.dataURL") + filename;
-    }
-
-    private String getDataFilename(String filename) {
-        return getDelegate().getProviderConfig()
-                .getDataDir() + "/" + filename;
-    }
-
-    private void replaceNullExertionIDs(Exertion ex) {
-        if (ex != null && ex.getId() == null) {
-            ((ServiceExertion) ex)
-                    .setId(UuidFactory.generate());
-            if (ex.isJob()) {
-                for (int i = 0; i < ((Job) ex).size(); i++)
-                    replaceNullExertionIDs(((Job) ex).get(i));
-            }
-        }
-    }
-
-    private void notifyViaEmail(Exertion ex) throws ContextException {
-		if (ex == null || ex.isTask())
-            return;
-        Job job = (Job) ex;
-        Vector recipents = null;
-		String notifyees = ((ControlContext) job.getDataContext()).getNotifyList();
-        if (notifyees != null) {
-			String[] list = StringUtils.tokenize(notifyees, SorcerConstants.MAIL_SEP);
-            recipents = new Vector(list.length);
-            for (int i = 0; i < list.length; i++)
-                recipents.addElement(list[i]);
-        }
-		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
-        if (recipents == null) {
-            if (admin != null) {
-                recipents = new Vector();
-                recipents.addElement(admin);
-            }
-        } else if (admin != null && !recipents.contains(admin))
-            recipents.addElement(admin);
-
-        if (recipents == null)
-            to = to + "No e-mail notifications will be sent for this job.";
-        else {
-            to = to + "e-mail notification will be sent to\n";
-            for (int i = 0; i < recipents.size(); i++)
-                to = to + "  " + recipents.elementAt(i) + "\n";
-        }
-        String comment = "Your job '" + job.getName()
-                + "' has been submitted.\n" + to;
-		((ControlContext) job.getDataContext()).setFeedback(comment);
-        if (job.getMasterExertion() != null
-				&& job.getMasterExertion().isTask()) {
-			job.getMasterExertion().getDataContext()
-                    .putValue(Context.JOB_COMMENTS, comment);
-
-            Contexts.markOut(
-					job.getMasterExertion().getDataContext(),
-                    Context.JOB_COMMENTS);
-
-        }
-    }
-
-    protected class JobThread extends Thread {
-
-        // doJob method calls this internally
-        private Job job;
-
-        private Job result;
-
-        private String jobID;
-
-        private Provider provider;
-
-        public JobThread(Job job, Provider provider) {
-            super("[" + Thread.currentThread().getName() + "] Job-" + job.getName());
-            this.job = job;
-            this.provider = provider;
-        }
-
-        public void run() {
-            logger.trace("*** JobThread Started ***");
-            Dispatcher dispatcher = null;
-
-            try {
-                dispatcher = ExertionDispatcherFactory.getFactory()
-                        .createDispatcher(job,
-                                new HashSet<Context>(), false, myMemberUtil, provider);
-                while (dispatcher.getState() != Exec.DONE
-                        && dispatcher.getState() != Exec.FAILED
-                        && dispatcher.getState() != Exec.SUSPENDED) {
-                    logger.debug("Dispatcher waiting for exertions... Sleeping for 250 milliseconds.");
-                    Thread.sleep(250);
-                }
-                logger.debug("Dispatcher State: " + dispatcher.getState());
-            } catch (DispatcherException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            result = (NetJob) dispatcher.getExertion();
-            try {
-                job.getControlContext().appendTrace(provider.getProviderName()  + " dispatcher: "
-                        + dispatcher.getClass().getName());
-            } catch (RemoteException e) {
-                // ignore it
-            }
-        }
-
-        public Job getJob() {
-            return job;
-        }
-
-        public Job getResult() throws ContextException {
-            return result;
-        }
-
-        public String getJobID() {
-            return jobID;
-        }
-    }
-
     protected class TaskThread extends Thread {
 
         // doJob method calls this internally
         private Task task;
 
         private Task result;
-
-        private String taskID;
 
         private Provider provider;
 
@@ -370,12 +87,8 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 
         public void run() {
             logger.trace("*** TaskThread Started ***");
-            SpaceTaskDispatcher dispatcher = null;
-
             try {
-                dispatcher = (SpaceTaskDispatcher) ExertionDispatcherFactory
-						.getFactory().createDispatcher(task,
-                                new HashSet<Context>(), false, myMemberUtil, provider);
+                SpaceTaskDispatcher dispatcher = (SpaceTaskDispatcher) getDispatcherFactory();
                 try {
                     task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: "
                             + dispatcher.getClass().getName());
@@ -390,8 +103,6 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
                 }
                 logger.debug("Dispatcher State: " + dispatcher.getState());
 				result = (NetTask) dispatcher.getExertion();
-            } catch (DispatcherException e) {
-				logger.warn("Dispatcher exception", e);
             } catch (InterruptedException e) {
 				logger.warn("Interrupted", e);
             }
@@ -403,20 +114,6 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
 
         public Task getResult() throws ContextException {
             return result;
-        }
-
-        public String getTaskID() {
-            return taskID;
-        }
-    }
-
-    private void prepareToStep(Job job) {
-        Exertion e;
-        for (int i = 0; i < job.size(); i++) {
-            e = job.get(i);
-			((ControlContext) job.getContext()).setReview(e, true);
-			if (e.isJob())
-                prepareToStep((Job) e);
         }
     }
 
@@ -442,41 +139,14 @@ public class ServiceSpacer extends ServiceProvider implements Spacer, Executor, 
             return null;
         }
     }
-		/*
-		 * try { if (task.isScript()) { ServiceContext[] ctxs = task.contexts;
-		 * String fn = (String)task.getValue(OUT_FILE); Vector outputs =
-		 * task.contexts[0].getStartsWithValues(OUT_PATH);
-		 * ctxs[0].putValue(OUT_FILE, getDataFilename(fn));
-		 * ((SorcerScript)task.getMethod()).invokeMethod(ctxs);
-		 * ctxs[0].putValue((String)outputs.firstElement(), getDataURL(fn));
-		 * result = task; } else if (task.isRemote()) { Util.debug(this,
-		 * "==============> EXECUTE TASK " + task.name); Util.debug(this,
-		 * "processTask:contexts=" + Contexts.contextToString(task.contexts));
-		 * task.taskID = new UID().toString(); Util.debug(this, "get provider
-		 * for=" + task.providerName); Provider provider =
-		 * Catalog.getCatalog().lookup(task.getAttributes());
-		 * 
-		 * if (provider == null) { String msg = null; //get the PROCESS Method
-		 * and grab provider name + interface ServiceMethod method =
-		 * task.getMethod(); msg = "No Provider available. Provider Name: " +
-		 * method.providerName + " Provider interface: " + method.serviceType;
-		 * System.err.println(msg);
-		 * 
-		 * result = task; task.putValue(OUT_VALUE, "no provider available");
-		 * 
-		 * 
-		 * throw new ExertionException(msg, task); } else {
-		 * task.setProvider(provider); result =
-		 * (RemoteServiceTask)provider.service(task); Util.debug(this,
-		 * "processTask ==============> EXECUTED TASK " + result.name);
-		 * Util.debug(this, "processTask:contexts=" +
-		 * Contexts.contextToString(result.contexts)); } } } catch
-		 * (ExertionMethodException e) { e.printStackTrace(); } catch
-		 * (ExertionException e) { e.printStackTrace(); }
-		 */
 
 	@Override
 	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-		return new ControlFlowManager(exertion, delegate, this).process(threadManager);
+		return new ControlFlowManager(exertion, delegate, (Spacer)this).process(threadManager);
 	}
+
+    @Override
+    protected DispatcherFactory getDispatcherFactory() {
+        return ExertionDispatcherFactory.getFactory(myMemberUtil);
+    }
 }

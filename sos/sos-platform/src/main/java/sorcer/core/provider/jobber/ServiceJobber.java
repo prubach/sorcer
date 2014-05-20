@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +20,10 @@ import com.sun.jini.start.LifeCycle;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.UuidFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
-import sorcer.core.context.ControlContext;
+import sorcer.core.dispatch.DispatcherFactory;
+import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.Jobber;
@@ -47,8 +45,6 @@ import static sorcer.core.SorcerConstants.MAIL_SEP;
  * 
  */
 public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
-	private Logger logger = LoggerFactory.getLogger(ServiceJobber.class);
-
 	public ServiceJobber() throws RemoteException {
 		// do nothing
 	}
@@ -109,15 +105,15 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 
 		setServiceID(job);
 		try {
-			if (((ControlContext)job.getControlContext()).isMonitorable()
-					&& !((ControlContext)job.getControlContext()).isWaitable()) {
+            Job _job = (Job) job;
+            JobThread jobThread = new JobThread(_job, this, getDispatcherFactory());
+			if (job.getControlContext().isMonitorable()
+					&& !job.getControlContext().isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
-                Job _job = (Job) job;
-                new Thread(new JobThread(_job, this), "Thread-" + _job.getContextName()).start();
+                new Thread(jobThread, _job.getContextName()).start();
                 return job;
 			} else {
-				JobThread jobThread = new JobThread((Job) job, this);
 				jobThread.run();
 				Job result = jobThread.getResult();
 				logger.trace("<== Result: " + result);
@@ -129,102 +125,11 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		}
 	}
 
-	// public Exertion stopJob(String , Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = getJob(jobID, subject);
-	// //If job has serviceID then call stop on the provider with serviceID
-	// if (job.getServiceID()!=null &&
-	// !job.getServiceID().equals(getProviderID())) {
-	// Provider provider =
-	// ServiceProviderAccessor.getProvider(job.getServiceID());
-	// if (provider == null)
-	// throw new ExertionException("Jobber with serviceID ="+job.getServiceID()
-	// +" Jobber Name ="+job.getJobberName()+" down!");
-	// else
-	// return provider.stopJob(jobID, subject);
-	// }
+    protected DispatcherFactory getDispatcherFactory() {
+        return ExertionDispatcherFactory.getFactory();
+    }
 
-	// //else assume the Jobber called on is current one.
-	// ExertDispatcher dispatcher = getDispatcher(jobID);
-	// if (dispatcher == null) {
-	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-	// //return job;
-	// //return cleanIfCorrupted(job);
-	// }
-	// else {
-	// if (isAuthorized(subject,"STOPSERVICE",jobID)) {
-	// if (job.getStatus()!=RUNNING || job.getState()!=RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" is not Running!");
-	// return dispatcher.stopJob();
-	// }
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-	// }
-
-	// public Exertion suspendJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-
-	// ExertDispatcher dispatcher = getDispatcher(jobID);
-	// if (dispatcher == null) {
-	// throw new ExertionException("No job with id "+jobID+" found in Jobber ");
-	// //RemoteServiceJob job = getPersistedJob(jobID ,subject);
-	// //return job;
-	// //return cleanIfCorrupted(job);
-	// }
-	// else {
-	// if (isAuthorized(subject,"SUSPENDJOB",jobID))
-	// return dispatcher.suspendJob();
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-	// }
-
-	// public Exertion resumeJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = null;
-	// if (isAuthorized(subject,"RESUMEJOB",jobID)) {
-	// job = getJob(jobID, subject);
-	// if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" already Running!");
-	// prepareToResume(job);
-	// return doJob(job);
-	// }
-	// els
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-
-	// public Exertion stepJob(String jobID,Subject subject)
-	// throws RemoteException, ExertionException, ExertionMethodException {
-	// RemoteServiceJob job = null;
-	// if (isAuthorized(subject,"STEPJOB",jobID)) {
-	// job = getJob(jobID, subject);
-	// if (job.getStatus()==RUNNING || job.getState()==RUNNING)
-	// throw new ExertionException("Job with id="+jobID+" already Running!");
-	// prepareToStep(job);
-	// return doJob(job);
-	// }
-	// else
-	// throw new ExertionException("Access Denied to step Job id ="+jobID+"
-	// subject="+subject);
-	// }
-
-	private String getDataURL(String filename) {
-		return getDelegate().getProviderConfig().getProperty(
-				"provider.dataURL")
-				+ filename;
-	}
-
-	private String getDataFilename(String filename) {
-		return getDelegate().getProviderConfig().getDataDir() + "/"
-				+ filename;
-	}
-
-	private void replaceNullExertionIDs(Exertion ex) {
+    protected void replaceNullExertionIDs(Exertion ex) {
 		if (ex != null && ex.getId() == null) {
 			((ServiceExertion) ex)
 					.setId(UuidFactory.generate());
@@ -235,7 +140,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		}
 	}
 
-	private void notifyViaEmail(Exertion ex) throws ContextException {
+	protected void notifyViaEmail(Exertion ex) throws ContextException {
 		if (ex == null || ex.isTask())
 			return;
 		Job job = (Job) ex;
@@ -273,15 +178,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 			Contexts.markOut(job.getMasterExertion()
 					.getDataContext(), Context.JOB_COMMENTS);
 
-		}
-	}
-
-	private void prepareToStep(Job job) {
-		for (int i = 0; i < job.size(); i++) {
-			Exertion e = job.get(i);
-			(job.getControlContext()).setReview(e, true);
-			if (e.isJob())
-				prepareToStep((Job) e);
 		}
 	}
 

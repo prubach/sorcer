@@ -22,18 +22,14 @@ import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.ext.ProvisioningException;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
 public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 
-	public SpaceTaskDispatcher(final NetTask task, 
+	public SpaceTaskDispatcher(final Task task,
             final Set<Context> sharedContexts,
             final boolean isSpawned, 
             final LokiMemberUtil myMemberUtil,
@@ -97,7 +93,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		ExertionEnvelop temp;
 		temp = ExertionEnvelop.getTemplate();
 		temp.exertionID = xrt.getId();
-		temp.state = new Integer(DONE);
+		temp.state = DONE;
 
 		logger.debug("template for space task to be collected: {}",
 				temp.describe());
@@ -107,7 +103,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 			logger.debug("collected result envelope {}",
 					resultEnvelop.describe());
 			
-			NetTask result = (NetTask) resultEnvelop.exertion;
+			Task result = (Task) resultEnvelop.exertion;
 			state = DONE;
 			try {
 				notifyExertionExecution(xrt, xrt, result);
@@ -124,14 +120,14 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		ExertionEnvelop template;
 		template = ExertionEnvelop.getTemplate();
 		template.exertionID = xrt.getId();
-		template.state = new Integer(FAILED);
+		template.state = FAILED;
 
 		logger.debug("template for failed task to be collected: {}",
 				template.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {
-			NetTask result = (NetTask) resultEnvelop.exertion;
+			Task result = (Task) resultEnvelop.exertion;
 			state = FAILED;
 			try {
 				notifyExertionExecution(xrt, xrt, result);
@@ -148,14 +144,14 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		ExertionEnvelop template;
 		template = ExertionEnvelop.getTemplate();
 		template.exertionID = xrt.getId();
-		template.state = new Integer(ERROR);
+		template.state = ERROR;
 
 		logger.debug("template for error task to be collected: {}",
 				template.describe());
 
 		ExertionEnvelop resultEnvelop = takeEnvelop(template);
 		if (resultEnvelop != null) {
-			NetTask result = (NetTask) resultEnvelop.exertion;
+			Task result = (Task) resultEnvelop.exertion;
 			state = ERROR;
 			try {
 				notifyExertionExecution(xrt, xrt, result);
