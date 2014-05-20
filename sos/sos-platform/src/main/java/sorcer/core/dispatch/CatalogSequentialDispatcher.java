@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             boolean isSpawned, 
             Provider provider,
             ProvisionManager provisionManager,
-            ProviderProvisionManager providerProvisionManager) throws Throwable {
+            ProviderProvisionManager providerProvisionManager) {
 		super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
@@ -51,7 +51,6 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	public void collectResults() throws ExertionException, SignatureException {
 		try {
-			ExertionException fe = null;
 			String pn = null;
 			if (inputXrts == null || inputXrts.size() == 0) {
 				xrt.setStatus(FAILED);
@@ -60,20 +59,18 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 					pn = provider.getProviderName();
 					if (pn == null) 
 						pn = provider.getClass().getName();
-					fe = new ExertionException(pn
-							+ " received invalid job: "  + xrt.getName(), xrt);
 				} catch (RemoteException e) {
-					// ignore it, local call
-				}
-				fe = new ExertionException(pn
-						+ " received a job with no component exertions or alreday executed: "  
+                    logger.warn("Error during local call on {}", provider, e);
+                }
+                ExertionException fe = new ExertionException(pn
+						+ " received a job with no component exertions or already executed: "
 						+ xrt.getName(), xrt);
 				xrt.reportException(fe);
 				dispatchers.remove(xrt.getId());
 				throw fe;
 			}
 
-			ServiceExertion se = null;
+			ServiceExertion se;
 			xrt.startExecTime();
 			for (int i = 0; i < inputXrts.size(); i++) {
 				se = (ServiceExertion) inputXrts.get(i);
@@ -102,7 +99,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 						if (pn == null) 
 							pn = provider.getClass().getName();
 					} catch (RemoteException e) {
-						// ignore it, local call
+                        logger.warn("Error during local call on {}", provider, e);
 					}
 					ExertionException ef = new ExertionException(pn
 							+ " received failed task: " + se.getName(), se);

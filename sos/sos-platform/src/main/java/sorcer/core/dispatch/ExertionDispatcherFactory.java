@@ -67,24 +67,24 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 			if (exertion instanceof Task) {
 				logger.info("Running Space Task Dispatcher...");
 				return new SpaceTaskDispatcher((Task)exertion,
-						                                    sharedContexts, 
-						                                    isSpawned, 
+						                                    sharedContexts,
+						                                    isSpawned,
 						                                    loki,
                         provisionManager,
                         providerProvisionManager);
 			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
 				 return new CatalogBlockDispatcher((Block)exertion,
-						                                  sharedContexts, 
-						                                  isSpawned, 
+						                                  sharedContexts,
+						                                  isSpawned,
 						                                  provider,
                          provisionManager,
                          providerProvisionManager);
 			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
 				return new SpaceBlockDispatcher((Block)exertion,
-						                                  sharedContexts, 
-						                                  isSpawned, 
+						                                  sharedContexts,
+						                                  isSpawned,
 						                                  loki,
 						                                  provider,
                         provisionManager,
@@ -146,8 +146,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         providerProvisionManager);
             }
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
-        } catch (Throwable e) {
-            e.printStackTrace();
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
             throw new DispatcherException(
                     "Failed to create the exertion dispatcher for job: "+ exertion.getName(), e);
         }

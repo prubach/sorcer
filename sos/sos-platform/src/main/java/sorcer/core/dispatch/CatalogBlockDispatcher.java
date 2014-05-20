@@ -50,7 +50,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 	public CatalogBlockDispatcher(Block block, Set<Context> sharedContext,
 			boolean isSpawned, Provider provider,
             ProvisionManager provisionManager,
-			ProviderProvisionManager providerProvisionManager) throws Throwable {
+			ProviderProvisionManager providerProvisionManager) {
 		super(block, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 	

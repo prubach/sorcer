@@ -18,9 +18,11 @@
 package sorcer.core.provider.jobber;
 
 import java.rmi.RemoteException;
+import java.util.HashSet;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.DispatcherFactory;
 import sorcer.core.provider.Provider;
 import sorcer.core.dispatch.ExertionDispatcherFactory;
@@ -37,7 +39,6 @@ import com.sun.jini.start.LifeCycle;
  * ServiceSpacer - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using JavaSpace from which provides PULL
  * exertions to be executed.
- *
  */
 public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     private LokiMemberUtil myMemberUtil;
@@ -55,7 +56,6 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
      * Require ctor for Jini 2 NonActivatableServiceDescriptor
      *
      * @throws RemoteException
-     *
      */
     public ServiceSpacer(String[] args, LifeCycle lifeCycle) throws Exception {
         super(args, lifeCycle);
@@ -88,7 +88,8 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
         public void run() {
             logger.trace("*** TaskThread Started ***");
             try {
-                SpaceTaskDispatcher dispatcher = (SpaceTaskDispatcher) getDispatcherFactory();
+                SpaceTaskDispatcher dispatcher = (SpaceTaskDispatcher) getDispatcherFactory(task).createDispatcher(task,
+                        new HashSet<Context>(), false, provider);
                 try {
                     task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: "
                             + dispatcher.getClass().getName());
@@ -105,6 +106,9 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
 				result = (NetTask) dispatcher.getExertion();
             } catch (InterruptedException e) {
 				logger.warn("Interrupted", e);
+            } catch (DispatcherException e) {
+                logger.warn("Error while executing space task {}", task.getName(), e);
+                task.reportException(e);
             }
         }
 
@@ -142,11 +146,14 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
 
 	@Override
 	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-		return new ControlFlowManager(exertion, delegate, (Spacer)this).process(threadManager);
+        return new ControlFlowManager(exertion, delegate, this).process(threadManager);
 	}
 
     @Override
-    protected DispatcherFactory getDispatcherFactory() {
-        return ExertionDispatcherFactory.getFactory(myMemberUtil);
+    protected DispatcherFactory getDispatcherFactory(Exertion exertion) {
+        if (exertion.isSpacable())
+            return ExertionDispatcherFactory.getFactory(myMemberUtil);
+        else
+            return super.getDispatcherFactory(exertion);
     }
 }

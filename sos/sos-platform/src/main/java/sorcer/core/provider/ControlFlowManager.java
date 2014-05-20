@@ -22,10 +22,10 @@ import static sorcer.service.TaskFactory.task;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.sun.jini.thread.TaskManager;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.AltExertion;
@@ -79,7 +79,6 @@ public class ControlFlowManager {
 	 */
 	protected Concatenator concatenator;
 
-	
 	/**
 	 * Reference to a spacer proxy if available.
 	 */
@@ -154,7 +153,7 @@ public class ControlFlowManager {
 	public ControlFlowManager(Exertion exertion, ProviderDelegate delegate,
 			Spacer spacer) {
 		this(exertion, delegate);
-		this.jobber = null;
+		this.jobber = spacer;
 		this.spacer = spacer;
 	}
 
@@ -169,49 +168,34 @@ public class ControlFlowManager {
      * @throws ExertionException
      *             exception from other methods
      */
-    public Exertion process(TaskManager exertionManager) throws ExertionException {
+    public Exertion process(ExecutorService ignored) throws ExertionException {
         logger.info("process exertion: " + exertion.getName());
-        Exertion result = null;
-        if (exertionManager == null) {
-            logger.info("exertionManager is NULL");
-
-            try {
-                if (exertion.isConditional()) {
-                    logger.info("exertion Conditional");
-                    result = doConditional(exertion);
-                    logger.info("exertion Conditional; result: " + result);
-                } else if (exertion.isJob()) {
-                    logger.info("exertion isJob()");
-                    result = doRendezvousExertion((Job) exertion);
-                    logger.info("exertion isJob(); result: " + result);
-                } else if (exertion.isBlock()) {
-					logger.info("exertion isBlock()");
-					result = doBlock((Block) exertion);
-					logger.info("exertion isBlock(); result: " + result);
-				} else if (exertion.isTask()) {
-                    logger.info("exertion isTask()");
-                    result = doTask((Task) exertion);
-                    logger.info("exertion isTask(); result: " + result);
-                }
-            } catch (Exception e) {
-                throw new ExertionException(e.getMessage(), e);
+        try {
+            Exertion result = null;
+            if (exertion.isConditional()) {
+                logger.info("exertion Conditional");
+                result = doConditional(exertion);
+                logger.info("exertion Conditional; result: " + result);
+            } else if (exertion.isJob()) {
+                logger.info("exertion isJob()");
+                result = doRendezvousExertion((Job) exertion);
+                logger.info("exertion isJob(); result: " + result);
+            } else if (exertion.isBlock()) {
+                logger.info("exertion isBlock()");
+                result = doBlock((Block) exertion);
+                logger.info("exertion isBlock(); result: " + result);
+            } else if (exertion.isTask()) {
+                logger.info("exertion isTask()");
+                result = doTask((Task) exertion);
+                logger.info("exertion isTask(); result: " + result);
             }
             return result;
-        } else {
-            logger.info("exertionManager is *NOT* null");
-            ExertionRunnable ethread = new ExertionRunnable(exertion);
-            exertionManager.add(ethread);
-            while (!ethread.stopped && ethread.result == null) {
-                try {
-                    Thread.sleep(WAIT_INCREMENT);
-                } catch (InterruptedException e) {
-                    logger.log(Level.SEVERE, "Error", e);
-                    ((ServiceExertion)exertion).setStatus(Exec.FAILED);
-                    ((ServiceExertion)exertion).reportException(e);
-                    return exertion;
-                }
-            }
-            return ethread.result;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (ExertionException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ExertionException(e.getMessage(), e);
         }
     }
 
@@ -451,39 +435,6 @@ public class ControlFlowManager {
         }
     }
 */
-
-    //com.sun.jini.thread.TaskManager.Task
-    private class ExertionRunnable implements Runnable, TaskManager.Task {
-        volatile boolean stopped = false;
-        private Exertion xrt;
-        private Exertion result;
-
-        ExertionRunnable(Exertion exertion) {
-            xrt = exertion;
-        }
-
-        public void run() {
-            try {
-                if (xrt instanceof Conditional) {
-                    result = doConditional(xrt);
-				} else if (xrt.isJob()) {
-                    result = doRendezvousExertion((Job) xrt);
-				} else if (xrt.isTask()) {
-                    result = doTask((Task) xrt);
-                }
-                stopped = true;
-            } catch (Exception e) {
-                stopped = true;
-                logger.finer("Exertion thread killed by exception: "
-                        + e.getMessage());
-            }
-        }
-
-        @Override
-        public boolean runAfter(List tasks, int size) {
-            return false;
-        }
-    }
 
     public Task doBatchTask(Task task) throws ExertionException,
             SignatureException, RemoteException, ContextException {

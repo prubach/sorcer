@@ -30,7 +30,7 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
             boolean isSpawned, 
             Provider provider,
             ProvisionManager provisionManager,
-            ProviderProvisionManager providerProvisionManager) throws Throwable {
+            ProviderProvisionManager providerProvisionManager) {
 		super(job, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 

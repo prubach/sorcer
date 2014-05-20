@@ -16,7 +16,6 @@
 
 package sorcer.core.provider;
 
-import com.sun.jini.thread.TaskManager;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.UnknownLeaseException;
 import net.jini.lease.LeaseRenewalManager;
@@ -29,6 +28,7 @@ import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.*;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.ExecutorService;
 
 import static sorcer.service.Exec.FAILED;
 import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
@@ -53,7 +53,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
     }
 
     @Override
-    public Exertion process(TaskManager taskManager) throws ExertionException {
+    public Exertion process(ExecutorService taskManager) throws ExertionException {
         try {
             exertion = register(exertion);
         } catch (RemoteException e) {

@@ -106,7 +106,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		setServiceID(job);
 		try {
             Job _job = (Job) job;
-            JobThread jobThread = new JobThread(_job, this, getDispatcherFactory());
+            JobThread jobThread = new JobThread(_job, this, getDispatcherFactory(job));
 			if (job.getControlContext().isMonitorable()
 					&& !job.getControlContext().isWaitable()) {
 				replaceNullExertionIDs(job);
@@ -125,7 +125,7 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		}
 	}
 
-    protected DispatcherFactory getDispatcherFactory() {
+    protected DispatcherFactory getDispatcherFactory(Exertion exertion) {
         return ExertionDispatcherFactory.getFactory();
     }
 

@@ -228,7 +228,10 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 
 	public Exertion exert(Arg... entries) throws TransactionException, ExertionException,
 			RemoteException;
-	
+
+    // Check if this is a Job that will be performed by Spacer
+    boolean isSpacable();
+
 	/**
 	 * Returns the list of traces of thrown exceptions.
 	 * @return ThrowableTrace list

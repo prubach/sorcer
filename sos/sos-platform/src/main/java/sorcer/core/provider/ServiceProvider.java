@@ -35,6 +35,7 @@ import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
+import java.util.concurrent.*;
 
 import javax.inject.Inject;
 import javax.security.auth.Subject;
@@ -77,12 +78,12 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
+import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
 
 import com.sun.jini.config.Config;
 import com.sun.jini.start.LifeCycle;
-import com.sun.jini.thread.TaskManager;
 import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
@@ -174,7 +175,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
 	static final String DEFAULT_PROVIDER_PROPERTY = "provider.properties";
 
-	protected TaskManager threadManager;
+	protected ThreadPoolExecutor threadManager;
 
 	int loopCount = 0;
 
@@ -1628,7 +1629,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
             joinManager.terminate();
 
         if (threadManager != null)
-            threadManager.terminate();
+            threadManager.shutdown();
 
         unexport(true);
         delegate.destroy();
@@ -1643,7 +1644,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	public boolean isBusy() {
 		boolean isBusy = false;
 		if (threadManager != null)
-			isBusy = isBusy || threadManager.getPending().size() > 0;
+			isBusy = threadManager.getActiveCount() > 0;
 		isBusy = isBusy || delegate.exertionStateTable.size() > 0;
 		return isBusy;
 	}
@@ -1697,59 +1698,41 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return false;
 	}
 
-	protected void setupThreadManager() {
+	protected void setupThreadManager() throws ConfigurationException{
 		// TaskManger(int maxThreads, long timeout, float loadFactor)
 		// 10, 1000 * 15, 3.0f
 		Configuration config = delegate.getDeploymentConfig();
-		int maxThreads = 10, waitIncrement = 50;
-		long timeout = 1000 * 15;
-		float loadFactor = 3.0f;
-		boolean threadManagement = false;
-		try {
-			threadManagement = (Boolean) config.getEntry(
+
+		boolean threadManagement = (Boolean) config.getEntry(
 					ServiceProvider.COMPONENT, THREAD_MANAGEMNT, boolean.class,
 					false);
-		} catch (Exception e) {
-			// do nothing, default value is used
-			// e.printStackTrace();
-		}
-		logger.info("threadManagement: " + threadManagement);
+		logger.debug("threadManagement: " + threadManagement);
 		if (!threadManagement) {
 			return;
 		}
 
-		try {
-			maxThreads = (Integer) config.getEntry(ServiceProvider.COMPONENT,
-					MAX_THREADS, int.class);
-		} catch (Exception e) {
-			logger.warn("setupThreadManger#maxThreads", e);
-		}
-		logger.info("maxThreads: " + maxThreads);
-		try {
-			timeout = (Long) config.getEntry(ServiceProvider.COMPONENT,
-					MANAGER_TIMEOUT, long.class);
-		} catch (Exception e) {
-			logger.warn("setupThreadManger#timeout", e);
-		}
+        int maxThreads = (Integer) config.getEntry(ServiceProvider.COMPONENT,
+					MAX_THREADS, int.class, 10);
+		logger.debug("maxThreads: " + maxThreads);
+
+        long timeout = (Long) config.getEntry(ServiceProvider.COMPONENT,
+                MANAGER_TIMEOUT, long.class, 1000l * 15);
 		logger.info("timeout: " + timeout);
-		try {
-			loadFactor = (Float) config.getEntry(ServiceProvider.COMPONENT,
-					LOAD_FACTOR, float.class);
-		} catch (Exception e) {
-			logger.warn("setupThreadManger#loadFactor", e);
-		}
-		logger.info("loadFactor: " + loadFactor);
-		try {
-			waitIncrement = (Integer) config.getEntry(
+
+
+        float	loadFactor = (Float) config.getEntry(ServiceProvider.COMPONENT,
+					LOAD_FACTOR, float.class, 3.0f);
+		logger.debug("loadFactor: " + loadFactor);
+
+		int	waitIncrement = (Integer) config.getEntry(
 					ServiceProvider.COMPONENT, WAIT_INCREMENT, int.class,
-					waitIncrement);
-		} catch (Exception e) {
-			logger.warn("setupThreadManger#waitIncrement", e);
-		}
+					50);
 		logger.info("waitIncrement: " + waitIncrement);
 
 		ControlFlowManager.WAIT_INCREMENT = waitIncrement;
 
+        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
+        tf.setNameFormat(getName() + "-%2$d");
 		 /**
 	     * Create a task manager.
 	     *
@@ -1760,8 +1743,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	     * and pending) exceeds the number of threads times the loadFactor,
 	     * and the maximum number of threads has not been reached.
 	     */
-		threadManager = new TaskManager(maxThreads, timeout, loadFactor);
-	}
+        threadManager = new ThreadPoolExecutor(0, maxThreads, timeout, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), tf);
+    }
 
 	public final static String DB_HOME = "dbHome";
 	public final static String THREAD_MANAGEMNT = "threadManagement";
