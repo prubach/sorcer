@@ -149,8 +149,10 @@ public class ProviderProxy implements Serializable {
                 if (!list.contains(ReferentUuid.class))
 					list.add(ReferentUuid.class);
 
+/*
                 if (!list.contains(ServiceActivityProvider.class))
                     list.add(ServiceActivityProvider.class);
+*/
 
 				if (list.contains(Provider.class)) {
 					list.remove(AdministratableProvider.class);
