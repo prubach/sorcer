@@ -168,7 +168,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
         ((ServiceExertion) exertion).setSubject(subject);
 		preExecExertion(exertion);
 		ExertionEnvelop ee = ExertionEnvelop.getTemplate(exertion);
-		ee.state = new Integer(INITIAL);
+		ee.state = INITIAL;
 		try {
 			space.write(ee, null, Lease.FOREVER);
 			logger.debug("written envelop: "
@@ -188,26 +188,18 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		ExertionEnvelop result = null;
 		try {
 			while (state == RUNNING) {
-				result = (ExertionEnvelop) space.take(template, null, SpaceTaker.SPACE_TIMEOUT);						
+				result = (ExertionEnvelop) space.take(template, null, SpaceTaker.SPACE_TIMEOUT);
 				if (result != null) {
 					return result;
 				}
 			}
+            return null;
+        } catch (UnusableEntryException e){
+            logger.warn("UnusableEntryException! unusable fields = " + e.partialEntry, e);
+            throw new ExertionException("Taking exertion envelop failed", e);
 		} catch (Throwable e) {
-			if (e instanceof UnusableEntryException) {
-				UnusableEntryException e1 = (UnusableEntryException) e;
-				System.out.println("UnusableEntryException!\nunusable fields = \n");
-				Arrays.toString(e1.unusableFields);
-				System.out.println("partialEntry = " + e1.partialEntry);
-				for (int ctr = 0; ctr < e1.nestedExceptions.length; ctr ++) {
-					Throwable ne = e1.nestedExceptions[ctr];
-					System.out.println("nested exception " + ctr + " = " + ne);
-					ne.printStackTrace();
-				}
-			}
 			throw new ExertionException("Taking exertion envelop failed", e);
 		}
-		return null;
 	}
 
 	protected void postExecExertion(Exertion ex, Exertion result)
@@ -233,7 +225,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	public void collectFails() throws ExertionException {
 		ExertionEnvelop template = ExertionEnvelop.getParentTemplate(xrt.getId(),
 				null);
-		template.state = new Integer(FAILED);
+		template.state = FAILED;
 		while (state != DONE && state != FAILED) {
 			ExertionEnvelop ee;
 			try {
@@ -250,8 +242,6 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 				if (result != null) {
 					handleError(result, FAILED);
 				}
-			} else {
-				continue;
 			}
 		}
 	}
@@ -259,7 +249,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	public void collectErrors() throws ExertionException {
 		ExertionEnvelop template = ExertionEnvelop.getParentTemplate(xrt.getId(),
 				null);
-		template.state = new Integer(ERROR);
+		template.state = ERROR;
 		while (state != DONE && state != FAILED) {
 			ExertionEnvelop ee;
 			try {
@@ -276,8 +266,6 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 				if (result != null) {
 					handleError(result, ERROR);
 				}
-			} else {
-				continue;
 			}
 		}
 	}

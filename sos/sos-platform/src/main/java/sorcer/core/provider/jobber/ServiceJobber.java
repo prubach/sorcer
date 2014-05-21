@@ -73,18 +73,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException, ExertionException {
-		logger.trace("service: " + exertion.getName());
-		try {
-			// Jobber overrides SorcerProvider.service method here
-			setServiceID(exertion);
-			// Create an instance of the ExertionProcessor and call on the
-			// process method, returns an Exertion
-			return new ControlFlowManager(exertion, delegate, this).process();
-
-		} 
-		catch (Exception e) {
-			throw new ExertionException(e);
-		}
+        setServiceID(exertion);
+        return super.service(exertion);
 	}
 
 	public Exertion execute(Exertion exertion) throws RemoteException,
@@ -97,10 +87,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		return doJob(exertion, txn);
 	}
 
-	public Exertion doJob(Exertion job) {
-		return doJob(job, null);
-	}
-	
 	public Exertion doJob(Exertion job, Transaction txn) {
 		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
 
@@ -180,11 +166,6 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 					.getDataContext(), Context.JOB_COMMENTS);
 
 		}
-	}
-
-	@Override
-	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-		return new ControlFlowManager(exertion, delegate, this).process();
 	}
 
     @Override

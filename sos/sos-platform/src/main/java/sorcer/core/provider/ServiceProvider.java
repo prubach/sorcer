@@ -1338,6 +1338,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
+        logger.trace("service: " + exertion.getName());
 		// create an instance of the ControlFlowManager and call on the
 		// process method, returns an Exertion
         return getControlFlownManager(exertion).process();

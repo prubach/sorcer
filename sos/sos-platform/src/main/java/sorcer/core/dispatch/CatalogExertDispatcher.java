@@ -50,13 +50,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   ProviderProvisionManager providerProvisionManager) {
         super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
         dThread = new DispatchThread();
-        try {
-            dThread.start();
-            dThread.join();
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-            state = FAILED;
-        }
+        dThread.run();
     }
     protected void preExecExertion(Exertion exertion) throws ExertionException,
             SignatureException {

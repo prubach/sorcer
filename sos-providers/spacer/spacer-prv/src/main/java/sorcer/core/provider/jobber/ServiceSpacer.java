@@ -144,11 +144,6 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     }
 
 	@Override
-	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-        return new ControlFlowManager(exertion, delegate, this).process();
-	}
-
-    @Override
     protected DispatcherFactory getDispatcherFactory(Exertion exertion) {
         if (exertion.isSpacable())
             return ExertionDispatcherFactory.getFactory(myMemberUtil);
