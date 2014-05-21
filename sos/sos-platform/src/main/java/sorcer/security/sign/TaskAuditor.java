@@ -48,6 +48,8 @@ import net.jini.lookup.ServiceDiscoveryManager;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Service;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * <p>
  * All secure data or transactions in SCAF are saved using an Auditor Service.
@@ -69,7 +71,7 @@ public class TaskAuditor {
 	 */
 	public void audit(SignedServiceTask task) {
 		try {
-			Thread thread = new Thread(new AuditThread(task), "[" + Thread.currentThread().getName() + "] Audit");
+			Thread thread = new Thread(new AuditThread(task), tName("Audit"));
 			thread.start();
 		} catch (Exception ex) {
 			ex.printStackTrace();

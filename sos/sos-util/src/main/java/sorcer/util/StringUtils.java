@@ -609,4 +609,8 @@ public class StringUtils {
         }
         return defVal;
     }
+
+    public static String tName(String newThreadName) {
+        return "[" + Thread.currentThread().getName() + "] " + newThreadName;
+    }
 }

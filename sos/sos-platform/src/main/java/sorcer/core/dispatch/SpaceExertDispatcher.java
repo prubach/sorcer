@@ -36,6 +36,8 @@ import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
+import static sorcer.util.StringUtils.tName;
+
 @SuppressWarnings("rawtypes")
 abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	protected JavaSpace05 space;
@@ -342,7 +344,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	protected class CollectFailThread extends Thread {
 
 		public CollectFailThread(ThreadGroup disatchGroup) {
-			super(disatchGroup, "Fail collector");
+			super(disatchGroup, tName("Fail collector"));
 		}
 
 		public void run() {
@@ -360,7 +362,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	protected class CollectErrorThread extends Thread {
 
 		public CollectErrorThread(ThreadGroup disatchGroup) {
-			super(disatchGroup, "Error collector");
+			super(disatchGroup, tName("Error collector"));
 		}
 
 		public void run() {

@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.StringUtils;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
@@ -111,7 +112,7 @@ public class ExecCmd extends ShellCmd {
 				}
 				out.println(result.getOut());
 			}
-		}, "[" + Thread.currentThread().getName() + "] exec-" + cmd);
+		}, StringUtils.tName("exec-" + cmd));
 		execThread.start();
 	}
 }

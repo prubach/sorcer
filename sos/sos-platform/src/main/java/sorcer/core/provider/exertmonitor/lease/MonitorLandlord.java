@@ -42,6 +42,8 @@ import com.sun.jini.landlord.Landlord;
 import com.sun.jini.landlord.LeaseFactory;
 import com.sun.jini.landlord.LeasedResource;
 
+import static sorcer.util.StringUtils.*;
+
 public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote {
 
 	public static interface MonitorLeasedResource extends LeasedResource {
@@ -85,7 +87,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 				TcpServerEndpoint.getInstance(0), new BasicILFactory());
 
 		proxy = (Landlord) exporter.export(this);
-		Thread llt = new Thread(this, "[" + Thread.currentThread().getName() + "] MonitorLandlord.checkLeases");
+		Thread llt = new Thread(this, tName("MonitorLandlord.checkLeases"));
 		llt.setDaemon(true);
 		llt.start();
 	}

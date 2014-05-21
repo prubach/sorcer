@@ -35,6 +35,8 @@ import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 
+import static sorcer.util.StringUtils.tName;
+
 abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     private final static int SLEEP_TIME = 20;
@@ -412,7 +414,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
         public ExertionThread(ServiceExertion exertion,
                               ExertDispatcher dispatcher) {
-            super("[" + Thread.currentThread().getName() + "] Exertion-" + exertion.getName());
+            super(tName("Exertion-" + exertion.getName()));
             ex = exertion;
             this.dispatcher = dispatcher;
             if (isMonitored)

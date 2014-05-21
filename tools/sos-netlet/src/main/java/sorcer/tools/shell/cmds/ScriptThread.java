@@ -22,20 +22,19 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
-import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.deploy.Deployment;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-//import sorcer.tools.shell.RootLoader;
 import sorcer.util.ServiceExerter;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
+
+import static sorcer.util.StringUtils.tName;
 
 public class ScriptThread extends Thread {
 		private String script;
@@ -50,7 +49,7 @@ public class ScriptThread extends Thread {
                 .getName());
 
         public ScriptThread(String script, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
-            super("[" + Thread.currentThread().getName() + "] Script");
+            super(tName("Script"));
             this.config = config;
             this.debug = debug;
             gShell = new GroovyShell(classLoader);
@@ -76,14 +75,14 @@ public class ScriptThread extends Thread {
         }
 
         public ScriptThread(String script, ClassLoader classLoader) {
-            super("[" + Thread.currentThread().getName() + "] Script");
+            super(tName("Script"));
             this.gShell = new GroovyShell(classLoader);
             this.script = script;
             this.parseScript();
         }
 
 		public ScriptThread(File file, ClassLoader classLoader) {
-            super("[" + Thread.currentThread().getName() + "] Script-" + file.getPath());
+            super(tName("Script-" + file.getPath()));
             this.gShell = new GroovyShell(classLoader);
 			this.scriptFile = file;
             this.parseScript();

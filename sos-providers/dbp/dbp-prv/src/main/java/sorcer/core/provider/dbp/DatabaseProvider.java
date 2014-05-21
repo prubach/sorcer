@@ -51,6 +51,8 @@ import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.je.DatabaseException;
 
+import static sorcer.util.StringUtils.tName;
+
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @Component
 public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
@@ -119,7 +121,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		Uuid uuid;
 
 		public PersistThread(Object object) {
-            super("[" + Thread.currentThread().getName() + "] PersistThread-" + ((Identifiable)object).getId());
+            super(tName("PersistThread-" + ((Identifiable)object).getId()));
 			this.object = object;
 			this.uuid = (Uuid)((Identifiable)object).getId();
 		}
@@ -155,7 +157,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 
 		public UpdateThread(URL url, Object object) throws InvalidObjectException {
-            super("[" + Thread.currentThread().getName() + "] UpdateThread-" + url);
+            super(tName("UpdateThread-" + url));
 			this.object = object;
 			this.uuid = SdbUtil.getUuid(url);
 		}
@@ -185,7 +187,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		Store storeType;
 		
 		public DeleteThread(Uuid uuid, Store storeType) {
-            super("[" + Thread.currentThread().getName() + "] DeleteThread-" + uuid);
+            super(tName("DeleteThread-" + uuid));
             this.uuid = uuid;
 			this.storeType = storeType;
 		}

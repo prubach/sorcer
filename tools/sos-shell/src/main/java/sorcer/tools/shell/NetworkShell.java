@@ -66,7 +66,6 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.rioproject.impl.config.DynamicConfiguration;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
-import sorcer.core.context.Contexts;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.netlet.util.ScriptExertException;
 import sorcer.security.util.SorcerPrincipal;
@@ -74,7 +73,6 @@ import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
 import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
-import sorcer.util.ClassLoaders;
 import sorcer.util.StringUtils;
 import sorcer.util.TimeUtil;
 import sorcer.util.WhitespaceTokenizer;
@@ -83,6 +81,8 @@ import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
 import com.sun.jini.config.Config;
+
+import static sorcer.util.StringUtils.tName;
 
 /**
  * @author Mike Sobolewski
@@ -895,7 +895,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 						e.printStackTrace();
 					}
 				}
-			}, "[" + Thread.currentThread().getName() + "] exec-" + cmd);
+			}, tName("exec-" + cmd));
 			edt.setDaemon(true);
 			edt.start();
 		}

@@ -35,7 +35,6 @@ import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
-import java.util.concurrent.*;
 
 import javax.inject.Inject;
 import javax.security.auth.Subject;
@@ -48,10 +47,6 @@ import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
-/*
-import net.jini.core.lease.Lease;
-import net.jini.core.lease.LeaseDeniedException;
-*/
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.discovery.DiscoveryGroupManagement;
@@ -78,7 +73,6 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
-import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.InjectionHelper;
 import sorcer.util.ObjectLogger;
 
@@ -88,6 +82,7 @@ import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.tName;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency
@@ -613,7 +608,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			logger.info("Provider service started: {} {}", getProviderName(), this);
 
 			// allow for enough time to export the provider's proxy and stay alive
-			new Thread(ProviderDelegate.threadGroup, new KeepAwake(), "[" + Thread.currentThread().getName() + "] KeepAwake-" + getName()).start();
+			new Thread(ProviderDelegate.threadGroup, new KeepAwake(), tName("KeepAwake-" + getName())).start();
 		} catch (Throwable e) {
 			initFailed(e);
 		}

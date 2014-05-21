@@ -309,7 +309,7 @@ public class JavaSpaceContentsView extends JPanel implements Runnable {
 							auto.setEnabled(true);
 						}
 					}
-				}), "[" + Thread.currentThread().getName() + "] JavaSpaceContentsView-update");
+				}), "JavaSpaceContentsView-update");
 				t.start();
 
 			}

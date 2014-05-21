@@ -35,6 +35,8 @@ import sorcer.core.provider.Spacer;
 
 import com.sun.jini.start.LifeCycle;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * ServiceSpacer - The SORCER rendezvous service provider that provides
  * coordination for executing exertions using JavaSpace from which provides PULL
@@ -80,7 +82,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
         private Provider provider;
 
         public TaskThread(Task task, Provider provider) {
-            super("[" + Thread.currentThread().getName() + "] Task-" + task.getName());
+            super(tName("Task-" + task.getName()));
             this.task = task;
             this.provider = provider;
         }

@@ -26,6 +26,8 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static sorcer.util.StringUtils.tName;
+
 public class BlockThread extends Thread {
 	private final static Logger logger = Logger.getLogger(BlockThread.class
 			.getName());
@@ -39,7 +41,7 @@ public class BlockThread extends Thread {
 	Provider provider;
 
 	public BlockThread(Block block, Provider provider) {
-        super("[" + Thread.currentThread().getName() + "] Block-" + block.toString());
+        super(tName("Block-" + block));
 		this.block = block;
 		this.provider = provider;
 	}

@@ -58,7 +58,7 @@ public class LogFileView extends JFrame {
 		});
 
 		getContentPane().add(new JScrollPane(_output), BorderLayout.CENTER);
-        _updater = new Thread(Thread.currentThread() + "-LogFileView.refresh") {
+        _updater = new Thread("LogFileView.refresh") {
             public void run() {
 				while (!isInterrupted()) {
 

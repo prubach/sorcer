@@ -54,6 +54,7 @@ import sorcer.util.Sorcer;
 import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.*;
 
 @SuppressWarnings("rawtypes")
 abstract public class ExertDispatcher implements Dispatcher,
@@ -187,11 +188,11 @@ abstract public class ExertDispatcher implements Dispatcher,
         volatile boolean stop = false;
 
         public DispatchThread() {
-            super("[" + Thread.currentThread().getName() + "] Dispatch");
+            super(tName("Dispatch"));
         }
 
         public DispatchThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, Thread.currentThread().getName() +"-Dispatch");
+            super(disatchGroup, tName("Dispatch"));
         }
 
         public void run() {
@@ -213,7 +214,7 @@ abstract public class ExertDispatcher implements Dispatcher,
     protected class CollectResultThread extends Thread {
 
         public CollectResultThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, "Result collector");
+            super(disatchGroup, tName("Result collector"));
         }
 
         public void run() {

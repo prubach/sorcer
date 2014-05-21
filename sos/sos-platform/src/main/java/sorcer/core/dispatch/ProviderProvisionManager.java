@@ -32,6 +32,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * @author Pawel Rubach
  */
@@ -54,7 +56,7 @@ public class ProviderProvisionManager {
         ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
         provGroup.setDaemon(true);
         provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-        Thread pThread = new Thread(provGroup, new ProvisionThread(), "Provisioner");
+        Thread pThread = new Thread(provGroup, new ProvisionThread(), tName("Provisioner"));
         pThread.start();
 	}
 

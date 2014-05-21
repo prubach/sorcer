@@ -95,6 +95,7 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
 import sorcer.util.*;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.*;
 
 /**
  * There are two types of SORCER service servers: generic service servers -
@@ -698,7 +699,7 @@ public class ProviderDelegate {
 						workerTransactional, queueSize == 0), spaceWorkerPool);
                 spaceTakers.add(worker);
 			}
-			Thread sith = new Thread(interfaceGroup, worker, "[" + Thread.currentThread().getName() + "] SpaceTaker-" + spaceName);
+			Thread sith = new Thread(interfaceGroup, worker, tName("SpaceTaker-" + spaceName));
 			sith.setDaemon(true);
 			sith.start();
 			logger.info("*** space worker-" + i + " started for: "
@@ -730,7 +731,7 @@ public class ProviderDelegate {
 							spaceWorkerPool);
                     spaceTakers.add(worker);
 				}
-				Thread snth = new Thread(namedGroup, worker, "[" + Thread.currentThread().getName() + "] SpaceTaker-" + getProviderName());
+				Thread snth = new Thread(namedGroup, worker, tName("SpaceTaker - " + getProviderName()));
 				snth.setDaemon(true);
 				snth.start();
 				logger.info("*** named space worker-" + i + " started for: "
