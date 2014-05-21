@@ -51,6 +51,24 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
         lrm = new LeaseRenewalManager();
     }
 
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Jobber jobber) {
+        super(exertion, delegate, jobber);
+        sessionMonitor = Accessor.getService(MonitoringManagement.class);
+        lrm = new LeaseRenewalManager();
+    }
+
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Spacer spacer) {
+        super(exertion, delegate, spacer);
+        sessionMonitor = Accessor.getService(MonitoringManagement.class);
+        lrm = new LeaseRenewalManager();
+    }
+
+    public MonitoringControlFlowManager(Exertion exertion, ProviderDelegate delegate, Concatenator concatenator) {
+        super(exertion, delegate, concatenator);
+        sessionMonitor = Accessor.getService(MonitoringManagement.class);
+        lrm = new LeaseRenewalManager();
+    }
+
     @Override
     public Exertion process() throws ExertionException {
         try {

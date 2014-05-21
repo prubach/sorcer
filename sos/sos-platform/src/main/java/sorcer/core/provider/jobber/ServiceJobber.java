@@ -27,6 +27,7 @@ import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.Jobber;
+import sorcer.core.provider.MonitoringControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 
@@ -184,5 +185,16 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	@Override
 	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
 		return new ControlFlowManager(exertion, delegate, this).process();
+	}
+
+    @Override
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!(exertion instanceof Job))
+            throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate, this);
+        else
+            return new ControlFlowManager(exertion, delegate, this);
 	}
 }

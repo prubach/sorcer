@@ -1338,23 +1338,19 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
-		// create an instance of the ExertionProcessor and call on the
+		// create an instance of the ControlFlowManager and call on the
 		// process method, returns an Exertion
-		ControlFlowManager cfm;
-		if (this instanceof Jobber) {
-			cfm = new ControlFlowManager(exertion, delegate, (Jobber) this);
-		} else if (this instanceof Spacer) {
-			cfm = new ControlFlowManager(exertion, delegate, (Spacer) this);
-		} else if (this instanceof Concatenator) {
-			cfm = new ControlFlowManager(exertion, delegate, (Concatenator) this);
-		} else if (exertion instanceof Task) {
-            if (exertion.isMonitorable())
-                cfm = new MonitoringControlFlowManager(exertion, delegate);
-            else
-                cfm = new ControlFlowManager(exertion, delegate);
-        } else
+        return getControlFlownManager(exertion).process();
+	}
+
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!(exertion instanceof Task))
             throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
-		return cfm.process();
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate);
+        else
+            return new ControlFlowManager(exertion, delegate);
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,

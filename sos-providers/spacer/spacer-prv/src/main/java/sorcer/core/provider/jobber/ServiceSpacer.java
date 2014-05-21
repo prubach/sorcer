@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.DispatcherFactory;
+import sorcer.core.provider.MonitoringControlFlowManager;
 import sorcer.core.provider.Provider;
 import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.SpaceTaskDispatcher;
@@ -153,5 +154,16 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
             return ExertionDispatcherFactory.getFactory(myMemberUtil);
         else
             return super.getDispatcherFactory(exertion);
+    }
+
+    @Override
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!exertion.isSpacable())
+            throw new ExertionException(new IllegalArgumentException("Exertion not spacable: " + exertion));
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate, this);
+        else
+            return new ControlFlowManager(exertion, delegate, this);
     }
 }
