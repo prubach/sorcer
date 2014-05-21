@@ -26,6 +26,8 @@ import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
 
+import static sorcer.service.Exec.*;
+
 public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;
 
@@ -61,7 +63,6 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		while (workers.size() > 0) {
             List<ExertionThread> workersToRemove = new ArrayList<ExertionThread>();
 			for (ExertionThread exThread : workers) {
-                if (!exThread.isAlive()) {
                     result = exThread.getResult();
                     if (result != null) {
                         ServiceExertion se = (ServiceExertion) result;
@@ -71,7 +72,6 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
                         else if (se.getStatus() == SUSPENDED)
                             isSuspended = true;
                         workersToRemove.add(exThread);
-                    }
                 }
 			}
             workers.removeAll(workersToRemove);

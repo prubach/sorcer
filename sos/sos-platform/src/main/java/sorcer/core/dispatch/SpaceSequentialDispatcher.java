@@ -29,6 +29,8 @@ import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
+import static sorcer.service.Exec.*;
+
 public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 
 	public SpaceSequentialDispatcher(Job job, 

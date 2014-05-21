@@ -22,6 +22,7 @@ import java.util.Set;
 
 import sorcer.core.provider.Provider;
 import sorcer.service.*;
+import static sorcer.service.Exec.*;
 
 public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 

@@ -37,6 +37,8 @@ import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 
+import static sorcer.service.Exec.*;
+
 /**
  * A dispatching class for exertion blocks in the PUSH mode.
  * 

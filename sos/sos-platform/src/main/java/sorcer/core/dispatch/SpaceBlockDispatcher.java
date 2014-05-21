@@ -1,7 +1,8 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,6 +33,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
+import static sorcer.service.Exec.*;
 
 /**
  * A dispatching class for exertion blocks in the PULL mode.
@@ -52,7 +54,6 @@ public class SpaceBlockDispatcher extends SpaceExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-        checkAndDispatchExertions();
 		try {
 			reconcileInputExertions(xrt);
 		} catch (ContextException ex) {

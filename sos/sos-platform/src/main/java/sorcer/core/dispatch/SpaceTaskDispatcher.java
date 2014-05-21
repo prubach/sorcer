@@ -26,6 +26,7 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
+import static sorcer.service.Exec.*;
 
 public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 

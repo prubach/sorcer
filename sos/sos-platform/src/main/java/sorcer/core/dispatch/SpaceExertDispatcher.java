@@ -36,6 +36,7 @@ import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 import sorcer.service.space.SpaceAccessor;
 
+import static sorcer.service.Exec.*;
 import static sorcer.util.StringUtils.tName;
 
 @SuppressWarnings("rawtypes")

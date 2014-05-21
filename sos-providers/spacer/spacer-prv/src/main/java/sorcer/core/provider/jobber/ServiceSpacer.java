@@ -65,9 +65,9 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     }
 
     public Exertion execute(Exertion exertion, Transaction txn)
-            throws TransactionException, RemoteException {
+            throws TransactionException, RemoteException, ExertionException {
         if (exertion.isJob())
-            return doJob(exertion);
+            return super.execute(exertion, txn);
         else
             return doTask(exertion);
     }

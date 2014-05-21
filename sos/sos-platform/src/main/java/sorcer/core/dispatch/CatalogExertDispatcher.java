@@ -36,6 +36,7 @@ import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 
 import static sorcer.util.StringUtils.tName;
+import static sorcer.service.Exec.*;
 
 abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
@@ -88,7 +89,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
     // Parallel
     protected ExertionThread runExertion(ServiceExertion ex) {
         ExertionThread eThread = new ExertionThread(ex, this);
-        eThread.start();
+        Thread t = new Thread(eThread, tName("Exert" + ex.getName()));
+        t.start();
         return eThread;
     }
     // Sequential
@@ -151,12 +153,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
     }
     protected Task execTask(Task task) throws ExertionException,
             SignatureException, RemoteException {
-//		 try {
-//		 ObjectLogger.persist("tmp.task", task);
-//		 } catch (IOException e) {
-//		 e.printStackTrace();
-//		 }
-
         if (task instanceof NetTask) {
             return execServiceTask(task);
         } else {
@@ -272,42 +268,10 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             throws DispatcherException, InterruptedException,
             RemoteException {
 
-/*
-            // this didn't work before we fixed searching the providers.
-        try {
-            ServiceTemplate st = Accessor.getServiceTemplate(null,
-                    null, new Class[] { Jobber.class }, null);
-            ServiceItem[] jobbers = Accessor.getServiceItems(st, null,
-                    Sorcer.getLookupGroups());
-			/*
-			 * check if there is any available jobber in the network and
-			 * delegate the inner job to the available Jobber. In the future, a
-			 * efficient load balancing algorithm should be implemented for
-			 * dispatching inner jobs. Currently, it only does round robin.
-			 /
-            for (int i = 0; i < jobbers.length; i++) {
-                if (jobbers[i] != null) {
-                    if (!provider.getProviderID().equals(
-                            jobbers[i].serviceID)) {
-                        logger.finest("\n***Jobber: " + i + " ServiceID: "
-                                + jobbers[i].serviceID);
-                        Provider rjobber = (Provider) jobbers[i].service;
-
-                        return (Job) rjobber.service(job, null);
-                    }
-                }
-            }
-*/
-
-			/*
-			 * Create a new dispatcher thread for the inner job, if no available
-			 * Jobber is found in the network
-			 */
-            Dispatcher dispatcher = null;
             runningExertionIDs.addElement(job.getId());
 
             // create a new instance of a dispatcher
-            dispatcher = ExertionDispatcherFactory.getFactory()
+            Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
                     .createDispatcher(job, sharedContexts, true, provider);
             // wait until serviceJob is done by dispatcher
             while (dispatcher.getState() != DONE
@@ -318,26 +282,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             out.getControlContext().appendTrace(provider.getProviderName()
                     + " dispatcher: " + getClass().getName());
             return out;
-/*
-        } catch (RemoteException re) {
-            re.printStackTrace();
-            throw re;
-        } catch (ExertionException ee) {
-            ee.printStackTrace();
-            throw ee;
-        } catch (DispatcherException de) {
-            de.printStackTrace();
-            throw de;
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-            throw ie;
-        } catch (TransactionException te) {
-            te.printStackTrace();
-            throw new ExertionException("transaction failure", te);
-        }
-*/
     }
-
 
 	private Block execBlock(Block block)
 			throws DispatcherException, InterruptedException,
@@ -404,19 +349,15 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		}
 	}
 
-    protected class ExertionThread extends Thread {
+    protected class ExertionThread implements Runnable {
 
         private Exertion ex;
 
         private Exertion result;
 
-        private ExertDispatcher dispatcher;
-
         public ExertionThread(ServiceExertion exertion,
-                              ExertDispatcher dispatcher) {
-            super(tName("Exertion-" + exertion.getName()));
+                              Dispatcher dispatcher) {
             ex = exertion;
-            this.dispatcher = dispatcher;
             if (isMonitored)
                 dispatchers.put(xrt.getId(), dispatcher);
         }
@@ -443,7 +384,5 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         public Exertion getResult() {
             return result;
         }
-
     }
-
 }

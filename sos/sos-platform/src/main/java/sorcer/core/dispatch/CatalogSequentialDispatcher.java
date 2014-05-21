@@ -24,6 +24,7 @@ import java.util.Set;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
+import static sorcer.service.Exec.*;
 
 public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
