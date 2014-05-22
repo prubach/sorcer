@@ -66,7 +66,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-		checkAndDispatchExertions();
+		checkProvision();
 		try {
 			reconcileInputExertions(xrt);
 		} catch (ContextException e) {

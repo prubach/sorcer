@@ -40,7 +40,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-        checkAndDispatchExertions();
+        checkProvision();
 		try {
 			inputXrts = Jobs.getInputExertions(((Job)xrt));
 			reconcileInputExertions(xrt);

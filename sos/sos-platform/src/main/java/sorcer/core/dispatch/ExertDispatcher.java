@@ -131,7 +131,7 @@ abstract public class ExertDispatcher implements Dispatcher {
      *
      * @throws ExertionException if there are issues dispatching the {@code Exertion}
      */
-    protected void checkAndDispatchExertions() throws ExertionException {
+    protected void checkProvision() throws ExertionException {
         if(xrt.isProvisionable() && xrt.getDeployments().size()>0) {
             try {
                 getProvisionManager().deployServices();

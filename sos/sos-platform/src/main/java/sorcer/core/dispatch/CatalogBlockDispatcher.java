@@ -58,7 +58,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 	
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-        checkAndDispatchExertions();
+        checkProvision();
 		inputXrts = xrt.getExertions();
 		reset();
 		// reconcileInputExertions(xrt);

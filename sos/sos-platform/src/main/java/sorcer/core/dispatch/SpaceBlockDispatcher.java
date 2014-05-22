@@ -59,7 +59,7 @@ public class SpaceBlockDispatcher extends SpaceExertDispatcher {
 		} catch (ContextException ex) {
 			throw new ExertionException(ex);
 		}
-        checkAndDispatchExertions();
+        checkProvision();
 		logger.debug("exertion count: {}", inputXrts.size());
 		for (int i = 0; i < inputXrts.size(); i++) {
 			ServiceExertion exertion = (ServiceExertion) inputXrts.get(i);

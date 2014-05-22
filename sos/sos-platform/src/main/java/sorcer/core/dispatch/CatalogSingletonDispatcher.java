@@ -37,7 +37,7 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 
 	public void dispatchExertions() throws SignatureException,
 			ExertionException {
-        checkAndDispatchExertions();
+        checkProvision();
 		// boolean isPersisted = (job.getStatus() != INITIAL)?false:true;
 		xrt.setStatus(RUNNING);
 		collectResults();

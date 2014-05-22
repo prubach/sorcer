@@ -45,7 +45,7 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 
 	public void dispatchExertions() throws ExertionException,
 			SignatureException {
-        checkAndDispatchExertions();
+        checkProvision();
 		try {
 			reconcileInputExertions(xrt);
 		} catch (ContextException ex) {
