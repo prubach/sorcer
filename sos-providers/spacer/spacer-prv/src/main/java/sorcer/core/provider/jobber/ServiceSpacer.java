@@ -154,7 +154,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     @Override
     protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
         if (!exertion.isSpacable())
-            throw new ExertionException(new IllegalArgumentException("Exertion not spacable: " + exertion));
+            return super.getControlFlownManager(exertion);
 
         if (exertion.isMonitorable())
             return new MonitoringControlFlowManager(exertion, delegate, this);

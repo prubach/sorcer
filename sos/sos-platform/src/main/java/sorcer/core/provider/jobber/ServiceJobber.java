@@ -84,21 +84,22 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		return doJob(exertion, txn);
+        if(!(exertion instanceof Job))
+            throw new IllegalArgumentException("Not a job");
+		return doJob((Job)exertion, txn);
 	}
 
-	public Exertion doJob(Exertion job, Transaction txn) {
+	public Exertion doJob(Job job, Transaction txn) {
 		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
 
 		setServiceID(job);
 		try {
-            Job _job = (Job) job;
-            JobThread jobThread = new JobThread(_job, this, getDispatcherFactory(job));
+            JobThread jobThread = new JobThread(job, this, getDispatcherFactory(job));
 			if (job.getControlContext().isMonitorable()
 					&& !job.getControlContext().isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
-                new Thread(jobThread, _job.getContextName()).start();
+                new Thread(jobThread, job.getContextName()).start();
                 return job;
 			} else {
 				jobThread.run();
@@ -106,9 +107,10 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 				logger.trace("<== Result: " + result);
 				return result;
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception e) {
+			job.reportException(e);
+            logger.warn("Error", e);
+            return job;
 		}
 	}
 
