@@ -53,7 +53,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 	public void collectResults() throws ExertionException, SignatureException {
 		try {
 			String pn = null;
-			if (inputXrts == null || inputXrts.size() == 0) {
+			if (inputXrts == null) {
 				xrt.setStatus(FAILED);
 				state = FAILED;
 				try {

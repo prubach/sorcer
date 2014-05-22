@@ -1,6 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
+ * Copyright 2013, 2014 SorcerSoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -672,7 +673,7 @@ public class operator {
 						p.inPath, ((Exertion) p.in).getContext());
 			}
 		} else
-			throw new ExertionException("No component exertion defined for job: " + job.getName());
+			logger.warning("No component exertion defined for job: " + job.getName());
 
 		return job;
 	}
