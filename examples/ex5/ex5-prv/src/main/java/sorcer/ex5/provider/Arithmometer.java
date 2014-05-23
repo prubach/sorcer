@@ -244,7 +244,10 @@ public class Arithmometer implements Serializable {
 
 			double result;
 			if (selector.equals(ADD)) {
-					result = (Double)revalue(inputs.get(0));
+                Thread.sleep(8000);
+				result = (Double)revalue(inputs.get(0));
+                cxt.putValue(outpaths.get(0), result);
+                Thread.sleep(8000);
 				for (int i = 1; i < inputs.size(); i++)
 					result += (Double)revalue(inputs.get(i));
 			} else if (selector.equals(SUBTRACT)) {
