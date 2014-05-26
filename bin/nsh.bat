@@ -26,7 +26,8 @@ IF EXIST "%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config" SET "NSH_CONF=%HO
 
 set STARTER_MAIN_CLASS=sorcer.tools.shell.NetworkShell
 set SHELL_CLASS=sorcer.tools.shell.NetworkShell
-CALL java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy" -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home="%SORCER_HOME%" -Dnsh.starter.config=%NSH_CONF% %STARTER_MAIN_CLASS% %*
+rem echo java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.net.preferIPv4Stack=true -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy" -Djava.protocol.handler.pkgs="net.jini.url|sorcer.util.bdb|org.rioproject.url" -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader -Djava.rmi.server.useCodebaseOnly=false -Dprogram.name=NSH -Dsorcer.home="%SORCER_HOME%" -Dnsh.starter.config=%NSH_CONF% %STARTER_MAIN_CLASS% %*
+CALL java %JAVA_OPTS% -classpath "%SHELL_CLASSPATH%" -Djava.security.policy="%SORCER_HOME%\configs\shell\policy\shell.policy" -Dprogram.name=NSH -Dnsh.starter.config="%NSH_CONF%" %STARTER_MAIN_CLASS% %*
 rem --classpath "%CP%"
 popd
 
