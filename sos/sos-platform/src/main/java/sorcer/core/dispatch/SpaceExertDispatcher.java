@@ -28,7 +28,6 @@ import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
-import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
@@ -62,11 +61,8 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
-		// logger.info(this, "using space=" + Env.getSpaceName());
 
-		if (exertion instanceof Job)
-			inputXrts = Jobs.getInputExertions((Job)exertion);
-		else if (exertion instanceof Block) 
+		else if (exertion instanceof CompoundExertion)
 			inputXrts = exertion.getExertions();
 
 		disatchGroup = new ThreadGroup("exertion-"+ exertion.getId());
@@ -86,14 +82,6 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		efThread.start();
 
 		myMemberUtil = memUtil;
-	}
-
-	public SpaceExertDispatcher(Job job, 
-            Set<Context> sharedContext,
-            boolean isSpawned, 
-            Provider provider) throws Throwable {
-		super(job, sharedContext, isSpawned, provider, null, null);
-
 	}
 
 	protected void addPoison(Exertion exertion) {
@@ -214,7 +202,6 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
 				ser.setStatus(DONE);
 				collectOutputs(result);
-				notifyExertionExecution(ex, result);
 			}
 		} catch (Exception e) {
 			throw new ExertionException(e);

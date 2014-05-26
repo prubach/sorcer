@@ -110,8 +110,8 @@ public class ExertionEnvelop implements Entry {
 		ee.serviceType = ss.getServiceType();
 		ee.providerName = ss.getProviderName();
 		ee.exertionID = ex.getId();
-		ee.parentID = ((ServiceExertion) ex).getParentId();
-		ee.isJob = new Boolean(ex.isJob());
+		ee.parentID = ex.getParentId();
+		ee.isJob = ex.isJob();
 
 		return ee;
 	}
@@ -130,7 +130,7 @@ public class ExertionEnvelop implements Entry {
 		ExertionEnvelop ee = ExertionEnvelop.getTemplate();
 		ee.parentID = parentID;
 		ee.exertionID = childID;
-		ee.state = new Integer(Exec.DONE); // must be set to DONE (completed)
+		ee.state = Exec.DONE; // must be set to DONE (completed)
 
 		return ee;
 	}

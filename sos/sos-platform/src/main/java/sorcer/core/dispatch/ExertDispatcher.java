@@ -35,7 +35,6 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
-import sorcer.core.exertion.NetJob;
 import sorcer.service.*;
 import sorcer.util.StringUtils;
 
@@ -117,14 +116,10 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected void initialize() {
         dispatchers.put(xrt.getId(), this);
         state = RUNNING;
-        if (xrt instanceof NetJob) {
-            masterXrt = (ServiceExertion) ((NetJob) xrt)
-                    .getMasterExertion();
+        if (xrt instanceof Job) {
+            masterXrt = (ServiceExertion) ((Job) xrt).getMasterExertion();
         }
     }
-
-    abstract public void dispatchExertions() throws ExertionException,
-            SignatureException;
 
     /**
      * If the {@code Exertion} is provisionable, deploy services.
@@ -140,9 +135,6 @@ abstract public class ExertDispatcher implements Dispatcher {
             }
         }
     }
-
-    abstract public void collectResults() throws ExertionException,
-            SignatureException;
 
     public Exertion getExertion() {
         return xrt;
@@ -190,8 +182,7 @@ abstract public class ExertDispatcher implements Dispatcher {
         }
 
         public void run() {
-            if (xrt.isExecTimeRequested())
-                xrt.startExecTime();
+            xrt.startExecTime();
             try {
                 collectResults();
                 xrt.setStatus(DONE);
@@ -241,11 +232,11 @@ abstract public class ExertDispatcher implements Dispatcher {
 		String toPath = null, newToPath = null, toPathcp, fromPath = null;
 		int argIndex = -1;
 		try {
-			Hashtable toInMap = Contexts.getInPathsMap(toContext);
+			Map<String, String> toInMap = Contexts.getInPathsMap(toContext);
 			logger.info("updating inputs in context toContext = {}", toContext);
 			logger.info("updating based on = {}", toInMap);
-			for (Enumeration e = toInMap.keys(); e.hasMoreElements();) {
-				toPath = (String) e.nextElement();
+			for (Map.Entry<String, String> e  : toInMap.entrySet()) {
+                toPath = e.getKey();
 				// find argument for parametric context
 				if (toPath.endsWith("]")) {
 					Tuple2<String, Integer> pair = getPathIndex(toPath);
@@ -254,7 +245,7 @@ abstract public class ExertDispatcher implements Dispatcher {
 						newToPath = pair._1;
 					}
 				}
-				toPathcp = (String) toInMap.get(toPath);
+				toPathcp = e.getValue();
 				logger.info("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
 				logger.info("context ID = {}", Contexts.getContextParameterID(toPathcp));
@@ -328,69 +319,6 @@ abstract public class ExertDispatcher implements Dispatcher {
             }
         }
         return null;
-    }
-
-    public void notifyExertionExecution(Exertion inex, Exertion outex) throws ContextException {
-        notifyExertionExecution(xrt, inex, outex);
-    }
-
-    public void notifyExertionExecution(Exertion parent, Exertion inex, Exertion outex) throws ContextException {
-        if (inex instanceof Conditional && outex instanceof Conditional) {
-            // do nothing for now
-        } else if (inex.isTask()
-                && outex.isTask())
-            notifyTaskExecution(parent, (ServiceExertion) inex, (ServiceExertion) outex);
-    }
-
-    private void notifyTaskExecution(Exertion parent, ServiceExertion inTask,
-                                     ServiceExertion outTask) throws ContextException {
-        // notify o MASTER task completion
-        Vector recipients = null;
-        String notifyees = ((ControlContext)parent.getControlContext()).getNotifyList(inTask);
-        if (notifyees != null) {
-			String[] list = StringUtils.tokenize(notifyees, MAIL_SEP);
-            recipients = new Vector(list.length);
-            for (int i = 0; i < list.length; i++)
-                recipients.addElement(list[i]);
-        }
-
-		String to = "", admin = SorcerEnv.getProperty("sorcer.admin");
-        if (recipients == null) {
-            if (admin != null) {
-                recipients = new Vector();
-                recipients.addElement(admin);
-            }
-        } else if (admin != null && !recipients.contains(admin))
-            recipients.addElement(admin);
-
-        if (recipients == null || recipients.size() == 0)
-            return;
-
-        StringBuffer sb;
-        if (inTask == masterXrt)
-            sb = new StringBuffer("SORCER Master Task ");
-        else
-            sb = new StringBuffer("SORCER Task ");
-
-        sb.append(outTask.getName()).append("\n\nDescription:\n").append(
-                outTask.getDescription());
-        if (outTask.getStatus() > 0)
-            sb
-					.append("\n\nTask executed sucessfully with the input dataContext:\n");
-        else
-			sb.append("\n\nTask execution FAILED; The input dataContext was:\n");
-        sb.append(inTask.contextToString()).append(
-				"\n\nincluding the following output dataContext:\n").append(
-				outTask.getDataContext());
-        sb.append("\n\nincluding the specific output paths:\n").append(
-				Contexts.getFormattedOut(outTask.getDataContext(), true));
-
-        for (int i = 0; i < recipients.size() - 1; i++)
-            to = to + recipients.elementAt(i) + ",";
-
-        to = to + recipients.lastElement();
-
-        // sendMailWithSubject(sb.toString(), outTask.getName(), to);
     }
 
     public boolean isMonitorable() {

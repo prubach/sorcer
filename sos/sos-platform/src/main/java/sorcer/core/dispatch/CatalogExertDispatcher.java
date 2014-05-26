@@ -233,10 +233,12 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                             result = (Task) service.service(task, null);
 
                         } catch (Exception re) {
-                            logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
-                            service = (Service) Accessor.getService(sig);
-                            logger.warn("Got service: ");
                             if (tried >= maxTries) throw re;
+                            else {
+                                logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
+                                service = (Service) Accessor.getService(sig);
+                                logger.warn("Got service: {}", service);
+                            }
                         }
                     }
                     if (result!=null)
