@@ -290,16 +290,18 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 	}
 
 	private void cleanRemainingFailedExertions(Uuid id) {
+        logger.debug("clean remaining failed exertions for {}", id);
 		ExertionEnvelop template = ExertionEnvelop.getParentTemplate(id, null);
 		ExertionEnvelop ee = null;
 
-		while (ee != null) {
+        do {
 			try {
+                logger.debug("take envelop {}", template);
 				ee = takeEnvelop(template);
 			} catch (ExertionException e) {
-				e.printStackTrace();
+                logger.warn("Error while taking {}", template);
 			}
-		}
+        } while (ee != null);
 	}
 	
 	protected void executeMasterExertion() throws 
