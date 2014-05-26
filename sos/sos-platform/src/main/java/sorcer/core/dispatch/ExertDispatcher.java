@@ -28,17 +28,13 @@ import net.jini.id.UuidFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
-import sorcer.core.context.ControlContext;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
-import sorcer.util.StringUtils;
 
-import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.StringUtils.*;
 import static sorcer.service.Exec.*;
 
@@ -62,7 +58,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected boolean isSpawned;
 
     // All dispatchers spawned by this one.
-    protected Vector runningExertionIDs = new Vector();
+    protected List<Uuid> runningExertionIDs = Collections.synchronizedList(new LinkedList<Uuid>());
 
     // subject for whom this dispatcher is running.
     // make sure subject is set before and after any object goes out and comes
@@ -222,8 +218,8 @@ abstract public class ExertDispatcher implements Dispatcher {
 
     protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
         List<Context> inputContexts = Jobs.getTaskContexts(ex);
-        for (int i = 0; i < inputContexts.size(); i++)
-            updateInputs((ServiceContext) inputContexts.get(i));
+        for (Context inputContext : inputContexts)
+            updateInputs((ServiceContext) inputContext);
     }
 
 	protected void updateInputs(ServiceContext toContext)
@@ -289,7 +285,7 @@ abstract public class ExertDispatcher implements Dispatcher {
         String newPath = null;
         int i1 = path.lastIndexOf('/');
         String lastAttribute = path.substring(i1+1);
-        if (lastAttribute.charAt(0) == '[' && lastAttribute.charAt(lastAttribute.length()-1) == ']') {
+        if (lastAttribute.charAt(0) == '[' && lastAttribute.charAt(lastAttribute.length() - 1) == ']') {
             index = Integer.parseInt(lastAttribute.substring(1, lastAttribute.length()-1));
             newPath = path.substring(0, i1+1);
         }
@@ -299,23 +295,18 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected ServiceContext getSharedContext(String path, String id) {
 		// try to get the dataContext with particular id.
 		// If not found, then find a dataContext with particular path.
-        Context hc;
 		if (Context.EMPTY_LEAF.equals(path) || "".equals(path))
             return null;
         if (id != null && id.length() > 0) {
-            Iterator<Context> it = sharedContexts.iterator();
-            while (it.hasNext()) {
-                hc = it.next();
+            for (Context hc : sharedContexts) {
                 if (UuidFactory.create(id).equals(hc.getId()))
-                    return (ServiceContext)hc;
+                    return (ServiceContext) hc;
             }
         }
         else {
-            Iterator<Context> it = sharedContexts.iterator();
-            while (it.hasNext()) {
-                hc = it.next();
+            for (Context hc : sharedContexts) {
                 if (hc.containsPath(path))
-                    return (ServiceContext)hc;
+                    return (ServiceContext) hc;
             }
         }
         return null;

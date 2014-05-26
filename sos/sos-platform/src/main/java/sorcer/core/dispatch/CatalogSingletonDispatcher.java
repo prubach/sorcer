@@ -44,7 +44,7 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 	}
 
 	public void collectResults() throws ExertionException, SignatureException {
-		ServiceExertion result = null;
+		ServiceExertion result;
         ServiceExertion exertion = (ServiceExertion)((Job) xrt).get(0);
         exertion.startExecTime();
 		// Provider is expecting exertion field in Context to be set.
@@ -59,8 +59,7 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 			if (result.getStatus() <= FAILED) {
 				xrt.setStatus(FAILED);
 				state = FAILED;
-				ExertionException fe = null;
-				fe = new ExertionException(provider.getProviderName()
+				ExertionException fe = new ExertionException(provider.getProviderName()
 						+ " received failed task", result);
 				result.reportException(fe);
 				dispatchers.remove(xrt.getId());
@@ -68,7 +67,6 @@ public class CatalogSingletonDispatcher extends CatalogExertDispatcher {
 			} else {
 				((Job) xrt).setExertionAt(result, 0);
 				state = DONE;
-				notifyExertionExecution(exertion, result);
 				xrt.setStatus(DONE);
 				dispatchers.remove(xrt.getId());
 			}

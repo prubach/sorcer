@@ -95,7 +95,7 @@ public class SpaceSequentialDispatcher extends SpaceExertDispatcher {
 		ExertionEnvelop temp;
 		temp = ExertionEnvelop.getTemplate();
 		temp.parentID = xrt.getId();
-		temp.state = new Integer(DONE);
+		temp.state = DONE;
 
 		logger.debug("collect exertions for template: \n"
                 + temp.describe());

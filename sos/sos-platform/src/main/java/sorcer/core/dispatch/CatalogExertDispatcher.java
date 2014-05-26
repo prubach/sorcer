@@ -139,7 +139,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				if (result.isTask()) {
 					collectOutputs(result);
 				}
-				notifyExertionExecution(ex, result);
 			} catch (ContextException e) {
 				throw new ExertionException(e);
 			}
@@ -192,7 +191,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     }
                 }
                 if (service == null) {
-                    String msg = null;
+                    String msg;
                     // get the PROCESS Method and grab provider name + interface
                     msg = "No Provider Available\n" + "Provider Name:      "
                             + sig.getProviderName() + "\n"
@@ -264,7 +263,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             throws DispatcherException, InterruptedException,
             RemoteException {
 
-            runningExertionIDs.addElement(job.getId());
+            runningExertionIDs.add(job.getId());
 
             // create a new instance of a dispatcher
             Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
@@ -312,8 +311,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			 * Create a new dispatcher thread for the inner job, if no available
 			 * Jobber is found in the network
 			 */
-			Dispatcher dispatcher = null;
-			runningExertionIDs.addElement(block.getId());
+			Dispatcher dispatcher;
+			runningExertionIDs.add(block.getId());
 
 			// create a new instance of a dispatcher
 			dispatcher = ExertionDispatcherFactory.getFactory()

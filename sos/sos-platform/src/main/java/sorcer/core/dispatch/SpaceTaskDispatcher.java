@@ -106,11 +106,6 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 			
 			Task result = (Task) resultEnvelop.exertion;
 			state = DONE;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
 			result.setStatus(DONE);
 			xrt = result;
 		}
@@ -130,11 +125,6 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		if (resultEnvelop != null) {
 			Task result = (Task) resultEnvelop.exertion;
 			state = FAILED;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
 			result.setStatus(FAILED);
 			xrt = result;
 		}
@@ -154,11 +144,6 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		if (resultEnvelop != null) {
 			Task result = (Task) resultEnvelop.exertion;
 			state = ERROR;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
 			result.setStatus(ERROR);
 			xrt = result;
 		}

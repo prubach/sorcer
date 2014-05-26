@@ -59,7 +59,7 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	public void collectResults() throws ExertionException, SignatureException {
 		boolean isFailed = false;
 		boolean isSuspended = false;
-		Exertion result = null;
+		Exertion result;
 		while (workers.size() > 0) {
             List<ExertionThread> workersToRemove = new ArrayList<ExertionThread>();
 			for (ExertionThread exThread : workers) {

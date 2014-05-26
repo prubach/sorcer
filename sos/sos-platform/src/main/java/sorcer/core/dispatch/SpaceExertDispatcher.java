@@ -173,7 +173,7 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 		if (space == null) {
 			throw new ExertionException("NO exertion space available!");
 		}
-		ExertionEnvelop result = null;
+		ExertionEnvelop result;
 		try {
 			while (state == RUNNING) {
 				result = (ExertionEnvelop) space.take(template, null, SpaceTaker.SPACE_TIMEOUT);

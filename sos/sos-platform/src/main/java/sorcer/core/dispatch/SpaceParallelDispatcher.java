@@ -51,7 +51,7 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 		}
 
 		int index = inputXrts.size() - 1;
-		ServiceExertion exertion = null;
+		ServiceExertion exertion;
 		try {
 			while (index >= 0) {
 				exertion = (ServiceExertion) inputXrts.get(index);
@@ -105,8 +105,7 @@ public class SpaceParallelDispatcher extends SpaceExertDispatcher {
 				postExecExertion(input, result);
 				count++;
 			} else {
-				logger.trace("continue for envelop: " + resultEnvelop);
-				continue;
+				logger.trace("continue for envelop: {}", resultEnvelop);
 			}
 		}
 		executeMasterExertion();

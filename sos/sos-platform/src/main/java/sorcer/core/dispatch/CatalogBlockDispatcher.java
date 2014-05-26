@@ -73,7 +73,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 
 	public void collectResults() throws ExertionException, SignatureException {
 		try {
-			String pn = null;
+			String pn;
 			if (inputXrts == null) {
 				xrt.setStatus(FAILED);
 				state = FAILED;
@@ -92,7 +92,7 @@ public class CatalogBlockDispatcher extends CatalogExertDispatcher implements
 				}
 			}
 
-			ServiceExertion se = null;
+			ServiceExertion se;
 			xrt.startExecTime();
 			for (int i = 0; i < inputXrts.size(); i++) {
 				se = (ServiceExertion) inputXrts.get(i);
