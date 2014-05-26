@@ -184,10 +184,11 @@ public class ObjectStoreTest {
 
 	//@Ignore
 	@Test
-	public void deleteStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void deleteStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data1 = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		//logger.info("id1: " + data1.getId());
 		URL objURL1 = store(data1);
+        Thread.sleep(500);
 		List<String> content = list(objURL1);
 		int initSize = content.size();
 		//logger.info("initial store size: " + initSize);
@@ -196,6 +197,7 @@ public class ObjectStoreTest {
 		Context data2 = cxt("stored", in("arg/x5", par("x5")));
 		//logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
+        Thread.sleep(500);
 		content = list(objURL2);
 		//logger.info("content size: " + content.size());
 		//logger.info("content 2: " + content);
@@ -206,10 +208,12 @@ public class ObjectStoreTest {
 		Assert.assertEquals(content.size(), initSize);
 		
 		objURL2 = store(data1);
+        Thread.sleep(500);
 		content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize + 1);
 
 		delete(data1);
+        Thread.sleep(500);
 		content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize);
 		
@@ -218,6 +222,7 @@ public class ObjectStoreTest {
 		logger.info("storeSize before clear: " + storeSize);
 		
 		int size = (int)clear(Store.context);
+        Thread.sleep(500);
 		logger.info("cleared tally: " + size);
 //		Assert.assertEquals(storeSize, size);
 		

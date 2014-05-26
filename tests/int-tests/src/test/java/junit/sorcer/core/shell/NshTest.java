@@ -1,5 +1,6 @@
 package junit.sorcer.core.shell;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.util.exec.ExecUtils;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
@@ -25,8 +27,13 @@ public class NshTest {
             .getLogger(NshTest.class.getName());
     private static final String EXCEPTION = "Exception";
 
-    private StringBuilder sb = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
-            "bin"+ java.io.File.separator + "nsh").getAbsolutePath());
+    private StringBuilder sb;
+
+    @Before
+    public void init() throws IOException {
+        sb = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
+                "bin"+ java.io.File.separator + "nsh").getCanonicalPath());
+    }
 
 
     @Test

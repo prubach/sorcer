@@ -397,19 +397,17 @@ public class ExertMonitor extends ServiceProvider implements
 	 */
 	public Exertion getMonitorableExertion(UEID cookie, Principal principal)
 			throws RemoteException, MonitorException {
-		UuidKey key;
+        UuidKey key;
 		Exertion ex;
 		Iterator<UuidKey> ki = resources.keySet().iterator();
 		while (ki.hasNext()) {
 			key = ki.next();
 			ex = (getSession(key)).getRuntimeExertion();
-
-			if (cookie.exertionID.equals(ex.getId())
+            logger.info("found info: " + ex.getId());
+			if (cookie.exertionID.equals(ex.getId().toString())
 					&& ((ServiceExertion) ex).getPrincipal().getId()
 							.equals(((SorcerPrincipal) principal).getId()))
 				return ex;
-			else
-				return null;
 		}
 		return null;
 	}

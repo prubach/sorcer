@@ -20,6 +20,8 @@ package sorcer.core;
 import net.jini.core.lookup.ServiceID;
 import sorcer.util.StringUtils;
 
+import java.io.Serializable;
+
 /**
  * Sometimes it's critical to identify an exertion associated with a provider.
  * For example, a broker or monitor might like to have an identifier associated
@@ -32,7 +34,9 @@ import sorcer.util.StringUtils;
  * This object is immutable.
  */
 
-public class UEID {
+public class UEID implements Serializable {
+
+    static final long serialVersionUID = -687991492884005033L;
 
 	public final ServiceID sid;
 
