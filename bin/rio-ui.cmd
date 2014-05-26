@@ -29,19 +29,19 @@ set rioVersion=5.0-M4-S6
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
-    IF EXIST %SHOME_BIN%\sorcer-boot.bat (
-        SET SORCER_HOME=%SHOME_BIN%\..
+    IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
+        SET "SORCER_HOME=%SHOME_BIN%\.."
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
 )
 IF defined SORCER_HOME (
-  call %SORCER_HOME%\bin\common-run.bat
+  call "%SORCER_HOME%\bin\common-run.bat"
 ) ELSE (
-  if exist %CD%\common-run.bat (
+  if exist "%CD%\common-run.bat" (
     call common-run.bat
   ) ELSE (
-    call %CD%\bin\common-run.bat
+    call "%CD%\bin\common-run.bat"
   )
 )
 set rioVersion=%v.rio%
@@ -51,4 +51,4 @@ set RIOUI_CLASSPATH="%SORCER_RIOUI_CP%;%RIO_HOME%\lib\rio-ui-%rioVersion%.jar"
 set MAIN_CLASS=org.rioproject.tools.ui.Main
 rem echo %RIOUI_CLASSPATH%
 
-call "%JAVACMD%" %JAVA_OPTS% -cp %RIOUI_CLASSPATH% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.tools.ui.logDir="%RIO_HOME%"\..\..\logs -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%
+call "%JAVACMD%" %JAVA_OPTS% -cp %RIOUI_CLASSPATH% -DRIO_HOME="%RIO_HOME%" -Dorg.rioproject.tools.ui.logDir="%RIO_HOME%\..\..\logs" -Djava.security.policy="%RIO_HOME%\..\..\configs\rio\rio.policy" -Djava.rmi.server.useCodebaseOnly=false -Djava.protocol.handler.pkgs=org.rioproject.url %MAIN_CLASS% %command_line%

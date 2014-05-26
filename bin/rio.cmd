@@ -30,20 +30,20 @@ set RIO_LIB=%RIO_HOME%\lib
 SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
-    IF EXIST %SHOME_BIN%\sorcer-boot.bat (
-        SET SORCER_HOME=%SHOME_BIN%\..
+    IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
+        SET "SORCER_HOME=%SHOME_BIN%\.."
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
 )
 
 IF defined SORCER_HOME (
-  call %SORCER_HOME%\bin\common-run.bat
+  call "%SORCER_HOME%\bin\common-run.bat"
 ) ELSE (
-  if exist %CD%\common-run.bat (
+  if exist "%CD%\common-run.bat" (
     call common-run.bat
   ) ELSE (
-    call %CD%\bin\common-run.bat
+    call "%CD%\bin\common-run.bat"
   )
 )
 
@@ -64,7 +64,7 @@ set command_line=%*
 set launchTarget=org.rioproject.tools.cli.CLI
 set classpath=-cp "%RIO_HOME%\lib\rio-cli-%rioVersion%.jar";"%SLF4J_CLASSPATH%";"%SORCER_RIO_CP%"
 set props="-DRIO_HOME=%RIO_HOME%"
-"%JAVACMD%" %JAVA_OPTS% %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%"\..\..\configs\rio\rio.policy  %launchTarget% %cliExt% %command_line%
+"%JAVACMD%" %JAVA_OPTS% %classpath% -Xms256m -Xmx256m -Djava.protocol.handler.pkgs=org.rioproject.url -DRIO_HOME="%RIO_HOME%" -Djava.rmi.server.useCodebaseOnly=false -Djava.security.policy="%RIO_HOME%\..\..\configs\rio\rio.policy" %launchTarget% %cliExt% %command_line%
 goto end
 
 :create-project

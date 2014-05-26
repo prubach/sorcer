@@ -22,7 +22,7 @@ SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
 	echo sh not set
     IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
-        SET SORCER_HOME=%SHOME_BIN%\..
+        SET "SORCER_HOME=%SHOME_BIN%\.."
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
 		EXIT
@@ -41,14 +41,14 @@ SET FOUND=
 SET PROG=mvn.bat
 FOR %%i IN ("%PATH:;=";"%") DO IF EXIST %%i\%PROG% SET FOUND=%%i  
 IF NOT DEFINED FOUND (
-    SET M2_HOME=%SORCER_HOME%\lib\apache-maven
+    SET "M2_HOME=%SORCER_HOME%\lib\apache-maven"
     SET "PATH=%M2_HOME%\bin;%PATH%"
 )
 SET FOUND=
 SET PROG=ant.bat
 FOR %%i IN ("%PATH:;=";"%") DO IF EXIST %%i\%PROG% SET FOUND=%%i  
 IF NOT DEFINED FOUND (
-    SET ANT_HOME=%SORCER_HOME%\lib\apache-ant
+    SET "ANT_HOME=%SORCER_HOME%\lib\apache-ant"
     SET "PATH=%ANT_HOME%\bin;%PATH%"
 )
 
