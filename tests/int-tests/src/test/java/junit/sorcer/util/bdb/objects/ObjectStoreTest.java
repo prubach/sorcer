@@ -95,11 +95,12 @@ public class ObjectStoreTest {
 	}
 	
 	@Test
-	public void storeOperatorTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void storeOperatorTest() throws SignatureException, ExertionException, ContextException,
+            IOException, InterruptedException {
 		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		
 		URL objURL = store(data);
-		
+        Thread.sleep(500);
 		logger.info("stored object URL: " + objURL);
 //		logger.info("retrieved object: " + objURL.getContent());
 		
@@ -204,6 +205,7 @@ public class ObjectStoreTest {
 		Assert.assertEquals(content.size(), initSize + 1);
 
 		delete(objURL1);
+        Thread.sleep(500);
 		content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize);
 		

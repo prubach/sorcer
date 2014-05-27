@@ -31,8 +31,8 @@ public class NshTest {
 
     @Before
     public void init() throws IOException {
-        sb = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
-                "bin"+ java.io.File.separator + "nsh").getCanonicalPath());
+        sb = new StringBuilder("\"").append(new java.io.File(SorcerEnv.getHomeDir(),
+                "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).append("\"");
     }
 
 
