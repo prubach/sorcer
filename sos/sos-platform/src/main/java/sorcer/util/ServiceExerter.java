@@ -20,7 +20,6 @@ package sorcer.util;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
@@ -29,6 +28,8 @@ import net.jini.core.transaction.TransactionException;
 import org.dancres.blitz.jini.lockmgr.LockResult;
 import org.dancres.blitz.jini.lockmgr.MutualExclusion;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.deploy.Deployment;
@@ -54,8 +55,7 @@ import sorcer.service.txmgr.TransactionManagerAccessor;
  */
 @SuppressWarnings("rawtypes")
 public class ServiceExerter implements Exerter, Callable {
-    protected final static Logger logger = Logger.getLogger(ServiceExerter.class
-            .getName());
+    protected final static Logger logger = LoggerFactory.getLogger(ServiceExerter.class);
 
     private ServiceExertion exertion;
     private Transaction transaction;
@@ -210,18 +210,18 @@ public class ServiceExerter implements Exerter, Callable {
                 exertion.reportException(new ExertionException(
                         "No such operation in the requested signature: "
                                 + signature));
-                logger.warning("Not selectable exertion operation: " + signature);
+                logger.warn("Not selectable exertion operation: ", signature);
                 return exertion;
             }
 
             if (providerName != null && providerName.length() > 0) {
                 signature.setProviderName(providerName);
             }
-            logger.finer("* Exertion shell's servicer accessor: "
-                    + Accessor.getAccessorType());
+            logger.debug("Exertion shell's servicer accessor: {}",
+                    Accessor.getAccessorType());
             provider = ((NetSignature) signature).getService();
         } catch (SignatureException e) {
-            e.printStackTrace();
+            logger.warn("Error", e);
             throw new ExertionException(e);
         } catch (ContextException se) {
             throw new ExertionException(se);
@@ -240,11 +240,11 @@ public class ServiceExerter implements Exerter, Callable {
                 try {
                     Provisioner provisioner = Accessor.getService(Provisioner.class);
                     if (provisioner != null) {
-                        logger.fine("Provisioning "+signature);
+                        logger.debug("Provisioning {}", signature);
                         provider = provisioner.provision(signature.getServiceType().getName(), signature.getName(), ((NetSignature) signature).getVersion());
                     }
                 } catch (ProvisioningException pe) {
-                    logger.warning("* Provider not available and not provisioned: " + pe.getMessage());
+                    logger.warn("Provider not available and not provisioned", pe);
                     exertion.setStatus(Exec.FAILED);
                     exertion.reportException(new RuntimeException(
                             "Cannot find provider and provisioning returned error: " + pe.getMessage()));
@@ -256,7 +256,7 @@ public class ServiceExerter implements Exerter, Callable {
         // provider = ProviderAccessor.getProvider(null, signature
         // .getServiceType());
         if (provider == null) {
-            logger.warning("* Provider not available for: " + signature);
+            logger.warn("Provider not available for: {}", signature);
             exertion.setStatus(Exec.FAILED);
             exertion.reportException(new RuntimeException(
                     "Cannot find provider for: " + signature));
@@ -281,8 +281,9 @@ public class ServiceExerter implements Exerter, Callable {
 			Exertion result = provider.service(exertion, transaction);
             if (result != null && result.getExceptions().size() > 0) {
                 for (ThrowableTrace et : result.getExceptions()) {
-                    logger.warning("Got exception running " +exertion.getName() + " : " + et.describe());
-                    if (et.getThrowable() instanceof Error)
+                    Throwable t = et.getThrowable();
+                    logger.warn("Got exception running {}", exertion.getName(), t);
+                    if (t instanceof Error)
                         ((ServiceExertion) result).setStatus(Exec.ERROR);
                 }
 				((ServiceExertion)result).setStatus(Exec.FAILED);
