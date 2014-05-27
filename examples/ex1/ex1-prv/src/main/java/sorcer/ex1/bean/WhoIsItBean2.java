@@ -1,7 +1,7 @@
 /**
  *
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package sorcer.ex1.bean;
 
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.ex1.Message;
 import sorcer.ex1.WhoIsIt;
 import sorcer.ex1.provider.ProviderMessage;
@@ -33,35 +33,30 @@ import sorcer.util.StringUtils;
 
 public class WhoIsItBean2 implements WhoIsIt {
 
-	private ServiceProvider provider;
-	private Logger logger;
-	
-	public void init(Provider provider) {
-		this.provider = (ServiceProvider)provider;
-		try {
-			logger = provider.getLogger();
-		} catch (RemoteException e) {
-			// ignore it, local call
-		}
+    private String providerName ;
+	private Logger logger = LoggerFactory.getLogger(WhoIsItBean2.class);
+
+    public void init(Provider provider) throws RemoteException {
+        providerName = provider.getProviderName();
 	}
 	
 	public Context getHostName(Context context) throws RemoteException,
 			ContextException {
 		String hostname;
-		logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+		logger.trace("entering WhoIsItBean2.getHostName");
 		try {
 			hostname = SorcerEnv.getLocalHost().getHostName();
 			context.putValue("provider/hostname", hostname);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), provider.getProviderName(), rhn));
+					.getMessage(), providerName, rhn));
 			
 			Thread.sleep(2000);
 			context.reportException(new RuntimeException("Slept for 2 sec"));
-			context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
-		
-			logger.info("executed getHostName: " + context);
+			context.appendTrace(getClass().getName() + ":" + providerName);
+
+			logger.info("executed getHostName: {}", context);
 
 		} catch (UnknownHostException e1) {
 			throw new ContextException("getHostAddress", e1);
@@ -74,20 +69,20 @@ public class WhoIsItBean2 implements WhoIsIt {
 	public Context getHostAddress(Context context) throws RemoteException,
 			ContextException {
 		String ipAddress;
-		logger.entering(WhoIsItBean2.class.getName(), "getHostName");
+		logger.trace("entering WhoIsItBean2.getHostName");
 		try {
 			ipAddress = SorcerEnv.getHostAddress();
 			context.putValue("provider/address", ipAddress);
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), provider.getProviderName(), rhn));
+					.getMessage(), providerName, rhn));
 			
 			Thread.sleep(2000);
 			context.reportException(new RuntimeException("Slept for 2 sec"));
-			context.appendTrace(getClass().getName() + ":" + provider.getProviderName());
+			context.appendTrace(getClass().getName() + ":" + providerName);
 			
-			logger.info("executed getHostAddress: " + context);
+			logger.info("executed getHostAddress: {}", context);
 
 		} catch (UnknownHostException e1) {
 			throw new ContextException("getHostAddress", e1);
@@ -109,7 +104,7 @@ public class WhoIsItBean2 implements WhoIsIt {
 			String rhn = (String) context.getValue("requestor/hostname");
 			Message rmsg = (Message) context.getValue("requestor/message");
 			context.putValue("provider/message", new ProviderMessage(rmsg
-					.getMessage(), provider.getProviderName(), rhn));
+					.getMessage(), providerName, rhn));
 		} catch (UnknownHostException e1) {
 			context.reportException(e1);
 			e1.printStackTrace();
