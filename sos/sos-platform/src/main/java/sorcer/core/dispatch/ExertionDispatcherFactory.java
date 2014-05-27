@@ -93,7 +93,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
             Job job = (Job)exertion;
             ExertionSorter es = new ExertionSorter(job);
             job = (Job)es.getSortedJob();
-            if (Jobs.isSpaceSingleton(job)) {
+            if (Jobs.isSpaceSingleton(job) || Jobs.isSpaceSequential(job)) {
                 logger.info("Running Space Sequential Dispatcher...");
                 dispatcher = new SpaceSequentialDispatcher(job,
                         sharedContexts,
@@ -105,15 +105,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
             } else if (Jobs.isSpaceParallel(job)) {
                 logger.info("Running Space Parallel Dispatcher...");
                 dispatcher = new SpaceParallelDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        loki,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isSpaceSequential(job)) {
-                logger.info("Running Space Sequential Dispatcher ...");
-                dispatcher = new SpaceSequentialDispatcher(job,
                         sharedContexts,
                         isSpawned,
                         loki,
