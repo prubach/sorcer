@@ -15,6 +15,8 @@ package sorcer.util.eval;
  * limitations under the License.
  */
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sorcer.util.Collections;
 
 import java.util.HashMap;
@@ -28,6 +30,8 @@ public class PropertyEvaluator {
     private static final String PREFIX = "${";
     private static final String SUFFIX = "}";
     private Map<String, Properties> sources = new HashMap<String, Properties>();
+
+    private Logger logger = LoggerFactory.getLogger(PropertyEvaluator.class);
 
     public void addDefaultSources() {
         addDefaultSources("sys", "env");
@@ -62,6 +66,8 @@ public class PropertyEvaluator {
         String key = "--KEY--";
         data.put(key, value);
         eval(data);
+        if (!value.equals(data.get(key)))
+            logger.info("Replacing: " + value + " with: " + data.get(key));
         return data.get(key);
     }
 
