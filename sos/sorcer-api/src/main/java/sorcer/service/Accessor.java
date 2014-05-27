@@ -18,7 +18,6 @@
 
 package sorcer.service;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -239,7 +238,6 @@ public class Accessor {
      *
      * @param provider the provider to check
      * @return true if a provider is alive, otherwise false
-     * @throws java.rmi.RemoteException
      */
     public static boolean isAlive(Provider provider) {
         if (provider == null)
