@@ -11,6 +11,11 @@
     <profiles>
     <profile>
         <id>release</id>
+        <activation>
+            <os>
+                <family>unix</family>
+            </os>
+        </activation>
         <dependencies>
             <dependency>
                 <groupId>org.sorcersoft.sorcer</groupId>

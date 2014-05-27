@@ -56,6 +56,8 @@ public class ExertMonitor extends ServiceProvider implements
 	
 	private StoredMap<UuidKey, IMonitorSession> resources;
 
+    private Map<Uuid, UuidKey> cacheSessionKeyMap = new HashMap<Uuid, UuidKey>();
+
 	public ExertMonitor(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
 		initMonitor();
@@ -397,14 +399,22 @@ public class ExertMonitor extends ServiceProvider implements
 	 */
 	public Exertion getMonitorableExertion(UEID cookie, Principal principal)
 			throws RemoteException, MonitorException {
-        UuidKey key;
-		Exertion ex;
+        UuidKey lkey = cacheSessionKeyMap.get(cookie.exertionID);
+        Exertion ex;
+        if (lkey!=null) {
+            ex = (getSession(lkey)).getRuntimeExertion();
+            if (ex!=null && ((ServiceExertion) ex).getPrincipal().getId()
+                    .equals(((SorcerPrincipal) principal).getId()))
+                return ex;
+            else
+                return null;
+        }
 		Iterator<UuidKey> ki = resources.keySet().iterator();
 		while (ki.hasNext()) {
-			key = ki.next();
-			ex = (getSession(key)).getRuntimeExertion();
-            logger.info("found info: " + ex.getId());
-			if (cookie.exertionID.equals(ex.getId().toString())
+			lkey = ki.next();
+			ex = (getSession(lkey)).getRuntimeExertion();
+            if (ex!=null) cacheSessionKeyMap.put(ex.getId(), lkey);
+            if (cookie.exertionID.equals(ex.getId().toString())
 					&& ((ServiceExertion) ex).getPrincipal().getId()
 							.equals(((SorcerPrincipal) principal).getId()))
 				return ex;
