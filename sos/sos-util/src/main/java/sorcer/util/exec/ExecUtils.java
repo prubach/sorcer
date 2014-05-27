@@ -7,6 +7,7 @@ package sorcer.util.exec;
 
 import java.io.*;
 import sorcer.util.GenericUtil;
+import sorcer.util.StringUtils;
 
 /**
  * Utility methods to interact with and manage native processes started from
@@ -371,7 +372,8 @@ public class ExecUtils {
             String[] ncmdarray = new String[cmdarray.length + 2];
             ncmdarray[0] = "cmd";
             ncmdarray[1] = "/C";
-            System.arraycopy(cmdarray, 0, ncmdarray, 2, cmdarray.length);
+            ncmdarray[2] = "\"" + cmdarray[0] + "\"";
+            System.arraycopy(cmdarray, 1, ncmdarray, 3, cmdarray.length-1);
             cmdarray = ncmdarray;
         }
         return execCommand(Runtime.getRuntime().exec(cmdarray));

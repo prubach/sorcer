@@ -178,7 +178,7 @@ public class Util {
 
     @SuppressWarnings("unchecked")
     static <T> T waitForService(Class<T> serviceType) throws Exception{
-        return waitForService(serviceType, 60);
+        return waitForService(serviceType, 120);
     }
 
     @SuppressWarnings("unchecked")

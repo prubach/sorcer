@@ -114,6 +114,9 @@ public class Deployment implements Arg, Serializable {
             configs[i] = propsEval.eval(configs[i]);
             if (!GenericUtil.isWindows() && !configs[i].startsWith("/") && !configs[i].startsWith("${"))
                 configs[i] = SorcerEnv.getHomeDir().toString() + File.separatorChar + configs[i];
+            // Escape windows paths with spaces
+            if (GenericUtil.isWindows() && configs[i].contains(" "))
+                configs[i] = "\""+configs[i]+"\"";
         }
         return configs;
     }

@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import sorcer.core.SorcerEnv;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
+import sorcer.util.StringUtils;
 import sorcer.util.exec.ExecUtils;
 
 import java.io.IOException;
@@ -27,23 +28,24 @@ public class NshTest {
             .getLogger(NshTest.class.getName());
     private static final String EXCEPTION = "Exception";
 
-    private StringBuilder sb;
+    private String baseCmd;
+
+    private String[] cmds;
 
     @Before
     public void init() throws IOException {
-        sb = new StringBuilder("\"").append(new java.io.File(SorcerEnv.getHomeDir(),
-                "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).append("\"");
+        baseCmd = new StringBuilder(new java.io.File(SorcerEnv.getHomeDir(),
+                "bin"+ java.io.File.separator + "nsh").getCanonicalPath()).toString();
     }
 
 
     @Test
     public void discoCmdTest() throws Exception {
-        sb.append(" -c");
-        sb.append(" disco");
+        cmds = new String[] { baseCmd, "-c", "disco"};
 
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
         String res =  result.getOut();
-        logger.info("Result running: " + sb.toString() +":\n" + res);
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
         assertTrue(res.contains("LOOKUP SERVICE"));
         assertTrue(res.contains(SorcerEnv.getLookupGroups()[0]));
         assertFalse(res.contains(EXCEPTION));
@@ -52,14 +54,13 @@ public class NshTest {
 
     @Test
     public void lupCmdTest() throws Exception {
-        sb.append(" -c");
-        sb.append(" lup -s");
+        cmds = new String[] { baseCmd, "-c", "lup -s"};
 
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        logger.info("Result running: " + sb.toString() +":\n" + result.getOut());
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
-        String res = result.getOut();
         assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
         assertTrue(res.contains(SorcerEnv.getActualSpacerName()));
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
@@ -70,13 +71,12 @@ public class NshTest {
 
     @Test
     public void spCmdTest() throws Exception {
-        sb.append(" -c");
-        sb.append(" sp");
+        cmds = new String[] { baseCmd, "-c", "sp"};
 
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        // getting around a problem with out and err mixed up.
-        String res = result.getOut();
-        logger.info("Result running: " + sb.toString() +":\n" + res);
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
+
         assertTrue(res.contains(SorcerEnv.getActualSpaceName()));
         assertFalse(res.contains(EXCEPTION));
         assertFalse(result.getErr().contains(EXCEPTION));
@@ -84,12 +84,12 @@ public class NshTest {
 
     @Test
     public void dsCmdTest() throws Exception {
-        sb.append(" -c");
-        sb.append(" ds");
+        cmds = new String[] { baseCmd, "-c", "ds"};
 
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = result.getOut();
-        logger.info("Result running: " + sb.toString() +":\n" + res);
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
+
         assertTrue(res.contains(SorcerEnv.getActualDatabaseStorerName()));
         assertFalse(res.contains(EXCEPTION));
         assertFalse(result.getErr().contains(EXCEPTION));
@@ -97,12 +97,11 @@ public class NshTest {
 
     @Test
     public void batchCmdTest() throws Exception {
-        sb.append(" -b");
-        sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batch.nsh");
+        cmds = new String[] { baseCmd, "-b", "${sys.sorcer.home}/configs/int-tests/nsh/batch.nsh"};
 
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = result.getOut();
-        logger.info("Result running: " + sb.toString() +":\n" + res);
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
         if (!result.getErr().isEmpty())
             logger.info("Result ERROR: " + result.getErr());
         assertTrue(res.contains(SorcerEnv.getActualName("Jobber")));
@@ -113,14 +112,14 @@ public class NshTest {
         assertFalse(result.getErr().contains(EXCEPTION));
     }
 
-    @Test(timeout = 90000)
+    @Test(timeout = 150000)
     public void batchExertCmdTest() throws Exception {
-        sb.append(" -b");
-        sb.append(" ${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh");
-        logger.info("Running: " + sb.toString());
-        ExecUtils.CmdResult result = ExecUtils.execCommand(sb.toString());
-        String res = result.getOut();
-        logger.info("Result running: " + sb.toString() +":\n" + res);
+        cmds = new String[] { baseCmd, "-b", "${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh"};
+
+        logger.info("Running: " + StringUtils.join(cmds, " ") +":\n");
+        ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
+        String res =  result.getOut();
+        logger.info("Result running: " + StringUtils.join(cmds, " ") +":\n" + res);
         assertFalse(res.contains("ExertionException:"));
         assertTrue(res.contains("f1/f3/result/y3 = 400.0"));
         assertFalse(result.getErr().contains("ExertionException:"));
