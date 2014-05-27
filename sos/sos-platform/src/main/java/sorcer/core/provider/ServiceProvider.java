@@ -223,10 +223,12 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		delegate.setJiniConfig(config);
 		String providerProperties = null;
 		try {
-			providerProperties = (String) Config.getNonNullEntry(config,
-					COMPONENT, "properties", String.class, "");
+            Object props = Config.getNonNullEntry(config,
+					COMPONENT, "properties", Object.class, "");
+            if (props instanceof String)
+                providerProperties = (String)props;
 		} catch (ConfigurationException e) {
-			logger.warn("Error while reading configuration of {} from {}", getProviderName(), config, e);
+            logger.warn("Error while reading configuration of {} from {}", getProviderName(), config, e);
 		}
 		// configure the provider's delegate
 		delegate.getProviderConfig().init(true, providerProperties);

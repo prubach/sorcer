@@ -54,7 +54,7 @@ public class NshTest {
 
     @Test
     public void lupCmdTest() throws Exception {
-        cmds = new String[] { baseCmd, "-c", "lup -s"};
+        cmds = new String[] { baseCmd, "-c", "lup", "-s"};
 
         ExecUtils.CmdResult result = ExecUtils.execCommand(cmds);
         String res =  result.getOut();
