@@ -28,6 +28,7 @@ import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
+import sorcer.core.exertion.Jobs;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
@@ -62,8 +63,10 @@ abstract public class SpaceExertDispatcher extends ExertDispatcher {
 			throw new ExertionException("NO exertion space available!");
 		}
 
-		else if (exertion instanceof CompoundExertion)
-			inputXrts = exertion.getExertions();
+		if (exertion instanceof Job)
+			inputXrts = Jobs.getInputExertions((Job)exertion);
+		else if (exertion instanceof Block)
+			inputXrts = exertion.getAllExertions();
 
 		disatchGroup = new ThreadGroup("exertion-"+ exertion.getId());
 		disatchGroup.setDaemon(true);
