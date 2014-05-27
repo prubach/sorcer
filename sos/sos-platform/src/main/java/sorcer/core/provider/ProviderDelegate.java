@@ -673,10 +673,17 @@ public class ProviderDelegate {
 			if (maximumPoolSize > workerCount)
 				workerCount = maximumPoolSize;
 		}
+
+        ConfigurableThreadFactory factory = new ConfigurableThreadFactory();
+        factory.setNameFormat(tName("SpcTkr-" + getProviderName()+ "-%2$d"));
+
+        ConfigurableThreadFactory namedWorkerFactory = new ConfigurableThreadFactory();
+        namedWorkerFactory.setThreadGroup(namedGroup);
+        namedWorkerFactory.setNameFormat(tName("SpcTkr-" + getProviderName() + "-%2$d"));
+        namedWorkerFactory.setDaemon(true);
+
 		for (int i = 0; i < publishedServiceTypes.length; i++) {
 			// spaceWorkerPool = Executors.newFixedThreadPool(workerCount);
-            ConfigurableThreadFactory factory = new ConfigurableThreadFactory();
-            factory.setNameFormat("SpaceTaker-" + spaceName + "-thread-%2$d");
             spaceWorkerPool = new ThreadPoolExecutor(workerCount,
 					maximumPoolSize > workerCount ? maximumPoolSize
 							: workerCount, 0L, TimeUnit.MILLISECONDS,
@@ -699,8 +706,12 @@ public class ProviderDelegate {
 						workerTransactional, queueSize == 0), spaceWorkerPool);
                 spaceTakers.add(worker);
 			}
-			Thread sith = new Thread(interfaceGroup, worker, tName("SpaceTaker-" + spaceName));
-			sith.setDaemon(true);
+            ConfigurableThreadFactory ifaceWorkerFactory = new ConfigurableThreadFactory();
+            ifaceWorkerFactory.setThreadGroup(interfaceGroup);
+            ifaceWorkerFactory.setDaemon(true);
+            ifaceWorkerFactory.setNameFormat(tName("SpcTkr-" + publishedServiceTypes[i].getSimpleName()));
+
+            Thread sith = ifaceWorkerFactory.newThread(worker);
 			sith.start();
 			logger.info("*** space worker-" + i + " started for: "
 					+ publishedServiceTypes[i]);
@@ -713,7 +724,7 @@ public class ProviderDelegate {
 						maximumPoolSize > workerCount ? maximumPoolSize
 								: workerCount, 0L, TimeUnit.MILLISECONDS,
 						new LinkedBlockingQueue<Runnable>(
-								(queueSize == 0 ? workerCount : queueSize)));
+								(queueSize == 0 ? workerCount : queueSize)), factory);
 				spaceHandlingPools.add(spaceWorkerPool);
 				envelop = ExertionEnvelop.getTemplate(publishedServiceTypes[i],
 						getProviderName());
@@ -731,8 +742,7 @@ public class ProviderDelegate {
 							spaceWorkerPool);
                     spaceTakers.add(worker);
 				}
-				Thread snth = new Thread(namedGroup, worker, tName("SpaceTaker - " + getProviderName()));
-				snth.setDaemon(true);
+				Thread snth = namedWorkerFactory.newThread(worker);
 				snth.start();
 				logger.info("*** named space worker-" + i + " started for: "
 						+ publishedServiceTypes[i] + ":" + getProviderName());
@@ -972,9 +982,9 @@ public class ProviderDelegate {
                 String pf = task.getProcessSignature().getPrefix();
                 if (pf != null)
 			    	((ServiceContext) task.getContext()).setCurrentPrefix(pf);
-				
-				Context result = task.getContext();
-				if (isContextual) 
+
+				Context result;
+				if (isContextual)
 					result = execContextualBean(m, task, impl);
 				else
 					result = execParametricBean(m, task, impl);
@@ -984,9 +994,13 @@ public class ProviderDelegate {
 				task.setContext(result);
 				task.setStatus(Exec.DONE);
 				return task;
+            } catch (InvocationTargetException e){
+                Throwable t = e.getCause();
+                task.reportException(t);
+                logger.warn("Error while executing {}", m, t);
 			} catch (Exception e) {
 				task.reportException(e);
-				e.printStackTrace();
+				logger.warn("Error while executing {}", m, e);
 			}
 		}
 		task.setStatus(Exec.FAILED);
@@ -1027,8 +1041,10 @@ public class ProviderDelegate {
 				result = (Context) m.invoke(impl, args);
 				// logger.info("ZZZZZZZZZZZZZZZZZZZZZ result: " + result);
 			}
-		} catch (Throwable t) {
-			t.printStackTrace();
+        } catch (ContextException x){
+            throw x;
+        } catch (InvocationTargetException t) {
+            throw t;
 		}
 		return result;
 	}
