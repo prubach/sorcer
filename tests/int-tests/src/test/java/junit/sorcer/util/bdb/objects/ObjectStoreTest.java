@@ -113,16 +113,16 @@ public class ObjectStoreTest {
 		
 		Uuid uuid = data.getId();
 		store(data);
-		
+		Thread.sleep(700);
 		Task objectRetrieveTask = task(
 				"retrieve",
 				sig("contextRetrieve", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
 					DbpUtil.getRetrieveContext(uuid, Store.context));
 				
 		objectRetrieveTask = exert(objectRetrieveTask);
-//		logger.info("objectRetrieveTask: " + objectRetrieveTask);
-        Thread.sleep(500);
-        Object retrived = value(context(objectRetrieveTask));
+        Thread.sleep(700);
+		logger.info("objectRetrieveTask: " + objectRetrieveTask);
+		Object retrived = value(context(objectRetrieveTask));
 //		logger.info("objectRetrieveTask context: " + retrived);
 		Assert.assertEquals(data, retrived);
 	}

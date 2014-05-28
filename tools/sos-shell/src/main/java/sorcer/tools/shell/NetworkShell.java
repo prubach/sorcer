@@ -476,9 +476,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                     String batchCmds = readScript(batchFile);
                     shellOutput.println("Executing batch file: " + batchFile.getAbsolutePath());
                     for (String batchCmd : batchCmds.split("\n")) {
-                        StringTokenizer tok = new StringTokenizer(batchCmd);
+                        WhitespaceTokenizer tok = new WhitespaceTokenizer(batchCmd);
                         List<String> argsList = new ArrayList<String>();
-                        while (tok.hasMoreElements()) {
+                        while (tok.hasMoreTokens()) {
                             argsList.add(tok.nextToken());
                         }
                         String originalRequest = request;
