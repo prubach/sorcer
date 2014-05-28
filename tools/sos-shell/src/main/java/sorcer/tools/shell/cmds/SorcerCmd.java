@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.WhitespaceTokenizer;
 
 public class SorcerCmd extends ShellCmd {
 	{
@@ -44,7 +45,7 @@ public class SorcerCmd extends ShellCmd {
 
 	public void execute() throws Throwable {
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+        WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		if (numTokens == 0) {
 			out.println("SORCER_HOME: " + System.getenv("SORCER_HOME"));

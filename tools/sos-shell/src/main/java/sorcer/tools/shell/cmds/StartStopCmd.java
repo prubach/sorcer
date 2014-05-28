@@ -30,6 +30,7 @@ import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
 
 import com.sun.jini.admin.DestroyAdmin;
+import sorcer.util.WhitespaceTokenizer;
 
 public class StartStopCmd extends ShellCmd {
 	{
@@ -56,7 +57,7 @@ public class StartStopCmd extends ShellCmd {
 		INetworkShell shell = NetworkShell.getInstance();
 		out = NetworkShell.getShellOutputStream();
 		LookupDiscovery ld = NetworkShell.getDisco();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+        WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		input = shell.getCmd();
 		if (out == null)
 			throw new NullPointerException("Must have an output PrintStream");

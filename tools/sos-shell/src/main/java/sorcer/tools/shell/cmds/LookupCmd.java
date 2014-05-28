@@ -40,6 +40,7 @@ import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 
 import com.sun.jini.admin.DestroyAdmin;
+import sorcer.util.WhitespaceTokenizer;
 
 public class LookupCmd extends ShellCmd {
 
@@ -76,7 +77,7 @@ public class LookupCmd extends ShellCmd {
 
 	public void execute() throws IOException, ClassNotFoundException {
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+        WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		int index = NetworkShell.selectedRegistrar;
 		String next = null;

@@ -34,6 +34,7 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.entry.Name;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.WhitespaceTokenizer;
 
 public class DiscoCmd extends ShellCmd {
 
@@ -60,7 +61,7 @@ public class DiscoCmd extends ShellCmd {
 	public void execute() throws IOException, ClassNotFoundException {
 		// out.println("registrars: " + registrars);
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+		WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		int index = 0;
 		String next = null;

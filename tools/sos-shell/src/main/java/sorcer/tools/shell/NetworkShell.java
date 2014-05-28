@@ -75,7 +75,9 @@ import sorcer.service.ExertionInfo;
 import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
 import sorcer.util.ClassLoaders;
+import sorcer.util.StringUtils;
 import sorcer.util.TimeUtil;
+import sorcer.util.WhitespaceTokenizer;
 import sorcer.util.eval.PropertyEvaluator;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
@@ -173,7 +175,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 	private static BufferedReader shellInput;
 
-	private static StringTokenizer shellTokenizer;
+	//private static StringTokenizer shellTokenizer;
+    private static WhitespaceTokenizer shellTokenizer;
 
 	private String hostName;
 
@@ -221,7 +224,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	}
 
 	static public void main(String argv[]) {
-		String curToken = null;
+        String curToken = null;
 		//System.out.println("nsh main args: " + Arrays.toString(argv));	
 		if (argv.length > 0) {
             if ((argv.length == 1 && argv[0].startsWith("--"))
@@ -303,7 +306,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		}
 		while (request != null && ((request.length() > 0 && BUILTIN_QUIT_COMMAND.indexOf(request) < 0)
 				|| request.length() == 0)) {
-			shellTokenizer = new StringTokenizer(request);
+			shellTokenizer = new WhitespaceTokenizer(request);
+			//new StringTokenizer(request);
 			curToken = "";
 			if (shellTokenizer.hasMoreTokens()) {
 				curToken = shellTokenizer.nextToken();
@@ -320,11 +324,11 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 					if (i > 0) {
 						request = cmdName;
 						cmdName = cmdName.substring(0, i);
-						shellTokenizer = new StringTokenizer(request);
+						shellTokenizer = new WhitespaceTokenizer(request);
 					} else {
 						request = cmdName + " " + request;
 						cmdName = new StringTokenizer(cmdName).nextToken();
-						shellTokenizer = new StringTokenizer(request);
+						shellTokenizer = new WhitespaceTokenizer(request);
 					}
 					cmd = commandTable.get(cmdName);
 					cmd.execute(NetworkShell.getInstance());
@@ -423,7 +427,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             args[i] = propsEval.eval(args[i]);
         }
 		request = arrayToRequest(args);
-        shellTokenizer = new StringTokenizer(request);
+        shellTokenizer = new WhitespaceTokenizer(request);
         System.err.println("----------------------------------------------------");
         System.err.println("Starting non-interactive exec of request: " + request);
 
@@ -458,9 +462,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 } else if (args[0].equals("-c")) {
                     ShellCmd cmd = commandTable.get(args[1]);
                     if (args.length > 2)
-                        shellTokenizer = new StringTokenizer(request.substring(4 + args[1].length()));
+                        shellTokenizer = new WhitespaceTokenizer(request.substring(4 + args[1].length()));
                     else
-                        shellTokenizer = new StringTokenizer(request.substring(3 + args[1].length()));
+                        shellTokenizer = new WhitespaceTokenizer(request.substring(3 + args[1].length()));
                     if (cmd!=null)
                         cmd.execute(NetworkShell.getInstance());
                     else
@@ -480,9 +484,9 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                         String originalRequest = request;
                         ShellCmd cmd = commandTable.get(argsList.get(0));
                         if (argsList.size() > 1)
-                            shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length() +1));
+                            shellTokenizer = new WhitespaceTokenizer(batchCmd.substring(argsList.get(0).length() +1));
                         else
-                            shellTokenizer = new StringTokenizer(batchCmd.substring(argsList.get(0).length()));
+                            shellTokenizer = new WhitespaceTokenizer(batchCmd.substring(argsList.get(0).length()));
                         request = batchCmd;
                         System.err.println("Starting command: '" + batchCmd + "'");
                         if (cmd!=null)
@@ -708,7 +712,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		return request;
 	}
 
-	public static StringTokenizer getShellTokenizer() {
+	public static WhitespaceTokenizer getShellTokenizer() {
 		return shellTokenizer;
 	}
 
@@ -1492,8 +1496,12 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				buffer.append("null");
 			else if (obj.getClass().isArray())
 				buffer.append(arrayToRequest(obj));
-			else
-				buffer.append(obj);
+			else {
+                if (obj.toString().contains(" "))
+                    buffer.append("'").append(obj).append("'");
+                else
+                    buffer.append(obj);
+            }
 
 			if (i == last)
 				buffer.append("");

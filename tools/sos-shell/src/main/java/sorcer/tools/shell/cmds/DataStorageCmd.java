@@ -45,6 +45,7 @@ import sorcer.service.SignatureException;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.WhitespaceTokenizer;
 import sorcer.util.bdb.objects.ObjectInfo;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.DbpUtil;
@@ -84,7 +85,7 @@ public class DataStorageCmd extends ShellCmd {
 
 	public void execute() throws RemoteException, MonitorException {
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+		WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 		int myIdx = 0;
 		String next = null;

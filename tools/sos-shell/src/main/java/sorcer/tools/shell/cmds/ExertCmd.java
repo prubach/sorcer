@@ -32,6 +32,7 @@ import sorcer.core.context.node.ContextNode;
 import sorcer.netlet.ScriptExerter;
 import sorcer.service.*;
 import sorcer.tools.shell.*;
+import sorcer.util.WhitespaceTokenizer;
 
 public class ExertCmd extends ShellCmd {
 
@@ -85,15 +86,55 @@ public class ExertCmd extends ShellCmd {
 		boolean marshalled = false;
 		boolean commandLine = NetworkShell.isInteractive();
 
-        Pattern p = Pattern.compile("(\"[^\"]*\"|[^\"^\\s]+)(\\s+|$)", Pattern.MULTILINE);
-        Matcher m = p.matcher(input);
+        List<String> argsList = WhitespaceTokenizer.tokenize(input);
+
+
+//        Pattern p = Pattern.compile("(\"[^\"]*\"|[^\"^\\s]+)(\\s+|$)", Pattern.MULTILINE);
+ //       Matcher m = p.matcher(input);
+        if (argsList.isEmpty()) {
+            out.println(COMMAND_USAGE);
+            return;
+        }
+
+        try {
+            for (int i = 0; i < argsList.size(); i++) {
+                String nextToken = argsList.get(i);
+                if (nextToken.startsWith("\"") || nextToken.startsWith("'"))
+                    nextToken = nextToken.substring(1, nextToken.length() - 1);
+                if (nextToken.equals("-s")) {
+                    outPersisted = true;
+                    outputFile = new File("" + d + File.separator + argsList.get(i + 1));
+                } else if (nextToken.equals("-controlContext"))
+                    outputControlContext = true;
+                else if (nextToken.equals("-m"))
+                    marshalled = true;
+                    // evaluate text
+                else if (nextToken.equals("-t")) {
+                    if (script == null || script.length() == 0) {
+                        throw new NullPointerException("Must have not empty script");
+                    }
+                }
+                // evaluate file script
+                else if (nextToken.equals("-f"))
+                    scriptFilename = argsList.get(i + 1);
+                else
+                    scriptFilename = nextToken;
+            }
+        } catch (IndexOutOfBoundsException ie) {
+            out.println("Wrong number of arguments");
+            return;
+        }
+
+/*
         if (m.groupCount() == 0) {
             out.println(COMMAND_USAGE);
             return;
         }
+*/
+/*
         while (m.find()) {
             String nextToken = m.group(1);
-            if (nextToken.startsWith("\""))
+            if (nextToken.startsWith("\"") || nextToken.startsWith("'"))
                 nextToken = nextToken.substring(1, nextToken.length() - 1);
             if (nextToken.equals("-s")) {
 					outPersisted = true;
@@ -114,6 +155,8 @@ public class ExertCmd extends ShellCmd {
 				else
 					scriptFilename = nextToken;
 			}
+*/
+
         if (script != null) {
             scriptExerter.readScriptWithHeaders(script);
 		} else if (scriptFilename != null) {

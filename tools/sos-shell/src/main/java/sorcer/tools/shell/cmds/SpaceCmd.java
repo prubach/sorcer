@@ -43,6 +43,7 @@ import sorcer.service.*;
 import sorcer.service.Exec.State;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.WhitespaceTokenizer;
 
 /**
  * @author Mike Sobolewski
@@ -95,7 +96,7 @@ public class SpaceCmd extends ShellCmd {
 
 	public void execute() throws RemoteException, MonitorException, ContextException {
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+        WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		int numTokens = myTk.countTokens();
 //		out.println("numTokens: " + numTokens);
 		int myIdx = 0;

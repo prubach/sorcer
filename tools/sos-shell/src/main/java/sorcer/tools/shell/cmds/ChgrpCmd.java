@@ -27,6 +27,7 @@ import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.discovery.DiscoveryGroupManagement;
 import sorcer.tools.shell.NetworkShell;
 import sorcer.tools.shell.ShellCmd;
+import sorcer.util.WhitespaceTokenizer;
 
 public class ChgrpCmd extends ShellCmd {
 
@@ -47,7 +48,7 @@ public class ChgrpCmd extends ShellCmd {
 
 	public void execute() throws Throwable {
 		out = NetworkShell.getShellOutputStream();
-		StringTokenizer myTk = NetworkShell.getShellTokenizer();
+		WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		// pass in a clone of list - command may modify it
 		@SuppressWarnings("unchecked")
 		ArrayList<ServiceRegistrar> registrars = (ArrayList<ServiceRegistrar>) NetworkShell
@@ -98,7 +99,7 @@ public class ChgrpCmd extends ShellCmd {
 		}
 	}
 
-	private String[] getGroupArray(StringTokenizer tokenizer, int size) {
+	private String[] getGroupArray(WhitespaceTokenizer tokenizer, int size) {
 		String[] groups = new String[size];
 		String group;
 		for (int i = 0; i < size; i++) {
