@@ -108,7 +108,7 @@ public class ObjectStoreTest {
 	}
 	
 	@Test
-	public void retrievalContextTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void retrievalContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data = cxt("store", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		
 		Uuid uuid = data.getId();
@@ -121,13 +121,14 @@ public class ObjectStoreTest {
 				
 		objectRetrieveTask = exert(objectRetrieveTask);
 //		logger.info("objectRetrieveTask: " + objectRetrieveTask);
-		Object retrived = value(context(objectRetrieveTask));
+        Thread.sleep(500);
+        Object retrived = value(context(objectRetrieveTask));
 //		logger.info("objectRetrieveTask context: " + retrived);
 		Assert.assertEquals(data, retrived);
 	}
 	
 	@Test
-	public void updateContextTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void updateContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data = cxt("store", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		Context updatedData = cxt("store", in("arg/x3", par("x3", 10.0)), in("arg/x4", par("x4", 20.0)));
 		
@@ -158,13 +159,14 @@ public class ObjectStoreTest {
                 DbpUtil.getRetrieveContext(objUuid, Store.context));
 		
 		objectRetrieveTask = exert(objectRetrieveTask);
-		logger.info("updated data: " + updatedData);
+        Thread.sleep(500);
+        logger.info("updated data: " + updatedData);
 		logger.info("retrieved updated data: " + value(context(objectRetrieveTask), DatabaseStorer.object_retrieved));
 		Assert.assertEquals(value(context(objectRetrieveTask),DatabaseStorer.object_retrieved), updatedData);
 	}
 	
 	@Test
-	public void listStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void listStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data1 = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		//logger.info("id1: " + data1.getId());
 		URL objURL1 = store(data1);
@@ -176,7 +178,8 @@ public class ObjectStoreTest {
 		Context data2 = cxt("stored", in("arg/x5", par("x5")));
 		//logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
-		content = list(objURL2);
+        Thread.sleep(500);
+        content = list(objURL2);
 		//logger.info("content size: " + content.size());
 		//logger.info("content 2: " + content);
 
