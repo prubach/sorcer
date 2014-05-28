@@ -18,17 +18,15 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
 import java.util.Set;
 
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
-import sorcer.service.space.SpaceAccessor;
+
 import static sorcer.service.Exec.*;
 
-public class SpaceTaskDispatcher extends SpaceExertDispatcher {
+public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
 
 	public SpaceTaskDispatcher(final Task task,
             final Set<Context> sharedContexts,
@@ -61,7 +59,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		CollectErrorThread efThread = new CollectErrorThread(disatchGroup);
 		efThread.start();
 
-		this.myMemberUtil = myMemberUtil;
+		this.loki = myMemberUtil;
 	}
 
 	public void dispatchExertions() throws ExertionException,
@@ -72,22 +70,7 @@ public class SpaceTaskDispatcher extends SpaceExertDispatcher {
 		} catch (ContextException e) {
 			throw new ExertionException(e);
 		}
-		logger.debug("space task: " + xrt);
-		try {
-			writeEnvelop(xrt);
-			logger.debug("written task ==> SPACE EXECUTE TASK: "
-					+ xrt.getName());
-		} catch (ProvisioningException pe) {
-            xrt.setStatus(FAILED);
-            throw new ExertionException(pe.getLocalizedMessage());
-        } catch (RemoteException re) {
-			logger.warn("Space not reachable... resetting space", re);
-			space = SpaceAccessor.getSpace();
-			if (space == null) {
-				xrt.setStatus(FAILED);
-				throw new ExertionException("NO exertion space available!");
-			}
-		}
+        dispatchExertion(xrt);
 	}
 
 	public void collectResults() throws ExertionException, SignatureException {

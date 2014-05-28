@@ -61,7 +61,7 @@ public class ProviderProvisionManager {
 	}
 
 
-    public void add(Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
+    public void add(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
         Service service = (Service) Accessor.getService(sig);
         // A hack to disable provisioning spacer itself
@@ -182,7 +182,7 @@ public class ProviderProvisionManager {
         Signature signature;
         int provisionAttempts=0;
         Exertion exertion;
-        SpaceExertDispatcher spaceExertDispatcher;
+        SpaceParallelDispatcher spaceExertDispatcher;
 
         private String getServiceType() {
             return serviceType;
@@ -229,12 +229,12 @@ public class ProviderProvisionManager {
             return exertion;
         }
 
-        public SpaceExertDispatcher getSpaceExertDispatcher() {
+        public SpaceParallelDispatcher getSpaceExertDispatcher() {
             return spaceExertDispatcher;
         }
 
         private SignatureElement(String serviceType, String providerName, String version, Signature signature,
-                                 Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
+                                 Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
             this.serviceType = serviceType;
             this.providerName = providerName;
             this.version = version;

@@ -82,7 +82,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                          providerProvisionManager);
 			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				return new SpaceBlockDispatcher((Block)exertion,
+				return new SpaceSequentialDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  loki,
