@@ -49,7 +49,7 @@ import sorcer.service.Task;
 })
 public class MasterSlaveSeqPushTest {
 
-    @Test(timeout = 45000)
+    @Test(timeout = 90000)
 	public void testMasterSlaveSeqPush() throws Exception {
         Logger logger = LoggerFactory.getLogger(MasterSlaveSeqPushTest.class);
 		String requestorName = System.getProperty("user.name");

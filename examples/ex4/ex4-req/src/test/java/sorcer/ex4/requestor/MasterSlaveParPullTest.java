@@ -49,7 +49,7 @@ import sorcer.service.Task;
 //@Ignore("Works only if run separately")
 public class MasterSlaveParPullTest {
 
-    @Test(timeout = 30000)
+    @Test(timeout = 60000)
     public void getExertion() throws Exception {
 		String requestorName = System.getProperty("user.name");
 
