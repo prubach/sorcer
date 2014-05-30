@@ -169,7 +169,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         launcher.setConfigs(new LinkedList<String>(Arrays.asList(serviceConfigPaths)));
         launcher.addSorcerListener(listener);
         launcher.setHome(home);
-        File logDir = new File("/tmp/logs");
+        File logDir = new File(System.getProperty("java.io.tmpdir"), "logs");
         logDir.mkdir();
         launcher.setLogDir(logDir);
 

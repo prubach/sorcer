@@ -32,5 +32,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-junit</artifactId>
+            <version>${v.sorcer}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

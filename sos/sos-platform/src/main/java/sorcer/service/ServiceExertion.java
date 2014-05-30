@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,6 +102,12 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	protected Boolean isExportControlled;
 
 	protected Integer scopeCode;
+
+    // Date when the Exertion was computed
+    protected Date exertionDate;
+
+    // Date of creation of this Exertion
+    protected Date creationDate = new Date();
 
 	/** execution status: INITIAL|DONE|RUNNING|SUSPENDED|HALTED */
 	protected Integer status = Exec.INITIAL;
@@ -1219,19 +1226,35 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		controlContext.setProvisionable(state);
 	}
 
-	public String describe() {
+
+    public Date getExertionDate() {
+        return exertionDate;
+    }
+
+    public void setExertionDate(Date exertionDate) {
+        this.exertionDate = exertionDate;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public String describe() {
 		if (!SorcerEnv.debug)
 			return info();
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 		String stdoutSep = "================================================================================\n";
 		StringBuffer info = new StringBuffer();
 		info.append("\n").append(stdoutSep)
 		    .append("[SORCER Service Exertion]\n")
 		    .append("\tExertion Type:        " + getClass().getName() + "\n")
 		    .append("\tExertion Name:        " + name + "\n")
-		    .append("\tExertion Status:      " + status + "\n")
+		    .append("\tExertion Status:      " + Exec.State.name(status) + "\n")
 		    .append("\tExertion ID:          " + exertionId + "\n")
-		    .append("\tRuntime ID:           " + runtimeId + "\n")
+            .append("\tCreation Date:        " + sdf.format(creationDate) + "\n")
+            .append("\tExertion Date:        " + (exertionDate!=null ? sdf.format(exertionDate) : "") + "\n")
+            .append("\tRuntime ID:           " + runtimeId + "\n")
 		    .append("\tParent ID:            " + parentId  + "\n")
 		    .append("\tOwner ID:             " + ownerId + "\n")
 		    .append("\tSubject ID:           " + subjectId + "\n")

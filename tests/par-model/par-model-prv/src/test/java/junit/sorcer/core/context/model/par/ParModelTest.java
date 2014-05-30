@@ -352,11 +352,12 @@ public class ParModelTest {
 	}
 	
 	@Test
-	public void persistableMappableParsTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void persistableMappableParsTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context cxt = context(entry("url", "myUrl"), entry("design/in", 25.0));
 
 		// persistent par
 		Par dbIn = persistent(par("dbIn", "design/in", cxt));
+        Thread.sleep(500);
 		assertEquals(value(dbIn), 25.0);  	// is persisted
 		logger.info("value dbIn asis design/in 1: " + dbIn.getMappable().asis("design/in"));
 
@@ -365,7 +366,7 @@ public class ParModelTest {
 		assertEquals(value(cxt, "design/in"), 25.0);
 
 		set(dbIn, 30.0); 	// is persisted
-		
+        Thread.sleep(500);
 //		logger.info("value dbIn asis: " + dbIn.asis());
 //		logger.info("value dbIn asis design/in 2: " + dbIn.getMappable().asis("design/in"));
 

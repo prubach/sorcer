@@ -44,7 +44,7 @@ Created the nsh shell log file: /home/user/sorcer/logs/shell/nsh.log
      sorcer\.core\.exertion\.NetTask: hello1 task ID: 29eaa758-3bb8-4577-8646-b5b19610d2ec
        process sig: class sorcer.core.signature.NetSignature:\*;SRV;true;interface sorcer.ex0.HelloWorld;sayHelloWorld
 
-       status: 4
+       status: DONE
        exec time: 18 msec
 
      ---> OUTPUT DATA CONTEXT --->

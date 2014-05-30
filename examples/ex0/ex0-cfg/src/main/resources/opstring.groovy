@@ -24,13 +24,13 @@ deployment(name: 'ex0-provider') {
 
     codebase getCodebase()
 
-    artifact id: 'ex0-api', 'org.sorcersoft.sorcer:ex0-dl:pom:' + getSorcerVersion()
+    artifact id: 'ex0-dl', 'org.sorcersoft.sorcer:ex0-dl:pom:' + getSorcerVersion()
     artifact id:'ex0-cfg', 'org.sorcersoft.sorcer:ex0-cfg:'+getSorcerVersion()
 
     service(name:'HelloWorld') {
          interfaces {
              classes 'sorcer.ex0.HelloWorld'
-             artifact ref:'ex0-api'
+             artifact ref:'ex0-dl'
          }
          implementation(class: 'sorcer.core.provider.ServiceTasker') {
              artifact ref:'ex0-cfg'
