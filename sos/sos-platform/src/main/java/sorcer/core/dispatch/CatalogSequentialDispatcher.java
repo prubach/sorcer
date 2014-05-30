@@ -29,7 +29,7 @@ import static sorcer.service.Exec.*;
 public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	@SuppressWarnings("rawtypes")
-	public CatalogSequentialDispatcher(Job job, 
+	public CatalogSequentialDispatcher(Exertion job,
             Set<Context> sharedContext,
             boolean isSpawned, 
             Provider provider,
@@ -42,7 +42,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 			SignatureException {
         checkProvision();
 		try {
-			inputXrts = Jobs.getInputExertions(((Job)xrt));
+			inputXrts = Jobs.getInputExertions(((Job) xrt));
 			reconcileInputExertions(xrt);
 		} catch (ContextException e) {
 			throw new ExertionException(e);
@@ -52,78 +52,48 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 
 	public void collectResults() throws ExertionException, SignatureException {
 		try {
-			String pn = null;
-			if (inputXrts == null) {
-				xrt.setStatus(FAILED);
-				state = FAILED;
-				try {
-					pn = provider.getProviderName();
-					if (pn == null) 
-						pn = provider.getClass().getName();
-				} catch (RemoteException e) {
-                    logger.warn("Error during local call on {}", provider, e);
+            String pn;
+            if (inputXrts == null) {
+                xrt.setStatus(FAILED);
+                state = FAILED;
+                try {
+                    pn = provider.getProviderName();
+                    if (pn == null)
+                        pn = provider.getClass().getName();
+                    ExertionException fe = new ExertionException(pn + " received invalid job: "
+                            + xrt.getName(), xrt);
+
+                    xrt.reportException(fe);
+                    dispatchers.remove(xrt.getId());
+                    throw fe;
+                } catch (RemoteException e) {
+                    logger.warn("Error during local call", e);
                 }
-                ExertionException fe = new ExertionException(pn
-						+ " received a job with no component exertions or already executed: "
-						+ xrt.getName(), xrt);
-				xrt.reportException(fe);
-				dispatchers.remove(xrt.getId());
-				throw fe;
-			}
+            }
 
-			ServiceExertion se;
-			xrt.startExecTime();
-			for (int i = 0; i < inputXrts.size(); i++) {
-				se = (ServiceExertion) inputXrts.get(i);
-				// Provider is expecting exertion to be in context
-				try {
-					se.getContext().setExertion(se);
-				
-				// support for continuous pre and post execution of task
-				// signatures
-				if (i > 0 && se.isTask() && ((Task) se).isContinous())
-					se.setContext(inputXrts.get(i - 1).getContext());
-				} catch (ContextException ex) {
-					throw new ExertionException(ex);
-				}
-				if (isInterupted(se)) {
-					se.stopExecTime();
-					dispatchers.remove(xrt.getId());
-					return;
-				}
-				se = (ServiceExertion) execExertion(se);
-				if (se.getStatus() <= FAILED) {
-					xrt.setStatus(FAILED);
-					state = FAILED;
-					try {
-						pn = provider.getProviderName();
-						if (pn == null) 
-							pn = provider.getClass().getName();
-					} catch (RemoteException e) {
-                        logger.warn("Error during local call on {}", provider, e);
-					}
-					ExertionException ef = new ExertionException(pn
-							+ " received failed task: " + se.getName(), se);
-					xrt.reportException(ef);
-					dispatchers.remove(xrt.getId());
-					throw ef;
-				} else if (se.getStatus() == SUSPENDED
-						|| xrt.getControlContext().isReview(se)) {
-					xrt.setStatus(SUSPENDED);
-					ExertionException ex = new ExertionException(
-							"exertion suspended", se);
-					se.reportException(ex);
-					dispatchers.remove(xrt.getId());
-					throw ex;
-				}
-			}
-			if (isInterupted(masterXrt)) {
-				masterXrt.stopExecTime();
-				dispatchers.remove(xrt.getId());
-				return;
-			}
+            xrt.startExecTime();
+            Context previous = null;
+            for (Exertion exertion: inputXrts) {
+                ServiceExertion se = (ServiceExertion) exertion;
+                // support for continuous pre and post execution of task
+                // signatures
+                if (previous != null && se.isTask() && ((Task) se).isContinous())
+                    se.setContext(previous);
 
-			if (masterXrt != null) {
+                collectResult(se);
+                try {
+                    previous = exertion.getContext();
+                } catch (ContextException e) {
+                    throw new ExertionException(e);
+                }
+            }
+
+            if (masterXrt != null) {
+                if (isInterupted(masterXrt)) {
+                    masterXrt.stopExecTime();
+                    dispatchers.remove(xrt.getId());
+                    return;
+                }
 				masterXrt = (ServiceExertion) execExertion(masterXrt); // executeMasterExertion();
 				if (masterXrt.getStatus() <= FAILED) {
 					state = FAILED;
@@ -142,4 +112,36 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 		}
 	}
 
+    protected void collectResult(ServiceExertion se) throws SignatureException, ExertionException {
+        if (isInterupted(se)) {
+            se.stopExecTime();
+            dispatchers.remove(xrt.getId());
+            return;
+        }
+
+        if (se.getStatus() <= FAILED) {
+            xrt.setStatus(FAILED);
+            state = FAILED;
+            try {
+                String pn = provider.getProviderName();
+                if (pn == null)
+                    pn = provider.getClass().getName();
+                ExertionException fe = new ExertionException(pn
+                        + " received failed task: " + se.getName(), se);
+                xrt.reportException(fe);
+                dispatchers.remove(xrt.getId());
+                throw fe;
+            } catch (RemoteException e) {
+                logger.warn("Exception during local call");
+            }
+        } else if (se.getStatus() == SUSPENDED
+                || xrt.getControlContext().isReview(se)) {
+            xrt.setStatus(SUSPENDED);
+            ExertionException ex = new ExertionException(
+                    "exertion suspended", se);
+            se.reportException(ex);
+            dispatchers.remove(xrt.getId());
+            throw ex;
+        }
+    }
 }
