@@ -56,7 +56,7 @@ public class WhoIsItSequentialTaskTest {
 
 	private static Logger logger = LoggerFactory.getLogger(WhoIsItSequentialTaskTest.class);
 
-    @Test(timeout = 45000)
+    @Test(timeout = 75000)
 	public void whoIsItSequential() throws Exception {
 		int tally = 5;
 		// create a service task and execute it 'tally' times
