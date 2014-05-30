@@ -366,19 +366,21 @@ public class ParModelTest {
 		assertEquals(value(cxt, "design/in"), 25.0);
 
 		set(dbIn, 30.0); 	// is persisted
-        Thread.sleep(500);
+        Thread.sleep(1000);
 //		logger.info("value dbIn asis: " + dbIn.asis());
 //		logger.info("value dbIn asis design/in 2: " + dbIn.getMappable().asis("design/in"));
 
 		logger.info("value dbIn: " + value(dbIn));
-		assertEquals(value(dbIn), 30.0);
+        Thread.sleep(500);
+		assertEquals(30.0, value(dbIn));
 		
 		// not persistent par
 		Par up = par("up", "url", cxt);
 		assertEquals(value(up), "myUrl");
 		
 		set(up, "newUrl");
-		assertEquals(value(up), "newUrl");
+        Thread.sleep(800);
+        assertEquals(value(up), "newUrl");
 	}
 	
 	@Test
