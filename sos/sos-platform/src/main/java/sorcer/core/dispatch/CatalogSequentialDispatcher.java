@@ -118,7 +118,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             dispatchers.remove(xrt.getId());
             return;
         }
-
+        se = (ServiceExertion) execExertion(se);
         if (se.getStatus() <= FAILED) {
             xrt.setStatus(FAILED);
             state = FAILED;
