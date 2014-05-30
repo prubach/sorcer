@@ -23,7 +23,7 @@
 		<module>ex5</module>
 		<module>ex6</module>
         <module>account</module>
-    </modules>
+  </modules>
 
     <build>
         <pluginManagement>
