@@ -64,6 +64,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
         if (deployments.size() > 0)
             provisionManager = new ProvisionManager(exertion);
         try {
+            if(exertion instanceof Job)
+                exertion = new ExertionSorter(exertion).getSortedJob();
+
 			if (exertion instanceof Task) {
 				logger.info("Running Space Task Dispatcher...");
 				return new SpaceTaskDispatcher((Task)exertion,
@@ -74,13 +77,13 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         providerProvisionManager);
 			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				 return new CatalogBlockDispatcher((Block)exertion,
+				 return new CatalogBlockDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  provider,
                          provisionManager,
                          providerProvisionManager);
-			} else if (Jobs.isSpaceBlock(exertion) && exertion instanceof Block) {
+			} else if (isSpaceSequential(exertion)) {
 				logger.info("Running Catalog Block Dispatcher...");
 				return new SpaceSequentialDispatcher(exertion,
 						                                  sharedContexts,
@@ -90,19 +93,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provisionManager,
                         providerProvisionManager);
 			}
-            Job job = (Job)exertion;
-            ExertionSorter es = new ExertionSorter(job);
-            job = (Job)es.getSortedJob();
-            if (Jobs.isSpaceSingleton(job) || Jobs.isSpaceSequential(job)) {
-                logger.info("Running Space Sequential Dispatcher...");
-                dispatcher = new SpaceSequentialDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        loki,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isSpaceParallel(job)) {
+            if (exertion instanceof Job) {
+            Job job = (Job) exertion;
+			if (Jobs.isSpaceParallel(job)) {
                 logger.info("Running Space Parallel Dispatcher...");
                 dispatcher = new SpaceParallelDispatcher(job,
                         sharedContexts,
@@ -136,6 +129,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provisionManager,
                         providerProvisionManager);
             }
+            }
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (RuntimeException e) {
             throw e;
@@ -146,6 +140,13 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
         return dispatcher;
     }
 
+    protected boolean isSpaceSequential(Exertion exertion) {
+        if(exertion instanceof Job) {
+            Job job = (Job) exertion;
+            return Jobs.isSpaceSingleton(job) || Jobs.isSpaceSequential(job);
+        }
+        return Jobs.isSpaceBlock(exertion);
+    }
 
     /**
      * Returns an instance of the appropriate subclass of Dispatcher as

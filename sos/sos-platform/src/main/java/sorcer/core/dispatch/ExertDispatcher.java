@@ -195,6 +195,9 @@ abstract public class ExertDispatcher implements Dispatcher {
         }
     }
 
+    protected abstract void collectResults() throws ExertionException, SignatureException;
+    protected abstract void dispatchExertions() throws ExertionException, SignatureException;
+
     protected void collectOutputs(Exertion ex) throws ContextException {
         if (sharedContexts==null) {
             logger.warn("Trying to update sharedContexts but it is null for exertion: " + ex);

@@ -17,10 +17,10 @@
 package sorcer.core.dispatch;
 
 import net.jini.config.ConfigurationException;
+import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.service.Block;
-import sorcer.service.Exec;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -72,27 +72,15 @@ public class BlockThread extends Thread {
 			} catch (RemoteException e) {
 				// ignore it, locall call
 			}
-			 int COUNT = 1000;
-			 int count = COUNT;
-			while (dispatcher.getState() != Exec.DONE
-					&& dispatcher.getState() != Exec.FAILED
-					&& dispatcher.getState() != Exec.SUSPENDED) {
-				 count--;
-				 if (count < 0) {
-				 logger.finer("*** Concatenator's Exertion Dispatcher waiting in state: "
-				 + dispatcher.getState());
-				 count = COUNT;
-				 }
-				Thread.sleep(SLEEP_TIME);
-			}
-			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatcher.getState()
+            dispatcher.exert();
+            DispatchResult result = dispatcher.getResult();
+
+			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + result.state
 					+ " for block***\n" + block.getControlContext());
-            result = (Block) dispatcher.getExertion();
+            this.result = (Block) result.exertion;
 		} catch (DispatcherException de) {
-			de.printStackTrace();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+            logger.log(Level.WARNING, "Error while exerting " + block.getId(), de);
+        }
 	}
 
 	public Block getBlock() {

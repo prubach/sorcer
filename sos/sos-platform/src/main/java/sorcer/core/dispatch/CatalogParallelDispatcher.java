@@ -21,7 +21,10 @@ package sorcer.core.dispatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
+import sorcer.core.DispatchResult;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
@@ -30,6 +33,8 @@ import static sorcer.service.Exec.*;
 
 public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 	List<ExertionThread> workers;
+    protected ExecutorService executor;
+    private List<Future<Exertion>>results;
 
 	public CatalogParallelDispatcher(Job job, 
             Set<Context> sharedContexts,
@@ -40,7 +45,13 @@ public class CatalogParallelDispatcher extends CatalogExertDispatcher {
 		super(job, sharedContexts, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
-	public void dispatchExertions() throws ExertionException,
+    @Override
+    public DispatchResult getResult() {
+
+        return new ;
+    }
+
+    public void dispatchExertions() throws ExertionException,
 			SignatureException {
 		workers = new ArrayList<ExertionThread>();
 		try {

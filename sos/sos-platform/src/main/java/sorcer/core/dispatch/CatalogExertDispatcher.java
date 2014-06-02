@@ -49,9 +49,13 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   ProvisionManager provisionManager,
                                   ProviderProvisionManager providerProvisionManager) {
         super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
+    }
+
+    public void exert(){
         dThread = new DispatchThread();
         dThread.run();
     }
+
     protected void preExecExertion(Exertion exertion) throws ExertionException,
             SignatureException {
         // If Job, new dispatcher will update inputs for it's Exertion
