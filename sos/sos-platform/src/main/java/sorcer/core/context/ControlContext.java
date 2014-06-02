@@ -185,6 +185,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 		setWaitable(true);
 		put(EXCEPTIONS, exceptions);
 		put(TRACE_LIST, traceList);
+        setExecTimeRequested(true);
 	}
 
 	public ControlContext(Exertion exertion) {

@@ -189,7 +189,7 @@ public class Task extends ServiceExertion {
 		StringBuilder sb = new StringBuilder(
 				"\n=== START PRINTNIG TASK ===\nExertion Description: "
 						+ getClass().getName() + ":" + name);
-		sb.append("\n\tstatus: ").append(getStatus());
+		sb.append("\n\tstatus: ").append(Exec.State.name(getStatus()));
 		sb.append(", task ID=");
 		sb.append(getId());
 		sb.append(", description: ");

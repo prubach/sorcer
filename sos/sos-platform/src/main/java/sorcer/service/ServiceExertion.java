@@ -103,9 +103,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	protected Integer scopeCode;
 
-    // Date when the Exertion was computed
-    protected Date exertionDate;
-
     // Date of creation of this Exertion
     protected Date creationDate = new Date();
 
@@ -1226,15 +1223,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		controlContext.setProvisionable(state);
 	}
 
-
-    public Date getExertionDate() {
-        return exertionDate;
-    }
-
-    public void setExertionDate(Date exertionDate) {
-        this.exertionDate = exertionDate;
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
@@ -1253,7 +1241,6 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		    .append("\tExertion Status:      " + Exec.State.name(status) + "\n")
 		    .append("\tExertion ID:          " + exertionId + "\n")
             .append("\tCreation Date:        " + sdf.format(creationDate) + "\n")
-            .append("\tExertion Date:        " + (exertionDate!=null ? sdf.format(exertionDate) : "") + "\n")
             .append("\tRuntime ID:           " + runtimeId + "\n")
 		    .append("\tParent ID:            " + parentId  + "\n")
 		    .append("\tOwner ID:             " + ownerId + "\n")
