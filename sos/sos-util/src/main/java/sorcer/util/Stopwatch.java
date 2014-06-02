@@ -109,7 +109,16 @@ public final class Stopwatch implements Serializable {
 		return getTimeString(System.currentTimeMillis() - startTime);
 	}
 
-	/**
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public long getStopTime() {
+        return stopTime;
+    }
+
+    /**
 	 * Get the time as a string.
 	 */
 	public static String getTimeString(long time) {
