@@ -72,7 +72,7 @@ public class BlockThread extends Thread {
 			} catch (RemoteException e) {
 				// ignore it, locall call
 			}
-            dispatcher.exert();
+            dispatcher.exec();
             DispatchResult result = dispatcher.getResult();
 
 			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + result.state

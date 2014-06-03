@@ -233,6 +233,7 @@ public class SpaceTaker implements Runnable {
 
 		while (keepGoing) {
 			ExertionEnvelop ee;
+            Object envelopNoCast = null;
 			try {
 				space = SpaceAccessor.getSpace(data.spaceName,
                         data.spaceGroup);
@@ -245,6 +246,7 @@ public class SpaceTaker implements Runnable {
 				if (data.noQueue) {
 					if (((ThreadPoolExecutor) pool).getActiveCount() != ((ThreadPoolExecutor) pool)
 							.getCorePoolSize()) {
+                        Transaction tx = null;
 						if (isTransactional) {
 							txnCreated = TX.createTransaction(transactionLeaseTimeout);
 							if (txnCreated == null) {
@@ -252,12 +254,10 @@ public class SpaceTaker implements Runnable {
 								Thread.sleep(spaceTimeout / 6);
 								continue;
 							}
-							ee = (ExertionEnvelop) space.take(data.entry,
-									txnCreated.transaction, spaceTimeout);
-						} else {
-							ee = (ExertionEnvelop) space.take(data.entry, null,
-									spaceTimeout);
+                            tx = txnCreated.transaction;
 						}
+                        envelopNoCast = space.take(data.entry, tx, spaceTimeout);
+                        ee = (ExertionEnvelop) envelopNoCast;
 					} else {
 						continue;
 					}
@@ -277,7 +277,7 @@ public class SpaceTaker implements Runnable {
 								spaceTimeout);
 					}
 				}
-				
+
 				// after 'take' timeout abort transaction and sleep for a while
 				// before 'taking' the next exertion
 				if (ee == null) {
@@ -290,7 +290,7 @@ public class SpaceTaker implements Runnable {
                             break;
                         }
 					}
-					
+
 					txnCreated = null;
 					continue;
 				}

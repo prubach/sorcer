@@ -18,13 +18,18 @@
 
 package sorcer.core.dispatch;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.entry.UnusableEntryException;
 import net.jini.core.lease.Lease;
+import net.jini.entry.UnusableEntriesException;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
+import sorcer.core.DispatchResult;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
@@ -73,43 +78,47 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         disatchGroup.setDaemon(true);
         disatchGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
 
-        dThread = new DispatchThread(disatchGroup);
-        dThread.start();
+        this.loki = loki;
+	}
+
+    @Override
+    protected List<Exertion> getInputExertions() throws ContextException {
+        if (xrt instanceof Job)
+            return Jobs.getInputExertions((Job) xrt);
+        else if (xrt instanceof Block)
+            return xrt.getAllExertions();
+        else
+            return null;
+    }
+
+    @Override
+    public void doExec() throws SignatureException, ExertionException {
+        dispatchExertions();
 
         CollectResultThread crThread = new CollectResultThread(disatchGroup);
         crThread.start();
 
+/*
         CollectFailThread cfThread = new CollectFailThread(disatchGroup);
         cfThread.start();
 
         CollectErrorThread efThread = new CollectErrorThread(disatchGroup);
         efThread.start();
-
-        this.loki = loki;
+*/
 	}
 
-	public void dispatchExertions() throws ExertionException,
+    protected void dispatchExertions() throws ExertionException,
 			SignatureException {
-        checkProvision();
-		try {
-			reconcileInputExertions(xrt);
-		} catch (ContextException ex) {
-			throw new ExertionException(ex);
-		}
-
-        logger.debug("exertion count: {}", inputXrts.size());
-
         for (Exertion exertion : inputXrts) {
             dispatchExertion(exertion);
         }
-        dThread.stop = true;
     }
 
     protected void dispatchExertion(Exertion exertion) throws ExertionException, SignatureException {
         logger.debug("exertion #{}: exertion: {}", exertion.getIndex(), exertion);
         try {
             writeEnvelop(exertion);
-            logger.debug("generateTasks ==> SPACE SEQUENIAL EXECUTE EXERTION: "
+            logger.debug("generateTasks ==> SPACE EXECUTE EXERTION: "
                     + exertion.getName());
         } catch (ProvisioningException pe) {
             xrt.setStatus(FAILED);
@@ -138,28 +147,50 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
 	public void collectResults() throws ExertionException, SignatureException {
 		int count = 0;
 		// get all children of the underlying parent job
-		ExertionEnvelop template = ExertionEnvelop.getTakeTemplate(xrt.getId(),
+		ExertionEnvelop doneTemplate = ExertionEnvelop.getTakeTemplate(xrt.getId(),
 				null);
-		logger.debug("collect exertions for template: {}",
-						template.describe());
-		while (count < inputXrts.size() && state != FAILED) {
-			ExertionEnvelop resultEnvelop = takeEnvelop(template);
-			if (resultEnvelop != null && resultEnvelop.exertion != null) {
-				ServiceExertion input = (ServiceExertion) ((NetJob)xrt)
-						.get(resultEnvelop.exertion
-								.getIndex());
-				logger.debug("collected result envelope {}",
-								resultEnvelop.describe());
-				ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
-				postExecExertion(input, result);
-				count++;
-			} else {
-				logger.trace("continue for envelop: {}", resultEnvelop);
-			}
-		}
-		executeMasterExertion();
-		dispatchers.remove(xrt.getId());
-		state = DONE;
+        ExertionEnvelop failTmpl = ExertionEnvelop.getParentTemplate(xrt.getId(),
+                null);
+        failTmpl.state = FAILED;
+
+        ExertionEnvelop errTmpl = ExertionEnvelop.getParentTemplate(xrt.getId(),
+                null);
+        errTmpl.state = ERROR;
+
+        while(count < inputXrts.size() && state != FAILED) {
+            Collection<ExertionEnvelop> results;
+            try {
+                results = space.take(Arrays.asList(doneTemplate, failTmpl, errTmpl), null, SpaceTaker.SPACE_TIMEOUT, Integer.MAX_VALUE);
+                count += results.size();
+            } catch (UnusableEntriesException e) {
+                xrt.setStatus(FAILED);
+                state = FAILED;
+                Collection<UnusableEntryException> exceptions = e.getUnusableEntryExceptions();
+                for (UnusableEntryException throwable : exceptions) {
+                    logger.warn("UnusableEntryException! unusable fields = " + throwable.partialEntry, throwable);
+                }
+                throw new ExertionException(e);
+            } catch (Throwable e) {
+                throw new ExertionException("Taking exertion envelop failed", e);
+            }
+            for (ExertionEnvelop resultEnvelop : results) {
+                logger.debug("collect exertions for template: {}",
+              						doneTemplate.describe());
+                ServiceExertion input = (ServiceExertion) ((NetJob) xrt)
+                        .get(resultEnvelop.exertion
+                                .getIndex());
+                logger.debug("collected result envelope {}",
+                        resultEnvelop.describe());
+                ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
+                postExecExertion(input, result);
+            }
+        }
+
+        if(xrt.getStatus()!=FAILED) {
+            executeMasterExertion();
+            state = DONE;
+        }
+        dispatchers.remove(xrt.getId());
     }
 
     protected void addPoison(Exertion exertion) {
@@ -330,7 +361,6 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                     exertion.getIndex());
         addPoison(exertion);
         this.state = state;
-        dThread.stop = true;
         cleanRemainingFailedExertions(xrt.getId());
     }
 
@@ -353,8 +383,7 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             ExertionException, SignatureException {
         if (masterXrt == null)
             return;
-        logger
-                .info("executeMasterExertion ==============> SPACE EXECUTE MASTER EXERTION");
+        logger.info("executeMasterExertion ==============> SPACE EXECUTE MASTER EXERTION");
         try {
             writeEnvelop(masterXrt);
         } catch (ProvisioningException pe) {
@@ -378,10 +407,15 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                 masterXrt.getParentId(), masterXrt.getId());
 
         ExertionEnvelop result = takeEnvelop(template);
-        logger.debug("executeMasterExertion MASTER EXERTION RESULT RECIEVED");
+        logger.debug("executeMasterExertion MASTER EXERTION RESULT RECEIVED");
         if (result != null && result.exertion != null) {
             postExecExertion(masterXrt, result.exertion);
         }
+    }
+
+    @Override
+    public DispatchResult getResult() {
+        return new DispatchResult(State.values()[state], xrt);
     }
 
     protected class CollectFailThread extends Thread {

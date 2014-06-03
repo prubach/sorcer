@@ -36,4 +36,8 @@ public interface IControlContext extends Context<Object>, Strategy {
     void setOpti(Strategy.Opti optiType);
 
     Strategy.Opti getOpti();
+
+    void addException(Throwable t);
+
+    void addException(String message, Throwable t);
 }

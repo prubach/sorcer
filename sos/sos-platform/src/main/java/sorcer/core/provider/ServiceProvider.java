@@ -35,6 +35,7 @@ import java.security.Principal;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
+import java.util.concurrent.*;
 
 import javax.inject.Inject;
 import javax.security.auth.Subject;
@@ -73,12 +74,10 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
-import sorcer.util.InjectionHelper;
-import sorcer.util.ObjectLogger;
+import sorcer.util.*;
 
 import com.sun.jini.config.Config;
 import com.sun.jini.start.LifeCycle;
-import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
@@ -193,6 +192,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     private IServiceBeanListener beanListener;
 
     private IProviderServiceBuilder serviceBuilder;
+
+    protected ScheduledExecutorService scheduler;
 
     protected ServiceProvider() {
 		providers.add(this);
@@ -608,7 +609,13 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			logger.info("Provider service started: {} {}", getProviderName(), this);
 
 			// allow for enough time to export the provider's proxy and stay alive
-			new Thread(ProviderDelegate.threadGroup, new KeepAwake(), tName("KeepAwake-" + getName())).start();
+            scheduler.schedule(new Callable<Void>() {
+                @Override
+                public Void call() throws RemoteException, ConfigurationException {
+                    delegate.initSpaceSupport();
+                    return null;
+                }
+            }, 100, TimeUnit.MILLISECONDS);
 		} catch (Throwable e) {
 			initFailed(e);
 		}
@@ -1694,6 +1701,16 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		logger.debug("threadManagement: " + threadManagement);
 		if (threadManagement)
             logger.warn(THREAD_MANAGEMNT + " is currently unsupported");
+
+        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
+        tf.setDaemon(true);
+        tf.setNameFormat(tName(getName()) + "-%2$s");
+        tf.setThreadGroup(ProviderDelegate.threadGroup);
+        ClassLoader mine = getClass().getClassLoader();
+        ClassLoader thread = Thread.currentThread().getContextClassLoader();
+        logger.warn("ClassLoaders  class: {}, context: {}", System.identityHashCode(mine), System.identityHashCode(thread));
+        //tf.setContextClassLoader(Thread.currentThread().getContextClassLoader());
+        scheduler = Executors.newScheduledThreadPool(0, tf);
     }
 
 	public final static String THREAD_MANAGEMNT = "threadManagement";

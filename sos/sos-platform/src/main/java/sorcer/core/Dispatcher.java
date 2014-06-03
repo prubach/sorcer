@@ -17,6 +17,6 @@
 package sorcer.core;
 
 public interface Dispatcher {
-    void exert();
+    void exec();
     DispatchResult getResult();
 }

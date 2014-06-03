@@ -18,10 +18,10 @@
 package sorcer.core.provider.jobber;
 
 import java.rmi.RemoteException;
-import java.util.HashSet;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.DispatchResult;
 import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.DispatcherFactory;
 import sorcer.core.provider.MonitoringControlFlowManager;
@@ -99,16 +99,10 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
                 } catch (RemoteException e) {
                     //ignore it, local call
                 }
-                while (dispatcher.getState() != Exec.DONE
-                        && dispatcher.getState() != Exec.FAILED
-                        && dispatcher.getState() != Exec.SUSPENDED) {
-                    logger.debug("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
-                    Thread.sleep(250);
-                }
-                logger.debug("Dispatcher State: " + dispatcher.getState());
+                dispatcher.exec();
+                DispatchResult dispatchResult = dispatcher.getResult();
+                logger.debug("Dispatcher State: " + dispatchResult.state);
 				result = (NetTask) dispatcher.getExertion();
-            } catch (InterruptedException e) {
-				logger.warn("Interrupted", e);
             } catch (DispatcherException e) {
                 logger.warn("Error while executing space task {}", task.getName(), e);
                 task.reportException(e);

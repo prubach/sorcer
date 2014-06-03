@@ -39,9 +39,6 @@ import static sorcer.util.StringUtils.tName;
 import static sorcer.service.Exec.*;
 
 abstract public class CatalogExertDispatcher extends ExertDispatcher {
-
-    private final static int SLEEP_TIME = 20;
-
     public CatalogExertDispatcher(Exertion job,
                                   Set<Context> sharedContext,
                                   boolean isSpawned,
@@ -49,11 +46,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                                   ProvisionManager provisionManager,
                                   ProviderProvisionManager providerProvisionManager) {
         super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
-    }
-
-    public void exert(){
-        dThread = new DispatchThread();
-        dThread.run();
     }
 
     protected void preExecExertion(Exertion exertion) throws ExertionException,
@@ -91,6 +83,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         t.start();
         return eThread;
     }
+
     // Sequential
     protected Exertion execExertion(Exertion ex) throws SignatureException,
             ExertionException {
@@ -109,7 +102,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				logger.warn("Unknown ServiceExertion: {}", ex);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+            logger.warn("Error while executing exertion");
 			// return original exertion with exception
 			result = (ServiceExertion) ex;
             result.reportException(e);
@@ -272,12 +265,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             // create a new instance of a dispatcher
             Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
                     .createDispatcher(job, sharedContexts, true, provider);
+        dispatcher.exec();
             // wait until serviceJob is done by dispatcher
-            while (dispatcher.getState() != DONE
-                    && dispatcher.getState() != FAILED) {
-                Thread.sleep(SLEEP_TIME);
-            }
-            Job out = (Job) dispatcher.getExertion();
+        Job out = (Job) dispatcher.getResult().exertion;
             out.getControlContext().appendTrace(provider.getProviderName()
                     + " dispatcher: " + getClass().getName());
             return out;
@@ -321,12 +311,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			// create a new instance of a dispatcher
 			dispatcher = ExertionDispatcherFactory.getFactory()
 					.createDispatcher(block, sharedContexts, true, provider);
+            dispatcher.exec();
 			// wait until serviceJob is done by dispatcher
-			while (dispatcher.getState() != DONE
-					&& dispatcher.getState() != FAILED) {
-				Thread.sleep(SLEEP_TIME);
-			}
-			Block out = (Block) dispatcher.getExertion();
+			Block out = (Block) dispatcher.getResult().exertion;
 			out.getControlContext().appendTrace(provider.getProviderName() 
 					+ " dispatcher: " + getClass().getName());
 			return out;
@@ -339,9 +326,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		} catch (DispatcherException de) {
 			de.printStackTrace();
 			throw de;
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-			throw ie;
 		} catch (TransactionException te) {
 			te.printStackTrace();
 			throw new ExertionException("transaction failure", te);

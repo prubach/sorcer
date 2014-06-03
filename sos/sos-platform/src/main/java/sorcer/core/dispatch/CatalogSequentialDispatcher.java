@@ -19,6 +19,7 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Set;
 
 import sorcer.core.provider.Provider;
@@ -38,20 +39,9 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 		super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
 
-	public void dispatchExertions() throws ExertionException,
+    protected void doExec() throws ExertionException,
 			SignatureException {
-        checkProvision();
-		try {
-			inputXrts = Jobs.getInputExertions(((Job) xrt));
-			reconcileInputExertions(xrt);
-		} catch (ContextException e) {
-			throw new ExertionException(e);
-		}
-		collectResults();
-	}
 
-	public void collectResults() throws ExertionException, SignatureException {
-		try {
             String pn;
             if (inputXrts == null) {
                 xrt.setStatus(FAILED);
@@ -80,7 +70,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
                 if (previous != null && se.isTask() && ((Task) se).isContinous())
                     se.setContext(previous);
 
-                collectResult(se);
+                dispatchExertion(se);
                 try {
                     previous = exertion.getContext();
                 } catch (ContextException e) {
@@ -89,11 +79,6 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             }
 
             if (masterXrt != null) {
-                if (isInterupted(masterXrt)) {
-                    masterXrt.stopExecTime();
-                    dispatchers.remove(xrt.getId());
-                    return;
-                }
 				masterXrt = (ServiceExertion) execExertion(masterXrt); // executeMasterExertion();
 				if (masterXrt.getStatus() <= FAILED) {
 					state = FAILED;
@@ -107,17 +92,9 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 			dispatchers.remove(xrt.getId());
 			xrt.stopExecTime();
 			xrt.setStatus(DONE);
-		} finally {
-			dThread.stop = true;
-		}
 	}
 
-    protected void collectResult(ServiceExertion se) throws SignatureException, ExertionException {
-        if (isInterupted(se)) {
-            se.stopExecTime();
-            dispatchers.remove(xrt.getId());
-            return;
-        }
+    protected void dispatchExertion(ServiceExertion se) throws SignatureException, ExertionException {
         se = (ServiceExertion) execExertion(se);
         if (se.getStatus() <= FAILED) {
             xrt.setStatus(FAILED);
@@ -143,5 +120,9 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             dispatchers.remove(xrt.getId());
             throw ex;
         }
+    }
+
+    protected List<Exertion> getInputExertions() throws ContextException {
+        return Jobs.getInputExertions(((Job) xrt));
     }
 }

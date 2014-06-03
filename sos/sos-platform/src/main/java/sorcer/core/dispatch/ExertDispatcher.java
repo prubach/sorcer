@@ -28,6 +28,7 @@ import net.jini.id.UuidFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
+import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
@@ -71,7 +72,6 @@ abstract public class ExertDispatcher implements Dispatcher {
             = new HashMap<Uuid, Dispatcher>();
 
 	protected ThreadGroup disatchGroup;
-	protected DispatchThread dThread;
 	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
@@ -103,18 +103,64 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.isSpawned = isSpawned;
         this.isMonitored = sxrt.isMonitorable();
         this.provider = provider;
-        sxrt.setStatus(RUNNING);
         this.provisionManager = provisionManager;
         this.providerProvisionManager = providerProvisionManager;
-        initialize();
     }
 
-    protected void initialize() {
+    public void exec() {
         dispatchers.put(xrt.getId(), this);
         state = RUNNING;
         if (xrt instanceof Job) {
             masterXrt = (ServiceExertion) ((Job) xrt).getMasterExertion();
         }
+        try {
+            beforeExec(xrt);
+            doExec();
+            afterExec(xrt);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.info("Exertion dispatcher thread killed by exception", e);
+            xrt.setStatus(FAILED);
+            state = FAILED;
+            xrt.reportException(e);
+        }finally {
+            dispatchers.remove(xrt.getId());
+        }
+    }
+
+    abstract protected void doExec() throws SignatureException, ExertionException;
+    abstract protected List<Exertion> getInputExertions() throws ContextException;
+
+    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException, ContextException {
+        logger.info("before exert {}", exertion);
+        reconcileInputExertions(exertion);
+        updateInputs(exertion);
+        checkProvision();
+        inputXrts = getInputExertions();
+    }
+
+    protected void afterExec(Exertion result) throws ContextException {
+        logger.info("After exert {}", result);
+    }
+
+    @Override
+    public DispatchResult getResult() {
+        /**
+         * The default implementation - wait for status to be changed by another thread
+         */
+
+        try {
+            while (!finished())
+                Thread.sleep(50);
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted!", e);
+        }
+        return new DispatchResult(State.values()[state], xrt);
+    }
+
+    private boolean finished(){
+        return state == State.DONE.ordinal() || state == State.FAILED.ordinal();
     }
 
     /**
@@ -144,33 +190,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.state = state;
     }
 
-    protected class DispatchThread extends Thread {
-        volatile boolean stop = false;
-
-        public DispatchThread() {
-            super(tName("Dispatch"));
-        }
-
-        public DispatchThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, tName("Dispatch"));
-        }
-
-        public void run() {
-            try {
-                while (!stop) {
-                    dispatchExertions();
-                }
-            } catch (Exception e) {
-                logger.info("Exertion dispatcher thread killed by exception", e);
-				interrupt();
-				xrt.setStatus(FAILED);
-				state = FAILED;
-				xrt.reportException(e);
-            }
-            dispatchers.remove(xrt.getId());
-        }
-    }
-
     protected class CollectResultThread extends Thread {
 
         public CollectResultThread(ThreadGroup disatchGroup) {
@@ -182,8 +201,6 @@ abstract public class ExertDispatcher implements Dispatcher {
             try {
                 collectResults();
                 xrt.setStatus(DONE);
-                if (dThread != null)
-                    dThread.stop = true;
             } catch (Exception ex) {
                 xrt.setStatus(FAILED);
                 xrt.reportException(ex);
@@ -195,8 +212,8 @@ abstract public class ExertDispatcher implements Dispatcher {
         }
     }
 
-    protected abstract void collectResults() throws ExertionException, SignatureException;
-    protected abstract void dispatchExertions() throws ExertionException, SignatureException;
+    protected void collectResults() throws ExertionException, SignatureException{}
+    //protected abstract void dispatchExertions() throws ExertionException, SignatureException;
 
     protected void collectOutputs(Exertion ex) throws ContextException {
         if (sharedContexts==null) {
@@ -319,36 +336,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         return isMonitored;
     }
 
-    protected boolean isInterupted(Exertion ex) throws ExertionException,
-            SignatureException {
-        // if (job.getStatus() == FAILED) {
-        // runtimeStore(job, UPDATE_EXERTION);
-        // dispatchers.remove(job.getID());
-        // state = FAILED;
-        // return true;
-        // }
-        // else if (ex.getStatus() == SUSPENDED || job.getStatus() == SUSPENDED)
-        // {
-        // job.setStatus(SUSPENDED);
-        // ex.setStatus(SUSPENDED);
-        // runtimeStore(job, UPDATE_EXERTION);
-        // dispatchers.remove(job.getID());
-        // state = SUSPENDED;
-        // return true;
-        // }
-        // if (job.getStatus() == HALTED) {
-        // runtimeStore(job, REMOVE_JOB);
-        // dispatchers.remove(job.getID());
-        // state = HALTED;
-        // return true;
-        // }
-        return false;
-    }
-
-    public ProviderProvisionManager getProviderProvisionManager() {
-        return providerProvisionManager;
-    }
-
     public ProvisionManager getProvisionManager() {
         return provisionManager;
     }
@@ -361,10 +348,11 @@ abstract public class ExertDispatcher implements Dispatcher {
                 inputXrts.remove(ex);
         } else {
             ext.setStatus(INITIAL);
-			if (!ex.isTask()) {
-				for (int i = 0; i < ((CompoundExertion) ex).size(); i++)
-					reconcileInputExertions(((CompoundExertion) ex).get(i));
-			}
+            if (ex instanceof CompoundExertion) {
+                CompoundExertion ce = (CompoundExertion) ex;
+                for (Exertion sub : ce.getExertions())
+                    reconcileInputExertions(sub);
+            }
         }
     }
 }

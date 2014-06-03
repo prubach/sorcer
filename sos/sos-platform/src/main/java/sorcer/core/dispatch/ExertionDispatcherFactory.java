@@ -104,14 +104,6 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provider,
                         provisionManager,
                         providerProvisionManager);
-            } else if (Jobs.isCatalogSingleton(job)) {
-                logger.info("Running Catalog Singleton Dispatcher...");
-                dispatcher = new CatalogSingletonDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
             } else if (Jobs.isCatalogParallel(job)) {
                 logger.info("Running Catalog Parallel Dispatcher...");
                 dispatcher = new CatalogParallelDispatcher(job,

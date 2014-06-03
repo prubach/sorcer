@@ -18,6 +18,7 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Set;
 
 import sorcer.core.context.ServiceContext;
@@ -51,15 +52,11 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 			ProviderProvisionManager providerProvisionManager) {
 		super(block, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
 	}
-	
-	public void dispatchExertions() throws ExertionException,
-			SignatureException {
-        checkProvision();
-		inputXrts = xrt.getExertions();
-		reset();
-		// reconcileInputExertions(xrt);
-		collectResults();
-		
+
+
+    @Override
+    protected void doExec() throws ExertionException, SignatureException {
+        super.doExec();
 		try {
 			Condition.cleanupScripts(xrt);
 		} catch (ContextException e) {
@@ -67,7 +64,7 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 		}
 	}
 
-    protected void collectResult(ServiceExertion se) throws ExertionException, SignatureException {
+    protected void dispatchExertion(ServiceExertion se) throws ExertionException, SignatureException {
         try {
             ((ServiceContext)se.getContext()).setBlockScope(xrt.getContext());
 
@@ -83,7 +80,7 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
             throw new ExertionException(ce);
         }
 
-        super.collectResult(se);
+        super.dispatchExertion(se);
         try {
             postUpdate(se);
         } catch (Exception e) {
@@ -139,10 +136,8 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 //		if (cxt.getReturnPath() != null)
 //			cxt.putValue(cxt.getReturnPath().path, cxt.getReturnValue()); 
 	}
-	
-	private void reset() {
-		xrt.setStatus(INITIAL);
-		for (Exertion e : xrt.getExertions())
-			((ServiceExertion)e).reset(INITIAL);
+
+    protected List<Exertion> getInputExertions() {
+        return xrt.getExertions();
 	}
 }

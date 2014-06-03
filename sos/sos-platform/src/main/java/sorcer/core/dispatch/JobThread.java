@@ -18,12 +18,13 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.service.ContextException;
-import sorcer.service.Exec;
 import sorcer.service.Job;
 
 public class JobThread implements Runnable {
@@ -58,26 +59,13 @@ public class JobThread implements Runnable {
                 logger.severe("exception in dispatcher: " + e);
 				// ignore it, locall call
 			}
-			 int COUNT = 1000;
-			 int count = COUNT;
-			while (dispatcher.getState() != Exec.DONE
-					&& dispatcher.getState() != Exec.FAILED
-					&& dispatcher.getState() != Exec.SUSPENDED) {
-				 count--;
-				 if (count < 0) {
-				 logger.finer("*** Jobber's Exertion Dispatcher waiting in state: "
-				 + dispatcher.getState());
-				 count = COUNT;
-				 }
-				Thread.sleep(SLEEP_TIME);
-			}
-			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatcher.getState()
+			dispatcher.exec();
+            DispatchResult dispatchResult = dispatcher.getResult();
+			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatchResult.state
 					+ " for job***\n" + job.getControlContext());
-            result = (Job) dispatcher.getExertion();
+            result = (Job) dispatchResult.exertion;
 		} catch (DispatcherException de) {
-			de.printStackTrace();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
+			logger.log(Level.SEVERE, "Error", de);
 		}
 	}
 
