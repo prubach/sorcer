@@ -18,6 +18,7 @@
 package sorcer.core.invoker;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -28,12 +29,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Par;
-import sorcer.service.Arg;
-import sorcer.service.ArgSet;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
-import sorcer.service.Invocation;
+import sorcer.service.*;
 import sorcer.util.StringUtils;
 
 /**
@@ -223,12 +219,12 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 						m = mts[0];
 				} else {
 //					// exception when Arg... is not specified for the invoke
-					if (target instanceof Invocation && paramTypes.length == 1 
+					if (target instanceof Invocation && paramTypes.length == 1
 								&&  paramTypes[0] == Context.class
 									&& selector.equals("invoke"))	{
 						paramTypes = new Class[2];
 						paramTypes[0] = Context.class;
-						paramTypes[1] = Arg[].class;		
+						paramTypes[1] = Arg[].class;
 						Object[] parameters2 = new Object[2];
 						parameters2[0] = parameters[0];
 						parameters2[1] = new Arg[0];
@@ -248,7 +244,7 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 					}
 				}
 			}
-			
+
 			logger.fine("**inovking; target = " + target);
 			logger.fine("class: " + evalClass);
 			logger.fine("context: " + context);
@@ -264,6 +260,13 @@ public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
 			val = m.invoke(target, parameters);
 			logger.fine("val: " + val);
 
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            for (Class<?> eType : m.getExceptionTypes()) {
+                if (eType.isInstance(cause) && cause instanceof Exception)
+                    throw new InvocationException((Exception) cause);
+            }
+            throw new EvaluationException(e);
 		} catch (Exception e) {
 			logger.severe("**error in object invoker; target = " + target);
             logger.severe("class: " + evalClass);

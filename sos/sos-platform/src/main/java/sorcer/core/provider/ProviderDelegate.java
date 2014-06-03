@@ -1601,10 +1601,7 @@ public class ProviderDelegate {
 		} catch (Exception ex) {
 			logger.warn("Some problem in accessing attributes", ex);
 		}
-/*        String hostName = null, hostAddress = null;
-        hostName = SorcerEnv.getHostName();
-        hostAddress = SorcerEnv.getHostAddress();
-  */
+
 		if (hostName != null) {
 			serviceType.hostName = hostName;
 		} else {

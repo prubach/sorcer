@@ -134,8 +134,7 @@ public class ObjectTask extends Task {
                 dataContext.setReturnValue(result);
             }
         } catch (Throwable e) {
-            e.printStackTrace();
-            dataContext.reportException(e);
+            controlContext.reportException(e);
             if (e instanceof Exception)
                 setStatus(FAILED);
             else

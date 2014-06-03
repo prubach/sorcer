@@ -456,7 +456,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 
 	public void stopExecTime() {
 		if (stopwatch == null) {
-			logger.info("No stopwatch available for stopExecTime");
+			logger.fine("No stopwatch available for stopExecTime");
 			return;
 		}
 		stopwatch.stop();
