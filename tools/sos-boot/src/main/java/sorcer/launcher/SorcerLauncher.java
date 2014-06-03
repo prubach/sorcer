@@ -48,6 +48,7 @@ public class SorcerLauncher extends Launcher {
     final private static Logger log = LoggerFactory.getLogger(SorcerLauncher.class);
 
     private ThreadFactory threadFactory;
+    private static ThreadGroup threadGroup = new ThreadGroup("SORCER");
     private ServiceStarter serviceStarter;
     protected Profile profile;
 
@@ -97,7 +98,7 @@ public class SorcerLauncher extends Launcher {
     public static ThreadFactory getDefaultThreadFactory() {
         ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
         tf.setNameFormat("SORCER");
-        tf.setThreadGroup(new ThreadGroup("SORCER"));
+        tf.setThreadGroup(threadGroup);
         return tf;
     }
 
@@ -272,6 +273,20 @@ public class SorcerLauncher extends Launcher {
             return;
         serviceStarter.stop();
         serviceStarter = null;
+
+        Thread[] threads = new Thread[Thread.activeCount() * 2];
+        Thread current = Thread.currentThread();
+        threadGroup.enumerate(threads);
+        for (Thread t : threads) {
+            if (t == null || current == t) continue;
+            log.warn("*** Interrupting leaked thread {}", t.getName());
+            t.interrupt();
+            try {
+                t.join(1000);
+            } catch (InterruptedException e) {
+                log.warn("Interrupted on join()!", e);
+            }
+        }
     }
 
     public void setThreadFactory(ThreadFactory threadFactory) {
