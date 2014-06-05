@@ -37,6 +37,7 @@ import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.slf4j.MDC;
 import sorcer.core.ContextManagement;
+import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Service;
 
@@ -221,6 +222,11 @@ public class SorcerILFactory extends BasicILFactory {
 				Collection context) throws Throwable {
             try{
                 MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
+                if (args.length>0 && args[0] instanceof Exertion) {
+                    Exertion xrt = ((Exertion)args[0]);
+                    if (xrt!=null && xrt.getId()!=null)
+                        MDC.put(MDC_EXERTION_ID, xrt.getId().toString());
+                }
                 return doInvoke(impl, method, args, context);
             }finally {
                 MDC.remove(MDC_SORCER_REMOTE_CALL);

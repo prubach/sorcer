@@ -17,12 +17,18 @@
  */
 package sorcer.core;
 
+import ch.qos.logback.classic.turbo.MDCFilter;
+import net.jini.core.event.EventRegistration;
+import net.jini.core.event.RemoteEventListener;
+import net.jini.core.lease.LeaseDeniedException;
 import sorcer.core.provider.logger.LoggingConfig;
 
 import java.io.IOException;
+import java.rmi.MarshalledObject;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.classic.spi.LoggingEventVO;
 
@@ -30,6 +36,7 @@ public interface RemoteLogger extends Remote {
 
     String LOGGER_CONTEXT_KEY = "SORCER-REMOTE-CALL";
     String KEY_HOSTNAME = "hostname";
+    String KEY_EXERTION_ID = "exertionId";
 
     public void publish(List<LoggingEventVO> record) throws RemoteException;
 
@@ -40,5 +47,13 @@ public interface RemoteLogger extends Remote {
     public List<String> getLog(String fileName) throws RemoteException;
 
     public void deleteLog(String logName) throws RemoteException;
+
+
+    public EventRegistration registerLogListener(RemoteEventListener listener,
+                                      MarshalledObject handback, long duration, Map<String, String> filterMap)
+            throws LeaseDeniedException, RemoteException;
+
+
+//    public void registerLogListener(MDCFilter mdcFilter, Object proxy) throws RemoteException;
 
 }

@@ -20,15 +20,20 @@ package sorcer.tools.shell.cmds;
 
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import sorcer.core.RemoteLogger;
+import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.node.ContextNode;
+import sorcer.core.provider.logger.LoggerRemoteEventClient;
 import sorcer.netlet.ScriptExerter;
 import sorcer.service.*;
 import sorcer.tools.shell.*;
@@ -125,38 +130,6 @@ public class ExertCmd extends ShellCmd {
             return;
         }
 
-/*
-        if (m.groupCount() == 0) {
-            out.println(COMMAND_USAGE);
-            return;
-        }
-*/
-/*
-        while (m.find()) {
-            String nextToken = m.group(1);
-            if (nextToken.startsWith("\"") || nextToken.startsWith("'"))
-                nextToken = nextToken.substring(1, nextToken.length() - 1);
-            if (nextToken.equals("-s")) {
-					outPersisted = true;
-					outputFile = new File("" + d + File.separator + nextToken);
-				} else if (nextToken.equals("-controlContext"))
-					outputControlContext = true;
-				else if (nextToken.equals("-m"))
-					marshalled = true;
-				// evaluate text
-				else if (nextToken.equals("-t")) {
-					if (script == null || script.length() == 0) {
-						throw new NullPointerException("Must have not empty script");
-					}
-				}
-				// evaluate file script
-				else if (nextToken.equals("-f"))
-					scriptFilename = nextToken;
-				else
-					scriptFilename = nextToken;
-			}
-*/
-
         if (script != null) {
             scriptExerter.readScriptWithHeaders(script);
 		} else if (scriptFilename != null) {
@@ -176,6 +149,22 @@ public class ExertCmd extends ShellCmd {
 			return;
 		}
         Object target = scriptExerter.parse();
+        LoggerRemoteEventClient lrec = null;
+        Thread loggerListenerThread;
+
+        // Starting RemoteLoggerListener
+        if (target instanceof Exertion) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put(RemoteLogger.KEY_EXERTION_ID, ((Exertion)target).getId().toString());
+            RemoteLogger remoteLogger = Accessor.getService(RemoteLogger.class);
+
+            if (remoteLogger != null) {
+                lrec = new LoggerRemoteEventClient(remoteLogger, SorcerEnv.getHostAddress(), map);
+                loggerListenerThread = new Thread(lrec);
+                loggerListenerThread.start();
+            }
+        }
+
         Object result = scriptExerter.execute();
         // System.out.println(">>>>>>>>>>> result: " + result);
 		if (result != null) {
@@ -223,6 +212,8 @@ public class ExertCmd extends ShellCmd {
 			}
 			// System.out.println(">>> executing script: \n" + sb.toString());
 		}
+
+        if (lrec != null) lrec.destroy();
 	}
 
 	public String getScript() {

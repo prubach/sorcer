@@ -17,6 +17,11 @@
     <dependencies>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>logger-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-api</artifactId>
             <version>${project.version}</version>
         </dependency>
