@@ -91,8 +91,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
         public void run() {
             logger.trace("*** TaskThread Started ***");
             try {
-                SpaceTaskDispatcher dispatcher = (SpaceTaskDispatcher) getDispatcherFactory(task).createDispatcher(task,
-                        provider);
+                SpaceTaskDispatcher dispatcher = getDispatcherFactory(task).createDispatcher(task, provider);
                 try {
                     task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: "
                             + dispatcher.getClass().getName());
@@ -102,7 +101,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
                 dispatcher.exec();
                 DispatchResult dispatchResult = dispatcher.getResult();
                 logger.debug("Dispatcher State: " + dispatchResult.state);
-				result = (NetTask) dispatcher.getExertion();
+				result = (NetTask) dispatchResult.exertion;
             } catch (DispatcherException e) {
                 logger.warn("Error while executing space task {}", task.getName(), e);
                 task.reportException(e);

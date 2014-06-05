@@ -44,17 +44,6 @@ public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
         return Arrays.asList((Exertion)xrt);
     }
 
-    public void dispatchExertions() throws ExertionException,
-			SignatureException {
-		checkProvision();
-		try {
-			reconcileInputExertions(xrt);
-		} catch (ContextException e) {
-			throw new ExertionException(e);
-		}
-        dispatchExertion(xrt);
-	}
-
 	public void collectResults() throws ExertionException, SignatureException {
 		ExertionEnvelop temp;
 		temp = ExertionEnvelop.getTemplate();

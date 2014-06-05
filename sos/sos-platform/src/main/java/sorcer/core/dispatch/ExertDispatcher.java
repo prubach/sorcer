@@ -36,7 +36,6 @@ import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
 
-import static sorcer.util.StringUtils.*;
 import static sorcer.service.Exec.*;
 
 @SuppressWarnings("rawtypes")
@@ -86,9 +85,6 @@ abstract public class ExertDispatcher implements Dispatcher {
     public void setProvider(Provider provider) {
         this.provider = provider;
     }
-
-    public ExertDispatcher() {
-	}
 
 	public ExertDispatcher(Exertion exertion,
                            Set<Context> sharedContexts,
@@ -190,12 +186,7 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.state = state;
     }
 
-    protected class CollectResultThread extends Thread {
-
-        public CollectResultThread(ThreadGroup disatchGroup) {
-            super(disatchGroup, tName("Result collector"));
-        }
-
+    protected class CollectResultThread implements Runnable {
         public void run() {
             xrt.startExecTime();
             try {

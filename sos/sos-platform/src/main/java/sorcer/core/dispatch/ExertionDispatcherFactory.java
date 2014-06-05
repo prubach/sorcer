@@ -67,15 +67,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
             if(exertion instanceof Job)
                 exertion = new ExertionSorter(exertion).getSortedJob();
 
-			if (exertion instanceof Task) {
-				logger.info("Running Space Task Dispatcher...");
-				return new SpaceTaskDispatcher((Task)exertion,
-						                                    sharedContexts,
-						                                    isSpawned,
-						                                    loki,
-                        provisionManager,
-                        providerProvisionManager);
-			} else if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
+			if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
 				 return new CatalogBlockDispatcher(exertion,
 						                                  sharedContexts,
@@ -151,5 +143,29 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     @Override
     public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException {
         return createDispatcher(exertion, new HashSet<Context>(), false, provider);
+    }
+
+    @Override
+    public SpaceTaskDispatcher createDispatcher(Task task, Provider provider, String... config) throws DispatcherException {
+        ProvisionManager provisionManager = null;
+        List<Deployment> deployments = task.getDeployments();
+        if (deployments.size() > 0)
+            provisionManager = new ProvisionManager(task);
+
+        logger.info("Running Space Task Dispatcher...");
+        try {
+            return new SpaceTaskDispatcher(task,
+                    new HashSet<Context>(),
+                    false,
+                    loki,
+                    provisionManager,
+                    providerProvisionManager);
+        } catch (ContextException e) {
+            throw new DispatcherException(
+                    "Failed to create the exertion dispatcher for job: "+ task.getName(), e);
+        } catch (ExertionException e) {
+            throw new DispatcherException(
+                    "Failed to create the exertion dispatcher for job: "+ task.getName(), e);
+        }
     }
 }
