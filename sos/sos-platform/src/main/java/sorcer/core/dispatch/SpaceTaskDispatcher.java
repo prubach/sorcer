@@ -18,6 +18,8 @@
 
 package sorcer.core.dispatch;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import sorcer.core.exertion.ExertionEnvelop;
@@ -33,36 +35,16 @@ public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
             final boolean isSpawned, 
             final LokiMemberUtil myMemberUtil,
             final ProvisionManager provisionManager,
-            final ProviderProvisionManager providerProvisionManager) throws ExertionException, SignatureException {
-
-		this.providerProvisionManager = providerProvisionManager;
-        this.provisionManager = provisionManager;
-        this.xrt = task;
-		subject = task.getSubject();
-		this.sharedContexts = sharedContexts;
-		this.isSpawned = isSpawned;
-		isMonitored = task.isMonitorable();
-		state = RUNNING;
-		dispatchers.put(task.getId(), this);
-		dispatchExertions();
-		
-		disatchGroup = new ThreadGroup("task-"+ task.getId());
-		disatchGroup.setDaemon(true);
-		disatchGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-
-		CollectResultThread crThread = new CollectResultThread(disatchGroup);
-		crThread.start();
-
-		CollectFailThread cfThread = new CollectFailThread(disatchGroup);
-		cfThread.start();
-
-		CollectErrorThread efThread = new CollectErrorThread(disatchGroup);
-		efThread.start();
-
-		this.loki = myMemberUtil;
+            final ProviderProvisionManager providerProvisionManager) throws ContextException, ExertionException {
+        super(task, sharedContexts, isSpawned, myMemberUtil, null, provisionManager, providerProvisionManager);
 	}
 
-	public void dispatchExertions() throws ExertionException,
+    @Override
+    protected List<Exertion> getInputExertions() throws ContextException {
+        return Arrays.asList((Exertion)xrt);
+    }
+
+    public void dispatchExertions() throws ExertionException,
 			SignatureException {
 		checkProvision();
 		try {
