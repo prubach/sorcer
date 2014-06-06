@@ -48,11 +48,15 @@ public class RemoteLoggerClient implements Runnable {
 
     @Override
     public void run() {
-        LinkedList<ILoggingEvent> loggingEvents = new LinkedList<ILoggingEvent>();
-        int count = queue.drainTo(loggingEvents);
-        if (count == 0)
-            return;
-        publish(loggingEvents);
+        try {
+            LinkedList<ILoggingEvent> loggingEvents = new LinkedList<ILoggingEvent>();
+            int count = queue.drainTo(loggingEvents);
+            if (count == 0)
+                return;
+            publish(loggingEvents);
+        } catch (Throwable t) {
+            log.error("Problem: ", t);
+        }
     }
 
     private void publish(List<ILoggingEvent> loggingEvents) {
@@ -87,7 +91,8 @@ public class RemoteLoggerClient implements Runnable {
      * @param vos the logging events to publish
      */
     private void publishNoRetry(List<LoggingEventVO> vos) {
-        remoteLogger = Accessor.getService(RemoteLogger.class);
+        Object o = Accessor.getService(RemoteLogger.class);
+        remoteLogger = (RemoteLogger)o;
         if (remoteLogger != null)
             try {
                 remoteLogger.publish(vos);

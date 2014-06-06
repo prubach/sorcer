@@ -67,7 +67,7 @@ public class PropertyEvaluator {
         data.put(key, value);
         eval(data);
         if (!value.equals(data.get(key)))
-            logger.info("Replacing: " + value + " with: " + data.get(key));
+            logger.debug("Replacing: " + value + " with: " + data.get(key));
         return data.get(key);
     }
 

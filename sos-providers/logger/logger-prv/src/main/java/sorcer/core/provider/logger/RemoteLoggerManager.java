@@ -94,6 +94,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         String loggerName;
         Logger logger;
         synchronized (this) {
+            log.info("Publishing remote log: " + loggingEvent.getMessage().substring(0,50));
             Map<String, String> mdc = loggingEvent.getMDCPropertyMap();
             String exertionId = null;
             if (!remoteLogListeners.isEmpty()) {
@@ -102,10 +103,11 @@ public class RemoteLoggerManager implements RemoteLogger {
                 keyMap.put(KEY_EXERTION_ID, exertionId);
 
                 for (Map.Entry<Map<String, String>, EventHandler> entry : remoteLogListeners.entrySet()) {
-                    if (mdc.keySet().containsAll(entry.getKey().keySet())) {
+                    if (mdc.entrySet().containsAll(entry.getKey().entrySet())) {
                         try {
                             LoggerRemoteEvent rse = new LoggerRemoteEvent(provider.getProxy(), loggingEvent);
                             entry.getValue().fire(rse);
+                            log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,50));
                         } catch (NoEventConsumerException e) {
                             log.error("Problem sending remote log event, no event consumer available");
                         } catch (RemoteException e) {
@@ -171,18 +173,18 @@ public class RemoteLoggerManager implements RemoteLogger {
         // TODO implement
     }
 
-    @Override
-    public EventRegistration registerLogListener(RemoteEventListener listener, MarshalledObject handback, long duration, Map<String,String> filterMap) throws LeaseDeniedException, RemoteException {
+    public EventRegistration registerLogListener(RemoteEventListener listener, MarshalledObject handback, long duration, List<Map<String,String>> filterMap) throws LeaseDeniedException, RemoteException {
         log.info("Registering new listener for remote logs: " + listener);
         EventDescriptor eventDescriptor = new EventDescriptor(ILoggingEvent.class, LoggerRemoteEvent.ID);
         EventHandler eventHandler;
         try {
             eventHandler = new DispatchEventHandler(eventDescriptor);
             EventRegistration evReg = eventHandler.register(provider.getProxy(), listener, handback, duration);
-            remoteLogListeners.put(filterMap, eventHandler);
+            for (Map<String, String>  fMap : filterMap)
+                remoteLogListeners.put(fMap, eventHandler);
             return evReg;
         } catch (Exception e1) {
-            e1.printStackTrace();
+            log.error("Problem registering to Log listener: " + e1.getMessage());
         }
         return null;
     }

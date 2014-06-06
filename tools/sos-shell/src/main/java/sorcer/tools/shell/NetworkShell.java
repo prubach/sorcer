@@ -69,15 +69,13 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.netlet.util.ScriptExertException;
+import sorcer.resolver.Resolver;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.EvaluationException;
 import sorcer.service.ExertionInfo;
 import sorcer.tools.shell.cmds.*;
 import sorcer.tools.webster.Webster;
-import sorcer.util.ClassLoaders;
-import sorcer.util.StringUtils;
-import sorcer.util.TimeUtil;
-import sorcer.util.WhitespaceTokenizer;
+import sorcer.util.*;
 import sorcer.util.eval.PropertyEvaluator;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
@@ -1360,6 +1358,13 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		
 		String[] jars = (String[]) sysConfig.getEntry(CONFIG_COMPONENT,
 				"httpJars", String[].class, new String[] { });
+
+        // Add logger-api to default codebase - required for ExertCmd, for example
+        List<String> jarsList = new ArrayList<String>(Arrays.asList(jars));
+        String loggerStr = Resolver.resolveRelative(Artifact.sorcer("logger-api"));
+        if (loggerStr!=null) jarsList.add(loggerStr);
+        jars = jarsList.toArray(new String[0]);
+
 		/*
 		 * Look to see if the user has provided a starting directory, groups,
 		 * locators, discovery timeout, httpPort or ignore http

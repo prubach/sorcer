@@ -20,6 +20,7 @@ package sorcer.tools.shell.cmds;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.jini.core.lookup.ServiceItem;
 import org.apache.commons.io.FileUtils;
 import sorcer.core.RemoteLogger;
 import sorcer.core.SorcerEnv;
@@ -154,15 +156,19 @@ public class ExertCmd extends ShellCmd {
 
         // Starting RemoteLoggerListener
         if (target instanceof Exertion) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put(RemoteLogger.KEY_EXERTION_ID, ((Exertion)target).getId().toString());
-            RemoteLogger remoteLogger = Accessor.getService(RemoteLogger.class);
-
-            if (remoteLogger != null) {
-                lrec = new LoggerRemoteEventClient(remoteLogger, SorcerEnv.getHostAddress(), map);
-                loggerListenerThread = new Thread(lrec);
-                loggerListenerThread.start();
+            List<Map<String, String>> filterMapList = new ArrayList<Map<String, String>>();
+            for (String exId : getAllExertionIdFromExertion((Exertion)target)) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put(RemoteLogger.KEY_EXERTION_ID, exId);
+                filterMapList.add(map);
             }
+            ServiceItem[] sItems = Accessor.getServiceItems(RemoteLogger.class, null);
+            lrec = new LoggerRemoteEventClient();
+            List<RemoteLogger> lrs = new ArrayList<RemoteLogger>();
+            for (ServiceItem sItem : sItems) {
+                lrs.add((RemoteLogger)sItem.service);
+            }
+            lrec.register(lrs, SorcerEnv.getHostAddress(), filterMapList);
         }
 
         Object result = scriptExerter.execute();
@@ -272,6 +278,15 @@ public class ExertCmd extends ShellCmd {
 		}
 		return sb;
 	}
+
+    public static List<String> getAllExertionIdFromExertion(Exertion xrt) {
+        List<String> xrtIdsList = new ArrayList<String>();
+        for (Exertion exertion : xrt.getAllExertions()) {
+            xrtIdsList.add(exertion.getId().toString());
+        }
+        return xrtIdsList;
+    }
+
 
 
     private void saveFilesFromContext(Exertion xrt, PrintStream out) {

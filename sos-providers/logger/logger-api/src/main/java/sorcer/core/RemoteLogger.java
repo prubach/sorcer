@@ -50,7 +50,7 @@ public interface RemoteLogger extends Remote {
 
 
     public EventRegistration registerLogListener(RemoteEventListener listener,
-                                      MarshalledObject handback, long duration, Map<String, String> filterMap)
+                                      MarshalledObject handback, long duration, List<Map<String, String>> filterMapList)
             throws LeaseDeniedException, RemoteException;
 
 
