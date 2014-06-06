@@ -19,6 +19,7 @@
 package sorcer.core.dispatch;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -44,64 +45,23 @@ public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
         return Arrays.asList((Exertion)xrt);
     }
 
-	public void collectResults() throws ExertionException, SignatureException {
-		ExertionEnvelop temp;
-		temp = ExertionEnvelop.getTemplate();
-		temp.exertionID = xrt.getId();
-		temp.state = DONE;
+    @Override
+    protected void handleResult(Collection<ExertionEnvelop> results) throws ExertionException, SignatureException {
+        if (results.size() != 1)
+            throw new ExertionException("Invalid number of results (" + results.size() + "), expecting 1");
 
-		logger.debug("template for space task to be collected: {}",
-				temp.describe());
 
-		ExertionEnvelop resultEnvelop = takeEnvelop(temp);
-		if (resultEnvelop != null) {
-			logger.debug("collected result envelope {}",
-					resultEnvelop.describe());
-			
-			Task result = (Task) resultEnvelop.exertion;
-			state = DONE;
-			result.setStatus(DONE);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-	
-	public void collectFails() throws ExertionException {
-		ExertionEnvelop template;
-		template = ExertionEnvelop.getTemplate();
-		template.exertionID = xrt.getId();
-		template.state = FAILED;
+        Task result = (Task) results.iterator().next().exertion;
+        int status = result.getStatus();
+        if(status == DONE){
+            state = DONE;
+            result.setStatus(DONE);
+            xrt = result;
 
-		logger.debug("template for failed task to be collected: {}",
-				template.describe());
+        }else if (status == FAILED) {
+                addPoison(xrt);
 
-		ExertionEnvelop resultEnvelop = takeEnvelop(template);
-		if (resultEnvelop != null) {
-			Task result = (Task) resultEnvelop.exertion;
-			state = FAILED;
-			result.setStatus(FAILED);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-	
-	public void collectErrors() throws ExertionException {
-		ExertionEnvelop template;
-		template = ExertionEnvelop.getTemplate();
-		template.exertionID = xrt.getId();
-		template.state = ERROR;
-
-		logger.debug("template for error task to be collected: {}",
-				template.describe());
-
-		ExertionEnvelop resultEnvelop = takeEnvelop(template);
-		if (resultEnvelop != null) {
-			Task result = (Task) resultEnvelop.exertion;
-			state = ERROR;
-			result.setStatus(ERROR);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-
+            handleError(result);
+        }
+    }
 }

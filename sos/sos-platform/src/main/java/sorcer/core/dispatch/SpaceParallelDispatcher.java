@@ -146,22 +146,17 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                 for (UnusableEntryException throwable : exceptions) {
                     logger.warn("UnusableEntryException! unusable fields = " + throwable.partialEntry, throwable);
                 }
-                handleError(results, FAILED);
+                cleanRemainingFailedExertions(xrt.getId());
+
                 throw new ExertionException(e);
             } catch (Exception e) {
                 throw new ExertionException("Taking exertion envelop failed", e);
             }
-            for (ExertionEnvelop resultEnvelop : results) {
-                logger.debug("collect exertions for template: {}",
-              						doneTemplate.describe());
-                ServiceExertion input = (ServiceExertion) ((NetJob) xrt)
-                        .get(resultEnvelop.exertion
-                                .getIndex());
-                logger.debug("collected result envelope {}",
-                        resultEnvelop.describe());
-                ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
-                postExecExertion(input, result);
-            }
+            if (results.isEmpty())
+                continue;
+            logger.debug("collect exertions for template: {}",
+                    doneTemplate.describe());
+            handleResult(results);
         }
 
         if(xrt.getStatus()!=FAILED) {
@@ -169,6 +164,28 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             state = DONE;
         }
         dispatchers.remove(xrt.getId());
+    }
+
+    protected void handleResult(Collection<ExertionEnvelop> results) throws ExertionException, SignatureException {
+        boolean poisoned = false;
+        for (ExertionEnvelop resultEnvelop : results) {
+            ServiceExertion input = (ServiceExertion) ((NetJob) xrt)
+                    .get(resultEnvelop.exertion
+                            .getIndex());
+            ServiceExertion result = (ServiceExertion) resultEnvelop.exertion;
+            int status = result.getStatus();
+            if(status == DONE)
+                postExecExertion(input, result);
+            else if (status == FAILED) {
+                if (!poisoned) {
+                    addPoison(xrt);
+                    poisoned = true;
+                }
+
+                handleError(result);
+            }
+
+        }
     }
 
     protected void addPoison(Exertion exertion) {
@@ -285,13 +302,10 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         changeDoneExertionIndex(result.getIndex());
     }
 
-    protected void handleError(Exertion exertion, int state) {
+    protected void handleError(Exertion exertion) {
         if (exertion != xrt)
             ((NetJob) xrt).setExertionAt(exertion,
                     exertion.getIndex());
-        addPoison(exertion);
-        this.state = state;
-        cleanRemainingFailedExertions(xrt.getId());
     }
 
     private void cleanRemainingFailedExertions(Uuid id) {
