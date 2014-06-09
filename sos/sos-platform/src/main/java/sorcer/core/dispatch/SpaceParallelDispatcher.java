@@ -29,7 +29,6 @@ import net.jini.core.lease.Lease;
 import net.jini.entry.UnusableEntriesException;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
-import sorcer.core.DispatchResult;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
@@ -124,20 +123,13 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
 	public void collectResults() throws ExertionException, SignatureException {
 		int count = 0;
 		// get all children of the underlying parent job
-		ExertionEnvelop doneTemplate = ExertionEnvelop.getTakeTemplate(xrt.getId(),
-				null);
-        ExertionEnvelop failTmpl = ExertionEnvelop.getParentTemplate(xrt.getId(),
-                null);
-        failTmpl.state = FAILED;
-
-        ExertionEnvelop errTmpl = ExertionEnvelop.getParentTemplate(xrt.getId(),
-                null);
-        errTmpl.state = ERROR;
-
+        List<ExertionEnvelop> templates = Arrays.asList(getTemplate(DONE), getTemplate(FAILED), getTemplate(ERROR));
         while(count < inputXrts.size() && state != FAILED) {
             Collection<ExertionEnvelop> results;
             try {
-                results = space.take(Arrays.asList(doneTemplate, failTmpl, errTmpl), null, SpaceTaker.SPACE_TIMEOUT, Integer.MAX_VALUE);
+                results = space.take(templates, null, SpaceTaker.SPACE_TIMEOUT, Integer.MAX_VALUE);
+                if (results.isEmpty())
+                    continue;
                 count += results.size();
             } catch (UnusableEntriesException e) {
                 xrt.setStatus(FAILED);
@@ -150,12 +142,10 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
 
                 throw new ExertionException(e);
             } catch (Exception e) {
+                xrt.setStatus(FAILED);
+                state = FAILED;
                 throw new ExertionException("Taking exertion envelop failed", e);
             }
-            if (results.isEmpty())
-                continue;
-            logger.debug("collect exertions for template: {}",
-                    doneTemplate.describe());
             handleResult(results);
         }
 
@@ -164,6 +154,18 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             state = DONE;
         }
         dispatchers.remove(xrt.getId());
+    }
+
+    protected ExertionEnvelop getTemplate(int state) {
+        Uuid parentId = null;
+        Uuid id = null;
+        if(inputXrts.size()==1 && inputXrts.get(0)==xrt)
+            id = xrt.getId();
+        else
+            parentId = xrt.getId();
+        ExertionEnvelop tmpl = ExertionEnvelop.getTakeTemplate(parentId, id);
+        tmpl.state = state;
+        return tmpl;
     }
 
     protected void handleResult(Collection<ExertionEnvelop> results) throws ExertionException, SignatureException {
@@ -356,10 +358,4 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             postExecExertion(masterXrt, result.exertion);
         }
     }
-
-    @Override
-    public DispatchResult getResult() {
-        return new DispatchResult(State.values()[state], xrt);
-    }
-
 }
