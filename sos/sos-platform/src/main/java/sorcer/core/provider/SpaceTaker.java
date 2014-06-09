@@ -71,7 +71,7 @@ public class SpaceTaker implements Runnable {
 	protected volatile boolean keepGoing = true;
 
 	public static void doLog(String msg, String threadId, Transaction.Created txn) {
-		String newMsg = "\nspace taker log; thread id = " + threadId + "\n"
+		String newMsg = "space taker log; thread id = " + threadId + " "
 				+ msg;
 
 		if (txn != null) {
@@ -188,11 +188,11 @@ public class SpaceTaker implements Runnable {
 			threadIdsTaker.remove(threadIdString);
 		}
 		
-		logger.info("\n\n***TAKER THREAD: " + prefix + ": total calls = " + numCallsTaker
-				+ "\n***" + prefix + ": number of threads running = "
-				+ numThreadsTaker + "\n***" + prefix + ": thread ids running = "
+		logger.info("***TAKER THREAD: " + prefix + ": total calls = " + numCallsTaker
+				+ " number of threads running = "
+				+ numThreadsTaker + " thread ids running = "
 				+ threadIdsTaker 
-				+ "\nthis = " + this);
+				+ " this = " + this);
 
 		return threadIdString;
 	}
@@ -217,11 +217,11 @@ public class SpaceTaker implements Runnable {
 			prefix = "subtracting worker thread";
 			threadIdsWorker.remove(threadIdString);
 		}
-		logger.info("\n\n***WORKER THREAD: " + prefix + ": total calls = " + numCallsWorker
-				+ "\n***" + prefix + ": number of threads running = "
-				+ numThreadsWorker + "\n***" + prefix + ": thread ids running = "
+		logger.info(prefix + ": total calls = " + numCallsWorker
+				+ " number of threads running = "
+				+ numThreadsWorker + " thread ids running = "
 				+ threadIdsWorker
-				+ "\nthis = " + this);
+				+ " this = " + this);
 
 		return threadIdString;
 	}
