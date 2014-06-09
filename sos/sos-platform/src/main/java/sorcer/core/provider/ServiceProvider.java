@@ -615,7 +615,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
                     delegate.initSpaceSupport();
                     return null;
                 }
-            }, 100, TimeUnit.MILLISECONDS);
+            }, 0, TimeUnit.MILLISECONDS);
 		} catch (Throwable e) {
 			initFailed(e);
 		}
@@ -1704,13 +1704,13 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 
         ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
         tf.setDaemon(true);
-        tf.setNameFormat(tName(getName()) + "-%2$s");
+        tf.setNameFormat(tName(getName()) + "-init-%2$s");
         tf.setThreadGroup(ProviderDelegate.threadGroup);
         ClassLoader mine = getClass().getClassLoader();
         ClassLoader thread = Thread.currentThread().getContextClassLoader();
         logger.warn("ClassLoaders  class: {}, context: {}", System.identityHashCode(mine), System.identityHashCode(thread));
         //tf.setContextClassLoader(Thread.currentThread().getContextClassLoader());
-        scheduler = Executors.newScheduledThreadPool(0, tf);
+        scheduler = Executors.newScheduledThreadPool(1, tf);
     }
 
 	public final static String THREAD_MANAGEMNT = "threadManagement";
