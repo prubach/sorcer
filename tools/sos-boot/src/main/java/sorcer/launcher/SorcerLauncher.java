@@ -274,6 +274,7 @@ public class SorcerLauncher extends Launcher {
         serviceStarter.stop();
         serviceStarter = null;
 
+/*
         Thread[] threads = new Thread[Thread.activeCount() * 2];
         Thread current = Thread.currentThread();
         threadGroup.enumerate(threads);
@@ -287,6 +288,7 @@ public class SorcerLauncher extends Launcher {
                 log.warn("Interrupted on join()!", e);
             }
         }
+*/
     }
 
     public void setThreadFactory(ThreadFactory threadFactory) {
