@@ -21,6 +21,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${v.logback}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-api</artifactId>
             <version>${project.version}</version>
@@ -65,4 +71,15 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${v.logback}</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

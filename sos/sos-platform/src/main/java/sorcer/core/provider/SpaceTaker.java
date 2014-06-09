@@ -31,6 +31,7 @@ import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
@@ -40,6 +41,9 @@ import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Task;
 import sorcer.service.space.SpaceAccessor;
+
+import static sorcer.core.SorcerConstants.MDC_EXERTION_ID;
+import static sorcer.core.SorcerConstants.MDC_SORCER_REMOTE_CALL;
 
 /**
  * This is a class creates a JavaSpace taker that extends the {@link Thread}
@@ -294,8 +298,7 @@ public class SpaceTaker implements Runnable {
 					txnCreated = null;
 					continue;
 				}
-
-				pool.execute(new SpaceWorker(ee, txnCreated));
+                pool.execute(new SpaceWorker(ee, txnCreated));
 			} catch (Exception ex) {
                 logger.warn("Problem with SpaceTaker", ex);
 			}
@@ -360,6 +363,11 @@ public class SpaceTaker implements Runnable {
 		}
 
 		public void run() {
+            //
+            MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
+            if (ee.exertion!=null && ee.exertion.getId()!=null)
+                MDC.put(MDC_EXERTION_ID, ee.exertion.getId().toString());
+            //
 			String threadId = doThreadMonitorWorker(null);
 
 			Entry result = doEnvelope(ee, (txnCreated == null) ? null
@@ -403,6 +411,8 @@ public class SpaceTaker implements Runnable {
 				}
 			}
 			doThreadMonitorWorker(threadId);
+            MDC.remove(MDC_SORCER_REMOTE_CALL);
+            MDC.remove(MDC_EXERTION_ID);
 		}
 
 		public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction, String threadId, Transaction.Created txn) {

@@ -19,26 +19,26 @@
 package sorcer.tools.shell.cmds;
 
 import java.io.*;
-import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import net.jini.core.lookup.ServiceItem;
+import net.jini.core.event.RemoteEvent;
+import net.jini.core.event.UnknownEventException;
 import org.apache.commons.io.FileUtils;
 import sorcer.core.RemoteLogger;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.context.node.ContextNode;
 import sorcer.core.provider.logger.LoggerRemoteEventClient;
+import sorcer.core.provider.logger.LoggerRemoteException;
 import sorcer.netlet.ScriptExerter;
 import sorcer.service.*;
 import sorcer.tools.shell.*;
+import sorcer.util.ConsoleLoggerListener;
 import sorcer.util.WhitespaceTokenizer;
 
 public class ExertCmd extends ShellCmd {
@@ -94,7 +94,6 @@ public class ExertCmd extends ShellCmd {
 		boolean commandLine = NetworkShell.isInteractive();
 
         List<String> argsList = WhitespaceTokenizer.tokenize(input);
-
 
 //        Pattern p = Pattern.compile("(\"[^\"]*\"|[^\"^\\s]+)(\\s+|$)", Pattern.MULTILINE);
  //       Matcher m = p.matcher(input);
@@ -162,13 +161,15 @@ public class ExertCmd extends ShellCmd {
                 map.put(RemoteLogger.KEY_EXERTION_ID, exId);
                 filterMapList.add(map);
             }
-            ServiceItem[] sItems = Accessor.getServiceItems(RemoteLogger.class, null);
-            lrec = new LoggerRemoteEventClient();
-            List<RemoteLogger> lrs = new ArrayList<RemoteLogger>();
-            for (ServiceItem sItem : sItems) {
-                lrs.add((RemoteLogger)sItem.service);
+            if (!filterMapList.isEmpty()) {
+                try {
+                    lrec = new LoggerRemoteEventClient();
+                    lrec.register(filterMapList, new ConsoleLoggerListener());
+                } catch (LoggerRemoteException lre) {
+                    out.append("Remote logging disabled: " + lre.getMessage());
+                    lrec = null;
+                }
             }
-            lrec.register(lrs, SorcerEnv.getHostAddress(), filterMapList);
         }
 
         Object result = scriptExerter.execute();

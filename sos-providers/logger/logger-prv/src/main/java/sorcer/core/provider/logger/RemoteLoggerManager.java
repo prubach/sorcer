@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.rmi.MarshalledObject;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteLoggerManager implements RemoteLogger {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(RemoteLoggerManager.class);
@@ -54,7 +55,9 @@ public class RemoteLoggerManager implements RemoteLogger {
 
     private File logDir = new File(SorcerEnv.getHomeDir(), "logs/remote");
 
-    private Map<Map<String,String>, EventHandler> remoteLogListeners = new HashMap<Map<String,String>, EventHandler>();
+    private Map<Map<String,String>, EventHandler> remoteLogListeners = new ConcurrentHashMap<Map<String,String>, EventHandler>();
+
+    private Map<EventRegistration, EventHandler> remoteLogHandlers = new ConcurrentHashMap<EventRegistration, EventHandler>();
 
     private Provider provider;
 
@@ -94,7 +97,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         String loggerName;
         Logger logger;
         synchronized (this) {
-            log.info("Publishing remote log: " + loggingEvent.getMessage().substring(0,50));
+            log.info("Publishing remote log: " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
             Map<String, String> mdc = loggingEvent.getMDCPropertyMap();
             String exertionId = null;
             if (!remoteLogListeners.isEmpty()) {
@@ -107,7 +110,7 @@ public class RemoteLoggerManager implements RemoteLogger {
                         try {
                             LoggerRemoteEvent rse = new LoggerRemoteEvent(provider.getProxy(), loggingEvent);
                             entry.getValue().fire(rse);
-                            log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,50));
+                            log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
                         } catch (NoEventConsumerException e) {
                             log.error("Problem sending remote log event, no event consumer available");
                         } catch (RemoteException e) {
@@ -180,6 +183,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         try {
             eventHandler = new DispatchEventHandler(eventDescriptor);
             EventRegistration evReg = eventHandler.register(provider.getProxy(), listener, handback, duration);
+            remoteLogHandlers.put(evReg, eventHandler);
             for (Map<String, String>  fMap : filterMap)
                 remoteLogListeners.put(fMap, eventHandler);
             return evReg;
@@ -187,5 +191,26 @@ public class RemoteLoggerManager implements RemoteLogger {
             log.error("Problem registering to Log listener: " + e1.getMessage());
         }
         return null;
+    }
+
+    //@Override
+    public void unregisterLogListener(EventRegistration evReg) throws RemoteException {
+        log.info("Unregistering listener for remote logs: " + evReg.getID());
+        try {
+            EventHandler evHandler = remoteLogHandlers.get(evReg);
+            if (evHandler!=null) {
+                List<Map<String,String>> toRemove = new ArrayList<Map<String, String>>();
+                for (Map.Entry<Map<String, String>, EventHandler> entry : remoteLogListeners.entrySet()) {
+                    if (entry.getValue().equals(evHandler)) {
+                        toRemove.add(entry.getKey());
+                    }
+                }
+                for (Map<String, String> key : toRemove)
+                    remoteLogListeners.remove(key);
+                remoteLogHandlers.remove(evReg);
+            }
+        } catch (Exception e1) {
+            log.error("Problem unregistering Log listener: " + e1.getMessage());
+        }
     }
 }

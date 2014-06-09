@@ -17,7 +17,6 @@
  */
 package sorcer.core;
 
-import ch.qos.logback.classic.turbo.MDCFilter;
 import net.jini.core.event.EventRegistration;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.LeaseDeniedException;
@@ -53,7 +52,6 @@ public interface RemoteLogger extends Remote {
                                       MarshalledObject handback, long duration, List<Map<String, String>> filterMapList)
             throws LeaseDeniedException, RemoteException;
 
-
-//    public void registerLogListener(MDCFilter mdcFilter, Object proxy) throws RemoteException;
+    public void unregisterLogListener(EventRegistration evReg) throws RemoteException;
 
 }

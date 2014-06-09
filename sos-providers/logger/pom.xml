@@ -11,7 +11,8 @@
 	<name>SORCER OS :: providers :: logger</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>logger-cfg</module>
+        <module>logger-cfg</module>
+        <module>logger-dl</module>
 		<module>logger-prv</module>
 		<module>logger-sui</module>
         <module>logger-api</module>
