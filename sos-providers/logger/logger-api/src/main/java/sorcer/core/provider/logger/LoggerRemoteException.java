@@ -7,9 +7,6 @@ package sorcer.core.provider.logger;
  */
 public class LoggerRemoteException extends Exception {
 
-    public LoggerRemoteException() {
-    }
-
     public LoggerRemoteException(String message) {
         super(message);
     }
@@ -20,9 +17,5 @@ public class LoggerRemoteException extends Exception {
 
     public LoggerRemoteException(Throwable cause) {
         super(cause);
-    }
-
-    public LoggerRemoteException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
