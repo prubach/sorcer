@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@
 package sorcer.core.provider.jobber;
 
 import java.rmi.RemoteException;
-import java.util.HashSet;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.core.DispatchResult;
 import sorcer.core.dispatch.DispatcherException;
 import sorcer.core.dispatch.DispatcherFactory;
+import sorcer.core.provider.MonitoringControlFlowManager;
 import sorcer.core.provider.Provider;
 import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.SpaceTaskDispatcher;
@@ -34,6 +35,8 @@ import sorcer.service.*;
 import sorcer.core.provider.Spacer;
 
 import com.sun.jini.start.LifeCycle;
+
+import static sorcer.util.StringUtils.tName;
 
 /**
  * ServiceSpacer - The SORCER rendezvous service provider that provides
@@ -63,9 +66,9 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     }
 
     public Exertion execute(Exertion exertion, Transaction txn)
-            throws TransactionException, RemoteException {
+            throws TransactionException, RemoteException, ExertionException {
         if (exertion.isJob())
-            return doJob(exertion);
+            return super.execute(exertion, txn);
         else
             return doTask(exertion);
     }
@@ -80,7 +83,7 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
         private Provider provider;
 
         public TaskThread(Task task, Provider provider) {
-            super("[" + Thread.currentThread().getName() + "] Task-" + task.getName());
+            super(tName("Task-" + task.getName()));
             this.task = task;
             this.provider = provider;
         }
@@ -88,24 +91,17 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
         public void run() {
             logger.trace("*** TaskThread Started ***");
             try {
-                SpaceTaskDispatcher dispatcher = (SpaceTaskDispatcher) getDispatcherFactory(task).createDispatcher(task,
-                        new HashSet<Context>(), false, provider);
+                SpaceTaskDispatcher dispatcher = getDispatcherFactory(task).createDispatcher(task, provider);
                 try {
                     task.getControlContext().appendTrace(provider.getProviderName() + " dispatcher: "
                             + dispatcher.getClass().getName());
                 } catch (RemoteException e) {
                     //ignore it, local call
                 }
-                while (dispatcher.getState() != Exec.DONE
-                        && dispatcher.getState() != Exec.FAILED
-                        && dispatcher.getState() != Exec.SUSPENDED) {
-                    logger.debug("Dispatcher waiting for a space task... Sleeping for 250 milliseconds.");
-                    Thread.sleep(250);
-                }
-                logger.debug("Dispatcher State: " + dispatcher.getState());
-				result = (NetTask) dispatcher.getExertion();
-            } catch (InterruptedException e) {
-				logger.warn("Interrupted", e);
+                dispatcher.exec();
+                DispatchResult dispatchResult = dispatcher.getResult();
+                logger.debug("Dispatcher State: " + dispatchResult.state);
+				result = (NetTask) dispatchResult.exertion;
             } catch (DispatcherException e) {
                 logger.warn("Error while executing space task {}", task.getName(), e);
                 task.reportException(e);
@@ -141,15 +137,21 @@ public class ServiceSpacer extends ServiceJobber implements Spacer, Executor {
     }
 
 	@Override
-	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-        return new ControlFlowManager(exertion, delegate, this).process();
-	}
-
-    @Override
     protected DispatcherFactory getDispatcherFactory(Exertion exertion) {
         if (exertion.isSpacable())
             return ExertionDispatcherFactory.getFactory(myMemberUtil);
         else
             return super.getDispatcherFactory(exertion);
+    }
+
+    @Override
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!exertion.isSpacable())
+            return super.getControlFlownManager(exertion);
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate, this);
+        else
+            return new ControlFlowManager(exertion, delegate, this);
     }
 }

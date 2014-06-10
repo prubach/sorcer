@@ -65,7 +65,7 @@ public class JarView extends JPanel implements Runnable {
 		title.setIcon(TreeRenderer._jarIcon);
 		add(title, BorderLayout.NORTH);
 		if (!url.toString().endsWith("/")) {
-            new Thread(this, "[" + Thread.currentThread().getName() + "] JarView-" + codebase).start();
+            new Thread(this, "JarView-" + codebase).start();
         }
 	}
 

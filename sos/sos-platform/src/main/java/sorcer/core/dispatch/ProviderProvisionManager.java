@@ -32,6 +32,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * @author Pawel Rubach
  */
@@ -54,12 +56,12 @@ public class ProviderProvisionManager {
         ThreadGroup provGroup = new ThreadGroup("spacer-provisioning");
         provGroup.setDaemon(true);
         provGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-        Thread pThread = new Thread(provGroup, new ProvisionThread(), "Provisioner");
+        Thread pThread = new Thread(provGroup, new ProvisionThread(), tName("Provisioner"));
         pThread.start();
 	}
 
 
-    public void add(Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
+    public void add(Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
         NetSignature sig = (NetSignature) exertion.getProcessSignature();
         Service service = (Service) Accessor.getService(sig);
         // A hack to disable provisioning spacer itself
@@ -180,7 +182,7 @@ public class ProviderProvisionManager {
         Signature signature;
         int provisionAttempts=0;
         Exertion exertion;
-        SpaceExertDispatcher spaceExertDispatcher;
+        SpaceParallelDispatcher spaceExertDispatcher;
 
         private String getServiceType() {
             return serviceType;
@@ -227,12 +229,12 @@ public class ProviderProvisionManager {
             return exertion;
         }
 
-        public SpaceExertDispatcher getSpaceExertDispatcher() {
+        public SpaceParallelDispatcher getSpaceExertDispatcher() {
             return spaceExertDispatcher;
         }
 
         private SignatureElement(String serviceType, String providerName, String version, Signature signature,
-                                 Exertion exertion, SpaceExertDispatcher spaceExertDispatcher) {
+                                 Exertion exertion, SpaceParallelDispatcher spaceExertDispatcher) {
             this.serviceType = serviceType;
             this.providerName = providerName;
             this.version = version;

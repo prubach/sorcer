@@ -315,7 +315,7 @@ public class ServiceBrowser {
 					}
 					f.toFront();
 				}
-			}, Thread.currentThread().getName()+"-ServiceBrowser.openWindows");
+			}, "ServiceBrowser.openWindows");
 			t.start();
 
 			// now open any other persistent views

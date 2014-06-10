@@ -61,6 +61,7 @@ import com.sun.jini.start.LifeCycle;
 import sorcer.util.StringUtils;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.tName;
 
 /**
  * The facility for maintaining a cache of all SORCER OS :: providers {@link sorcer.service.Service}
@@ -1315,7 +1316,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 		}
 
 		private void refreshScreen(String msg) {
-			new Thread(new CatalogerEventListener(msg), "[" + Thread.currentThread().getName() + "] CatalogerEventListener").start();
+			new Thread(new CatalogerEventListener(msg), tName("CatalogerEventListener")).start();
 		}
 
 		public void run() {

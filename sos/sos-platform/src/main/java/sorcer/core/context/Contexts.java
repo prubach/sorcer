@@ -19,14 +19,7 @@
 package sorcer.core.context;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
@@ -512,14 +505,14 @@ public class Contexts {
 	 * @return map of all paths marked as data input
 	 * @throws ContextException
 	 */
-	public static Hashtable getInPathsMap(Context cntxt)
+	public static Map<String, String> getInPathsMap(Context cntxt)
 			throws ContextException {
 		// get all the in and inout paths
 		String inAssoc = Context.DIRECTION + APS + Context.DA_IN;
 		String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
 		String[] inPaths = Contexts.getMarkedPaths(cntxt, inAssoc);
 		String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
-		Hashtable inpaths = new Hashtable();
+		Map<String,String> inpaths = new HashMap<String, String>();
 
 		if (inPaths != null)
 			for (int i = 0; i < inPaths.length; i++)

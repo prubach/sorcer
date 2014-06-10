@@ -141,7 +141,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         try {
             sorcerLauncher = startSorcer(configs);
             super.run(notifier);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error", e);
             notifier.fireTestFailure(new Failure(getDescription(), new Exception("Error while starting SORCER with configs: " + Arrays.toString(configs), e)));
         } finally {

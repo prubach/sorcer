@@ -30,11 +30,12 @@ import java.util.Arrays;
 import sorcer.core.context.model.par.Par;
 import sorcer.service.Arg;
 import sorcer.service.ArgSet;
-import sorcer.service.ContextException;
 import sorcer.service.EvaluationException;
 import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 import sorcer.util.exec.NullInputStream;
+
+import static sorcer.util.StringUtils.tName;
 
 /**
  * @author Mike Sobolewski
@@ -228,7 +229,7 @@ public class CmdInvoker extends Invoker implements CmdInvoking {
 									+ logFile);
 				}
 			}
-		}, Thread.currentThread().getName()+"-STDIN-"+process.toString());
+        }, tName("STDIN-" + process));
 		scriptLogger.start();
 		CmdResult result = null;
 		if (stdin != null)

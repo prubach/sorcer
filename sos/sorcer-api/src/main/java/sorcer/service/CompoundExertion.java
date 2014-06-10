@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author Mike Sobolewski
  */
-public interface CompoundExertion {
+public interface CompoundExertion extends Exertion {
 	public int size();
 
 	/**

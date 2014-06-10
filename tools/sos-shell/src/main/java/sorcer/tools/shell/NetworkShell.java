@@ -1,7 +1,7 @@
 /*
  * Copyright 2011 the original author or authors.
  * Copyright 2011 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,6 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.rioproject.impl.config.DynamicConfiguration;
 import sorcer.boot.load.Activator;
 import sorcer.core.SorcerEnv;
-import sorcer.core.context.Contexts;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.netlet.util.ScriptExertException;
 import sorcer.resolver.Resolver;
@@ -81,6 +80,8 @@ import sorcer.util.exec.ExecUtils;
 import sorcer.util.exec.ExecUtils.CmdResult;
 
 import com.sun.jini.config.Config;
+
+import static sorcer.util.StringUtils.tName;
 
 /**
  * @author Mike Sobolewski
@@ -893,7 +894,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 						e.printStackTrace();
 					}
 				}
-			}, "[" + Thread.currentThread().getName() + "] exec-" + cmd);
+			}, tName("exec-" + cmd));
 			edt.setDaemon(true);
 			edt.start();
 		}

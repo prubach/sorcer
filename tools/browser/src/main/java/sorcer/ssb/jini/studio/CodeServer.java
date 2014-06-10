@@ -121,7 +121,7 @@ public class CodeServer implements Runnable {
 		System.out.println("SSB Code Server started on port " + port);
 
 		setCodebase(port);
-        _thread = new Thread(this, "[" + Thread.currentThread().getName() + "] CodeServer-" + port);
+        _thread = new Thread(this, "CodeServer-" + port);
         _thread.start();
 	}
 
@@ -133,7 +133,7 @@ public class CodeServer implements Runnable {
 					public void run() {
 						serviceRequest(request);
 					}
-                }, "[" + Thread.currentThread().getName() + "] CodeServer.serviceRequest");
+                }, "CodeServer.serviceRequest");
                 t.start();
 			} catch (Exception ex) {
 				System.out.println(ex);

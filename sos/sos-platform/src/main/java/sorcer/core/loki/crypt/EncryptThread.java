@@ -26,6 +26,8 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.Scanner;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * The encryption thread is sparked by an encryption manager for the processing
  * of cipher text which is written back to the manager via an output pipe
@@ -54,7 +56,7 @@ class EncryptThread extends Thread {
 	 *            cipher text byte array to encrypt
 	 */
 	public EncryptThread(Writer out, Cipher encryptCipher, byte[] data) {
-        super("[" + Thread.currentThread().getName() + "] Encrypt");
+        super(tName("Encrypt"));
 		this.init(out, encryptCipher, new StringReader(new String(data)));
 	}
 
@@ -67,7 +69,7 @@ class EncryptThread extends Thread {
 	 *            cipher text string to encrypt
 	 */
 	public EncryptThread(Writer out, Cipher encryptCipher, String data) {
-        super("[" + Thread.currentThread().getName() + "] Encrypt");
+        super(tName("Encrypt"));
 		this.init(out, encryptCipher, new StringReader(data));
 	}
 

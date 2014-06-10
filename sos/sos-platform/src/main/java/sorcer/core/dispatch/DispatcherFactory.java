@@ -21,6 +21,7 @@ import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
+import sorcer.service.Task;
 
 import java.util.Set;
 
@@ -38,6 +39,8 @@ public interface DispatcherFactory {
      *                 of SERVICE tasks.
      */
 	 public Dispatcher createDispatcher(Exertion exertion, Provider provider, String... config) throws DispatcherException;
+
+    public SpaceTaskDispatcher createDispatcher(Task Task, Provider provider, String... config) throws DispatcherException;
 
     public Dispatcher createDispatcher(Exertion exertion, Set<Context> sharedContexts, boolean isSpawned, Provider provider) throws DispatcherException;
 }

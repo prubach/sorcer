@@ -48,10 +48,6 @@ import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
-/*
-import net.jini.core.lease.Lease;
-import net.jini.core.lease.LeaseDeniedException;
-*/
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.transaction.Transaction;
 import net.jini.discovery.DiscoveryGroupManagement;
@@ -78,16 +74,14 @@ import sorcer.core.proxy.Partnership;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.service.*;
-import sorcer.util.ConfigurableThreadFactory;
-import sorcer.util.InjectionHelper;
-import sorcer.util.ObjectLogger;
+import sorcer.util.*;
 
 import com.sun.jini.config.Config;
 import com.sun.jini.start.LifeCycle;
-import sorcer.util.StringUtils;
 
 import static java.util.Collections.addAll;
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.util.StringUtils.tName;
 
 /**
  * The ServiceProvider class is a type of {@link Provider} with dependency
@@ -198,6 +192,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
     private IServiceBeanListener beanListener;
 
     private IProviderServiceBuilder serviceBuilder;
+
+    protected ScheduledExecutorService scheduler;
 
     protected ServiceProvider() {
 		providers.add(this);
@@ -613,7 +609,13 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			logger.info("Provider service started: {} {}", getProviderName(), this);
 
 			// allow for enough time to export the provider's proxy and stay alive
-			new Thread(ProviderDelegate.threadGroup, new KeepAwake(), "[" + Thread.currentThread().getName() + "] KeepAwake-" + getName()).start();
+            scheduler.schedule(new Callable<Void>() {
+                @Override
+                public Void call() throws RemoteException, ConfigurationException {
+                    delegate.initSpaceSupport();
+                    return null;
+                }
+            }, 0, TimeUnit.MILLISECONDS);
 		} catch (Throwable e) {
 			initFailed(e);
 		}
@@ -1343,23 +1345,20 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	 */
 	public Exertion doExertion(final Exertion exertion, Transaction txn)
 			throws ExertionException {
-		// create an instance of the ExertionProcessor and call on the
+        logger.trace("service: " + exertion.getName());
+		// create an instance of the ControlFlowManager and call on the
 		// process method, returns an Exertion
-		ControlFlowManager cfm;
-		if (this instanceof Jobber) {
-			cfm = new ControlFlowManager(exertion, delegate, (Jobber) this);
-		} else if (this instanceof Spacer) {
-			cfm = new ControlFlowManager(exertion, delegate, (Spacer) this);
-		} else if (this instanceof Concatenator) {
-			cfm = new ControlFlowManager(exertion, delegate, (Concatenator) this);
-		} else if (exertion instanceof Task) {
-            if (exertion.isMonitorable())
-                cfm = new MonitoringControlFlowManager(exertion, delegate);
-            else
-                cfm = new ControlFlowManager(exertion, delegate);
-        } else
+        return getControlFlownManager(exertion).process();
+	}
+
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!(exertion instanceof Task))
             throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
-		return cfm.process();
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate);
+        else
+            return new ControlFlowManager(exertion, delegate);
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException,
@@ -1702,6 +1701,16 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		logger.debug("threadManagement: " + threadManagement);
 		if (threadManagement)
             logger.warn(THREAD_MANAGEMNT + " is currently unsupported");
+
+        ConfigurableThreadFactory tf = new ConfigurableThreadFactory();
+        tf.setDaemon(true);
+        tf.setNameFormat(tName(getName()) + "-init-%2$s");
+        tf.setThreadGroup(ProviderDelegate.threadGroup);
+        ClassLoader mine = getClass().getClassLoader();
+        ClassLoader thread = Thread.currentThread().getContextClassLoader();
+        logger.warn("ClassLoaders  class: {}, context: {}", System.identityHashCode(mine), System.identityHashCode(thread));
+        //tf.setContextClassLoader(Thread.currentThread().getContextClassLoader());
+        scheduler = Executors.newScheduledThreadPool(1, tf);
     }
 
 	public final static String THREAD_MANAGEMNT = "threadManagement";

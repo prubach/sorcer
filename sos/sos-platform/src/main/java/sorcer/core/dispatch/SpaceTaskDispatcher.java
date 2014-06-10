@@ -18,150 +18,50 @@
 
 package sorcer.core.dispatch;
 
-import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
-import sorcer.service.space.SpaceAccessor;
 
-public class SpaceTaskDispatcher extends SpaceExertDispatcher {
+import static sorcer.service.Exec.*;
+
+public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
 
 	public SpaceTaskDispatcher(final Task task,
             final Set<Context> sharedContexts,
             final boolean isSpawned, 
             final LokiMemberUtil myMemberUtil,
             final ProvisionManager provisionManager,
-            final ProviderProvisionManager providerProvisionManager) throws ExertionException, SignatureException {
-
-		this.providerProvisionManager = providerProvisionManager;
-        this.provisionManager = provisionManager;
-        this.xrt = task;
-		subject = task.getSubject();
-		this.sharedContexts = sharedContexts;
-		this.isSpawned = isSpawned;
-		isMonitored = task.isMonitorable();
-		state = RUNNING;
-		dispatchers.put(task.getId(), this);
-		dispatchExertions();
-		
-		disatchGroup = new ThreadGroup("task-"+ task.getId());
-		disatchGroup.setDaemon(true);
-		disatchGroup.setMaxPriority(Thread.NORM_PRIORITY - 1);
-
-		CollectResultThread crThread = new CollectResultThread(disatchGroup);
-		crThread.start();
-
-		CollectFailThread cfThread = new CollectFailThread(disatchGroup);
-		cfThread.start();
-
-		CollectErrorThread efThread = new CollectErrorThread(disatchGroup);
-		efThread.start();
-
-		this.myMemberUtil = myMemberUtil;
+            final ProviderProvisionManager providerProvisionManager) throws ContextException, ExertionException {
+        super(task, sharedContexts, isSpawned, myMemberUtil, null, provisionManager, providerProvisionManager);
 	}
 
-	public void dispatchExertions() throws ExertionException,
-			SignatureException {
-		checkAndDispatchExertions();
-		try {
-			reconcileInputExertions(xrt);
-		} catch (ContextException e) {
-			throw new ExertionException(e);
-		}
-		logger.debug("space task: " + xrt);
-		try {
-			writeEnvelop(xrt);
-			logger.debug("written task ==> SPACE EXECUTE TASK: "
-					+ xrt.getName());
-		} catch (ProvisioningException pe) {
-            xrt.setStatus(FAILED);
-            throw new ExertionException(pe.getLocalizedMessage());
-        } catch (RemoteException re) {
-			logger.warn("Space not reachable... resetting space", re);
-			space = SpaceAccessor.getSpace();
-			if (space == null) {
-				xrt.setStatus(FAILED);
-				throw new ExertionException("NO exertion space available!");
-			}
-		}
-	}
+    @Override
+    protected List<Exertion> getInputExertions() throws ContextException {
+        return Arrays.asList((Exertion)xrt);
+    }
 
-	public void collectResults() throws ExertionException, SignatureException {
-		ExertionEnvelop temp;
-		temp = ExertionEnvelop.getTemplate();
-		temp.exertionID = xrt.getId();
-		temp.state = DONE;
+    @Override
+    protected void handleResult(Collection<ExertionEnvelop> results) throws ExertionException, SignatureException {
+        if (results.size() != 1)
+            throw new ExertionException("Invalid number of results (" + results.size() + "), expecting 1");
 
-		logger.debug("template for space task to be collected: {}",
-				temp.describe());
 
-		ExertionEnvelop resultEnvelop = takeEnvelop(temp);
-		if (resultEnvelop != null) {
-			logger.debug("collected result envelope {}",
-					resultEnvelop.describe());
-			
-			Task result = (Task) resultEnvelop.exertion;
-			state = DONE;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
-			result.setStatus(DONE);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-	
-	public void collectFails() throws ExertionException {
-		ExertionEnvelop template;
-		template = ExertionEnvelop.getTemplate();
-		template.exertionID = xrt.getId();
-		template.state = FAILED;
+        Task result = (Task) results.iterator().next().exertion;
+        int status = result.getStatus();
+        if(status == DONE){
+            state = DONE;
+            result.setStatus(DONE);
+            xrt = result;
 
-		logger.debug("template for failed task to be collected: {}",
-				template.describe());
+        }else if (status == FAILED) {
+                addPoison(xrt);
 
-		ExertionEnvelop resultEnvelop = takeEnvelop(template);
-		if (resultEnvelop != null) {
-			Task result = (Task) resultEnvelop.exertion;
-			state = FAILED;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
-			result.setStatus(FAILED);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-	
-	public void collectErrors() throws ExertionException {
-		ExertionEnvelop template;
-		template = ExertionEnvelop.getTemplate();
-		template.exertionID = xrt.getId();
-		template.state = ERROR;
-
-		logger.debug("template for error task to be collected: {}",
-				template.describe());
-
-		ExertionEnvelop resultEnvelop = takeEnvelop(template);
-		if (resultEnvelop != null) {
-			Task result = (Task) resultEnvelop.exertion;
-			state = ERROR;
-			try {
-				notifyExertionExecution(xrt, xrt, result);
-			} catch (ContextException e) {
-				throw new ExertionException(e);
-			}
-			result.setStatus(ERROR);
-			xrt = result;
-		}
-		dispatchers.remove(xrt.getId());
-	}
-
+            handleError(result);
+        }
+    }
 }

@@ -27,6 +27,7 @@ import sorcer.core.dispatch.ExertionDispatcherFactory;
 import sorcer.core.dispatch.JobThread;
 import sorcer.core.provider.ControlFlowManager;
 import sorcer.core.provider.Jobber;
+import sorcer.core.provider.MonitoringControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.*;
 
@@ -72,18 +73,8 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	}
 
 	public Exertion service(Exertion exertion) throws RemoteException, ExertionException {
-		logger.trace("service: " + exertion.getName());
-		try {
-			// Jobber overrides SorcerProvider.service method here
-			setServiceID(exertion);
-			// Create an instance of the ExertionProcessor and call on the
-			// process method, returns an Exertion
-			return new ControlFlowManager(exertion, delegate, this).process();
-
-		} 
-		catch (Exception e) {
-			throw new ExertionException(e);
-		}
+        setServiceID(exertion);
+        return super.service(exertion);
 	}
 
 	public Exertion execute(Exertion exertion) throws RemoteException,
@@ -93,25 +84,22 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 	
 	public Exertion execute(Exertion exertion, Transaction txn)
 			throws TransactionException, ExertionException, RemoteException {
-		return doJob(exertion, txn);
+        if(!(exertion instanceof Job))
+            throw new IllegalArgumentException("Not a job");
+		return doJob((Job)exertion, txn);
 	}
 
-	public Exertion doJob(Exertion job) {
-		return doJob(job, null);
-	}
-	
-	public Exertion doJob(Exertion job, Transaction txn) {
+	public Exertion doJob(Job job, Transaction txn) {
 		//logger.info("*********************************************ServiceJobber.doJob(), job = " + job);
 
 		setServiceID(job);
 		try {
-            Job _job = (Job) job;
-            JobThread jobThread = new JobThread(_job, this, getDispatcherFactory(job));
+            JobThread jobThread = new JobThread(job, this, getDispatcherFactory(job));
 			if (job.getControlContext().isMonitorable()
 					&& !job.getControlContext().isWaitable()) {
 				replaceNullExertionIDs(job);
 				notifyViaEmail(job);
-                new Thread(jobThread, _job.getContextName()).start();
+                new Thread(jobThread, job.getContextName()).start();
                 return job;
 			} else {
 				jobThread.run();
@@ -119,9 +107,10 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 				logger.trace("<== Result: " + result);
 				return result;
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			return null;
+		} catch (Exception e) {
+			job.reportException(e);
+            logger.warn("Error", e);
+            return job;
 		}
 	}
 
@@ -181,8 +170,14 @@ public class ServiceJobber extends ServiceProvider implements Jobber, Executor {
 		}
 	}
 
-	@Override
-	public Exertion doExertion(Exertion exertion, Transaction txn) throws ExertionException {
-		return new ControlFlowManager(exertion, delegate, this).process();
+    @Override
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!(exertion instanceof Job))
+            throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate, this);
+        else
+            return new ControlFlowManager(exertion, delegate, this);
 	}
 }

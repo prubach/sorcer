@@ -9,6 +9,8 @@ import java.io.*;
 import sorcer.util.GenericUtil;
 import sorcer.util.StringUtils;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * Utility methods to interact with and manage native processes started from
  * Java.
@@ -95,8 +97,8 @@ public class ExecUtils {
         // concurrency to avoid stdio deadlocks
         Redir stdout = new Redir(process.getInputStream());
         Redir stderr = new Redir(process.getErrorStream());
-        new Thread(stdout, "[" + Thread.currentThread().getName() + "] STDOUT-" + process.toString()).start();
-        new Thread(stderr, "[" + Thread.currentThread().getName() + "] STDERR-" + process.toString()).start();
+        new Thread(stdout, tName("STDOUT-" + process.toString())).start();
+        new Thread(stderr, tName("STDERR-" + process.toString())).start();
         // redirect input in the current thread
         if (stdin != null) {
             OutputStream pout = process.getOutputStream();
@@ -416,8 +418,8 @@ public class ExecUtils {
         // concurrency to avoid stdio deadlocks
         Redir stdout = new Redir(process.getInputStream());
         Redir stderr = new Redir(process.getErrorStream());
-        new Thread(stdout, "[" + Thread.currentThread().getName() + "] STDOUT-" + process.toString()).start();
-        new Thread(stderr, "[" + Thread.currentThread().getName() + "] STDERR-" + process.toString()).start();
+        new Thread(stdout, tName("STDOUT - " + process.toString())).start();
+        new Thread(stderr, tName("STDERR - " + process.toString())).start();
         // redirect input in the current thread
         if (stdin != null) {
             OutputStream pout = process.getOutputStream();

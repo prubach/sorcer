@@ -23,6 +23,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Collections;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -2652,11 +2653,17 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public void reportException(Throwable t) {
-        ((ControlContext)exertion.getControlContext()).addException(t);
+        if (exertion != null)
+            exertion.getControlContext().addException(t);
+        else
+            logger.log(Level.WARNING, "Error (could not report)", t);
 	}
 
 	public void reportException(String message, Throwable t) {
-        ((ControlContext)exertion.getControlContext()).addException(message, t);
+        if (exertion != null)
+            exertion.getControlContext().addException(message, t);
+        else
+            logger.log(Level.WARNING, message, t);
 	}
 
 	/*

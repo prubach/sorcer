@@ -69,6 +69,8 @@ import sorcer.ui.util.JIconButton;
 import sorcer.ui.util.WindowUtilities;
 import sorcer.util.StringUtils;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * HTML file browser and file editor
  */
@@ -483,7 +485,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 		Object result;
 
 		public ExertionThread(String script) {
-            super("[" + Thread.currentThread().getName() + "] Exertion");
+            super(tName("Exertion"));
 			this.script = script;
 		}
 

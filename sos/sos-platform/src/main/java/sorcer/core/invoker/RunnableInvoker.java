@@ -27,6 +27,8 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.InvocationException;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * @author Mike Sobolewski
  */
@@ -65,7 +67,7 @@ public class RunnableInvoker<T> extends Invoker<T> {
 		} catch (ContextException e) {
 			throw new InvocationException(e);
 		}
-		new Thread(runnable, "[" + Thread.currentThread().getName() + "] RunnableInvoker-" + runnable.toString()).start();
+		new Thread(runnable, tName("RunnableInvoker-" + runnable)).start();
 		return null;
 	}
 	

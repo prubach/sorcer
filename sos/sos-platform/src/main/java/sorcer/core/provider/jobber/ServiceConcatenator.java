@@ -28,6 +28,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.dispatch.BlockThread;
 import sorcer.core.provider.Concatenator;
 import sorcer.core.provider.ControlFlowManager;
+import sorcer.core.provider.MonitoringControlFlowManager;
 import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Block;
 import sorcer.service.Condition;
@@ -54,6 +55,17 @@ public class ServiceConcatenator extends ServiceProvider implements Concatenator
 	// require constructor for Jini 2 NonActivatableServiceDescriptor
 	public ServiceConcatenator(String[] args, LifeCycle lifeCycle) throws Exception {
 		super(args, lifeCycle);
+	}
+
+    @Override
+    protected ControlFlowManager getControlFlownManager(Exertion exertion) throws ExertionException {
+        if (!(exertion instanceof Block))
+            throw new ExertionException(new IllegalArgumentException("Unknown exertion type " + exertion));
+
+        if (exertion.isMonitorable())
+            return new MonitoringControlFlowManager(exertion, delegate, this);
+        else
+            return new ControlFlowManager(exertion, delegate, this);
 	}
 
 	public void setServiceID(Exertion ex) {

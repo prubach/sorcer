@@ -60,6 +60,8 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Logger;
 
+import static sorcer.util.StringUtils.tName;
+
 /**
  * SORCER generic utility class. It implements the interface
  * {@link Serializable}.
@@ -86,7 +88,7 @@ public class GenericUtil implements Serializable {
          * @param process
          */
         protected Worker(final Process process) {
-            super("[" + Thread.currentThread().getName() + "] ProcessWorker-" + process.toString());
+            super(tName("ProcessWorker-" + process));
             this.process = process;
         }
 
@@ -1543,7 +1545,7 @@ public class GenericUtil implements Serializable {
      * @throws IOException
      */
     public static void redirectOutput(Process p, File file) throws IOException {
-        new Thread(new RedirectInputStreamRunnable(p.getInputStream(), file), "[" + Thread.currentThread().getName() + "] STDOUT-" + p.toString())
+        new Thread(new RedirectInputStreamRunnable(p.getInputStream(), file), tName("STDOUT-" + p))
                 .run();
     }
 
@@ -1557,7 +1559,7 @@ public class GenericUtil implements Serializable {
      * @throws IOException
      */
     public static void redirectError(Process p, File file) {
-        new Thread(new RedirectInputStreamRunnable(p.getErrorStream(), file), "[" + Thread.currentThread().getName() + "] STDERR-" + p.toString())
+        new Thread(new RedirectInputStreamRunnable(p.getErrorStream(), file), tName("STDERR-" + p))
                 .run();
     }
 
@@ -3840,7 +3842,7 @@ class StreamGobbler extends Thread {
     public StreamGobbler(InputStream is, String type,
                          boolean displayStreamOutput, File logFile, File dir)
             throws FileNotFoundException {
-        super("[" + Thread.currentThread().getName() + "] StreamGobbler-" + logFile.getPath());
+        super(tName("StreamGobbler-" + logFile));
         this.is = is;
         this.type = type;
         this.displayStreamOutput = displayStreamOutput;
@@ -3912,7 +3914,7 @@ class StreamJobControlWriter extends Thread {
     public StreamJobControlWriter(OutputStream os, boolean displayStreamOutput, Logger logger
             , File dir)
             throws FileNotFoundException {
-        super("[" + Thread.currentThread().getName() + "] StreamJobControlWriter");
+        super(tName("StreamJobControlWriter"));
         this.os = os;
         this.ps = new PrintStream(os);
         this.displayStreamOutput = displayStreamOutput;

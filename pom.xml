@@ -251,13 +251,6 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-<!--
-				<plugin>
-					<groupId>org.sorcersoft.sorcer</groupId>
-					<artifactId>sorcer-maven-plugin</artifactId>
-					<version>${project.version}</version>
-				</plugin>
--->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
@@ -267,6 +260,18 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.4</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                            <manifestEntries>
+                                <Specification-Title>SORCER</Specification-Title>
+                                <Specification-Vendor>sorcersoft.org</Specification-Vendor>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.bitstrings.maven.plugins</groupId>
@@ -287,6 +292,7 @@
                             <!--<RIO_HOME>${env.SORCER_HOME}/target/rio</RIO_HOME>-->
                             <sorcer.home>${env.SORCER_HOME}</sorcer.home>
                             <java.rmi.server.RMIClassLoaderSpi>sorcer.rio.rmi.SorcerResolvingLoader</java.rmi.server.RMIClassLoaderSpi>
+                            <logback.configurationFile>${env.SORCER_HOME}/configs/logback.groovy</logback.configurationFile>
                         </systemPropertyVariables>
 
                         <!-- reuse forks should work after all integration tests are migrated to SorcerRunner -->

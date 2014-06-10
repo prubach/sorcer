@@ -17,14 +17,16 @@
 package sorcer.core.dispatch;
 
 import net.jini.config.ConfigurationException;
+import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.service.Block;
-import sorcer.service.Exec;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static sorcer.util.StringUtils.tName;
 
 public class BlockThread extends Thread {
 	private final static Logger logger = Logger.getLogger(BlockThread.class
@@ -39,7 +41,7 @@ public class BlockThread extends Thread {
 	Provider provider;
 
 	public BlockThread(Block block, Provider provider) {
-        super("[" + Thread.currentThread().getName() + "] Block-" + block.toString());
+        super(tName("Block-" + block));
 		this.block = block;
 		this.provider = provider;
 	}
@@ -70,27 +72,15 @@ public class BlockThread extends Thread {
 			} catch (RemoteException e) {
 				// ignore it, locall call
 			}
-			 int COUNT = 1000;
-			 int count = COUNT;
-			while (dispatcher.getState() != Exec.DONE
-					&& dispatcher.getState() != Exec.FAILED
-					&& dispatcher.getState() != Exec.SUSPENDED) {
-				 count--;
-				 if (count < 0) {
-				 logger.finer("*** Concatenator's Exertion Dispatcher waiting in state: "
-				 + dispatcher.getState());
-				 count = COUNT;
-				 }
-				Thread.sleep(SLEEP_TIME);
-			}
-			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatcher.getState()
+            dispatcher.exec();
+            DispatchResult result = dispatcher.getResult();
+
+			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + result.state
 					+ " for block***\n" + block.getControlContext());
-            result = (Block) dispatcher.getExertion();
+            this.result = (Block) result.exertion;
 		} catch (DispatcherException de) {
-			de.printStackTrace();
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+            logger.log(Level.WARNING, "Error while exerting " + block.getId(), de);
+        }
 	}
 
 	public Block getBlock() {

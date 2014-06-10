@@ -87,14 +87,13 @@ public class Jobs implements SorcerConstants {
 	}
 
     public static List<Exertion> getInputExertions(Job job) throws ContextException {
-		if (job == null || job.size() == 0)
+		if (job == null)
 			return null;
 		List<Exertion> exertions = new ArrayList<Exertion>();
 		Exertion master = job.getMasterExertion();
-		for (int i = 0; i < job.size(); i++)
-			if (!(job.get(i).equals(master) || job
-					.getControlContext().isSkipped(job.get(i))))
-				exertions.add(job.get(i));
+		for (Exertion xrt : job.getExertions())
+            if (!(xrt.equals(master) || job.getControlContext().isSkipped(xrt)))
+                exertions.add(xrt);
 		return exertions;
 	}
 

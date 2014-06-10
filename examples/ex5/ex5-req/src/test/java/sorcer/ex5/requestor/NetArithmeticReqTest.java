@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +16,6 @@
  */
 package sorcer.ex5.requestor;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -53,24 +51,17 @@ import static org.junit.Assert.assertEquals;
                 ":ex5-cfg-adder",
                 ":ex5-cfg-multiplier",
                 ":ex5-cfg-subtractor",
-                ":ex5-cfg-divider",
+                ":ex5-cfg-divider"
         }),
         @SorcerServiceConfiguration({
-                ":ex5-cfg-all",
+                ":ex5-cfg-all"
         }),
         @SorcerServiceConfiguration({
-                ":ex5-cfg-one-bean",
+                ":ex5-cfg-one-bean"
         })
 })
 public class NetArithmeticReqTest {
-
-	private final static Logger logger = LoggerFactory
-			.getLogger(NetArithmeticReqTest.class);
-
-
-    //
-    //Failed tests:
-    //NetArithmeticReqTest.exertJobComposition:79 expected:<400.0> but was:<-100.0>
+	private final static Logger logger = LoggerFactory.getLogger(NetArithmeticReqTest.class);
 
     @Test
 	public void exertJobComposition() throws Exception {
