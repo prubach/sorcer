@@ -1,7 +1,8 @@
 /*
  * Copyright 2013 the original author or authors.
  * Copyright 2013 SorcerSoft.org.
- *  
+ * Copyright 2014 SorcerSoft.com S.A.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,10 +33,7 @@ import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
-
-import static sorcer.service.Exec.*;
 
 /**
  * A dispatching class for exertion blocks in the PUSH mode.
@@ -64,31 +62,28 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 		}
 	}
 
-    protected void dispatchExertion(ServiceExertion se) throws ExertionException, SignatureException {
+    @Override
+    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException {
+        super.beforeExec(exertion);
         try {
-            ((ServiceContext)se.getContext()).setBlockScope(xrt.getContext());
-
-            // Provider is expecting exertion to be in context
-            se.getContext().setExertion(se);
+            preUpdate(exertion);
+            ((ServiceContext)exertion.getContext()).setBlockScope(xrt.getContext());
         } catch (ContextException ex) {
             throw new ExertionException(ex);
         }
-        try {
-            preUpdate(se);
-            se = (ServiceExertion) execExertion(se);
-        } catch (Exception ce) {
-            throw new ExertionException(ce);
-        }
+    }
 
-        super.dispatchExertion(se);
+    @Override
+    protected void afterExec(Exertion result) throws ContextException, ExertionException {
+        super.afterExec(result);
         try {
-            postUpdate(se);
-        } catch (Exception e) {
+            postUpdate(result);
+        } catch (RemoteException e) {
             throw new ExertionException(e);
-		}
-	}
+        }
+    }
 
-	private void preUpdate(ServiceExertion exertion) throws ContextException {
+    private void preUpdate(Exertion exertion) throws ContextException {
 		if (exertion instanceof AltExertion) {
 			for (OptExertion oe : ((AltExertion)exertion).getOptExertions()) {
 				oe.getCondition().getConditionalContext().append(xrt.getContext());
@@ -113,7 +108,7 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 		}
 	}
 	
-	private void postUpdate(ServiceExertion exertion) throws ContextException, RemoteException {
+	private void postUpdate(Exertion exertion) throws ContextException, RemoteException {
 		if (exertion instanceof AltExertion) {
 			xrt.getContext().append(((AltExertion)exertion).getActiveOptExertion().getContext());
 		} else if (exertion instanceof OptExertion) {

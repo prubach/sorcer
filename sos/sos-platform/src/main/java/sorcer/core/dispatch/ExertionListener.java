@@ -1,6 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
- * Copyright 2013, 2014 Sorcersoft.com S.A.
+ * Copyright 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core;
 
-import sorcer.core.dispatch.ExertionListener;
+package sorcer.core.dispatch;
 
-public interface Dispatcher {
-    void exec();
-    DispatchResult getResult();
+import sorcer.service.ContextException;
+import sorcer.service.Exertion;
 
-    void addExertionListener(ExertionListener listener);
-    void removeExertionListener(ExertionListener listener);
+/**
+ * @author Rafał Krupiński
+ */
+public interface ExertionListener {
+    void exertionStatusChanged(Exertion exertion) throws ContextException;
 }

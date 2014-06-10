@@ -95,6 +95,7 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
 	}
 
     protected void dispatchExertion(ServiceExertion se) throws SignatureException, ExertionException {
+        beforeExec(se);
         se = (ServiceExertion) execExertion(se);
         if (se.getStatus() <= FAILED) {
             xrt.setStatus(FAILED);

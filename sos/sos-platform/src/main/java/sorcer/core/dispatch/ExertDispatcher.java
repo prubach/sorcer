@@ -19,6 +19,7 @@
 package sorcer.core.dispatch;
 
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
 import java.util.*;
 
 import javax.security.auth.Subject;
@@ -30,11 +31,13 @@ import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 import static sorcer.service.Exec.*;
 
@@ -53,9 +56,6 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected boolean isMonitored;
 
     protected Set<Context> sharedContexts;
-
-    // If it is spawned by another dispatcher.
-    protected boolean isSpawned;
 
     // All dispatchers spawned by this one.
     protected List<Uuid> runningExertionIDs = Collections.synchronizedList(new LinkedList<Uuid>());
@@ -96,7 +96,6 @@ abstract public class ExertDispatcher implements Dispatcher {
 		this.xrt = sxrt;
         this.subject = sxrt.getSubject();
         this.sharedContexts = sharedContexts;
-        this.isSpawned = isSpawned;
         this.isMonitored = sxrt.isMonitorable();
         this.provider = provider;
         this.provisionManager = provisionManager;
@@ -110,17 +109,20 @@ abstract public class ExertDispatcher implements Dispatcher {
             masterXrt = (ServiceExertion) ((Job) xrt).getMasterExertion();
         }
         try {
-            beforeExec(xrt);
+            beforeParent(xrt);
             doExec();
             afterExec(xrt);
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Exception e) {
             logger.info("Exertion dispatcher thread killed by exception", e);
             xrt.setStatus(FAILED);
             state = FAILED;
             xrt.reportException(e);
-        }finally {
+            try {
+                afterStatusChanged(xrt);
+            } catch (ContextException e1) {
+                logger.warn("Could not access context", e1);
+            }
+        } finally {
             dispatchers.remove(xrt.getId());
         }
     }
@@ -128,16 +130,50 @@ abstract public class ExertDispatcher implements Dispatcher {
     abstract protected void doExec() throws SignatureException, ExertionException;
     abstract protected List<Exertion> getInputExertions() throws ContextException;
 
-    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException, ContextException {
+    protected void beforeParent(Exertion exertion) throws ContextException, ExertionException {
         logger.info("before exert {}", exertion);
         reconcileInputExertions(exertion);
         updateInputs(exertion);
         checkProvision();
         inputXrts = getInputExertions();
+        if (inputXrts.size() > 0 && inputXrts.get(0) != xrt) {
+            MonitoringSession session = MonitorUtil.getMonitoringSession(xrt);
+            for (Exertion x : inputXrts) {
+                MonitorUtil.setMonitorSession(x, session);
+            }
+        }
     }
 
-    protected void afterExec(Exertion result) throws ContextException {
-        logger.info("After exert {}", result);
+    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException {
+        logger.debug("before exert {}", exertion);
+        try {
+            // Provider is expecting exertion to be in context
+            exertion.getContext().setExertion(exertion);
+        } catch (ContextException e) {
+            throw new ExertionException(e);
+        }
+        // If Job, new dispatcher will update inputs for it's Exertion
+        // in catalog dispatchers, if it is a job, then new dispatcher is
+        // spawned
+        // and the shared contexts are passed. So the new dispatcher will update
+        // inputs
+        // of tasks inside the jobExertion. But in space, all inputs to a new
+        // job are
+        // to be updated before dropping.
+        try {
+            exertion.getControlContext().appendTrace(provider.getProviderName()
+                    + " dispatcher: " + getClass().getName());
+        } catch (RemoteException e) {
+            logger.warn("Exception on local call", e);
+        }
+        ((ServiceExertion) exertion).startExecTime();
+        ((ServiceExertion) exertion).setStatus(RUNNING);
+
+    }
+
+    protected void afterExec(Exertion result) throws ContextException, ExertionException {
+        logger.debug("After exert {}", result);
+        afterStatusChanged(result);
     }
 
     @Override
@@ -167,7 +203,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected void checkProvision() throws ExertionException {
         if(xrt.isProvisionable() && xrt.getDeployments().size()>0) {
             try {
-                getProvisionManager().deployServices();
+                provisionManager.deployServices();
             } catch (DispatcherException e) {
                 throw new ExertionException("Unable to deploy services", e);
             }
@@ -228,6 +264,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     }
 
     protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
+        logger.debug("updating inputs for {}", ex.getName());
         List<Context> inputContexts = Jobs.getTaskContexts(ex);
         for (Context inputContext : inputContexts)
             updateInputs((ServiceContext) inputContext);
@@ -327,10 +364,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         return isMonitored;
     }
 
-    public ProvisionManager getProvisionManager() {
-        return provisionManager;
-    }
-
     protected void reconcileInputExertions(Exertion ex) throws ContextException {
         ServiceExertion ext = (ServiceExertion)ex;
         if (ext.getStatus() == DONE) {
@@ -345,5 +378,26 @@ abstract public class ExertDispatcher implements Dispatcher {
                     reconcileInputExertions(sub);
             }
         }
+    }
+
+    /**
+     * Local listeners
+     */
+    private List<ExertionListener> listeners = new LinkedList<ExertionListener>();
+
+    private void afterStatusChanged(Exertion exertion) throws ContextException {
+        for (ExertionListener listener : listeners) {
+            listener.exertionStatusChanged(exertion);
+        }
+    }
+
+    @Override
+    public void addExertionListener(ExertionListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeExertionListener(ExertionListener listener) {
+        listeners.remove(listener);
     }
 }

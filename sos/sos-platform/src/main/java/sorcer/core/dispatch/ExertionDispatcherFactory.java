@@ -30,6 +30,7 @@ import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The
@@ -86,34 +87,38 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         providerProvisionManager);
 			}
             if (exertion instanceof Job) {
-            Job job = (Job) exertion;
-			if (Jobs.isSpaceParallel(job)) {
-                logger.info("Running Space Parallel Dispatcher...");
-                dispatcher = new SpaceParallelDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        loki,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isCatalogParallel(job)) {
-                logger.info("Running Catalog Parallel Dispatcher...");
-                dispatcher = new CatalogParallelDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isCatalogSequential(job)) {
-                logger.info("Running Catalog Sequential Dispatcher...");
-                dispatcher = new CatalogSequentialDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
+                Job job = (Job) exertion;
+                if (Jobs.isSpaceParallel(job)) {
+                    logger.info("Running Space Parallel Dispatcher...");
+                    dispatcher = new SpaceParallelDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            loki,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                } else if (Jobs.isCatalogParallel(job)) {
+                    logger.info("Running Catalog Parallel Dispatcher...");
+                    dispatcher = new CatalogParallelDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                } else if (Jobs.isCatalogSequential(job)) {
+                    logger.info("Running Catalog Sequential Dispatcher...");
+                    dispatcher = new CatalogSequentialDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                }
             }
-            }
+            assert dispatcher != null;
+            if (exertion.isMonitorable())
+                dispatcher.addExertionListener(new MonitoringExertionListener(MonitorUtil.getMonitoringSession(exertion)));
+
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (RuntimeException e) {
             throw e;
