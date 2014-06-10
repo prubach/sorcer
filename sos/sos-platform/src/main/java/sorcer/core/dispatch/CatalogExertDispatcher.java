@@ -49,6 +49,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     protected Exertion execExertion(Exertion ex) throws SignatureException,
             ExertionException {
+        beforeExec(ex);
         // set subject before task goes out.
         // ex.setSubject(subject);
         ServiceExertion result = null;
@@ -62,6 +63,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			} else {
 				logger.warn("Unknown ServiceExertion: {}", ex);
 			}
+            afterExec(ex, result);
 		} catch (Exception e) {
             logger.warn("Error while executing exertion");
 			// return original exertion with exception
@@ -73,13 +75,15 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		}
 		// set subject after result is received
 		// result.setSubject(subject);
-		postExecExertion(ex, result);
 		return result;
     }
-    protected void postExecExertion(Exertion ex, Exertion result)
-            throws SignatureException, ExertionException {
+
+    protected void afterExec(Exertion ex, Exertion result)
+            throws SignatureException, ExertionException, ContextException {
+        afterExec(result);
         ServiceExertion ser = (ServiceExertion) result;
-		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
+		((CompoundExertion)xrt).setExertionAt(result, result.getIndex());
+//		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
         if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
             ser.setStatus(DONE);
 /*            if (xrt.getControlContext().isNodeReferencePreserved())

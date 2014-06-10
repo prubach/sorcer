@@ -131,12 +131,12 @@ abstract public class ExertDispatcher implements Dispatcher {
     abstract protected List<Exertion> getInputExertions() throws ContextException;
 
     protected void beforeParent(Exertion exertion) throws ContextException, ExertionException {
-        logger.info("before exert {}", exertion);
+        logger.debug("before exert {}", exertion);
         reconcileInputExertions(exertion);
         updateInputs(exertion);
         checkProvision();
         inputXrts = getInputExertions();
-        if (inputXrts.size() > 0 && inputXrts.get(0) != xrt) {
+        if (xrt.isMonitorable() && inputXrts.size() > 0 && inputXrts.get(0) != xrt) {
             MonitoringSession session = MonitorUtil.getMonitoringSession(xrt);
             for (Exertion x : inputXrts) {
                 MonitorUtil.setMonitorSession(x, session);
