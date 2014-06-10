@@ -27,6 +27,7 @@
     </parent>
 
     <artifactId>exertmonitor-api</artifactId>
+    <name>SORCER OS :: providers :: exertmonitor :: API</name>
 
     <dependencies>
         <dependency>

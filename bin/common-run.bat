@@ -18,16 +18,17 @@ IF NOT DEFINED SORCER_HOME (
     )
 )
 rem read sorcer.env to get the local repo location
-FOR /F "usebackq tokens=1,2 delims==" %%G IN ("%SORCER_HOME%\configs\sorcer.env") DO (set %%G=%%H)
-set MVN_REPO=%sorcer.local.repo.location%
+rem FOR /F "usebackq tokens=1,2 delims==" %%G IN ("%SORCER_HOME%\configs\sorcer.env") DO (set %%G=%%H)
+rem set MVN_REPO=%sorcer.local.repo.location%
 
-set "USER_HOME=%HOMEDRIVE%%HOMEPATH%"
+rem set "USER_HOME=%HOMEDRIVE%%HOMEPATH%"
 
-SETLOCAL EnableDelayedExpansion
-set MVN_REPO=!MVN_REPO;${user.home}=%USER_HOME%!
-set MVN_REPO=%MVN_REPO;/=\%
-IF NOT DEFINED MVN_REPO SET "MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository"
-ENDLOCAL & SET MVN_REPO=%MVN_REPO%
+rem SETLOCAL EnableDelayedExpansion
+rem set MVN_REPO=!MVN_REPO;${user.home}=%USER_HOME%!
+rem set MVN_REPO=%MVN_REPO;/=\%
+rem IF NOT DEFINED MVN_REPO SET "MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository"
+rem ENDLOCAL & SET MVN_REPO=%MVN_REPO%
+SET "MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository"
 
 set "LIB_DIR=%SORCER_HOME%\lib"
 
