@@ -28,7 +28,7 @@ import sorcer.config.ConfigEntry;
 import sorcer.core.SorcerEnv;
 import sorcer.util.ConfigurableThreadFactory;
 
-import java.io.File;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.concurrent.*;
 
@@ -44,7 +44,19 @@ public class RemoteLoggerInstaller implements DestroyAdmin {
     @ConfigEntry(required = false)
     public long rate = 200;
 
+    @ConfigEntry(required = false)
+    public String hostname;
+
     private ScheduledFuture<?> scheduledFuture;
+
+    {
+        try {
+            hostname = SorcerEnv.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            log.warn("Couldn't determine own hostname");
+            hostname = "remote-unknown";
+        }
+    }
 
     public RemoteLoggerInstaller() {
         init();
@@ -66,7 +78,7 @@ public class RemoteLoggerInstaller implements DestroyAdmin {
         if (appender != null)
             throw new IllegalStateException("Appender " + appenderName + " already configured");
 
-        RemoteLoggerAppender remoteAppender = new RemoteLoggerAppender(queue);
+        RemoteLoggerAppender remoteAppender = new RemoteLoggerAppender(queue, hostname);
         remoteAppender.setContext(loggerContext);
         remoteAppender.addFilter(MDCFilter.instance);
         remoteAppender.start();
@@ -75,8 +87,7 @@ public class RemoteLoggerInstaller implements DestroyAdmin {
 
     private void installClient(BlockingQueue<ILoggingEvent> queue) {
         ConfigurableThreadFactory threadFactory = new ConfigurableThreadFactory();
-        threadFactory.setDaemon(true);
-        threadFactory.setNameFormat("RemoteLoggerClient-%2$d");
+        threadFactory.setNameFormat("Logger");
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(threadFactory);
         scheduledFuture = scheduler.scheduleAtFixedRate(new RemoteLoggerClient(queue), 0, rate, TimeUnit.MILLISECONDS);

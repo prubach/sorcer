@@ -18,12 +18,8 @@ package sorcer.platform.logger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sorcer.core.RemoteLogger;
-import sorcer.core.SorcerEnv;
 
-import java.net.UnknownHostException;
 import java.util.Queue;
 
 /**
@@ -32,22 +28,13 @@ import java.util.Queue;
  * @author Rafał Krupiński
  */
 public class RemoteLoggerAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
-    final private static Logger log = LoggerFactory.getLogger(RemoteLoggerAppender.class);
     private Queue<ILoggingEvent> queue;
-    private static String hostname;
+    private String hostname;
 
-    static {
-        try {
-            hostname = SorcerEnv.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            log.warn("Couldn't determine own hostname");
-            hostname = "remote";
-        }
-    }
-
-    public RemoteLoggerAppender(Queue<ILoggingEvent> queue) {
+    public RemoteLoggerAppender(Queue<ILoggingEvent> queue, String hostname) {
         assert queue != null;
         this.queue = queue;
+        this.hostname = hostname;
     }
 
     @Override
