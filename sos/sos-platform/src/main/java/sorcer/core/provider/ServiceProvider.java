@@ -1706,10 +1706,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
         tf.setDaemon(true);
         tf.setNameFormat(tName(getName()) + "-init-%2$s");
         tf.setThreadGroup(ProviderDelegate.threadGroup);
-        ClassLoader mine = getClass().getClassLoader();
-        ClassLoader thread = Thread.currentThread().getContextClassLoader();
-        logger.warn("ClassLoaders  class: {}, context: {}", System.identityHashCode(mine), System.identityHashCode(thread));
-        //tf.setContextClassLoader(Thread.currentThread().getContextClassLoader());
         scheduler = Executors.newScheduledThreadPool(1, tf);
     }
 
@@ -1725,29 +1721,6 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return System.getProperties();
 	}
 
-	public class KeepAwake implements Runnable {
-
-		public void run() {
-			try {
-				delegate.initSpaceSupport();
-			} catch (Exception x) {
-				logger.warn("Error while initializing space", x);
-			}
-			try {
-				while (running) {
-					Thread.sleep(ProviderDelegate.KEEP_ALIVE_TIME);
-				}
-			} catch (Exception doNothing) {
-			}
-		}
-	}
-	
-	public void initSpaceSupport() throws RemoteException,
-			ConfigurationException {
-		delegate.spaceEnabled(true);
-		delegate.initSpaceSupport();
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
