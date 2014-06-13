@@ -151,10 +151,9 @@ public class ExertCmd extends ShellCmd {
 		}
         Object target = scriptExerter.parse();
         LoggerRemoteEventClient lrec = null;
-        Thread loggerListenerThread;
 
         // Starting RemoteLoggerListener
-        if (target instanceof Exertion) {
+        if (shell.isRemoteLogging() & target instanceof Exertion) {
             List<Map<String, String>> filterMapList = new ArrayList<Map<String, String>>();
             for (String exId : getAllExertionIdFromExertion((Exertion)target)) {
                 Map<String, String> map = new HashMap<String, String>();
@@ -164,7 +163,7 @@ public class ExertCmd extends ShellCmd {
             if (!filterMapList.isEmpty()) {
                 try {
                     lrec = new LoggerRemoteEventClient();
-                    lrec.register(filterMapList, new ConsoleLoggerListener());
+                    lrec.register(filterMapList, new ConsoleLoggerListener(out));
                 } catch (LoggerRemoteException lre) {
                     out.append("Remote logging disabled: " + lre.getMessage());
                     lrec = null;

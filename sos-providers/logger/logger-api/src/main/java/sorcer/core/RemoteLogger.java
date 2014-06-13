@@ -35,7 +35,8 @@ public interface RemoteLogger extends Remote {
 
     String LOGGER_CONTEXT_KEY = "SORCER-REMOTE-CALL";
     String KEY_HOSTNAME = "hostname";
-    String KEY_EXERTION_ID = "exertionId";
+    String KEY_EXERTION_ID = "xrtId";
+    String KEY_PROVIDER_ID = "prvId";
 
     public void publish(List<LoggingEventVO> record) throws RemoteException;
 

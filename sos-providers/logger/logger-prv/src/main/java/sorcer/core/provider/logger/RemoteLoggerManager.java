@@ -97,7 +97,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         String loggerName;
         Logger logger;
         synchronized (this) {
-            log.info("Publishing remote log: " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
+            //log.info("Publishing remote log: " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
             Map<String, String> mdc = loggingEvent.getMDCPropertyMap();
             String exertionId = null;
             if (!remoteLogListeners.isEmpty()) {
@@ -110,7 +110,7 @@ public class RemoteLoggerManager implements RemoteLogger {
                         try {
                             LoggerRemoteEvent rse = new LoggerRemoteEvent(provider.getProxy(), loggingEvent);
                             entry.getValue().fire(rse);
-                            log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
+                            //log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
                         } catch (NoEventConsumerException e) {
                             log.error("Problem sending remote log event, no event consumer available");
                         } catch (RemoteException e) {
@@ -128,7 +128,7 @@ public class RemoteLoggerManager implements RemoteLogger {
                     hostname = mdc.get(KEY_HOSTNAME);
                 else
                     hostname = "remote";
-                logger.setAdditive(false);
+                //logger.setAdditive(false);
                 logger.addAppender(createAppender(loggerName, hostname));
             }
         }

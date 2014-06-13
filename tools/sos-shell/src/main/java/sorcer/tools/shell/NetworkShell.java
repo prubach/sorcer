@@ -114,6 +114,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     static private boolean debug = false;
 
+    static private boolean isRemoteLogging = true;
+
 	static private String shellName = "nsh";
 
 	private static String request;
@@ -382,6 +384,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public boolean isRemoteLogging() {
+        return isRemoteLogging;
     }
 
 	public static SorcerPrincipal getPrincipal() {
@@ -1298,7 +1304,12 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
         debug = (Boolean) sysConfig.getEntry(CONFIG_COMPONENT,
                 "debug", boolean.class, Boolean.FALSE);
-		loginContext = null;
+
+        isRemoteLogging = (Boolean) sysConfig.getEntry(CONFIG_COMPONENT,
+                "remoteLogging", boolean.class, Boolean.TRUE);
+
+
+        loginContext = null;
 		try {
 			loginContext = (LoginContext) Config.getNonNullEntry(sysConfig,
 					CONFIG_COMPONENT, "loginContext", LoginContext.class);

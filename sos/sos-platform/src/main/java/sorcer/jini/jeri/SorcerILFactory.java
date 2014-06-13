@@ -37,11 +37,13 @@ import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.slf4j.MDC;
 import sorcer.core.ContextManagement;
+import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.service.Service;
 
 import static sorcer.core.SorcerConstants.*;
+import static sorcer.core.SorcerConstants.MDC_PROVIDER_ID;
 
 /**
  * A SorcerILFactory can be used with object interfaces as its services. Those
@@ -222,6 +224,15 @@ public class SorcerILFactory extends BasicILFactory {
 				Collection context) throws Throwable {
             try{
                 MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
+                if (impl instanceof ServiceProvider) {
+                    MDC.put(MDC_PROVIDER_ID, ((ServiceProvider) impl).getId().toString());
+                    for (Class cl : ((ServiceProvider) impl).getDelegate().getPublishedServiceTypes()) {
+                        if (cl.getName().contains(REMOTE_LOGGER_INTERFACE)) {
+                            MDC.remove(MDC_SORCER_REMOTE_CALL);
+                            break;
+                        }
+                    }
+                }
                 if (args.length>0 && args[0] instanceof Exertion) {
                     Exertion xrt = ((Exertion)args[0]);
                     if (xrt!=null && xrt.getId()!=null)
@@ -230,6 +241,8 @@ public class SorcerILFactory extends BasicILFactory {
                 return doInvoke(impl, method, args, context);
             }finally {
                 MDC.remove(MDC_SORCER_REMOTE_CALL);
+                MDC.remove(MDC_EXERTION_ID);
+                MDC.remove(MDC_PROVIDER_ID);
             }
         }
 

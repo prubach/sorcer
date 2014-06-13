@@ -1219,8 +1219,10 @@ public interface SorcerConstants {
 
     String NAME_DEFAULT="___SORCER_NAME_DEFAULT___";
     String MDC_SORCER_REMOTE_CALL = "SORCER-REMOTE-CALL";
-    String MDC_EXERTION_ID = "exertionId";
+    String MDC_EXERTION_ID = "xrtId";
+    String MDC_PROVIDER_ID = "prvId";
     String START_PACKAGE = "com.sun.jini.start";
+    String REMOTE_LOGGER_INTERFACE = "RemoteLogger";
 }
 
 
