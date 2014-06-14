@@ -57,7 +57,7 @@ public class RemoteLoggerManager implements RemoteLogger {
 
     private Map<Map<String,String>, EventHandler> remoteLogListeners = new ConcurrentHashMap<Map<String,String>, EventHandler>();
 
-    private Map<EventRegistration, EventHandler> remoteLogHandlers = new ConcurrentHashMap<EventRegistration, EventHandler>();
+    private Map<Long, EventHandler> remoteLogHandlers = new ConcurrentHashMap<Long, EventHandler>();
 
     private Provider provider;
 
@@ -183,7 +183,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         try {
             eventHandler = new DispatchEventHandler(eventDescriptor);
             EventRegistration evReg = eventHandler.register(provider.getProxy(), listener, handback, duration);
-            remoteLogHandlers.put(evReg, eventHandler);
+            remoteLogHandlers.put(evReg.getID(), eventHandler);
             for (Map<String, String>  fMap : filterMap)
                 remoteLogListeners.put(fMap, eventHandler);
             return evReg;
@@ -197,7 +197,7 @@ public class RemoteLoggerManager implements RemoteLogger {
     public void unregisterLogListener(EventRegistration evReg) throws RemoteException {
         log.info("Unregistering listener for remote logs: " + evReg.getID());
         try {
-            EventHandler evHandler = remoteLogHandlers.get(evReg);
+            EventHandler evHandler = remoteLogHandlers.get(evReg.getID());
             if (evHandler!=null) {
                 List<Map<String,String>> toRemove = new ArrayList<Map<String, String>>();
                 for (Map.Entry<Map<String, String>, EventHandler> entry : remoteLogListeners.entrySet()) {
@@ -207,7 +207,7 @@ public class RemoteLoggerManager implements RemoteLogger {
                 }
                 for (Map<String, String> key : toRemove)
                     remoteLogListeners.remove(key);
-                remoteLogHandlers.remove(evReg);
+                remoteLogHandlers.remove(evReg.getID());
             }
         } catch (Exception e1) {
             log.error("Problem unregistering Log listener: " + e1.getMessage());
