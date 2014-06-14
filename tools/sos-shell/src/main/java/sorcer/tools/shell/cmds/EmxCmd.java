@@ -19,10 +19,7 @@ package sorcer.tools.shell.cmds;
 
 import java.io.PrintStream;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import net.jini.core.lookup.ServiceItem;
 import net.jini.id.Uuid;
@@ -276,8 +273,11 @@ public class EmxCmd extends ShellCmd {
 			out.println("No monitored exertions at this time.");
 			return;
 		}
-		exertionInfos = new ExertionInfo[all.size()];
-		all.values().toArray(exertionInfos);
+
+        ArrayList<ExertionInfo> eInfos =  new ArrayList<ExertionInfo>(all.values());
+        Collections.sort(eInfos);
+        exertionInfos = new ExertionInfo[all.size()];
+        eInfos.toArray(exertionInfos);
 		printExerionInfos(exertionInfos);
 	}
 

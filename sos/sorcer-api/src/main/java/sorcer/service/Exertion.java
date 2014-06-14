@@ -21,6 +21,7 @@ package sorcer.service;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import net.jini.core.transaction.Transaction;
@@ -364,4 +365,10 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
     void setIndex(int i);
 
     Uuid getParentId();
+
+    /**
+     * Return date when exertion was created
+     * @return
+     */
+    Date getCreationDate();
 }

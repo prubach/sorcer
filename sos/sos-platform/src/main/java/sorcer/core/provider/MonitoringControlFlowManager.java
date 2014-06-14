@@ -83,7 +83,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
                     DEFAULT_TIMEOUT_PERIOD);
             lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
 
-            NetTask result = (NetTask) super.process();
+            ServiceExertion result = (ServiceExertion) super.process();
             Exec.State resultState = result.getStatus() <= FAILED ? Exec.State.FAILED : Exec.State.DONE;
             try {
                 monSession.changed(result.getContext(), resultState);
