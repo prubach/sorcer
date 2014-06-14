@@ -131,7 +131,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     abstract protected List<Exertion> getInputExertions() throws ContextException;
 
     protected void beforeParent(Exertion exertion) throws ContextException, ExertionException {
-        logger.debug("before exert {}", exertion);
+        logger.debug("before parent {}", exertion);
         reconcileInputExertions(exertion);
         updateInputs(exertion);
         checkProvision();
@@ -149,6 +149,7 @@ abstract public class ExertDispatcher implements Dispatcher {
         try {
             // Provider is expecting exertion to be in context
             exertion.getContext().setExertion(exertion);
+            updateInputs(exertion);
         } catch (ContextException e) {
             throw new ExertionException(e);
         }
