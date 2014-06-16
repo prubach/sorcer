@@ -114,6 +114,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     static private boolean debug = false;
 
+    static private boolean isRemoteLogging = true;
+
 	static private String shellName = "nsh";
 
 	private static String request;
@@ -223,8 +225,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 	}
 
 	static public void main(String argv[]) {
-        String curToken = null;
-		//System.out.println("nsh main args: " + Arrays.toString(argv));	
+		//System.out.println("nsh main args: " + Arrays.toString(argv));
 		if (argv.length > 0) {
             if ((argv.length == 1 && argv[0].startsWith("--"))
 					|| (argv.length == 2 && (argv[0].equals("-e"))
@@ -296,7 +297,6 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
                 e.printStackTrace(shellOutput);
             System.exit(1);
         }
-		ShellCmd cmd = null;
 		//nshUrl = getWebsterUrl();
 		//System.out.println("main request: " + request);
 		if (request==null) {
@@ -305,76 +305,84 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		}
 		while (request != null && ((request.length() > 0 && BUILTIN_QUIT_COMMAND.indexOf(request) < 0)
 				|| request.length() == 0)) {
-			shellTokenizer = new WhitespaceTokenizer(request);
-			//new StringTokenizer(request);
-			curToken = "";
-			if (shellTokenizer.hasMoreTokens()) {
-				curToken = shellTokenizer.nextToken();
-			}
-			try {
-				if (commandTable.containsKey(curToken)) {
-					cmd = commandTable.get(curToken);
-					cmd.execute(NetworkShell.getInstance());
-				}
-				// admissible shortcuts in the 'synonyms' map
-				else if (aliases.containsKey(curToken)) {
-					String cmdName = aliases.get(curToken);
-					int i = cmdName.indexOf(" -");
-					if (i > 0) {
-						request = cmdName;
-						cmdName = cmdName.substring(0, i);
-						shellTokenizer = new WhitespaceTokenizer(request);
-					} else {
-						request = cmdName + " " + request;
-						cmdName = new StringTokenizer(cmdName).nextToken();
-						shellTokenizer = new WhitespaceTokenizer(request);
-					}
-					cmd = commandTable.get(cmdName);
-					cmd.execute(NetworkShell.getInstance());
-				} else if (request.length() > 0) {
-					if (request.equals("?")) {
-						instance.listCommands();
-
-					} else {
-						shellOutput.println(UNKNOWN_COMMAND_MSG);
-					}
-				}
-				shellOutput.print(SYSTEM_PROMPT);
-				shellOutput.flush();
-				String in = shellInput.readLine();
-				// Exit if CTRL+D pressed
-				if (in==null) System.exit(0);
-				
-				// fore !! run the previous command
-				if (!in.equals("!!")) {
-					instance.request = in;
-				}
-			} catch (IOException io) {
-                shellOutput.println(io.getMessage());
-                try {
-                    request = shellInput.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-            } catch (Throwable ex) {
-                if (ex instanceof ScriptExertException) {
-                    String msg = "Problem parsing script @ line: " +
-                            ((ScriptExertException)ex).getLineNum() + ":\n" + ex.getLocalizedMessage();
-                    logger.severe(msg);
-                    shellOutput.println(msg);
-                } else
-                    ex.printStackTrace(shellOutput);
-                try {
-					request = shellInput.readLine();
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-			}
+            processRequest(false);
 		}
 		// shellOutput.println("Thanks for using the SORCER Network Shell!");
 	}
+
+    public static void processRequest(boolean outsideCall) {
+        ShellCmd cmd;
+        shellTokenizer = new WhitespaceTokenizer(request);
+        //new StringTokenizer(request);
+        String curToken = "";
+        if (shellTokenizer.hasMoreTokens()) {
+            curToken = shellTokenizer.nextToken();
+        }
+        try {
+            if (commandTable.containsKey(curToken)) {
+                cmd = commandTable.get(curToken);
+                cmd.execute(NetworkShell.getInstance());
+            }
+            // admissible shortcuts in the 'synonyms' map
+            else if (aliases.containsKey(curToken)) {
+                String cmdName = aliases.get(curToken);
+                int i = cmdName.indexOf(" -");
+                if (i > 0) {
+                    request = cmdName;
+                    cmdName = cmdName.substring(0, i);
+                    shellTokenizer = new WhitespaceTokenizer(request);
+                } else {
+                    request = cmdName + " " + request;
+                    cmdName = new StringTokenizer(cmdName).nextToken();
+                    shellTokenizer = new WhitespaceTokenizer(request);
+                }
+                cmd = commandTable.get(cmdName);
+                cmd.execute(NetworkShell.getInstance());
+            } else if (request.length() > 0) {
+                if (request.equals("?")) {
+                    instance.listCommands();
+
+                } else {
+                    shellOutput.println(UNKNOWN_COMMAND_MSG);
+                }
+            }
+            if(outsideCall) {
+                return;
+            }
+            shellOutput.print(SYSTEM_PROMPT);
+            shellOutput.flush();
+            String in = shellInput.readLine();
+            // Exit if CTRL+D pressed
+            if (in==null) System.exit(0);
+
+            // fore !! run the previous command
+            if (!in.equals("!!")) {
+                instance.request = in;
+            }
+        } catch (IOException io) {
+            shellOutput.println(io.getMessage());
+            try {
+                request = shellInput.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        } catch (Throwable ex) {
+            if (ex instanceof ScriptExertException) {
+                String msg = "Problem parsing script @ line: " +
+                        ((ScriptExertException)ex).getLineNum() + ":\n" + ex.getLocalizedMessage();
+                logger.severe(msg);
+                shellOutput.println(msg);
+            } else
+                ex.printStackTrace(shellOutput);
+            try {
+                request = shellInput.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+    }
 
 	public static String getUserName() {
 		return userName;
@@ -382,6 +390,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public boolean isRemoteLogging() {
+        return isRemoteLogging;
     }
 
 	public static SorcerPrincipal getPrincipal() {
@@ -1298,7 +1310,12 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
         debug = (Boolean) sysConfig.getEntry(CONFIG_COMPONENT,
                 "debug", boolean.class, Boolean.FALSE);
-		loginContext = null;
+
+        isRemoteLogging = (Boolean) sysConfig.getEntry(CONFIG_COMPONENT,
+                "remoteLogging", boolean.class, Boolean.TRUE);
+
+
+        loginContext = null;
 		try {
 			loginContext = (LoginContext) Config.getNonNullEntry(sysConfig,
 					CONFIG_COMPONENT, "loginContext", LoginContext.class);
