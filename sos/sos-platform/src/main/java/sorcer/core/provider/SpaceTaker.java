@@ -17,6 +17,7 @@
  */
 package sorcer.core.provider;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -43,6 +44,7 @@ import sorcer.service.Task;
 import sorcer.service.space.SpaceAccessor;
 
 import static sorcer.core.SorcerConstants.MDC_EXERTION_ID;
+import static sorcer.core.SorcerConstants.MDC_PROVIDER_ID;
 import static sorcer.core.SorcerConstants.MDC_SORCER_REMOTE_CALL;
 
 /**
@@ -367,6 +369,14 @@ public class SpaceTaker implements Runnable {
             MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
             if (ee.exertion!=null && ee.exertion.getId()!=null)
                 MDC.put(MDC_EXERTION_ID, ee.exertion.getId().toString());
+            try {
+                String prvId = null;
+                if (data.provider!=null)
+                    prvId = data.provider.getProviderID().toString();
+                MDC.put(MDC_PROVIDER_ID, prvId);
+            } catch (RemoteException re) {
+                logger.warn("Problem getting provider ID in SpaceTaker");
+            }
             //
 			String threadId = doThreadMonitorWorker(null);
 
@@ -413,6 +423,7 @@ public class SpaceTaker implements Runnable {
 			doThreadMonitorWorker(threadId);
             MDC.remove(MDC_SORCER_REMOTE_CALL);
             MDC.remove(MDC_EXERTION_ID);
+            MDC.remove(MDC_PROVIDER_ID);
 		}
 
 		public Entry doEnvelope(ExertionEnvelop ee, Transaction transaction, String threadId, Transaction.Created txn) {
