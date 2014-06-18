@@ -27,6 +27,7 @@ import net.jini.core.lease.Lease;
 import net.jini.core.lease.UnknownLeaseException;
 import net.jini.core.transaction.Transaction;
 import net.jini.lease.LeaseListener;
+import net.jini.lease.LeaseRenewalManager;
 import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
@@ -35,11 +36,10 @@ import org.slf4j.MDC;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.loki.exertion.KPEntry;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.river.TX;
-import sorcer.service.Exec;
-import sorcer.service.Exertion;
-import sorcer.service.ServiceExertion;
-import sorcer.service.Task;
+import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 import sorcer.service.space.SpaceAccessor;
 
 import static sorcer.core.SorcerConstants.MDC_EXERTION_ID;
@@ -71,7 +71,9 @@ public class SpaceTaker implements Runnable {
 
 	protected ExecutorService pool;
 
-	// controls the loop of this space worker
+    private LeaseRenewalManager lrm;
+
+    // controls the loop of this space worker
 	protected volatile boolean keepGoing = true;
 
 	public static void doLog(String msg, String threadId, Transaction.Created txn) {
@@ -122,6 +124,7 @@ public class SpaceTaker implements Runnable {
 	 * Default constructor. Set the worker thread as a Daemon thread
 	 */
 	public SpaceTaker() {
+        lrm = new LeaseRenewalManager();
 	}
 
 	/**
@@ -298,7 +301,7 @@ public class SpaceTaker implements Runnable {
 					txnCreated = null;
 					continue;
 				}
-                pool.execute(new SpaceWorker(ee, txnCreated));
+                pool.execute(new SpaceWorker(ee, txnCreated, data.provider));
 			} catch (Exception ex) {
                 logger.warn("Problem with SpaceTaker", ex);
 			}
@@ -349,13 +352,15 @@ public class SpaceTaker implements Runnable {
 
 
     class SpaceWorker implements Runnable {
-		private ExertionEnvelop ee;
+        private ExertionEnvelop ee;
+        private Provider provider;
 		private Transaction.Created txnCreated;
 		
 
 		SpaceWorker(ExertionEnvelop envelope,
-				Transaction.Created workerTxnCreated)
+				Transaction.Created workerTxnCreated, Provider provider)
 				throws UnknownLeaseException {
+            this.provider = provider;
 			ee = envelope;
 			if (workerTxnCreated != null) {
 				txnCreated = workerTxnCreated;
@@ -423,6 +428,13 @@ public class SpaceTaker implements Runnable {
 						"taken by: " + data.provider.getProviderName() + ":"
 								+ data.provider.getProviderID());
 				se = (ServiceExertion) ee.exertion;
+                MonitoringSession monSession = MonitorUtil.getMonitoringSession(se);
+
+                if (se.isMonitorable()) {
+                    monSession.init((Monitorable)provider.getProxy());
+                    lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
+                }
+
 
 				if (se instanceof Task) {
 					// task for the worker's provider
@@ -433,7 +445,7 @@ public class SpaceTaker implements Runnable {
 					out = (ServiceExertion) data.provider.service(se,
 							transaction);
 				}
-				if (out != null) {
+                if (out != null) {
 					out.setStatus(Exec.DONE);
 					ee.state = Exec.DONE;
 					ee.exertion = out;
@@ -442,7 +454,11 @@ public class SpaceTaker implements Runnable {
 					ee.state = Exec.ERROR;
 					ee.exertion = se;
 				}
-			} catch (Throwable th) {	
+                if (se.isMonitorable()) {
+                    monSession.changed(se.getContext(), se.getStatus());
+                    lrm.remove(monSession.getLease());
+                }
+            } catch (Throwable th) {
 				logger.debug("doEnvelope", th);
 				if (th instanceof Exception) {
 					ee.state = Exec.FAILED;

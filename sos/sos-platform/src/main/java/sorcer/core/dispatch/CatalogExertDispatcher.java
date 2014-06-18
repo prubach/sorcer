@@ -80,7 +80,6 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     protected void afterExec(Exertion ex, Exertion result)
             throws SignatureException, ExertionException, ContextException {
-        afterExec(result);
         ServiceExertion ser = (ServiceExertion) result;
 		((CompoundExertion)xrt).setExertionAt(result, result.getIndex());
 //		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
@@ -105,6 +104,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				throw new ExertionException(e);
 			}
         }
+        afterExec(result);
     }
     protected Task execTask(Task task) throws ExertionException,
             SignatureException, RemoteException {
@@ -225,17 +225,18 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             throws DispatcherException, InterruptedException,
             RemoteException {
 
-            runningExertionIDs.add(job.getId());
+        runningExertionIDs.add(job.getId());
 
-            // create a new instance of a dispatcher
-            Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
-                    .createDispatcher(job, sharedContexts, true, provider);
+        // create a new instance of a dispatcher
+        Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
+                .createDispatcher(job, sharedContexts, true, provider);
         dispatcher.exec();
-            // wait until serviceJob is done by dispatcher
+        // wait until serviceJob is done by dispatcher
         Job out = (Job) dispatcher.getResult().exertion;
-            out.getControlContext().appendTrace(provider.getProviderName()
-                    + " dispatcher: " + getClass().getName());
-            return out;
+
+        out.getControlContext().appendTrace(provider.getProviderName()
+                + " dispatcher: " + getClass().getName());
+        return out;
     }
 
 	private Block execBlock(Block block)

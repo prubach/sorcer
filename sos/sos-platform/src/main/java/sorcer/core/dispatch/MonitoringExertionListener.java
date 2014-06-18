@@ -16,15 +16,15 @@
 
 package sorcer.core.dispatch;
 
+import net.jini.core.lease.Lease;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.monitor.MonitoringSession;
-import sorcer.service.ContextException;
-import sorcer.service.Exec;
-import sorcer.service.Exertion;
-import sorcer.service.MonitorException;
+import sorcer.service.*;
 
 import java.rmi.RemoteException;
+
+import static sorcer.service.Exec.FAILED;
 
 /**
  * @author Rafał Krupiński
@@ -35,12 +35,17 @@ public class MonitoringExertionListener implements ExertionListener {
 
     public MonitoringExertionListener(MonitoringSession monitorSession) {
         this.monitorSession = monitorSession;
+
     }
 
     @Override
     public void exertionStatusChanged(Exertion exertion) throws ContextException {
         try {
-            monitorSession.changed(exertion.getContext(), Exec.State.UPDATED);
+            if (exertion.getContext().getExertion()==null)
+                exertion.getContext().setExertion(exertion);
+            monitorSession.changed(exertion.getContext(), exertion.getStatus());
+        } catch (ExertionException e) {
+            log.warn("Error while updating monitor", e);
         } catch (RemoteException e) {
             log.warn("Error while updating monitor", e);
         } catch (MonitorException e) {

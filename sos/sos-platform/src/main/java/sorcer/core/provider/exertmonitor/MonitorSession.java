@@ -177,6 +177,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public Lease init(Monitorable executor, long duration, long timeout)
 			throws MonitorException {
+        logger.info("Initializing session for: " + runtimeExertion.getName());
 
 		if (executor == null)
 			throw new NullPointerException(
@@ -246,13 +247,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	}
 
 	public void done(Context<?> ctx) throws MonitorException {
+        logger.info("Done exertion: " + runtimeExertion.getName());
 		if (ctx == null)
 			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,
 					"Trying to call done on a non running resource" + this);
-			throw new MonitorException("Exertion not running, state="
+			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running, state="
 					+ getState());
 		}
 
@@ -277,7 +279,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,
 					"Trying to call failed on a non running resource" + this);
-			throw new MonitorException("Exertion not running . state="
+			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running . state="
 					+ getState());
 		}
 
@@ -304,12 +306,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void stateChanged() {
 		int oldState = getState();
-		// logger.log(Level.INFO,
-		System.out.println("stateChanged called oldState =" + getState()
+		logger.fine("stateChanged called " + runtimeExertion.getName() + " oldState =" + Exec.State.name(getState())
 				+ " resetting state.....");
 		resetState();
-		// logger.log(Level.INFO,
-		System.out.println("stateChanged called newState =" + getState());
+        logger.fine("stateChanged called newState =" + Exec.State.name(getState()));
 		if (oldState != getState()) {
 			fireRemoteEvent();
 			notifyParent();
@@ -319,12 +319,16 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	// Persist only the root session
 	private void persist() {
-		if (parentResource != null)
-			return;
+	    MonitorSession tempSession = this;
+        do {
+            if (tempSession.parentResource!=null)
+                tempSession = tempSession.parentResource;
+        } while (tempSession.parentResource!=null);
+        logger.info("Persisting resource for exertion: " + tempSession.runtimeExertion.getName());
 		try {
-			sessionManager.persist(this);
+            sessionManager.persist(tempSession);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.severe("Problem persisting monitorSession: " + e.getMessage());
 			try {
 				logger.log(Level.SEVERE, "Could not persist the session resource:\n"
 						+ initialExertion + " at: " + ((Provider)sessionManager).getProviderName());
@@ -350,21 +354,22 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				suspendedCount++;
 			else if (get(i).isDone())
 				doneCount++;
-			else
-				// logger.log(Level.INFO,
-				System.out
-						.println("State not accounted for while resetting state"
-								+ i
+			else if (get(i).isInitial())
+                logger.fine("Ignoring state INITIAL for: " + get(i).runtimeExertion.getName());
+            else
+				logger.severe("State not accounted for while resetting state"
+								+ get(i).runtimeExertion.getName()
 								+ " state="
 								+ get(i).getState());
 
 		}
-		// logger.log(Level.SEVERE,
-		System.out.println("failed count=" + failedCount + " suspended count="
+		logger.fine("failed count=" + failedCount + " suspended count="
 				+ suspendedCount + " doneCount=" + doneCount);
 
-		if (doneCount == size())
-			runtimeExertion.setStatus(Exec.DONE);
+		if (doneCount == size()) {
+            runtimeExertion.setStatus(Exec.DONE);
+            mLandlord.remove(this);
+        }
 		else if (failedCount != 0
 				&& failedCount + doneCount + suspendedCount == size())
 			runtimeExertion.setStatus(Exec.FAILED);

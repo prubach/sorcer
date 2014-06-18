@@ -23,14 +23,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.jini.core.lease.Lease;
+import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.deploy.Deployment;
+import sorcer.core.monitor.MonitorSessionManagement;
+import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.service.*;
 import sorcer.service.monitor.MonitorUtil;
+
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The
@@ -42,6 +50,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
     private LokiMemberUtil loki;
+
+    public static final long LEASE_RENEWAL_PERIOD = 1 * 1000 * 60L;
+    public static final long DEFAULT_TIMEOUT_PERIOD = 1 * 1000 * 90L;
 
     protected ExertionDispatcherFactory(LokiMemberUtil loki){
         this.loki = loki;
@@ -116,8 +127,24 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                 }
             }
             assert dispatcher != null;
-            if (exertion.isMonitorable())
-                dispatcher.addExertionListener(new MonitoringExertionListener(MonitorUtil.getMonitoringSession(exertion)));
+            if (exertion.isMonitorable()) {
+                MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+                logger.info("Initializing monitor session for : " + exertion.getName());
+                monSession.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
+                        DEFAULT_TIMEOUT_PERIOD);
+                LeaseRenewalManager lrm = new LeaseRenewalManager();
+                lrm.renewUntil(monSession.getLease(), Lease.FOREVER, LEASE_RENEWAL_PERIOD, null);
+                dispatcher.setLrm(lrm);
+                //dispatcher.getLrm().renewUntil(monSession.getLease(), Lease.ANY, null);
+                //monSession = MonitorUtil.getMonitoringSession(exertion);
+                logger.info("Exertion state: " + Exec.State.name(exertion.getStatus()));
+                logger.info("Session for the exertion = " + monSession);
+                logger.info("Lease to be renewed for duration = " +
+                        (monSession.getLease().getExpiration() - System
+                                .currentTimeMillis()));
+                //dispatcher.getLrm().renewUntil(monSession.getLease(), Lease.FOREVER, DEFAULT_TIMEOUT_PERIOD, null);
+                dispatcher.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
+            }
 
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (RuntimeException e) {

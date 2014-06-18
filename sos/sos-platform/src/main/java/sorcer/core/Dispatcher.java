@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2013 the original author or authors.
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
@@ -16,12 +16,17 @@
  */
 package sorcer.core;
 
+import net.jini.core.lease.UnknownLeaseException;
+import net.jini.id.Uuid;
+import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.dispatch.ExertionListener;
 
 public interface Dispatcher {
     void exec();
     DispatchResult getResult();
 
-    void addExertionListener(ExertionListener listener);
-    void removeExertionListener(ExertionListener listener);
+    void addExertionListener(Uuid exertionId, ExertionListener listener);
+    void removeExertionListener(Uuid exertionId);
+    LeaseRenewalManager getLrm();
+    void setLrm(LeaseRenewalManager lrm);
 }

@@ -26,6 +26,7 @@ import sorcer.core.monitor.MonitorSessionManagement;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 import java.rmi.RemoteException;
 
@@ -71,22 +72,31 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
     @Override
     public Exertion process() throws ExertionException {
+        MonitoringSession monSession = getMonitoringSession(exertion);
         try {
-            exertion = register(exertion);
+            if (monSession==null) {
+                logger.info("No Monitor Session, registering for: " + exertion.getName());
+                exertion = register(exertion);
+            }
         } catch (RemoteException e) {
             throw new ExertionException(e);
         }
-        MonitoringSession monSession = getMonitoringSession(exertion);
+        monSession = getMonitoringSession(exertion);
 
         try {
-            monSession.init((Monitorable) delegate.getProvider().getProxy(), LEASE_RENEWAL_PERIOD,
-                    DEFAULT_TIMEOUT_PERIOD);
-            lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
-
+            if (!(exertion instanceof CompoundExertion)) {
+                monSession.init((Monitorable) delegate.getProvider().getProxy(), LEASE_RENEWAL_PERIOD,
+                        DEFAULT_TIMEOUT_PERIOD);
+                lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
+            }
             ServiceExertion result = (ServiceExertion) super.process();
             Exec.State resultState = result.getStatus() <= FAILED ? Exec.State.FAILED : Exec.State.DONE;
+
             try {
-                monSession.changed(result.getContext(), resultState);
+                if (!(result instanceof CompoundExertion))
+                    monSession.changed(result.getContext(), resultState.ordinal());
+                else
+                    logger.info("Ignoring setting state because exertion (" + result.getName() + ") is a JOB and dispatcher should handle that");
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
@@ -107,7 +117,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
             try {
                 lrm.remove(monSession.getLease());
             } catch (UnknownLeaseException e) {
-                log.debug("Error while removing lease for {}", exertion.getName(), e);
+                log.warn("Error while removing lease for {}", exertion.getName(), e);
             }
         }
     }

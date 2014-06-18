@@ -137,7 +137,7 @@ public interface MonitoringSession extends Serializable {
 	/**
 	 * Providers use this method to update the monitoring session
 	 * 
-	 * @param xtc
+	 * @param ctx
 	 *            The service context changed.
 	 * 
 	 *  * @param aspect
@@ -151,7 +151,7 @@ public interface MonitoringSession extends Serializable {
 	 *             if there is a communication error
 	 **/
 
-	public void changed(Context ctx, Object aspect) throws RemoteException,
+	public void changed(Context ctx, int aspect) throws RemoteException,
 			MonitorException;
 
 	/**

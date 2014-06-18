@@ -41,7 +41,7 @@ public class MonitorUtil {
         if (controlContext.isMonitorable() && monSession != null) {
             try {
                 context.putValue("context/checkpoint/time", StringUtils.getDateTime());
-                monSession.changed(context, Exec.State.UPDATED);
+                monSession.changed(context, Exec.State.UPDATED.ordinal());
             } catch (Exception e) {
                 throw new ContextException(e);
             }
@@ -49,7 +49,7 @@ public class MonitorUtil {
     }
 
     /**
-     * Record this context acording to the corresponding aspect if the related
+     * Record this context according to the corresponding aspect if the related
      * exertion is monitored.
      *
      * @throws java.rmi.RemoteException
@@ -63,7 +63,7 @@ public class MonitorUtil {
         IControlContext controlContext = mxrt.getControlContext();
         MonitoringSession monSession = getMonitoringSession(controlContext);
         if (mxrt.isMonitorable() && monSession != null) {
-            monSession.changed(context, aspect);
+            monSession.changed(context, aspect.ordinal());
         }
     }
 

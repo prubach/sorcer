@@ -26,6 +26,7 @@ import javax.security.auth.Subject;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
@@ -74,7 +75,16 @@ abstract public class ExertDispatcher implements Dispatcher {
 	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
-	public static Map<Uuid, Dispatcher> getDispatchers() {
+    /**
+     * Local listeners
+     */
+    private static Map<Uuid, ExertionListener> listeners = new HashMap<Uuid, ExertionListener>();
+
+    public static Map<Uuid, ExertionListener> getListeners() {
+        return listeners;
+    }
+
+    public static Map<Uuid, Dispatcher> getDispatchers() {
 		return dispatchers;
 	}
 
@@ -85,6 +95,9 @@ abstract public class ExertDispatcher implements Dispatcher {
     public void setProvider(Provider provider) {
         this.provider = provider;
     }
+
+
+    private LeaseRenewalManager lrm = null;
 
 	public ExertDispatcher(Exertion exertion,
                            Set<Context> sharedContexts,
@@ -105,6 +118,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     public void exec() {
         dispatchers.put(xrt.getId(), this);
         state = RUNNING;
+        xrt.setStatus(state);
         if (xrt instanceof Job) {
             masterXrt = (ServiceExertion) ((Job) xrt).getMasterExertion();
         }
@@ -117,12 +131,12 @@ abstract public class ExertDispatcher implements Dispatcher {
             xrt.setStatus(FAILED);
             state = FAILED;
             xrt.reportException(e);
-            try {
-                afterStatusChanged(xrt);
-            } catch (ContextException e1) {
-                logger.warn("Could not access context", e1);
-            }
         } finally {
+            try {
+                if (lrm!=null) lrm.remove(MonitorUtil.getMonitoringSession(xrt).getLease());
+            } catch (Exception ce) {
+                logger.warn("Problem removing lease for : " + xrt.getName() + " " + Exec.State.name(xrt.getStatus()) , ce);
+            }
             dispatchers.remove(xrt.getId());
         }
     }
@@ -136,12 +150,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         updateInputs(exertion);
         checkProvision();
         inputXrts = getInputExertions();
-        if (xrt.isMonitorable() && inputXrts.size() > 0 && inputXrts.get(0) != xrt) {
-            MonitoringSession session = MonitorUtil.getMonitoringSession(xrt);
-            for (Exertion x : inputXrts) {
-                MonitorUtil.setMonitorSession(x, session);
-            }
-        }
     }
 
     protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException {
@@ -174,7 +182,7 @@ abstract public class ExertDispatcher implements Dispatcher {
 
     protected void afterExec(Exertion result) throws ContextException, ExertionException {
         logger.debug("After exert {}", result);
-        afterStatusChanged(result);
+        //afterStatusChanged(result);
     }
 
     @Override
@@ -278,8 +286,8 @@ abstract public class ExertDispatcher implements Dispatcher {
 		int argIndex = -1;
 		try {
 			Map<String, String> toInMap = Contexts.getInPathsMap(toContext);
-			logger.info("updating inputs in context toContext = {}", toContext);
-			logger.info("updating based on = {}", toInMap);
+			logger.debug("updating inputs in context toContext = {}", toContext);
+			logger.debug("updating based on = {}", toInMap);
 			for (Map.Entry<String, String> e  : toInMap.entrySet()) {
                 toPath = e.getKey();
 				// find argument for parametric context
@@ -291,18 +299,18 @@ abstract public class ExertDispatcher implements Dispatcher {
 					}
 				}
 				toPathcp = e.getValue();
-				logger.info("toPathcp = {}", toPathcp);
+				logger.debug("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-				logger.info("context ID = {}", Contexts.getContextParameterID(toPathcp));
+				logger.debug("context ID = {}", Contexts.getContextParameterID(toPathcp));
 				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
-				logger.info("fromContext = {}", fromContext);
-				logger.info("before updating toContext: {}", toContext
-						+ "\n>>> TO path: " + toPath + "\nfromContext: "
-						+ fromContext + "\n>>> FROM path: " + fromPath);
+				logger.debug("fromContext = {}", fromContext);
+				logger.debug("before updating toContext: {}", toContext
+                        + "\n>>> TO path: " + toPath + "\nfromContext: "
+                        + fromContext + "\n>>> FROM path: " + fromPath);
                 if (fromContext != null) {
-					logger.info("updating toContext: {}", toContext
-							+ "\n>>> TO path: " + toPath + "\nfromContext: "
-							+ fromContext + "\n>>> FROM path: " + fromPath);
+					logger.debug("updating toContext: {}", toContext
+                            + "\n>>> TO path: " + toPath + "\nfromContext: "
+                            + fromContext + "\n>>> FROM path: " + fromPath);
                     // make parametric substitution if needed
                     if (argIndex >=0 ) {
                         Object args = toContext.getValue(Context.PARAMETER_VALUES);
@@ -381,24 +389,30 @@ abstract public class ExertDispatcher implements Dispatcher {
         }
     }
 
-    /**
-     * Local listeners
-     */
-    private List<ExertionListener> listeners = new LinkedList<ExertionListener>();
+    public LeaseRenewalManager getLrm() {
+        return lrm;
+    }
+
+    public void setLrm(LeaseRenewalManager lrm) {
+        this.lrm = lrm;
+    }
 
     private void afterStatusChanged(Exertion exertion) throws ContextException {
-        for (ExertionListener listener : listeners) {
-            listener.exertionStatusChanged(exertion);
-        }
+        logger.debug("Updating monitor info about: " + exertion.getName() + " state: " + Exec.State.name(exertion.getStatus()));
+        ExertionListener exListener = getListeners().get(exertion.getId());
+        if (exListener!=null)
+            exListener.exertionStatusChanged(exertion);
+        else
+            logger.warn("Could not update monitoring session no listener found for exertion: " + exertion.getName() + " ID: " + exertion.getId());
     }
 
     @Override
-    public void addExertionListener(ExertionListener listener) {
-        listeners.add(listener);
+    public void addExertionListener(Uuid exId, ExertionListener listener) {
+        getListeners().put(exId, listener);
     }
 
     @Override
-    public void removeExertionListener(ExertionListener listener) {
-        listeners.remove(listener);
+    public void removeExertionListener(Uuid exId) {
+        getListeners().remove(exId);
     }
 }

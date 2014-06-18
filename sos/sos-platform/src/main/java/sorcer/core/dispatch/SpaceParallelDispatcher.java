@@ -30,6 +30,7 @@ import net.jini.entry.UnusableEntriesException;
 import net.jini.id.Uuid;
 import net.jini.space.JavaSpace05;
 import sorcer.core.exertion.Jobs;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.ExertionEnvelop;
 import sorcer.core.exertion.NetJob;
@@ -37,6 +38,7 @@ import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.provider.SpaceTaker;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 import sorcer.service.space.SpaceAccessor;
 
 import static sorcer.service.Exec.*;
@@ -86,7 +88,23 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         new Thread(disatchGroup, new CollectResultThread(), tName("collect-" + xrt.getName())).start();
 
         for (Exertion exertion : inputXrts) {
+            if (xrt.isMonitorable()) {
+                try {
+                    MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+                    monSession.init(ExertionDispatcherFactory.LEASE_RENEWAL_PERIOD, ExertionDispatcherFactory.DEFAULT_TIMEOUT_PERIOD);
+                    this.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
+                } catch (MonitorException me) {
+                    logger.error("Problem starting monitoring for " + xrt.getName());
+                } catch (RemoteException re) {
+                    logger.error("Problem starting monitoring for " + xrt.getName());
+                }
+            }
             dispatchExertion(exertion);
+            try {
+                afterExec(exertion);
+            } catch (ContextException ce) {
+                logger.warn("Problem sending state to monitor");
+            }
         }
 	}
 
@@ -96,6 +114,7 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             writeEnvelop(exertion);
             logger.debug("generateTasks ==> SPACE EXECUTE EXERTION: "
                     + exertion.getName());
+            xrt.setStatus(INSPACE);
         } catch (ProvisioningException pe) {
             xrt.setStatus(FAILED);
             throw new ExertionException(pe.getLocalizedMessage());
@@ -187,6 +206,12 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                 handleError(result);
             }
 
+            try {
+                afterExec(result);
+                this.removeExertionListener(result.getId());
+            } catch (ContextException ce) {
+                logger.error("Problem sending status after exec to monitor");
+            }
         }
     }
 
