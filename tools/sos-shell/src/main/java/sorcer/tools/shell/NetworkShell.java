@@ -198,11 +198,13 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		// do nothing, see buildInstance
 	}
 	
-	public static synchronized String[] buildInstance(String... argv)
+	public static synchronized String[] buildInstance(boolean ensureSecurityManager, String... argv)
 			throws Throwable {
 		shellOutput = System.out;
 		if (instance == null) {
-			ensureSecurityManager();
+            if(ensureSecurityManager) {
+                ensureSecurityManager();
+            }
 			instance = new NetworkShell();
 			instance.enumerateCommands();
 			return initShell(argv);
@@ -250,7 +252,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 				shellOutput.println("Type 'help' for command help");
 			}
 			
-			argv = buildInstance(argv);
+			argv = buildInstance(true, argv);
             // Process config files to load extensions - i.e. external commands and activate them
             try {
                 LoaderConfiguration lc = new LoaderConfiguration();
