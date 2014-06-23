@@ -66,6 +66,7 @@ import net.jini.security.TrustVerifier;
 import net.jini.space.JavaSpace05;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.container.jeri.AbstractExporterFactory;
 import sorcer.container.jeri.ExporterFactories;
 import sorcer.core.*;
 import sorcer.core.context.Contexts;
@@ -76,12 +77,12 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
-import sorcer.core.provider.container.SorcerExporterFactory;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.provider.container.IProviderServiceBuilder;
 import sorcer.core.service.IServiceBeanListener;
 import sorcer.core.signature.NetSignature;
+import sorcer.jini.jeri.SorcerILFactory;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.jini.lookup.entry.VersionInfo;
 import sorcer.security.sign.SignedServiceTask;
@@ -292,7 +293,7 @@ public class ProviderDelegate {
 
     private IProviderServiceBuilder serviceBuilder;
 
-    protected javax.inject.Provider<? extends Exporter> exporterFactory;
+    protected AbstractExporterFactory exporterFactory;
 
 	public ProviderDelegate(IServiceBeanListener beanListener, IProviderServiceBuilder serviceBuilder) {
         this.beanListener = beanListener;
@@ -2716,7 +2717,7 @@ public class ProviderDelegate {
 					allBeans.add(instantiateScriplet(scriptlets[i]));
 			}
 
-        exporterFactory = (javax.inject.Provider<Exporter>) config.getEntry(ServiceProvider.COMPONENT, "exporterFactory", javax.inject.Provider.class, null);
+        exporterFactory = (AbstractExporterFactory) config.getEntry(ServiceProvider.COMPONENT, "exporterFactory", AbstractExporterFactory.class, null);
             if (exporterFactory == null)
                 exporterFactory = ExporterFactories.EXPORTER;
 
@@ -2725,7 +2726,7 @@ public class ProviderDelegate {
                         + " for: \n" + allBeans);
 				serviceBeans = allBeans.toArray();
 				initServiceBeans(serviceBeans);
-				outerExporter = new SorcerExporterFactory(serviceComponents, implClassLoader).get();
+				outerExporter = exporterFactory.get(new SorcerILFactory(serviceComponents, implClassLoader));
 			} else {
 				logger.info("*** NO beans used by " + getProviderName());
 				outerExporter = (Exporter) config.getEntry(

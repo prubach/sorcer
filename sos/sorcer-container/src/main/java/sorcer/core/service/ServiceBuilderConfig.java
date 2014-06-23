@@ -19,9 +19,8 @@ package sorcer.core.service;
 import net.jini.export.Exporter;
 import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
+import sorcer.container.jeri.AbstractExporterFactory;
 import sorcer.core.SorcerEnv;
-
-import javax.inject.Provider;
 
 import static sorcer.container.jeri.ExporterFactories.EXPORTER;
 
@@ -40,7 +39,7 @@ public class ServiceBuilderConfig {
     public boolean register = true;
 
     @ConfigEntry
-    public Provider<? extends Exporter> exporterFactory = EXPORTER;
+    public AbstractExporterFactory<? extends Exporter> exporterFactory = EXPORTER;
 
     @ConfigEntry
     public String[] lookupGroups = SorcerEnv.getLookupGroups();

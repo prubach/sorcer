@@ -23,9 +23,11 @@ import net.jini.jeri.ServerEndpoint;
 import javax.inject.Provider;
 
 /**
+ * (Abstract)ExporterFactory implementations allow to configure multi-use factories for {@link Exporter}s sharing the same configuration.
+ *
  * @author Rafał Krupiński
  */
-public abstract class AbstractExporterFactory<T extends Exporter> implements Provider<T> {
+public abstract class AbstractExporterFactory<T extends Exporter> {
     protected InvocationLayerFactory ilFactory;
     protected Provider<? extends ServerEndpoint> serverEndpointProvider;
     protected boolean enableDGC;
@@ -42,10 +44,13 @@ public abstract class AbstractExporterFactory<T extends Exporter> implements Pro
         this(ilFactory, serverEndpointProvider, false, true);
     }
 
-    @Override
     public T get() {
-        return doGet(serverEndpointProvider.get());
+        return doGet(serverEndpointProvider.get(), ilFactory);
     }
 
-    protected abstract T doGet(ServerEndpoint serverEndpoint);
+    public T get(InvocationLayerFactory ilFactory) {
+        return doGet(serverEndpointProvider.get(), ilFactory);
+    }
+
+    protected abstract T doGet(ServerEndpoint serverEndpoint, InvocationLayerFactory ilFactory);
 }

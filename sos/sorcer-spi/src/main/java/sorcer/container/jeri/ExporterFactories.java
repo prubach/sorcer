@@ -18,21 +18,43 @@ package sorcer.container.jeri;
 
 import net.jini.jeri.BasicJeriExporter;
 
-import javax.inject.Provider;
-
 /**
  * @author Rafał Krupiński
  */
 public class ExporterFactories {
-    public static final Provider<BasicJeriExporter> EXPORTER = new ExporterFactory();
-    public static final Provider<BasicJeriExporter> TRUSTED = ExporterFactory.trusted(null, null);
+    /**
+     * ExporterFactory with BasicILFactory and TcpServerEndpoint
+     */
+    public static final ExporterFactory EXPORTER = new ExporterFactory();
 
+    /**
+     * ExporterFactory with ProxyTrustILFactory and TcpServerEndpoint
+     */
+    public static final ExporterFactory TRUSTED = ExporterFactory.trusted(null, null);
+
+    /**
+     * ExporterFactory with BasicILFactory and HttpServerEndpoint
+     */
+    public static final HttpExporterFactory HTTP = new HttpExporterFactory();
+
+    /**
+     * @return BasicJeriExporter created by {@link #EXPORTER} {@link ExporterFactory}
+     */
     public static BasicJeriExporter getBasicTcp() {
         return EXPORTER.get();
     }
 
+    /**
+     * @return BasicJeriExporter created with {@link #TRUSTED} {@link ExporterFactory}
+     */
     public static BasicJeriExporter getTrustedTcp() {
         return TRUSTED.get();
     }
 
+    /**
+     * @return BasicJeriExporter created with {@link #HTTP} {@link HttpExporterFactory}
+     */
+    public static BasicJeriExporter getHttp() {
+        return HTTP.get();
+    }
 }

@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package sorcer.core.provider.container;
-
-import sorcer.container.jeri.ExporterFactory;
-import sorcer.jini.jeri.SorcerILFactory;
-
-import java.util.Map;
+package sorcer.container.jeri;
 
 /**
- * Exporter factory creating BasicJeriExporter with SorcerILFactory
+ * Exporter factory creating BasicJeriExporter with HttpServerEndpoint
  *
  * @author Rafał Krupiński
  */
-public class SorcerExporterFactory extends ExporterFactory {
-    public SorcerExporterFactory(Map<Class, Object> beanMap, ClassLoader classLoader) {
-        super(new SorcerILFactory(beanMap, classLoader));
+public class HttpExporterFactory extends ExporterFactory {
+    public HttpExporterFactory() {
+        super(new HttpServerEndpointFactory());
     }
 }

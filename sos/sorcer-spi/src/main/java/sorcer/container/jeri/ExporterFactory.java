@@ -37,16 +37,20 @@ public class ExporterFactory extends AbstractExporterFactory<BasicJeriExporter> 
         this(ilFactory, new TcpServerEndpointFactory());
     }
 
+    public ExporterFactory(Provider<? extends ServerEndpoint> serverEndpointProvider){
+        this(new BasicILFactory(), serverEndpointProvider);
+    }
+
     public ExporterFactory() {
         this(new BasicILFactory());
     }
 
-    public static Provider<BasicJeriExporter> trusted(MethodConstraints methodConstraints, Class permissionClass) {
+    public static ExporterFactory trusted(MethodConstraints methodConstraints, Class permissionClass) {
         return new ExporterFactory(new ProxyTrustILFactory(methodConstraints, permissionClass));
     }
 
     @Override
-    protected BasicJeriExporter doGet(ServerEndpoint serverEndpoint) {
+    protected BasicJeriExporter doGet(ServerEndpoint serverEndpoint, InvocationLayerFactory ilFactory) {
         return new BasicJeriExporter(serverEndpoint, ilFactory, enableDGC, keepAlive);
     }
 }
