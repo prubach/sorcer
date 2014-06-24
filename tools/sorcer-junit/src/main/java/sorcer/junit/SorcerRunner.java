@@ -104,7 +104,6 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
-        SorcerEnv.debug = true;
         ExportCodebase exportCodebase = klass.getAnnotation(ExportCodebase.class);
         String[] codebase = exportCodebase != null ? exportCodebase.value() : null;
         if (codebase != null && codebase.length > 0)

@@ -34,7 +34,6 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Entry;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.ContextLink;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ServiceContext;
@@ -936,7 +935,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public String toString() {
-		if (SorcerEnv.debug)
+		if (logger.isLoggable(Level.FINEST))
 			return describe();
 		
 		StringBuilder info = new StringBuilder().append(
@@ -1228,7 +1227,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
     }
 
     public String describe() {
-		if (!SorcerEnv.debug)
+		if (!logger.isLoggable(Level.FINEST))
 			return info();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");

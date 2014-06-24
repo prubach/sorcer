@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import net.jini.core.transaction.TransactionException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
-import sorcer.core.context.ControlContext;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
 import sorcer.service.ContextException;
@@ -67,7 +66,6 @@ abstract public class
 
     public static void main(String... args) throws Exception {
         prepareBasicEnvironment();
-        SorcerEnv.debug = true;
         Webster myWebster = prepareCodebase();
         initialize(args);
         requestor.webster = myWebster;
@@ -162,7 +160,7 @@ abstract public class
     public void postprocess(String... args) throws ExertionException, ContextException {
         if (exertion != null) {
             logger.info("<<<<<<<<<< Exceptions: \n" + exertion.getExceptions());
-            logger.info("<<<<<<<<<< Traces: \n" + ((ControlContext)exertion.getControlContext()).getTrace());
+            logger.info("<<<<<<<<<< Traces: \n" + exertion.getControlContext().getTrace());
             logger.info("<<<<<<<<<< Ouput context: \n" + exertion.getContext());
         }
         // Exit webster

@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +42,6 @@ public class SorcerEnv {
     final static String DATA_NODE_TYPE = "dnt";
     final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
     private static final String WEBSTER_URL = "webster.url";
-    public static boolean debug = false;
     /**
      * Default name 'provider.properties' for a file defining provider
      * properties.

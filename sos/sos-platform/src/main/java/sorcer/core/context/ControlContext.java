@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sorcer.core.SorcerEnv;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 import sorcer.util.Stopwatch;
@@ -146,6 +146,8 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	public final static String FALSE = "false";
 
 	public final static String TRACE_LIST = "exertion/exec/trace";
+
+    private static final String PATH_TRACE_ENABLED = "exertion/exec/trace/enabled";
 
 	private List<ThrowableTrace> exceptions = new ArrayList<ThrowableTrace>();
 
@@ -627,7 +629,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	}
 
     public void appendTrace(String info) {
-		if (SorcerEnv.debug)
+		if (isTraceEnabled())
 			traceList.add(info);
 	}
 
@@ -707,11 +709,19 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
-		if (SorcerEnv.debug) {
+		if (logger.isLoggable(Level.FINEST)) {
 			sb.append("\nControl Context Exceptions: \n");
 			sb.append(describeExceptions());
 		}
 		return sb.toString();
 	}
 
+    public boolean isTraceEnabled() {
+        Boolean trace = (Boolean) get(PATH_TRACE_ENABLED);
+        return trace != null && trace;
+    }
+
+    public void setTraceEnabled(boolean traceEnabled) {
+        put(PATH_TRACE_ENABLED, traceEnabled);
+    }
 }

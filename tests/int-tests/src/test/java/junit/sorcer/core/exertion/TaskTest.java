@@ -1,7 +1,6 @@
-/**
- *
+/*
  * Copyright 2013 the original author or authors.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +19,11 @@ package junit.sorcer.core.exertion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.entry;
-import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 import static sorcer.eo.operator.*;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 import static sorcer.po.operator.pars;
 
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
@@ -34,18 +31,14 @@ import junit.sorcer.core.provider.Adder;
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.Multiply;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.exertion.ObjectTask;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -83,13 +76,13 @@ public class TaskTest {
 	
 	@Test
 	public void arithmeticTaskTest() throws ExertionException, SignatureException, ContextException, RemoteException {
-		//to test tracing of execution enable ServiceExertion.debug 
-		SorcerEnv.debug = true;
-		
 		Task task = task("add",
 				sig("add", AdderImpl.class),
 				context(in("arg/x1", 20.0), in("arg/x2", 80.0),
 						result("result/y")));
+
+        //to test tracing of execution enable ControlContext.traceEnabled
+        task.getControlContext().setTraceEnabled(true);
 		
 		task = exert(task);
 //		logger.info("exerted: " + task);
@@ -103,7 +96,6 @@ public class TaskTest {
 		//logger.info("exec trace: " + trace(task));
 		//logger.info("trace  size: " + trace(task).size());
 		//assertTrue(trace(task).size() == 1);
-		SorcerEnv.debug = true;
 //		logger.info("exceptions: " + exceptions(task));
 		assertEquals("Exception list", 0, exceptions(task).size());
 
@@ -186,8 +178,9 @@ public class TaskTest {
 
     @Test
     public void exertObjectTaskTest() throws Exception {
-        SorcerEnv.debug = true;
         ObjectTask objTask = new ObjectTask("t4", new ObjectSignature("multiply", Multiply.class, double[].class));
+        objTask.getControlContext().setTraceEnabled(true);
+
         ServiceContext cxt = new ServiceContext();
         Object arg = new double[] { 10.0, 50.0 };
         //cxt.setReturnPath("result/y").setArgs(new double[] {10.0, 50.0});
