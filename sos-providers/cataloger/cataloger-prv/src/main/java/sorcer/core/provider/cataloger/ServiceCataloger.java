@@ -257,18 +257,26 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 	 */
 	public Provider lookup(String providerName, Class... serviceTypes)
 			throws RemoteException {
-        // TODO RemoteLoggerAppender may call Cataloger to look for RemoteLogger - this introduces recursion
+        // TODO RemoteLoggerAppender may call Cataloger to look for RemoteLogger which introduces recursion; make RLA not use Cataloger
+        String mdcRemoteCall = MDC.get(MDC_SORCER_REMOTE_CALL);
         MDC.remove(MDC_SORCER_REMOTE_CALL);
-		String pn = providerName;
+        // another workaround: disable warning on ConnectionException in ProviderProxy
+        MDC.put("java.net.ConnectException.ignore", "TRUE");
+        String pn = providerName;
 		if (ANY.equals(providerName))
 			pn = null;
 		try {
 			ServiceItem sItem = cinfo.getServiceItem(serviceTypes, pn);
 			if (sItem != null && (sItem.service instanceof Provider))
 				return (Provider) sItem.service;
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		} catch (Exception t) {
+            logger.warn("Error while getting service item", t);
+        } finally {
+            if (mdcRemoteCall != null)
+                MDC.put(MDC_SORCER_REMOTE_CALL, mdcRemoteCall);
+            MDC.remove("java.net.ConnectException.ignore");
+        }
+
 		return null;
 	}
 
