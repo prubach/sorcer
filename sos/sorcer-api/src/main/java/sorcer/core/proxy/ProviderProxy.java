@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.ConnectException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -149,10 +148,8 @@ public class ProviderProxy implements Serializable {
                 if (!list.contains(ReferentUuid.class))
 					list.add(ReferentUuid.class);
 
-/*
                 if (!list.contains(ServiceActivityProvider.class))
                     list.add(ServiceActivityProvider.class);
-*/
 
 				if (list.contains(Provider.class)) {
 					list.remove(AdministratableProvider.class);
