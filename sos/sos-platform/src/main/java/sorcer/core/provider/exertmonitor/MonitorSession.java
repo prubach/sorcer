@@ -188,7 +188,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Trying to initialize a exertion already in space or is running"
 							+ this);
 			throw new MonitorException(
-					"Session already active and is in state =" + getState());
+					"Session already active for " + runtimeExertion.getName() + " and is in state =" + getState());
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);

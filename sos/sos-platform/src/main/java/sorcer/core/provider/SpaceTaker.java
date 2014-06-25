@@ -430,7 +430,7 @@ public class SpaceTaker implements Runnable {
 				se = (ServiceExertion) ee.exertion;
                 MonitoringSession monSession = MonitorUtil.getMonitoringSession(se);
 
-                if (se.isMonitorable()) {
+                if (se.isMonitorable() && se.isTask() && monSession!=null) {
                     monSession.init((Monitorable)provider.getProxy());
                     lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
                 }
@@ -454,7 +454,7 @@ public class SpaceTaker implements Runnable {
 					ee.state = Exec.ERROR;
 					ee.exertion = se;
 				}
-                if (se.isMonitorable()) {
+                if (se.isMonitorable() && se.isTask() && monSession!=null) {
                     monSession.changed(se.getContext(), se.getStatus());
                     lrm.remove(monSession.getLease());
                 }

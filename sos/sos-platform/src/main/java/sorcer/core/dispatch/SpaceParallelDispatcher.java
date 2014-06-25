@@ -88,11 +88,11 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
         new Thread(disatchGroup, new CollectResultThread(), tName("collect-" + xrt.getName())).start();
 
         for (Exertion exertion : inputXrts) {
-            if (xrt.isMonitorable()) {
+            MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+            if (xrt.isMonitorable() && monSession!=null) {
                 try {
-                    MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
                     monSession.init(ExertionDispatcherFactory.LEASE_RENEWAL_PERIOD, ExertionDispatcherFactory.DEFAULT_TIMEOUT_PERIOD);
-                    this.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
+                    //this.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
                 } catch (MonitorException me) {
                     logger.error("Problem starting monitoring for " + xrt.getName());
                 } catch (RemoteException re) {
@@ -164,6 +164,10 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                 xrt.setStatus(FAILED);
                 state = FAILED;
                 throw new ExertionException("Taking exertion envelop failed", e);
+            } finally {
+                synchronized (this) {
+                    notify();
+                }
             }
             handleResult(results);
         }
@@ -190,6 +194,8 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
     protected void handleResult(Collection<ExertionEnvelop> results) throws ExertionException, SignatureException {
         boolean poisoned = false;
         for (ExertionEnvelop resultEnvelop : results) {
+
+            logger.debug("HandleResult got result: " + resultEnvelop.describe());
             ServiceExertion input = (ServiceExertion) ((NetJob) xrt)
                     .get(resultEnvelop.exertion
                             .getIndex());
@@ -202,13 +208,12 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
                     addPoison(xrt);
                     poisoned = true;
                 }
-
                 handleError(result);
             }
 
             try {
                 afterExec(result);
-                this.removeExertionListener(result.getId());
+                //this.removeExertionListener(result.getId());
             } catch (ContextException ce) {
                 logger.error("Problem sending status after exec to monitor");
             }

@@ -133,7 +133,8 @@ abstract public class ExertDispatcher implements Dispatcher {
             xrt.reportException(e);
         } finally {
             try {
-                if (lrm!=null) lrm.remove(MonitorUtil.getMonitoringSession(xrt).getLease());
+                MonitoringSession monSession = MonitorUtil.getMonitoringSession(xrt);
+                if (lrm!=null && monSession!=null) lrm.remove(monSession.getLease());
             } catch (Exception ce) {
                 logger.warn("Problem removing lease for : " + xrt.getName() + " " + Exec.State.name(xrt.getStatus()) , ce);
             }
@@ -182,7 +183,6 @@ abstract public class ExertDispatcher implements Dispatcher {
 
     protected void afterExec(Exertion result) throws ContextException, ExertionException {
         logger.debug("After exert {}", result);
-        //afterStatusChanged(result);
     }
 
     @Override
@@ -397,16 +397,16 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.lrm = lrm;
     }
 
-    private void afterStatusChanged(Exertion exertion) throws ContextException {
+    /*private void afterStatusChanged(Exertion exertion) throws ContextException {
         logger.debug("Updating monitor info about: " + exertion.getName() + " state: " + Exec.State.name(exertion.getStatus()));
         ExertionListener exListener = getListeners().get(exertion.getId());
         if (exListener!=null)
             exListener.exertionStatusChanged(exertion);
         else
             logger.warn("Could not update monitoring session no listener found for exertion: " + exertion.getName() + " ID: " + exertion.getId());
-    }
+    } */
 
-    @Override
+    /*@Override
     public void addExertionListener(Uuid exId, ExertionListener listener) {
         getListeners().put(exId, listener);
     }
@@ -414,5 +414,5 @@ abstract public class ExertDispatcher implements Dispatcher {
     @Override
     public void removeExertionListener(Uuid exId) {
         getListeners().remove(exId);
-    }
+    }*/
 }

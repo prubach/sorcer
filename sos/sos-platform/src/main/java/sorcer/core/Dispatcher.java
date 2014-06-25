@@ -25,8 +25,8 @@ public interface Dispatcher {
     void exec();
     DispatchResult getResult();
 
-    void addExertionListener(Uuid exertionId, ExertionListener listener);
-    void removeExertionListener(Uuid exertionId);
+    ///void addExertionListener(Uuid exertionId, ExertionListener listener);
+    //void removeExertionListener(Uuid exertionId);
     LeaseRenewalManager getLrm();
     void setLrm(LeaseRenewalManager lrm);
 }
