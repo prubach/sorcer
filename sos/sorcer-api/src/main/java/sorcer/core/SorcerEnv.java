@@ -16,11 +16,8 @@
  */
 package sorcer.core;
 
-import sorcer.util.HostUtil;
+import sorcer.util.*;
 import sorcer.service.ConfigurationException;
-import sorcer.util.GenericUtil;
-import sorcer.util.ParentFirstProperties;
-import sorcer.util.StringUtils;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -1282,7 +1279,11 @@ public class SorcerEnv {
     }
 
     public static InetAddress getLocalHost() throws UnknownHostException {
-        return HostUtil.getInetAddress();
+        String hostnameProp = System.getProperty(JavaSystemProperties.RMI_SERVER_HOSTNAME);
+        if (hostnameProp != null && !hostnameProp.isEmpty())
+            return InetAddress.getByName(hostnameProp);
+        else
+            return HostUtil.getInetAddress();
     }
 
     public static String[] getWebsterRoots() {
