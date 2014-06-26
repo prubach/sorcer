@@ -81,7 +81,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 
 			if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				 return new CatalogBlockDispatcher(exertion,
+                dispatcher = new CatalogBlockDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  provider,
@@ -89,7 +89,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                          providerProvisionManager);
 			} else if (isSpaceSequential(exertion)) {
 				logger.info("Running Space Sequential Dispatcher...");
-				return new SpaceSequentialDispatcher(exertion,
+				dispatcher = new SpaceSequentialDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  loki,
@@ -97,7 +97,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provisionManager,
                         providerProvisionManager);
 			}
-            if (exertion instanceof Job) {
+            if (dispatcher==null && exertion instanceof Job) {
                 Job job = (Job) exertion;
                 if (Jobs.isSpaceParallel(job)) {
                     logger.info("Running Space Parallel Dispatcher...");
@@ -129,26 +129,22 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
             assert dispatcher != null;
             MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
             if (exertion.isMonitorable() && monSession!=null) {
-                logger.info("Initializing monitor session for : " + exertion.getName());
+                logger.fine("Initializing monitor session for : " + exertion.getName());
                 if (!(monSession.getState()==Exec.INSPACE)) {
                     monSession.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                             DEFAULT_TIMEOUT_PERIOD);
                 } else {
-                    logger.info("MonitoringSession was INSPACE - changed to RUNNING " + exertion.getName());
                     monSession.init((Monitorable)provider.getProxy());
                 }
                 LeaseRenewalManager lrm = new LeaseRenewalManager();
                 lrm.renewUntil(monSession.getLease(), Lease.FOREVER, LEASE_RENEWAL_PERIOD, null);
                 dispatcher.setLrm(lrm);
 
-                logger.info("Exertion state: " + Exec.State.name(exertion.getStatus()));
-                logger.info("Session for the exertion = " + monSession);
-                logger.info("Lease to be renewed for duration = " +
+                logger.fine("Exertion state: " + Exec.State.name(exertion.getStatus()));
+                logger.fine("Session for the exertion = " + monSession);
+                logger.fine("Lease to be renewed for duration = " +
                         (monSession.getLease().getExpiration() - System
                                 .currentTimeMillis()));
-                //dispatcher.getLrm().renewUntil(monSession.getLease(), Lease.FOREVER, DEFAULT_TIMEOUT_PERIOD, null);
-                //dispatcher.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
-
             }
 
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());

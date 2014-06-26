@@ -144,14 +144,17 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void init() {
 		cookie = UuidFactory.generate();
-		if (initialExertion.isJob())
-			addSessions((Job) initialExertion, (Job) runtimeExertion, this);
+		if (initialExertion.isJob() || initialExertion.isBlock())
+			addSessions((CompoundExertion) initialExertion, (CompoundExertion) runtimeExertion, this);
 	}
 
-	private void addSessions(Job initial, Job runtime, MonitorSession parent) {
-		for (int i = 0; i < initial.size(); i++)
-			add(new MonitorSession(initial.get(i),
-					runtime.get(i), parent));
+	private void addSessions(CompoundExertion initial, CompoundExertion runtime, MonitorSession parent) {
+		for (int i = 0; i < initial.size(); i++) {
+            if (!runtime.get(i).isMonitorable())
+                ((ServiceExertion)runtime.get(i)).setMonitored(true);
+            add(new MonitorSession(initial.get(i),
+                    runtime.get(i), parent));
+        }
 	}
 
 	public RemoteEventListener getListener() {

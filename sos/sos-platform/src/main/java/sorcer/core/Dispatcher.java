@@ -16,17 +16,12 @@
  */
 package sorcer.core;
 
-import net.jini.core.lease.UnknownLeaseException;
-import net.jini.id.Uuid;
 import net.jini.lease.LeaseRenewalManager;
-import sorcer.core.dispatch.ExertionListener;
 
 public interface Dispatcher {
     void exec();
     DispatchResult getResult();
 
-    ///void addExertionListener(Uuid exertionId, ExertionListener listener);
-    //void removeExertionListener(Uuid exertionId);
     LeaseRenewalManager getLrm();
     void setLrm(LeaseRenewalManager lrm);
 }

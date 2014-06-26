@@ -75,15 +75,6 @@ abstract public class ExertDispatcher implements Dispatcher {
 	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
-    /**
-     * Local listeners
-     */
-    private static Map<Uuid, ExertionListener> listeners = new HashMap<Uuid, ExertionListener>();
-
-    public static Map<Uuid, ExertionListener> getListeners() {
-        return listeners;
-    }
-
     public static Map<Uuid, Dispatcher> getDispatchers() {
 		return dispatchers;
 	}
@@ -396,23 +387,4 @@ abstract public class ExertDispatcher implements Dispatcher {
     public void setLrm(LeaseRenewalManager lrm) {
         this.lrm = lrm;
     }
-
-    /*private void afterStatusChanged(Exertion exertion) throws ContextException {
-        logger.debug("Updating monitor info about: " + exertion.getName() + " state: " + Exec.State.name(exertion.getStatus()));
-        ExertionListener exListener = getListeners().get(exertion.getId());
-        if (exListener!=null)
-            exListener.exertionStatusChanged(exertion);
-        else
-            logger.warn("Could not update monitoring session no listener found for exertion: " + exertion.getName() + " ID: " + exertion.getId());
-    } */
-
-    /*@Override
-    public void addExertionListener(Uuid exId, ExertionListener listener) {
-        getListeners().put(exId, listener);
-    }
-
-    @Override
-    public void removeExertionListener(Uuid exId) {
-        getListeners().remove(exId);
-    }*/
 }

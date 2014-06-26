@@ -92,7 +92,6 @@ public class SpaceParallelDispatcher extends ExertDispatcher {
             if (xrt.isMonitorable() && monSession!=null) {
                 try {
                     monSession.init(ExertionDispatcherFactory.LEASE_RENEWAL_PERIOD, ExertionDispatcherFactory.DEFAULT_TIMEOUT_PERIOD);
-                    //this.addExertionListener(exertion.getId(), new MonitoringExertionListener(monSession));
                 } catch (MonitorException me) {
                     logger.error("Problem starting monitoring for " + xrt.getName());
                 } catch (RemoteException re) {

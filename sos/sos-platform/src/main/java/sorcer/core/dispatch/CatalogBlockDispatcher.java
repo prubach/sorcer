@@ -27,13 +27,10 @@ import sorcer.core.context.model.par.ParModel;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.OptExertion;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Provider;
-import sorcer.service.Condition;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Exertion;
-import sorcer.service.ExertionException;
-import sorcer.service.SignatureException;
+import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 /**
  * A dispatching class for exertion blocks in the PUSH mode.
@@ -78,7 +75,21 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
         super.afterExec(result);
         try {
             postUpdate(result);
+            MonitoringSession monSession = MonitorUtil.getMonitoringSession(result);
+            //TODO Not very nice
+            if (result.isBlock() && result.isMonitorable() && monSession!=null) {
+                boolean isFailed = false;
+                for (Exertion xrt : result.getAllExertions()) {
+                    if (xrt.getStatus()==Exec.FAILED || xrt.getStatus()==Exec.ERROR) {
+                        isFailed = true;
+                        break;
+                    }
+                }
+                monSession.changed(result.getContext(), (isFailed ? Exec.FAILED : Exec.DONE));
+            }
         } catch (RemoteException e) {
+            throw new ExertionException(e);
+        } catch (MonitorException e) {
             throw new ExertionException(e);
         }
     }
