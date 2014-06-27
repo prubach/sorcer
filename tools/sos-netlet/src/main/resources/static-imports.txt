@@ -1,5 +1,6 @@
 import static sorcer.eo.operator.*;
 import static sorcer.co.operator.*;
+import static sorcer.po.operator.*;
 //import static sorcer.vo.operator.*;
 //import static sorcer.tools.shell.NetworkShell.nshUrl;
 

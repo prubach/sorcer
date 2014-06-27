@@ -20,6 +20,7 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.core.exertion.AltExertion;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.provider.Provider;
 import sorcer.core.monitor.MonitorEvent;
@@ -146,7 +147,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		cookie = UuidFactory.generate();
 		if (initialExertion.isJob() || initialExertion.isBlock())
 			addSessions((CompoundExertion) initialExertion, (CompoundExertion) runtimeExertion, this);
-	}
+
+        if (initialExertion instanceof ConditionalExertion)
+            addSessionsForConditionals((ConditionalExertion)initialExertion, (ConditionalExertion)runtimeExertion, this);
+    }
 
 	private void addSessions(CompoundExertion initial, CompoundExertion runtime, MonitorSession parent) {
 		for (int i = 0; i < initial.size(); i++) {
@@ -156,6 +160,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
                     runtime.get(i), parent));
         }
 	}
+
+    private void addSessionsForConditionals(ConditionalExertion initial, ConditionalExertion runtime, MonitorSession parent) {
+        for (int i = 0; i<initial.getTargets().size(); i++) {
+            if (!runtime.getTargets().get(i).isMonitorable())
+                ((ServiceExertion)runtime.getTargets().get(i)).setMonitored(true);
+            add(new MonitorSession(initial.getTargets().get(i), runtime.getTargets().get(i), parent));
+        }
+    }
 
 	public RemoteEventListener getListener() {
 		return listener;
@@ -369,7 +381,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		logger.fine("failed count=" + failedCount + " suspended count="
 				+ suspendedCount + " doneCount=" + doneCount);
 
-		if (doneCount == size()) {
+		if (doneCount == size() || (runtimeExertion instanceof AltExertion && doneCount>0)) {
             runtimeExertion.setStatus(Exec.DONE);
             mLandlord.remove(this);
         }

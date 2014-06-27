@@ -22,6 +22,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Set;
 
+import net.jini.core.lease.Lease;
+import net.jini.core.lease.UnknownLeaseException;
+import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.exertion.AltExertion;
@@ -77,7 +80,7 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
             postUpdate(result);
             MonitoringSession monSession = MonitorUtil.getMonitoringSession(result);
             //TODO Not very nice
-            if (result.isBlock() && result.isMonitorable() && monSession!=null) {
+            /*if (result.isBlock() && result.isMonitorable() && monSession!=null) {
                 boolean isFailed = false;
                 for (Exertion xrt : result.getAllExertions()) {
                     if (xrt.getStatus()==Exec.FAILED || xrt.getStatus()==Exec.ERROR) {
@@ -86,11 +89,11 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
                     }
                 }
                 monSession.changed(result.getContext(), (isFailed ? Exec.FAILED : Exec.DONE));
-            }
+            }*/
         } catch (RemoteException e) {
             throw new ExertionException(e);
-        } catch (MonitorException e) {
-            throw new ExertionException(e);
+        /*} catch (MonitorException e) {
+            throw new ExertionException(e);*/
         }
     }
 
@@ -100,6 +103,19 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 				oe.getCondition().getConditionalContext().append(xrt.getContext());
 				oe.getCondition().setStatus(null);
 			}
+            MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+            if (exertion.isMonitorable() && monSession!=null) {
+                try {
+                    monSession.init((Monitorable) provider.getProxy(), ExertionDispatcherFactory.LEASE_RENEWAL_PERIOD,
+                            ExertionDispatcherFactory.DEFAULT_TIMEOUT_PERIOD);
+                    if (getLrm()==null) setLrm(new LeaseRenewalManager());
+                    getLrm().renewUntil(monSession.getLease(), Lease.FOREVER, ExertionDispatcherFactory.LEASE_RENEWAL_PERIOD, null);
+                } catch (RemoteException re) {
+                    logger.error("Problem initializing Monitor Session for: " + exertion.getName(), re);
+                } catch (MonitorException e) {
+                    logger.error("Problem initializing Monitor Session for: " + exertion.getName(), e);
+                }
+            }
 		} else if (exertion instanceof OptExertion) {
 			Context pc = ((OptExertion)exertion).getCondition().getConditionalContext();
 			((OptExertion)exertion).getCondition().setStatus(null);
@@ -122,6 +138,19 @@ public class CatalogBlockDispatcher extends CatalogSequentialDispatcher {
 	private void postUpdate(Exertion exertion) throws ContextException, RemoteException {
 		if (exertion instanceof AltExertion) {
 			xrt.getContext().append(((AltExertion)exertion).getActiveOptExertion().getContext());
+            /*MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+            if (exertion.isMonitorable() && monSession!=null) {
+                try {
+                    monSession.changed(exertion.getContext(), exertion.getStatus());
+                    getLrm().remove(monSession.getLease());
+                } catch (RemoteException re) {
+                    logger.error("Problem initializing Monitor Session for: " + exertion.getName(), re);
+                } catch (MonitorException e) {
+                    logger.error("Problem initializing Monitor Session for: " + exertion.getName(), e);
+                } catch (UnknownLeaseException e) {
+                    logger.error("Problem removing monitoring lease for: " + exertion.getName(), e);
+                }
+            } */
 		} else if (exertion instanceof OptExertion) {
 			xrt.getContext().append(exertion.getContext());
 		}
