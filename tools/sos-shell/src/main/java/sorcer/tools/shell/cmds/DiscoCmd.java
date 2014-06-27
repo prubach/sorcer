@@ -103,7 +103,7 @@ public class DiscoCmd extends ShellCmd {
 				describeServiceRegistrar(myReg, false);
 			}
 		} else
-			System.out.println("Sorry, no lookup services located");
+			out.println("Sorry, no lookup services located");
 	}
 
 	static public void describeServiceRegistrar(ServiceRegistrar myReg,
