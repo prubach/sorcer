@@ -99,6 +99,7 @@ logger("sorcer.arithmetic", DEBUG)
 
 logger("sorcer.core.provider.logger", DEBUG)
 logger("sorcer.platform.logger", DEBUG)
+logger("sorcer.core.dispatch", INFO)
 
 /*
 logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
