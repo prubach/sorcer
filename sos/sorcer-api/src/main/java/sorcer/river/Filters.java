@@ -93,9 +93,8 @@ public class Filters {
         return new ServiceIDFilter(serviceID);
     }
 
-    public static ServiceItemFilter serviceTemplateFilter(ServiceTemplate serviceTemplate){
-        assert serviceTemplate != null;
-        return new ServiceTemplateFilter(serviceTemplate);
+    public static ServiceItemFilter serviceTemplateFilter(ServiceTemplate serviceTemplate) {
+        return serviceTemplate != null ? new ServiceTemplateFilter(serviceTemplate) : trueFilter;
     }
 }
 

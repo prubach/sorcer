@@ -219,7 +219,7 @@ public class ServiceExerter implements Exerter, Callable {
                 signature.setProviderName(providerName);
             }
             logger.debug("Exertion shell's servicer accessor: {}",
-                    Accessor.getAccessorType());
+                    Accessor.getAccessor());
             provider = ((NetSignature) signature).getService();
         } catch (SignatureException e) {
             logger.warn("Error", e);

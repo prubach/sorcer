@@ -17,28 +17,34 @@
 package sorcer.client;
 
 import javax.inject.Provider;
-import java.lang.reflect.Proxy;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 
 /**
- * Factory of client proxy objects
- * <p/>
- * TODO support injection with @Inject
- *
  * @author Rafał Krupiński
  */
-public class RefreshableProxyFactory<T> implements Provider<T> {
-    private Provider<T> backend;
-    private ClassLoader cl;
-    private Class<T> type;
+public class CachingProxyFactory<T> implements Provider<T> {
+    private Reference<T> localCache;
 
-    public RefreshableProxyFactory(Class<T> type) {
-        this.type = type;
-        backend = new ProxyFactory<T>(type);
-        cl = type.getClassLoader();
+    private final Provider<T> parent;
+
+    public CachingProxyFactory(Provider<T> parent) {
+        this.parent = parent;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public T get() {
-        return (T) Proxy.newProxyInstance(cl, new Class[]{type}, new RefreshableInvocationHandler(backend));
+        if (localCache != null) {
+            T result = localCache.get();
+            if (result != null)
+                return result;
+        }
+
+        T result = parent.get();
+
+        if (result != null)
+            localCache = new SoftReference<T>(result);
+
+        return result;
     }
 }

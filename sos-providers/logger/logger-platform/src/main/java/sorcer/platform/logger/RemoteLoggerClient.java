@@ -39,7 +39,7 @@ import java.util.concurrent.BlockingQueue;
 public class RemoteLoggerClient implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(RemoteLoggerClient.class);
     private BlockingQueue<ILoggingEvent> queue;
-    private RemoteLogger remoteLogger;
+    private RemoteLogger remoteLogger = Accessor.getService(RemoteLogger.class);
 
     public RemoteLoggerClient(BlockingQueue<ILoggingEvent> queue) {
         assert queue != null;
@@ -53,17 +53,9 @@ public class RemoteLoggerClient implements Runnable {
             int count = queue.drainTo(loggingEvents);
             if (count == 0)
                 return;
-            publish(loggingEvents);
+            publishRetry(vo(loggingEvents));
         } catch (Throwable t) {
             log.error("Problem: ", t);
-        }
-    }
-
-    private void publish(List<ILoggingEvent> loggingEvents) {
-        if (remoteLogger != null) {
-            publishRetry(vo(loggingEvents));
-        } else {
-            publishNoRetry1(loggingEvents);
         }
     }
 
@@ -81,24 +73,16 @@ public class RemoteLoggerClient implements Runnable {
         }
     }
 
-    private void publishNoRetry1(List<ILoggingEvent> loggingEvents) {
-        publishNoRetry(vo(loggingEvents));
-    }
-
     /**
-     * Gets a new RemoteLogger proxy and if it's available, publishes the logging event to it.
+     * Publishes the logging event to RemoteLogger using cashed proxy.
      *
      * @param vos the logging events to publish
      */
     private void publishNoRetry(List<LoggingEventVO> vos) {
-        Object o = Accessor.getService(RemoteLogger.class);
-        remoteLogger = (RemoteLogger)o;
-        if (remoteLogger != null)
             try {
                 remoteLogger.publish(vos);
             } catch (RemoteException e) {
                 log.debug("Could not publish logging event", e);
-                remoteLogger = null;
             }
     }
 

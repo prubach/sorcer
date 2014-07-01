@@ -445,6 +445,7 @@ $MVN_REPO/org/apache/commons/commons-lang3/3.2.1/commons-lang3-3.2.1.jar:\
 $MVN_REPO/org/codehaus/plexus/plexus-utils/$V_PLEXUS/plexus-utils-$V_PLEXUS.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher-base/$V_SORCER/sorcer-launcher-base-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-launcher/$V_SORCER/sorcer-launcher-$V_SORCER.jar:\
+$MVN_REPO/javax/inject/javax.inject/1/javax.inject-1.jar:\
 $MVN_REPO/commons-cli/commons-cli/1.2/commons-cli-1.2.jar"
 
 

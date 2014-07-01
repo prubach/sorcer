@@ -92,7 +92,7 @@ public class SpaceAccessor {
             log.info("JavaSpace is back!");
             return javaSpace;
         } catch (Exception e) {
-            log.error("Problem connecting to JavaSpace");
+            log.error("Problem connecting to JavaSpace", e);
             cache = null;
             return null;
         }

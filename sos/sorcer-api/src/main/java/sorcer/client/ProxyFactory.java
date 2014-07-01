@@ -19,63 +19,42 @@ package sorcer.client;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
-import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceItemFilter;
-import sorcer.container.sdi.IDiscoveryManagerRegistry;
 import sorcer.core.SorcerEnv;
 import sorcer.river.Filters;
-import sorcer.service.Accessor;
+import sorcer.service.DynamicAccessor;
 import sorcer.util.ClassLoaders;
-import sorcer.util.InjectionHelper;
 
 import javax.inject.Provider;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Rafał Krupiński
  */
 public class ProxyFactory<T> implements Provider<T> {
-    /**
-     * The future default is preferLocal, but currently only requireRemote is supported.
-     * This is only informative, as this field is now ignored.
-     */
-    // private ServiceScope scope = ServiceScope.preferLocal;
-    private ServiceScope scope = ServiceScope.requireRemote;
-
     private ServiceTemplate template;
 
-    private boolean cache = true;
+    private ServiceItemFilter filter;
 
-    private ServiceItemFilter filter = Filters.any();
+    private DynamicAccessor accessor;
 
-    private long lastCheck;
+    public ProxyFactory(Class<T> type, DynamicAccessor accessor) {
+        this(new ServiceTemplate(null, new Class[]{type}, new Entry[0]), Filters.any(), accessor);
+    }
 
-    private String[] groups = SorcerEnv.getLookupGroups();
-
-    /**
-     * Time between Accessor failure and the next retry of Accessor.getService
-     */
-    private long failureGracePeriod = TimeUnit.MINUTES.toMillis(1);
-
-    public ProxyFactory(Class<T> type) {
-        template = new ServiceTemplate(null, new Class[]{type}, new Entry[0]);
+    public ProxyFactory(ServiceTemplate template, ServiceItemFilter filter, DynamicAccessor accessor) {
+        this.template = template;
+        this.filter = filter;
+        this.accessor = accessor;
     }
 
     @Override
     public T get() {
-        IDiscoveryManagerRegistry registry = InjectionHelper.create(IDiscoveryManagerRegistry.class);
-        LookupCache cache = registry.getLookupCache(groups);
-        if (cache != null) {
-            ServiceItem result = cache.lookup(Filters.and(filter, Filters.serviceTemplateFilter(template)));
-            if (result != null)
-                return (T) result.service;
-        }
-
         ClassLoaders.Callable<T, RuntimeException> getServiceCallable = new ClassLoaders.Callable<T, RuntimeException>() {
             @Override
             @SuppressWarnings("unchecked")
             public T call() throws RuntimeException {
-                return (T) Accessor.getService(template, filter);
+                ServiceItem[] serviceItems = accessor.getServiceItems(template, 1, 1, filter, SorcerEnv.getLookupGroups());
+                return (T) (serviceItems.length > 0 ? serviceItems[0].service : null);
             }
         };
         T result;
@@ -95,23 +74,8 @@ public class ProxyFactory<T> implements Provider<T> {
                     throw new IllegalArgumentException("Obtained object " + result + " is not a " + type.getName());
     }
 
-    public void setScope(ServiceScope scope) {
-        this.scope = scope;
-    }
-
     public void setTemplate(ServiceTemplate template) {
         this.template = template;
-    }
-
-    /**
-     * Set the service object explicitly, intended for testing purposes
-    public void setService(T service) {
-        this.service = service;
-    }
-     */
-
-    public void setCache(boolean cache) {
-        this.cache = cache;
     }
 
     public void setFilter(ServiceItemFilter filter) {

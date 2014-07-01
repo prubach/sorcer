@@ -20,6 +20,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.client.ProxyHelper;
 import sorcer.service.Accessor;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
@@ -47,6 +48,7 @@ public class DatabaseStorerTest {
     @Test(/*timeout = 5000*/)
     public void testDbp() throws Exception {
         IDatabaseProvider databaseProvider = Accessor.getService(IDatabaseProvider.class);
+        assertTrue(ProxyHelper.isReady(databaseProvider));
         assertNotNull("No IDatabaseProvider found", databaseProvider);
 
         URL url = null;

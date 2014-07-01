@@ -20,10 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
+import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.rmi.RemoteException;
 
 /**
  * @author Rafał Krupiński
@@ -32,8 +32,6 @@ public class RefreshableInvocationHandler<T> implements InvocationHandler {
     private Provider<T> targetFactory;
     private T target;
     private final static Logger log = LoggerFactory.getLogger(RefreshableInvocationHandler.class);
-
-    private static final int retries = 3;
 
     public RefreshableInvocationHandler(Provider<T> targetFactory) {
         this.targetFactory = targetFactory;
@@ -48,23 +46,23 @@ public class RefreshableInvocationHandler<T> implements InvocationHandler {
         if (target == null)
             throw new NullPointerException("No target object from " + targetFactory);
 
-        Object result = null;
-        for (int i = 0; i < retries && result == null; i++)
-            try {
-                try {
-                    result = method.invoke(target, args);
-                } catch (InvocationTargetException x) {
-                    throw x.getCause();
-                }
-            } catch (RemoteException x) {
-                log.warn("Error while calling {} on {} from {}", method, target, targetFactory);
-                if (i < retries - 1) {
-                    target = targetFactory.get();
-                    if (target == null)
-                        throw new NullPointerException("No target object from " + targetFactory);
-                    log.debug("Using {}", target);
-                }
-            }
-        return result;
+        try {
+            return invokeNoRetry(method, args);
+        } catch (Throwable x) {
+            log.warn("Error while calling {}", method, x);
+            return invokeNoRetry(method, args);
+        }
+    }
+
+    protected Object invokeNoRetry(Method method, Object[] args) throws Throwable {
+        try {
+            return method.invoke(target, args);
+        } catch (InvocationTargetException x) {
+            throw x.getCause();
+        }
+    }
+
+    public Provider<T> getProvider() {
+        return targetFactory;
     }
 }

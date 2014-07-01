@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 
 package sorcer.service;
 
+import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,16 +29,21 @@ import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
+import net.jini.discovery.LookupDiscovery;
+import net.jini.lease.LeaseRenewalManager;
+import net.jini.lookup.LookupCache;
+import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.lookup.ServiceItemFilter;
 import net.jini.lookup.entry.Name;
+import sorcer.client.CachingProxyFactory;
+import sorcer.client.ProxyFactory;
+import sorcer.client.RefreshableInvocationHandler;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.river.Filters;
-import sorcer.util.ProviderNameUtil;
-import sorcer.util.SorcerProviderNameUtil;
-import sorcer.util.StringUtils;
+import sorcer.util.*;
 
 import static sorcer.core.SorcerConstants.ANY;
 
@@ -132,9 +139,15 @@ public class Accessor {
         return (T) getService(serviceTemplate, Filters.any());
     }
 
-    public static Object getService(ServiceTemplate template, ServiceItemFilter filter, String[] groups) {
-        ServiceItem serviceItem = getServiceItem(template, filter, groups);
-        return serviceItem == null ? null : serviceItem.service;
+    public static <T> T getService(ServiceTemplate template, ServiceItemFilter filter, String[] groups) {
+        try {
+            ServiceDiscoveryManager sdm = new ServiceDiscoveryManager(new LookupDiscovery(groups), new LeaseRenewalManager());
+            LookupCache lookupCache = sdm.createLookupCache(template, filter, null);
+            CachingProxyFactory<T> cachingProxyFactory = new CachingProxyFactory<T>(new ProxyFactory<T>(template, filter, accessor));
+            return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), template.serviceTypes, new RefreshableInvocationHandler<T>(cachingProxyFactory));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public static Object getService(ServiceTemplate template, ServiceItemFilter filter) {
