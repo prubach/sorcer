@@ -18,9 +18,11 @@
 
 package sorcer.core.provider.exertmonitor.lease;
 
+import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -41,6 +43,8 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import com.sun.jini.landlord.Landlord;
 import com.sun.jini.landlord.LeaseFactory;
 import com.sun.jini.landlord.LeasedResource;
+import sorcer.core.SorcerEnv;
+import sorcer.core.provider.exertmonitor.MonitorSession;
 
 import static sorcer.util.StringUtils.*;
 
@@ -83,10 +87,16 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	}
 
 	public void export() throws ExportException {
-		BasicJeriExporter exporter = new BasicJeriExporter(
-				TcpServerEndpoint.getInstance(0), new BasicILFactory());
-
-		proxy = (Landlord) exporter.export(this);
+        BasicJeriExporter exporter = null;
+        try {
+            exporter = new BasicJeriExporter(
+                    TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0), new BasicILFactory());
+        } catch (UnknownHostException e) {
+            logger.warning("Could not resolve hostAddress - starting on default interface");
+            exporter = new BasicJeriExporter(
+                    TcpServerEndpoint.getInstance(0), new BasicILFactory());
+        }
+        proxy = (Landlord) exporter.export(this);
 		Thread llt = new Thread(this, tName("MonitorLandlord.checkLeases"));
 		llt.setDaemon(true);
 		llt.start();
@@ -217,6 +227,10 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 		for (Enumeration e = resources.keys(); e.hasMoreElements();) {
 			cookie = (Uuid) e.nextElement();
 			resource = (MonitorLeasedResource) resources.get(cookie);
+            String name = (((MonitorSession)resource).getRuntimeExertion()!=null ?
+                    ((MonitorSession)resource).getRuntimeExertion().getName() : " NOT EXERTION");
+            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
+            logger.info("Checking lease: " + name + " " + sdf.format(resource.getExpiration()));
 
 			if (resource.getExpiration() < now) {
 				logger.log(Level.INFO, "Lease cancelled for resource ="

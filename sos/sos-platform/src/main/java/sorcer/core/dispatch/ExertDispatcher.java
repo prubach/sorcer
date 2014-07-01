@@ -19,22 +19,26 @@
 package sorcer.core.dispatch;
 
 import java.lang.reflect.Array;
+import java.rmi.RemoteException;
 import java.util.*;
 
 import javax.security.auth.Subject;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import net.jini.lease.LeaseRenewalManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 import static sorcer.service.Exec.*;
 
@@ -54,9 +58,6 @@ abstract public class ExertDispatcher implements Dispatcher {
 
     protected Set<Context> sharedContexts;
 
-    // If it is spawned by another dispatcher.
-    protected boolean isSpawned;
-
     // All dispatchers spawned by this one.
     protected List<Uuid> runningExertionIDs = Collections.synchronizedList(new LinkedList<Uuid>());
 
@@ -74,7 +75,7 @@ abstract public class ExertDispatcher implements Dispatcher {
 	protected ProviderProvisionManager providerProvisionManager;
     protected ProvisionManager provisionManager;
 
-	public static Map<Uuid, Dispatcher> getDispatchers() {
+    public static Map<Uuid, Dispatcher> getDispatchers() {
 		return dispatchers;
 	}
 
@@ -86,6 +87,9 @@ abstract public class ExertDispatcher implements Dispatcher {
         this.provider = provider;
     }
 
+
+    private LeaseRenewalManager lrm = null;
+
 	public ExertDispatcher(Exertion exertion,
                            Set<Context> sharedContexts,
                            boolean isSpawned,
@@ -96,7 +100,6 @@ abstract public class ExertDispatcher implements Dispatcher {
 		this.xrt = sxrt;
         this.subject = sxrt.getSubject();
         this.sharedContexts = sharedContexts;
-        this.isSpawned = isSpawned;
         this.isMonitored = sxrt.isMonitorable();
         this.provider = provider;
         this.provisionManager = provisionManager;
@@ -106,21 +109,26 @@ abstract public class ExertDispatcher implements Dispatcher {
     public void exec() {
         dispatchers.put(xrt.getId(), this);
         state = RUNNING;
+        xrt.setStatus(state);
         if (xrt instanceof Job) {
             masterXrt = (ServiceExertion) ((Job) xrt).getMasterExertion();
         }
         try {
-            beforeExec(xrt);
+            beforeParent(xrt);
             doExec();
             afterExec(xrt);
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Exception e) {
             logger.info("Exertion dispatcher thread killed by exception", e);
             xrt.setStatus(FAILED);
             state = FAILED;
             xrt.reportException(e);
-        }finally {
+        } finally {
+            try {
+                MonitoringSession monSession = MonitorUtil.getMonitoringSession(xrt);
+                if (lrm!=null && monSession!=null) lrm.remove(monSession.getLease());
+            } catch (Exception ce) {
+                logger.warn("Problem removing lease for : " + xrt.getName() + " " + Exec.State.name(xrt.getStatus()) , ce);
+            }
             dispatchers.remove(xrt.getId());
         }
     }
@@ -128,16 +136,44 @@ abstract public class ExertDispatcher implements Dispatcher {
     abstract protected void doExec() throws SignatureException, ExertionException;
     abstract protected List<Exertion> getInputExertions() throws ContextException;
 
-    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException, ContextException {
-        logger.info("before exert {}", exertion);
+    protected void beforeParent(Exertion exertion) throws ContextException, ExertionException {
+        logger.debug("before parent {}", exertion);
         reconcileInputExertions(exertion);
         updateInputs(exertion);
         checkProvision();
         inputXrts = getInputExertions();
     }
 
-    protected void afterExec(Exertion result) throws ContextException {
-        logger.info("After exert {}", result);
+    protected void beforeExec(Exertion exertion) throws ExertionException, SignatureException {
+        logger.debug("before exert {}", exertion);
+        try {
+            // Provider is expecting exertion to be in context
+            exertion.getContext().setExertion(exertion);
+            updateInputs(exertion);
+        } catch (ContextException e) {
+            throw new ExertionException(e);
+        }
+        // If Job, new dispatcher will update inputs for it's Exertion
+        // in catalog dispatchers, if it is a job, then new dispatcher is
+        // spawned
+        // and the shared contexts are passed. So the new dispatcher will update
+        // inputs
+        // of tasks inside the jobExertion. But in space, all inputs to a new
+        // job are
+        // to be updated before dropping.
+        try {
+            exertion.getControlContext().appendTrace(provider.getProviderName()
+                    + " dispatcher: " + getClass().getName());
+        } catch (RemoteException e) {
+            logger.warn("Exception on local call", e);
+        }
+        ((ServiceExertion) exertion).startExecTime();
+        ((ServiceExertion) exertion).setStatus(RUNNING);
+
+    }
+
+    protected void afterExec(Exertion result) throws ContextException, ExertionException {
+        logger.debug("After exert {}", result);
     }
 
     @Override
@@ -167,7 +203,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     protected void checkProvision() throws ExertionException {
         if(xrt.isProvisionable() && xrt.getDeployments().size()>0) {
             try {
-                getProvisionManager().deployServices();
+                provisionManager.deployServices();
             } catch (DispatcherException e) {
                 throw new ExertionException("Unable to deploy services", e);
             }
@@ -228,6 +264,7 @@ abstract public class ExertDispatcher implements Dispatcher {
     }
 
     protected void updateInputs(Exertion ex) throws ExertionException, ContextException {
+        logger.debug("updating inputs for {}", ex.getName());
         List<Context> inputContexts = Jobs.getTaskContexts(ex);
         for (Context inputContext : inputContexts)
             updateInputs((ServiceContext) inputContext);
@@ -240,8 +277,8 @@ abstract public class ExertDispatcher implements Dispatcher {
 		int argIndex = -1;
 		try {
 			Map<String, String> toInMap = Contexts.getInPathsMap(toContext);
-			logger.info("updating inputs in context toContext = {}", toContext);
-			logger.info("updating based on = {}", toInMap);
+			logger.debug("updating inputs in context toContext = {}", toContext);
+			logger.debug("updating based on = {}", toInMap);
 			for (Map.Entry<String, String> e  : toInMap.entrySet()) {
                 toPath = e.getKey();
 				// find argument for parametric context
@@ -253,18 +290,18 @@ abstract public class ExertDispatcher implements Dispatcher {
 					}
 				}
 				toPathcp = e.getValue();
-				logger.info("toPathcp = {}", toPathcp);
+				logger.debug("toPathcp = {}", toPathcp);
 				fromPath = Contexts.getContextParameterPath(toPathcp);
-				logger.info("context ID = {}", Contexts.getContextParameterID(toPathcp));
+				logger.debug("context ID = {}", Contexts.getContextParameterID(toPathcp));
 				fromContext = getSharedContext(fromPath, Contexts.getContextParameterID(toPathcp));
-				logger.info("fromContext = {}", fromContext);
-				logger.info("before updating toContext: {}", toContext
-						+ "\n>>> TO path: " + toPath + "\nfromContext: "
-						+ fromContext + "\n>>> FROM path: " + fromPath);
+				logger.debug("fromContext = {}", fromContext);
+				logger.debug("before updating toContext: {}", toContext
+                        + "\n>>> TO path: " + toPath + "\nfromContext: "
+                        + fromContext + "\n>>> FROM path: " + fromPath);
                 if (fromContext != null) {
-					logger.info("updating toContext: {}", toContext
-							+ "\n>>> TO path: " + toPath + "\nfromContext: "
-							+ fromContext + "\n>>> FROM path: " + fromPath);
+					logger.debug("updating toContext: {}", toContext
+                            + "\n>>> TO path: " + toPath + "\nfromContext: "
+                            + fromContext + "\n>>> FROM path: " + fromPath);
                     // make parametric substitution if needed
                     if (argIndex >=0 ) {
                         Object args = toContext.getValue(Context.PARAMETER_VALUES);
@@ -327,10 +364,6 @@ abstract public class ExertDispatcher implements Dispatcher {
         return isMonitored;
     }
 
-    public ProvisionManager getProvisionManager() {
-        return provisionManager;
-    }
-
     protected void reconcileInputExertions(Exertion ex) throws ContextException {
         ServiceExertion ext = (ServiceExertion)ex;
         if (ext.getStatus() == DONE) {
@@ -345,5 +378,13 @@ abstract public class ExertDispatcher implements Dispatcher {
                     reconcileInputExertions(sub);
             }
         }
+    }
+
+    public LeaseRenewalManager getLrm() {
+        return lrm;
+    }
+
+    public void setLrm(LeaseRenewalManager lrm) {
+        this.lrm = lrm;
     }
 }

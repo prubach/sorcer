@@ -1764,6 +1764,11 @@ public class operator {
 
     public static Block block(String name, Signature signature, Context context,
                               Exertion... exertions) throws ExertionException {
+        return block(name, signature, null, context, exertions);
+    }
+
+    public static Block block(String name, Signature signature, ControlContext control, Context context,
+                              Exertion... exertions) throws ExertionException {
         Block block;
         try {
             if (signature != null) {
@@ -1779,6 +1784,10 @@ public class operator {
             if (context != null)
                 block.setContext(context);
             block.setExertions(exertions);
+
+            if (block instanceof NetBlock && control != null) {
+                block.setControlContext(control);
+            }
         } catch (Exception se) {
             throw new ExertionException(se);
         }

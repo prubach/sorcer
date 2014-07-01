@@ -59,7 +59,7 @@ public class JobThread implements Runnable {
                 logger.severe("exception in dispatcher: " + e);
 				// ignore it, locall call
 			}
-			dispatcher.exec();
+ 			dispatcher.exec();
             DispatchResult dispatchResult = dispatcher.getResult();
 			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatchResult.state
 					+ " for job***\n" + job.getControlContext());

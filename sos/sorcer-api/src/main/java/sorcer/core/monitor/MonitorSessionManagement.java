@@ -152,7 +152,7 @@ public interface MonitorSessionManagement extends MonitorManagement {
 	 *             if there is a communication error
 	 **/
 	
-	public void update(Uuid cookie, Context ctx, Object aspect)
+	public void update(Uuid cookie, Context ctx, int aspect)
 			throws RemoteException, MonitorException;
 	
 	public int getState(Uuid cookie) throws RemoteException,

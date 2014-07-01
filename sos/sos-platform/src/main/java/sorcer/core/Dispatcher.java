@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2013 the original author or authors.
  * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
@@ -16,7 +16,12 @@
  */
 package sorcer.core;
 
+import net.jini.lease.LeaseRenewalManager;
+
 public interface Dispatcher {
     void exec();
     DispatchResult getResult();
+
+    LeaseRenewalManager getLrm();
+    void setLrm(LeaseRenewalManager lrm);
 }

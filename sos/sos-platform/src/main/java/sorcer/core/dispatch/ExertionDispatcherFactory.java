@@ -23,13 +23,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.jini.core.lease.Lease;
+import net.jini.lease.LeaseRenewalManager;
 import sorcer.core.deploy.Deployment;
+import sorcer.core.monitor.MonitorSessionManagement;
+import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.loki.member.LokiMemberUtil;
+import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
+
+import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
 
 /**
  * This class creates instances of appropriate subclasses of Dispatcher. The
@@ -41,6 +50,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
     private LokiMemberUtil loki;
+
+    public static final long LEASE_RENEWAL_PERIOD = 1 * 1000 * 60L;
+    public static final long DEFAULT_TIMEOUT_PERIOD = 1 * 1000 * 90L;
 
     protected ExertionDispatcherFactory(LokiMemberUtil loki){
         this.loki = loki;
@@ -69,15 +81,15 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
 
 			if (Jobs.isCatalogBlock(exertion) && exertion instanceof Block) {
 				logger.info("Running Catalog Block Dispatcher...");
-				 return new CatalogBlockDispatcher(exertion,
+                dispatcher = new CatalogBlockDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  provider,
                          provisionManager,
                          providerProvisionManager);
 			} else if (isSpaceSequential(exertion)) {
-				logger.info("Running Catalog Block Dispatcher...");
-				return new SpaceSequentialDispatcher(exertion,
+				logger.info("Running Space Sequential Dispatcher...");
+				dispatcher = new SpaceSequentialDispatcher(exertion,
 						                                  sharedContexts,
 						                                  isSpawned,
 						                                  loki,
@@ -85,35 +97,56 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                         provisionManager,
                         providerProvisionManager);
 			}
-            if (exertion instanceof Job) {
-            Job job = (Job) exertion;
-			if (Jobs.isSpaceParallel(job)) {
-                logger.info("Running Space Parallel Dispatcher...");
-                dispatcher = new SpaceParallelDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        loki,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isCatalogParallel(job)) {
-                logger.info("Running Catalog Parallel Dispatcher...");
-                dispatcher = new CatalogParallelDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
-            } else if (Jobs.isCatalogSequential(job)) {
-                logger.info("Running Catalog Sequential Dispatcher...");
-                dispatcher = new CatalogSequentialDispatcher(job,
-                        sharedContexts,
-                        isSpawned,
-                        provider,
-                        provisionManager,
-                        providerProvisionManager);
+            if (dispatcher==null && exertion instanceof Job) {
+                Job job = (Job) exertion;
+                if (Jobs.isSpaceParallel(job)) {
+                    logger.info("Running Space Parallel Dispatcher...");
+                    dispatcher = new SpaceParallelDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            loki,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                } else if (Jobs.isCatalogParallel(job)) {
+                    logger.info("Running Catalog Parallel Dispatcher...");
+                    dispatcher = new CatalogParallelDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                } else if (Jobs.isCatalogSequential(job)) {
+                    logger.info("Running Catalog Sequential Dispatcher...");
+                    dispatcher = new CatalogSequentialDispatcher(job,
+                            sharedContexts,
+                            isSpawned,
+                            provider,
+                            provisionManager,
+                            providerProvisionManager);
+                }
             }
+            assert dispatcher != null;
+            MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
+            if (exertion.isMonitorable() && monSession!=null) {
+                logger.fine("Initializing monitor session for : " + exertion.getName());
+                if (!(monSession.getState()==Exec.INSPACE)) {
+                    monSession.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
+                            DEFAULT_TIMEOUT_PERIOD);
+                } else {
+                    monSession.init((Monitorable)provider.getProxy());
+                }
+                LeaseRenewalManager lrm = new LeaseRenewalManager();
+                lrm.renewUntil(monSession.getLease(), Lease.FOREVER, LEASE_RENEWAL_PERIOD, null);
+                dispatcher.setLrm(lrm);
+
+                logger.fine("Exertion state: " + Exec.State.name(exertion.getStatus()));
+                logger.fine("Session for the exertion = " + monSession);
+                logger.fine("Lease to be renewed for duration = " +
+                        (monSession.getLease().getExpiration() - System
+                                .currentTimeMillis()));
             }
+
             logger.info("*** tally of used dispatchers: " + ExertDispatcher.getDispatchers().size());
         } catch (RuntimeException e) {
             throw e;

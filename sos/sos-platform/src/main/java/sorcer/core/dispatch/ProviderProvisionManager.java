@@ -69,7 +69,8 @@ public class ProviderProvisionManager {
             synchronized (servicesToProvision) {
                 servicesToProvision.add(
                         new SignatureElement(sig.getServiceType().getName(), sig.getProviderName(),
-                                sig.getVersion(), sig, exertion, spaceExertDispatcher));
+                                sig.getVersion(), sig, exertion, spaceExertDispatcher)
+                );
             }
         }
     }

@@ -363,14 +363,8 @@ public class ExertMonitor extends ServiceProvider implements
 			UuidKey key;
 			while (ki.hasNext()) {
 				key = ki.next();
-				ServiceExertion xrt = (ServiceExertion) (getSession(key)).getRuntimeExertion();						
-				if (xrt.getPrincipal().getId()
-						.equals(((SorcerPrincipal) principal).getId())) {
-					if (state == null || state.equals(Exec.State.NULL)
-							|| xrt.getStatus() == state.ordinal()) {
-						table.put(xrt.getId(), new ExertionInfo(xrt, key.getId()));
-					}
-				}
+                MonitorSession monSession = getSession(key);
+                table.putAll(getMonitorableExertionInfo(monSession, key, state, principal));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -378,6 +372,25 @@ public class ExertMonitor extends ServiceProvider implements
 		}
 		return table;
 	}
+
+    private Map<Uuid, ExertionInfo> getMonitorableExertionInfo(MonitorSession monitorSession, UuidKey key, Exec.State state, Principal principal) throws RemoteException,MonitorException {
+        Map<Uuid, ExertionInfo> table = new HashMap<Uuid, ExertionInfo>();
+        ServiceExertion xrt = (ServiceExertion) (monitorSession).getRuntimeExertion();
+        if (xrt.getPrincipal().getId()
+                .equals(((SorcerPrincipal) principal).getId())) {
+            if (state == null || state.equals(Exec.State.NULL)
+                    || xrt.getStatus() == state.ordinal()) {
+                table.put(xrt.getId(), new ExertionInfo(xrt, key.getId()));
+            }
+        }
+        for (MonitorSession internalSession : monitorSession) {
+            table.putAll(getMonitorableExertionInfo(internalSession, key, state, principal));
+        }
+        return table;
+    }
+
+
+
 
 	public Exertion getMonitorableExertion(Uuid id, Principal principal)
 			throws RemoteException, MonitorException {
@@ -431,15 +444,16 @@ public class ExertMonitor extends ServiceProvider implements
 	 * sorcer.core.monitor.MonitorSessionManagement.Aspect)
 	 */
 	@Override
-	public void update(Uuid cookie, Context ctx, Object aspect)
+	public void update(Uuid cookie, Context ctx, int aspect)
 			throws RemoteException, MonitorException {
-		if (aspect.equals(Exec.State.UPDATED)) {
+		if (aspect==Exec.UPDATED) {
 			update(cookie, ctx);
-		} else if (aspect.equals(Exec.State.DONE)) {
+		} else if (aspect==Exec.DONE) {
 			done(cookie, ctx);
-		} else if (aspect.equals(Exec.State.FAILED)) {
+		} else if (aspect== Exec.FAILED) {
 			failed(cookie, ctx);
-		}
+		} else
+            logger.warning("Got wrong aspect to update: " + aspect);
 
 	}
 

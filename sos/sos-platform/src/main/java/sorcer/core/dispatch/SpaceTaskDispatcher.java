@@ -53,12 +53,12 @@ public class SpaceTaskDispatcher extends SpaceParallelDispatcher {
 
         Task result = (Task) results.iterator().next().exertion;
         int status = result.getStatus();
-        if(status == DONE){
+        if (status == DONE) {
             state = DONE;
             result.setStatus(DONE);
             xrt = result;
 
-        }else if (status == FAILED) {
+        } else if (status == FAILED) {
                 addPoison(xrt);
 
             handleError(result);

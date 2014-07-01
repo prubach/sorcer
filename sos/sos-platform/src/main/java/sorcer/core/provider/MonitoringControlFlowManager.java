@@ -26,6 +26,7 @@ import sorcer.core.monitor.MonitorSessionManagement;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.service.*;
+import sorcer.service.monitor.MonitorUtil;
 
 import java.rmi.RemoteException;
 
@@ -71,22 +72,31 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
     @Override
     public Exertion process() throws ExertionException {
+        MonitoringSession monSession = getMonitoringSession(exertion);
+        if (sessionMonitor==null)
+            logger.severe("Monitoring enabled but ExertMonitor service could not be found!");
         try {
-            exertion = register(exertion);
+            if (monSession==null && sessionMonitor!=null) {
+                logger.info("No Monitor Session, registering for: " + exertion.getName());
+                exertion = register(exertion);
+            }
         } catch (RemoteException e) {
             throw new ExertionException(e);
         }
-        MonitoringSession monSession = getMonitoringSession(exertion);
+        monSession = getMonitoringSession(exertion);
 
         try {
-            monSession.init((Monitorable) delegate.getProvider().getProxy(), LEASE_RENEWAL_PERIOD,
-                    DEFAULT_TIMEOUT_PERIOD);
-            lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
-
-            NetTask result = (NetTask) super.process();
+            if (sessionMonitor!=null && !(exertion instanceof CompoundExertion)) {
+                monSession.init((Monitorable) delegate.getProvider().getProxy(), LEASE_RENEWAL_PERIOD,
+                        DEFAULT_TIMEOUT_PERIOD);
+                lrm.renewUntil(monSession.getLease(), Lease.ANY, null);
+            }
+            ServiceExertion result = (ServiceExertion) super.process();
             Exec.State resultState = result.getStatus() <= FAILED ? Exec.State.FAILED : Exec.State.DONE;
+
             try {
-                monSession.changed(result.getContext(), resultState);
+                if (sessionMonitor!=null && !(result instanceof CompoundExertion))
+                    monSession.changed(result.getContext(), resultState.ordinal());
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
@@ -105,9 +115,10 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
             throw new IllegalStateException(msg, e);
         } finally {
             try {
-                lrm.remove(monSession.getLease());
+                if (sessionMonitor!=null && !(exertion instanceof CompoundExertion))
+                    lrm.remove(monSession.getLease());
             } catch (UnknownLeaseException e) {
-                log.debug("Error while removing lease for {}", exertion.getName(), e);
+                log.warn("Error while removing lease for {}", exertion.getName(), e);
             }
         }
     }
@@ -116,7 +127,6 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
         ServiceExertion registeredExertion = (ServiceExertion) (sessionMonitor.register(null,
                 exertion, LEASE_RENEWAL_PERIOD));
-
         MonitoringSession session = getMonitoringSession(registeredExertion);
         log.info("Session for the exertion = {}", session);
         log.info("Lease to be renewed for duration = {}",

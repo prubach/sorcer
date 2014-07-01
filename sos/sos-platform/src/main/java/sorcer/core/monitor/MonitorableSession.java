@@ -202,7 +202,7 @@ public class MonitorableSession implements MonitoringSession {
 	 *             if there is a communication error
 	 **/
 
-	public void changed(Context ctx, Object aspect) throws RemoteException,
+	public void changed(Context ctx, int aspect) throws RemoteException,
 			MonitorException {
 		msm.update(cookie, ctx, aspect);
 

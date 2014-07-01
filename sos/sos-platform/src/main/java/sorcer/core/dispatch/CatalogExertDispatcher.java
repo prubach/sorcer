@@ -35,7 +35,6 @@ import sorcer.ext.Provisioner;
 import sorcer.ext.ProvisioningException;
 import sorcer.service.*;
 
-import static sorcer.util.StringUtils.tName;
 import static sorcer.service.Exec.*;
 
 abstract public class CatalogExertDispatcher extends ExertDispatcher {
@@ -48,50 +47,13 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         super(job, sharedContext, isSpawned, provider, provisionManager, providerProvisionManager);
     }
 
-    protected void preExecExertion(Exertion exertion) throws ExertionException,
-            SignatureException {
-        // If Job, new dispatcher will update inputs for it's Exertion
-        // in catalog dispatchers, if it is a job, then new dispatcher is
-        // spawned
-        // and the shared contexts are passed. So the new dispatcher will update
-        // inputs
-        // of tasks inside the jobExertion. But in space, all inputs to a new
-        // job are
-        // to be updated before dropping.
-        try {
-            exertion.getControlContext().appendTrace(provider.getProviderName()
-                    + " dispatcher: " + getClass().getName());
-        } catch (RemoteException e) {
-            // ignore it, local call
-        }
-        logger.info("preExecExertions>>>...UPDATING INPUTS..." + exertion.getName());
-		try {
-			//if (exertion.isTask()) {
-				updateInputs(exertion);
-			//}
-		} catch (ContextException e) {
-			throw new ExertionException(e);
-		}        
-		((ServiceExertion) exertion).startExecTime();
-        ((ServiceExertion) exertion).setStatus(RUNNING);
-    }
-
-    // Parallel
-    protected ExertionThread runExertion(ServiceExertion ex) {
-        ExertionThread eThread = new ExertionThread(ex, this);
-        Thread t = new Thread(eThread, tName("Exert" + ex.getName()));
-        t.start();
-        return eThread;
-    }
-
-    // Sequential
     protected Exertion execExertion(Exertion ex) throws SignatureException,
             ExertionException {
+        beforeExec(ex);
         // set subject before task goes out.
         // ex.setSubject(subject);
         ServiceExertion result = null;
-  	try {
-			preExecExertion(ex);
+        try {
 			if (ex.isTask()) {
 				result = execTask((Task) ex);
 			} else if (ex.isJob()) {
@@ -101,6 +63,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			} else {
 				logger.warn("Unknown ServiceExertion: {}", ex);
 			}
+            afterExec(ex, result);
 		} catch (Exception e) {
             logger.warn("Error while executing exertion");
 			// return original exertion with exception
@@ -112,13 +75,14 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 		}
 		// set subject after result is received
 		// result.setSubject(subject);
-		postExecExertion(ex, result);
 		return result;
     }
-    protected void postExecExertion(Exertion ex, Exertion result)
-            throws SignatureException, ExertionException {
+
+    protected void afterExec(Exertion ex, Exertion result)
+            throws SignatureException, ExertionException, ContextException {
         ServiceExertion ser = (ServiceExertion) result;
-		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
+		((CompoundExertion)xrt).setExertionAt(result, result.getIndex());
+//		((CompoundExertion)xrt).setExertionAt(result, ex.getIndex());
         if (ser.getStatus() > FAILED && ser.getStatus() != SUSPENDED) {
             ser.setStatus(DONE);
 /*            if (xrt.getControlContext().isNodeReferencePreserved())
@@ -140,6 +104,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 				throw new ExertionException(e);
 			}
         }
+        afterExec(result);
     }
     protected Task execTask(Task task) throws ExertionException,
             SignatureException, RemoteException {
@@ -260,17 +225,18 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
             throws DispatcherException, InterruptedException,
             RemoteException {
 
-            runningExertionIDs.add(job.getId());
+        runningExertionIDs.add(job.getId());
 
-            // create a new instance of a dispatcher
-            Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
-                    .createDispatcher(job, sharedContexts, true, provider);
+        // create a new instance of a dispatcher
+        Dispatcher dispatcher = ExertionDispatcherFactory.getFactory()
+                .createDispatcher(job, sharedContexts, true, provider);
         dispatcher.exec();
-            // wait until serviceJob is done by dispatcher
+        // wait until serviceJob is done by dispatcher
         Job out = (Job) dispatcher.getResult().exertion;
-            out.getControlContext().appendTrace(provider.getProviderName()
-                    + " dispatcher: " + getClass().getName());
-            return out;
+
+        out.getControlContext().appendTrace(provider.getProviderName()
+                + " dispatcher: " + getClass().getName());
+        return out;
     }
 
 	private Block execBlock(Block block)
@@ -331,41 +297,4 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 			throw new ExertionException("transaction failure", te);
 		}
 	}
-
-    protected class ExertionThread implements Runnable {
-
-        private Exertion ex;
-
-        private Exertion result;
-
-        public ExertionThread(ServiceExertion exertion,
-                              Dispatcher dispatcher) {
-            ex = exertion;
-            if (isMonitored)
-                dispatchers.put(xrt.getId(), dispatcher);
-        }
-
-        public void run() {
-            try {
-                result = execExertion(ex);
-            } catch (ExertionException ee) {
-                ee.printStackTrace();
-                result = ex;
-                ((ServiceExertion) result).setStatus(FAILED);
-            } catch (SignatureException eme) {
-                eme.printStackTrace();
-                result = ex;
-                ((ServiceExertion) result).setStatus(FAILED);
-            }
-            dispatchers.remove(xrt.getId());
-        }
-
-        public Exertion getExertion() {
-            return ex;
-        }
-
-        public Exertion getResult() {
-            return result;
-        }
-    }
 }

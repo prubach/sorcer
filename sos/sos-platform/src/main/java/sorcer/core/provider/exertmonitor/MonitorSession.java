@@ -20,6 +20,7 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.core.exertion.AltExertion;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.provider.Provider;
 import sorcer.core.monitor.MonitorEvent;
@@ -144,15 +145,29 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void init() {
 		cookie = UuidFactory.generate();
-		if (initialExertion.isJob())
-			addSessions((Job) initialExertion, (Job) runtimeExertion, this);
+		if (initialExertion.isJob() || initialExertion.isBlock())
+			addSessions((CompoundExertion) initialExertion, (CompoundExertion) runtimeExertion, this);
+
+        if (initialExertion instanceof ConditionalExertion)
+            addSessionsForConditionals((ConditionalExertion)initialExertion, (ConditionalExertion)runtimeExertion, this);
+    }
+
+	private void addSessions(CompoundExertion initial, CompoundExertion runtime, MonitorSession parent) {
+		for (int i = 0; i < initial.size(); i++) {
+            if (!runtime.get(i).isMonitorable())
+                ((ServiceExertion)runtime.get(i)).setMonitored(true);
+            add(new MonitorSession(initial.get(i),
+                    runtime.get(i), parent));
+        }
 	}
 
-	private void addSessions(Job initial, Job runtime, MonitorSession parent) {
-		for (int i = 0; i < initial.size(); i++)
-			add(new MonitorSession(initial.get(i),
-					runtime.get(i), parent));
-	}
+    private void addSessionsForConditionals(ConditionalExertion initial, ConditionalExertion runtime, MonitorSession parent) {
+        for (int i = 0; i<initial.getTargets().size(); i++) {
+            if (!runtime.getTargets().get(i).isMonitorable())
+                ((ServiceExertion)runtime.getTargets().get(i)).setMonitored(true);
+            add(new MonitorSession(initial.getTargets().get(i), runtime.getTargets().get(i), parent));
+        }
+    }
 
 	public RemoteEventListener getListener() {
 		return listener;
@@ -177,6 +192,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	public Lease init(Monitorable executor, long duration, long timeout)
 			throws MonitorException {
+        logger.info("Initializing session for: " + runtimeExertion.getName());
 
 		if (executor == null)
 			throw new NullPointerException(
@@ -187,7 +203,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Trying to initialize a exertion already in space or is running"
 							+ this);
 			throw new MonitorException(
-					"Session already active and is in state =" + getState());
+					"Session already active for " + runtimeExertion.getName() + " and is in state =" + getState());
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
@@ -246,13 +262,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	}
 
 	public void done(Context<?> ctx) throws MonitorException {
+        logger.info("Done exertion: " + runtimeExertion.getName());
 		if (ctx == null)
 			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,
 					"Trying to call done on a non running resource" + this);
-			throw new MonitorException("Exertion not running, state="
+			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running, state="
 					+ getState());
 		}
 
@@ -277,7 +294,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		if (!isRunning()) {
 			logger.log(Level.SEVERE,
 					"Trying to call failed on a non running resource" + this);
-			throw new MonitorException("Exertion not running . state="
+			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running . state="
 					+ getState());
 		}
 
@@ -304,12 +321,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void stateChanged() {
 		int oldState = getState();
-		// logger.log(Level.INFO,
-		System.out.println("stateChanged called oldState =" + getState()
+		logger.fine("stateChanged called " + runtimeExertion.getName() + " oldState =" + Exec.State.name(getState())
 				+ " resetting state.....");
 		resetState();
-		// logger.log(Level.INFO,
-		System.out.println("stateChanged called newState =" + getState());
+        logger.fine("stateChanged called newState =" + Exec.State.name(getState()));
 		if (oldState != getState()) {
 			fireRemoteEvent();
 			notifyParent();
@@ -319,12 +334,16 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	// Persist only the root session
 	private void persist() {
-		if (parentResource != null)
-			return;
+	    MonitorSession tempSession = this;
+        do {
+            if (tempSession.parentResource!=null)
+                tempSession = tempSession.parentResource;
+        } while (tempSession.parentResource!=null);
+        logger.info("Persisting resource for exertion: " + tempSession.runtimeExertion.getName());
 		try {
-			sessionManager.persist(this);
+            sessionManager.persist(tempSession);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.severe("Problem persisting monitorSession: " + e.getMessage());
 			try {
 				logger.log(Level.SEVERE, "Could not persist the session resource:\n"
 						+ initialExertion + " at: " + ((Provider)sessionManager).getProviderName());
@@ -350,21 +369,22 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				suspendedCount++;
 			else if (get(i).isDone())
 				doneCount++;
-			else
-				// logger.log(Level.INFO,
-				System.out
-						.println("State not accounted for while resetting state"
-								+ i
+			else if (get(i).isInitial())
+                logger.fine("Ignoring state INITIAL for: " + get(i).runtimeExertion.getName());
+            else
+				logger.severe("State not accounted for while resetting state"
+								+ get(i).runtimeExertion.getName()
 								+ " state="
 								+ get(i).getState());
 
 		}
-		// logger.log(Level.SEVERE,
-		System.out.println("failed count=" + failedCount + " suspended count="
+		logger.fine("failed count=" + failedCount + " suspended count="
 				+ suspendedCount + " doneCount=" + doneCount);
 
-		if (doneCount == size())
-			runtimeExertion.setStatus(Exec.DONE);
+		if (doneCount == size() || (runtimeExertion instanceof AltExertion && doneCount>0)) {
+            runtimeExertion.setStatus(Exec.DONE);
+            mLandlord.remove(this);
+        }
 		else if (failedCount != 0
 				&& failedCount + doneCount + suspendedCount == size())
 			runtimeExertion.setStatus(Exec.FAILED);
