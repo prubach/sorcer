@@ -124,13 +124,7 @@ public class ProviderDelegate {
 	private static final Logger logger = LoggerFactory.getLogger(ProviderDelegate.class);
 	private static final Logger threadLogger = LoggerFactory.getLogger(ProviderDelegate.class.getName()+".threads");
 
-	private Logger remoteLogger;
-
-	/** Provider logger used in custom provider methods */
-	private Logger providerLogger;
-
-	/** Context logger used in custom provider methods */
-	private Logger contextLogger;
+    private boolean remoteLogging = false;
 
 	/** Provider deployment configuration. */
 	protected DeploymentConfiguration config = new DeploymentConfiguration();
@@ -424,42 +418,10 @@ public class ProviderDelegate {
 			// do nothing, default value is used
 			e.printStackTrace();
 		}
-/*
-		if (remoteProviderLogging) {
-			initProviderLogger();
-		}
-*/
 
-		boolean remoteLogging = false;
-		try {
 			remoteLogging = (Boolean) jconfig.getEntry(
 					ServiceProvider.COMPONENT, REMOTE_LOGGING, boolean.class,
 					false);
-		} catch (Exception e) {
-			// do nothing, default value is used
-			e.printStackTrace();
-		}
-		if (remoteLogging) {
-			String managerName, loggerName;
-			try {
-				managerName = (String) jconfig.getEntry(
-						ServiceProvider.COMPONENT, REMOTE_LOGGER_MANAGER_NAME,
-						String.class, "*");
-/*
-				Level level = (Level) jconfig.getEntry(
-						ServiceProvider.COMPONENT, REMOTE_LOGGER_LEVEL,
-						Level.class, Level.ALL);
-				loggerName = (String) jconfig.getEntry(
-						ServiceProvider.COMPONENT, REMOTE_LOGGER_NAME,
-						String.class,
-						"remote.sorcer.provider-" + provider.getProviderName());
-
-				initRemoteLogger(level, managerName, loggerName);
-*/
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 
 		try {
 			monitorable = (Boolean) jconfig.getEntry(ServiceProvider.COMPONENT,
@@ -704,7 +666,7 @@ public class ProviderDelegate {
 			} else {
 				worker = new SpaceTaker(new SpaceTaker.SpaceTakerData(envelop,
 						memberInfo, provider, spaceName, spaceGroup,
-						workerTransactional, queueSize == 0), spaceWorkerPool);
+						workerTransactional, queueSize == 0), spaceWorkerPool, remoteLogging);
                 spaceTakers.add(worker);
 			}
             ConfigurableThreadFactory ifaceWorkerFactory = new ConfigurableThreadFactory();
@@ -740,7 +702,7 @@ public class ProviderDelegate {
 					worker = new SpaceTaker(new SpaceTaker.SpaceTakerData(
 							envelop, memberInfo, provider, spaceName,
 							spaceGroup, workerTransactional, queueSize == 0),
-							spaceWorkerPool);
+							spaceWorkerPool, remoteLogging);
                     spaceTakers.add(worker);
 				}
 				Thread snth = namedWorkerFactory.newThread(worker);
@@ -2726,7 +2688,9 @@ public class ProviderDelegate {
                         + " for: \n" + allBeans);
 				serviceBeans = allBeans.toArray();
 				initServiceBeans(serviceBeans);
-				outerExporter = exporterFactory.get(new SorcerILFactory(serviceComponents, implClassLoader));
+                SorcerILFactory ilFactory = new SorcerILFactory(serviceComponents, implClassLoader);
+                ilFactory.setRemoteLogging(remoteLogging);
+                outerExporter = exporterFactory.get(ilFactory);
 			} else {
 				logger.info("*** NO beans used by " + getProviderName());
 				outerExporter = (Exporter) config.getEntry(
@@ -2940,75 +2904,6 @@ public class ProviderDelegate {
 	public void setServiceComponents(Map serviceComponents) {
 		this.serviceComponents = serviceComponents;
 	}
-
-	public Logger getContextLogger() {
-		return contextLogger;
-	}
-
-	public Logger getProviderLogger() {
-		return providerLogger;
-	}
-
-	public Logger getRemoteLogger() {
-		return remoteLogger;
-	}
-
-/*
-	private void initContextLogger() {
-		Handler h = null;
-		try {
-			contextLogger = Logger.getLogger(PRIVATE_CONTEXT_LOGGER + "."
-					+ getProviderName());
-
-			h = new FileHandler(Sorcer.getHomeDir() + "/logs/remote/context-"
-					+ getProviderName() + "-" + getHostName() + "-ctx%g.log",
-					20000, 8, true);
-			if (h != null) {
-				h.setFormatter(new SimpleFormatter());
-				contextLogger.addHandler(h);
-			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void initProviderLogger() {
-		Handler h = null;
-		try {
-			providerLogger = Logger.getLogger(PRIVATE_PROVIDER_LOGGER + "."
-					+ getProviderName());
-			h = new FileHandler(SorcerEnv.getHomeDir() + "/logs/remote/provider-"
-					+ getProviderName() + "-" + getHostName() + "-prv%g.log",
-					20000, 8, true);
-			if (h != null) {
-				h.setFormatter(new SimpleFormatter());
-				providerLogger.addHandler(h);
-			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void initRemoteLogger(Level level, String managerName,
-			String loggerName) {
-		Handler rh = null;
-		try {
-			remoteLogger = Logger.getLogger(loggerName);
-			rh = new RemoteHandler(level, managerName);
-			if (remoteLogger != null && rh != null) {
-				rh.setFormatter(new SimpleFormatter());
-				remoteLogger.addHandler(rh);
-				remoteLogger.setUseParentHandlers(false);
-			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
-	}
-*/
 
 	public String getHostAddress() {
 		if (hostAddress == null)

@@ -77,6 +77,7 @@ public class SpaceTaker implements Runnable {
 
     // controls the loop of this space worker
 	protected volatile boolean keepGoing = true;
+    protected boolean remoteLogging;
 
 	public static void doLog(String msg, String threadId, Transaction.Created txn) {
 		String newMsg = "space taker log; thread id = " + threadId + " "
@@ -133,17 +134,19 @@ public class SpaceTaker implements Runnable {
 	 * This is a Constructor. It executes the default constructor plus set the
 	 * provider worker data and executor service pool. The transaction lease
 	 * time is set and space time out time is established.
-	 * 
+	 *
 	 * @param data
 	 *            SpaceDispatcher data
 	 * @param pool
 	 *            Executor service provides methods to manage termination and
-	 *            tracking progress of one or more asynchronous tasks
+     * @param remoteLogging
+     *              Enable logging to a RemoteLoggerManager
 	 */
-	public SpaceTaker(SpaceTakerData data, ExecutorService pool) {
+	public SpaceTaker(SpaceTakerData data, ExecutorService pool, boolean remoteLogging) {
 		this();
 		this.data = data;
 		this.pool = pool;
+        this.remoteLogging = remoteLogging;
 		this.transactionLeaseTimeout = getTransactionLeaseTime();
 		this.spaceTimeout = getTimeOut();
 		this.isTransactional = data.workerTransactional;
@@ -303,7 +306,7 @@ public class SpaceTaker implements Runnable {
 					txnCreated = null;
 					continue;
 				}
-                pool.execute(new SpaceWorker(ee, txnCreated, data.provider));
+                pool.execute(new SpaceWorker(ee, txnCreated, data.provider, remoteLogging));
 			} catch (Exception ex) {
                 logger.warn("Problem with SpaceTaker", ex);
 			}
@@ -357,21 +360,23 @@ public class SpaceTaker implements Runnable {
         private ExertionEnvelop ee;
         private Provider provider;
 		private Transaction.Created txnCreated;
-		
+		private boolean remoteLogging;
+
 
 		SpaceWorker(ExertionEnvelop envelope,
-				Transaction.Created workerTxnCreated, Provider provider)
+                    Transaction.Created workerTxnCreated, Provider provider, boolean remoteLogging)
 				throws UnknownLeaseException {
             this.provider = provider;
 			ee = envelope;
+            this.remoteLogging = remoteLogging;
 			if (workerTxnCreated != null) {
 				txnCreated = workerTxnCreated;
 			}
 		}
 
 		public void run() {
-            //
-            MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
+            if(remoteLogging)
+                MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
             if (ee.exertion!=null && ee.exertion.getId()!=null)
                 MDC.put(MDC_EXERTION_ID, ee.exertion.getId().toString());
             try {

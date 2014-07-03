@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 the original author or authors.
  * Copyright 2010 SorcerSoft.org.
- * Copyright 2013 Sorcersoft.com S.A.
+ * Copyright 2013, 2014 Sorcersoft.com S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,12 @@ import net.jini.security.proxytrust.ServerProxyTrust;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.slf4j.MDC;
 import sorcer.core.ContextManagement;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
+import sorcer.service.Identifiable;
 import sorcer.service.Service;
 
 import static sorcer.core.SorcerConstants.*;
-import static sorcer.core.SorcerConstants.MDC_PROVIDER_ID;
 
 /**
  * A SorcerILFactory can be used with object interfaces as its services. Those
@@ -222,28 +221,30 @@ public class SorcerILFactory extends BasicILFactory {
 
 		protected Object invoke(Remote impl, Method method, Object[] args,
 				Collection context) throws Throwable {
-            try{
-                MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
-                if (impl instanceof ServiceProvider) {
-                    MDC.put(MDC_PROVIDER_ID, ((ServiceProvider) impl).getId().toString());
-                    for (Class cl : ((ServiceProvider) impl).getDelegate().getPublishedServiceTypes()) {
-                        if (cl.getName().contains(REMOTE_LOGGER_INTERFACE)) {
-                            MDC.remove(MDC_SORCER_REMOTE_CALL);
-                            break;
-                        }
-                    }
-                }
-                if (args.length>0 && args[0] instanceof Exertion) {
-                    Exertion xrt = ((Exertion)args[0]);
-                    if (xrt!=null && xrt.getId()!=null)
-                        MDC.put(MDC_EXERTION_ID, xrt.getId().toString());
-                }
+            try {
+                setupLogging(impl, args);
                 return doInvoke(impl, method, args, context);
-            }finally {
-                MDC.remove(MDC_SORCER_REMOTE_CALL);
-                MDC.remove(MDC_EXERTION_ID);
-                MDC.remove(MDC_PROVIDER_ID);
+            } finally {
+                cleanLogging();
             }
+        }
+
+        private void setupLogging(Remote impl, Object[] args) {
+            if(remoteLogging)
+                MDC.put(MDC_SORCER_REMOTE_CALL, MDC_SORCER_REMOTE_CALL);
+            if (impl instanceof Identifiable)
+                MDC.put(MDC_PROVIDER_ID, ((Identifiable) impl).getId().toString());
+            if (args.length > 0 && args[0] instanceof Exertion) {
+                Exertion xrt = ((Exertion) args[0]);
+                if (xrt != null && xrt.getId() != null)
+                    MDC.put(MDC_EXERTION_ID, xrt.getId().toString());
+            }
+        }
+
+        private void cleanLogging() {
+            MDC.remove(MDC_SORCER_REMOTE_CALL);
+            MDC.remove(MDC_EXERTION_ID);
+            MDC.remove(MDC_PROVIDER_ID);
         }
 
 		protected Object doInvoke(Remote impl, Method method, Object[] args,
@@ -287,5 +288,11 @@ public class SorcerILFactory extends BasicILFactory {
 			}
 			return obj;
 		}
+	}
+
+    private boolean remoteLogging = false;
+
+    public void setRemoteLogging(boolean remoteLogging){
+        this.remoteLogging = remoteLogging;
 	}
 }

@@ -104,7 +104,7 @@ public class SpaceIsReadyTaker extends SpaceTaker {
 					initDataMember(ee, txnCreated.transaction);
 				}
 				
-				pool.execute(new SpaceWorker(ee, txnCreated, data.provider));
+				pool.execute(new SpaceWorker(ee, txnCreated, data.provider, remoteLogging));
 			} catch (Exception ex) {
 				continue;
 			}
