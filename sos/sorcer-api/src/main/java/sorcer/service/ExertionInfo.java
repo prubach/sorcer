@@ -47,6 +47,8 @@ public class ExertionInfo implements Comparable, Serializable {
 
     private String lastUpdateDate;
 
+    private Exertion exertion;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public ExertionInfo(String name) {
@@ -61,6 +63,7 @@ public class ExertionInfo implements Comparable, Serializable {
         creationDate = exertion.getCreationDate();
         lastUpdateDate = exertion.getControlContext().getLastUpdateDate();
 		signature = exertion.getProcessSignature();
+        this.exertion = exertion;
 	}
 
 	public ExertionInfo(Exertion exertion, Uuid storeId) {
@@ -124,7 +127,11 @@ public class ExertionInfo implements Comparable, Serializable {
 		this.signature = signature;
 	}
 
-	public String describe() {
+    public Exertion getExertion() {
+        return exertion;
+    }
+
+    public String describe() {
 		StringBuilder info = new StringBuilder().append("name: ").append(name);
 		info.append("  ID: ").append(id);
 		info.append("  state: ").append(Exec.State.name(status));
