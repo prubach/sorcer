@@ -466,7 +466,7 @@ public class SpaceTaker implements Runnable {
 					ee.exertion = se;
 				}
                 if (se.isMonitorable() && se.isTask() && monSession!=null) {
-                    monSession.changed(se.getContext(), se.getStatus());
+                    monSession.changed(se.getContext(), se.getControlContext(), se.getStatus());
                     lrm.remove(monSession.getLease());
                 }
             } catch (Throwable th) {

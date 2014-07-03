@@ -233,7 +233,9 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         dispatcher.exec();
         // wait until serviceJob is done by dispatcher
         Job out = (Job) dispatcher.getResult().exertion;
-
+        // Not sure if good place
+        out.stopExecTime();
+        //
         out.getControlContext().appendTrace(provider.getProviderName()
                 + " dispatcher: " + getClass().getName());
         return out;

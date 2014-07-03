@@ -20,6 +20,8 @@ import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.core.context.ControlContext;
+import sorcer.core.context.IControlContext;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.core.provider.Provider;
@@ -251,17 +253,19 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		return lease;
 	}
 
-	public void update(Context<?> ctx) {
+	public void update(Context<?> ctx, IControlContext controlContext) {
 		if (ctx == null)
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
 
-        if (runtimeExertion instanceof ServiceExertion)
+        if (runtimeExertion instanceof ServiceExertion) {
             runtimeExertion.setContext(ctx);
+            runtimeExertion.setControlContext((ControlContext)controlContext);
+        }
 		persist();
 	}
 
-	public void done(Context<?> ctx) throws MonitorException {
+	public void done(Context<?> ctx, IControlContext controlContext) throws MonitorException {
         logger.info("Done exertion: " + runtimeExertion.getName());
 		if (ctx == null)
 			throw new NullPointerException("Assertion Failed: ctx cannot be null");
@@ -277,8 +281,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 				" This exertion is completed " + runtimeExertion.getName());
 
 		runtimeExertion.setStatus(Exec.DONE);
-        if (runtimeExertion instanceof ServiceExertion)
+        if (runtimeExertion instanceof ServiceExertion) {
             runtimeExertion.setContext(ctx);
+            runtimeExertion.setControlContext((ControlContext)controlContext);
+        }
 
 		fireRemoteEvent();
 		notifyParent();
@@ -286,7 +292,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		mLandlord.remove(this);
 	}
 
-	public void failed(Context<?> ctx) throws MonitorException {
+	public void failed(Context<?> ctx, IControlContext controlContext) throws MonitorException {
 		if (ctx == null)
 			throw new NullPointerException(
 					"Assertion Failed: ctx cannot be NULL");
@@ -300,6 +306,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		runtimeExertion.setStatus(Exec.FAILED);
 		runtimeExertion.setContext(ctx);
+        runtimeExertion.setControlContext((ControlContext)controlContext);
 
 		fireRemoteEvent();
 		notifyParent();
@@ -379,7 +386,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		}
 		logger.fine("failed count=" + failedCount + " suspended count="
-				+ suspendedCount + " doneCount=" + doneCount);
+                + suspendedCount + " doneCount=" + doneCount);
 
 		if (doneCount == size() || (runtimeExertion instanceof AltExertion && doneCount>0)) {
             runtimeExertion.setStatus(Exec.DONE);

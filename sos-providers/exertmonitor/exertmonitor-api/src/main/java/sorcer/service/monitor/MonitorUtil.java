@@ -41,7 +41,7 @@ public class MonitorUtil {
         if (controlContext.isMonitorable() && monSession != null) {
             try {
                 context.putValue("context/checkpoint/time", StringUtils.getDateTime());
-                monSession.changed(context, Exec.State.UPDATED.ordinal());
+                monSession.changed(context, controlContext, Exec.State.UPDATED.ordinal());
             } catch (Exception e) {
                 throw new ContextException(e);
             }
@@ -63,7 +63,7 @@ public class MonitorUtil {
         IControlContext controlContext = mxrt.getControlContext();
         MonitoringSession monSession = getMonitoringSession(controlContext);
         if (mxrt.isMonitorable() && monSession != null) {
-            monSession.changed(context, aspect.ordinal());
+            monSession.changed(context, controlContext, aspect.ordinal());
         }
     }
 

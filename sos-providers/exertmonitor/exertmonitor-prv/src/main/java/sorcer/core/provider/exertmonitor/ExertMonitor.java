@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
+import sorcer.core.context.IControlContext;
 import sorcer.core.monitor.MonitoringManagement;
 import sorcer.service.*;
 import sorcer.core.UEID;
@@ -274,7 +275,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 *             if there is a communication error
 	 */
 
-	private void update(Uuid cookie, Context ctx) throws RemoteException,
+	private void update(Uuid cookie, Context ctx, IControlContext controlContext) throws RemoteException,
 			MonitorException {
 		// Get the SessionResource corresponding to this cookie
 		MonitorSession resource = findSessionResource(cookie);
@@ -282,7 +283,7 @@ public class ExertMonitor extends ServiceProvider implements
 			throw new MonitorException("There exists no such session for: "
 					+ cookie);
 
-		resource.update(ctx);
+		resource.update(ctx, controlContext);
 	}
 
 	/**
@@ -299,7 +300,7 @@ public class ExertMonitor extends ServiceProvider implements
 	 *             if there is a communication error
 	 */
 
-	private void done(Uuid cookie, Context ctx) throws RemoteException,
+	private void done(Uuid cookie, Context ctx, IControlContext controlContext) throws RemoteException,
 			MonitorException {
 		// Get the SessionResource correspoding to this cookie
 		MonitorSession resource = findSessionResource(cookie);
@@ -307,7 +308,7 @@ public class ExertMonitor extends ServiceProvider implements
 		if (resource == null)
 			throw new MonitorException("There exists no such session");
 		
-		resource.done(ctx);
+		resource.done(ctx, controlContext);
 	}
 
 	/**
@@ -323,14 +324,14 @@ public class ExertMonitor extends ServiceProvider implements
 	 * @throws RemoteException
 	 *             if there is a communication error
 	 */
-	private void failed(Uuid cookie, Context ctx) throws RemoteException,
+	private void failed(Uuid cookie, Context ctx, IControlContext controlContext) throws RemoteException,
 			MonitorException {
 		MonitorSession resource = findSessionResource(cookie);
 
 		if (resource == null)
 			throw new MonitorException("There exists no such session");
 
-		resource.failed(ctx);
+		resource.failed(ctx, controlContext);
 	}
 
 	public int getState(Uuid cookie) throws RemoteException, MonitorException {
@@ -444,14 +445,14 @@ public class ExertMonitor extends ServiceProvider implements
 	 * sorcer.core.monitor.MonitorSessionManagement.Aspect)
 	 */
 	@Override
-	public void update(Uuid cookie, Context ctx, int aspect)
+	public void update(Uuid cookie, Context ctx, IControlContext controlContext, int aspect)
 			throws RemoteException, MonitorException {
 		if (aspect==Exec.UPDATED) {
-			update(cookie, ctx);
+			update(cookie, ctx, controlContext);
 		} else if (aspect==Exec.DONE) {
-			done(cookie, ctx);
+			done(cookie, ctx, controlContext);
 		} else if (aspect== Exec.FAILED) {
-			failed(cookie, ctx);
+			failed(cookie, ctx, controlContext);
 		} else
             logger.warning("Got wrong aspect to update: " + aspect);
 

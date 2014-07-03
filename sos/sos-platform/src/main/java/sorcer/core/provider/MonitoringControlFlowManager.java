@@ -96,7 +96,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
 
             try {
                 if (sessionMonitor!=null && !(result instanceof CompoundExertion))
-                    monSession.changed(result.getContext(), resultState.ordinal());
+                    monSession.changed(result.getContext(), result.getControlContext(), resultState.ordinal());
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {

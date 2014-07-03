@@ -248,26 +248,27 @@ public class EmxCmd extends ShellCmd {
 		} else {
 			Map<Uuid, ExertionInfo> hm;
 			all = new HashMap<Uuid, ExertionInfo>();
-			for (int i = 0; i < emxMonitors.length; i++) {
-				out.println("From EMX "
-						+ AttributesUtil
-								.getProviderName(emxMonitors[i].attributeSets)
-						+ " at: "
-						+ AttributesUtil
-								.getHostName(emxMonitors[i].attributeSets));
+            if (emxMonitors!=null)
+                for (int i = 0; i < emxMonitors.length; i++) {
+                    out.println("From EMX "
+                            + AttributesUtil
+                                    .getProviderName(emxMonitors[i].attributeSets)
+                            + " at: "
+                            + AttributesUtil
+                                    .getHostName(emxMonitors[i].attributeSets));
 
-				MonitorUIManagement emx = (MonitorUIManagement) emxMonitors[i].service;
-				hm = emx.getMonitorableExertionInfo(xetType,
-						NetworkShell.getPrincipal());
-				if (hm != null && hm.size() > 0) {
-					all.putAll(hm);
-				}
-				// populate exertion/EMX map
-				monitorMap.clear();
-				for (ExertionInfo ei : hm.values()) {
-					monitorMap.put(ei.getStoreId(), emxMonitors[i]);
-				}
-			}
+                    MonitorUIManagement emx = (MonitorUIManagement) emxMonitors[i].service;
+                    hm = emx.getMonitorableExertionInfo(xetType,
+                            NetworkShell.getPrincipal());
+                    if (hm != null && hm.size() > 0) {
+                        all.putAll(hm);
+                    }
+                    // populate exertion/EMX map
+                    monitorMap.clear();
+                    for (ExertionInfo ei : hm.values()) {
+                        monitorMap.put(ei.getStoreId(), emxMonitors[i]);
+                    }
+                }
 		}
 		if (all.size() == 0) {
 			out.println("No monitored exertions at this time.");
