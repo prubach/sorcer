@@ -180,13 +180,13 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sos-start.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-platform.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-resolver.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-spi.jar"/>
+                <pathelement location="${lib.dir}/sorcer/sorcer-container.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-launcher.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sorcer-launcher-base.jar"/>               
                 <pathelement location="${lib.dir}/sorcer/sorcer-api.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-rio-start.jar"/>
                 <pathelement location="${lib.dir}/jini/jsk-resources.jar"/>		
@@ -243,9 +243,7 @@
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-start/${v.sorcer}/sos-start-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-resolver/${v.sorcer}/sorcer-resolver-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher-base/${v.sorcer}/sorcer-launcher-base-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-launcher/${v.sorcer}/sorcer-launcher-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-api/${v.sorcer}/sorcer-api-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-spi/${v.sorcer}/sorcer-spi-${v.sorcer}.jar"/>

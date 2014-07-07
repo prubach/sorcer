@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package sorcer.launcher;
+package sorcer.launcher.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.launcher.SorcerListener;
 import sorcer.util.io.LineWriter;
 
 import java.io.IOException;

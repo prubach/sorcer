@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package sorcer.launcher.process;
+package sorcer.launcher.impl.process;
 
 import sorcer.launcher.NullSorcerListener;
+import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.Process2;
 
 /**

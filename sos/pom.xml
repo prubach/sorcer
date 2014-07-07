@@ -19,7 +19,7 @@
         <module>sorcer-ui</module>
         <module>sos-platform</module>
         <module>sos-util</module>
-        <module>sos-launch</module>
+        <module>sorcer-launcher</module>
         <module>commons-req</module>
         <module>sos-api</module>
         <module>exertlet</module>

@@ -73,12 +73,11 @@ public abstract class Launcher implements ILauncher {
             "org.rioproject:rio-api",
             "org.rioproject:rio-proxy",
 
-            "org.sorcersoft.sorcer:sos-start",
             "org.sorcersoft.sorcer:sos-boot",
             "org.sorcersoft.sorcer:sorcer-api",
             "org.sorcersoft.sorcer:sorcer-spi",
             "org.sorcersoft.sorcer:sorcer-container",
-            "org.sorcersoft.sorcer:sorcer-launcher-base",
+            "org.sorcersoft.sorcer:sorcer-launcher",
             "org.sorcersoft.sorcer:sorcer-resolver",
             "org.sorcersoft.sorcer:sorcer-rio-start",
             "org.sorcersoft.sorcer:sos-util",

@@ -20,8 +20,8 @@ package sorcer.tools.shell.cmds;
 import org.apache.commons.cli.*;
 import sorcer.core.SorcerEnv;
 import sorcer.launcher.*;
-import sorcer.launcher.process.DestroyingListener;
-import sorcer.launcher.process.ForkingLauncher;
+import sorcer.launcher.impl.process.DestroyingListener;
+import sorcer.launcher.impl.process.ForkingLauncher;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
@@ -30,7 +30,6 @@ import sorcer.util.FileUtils;
 import sorcer.util.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.launcher.process;
+package sorcer.launcher.impl.process;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -22,6 +22,8 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.launcher.*;
+import sorcer.launcher.impl.JavaProcessBuilder;
+import sorcer.launcher.impl.SorcerOutputConsumer;
 import sorcer.resolver.Resolver;
 import sorcer.util.Process2;
 import sorcer.util.ProcessDownCallback;

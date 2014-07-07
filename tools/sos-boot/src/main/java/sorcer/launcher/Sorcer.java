@@ -25,7 +25,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
-import sorcer.launcher.process.DestroyingListener;
+import sorcer.launcher.impl.process.DestroyingListener;
 import sorcer.launcher.process.ProcessDestroyer;
 import sorcer.util.FileUtils;
 import sorcer.util.JavaSystemProperties;
@@ -239,7 +239,7 @@ public class Sorcer {
     private static IForkingLauncher createForkingLauncher(Integer debugPort, WaitMode mode) {
         IForkingLauncher forkingLauncher;
         try {
-            forkingLauncher = (IForkingLauncher) Class.forName("sorcer.launcher.process.ForkingLauncher").newInstance();
+            forkingLauncher = (IForkingLauncher) Class.forName("sorcer.launcher.impl.process.ForkingLauncher").newInstance();
             if (debugPort != null)
                 forkingLauncher.setDebugPort(debugPort);
 
