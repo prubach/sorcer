@@ -570,19 +570,16 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				sb.append("\n");
 				if (sItems != null && sItems.size() > 0
 						&& sItems.get(0) != null) {
-					if (sItems.get(0).attributeSets[0] instanceof Name)
-						sb.append(((Name) (sItems.get(0).attributeSets[0])).name);
-					else
-						sb.append(sItems.get(0).attributeSets[0]);
-
-					for (int i = 1; i < sItems.size(); i++) {
-						if (sItems.get(i).attributeSets[0] instanceof Name)
-							sb.append(",")
-									.append(((Name) (sItems
-											.get(i).attributeSets[0])).name);
-						else
-							sb.append(",")
-									.append(sItems.get(i).attributeSets[0]);
+                    int i = 0;
+					for (ServiceItem sItem : sItems) {
+						if (sItem.attributeSets[0] instanceof Name) {
+                            if (i > 0) sb.append(",");
+                            sb.append(((Name) (sItem.attributeSets[0])).name);
+                        } else {
+                            if (i > 0) sb.append(",");
+                            sb.append(sItem.attributeSets[0]);
+                        }
+                        i++;
 					}
 					sb.append("==>\n");
 					sb.append(key);

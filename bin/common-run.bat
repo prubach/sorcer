@@ -1,10 +1,10 @@
 if "%JAVA_HOME%" == "" goto noJavaHome
 if not exist "%JAVA_HOME%\bin\java.exe" goto noJavaHome
 set JAVACMD=
-set "JAVACMD=%JAVA_HOME%\bin\java.exe"
+set JAVACMD=%JAVA_HOME%\bin\java.exe
 goto endOfJavaHome
 :noJavaHome
-set "JAVACMD=java.exe"
+set JAVACMD=java.exe
 :endOfJavaHome
 
 rem echo %JAVACMD%
@@ -12,7 +12,7 @@ SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
     IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
-        SET "SORCER_HOME=%SHOME_BIN%\.."
+        SET SORCER_HOME=%SHOME_BIN%\..
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
@@ -28,9 +28,9 @@ rem set MVN_REPO=!MVN_REPO;${user.home}=%USER_HOME%!
 rem set MVN_REPO=%MVN_REPO;/=\%
 rem IF NOT DEFINED MVN_REPO SET "MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository"
 rem ENDLOCAL & SET MVN_REPO=%MVN_REPO%
-SET "MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository"
+SET MVN_REPO=%HOMEDRIVE%%HOMEPATH%\.m2\repository
 
-set "LIB_DIR=%SORCER_HOME%\lib"
+set LIB_DIR=%SORCER_HOME%\lib
 
 FOR /F "usebackq tokens=1,2 delims==" %%G IN ("%SORCER_HOME%\configs\versions.properties") DO (set %%G=%%H)
 

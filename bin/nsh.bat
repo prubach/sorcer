@@ -4,7 +4,7 @@ SET mypath=%~dp0
 SET SHOME_BIN=%mypath:~0,-1%
 IF NOT DEFINED SORCER_HOME (
     IF EXIST "%SHOME_BIN%\sorcer-boot.bat" (
-        SET "SORCER_HOME=%SHOME_BIN%\.."
+        SET SORCER_HOME=%SHOME_BIN%\..
     ) ELSE (
         ECHO Problem setting SORCER_HOME, please set this variable and point it to the main SORCER installation directory!
     )
@@ -20,9 +20,9 @@ IF NOT DEFINED SORCER_HOME (
   call "%SORCER_HOME%\bin\common-run.bat"
 )
 rem Use SORCER default if still not found
-IF NOT DEFINED NSH_CONF SET "NSH_CONF=%SORCER_HOME%\configs\shell\configs\nsh-start.config"
+IF NOT DEFINED NSH_CONF SET NSH_CONF=%SORCER_HOME%\configs\shell\configs\nsh-start.config
 rem Use the user nsh start-config file if exists.
-IF EXIST "%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config" SET "NSH_CONF=%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config"
+IF EXIST "%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config" SET NSH_CONF=%HOMEDRIVE%%HOMEPATH%\.nsh\configs\nsh-start.config
 
 set STARTER_MAIN_CLASS=sorcer.tools.shell.NetworkShell
 set SHELL_CLASS=sorcer.tools.shell.NetworkShell
