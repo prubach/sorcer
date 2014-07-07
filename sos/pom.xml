@@ -21,7 +21,6 @@
         <module>sos-util</module>
         <module>sos-launch</module>
         <module>commons-req</module>
-        <module>commons-prv</module>
         <module>sos-api</module>
         <module>exertlet</module>
         <module>default-codebase</module>

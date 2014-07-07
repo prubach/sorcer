@@ -35,7 +35,6 @@ import static sorcer.util.ArtifactCoordinates.coords;
 public class SorcerDescriptorUtil {
     final static Logger logger = Logger.getLogger("sorcer.provider.boot");
     public static final ArtifactCoordinates SOS_PLATFORM = sorcer("sos-platform");
-    public static final ArtifactCoordinates COMMONS_PRV = sorcer("commons-prv");
     public static final ArtifactCoordinates EXERTMONITOR_SERVICE = sorcer("exertmonitor-prv");
     public static final ArtifactCoordinates EXERTLET_UI = sorcer("sos-exertlet-sui");
     public static final ArtifactCoordinates DBP_PRV = sorcer("dbp-prv");
@@ -127,7 +126,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, COMMONS_PRV);
+		String spacerClasspath = Resolver.resolveClassPath(SPACER_PRV, SOS_PLATFORM);
 
 		// service provider codebase
         String spacerCodebase = getCodebase(new ArtifactCoordinates[]{
@@ -218,7 +217,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String jobberClasspath = Resolver.resolveClassPath(JOBBER_PRV, COMMONS_PRV);
+		String jobberClasspath = Resolver.resolveClassPath(JOBBER_PRV, SOS_PLATFORM);
 		
 		// service provider codebase
         String jobberCodebase = getCodebase(new ArtifactCoordinates[]{
@@ -392,7 +391,7 @@ public class SorcerDescriptorUtil {
                 //SOS_PLATFORM,
 				EXERTMONITOR_SERVICE,
 				SLEEPYCAT,
-				COMMONS_PRV
+				SOS_PLATFORM
 		);
 
 	// service provider codebase
@@ -515,7 +514,7 @@ public class SorcerDescriptorUtil {
                 //SOS_PLATFORM,
 				DBP_PRV,
 				SLEEPYCAT,
-				COMMONS_PRV
+				SOS_PLATFORM
 		);
 		
 		// service provider codebase
@@ -608,7 +607,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String dbpc = Resolver.resolveClassPath(DSP_PRV, SLEEPYCAT, COMMONS_PRV);
+		String dbpc = Resolver.resolveClassPath(DSP_PRV, SLEEPYCAT, SOS_PLATFORM);
 		
 		// service provider codebase
         String dbpCodebase = getCodebase(new ArtifactCoordinates[]{
@@ -700,7 +699,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String catalogClasspath = Resolver.resolveClassPath(CATALOGER_PRV, COMMONS_PRV);
+		String catalogClasspath = Resolver.resolveClassPath(CATALOGER_PRV, SOS_PLATFORM);
 
 		// service provider codebase		
 		String catalogCodebase = getCodebase(new ArtifactCoordinates[]{
@@ -792,7 +791,7 @@ public class SorcerDescriptorUtil {
 			throw new RuntimeException("'sorcer.home' property not declared");
 		
 		// service provider classpath
-		String loggerClasspath = Resolver.resolveClassPath(LOGGER_PRV, LOGGER_SUI, COMMONS_PRV);
+		String loggerClasspath = Resolver.resolveClassPath(LOGGER_PRV, LOGGER_SUI, SOS_PLATFORM);
 
 		// service provider codebase
 		String loggerCodebase = getCodebase(new ArtifactCoordinates[]{

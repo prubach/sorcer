@@ -54,7 +54,7 @@ public final class ServiceElementFactory {
     /* The default provider implementation jar */
     //static final List<String> commonImplJars = Arrays.asList("sorcer-prv.jar");
     static final List<String> commonImplJars = Arrays.asList(
-            "artifact:org.sorcersoft.sorcer/commons-prv/" + SorcerEnv.getSorcerVersion());
+            "artifact:org.sorcersoft.sorcer/sos-platform/" + SorcerEnv.getSorcerVersion());
                 //Arrays.asList("sorcer-prv.jar");
 
     private ServiceElementFactory(){}

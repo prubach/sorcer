@@ -20,11 +20,6 @@
 			<artifactId>account-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>commons-prv</artifactId>
-			<version>${v.sorcer}</version>
-		</dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>

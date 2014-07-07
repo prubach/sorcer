@@ -25,7 +25,6 @@
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sos-platform</artifactId>
         	<version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
@@ -36,11 +35,6 @@
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ex6-sui</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>commons-prv</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

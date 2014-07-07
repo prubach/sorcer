@@ -20,12 +20,6 @@
 			<artifactId>ex0-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.sorcersoft.sorcer</groupId>
-			<artifactId>commons-prv</artifactId>
-            <version>${project.version}</version>
-		</dependency>
-
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>sorcer-junit</artifactId>
