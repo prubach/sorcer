@@ -67,8 +67,8 @@ public class WhoIsItParallelTaskTest {
 			fList.add(future);
 		}
 		pool.shutdown();
-		for (int i = 0; i < tally; i++) {
-            Exertion exertion = fList.get(i).get();
+		for (Future<Exertion> future : fList) {
+            Exertion exertion = future.get();
             logger.info("got back task executed in parallel: {}", exertion.getName());
             ExertionErrors.check(exertion.getExceptions());
 		}
