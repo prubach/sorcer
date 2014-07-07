@@ -43,11 +43,6 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>cataloger-api</artifactId>
-            <version>${v.sorcer}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>dbp-api</artifactId>
             <version>${v.sorcer}</version>
         </dependency>

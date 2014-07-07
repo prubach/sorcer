@@ -52,7 +52,7 @@ deployment(name: 'Sorcer') {
 
     def cataloger = [
             impl: 'org.sorcersoft.sorcer:cataloger-cfg:' + SORCER_VERSION,
-            api : 'org.sorcersoft.sorcer:cataloger-dl:pom:' + SORCER_VERSION
+            api : 'org.sorcersoft.sorcer:default-codebase:pom:' + SORCER_VERSION
     ]
 
     artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()

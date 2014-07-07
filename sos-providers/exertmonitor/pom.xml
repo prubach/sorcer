@@ -13,6 +13,5 @@
 	<modules>
 		<module>exertmonitor-cfg</module>
 		<module>exertmonitor-prv</module>
-		<module>exertmonitor-api</module>
 	</modules>
 </project>

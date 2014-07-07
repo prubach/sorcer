@@ -20,14 +20,10 @@ deployment(name: 'SorcerCommon') {
     codebase getCodebase()
 
     artifact id: 'cataloger-prv', sorcer('cataloger-prv')
-    artifact id: 'cataloger-api', sorcer('cataloger-api')
-    artifact id: 'jobber-prv', sorcer('jobber-prv')
-    artifact id: 'spacer-prv', sorcer('spacer-prv')
     artifact id: 'logger-prv', sorcer('logger-prv')
     artifact id: 'logger-sui', sorcer('logger-sui')
     artifact id: 'dbp-prv', sorcer('dbp-prv')
     artifact id: 'exertmonitor-prv', sorcer('exertmonitor-prv')
-    artifact id: 'commons-prv', sorcer('commons-prv')
 
     artifact id: 'mahalo', 'org.apache.river:mahalo:' + getRiverVersion()
     artifact id: 'mahalo-dl', 'org.apache.river:mahalo-dl:' + getRiverVersion()
