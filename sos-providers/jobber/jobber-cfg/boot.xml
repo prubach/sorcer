@@ -23,11 +23,11 @@ Replace "provider.name" with your provider name and specify property value for "
 Also you might need to adjust the classpath (provider.classpath) for your provider 
 -->
 
-<project name="Jobber" default="boot.provider" basedir="../jobber-prv">
+<project name="Jobber" default="boot.provider" basedir="../jobber-cfg">
 	
 	<property name="pom.file" value="${basedir}/pom.xml" />
 	<property environment="env" />
-	<property name="provider.config" value="${basedir}/target/classes/config/services.config" />
+	<property name="provider.config" value="${basedir}/target/classes/opstring.groovy" />
     <property name="provider.debug" value="false" />
 	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
 		

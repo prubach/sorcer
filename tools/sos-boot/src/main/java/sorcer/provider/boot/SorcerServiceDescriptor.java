@@ -200,8 +200,12 @@ public class SorcerServiceDescriptor extends AbstractServiceDescriptor {
     public Set<URI> getClasspath() {
         if (classpath == null)
             return null;
-        assert classPathHelper != null : "Null ClassPathHelper";
-        Set<String>paths = new HashSet<String>();
+        //assert classPathHelper != null : "Null ClassPathHelper";
+        Set<String> paths = new HashSet<String>();
+       /* if (classPathHelper==null) {
+            log.error("ClassPathHelper is NULL, ignoring jars specified in META-INF");
+            return new HashSet<URI>();
+        }*/
         for (String s : StringUtils.tokenizerSplit(classpath, File.pathSeparator)) {
             log.debug(s);
             paths.add(s);

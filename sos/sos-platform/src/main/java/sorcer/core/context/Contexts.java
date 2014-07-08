@@ -89,6 +89,21 @@ public class Contexts {
 		return list;
 	}
 
+    public static List<?> getNamedOutValues(Context context) throws ContextException {
+        List outpaths = Contexts.getNamedOutPaths(context);
+        if (outpaths == null)
+            return null;
+        List list = new ArrayList(outpaths.size());
+        for (Object path : outpaths)
+            try {
+                list.add(context.getValue((String) path));
+            } catch (ContextException e) {
+                throw new ContextException(e);
+            }
+
+        return list;
+    }
+
 	public static List<?> getPrefixedInValues(Context context) throws ContextException {
 		List inpaths = Contexts.getPrefixedInPaths(context);
 		if (inpaths == null) 
@@ -496,6 +511,37 @@ public class Contexts {
             Collections.addAll(list, inoutPaths);
 		return list;
 	}
+
+
+    public static List getNamedOutPaths(Context cntxt) throws ContextException {
+        // get all the in and out paths
+        return getPrefixedOutPaths(cntxt, ((ServiceContext)cntxt).getCurrentSelector());
+    }
+
+    public static List getPrefixedOutPaths(Context cntxt) throws ContextException {
+        // get all the in and out paths
+        return getPrefixedOutPaths(cntxt, ((ServiceContext)cntxt).getCurrentPrefix());
+    }
+
+    public static List getPrefixedOutPaths(Context cntxt, String prefix) throws ContextException {
+        // get all the in and out paths
+        String outAssoc = Context.DIRECTION + APS + Context.DA_OUT;
+        String inoutAssoc = Context.DIRECTION + APS + Context.DA_INOUT;
+        String[] outPaths = Contexts.getMarkedPaths(cntxt, outAssoc);
+        String[] inoutPaths = Contexts.getMarkedPaths(cntxt, inoutAssoc);
+        List list = new ArrayList();
+
+        if (outPaths != null)
+            for (int i = 0; i < outPaths.length; i++) {
+                if (outPaths[i].startsWith(prefix))
+                    list.add(outPaths[i]);
+            }
+        if (inoutPaths != null)
+            for (int i = 0; i < inoutPaths.length; i++)
+                if (inoutPaths[i].startsWith(prefix))
+                    list.add(inoutPaths[i]);
+        return list;
+    }
 
 	/**
 	 * Returns a map of all paths marked as data input.

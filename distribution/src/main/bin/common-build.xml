@@ -106,6 +106,7 @@ SUPPORT for LEGACY service providers built using Ant scripts - not recommended f
 	</path>
 
 	<path id="sorcer-build.path">
+        <pathelement location="${common.lib}/slf4j-api.jar" />
 		<pathelement location="${sorcer.lib}/commons-req.jar" />
 		<pathelement location="${sorcer.lib}/sos-util.jar" />
 		<pathelement location="${sorcer.lib}/sos-platform.jar" />

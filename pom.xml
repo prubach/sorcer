@@ -504,10 +504,10 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>2.2</version>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.jboss.tattletale</groupId>
                 <artifactId>tattletale-maven</artifactId>
-                <!-- The version of the plugin you want to use -->
+                &lt;!&ndash; The version of the plugin you want to use &ndash;&gt;
                 <version>1.2.0.Beta2</version>
                 <executions>
                     <execution>
@@ -517,13 +517,13 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- This is the location which will be scanned for generating tattletale reports
-                    -->
+                    &lt;!&ndash; This is the location which will be scanned for generating tattletale reports
+                    &ndash;&gt;
                     <source>target</source>
-                    <!-- This is where the reports will be generated -->
+                    &lt;!&ndash; This is where the reports will be generated &ndash;&gt;
                     <destination>target/dest</destination>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
 	</build>
 

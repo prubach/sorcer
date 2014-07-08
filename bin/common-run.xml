@@ -180,7 +180,7 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>
                 <pathelement location="${lib.dir}/sorcer/sos-boot.jar"/>
-                <pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>
+                <!--<pathelement location="${lib.dir}/sorcer/sos-webster.jar"/>-->
                 <pathelement location="${lib.dir}/sorcer/sos-util.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sos-platform.jar"/>
                 <pathelement location="${lib.dir}/sorcer/sorcer-resolver.jar"/>
@@ -205,17 +205,17 @@
                 <pathelement location="${lib.dir}/commons/google-collections.jar"/>
                 <pathelement location="${lib.dir}/commons/guice.jar"/>
                 <pathelement location="${lib.dir}/commons/guice-multibindings.jar"/>
-                <pathelement location="${lib.dir}/commons/aoplliance.jar"/>
-                <pathelement location="${lib.dir}/commons/javax.inject-1.jar"/>
+                <pathelement location="${lib.dir}/commons/aopalliance.jar"/>
+                <pathelement location="${lib.dir}/commons/javax.inject.jar"/>
                 <pathelement location="${lib.dir}/commons/plexus-utils.jar"/>
-                <pathelement location="${lib.dir}/commons/sigar.jar"/>
+                <pathelement location="${lib.dir}/sigar/sigar.jar"/>
             </path>
             <path id="runtime.classpath">
             </path>
 
             <path id="requestor.classpath">
                 <pathelement location="${lib.dir}/commons/guice.jar"/>
-                <pathelement location="${lib.dir}/commons/javax.inject-1.jar"/>
+                <pathelement location="${lib.dir}/commons/javax.inject.jar"/>
             </path>
 
             <path id="rio-resolver.classpath">
@@ -240,7 +240,7 @@
             <path id="boot.classpath">
                 <path refid="jini.classpath"/>                
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-boot/${v.sorcer}/sos-boot-${v.sorcer}.jar"/>
-                <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>
+                <!--<pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-webster/${v.sorcer}/sos-webster-${v.sorcer}.jar"/>-->
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-util/${v.sorcer}/sos-util-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sos-platform/${v.sorcer}/sos-platform-${v.sorcer}.jar"/>
                 <pathelement location="${mvn.repo}/org/sorcersoft/sorcer/sorcer-resolver/${v.sorcer}/sorcer-resolver-${v.sorcer}.jar"/>
@@ -404,7 +404,7 @@
                             <env key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
                             <sysproperty key="java.security.policy"
-                                         value="${basedir}/src/main/resources/policy/prv.policy"/>
+                                         value="${sorcer.home}/configs/sorcer.policy"/>
                             <sysproperty key="provider.runtime.classpath" value="${runtime.classpath.string}"/>
                         </java>
                     </ac:else>

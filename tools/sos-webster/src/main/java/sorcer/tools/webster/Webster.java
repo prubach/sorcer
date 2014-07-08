@@ -80,7 +80,7 @@ public class Webster implements Runnable {
     static final int DEFAULT_MIN_THREADS = 1;
     static final int DEFAULT_MAX_THREADS = 10;
     private ServerSocket ss;
-    private int port;
+    private int port;                                                                   ''
     private volatile boolean run = true;
     private static Properties MimeTypes = new Properties();
     private String[] websterRoot;
@@ -305,42 +305,43 @@ public class Webster implements Runnable {
         }
         //logger.info("roots concat: " + roots);
 
-        for(int i = 0; i < options.length; i++) {
-            String option = options[i];
-            if(option.equals("-port")) {
-                i++;
-                this.port = Integer.parseInt(options[i]);
-            } else if(option.equals("-roots")) {
-                i++;
-                roots = options[i];
-            } else if(option.equals("-bindAddress")) {
-                i++;
-                bindAddress = options[i];
-            } else if(option.equals("-startPort")) {
-                i++;
-                startPort = Integer.parseInt(options[i]);
-            } else if(option.equals("-endPort")) {
-                i++;
-                endPort = Integer.parseInt(options[i]);
-            } else if(option.equals("-minThreads")) {
-                i++;
-                minThreads = Integer.parseInt(options[i]);
-            } else if(option.equals("-maxThreads")) {
-                i++;
-                maxThreads = Integer.parseInt(options[i]);
-            } else if(option.equals("-soTimeout")) {
-                i++;
-                soTimeout = Integer.parseInt(options[i]);
-            } else if(option.equals("-isDaemon")) {
-                i++;
-                isDaemon = Boolean.parseBoolean(options[i]);
-            } else if(option.equals("-debug")) {
-                i++;
-                debug = Boolean.parseBoolean(options[i]);
-            } else {
-                throw new IllegalArgumentException(option);
+        if (options!=null)
+            for(int i = 0; i < options.length; i++) {
+                String option = options[i];
+                if(option.equals("-port")) {
+                    i++;
+                    this.port = Integer.parseInt(options[i]);
+                } else if(option.equals("-roots")) {
+                    i++;
+                    roots = options[i];
+                } else if(option.equals("-bindAddress")) {
+                    i++;
+                    bindAddress = options[i];
+                } else if(option.equals("-startPort")) {
+                    i++;
+                    startPort = Integer.parseInt(options[i]);
+                } else if(option.equals("-endPort")) {
+                    i++;
+                    endPort = Integer.parseInt(options[i]);
+                } else if(option.equals("-minThreads")) {
+                    i++;
+                    minThreads = Integer.parseInt(options[i]);
+                } else if(option.equals("-maxThreads")) {
+                    i++;
+                    maxThreads = Integer.parseInt(options[i]);
+                } else if(option.equals("-soTimeout")) {
+                    i++;
+                    soTimeout = Integer.parseInt(options[i]);
+                } else if(option.equals("-isDaemon")) {
+                    i++;
+                    isDaemon = Boolean.parseBoolean(options[i]);
+                } else if(option.equals("-debug")) {
+                    i++;
+                    debug = Boolean.parseBoolean(options[i]);
+                } else {
+                    throw new IllegalArgumentException(option);
+                }
             }
-        }
         if (websterRoot != null)
             init(bindAddress);
         else

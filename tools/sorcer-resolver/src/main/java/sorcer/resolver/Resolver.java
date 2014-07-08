@@ -108,8 +108,13 @@ public class Resolver {
             // For compatibility do not resolve against artifacts if coords is a url to a jar
             if (coords[i].contains("http"))
                 relatives[i] = coords[i];
-            else
+            // Artifact should contain ":"
+            else if (coords[i].contains(":"))
 			    relatives[i] = resolveAbsolute(base, ArtifactCoordinates.coords(coords[i]));
+            // Compatibility with old codebase as simple jar names
+            else
+                relatives[i] = base.toString() + coords[i];
+
 		}
 		return StringUtils.join(relatives, SorcerConstants.CODEBASE_SEPARATOR);
 	}

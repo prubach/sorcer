@@ -212,11 +212,14 @@ public class Booter {
      * @return the codebase for the JAR
      */
     public static String getCodebase(String[] jars, String address, String port) {
-		int p = new Integer(port);
-		if (p <= 0)
-			Booter.port = getPort();
-
-		URL baseUrl = getCodebaseRoot(address, Booter.port);
+		int p = Integer.parseInt(port);
+        logger.info("Got port: " + port + " for jars: " + jars);
+		if (p <= 0) {
+            Booter.port = getPort();
+            p = Booter.port;
+        }
+        logger.info("port is: " + p);
+		URL baseUrl = getCodebaseRoot(address, p);
 		return SorcerEnv.getCodebase(baseUrl, jars);
 	}
 

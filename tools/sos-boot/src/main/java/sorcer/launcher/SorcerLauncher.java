@@ -25,6 +25,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import sorcer.boot.ServiceStarter;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.ArtifactResolver;
+import sorcer.resolver.MappedFlattenedArtifactResolver;
 import sorcer.resolver.Resolver;
 import sorcer.util.ConfigurableThreadFactory;
 import sorcer.util.StringUtils;
@@ -137,15 +138,18 @@ public class SorcerLauncher extends Launcher {
         //we can't simply create another AppClassLoader,
         //because rio CommonClassLoader enforces SystemClassLoader as parent,
         //so all services started with rio would have parallel CL hierarchy
-
+        File sorcerLib = new File(SorcerEnv.getHomeDir(), "lib");
+        MappedFlattenedArtifactResolver flatResolver = new MappedFlattenedArtifactResolver(sorcerLib);
+        List<URL> actualClassPath = getClassPath(SorcerLauncher.class.getClassLoader());
+        boolean isSorcerLib = actualClassPath.get(0).getFile().startsWith(sorcerLib.getAbsolutePath());
         List<URL> requiredClassPath = new LinkedList<URL>();
         for (String file : CLASS_PATH) {
-            requiredClassPath.add(new File(Resolver.resolveAbsolute(file)).toURI().toURL());
+            requiredClassPath.add(
+                    (isSorcerLib ? new File(flatResolver.resolveAbsolute(file)).toURI().toURL() :
+                        new File(Resolver.resolveAbsolute(file)).toURI().toURL()));
         }
-        List<URL> actualClassPath = getClassPath(SorcerLauncher.class.getClassLoader());
         List<URL> missingClassPath = new LinkedList<URL>(requiredClassPath);
         missingClassPath.removeAll(actualClassPath);
-
         // use logger, we won't be able to start in direct mode anyway
         for (URL entry : missingClassPath)
             log.warn("Missing required ClassPath element {}", entry);
