@@ -80,7 +80,7 @@ public class Webster implements Runnable {
     static final int DEFAULT_MIN_THREADS = 1;
     static final int DEFAULT_MAX_THREADS = 10;
     private ServerSocket ss;
-    private int port;                                                                   ''
+    private int port;
     private volatile boolean run = true;
     private static Properties MimeTypes = new Properties();
     private String[] websterRoot;
