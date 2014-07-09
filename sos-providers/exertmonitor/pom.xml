@@ -12,6 +12,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>exertmonitor-cfg</module>
+        <module>exertmonitor-dl</module>
 		<module>exertmonitor-prv</module>
 	</modules>
 </project>

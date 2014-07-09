@@ -60,12 +60,17 @@ deployment(name: 'Sorcer') {
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
 
     def logger = [
-            codebase : 'org.sorcersoft.sorcer:logger-api:' + SORCER_VERSION,
+            codebase : 'org.sorcersoft.sorcer:logger-dl:pom:' + SORCER_VERSION,
             classpath : 'org.sorcersoft.sorcer:logger-cfg:' + SORCER_VERSION,
     ]
 
+    def exertmonitor = [
+            codebase : 'org.sorcersoft.sorcer:exertmonitor-dl:pom:' + SORCER_VERSION,
+            classpath : 'org.sorcersoft.sorcer:exertmonitor-cfg:' + SORCER_VERSION,
+    ]
+
     artifact id: 'dbp-cfg', "org.sorcersoft.sorcer:dbp-cfg:" + getSorcerVersion()
-    artifact id: 'exertmonitor-cfg', "org.sorcersoft.sorcer:exertmonitor-cfg:" + getSorcerVersion()
+
     artifact id: 'exerter-cfg', "org.sorcersoft.sorcer:exerter-cfg:" + getSorcerVersion()
 
     /*
@@ -194,10 +199,10 @@ deployment(name: 'Sorcer') {
     service(name: "ExertMonitor") { fork:'yes'
         interfaces {
             classes 'sorcer.core.monitor.MonitoringManagement'
-            artifact sorcer.codebase
+            artifact exertmonitor.codebase
         }
         implementation(class: 'sorcer.core.provider.exertmonitor.ExertMonitor') {
-            artifact ref: 'exertmonitor-cfg'
+            artifact exertmonitor.classpath
         }
         configuration file: 'classpath:exertmonitor.config'
         maintain 1

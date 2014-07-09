@@ -14,7 +14,7 @@ import sorcer.service.Task
 
 Task f4 = task("f4", sig("multiply", Multiplier.class),
 	context("multiply", input(path("arg/x1"), 10.0d), input(path("arg/x2"), 50.0d),
-		out(path("result/y1"), null)));
+		out(path("result/y1"), null)), strategy(Monitor.YES, Provision.TRUE));
 		
 Task f5 = task("f5", sig("add", Adder.class),
 	context("add", input(path("arg/x3"), 20.0d), input(path("arg/x4"), 80.0d),
