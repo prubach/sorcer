@@ -27,9 +27,12 @@ import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -58,8 +61,20 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
     private final Map<String, String> classAnnotationMap = new ConcurrentHashMap<String, String>();
     private static final Resolver resolver;
     private static final Logger logger = LoggerFactory.getLogger(SorcerResolvingLoader.class);
+    private static final Map<String, Class<?>> primitiveTypes =
+            new HashMap<String, Class<?>>();
 
     static {
+        primitiveTypes.put("byte", byte.class);
+        primitiveTypes.put("short", short.class);
+        primitiveTypes.put("int", int.class);
+        primitiveTypes.put("long", long.class);
+        primitiveTypes.put("float", float.class);
+        primitiveTypes.put("double", double.class);
+        primitiveTypes.put("boolean", boolean.class);
+        primitiveTypes.put("char", char.class);
+        primitiveTypes.put("void", void.class);
+
         String envSorcerHome = System.getenv(ENV_SORCER_HOME);
         String sorcerHome = (envSorcerHome!=null && !envSorcerHome.isEmpty() ?
                 envSorcerHome : System.getProperty(SORCER_HOME));
@@ -88,6 +103,9 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         }
         logger.trace("Load class {} using codebase {}, resolved to {}", name, codebase, resolvedCodebase);
         try {
+            Class primitive = primitiveTypes.get(name);
+            if (primitive!=null)
+                return primitive;
             return loader.loadClass(resolvedCodebase, name, defaultLoader);
         } catch (Exception fe) {
             logger.warn("Problem loading class: " + name + " from: " + resolvedCodebase + " " + fe.getMessage() + " - trying again");
@@ -186,4 +204,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
         }
         return cp;
     }
+
+
+
 }
