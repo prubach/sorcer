@@ -78,6 +78,11 @@
                 <destName>logger-${v.sorcer}.pom</destName>
             </file>
             <file>
+                <source>${basedir}/../sos-providers/logger/logger-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>logger-dl-${v.sorcer}.pom</destName>
+            </file>
+            <file>
                 <source>${basedir}/../sos-providers/spacer/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>spacer-${v.sorcer}.pom</destName>
@@ -86,6 +91,11 @@
                 <source>${basedir}/../sos-providers/exertmonitor/pom.xml</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>exertmonitor-${v.sorcer}.pom</destName>
+            </file>
+            <file>
+                <source>${basedir}/../sos-providers/exertmonitor/exertmonitor-dl/pom.xml</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>exertmonitor-dl-${v.sorcer}.pom</destName>
             </file>
             <file>
                 <source>${basedir}/../sos-providers/concatenator/pom.xml</source>
@@ -330,6 +340,11 @@
                 <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/5/commons-parent-5.pom</source>
                 <outputDirectory>/configs/poms</outputDirectory>
                 <destName>commons-parent-5.pom</destName>
+            </file>
+            <file>
+                <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/20/commons-parent-20.pom</source>
+                <outputDirectory>/configs/poms</outputDirectory>
+                <destName>commons-parent-20.pom</destName>
             </file>
             <file>
                 <source>${user.home}/.m2/repository/org/apache/commons/commons-parent/32/commons-parent-32.pom</source>
