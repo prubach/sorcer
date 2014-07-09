@@ -248,6 +248,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
+        runtimeExertion.startExecTime();
 		this.provider = executor;
 		persist();
 		return lease;
@@ -390,11 +391,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 		if (doneCount == size() || (runtimeExertion instanceof AltExertion && doneCount>0)) {
             runtimeExertion.setStatus(Exec.DONE);
+            runtimeExertion.stopExecTime();
             mLandlord.remove(this);
         }
 		else if (failedCount != 0
-				&& failedCount + doneCount + suspendedCount == size())
-			runtimeExertion.setStatus(Exec.FAILED);
+				&& failedCount + doneCount + suspendedCount == size()) {
+            runtimeExertion.setStatus(Exec.FAILED);
+            runtimeExertion.stopExecTime();
+        }
 		else if (suspendedCount != 0 && doneCount + suspendedCount == size())
 			runtimeExertion.setStatus(Exec.SUSPENDED);
 
