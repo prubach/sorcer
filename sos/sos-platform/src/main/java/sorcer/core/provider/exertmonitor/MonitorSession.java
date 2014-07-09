@@ -209,6 +209,8 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
+        if (runtimeExertion.getControlContext().getStopwatch()==null)
+            runtimeExertion.startExecTime();
 		this.provider = executor;
 		setExpiration(mLandlord.getExpiration(duration));
 		setTimeout(System.currentTimeMillis() + timeout);
@@ -248,8 +250,9 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		}
 
 		runtimeExertion.setStatus(Exec.RUNNING);
-        runtimeExertion.startExecTime();
-		this.provider = executor;
+        if (runtimeExertion.getControlContext().getStopwatch()==null)
+            runtimeExertion.startExecTime();
+        this.provider = executor;
 		persist();
 		return lease;
 	}
