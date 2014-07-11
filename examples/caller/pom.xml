@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sorcersoft.sorcer</groupId>
+		<artifactId>provider-root</artifactId>
+		<version>1.0-SNAPSHOT</version>
+        <relativePath/>
+	</parent>
+
+	<groupId>org.sorcersoft.sorcer</groupId>
+	<artifactId>caller</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>SORCER :: caller</name>
+	<description>System Caller Service</description>
+
+	<properties>
+		<v.sorcer>1.0-SNAPSHOT</v.sorcer>
+	</properties>
+
+	<modules>
+		<module>caller-api</module>
+        <module>caller-cfg</module>
+        <module>caller-dl</module>
+        <module>caller-prv</module>
+		<module>caller-req</module>
+
+        <!-- optional modules -->
+		<module>caller-sui</module>
+	</modules>
+</project>

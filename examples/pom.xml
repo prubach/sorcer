@@ -23,6 +23,7 @@
 		<module>ex5</module>
 		<module>ex6</module>
         <module>account</module>
+    <module>caller</module>
   </modules>
 
     <build>

@@ -36,8 +36,8 @@ echo ##
 echo ##############################################################################
 echo .
 
-echo Starting using
-echo %SOS_START_CMD%
+rem echo Starting using
+rem echo %SOS_START_CMD%
 call %SOS_START_CMD%
 
 endlocal

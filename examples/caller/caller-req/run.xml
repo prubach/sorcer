@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name ="Caller Requestor" default="run.requestor" basedir=".">
+	<!-- set property values here -->
+	<property name="requestor.name" value="caller-req" />
+	<property name="requestor.version" value="1.0-SNAPSHOT" />
+	<property name="requestor.class" value="sorcer.core.requestor.ServiceRequestor" />
+    <property name="requestor.run.args" value="sorcer.caller.CallerTester" />
+
+	<property name="requestor.api" value="caller-api"/>
+	<property name="requestor.groupId" value="org.sorcersoft.sorcer"/>
+	<property name="requestor.policy" value="src/main/resources/policy/req.policy"/>
+
+	<!-- loads system environment variables -->
+	<property environment="env" />
+	<import file="${env.SORCER_HOME}/bin/common-run.xml" />
+	<echo message="webster: ${provider.webster.url}" />
+
+	<!-- provider codebase jars -->
+	<property name="j1" value="${requestor.groupId}:${requestor.api}:${requestor.version}" />
+    <property name="j2" value="org.sorcersoft.sorcer:sorcer-api" />
+
+	<property name="requestor.webster.codebase" value="${j1} ${j2}" />
+    <property name="webster.internal" value="true" />
+
+</project>
+

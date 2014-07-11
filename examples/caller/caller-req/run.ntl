@@ -1,0 +1,33 @@
+#!/usr/bin/env nsh
+
+////
+// This is an example of a SORCER netlet script.
+// Before testing this script please make sure that the 'nsh' (UNIX) or 'nsh.bat' (Windows) file is available in your
+// PATH. If that is not the case please run:
+// - on Windows: %SORCER_HOME%\bin\setenv.bat
+// - on Unix: source $SORCER_HOME/bin/setenv
+//
+// To test this script please start your provider and then run this script:
+// - on Windows execute: nsh -f run.ntl
+// - on Unix you can simply run the script by invoking: ./run.ntl
+//
+//
+codebase mvn://org.sorcersoft.sorcer:caller-api:1.0-SNAPSHOT
+
+// If you want to run the codebase from an external codeserver please add @computer:port to point to the
+// codeserver (webster) that serves the caller-api.jar file.
+//
+//      codebase mvn://org.sorcersoft.sorcer:caller-api:1.0.0-SNAPSHOT@computer:50001
+//
+// You can also use a fixed direct URL, for example:
+//
+//      codebase http://computer:50001/lib/caller-api.jar
+//
+// It is also possible to load local jar files using the "load" command (see below for an example) but those will not become part of the codebase so other
+// providers may complain about missing classes:
+//
+//      load file:///opt/sorcer/lib/*.jar
+
+import sorcer.caller.Caller;
+
+t1 = task("hello1", sig("sayHelloWorld", Caller.class), context("Hello", input(path("in/value"), "TESTER"), out(path("out", "value"), null)));

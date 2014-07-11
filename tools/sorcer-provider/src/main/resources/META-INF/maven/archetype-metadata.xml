@@ -55,7 +55,7 @@
             <defaultValue>false</defaultValue>
         </requiredProperty>
         <requiredProperty key="serviceIcon">
-            <defaultValue>/config/sorcer.png</defaultValue>
+            <defaultValue>sorcersoft.png</defaultValue>
         </requiredProperty>
     </requiredProperties>
 
