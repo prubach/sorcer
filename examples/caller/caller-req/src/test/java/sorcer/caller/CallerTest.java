@@ -5,15 +5,21 @@ import org.junit.runner.RunWith;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.core.context.PositionalContext;
 import sorcer.junit.*;
 import sorcer.service.*;
+
+import java.rmi.RMISecurityManager;
+
 import static org.junit.Assert.assertEquals;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static sorcer.eo.operator.*;
 
 @RunWith(SorcerRunner.class)
 @Category(SorcerClient.class)
-@ExportCodebase({"org.sorcersoft.sorcer:caller-dl:pom:1.0.0-SNAPSHOT"})
+@ExportCodebase({"org.sorcersoft.sorcer:caller-dl:pom:1.0-SNAPSHOT"})
 @SorcerServiceConfiguration(":caller-cfg")
 public class CallerTest {
 
@@ -23,15 +29,25 @@ public class CallerTest {
     public void testCaller() throws ContextException, SignatureException, ExertionException {
         logger.info("Starting CallerTest");
 
-        Task t1 = task("hello", sig("sayHelloWorld", Caller.class),
-                context("Hello", in(path("in", "value"), "TESTER"), out(path("out", "value"), null)));
+        System.setSecurityManager(new RMISecurityManager());
+        logger.info("Starting CallerTester");
+
+        Context ctx = new PositionalContext("caller");
+        String[] comms = new String[] { "ls" };
+        String[] argss = new String[] { "-al" };
+        CallerUtil.setCmds(ctx, comms);
+        CallerUtil.setArgs(ctx, argss);
+        CallerUtil.setBin(ctx);
+        CallerUtil.setWorkingDir(ctx, "/");
+
+        Task t1 = task("test", sig("execute", Caller.class), ctx);
 
         logger.info("Task t1 prepared: " + t1);
         Exertion out = exert(t1);
-
-        logger.info("Got result: {}", get(out, "out/value"));
+        logger.info("Got result: " + CallerUtil.getCallOutput(ctx));
         logger.info("----------------------------------------------------------------");
-        logger.info("Task t1 trace: " + trace(out));
-        assertEquals("Hello there - TESTER", get(out, "out/value"));
+        logger.info("Task t1 trace: {}" + trace(out));
+
+        assertNotNull(CallerUtil.getCallOutput(ctx));
     }
 }
