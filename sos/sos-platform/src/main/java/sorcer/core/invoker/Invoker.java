@@ -40,8 +40,6 @@ import sorcer.service.Identifiable;
 import sorcer.service.Invocation;
 import sorcer.service.InvocationException;
 import sorcer.service.Scopable;
-import sorcer.vfe.Observable;
-import sorcer.vfe.Observer;
 
 /**
  * @author Mike Sobolewski

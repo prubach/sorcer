@@ -16,7 +16,7 @@
  */
 package sorcer.co.tuple;
 
-import sorcer.core.context.model.var.FidelityInfo;
+import sorcer.service.FidelityInfo;
 
 public class FidelityEntry<T> extends Entry<T> {
 	private static final long serialVersionUID = -508307270964254478L;

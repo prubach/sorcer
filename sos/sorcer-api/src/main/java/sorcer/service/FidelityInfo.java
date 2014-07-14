@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-package sorcer.core.context.model.var;
+package sorcer.service;
 
 import java.io.Serializable;
 
-import sorcer.service.Arg;
 import sorcer.vfe.util.Wrt;
 
 public class FidelityInfo implements Serializable, Arg {

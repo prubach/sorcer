@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ApplicationDescription;
-import sorcer.core.context.model.Variability;
+import sorcer.service.modeling.Variability;
 import sorcer.service.Arg;
 import sorcer.service.ArgException;
 import sorcer.service.ArgSet;
@@ -415,7 +415,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.core.context.model.Variability#addArgs(sorcer.core.context.model.par.ParSet)
+	 * @see sorcer.service.modeling.Variability#addArgs(sorcer.core.context.model.par.ParSet)
 	 */
 	@Override
 	public void addArgs(ArgSet set) throws EvaluationException {

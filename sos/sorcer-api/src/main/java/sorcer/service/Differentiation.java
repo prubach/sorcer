@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package sorcer.core.context.model.var;
+package sorcer.service;
+
+import sorcer.core.context.model.var.Gradient;
 
 import java.io.Serializable;
 import java.util.ArrayList;

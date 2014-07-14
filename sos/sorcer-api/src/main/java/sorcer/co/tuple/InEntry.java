@@ -18,7 +18,7 @@ package sorcer.co.tuple;
 
 import java.net.URL;
 
-import sorcer.core.context.model.var.FidelityInfo;
+import sorcer.service.FidelityInfo;
 import sorcer.service.Context;
 
 public class InEntry<T> extends FidelityEntry<T> {

@@ -1,7 +1,7 @@
 package sorcer.core.context.model.par;
 
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.model.Variability;
+import sorcer.service.modeling.Variability;
 import sorcer.service.*;
 import sorcer.util.bdb.sdb.DbpUtil;
 import sorcer.util.bdb.sdb.SdbUtil;

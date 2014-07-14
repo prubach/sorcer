@@ -20,7 +20,7 @@ package sorcer.co.tuple;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import sorcer.core.context.model.var.FidelityInfo;
+import sorcer.service.FidelityInfo;
 import sorcer.service.Arg;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;

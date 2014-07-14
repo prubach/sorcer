@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
-package sorcer.core.context.model;
+package sorcer.service.modeling;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.Set;
 
 import sorcer.core.context.ApplicationDescription;
 import sorcer.service.*;

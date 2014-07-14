@@ -19,6 +19,7 @@ package sorcer.vfe;
 
 import java.rmi.RemoteException;
 
+import sorcer.core.invoker.Observer;
 import sorcer.service.EvaluationException;
 
 public interface EvaluationModel {
@@ -56,9 +57,9 @@ public interface EvaluationModel {
 	 *            any object.
 	 * @throws RemoteException 
 	 * @throws EvaluationException 
-	 * @see Observable#clearChanged()
-	 * @see Observable#hasChanged()
-	 * @see Observer#update(Observable, Object)
+	 * @see sorcer.core.invoker.Observable#clearChanged()
+	 * @see sorcer.core.invoker.Observable#hasChanged()
+	 * @see sorcer.core.invoker.Observer#update(sorcer.core.invoker.Observable, Object)
 	 */
 	public void notifyObservers(Object arg) throws EvaluationException, RemoteException;
 

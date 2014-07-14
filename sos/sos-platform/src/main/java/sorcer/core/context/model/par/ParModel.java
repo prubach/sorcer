@@ -25,7 +25,7 @@ import java.util.Vector;
 
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
-import sorcer.core.context.model.Variability;
+import sorcer.service.modeling.Variability;
 import sorcer.core.invoker.Invoker;
 import sorcer.service.*;
 
