@@ -1076,6 +1076,11 @@ public class SorcerEnv {
     }
 
 
+    public static String getHome() {
+        File homeDir = getHomeDir();
+        return (homeDir!=null ? homeDir.getAbsolutePath() : null);
+    }
+
     public static File getExtDir() {
         return sorcerEnv.getSorcerExtDir();
     }
@@ -1732,10 +1737,6 @@ public class SorcerEnv {
 
     public String getSorcerHome() {
         return properties.getProperty(SORCER_HOME);
-    }
-
-    public String getHome() {
-        return getSorcerHome();
     }
 
     public void setSorcerHome(String sorcerHome) {
