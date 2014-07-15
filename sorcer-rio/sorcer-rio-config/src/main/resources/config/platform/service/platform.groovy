@@ -61,7 +61,7 @@ ServiceDescriptor[] getPlatformServices() {
                     "org.sorcersoft.sorcer:dbp-api:" + SORCER_VERSION,
                     policy,
                     "org.sorcersoft.sorcer:dbp-handler:" + SORCER_VERSION,
-                    "sorcer.util.bdb.HandlerInstaller"
+                    "sorcer.util.url.HandlerInstaller"
             ),
             new ResolvingServiceDescriptor(
                     "org.sorcersoft.sorcer:sos-exertlet-sui:" + SORCER_VERSION,
