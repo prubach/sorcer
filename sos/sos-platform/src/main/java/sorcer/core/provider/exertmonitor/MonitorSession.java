@@ -24,6 +24,7 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.IControlContext;
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.provider.MonitorManagementSession;
 import sorcer.core.provider.Provider;
 import sorcer.core.monitor.MonitorEvent;
 import sorcer.core.monitor.MonitorableSession;
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
 import static sorcer.service.monitor.MonitorUtil.setMonitorSession;
 
 public class MonitorSession extends ArrayList<MonitorSession> implements
-		MonitorLandlord.MonitorLeasedResource, Serializable, IMonitorSession {
+		MonitorLandlord.MonitorLeasedResource, Serializable, MonitorManagementSession {
 
 	static final long serialVersionUID = -4427096084987355507L;
 
@@ -175,14 +176,14 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		return listener;
 	}
 
-	public Map<Uuid, MonitorSession> getSessions() {
-		HashMap<Uuid, MonitorSession> map = new HashMap<Uuid, MonitorSession>();
+	public Map<Uuid, MonitorManagementSession> getSessions() {
+		HashMap<Uuid, MonitorManagementSession> map = new HashMap<Uuid, MonitorManagementSession>();
 		collectSessions(map);
 		map.put(cookie, this);
 		return map;
 	}
 
-	private HashMap<Uuid, MonitorSession> collectSessions(HashMap<Uuid, MonitorSession> map) {
+	private HashMap<Uuid, MonitorManagementSession> collectSessions(HashMap<Uuid, MonitorManagementSession> map) {
 		MonitorSession resource;
 		for (int i = 0; i < size(); i++) {
 			resource = get(i);

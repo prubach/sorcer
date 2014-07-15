@@ -33,7 +33,6 @@ import sorcer.core.SorcerConstants;
 //import sorcer.core.context.ArrayContext;
 //import sorcer.core.context.ContextLink;
 //import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.Par;
 import sorcer.core.provider.Provider;
 import sorcer.security.util.SorcerPrincipal;
 
@@ -527,9 +526,9 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
 	public Object addValue(Identifiable value) throws ContextException;
 
-	public Par addPar(String path, Object value) throws ContextException;
+	public Arg addPar(String path, Object value) throws ContextException;
 
-	public Par getPar(String path) throws ContextException;
+	public Arg getPar(String path) throws ContextException;
 
 	public Object putValue(String path, Object value, String association)
 			throws ContextException;

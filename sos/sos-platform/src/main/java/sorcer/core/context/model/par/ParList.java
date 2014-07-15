@@ -17,15 +17,17 @@
 
 package sorcer.core.context.model.par;
 
-import sorcer.co.tuple.Tuple2;
-import sorcer.service.EvaluationException;
-import sorcer.service.VarException;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import sorcer.co.tuple.Tuple2;
+import sorcer.service.Arg;
+import sorcer.service.ArgList;
+import sorcer.service.EvaluationException;
+import sorcer.service.Identity;
 
 /**
  * @author Mike Sobolewski
@@ -68,7 +70,7 @@ public class ParList extends ArrayList<Par> {
 		}
 	}
 
-	public Par<? extends Object> getPar(String parName) throws VarException {
+	public Par<? extends Object> getPar(String parName) throws ParException {
 		for (Par<?> p : this) {
 			if (p.getName().equals(parName)) {
 				return p;
@@ -81,13 +83,14 @@ public class ParList extends ArrayList<Par> {
 			throws EvaluationException {
 		Par par = null;
 		for (Par p : this) {
-			if (p.getName().equals(parName))
+			if (((Identity) p).getName().equals(parName)) {
 				par = p;
-			par.setValue(value);
-			break;
+				par.setValue(value);
+				break;
+			}
 		}
 		if (par == null)
-			throw new VarException("No such Par in the list: " + parName);
+			throw new ParException("No such Par in the list: " + parName);
 	}
 
 	public ParList selectPars(List<String>... parNames) {
@@ -116,7 +119,7 @@ public class ParList extends ArrayList<Par> {
 	}
 
 	public boolean containsParName(String name) {
-		return contains(new ParImpl(name));
+		return contains(new Par(name));
 	}
 
 	@Override
@@ -176,13 +179,13 @@ public class ParList extends ArrayList<Par> {
 	}
 
 	public ParList setParValues(Tuple2<String, ?>... entries)
-			throws VarException {
+			throws ParException {
 		try {
 			for (Tuple2<String, ?> entry : entries) {
 				setParValue(entry._1, entry._2);
 			}
 		} catch (Exception e) {
-			throw new VarException(e);
+			throw new ParException(e);
 		}
 		return this;
 	}
@@ -204,4 +207,25 @@ public class ParList extends ArrayList<Par> {
 	public String toString() {
 		return getNames().toString();
 	}
+	
+	public ParSet toParSet() {
+		ParSet out = new ParSet();
+		for (Arg a : this) {
+			if (!(a instanceof Par<?>))
+				throw new RuntimeException("wrong argument");
+			out.add((Par<?>)a);
+		}
+		return out;
+	}
+	
+	public ParList toParList() {
+		ParList out = new ParList();
+		for (Arg a : this) {
+			if (!(a instanceof Par<?>))
+				throw new RuntimeException("wrong argument");
+			out.add((Par<?>)a);
+		}
+		return out;
+	}
+	
 }

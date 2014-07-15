@@ -35,7 +35,6 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.context.*;
 import sorcer.core.context.model.PoolStrategy;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.exertion.*;
@@ -413,7 +412,7 @@ public class operator {
 
 	protected static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
 			throws ContextException {
-		Par p = new ParImpl(entry.path(), entry.value());
+		Par p = new Par(entry.path(), entry.value());
 		p.setPersistent(true);
 		if (entry.datastoreURL != null)
 			p.setDbURL(entry.datastoreURL);
@@ -429,7 +428,7 @@ public class operator {
 
 	protected static void setPar(Context cxt, Tuple2 entry)
 			throws ContextException {
-		Par p = new ParImpl(entry.path(), entry.value());
+		Par p = new Par(entry.path(), entry.value());
 		p.setPersistent(true);
 		if (entry.datastoreURL != null)
 			p.setDbURL(entry.datastoreURL);
@@ -685,7 +684,7 @@ public class operator {
                                           ReturnPath returnPath) throws SignatureException {
         EvaluationSignature sig = null;
         if (evaluator instanceof Scopable) {
-            sig = new EvaluationSignature(new ParImpl((Identifiable)evaluator));
+            sig = new EvaluationSignature(new Par((Identifiable)evaluator));
         } else {
             sig = new EvaluationSignature(evaluator);
         }
@@ -1435,7 +1434,7 @@ public class operator {
 			this.in = in;
 			this.inPath = inPath;
 			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                par = new ParImpl(outPath, inPath, in);
+                par = new Par(outPath, inPath, in);
 				((ServiceExertion) out).addPersister(par);
 			}
 		}
@@ -1446,7 +1445,7 @@ public class operator {
 			this.in = inEndPoint.in;
 			this.inPath = inEndPoint.inPath;
 			if ((in instanceof Exertion) && (out instanceof Exertion)) {
-                par = new ParImpl(outPath, inPath, in);
+                par = new Par(outPath, inPath, in);
 				((ServiceExertion) out).addPersister(par);
 			}
 		}

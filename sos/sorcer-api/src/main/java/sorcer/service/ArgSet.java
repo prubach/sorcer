@@ -22,13 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
-import sorcer.co.tuple.Entry;
-import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParException;
+//import sorcer.co.tuple.Entry;
 
 /**
  * @author Mike Sobolewski
@@ -41,21 +37,6 @@ public class ArgSet extends TreeSet<Arg> {
 	public ArgSet() {
 		super();
 	}
-
-	public ArgSet(ArgList argList) {
-		addAll(argList);
-	}
-	
-	public ArgSet(Set<Par> argSet) {
-		addAll(argSet);
-	}
-
-	
-	public ArgSet(ArgList...  argLists) {
-		for (ArgList vl : argLists) {
-			addAll(vl);
-		}
-	}
 	
 	public ArgSet(Arg...  args) {
 		for (Arg v : args) {
@@ -63,49 +44,31 @@ public class ArgSet extends TreeSet<Arg> {
 		}
 	}
 	
-	public Arg getArg(String parName) {
+	public Arg getArg(String argName) throws ArgException {
 		for (Arg v : this) {
-			if (v.getName().equals(parName))
+			if (v.getName().equals(argName))
 				return v;
 		}
 		return null;
 	}
 	
-	public void setValue(String parName, Object value)
+	public void setValue(String argName, Object value)
 			throws EvaluationException {
-		Arg par = null;
-		for (Arg p : this) {
-			if (p.getName().equals(parName)) {
-				par = p;
-				if (par instanceof Setter)
-					try {
-						((Setter)par).setValue(value);
-					} catch (RemoteException e) {
-						throw new EvaluationException(e);
-					}
+		Arg arg = null;
+		for (Arg a : this) {
+			if (a.getName().equals(argName)) {
+				arg = a;
+				if (arg instanceof Setter)
+					((Setter) arg).setValue(value);
 				break;
 			}
 		}
-		if (par == null)
-			throw new ParException("No such Par in the list: " + parName);
+		if (arg == null)
+			throw new ArgException("No such Arg in the list: " + argName);
 	}
 	
-	public ArgList selectArgs(List<String>... parnames) {
-		List<String> allParNames = new ArrayList<String>();
-		for (List<String> nl : parnames) {
-			allParNames.addAll(nl);
-		}
-		ArgList out = new ArgList();
-		for (Arg v : this) {
-			if (allParNames.contains(v.getName())) {
-				out.add(v);
-			}
-		}
-		return out;
-	}
-	
-	public ArgSet selectArgs(String... parnames) {
-		List<String> vnames = Arrays.asList(parnames);
+	public ArgSet selectArgs(String... argnames) {
+		List<String> vnames = Arrays.asList(argnames);
 		ArgSet out = new ArgSet();
 		for (Arg v : this) {
 			if (vnames.contains(v.getName())) {
@@ -117,11 +80,11 @@ public class ArgSet extends TreeSet<Arg> {
 
 	@Override
 	public boolean contains(Object obj) {
-		if (!(obj instanceof Par<?>))
+		if (!(obj instanceof Arg))
 			return false;
 		else {
 			for (Arg v : this) {
-				if (v.getName().equals(((Par<?>)obj).getName()))
+				if (v.getName().equals(((Arg)obj).getName()))
 					return true;
 			}
 		}
@@ -130,11 +93,11 @@ public class ArgSet extends TreeSet<Arg> {
 	
 	@Override
 	public boolean remove(Object obj) {
-		if (obj == null || !(obj instanceof Par<?>)) {
+		if (obj == null || !(obj instanceof Arg)) {
 			return false;
 		} else {
 			for (Arg v : this) {
-				if (v.getName().equals(((Par<?>) obj).getName())) {
+				if (v.getName().equals(((Arg) obj).getName())) {
 					super.remove(v);
 					return true;
 				}
@@ -170,34 +133,6 @@ public class ArgSet extends TreeSet<Arg> {
 		 return toArray(va);
 	 }
 			
-	 public ArgList toList() {
-		 ArgList vl = new ArgList(size());
-		 for (Arg v : this)
-			 vl.add(v);
-		 return vl;
-	 }
-
-	public static ArgSet asSet(Map map) {
-		ArgSet as = new ArgSet();
-		Iterator it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry e = (Map.Entry) it.next();
-			as.add(new Entry((String) e.getKey(), e.getValue()));
-		}
-		return as;
-	}
-
-	public static ArgSet asSet(ArgList list) {
-		return new ArgSet(list);
-	}
-
-	public static ArgList asList(Arg[] array) {
-		ArgList vl = new ArgList(array.length);
-		for (Arg v : array)
-			vl.add(v);
-		return vl;
-	}
-	 
 	public static ArgSet asSet(Arg[] array) {
 		ArgSet vl = new ArgSet();
 		for (Arg v : array)
@@ -207,12 +142,9 @@ public class ArgSet extends TreeSet<Arg> {
 
 	public void clearArgs() throws EvaluationException {
 		for (Arg p : this) {
-			try {
-				if (p instanceof Setter)
-					((Setter) p).setValue(null);
-			} catch (RemoteException e) {
-				throw new EvaluationException(e);
-			}
+			if (p instanceof Setter)
+				((Setter) p).setValue(null);
 		}
 	}
+	
 }

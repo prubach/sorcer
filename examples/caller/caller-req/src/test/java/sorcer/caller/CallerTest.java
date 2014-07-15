@@ -33,8 +33,8 @@ public class CallerTest {
         logger.info("Starting CallerTester");
 
         Context ctx = new PositionalContext("caller");
-        String[] comms = new String[] { "ls" };
-        String[] argss = new String[] { "-al" };
+        String[] comms = new String[] { "java" };
+        String[] argss = new String[] { "-version" };
         CallerUtil.setCmds(ctx, comms);
         CallerUtil.setArgs(ctx, argss);
         CallerUtil.setBin(ctx);

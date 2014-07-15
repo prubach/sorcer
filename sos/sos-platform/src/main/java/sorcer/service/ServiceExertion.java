@@ -37,7 +37,6 @@ import sorcer.co.tuple.Entry;
 import sorcer.core.ComponentFidelityInfo;
 import sorcer.core.context.*;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.invoker.ExertInvoker;
 import sorcer.core.provider.Jobber;
@@ -56,7 +55,10 @@ import static sorcer.service.Signature.ReturnPath;
 @SuppressWarnings("rawtypes")
 public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Serializable {
 
-	static final long serialVersionUID = -3907402419486719293L;
+	// Added only for compatibility with AFRL Sorcer
+    public static boolean debug = false;
+    //
+    static final long serialVersionUID = -3907402419486719293L;
 
 	protected final static Logger logger = Logger
 			.getLogger(ServiceExertion.class.getName());
@@ -821,7 +823,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	/**
 	 * Appends a signature <code>signature</code> for this exertion.
 	 * 
-	 * @see #getSignatures
+	 * @see #addSignatures
 	 */
 	public void addSignature(Signature signature) {
 		if (signature == null)
@@ -953,7 +955,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public Par getPar(String path) {
-		return new ParImpl(path, this);
+		return new Par(path, this);
 	}
 
 	abstract public Context linkContext(Context context, String path)

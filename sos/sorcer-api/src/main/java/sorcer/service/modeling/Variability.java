@@ -87,7 +87,7 @@ public interface Variability<T> extends Identifiable, Evaluation<T>, Perturbatio
 
 	public void addArgs(ArgSet set) throws EvaluationException;
 	
-	public Variability<T> getVariability(String name) throws ArgException;
+	//public Variability<T> getVariability(String name) throws ArgException;
 	
 	public T getArg(String varName) throws ArgException;
 	

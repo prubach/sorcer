@@ -23,9 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParException;
-
 /**
  * @author Mike Sobolewski
  */
@@ -52,21 +49,7 @@ public class ArgList extends ArrayList<Arg> {
 		}
 	}
 
-	public ArgList(Par<?>[] parArray) {
-		super();
-		for (Par<?> p : parArray) {
-			add(p);
-		}
-	}
-
-	public <T> ArgList(List<Par<T>> parList) {
-		super();
-		for (Par<T> p : parList) {
-			add(p);
-		}
-	}
-
-	public Arg getArg(String parName) {
+	public Arg getArg(String parName) throws ArgException {
 		for (Arg p : this) {
 			if (p.getName().equals(parName)) {
 				return p;
@@ -82,16 +65,12 @@ public class ArgList extends ArrayList<Arg> {
 			if (p.getName().equals(parName)) {
 				par = p;
 				if (par instanceof Setter)
-					try {
-						((Setter)par).setValue(value);
-					} catch (RemoteException e) {
-						throw new EvaluationException(e);
-					}
+					((Setter) par).setValue(value);
 				break;
 			}
 		}
 		if (par == null)
-			throw new ParException("No such Arg in the list: " + parName);
+			throw new ArgException("No such Arg in the list: " + parName);
 	}
 	
 	public ArgList selectArgs(List<String>... parNames) {
@@ -120,21 +99,20 @@ public class ArgList extends ArrayList<Arg> {
 	}
 
 	public boolean containsArgName(String name) {
-        //TODO To check by PR
-        for (Arg v : this) {
-            if ((v instanceof Par) && (v.getName().equals(name)))
-                return true;
-        }
+		for (Arg v : this) {
+			if (v.getName().equals(name))
+				return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean contains(Object obj) {
-		if (!(obj instanceof Par<?>))
+		if (!(obj instanceof Arg))
 			return false;
 		else {
 			for (Arg v : this) {
-				if (v.getName().equals(((Par<?>) obj).getName()))
+				if (v.getName().equals(((Arg) obj).getName()))
 					return true;
 			}
 		}
@@ -147,7 +125,7 @@ public class ArgList extends ArrayList<Arg> {
 			return false;
 		} else {
 			for (Arg v : this) {
-				if (v.getName().equals(((Par<?>) obj).getName())) {
+				if (v.getName().equals(((Arg) obj).getName())) {
 					super.remove(v);
 					return true;
 				}
@@ -176,19 +154,6 @@ public class ArgList extends ArrayList<Arg> {
 		return values;
 	}
 	
-	public Par<?>[] toArray() {
-		Par<?>[] pa = new Par[size()];
-		return toArray(pa);
-	}
-
-	public static ArgList asList(Par<?>[] array) {
-		ArgList pl = new ArgList(array.length);
-		for (Par<?> p : array)
-			pl.add(p);
-		return pl;
-	}
-
-
 	public String describe() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getNames().toString());
@@ -206,4 +171,5 @@ public class ArgList extends ArrayList<Arg> {
 	public String toString() {
 		return getNames().toString();
 	}
+
 }

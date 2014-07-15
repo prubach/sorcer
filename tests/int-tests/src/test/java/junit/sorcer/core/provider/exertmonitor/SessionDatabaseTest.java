@@ -35,7 +35,9 @@ import org.junit.Test;
 
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import sorcer.core.provider.MonitorManagementSession;
 import sorcer.core.provider.exertmonitor.IMonitorSession;
+import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
@@ -100,18 +102,18 @@ public class SessionDatabaseTest {
 
     @Test
 	public void storedMapTest() throws Exception {
-		StoredMap<UuidKey, IMonitorSession> sm = runner.getViews()
+		StoredMap<UuidKey, MonitorManagementSession> sm = runner.getViews()
 				.getSessionMap();
 		
-		Iterator<Map.Entry<UuidKey, IMonitorSession>> mei = sm
+		Iterator<Map.Entry<UuidKey, MonitorManagementSession>> mei = sm
 				.entrySet().iterator();
 				
 		List<String> names = new ArrayList<String>();
-		Map.Entry<UuidKey, IMonitorSession> entry = null;
+		Map.Entry<UuidKey, MonitorManagementSession> entry = null;
 
 		while (mei.hasNext()) {
 			entry = mei.next();
-			names.add(entry.getValue().getInitialExertion().getName());
+			names.add(((MonitorSession)entry.getValue()).getInitialExertion().getName());
 		}
 		List<String> ln = list("t1", "t2");
 		Collections.sort(names);

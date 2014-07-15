@@ -20,7 +20,7 @@ package sorcer.service;
 import groovy.lang.Closure;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
+
 import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.OptExertion;
@@ -160,7 +160,7 @@ import java.util.logging.Logger;
     public static Arg[] pars(String... parnames) {
         ArgSet ps = new ArgSet();
         for (String name : parnames) {
-            ps.add(new ParImpl(name));
+            ps.add(new Par(name));
         }
         return ps.toArray();
     }

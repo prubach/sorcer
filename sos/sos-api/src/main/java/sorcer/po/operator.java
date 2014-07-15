@@ -27,7 +27,6 @@ import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Agent;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.invoker.*;
 import sorcer.service.Arg;
@@ -54,22 +53,22 @@ public class operator {
 
 
 	public static <T> Par<T> par(String path, T argument) {
-		return new ParImpl<T>(path, argument);
+		return new Par<T>(path, argument);
 	}
 	
 	public static <T> Par<T> dbPar(String path, T argument) {
-		Par p = new ParImpl(path, argument);
+		Par p = new Par(path, argument);
 		p.setPersistent(true);
 		return p;
 	}
 	
 	public static <T> Par<T> par(String name, String path, Mappable argument) {
-		Par p = new ParImpl(name, path, argument);
+		Par p = new Par(name, path, argument);
 		return p;
 	}
 	
 	public static <T> Par<T> pipe(Mappable in, String name, String path, Mappable out) throws ContextException {
-		Par p = new ParImpl(name, path, out);
+		Par p = new Par(name, path, out);
 		add(p, in);
 		return p;
 	}
@@ -92,7 +91,7 @@ public class operator {
 	}
 	
 	public static Par par(ParModel pm, String name) throws ContextException {
-		Par parameter = new ParImpl(name, pm.asis(name));
+		Par parameter = new Par(name, pm.asis(name));
 		parameter.setScope(pm);
 		return parameter;
 	}
@@ -230,9 +229,9 @@ public class operator {
 	
 	public static Par par(Object object) {
 		if (object instanceof String)
-			return new ParImpl((String)object);
+			return new Par((String)object);
 		else if (object instanceof Identifiable)
-			return new ParImpl(((Identifiable) object).getName(), object);
+			return new Par(((Identifiable) object).getName(), object);
 		return null;
 	}
 	
@@ -299,7 +298,7 @@ public class operator {
 			throws ContextException {
 		ArgSet ps = new ArgSet();
 		for (String name : parnames) {
-			ps.add(new ParImpl(name));
+			ps.add(new Par(name));
 		}
 		return ps.toArray();
 	}

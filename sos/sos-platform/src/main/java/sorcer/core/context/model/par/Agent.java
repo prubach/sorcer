@@ -24,7 +24,7 @@ import sorcer.service.EvaluationException;
  *
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class Agent<T> extends ParImpl<T> implements Serializable {
+public class Agent<T> extends Par<T> implements Serializable {
 
 	private URL[] agentURLs;
 	
@@ -39,7 +39,8 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 		this.agentURLs = agentURLs;
 	}
 	
-	public Agent(String name, String className, URL... agentURLs) {
+	public Agent(String name, String className, URL... agentURLs)
+			throws EvaluationException, RemoteException {
 		super(name);
 		this.className = className;
 		this.agentURLs = agentURLs;
@@ -47,9 +48,9 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 	
 	public T evaluate(Arg... entries)
 			throws EvaluationException, RemoteException {
-		if (invoker != null) {
-            return (T) invoker.invoke(getPars(entries));
-        }
+		if (invoker != null)
+			return (T)invoker.invoke(getPars(entries));
+					
 		if (className == null)
 			className = getClassName(entries);
 
@@ -85,7 +86,7 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 						.newInstance(new Object[] { scope });
 				invoker = new MethodInvoker(name, obj, name, getPars(entries));
 				if (scope instanceof ParModel)
-					invoker.setScope(scope);
+					invoker.setScope((ParModel)scope);
 				invoker.setContext(scope);
 			} finally {
 				AccessController.doPrivileged(new PrivilegedAction() {
@@ -102,17 +103,17 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 							+ e.getClass().getName() + ": "
 							+ e.getLocalizedMessage());
 		}
-		value = invoker.invoke(entries);
+		value = (T)invoker.invoke(entries);
 		invoker.valueValid(true);
-		return (T)value;
+		return value;
 	}
 	
 	@Override
 	public T getValue(Arg... entries) throws EvaluationException, RemoteException {
 		if (value != null && invoker != null && invoker.valueValid())
-			return (T)value;
+			return value;
 		else
-			return evaluate(entries);
+			return (T)evaluate(entries);
 	}
 	
 	/* (non-Javadoc)
@@ -124,18 +125,12 @@ public class Agent<T> extends ParImpl<T> implements Serializable {
 	}
 	
 	private Par[] getPars(Arg... entries) {
-		ArgList pl = new ArgList();
+		Par[] pa = new Par[entries.length];
 		if (entries != null && entries.length > 0) {
-			for (Arg p : entries) {
-				if (p instanceof Par) {
-					pl.add(p);
-				}
-			}
+			for (int i = 0; i < entries.length; i++)
+				pa[i] = (Par) entries[i];
 		}
-		if (pl.size() > 0) {
-			return pl.toArray();
-		} else
-			return new Par[0];
+		return pa;
 	}
 	
 	private String getClassName(Arg... entries) {

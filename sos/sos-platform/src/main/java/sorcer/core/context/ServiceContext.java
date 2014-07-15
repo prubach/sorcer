@@ -2794,7 +2794,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	}
 
 	public Par getPar(String path) throws ContextException  {
-		return new ParImpl(path, this);
+		return new Par(path, this);
 	}
 	
 	/*
@@ -2909,7 +2909,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	@Override
 	public Object putDbValue(String path, Object value) throws ContextException {
-		Par par = new ParImpl(path, value);
+		Par par = new Par(path, value);
 		par.setPersistent(true);
 		return putValue(path, par);
 	}
@@ -2920,7 +2920,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	@Override
 	public Object putDbValue(String path, Object value, URL datastoreUrl)
 			throws ContextException {
-		Par par = new ParImpl(path, value);
+		Par par = new Par(path, value);
 		par.setPersistent(true);
 		par.setDbURL(datastoreUrl);
 		return putValue(path, par);
@@ -3025,7 +3025,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public Par addPar(String path, Object value) throws ContextException {
 		Par par;
 		try {
-			par = new ParImpl(path, value, this);
+			par = new Par(path, value, this);
 		} catch (RemoteException e) {
 			throw new ContextException(e);
 		}

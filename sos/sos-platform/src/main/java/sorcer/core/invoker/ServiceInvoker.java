@@ -26,7 +26,7 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.co.tuple.Entry;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
+
 import sorcer.core.context.model.par.ParModel;
 import sorcer.service.Arg;
 import sorcer.service.ArgList;
@@ -249,7 +249,7 @@ public class ServiceInvoker<T> extends Observable implements Identifiable, Scopa
 				valueValid(false);
 			}
 		} else if (par instanceof Identifiable) {
-			Par p = new ParImpl(((Identifiable) par).getName(), par, invokeContext);
+			Par p = new Par(((Identifiable) par).getName(), par, invokeContext);
 			try {
 				invokeContext.putValue(p.getName(), p);
 			} catch (ContextException e) {

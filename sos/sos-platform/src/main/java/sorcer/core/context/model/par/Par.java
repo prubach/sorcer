@@ -22,18 +22,23 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.security.Principal;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ApplicationDescription;
-import sorcer.service.modeling.Variability;
+import sorcer.core.context.ServiceContext;
 import sorcer.service.Arg;
 import sorcer.service.ArgException;
+import sorcer.service.ArgList;
 import sorcer.service.ArgSet;
+import sorcer.service.Condition;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
+import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.service.Identity;
 import sorcer.service.Invocation;
@@ -41,6 +46,9 @@ import sorcer.service.InvocationException;
 import sorcer.service.Mappable;
 import sorcer.service.Scopable;
 import sorcer.service.Setter;
+import sorcer.service.modeling.Variability;
+import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 /**
  * In service-based modeling, a parameter (for short a par) is a special kind of
@@ -51,7 +59,7 @@ import sorcer.service.Setter;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"unchecked", "rawtypes" })
-public abstract class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>, Evaluation<T>,
+public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>, Evaluation<T>, 
 	Invocation<T>, Setter, Scopable, Comparable<T>, Serializable {
 
 	private static final long serialVersionUID = 7495489980319169695L;
@@ -66,10 +74,10 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 
 	protected Context<T> scope;
 	
-	private boolean persistent = false;
+	boolean persistent = false;
 				
 	// data store URL for this par
-	protected URL dbURL;
+	private URL dbURL;
 
 	// A context returning value at the path
 	// that is this par name
@@ -93,15 +101,13 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	
 	public Par(String parname, Object argument, Context scope) throws RemoteException {
 		this(parname, (T)argument);
+		if (((ServiceContext)scope).containsKey(Condition._closure_))
+			((ServiceContext) scope).remove(Condition._closure_);
 		this.scope = scope;
-        setClosure(scope);
 		if (argument instanceof Scopable)
 			((Scopable)argument).setScope(this.scope);
 	}
-
-
-    public abstract void setClosure(Context scope);
-
+	
 	public Par(String name, String path, Mappable map) {
 		this(name);
 		value =  (T)path;
@@ -116,7 +122,48 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		return name;
 	}
 	
-	public abstract void setValue(Object value) throws EvaluationException;
+	public void setValue(Object value) throws EvaluationException {		
+		if (persistent) {
+			try {
+				if (SdbUtil.isSosURL(value)) {
+					if (((URL)value).getRef() == null) {
+						value = DbpUtil.store(value);
+					} else if (persistent){
+                        DbpUtil.update((URL)value, value);
+					}
+					return;
+				}	
+			} catch (Exception e) {
+				throw new EvaluationException(e);
+			} 
+		}
+		if (mappable != null) {
+			try {
+				Object val = mappable.asis((String)this.value);
+				if (val instanceof Par) {
+					((Par)val).setValue(value);
+				} else if (persistent) {
+					if (SdbUtil.isSosURL(val)) {
+                        DbpUtil.update((URL)val, value);
+					} else {
+						URL url = DbpUtil.store(value);
+						Par p = new Par((String)this.value, url);
+						p.setPersistent(true);
+						if (mappable instanceof ServiceContext)
+							((ServiceContext)mappable).put((String)this.value, p);
+						else
+							mappable.putValue((String)this.value, p);
+					} 
+				} else {
+					mappable.putValue((String)this.value, value);
+				}
+			} catch (Exception e) {
+				throw new EvaluationException(e);
+			}
+		} 
+		else
+			this.value = (T)value;
+	}
 
 	/* (non-Javadoc)
 	 * @see sorcer.service.Evaluation#getAsis()
@@ -130,8 +177,69 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	 * @see sorcer.service.Evaluation#getValue(sorcer.co.tuple.Parameter[])
 	 */
 	@Override
-	public abstract T getValue(Arg... entries) throws EvaluationException, RemoteException;
+	public T getValue(Arg... entries) throws EvaluationException,
+			RemoteException {
+		substitute(entries);
+		T val = null;
+		try {
+			if (mappable != null) {
+				val = (T) mappable.getValue((String) value);
+			} else if (value == null && scope != null) {
+				val = (T) ((ServiceContext<T>) scope).get(name);
+			} else {
+				val = value;
+			}
+			if (val instanceof Evaluation) {
+				if (val instanceof Par && ((Par)val).asis() == null && value == null) {
+					logger.warning("undefined par: " + val);
+					return null;
+				}
+				
+				if (val instanceof Scopable && ((Scopable)val).getScope() != null) {
+					((Context)((Scopable)val).getScope()).append(scope);
+				}
+				
+				if (val instanceof Exertion) {
+					// TODO context binding for all exertions, works for tasks only
+					Context cxt = ((Exertion)val).getDataContext();
+					List<String> paths =((ServiceContext)cxt).getPaths();
+					for (String an : ((Map<String, Object>)scope).keySet()) {
+						for (String p : paths) {
+							if (p.endsWith(an)) {
+								cxt.putValue(p, scope.getValue(an));
+								break;
+							}
+						}
+					}
+				}
+				val = ((Evaluation<T>) val).getValue(entries);
+			}
 
+			if (persistent) {
+				if (SdbUtil.isSosURL(val))
+					val = (T) ((URL) val).getContent();
+				else {
+					if (mappable != null) {
+						URL url = DbpUtil.store(val);
+						Par p = new Par((String)this.value, url);
+						p.setPersistent(true);
+						if (mappable instanceof ServiceContext)
+							((ServiceContext)mappable).put((String)this.value, p);
+						else
+							mappable.putValue((String)this.value, p);
+					}
+					else {
+						value = (T) DbpUtil.store(val);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new EvaluationException(e);
+		}
+		return val;
+	}
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.Evaluation#substitute(sorcer.co.tuple.Parameter[])
 	 */
@@ -160,7 +268,11 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		return scope;
 	}
 
-	public abstract void setScope(Context scope);
+	public void setScope(Context scope) {
+		if (((ServiceContext)scope).containsKey(Condition._closure_))
+			((ServiceContext) scope).remove(Condition._closure_);
+		this.scope = scope;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -230,7 +342,6 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	 */
 	@Override
 	public ArgSet getArgs() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -240,7 +351,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	@Override
 	public T getArg(String varName) throws ArgException {
 		try {
-			return scope.getValue(varName, null);
+			return (T) scope.getValue(varName);
 		} catch (ContextException e) {
 			throw new ArgException(e);
 		}
@@ -289,14 +400,33 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	public Principal getPrincipal() {
 		return principal;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.vfe.Variability#getArgVar(java.lang.String)
-	 */
-	@Override
-	public abstract Variability<T> getVariability(String name) throws ArgException;
 
-	public abstract URL getDbURL() throws MalformedURLException;
+	
+//	/* (non-Javadoc)
+//	 * @see sorcer.vfe.Variability#getArgVar(java.lang.String)
+//	 */
+//	@Override
+//	public Variability<T> getVariability(String name) throws ArgException {
+//		Object obj = scope.get(name);
+//		if (obj instanceof Par)
+//			return (Par)obj;
+//		else
+//			try {
+//				return new Par(name, obj, scope);
+//			} catch (RemoteException e) {
+//				throw new ArgException(e);
+//			}
+//	}
+
+	public URL getDbURL() throws MalformedURLException {
+		URL url = null;
+		if (dbURL != null)
+			url = dbURL;
+		else if (((ServiceContext)scope).getDbUrl() != null)
+			url = new URL(((ServiceContext)scope).getDbUrl());
+		
+		return url;
+	}
 
 	public URL getURL() throws ContextException {
 		if (persistent) {
@@ -374,7 +504,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		if (attributes[0].equals(name)) {
 			if (attributes.length == 1)
 				try {
-					return getValue(args);
+					return (T)getValue(args);
 				} catch (RemoteException e) {
 					throw new ContextException(e);
 				}
@@ -415,7 +545,7 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 	}
 
 	/* (non-Javadoc)
-	 * @see sorcer.service.modeling.Variability#addArgs(sorcer.core.context.model.par.ParSet)
+	 * @see sorcer.core.context.model.Variability#addArgs(ArgSet set)
 	 */
 	@Override
 	public void addArgs(ArgSet set) throws EvaluationException {
@@ -453,4 +583,5 @@ public abstract class Par<T> extends Identity implements Variability<T>, Arg, Ma
 		this.scope = (Context)scope;
 		
 	}
+
 }

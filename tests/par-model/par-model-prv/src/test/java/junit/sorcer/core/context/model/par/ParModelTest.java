@@ -66,7 +66,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Agent;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.context.model.par.ParImpl;
+
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.invoker.ServiceInvoker;
 import sorcer.core.provider.rendezvous.ServiceJobber;
@@ -148,9 +148,9 @@ public class ParModelTest {
 
 	@Test
 	public void parContextTest() throws RemoteException, ContextException {
-		Par x = new ParImpl("x", 10.0);
-		Par y = new ParImpl("y", 20.0);
-		Par add = new ParImpl("add", invoker("x + y", pars("x", "y")));
+		Par x = new Par("x", 10.0);
+		Par y = new Par("y", 20.0);
+		Par add = new Par("add", invoker("x + y", pars("x", "y")));
 
 		ParModel pm = new ParModel("arithmetic-model");
 		pm.add(x, y, add);

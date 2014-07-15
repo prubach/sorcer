@@ -1,7 +1,7 @@
 /*
  * Copyright 2009 the original author or authors.
  * Copyright 2009 SorcerSoft.org.
- *
+ *  
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,20 +16,39 @@
  */
 package sorcer.core.context.model.par;
 
+
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import sorcer.core.SorcerConstants;
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.invoker.ServiceInvoker;
-import sorcer.service.modeling.Variability;
 import sorcer.service.*;
+import sorcer.service.modeling.Variability;
 
-import static sorcer.core.SorcerConstants.*;
+/*
+ * Copyright 2013 the original author or authors.
+ * Copyright 20 SorcerSoft.org.
+ *  
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * The ParModel is a shared service context as a map of parameters (Pars),
@@ -63,20 +82,20 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		add(objects);
 	}
 	
-	public T getValue(String path, Arg... entries)
-			throws ContextException {
+	public T getValue(String path, Arg... entries) throws ContextException {
 		try {
 			T val = null;
 			if (path != null)
-				val = get(path);
+				val = (T) get(path);
 			else
-				val = super.getValue(path, entries);
-		
+				val = (T) super.getValue(path, entries);
+			if ((val instanceof Par) && (((Par) val).asis() instanceof Variability)) {
+				bindVar((Variability) ((Par) val).asis());
+			}
 			if (val != null && val instanceof Evaluation) {
-				return (T)((Evaluation) val).getValue(entries);
-			} else {
-                return val;
-            }
+				return (T) ((Evaluation) val).getValue(entries);
+			} else
+				return (T) val;
 		} catch (Exception e) {
 			throw new EvaluationException(e);
 		}
@@ -90,7 +109,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 	@Override
 	public T getValue(Arg... entries) throws EvaluationException {
 		try {
-			return getValue(null, entries);
+			return (T) getValue(null, entries);
 		} catch (ContextException e) {
 			throw new EvaluationException(e);
 		}
@@ -99,7 +118,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 	@Override
 	public T putValue(String path, Object value) throws ContextException {
 		contextChanged = true;
-		Object obj = getPar(path);
+		Object obj = get(path);
 		if (obj instanceof Par) {
 			((Par)obj).setValue(value);
 			return (T)value;
@@ -125,10 +144,24 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		if (obj instanceof Par)
 			return (Par<Object>) obj;
 		else
-			return null;
+			try {
+				return new Par<Object>(name, asis(name), this);
+			} catch (RemoteException e) {
+				throw new ContextException(e);
+			}
 	}
 	
-	public ParModel add(List<Identifiable> objects) throws
+	public Variability bindVar(Variability var) throws EvaluationException,
+			ContextException, RemoteException {
+		ArgSet args = var.getArgs();
+		for (Arg v : args)
+			if (get(v.getName()) != null) {
+				((Variability) v).setValue(getValue(v.getName()));
+			}
+		return var;
+	}
+	
+	public ParModel add(List<Identifiable> objects) throws EvaluationException,
 			RemoteException, ContextException {
 		Identifiable[] objs = new Identifiable[objects.size()];
 		objects.toArray(objs);
@@ -147,8 +180,8 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 				putValue((String) ((sorcer.co.tuple.Entry) obj).key(),
 						((sorcer.co.tuple.Entry) obj).value());
 			} else {
-				String pn = obj.getName();
-				p = new ParImpl(pn, obj, new ParModel(pn).append(this));
+				String pn = ((Identifiable) obj).getName();
+				p = new Par(pn, obj, new ParModel(pn).append(this));
 			}
 
 			if (p != null)
@@ -168,8 +201,8 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 				putValue((String) ((sorcer.co.tuple.Entry) obj).key(),
 						((sorcer.co.tuple.Entry) obj).value());
 			} else {
-				String pn = obj.getName();
-				p = new ParImpl(pn, obj, this);
+				String pn = ((Identifiable) obj).getName();
+				p = new Par(pn, obj, this);
 			}
 			
 			if (p != null)
@@ -205,14 +238,14 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		try {
 			if (context != null) {
 				this.append(context);
-				if (context.getValue("par")!=null &&  context.getValue("par") != Context.none) {
-					logger.info("value key: " + getValue("par"));
-					logger.info("value at: " + getValue((String)context.getValue("par"), entries));
-					return getValue((String)context.getValue("par"));
+				if (context.getValue("par") != Context.none) {
+//					logger.info("ZZZZZZZZZZZZZZZZZZZZ value key: " + getValue("par"));
+//					logger.info("ZZZZZZZZZZZZZZZZZZZZ value at: " + getValue((String)context.getValue("par"), entries));
+					return (T)getValue((String)context.getValue("par"));
 				}
 			}
-			if (context.getExecPath() != null) {
-				Object o = get(context.getExecPath().path());
+			if (((ServiceContext)context).getExecPath() != null) {
+				Object o = get(((ServiceContext)context).getExecPath().path());
 				if (o instanceof Par) {
 					if (o instanceof Agent) {
 						if (((Agent)o).getScope() == null)
@@ -221,12 +254,12 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 							((Agent)o).getScope().append(this);
 						result = ((Agent)o).getValue(entries);
 					} else {
-						Object i = ((Par) get(context.getExecPath().path())).asis();
+						Object i = ((Par) get(((ServiceContext)context).getExecPath().path())).asis();
 						if (i instanceof ServiceInvoker) {
 							result = ((ServiceInvoker) i).invoke(entries);
 					} else
 						throw new InvocationException("No such invoker at: "
-							+ context.getReturnPath().path);
+							+ ((ServiceContext)context).getReturnPath().path);
 					}
 				} else {
 					result = o;
@@ -267,7 +300,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		putValue(path, value);
 		markVar(this, path, value);
 		try {
-			return new ParImpl(path, value, this);
+			return new Par(path, value, this);
 		} catch (RemoteException e) {
 			throw new ContextException(e);
 		}
@@ -280,7 +313,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 	 * @throws ContextException
 	 */
 	public Enumeration getVarPaths(Variability var) throws ContextException {
-		String assoc = VAR_NODE_TYPE + APS + var.getName() + APS + var.getType();
+		String assoc = VAR_NODE_TYPE + SorcerConstants.APS + var.getName() + SorcerConstants.APS + var.getType();
 		String[] paths = Contexts.getMarkedPaths(this, assoc);
 		Vector outpaths = new Vector();
 		if (paths != null)
@@ -313,11 +346,10 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 	 */
 	public static Context markVar(Context cntxt, String path, Variability var)
 			throws ContextException {
-		return cntxt.mark(path, Context.VAR_NODE_TYPE + APS
-				+ var.getName() + APS + var.getType());
+		return cntxt.mark(path, Context.VAR_NODE_TYPE + SorcerConstants.APS
+				+ var.getName() + SorcerConstants.APS + var.getType());
 	}
 	
-/*
 	public Context<T> appendNew(Context<T> context)
 			throws ContextException, RemoteException {
 		ServiceContext cxt = (ServiceContext) context;
@@ -330,8 +362,7 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		}
 		return this;
 	}
-*/
-
+	
 	@Override
 	public String toString() {
 		return this.getClass().getName() + ":" + getName() + "\nkeys: " + keySet() 

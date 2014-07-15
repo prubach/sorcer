@@ -33,6 +33,7 @@ import net.jini.core.lease.Lease;
 import net.jini.id.Uuid;
 import sorcer.core.context.IControlContext;
 import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.provider.MonitorManagementSession;
 import sorcer.service.*;
 import sorcer.core.UEID;
 import sorcer.core.provider.ServiceProvider;
@@ -55,7 +56,7 @@ public class ExertMonitor extends ServiceProvider implements
 
 	private SessionDatabase db;
 	
-	private StoredMap<UuidKey, IMonitorSession> resources;
+	private StoredMap<UuidKey, MonitorManagementSession> resources;
 
     private Map<Uuid, UuidKey> cacheSessionKeyMap = new HashMap<Uuid, UuidKey>();
 
@@ -172,8 +173,8 @@ public class ExertMonitor extends ServiceProvider implements
 
 		// Ok it's not with landlord. So we retrieve it from the database
 		synchronized (resourcesWriteLock) {
-			Iterator<Map.Entry<UuidKey, IMonitorSession>> si = resources.entrySet().iterator();
-			Map.Entry<UuidKey, IMonitorSession> next;
+			Iterator<Map.Entry<UuidKey, MonitorManagementSession>> si = resources.entrySet().iterator();
+			Map.Entry<UuidKey, MonitorManagementSession> next;
 			while (si.hasNext()) {
 				next = si.next();
 				try {
@@ -472,8 +473,8 @@ public class ExertMonitor extends ServiceProvider implements
 	 * @see sorcer.core.monitor.MonitorManagement#persist(sorcer.core.provider.exertmonitor.MonitorSession)
 	 */
 	@Override
-	public boolean persist(IMonitorSession session) throws IOException {
-		resources.put(new UuidKey(session.getCookie()), session);
+	public boolean persist(MonitorManagementSession session) throws IOException {
+		resources.put(new UuidKey(((MonitorSession)session).getCookie()), session);
 		return true;
 	}
 	
