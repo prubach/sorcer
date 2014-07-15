@@ -22,6 +22,7 @@ import java.security.Principal;
 import java.util.Date;
 
 import net.jini.id.Uuid;
+import sorcer.core.provider.DatabaseStorer;
 
 
 /**
@@ -31,7 +32,7 @@ import net.jini.id.Uuid;
  */
 public class ObjectInfo {
 	
-	public Store type;
+	public DatabaseStorer.Store type;
 	public Uuid uuid;
 	public Principal principal;
 	public String info;

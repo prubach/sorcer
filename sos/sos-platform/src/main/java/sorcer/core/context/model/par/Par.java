@@ -31,7 +31,6 @@ import sorcer.core.context.ApplicationDescription;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Arg;
 import sorcer.service.ArgException;
-import sorcer.service.ArgList;
 import sorcer.service.ArgSet;
 import sorcer.service.Condition;
 import sorcer.service.Context;
@@ -47,8 +46,8 @@ import sorcer.service.Mappable;
 import sorcer.service.Scopable;
 import sorcer.service.Setter;
 import sorcer.service.modeling.Variability;
-import sorcer.util.bdb.sdb.DbpUtil;
 import sorcer.util.url.sos.SdbUtil;
+import sorcer.util.url.sos.SosDbUtil;
 
 /**
  * In service-based modeling, a parameter (for short a par) is a special kind of
@@ -125,11 +124,11 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 	public void setValue(Object value) throws EvaluationException {		
 		if (persistent) {
 			try {
-				if (SdbUtil.isSosURL(value)) {
+				if (SosDbUtil.isSosURL(value)) {
 					if (((URL)value).getRef() == null) {
-						value = DbpUtil.store(value);
+						value = SdbUtil.store(value);
 					} else if (persistent){
-                        DbpUtil.update((URL)value, value);
+                        SdbUtil.update((URL) value, value);
 					}
 					return;
 				}	
@@ -143,10 +142,10 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 				if (val instanceof Par) {
 					((Par)val).setValue(value);
 				} else if (persistent) {
-					if (SdbUtil.isSosURL(val)) {
-                        DbpUtil.update((URL)val, value);
+					if (SosDbUtil.isSosURL(val)) {
+                        SdbUtil.update((URL) val, value);
 					} else {
-						URL url = DbpUtil.store(value);
+						URL url = SdbUtil.store(value);
 						Par p = new Par((String)this.value, url);
 						p.setPersistent(true);
 						if (mappable instanceof ServiceContext)
@@ -216,11 +215,11 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 			}
 
 			if (persistent) {
-				if (SdbUtil.isSosURL(val))
+				if (SosDbUtil.isSosURL(val))
 					val = (T) ((URL) val).getContent();
 				else {
 					if (mappable != null) {
-						URL url = DbpUtil.store(val);
+						URL url = SdbUtil.store(val);
 						Par p = new Par((String)this.value, url);
 						p.setPersistent(true);
 						if (mappable instanceof ServiceContext)
@@ -229,7 +228,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 							mappable.putValue((String)this.value, p);
 					}
 					else {
-						value = (T) DbpUtil.store(val);
+						value = (T) SdbUtil.store(val);
 					}
 				}
 			}

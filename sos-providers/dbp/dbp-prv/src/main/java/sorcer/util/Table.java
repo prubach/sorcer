@@ -45,8 +45,7 @@ import sorcer.core.provider.dbp.DatabaseProvider;
 import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.service.Signature;
-import sorcer.util.bdb.objects.Store;
-import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 /**
  * This is a Java class that is an implementation of table of objects that uses a 
@@ -1053,7 +1052,7 @@ public class Table implements ModelTable {
 	
 	public URL writeToSdbURL(URL url) throws EvaluationException {
 		try {
-			Context cxt = DbpUtil.getStoreContext(this);
+			Context cxt = SdbUtil.getStoreContext(this);
 			if (outputStorageSignature != null) {
 				if (outputStorageSignature.getServiceType() == DatabaseStorer.class) {
 					DatabaseStorer objectStore = ((DatabaseStorer) ProviderLookup
@@ -1069,7 +1068,7 @@ public class Table implements ModelTable {
 				Uuid uuid = ((DatabaseProvider) provider).store(this);
 				try {
 					outputTableURL = ((DatabaseProvider) provider).getDatabaseURL(
-							Store.table, uuid);
+							DatabaseStorer.Store.table, uuid);
 				} catch (Exception e) {
 					throw new EvaluationException(e);
 				}

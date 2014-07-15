@@ -24,13 +24,13 @@ import java.net.URL;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import sorcer.core.SorcerEnv;
-import sorcer.util.bdb.objects.Store;
+import sorcer.core.provider.DatabaseStorer;
 
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class SdbUtil {
+public class SosDbUtil {
 
     public static boolean isSosURL(Object url) {
         if (url instanceof URL && ((URL)url).getProtocol().equals("sos"))
@@ -54,10 +54,10 @@ public class SdbUtil {
         return UuidFactory.create(urlRef.substring(index + 1));
     }
 
-	public static Store getStoreType(URL url) {
+	public static DatabaseStorer.Store getStoreType(URL url) {
 		String urlRef = url.getRef();
 		int index = urlRef.indexOf('=');
-		return Store.getStoreType(urlRef.substring(0, index));
+		return DatabaseStorer.Store.getStoreType(urlRef.substring(0, index));
 	}
 
     public static String getProviderName(URL url) {

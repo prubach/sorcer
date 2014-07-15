@@ -42,10 +42,9 @@ import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.util.bdb.objects.SorcerDatabase;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
-import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
-import sorcer.util.url.sos.SdbUtil;
+import sorcer.util.url.sos.SosDbUtil;
 
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;
@@ -92,7 +91,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	public Uuid update(URL url, Object object) throws InvalidObjectException {
 		Object uuidObject = object;
 		if (!(object instanceof Identifiable)) {
-			uuidObject = new UuidObject(SdbUtil.getUuid(url), object);
+			uuidObject = new UuidObject(SosDbUtil.getUuid(url), object);
 		}
 		UpdateThread ut = new UpdateThread(url, uuidObject);
 		ut.start();
@@ -159,7 +158,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		public UpdateThread(URL url, Object object) throws InvalidObjectException {
             super(tName("UpdateThread-" + url));
 			this.object = object;
-			this.uuid = SdbUtil.getUuid(url);
+			this.uuid = SosDbUtil.getUuid(url);
 		}
 		
 		public void run() {
@@ -242,8 +241,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public Uuid deleteURL(URL url) {
-		Store storeType = SdbUtil.getStoreType(url);
-		Uuid id = SdbUtil.getUuid(url);
+		Store storeType = SosDbUtil.getStoreType(url);
+		Uuid id = SosDbUtil.getUuid(url);
 		DeleteThread dt = new DeleteThread(id, storeType);
 		dt.start();
 		id = dt.getUuid();
@@ -251,8 +250,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 
 	public Object retrieve(URL url) {
-		Store storeType = SdbUtil.getStoreType(url);
-		Uuid uuid = SdbUtil.getUuid(url);
+		Store storeType = SosDbUtil.getStoreType(url);
+		Uuid uuid = SosDbUtil.getUuid(url);
 		return retrieve(uuid, storeType);
 	}
 	
@@ -346,7 +345,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public List<String> list(URL url) {
-		return list(SdbUtil.getStoreType(url));
+		return list(SosDbUtil.getStoreType(url));
 	}
 
 	/* (non-Javadoc)

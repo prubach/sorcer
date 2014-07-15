@@ -35,7 +35,7 @@ import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.OptExertion;
 import sorcer.util.StringUtils;
-import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 
 /**
@@ -188,10 +188,10 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	
 	public URL persistContext() throws ExertionException, SignatureException, ContextException {
 		if (contextURL == null) {
-			contextURL = DbpUtil.store(dataContext);
+			contextURL = SdbUtil.store(dataContext);
 			dataContext = null;
 		} else {
-            DbpUtil.update(dataContext);
+            SdbUtil.update(dataContext);
 		}
 		return contextURL;
 	}

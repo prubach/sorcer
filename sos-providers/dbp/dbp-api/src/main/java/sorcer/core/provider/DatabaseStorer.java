@@ -17,11 +17,25 @@
 
 package sorcer.core.provider;
 
-import sorcer.core.provider.StorageManagement;
-
 import java.rmi.Remote;
 
 
 public interface DatabaseStorer extends StorageManagement, Remote {
-	
+
+    /**
+     * Extracted from SorcerDatabaseViews
+     *
+     * @author Rafał Krupiński
+     */
+    enum Store {
+        context, exertion, var, varmodel, table, object, all;
+
+        public static Store getStoreType(String storeName) {
+            for (Store s : Store.values()) {
+                if (storeName.equals("" + s))
+                    return s;
+            }
+            return null;
+        }
+    }
 }

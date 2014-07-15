@@ -19,11 +19,10 @@ package sorcer.util.url.sos;
 
 import sorcer.co.tuple.InEntry;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.StorageManagement;
 import sorcer.service.Accessor;
 import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.util.bdb.objects.Store;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,7 +43,7 @@ public class SdbConnection extends URLConnection {
 
 	private String providerName;
 
-	private Store storeType;
+	private DatabaseStorer.Store storeType;
 
 	private String uuid;
 
@@ -59,7 +58,7 @@ public class SdbConnection extends URLConnection {
         providerName = path;
 		String reference = getURL().getRef();
 		int index = reference.indexOf('=');
-		storeType = Store.getStoreType(reference.substring(0, index));
+		storeType = DatabaseStorer.Store.getStoreType(reference.substring(0, index));
 		uuid = reference.substring(index + 1);
 	}
 

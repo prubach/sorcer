@@ -46,8 +46,7 @@ import sorcer.tools.shell.ReggieHelper;
 import sorcer.tools.shell.ShellCmd;
 import sorcer.util.WhitespaceTokenizer;
 import sorcer.util.bdb.objects.ObjectInfo;
-import sorcer.util.bdb.objects.Store;
-import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 public class DataStorageCmd extends ShellCmd {
 
@@ -75,7 +74,7 @@ public class DataStorageCmd extends ShellCmd {
 	static private ServiceItem[] dataStorers;
 	static private ObjectInfo[] recordInfos;
 	static private int selectedDataStorer = -1;
-	private Store selectedStore;
+	private DatabaseStorer.Store selectedStore;
 	private int selectedRecord = -1;
 	static private Map<Uuid, ServiceItem> dataStorerMap = new HashMap<Uuid, ServiceItem>();
 
@@ -88,7 +87,7 @@ public class DataStorageCmd extends ShellCmd {
 		int numTokens = myTk.countTokens();
 		int myIdx = 0;
 		String next = null;
-		Store storeType = null;
+		DatabaseStorer.Store storeType = null;
 
 		if (numTokens == 0) {
 			printStorageServices();
@@ -102,7 +101,7 @@ public class DataStorageCmd extends ShellCmd {
 					out.println("No selected data storage");
 				return;
 			} else if (next.equals("-l")) {
-				printRecords(Store.all);
+				printRecords(DatabaseStorer.Store.all);
 			} else if (next.equals("-s")) {
                 printStorageServices();
 				selectedDataStorer = -1;
@@ -168,7 +167,7 @@ public class DataStorageCmd extends ShellCmd {
 		}
 	}
 
-	private void printRecord(Uuid id, Store type) throws RemoteException, MonitorException {
+	private void printRecord(Uuid id, DatabaseStorer.Store type) throws RemoteException, MonitorException {
 		Exertion xrt = null;
 		if (selectedDataStorer >= 0) {
 			xrt = ((MonitorUIManagement) dataStorers[selectedDataStorer].service)
@@ -182,7 +181,7 @@ public class DataStorageCmd extends ShellCmd {
 		out.println(((ServiceExertion) xrt).describe());
 	}
 
-	private void printRecords(Store type)
+	private void printRecords(DatabaseStorer.Store type)
 			throws RemoteException, MonitorException {
 		if (dataStorers == null || dataStorers.length == 0) {
 			findStorers();
@@ -213,14 +212,14 @@ public class DataStorageCmd extends ShellCmd {
 				 out.println("XXXXXXXXXXXXX interfaces: " + Arrays.toString(dataStorers[selectedDataStorer].service.getClass().getInterfaces()));
 				 out.println("XXXXXXXXXXXXX name: " + ((Provider) dataStorers[selectedDataStorer].service).getProviderName());
 				 try {
-				 cxt = ((DatabaseStorer) dataStorers[selectedDataStorer].service).contextList(DbpUtil.getListContext(Store.object));
+				 cxt = ((DatabaseStorer) dataStorers[selectedDataStorer].service).contextList(SdbUtil.getListContext(DatabaseStorer.Store.object));
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
 				out.println("XXXXXXXXXXXXX dataContext: " + cxt);
 				try {
                     operator.store("dupa");
-                    List<String>  records = operator.list(Store.object);
+                    List<String>  records = operator.list(DatabaseStorer.Store.object);
 					out.println("XXXXXXXXXXXXX records; " + records);
 				} catch (ExertionException e) {
 					// TODO Auto-generated catch block
@@ -378,25 +377,25 @@ public class DataStorageCmd extends ShellCmd {
 		return dataStorerList;
 	}
 
-	private Store getStoreType(String type) {
-		Store storeType = Store.all;
+	private DatabaseStorer.Store getStoreType(String type) {
+		DatabaseStorer.Store storeType = DatabaseStorer.Store.all;
 		String option = type.toLowerCase();
 		if (option == null)
-			storeType = Store.all;
+			storeType = DatabaseStorer.Store.all;
 		else if (option.startsWith("c"))
-			storeType = Store.context;
+			storeType = DatabaseStorer.Store.context;
 		else if (option.startsWith("a"))
-			storeType = Store.all;
+			storeType = DatabaseStorer.Store.all;
 		else if (option.startsWith("e"))
-			storeType = Store.exertion;
+			storeType = DatabaseStorer.Store.exertion;
 		else if (option.startsWith("t"))
-			storeType = Store.table;
+			storeType = DatabaseStorer.Store.table;
 		else if (option.startsWith("v"))
-			storeType = Store.var;
+			storeType = DatabaseStorer.Store.var;
 		else if (option.startsWith("m"))
-			storeType = Store.varmodel;
+			storeType = DatabaseStorer.Store.varmodel;
 		else if (option.startsWith("o"))
-			storeType = Store.object;
+			storeType = DatabaseStorer.Store.object;
 
 		selectedStore = storeType;
 		return storeType;

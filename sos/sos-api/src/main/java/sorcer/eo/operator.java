@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
-import sorcer.co.Loop;
+import sorcer.util.Loop;
 import sorcer.co.tuple.*;
 import sorcer.core.ComponentFidelityInfo;
 import sorcer.core.SorcerConstants;
@@ -38,6 +38,7 @@ import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParModel;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.exertion.*;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.Spacer;
@@ -55,8 +56,7 @@ import sorcer.service.modeling.Variability;
 import sorcer.util.ObjectClonerAdv;
 import sorcer.util.ServiceExerter;
 import sorcer.util.Sorcer;
-import sorcer.util.bdb.objects.Store;
-import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 import sorcer.service.Signature.ReturnPath;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -1542,7 +1542,7 @@ public class operator {
 
 	public static URL store(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.store(object);
+		return SdbUtil.store(object);
 	}
 
 	public static Object retrieve(URL url) throws IOException {
@@ -1551,32 +1551,32 @@ public class operator {
 
 	public static URL update(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.update(object);
+		return SdbUtil.update(object);
 	}
 
 	public static List<String> list(URL url) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.list(url);
+		return SdbUtil.list(url);
 	}
 
-	public static List<String> list(Store store) throws ExertionException,
+	public static List<String> list(DatabaseStorer.Store store) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.list(store);
+		return SdbUtil.list(store);
 	}
 
 	public static URL delete(Object object) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.delete(object);
+		return SdbUtil.delete(object);
 	}
 
-	public static int clear(Store type) throws ExertionException,
+	public static int clear(DatabaseStorer.Store type) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.clear(type);
+		return SdbUtil.clear(type);
 	}
 
-	public static int size(Store type) throws ExertionException,
+	public static int size(DatabaseStorer.Store type) throws ExertionException,
 			SignatureException, ContextException {
-		return DbpUtil.size(type);
+		return SdbUtil.size(type);
 	}
 
 

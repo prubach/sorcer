@@ -1,4 +1,4 @@
-package sorcer.util.bdb.sdb;
+package sorcer.util.url.sos;
 
 import net.jini.id.Uuid;
 import sorcer.core.SorcerEnv;
@@ -8,22 +8,18 @@ import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.StorageManagement;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.util.bdb.objects.Store;
-import sorcer.util.url.sos.SdbUtil;
+import sorcer.util.url.sos.SosDbUtil;
 
 import java.net.URL;
 import java.util.List;
 
-import static sorcer.util.url.sos.SdbUtil.getProviderName;
-import static sorcer.util.url.sos.SdbUtil.getServiceType;
-import static sorcer.util.url.sos.SdbUtil.getStoreType;
 import static sorcer.service.Signature.ReturnPath;
 /**
  * SORCER class
  * User: prubach
  * Date: 19.09.13
  */
-public class DbpUtil {
+public class SdbUtil extends SosDbUtil {
 
     public static URL store(Object object) throws ExertionException,
             SignatureException, ContextException {
@@ -50,7 +46,7 @@ public class DbpUtil {
 
     static public URL update(URL storedURL, Object value)
             throws ExertionException, SignatureException, ContextException {
-        return update(SdbUtil.getUuid(storedURL), value);
+        return update(SosDbUtil.getUuid(storedURL), value);
     }
 
     static public URL update(Uuid storeUuid, Object value)
@@ -68,7 +64,7 @@ public class DbpUtil {
         return (URL) objectUpdateTask.getValue(StorageManagement.object_url);
     }
 
-    public static int clear(Store type) throws ExertionException,
+    public static int clear(DatabaseStorer.Store type) throws ExertionException,
             SignatureException, ContextException {
         String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("clear");
@@ -90,7 +86,7 @@ public class DbpUtil {
 */
     }
 
-    public static int size(Store type) throws ExertionException,
+    public static int size(DatabaseStorer.Store type) throws ExertionException,
             SignatureException, ContextException {
         String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("size");
@@ -188,10 +184,10 @@ public class DbpUtil {
 
     static public Object retrieve(URL url) throws ExertionException,
             SignatureException, ContextException {
-        return retrieve(SdbUtil.getUuid(url), getStoreType(url));
+        return retrieve(SosDbUtil.getUuid(url), getStoreType(url));
     }
 
-    static public Object retrieve(Uuid storeUuid, Store storeType)
+    static public Object retrieve(Uuid storeUuid, DatabaseStorer.Store storeType)
             throws ExertionException, SignatureException, ContextException {
         String storageName = SorcerEnv.getActualDatabaseStorerName();
         Context ctx = new PositionalContext("retrieve");
@@ -224,9 +220,9 @@ public class DbpUtil {
     }
 
     @SuppressWarnings("unchecked")
-    static public List<String> list(URL url, Store storeType)
+    static public List<String> list(URL url, DatabaseStorer.Store storeType)
             throws ExertionException, SignatureException, ContextException {
-        Store type = storeType;
+        DatabaseStorer.Store type = storeType;
         String providerName = getProviderName(url);
         if (providerName == null)
             providerName = SorcerEnv.getActualDatabaseStorerName();
@@ -234,7 +230,7 @@ public class DbpUtil {
         if (type == null) {
             type = getStoreType(url);
             if (type == null) {
-                type = Store.object;
+                type = DatabaseStorer.Store.object;
             }
         }
         Context ctx = new PositionalContext("list");
@@ -255,7 +251,7 @@ public class DbpUtil {
     }
 
     @SuppressWarnings("unchecked")
-    static public List<String> list(Store storeType) throws ExertionException,
+    static public List<String> list(DatabaseStorer.Store storeType) throws ExertionException,
             SignatureException, ContextException {
         String storageName = SorcerEnv.getActualName(SorcerEnv
                 .getDatabaseStorerName());
@@ -336,7 +332,7 @@ public class DbpUtil {
      * @return retrieval {@link sorcer.service.Context}
      * @throws sorcer.service.ContextException
      */
-    static public Context getRetrieveContext(Uuid uuid, Store type)
+    static public Context getRetrieveContext(Uuid uuid, DatabaseStorer.Store type)
             throws ContextException {
 		ServiceContext cxt = new ServiceContext("retrieve dataContext");
         cxt.putInValue(StorageManagement.object_type, type);
@@ -347,7 +343,7 @@ public class DbpUtil {
 
     static public Context getUpdateContext(Object object, URL url)
             throws ContextException {
-        return getUpdateContext(object, SdbUtil.getUuid(url));
+        return getUpdateContext(object, SosDbUtil.getUuid(url));
     }
 
     /**
@@ -370,7 +366,7 @@ public class DbpUtil {
         return cxt;
     }
 
-    static public Context getListContext(Store storeType)
+    static public Context getListContext(DatabaseStorer.Store storeType)
             throws ContextException {
         ServiceContext cxt = new ServiceContext("storage list context");
         cxt.putInValue(StorageManagement.store_type, storeType);

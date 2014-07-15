@@ -37,8 +37,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
-import sorcer.util.bdb.objects.Store;
-import sorcer.util.bdb.sdb.DbpUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 /**
 * @author Mike Sobolewski
@@ -58,7 +57,7 @@ public class ObjectStoreTest {
 		Task objectStoreTask = task(
 				"objectStore",
 				sig("contextStore", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
-					DbpUtil.getStoreContext(data));
+					SdbUtil.getStoreContext(data));
 		
 		//objectStoreTask = exert(objectStoreTask);
 		
@@ -78,7 +77,7 @@ public class ObjectStoreTest {
 		Task objectStoreTask = task(
 				"objectStore",
 				sig("contextStore", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
-				DbpUtil.getStoreContext(data));
+				SdbUtil.getStoreContext(data));
 		
 		//objectStoreTask = exert(objectStoreTask);
 		
@@ -114,7 +113,7 @@ public class ObjectStoreTest {
 		Task objectRetrieveTask = task(
 				"retrieve",
 				sig("contextRetrieve", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
-					DbpUtil.getRetrieveContext(uuid, Store.context));
+					SdbUtil.getRetrieveContext(uuid, DatabaseStorer.Store.context));
 				
 		objectRetrieveTask = exert(objectRetrieveTask);
         Thread.sleep(700);
@@ -135,7 +134,7 @@ public class ObjectStoreTest {
 		Task objectStoreTask = task(
 				"store",
 				sig("contextStore", DatabaseStorer.class, null, storageName),
-				DbpUtil.getStoreContext(data));
+				SdbUtil.getStoreContext(data));
 	
 		objectStoreTask = exert(objectStoreTask);
 		Uuid objUuid = (Uuid)value(context(objectStoreTask), DatabaseStorer.object_uuid);
@@ -144,7 +143,7 @@ public class ObjectStoreTest {
 		Task objectUpdateTask = task(
 				"update",
 				sig("contextUpdate", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
-                DbpUtil.getUpdateContext(updatedData, objUuid));
+                SdbUtil.getUpdateContext(updatedData, objUuid));
 		
 		objectUpdateTask = exert(objectUpdateTask);
 		
@@ -153,7 +152,7 @@ public class ObjectStoreTest {
 				"retrieve",
 				sig("contextRetrieve", DatabaseStorer.class, null,
                         Sorcer.getActualDatabaseStorerName()),
-                DbpUtil.getRetrieveContext(objUuid, Store.context));
+                SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
 		
 		objectRetrieveTask = exert(objectRetrieveTask);
         Thread.sleep(500);
@@ -220,15 +219,15 @@ public class ObjectStoreTest {
 		Assert.assertEquals(content.size(), initSize);
 		
 		//TODO, verify - was OK
-		int storeSize = size(Store.context);
+		int storeSize = size(DatabaseStorer.Store.context);
 		logger.info("storeSize before clear: " + storeSize);
 		
-		int size = (int)clear(Store.context);
+		int size = (int)clear(DatabaseStorer.Store.context);
         Thread.sleep(500);
 		logger.info("cleared tally: " + size);
 //		Assert.assertEquals(storeSize, size);
 		
-		storeSize = size(Store.context);
+		storeSize = size(DatabaseStorer.Store.context);
 		logger.info("storeSize after clear: " + storeSize);
 //		Assert.assertEquals(storeSize, 0);
 

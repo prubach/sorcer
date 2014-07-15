@@ -21,6 +21,7 @@ package sorcer.util.bdb.objects;
 import java.io.IOException;
 
 import net.jini.id.Uuid;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.ProviderRuntime;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
@@ -448,8 +449,8 @@ public class SorcerDatabaseViews {
 		}
 	}
 	
-	public static Store getStoreType(String storeName) {
-		for (Store s : Store.values()) {
+	public static DatabaseStorer.Store getStoreType(String storeName) {
+		for (DatabaseStorer.Store s : DatabaseStorer.Store.values()) {
 			if (storeName.equals(""+s))
 				return s;
 		}
