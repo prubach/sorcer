@@ -224,11 +224,11 @@ public class operator {
         return ContextFactory.context(entries);
     }
 
-    public static void popultePositionalContext(PositionalContext pcxt, List<Tuple2<String, ?>> entryList) throws ContextException {
+    protected static void popultePositionalContext(PositionalContext pcxt, List<Tuple2<String, ?>> entryList) throws ContextException {
         ContextFactory.popultePositionalContext(pcxt, entryList);
     }
 
-    public static void populteContext(Context cxt,
+    protected static void populteContext(Context cxt,
                                       List<Tuple2<String, ?>> entryList) throws ContextException {
         ContextFactory.populteContext(cxt, entryList);
     }
@@ -1489,24 +1489,24 @@ public class operator {
 		return new target(object);
 	}
 
-	public static class target extends Path {
-		private static final long serialVersionUID = 1L;
-		Object target;
+    public static class target extends Path {
+        private static final long serialVersionUID = 1L;
+        public Object target;
 
-		target(Object target) {
-			this.target = target;
-		}
+        target(Object target) {
+            this.target = target;
+        }
 
-		target(String path, Object target) {
-			this.target = target;
-			this._1 = path;
-		}
+        target(String path, Object target) {
+            this.target = target;
+            this._1 = path;
+        }
 
-		@Override
-		public String toString() {
-			return "target: " + target;
-		}
-	}
+        @Override
+        public String toString() {
+            return "target: " + target;
+        }
+    }
 
 	public static class result extends Tuple2 {
 
