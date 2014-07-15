@@ -25,6 +25,7 @@ import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.SharedAssociativeContext;
 import sorcer.core.context.SharedIndexedContext;
+import sorcer.core.context.model.PoolStrategy;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 
@@ -39,7 +40,7 @@ import static sorcer.util.UnknownName.getUnknown;
  */
 public class ContextFactory {
 
-    // TODO VFE related
+
     public static <T extends Object> Context context(T... entries)
             throws ContextException {
         if (entries[0] instanceof Exertion) {
@@ -55,23 +56,18 @@ public class ContextFactory {
                         (String) entries[0]).getContext();
             }
         }
-
         String name = getUnknown();
         List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
         List<Par> parList = new ArrayList<Par>();
         List<Context.Type> types = new ArrayList<Context.Type>();
-		/*VarInfoList nVarsInfoList = new VarInfoList();
-		VarInfoList iVarsInfoList = null;
-		VarInfoList oVarsInfoList = null;
-		List<EntryList> entryLists = new ArrayList<EntryList>();*/
+        List<EntryList> entryLists = new ArrayList<EntryList>();
         Complement subject = null;
         ReturnPath returnPath = null;
         ExecPath execPath = null;
         Args cxtArgs = null;
         ParameterTypes parameterTypes = null;
         target target = null;
-        //Table table = null;
-        Strategy modelStrategy = null;
+        PoolStrategy modelStrategy = null;
         for (T o : entries) {
             if (o instanceof Complement) {
                 subject = (Complement) o;
@@ -93,23 +89,13 @@ public class ContextFactory {
                 types.add((Context.Type) o);
             } else if (o instanceof String) {
                 name = (String) o;
-            } /* else if (o instanceof Table) {
-				table = (Table) o;
-			} else if (o instanceof Strategy) {
-				modelStrategy = (Strategy) o;
-			} else if (o instanceof VarInfo) {
-				nVarsInfoList.add((VarInfo) o);
-			}*/ else if (o instanceof Par) {
+            } else if (o instanceof PoolStrategy) {
+                modelStrategy = (PoolStrategy) o;
+            } else if (o instanceof Par) {
                 parList.add((Par) o);
-            } /*else if (o instanceof EntryList) {
-				entryLists.add((EntryList) o);
-			} else if (o instanceof VarInfoList && ((VarInfoList) o).size() > 0) {
-				if (((VarInfoList) o).get(0).getType() == Variability.Type.INPUT) {
-					iVarsInfoList = (VarInfoList) o;
-				} else if (((VarInfoList) o).get(0).getType() == Variability.Type.OUTPUT) {
-					oVarsInfoList = (VarInfoList) o;
-				}
-			} */
+            } else if (o instanceof EntryList) {
+                entryLists.add((EntryList) o);
+            }
         }
         Context cxt = null;
         if (types.contains(Context.Type.ARRAY)) {
@@ -152,20 +138,6 @@ public class ContextFactory {
             for (Par p : parList)
                 cxt.putValue(p.getName(), p);
         }
-        // parametric context items
-		/*if (table != null)
-			cxt.putValue(Modeling.IN_TABLE, table);
-		if (modelStrategy != null)
-			cxt.putValue(Modeling.MODEL_STRATEGY, modelStrategy);
-		if (nVarsInfoList.size() > 0) {
-			cxt.putValue(ResponseContext.NONE_INFO, nVarsInfoList);
-		}
-		if (iVarsInfoList != null && iVarsInfoList.size() > 0) {
-			cxt.putValue(ResponseContext.INPUTS_INFO, iVarsInfoList);
-		}
-		if (oVarsInfoList != null && oVarsInfoList.size() > 0) {
-			cxt.putValue(ResponseContext.OUTPUTS_INFO, oVarsInfoList);
-		} */
         if (returnPath != null)
             ((ServiceContext) cxt).setReturnPath(returnPath);
         if (execPath != null)
@@ -195,13 +167,13 @@ public class ContextFactory {
             }
             ((ServiceContext) cxt).setTarget(target.target);
         }
-		/*if (entryLists.size() > 0)
-			((ServiceContext)cxt).setEntryLists(entryLists);*/
+        if (entryLists.size() > 0)
+            ((ServiceContext)cxt).setEntryLists(entryLists);
         return cxt;
     }
 
     public static void popultePositionalContext(PositionalContext pcxt,
-                                                 List<Tuple2<String, ?>> entryList) throws ContextException {
+                                                   List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
                 Object par = ((InEntry)entryList.get(i)).value();
@@ -237,85 +209,55 @@ public class ContextFactory {
                 if (((Entry) entryList.get(i)).isPersistant) {
                     setPar(pcxt, (Entry) entryList.get(i), i);
                 } else {
-                    pcxt.putValueAt((entryList.get(i)).path(),
-                            (entryList.get(i)).value(), i + 1);
+                    pcxt.putValueAt(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value(), i + 1);
                 }
             } else if (entryList.get(i) instanceof DataEntry) {
                 pcxt.putValueAt(Context.DSD_PATH,
                         ((DataEntry) entryList.get(i)).value(), i + 1);
-            } else if (entryList.get(i) instanceof Tuple2) {
-                //if (entryList.get(i) instanceof InTable) {
-                //	pcxt.putValueAt(Modeling.IN_STREAM, entryList.get(i), i + 1);
-                //} else if (entryList.get(i) instanceof OutTable) {
-                //	pcxt.putValueAt(Modeling.OUT_STREAM, entryList.get(i),
-                //			i + 1);
-                //} else {
-                if (entryList.get(i).isPersistant) {
-                    setPar(pcxt, entryList.get(i), i);
-                } else {
-                    pcxt.putValueAt(
-                            entryList.get(i)._1,
-                            entryList.get(i)._2,
-                            i + 1);
-                }
-                //}
             }
         }
     }
 
     public static void populteContext(Context cxt,
-                                       List<Tuple2<String, ?>> entryList) throws ContextException {
+                                         List<Tuple2<String, ?>> entryList) throws ContextException {
         for (int i = 0; i < entryList.size(); i++) {
             if (entryList.get(i) instanceof InEntry) {
                 if (((InEntry) entryList.get(i)).isPersistant) {
                     setPar(cxt, (InEntry) entryList.get(i));
                 } else {
-                    cxt.putInValue((entryList.get(i)).path(),
-                            (entryList.get(i)).value());
+                    cxt.putInValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof OutEntry) {
                 if (((OutEntry) entryList.get(i)).isPersistant) {
                     setPar(cxt, (OutEntry) entryList.get(i));
                 } else {
-                    cxt.putOutValue((entryList.get(i)).path(),
-                            (entryList.get(i)).value());
+                    cxt.putOutValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof InoutEntry) {
                 if (((InoutEntry) entryList.get(i)).isPersistant) {
                     setPar(cxt, (InoutEntry) entryList.get(i));
                 } else {
-                    cxt.putInoutValue((entryList.get(i)).path(),
-                            (entryList.get(i)).value());
+                    cxt.putInoutValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof Entry) {
                 if (((Entry) entryList.get(i)).isPersistant) {
-                    setPar(cxt, entryList.get(i));
+                    setPar(cxt, (Entry) entryList.get(i));
                 } else {
-                    cxt.putValue((entryList.get(i)).path(),
-                            (entryList.get(i)).value());
+                    cxt.putValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
                 }
             } else if (entryList.get(i) instanceof DataEntry) {
                 cxt.putValue(Context.DSD_PATH,
-                        (entryList.get(i)).value());
-            } else if (entryList.get(i) instanceof Tuple2) {
-				/*if (entryList.get(i) instanceof InTable) {
-					cxt.putValue(Modeling.IN_STREAM, entryList.get(i));
-				} else if (entryList.get(i) instanceof OutTable) {
-					cxt.putValue(Modeling.OUT_STREAM, entryList.get(i));
-				} else {*/
-                if (entryList.get(i).isPersistant) {
-                    setPar(cxt, entryList.get(i));
-                } else {
-                    cxt.putValue(
-                            entryList.get(i)._1,
-                            entryList.get(i)._2);
-                }
-                //}
+                        ((Entry) entryList.get(i)).value());
             }
         }
     }
 
-    private static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
+    public static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
             throws ContextException {
 
         Par p = new ParImpl(entry.path(), entry.value());
@@ -332,7 +274,7 @@ public class ContextFactory {
             pcxt.putValueAt(entry.path(), p, i + 1);
     }
 
-    private static void setPar(Context cxt, Tuple2 entry)
+    public static void setPar(Context cxt, Tuple2 entry)
             throws ContextException {
 
         Par p = new ParImpl(entry.path(), entry.value());

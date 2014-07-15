@@ -17,11 +17,16 @@ package sorcer.core.context.model.par;
  * limitations under the License.
  */
 
-import sorcer.service.EvaluationException;
-import sorcer.service.VarException;
-
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import sorcer.service.EvaluationException;
+import sorcer.service.Identity;
 
 /**
  * @author Mike Sobolewski
@@ -44,19 +49,19 @@ public class ParSet extends TreeSet<Par> {
 	}
 
 	
-	public ParSet(ParList... parLists) {
+	public ParSet(ParList...  parLists) {
 		for (ParList vl : parLists) {
 			addAll(vl);
 		}
 	}
 	
-	public ParSet(Par<?>... pars) {
+	public ParSet(Par<?>...  pars) {
 		for (Par<?> v : pars) {
 			add(v);
 		}
 	}
 	
-	public Par<?> getPar(String parName) throws VarException {
+	public Par<?> getPar(String parName) throws ParException {
 		for (Par<?> v : this) {
 			if (v.getName().equals(parName))
 				return v;
@@ -68,13 +73,14 @@ public class ParSet extends TreeSet<Par> {
 			throws EvaluationException {
 		Par par = null;
 		for (Par<?> p : this) {
-			if (p.getName().equals(parName))
+			if (((Identity) p).getName().equals(parName)) {
 				par = p;
-			par.setValue(value);
-			break;
+				par.setValue(value);
+				break;
+			}
 		}
 		if (par == null)
-			throw new VarException("No such Par in the list: " + parName);
+			throw new ParException("No such Par in the list: " + parName);
 	}
 	
 	public ParList selectPars(List<String>... parnames) {

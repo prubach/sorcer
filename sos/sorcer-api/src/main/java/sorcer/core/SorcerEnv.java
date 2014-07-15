@@ -1734,6 +1734,10 @@ public class SorcerEnv {
         return properties.getProperty(SORCER_HOME);
     }
 
+    public String getHome() {
+        return getSorcerHome();
+    }
+
     public void setSorcerHome(String sorcerHome) {
         properties.setProperty(SORCER_HOME, sorcerHome);
     }

@@ -41,7 +41,7 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.ServiceElement;
 
 import org.rioproject.opstring.UndeployOption;
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.deploy.OperationalStringFactory;
 import sorcer.service.Job;
 import sorcer.service.Service;
@@ -56,13 +56,13 @@ public class OperationalStringFactoryTest {
     @Test
     public void testOperationalStringCreation() throws Exception {
         Job job = Util.createJob();
-        Map<Deployment.Unique, List<OperationalString>> deployments = OperationalStringFactory.create(job);
+        Map<ServiceDeployment.Unique, List<OperationalString>> deployments = OperationalStringFactory.create(job);
         List<OperationalString> allOperationalStrings = new ArrayList<OperationalString>();
-        allOperationalStrings.addAll(deployments.get(Deployment.Unique.YES));
-        allOperationalStrings.addAll(deployments.get(Deployment.Unique.NO));
+        allOperationalStrings.addAll(deployments.get(ServiceDeployment.Unique.YES));
+        allOperationalStrings.addAll(deployments.get(ServiceDeployment.Unique.NO));
         assertTrue("Expected 2, got " + allOperationalStrings.size(), allOperationalStrings.size() == 2);
 
-        assertTrue(deployments.get(Deployment.Unique.NO).size()==2);
+        assertTrue(deployments.get(ServiceDeployment.Unique.NO).size()==2);
 
         OperationalString multiply = allOperationalStrings.get(0);
         assertEquals(1, multiply.getServices().length);
@@ -103,8 +103,8 @@ public class OperationalStringFactoryTest {
         Job job = job("Some Job", job("f2", task), task, strategy(Strategy.Provision.YES),
                 pipe(out(task, "result/y1"), input(task, "arg/x5")),
                 pipe(out(task, "result/y2"), input(task, "arg/x6")));
-        Map<Deployment.Unique, List<OperationalString>> deployments = OperationalStringFactory.create(job);
-        OperationalString operationalString = deployments.get(Deployment.Unique.NO).get(0);
+        Map<ServiceDeployment.Unique, List<OperationalString>> deployments = OperationalStringFactory.create(job);
+        OperationalString operationalString = deployments.get(ServiceDeployment.Unique.NO).get(0);
         assertEquals(1, operationalString.getServices().length);
         String name = job.getDeploymentId();
         assertEquals(name, operationalString.getName());

@@ -435,13 +435,13 @@ public class ControlFlowManager {
 
     public Task doBatchTask(Task task) throws ExertionException,
             SignatureException, RemoteException, ContextException {
-        List<Signature> alls = task.getSignatures();
-        Signature lastSig = alls.get(alls.size()-1);
-        if (alls.size() > 1 &&  task.isNotCorrectBatch() && !(lastSig instanceof NetSignature)) {
-            for (int i = 0; i< alls.size()-1; i++) {
-                alls.get(i).setType(Signature.PRE);
-            }
-        }
+		ServiceFidelity alls = task.getFidelity();
+		Signature lastSig = alls.get(alls.size()-1);
+		if (alls.size() > 1 &&  task.isBatch() && !(lastSig instanceof NetSignature)) {
+			for (int i = 0; i< alls.size()-1; i++) {
+				alls.get(i).setType(Signature.PRE);
+			}
+		}
         task.startExecTime();
         // append context from Contexters
         if (task.getApdProcessSignatures().size() > 0) {
@@ -456,13 +456,13 @@ public class ControlFlowManager {
             task.setContext(cxt);
         }
         // execute service task
-        List<Signature> ts = new ArrayList<Signature>(1);
+		ServiceFidelity ts = new ServiceFidelity(1);
         Signature tsig = task.getProcessSignature();
         ((ServiceContext)task.getContext()).setCurrentSelector(tsig.getSelector());
         ((ServiceContext)task.getContext()).setCurrentPrefix(tsig.getPrefix());
 
         ts.add(tsig);
-        task.setSignatures(ts);
+        task.setFidelity(ts);
         if (tsig.getReturnPath() != null)
             ((ServiceContext)task.getContext()).setReturnPath(tsig.getReturnPath());
 
@@ -473,10 +473,10 @@ public class ControlFlowManager {
                     + task.getName());
             task.reportException(ex);
             task.setStatus(Exec.FAILED);
-            task.setSignatures(alls);
+            task.setFidelity(alls);
             return task;
         }
-        task.setSignatures(alls);
+        task.setFidelity(alls);
         // do postprocessing
         if (task.getPostprocessSignatures().size() > 0) {
             Context cxt = postprocess(task);
@@ -489,10 +489,10 @@ public class ControlFlowManager {
                     + task.getName());
             task.reportException(ex);
             task.setStatus(Exec.FAILED);
-            task.setSignatures(alls);
+            task.setFidelity(alls);
             return task;
         }
-        task.setSignatures(alls);
+        task.setFidelity(alls);
         task.stopExecTime();
         return task;
     }
@@ -521,13 +521,13 @@ public class ControlFlowManager {
                 ((ServiceContext)shared).setCurrentSelector(signatures.get(i).getSelector());
                 ((ServiceContext)shared).setCurrentPrefix(signatures.get(i).getPrefix());
 
-                List<Signature> tmp = new ArrayList<Signature>(1);
+                ServiceFidelity tmp = new ServiceFidelity(1);
                 tmp.add(signatures.get(i));
-                t.setSignatures(tmp);
+                t.setFidelity(tmp);
                 t.setContinous(true);
                 t.setContext(shared);
 
-                logger.info("Sending one of the batch tasks to exert: " + t.getName() + " " + t.getSignatures().toString());
+                logger.info("Sending one of the batch tasks to exert: " + t.getName() + " " + t.getFidelity().toString());
                 t = t.doTask();
                 signatures.get(i).setType(type);
                 shared = t.getContext();

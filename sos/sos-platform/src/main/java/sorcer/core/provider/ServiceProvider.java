@@ -158,6 +158,9 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 	// RemoteMethodControl is needed to enable Proxy Constraints
 
     /** Logger and configuration component name for service provider. */
+
+    public final static String DB_HOME = "dbHome";
+
     static final String PROVIDER = ServiceProvider.class.getName();
 
     /** Logger for logging information about this instance */

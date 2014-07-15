@@ -69,8 +69,8 @@ public final class ServiceElementFactory {
      * @throws ConfigurationException if there are problem reading the configuration
      */
     public static ServiceElement create(ServiceSignature signature) throws IOException, ConfigurationException {
-        Deployment deployment = signature.getDeployment();
-        Configuration configuration = Configuration.getInstance(deployment.getConfigs());
+        ServiceDeployment deployment = signature.getDeployment();
+        Configuration configuration = Configuration.getInstance(deployment.getConfig());
         String component = "sorcer.core.provider.ServiceProvider";
 
         String name = deployment.getName();
@@ -129,7 +129,7 @@ public final class ServiceElementFactory {
     }
 
     static ServiceElement create(final ServiceDetails serviceDetails,
-                                 final Deployment deployment) throws IOException {
+                                 final ServiceDeployment deployment) throws IOException {
         ServiceElement service = new ServiceElement();
 
         String websterUrl;
@@ -206,7 +206,7 @@ public final class ServiceElementFactory {
         configMap.put(ServiceBeanConfig.NAME, serviceName);
         configMap.put(ServiceBeanConfig.GROUPS, SorcerEnv.getLookupGroups());
         ServiceBeanConfig sbc = new ServiceBeanConfig(configMap,
-                                                      new String[]{getConfigurationAsString(deployment.getConfigs())});
+                                                      new String[]{deployment.getConfig()});
         sbc.addAdditionalEntries(new DeployInfo(deployment.getType().name(), deployment.getUnique().name(), deployment.getIdle()));
         service.setServiceBeanConfig(sbc);
         service.setPlanned(deployment.getMultiplicity());                

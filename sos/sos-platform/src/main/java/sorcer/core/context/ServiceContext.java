@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
+import sorcer.co.tuple.EntryList;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.model.par.*;
@@ -125,6 +126,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	protected String dbUrl;
 
 	protected String prefix = "";
+
+	protected List<EntryList> entryLists;
 
 	protected float version;
 
@@ -302,7 +305,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			// the variable node type relationship (var name and its type) in
 			// Analysis Models: vnt|var|vt
 			setCompositeAttribute(VAR_NODE_TYPE + APS + VAR + APS + VT);
-			dbUrl = "sos://sorcer.service.DatabaseStorer";
+			dbUrl = "sos://sorcer.core.provider.DatabaseStorer";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1076,7 +1079,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			while (e.hasMoreElements()) {
 				link = (Link) e.nextElement();
 				result = getLinkedContext(link).isSingletonAttribute(
-						attributeName);
+                        attributeName);
 				if (result)
 					break;
 			}
@@ -1898,7 +1901,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	public String toString(String cr, StringBuilder sb, boolean withMetacontext) {
 		sb.append(subjectPath.length() == 0 ? "" : "\n  subject: "
-				+ subjectPath + ":" + subjectValue + cr);
+                + subjectPath + ":" + subjectValue + cr);
 		Enumeration e = null;
 		try {
 			e = contextPaths(); // sorted enumeration
@@ -2947,7 +2950,25 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public void setDbUrl(String dbUrl) {
 		this.dbUrl = dbUrl;
 	}
-		
+
+	public List<EntryList> getEntryLists() {
+		return entryLists;
+	}
+
+	public void setEntryLists(List<EntryList> entryLists) {
+		this.entryLists = entryLists;
+	}
+	
+	public EntryList getEntryList(EntryList.Type type) {
+		if (entryLists != null) {
+			for (EntryList el : entryLists) {
+				if (el.getType().equals(type))
+					return el;
+			}
+		}
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see sorcer.service.Contexter#getContext(sorcer.service.Context)
 	 */

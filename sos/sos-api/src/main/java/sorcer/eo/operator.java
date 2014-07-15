@@ -17,15 +17,12 @@
  */
 package sorcer.eo;
 
-import static sorcer.util.UnknownName.getUnknown;
-
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceItem;
@@ -33,12 +30,13 @@ import net.jini.core.lookup.ServiceTemplate;
 import net.jini.core.transaction.Transaction;
 import sorcer.co.Loop;
 import sorcer.co.tuple.*;
+import sorcer.core.ComponentFidelityInfo;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.*;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.exertion.*;
 import sorcer.core.provider.Jobber;
 import sorcer.core.provider.Provider;
@@ -52,6 +50,7 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;
 import sorcer.service.Strategy.Provision;
 import sorcer.service.Strategy.Wait;
+import sorcer.service.modeling.Variability;
 import sorcer.util.ObjectClonerAdv;
 import sorcer.util.ServiceExerter;
 import sorcer.util.Sorcer;
@@ -192,6 +191,27 @@ public class operator {
 		return job.getComponentContext(path);
 	}
 
+	public static FidelityContext fiContext(FidelityInfo... fidelityInfos) throws ContextException {
+		return fiContext(null, fidelityInfos);
+	}
+	
+	public static FidelityContext fiContext(String name, FidelityInfo... fidelityInfos) throws ContextException {
+		FidelityContext fiCxt = new FidelityContext(name);
+		for (FidelityInfo e : fidelityInfos) {
+			if (e instanceof FidelityInfo) {
+				try {
+					fiCxt.put(e.getName(), e);
+				} catch (Exception ex) {
+					if (ex instanceof ContextException)
+						throw (ContextException) ex;
+					else
+						throw new ContextException(ex);
+				}
+			}
+		}
+		return fiCxt;
+	}
+
 /*    public static <T extends Object> Context context(T... entries)
             throws ContextException {
         return ContextFactory.context(entries);
@@ -204,7 +224,24 @@ public class operator {
         return ContextFactory.context(entries);
     }
 
-	public static List<String> names(List<? extends Identifiable> list) {
+    public static void popultePositionalContext(PositionalContext pcxt, List<Tuple2<String, ?>> entryList) throws ContextException {
+        ContextFactory.popultePositionalContext(pcxt, entryList);
+    }
+
+    public static void populteContext(Context cxt,
+                                      List<Tuple2<String, ?>> entryList) throws ContextException {
+        ContextFactory.populteContext(cxt, entryList);
+    }
+
+    public static void setPar(PositionalContext pcxt, Tuple2 entry, int i) throws ContextException {
+        ContextFactory.setPar(pcxt, entry, i);
+    }
+
+    public static void setPar(Context cxt, Tuple2 entry) throws ContextException {
+        ContextFactory.setPar(cxt, entry);
+    }
+
+    public static List<String> names(List<? extends Identifiable> list) {
 		List<String> names = new ArrayList<String>(list.size());
 		for (Identifiable i : list) {
 			names.add(i.getName());
@@ -340,7 +377,7 @@ public class operator {
         return sig;
         #*/
     }
-    public static Signature sig(String name, String selector, Deployment deployment)
+    public static Signature sig(String name, String selector, ServiceDeployment deployment)
             throws SignatureException {
         ServiceSignature signture = new ServiceSignature(name, selector);
         signture.setDeployment(deployment);
@@ -348,13 +385,13 @@ public class operator {
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                Provision type, Deployment deployment) throws SignatureException {
+                                Provision type, ServiceDeployment deployment) throws SignatureException {
         Signature signature = sig(operation, serviceType, null, (String) null, type);
         signature.setDeployment(deployment);
         return signature;
     }
 
-    public static Signature sig(Class<?> serviceType, ReturnPath returnPath, Deployment deployment)
+    public static Signature sig(Class<?> serviceType, ReturnPath returnPath, ServiceDeployment deployment)
             throws SignatureException {
         Signature signature = sig(serviceType, returnPath);
         signature.setDeployment(deployment);
@@ -362,13 +399,13 @@ public class operator {
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
-                                String providerName, Deployment deployment, Object... parameters)
+                                String providerName, ServiceDeployment deployment, Object... parameters)
             throws SignatureException {
         return sig(operation, serviceType, null, providerName, deployment, parameters);
     }
 
     public static Signature sig(String operation, Class<?> serviceType, String version,
-                                String providerName, Deployment deployment, Object... parameters)
+                                String providerName, ServiceDeployment deployment, Object... parameters)
             throws SignatureException {
         Signature signature = sig(operation, serviceType, version, providerName, parameters);
         signature.setDeployment(deployment);
@@ -481,23 +518,47 @@ public class operator {
         return new EvaluationTask(signature, context);
     }
 
-    public static ObjectSignature sig(String operation, Object object, Deployment deployment,
+    public static ObjectSignature sig(String operation, Object object, ServiceDeployment deployment,
                                       Class... types) throws SignatureException {
         ObjectSignature signature = sig(operation, object, types);
         signature.setDeployment(deployment);
         return signature;
     }
 
-    /*
-	public static FilterSignature sig(Filter filter) throws SignatureException {
-		return new FilterSignature(null, filter);
+	public static FidelityInfo sFi(String name) {
+		return new FidelityInfo(name);
 	}
 
-	public static FilterSignature sig(Object paramter, Filter filter)
-			throws SignatureException {
-		return new FilterSignature(paramter, filter);
+	public static FidelityInfo sFi(String name, String... selectors) {
+		return new FidelityInfo(name, selectors);
 	}
-	*/
+	
+	public static ComponentFidelityInfo csFi(String path, String name) {
+		return new ComponentFidelityInfo(name, path);
+	}
+	
+	
+	public static ComponentFidelityInfo csFi(String path, String name, String... selectors) {
+		return new ComponentFidelityInfo(name, path, selectors);
+	}
+	
+	
+	public static ServiceFidelity sFi(Exertion exertion) {
+		return exertion.getFidelity();		
+	}
+	
+	public static Map<String, ServiceFidelity> sFis(Exertion exertion) {
+		return exertion.getFidelities();		
+	}
+	
+	public static ServiceFidelity sFi(Signature... signatures) {
+		return new ServiceFidelity(signatures);		
+	}
+	
+	public static ServiceFidelity sFi(String name, Signature... signatures) {
+		return new ServiceFidelity(name, signatures);		
+	}
+	
 
 	public static ObjectSignature sig(String operation, Object object,
 			Class... types) throws SignatureException {
@@ -506,7 +567,7 @@ public class operator {
 				return new NetSignature(operation, (Class) object);
 			} else {
 				return new ObjectSignature(operation, object,
-						types.length == 0 ? null : types);
+						types == null || types.length == 0 ? null : types);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -555,7 +616,7 @@ public class operator {
     public static <T> Task batch(String name, T... elems)
 			throws ExertionException {
 		Task batch = task(name, elems);
-		if (batch.getSignatures().size() > 1)
+		if (batch.getFidelity().size() > 1)
 			return batch;
 		else
 			throw new ExertionException(
@@ -602,7 +663,9 @@ public class operator {
 		ReturnPath rp = null;
 		List<Exertion> exertions = new ArrayList<Exertion>();
 		List<Pipe> pipes = new ArrayList<Pipe>();
-
+		List<ServiceFidelity> fidelities = null;
+		List<FidelityContext> fiContexts = null;
+		
 		for (int i = 0; i < elems.length; i++) {
 			if (elems[i] instanceof String) {
 				name = (String) elems[i];
@@ -618,26 +681,44 @@ public class operator {
 				signature = ((Signature) elems[i]);
 			} else if (elems[i] instanceof ReturnPath) {
 				rp = ((ReturnPath) elems[i]);
+			} else if (elems[i] instanceof ServiceFidelity) {
+				if (fidelities == null)
+					fidelities = new ArrayList<ServiceFidelity>();
+				fidelities.add((ServiceFidelity) elems[i]);
+			} else if (elems[i] instanceof FidelityContext) {
+				if (fiContexts == null)
+					fiContexts = new ArrayList<FidelityContext>();
+				fiContexts.add((FidelityContext) elems[i]);
 			}
 		}
 
 		Job job = null;
-        boolean defaultSig = false;
-        if (signature == null) {
-            signature = sig("service", Jobber.class);
-            defaultSig = true;
-        }
-        if (signature instanceof NetSignature) {
-            job = new NetJob(name);
-        } else if (signature instanceof ObjectSignature) {
-            job = new ObjectJob(name);
-        }
-        if (!defaultSig) {
-            job.getSignatures().clear();
-            job.addSignature(signature);
-        } else {
-            job.addSignature(signature);
-        }
+		boolean defaultSig = false;
+		if (signature == null && fidelities == null) {
+			signature = sig("service", Jobber.class);
+			defaultSig = true;
+		}
+		if (signature instanceof NetSignature) {
+			job = new NetJob(name);
+		} else if (signature instanceof ObjectSignature) {
+			job = new ObjectJob(name);
+		}
+		if (fidelities == null) {
+			if (!defaultSig) {
+				job.getFidelity().clear();
+				job.addSignature(signature);
+			} else {
+				job.addSignature(signature);
+			}
+		} else {
+            // TODO - merge AFRL
+			job = new NetJob(name);
+			for (int i = 0; i < fidelities.size(); i++) {
+				job.addFidelity(fidelities.get(i));
+			}
+			job.setFidelity(fidelities.get(0));
+			job.setSelectedFidelitySelector(fidelities.get(0).getName());
+		} 
         if (data != null)
 			job.setContext(data);
 
@@ -650,12 +731,19 @@ public class operator {
 			if (control.getAccessType().equals(Access.PULL)) {
 				Signature procSig = job.getProcessSignature();
 				procSig.setServiceType(Spacer.class);
-				job.getSignatures().clear();
+				job.getFidelity().clear();
 				job.addSignature(procSig);
 				if (data != null)
 					job.setContext(data);
 				else
 					job.getDataContext().setExertion(job);
+			}
+		}
+		if (fiContexts != null) {
+			Map<String, FidelityContext> fiMap = new HashMap<String, FidelityContext>();
+			for (FidelityContext fiCxt : fiContexts) {
+					fiMap.put(fiCxt.getName(), fiCxt);
+				job.setFidelityContexts(fiMap);
 			}
 		}
 		if (exertions.size() > 0) {
@@ -673,7 +761,7 @@ public class operator {
 						p.inPath, ((Exertion) p.in).getContext());
 			}
 		} else
-			logger.warning("No component exertion defined for job: " + job.getName());
+			throw new ExertionException("No component exertion defined.");
 
 		return job;
 	}
@@ -712,8 +800,6 @@ public class operator {
 		}
 	}
 
-    // TODO VFE related
-    /*
 	public static <V> V take(Variability<V> variability)
 			throws EvaluationException {
 		try {
@@ -726,7 +812,7 @@ public class operator {
 		} catch (Exception e) {
 			throw new EvaluationException(e);
 		}
-	} */
+	}
 
 	public static Object get(Exertion exertion, String component, String path)
 			throws ExertionException {
@@ -1138,9 +1224,9 @@ public class operator {
 		return new InoutEntry(path, value, index);
 	}
 
-	/*private static String getUnknown() {
+	protected static String getUnknown() {
 		return "unknown" + count++;
-	} */
+	}
 
     // TODO VFE related
     /*public static class OutTable<T1, T2> extends Tuple2<T1, T2> {
@@ -1298,12 +1384,11 @@ public class operator {
 		cc.setSignatures(sl);
 		return cc;
 	}
-    // TODO VFE related
-	/*public static EntryList initialDesign(Entry...  entries) {
+    public static EntryList initialDesign(Entry...  entries) {
 		EntryList el = new EntryList(entries);
 		el.setType(EntryList.Type.INITIAL_DESIGN);
 		return el;
-	}*/
+	}
 	
 	public static URL dbURL() throws MalformedURLException {
 		return new URL(Sorcer.getDatabaseStorerUrl());
@@ -1868,9 +1953,9 @@ public class operator {
 
     public static class Configuration {
         private static final long serialVersionUID = 1L;
-        public String[] configuration;
+        public String configuration;
 
-        Configuration(String... configuration) {
+        Configuration(final String configuration) {
             this.configuration = configuration;
         }
     }
@@ -1912,7 +1997,7 @@ public class operator {
         }
 
         Idle(String idle) {
-            this.idle = Deployment.parseInt(idle);
+            this.idle = ServiceDeployment.parseInt(idle);
         }
     }
 
@@ -1922,6 +2007,47 @@ public class operator {
 
         PerNode(int number) {
             this.number = number;
+        }
+    }
+
+    public static class IP {
+        final Set<String> ips = new HashSet<String>();
+        boolean exclude;
+
+        public IP(final String... ips) {
+            Collections.addAll(this.ips, ips);
+        }
+
+        void setExclude(final boolean exclude) {
+            this.exclude = exclude;
+        }
+
+        public String[] getIps() {
+            return ips.toArray(new String[ips.size()]);
+        }
+    }
+
+    public static class Arch {
+        final String arch;
+
+        public Arch(final String arch) {
+            this.arch = arch;
+        }
+
+        public String getArch() {
+            return arch;
+        }
+    }
+
+    public static class OpSys {
+        final Set<String> opSys = new HashSet<String>();
+
+        public OpSys(final String... opSys) {
+            Collections.addAll(this.opSys, opSys);
+        }
+
+        public String[] getOpSys() {
+            return opSys.toArray(new String[opSys.size()]);
         }
     }
 
@@ -1969,26 +2095,69 @@ public class operator {
         return new Idle(idle);
     }
 
-    public static <T> Deployment deploy(T... elems) {
-        Deployment deployment = new Deployment();
+    public static IP ips(String... ips) {
+        return new IP(ips);
+    }
+
+    public static IP ips_exclude(String... ips) {
+        IP ip = new IP(ips);
+        ip.exclude = true;
+        return ip;
+    }
+
+    public static Arch arch(String arch) {
+        return new Arch(arch);
+    }
+
+    public static OpSys opsys(String... opsys) {
+        return new OpSys(opsys);
+    }
+
+    public static <T> ServiceDeployment deploy(T... elems) {
+        ServiceDeployment deployment = new ServiceDeployment();
         for (Object o : elems) {
             if (o instanceof Jars) {
                 deployment.setClasspathJars(((Jars) o).jars);
             } else if (o instanceof CodebaseJars) {
                 deployment.setCodebaseJars(((CodebaseJars) o).jars);
             } else if (o instanceof Configuration) {
-                deployment.setConfigs(((Configuration) o).configuration);
+                deployment.setConfig(((Configuration) o).configuration);
             } else if (o instanceof Impl) {
                 deployment.setImpl(((Impl) o).className);
             } else if (o instanceof Multiplicity) {
                 deployment.setMultiplicity(((Multiplicity) o).multiplicity);
                 deployment.setMaxPerCybernode(((Multiplicity) o).maxPerCybernode);
-            } else if(o instanceof Deployment.Type) {
-                deployment.setType(((Deployment.Type) o));
+            } else if(o instanceof ServiceDeployment.Type) {
+                deployment.setType(((ServiceDeployment.Type) o));
             } else if (o instanceof Idle) {
                 deployment.setIdle(((Idle) o).idle);
             } else if (o instanceof PerNode) {
                 deployment.setMaxPerCybernode(((PerNode)o).number);
+            } else if (o instanceof IP) {
+                IP ip = (IP)o;
+                for(String ipAddress : ip.getIps()) {
+                    try {
+                        InetAddress inetAddress = InetAddress.getByName(ipAddress);
+                        if(inetAddress.isReachable(1000)) {
+                            logger.warning(getWarningBanner("The signature declares an ip address or hostname.\n" +
+                                                            ipAddress+" is not reachable on the current network"));
+                        }
+                    } catch (Exception e) {
+                        logger.warning(getWarningBanner(ipAddress+" is not found on the current network.\n"
+                                                        +e.getClass().getName()+": "+e.getMessage()));
+                    }
+                }
+                if(ip.exclude) {
+                    deployment.setExcludeIps(ip.getIps());
+                } else {
+                    deployment.setIps(ip.getIps());
+                }
+            } else if (o instanceof Arch) {
+                deployment.setArchitecture(((Arch)o).getArch());
+            } else if (o instanceof OpSys) {
+                deployment.setOperatingSystems(((OpSys) o).getOpSys());
+            } else if (o instanceof WebsterUrl) {
+                deployment.setWebsterUrl(((WebsterUrl)o).websterUrl);
             }
         }
         return deployment;
@@ -2019,4 +2188,11 @@ public class operator {
         return block;
     }
 
+    private static String getWarningBanner(String message) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n****************************************************************\n");
+        builder.append(message).append("\n");
+        builder.append("****************************************************************\n");
+        return builder.toString();
+    }
 }

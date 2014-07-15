@@ -23,6 +23,7 @@ import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
@@ -133,6 +134,11 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	public Context getContext() throws ContextException;
 	
 	/**
+	 * Returns a component exertion at a given path.
+	 */
+	public Exertion getComponentExertion(String path);
+	
+	/**
 	 * Returns a value associated with a path (key) in this exertion's context.
 	 * 
 	 * @return a referenced by a path object
@@ -175,9 +181,12 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * @return a collection of all service signatures
 	 * @see #getProcessSignature
 	 */
-	public List<Signature> getSignatures();
+	public ServiceFidelity getFidelity();
 
-	public Arg getPar(String path);
+	/**
+	 * Returns a map of all available service fidelities of this exertion.
+	 */
+	public Map<String, ServiceFidelity> getFidelities();
 	
 	/**
 	 * Returns a signature of the <code>PROCESS</code> type for this exertion.
@@ -349,8 +358,13 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * Returns true if this exertion is a branching or looping exertion.
 	 */
 	public boolean isConditional();
-
-    /**
+	
+	/**
+	 * Returns true if this exertion is composed of other exertions.
+	 */
+	public boolean isCompound();
+	
+	/**
 	 * The exertion format for thin exertions (no RMI and Jini classes)
 	 */
 	public static final int THIN = 0;

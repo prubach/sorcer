@@ -101,7 +101,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 		} catch (ExertionException e) {
 			e.printStackTrace();
 		}
-		this.signatures.addAll(Arrays.asList(signatures));
+		this.fidelity.addAll(Arrays.asList(signatures));
 	}
 
 	public void setService(Service provider) {
@@ -127,7 +127,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 		temp.status = Exec.INITIAL;
 		temp.priority = null;
 		temp.index = null;
-		temp.signatures = null;
+		temp.fidelity = null;
 		return temp;
 	}
 

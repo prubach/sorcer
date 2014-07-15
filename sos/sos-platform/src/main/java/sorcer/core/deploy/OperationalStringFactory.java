@@ -58,7 +58,7 @@ public final class OperationalStringFactory {
      * @throws IllegalArgumentException if the {@code exertion} is {@code null}.
      * @throws Exception if there are configuration issues, if the iGrid opstring cannot be loaded
      */
-    public static Map<Deployment.Unique, List<OperationalString>> create(final Exertion exertion) throws Exception {
+    public static Map<ServiceDeployment.Unique, List<OperationalString>> create(final Exertion exertion) throws Exception {
         if(exertion==null)
             throw new IllegalArgumentException("exertion is null");
 
@@ -72,9 +72,9 @@ public final class OperationalStringFactory {
         for(NetSignature netSignature : netSignatures) {
             if(netSignature.getDeployment()==null)
                 continue;
-            if(netSignature.getDeployment().getType()==Deployment.Type.SELF) {
+            if(netSignature.getDeployment().getType()== ServiceDeployment.Type.SELF) {
                 selfies.add(netSignature);
-            } else if(netSignature.getDeployment().getType()==Deployment.Type.FED) {
+            } else if(netSignature.getDeployment().getType()== ServiceDeployment.Type.FED) {
                 federated.add(netSignature);
             }
         }
@@ -89,7 +89,7 @@ public final class OperationalStringFactory {
             opString.setUndeployOption(getUndeployOption(self.getDeployment()));
 
             //opString.addOperationalString(iGridDeployment);
-            if(self.getDeployment().getUnique()== Deployment.Unique.YES) {
+            if(self.getDeployment().getUnique()== ServiceDeployment.Unique.YES) {
                 uniqueOperationalStrings.add(opString);
             } else {
                 operationalStrings.add(opString);
@@ -116,20 +116,20 @@ public final class OperationalStringFactory {
         }
         opString.setUndeployOption(getUndeployOption(idle));
         //opString.addOperationalString(iGridDeployment);
-        Deployment eDeployment = exertion.getProcessSignature().getDeployment();
-        Deployment.Unique unique = eDeployment==null? Deployment.Unique.NO:eDeployment.getUnique();
-        if(unique == Deployment.Unique.YES) {
+        ServiceDeployment eDeployment = exertion.getProcessSignature().getDeployment();
+        ServiceDeployment.Unique unique = eDeployment==null? ServiceDeployment.Unique.NO:eDeployment.getUnique();
+        if(unique == ServiceDeployment.Unique.YES) {
             uniqueOperationalStrings.add(opString);
         } else {
             operationalStrings.add(opString);
         }
-        Map<Deployment.Unique, List<OperationalString>> opStringMap = new HashMap<Deployment.Unique, List<OperationalString>>();
-        opStringMap.put(Deployment.Unique.YES, uniqueOperationalStrings);
-        opStringMap.put(Deployment.Unique.NO, operationalStrings);
+        Map<ServiceDeployment.Unique, List<OperationalString>> opStringMap = new HashMap<ServiceDeployment.Unique, List<OperationalString>>();
+        opStringMap.put(ServiceDeployment.Unique.YES, uniqueOperationalStrings);
+        opStringMap.put(ServiceDeployment.Unique.NO, operationalStrings);
         return opStringMap;
     }
 
-    private static UndeployOption getUndeployOption(final Deployment deployment) {
+    private static UndeployOption getUndeployOption(final ServiceDeployment deployment) {
         UndeployOption undeployOption = null;
         if(deployment!=null) {
             undeployOption = getUndeployOption(deployment.getIdle());
@@ -162,7 +162,7 @@ public final class OperationalStringFactory {
         for(ClassBundle export : service.getExportBundles()) {
             nameBuilder.append(export.getClassName());
         }
-        return Deployment.createDeploymentID(nameBuilder.toString());
+        return ServiceDeployment.createDeploymentID(nameBuilder.toString());
     }
 
     private static OperationalString getIGridDeployment() throws Exception {

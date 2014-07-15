@@ -17,7 +17,6 @@ import static sorcer.po.operator.par;
 
 import java.io.IOException;
 import java.net.URL;
-import java.rmi.RMISecurityManager;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,20 +27,18 @@ import org.junit.Test;
 
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.service.DatabaseStorer;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
-import sorcer.service.ServiceExertion;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.Sorcer;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.sdb.DbpUtil;
-import sorcer.util.bdb.sdb.SdbUtil;
 
 /**
 * @author Mike Sobolewski

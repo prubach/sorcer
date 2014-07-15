@@ -37,7 +37,7 @@ import sorcer.core.provider.Provider;
 import sorcer.core.provider.StorageManagement;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.DatabaseStorer;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.service.Exertion;
 import sorcer.service.Identifiable;
 import sorcer.util.bdb.objects.SorcerDatabase;
@@ -45,7 +45,7 @@ import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.Store;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
-import sorcer.util.bdb.sdb.SdbUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredValueSet;

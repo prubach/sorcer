@@ -17,7 +17,7 @@
 
 package sorcer.service;
 
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 
 import java.io.Serializable;
 
@@ -136,9 +136,9 @@ public interface Signature extends Serializable,Comparable, Arg {
 	 */
 	public void setCodebase(String urls);
 
-    public Deployment getDeployment();
+    public ServiceDeployment getDeployment();
 
-    public void setDeployment(Deployment deployment);
+    public void setDeployment(ServiceDeployment deployment);
 	/**
 	 * There are four types of {@link Signature} operations that can be
 	 * associated with signatures: <code>PRE</code> (preprocess),

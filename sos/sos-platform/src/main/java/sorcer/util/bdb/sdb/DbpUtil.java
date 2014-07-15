@@ -4,17 +4,19 @@ import net.jini.id.Uuid;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.PositionalContext;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.StorageManagement;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 import sorcer.util.bdb.objects.Store;
+import sorcer.util.url.sos.SdbUtil;
 
 import java.net.URL;
 import java.util.List;
 
-import static sorcer.util.bdb.sdb.SdbUtil.getProviderName;
-import static sorcer.util.bdb.sdb.SdbUtil.getServiceType;
-import static sorcer.util.bdb.sdb.SdbUtil.getStoreType;
+import static sorcer.util.url.sos.SdbUtil.getProviderName;
+import static sorcer.util.url.sos.SdbUtil.getServiceType;
+import static sorcer.util.url.sos.SdbUtil.getStoreType;
 
 /**
  * SORCER class

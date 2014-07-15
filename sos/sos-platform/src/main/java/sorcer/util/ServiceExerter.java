@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.dispatch.*;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
@@ -152,7 +152,7 @@ public class ServiceExerter implements Exerter, Callable {
             // TODO PROVISIONING
 			if (exertion.isTask() && exertion.isProvisionable()) {
 				try {
-					List<Deployment> deployments = exertion
+					List<ServiceDeployment> deployments = exertion
 							.getDeployments();
 					if (deployments.size() > 0) {
 						ProvisionManager ProvisionManager = new ProvisionManager(exertion);
@@ -187,7 +187,7 @@ public class ServiceExerter implements Exerter, Callable {
             //
             if (!(signature instanceof NetSignature)) {
                 if (exertion instanceof Task) {
-                    if (exertion.getSignatures().size() == 1) {
+                    if (exertion.getFidelity().size() == 1) {
                         return ((Task) exertion).doTask(txn);
                     } else {
                         try {

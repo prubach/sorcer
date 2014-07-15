@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package sorcer.service;
+package sorcer.core.provider;
 
 import sorcer.core.provider.StorageManagement;
 

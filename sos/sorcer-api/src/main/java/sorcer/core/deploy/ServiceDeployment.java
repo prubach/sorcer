@@ -22,10 +22,15 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.jini.id.Uuid;
 import sorcer.core.SorcerEnv;
 import sorcer.service.Arg;
+import sorcer.service.Deployment;
+import sorcer.service.Strategy;
 import sorcer.util.GenericUtil;
 import sorcer.util.Sorcer;
 import sorcer.util.eval.PropertyEvaluator;
@@ -36,34 +41,10 @@ import sorcer.util.eval.PropertyEvaluator;
  * @author Mike Sobolewski
  * @author Dennis Reedy
  */
-public class Deployment implements Arg, Serializable {
+public class ServiceDeployment implements Arg, Serializable, Deployment {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * There are three types of provisioning: per signature (SELF), for a
-     * collection of signatures as a federation (all signatures in exertion with
-     * Type.FED), and no provisioning (suspended provisioning) for a signature
-     * (NONE)
-     */
-    public enum Type {
-        SELF, FED, NONE
-    }
-    private Type type = Type.FED;
-    
-    /**
-     * A service can be deployed with uniqueness. If a service is unique, a new instance is always
-     * created. If a service is not unique, the following behavior comes into play:
-     * <ul>
-     *     <li>If the service is @{code Type.SELF} it will be checked to see if has already been deployed. If not
-     *     deployed it will be created in it's own deployment. If found it will not be deployed.</li>
-     *     <li>If the service is @{code Type.FED} it will be checked to see if has already been deployed. If not
-     *     deployed it will be created as part of a deployment. If deployed, the number of instances will be
-     *     incremented within it's current deployment.</li>
-     * </ul>. If a service is not
-     */
-    public enum Unique {
-        YES, NO
-    }
+    private boolean isProvisionable = true;
+	private Type type = Type.FED;
     private Unique unique = Unique.NO;
 
     private int maxPerCybernode;
@@ -81,7 +62,11 @@ public class Deployment implements Arg, Serializable {
     private String providerName;
     private String impl = "sorcer.core.provider.ServiceTasker";
     private String websterUrl = Sorcer.getWebsterUrl();
-    private String[] configs;
+    private String config;
+    private String architecture;
+    private final Set<String> operatingSystems = new HashSet<String>();
+    private final Set<String> ips = new HashSet<String>();
+    private final Set<String> excludeIps = new HashSet<String>();
 
     // an idle time for un-provisioning
     private int idle = 0; /* Value is in minutes */
@@ -90,46 +75,72 @@ public class Deployment implements Arg, Serializable {
     private Boolean fork;
     private String jvmArgs;
 
-    public Deployment() {
+    public ServiceDeployment() {
     }
 
-    public Deployment(final String... configs) {
-        setConfigs(configs);
+    public ServiceDeployment(final String config) {
+        setConfig(config);
     }
 
-    public void setConfigs(final String... configs) {
+    public void setConfig(final String config) {
 /*        for (int i = 0; i < configs.length; i++)
             if (!configs[i].startsWith("/") && !configs[i].startsWith("${"))
                 configs[i] = SorcerEnv.getHomeDir().toString() + File.separatorChar + configs[i];*/
-        this.configs = configs;
+        this.config = config;
     }
 
-    public String[] getConfigs() {
+    public String getConfig() {
         // Workround for running deployment on another machine where SORCER_HOME is different - in fact this
         // should be done in RIO, not here, so it won't help when provision monitor is yet on another machine
         // with another filesystem locations
         PropertyEvaluator propsEval = new PropertyEvaluator();
         propsEval.addDefaultSources();
-        for (int i=0;i<configs.length;i++) {
-            configs[i] = propsEval.eval(configs[i]);
-            if (!GenericUtil.isWindows() && !configs[i].startsWith("/") && !configs[i].startsWith("${"))
-                configs[i] = SorcerEnv.getHomeDir().toString() + File.separatorChar + configs[i];
+        //for (int i=0;i<configs.length;i++) {
+            config = propsEval.eval(config);
+            if (!GenericUtil.isWindows() && !config.startsWith("/") && !config.startsWith("${"))
+                config = SorcerEnv.getHomeDir().toString() + File.separatorChar + config;
             // Escape windows paths with spaces
             //if (GenericUtil.isWindows() && configs[i].contains(" "))
             //    configs[i] = "\""+configs[i]+"\"";
-        }
-        return configs;
+        return config;
     }
 
     public void setName(final String name) {
         this.name = name;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see sorcer.service.Arg#getName()
-     */
+    public void setIps(final String... ips) {
+        Collections.addAll(this.ips, ips);
+    }
+
+    public String[] getIps() {
+        return ips.toArray(new String[ips.size()]);
+    }
+
+    public void setExcludeIps(final String... ips) {
+        Collections.addAll(this.excludeIps, ips);
+    }
+
+    public String[] getExcludeIps() {
+        return excludeIps.toArray(new String[excludeIps.size()]);
+    }
+
+    public void setArchitecture(final String architecture) {
+        this.architecture = architecture;
+    }
+
+    public String getArchitecture() {
+        return architecture;
+    }
+
+    public void setOperatingSystems(final String... operatingSystems) {
+        Collections.addAll(this.operatingSystems, operatingSystems);
+    }
+
+    public String[] getOperatingSystems() {
+        return operatingSystems.toArray(new String[operatingSystems.size()]);
+    }
+
     @Override
     public String getName() {
         return name;
@@ -283,17 +294,46 @@ public class Deployment implements Arg, Serializable {
 		return hexString.toString();
     }
 
+	public boolean isProvisionable() {
+		return isProvisionable;
+	}
+
+	public void setProvisionable(boolean isProvisionable) {
+		this.isProvisionable = isProvisionable;
+	}
+	
+	public void setProvisionable(Strategy.Provision isProvisionable) {
+		if (isProvisionable == Strategy.Provision.YES
+				|| isProvisionable == Strategy.Provision.TRUE) {
+			this.isProvisionable = true;
+		} else {
+			this.isProvisionable = true;
+		}
+	}
+	
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(impl).append("\n");
-        sb.append(Arrays.toString(classpathJars)).append("\n");
-        sb.append(Arrays.toString(codebaseJars)).append("\n");
-        sb.append(Arrays.toString(configs)).append("\n");
-        sb.append("URL: ").append(websterUrl).append("\n");
-        sb.append("idle: ").append(idle).append("\n");
-        sb.append("maintain: ").append(multiplicity).append("\n");
-
-        return sb.toString();
+        return "Deployment {" +
+               "type=" + type +
+               ", unique=" + unique +
+               ", maxPerCybernode=" + maxPerCybernode +
+               ", name='" + name + '\'' +
+               ", providerUuid=" + providerUuid +
+               ", multiplicity=" + multiplicity +
+               ", codebaseJars=" + Arrays.toString(codebaseJars) +
+               ", classpathJars=" + Arrays.toString(classpathJars) +
+               ", serviceType='" + serviceType + '\'' +
+               ", providerName='" + providerName + '\'' +
+               ", impl='" + impl + '\'' +
+               ", websterUrl='" + websterUrl + '\'' +
+               ", config='" + config + '\'' +
+               ", architecture='" + architecture + '\'' +
+               ", operatingSystems=" + operatingSystems +
+               ", ips=" + ips +
+               ", excludeIps=" + excludeIps +
+               ", idle=" + idle +
+               ", fork=" + fork +
+               ", jvmArgs='" + jvmArgs + '\'' +
+               '}';
     }
 }

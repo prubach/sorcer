@@ -25,6 +25,7 @@ import sorcer.core.provider.ProviderRuntime;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
+import sorcer.util.Table;
 
 import com.sleepycat.bind.EntityBinding;
 import com.sleepycat.bind.EntryBinding;
@@ -48,9 +49,7 @@ public class SorcerDatabaseViews {
 	private StoredMap runtimeMap;
 	private StoredMap runtimeByProviderNameMap;
 	private StoredMap contextMap;
-//	private StoredMap tableMap;
-//	private StoredMap varMap;
-//	private StoredMap varModelMap;
+	private StoredMap tableMap;
 	private StoredMap uuidObjectMap;
 
     /**
@@ -85,6 +84,14 @@ public class SorcerDatabaseViews {
 		contextMap = new StoredMap(db.getContextDatabase(),
 				contextKeyBinding, contextDataBinding, true);
 		
+		SerialBinding tableKeyBinding = new SerialBinding(catalog, UuidKey.class);
+		EntityBinding tableDataBinding = new TableBinding(catalog,
+				UuidKey.class, MarshalledData.class);
+		
+		tableMap = new StoredMap(db.getTableDatabase(),
+				tableKeyBinding, tableDataBinding, true);
+	
+			
 		SerialBinding objectKeyBinding = new SerialBinding(catalog, UuidKey.class);
 		EntityBinding objectDataBinding = new UuidObjectBinding(catalog,
 				UuidKey.class, MarshalledData.class);
@@ -111,6 +118,13 @@ public class SorcerDatabaseViews {
 	 */
 	public StoredMap<UuidKey, Context> getContextMap() {
 		return contextMap;
+	}
+
+	/**
+	 * Return a map view of the Table storage container.
+	 */
+	public StoredMap<UuidKey, Table> getTableMap() {
+		return tableMap;
 	}
 
 	/**
@@ -148,6 +162,13 @@ public class SorcerDatabaseViews {
 		return (StoredValueSet) contextMap.values();
 	}
 	
+	/**
+	 * Return an entity set view of the Table storage container.
+	 */
+	public StoredValueSet<Table> getTableSet() {
+		return (StoredValueSet) tableMap.values();
+	}
+
 	/**
 	 * Return an entity set view of the UuidObject storage container.
 	 */
@@ -304,6 +325,59 @@ public class SorcerDatabaseViews {
 		@Override
 		public Object objectToKey(Object object) {
 			return new UuidKey(((Context)object).getId());
+		}
+	}
+	
+	/**
+	 * TableBinding is used to bind the stored key/data entry pair to a
+	 * combined data object (entity).
+	 */
+	public static class TableBinding extends SerialSerialBinding {
+
+		/**
+		 * Construct the binding object.
+		 */
+		private TableBinding(ClassCatalog classCatalog, Class keyClass, Class dataClass) {
+			super(classCatalog, keyClass, dataClass);
+		}
+		
+		/**
+		 * Return the entity as the stored data. 
+		 */
+		public Object objectToData(Object object) {
+			MarshalledData mTable = null;
+			try {
+				mTable = new MarshalledData(object);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return mTable;
+		}
+
+		/* (non-Javadoc)
+		 * @see com.sleepycat.bind.serial.SerialSerialBinding#entryToObject(java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public Object entryToObject(Object keyInput, Object object) {
+			Table table = null;
+			MarshalledData md = (MarshalledData)object;
+			try {
+				table = (Table)md.get();
+				table.setId(((UuidKey)keyInput).getId());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			return table;
+		}
+
+		/* (non-Javadoc)
+		 * @see com.sleepycat.bind.serial.SerialSerialBinding#objectToKey(java.lang.Object)
+		 */
+		@Override
+		public Object objectToKey(Object object) {
+			return new UuidKey(((Table)object).getId());
 		}
 	}
 		

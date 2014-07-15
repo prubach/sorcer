@@ -212,11 +212,11 @@ import java.util.logging.Logger;
 		this.closure = closure;
 	}
 
-	public Context<?> getConditionalContext() {
+	public Context getConditionalContext() {
 		return conditionalContext;
 	}
 
-	public void setConditionalContext(Context<?> conditionaContext) {
+	public void setConditionalContext(Context conditionaContext) {
 		this.conditionalContext = conditionaContext;
 	}
 	

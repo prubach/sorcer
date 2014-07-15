@@ -52,7 +52,7 @@ import org.rioproject.opstring.OperationalStringException;
 import org.rioproject.opstring.OperationalStringManager;
 import org.rioproject.opstring.ServiceElement;
 
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.provider.Jobber;
 import sorcer.service.ContextException;
 import sorcer.service.ExertionException;
@@ -75,7 +75,7 @@ public class Util {
                //            deploy(configuration("tests/int-tests/target/test-classes/multiplier-prv.config"),
                                deploy(configuration("${sys.sorcer.home}/configs/int-tests/deployment/multiplier-prv.config"),
                                   idle(1),
-                                  Deployment.Type.SELF)),
+                                  ServiceDeployment.Type.SELF)),
                        context("multiply", input("arg/x1", 10.0d),
                                input("arg/x2", 50.0d), out("result/y1")));
 

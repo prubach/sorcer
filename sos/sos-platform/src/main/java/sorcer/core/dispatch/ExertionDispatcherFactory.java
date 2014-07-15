@@ -25,16 +25,13 @@ import java.util.logging.Logger;
 
 import net.jini.core.lease.Lease;
 import net.jini.lease.LeaseRenewalManager;
-import sorcer.core.deploy.Deployment;
-import sorcer.core.monitor.MonitorSessionManagement;
-import sorcer.core.monitor.MonitoringManagement;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.monitor.MonitoringSession;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.Dispatcher;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.core.loki.member.LokiMemberUtil;
-import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.service.*;
 import sorcer.service.monitor.MonitorUtil;
 
@@ -72,7 +69,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                                        Provider provider) throws DispatcherException {
         Dispatcher dispatcher = null;
         ProvisionManager provisionManager = null;
-        List<Deployment> deployments = ((ServiceExertion)exertion).getDeployments();
+        List<ServiceDeployment> deployments = ((ServiceExertion)exertion).getDeployments();
         if (deployments.size() > 0)
             provisionManager = new ProvisionManager(exertion);
         try {
@@ -181,7 +178,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
     @Override
     public SpaceTaskDispatcher createDispatcher(Task task, Provider provider, String... config) throws DispatcherException {
         ProvisionManager provisionManager = null;
-        List<Deployment> deployments = task.getDeployments();
+        List<ServiceDeployment> deployments = task.getDeployments();
         if (deployments.size() > 0)
             provisionManager = new ProvisionManager(task);
 

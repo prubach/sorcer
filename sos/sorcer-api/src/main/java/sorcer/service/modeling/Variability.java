@@ -93,10 +93,6 @@ public interface Variability<T> extends Identifiable, Evaluation<T>, Perturbatio
 	
 	public boolean isValueCurrent();
 
-	public Context getScope();
-	
-	public void setScope(Context scope);
-	
 	public void valueChanged(Object obj) throws EvaluationException,
 			RemoteException;
 

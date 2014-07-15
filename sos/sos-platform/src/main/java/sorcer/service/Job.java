@@ -20,10 +20,7 @@ package sorcer.service;
 
 import java.rmi.RemoteException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
@@ -33,8 +30,10 @@ import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.co.tuple.Entry;
+import sorcer.core.ComponentFidelityInfo;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ControlContext;
+import sorcer.core.context.FidelityContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.provider.Jobber;
@@ -106,9 +105,9 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 		this.description = description;
 	}
 
-	public Job(String name, String description, List<Signature> signatures) {
+	public Job(String name, String description, ServiceFidelity fidelity) {
 		this(name, description);
-		this.signatures = signatures;
+		this.fidelity = fidelity;
 	}
 
 	/**
@@ -122,23 +121,30 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 		// s.setServiceType(Jobber.class.getName());
 		s.setProviderName(null);
 		s.setType(Signature.Type.SRV);
-		signatures.add(s); // Add the signature
+		fidelity.add(s); // Add the signature
 	}
 
-	public List<Signature> getSignatures() {
-//TODO check...
-//		if (signatures != null)
-//			for (int i = 0; i < signatures.size(); i++)
+	public ServiceFidelity getFidelity() {
+//		if (fidelity != null)
+//			for (int i = 0; i < fidelity.size(); i++)
 //				signatures.get(i).setProviderName(controlContext.getRendezvousName());
-		return signatures;
+		return fidelity;
 	}
 
 	@Override
 	public boolean isJob() {
 		return true;
 	}
-
-    public boolean hasChild(String childName) {
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Exertion#isCompound()
+	 */
+	@Override
+	public boolean isCompound() {
+		return true;
+	}
+	
+	public boolean hasChild(String childName) {
 		for (Exertion ext : exertions) {
 			if (ext.getName().equals(childName))
 				return true;
@@ -620,6 +626,17 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 			}
 		}
 		return exti;
+	}
+	
+	public void applyFidelityContext(FidelityContext fiContext) throws ExertionException {
+		Collection<FidelityInfo> fidelities = fiContext.values();
+		ServiceExertion se = null;
+		for (FidelityInfo fi : fidelities) {
+			if (fi instanceof ComponentFidelityInfo) {
+				se = (ServiceExertion) getComponentExertion(((ComponentFidelityInfo)fi).getPath());				
+				se.selectFidelity(fi.getName());
+			}
+		}
 	}
 	
 	public void reset(int state) {

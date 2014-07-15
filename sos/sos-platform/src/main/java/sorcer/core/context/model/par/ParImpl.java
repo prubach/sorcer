@@ -4,7 +4,7 @@ import sorcer.core.context.ServiceContext;
 import sorcer.service.modeling.Variability;
 import sorcer.service.*;
 import sorcer.util.bdb.sdb.DbpUtil;
-import sorcer.util.bdb.sdb.SdbUtil;
+import sorcer.util.url.sos.SdbUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;

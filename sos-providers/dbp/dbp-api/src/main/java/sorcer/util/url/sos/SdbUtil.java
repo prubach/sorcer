@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package sorcer.util.bdb.sdb;
+package sorcer.util.url.sos;
 
 
 import java.net.URL;

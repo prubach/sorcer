@@ -122,8 +122,8 @@ public class operator {
 		return list;
 	}
 
-	public static List<String> header(String... elems) {
-		List<String> out = new header<String>(elems.length);
+	public static List<String> Header(String... elems) {
+		List<String> out = new Header<String>(elems.length);
 		for (String each : elems) {
 			out.add(each);
 		}
@@ -258,14 +258,14 @@ public class operator {
 		return name + count++;
 	}
 	
-	static class header<T> extends ArrayList<T> {
+	public static class Header<T> extends ArrayList<T> {
 		private static final long serialVersionUID = 1L;
 
-		public header() {
+		public Header() {
 			super();
 		}
 		
-		public header(int initialCapacity) {
+		public Header(int initialCapacity) {
 			super(initialCapacity);
 		}
 	}

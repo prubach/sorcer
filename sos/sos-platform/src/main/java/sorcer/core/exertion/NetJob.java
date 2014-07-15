@@ -45,7 +45,7 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 	public NetJob(String name) {
 		super(name);
 		try {
-			signatures.add(new NetSignature("service", Jobber.class, Type.SRV));
+			fidelity.add(new NetSignature("service", Jobber.class, Type.SRV));
 		} catch (SignatureException e) {
 			e.printStackTrace();
 		}

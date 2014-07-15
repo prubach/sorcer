@@ -22,7 +22,7 @@ import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.EmptyConfiguration;
 import net.jini.core.transaction.TransactionException;
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
 import sorcer.util.ServiceExerter;
@@ -116,7 +116,7 @@ public class ScriptThread extends Thread {
                                             "exertionDeploymentConfig", String.class,
                                             null);
                             if (configFile != null)
-                                result = esh.exert(new Deployment(configFile));
+                                result = esh.exert(new ServiceDeployment(configFile));
                             else
                                 result = esh.exert();
                         } catch (ConfigurationException e) {

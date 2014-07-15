@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 
-package sorcer.core.context.model.par;
+package sorcer.co.tuple;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import sorcer.co.tuple.Entry;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParSet;
 import sorcer.service.EvaluationException;
-import sorcer.service.VarException;
-
 
 /**
  * @author Mike Sobolewski
@@ -83,7 +80,7 @@ public class EntryList extends ArrayList<Entry> {
 		}
 	}
 		
-	public Entry getEntry(String entryName) throws VarException {
+	public Entry getEntry(String entryName) {
 		for (Entry e : this) {
 			if (e.getName().equals(entryName)) {
 				return e;

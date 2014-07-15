@@ -18,7 +18,7 @@ package sorcer.service;
  */
 
 
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.util.Sorcer;
@@ -50,8 +50,8 @@ public class SignatureFactory {
                     sig.setType((Type) o);
                 } else if (o instanceof ReturnPath) {
                     sig.setReturnPath((ReturnPath) o);
-                } else if (o instanceof Deployment) {
-                    sig.setDeployment((Deployment)o);
+                } else if (o instanceof ServiceDeployment) {
+                    sig.setDeployment((ServiceDeployment)o);
                 }
 
             }

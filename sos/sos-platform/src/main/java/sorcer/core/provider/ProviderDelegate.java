@@ -722,9 +722,9 @@ public class ProviderDelegate {
 			ContextException {
 		// prepare a default net batch task (has all sigs of SRV type) 
 		// and make the last signature as master SRV type only.
-		List<Signature> alls = task.getSignatures();
+		List<Signature> alls = task.getFidelity();
 		Signature lastSig = alls.get(alls.size() - 1);
-		if (alls.size() > 1 && task.isNotCorrectBatch()
+		if (alls.size() > 1 && task.isBatch()
 				&& (lastSig instanceof NetSignature)) {
 			for (int i = 0; i < alls.size() - 1; i++) {
 				alls.get(i).setType(Signature.PRE);

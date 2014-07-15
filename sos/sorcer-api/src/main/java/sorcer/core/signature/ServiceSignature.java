@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import net.jini.core.lookup.ServiceID;
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.service.*;
 
 import static sorcer.core.SorcerConstants.*;
@@ -100,7 +100,7 @@ public class ServiceSignature implements Signature {
 
 	private String portalURL;
 
-	private Deployment deployment;
+	private ServiceDeployment deployment;
 
 	public ServiceSignature() {
 		providerName = ANY;
@@ -467,11 +467,11 @@ public class ServiceSignature implements Signature {
 		return returnPath;
 	}
 	
-	public Deployment getDeployment() {
+	public ServiceDeployment getDeployment() {
 		return deployment;
 	}
 
-	public void setDeployment(Deployment deployment) {
+	public void setDeployment(ServiceDeployment deployment) {
 		this.deployment = deployment;
 	}
 

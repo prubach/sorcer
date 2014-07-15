@@ -95,8 +95,8 @@ public class Task extends ServiceExertion {
 
 	public Task(String name, String description, List<Signature> signatures) {
 		this(name, description);
-		if (this.signatures != null) {
-			this.signatures.addAll(signatures);
+		if (this.fidelity != null) {
+			this.fidelity.addAll(signatures);
 		}
 	}
 
@@ -139,6 +139,11 @@ public class Task extends ServiceExertion {
 		throw new ExertionException("Not implemneted by this Task: " + this);
 	}
 
+    public void updateConditionalContext(Conditional condition)
+            throws EvaluationException, ContextException {
+        // implement is subclasses
+    }
+
 	public void setIndex(int i) {
 		index = new Integer(i);
 	}
@@ -150,7 +155,7 @@ public class Task extends ServiceExertion {
 	
 	@Override
 	public boolean isCmd()  {
-		return (signatures.size() == 1);
+		return (fidelity.size() == 1);
 	}
 	
 	public boolean hasChild(String childName) {
@@ -165,9 +170,9 @@ public class Task extends ServiceExertion {
 	public void setOwnerId(String oid) {
 		// Util.debug("Owner ID: " +oid);
 		this.ownerId = oid;
-		if (signatures != null)
-			for (int i = 0; i < signatures.size(); i++)
-				((NetSignature) signatures.get(i)).setOwnerId(oid);
+		if (fidelity != null)
+			for (int i = 0; i < fidelity.size(); i++)
+				((NetSignature) fidelity.get(i)).setOwnerId(oid);
 		// Util.debug("Context : "+ context);
 		if (dataContext != null)
 			dataContext.setOwnerID(oid);
@@ -208,12 +213,12 @@ public class Task extends ServiceExertion {
 		sb.append(", selector: ").append(getSelector());
 		sb.append(", parent ID: ").append(parentId);
 
-		if (signatures.size() == 1) {
+		if (fidelity.size() == 1) {
             ///
             if (getProcessSignature()!=null)
 			    sb.append(getProcessSignature().getProviderName());
 		} else {
-			for (Signature s : signatures) {
+			for (Signature s : fidelity) {
 				sb.append("\n  ").append(s);
 			}
 		}

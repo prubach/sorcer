@@ -36,7 +36,7 @@ import org.rioproject.opstring.OperationalString;
 import org.rioproject.opstring.OperationalStringManager;
 import org.rioproject.opstring.ServiceElement;
 
-import sorcer.core.deploy.Deployment;
+import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.deploy.OperationalStringFactory;
 import sorcer.service.Accessor;
 import sorcer.service.Exertion;
@@ -62,7 +62,7 @@ public class ProvisionManager {
 	}
 	
     public boolean deployServices() throws DispatcherException {
-        Map<Deployment.Unique, List<OperationalString>> deployments;
+        Map<ServiceDeployment.Unique, List<OperationalString>> deployments;
         try {
             deployments = OperationalStringFactory.create(exertion);
         } catch (Exception e) {
@@ -77,12 +77,12 @@ public class ProvisionManager {
             ProvisionMonitor provisionMonitor = Accessor.getService(ProvisionMonitor.class);
             //ProvisionMonitor provisionMonitor = (ProvisionMonitor)ProviderLookup.getService(ProvisionMonitor.class);
             if (provisionMonitor != null) {
-                for (Map.Entry<Deployment.Unique, List<OperationalString>> entry : deployments.entrySet()) {
+                for (Map.Entry<ServiceDeployment.Unique, List<OperationalString>> entry : deployments.entrySet()) {
                     for (OperationalString deployment : entry.getValue()) {
                         logger.info(String.format("Processing deployment %s", deployment.getName()));
                         deployAdmin = (DeployAdmin) provisionMonitor.getAdmin();
                         if(deployAdmin.hasDeployed(deployment.getName())) {
-                            if (entry.getKey() == Deployment.Unique.YES) {
+                            if (entry.getKey() == ServiceDeployment.Unique.YES) {
                                 String newName = createDeploymentName(deployment.getName(),
                                                                       deployAdmin.getOperationalStringManagers());
                                 logger.info(String.format("Deployment for %s already exists, created new name [%s], " +
