@@ -31,13 +31,13 @@ public class CallerTester extends ServiceRequestor{
         logger.info("Starting CallerTester");
 
         Context ctx = new PositionalContext("caller");
-        String[] comms = new String[] { "ls" };
-        String[] argss = new String[] { "-al" };
+        String[] comms = new String[] { "java" };
+        String[] argss = new String[] { "-version" };
         //String[] argss = new String[] { "-s", "*" };
         CallerUtil.setCmds(ctx, comms);
         CallerUtil.setArgs(ctx, argss);
         CallerUtil.setBin(ctx);
-        CallerUtil.setWorkingDir(ctx, "/opt");
+        CallerUtil.setWorkingDir(ctx, ".");
 
         Task t1 = task("test", sig("execute", Caller.class), ctx);
 

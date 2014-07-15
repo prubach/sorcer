@@ -450,6 +450,26 @@ public class SorcerEnv {
     }
 
     /**
+     * Gets a system Cataloger name for this environment.
+     *
+     * @return a name of the system Cataloger
+     */
+    public static String getCatalogerName() {
+        return getProperty(P_CATALOGER_NAME, "Cataloger");
+    }
+
+    /**
+     * Returns an the actual Cataloger name, eventually suffixed, to use with
+     * this environment.
+     *
+     * @return a Cataloger actual name
+     */
+    public static String getActualCatalogerName() {
+        return getActualName(getCatalogerName());
+    }
+
+
+    /**
      * Checks which host to use for RMI.
      *
      * @return a hostname
