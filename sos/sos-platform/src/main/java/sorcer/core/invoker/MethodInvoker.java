@@ -37,7 +37,7 @@ import sorcer.util.StringUtils;
  */
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class MethodInvoker<T> extends Invoker<T> implements MethodInvoking<T> {
+public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvoking<T> {
 
 	private static final long serialVersionUID = -1158778636907725414L;
 

@@ -31,7 +31,7 @@ import sorcer.service.Invocation;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class InvokeIncrementor extends Invoker<Integer> implements Incrementor<Integer> {
+public class InvokeIncrementor extends ServiceInvoker<Integer> implements Incrementor<Integer> {
 
     private static final long serialVersionUID = 6556962121786495504L;
 

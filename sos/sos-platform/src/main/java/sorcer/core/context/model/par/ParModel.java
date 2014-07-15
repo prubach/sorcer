@@ -25,8 +25,8 @@ import java.util.Vector;
 
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
+import sorcer.core.invoker.ServiceInvoker;
 import sorcer.service.modeling.Variability;
-import sorcer.core.invoker.Invoker;
 import sorcer.service.*;
 
 import static sorcer.core.SorcerConstants.*;
@@ -222,8 +222,8 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 						result = ((Agent)o).getValue(entries);
 					} else {
 						Object i = ((Par) get(context.getExecPath().path())).asis();
-						if (i instanceof Invoker) {
-							result = ((Invoker) i).invoke(entries);
+						if (i instanceof ServiceInvoker) {
+							result = ((ServiceInvoker) i).invoke(entries);
 					} else
 						throw new InvocationException("No such invoker at: "
 							+ context.getReturnPath().path);

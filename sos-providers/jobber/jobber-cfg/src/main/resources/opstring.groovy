@@ -16,13 +16,13 @@ def String getCodebase() {
     return SorcerEnv.getWebsterUrl();
 }
 
-deployment(name: 'jobber-provider') {
+deployment(name: 'rendezvous-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
     def jobber = [
-            'impl': 'org.sorcersoft.sorcer:jobber-cfg:' + SorcerConstants.SORCER_VERSION,
+            'impl': 'org.sorcersoft.sorcer:rendezvous-cfg:' + SorcerConstants.SORCER_VERSION,
             'dl'  : 'org.sorcersoft.sorcer:default-codebase:pom:' + SorcerConstants.SORCER_VERSION
     ]
 
@@ -31,10 +31,10 @@ deployment(name: 'jobber-provider') {
             classes 'sorcer.core.provider.Jobber'
             artifact jobber.dl
         }
-        implementation(class: 'sorcer.core.provider.jobber.ServiceJobber') {
+        implementation(class: 'sorcer.core.provider.rendezvous.ServiceJobber') {
             artifact jobber.impl
         }
-        configuration file: 'classpath:jobber.config'
+        configuration file: 'classpath:rendezvous.config'
         maintain 1
     }
 }

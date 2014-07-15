@@ -54,7 +54,7 @@ import java.rmi.RemoteException;
 public interface MonitorSessionManagement extends MonitorManagement {
 	
 	/**
-	 * Makes this an active session. The jobber decides the lease duration and
+	 * Makes this an active session. The rendezvous decides the lease duration and
 	 * the timeout after which the monitor will call on monitorables that the
 	 * job is failed and report back to the Listener that the exertion of this
 	 * session has failed.

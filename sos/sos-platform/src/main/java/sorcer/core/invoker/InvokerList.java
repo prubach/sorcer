@@ -25,13 +25,14 @@ import java.util.Set;
 
 import sorcer.co.tuple.Tuple2;
 import sorcer.service.EvaluationException;
+import sorcer.service.Service;
 
 /**
  * @author Mike Sobolewski
  */
 
 @SuppressWarnings("rawtypes")
-public class InvokerList extends ArrayList<Invoker> {
+public class InvokerList extends ArrayList<ServiceInvoker> {
 	
 	private static final long serialVersionUID = -8243166261682952591L;
 	
@@ -43,7 +44,7 @@ public class InvokerList extends ArrayList<Invoker> {
 		super(size);
 	}
 
-	public InvokerList(Set<Invoker> invokerSet) {
+	public InvokerList(Set<ServiceInvoker> invokerSet) {
 		addAll(invokerSet);
 	}
 
@@ -54,22 +55,22 @@ public class InvokerList extends ArrayList<Invoker> {
 		}
 	}
 
-	public InvokerList(Invoker[] invokerArray) {
+	public InvokerList(ServiceInvoker[] invokerArray) {
 		super();
-		for (Invoker si : invokerArray) {
+		for (ServiceInvoker si : invokerArray) {
 			add(si);
 		}
 	}
 
-	public <T> InvokerList(List<Invoker> invokerList) {
+	public <T> InvokerList(List<ServiceInvoker> invokerList) {
 		super();
-		for (Invoker si : invokerList) {
+		for (ServiceInvoker si : invokerList) {
 			add(si);
 		}
 	}
 
-	public Invoker getInvoker(String invokerName) throws EvaluationException {
-		for (Invoker si : this) {
+	public ServiceInvoker getInvoker(String invokerName) throws EvaluationException {
+		for (ServiceInvoker si : this) {
 			if (si.getName().equals(invokerName)) {
 				return si;
 			}
@@ -77,7 +78,7 @@ public class InvokerList extends ArrayList<Invoker> {
 		return null;
 	}
 
-	public void setInvoker(String invokerName, Invoker invoker)
+	public void setInvoker(String invokerName, ServiceInvoker invoker)
 			throws EvaluationException {
 		for (int i = 0; i < this.size(); i++) {
 			if (get(i).getName().equals(invokerName)) {
@@ -93,7 +94,7 @@ public class InvokerList extends ArrayList<Invoker> {
 			allNames.addAll(nl);
 		}
 		InvokerList out = new InvokerList();
-		for (Invoker si : this) {
+		for (ServiceInvoker si : this) {
 			if (allNames.contains(si.getName())) {
 				out.add(si);
 			}
@@ -104,7 +105,7 @@ public class InvokerList extends ArrayList<Invoker> {
 	public InvokerList selectInvokers(String... invokerNames) {
 		List<String> names = Arrays.asList(invokerNames);
 		InvokerList out = new InvokerList();
-		for (Invoker si : this) {
+		for (ServiceInvoker si : this) {
 			if (names.contains(si.getName())) {
 				out.add(si);
 			}
@@ -114,11 +115,11 @@ public class InvokerList extends ArrayList<Invoker> {
 
 	@Override
 	public boolean remove(Object obj) {
-		if (obj == null || !(obj instanceof Invoker)) {
+		if (obj == null || !(obj instanceof ServiceInvoker)) {
 			return false;
 		} else {
-			for (Invoker si : this) {
-				if (si.getName().equals(((Invoker) obj).getName())) {
+			for (ServiceInvoker si : this) {
+				if (si.getName().equals(((ServiceInvoker) obj).getName())) {
 					super.remove(si);
 					return true;
 				}
@@ -157,14 +158,14 @@ public class InvokerList extends ArrayList<Invoker> {
 		return values;
 	}
 
-	public Invoker[] toArray() {
-		Invoker[] sia = new Invoker[size()];
+	public ServiceInvoker[] toArray() {
+        ServiceInvoker[] sia = new ServiceInvoker[size()];
 		return toArray(sia);
 	}
 
-	public static InvokerList asList(Invoker[] array) {
+	public static InvokerList asList(ServiceInvoker[] array) {
 		InvokerList sil = new InvokerList(array.length);
-		for (Invoker si : array)
+		for (ServiceInvoker si : array)
 			sil.add(si);
 		return sil;
 	}

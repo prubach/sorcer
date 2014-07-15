@@ -33,7 +33,7 @@ import static sorcer.util.StringUtils.tName;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class RunnableInvoker<T> extends Invoker<T> {
+public class RunnableInvoker<T> extends ServiceInvoker<T> {
 	
 	private static final long serialVersionUID = 4946544252868946576L;
 	

@@ -34,7 +34,7 @@ import sorcer.service.InvocationException;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class CallableInvoker<T> extends Invoker<T> {
+public class CallableInvoker<T> extends ServiceInvoker<T> {
 
 	private static final long serialVersionUID = 7263463730257328563L;
 

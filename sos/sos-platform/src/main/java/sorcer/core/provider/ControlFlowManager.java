@@ -20,7 +20,6 @@ package sorcer.core.provider;
 import static sorcer.service.TaskFactory.task;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +31,7 @@ import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.exertion.OptExertion;
-import sorcer.core.provider.jobber.ServiceConcatenator;
+import sorcer.core.provider.rendezvous.ServiceConcatenator;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
@@ -408,8 +407,8 @@ public class ControlFlowManager {
         this.concatenator = concatenator;
     }
 
-    public void setJobber(ServiceJobber jobber) {
-        this.jobber = jobber;
+    public void setJobber(ServiceJobber rendezvous) {
+        this.rendezvous = rendezvous;
     }
 
     public void setSpacer(Spacer spacer) {

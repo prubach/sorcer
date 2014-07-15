@@ -166,7 +166,7 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	
 	/**
 	 * Returns a control context (service control strategy) of this exertion to be 
-	 * realized by a tasker, jobber or spacer.
+	 * realized by a tasker, rendezvous or spacer.
 	 * 
 	 * @return a control context
 	 * @see #getSignatures

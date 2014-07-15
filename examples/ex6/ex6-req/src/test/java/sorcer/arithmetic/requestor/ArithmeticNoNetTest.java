@@ -1,28 +1,23 @@
 package sorcer.arithmetic.requestor;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.arithmetic.provider.AdderImpl;
 import sorcer.arithmetic.provider.ArithmeticImpl;
 import sorcer.arithmetic.provider.MultiplierImpl;
 import sorcer.arithmetic.provider.SubtractorImpl;
-import sorcer.core.provider.jobber.ServiceJobber;
-import sorcer.core.requestor.ServiceRequestor;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Job;
 import sorcer.service.Signature;
-import sorcer.service.Direction;
+import sorcer.service.Signature.Direction;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
-
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
 import static sorcer.eo.operator.*;

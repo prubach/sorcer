@@ -25,7 +25,7 @@ import sorcer.core.exertion.AltExertion;
 import sorcer.core.exertion.LoopExertion;
 import sorcer.core.exertion.OptExertion;
 import sorcer.core.invoker.GroovyInvoker;
-import sorcer.core.invoker.Invoker;
+import sorcer.core.invoker.ServiceInvoker;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -129,7 +129,7 @@ import java.util.logging.Logger;
 		} else if (evaluationPath != null && conditionalContext != null) {
 			obj = conditionalContext.getValue(evaluationPath);
 		} else if (closureExpression !=  null && conditionalContext != null) {
-			Invoker invoker = new GroovyInvoker(closureExpression, pars(pars));
+			ServiceInvoker invoker = new GroovyInvoker(closureExpression, pars(pars));
 			try {
 				invoker.setScope(conditionalContext);
 			} catch (RemoteException re) {
@@ -240,8 +240,8 @@ import java.util.logging.Logger;
 			if (path.equals(_closure_)) {
 				i.remove();
 			}
-			if (entry.getValue() instanceof Invoker) {
-				clenupContextScripts(((Invoker) entry.getValue())
+			if (entry.getValue() instanceof ServiceInvoker) {
+				clenupContextScripts(((ServiceInvoker) entry.getValue())
 						.getScope());
 			} else if (entry.getValue() instanceof Par
 					&& ((ServiceContext) ((Par) entry.getValue()).getScope())

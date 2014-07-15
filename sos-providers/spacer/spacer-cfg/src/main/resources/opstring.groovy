@@ -32,7 +32,7 @@ deployment(name: 'spacer-provider') {
             classes 'sorcer.core.provider.Spacer'
             artifact ref: 'spacer-api'
         }
-        implementation(class: 'sorcer.core.provider.jobber.ServiceSpacer') {
+        implementation(class: 'sorcer.core.provider.rendezvous.ServiceSpacer') {
             artifact ref: 'spacer-cfg'
         }
         configuration file: 'classpath:spacer.config'

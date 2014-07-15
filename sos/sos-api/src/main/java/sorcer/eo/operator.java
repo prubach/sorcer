@@ -46,6 +46,7 @@ import sorcer.core.signature.*;
 import sorcer.service.*;
 import sorcer.service.Signature.Kind;
 import sorcer.service.Signature.Type;
+import sorcer.service.Signature.Direction;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Monitor;

@@ -75,7 +75,7 @@ import sorcer.service.Scopable;
  * of the context.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class Invoker<T> extends Observable implements Identifiable, Scopable, Evaluator<T>, Invocation<T>, Observer, Serializable {
+public class ServiceInvoker<T> extends Observable implements Identifiable, Scopable, Evaluator<T>, Invocation<T>, Observer, Serializable {
 
 	private static final long serialVersionUID = -2007501128660915681L;
 	
@@ -103,45 +103,45 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 	protected ArgSet pars = new ArgSet();
 
 	/** Logger for logging information about instances of this type */
-	static final Logger logger = Logger.getLogger(Invoker.class
+	static final Logger logger = Logger.getLogger(ServiceInvoker.class
 			.getName());
 
-	public Invoker() {
+	public ServiceInvoker() {
 		this.name = defaultName + count++;
 		invokeContext = new ParModel("model/par");
 	}
 	
-	public Invoker(String name) {
+	public ServiceInvoker(String name) {
 		if (name == null)
 			this.name = defaultName + count++;
 		else
 			this.name = name;
 	}
 	
-	public Invoker(ParModel context) {
+	public ServiceInvoker(ParModel context) {
 		this(context.getName());
 		invokeContext = context;
 	}
 	
-	public Invoker(ParModel context, Evaluator evaluator, Par... pars) {
+	public ServiceInvoker(ParModel context, Evaluator evaluator, Par... pars) {
 		this(context);
 		this.evaluator = evaluator;
 		this.pars = new ArgSet(pars);
 	}
 	
-	public Invoker(ParModel context, Evaluator evaluator, ArgSet pars) {
+	public ServiceInvoker(ParModel context, Evaluator evaluator, ArgSet pars) {
 		this(context);
 		this.evaluator = evaluator;
 		this.pars = pars;
 	}
 	
-	public Invoker(Evaluator evaluator, ArgSet pars) {
+	public ServiceInvoker(Evaluator evaluator, ArgSet pars) {
 		this(((Identifiable)evaluator).getName());
 		this.evaluator = evaluator;
 		this.pars = pars;
 	}
 	
-	public Invoker(Evaluator evaluator, Par... pars) {
+	public ServiceInvoker(Evaluator evaluator, Par... pars) {
 		this(((Identifiable)evaluator).getName());
 		this.evaluator = evaluator;
 		this.pars = new ArgSet(pars);
@@ -167,12 +167,12 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 	 * @param pars
 	 *            the pars to set
 	 */
-	public Invoker setPars(ArgSet pars) {
+	public ServiceInvoker setPars(ArgSet pars) {
 		this.pars = pars;
 		return this;
 	}
 
-	public Invoker setPars(Arg[] pars) {
+	public ServiceInvoker setPars(Arg[] pars) {
 		this.pars = new ArgSet(pars);
 		return this;
 	}
@@ -191,7 +191,7 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 			if (evaluator != null)
 				return (T) invokeEvaluator(entries);
 			else
-				throw new EvaluationException("Not implemented by: " + this.getClass().getName());
+				throw new EvaluationException("Evaluation#getValue() not implemented by: " + this.getClass().getName());
 			
 	}
 
@@ -231,28 +231,25 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 	 * {@link #invoke} so the invoker is aware that the new par may be added to
 	 * the model.
 	 * 
-	 * @param name
-	 *            Name of the variable to be added
-	 * @param value
+	 * @param par
 	 *            Initial value or new value for the variable
 	 * @throws RemoteException
 	 * @throws EvaluationException
-	 * @throws VarException
 	 */
-	public Invoker addPar(Object par) throws EvaluationException,
+	public ServiceInvoker addPar(Object par) throws EvaluationException,
 			RemoteException {
 		if (par instanceof Par) {
-			invokeContext.put(((Par)par).getName(), par);
-			if (((Par)par).asis() instanceof Invoker) {
-			((Invoker) ((Par)par).getValue()).addObserver(this);
-			pars.add((Par)par);
-			value = null;
-			setChanged();
-			notifyObservers(this);
-			valueValid(false);
+			invokeContext.put(((Par) par).getName(), par);
+			if (((Par) par).asis() instanceof ServiceInvoker) {
+				((ServiceInvoker) ((Par) par).getValue()).addObserver(this);
+				pars.add((Par) par);
+				value = null;
+				setChanged();
+				notifyObservers(this);
+				valueValid(false);
 			}
 		} else if (par instanceof Identifiable) {
-			Par p = new ParImpl(((Identifiable)par).getName(), par, invokeContext);
+			Par p = new ParImpl(((Identifiable) par).getName(), par, invokeContext);
 			try {
 				invokeContext.putValue(p.getName(), p);
 			} catch (ContextException e) {
@@ -345,7 +342,8 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 		return value;
 	}
 	
-	private Object invokeEvaluator(Arg... entries) throws InvocationException {
+	private Object invokeEvaluator(Arg... entries)
+			throws InvocationException {
 		init(pars);
 		try {
 			evaluator.addArgs(pars);
@@ -425,8 +423,10 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 	 * 
 	 * @param evaluator
 	 *            the evaluator to set
+	 * @throws RemoteException 
+	 * @throws ContextException 
 	 */
-	public Invoker setEvaluator(Evaluator evaluator) {
+	public ServiceInvoker setEvaluator(Evaluator evaluator) {
 		this.evaluator = evaluator;
 		return this;
 	}
@@ -486,6 +486,22 @@ public class Invoker<T> extends Observable implements Identifiable, Scopable, Ev
 	@Override
 	public ArgSet getArgs() {
 		return pars;
+	}
+	
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluator#setParameterTypes(java.lang.Class[])
+	 */
+	@Override
+	public void setParameterTypes(Class<?>[] types) {
+		// implemented by subclasses
+	}
+
+	/* (non-Javadoc)
+	 * @see sorcer.service.Evaluator#setParameters(java.lang.Object[])
+	 */
+	@Override
+	public void setParameters(Object... args) {
+		// implemented by subclasses
 	}
 
 }

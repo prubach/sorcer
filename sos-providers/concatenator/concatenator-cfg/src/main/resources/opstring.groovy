@@ -31,7 +31,7 @@ deployment(name: 'concatenator-provider') {
             classes 'sorcer.core.provider.Concatenator'
             artifact concatenator.dl
         }
-        implementation(class: 'sorcer.core.provider.jobber.ServiceConcatenator') {
+        implementation(class: 'sorcer.core.provider.rendezvous.ServiceConcatenator') {
             artifact concatenator.impl
         }
         configuration file: 'classpath:concatenator.config'

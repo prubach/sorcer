@@ -33,12 +33,13 @@ import sorcer.co.tuple.EntryList;
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.Tuple2;
 import sorcer.core.context.model.par.*;
-import sorcer.core.invoker.Invoker;
+import sorcer.core.invoker.ServiceInvoker;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.node.ContextNode;
 import sorcer.core.context.node.ContextNodeException;
 import sorcer.core.signature.NetSignature;
+import sorcer.service.Signature.Direction;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.*;
 import sorcer.util.*;
@@ -2992,8 +2993,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (p.getScope() == null || p.getScope().size() == 0)
 			p.setScope(this);
 		try {
-			if (p.asis() instanceof Invoker) {
-				((Invoker) p.asis()).setScope(this);
+			if (p.asis() instanceof ServiceInvoker) {
+				((ServiceInvoker) p.asis()).setScope(this);
 			}
 		} catch (RemoteException e) {
 			throw new ContextException(e);
@@ -3007,8 +3008,8 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		if (p.getScope() == null)
 			p.setScope(new ParModel(p.getName()).append(this));
 		try {
-			if (p.asis() instanceof Invoker) {
-				((Invoker) p.asis()).setScope(this);
+			if (p.asis() instanceof ServiceInvoker) {
+				((ServiceInvoker) p.asis()).setScope(this);
 			}
 		} catch (RemoteException e) {
 			throw new ContextException(e);

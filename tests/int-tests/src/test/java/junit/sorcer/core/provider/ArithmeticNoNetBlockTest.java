@@ -23,12 +23,10 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.core.SorcerConstants;
-import sorcer.core.provider.jobber.ServiceConcatenator;
+import sorcer.core.provider.rendezvous.ServiceConcatenator;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Block;
 import sorcer.service.Task;

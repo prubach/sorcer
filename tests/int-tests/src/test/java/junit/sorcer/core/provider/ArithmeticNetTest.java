@@ -17,11 +17,9 @@
  */
 package junit.sorcer.core.provider;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.core.provider.jobber.ServiceJobber;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
@@ -37,7 +35,6 @@ import sorcer.service.Task;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
-import static sorcer.co.operator.from;
 import static sorcer.eo.operator.*;
 
 

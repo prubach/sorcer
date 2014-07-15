@@ -29,18 +29,7 @@ import sorcer.core.context.model.par.Agent;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
-import sorcer.core.invoker.AltInvoker;
-import sorcer.core.invoker.CallableInvoker;
-import sorcer.core.invoker.CmdInvoker;
-import sorcer.core.invoker.ExertInvoker;
-import sorcer.core.invoker.GroovyInvoker;
-import sorcer.core.invoker.InvokeDoubleIncrementor;
-import sorcer.core.invoker.InvokeIncrementor;
-import sorcer.core.invoker.Invoker;
-import sorcer.core.invoker.LoopInvoker;
-import sorcer.core.invoker.MethodInvoker;
-import sorcer.core.invoker.OptInvoker;
-import sorcer.core.invoker.RunnableInvoker;
+import sorcer.core.invoker.*;
 import sorcer.service.Arg;
 import sorcer.service.ArgSet;
 import sorcer.service.Condition;
@@ -162,8 +151,8 @@ public class operator {
 	}
 	
 	public static void clearPars(Object invoker) throws EvaluationException {
-		if (invoker instanceof Invoker)
-			((Invoker)invoker).clearPars();
+		if (invoker instanceof ServiceInvoker)
+			((ServiceInvoker)invoker).clearPars();
 	}
 	
 	public static ParModel parContext(Identifiable... objects)
@@ -302,7 +291,7 @@ public class operator {
 		return parameters;
 	}
 		
-	public static ArgSet pars(Invoker invoker) {
+	public static ArgSet pars(ServiceInvoker invoker) {
 			return invoker.getPars();
 	}
 	
@@ -324,33 +313,33 @@ public class operator {
 		return ps.toArray();
 	}
 	
-	public static Invoker invoker(Evaluator evaluator, ArgSet pars) {
-		return new Invoker(evaluator,pars);
+	public static ServiceInvoker invoker(Evaluator evaluator, ArgSet pars) {
+		return new ServiceInvoker(evaluator,pars);
 	}
 	
-	public static Invoker invoker(Evaluator evaluator, Par... pars) {
-		return new Invoker(evaluator,pars);
+	public static ServiceInvoker invoker(Evaluator evaluator, Par... pars) {
+		return new ServiceInvoker(evaluator,pars);
 	}
 	
-	public static Invoker invoker(String name, String expression, Arg... pars) {
+	public static ServiceInvoker invoker(String name, String expression, Arg... pars) {
 		//return new Invoker(groovy(expression), pars);
 		return new GroovyInvoker(name, expression, pars);
 	}
 	
-	public static Invoker invoker(String name, String expression, Par... pars) {
+	public static ServiceInvoker invoker(String name, String expression, Par... pars) {
 		//return new Invoker(groovy(expression), pars);
 		return new GroovyInvoker(name, expression, pars);
 	}
 	
-	public static Invoker invoker(String expression, Arg... pars) {
+	public static ServiceInvoker invoker(String expression, Arg... pars) {
 		return new GroovyInvoker(expression, pars);
 	}
 	
-	public static Invoker invoker(String expression) { 
+	public static ServiceInvoker invoker(String expression) {
 		return new GroovyInvoker(expression);
 	}
 	
-	public static Invoker invoker(Exertion exertion) {
+	public static ServiceInvoker invoker(Exertion exertion) {
 		return new ExertInvoker(exertion);
 	}
 	
@@ -417,11 +406,11 @@ public class operator {
 		 return new CallableInvoker(name, callable, pars);
 	}
 
-	public static OptInvoker opt(String name, Invoker target) {
+	public static OptInvoker opt(String name, ServiceInvoker target) {
 		return new OptInvoker(name, target);
 	}
 	
-	public static OptInvoker opt(String name, Condition condition, Invoker target) {
+	public static OptInvoker opt(String name, Condition condition, ServiceInvoker target) {
 		return new OptInvoker(name, condition, target);
 	}
 	
@@ -429,13 +418,13 @@ public class operator {
 		return new AltInvoker(name, invokers);
 	}
 	
-	public static LoopInvoker loop(String name, Condition condition, Invoker target) {
+	public static LoopInvoker loop(String name, Condition condition, ServiceInvoker target) {
 		return new LoopInvoker(name, condition, target);
 	}
 
 	public static LoopInvoker loop(String name, Condition condition, Par target)
 			throws EvaluationException, RemoteException {
-		return new LoopInvoker(name, condition, (Invoker) target.asis());
+		return new LoopInvoker(name, condition, (ServiceInvoker) target.asis());
 	}
 	
 	public static OptInvoker get(AltInvoker invoker, int index) {
@@ -451,7 +440,7 @@ public class operator {
 //		return new ExecPath(name);
 //	}
 	
-	public static ExecPath invoker(String name, Invoker invoker) {
+	public static ExecPath invoker(String name, ServiceInvoker invoker) {
 		return new ExecPath(name, invoker);
 	}
 	
@@ -470,8 +459,8 @@ public class operator {
 	public static Context invokeScope(Par par) throws EvaluationException,
 			RemoteException {
 		Object obj = par.asis();
-		if (obj instanceof Invoker)
-			return ((Invoker) obj).getScope();
+		if (obj instanceof ServiceInvoker)
+			return ((ServiceInvoker) obj).getScope();
 		else
 			return null;
 	}

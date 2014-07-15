@@ -40,7 +40,7 @@ import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Signature;
-import sorcer.service.Direction;
+import sorcer.service.Signature.Direction;
 import sorcer.service.Task;
 
 

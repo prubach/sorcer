@@ -32,7 +32,7 @@ import sorcer.service.EvaluationException;
  * 
  * @param <V>
  */
-public class LoopInvoker<V> extends Invoker<V> {
+public class LoopInvoker<V> extends ServiceInvoker<V> {
 
 	private int min = 0;
 
@@ -40,7 +40,7 @@ public class LoopInvoker<V> extends Invoker<V> {
 
 	protected Condition condition;
 
-	protected Invoker<V> target;
+	protected ServiceInvoker<V> target;
 
 	/**
 	 * Loop: while(true) { operand }
@@ -48,7 +48,7 @@ public class LoopInvoker<V> extends Invoker<V> {
 	 * @param name
 	 * @param var
 	 */
-	public LoopInvoker(String name, Invoker<V> invoker) {
+	public LoopInvoker(String name, ServiceInvoker<V> invoker) {
 		super(name);
 		condition = new Condition(true);
 		target = invoker;
@@ -62,7 +62,7 @@ public class LoopInvoker<V> extends Invoker<V> {
 	 * @param max
 	 * @param var
 	 */
-	public LoopInvoker(String name, int min, int max, Invoker<V> invoker) {
+	public LoopInvoker(String name, int min, int max, ServiceInvoker<V> invoker) {
 		super(name);
 		this.min = min;
 		this.max = max;
@@ -76,7 +76,7 @@ public class LoopInvoker<V> extends Invoker<V> {
 	 * @param condition
 	 * @param var
 	 */
-	public LoopInvoker(String name, Condition condition, Invoker<V> invoker) {
+	public LoopInvoker(String name, Condition condition, ServiceInvoker<V> invoker) {
 		super(name);
 		this.condition = condition;
 		target = invoker;
@@ -93,7 +93,7 @@ public class LoopInvoker<V> extends Invoker<V> {
 	 * @param var
 	 */
 	public LoopInvoker(String name, int min, int max, Condition condition,
-			Invoker<V> invoker) {
+                       ServiceInvoker<V> invoker) {
 		super(name);
 		this.min = min;
 		this.max = max;

@@ -42,7 +42,7 @@ import static sorcer.util.StringUtils.tName;
  */
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class CmdInvoker extends Invoker implements CmdInvoking {
+public class CmdInvoker extends ServiceInvoker implements CmdInvoking {
 
 	private static final long serialVersionUID = -4035189000192693692L;
 	

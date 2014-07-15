@@ -259,7 +259,7 @@ public interface SorcerConstants {
 	
 	public static final String S_PERSISTER_NAME = "sorcer.persister.service";
 
-	public static final String S_JOBBER_NAME = "sorcer.jobber.name";
+	public static final String S_JOBBER_NAME = "sorcer.rendezvous.name";
 
 	public static final String S_EXERTER_NAME = "sorcer.exerter.name";
 

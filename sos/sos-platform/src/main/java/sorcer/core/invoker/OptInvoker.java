@@ -19,45 +19,40 @@ package sorcer.core.invoker;
 
 import java.rmi.RemoteException;
 
-import sorcer.service.Arg;
-import sorcer.service.Condition;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.EvaluationException;
-import sorcer.service.InvocationException;
+import sorcer.service.*;
 
 /**
  * The option Var. There is a single target invoker that executes if the condition is true (like if... then).
  * 
  * @author Mike Sobolewski
  */
-public class OptInvoker<T> extends Invoker<T> {
+public class OptInvoker<T> extends ServiceInvoker<T> {
 	
 	protected Condition condition;
 	
-	protected Invoker<T> target;
+	protected ServiceInvoker<T> target;
 	
 	public OptInvoker(String name) {
 		super(name);
 	}
 		
-	public OptInvoker(String name, Invoker<T> invoker) {
+	public OptInvoker(String name, ServiceInvoker<T> invoker) {
 		super(name);
 		this.condition = new Condition(true);
 		this.target = invoker;
 	}
 	
-	public OptInvoker(String name, Condition condition, Invoker<T> invoker) {
+	public OptInvoker(String name, Condition condition, ServiceInvoker<T> invoker) {
 		super(name);
 		this.condition = condition;
 		this.target = invoker;
 	}
 
-	public Invoker<T> getTarget() {
+	public ServiceInvoker<T> getTarget() {
 		return target;
 	}
 
-	public void setTarget(Invoker<T> target) {
+	public void setTarget(ServiceInvoker<T> target) {
 		this.target = target;
 	}
 

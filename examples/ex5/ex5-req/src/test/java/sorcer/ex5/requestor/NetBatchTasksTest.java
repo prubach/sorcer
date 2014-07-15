@@ -24,8 +24,8 @@ import sorcer.ex5.provider.Adder;
 import sorcer.ex5.provider.Multiplier;
 import sorcer.ex5.provider.Subtractor;
 import sorcer.junit.*;
-import sorcer.service.Direction;
 import sorcer.service.Signature;
+import sorcer.service.Signature.Direction;
 import sorcer.service.Task;
 
 

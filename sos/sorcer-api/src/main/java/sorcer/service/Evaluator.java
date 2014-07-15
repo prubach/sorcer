@@ -41,4 +41,8 @@ public interface  Evaluator <T> extends Evaluation<T> {
 	public void addArgs(ArgSet set) throws EvaluationException, RemoteException;
 	
 	public ArgSet getArgs();
+
+    public void setParameterTypes(Class<?>[] types);
+
+    public void setParameters(Object... args);
 }

@@ -20,12 +20,10 @@ package junit.sorcer.core.exertion;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static sorcer.co.operator.list;
-import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 import static sorcer.eo.operator.*;
 import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
@@ -36,13 +34,10 @@ import junit.sorcer.core.provider.SubtractorImpl;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Context;
 import sorcer.service.ContextException;

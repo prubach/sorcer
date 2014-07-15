@@ -31,7 +31,7 @@ import sorcer.service.EvaluationException;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class AltInvoker<V> extends Invoker<V> {
+public class AltInvoker<V> extends ServiceInvoker<V> {
 	
 	protected List<OptInvoker> optInvokers;
 	

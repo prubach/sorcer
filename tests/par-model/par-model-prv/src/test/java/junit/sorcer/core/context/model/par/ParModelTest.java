@@ -68,8 +68,8 @@ import sorcer.core.context.model.par.Agent;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParImpl;
 import sorcer.core.context.model.par.ParModel;
-import sorcer.core.invoker.Invoker;
-import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.invoker.ServiceInvoker;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
@@ -120,8 +120,8 @@ public class ParModelTest {
 		ParModel pm = new ParModel("par-model");
 		pm.putValue("x", 10.0);
 		pm.putValue("y", 20.0);
-		pm.putValue("add", new Invoker(pm));
-		((Invoker)pm.get("add"))
+		pm.putValue("add", new ServiceInvoker(pm));
+		((ServiceInvoker)pm.get("add"))
 			.setPars(pars("x", "y"))
 			.setEvaluator(invoker("x + y", pars("x", "y")));
 		
@@ -131,7 +131,7 @@ public class ParModelTest {
 		assertEquals(pm.getValue("add"), 30.0);
 
 		logger.info("invoker value: " 
-				+ ((Invoker) pm.get("add")).invoke());
+				+ ((ServiceInvoker) pm.get("add")).invoke());
 
 		pm.setReturnPath("add");
 		logger.info("pm context value: " + pm.getValue());
@@ -670,8 +670,8 @@ public class ParModelTest {
 		final ParModel pm = new ParModel("par-model");
 		pm.putValue("x", 10.0);
 		pm.putValue("y", 20.0);
-		pm.putValue("condition", new Invoker(pm));
-		((Invoker)pm.get("condition"))
+		pm.putValue("condition", new ServiceInvoker(pm));
+		((ServiceInvoker)pm.get("condition"))
 			.setPars(pars("x", "y"))
 			.setEvaluator(invoker("x > y", pars("x", "y")));
 		
@@ -692,9 +692,9 @@ public class ParModelTest {
 	@Test
 	public void conditionClosureContext() throws RemoteException, ContextException {
 		ParModel pm = new ParModel("par-model");
-		pm.putValue(Condition._closure_, new Invoker(pm));
+		pm.putValue(Condition._closure_, new ServiceInvoker(pm));
 		// free variables, no pars for the invoker
-		((Invoker) pm.get(Condition._closure_))
+		((ServiceInvoker) pm.get(Condition._closure_))
 				.setEvaluator(invoker("{ double x, double y -> x > y }", pars("x", "y")));
 
 		Closure c = (Closure)pm.getValue(Condition._closure_);
@@ -772,8 +772,8 @@ public class ParModelTest {
 			 }
 		};
 		
-		add(pm, runnableInvoker("thread", update));	
-		Invoker vloop = loop("vloop", condition(pm, "{ z -> z < 50 }", "z"), z);
+		add(pm, runnableInvoker("thread", update));
+        ServiceInvoker vloop = loop("vloop", condition(pm, "{ z -> z < 50 }", "z"), z);
 		add(pm, vloop);
 		invoke(pm, "thread");
 		

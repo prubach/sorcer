@@ -18,7 +18,7 @@ package sorcer.schema;
  */
 
 
-import sorcer.service.Direction;
+import sorcer.service.Signature.Direction;
 
 import java.io.Serializable;
 

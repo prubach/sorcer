@@ -55,13 +55,11 @@ import org.rioproject.resolver.ResolverHelper;
 import sorcer.core.SorcerEnv;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.context.model.par.ParModel;
-import sorcer.core.invoker.AltInvoker;
-import sorcer.core.invoker.Invocable;
-import sorcer.core.invoker.Invoker;
-import sorcer.core.invoker.OptInvoker;
-import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.invoker.*;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
 import sorcer.junit.SorcerRunner;
+import sorcer.provider.boot.AbstractServiceDescriptor;
 import sorcer.resolver.Resolver;
 import sorcer.service.Condition;
 import sorcer.service.Context;
@@ -290,7 +288,7 @@ public class InvokerTest {
         String cmdToInvoke = "java -cp  " + cp + " " + Volume.class.getName() + " cylinder";
         logger.info("To invoke: " + cmdToInvoke);
 
-        Invoker cmd = cmdInvoker("volume", cmdToInvoke);
+        CmdInvoker cmd = cmdInvoker("volume", cmdToInvoke);
 
 		par("multiply", invoker("x * y", pars("x", "y")));
 		ParModel pm = add(model(), par("x", 10.0), par("y"), par(cmd),
@@ -519,7 +517,7 @@ public class InvokerTest {
 
 		add(pm,
 				loop("loop", condition(pm, "{ x -> x < 20 }", "x"),
-						(Invoker) asis((Par) asis(pm, "y"))));
+						(ServiceInvoker) asis((Par) asis(pm, "y"))));
 
 
 		logger.info("loop value: " + value(pm, "loop"));

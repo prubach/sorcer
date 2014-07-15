@@ -29,7 +29,7 @@ import static sorcer.service.Signature.ReturnPath;
  */
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ExertInvoker extends Invoker implements ExertionInvoking {
+public class ExertInvoker extends ServiceInvoker implements ExertionInvoking {
 	private static final long serialVersionUID = -8257643691945276788L;
 	private Exertion exertion;
 	private String path;

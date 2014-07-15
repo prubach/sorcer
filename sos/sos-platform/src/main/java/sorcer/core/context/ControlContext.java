@@ -39,7 +39,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	private static final long serialVersionUID = 7280700425027799253L;
 
 	// job broker
-	public final static String JOBBER_IS_DIRECT = "jobber" + CPS + "direct";
+	public final static String JOBBER_IS_DIRECT = "rendezvous" + CPS + "direct";
 
 	// control context name
 	public final static String CONTROL_CONTEXT = "control/strategy";

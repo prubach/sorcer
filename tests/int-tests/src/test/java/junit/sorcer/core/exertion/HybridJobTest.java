@@ -18,7 +18,6 @@ import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 import static sorcer.po.operator.pars;
 
-import java.rmi.RMISecurityManager;
 import java.util.logging.Logger;
 
 import junit.sorcer.core.provider.Multiply;
@@ -26,12 +25,10 @@ import junit.sorcer.core.provider.SubtractorImpl;
 
 import org.junit.Test;
 
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import sorcer.core.context.model.par.Par;
-import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.Exertion;
 import sorcer.service.Job;

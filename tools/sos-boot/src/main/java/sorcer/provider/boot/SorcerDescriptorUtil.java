@@ -43,7 +43,7 @@ public class SorcerDescriptorUtil {
     public static final ArtifactCoordinates LOGGER_PRV = sorcer("logger-prv");
     public static final ArtifactCoordinates LOGGER_SUI = sorcer("logger-sui");
     public static final ArtifactCoordinates SPACER_PRV = sorcer("spacer-prv");
-    public static final ArtifactCoordinates JOBBER_PRV = sorcer("jobber-prv");
+    public static final ArtifactCoordinates JOBBER_PRV = sorcer("rendezvous-prv");
 
     public static final ArtifactCoordinates SLEEPYCAT = coords("com.sleepycat:je");
     public static final ArtifactCoordinates SERVICEUI = coords("net.jini.lookup:serviceui");
@@ -135,7 +135,7 @@ public class SorcerDescriptorUtil {
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
-		String implClass = "sorcer.core.provider.jobber.ServiceSpacer";
+		String implClass = "sorcer.core.provider.rendezvous.ServiceSpacer";
 		return (new SorcerServiceDescriptor(spacerCodebase, policy,
 				spacerClasspath, implClass, spacerConfig));
 
@@ -226,7 +226,7 @@ public class SorcerDescriptorUtil {
 				SERVICEUI,
 				EXERTLET_UI,
 		}, hostAddress, Integer.toString(port));
-		String implClass = "sorcer.core.provider.jobber.ServiceJobber";
+		String implClass = "sorcer.core.provider.rendezvous.ServiceJobber";
 		return (new SorcerServiceDescriptor(jobberCodebase, policy,
 				jobberClasspath, implClass, jobberConfig));
 

@@ -23,7 +23,7 @@ import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.invoker.MethodInvoker;
 import sorcer.core.invoker.MethodInvoking;
-import sorcer.core.provider.jobber.ServiceJobber;
+import sorcer.core.provider.rendezvous.ServiceJobber;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.service.Context;
 import sorcer.service.Exertion;

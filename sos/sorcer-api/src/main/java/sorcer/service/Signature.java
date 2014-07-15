@@ -44,6 +44,42 @@ import java.util.Arrays;
 @SuppressWarnings("rawtypes")
 public interface Signature extends Serializable,Comparable, Arg {
 
+
+    public enum Direction implements java.io.Serializable {
+        IN {
+            @Override
+            public String getTag() {
+                return "in";
+            }
+        }, OUT {
+            @Override
+            public String getTag() {
+                return "out";
+            }
+        }, INOUT {
+            @Override
+            public String getTag() {
+                return "inout";
+            }
+            @Override
+            public boolean contains(Direction other) {
+                return true;
+            }
+        };
+
+        abstract public String getTag();
+
+        /**
+         * Returns true if other direction is not wider than this. IN and OUT are considered narrower than OUT
+         * @param other
+         * @return
+         */
+        public boolean contains(Direction other){
+            return equals(other);
+        }
+    }
+
+
 	/**
 	 * Returns an operation name of this signature.
 	 * 

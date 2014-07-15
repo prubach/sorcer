@@ -37,7 +37,7 @@ import sorcer.service.InvocationException;
  * @author Mike Sobolewski
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class GroovyInvoker<T> extends Invoker<T> {
+public class GroovyInvoker<T> extends ServiceInvoker<T> {
 
 	private static final long serialVersionUID = -2821704426312928422L;
 
