@@ -41,6 +41,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.StringUtils;
+import static sorcer.service.Signature.ReturnPath;
 
 import static sorcer.core.SorcerConstants.CPS;
 

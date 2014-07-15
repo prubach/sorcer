@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sorcer.util.bdb;
+package sorcer.util.url;
 
 /**
  * @author Rafał Krupiński
@@ -22,6 +22,6 @@ package sorcer.util.bdb;
 public class HandlerInstaller {
     @javax.inject.Inject
     public HandlerInstaller(sorcer.protocol.ProtocolHandlerRegistry protocolHandlerRegistry) {
-        protocolHandlerRegistry.register("sos", new sorcer.util.bdb.sdb.Handler());
+        protocolHandlerRegistry.register("sos", new sorcer.util.url.sos.Handler());
     }
 }

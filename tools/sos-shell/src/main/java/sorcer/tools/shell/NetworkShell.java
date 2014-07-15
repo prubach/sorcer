@@ -631,7 +631,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		String sorcerHome = System.getenv("SORCER_HOME");
 		if (sorcerHome == null)
 			throw new RuntimeException("SORCER_HOME must be set");
-		props.put("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+		props.put("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.url|org.rioproject.url");
 		Properties addedProps = getConfiguredSystemProperties();
 		props.putAll(addedProps);
 		Properties sysProps = System.getProperties();

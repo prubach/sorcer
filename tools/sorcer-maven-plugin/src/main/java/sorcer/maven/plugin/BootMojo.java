@@ -121,7 +121,7 @@ public class BootMojo extends AbstractSorcerMojo {
 			rioHome = sorcerHome + "/lib/rio";
 		}
 		properties.put(RMI_SERVER_USE_CODEBASE_ONLY, "false");
-		properties.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+		properties.put(PROTOCOL_HANDLER_PKGS, "net.jini.url|sorcer.util.url|org.rioproject.url");
 		properties.put(SECURITY_POLICY, new File(testOutputDir, "sorcer.policy").getPath());
         properties.put(UTIL_LOGGING_CONFIG_FILE, new File(sorcerHome, "configs/jini/scripts/services/logging.properties").getPath());
 		properties.put(SorcerConstants.SORCER_HOME, sorcerHome);

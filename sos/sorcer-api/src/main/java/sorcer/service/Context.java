@@ -444,7 +444,7 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 	 * 
 	 * @return The context path
 	 */
-	public ReturnPath<T> getReturnPath();
+	public Signature.ReturnPath<T> getReturnPath();
 
 	public T getReturnValue(Arg... entries) throws ContextException,
 			RemoteException;
@@ -1136,6 +1136,6 @@ public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
 
     Context getLinkedContext(Link link) throws ContextException;
 
-    Context setReturnPath(ReturnPath returnPath);
+    Context setReturnPath(Signature.ReturnPath returnPath);
 
 }

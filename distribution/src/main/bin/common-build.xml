@@ -476,7 +476,7 @@ SUPPORT for LEGACY service providers built using Ant scripts - not recommended f
 	<target name="junit-test" depends="junit-compile">
 		<junit printsummary="no" fork="yes" haltonfailure="no">
 			<formatter type="plain" usefile="no" />
-            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.bdb.sos|org.rioproject.url" />
+            <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.url|org.rioproject.url" />
             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
 			<sysproperty key="java.awt.headless" value="true" />
 			<batchtest>

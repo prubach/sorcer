@@ -319,7 +319,7 @@ abstract public class
 
     protected static void prepareBasicEnvironment(){
         System.setProperty("java.rmi.server.useCodebaseOnly", "false");
-        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.bdb|org.rioproject.url");
+        System.setProperty("java.protocol.handler.pkgs", "net.jini.url|sorcer.util.url|org.rioproject.url");
         System.setProperty("java.security.policy", System.getenv("SORCER_HOME") + "/configs/sorcer.policy");
         System.setProperty("java.rmi.server.RMIClassLoaderSpi", "sorcer.rio.rmi.SorcerResolvingLoader");
         System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");

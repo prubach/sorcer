@@ -22,6 +22,7 @@ import net.jini.core.transaction.Transaction;
 import sorcer.co.tuple.Entry;
 import sorcer.core.context.model.par.Par;
 import sorcer.service.*;
+import static sorcer.service.Signature.ReturnPath;
 
 /**
  * @author Mike Sobolewski

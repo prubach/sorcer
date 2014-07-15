@@ -17,7 +17,7 @@ import java.util.List;
 import static sorcer.util.url.sos.SdbUtil.getProviderName;
 import static sorcer.util.url.sos.SdbUtil.getServiceType;
 import static sorcer.util.url.sos.SdbUtil.getStoreType;
-
+import static sorcer.service.Signature.ReturnPath;
 /**
  * SORCER class
  * User: prubach

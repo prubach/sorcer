@@ -31,7 +31,7 @@ import sorcer.core.context.Contexts;
 import sorcer.core.context.PositionalContext;
 import sorcer.service.Context;
 import sorcer.service.ContextException;
-import sorcer.service.ReturnPath;
+import static sorcer.service.Signature.ReturnPath;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class Arithmometer implements Serializable {

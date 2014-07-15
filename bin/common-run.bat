@@ -147,7 +147,7 @@ set JAVA_OPTS=-Dsun.net.maxDatagramSockets=1024
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.env.file="%SORCER_HOME%\configs\sorcer.env"
 rem set JAVA_OPTS=%JAVA_OPTS% -Djava.net.preferIPv4Stack=true
 set JAVA_OPTS=%JAVA_OPTS% -Djava.security.policy="%SORCER_HOME%\configs\sorcer.policy"
-set JAVA_OPTS=%JAVA_OPTS% "-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.bdb|org.rioproject.url"
+set JAVA_OPTS=%JAVA_OPTS% "-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.url|org.rioproject.url"
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.useCodebaseOnly=false
 set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir="%SORCER_HOME%\databases"

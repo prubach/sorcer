@@ -35,7 +35,7 @@ import sorcer.protocol.ProtocolHandlerRegistry;
 import sorcer.resolver.Resolver;
 import sorcer.resolver.VersionResolver;
 import sorcer.util.*;
-import sorcer.util.bdb.HandlerInstaller;
+import sorcer.util.url.HandlerInstaller;
 
 import java.io.File;
 import java.net.URL;

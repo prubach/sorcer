@@ -23,6 +23,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ObjectSignature;
 import sorcer.util.Sorcer;
 
+import static sorcer.service.Signature.ReturnPath;
 import static sorcer.service.Signature.Type;
 
 /**

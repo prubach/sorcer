@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.util.bdb.sdb;
+package sorcer.util.url.sos;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,4 +37,8 @@ public class Handler extends URLStreamHandler {
 	protected URLConnection openConnection(URL url) throws IOException {
 	        return new SdbConnection(url);
 	}
+
+    public static void register() {
+        // do nothing - kept for compatibility with AFRL Sorcer
+    }
 }

@@ -51,6 +51,7 @@ import sorcer.util.ServiceExerter;
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;
 import static sorcer.service.Strategy.Flow;
+import static sorcer.service.Signature.ReturnPath;
 
 @SuppressWarnings("rawtypes")
 public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Serializable {

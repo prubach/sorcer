@@ -66,9 +66,9 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	protected Object subjectValue = "";
 
 	// default value new ReturnPath(Context.RETURN);
-	protected ReturnPath<T> returnPath;
+	protected Signature.ReturnPath<T> returnPath;
 	
-	protected ReturnPath<T> returnJobPath;
+	protected Signature.ReturnPath<T> returnJobPath;
 	
 	protected ExecPath execPath;
 	
@@ -2195,21 +2195,21 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		return this;
 	}
 
-	public ReturnPath getReturnPath() {
+	public Signature.ReturnPath getReturnPath() {
 		return returnPath;
 	}
 
 	public ServiceContext setReturnPath() throws ContextException {
-		this.returnPath = new ReturnPath();
+		this.returnPath = new Signature.ReturnPath();
 		return this;
 	}
 	
 	public ServiceContext setReturnPath(String path) throws ContextException {
-		this.returnPath = new ReturnPath(path);
+		this.returnPath = new Signature.ReturnPath(path);
 		return this;
 	}
 
-	public ServiceContext setReturnPath(ReturnPath returnPath) {
+	public ServiceContext setReturnPath(Signature.ReturnPath returnPath) {
 		this.returnPath = returnPath;
 		return this;
 	}
@@ -2226,7 +2226,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	public void setReturnValue(Object value) throws ContextException {
 		if (returnPath == null)
-			returnPath = new ReturnPath(Context.RETURN);
+			returnPath = new Signature.ReturnPath(Context.RETURN);
 
 		if (value == null)
 			putValue(returnPath.path, none);
@@ -2241,21 +2241,21 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			Contexts.markInout(this, returnPath.path);
 	}
 
-	public ReturnPath getReturnJobPath() {
+	public Signature.ReturnPath getReturnJobPath() {
 		return returnJobPath;
 	}
 
 	public ServiceContext setReturnJobPath() throws ContextException {
-		this.returnJobPath = new ReturnPath();
+		this.returnJobPath = new Signature.ReturnPath();
 		return this;
 	}
 	
 	public ServiceContext setReturnJobPath(String path) throws ContextException {
-		this.returnJobPath = new ReturnPath(path);
+		this.returnJobPath = new Signature.ReturnPath(path);
 		return this;
 	}
 
-	public ServiceContext setReturnJobPath(ReturnPath returnPath)
+	public ServiceContext setReturnJobPath(Signature.ReturnPath returnPath)
 			throws ContextException {
 		this.returnJobPath = returnPath;
 		return this;
@@ -2263,7 +2263,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 
 	public T setReturnJobValue(T value) throws ContextException {
 		if (returnJobPath == null)
-			returnJobPath = new ReturnPath(Context.RETURN);
+			returnJobPath = new Signature.ReturnPath(Context.RETURN);
 
 		if (value == null)
 			putValue(returnJobPath.path, none);
