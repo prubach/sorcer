@@ -33,8 +33,6 @@ import sorcer.service.DynamicAccessor;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,8 +66,6 @@ public class ProviderAccessor extends ServiceAccessor implements
 	protected static Cataloger cataloger;
 
     protected static ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
-
-    protected static Map<Class, Object> cache = new HashMap<Class, Object>();
 
 	public ProviderAccessor() {
 		// Nothing to do, uses the singleton design pattern

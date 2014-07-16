@@ -35,6 +35,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.jini.lookup.entry.SorcerServiceInfo;
 import sorcer.river.Filters;
 import sorcer.util.ProviderNameUtil;
+import sorcer.util.ServiceAccessor;
 import sorcer.util.SorcerProviderNameUtil;
 import sorcer.util.StringUtils;
 
@@ -58,15 +59,20 @@ public class Accessor {
     private static int minMatches = SorcerEnv.getLookupMinMatches();
     private static int maxMatches = SorcerEnv.getLookupMaxMatches();
     private static ProviderNameUtil providerNameUtil = new SorcerProviderNameUtil();
+    final public static DynamicAccessor nonCachingAccessor;
 
     static {
         initialize(SorcerEnv.getProperties().getProperty(SorcerConstants.S_SERVICE_ACCESSOR_PROVIDER_NAME));
+        if ("sorcer.util.ServiceAccessor".equals(getAccessorType()))
+            nonCachingAccessor = accessor;
+        else
+            nonCachingAccessor = new ServiceAccessor();
     }
 
     public static void initialize(String providerType) {
         try {
             logger.fine("SORCER DynamicAccessor provider: " + providerType);
-            Class type = Class.forName(providerType,true, Thread.currentThread().getContextClassLoader());
+            Class type = Class.forName(providerType, true, Thread.currentThread().getContextClassLoader());
             if(!DynamicAccessor.class.isAssignableFrom(type)){
                 throw new IllegalArgumentException("Configured class must implement DynamicAccessor: "+providerType);
             }
