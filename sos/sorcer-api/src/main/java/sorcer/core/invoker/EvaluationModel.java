@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package sorcer.vfe;
+package sorcer.core.invoker;
 
 import java.rmi.RemoteException;
 

@@ -55,7 +55,7 @@ deployment(name: 'Sorcer') {
             api : 'org.sorcersoft.sorcer:default-codebase:pom:' + SORCER_VERSION
     ]
 
-    artifact id: 'rendezvous-cfg', "org.sorcersoft.sorcer:rendezvous-cfg:" + getSorcerVersion()
+    artifact id: 'jobber-cfg', "org.sorcersoft.sorcer:jobber-cfg:" + getSorcerVersion()
     artifact id: 'concatenator-cfg', "org.sorcersoft.sorcer:concatenator-cfg:" + getSorcerVersion()
     artifact id: 'spacer-cfg', "org.sorcersoft.sorcer:spacer-cfg:" + getSorcerVersion()
 
@@ -154,9 +154,9 @@ deployment(name: 'Sorcer') {
             artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.rendezvous.ServiceJobber') {
-            artifact ref: 'rendezvous-cfg'
+            artifact ref: 'jobber-cfg'
         }
-        configuration file: 'classpath:rendezvous.config'
+        configuration file: 'classpath:jobber.config'
         maintain 1
     }
 

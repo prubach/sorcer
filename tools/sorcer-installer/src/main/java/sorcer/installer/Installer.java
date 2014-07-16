@@ -97,7 +97,7 @@ public class Installer {
     }
 
     /**
-     * loadProperties(map, File) version is used to load additional data in commercial distribution
+     * loadPropertiesFromFile(map, File) version is used to load additional data in commercial distribution
      */
     protected Properties readProperties(String resourceName, File versions_props_file) throws IOException {
         Properties versions = new Properties();

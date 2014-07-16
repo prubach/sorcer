@@ -16,13 +16,13 @@ def String getCodebase() {
     return SorcerEnv.getWebsterUrl();
 }
 
-deployment(name: 'rendezvous-provider') {
+deployment(name: 'jobber-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
     def jobber = [
-            'impl': 'org.sorcersoft.sorcer:rendezvous-cfg:' + SorcerConstants.SORCER_VERSION,
+            'impl': 'org.sorcersoft.sorcer:jobber-cfg:' + SorcerConstants.SORCER_VERSION,
             'dl'  : 'org.sorcersoft.sorcer:default-codebase:pom:' + SorcerConstants.SORCER_VERSION
     ]
 

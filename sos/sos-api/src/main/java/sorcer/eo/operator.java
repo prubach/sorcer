@@ -522,7 +522,11 @@ public class operator {
 		return sig(null, serviceType, null, Sorcer.getActualName(providerName),
 				parameters);
 	}
-
+    public static Signature sig(String operation, Class<?> serviceType,
+                                String providerName, Object... parameters)
+            throws SignatureException {
+            return sig(operation, serviceType, null, providerName, parameters);
+    }
 	public static Signature sig(String operation, Class<?> serviceType,
 			String version, String providerName, Object... parameters)
 			throws SignatureException {

@@ -1425,7 +1425,7 @@ public class SorcerEnv {
                 envFile = S_ENV_FIENAME;
                 String envPath = getSorcerHome() + "/configs/" + envFile;
                 System.setProperty(S_KEY_SORCER_ENV, envPath);
-                sorcerEnvProps = loadProperties(envFile);
+                sorcerEnvProps = loadPropertiesFromFile(envFile);
                 update(sorcerEnvProps);
                 properties.putAll(sorcerEnvProps);
                 envFrom = "(Sorcer resource)";
@@ -1473,6 +1473,9 @@ public class SorcerEnv {
     }
 
     // STATIC
+    public static Properties loadProperties(String filename) throws ConfigurationException {
+        return getEnvironment().loadPropertiesFromFile(filename);
+    }
 
     /**
      * Tries to load properties from a <code>filename</code>, first in a local
@@ -1482,7 +1485,7 @@ public class SorcerEnv {
      * @throws IOException
      * @throws ConfigurationException
      */
-    public Properties loadProperties(String filename)
+    public Properties loadPropertiesFromFile(String filename)
             throws ConfigurationException {
         Properties props = new Properties();
         try {

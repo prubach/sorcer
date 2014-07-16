@@ -632,7 +632,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		return exertionId;
 	}
 
-	public String getDeploymentId(List<NetSignature> list) throws NoSuchAlgorithmException {
+	public String getDeploymentId(List<Signature> list) throws NoSuchAlgorithmException {
 		StringBuilder ssb = new StringBuilder();
 		for (Signature s : list) {
 			ssb.append(s.getProviderName());
@@ -1087,7 +1087,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 	
 	public List<ServiceDeployment> getDeployments() {
-		List<NetSignature> nsigs = getAllNetSignatures();
+		List<Signature> nsigs = getAllNetSignatures();
 		List<ServiceDeployment> deploymnets = new ArrayList<ServiceDeployment>();
 		for (Signature s : nsigs) {
 			ServiceDeployment d = s.getDeployment();
@@ -1098,9 +1098,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 	
 	@Override
-    public List<NetSignature> getAllNetSignatures() {
+    public List<Signature> getAllNetSignatures() {
         List<Signature> allSigs = getAllSignatures();
-        List<NetSignature> netSignatures = new ArrayList<NetSignature>();
+        List<Signature> netSignatures = new ArrayList<Signature>();
         for (Signature s : allSigs) {
             if (s instanceof NetSignature)
                 netSignatures.add((NetSignature)s);
@@ -1110,9 +1110,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
     }
 	
 	@Override
-	public List<NetSignature> getAllNetTaskSignatures() {
+	public List<Signature> getAllNetTaskSignatures() {
 		List<Signature> allSigs = getAllTaskSignatures();
-        List<NetSignature> netSignatures = new ArrayList<NetSignature>();
+        List<Signature> netSignatures = new ArrayList<Signature>();
         for (Signature s : allSigs) {
             if (s instanceof NetSignature)
                 netSignatures.add((NetSignature)s);
@@ -1122,7 +1122,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}	
 	
 	public List<ServiceDeployment> getDeploymnets() {
-		List<NetSignature> nsigs = getAllNetSignatures();
+		List<Signature> nsigs = getAllNetSignatures();
 		List<ServiceDeployment> deploymnets = new ArrayList<ServiceDeployment>();
 		for (Signature s : nsigs) {
 			ServiceDeployment d = ((ServiceSignature)s).getDeployment();
@@ -1185,9 +1185,9 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	
 	public List<ServiceDeployment> getAllDeployments() {
 		List<ServiceDeployment> allDeployments = new ArrayList<ServiceDeployment>();
-		List<NetSignature> allSigs = getAllNetTaskSignatures();
-		for (NetSignature s : allSigs) {
-			allDeployments.add(s.getDeployment());
+		List<Signature> allSigs = getAllNetTaskSignatures();
+		for (Signature s : allSigs) {
+			allDeployments.add((ServiceDeployment)s.getDeployment());
 		}
 		return allDeployments;
 	}

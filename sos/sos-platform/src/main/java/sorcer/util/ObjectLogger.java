@@ -104,6 +104,19 @@ public class ObjectLogger {
 		}
 	}
 
+	public static synchronized Object restoreMarshalled(InputStream input)
+			throws IOException, ClassNotFoundException {
+		ObjectInputStream ois = null;
+		try {
+			ois = new ObjectInputStream(new BufferedInputStream(input));
+			MarshalledObject o = (MarshalledObject) ois.readObject();
+			return o.get();
+		} finally {
+			if (ois != null)
+				ois.close();
+		}
+	}
+	
 	public static synchronized void persistAnnotatedMarshalled(String filename,
 			Object item) throws IOException {
 		ObjectOutputStream oos = null;
@@ -120,6 +133,22 @@ public class ObjectLogger {
 		// System.out.println("Wrote to " + logDir + filename);
 	}
 
+	public static synchronized void persistAnnotatedMarshalled(File file,
+			Object item) throws IOException {
+		ObjectOutputStream oos = null;
+		try {
+			oos = new MarshalOutputStream(new BufferedOutputStream(
+					new FileOutputStream(file)), new ArrayList());
+			oos.writeObject(new MarshalledInstance(item).get(false));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			if (oos != null)
+				oos.close();
+		}
+		// System.out.println("Wrote to " + logDir + filename);
+	}
+	
 	public static synchronized Object restoreAnnotatedMarshalled(String filename)
 			throws IOException, ClassNotFoundException {
 		ObjectInputStream ois = null;

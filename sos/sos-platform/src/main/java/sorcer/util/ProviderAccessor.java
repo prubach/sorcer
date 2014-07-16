@@ -109,7 +109,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 
 		try {
 			//servicer = (Service)ProviderLookup.getService(providerName, serviceType);
-			cataloger = getCataloger();
+			cataloger = getLocalCataloger();
 			if (cataloger != null) {
 				int tryNo = 0;
 				while (tryNo < ServiceAccessor.LUS_REAPEAT) {
@@ -144,7 +144,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 */
 	public Object getService(ServiceID serviceID) {
 		try {
-			cataloger = getCataloger();
+			cataloger = getLocalCataloger();
 			if (cataloger != null)
 				return cataloger.lookup(serviceID);
 			else
@@ -186,9 +186,13 @@ public class ProviderAccessor extends ServiceAccessor implements
 	 * @return a Cataloger service proxy
      * @see sorcer.core.provider.Cataloger
 	 */
-	protected Cataloger getCataloger() {
+	protected Cataloger getLocalCataloger() {
         return getCataloger(providerNameUtil.getName(Cataloger.class)) ;
 	}
+
+    public static Cataloger getCataloger() {
+        return new ProviderAccessor().getLocalCataloger();
+    }
 
 	/**
 	 * Returns a SORCER Cataloger service provider using JINI discovery.
@@ -264,7 +268,7 @@ public class ProviderAccessor extends ServiceAccessor implements
         assert minMatches <= maxMatches;
 
         if(!Arrays.asList(template.serviceTypes).contains(Cataloger.class)){
-            Cataloger cataloger = getCataloger();
+            Cataloger cataloger = getLocalCataloger();
             if (cataloger != null) {
                 try {
                     ServiceMatches matches = cataloger.lookup(template, maxMatches);

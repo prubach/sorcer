@@ -36,6 +36,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
+import sorcer.service.Signature;
 
 /**
  * Create an {@link OperationalString} from an {@link Exertion}.
@@ -63,13 +64,13 @@ public final class OperationalStringFactory {
             throw new IllegalArgumentException("exertion is null");
 
         //OperationalString iGridDeployment = getIGridDeployment();
-        Iterable<NetSignature> netSignatures = getNetSignatures(exertion);
-        List<NetSignature> selfies = new ArrayList<NetSignature>();
-        List<NetSignature> federated = new ArrayList<NetSignature>();
+        Iterable<Signature> netSignatures = getNetSignatures(exertion);
+        List<Signature> selfies = new ArrayList<Signature>();
+        List<Signature> federated = new ArrayList<Signature>();
 
         List<OperationalString> uniqueOperationalStrings = new ArrayList<OperationalString>();
 
-        for(NetSignature netSignature : netSignatures) {
+        for(Signature netSignature : netSignatures) {
             if(netSignature.getDeployment()==null)
                 continue;
             if(netSignature.getDeployment().getType()== ServiceDeployment.Type.SELF) {
@@ -81,8 +82,8 @@ public final class OperationalStringFactory {
 
         List<OperationalString> operationalStrings = new ArrayList<OperationalString>();
 
-        for(NetSignature self : selfies) {
-            ServiceElement service = ServiceElementFactory.create(self);
+        for(Signature self : selfies) {
+            ServiceElement service = ServiceElementFactory.create((ServiceSignature)self);
             OpString opString = new OpString(createDeploymentID(service), null);
             service.setOperationalStringName(opString.getName());
             opString.addService(service);
@@ -98,8 +99,8 @@ public final class OperationalStringFactory {
 
         List<ServiceElement> services = new ArrayList<ServiceElement>();
         int idle = 0;
-        for(NetSignature signature : federated) {
-            services.add(ServiceElementFactory.create(signature));
+        for(Signature signature : federated) {
+            services.add(ServiceElementFactory.create((ServiceSignature)signature));
             if(signature.getDeployment().getIdle()>idle) {
                 idle = signature.getDeployment().getIdle();
             }
@@ -147,8 +148,8 @@ public final class OperationalStringFactory {
         return undeployOption;
     }
 
-    private static Iterable<NetSignature> getNetSignatures(final Exertion exertion) {
-        List<NetSignature> signatures = new ArrayList<NetSignature>();
+    private static Iterable<Signature> getNetSignatures(final Exertion exertion) {
+        List<Signature> signatures = new ArrayList<Signature>();
         if(exertion instanceof ServiceExertion) {
             ServiceExertion serviceExertion = (ServiceExertion)exertion;
             signatures.addAll(serviceExertion.getAllNetTaskSignatures());

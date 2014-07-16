@@ -94,10 +94,37 @@ public class ExecUtils {
     public static CmdResult execCommand(final Process process, final InputStream stdin)
         throws IOException, InterruptedException
     {
+        return execCommand(process, stdin, false);
+    }
+
+    /**
+     * Attach to the specified process, feed specified standard input, and
+     * return process' results. Waits for the process to complete and returns
+     * completion status and data written to standard output and error streams.
+     *
+     * @see #execCommand(Process)
+     *
+     * @param process
+     *            the process to attach to
+     * @param stdin
+     *            the data to redirect to process' standard input
+     * @return the results of the process
+     * @throws IOException
+     *             if an I/O error occurs
+     * @throws InterruptedException
+     *             if thread is interrupted before process ends
+     */
+    public static CmdResult execCommand(final Process process,
+                                        final InputStream stdin, boolean outLogged) throws IOException,
+            InterruptedException {
         // concurrency to avoid stdio deadlocks
-        Redir stdout = new Redir(process.getInputStream());
+        Redir stdout = null;
+        String out = null;
+        if (!outLogged) {
+            stdout = new Redir(process.getInputStream());
+            new Thread(stdout, tName("STDOUT-" + process.toString())).start();
+        }
         Redir stderr = new Redir(process.getErrorStream());
-        new Thread(stdout, tName("STDOUT-" + process.toString())).start();
         new Thread(stderr, tName("STDERR-" + process.toString())).start();
         // redirect input in the current thread
         if (stdin != null) {
@@ -107,9 +134,11 @@ public class ExecUtils {
         process.waitFor();
         int exitValue = process.exitValue();
 
-        stdout.throwIfHadException();
+        if (stdout != null) {
+            stdout.throwIfHadException();
+            out = new String(stdout.getResult());
+        }
         stderr.throwIfHadException();
-        String out = new String(stdout.getResult());
         String err = new String(stderr.getResult());
 
         return new CmdResult(exitValue, out, err);

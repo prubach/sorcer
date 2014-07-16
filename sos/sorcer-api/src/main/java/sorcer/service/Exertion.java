@@ -260,14 +260,14 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	 * 
 	 * @return Signature list
 	 */
-	public List<NetSignature> getAllNetSignatures();
+	public List<Signature> getAllNetSignatures();
 	
 	/**
 	 * Returns the list of all net task signatures of component exertions.
 	 * 
 	 * @return Signature list
 	 */
-	public List<NetSignature> getAllNetTaskSignatures();
+	public List<Signature> getAllNetTaskSignatures();
 	
 	/**
 	 * Returns the list of all traces of thrown exceptions including from all

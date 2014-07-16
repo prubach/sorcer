@@ -26,6 +26,7 @@ import sorcer.core.provider.ProviderRuntime;
 import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.service.ServiceExertion;
+import sorcer.util.ModelTable;
 import sorcer.util.Table;
 
 import com.sleepycat.bind.EntityBinding;
@@ -124,7 +125,7 @@ public class SorcerDatabaseViews {
 	/**
 	 * Return a map view of the Table storage container.
 	 */
-	public StoredMap<UuidKey, Table> getTableMap() {
+	public StoredMap<UuidKey, ModelTable> getTableMap() {
 		return tableMap;
 	}
 
@@ -166,7 +167,7 @@ public class SorcerDatabaseViews {
 	/**
 	 * Return an entity set view of the Table storage container.
 	 */
-	public StoredValueSet<Table> getTableSet() {
+	public StoredValueSet<ModelTable> getTableSet() {
 		return (StoredValueSet) tableMap.values();
 	}
 

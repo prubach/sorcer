@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import net.jini.id.Uuid;
 import sorcer.service.EvaluationException;
 import sorcer.service.Identifiable;
-import sorcer.vfe.EvaluationModel;
 
 public class Observable implements EvaluationModel, Serializable {
 	static final long serialVersionUID = -6036250788560831439L;

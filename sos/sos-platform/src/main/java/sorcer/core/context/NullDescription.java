@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package sorcer.core.context;
 
-package sorcer.vfe;
 
-public class ObserverException extends Exception {
-	static final long serialVersionUID = -6069127184549430432L;
 
-	public ObserverException() {
+public class NullDescription implements ApplicationDescription {
+
+	public String getDomain() {
+		return "NULL DOMAIN";
 	}
 
-	public ObserverException(String msg) {
-		super(msg);
+	public String getSubDomain() {
+		return "NULL SUBDOMAIN";
 	}
 
 }
