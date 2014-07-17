@@ -101,6 +101,8 @@ logger("sorcer.core.provider.logger", DEBUG)
 logger("sorcer.platform.logger", DEBUG)
 logger("sorcer.core.dispatch", INFO)
 
+logger("sorcer.core.invoker.MethodInvoker", INFO)
+
 /*
 logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
 logger("sorcer.launcher.SorcerLauncher", DEBUG)
