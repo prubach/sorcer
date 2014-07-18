@@ -46,7 +46,7 @@ public class CallerTester extends ServiceRequestor{
 
 
         //logger.info("GOT: " + out.getContext());
-        logger.info("Got result: " + CallerUtil.getCallOutput(ctx));
+        logger.info("Got result: " + CallerUtil.getCallOutput(out.getContext()));
         logger.info("----------------------------------------------------------------");
         logger.info("Task t1 trace: {}" + trace(out));
         return out;

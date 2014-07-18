@@ -11,10 +11,7 @@ import sorcer.service.*;
 
 import java.rmi.RMISecurityManager;
 
-import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static sorcer.eo.operator.*;
 
 @RunWith(SorcerRunner.class)
@@ -44,10 +41,10 @@ public class CallerTest {
 
         logger.info("Task t1 prepared: " + t1);
         Exertion out = exert(t1);
-        logger.info("Got result: " + CallerUtil.getCallOutput(ctx));
+        logger.info("Got result: " + CallerUtil.getCallOutput(out.getContext()));
         logger.info("----------------------------------------------------------------");
         logger.info("Task t1 trace: {}" + trace(out));
 
-        assertNotNull(CallerUtil.getCallOutput(ctx));
+        assertTrue(CallerUtil.getCallOutput(out.getContext()).contains("Java HotSpot"));
     }
 }

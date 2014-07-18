@@ -114,7 +114,7 @@ public class JavaSystemCaller
 						// any error???
 						final int exitVal = proc.waitFor();
 						logger.info("ExitValue: " + exitVal);
-                        if (exitVal!=0 || !errorGobbler.getOutput().isEmpty()) {
+                        if (exitVal!=0) {
                             context.reportException(new CallerException(exitVal, errorGobbler.getOutput(), aCommandLine));
                         }
 
@@ -125,6 +125,8 @@ public class JavaSystemCaller
 						if (output != null)
 							result[0] = output;
 
+                        if (output.isEmpty() && !errorGobbler.getOutput().isEmpty())
+                            output = errorGobbler.getOutput();
                         CallerUtil.setStopped(context, new Date());
                         CallerUtil.setCallOutput(context, output);
 
