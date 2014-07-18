@@ -274,6 +274,204 @@ public class ExecUtils {
         }
     }
 
+
+    public static Thread executeCommandWithWorkerNoBlocking(
+            String[] command, final boolean printOutput,
+            final boolean printError, final long timeOut, File dir,
+            File logFile, boolean doSynchronizedLaunch) {
+
+        Runtime runtime;
+        WorkerNoBlock worker;
+        Process process;
+        StreamGobbler outputGobbler, errorGobbler;
+
+        // windows platform independent
+        //
+        if (GenericUtil.isWindows()) {
+            String[] ncmdarray = new String[command.length + 2];
+            ncmdarray[0] = "cmd";
+            ncmdarray[1] = "/C";
+            int ctr = 2;
+            for (int i = 0; i < command.length; i++) {
+                ncmdarray[ctr] = command[i];
+                ctr++;
+            }
+            command = ncmdarray;
+        }
+
+        // mkdirs
+        //
+        if (!dir.exists()) dir.mkdirs();
+
+        try {
+            if (doSynchronizedLaunch) {
+                synchronized (GenericUtil.class) {
+                    runtime = Runtime.getRuntime();
+                    process = runtime.exec(command, null, dir);
+                    outputGobbler = new StreamGobbler(process.getInputStream(),
+                            "STD OUT", printOutput, logFile, dir);
+                    errorGobbler = new StreamGobbler(process.getErrorStream(),
+                            "STD ERR", printError, logFile, dir);
+                    outputGobbler.start();
+                    errorGobbler.start();
+                    worker = new WorkerNoBlock(process);
+                    worker.start();
+                }
+            } else {
+                runtime = Runtime.getRuntime();
+                process = runtime.exec(command, null, dir);
+                outputGobbler = new StreamGobbler(process.getInputStream(),
+                        "STD OUT", printOutput, logFile, dir);
+                errorGobbler = new StreamGobbler(process.getErrorStream(),
+                        "STD ERR", printError, logFile, dir);
+                outputGobbler.start();
+                errorGobbler.start();
+                worker = new WorkerNoBlock(process);
+                worker.start();
+            }
+
+        } catch (FileNotFoundException ex) {
+            String errorMessage = "the log file was not found.";
+            throw new RuntimeException(errorMessage, ex);
+
+        } catch (IOException ex) {
+            String errorMessage = "the command: " + command
+                    + ", did not complete due to an " + "io error.";
+            throw new RuntimeException(errorMessage, ex);
+        }
+        return (Thread) worker;
+    }
+
+    /**
+     * This is a class used for running shell scripts without blocking I/O
+     *
+     * @author S. A. Burton April 2011
+     *
+     */
+    private static class WorkerNoBlock extends Thread {
+        private Integer exitValue;
+        private final Process process;
+
+        /**
+         * Constructor
+         *
+         * @param process
+         */
+        protected WorkerNoBlock(final Process process) {
+            this.process = process;
+        }
+
+        /**
+         * This method gets the exit value of the shell script
+         *
+         * @return
+         */
+        public Integer getExitValue() {
+            return exitValue = process.exitValue();
+        }
+
+        /**
+         * Implementation is commented out
+         */
+        public void run() {
+            // try {
+            // //exitValue = process.waitFor();
+            // } catch (InterruptedException e) {
+            // return;
+            // }
+        }
+    }
+
+    private static class StreamGobbler extends Thread {
+
+        private boolean displayStreamOutput;
+        private InputStream is;
+        private PrintWriter logPw;
+        private String type;
+        public boolean keepGoing = true;
+        private File dir = null;
+
+        public StreamGobbler(InputStream is, String type,
+                             boolean displayStreamOutput, File logFile, File dir)
+                throws FileNotFoundException {
+            this.is = is;
+            this.type = type;
+            this.displayStreamOutput = displayStreamOutput;
+            logPw = new PrintWriter(new FileOutputStream(logFile));
+            this.dir = dir;
+        }
+
+        public void closeDown() {
+            GenericUtil.appendFileContents("StreamGobbler.closingDown(): setting flag to stop running "
+                    + " keepGoing = false now; stream gobbler type = " + type, dir);
+            keepGoing = false;
+        }
+
+        public void run() {
+            try {
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line = null;
+                while ((line = br.readLine()) != null && keepGoing) {
+
+                    GenericUtil.appendFileContents("StreamGobbler.run(): while loop; "
+                            + " stream gobbler type = " + type + "; line = " + line, dir);
+
+                    if (displayStreamOutput) System.out.println(type + ">" + line);
+
+                    GenericUtil.appendFileContents("StreamGobbler.run(): while loop; "
+                            + " stream gobbler type = " + type + "; here0", dir);
+
+                    logPw.println(line);
+
+
+                    GenericUtil.appendFileContents("StreamGobbler.run(): while loop; "
+                            + " stream gobbler type = " + type + "; here1", dir);
+
+                    logPw.flush();
+
+
+                    GenericUtil.appendFileContents("StreamGobbler.run(): while loop; "
+                            + " stream gobbler type = " + type + "; here2", dir);
+
+                    while (!br.ready() && keepGoing) {
+                        //System.out.println("gobbler type = " + type + " is not ready.");
+                        GenericUtil.appendFileContents("StreamGobbler.run(): inner while loop; "
+                                + "br not ready; stream gobbler type = " + type + "keepGoing = " + keepGoing, dir);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!keepGoing) break;
+                }
+                GenericUtil.appendFileContents("StreamGobbler.run(): exited run inner loop for type = "
+                        + type + "; keepGoing = " + keepGoing, dir);
+                logPw.flush();
+                logPw.close();
+                br.close();
+                isr.close();
+                is.close();
+            } catch (IOException ioe) {
+                System.out.println("***exception in gobbler type = " + type + ": " + ioe);
+                GenericUtil.appendFileContents("StreamGobbler.run(): exception = "
+                        + ioe, dir);
+                ioe.printStackTrace();
+            } finally {
+                logPw.flush();
+                logPw.close();
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     private static class Redir implements Runnable {
         final Pipe pipe;
         IOException ex;

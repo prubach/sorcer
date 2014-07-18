@@ -27,7 +27,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
 import sorcer.junit.*;
 import sorcer.service.Context;
-import sorcer.service.Exerter;
+import sorcer.core.provider.Exerter;
 import sorcer.service.Job;
 import sorcer.service.Task;
 

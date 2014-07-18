@@ -36,7 +36,7 @@ import sorcer.core.SorcerConstants;
 import sorcer.core.requestor.ServiceRequestor;
 import sorcer.service.Accessor;
 import sorcer.service.ContextException;
-import sorcer.service.Exerter;
+import sorcer.core.provider.Exerter;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionCallable;
 import sorcer.service.Job;

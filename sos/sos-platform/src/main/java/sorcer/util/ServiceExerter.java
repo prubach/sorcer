@@ -34,13 +34,10 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.ThrowableTrace;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.dispatch.*;
-import sorcer.core.provider.Provider;
+import sorcer.core.provider.*;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.model.par.Par;
 import sorcer.core.exertion.ObjectJob;
-import sorcer.core.provider.ControlFlowManager;
-import sorcer.core.provider.Jobber;
-import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.ext.Provisioner;
@@ -80,7 +77,7 @@ public class ServiceExerter implements Exerter, Callable {
     }
 
     /* (non-Javadoc)
-     * @see sorcer.service.Exerter#exert(sorcer.service.Exertion, sorcer.service.Parameter[])
+     * @see sorcer.core.provider.Exerter#exert(sorcer.service.Exertion, sorcer.service.Parameter[])
      */
     @Override
     public Exertion exert(Exertion xrt, Arg... entries)
@@ -94,7 +91,7 @@ public class ServiceExerter implements Exerter, Callable {
     }
 
     /* (non-Javadoc)
-     * @see sorcer.service.Exerter#exert(sorcer.service.Exertion, net.jini.core.transaction.Transaction, sorcer.service.Parameter[])
+     * @see sorcer.core.provider.Exerter#exert(sorcer.service.Exertion, net.jini.core.transaction.Transaction, sorcer.service.Parameter[])
      */
     @Override
     public Exertion exert(Exertion xrt, Transaction txn, Arg... entries)

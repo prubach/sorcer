@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-package sorcer.service;
+package sorcer.core.provider;
 
 import java.rmi.RemoteException;
 
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import sorcer.service.Arg;
+import sorcer.service.Exertion;
+import sorcer.service.ExertionException;
 
 /**
  * A functionality required for running exertions with given parameters.

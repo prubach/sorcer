@@ -62,480 +62,475 @@ import sorcer.service.Signature.ReturnPath;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {
 
-	protected static int count = 0;
+    protected static int count = 0;
 
-	protected static final Logger logger = Logger.getLogger(operator.class
-			.getName());
+    protected static final Logger logger = Logger.getLogger(operator.class
+            .getName());
 
-	public static String path(List<String> attributes) {
-		if (attributes.size() == 0)
-			return null;
-		if (attributes.size() > 1) {
-			StringBuilder spr = new StringBuilder();
-			for (int i = 0; i < attributes.size() - 1; i++) {
-				spr.append(attributes.get(i)).append(SorcerConstants.CPS);
-			}
-			spr.append(attributes.get(attributes.size() - 1));
-			return spr.toString();
-		}
-		return attributes.get(0);
-	}
-
-	public static Object revalue(Evaluation evaluation, String path,
-			Arg... entries) throws ContextException {
-		Object obj = value(evaluation, path, entries);
-		if (obj instanceof Evaluation) {
-			obj = value((Evaluation) obj, entries);
-		}
-		return obj;
-	}
-
-	public static Object revalue(Object object, Arg... entries)
-			throws EvaluationException {
-		Object obj = null;
-		if (object instanceof Evaluation) {
-			obj = value((Evaluation) object, entries);
-		}
-		if (obj == null) {
-			obj = object;
-		}
-		return obj;
-	}
-
-	public static String path(String... attributes) {
-		if (attributes.length == 0)
-			return null;
-		if (attributes.length > 1) {
-			StringBuilder spr = new StringBuilder();
-			for (int i = 0; i < attributes.length - 1; i++) {
-				spr.append(attributes[i]).append(SorcerConstants.CPS);
-			}
-			spr.append(attributes[attributes.length - 1]);
-			return spr.toString();
-		}
-		return attributes[0];
-	}
-
-	public static <T> Complement<T> subject(String path, T value)
-			throws SignatureException {
-		return new Complement<T>(path, value);
-	}
-
-	public static <T extends Context> T put(T context, Tuple2... entries)
-			throws ContextException {
-		for (int i = 0; i < entries.length; i++) {
-			if (context instanceof Context) {
-				context.putValue(((Tuple2<String, ?>) entries[i])._1,
-						((Tuple2<String, ?>) entries[i])._2);
-			}
-		}
-		return context;
-	}
-
-	public static void put(Exertion exertion, Tuple2<String, ?>... entries)
-			throws ContextException {
-		put(exertion.getContext(), entries);
-	}
-
-	public static Exertion setContext(Exertion exertion, Context context) {
-		((ServiceExertion) exertion).setContext(context);
-		return exertion;
-	}
-
-	public static ControlContext control(Exertion exertion)
-			throws ContextException {
-		return (ControlContext)exertion.getControlContext();
-	}
-
-	public static ControlContext control(Exertion exertion, String childName)
-			throws ContextException {
-		return (ControlContext)exertion.getExertion(childName).getControlContext();
-	}
-
-	public static <T extends Object> Context cxt(T... entries)
-			throws ContextException {
-		return context(entries);
-	}
-
-	public static Context jCxt(Job job) throws ContextException {
-		return job.getJobContext();
-	}
-
-	public static Context jobContext(Exertion job) throws ContextException {
-		return ((Job) job).getJobContext();
-	}
-
-	public static DataEntry data(Object data) {
-		return new DataEntry(Context.DSD_PATH, data);
-	}
-
-	public static Context taskContext(String path, Job job) throws ContextException {
-		return job.getComponentContext(path);
-	}
-
-	public static FidelityContext fiContext(FidelityInfo... fidelityInfos) throws ContextException {
-		return fiContext(null, fidelityInfos);
-	}
-	
-	public static FidelityContext fiContext(String name, FidelityInfo... fidelityInfos) throws ContextException {
-		FidelityContext fiCxt = new FidelityContext(name);
-		for (FidelityInfo e : fidelityInfos) {
-			if (e instanceof FidelityInfo) {
-				try {
-					fiCxt.put(e.getName(), e);
-				} catch (Exception ex) {
-					if (ex instanceof ContextException)
-						throw (ContextException) ex;
-					else
-						throw new ContextException(ex);
-				}
-			}
-		}
-		return fiCxt;
-	}
-	
-	public static <T extends Object> Context context(T... entries)
-			throws ContextException {
-		if (entries[0] instanceof Exertion) {
-			Exertion xrt = (Exertion) entries[0];
-			if (entries.length >= 2 && entries[1] instanceof String)
-				xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
-			return xrt.getContext();
-		} else if (entries[0] instanceof String) {
-			if (entries.length == 1)
-				return new PositionalContext((String) entries[0]);
-			else if (entries[1] instanceof Exertion) {
-				return ((Job) entries[1]).getComponentExertion(
-						(String) entries[0]).getContext();
-			}
-		}
-		String name = getUnknown();
-		List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
-		List<Par> parList = new ArrayList<Par>();
-		List<Context.Type> types = new ArrayList<Context.Type>();
-		List<EntryList> entryLists = new ArrayList<EntryList>();
-		Complement subject = null;
-		ReturnPath returnPath = null;
-		ExecPath execPath = null;
-		Args cxtArgs = null;
-		ParameterTypes parameterTypes = null;
-		target target = null;
-		PoolStrategy modelStrategy = null;
-		for (T o : entries) {
-			if (o instanceof Complement) {
-				subject = (Complement) o;
-			} else if (o instanceof Args
-					&& ((Args) o).args.getClass().isArray()) {
-				cxtArgs = (Args) o;
-			} else if (o instanceof ParameterTypes
-					&& ((ParameterTypes) o).parameterTypes.getClass().isArray()) {
-				parameterTypes = (ParameterTypes) o;
-			} else if (o instanceof target) {
-				target = (target) o;
-			} else if (o instanceof ReturnPath) {
-				returnPath = (ReturnPath) o;
-			} else if (o instanceof ExecPath) {
-				execPath = (ExecPath) o;
-			} else if (o instanceof Tuple2) {
-				entryList.add((Tuple2) o);
-			} else if (o instanceof Context.Type) {
-				types.add((Context.Type) o);
-			} else if (o instanceof String) {
-				name = (String) o;
-			} else if (o instanceof PoolStrategy) {
-				modelStrategy = (PoolStrategy) o;
-			} else if (o instanceof Par) {
-				parList.add((Par) o);
-			} else if (o instanceof EntryList) {
-				entryLists.add((EntryList) o);
-			}
-		}
-		Context cxt = null;
-		if (types.contains(Context.Type.ARRAY)) {
-			if (subject != null)
-				cxt = new ArrayContext(name, subject.path(), subject.value());
-			else
-				cxt = new ArrayContext(name);
-		} else if (types.contains(Context.Type.LIST)) {
-			if (subject != null)
-				cxt = new ListContext(name, subject.path(), subject.value());
-			else
-				cxt = new ListContext(name);
-		} else if (types.contains(Context.Type.SHARED)
-				&& types.contains(Context.Type.INDEXED)) {
-			cxt = new SharedIndexedContext(name);
-		} else if (types.contains(Context.Type.SHARED)) {
-			cxt = new SharedAssociativeContext(name);
-		} else if (types.contains(Context.Type.ASSOCIATIVE)) {
-			if (subject != null)
-				cxt = new ServiceContext(name, subject.path(), subject.value());
-			else
-				cxt = new ServiceContext(name);
-		} else {
-			if (subject != null) {
-				cxt = new PositionalContext(name, subject.path(),
-						subject.value());
-			} else {
-				cxt = new PositionalContext(name);
-			}
-		}
-		if (cxt instanceof PositionalContext) {
-			PositionalContext pcxt = (PositionalContext) cxt;
-			if (entryList.size() > 0)
-				popultePositionalContext(pcxt, entryList);
-		} else {
-			if (entryList.size() > 0)
-				populteContext(cxt, entryList);
-		}
-		if (parList != null) {
-			for (Par p : parList)
-				cxt.putValue(p.getName(), p);
-		}
-		if (returnPath != null)
-			((ServiceContext) cxt).setReturnPath(returnPath);
-		if (execPath != null)
-			((ServiceContext) cxt).setExecPath(execPath);
-		if (cxtArgs != null) {
-			if (cxtArgs.path() != null) {
-				((ServiceContext) cxt).setArgsPath(cxtArgs.path());
-			} else {
-				((ServiceContext) cxt).setArgsPath(Context.PARAMETER_VALUES);
-			}
-			((ServiceContext) cxt).setArgs(cxtArgs.args);
-		}
-		if (parameterTypes != null) {
-			if (parameterTypes.path() != null) {
-				((ServiceContext) cxt).setParameterTypesPath(parameterTypes
-						.path());
-			} else {
-				((ServiceContext) cxt)
-						.setParameterTypesPath(Context.PARAMETER_TYPES);
-			}
-			((ServiceContext) cxt)
-					.setParameterTypes(parameterTypes.parameterTypes);
-		}
-		if (target != null) {
-			if (target.path() != null) {
-				((ServiceContext) cxt).setTargetPath(target.path());
-			}
-			((ServiceContext) cxt).setTarget(target.target);
-		}
-		if (entryLists.size() > 0)
-			((ServiceContext)cxt).setEntryLists(entryLists);
-		return cxt;
-	}
-
-	protected static void popultePositionalContext(PositionalContext pcxt,
-			List<Tuple2<String, ?>> entryList) throws ContextException {
-		for (int i = 0; i < entryList.size(); i++) {
-			if (entryList.get(i) instanceof InEntry) {
-				Object par = ((InEntry)entryList.get(i)).value();
-				if (par instanceof Scopable) {
-					try {
-						((Scopable)par).setScope(pcxt);
-					} catch (RemoteException e) {
-						throw new ContextException(e);
-					}
-				}				
-				if (((InEntry) entryList.get(i)).isPersistant) {
-					setPar(pcxt, (InEntry) entryList.get(i), i);
-				} else {
-					pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
-							((InEntry) entryList.get(i)).value(), i + 1);
-				}
-			} else if (entryList.get(i) instanceof OutEntry) {
-				if (((OutEntry) entryList.get(i)).isPersistant) {
-					setPar(pcxt, (OutEntry) entryList.get(i), i);
-				} else {
-					pcxt.putOutValueAt(((OutEntry) entryList.get(i)).path(),
-							((OutEntry) entryList.get(i)).value(), i + 1);
-				}
-			} else if (entryList.get(i) instanceof InoutEntry) {
-				if (((InoutEntry) entryList.get(i)).isPersistant) {
-					setPar(pcxt, (InoutEntry) entryList.get(i), i);
-				} else {
-					pcxt.putInoutValueAt(
-							((InoutEntry) entryList.get(i)).path(),
-							((InoutEntry) entryList.get(i)).value(), i + 1);
-				}
-			} else if (entryList.get(i) instanceof Entry) {
-				if (((Entry) entryList.get(i)).isPersistant) {
-					setPar(pcxt, (Entry) entryList.get(i), i);
-				} else {
-					pcxt.putValueAt(((Entry) entryList.get(i)).path(),
-							((Entry) entryList.get(i)).value(), i + 1);
-				}
-			} else if (entryList.get(i) instanceof DataEntry) {
-				pcxt.putValueAt(Context.DSD_PATH,
-						((DataEntry) entryList.get(i)).value(), i + 1);
-			} 
-		}
-	}
-
-	protected static void populteContext(Context cxt,
-			List<Tuple2<String, ?>> entryList) throws ContextException {
-		for (int i = 0; i < entryList.size(); i++) {
-			if (entryList.get(i) instanceof InEntry) {
-				if (((InEntry) entryList.get(i)).isPersistant) {
-					setPar(cxt, (InEntry) entryList.get(i));
-				} else {
-					cxt.putInValue(((Entry) entryList.get(i)).path(),
-							((Entry) entryList.get(i)).value());
-				}
-			} else if (entryList.get(i) instanceof OutEntry) {
-				if (((OutEntry) entryList.get(i)).isPersistant) {
-					setPar(cxt, (OutEntry) entryList.get(i));
-				} else {
-					cxt.putOutValue(((Entry) entryList.get(i)).path(),
-							((Entry) entryList.get(i)).value());
-				}
-			} else if (entryList.get(i) instanceof InoutEntry) {
-				if (((InoutEntry) entryList.get(i)).isPersistant) {
-					setPar(cxt, (InoutEntry) entryList.get(i));
-				} else {
-					cxt.putInoutValue(((Entry) entryList.get(i)).path(),
-							((Entry) entryList.get(i)).value());
-				}
-			} else if (entryList.get(i) instanceof Entry) {
-				if (((Entry) entryList.get(i)).isPersistant) {
-					setPar(cxt, (Entry) entryList.get(i));
-				} else {
-					cxt.putValue(((Entry) entryList.get(i)).path(),
-							((Entry) entryList.get(i)).value());
-				}
-			} else if (entryList.get(i) instanceof DataEntry) {
-				cxt.putValue(Context.DSD_PATH,
-						((Entry) entryList.get(i)).value());
-			} 
-		}
-	}
-
-	protected static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
-			throws ContextException {
-		Par p = new Par(entry.path(), entry.value());
-		p.setPersistent(true);
-		if (entry.datastoreURL != null)
-			p.setDbURL(entry.datastoreURL);
-		if (entry instanceof InEntry)
-			pcxt.putInValueAt(entry.path(), p, i + 1);
-		else if (entry instanceof OutEntry)
-			pcxt.putOutValueAt(entry.path(), p, i + 1);
-		else if (entry instanceof InoutEntry)
-			pcxt.putInoutValueAt(entry.path(), p, i + 1);
-		else
-			pcxt.putValueAt(entry.path(), p, i + 1);
-	}
-
-	protected static void setPar(Context cxt, Tuple2 entry)
-			throws ContextException {
-		Par p = new Par(entry.path(), entry.value());
-		p.setPersistent(true);
-		if (entry.datastoreURL != null)
-			p.setDbURL(entry.datastoreURL);
-		if (entry instanceof InEntry)
-			cxt.putInValue(entry.path(), p);
-		else if (entry instanceof OutEntry)
-			cxt.putOutValue(entry.path(), p);
-		else if (entry instanceof InoutEntry)
-			cxt.putInoutValue(entry.path(), p);
-		else
-			cxt.putValue(entry.path(), p);
-	}
-
-	public static List<String> names(List<? extends Identifiable> list) {
-		List<String> names = new ArrayList<String>(list.size());
-		for (Identifiable i : list) {
-			names.add(i.getName());
-		}
-		return names;
-	}
-
-	public static String name(Object identifiable) {
-		if (identifiable instanceof Identifiable)
-			return ((Identifiable) identifiable).getName();
-		else
-			return null;
-	}
-
-	public static List<String> names(Identifiable... array) {
-		List<String> names = new ArrayList<String>(array.length);
-		for (Identifiable i : array) {
-			names.add(i.getName());
-		}
-		return names;
-	}
-
-	public static List<Entry> attributes(Entry... entries) {
-		List<Entry> el = new ArrayList<Entry>(entries.length);
-		for (Entry e : entries)
-			el.add(e);
-		return el;
-	}
-
-	/**
-	 * Makes this Revaluation revaluable, so its return value is to be again
-	 * evaluated as well.
-	 * 
-	 * @param evaluation
-	 *            to be marked as revaluable
-	 * @return an uevaluable Evaluation
-	 * @throws EvaluationException
-	 */
-	public static Revaluation revaluable(Revaluation evaluation, Arg... entries)
-			throws EvaluationException {
-		if (entries != null && entries.length > 0) {
-			try {
-				((Evaluation) evaluation).substitute(entries);
-			} catch (RemoteException e) {
-				throw new EvaluationException(e);
-			}
-		}
-		evaluation.setRevaluable(true);
-		return evaluation;
-	}
-
-	public static Revaluation unrevaluable(Revaluation evaluation) {
-		evaluation.setRevaluable(false);
-		return evaluation;
-	}
-
-	/**
-	 * Returns the Evaluation with a realized substitution for its arguments.
-	 * 
-	 * @param evaluation
-	 * @param entries
-	 * @return an evaluation with a realized substitution
-	 * @throws EvaluationException
-	 * @throws RemoteException
-	 */
-	public static Evaluation substitute(Evaluation evaluation, Arg... entries)
-			throws EvaluationException, RemoteException {
-		return evaluation.substitute(entries);
-	}
-
-    public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
-            throws SignatureException {
-        return SignatureFactory.sig(serviceType, returnPath);
+    public static String path(List<String> attributes) {
+        if (attributes.size() == 0)
+            return null;
+        if (attributes.size() > 1) {
+            StringBuilder spr = new StringBuilder();
+            for (int i = 0; i < attributes.size() - 1; i++) {
+                spr.append(attributes.get(i)).append(SorcerConstants.CPS);
+            }
+            spr.append(attributes.get(attributes.size() - 1));
+            return spr.toString();
+        }
+        return attributes.get(0);
     }
-	public static Signature sig(Class<?> serviceType, String providerName,
-			Object... parameters) throws SignatureException {
-		return sig(null, serviceType, null, Sorcer.getActualName(providerName),
-				parameters);
-	}
+
+    public static Object revalue(Evaluation evaluation, String path,
+                                 Arg... entries) throws ContextException {
+        Object obj = value(evaluation, path, entries);
+        if (obj instanceof Evaluation) {
+            obj = value((Evaluation) obj, entries);
+        }
+        return obj;
+    }
+
+    public static Object revalue(Object object, Arg... entries)
+            throws EvaluationException {
+        Object obj = null;
+        if (object instanceof Evaluation) {
+            obj = value((Evaluation) object, entries);
+        }
+        if (obj == null) {
+            obj = object;
+        }
+        return obj;
+    }
+
+    public static String path(String... attributes) {
+        if (attributes.length == 0)
+            return null;
+        if (attributes.length > 1) {
+            StringBuilder spr = new StringBuilder();
+            for (int i = 0; i < attributes.length - 1; i++) {
+                spr.append(attributes[i]).append(SorcerConstants.CPS);
+            }
+            spr.append(attributes[attributes.length - 1]);
+            return spr.toString();
+        }
+        return attributes[0];
+    }
+
+    public static <T> Complement<T> subject(String path, T value)
+            throws SignatureException {
+        return new Complement<T>(path, value);
+    }
+
+    public static <T extends Context> T put(T context, Tuple2... entries)
+            throws ContextException {
+        for (int i = 0; i < entries.length; i++) {
+            if (context instanceof Context) {
+                context.putValue(((Tuple2<String, ?>) entries[i])._1,
+                        ((Tuple2<String, ?>) entries[i])._2);
+            }
+        }
+        return context;
+    }
+
+    public static void put(Exertion exertion, Tuple2<String, ?>... entries)
+            throws ContextException {
+        put(exertion.getContext(), entries);
+    }
+
+    public static Exertion setContext(Exertion exertion, Context context) {
+        ((ServiceExertion) exertion).setContext(context);
+        return exertion;
+    }
+
+    public static ControlContext control(Exertion exertion)
+            throws ContextException {
+        return (ControlContext) exertion.getControlContext();
+    }
+
+    public static ControlContext control(Exertion exertion, String childName)
+            throws ContextException {
+        return (ControlContext) exertion.getExertion(childName).getControlContext();
+    }
+
+    public static <T extends Object> Context cxt(T... entries)
+            throws ContextException {
+        return context(entries);
+    }
+
+    public static Context jCxt(Job job) throws ContextException {
+        return job.getJobContext();
+    }
+
+    public static Context jobContext(Exertion job) throws ContextException {
+        return ((Job) job).getJobContext();
+    }
+
+    public static DataEntry data(Object data) {
+        return new DataEntry(Context.DSD_PATH, data);
+    }
+
+    public static Context taskContext(String path, Job job) throws ContextException {
+        return job.getComponentContext(path);
+    }
+
+    public static FidelityContext fiContext(FidelityInfo... fidelityInfos) throws ContextException {
+        return fiContext(null, fidelityInfos);
+    }
+
+    public static FidelityContext fiContext(String name, FidelityInfo... fidelityInfos) throws ContextException {
+        FidelityContext fiCxt = new FidelityContext(name);
+        for (FidelityInfo e : fidelityInfos) {
+            if (e instanceof FidelityInfo) {
+                try {
+                    fiCxt.put(e.getName(), e);
+                } catch (Exception ex) {
+                    if (ex instanceof ContextException)
+                        throw (ContextException) ex;
+                    else
+                        throw new ContextException(ex);
+                }
+            }
+        }
+        return fiCxt;
+    }
+
+    public static <T extends Object> Context context(T... entries)
+            throws ContextException {
+        if (entries[0] instanceof Exertion) {
+            Exertion xrt = (Exertion) entries[0];
+            if (entries.length >= 2 && entries[1] instanceof String)
+                xrt = ((Job) xrt).getComponentExertion((String) entries[1]);
+            return xrt.getContext();
+        } else if (entries[0] instanceof String) {
+            if (entries.length == 1)
+                return new PositionalContext((String) entries[0]);
+            else if (entries[1] instanceof Exertion) {
+                return ((Job) entries[1]).getComponentExertion(
+                        (String) entries[0]).getContext();
+            }
+        }
+        String name = getUnknown();
+        List<Tuple2<String, ?>> entryList = new ArrayList<Tuple2<String, ?>>();
+        List<Par> parList = new ArrayList<Par>();
+        List<Context.Type> types = new ArrayList<Context.Type>();
+        List<EntryList> entryLists = new ArrayList<EntryList>();
+        Complement subject = null;
+        ReturnPath returnPath = null;
+        ExecPath execPath = null;
+        Args cxtArgs = null;
+        ParameterTypes parameterTypes = null;
+        target target = null;
+        PoolStrategy modelStrategy = null;
+        for (T o : entries) {
+            if (o instanceof Complement) {
+                subject = (Complement) o;
+            } else if (o instanceof Args
+                    && ((Args) o).args.getClass().isArray()) {
+                cxtArgs = (Args) o;
+            } else if (o instanceof ParameterTypes
+                    && ((ParameterTypes) o).parameterTypes.getClass().isArray()) {
+                parameterTypes = (ParameterTypes) o;
+            } else if (o instanceof target) {
+                target = (target) o;
+            } else if (o instanceof ReturnPath) {
+                returnPath = (ReturnPath) o;
+            } else if (o instanceof ExecPath) {
+                execPath = (ExecPath) o;
+            } else if (o instanceof Tuple2) {
+                entryList.add((Tuple2) o);
+            } else if (o instanceof Context.Type) {
+                types.add((Context.Type) o);
+            } else if (o instanceof String) {
+                name = (String) o;
+            } else if (o instanceof PoolStrategy) {
+                modelStrategy = (PoolStrategy) o;
+            } else if (o instanceof Par) {
+                parList.add((Par) o);
+            } else if (o instanceof EntryList) {
+                entryLists.add((EntryList) o);
+            }
+        }
+        Context cxt = null;
+        if (types.contains(Context.Type.ARRAY)) {
+            if (subject != null)
+                cxt = new ArrayContext(name, subject.path(), subject.value());
+            else
+                cxt = new ArrayContext(name);
+        } else if (types.contains(Context.Type.LIST)) {
+            if (subject != null)
+                cxt = new ListContext(name, subject.path(), subject.value());
+            else
+                cxt = new ListContext(name);
+        } else if (types.contains(Context.Type.SHARED)
+                && types.contains(Context.Type.INDEXED)) {
+            cxt = new SharedIndexedContext(name);
+        } else if (types.contains(Context.Type.SHARED)) {
+            cxt = new SharedAssociativeContext(name);
+        } else if (types.contains(Context.Type.ASSOCIATIVE)) {
+            if (subject != null)
+                cxt = new ServiceContext(name, subject.path(), subject.value());
+            else
+                cxt = new ServiceContext(name);
+        } else {
+            if (subject != null) {
+                cxt = new PositionalContext(name, subject.path(),
+                        subject.value());
+            } else {
+                cxt = new PositionalContext(name);
+            }
+        }
+        if (cxt instanceof PositionalContext) {
+            PositionalContext pcxt = (PositionalContext) cxt;
+            if (entryList.size() > 0)
+                popultePositionalContext(pcxt, entryList);
+        } else {
+            if (entryList.size() > 0)
+                populteContext(cxt, entryList);
+        }
+        if (parList != null) {
+            for (Par p : parList)
+                cxt.putValue(p.getName(), p);
+        }
+        if (returnPath != null)
+            ((ServiceContext) cxt).setReturnPath(returnPath);
+        if (execPath != null)
+            ((ServiceContext) cxt).setExecPath(execPath);
+        if (cxtArgs != null) {
+            if (cxtArgs.path() != null) {
+                ((ServiceContext) cxt).setArgsPath(cxtArgs.path());
+            } else {
+                ((ServiceContext) cxt).setArgsPath(Context.PARAMETER_VALUES);
+            }
+            ((ServiceContext) cxt).setArgs(cxtArgs.args);
+        }
+        if (parameterTypes != null) {
+            if (parameterTypes.path() != null) {
+                ((ServiceContext) cxt).setParameterTypesPath(parameterTypes
+                        .path());
+            } else {
+                ((ServiceContext) cxt)
+                        .setParameterTypesPath(Context.PARAMETER_TYPES);
+            }
+            ((ServiceContext) cxt)
+                    .setParameterTypes(parameterTypes.parameterTypes);
+        }
+        if (target != null) {
+            if (target.path() != null) {
+                ((ServiceContext) cxt).setTargetPath(target.path());
+            }
+            ((ServiceContext) cxt).setTarget(target.target);
+        }
+        if (entryLists.size() > 0)
+            ((ServiceContext) cxt).setEntryLists(entryLists);
+        return cxt;
+    }
+
+    protected static void popultePositionalContext(PositionalContext pcxt,
+                                                   List<Tuple2<String, ?>> entryList) throws ContextException {
+        for (int i = 0; i < entryList.size(); i++) {
+            if (entryList.get(i) instanceof InEntry) {
+                Object par = ((InEntry) entryList.get(i)).value();
+                if (par instanceof Scopable) {
+                    try {
+                        ((Scopable) par).setScope(pcxt);
+                    } catch (RemoteException e) {
+                        throw new ContextException(e);
+                    }
+                }
+                if (((InEntry) entryList.get(i)).isPersistant) {
+                    setPar(pcxt, (InEntry) entryList.get(i), i);
+                } else {
+                    pcxt.putInValueAt(((InEntry) entryList.get(i)).path(),
+                            ((InEntry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof OutEntry) {
+                if (((OutEntry) entryList.get(i)).isPersistant) {
+                    setPar(pcxt, (OutEntry) entryList.get(i), i);
+                } else {
+                    pcxt.putOutValueAt(((OutEntry) entryList.get(i)).path(),
+                            ((OutEntry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof InoutEntry) {
+                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    setPar(pcxt, (InoutEntry) entryList.get(i), i);
+                } else {
+                    pcxt.putInoutValueAt(
+                            ((InoutEntry) entryList.get(i)).path(),
+                            ((InoutEntry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof Entry) {
+                if (((Entry) entryList.get(i)).isPersistant) {
+                    setPar(pcxt, (Entry) entryList.get(i), i);
+                } else {
+                    pcxt.putValueAt(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value(), i + 1);
+                }
+            } else if (entryList.get(i) instanceof DataEntry) {
+                pcxt.putValueAt(Context.DSD_PATH,
+                        ((DataEntry) entryList.get(i)).value(), i + 1);
+            }
+        }
+    }
+
+    protected static void populteContext(Context cxt,
+                                         List<Tuple2<String, ?>> entryList) throws ContextException {
+        for (int i = 0; i < entryList.size(); i++) {
+            if (entryList.get(i) instanceof InEntry) {
+                if (((InEntry) entryList.get(i)).isPersistant) {
+                    setPar(cxt, (InEntry) entryList.get(i));
+                } else {
+                    cxt.putInValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof OutEntry) {
+                if (((OutEntry) entryList.get(i)).isPersistant) {
+                    setPar(cxt, (OutEntry) entryList.get(i));
+                } else {
+                    cxt.putOutValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof InoutEntry) {
+                if (((InoutEntry) entryList.get(i)).isPersistant) {
+                    setPar(cxt, (InoutEntry) entryList.get(i));
+                } else {
+                    cxt.putInoutValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof Entry) {
+                if (((Entry) entryList.get(i)).isPersistant) {
+                    setPar(cxt, (Entry) entryList.get(i));
+                } else {
+                    cxt.putValue(((Entry) entryList.get(i)).path(),
+                            ((Entry) entryList.get(i)).value());
+                }
+            } else if (entryList.get(i) instanceof DataEntry) {
+                cxt.putValue(Context.DSD_PATH,
+                        ((Entry) entryList.get(i)).value());
+            }
+        }
+    }
+
+    protected static void setPar(PositionalContext pcxt, Tuple2 entry, int i)
+            throws ContextException {
+        Par p = new Par(entry.path(), entry.value());
+        p.setPersistent(true);
+        if (entry.datastoreURL != null)
+            p.setDbURL(entry.datastoreURL);
+        if (entry instanceof InEntry)
+            pcxt.putInValueAt(entry.path(), p, i + 1);
+        else if (entry instanceof OutEntry)
+            pcxt.putOutValueAt(entry.path(), p, i + 1);
+        else if (entry instanceof InoutEntry)
+            pcxt.putInoutValueAt(entry.path(), p, i + 1);
+        else
+            pcxt.putValueAt(entry.path(), p, i + 1);
+    }
+
+    protected static void setPar(Context cxt, Tuple2 entry)
+            throws ContextException {
+        Par p = new Par(entry.path(), entry.value());
+        p.setPersistent(true);
+        if (entry.datastoreURL != null)
+            p.setDbURL(entry.datastoreURL);
+        if (entry instanceof InEntry)
+            cxt.putInValue(entry.path(), p);
+        else if (entry instanceof OutEntry)
+            cxt.putOutValue(entry.path(), p);
+        else if (entry instanceof InoutEntry)
+            cxt.putInoutValue(entry.path(), p);
+        else
+            cxt.putValue(entry.path(), p);
+    }
+
+    public static List<String> names(List<? extends Identifiable> list) {
+        List<String> names = new ArrayList<String>(list.size());
+        for (Identifiable i : list) {
+            names.add(i.getName());
+        }
+        return names;
+    }
+
+    public static String name(Object identifiable) {
+        if (identifiable instanceof Identifiable)
+            return ((Identifiable) identifiable).getName();
+        else
+            return null;
+    }
+
+    public static List<String> names(Identifiable... array) {
+        List<String> names = new ArrayList<String>(array.length);
+        for (Identifiable i : array) {
+            names.add(i.getName());
+        }
+        return names;
+    }
+
+    public static List<Entry> attributes(Entry... entries) {
+        List<Entry> el = new ArrayList<Entry>(entries.length);
+        for (Entry e : entries)
+            el.add(e);
+        return el;
+    }
+
+    /**
+     * Makes this Revaluation revaluable, so its return value is to be again
+     * evaluated as well.
+     *
+     * @param evaluation to be marked as revaluable
+     * @return an uevaluable Evaluation
+     * @throws EvaluationException
+     */
+    public static Revaluation revaluable(Revaluation evaluation, Arg... entries)
+            throws EvaluationException {
+        if (entries != null && entries.length > 0) {
+            try {
+                ((Evaluation) evaluation).substitute(entries);
+            } catch (RemoteException e) {
+                throw new EvaluationException(e);
+            }
+        }
+        evaluation.setRevaluable(true);
+        return evaluation;
+    }
+
+    public static Revaluation unrevaluable(Revaluation evaluation) {
+        evaluation.setRevaluable(false);
+        return evaluation;
+    }
+
+    /**
+     * Returns the Evaluation with a realized substitution for its arguments.
+     *
+     * @param evaluation
+     * @param entries
+     * @return an evaluation with a realized substitution
+     * @throws EvaluationException
+     * @throws RemoteException
+     */
+    public static Evaluation substitute(Evaluation evaluation, Arg... entries)
+            throws EvaluationException, RemoteException {
+        return evaluation.substitute(entries);
+    }
+
+    public static Signature sig(Class<?> serviceType, String providerName,
+                                Object... parameters) throws SignatureException {
+        return sig(null, serviceType, null, Sorcer.getActualName(providerName),
+                parameters);
+    }
+
     public static Signature sig(String operation, Class<?> serviceType,
                                 String providerName, Object... parameters)
             throws SignatureException {
-            return sig(operation, serviceType, null, providerName, parameters);
+        return sig(operation, serviceType, null, providerName, parameters);
     }
-	public static Signature sig(String operation, Class<?> serviceType,
-			String version, String providerName, Object... parameters)
-			throws SignatureException {
-		return SignatureFactory.sig(operation, serviceType, version, providerName, parameters);
-        /*#SOURCE sig_operation_servicetype_providername_parameters
+
+    public static Signature sig(String operation, Class<?> serviceType,
+                                String version, String providerName, Object... parameters)
+            throws SignatureException {
         Signature sig = null;
         if (serviceType.isInterface()) {
-            sig = new NetSignature(operation, serviceType,
-                    Sorcer.getActualName(providerName));
+            sig = new NetSignature(operation, serviceType, version,
+                    (providerName != null ? Sorcer.getActualName(providerName) : null));
         } else {
             sig = new ObjectSignature(operation, serviceType);
         }
@@ -545,50 +540,19 @@ public class operator {
                     sig.setType((Type) o);
                 } else if (o instanceof ReturnPath) {
                     sig.setReturnPath((ReturnPath) o);
+                } else if (o instanceof ServiceDeployment) {
+                    sig.setDeployment((ServiceDeployment) o);
                 }
+
             }
         }
         return sig;
-        #*/
-	}
+    }
 
     public static Signature sig(String operation, Class<?> serviceType,
                                 String version)
             throws SignatureException {
-        return SignatureFactory.sig(operation, serviceType, version);
-        /*#SOURCE sig_operation_servicetype_providername_parameters
-        Signature sig = null;
-        if (serviceType.isInterface()) {
-            sig = new NetSignature(operation, serviceType,
-                    Sorcer.getActualName(providerName));
-        } else {
-            sig = new ObjectSignature(operation, serviceType);
-        }
-        if (parameters.length > 0) {
-            for (Object o : parameters) {
-                if (o instanceof Type) {
-                    sig.setType((Type) o);
-                } else if (o instanceof ReturnPath) {
-                    sig.setReturnPath((ReturnPath) o);
-                }
-            }
-        }
-        return sig;
-        #*/
-    }
-
-    public static Signature sig(String operation, Class<?> serviceType,
-                                Provision type, ServiceDeployment deployment) throws SignatureException {
-        Signature signature = sig(operation, serviceType, null, (String) null, type);
-        signature.setDeployment(deployment);
-        return signature;
-    }
-
-    public static Signature sig(Class<?> serviceType, ReturnPath returnPath, ServiceDeployment deployment)
-            throws SignatureException {
-        Signature signature = sig(serviceType, returnPath);
-        signature.setDeployment(deployment);
-        return signature;
+        return sig(operation, serviceType, version, (String)null, Type.SRV);
     }
 
     public static Signature sig(String operation, Class<?> serviceType,
@@ -632,6 +596,13 @@ public class operator {
 	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
+			Provision type, ServiceDeployment deployment) throws SignatureException {
+		Signature signature = sig(operation, serviceType, (String) null, type);
+		((ServiceSignature)signature).setDeployment(deployment);
+		return signature;
+	}
+	
+	public static Signature sig(String operation, Class<?> serviceType,
 			List<net.jini.core.entry.Entry> attributes)
 			throws SignatureException {
 		NetSignature op = new NetSignature();
@@ -642,28 +613,40 @@ public class operator {
 	}
 
 	public static Signature sig(Class<?> serviceType) throws SignatureException {
-		return SignatureFactory.sig(serviceType, null);
-/*#SOURCE sig_class_returnpath
-        Signature sig = null;
-        if (serviceType.isInterface()) {
-            sig = new NetSignature("service", serviceType);
-        } else if (Executor.class.isAssignableFrom(serviceType)) {
-            sig = new ObjectSignature("execute", serviceType);
-        } else {
-            sig = new ObjectSignature(serviceType);
-        }
-        if (returnPath != null)
-            sig.setReturnPath(returnPath);
-        return sig;
-#*/
+		return sig(serviceType, (ReturnPath) null);
+	}
 
-    }
+	public static Signature sig(Class<?> serviceType, ReturnPath returnPath, ServiceDeployment deployment)
+			throws SignatureException {
+		Signature signature = sig(serviceType, returnPath);
+		((ServiceSignature)signature).setDeployment(deployment);
+		return signature;
+	}
+	
+	public static Signature sig(Class<?> serviceType, ReturnPath returnPath)
+			throws SignatureException {
+		Signature sig = null;
+		if (serviceType.isInterface()) {
+			sig = new NetSignature("service", serviceType);
+		} else if (Executor.class.isAssignableFrom(serviceType)) {
+			sig = new ObjectSignature("execute", serviceType);
+		} else {
+			sig = new ObjectSignature(serviceType);
+		}
+		if (returnPath != null)
+			sig.setReturnPath(returnPath);
+		return sig;
+	}
 
 	public static Signature sig(String operation, Class<?> serviceType,
 			ReturnPath resultPath) throws SignatureException {
 		Signature sig = sig(operation, serviceType, Type.SRV);
 		sig.setReturnPath(resultPath);
 		return sig;
+	}
+
+	public static EvaluationSignature sig(Evaluator evaluator) throws SignatureException {
+		return new EvaluationSignature(evaluator);
 	}
 
 	public static Signature sig(Exertion exertion, String componentExertionName) {
@@ -675,7 +658,7 @@ public class operator {
             throws ExertionException {
         return TaskFactory.task(name, elems);
     }
-
+	
 	public static Signature type(Signature signature, Signature.Type type) {
 		signature.setType(type);
 		return signature;
