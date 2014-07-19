@@ -131,7 +131,7 @@ public class Task extends ServiceExertion {
 	
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		if (delegate == null) {
+		if (innerTask == null) {
 			if (fidelity != null) {
 				Signature ss = null;
 				if (fidelity.size() == 1) {
@@ -147,45 +147,30 @@ public class Task extends ServiceExertion {
 				if (ss != null) {
 					if (ss instanceof NetSignature) {
 						try {
-							delegate = new NetTask(name, (NetSignature) ss);
+                            innerTask = new NetTask(name, (NetSignature) ss);
 						} catch (SignatureException e) {
 							throw new ExertionException(e);
 						}
 					} else if (ss instanceof ObjectSignature) {
-						delegate = new ObjectTask(ss.getSelector(),
+                        innerTask = new ObjectTask(ss.getSelector(),
 								(ObjectSignature) ss);
-						delegate.setName(name);
-					} 
-					delegate.setFidelities(getFidelities());
-					delegate.setFidelity(getFidelity());
-					delegate.setSelectedFidelitySelector(selectedFidelitySelector);
-					delegate.setContext(dataContext);
-					delegate.setControlContext(controlContext);
+                        innerTask.setName(name);
+					}
+                    innerTask.setFidelities(getFidelities());
+                    innerTask.setFidelity(getFidelity());
+                    innerTask.setSelectedFidelitySelector(selectedFidelitySelector);
+                    innerTask.setContext(dataContext);
+                    innerTask.setControlContext(controlContext);
 				}
 			}
 		}
-		return delegate.doTask(txn);
+		return innerTask.doTask(txn);
 	}
 	
 	public Task doTask(Exertion xrt, Transaction txn) throws ExertionException {
 		// implemented for example by VarTask
 		return null;
 	}
-	
-	public void updateConditionalContext(Conditional condition)
-			throws EvaluationException, ContextException {
-		// implement is subclasses
-	}
-	
-	public void undoTask() throws ExertionException, SignatureException,
-			RemoteException {
-		throw new ExertionException("Not implemneted by this Task: " + this);
-	}
-
-    public void updateConditionalContext(Conditional condition)
-            throws EvaluationException, ContextException {
-        // implement is subclasses
-    }
 
 	public void setIndex(int i) {
 		index = new Integer(i);
