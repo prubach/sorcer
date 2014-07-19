@@ -303,11 +303,11 @@ public class ServiceDeployment implements Arg, Serializable, Deployment {
 	}
 	
 	public void setProvisionable(Strategy.Provision isProvisionable) {
-		if (isProvisionable == Strategy.Provision.YES
-				|| isProvisionable == Strategy.Provision.TRUE) {
+		if (isProvisionable.equals(Strategy.Provision.YES)
+				|| isProvisionable.equals(Strategy.Provision.TRUE)) {
 			this.isProvisionable = true;
 		} else {
-			this.isProvisionable = true;
+			this.isProvisionable = false;
 		}
 	}
 	
