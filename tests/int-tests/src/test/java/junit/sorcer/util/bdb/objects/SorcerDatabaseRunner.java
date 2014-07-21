@@ -154,7 +154,7 @@ public class SorcerDatabaseRunner {
 	public void run() throws Exception {
 		TransactionRunner runner = new TransactionRunner(sdb.getEnvironment());
 		runner.run(new PopulateContextDatabase());
-		//runner.run(new PopulateTableDatabase());
+		runner.run(new PopulateTableDatabase());
 		runner.run(new PopulateExertionDatabase());
 		runner.run(new PopulateUuidObjectDatabase());
 		

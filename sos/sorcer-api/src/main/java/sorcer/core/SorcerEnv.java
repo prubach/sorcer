@@ -1105,6 +1105,11 @@ public class SorcerEnv {
         return sorcerEnv.getSorcerExtDir();
     }
 
+    public static String getModelingDir() {
+        File modDir = sorcerEnv.getSorcerModelingDir();
+        return (modDir!=null ? modDir.getAbsolutePath() : null);
+    }
+
     public static String getRepoDir() {
         return getEnvProperties().getProperty(S_SORCER_REPO);
     }
@@ -1803,9 +1808,26 @@ public class SorcerEnv {
         }
         return sorcerExt;
     }
+    
+    public String getSorcerModelingLoc() {
+        String sorcerModel = properties.getProperty(S_SORCER_MODELING);
+        if (sorcerModel == null) {
+            sorcerModel = System.getProperty(S_SORCER_MODELING);
+            if (sorcerModel == null)
+                sorcerModel = System.getenv(E_SORCER_MODELING);
+            if (sorcerModel == null)
+                sorcerModel = getSorcerHome();
+            properties.setProperty(S_SORCER_MODELING, sorcerModel);
+        }
+        return sorcerModel;
+    }
 
     public File getSorcerExtDir() {
         return new File(getSorcerExt());
+    }
+
+    public File getSorcerModelingDir() {
+        return new File(getSorcerModelingLoc());
     }
 
     public LookupLocators getLookupLocatorsHolder(){

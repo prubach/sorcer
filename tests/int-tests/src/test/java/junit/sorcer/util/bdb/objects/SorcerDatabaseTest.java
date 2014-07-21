@@ -94,11 +94,11 @@ public class SorcerDatabaseTest {
 	public void storedcContextSetTest() throws Exception {
         // get from the database three contexts persisted   
 		List<String> names = runner.returnContextNames();
-		List<String> ln = list("c1", "c2", "c3");
+		List<String> ln = list("c1", "c1", "c2", "c2", "c3", "c3");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -116,11 +116,11 @@ public class SorcerDatabaseTest {
 			entry = mei.next();
 			names.add(entry.getValue().getName());
 		}
-		List<String> ln = list("c1", "c2", "c3");
+		List<String> ln = list("c1", "c1", "c2", "c2", "c3", "c3");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -133,7 +133,7 @@ public class SorcerDatabaseTest {
 		Collections.sort(names);
 		logger.info("table names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -151,22 +151,22 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getName());
 		}
-		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
+		List<String> ln = list("undefined0", "undefined1", "undefined2");
 		Collections.sort(names);
 		logger.info("table names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
 	public void storedExertionSetTest() throws Exception {
         // get from the database two exertions persisted twice
 		List<String> names = runner.returnExertionNames();
-		List<String> ln = list("f1", "f4");
+		List<String> ln = list("f1", "f1", "f4", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -184,11 +184,11 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getName());
 		}
-		List<String> ln = list("f1", "f4");
+		List<String> ln = list("f1", "f1", "f4", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -199,7 +199,7 @@ public class SorcerDatabaseTest {
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	@Test
@@ -217,11 +217,11 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getObject().toString());
 		}
-		List<String> ln = list("Mike", "Sobolewski");
+		List<String> ln = list("Mike", "Mike", "Sobolewski", "Sobolewski");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
-		assertEquals(names, ln);
+		assertEquals(ln, names);
 	}
 	
 	//@Test
