@@ -18,6 +18,7 @@
 package junit.sorcer.util.bdb.objects;
 
 import static org.junit.Assert.assertEquals;
+import static sorcer.co.operator.bag;
 import static sorcer.co.operator.list;
 import static sorcer.core.requestor.ServiceRequestor.setCodeBaseByArtifacts;
 
@@ -25,11 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -165,7 +162,7 @@ public class SorcerDatabaseTest {
 	public void storedExertionSetTest() throws Exception {
         // get from the database two exertions persisted twice
 		List<String> names = runner.returnExertionNames();
-		List<String> ln = list("f1", "f1", "f4", "f4");
+		List<String> ln = list("f1", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -187,7 +184,7 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getName());
 		}
-		List<String> ln = list("f1", "f1", "f4", "f4");
+		List<String> ln = list("f1", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -198,7 +195,7 @@ public class SorcerDatabaseTest {
 	public void storedUuidObjectSetTest() throws Exception {
         // get from the database three sessions persisted with three tasks
 		List<String> names = runner.returnUuidObjectNames();
-		List<String> ln = list("Mike", "Mike", "Sobolewski", "Sobolewski");
+		List<String> ln = list("Mike", "Sobolewski");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -220,7 +217,7 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getObject().toString());
 		}
-		List<String> ln = list("Mike", "Mike", "Sobolewski", "Sobolewski");
+		List<String> ln = list("Mike", "Sobolewski");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		

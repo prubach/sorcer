@@ -47,6 +47,7 @@ import sorcer.service.Job;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
 import sorcer.util.ModelTable;
+import sorcer.util.Table;
 import sorcer.util.bdb.objects.SorcerDatabase;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.UuidObject;
@@ -55,95 +56,7 @@ import com.sleepycat.collections.StoredValueSet;
 import com.sleepycat.collections.TransactionRunner;
 import com.sleepycat.collections.TransactionWorker;
 import com.sleepycat.je.DatabaseException;
-//import static sorcer.vo.operator.inputVars;
-//import static sorcer.vo.operator.outputVars;
-//import static sorcer.vo.operator.parametricModel;
-//import sorcer.core.dataContext.model.ParametricModel;
-//import sorcer.core.dataContext.model.VarModel;
-//import sorcer.vfe.Var;
-//import sorcer.vfe.util.Table;
-/**
- * SessionDatabaseRunner is the main entry point for the program and may be run as
- * follows:
- * 
- * <pre>
- * java sorcer.core.provider.exertmonitor.db
- *      [-h <home-directory> ]
- * </pre>
- * 
- * <p>
- * The default for the home directory is ./tmp -- the tmp subdirectory of the
- * current directory where the ServiceProviderDB is run. To specify a different
- * home directory, use the -home option. The home directory must exist before
- * running the sample. To recreate the sample database from scratch, delete all
- * files in the home directory before running the sample.
- * </p>
- * 
- * @author Mike Sobolewski
- */
-/**
-     * Run the sample program.
-     */
-// Parse the command line arguments.
-//
-// Run the sample.
-// If an exception reaches this point, the last transaction did not
-// complete.  If the exception is RunRecoveryException, follow
-// the Berkeley DB recovery procedures before running again.
-// Always attempt to close the database cleanly.
-/**
-	 * Open the database and views.
-	 */
-/**
-     * Close the database cleanly.
-     */
-/**
-     * Run two transactions to populate and print the database.  A
-     * TransactionRunner is used to ensure consistent handling of transactions,
-     * including deadlock retries.  But the best transaction handling mechanism
-     * to use depends on the application.
-     */
-//		requestor.run(new PopulateTableDatabase());
-//		requestor.run(new PopulateVarDatabase());
-//		requestor.run(new PopulateVarModelsDatabase());
-//		requestor.run(new PrintTableDatabase());
-//		requestor.run(new PrintVarDatabase());
-//		requestor.run(new PrintVarModelDatabase());
-/**
-     * Populate the Context database in a single transaction.
-     */
-/**
-     * Populate the Table database in a single transaction.
-     */
-//	private class PopulateTableDatabase implements TransactionWorker {
-//
-//		public void doWork() {
-//			try {
-//				addTables();
-//			} catch (EvaluationException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-/**
-     * Populate the Exertion database in a single transaction.
-     */
-/**
-     * Populate the Var database in a single transaction.
-     */
-//	private class PopulateVarDatabase implements TransactionWorker {
-//
-//		public void doWork() {
-//			try {
-//				addVars();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-/**
-     * Populate the Var database in a single transaction.
-     */
+
 /**
  * SessionDatabaseRunner is the main entry point for the program and may be run as
  * follows:
@@ -241,17 +154,13 @@ public class SorcerDatabaseRunner {
 	public void run() throws Exception {
 		TransactionRunner runner = new TransactionRunner(sdb.getEnvironment());
 		runner.run(new PopulateContextDatabase());
-//		requestor.run(new PopulateTableDatabase());
+		//runner.run(new PopulateTableDatabase());
 		runner.run(new PopulateExertionDatabase());
-//		requestor.run(new PopulateVarDatabase());
-//		requestor.run(new PopulateVarModelsDatabase());
 		runner.run(new PopulateUuidObjectDatabase());
 		
 		runner.run(new PrintContextDatabase());
-//		requestor.run(new PrintTableDatabase());
+		//runner.run(new PrintTableDatabase());
 		runner.run(new PrintExertionDatabase());
-//		requestor.run(new PrintVarDatabase());
-//		requestor.run(new PrintVarModelDatabase());
 		runner.run(new PrintUuidObjectDatabase());
 	}
 
@@ -268,16 +177,16 @@ public class SorcerDatabaseRunner {
 	 /**
      * Populate the Table database in a single transaction.
      */
-//	private class PopulateTableDatabase implements TransactionWorker {
-//
-//		public void doWork() {
-//			try {
-//				addTables();
-//			} catch (EvaluationException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+	public class PopulateTableDatabase implements TransactionWorker {
+
+		public void doWork() {
+			try {
+				addTables();
+			} catch (EvaluationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	 /**
      * Populate the Exertion database in a single transaction.
@@ -293,38 +202,10 @@ public class SorcerDatabaseRunner {
 		}
 	}
 	
-	 /**
-     * Populate the Var database in a single transaction.
-     */
-//	private class PopulateVarDatabase implements TransactionWorker {
-//
-//		public void doWork() {
-//			try {
-//				addVars();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-	
-	 /**
-     * Populate the Var database in a single transaction.
-     */
-//	private class PopulateVarModelsDatabase implements TransactionWorker {
-//
-//		public void doWork() {
-//			try {
-//				addVarModels();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-	
 	/**
     * Populate the UuidObject database in a single transaction.
     */
-	private class PopulateUuidObjectDatabase implements TransactionWorker {
+	public class PopulateUuidObjectDatabase implements TransactionWorker {
 
 		public void doWork() {
 			try {
@@ -355,18 +236,18 @@ public class SorcerDatabaseRunner {
         }
     }
 
-//    private class PrintTableDatabase implements TransactionWorker {
-//
-//        public void doWork() {
-//        	try {
-//				printValues("Tables", views.getTableSet().iterator());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//        }
-//    }
+	public class PrintTableDatabase implements TransactionWorker {
+
+        public void doWork() {
+        	try {
+				printValues("Tables", views.getTableSet().iterator());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+        }
+    }
     
     private class PrintExertionDatabase implements TransactionWorker {
 
@@ -380,32 +261,6 @@ public class SorcerDatabaseRunner {
 			}
         }
     }
-
-//    private class PrintVarDatabase implements TransactionWorker {
-//
-//        public void doWork() {
-//        	try {
-//				printValues("Vars", views.getVarSet().iterator());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//        }
-//    }
-        
-//    private class PrintVarModelDatabase implements TransactionWorker {
-//
-//        public void doWork() {
-//        	try {
-//				printValues("VarModels", views.getVarModelSet().iterator());
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (ClassNotFoundException e) {
-//				e.printStackTrace();
-//			}
-//        }
-//    }
     
     private class PrintUuidObjectDatabase implements TransactionWorker {
 
@@ -451,12 +306,12 @@ public class SorcerDatabaseRunner {
      * Populate the tables entities in the database.  
 	 * @throws EvaluationException 
      */
-//	private void addTables() throws EvaluationException {
-//		StoredValueSet<Table> tableSet = views.getTableSet();
-//        	tableSet.add((new Table()));
-//        	tableSet.add(new Table());
-//        	tableSet.add(new Table());
-//    }
+	private void addTables() throws EvaluationException {
+		StoredValueSet<ModelTable> tableSet = views.getTableSet();
+        	tableSet.add(new Table());
+        	tableSet.add(new Table());
+        	tableSet.add(new Table());
+    }
 	
 	private Task getTask() throws ExertionException, SignatureException, ContextException {
 		Task f4 = task("f4", sig("multiply", Multiplier.class), 
@@ -500,37 +355,6 @@ public class SorcerDatabaseRunner {
 		exertionSet.add(getJob());
 	}
 
-	 /**
-     * Populate the Var entities in the database.  
-     */
-//	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
-//	private void addVars() {
-//		StoredValueSet<Var> varSet = views.getVarSet();
-//		varSet.add(new Var("v1", 10.0));
-//		varSet.add(new Var("v2", "mike"));
-//	}
-	
-	 /**
-     * Populate the VarModel entities in the database.  
-	 * @throws EvaluationException 
-     */
-//	private void addVarModels() throws EvaluationException {
-//		ParametricModel m1 = parametricModel("m1", 
-//				inputVars("x", 2), 
-//				outputVars("f"),
-//				outputVars("g", 2));
-//		
-//		ParametricModel m2 = parametricModel("m2", 
-//				inputVars("x", 2), 
-//				outputVars("f"),
-//				outputVars("g", 2));
-//		
-//		StoredValueSet<VarModel> varModelSet = views.getVarModelSet();
-//
-//		varModelSet.add(m1);
-//		varModelSet.add(m2);
-//	}
-	
 	 /**
      * Populate the VarModel entities in the database.  
 	 * @throws EvaluationException 
@@ -586,36 +410,6 @@ public class SorcerDatabaseRunner {
 		}
 		return names;
 	}
-	
-	 /**
-     * Get the var names returned by an iterator of entity value objects.
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
-     */
-//	public List<String> returnVarNames() throws IOException, ClassNotFoundException {
-//		List<String> names = new ArrayList<String>();
-//		Iterator<Var> iterator = views.getVarSet().iterator();
-//		while (iterator.hasNext()) {
-//			Var var = iterator.next();
-//			names.add(var.getName());
-//		}
-//		return names;
-//	}
-	
-	 /**
-     * Get the var model names returned by an iterator of entity value objects.
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
-     */
-//	public List<String> returnVarModelNames() throws IOException, ClassNotFoundException {
-//		List<String> names = new ArrayList<String>();
-//		Iterator<VarModel> iterator = views.getVarModelSet().iterator();
-//		while (iterator.hasNext()) {
-//			VarModel varModel = iterator.next();
-//			names.add(varModel.getName());
-//		}
-//		return names;
-//	}
 	
 	 /**
      * Get the UuidObject names returned by an iterator of entity value objects.
