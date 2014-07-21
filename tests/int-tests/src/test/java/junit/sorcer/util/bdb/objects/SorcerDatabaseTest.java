@@ -45,6 +45,7 @@ import sorcer.service.Context;
 import sorcer.service.Exertion;
 import sorcer.util.IOUtils;
 
+import sorcer.util.ModelTable;
 import sorcer.util.bdb.objects.UuidKey;
 import sorcer.util.bdb.objects.UuidObject;
 
@@ -124,12 +125,47 @@ public class SorcerDatabaseTest {
 		
 		assertEquals(names, ln);
 	}
+	
+	@Test
+	public void storedTableSetTest() throws Exception {
+		// the second run and the second db population
+        runner.run();
+        // get from the database three tables persisted twice
+		List<String> names = runner.returnTableNames();
+		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
+		Collections.sort(names);
+		logger.info("table names: " + names);
+		
+		assertEquals(names, ln);
+	}
+	
+	@Test
+	public void storedTableMapTest() throws Exception {
+		StoredMap<UuidKey, ModelTable> sm = runner.getViews()
+				.getTableMap();
+		
+		Iterator<Map.Entry<UuidKey, ModelTable>> it = sm
+				.entrySet().iterator();
+				
+		List<String> names = new ArrayList<String>();
+		Map.Entry<UuidKey, ModelTable> entry = null;
 
+		while (it.hasNext()) {
+			entry = it.next();
+			names.add(entry.getValue().getName());
+		}
+		List<String> ln = list("undefined0", "undefined1", "undefined2", "undefined3", "undefined4", "undefined5");
+		Collections.sort(names);
+		logger.info("table names: " + names);
+		
+		assertEquals(names, ln);
+	}
+	
 	@Test
 	public void storedExertionSetTest() throws Exception {
         // get from the database two exertions persisted twice
 		List<String> names = runner.returnExertionNames();
-		List<String> ln = list("f1", "f4");
+		List<String> ln = list("f1", "f1", "f4", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -151,18 +187,18 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getName());
 		}
-		List<String> ln = list("f1", "f4");
+		List<String> ln = list("f1", "f1", "f4", "f4");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
 		assertEquals(names, ln);
 	}
-
+	
 	@Test
 	public void storedUuidObjectSetTest() throws Exception {
         // get from the database three sessions persisted with three tasks
 		List<String> names = runner.returnUuidObjectNames();
-		List<String> ln = list("Mike", "Sobolewski");
+		List<String> ln = list("Mike", "Mike", "Sobolewski", "Sobolewski");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -184,7 +220,7 @@ public class SorcerDatabaseTest {
 			entry = it.next();
 			names.add(entry.getValue().getObject().toString());
 		}
-		List<String> ln = list("Mike", "Sobolewski");
+		List<String> ln = list("Mike", "Mike", "Sobolewski", "Sobolewski");
 		Collections.sort(names);
 		logger.info("names: " + names);
 		
@@ -193,7 +229,7 @@ public class SorcerDatabaseTest {
 	
 	//@Test
 	public void sdbURL() throws Exception {
-		URL sbdUrl = new URL("sbd://myIterface/name#dataContext=2345");
+		URL sbdUrl = new URL("sbd://myIterface/name#context=2345");
 		Object obj = sbdUrl.openConnection().getContent();
 	}
 }

@@ -46,6 +46,7 @@ import sorcer.service.ExertionException;
 import sorcer.service.Job;
 import sorcer.service.SignatureException;
 import sorcer.service.Task;
+import sorcer.util.ModelTable;
 import sorcer.util.bdb.objects.SorcerDatabase;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.UuidObject;
@@ -541,7 +542,7 @@ public class SorcerDatabaseRunner {
 	}
 	
 	 /**
-     * Get the dataContext names returned by an iterator of entity value objects.
+     * Get the context names returned by an iterator of entity value objects.
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
      */
@@ -561,15 +562,15 @@ public class SorcerDatabaseRunner {
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
      */
-//	public List<String> returnTableNames() throws IOException, ClassNotFoundException {
-//		List<String> names = new ArrayList<String>();
-//		Iterator<Table> iterator = views.getTableSet().iterator();
-//		while (iterator.hasNext()) {
-//			Table table = iterator.next();
-//			names.add(table.getName());
-//		}
-//		return names;
-//	}
+	public List<String> returnTableNames() throws IOException, ClassNotFoundException {
+		List<String> names = new ArrayList<String>();
+		Iterator<ModelTable> iterator = views.getTableSet().iterator();
+		while (iterator.hasNext()) {
+			ModelTable table = iterator.next();
+			names.add(table.getName());
+		}
+		return names;
+	}
 	
 	 /**
      * Get the exertion names returned by an iterator of entity value objects.

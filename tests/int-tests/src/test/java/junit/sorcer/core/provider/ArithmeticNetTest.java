@@ -20,17 +20,11 @@ package junit.sorcer.core.provider;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import sorcer.junit.ExportCodebase;
-import sorcer.junit.SorcerClient;
-import sorcer.junit.SorcerRunner;
-import sorcer.junit.SorcerServiceConfiguration;
-import sorcer.service.Context;
-import sorcer.service.Job;
-import sorcer.service.Signature;
+import sorcer.junit.*;
+import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
-import sorcer.service.Task;
 
 import java.util.logging.Logger;
 
@@ -45,7 +39,8 @@ import static sorcer.eo.operator.*;
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
         "org.sorcersoft.sorcer:ju-arithmetic-api"})
-@SorcerServiceConfiguration(":ju-arithmetic-cfg-all")
+@SorcerServiceConfiguration(
+        { ":ju-arithmetic-cfg-all", ":ju-arithmetic-cfg-ctx" })
 public class ArithmeticNetTest {
 
 	private final static Logger logger = Logger
@@ -146,11 +141,9 @@ public class ArithmeticNetTest {
 				pipe(out(t5, "result/y"), in(t3, "arg/x2")));
 	}
 
-    // TODO - Problem with context value mappings
-    //@Ignore
     @Test
     public void contexterTest() throws Exception {
-        Task cxtt = task("addContext", sig("getContext", createContext()),
+        Task cxtt = task("addContext", sig("getContext", AddContext.createContext()),
                 context("add", input("arg/x1"), input("arg/x2")));
 
         Context result = context(exert(cxtt));
@@ -160,12 +153,23 @@ public class ArithmeticNetTest {
 
     }
 
-    // TODO - Problem with context value mappings
-    //@Ignore
+    // Needs ju-arithmetic-cfg-ctx service
+    @Test
+    public void netContexterTaskTest() throws Exception {
+        Task t5 = task("t5", sig("add", Adder.class),
+                sig("getContext", Contexter.class, "Add Contexter", Signature.APD),
+                context("add", in("arg/x1"), in("arg/x2"),
+                        result("result/y")));
+
+        Context result =  context(exert(t5));
+//		logger.info("contexter context: " + result);
+        assertEquals(get(result, "result/y"), 100.0);
+    }
+
     @Test
     public void objectContexterTaskTest() throws Exception {
         Task t5 = task("t5", sig("add", AdderImpl.class),
-                type(sig("getContext", createContext()), Signature.APD),
+                type(sig("getContext", AddContext.createContext()), Signature.APD),
                 context("add", in("arg/x1"), in("arg/x2"),
                         result("result/y")));
 
@@ -173,10 +177,4 @@ public class ArithmeticNetTest {
 //		logger.info("task context: " + result);
         assertEquals(get(result, "result/y"), 100.0);
     }
-
-    public static Context createContext() throws Exception {
-        Context cxt = context("add", input("arg/x1", 20.0), input("arg/x2", 80.0));
-        return  cxt;
-    }
-
 }
