@@ -171,6 +171,16 @@ public class Task extends ServiceExertion {
 		// implemented for example by VarTask
 		return null;
 	}
+	
+	public void updateConditionalContext(Conditional condition)
+			throws EvaluationException, ContextException {
+		// implement is subclasses
+	}
+	
+	public void undoTask() throws ExertionException, SignatureException,
+			RemoteException {
+		throw new ExertionException("Not implemneted by this Task: " + this);
+	}
 
 	public void setIndex(int i) {
 		index = new Integer(i);
