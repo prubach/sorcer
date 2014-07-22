@@ -550,7 +550,7 @@
                 <include>**/*</include>
             </includes>
             <excludes>
-                <exclude>sorcer.env</exclude>
+                <!--<exclude>sorcer.env</exclude>-->
                 <exclude>versions.properties</exclude>
                 <exclude>browser/pom.xml</exclude>
                 <exclude>shell/policy/shell.policy_old</exclude>
