@@ -268,9 +268,9 @@ public class IOUtils {
      * Check whether a file is a child of a dir. Neither file nor dir is canonized
      */
     public static boolean isChild(File dir, File file) {
-        File parent;
+        File parent=file;
         do {
-            parent = file.getParentFile();
+            parent = parent.getParentFile();
         } while (parent != null && !parent.equals(dir));
         return parent != null && parent.equals(dir);
     }

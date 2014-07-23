@@ -31,7 +31,6 @@ public class WebFile extends AbstractRemoteFile implements Serializable {
     private final File dataDir;
     private URL remoteUrl;
 
-
     public WebFile(File dataDir, File localFile) throws IOException {
         super(localFile);
         this.dataDir = dataDir;
