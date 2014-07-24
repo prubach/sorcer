@@ -780,7 +780,7 @@ public class SorcerEnv {
      * @return a HTTP document root directory
      */
     public static File getDocRootDir() {
-        return new File(System.getProperty(DOC_ROOT_DIR));
+        return new File(System.getProperty(DOC_ROOT_DIR, new File(getHomeDir(), "data").getPath()));
     }
 
     public static File getDataFile(String filename) {
@@ -825,10 +825,11 @@ public class SorcerEnv {
     }
 
     static public File getNewScratchDir(String scratchDirNamePrefix) {
-        logger.info("scratch_dir = " + System.getProperty(SCRATCH_DIR));
+        String scratch = System.getProperty(SCRATCH_DIR, "scratch");
+        logger.info("scratch_dir = " + scratch);
         logger.info("dataDir = " + getDataDir());
         String dirName = getDataDir() + File.separator
-                + System.getProperty(SCRATCH_DIR) + File.separator
+                + scratch + File.separator
                 + getUniqueId();
         File tempdir = new File(dirName);
         File scratchDir = null;
@@ -916,14 +917,14 @@ public class SorcerEnv {
     public static URL getDataURL(File dataFile) throws MalformedURLException {
         String dataUrl = getDataServerUrl();
         String path = dataFile.getAbsolutePath();
-        String docDir = System.getProperty(DOC_ROOT_DIR);
+        String docDir = getDataDir().getPath();
         int index = path.indexOf(docDir);
         if (index < 0) {
             throw new MalformedURLException("Data file: " + path
                     + " is not in: " + docDir);
         }
         return new URL(dataUrl + File.separator
-                + path.substring(System.getProperty(DOC_ROOT_DIR).length() + 1));
+                + path.substring(docDir.length() + 1));
     }
 
     /**
