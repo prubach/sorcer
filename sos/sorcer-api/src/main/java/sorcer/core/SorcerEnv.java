@@ -825,10 +825,11 @@ public class SorcerEnv {
     }
 
     static public File getNewScratchDir(String scratchDirNamePrefix) {
-        logger.info("scratch_dir = " + System.getProperty(SCRATCH_DIR));
+        String scratch = System.getProperty(SCRATCH_DIR, "scratch");
+        logger.info("scratch_dir = " + scratch);
         logger.info("dataDir = " + getDataDir());
         String dirName = getDataDir() + File.separator
-                + System.getProperty(SCRATCH_DIR) + File.separator
+                + scratch + File.separator
                 + getUniqueId();
         File tempdir = new File(dirName);
         File scratchDir = null;
