@@ -31,7 +31,9 @@ import sorcer.util.SorcerUtil;
 import sorcer.util.exec.ExecUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -74,12 +76,12 @@ import static org.junit.Assert.assertTrue;
 		String str = System.getProperty(R_PROPERTIES_FILENAME);
 		logger.info(R_PROPERTIES_FILENAME + " = " + str);
 		if (str != null && str != "") {
-			loadProperties(str); // search the provider package
+            loadConfiguration(str);
   		} else {
 			//throw new RuntimeException("No tester properties file available!");
 		}
 		// Determine if an internal web server is running if so obtain the root paths
-		boolean isWebsterInt = false;
+/*		boolean isWebsterInt = false;
 		String val = System.getProperty(SORCER_WEBSTER_INTERNAL);
 		if (val != null && val.length() != 0) {
 			isWebsterInt = val.equals("true");
@@ -95,24 +97,29 @@ import static org.junit.Assert.assertTrue;
 				e.printStackTrace();
 			}
 		}
-				
+*/
 		// system property for DOC_ROOT_DIR - needed for scratchURL
 		System.setProperty(SorcerConstants.DOC_ROOT_DIR, Sorcer.getHome() + File.separator + "data");
 	}
 	
 	
 	
-	/**
-	 * Loads tester properties from a <code>filename</code> file. 
-	 * 
-	 * @param filename
-	 *            the properties file name see #getProperty
-	 * @throws ConfigurationException 
-	 */
-	public void loadProperties(String filename) throws ConfigurationException {
-		logger.info("loading requestor properties:" + filename);
-		tester.setProps(Sorcer.loadProperties(filename));
-	}
+	public void loadConfiguration(String filename) {
+        try {
+            // check the class resource
+            InputStream is = new FileInputStream(new File(filename));
+            if (is != null) {
+                props = Sorcer.loadProperties(is);
+
+                // copy loaded provider's properties to global Env
+                // properties
+                Sorcer.updateFromProperties(props);
+            }
+        } catch (Exception ex) {
+            logger.warning("Not able to load requestor's file properties "
+                    + filename);
+        }
+    }
 
 	public String getProperty(String key) {
 		return tester.getProps().getProperty(key);

@@ -188,6 +188,18 @@ public class SorcerEnv {
         return result;
     }
 
+    public static void updateWebster() {
+        try {
+            String iface = getWebsterInterface();
+            int port = getWebsterPort();
+            setWebsterUrl(iface, port);
+            sorcerEnv.setWebsterInterfaceProperty(iface);
+            sorcerEnv.setWebsterPortProperty(port);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Return the interface of a SORCER class server.
      *
@@ -1251,6 +1263,9 @@ public class SorcerEnv {
                         val = prop.length() == 0 ? null : props
                                 .getProperty(prop);
                     }
+                    if (val!=null && val.indexOf("${", 0) != -1) {
+                        val = expandStringProperties(val, false, getEnvProperties());
+                    }
                     if (val != null) {
                         sb.append(val);
                     } else {
@@ -1750,6 +1765,10 @@ public class SorcerEnv {
 
     public void setRequestorWebsterCodebase(String codebase) {
         properties.setProperty(R_CODEBASE, codebase);
+    }
+
+    public void setWebsterInterfaceProperty(String interfaceProperty) {
+        properties.setProperty(P_WEBSTER_INTERFACE, interfaceProperty);
     }
 
     public void setWebsterPortProperty(int port) {

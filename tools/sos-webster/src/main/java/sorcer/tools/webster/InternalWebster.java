@@ -172,6 +172,7 @@ public class InternalWebster {
         System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, codebase);
         System.setProperty(SorcerConstants.P_WEBSTER_PORT, Integer.toString(webster.getPort()));
         System.setProperty(SorcerConstants.P_WEBSTER_INTERFACE, webster.getAddress());
+        SorcerEnv.updateWebster();
         logger.fine("Setting 'webster URL': " + SorcerEnv.getWebsterUrl());
         logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
 
