@@ -16,6 +16,7 @@
 
 package sorcer.file.remote;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import java.io.File;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @Category(SorcerClient.class)
 @RunWith(SorcerRunner.class)
 public class WebFileTest {
