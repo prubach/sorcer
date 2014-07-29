@@ -51,7 +51,7 @@ public class ObjectStoreTest {
 
 	
 	@Test
-	public void storeTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void storeTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		
 		Task objectStoreTask = task(
@@ -64,6 +64,7 @@ public class ObjectStoreTest {
 		//logger.info("objectStoreTask: " + objectStoreTask);
 		//logger.info("objectStoreTask context: " + context(objectStoreTask));
 		URL objURL = (URL)value(objectStoreTask);
+        Thread.sleep(800);
 		logger.info("stored object URL: " + objURL);
 		logger.info("retrieved object: " + objURL.getContent());
 		
@@ -71,7 +72,7 @@ public class ObjectStoreTest {
 	}
 
 	@Test
-	public void storageContextTest() throws SignatureException, ExertionException, ContextException, IOException {
+	public void storageContextTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		
 		Task objectStoreTask = task(
@@ -84,6 +85,7 @@ public class ObjectStoreTest {
 		//logger.info("objectStoreTask: " + objectStoreTask);
 		//logger.info("objectStoreTask context: " + context(objectStoreTask));
 		URL objURL = (URL)value(objectStoreTask);
+        Thread.sleep(800);
 		logger.info("stored object URL: " + objURL);
 //		logger.info("retrieved object: " + objURL.getContent());
 		
