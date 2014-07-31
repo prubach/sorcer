@@ -1009,9 +1009,15 @@ public class SorcerEnv {
         String codebase = "";
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < jars.length - 1; i++) {
-            sb.append(url).append("/").append(jars[i]).append(" ");
+            if (jars[i].startsWith("artifact:"))
+                sb.append(jars[i]).append(" ");
+            else
+                sb.append(url).append("/").append(jars[i]).append(" ");
         }
-        sb.append(url).append("/").append(jars[jars.length - 1]);
+        if (jars[jars.length - 1].startsWith("artifact:"))
+            sb.append(jars[jars.length - 1]);
+        else
+            sb.append(url).append("/").append(jars[jars.length - 1]);
         codebase = sb.toString();
         System.setProperty("java.rmi.server.codebase", codebase);
         if (logger.isLoggable(Level.FINE))
@@ -1882,6 +1888,10 @@ public class SorcerEnv {
             target[i] = o;
             ++i;
         }
+    }
+
+    public static boolean isIGrid() {
+        return false;
     }
 
     public File getResolverCache() {
