@@ -210,7 +210,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "DatabaseStorer") { fork:'yes'
         interfaces {
-            classes 'sorcer.service.DatabaseStorer'
+            classes 'sorcer.core.provider.DatabaseStorer'
             artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.ServiceProvider') {
@@ -222,7 +222,7 @@ deployment(name: 'Sorcer') {
 
     service(name: "Exerter") { //fork:'yes'
         interfaces {
-            classes 'sorcer.service.Exerter'
+            classes 'sorcer.core.provider.Exerter'
             artifact sorcer.codebase
         }
         implementation(class: 'sorcer.core.provider.ServiceTasker') {

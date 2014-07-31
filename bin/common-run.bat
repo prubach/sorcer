@@ -96,6 +96,7 @@ set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\rioproject\rio-platform\%v.
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-rio-start\%v.sorcer%\sorcer-rio-start-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-netlet\%v.sorcer%\sos-netlet-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sos-platform\%v.sorcer%\sos-platform-%v.sorcer%.jar
+set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\sorcersoft\sorcer\sorcer-spi\%v.sorcer%\sorcer-spi-%v.sorcer%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\plexus\plexus-utils\%v.plexus%\plexus-utils-%v.plexus%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\codehaus\groovy\groovy-all\%v.groovy%\groovy-all-%v.groovy%.jar
 set SHELL_CLASSPATH=%SHELL_CLASSPATH%;%MVN_REPO%\org\apache\commons\commons-lang3\3.2.1\commons-lang3-3.2.1.jar
