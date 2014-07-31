@@ -483,6 +483,7 @@ $MVN_REPO/org/sorcersoft/sorcer/dbp-api/$V_SORCER/dbp-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-api/$V_SORCER/sos-api-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sos-platform/$V_SORCER/sos-platform-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/browser/$V_SORCER/browser-$V_SORCER.jar:\
+$MVN_REPO/org/sorcersoft/sorcer/sorcer-spi/$V_SORCER/sorcer-spi-$V_SORCER.jar:\
 $MVN_REPO/org/sorcersoft/sorcer/sorcer-rio-start/$V_SORCER/sorcer-rio-start-$V_SORCER.jar:\
 $MVN_REPO/org/rioproject/resolver/resolver-api/$V_RIO/resolver-api-$V_RIO.jar:\
 $MVN_REPO/org/rioproject/rio-platform/$V_RIO/rio-platform-$V_RIO.jar:\
