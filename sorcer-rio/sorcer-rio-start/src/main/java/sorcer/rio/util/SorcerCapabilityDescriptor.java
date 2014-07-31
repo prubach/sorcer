@@ -5,7 +5,7 @@ import org.rioproject.config.PlatformCapabilityConfig;
 import org.rioproject.resolver.Artifact;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
+import sorcer.resolver.SorcerResolver;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -88,7 +88,7 @@ public class SorcerCapabilityDescriptor extends PlatformCapabilityConfig {
 
     static {
         try {
-            resolver = ResolverHelper.getResolver();
+            resolver = SorcerResolver.getResolver();
         } catch (ResolverException e) {
             throw new ExceptionInInitializerError(e);
         }

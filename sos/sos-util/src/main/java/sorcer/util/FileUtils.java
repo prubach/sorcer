@@ -49,28 +49,36 @@ public class FileUtils {
         return file.exists() ? file : null;
     }
 
-    @SuppressWarnings({"unchecked", "unused"})
     public static <T> T fromFile(File serialized) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = null;
+        FileInputStream in = null;
         try {
-            ois = new ClassLoaderAwareObjectInputStream(new FileInputStream(serialized), Thread.currentThread().getContextClassLoader());
-            return (T) ois.readObject();
+            in = new FileInputStream(serialized);
+            return fromFile(in);
         } finally {
-            IOUtils.closeQuietly(ois);
+            IOUtils.closeQuietly(in);
         }
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unchecked")
+    public static <T> T fromFile(InputStream in) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ClassLoaderAwareObjectInputStream(in, Thread.currentThread().getContextClassLoader());
+        return (T) ois.readObject();
+    }
+
     public static void toFile(Object o, File f) throws IOException {
         File parent = f.getParentFile();
         if (!parent.exists() && !parent.mkdirs())
             throw new IOException("Could not create parent dir for " + f);
-        ObjectOutputStream out = null;
+        FileOutputStream outputStream = null;
         try {
-            out = new ObjectOutputStream(new FileOutputStream(f));
-            out.writeObject(o);
+            outputStream = new FileOutputStream(f);
+            toFile(o, outputStream);
         } finally {
-            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(outputStream);
         }
+    }
+
+    public static void toFile(Object o, OutputStream outputStream) throws IOException {
+        new ObjectOutputStream(outputStream).writeObject(o);
     }
 }

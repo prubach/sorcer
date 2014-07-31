@@ -18,12 +18,13 @@ package org.sorcersoft.sorcer.resolver;
 
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.boot.util.ReferenceHolder;
 
 import javax.inject.Inject;
+
+import static sorcer.resolver.SorcerResolver.getResolver;
 
 /**
  * @author Rafał Krupiński
@@ -36,7 +37,7 @@ public class RioResolverActivator {
         Resolver resolver = resolverHolder.get();
         if (resolver != null)
             throw new IllegalStateException("Global Resolver instance already set");
-        resolver = ResolverHelper.getResolver();
+        resolver = getResolver();
         log.info("Setting global Resolver instance to {}", resolver);
         resolverHolder.set(resolver);
     }

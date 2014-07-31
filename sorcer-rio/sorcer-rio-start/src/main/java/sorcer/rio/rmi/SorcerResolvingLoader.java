@@ -19,16 +19,14 @@ package sorcer.rio.rmi;
 import org.rioproject.resolver.RemoteRepository;
 import org.rioproject.resolver.Resolver;
 import org.rioproject.resolver.ResolverException;
-import org.rioproject.resolver.ResolverHelper;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sorcer.resolver.SorcerResolver;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.rmi.server.RMIClassLoader;
 import java.rmi.server.RMIClassLoaderSpi;
@@ -80,7 +78,7 @@ public class SorcerResolvingLoader extends RMIClassLoaderSpi {
                 envSorcerHome : System.getProperty(SORCER_HOME));
         JavaSystemProperties.ensure("RIO_HOME", new File(sorcerHome, "lib/rio").getPath());
         try {
-            resolver = ResolverHelper.getResolver();
+            resolver = SorcerResolver.getResolver();
         } catch (ResolverException e) {
             throw new RuntimeException(e);
         }

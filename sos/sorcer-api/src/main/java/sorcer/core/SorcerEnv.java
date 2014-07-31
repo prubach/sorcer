@@ -1883,4 +1883,15 @@ public class SorcerEnv {
             ++i;
         }
     }
+
+    public File getResolverCache() {
+        return new File(getDataDir(), "resolver.ser");
+    }
+
+    /**
+     * Has user requested to clear the cache
+     */
+    public boolean isClearResolverCache() {
+        return Boolean.getBoolean("sorcer.resolver.cache.clear");
+    }
 }

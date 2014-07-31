@@ -39,12 +39,11 @@
             <artifactId>sos-util</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
-            <artifactId>sorcer-api</artifactId>
+            <artifactId>sorcer-spi</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

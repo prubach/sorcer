@@ -17,8 +17,8 @@ package sorcer.netlet.util;
 
 import org.rioproject.resolver.*;
 import org.rioproject.url.artifact.ArtifactURLConfiguration;
-import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
+import sorcer.resolver.SorcerResolver;
 import sorcer.util.JavaSystemProperties;
 import sorcer.util.SorcerResolverHelper;
 
@@ -113,7 +113,7 @@ public class LoaderConfigurationHelper {
 
     private static org.rioproject.resolver.Resolver getResolver() throws ResolverException {
         if (resolver == null)
-            resolver = ResolverHelper.getResolver();
+            resolver = SorcerResolver.getResolver();
         return resolver;
     }
 

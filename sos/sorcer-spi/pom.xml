@@ -31,6 +31,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.rioproject.resolver</groupId>
+            <artifactId>resolver-api</artifactId>
+            <version>${v.rio}</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
