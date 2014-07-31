@@ -124,7 +124,7 @@ public class SorcerResolver implements Resolver {
             lock = ch.lock();
             long storeNewLastMod = store.lastModified();
             if (read) {
-                if (storeNewLastMod > storeLastMod) {
+                if (store.length() > 0 && storeNewLastMod > storeLastMod) {
                     Map<String, String[]> newMap = FileUtils.fromFile(Channels.newInputStream(ch));
                     cache.putAll(newMap);
                     storeLastMod = storeNewLastMod;
