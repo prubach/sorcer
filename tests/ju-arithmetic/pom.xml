@@ -17,6 +17,7 @@
 		<module>ju-arithmetic-prv</module>
         <module>ju-arithmetic-cfg-all</module>
         <module>ju-arithmetic-cfg-ctx</module>
+        <module>ju-arithmetic-cfg-ter</module>
 	</modules>
 
 	<build>
