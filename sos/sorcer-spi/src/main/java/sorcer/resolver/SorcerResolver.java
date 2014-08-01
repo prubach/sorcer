@@ -26,9 +26,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.util.FileUtils;
 import sorcer.util.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -116,22 +114,31 @@ public class SorcerResolver implements Resolver {
     }
 
     protected void updateCacheStore(boolean read) {
-        RandomAccessFile randomAccessFile = null;
+        Closeable file = null;
         FileLock lock = null;
         try {
-            randomAccessFile = new RandomAccessFile(store, "rw");
-            FileChannel ch = randomAccessFile.getChannel();
+            FileChannel ch;
+            // new RandomAccessFile should throw FileNotFoundException if the file doesn't exist
+            boolean myRead = read && store.exists();
+            if (myRead) {
+                RandomAccessFile randomAccessFile = new RandomAccessFile(store, "rw");
+                file = randomAccessFile;
+                ch = randomAccessFile.getChannel();
+            } else {
+                FileOutputStream fileOutputStream = new FileOutputStream(store);
+                file = fileOutputStream;
+                ch = fileOutputStream.getChannel();
+            }
+
             lock = ch.lock();
-            long storeNewLastMod = store.lastModified();
-            if (read) {
+
+            if (myRead) {
+				long storeNewLastMod = store.lastModified();
                 if (store.length() > 0 && storeNewLastMod > storeLastMod) {
                     Map<String, String[]> newMap = FileUtils.fromFile(Channels.newInputStream(ch));
                     cache.putAll(newMap);
                     storeLastMod = storeNewLastMod;
                 }
-            } else {
-                log.debug("Cache clear");
-                ch.truncate(0);
             }
             FileUtils.toFile(cache, Channels.newOutputStream(ch));
         } catch (Exception e) {
@@ -143,7 +150,7 @@ public class SorcerResolver implements Resolver {
                 } catch (IOException e1) {
                     log.warn("Error", e1);
                 }
-            IOUtils.closeQuietly(randomAccessFile);
+            IOUtils.closeQuietly(file);
         }
     }
 
