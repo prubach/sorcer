@@ -125,6 +125,8 @@ public class SorcerResolver implements Resolver {
                 file = randomAccessFile;
                 ch = randomAccessFile.getChannel();
             } else {
+                // check if store exists, if not new empty file is created.
+                store.createNewFile();
                 FileOutputStream fileOutputStream = new FileOutputStream(store);
                 file = fileOutputStream;
                 ch = fileOutputStream.getChannel();

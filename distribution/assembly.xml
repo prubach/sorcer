@@ -741,6 +741,15 @@
             </includes>
         </fileSet>
 
+        <!-- Data dir -->
+        <fileSet>
+            <directory>${basedir}/../deploy</directory>
+            <outputDirectory>/data</outputDirectory>
+            <excludes>
+                <exclude>*</exclude>
+            </excludes>
+        </fileSet>
+
     </fileSets>
 
     <dependencySets>
