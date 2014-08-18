@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipFile;
 
 public class IOUtils {
@@ -275,4 +278,51 @@ public class IOUtils {
         return parent != null && parent.equals(dir);
     }
 
+    public static FileInputStream openInputStream(File file) throws IOException {
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                throw new IOException("File '" + file + "' exists but is a directory");
+            }
+            if (file.canRead() == false) {
+                throw new IOException("File '" + file + "' cannot be read");
+            }
+        } else {
+            throw new FileNotFoundException("File '" + file + "' does not exist");
+        }
+        return new FileInputStream(file);
+    }
+
+    public static List<String> readLines(File file) throws IOException {
+        return readLines(file, Charset.defaultCharset());
+    }
+
+    public static List<String> readLines(File file, Charset encoding) throws IOException {
+        InputStream in = null;
+        try {
+            in = openInputStream(file);
+            return IOUtils.readLines(in, encoding);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+
+    public static List<String> readLines(InputStream input, Charset encoding) throws IOException {
+        InputStreamReader reader = new InputStreamReader(input, encoding);
+        return readLines(reader);
+    }
+
+    public static List<String> readLines(Reader input) throws IOException {
+        BufferedReader reader = toBufferedReader(input);
+        List<String> list = new ArrayList<String>();
+        String line = reader.readLine();
+        while (line != null) {
+            list.add(line);
+            line = reader.readLine();
+        }
+        return list;
+    }
+
+    public static BufferedReader toBufferedReader(Reader reader) {
+        return reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+    }
 }

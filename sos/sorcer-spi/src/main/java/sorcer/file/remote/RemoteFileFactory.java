@@ -23,6 +23,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * A factory that creates RemoteFile instances based on whether source file is placed in a directory marked as shared.
+ *
+ * File placed in shared directories cause the factory to return {@link SharedFile}.
+ * Files placed in other directories are copied to data directory, and upon request copied over HTTP.
+ *
  * @author Rafał Krupiński
  */
 public class RemoteFileFactory {

@@ -16,12 +16,17 @@
 
 package sorcer.file.remote;
 
-import sorcer.service.Evaluation;
+import sorcer.service.EvaluationException;
 
 import java.io.File;
 
 /**
  * @author Rafał Krupiński
  */
-public interface RemoteFile extends Evaluation<File>{
+public interface RemoteFile {
+    /**
+     * Return local file represented by this object. The file may be first downloaded from remote location.
+     * Before returning, the checksum is verified against value stored in this object.
+     */
+    File getValue() throws EvaluationException;
 }

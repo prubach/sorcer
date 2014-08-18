@@ -387,7 +387,6 @@ public class SorcerEnv {
         return sorcerEnv.getProperty(S_VERSION_RIO, RIO_VERSION);
     }
 
-    /***
     /**
      * Gets an exertion space group name to use with this environment.
      *
@@ -851,14 +850,14 @@ public class SorcerEnv {
             scratchDir = new File(tempdir.getParentFile(), scratchDirNamePrefix
                     + tempdir.getName());
         }
-		
-		// check to see number of dirs in parent directory (32000 is problem in 
+
+		// check to see number of dirs in parent directory (32000 is problem in
 		// linux)
 		File parentDir = scratchDir.getParentFile();
 		String[] subDirs = parentDir.list(new FilenameFilter() {
 				public boolean accept(File dir, String name) {
 				 return new File(dir, name).isDirectory();
-			}												
+			}
 		});
 		logger.info("subDirs = " + subDirs);
 		if (subDirs != null) {
@@ -1063,7 +1062,7 @@ public class SorcerEnv {
     }
 
     public static String getPureNameFromActual(String actualName) {
-        return actualName.replace(getNameSuffix(),"");
+        return actualName.replace(getNameSuffix(), "");
     }
 
     public static String getSuffixedName(String name, int suffixLength) {
@@ -1117,7 +1116,7 @@ public class SorcerEnv {
 
     public static String getHome() {
         File homeDir = getHomeDir();
-        return (homeDir!=null ? homeDir.getAbsolutePath() : null);
+        return (homeDir != null ? homeDir.getAbsolutePath() : null);
     }
 
     public static File getExtDir() {
@@ -1126,7 +1125,7 @@ public class SorcerEnv {
 
     public static String getModelingDir() {
         File modDir = sorcerEnv.getSorcerModelingDir();
-        return (modDir!=null ? modDir.getAbsolutePath() : null);
+        return (modDir != null ? modDir.getAbsolutePath() : null);
     }
 
     public static String getRepoDir() {
@@ -1269,7 +1268,7 @@ public class SorcerEnv {
                         val = prop.length() == 0 ? null : props
                                 .getProperty(prop);
                     }
-                    if (val!=null && val.indexOf("${", 0) != -1) {
+                    if (val != null && val.indexOf("${", 0) != -1) {
                         val = expandStringProperties(val, false, getEnvProperties());
                     }
                     if (val != null) {
@@ -1484,11 +1483,36 @@ public class SorcerEnv {
             // Repo directory - setting
             properties = setRepoDir(properties);
             prepareWebsterInterface(properties);
+            readShareConfiguration(properties);
         } catch (Throwable t) {
             logger.throwing(
                     SorcerEnv.class.getName(),
                     "Unable to find/load SORCER environment configuration files",
                     t);
+        }
+    }
+
+    private void readShareConfiguration(Properties properties) {
+        String configPath = properties.getProperty("sorcer.share.config.file");
+        if (configPath == null || configPath.isEmpty())
+            return;
+        try {
+            List<String> lines = IOUtils.readLines(new File(configPath));
+            List<String> paths = new ArrayList<String>(lines.size());
+            for (String line : lines) {
+
+                int comment = line.indexOf("#");
+                if (comment > -1)
+                    line = line.substring(comment);
+                line = line.trim();
+                if (line.isEmpty())
+                    continue;
+
+                paths.add(line);
+            }
+            properties.setProperty("sorcer.share.config", String.join(File.pathSeparator, paths));
+        } catch (IOException e) {
+            logger.warning("Could not read share config file");
         }
     }
 
@@ -1590,7 +1614,7 @@ public class SorcerEnv {
                 System.setProperty(DATA_SERVER_PORT, httpPort);
             }
         }
-		
+
 		SCRATCH_DIR_ORIG = System.getProperty(SCRATCH_DIR);
 
     }
@@ -1800,25 +1824,25 @@ public class SorcerEnv {
     /**
      * copy all entries from provided map to SorcerEnv properties
      */
-    public void  load(Map<String, String> props){
+    public void load(Map<String, String> props) {
         properties.putAll(props);
     }
 
-    public static SorcerEnv load(String fileName){
+    public static SorcerEnv load(String fileName) {
         SorcerEnv result = new SorcerEnv();
 
         try {
-            result.load(fileName,"user file");
+            result.load(fileName, "user file");
         } catch (IOException e) {
-            throw new IllegalArgumentException("Could not load config from "+fileName);
+            throw new IllegalArgumentException("Could not load config from " + fileName);
         } catch (ConfigurationException e) {
-            throw new IllegalArgumentException("Could not load config from "+fileName);
+            throw new IllegalArgumentException("Could not load config from " + fileName);
         }
         sorcerEnv.overrideFromEnvironment(System.getenv());
         return result;
     }
 
-    public static void setSorcerEnv(SorcerEnv sorcerEnv){
+    public static void setSorcerEnv(SorcerEnv sorcerEnv) {
         SorcerEnv.sorcerEnv = sorcerEnv;
     }
 
@@ -1834,7 +1858,7 @@ public class SorcerEnv {
         }
         return sorcerExt;
     }
-    
+
     public String getSorcerModelingLoc() {
         String sorcerModel = properties.getProperty(S_SORCER_MODELING);
         if (sorcerModel == null) {
@@ -1856,7 +1880,7 @@ public class SorcerEnv {
         return new File(getSorcerModelingLoc());
     }
 
-    public LookupLocators getLookupLocatorsHolder(){
+    public LookupLocators getLookupLocatorsHolder() {
         return lookupLocators;
     }
 
@@ -1882,6 +1906,7 @@ public class SorcerEnv {
         System.arraycopy(additional, 0, result, websterRoots.size(), additional.length);
         return result;
     }
+
     private static <T> void addAll(List<T> src, T[] target) {
         int i = 0;
         for (T o : src) {

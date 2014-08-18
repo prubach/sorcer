@@ -20,14 +20,10 @@ package sorcer.file.remote;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
-import sorcer.service.Arg;
-import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
-import sorcer.util.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.rmi.RemoteException;
 
 /**
  * @author Rafał Krupiński
@@ -49,10 +45,9 @@ abstract public class AbstractRemoteFile implements RemoteFile {
     }
 
     @Override
-    public File getValue(Arg... entries) throws EvaluationException {
-        File result = null;
+    public File getValue() throws EvaluationException {
         try {
-            result = doGetFile();
+            File result = doGetFile();
             String myChecksum = checksum(result);
             if (!checksum.equals(myChecksum))
                 throw new IllegalStateException("File exists but has invalid checksum");
@@ -60,15 +55,5 @@ abstract public class AbstractRemoteFile implements RemoteFile {
         } catch (IOException e) {
             throw new EvaluationException("Error getting file", e);
         }
-    }
-
-    @Override
-    public Evaluation<File> substitute(Arg... entries) throws EvaluationException, RemoteException {
-        return this;
-    }
-
-    @Override
-    public File asis() throws EvaluationException, RemoteException {
-        return getValue();
     }
 }

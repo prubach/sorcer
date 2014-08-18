@@ -25,6 +25,8 @@ import java.io.*;
 import java.net.URL;
 
 /**
+ * Remote file that is copied over web using webster data appliance.
+ *
  * @author Rafał Krupiński
  */
 public class WebFile extends AbstractRemoteFile implements Serializable {

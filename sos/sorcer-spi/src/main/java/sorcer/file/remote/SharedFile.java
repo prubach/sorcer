@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Remote file that uses shared disk for access. File is not copied upon access, but the checksum is verified upon accessing the File object.
+ *
  * @author Rafał Krupiński
  */
 public class SharedFile extends AbstractRemoteFile {
