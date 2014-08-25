@@ -20,7 +20,7 @@ package sorcer.service;
 
 import net.jini.core.transaction.Transaction;
 import sorcer.core.context.ControlContext;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class ExertionExecutor {
                                                Transaction transaction, Arg... entries)
             throws ExertionException {
         try {
-            ServiceExerter esh = new ServiceExerter(input);
+            ExertionDispatcher esh = new ExertionDispatcher(input);
             Exertion result = null;
             try {
                 result = esh.exert(transaction, null, entries);

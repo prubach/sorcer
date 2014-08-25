@@ -59,7 +59,11 @@ public class ArgSet extends TreeSet<Arg> {
 			if (a.getName().equals(argName)) {
 				arg = a;
 				if (arg instanceof Setter)
-					((Setter) arg).setValue(value);
+                    try {
+                        ((Setter) arg).setValue(value);
+                    } catch (Exception e) {
+                        throw new EvaluationException();
+                    }
 				break;
 			}
 		}
@@ -143,8 +147,12 @@ public class ArgSet extends TreeSet<Arg> {
 	public void clearArgs() throws EvaluationException {
 		for (Arg p : this) {
 			if (p instanceof Setter)
-				((Setter) p).setValue(null);
-		}
+                try {
+                    ((Setter) p).setValue(null);
+                } catch (Exception e) {
+                    throw new EvaluationException();
+                }
+        }
 	}
 	
 }

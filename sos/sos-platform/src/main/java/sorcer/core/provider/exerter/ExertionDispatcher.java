@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package sorcer.util;
+package sorcer.core.provider.exerter;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -46,26 +46,28 @@ import sorcer.jini.lookup.ProviderID;
 import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.txmgr.TransactionManagerAccessor;
+import sorcer.util.ProviderLookup;
+import sorcer.util.Sorcer;
 
 /**
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public class ServiceExerter implements Exerter, Callable {
-    protected final static Logger logger = LoggerFactory.getLogger(ServiceExerter.class);
+public class ExertionDispatcher implements Exerter, Callable {
+    protected final static Logger logger = LoggerFactory.getLogger(ExertionDispatcher.class);
 
     private ServiceExertion exertion;
     private Transaction transaction;
     private static MutualExclusion locker;
 
-    public ServiceExerter() {
+    public ExertionDispatcher() {
     }
 
-    public ServiceExerter(Exertion xrt) {
+    public ExertionDispatcher(Exertion xrt) {
         exertion = (ServiceExertion) xrt;
     }
 
-    public ServiceExerter(Exertion xrt, Transaction txn) {
+    public ExertionDispatcher(Exertion xrt, Transaction txn) {
         exertion = (ServiceExertion) xrt;
         transaction = txn;
 
@@ -84,7 +86,7 @@ public class ServiceExerter implements Exerter, Callable {
             throws TransactionException, ExertionException, RemoteException {
         try {
             xrt.substitute(entries);
-        } catch (EvaluationException e) {
+        } catch (Exception e) {
             throw new ExertionException(e);
         }
         return exert(xrt, null, (String) null);
@@ -98,7 +100,7 @@ public class ServiceExerter implements Exerter, Callable {
             throws TransactionException, ExertionException, RemoteException {
         try {
             xrt.substitute(entries);
-        } catch (EvaluationException e) {
+        } catch (Exception e) {
             throw new ExertionException(e);
         }
         transaction = txn;
@@ -137,10 +139,25 @@ public class ServiceExerter implements Exerter, Callable {
 			}
 		}
 	}
+
+    private void realizeDependencies(Arg... entries) throws RemoteException,
+            ExertionException {
+        List<Invocation> dependers = exertion.getDependers();
+        if (dependers != null && dependers.size() > 0) {
+            for (Invocation<Object> depender : dependers) {
+                try {
+                    depender.invoke(exertion.getScope(), entries);
+                } catch (InvocationException e) {
+                    throw new ExertionException(e);
+                }
+            }
+        }
+    }
 	
     public Exertion exert0(Transaction txn, String providerName, Arg... entries)
             throws TransactionException, ExertionException, RemoteException {
 		initExecState();
+        realizeDependencies(entries);
         try {
             if (entries != null && entries.length > 0) {
                 exertion.substitute(entries);

@@ -54,7 +54,7 @@ public class InvokeDoubleIncrementor extends ServiceInvoker<Double> implements I
 	public Double getValue(Arg... entries) throws EvaluationException {
 		try {
 			if (value == null)
-				value = target.invoke(entries);
+				value = target.invoke(null, entries);
 			value = value + increment;
 
 		} catch (RemoteException e) {

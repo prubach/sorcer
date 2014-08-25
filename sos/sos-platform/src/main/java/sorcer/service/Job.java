@@ -649,7 +649,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	
 	@Override
 	public ServiceExertion substitute(Arg... entries)
-			throws EvaluationException {
+			throws SetterException {
 		try {
 			if (entries != null) {
 				for (Arg e : entries) {
@@ -664,7 +664,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 			}
 		} catch (ContextException ex) {
 			ex.printStackTrace();
-			throw new EvaluationException(ex);
+			throw new SetterException(ex);
 		}
 		return this;
 	}

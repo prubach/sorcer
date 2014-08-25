@@ -29,7 +29,7 @@ import sorcer.service.*;
  * Evaluator.
  */
 @SuppressWarnings("rawtypes")
-public interface Variability<T> extends Identifiable, Evaluation<T>, Perturbation<T>, Serializable {
+public interface Variability<T> extends Identifiable, Evaluation<T>, Setter, Perturbation<T>, Serializable {
 
 	/**
 	 * Types allow for grouping in the functional model so all variables of a
@@ -78,8 +78,6 @@ public interface Variability<T> extends Identifiable, Evaluation<T>, Perturbatio
 	public Type getType();
 
 	public ApplicationDescription getDescription();
-
-	public void setValue(T varValue) throws EvaluationException, RemoteException;
 
 	public Class<?> getValueType();
 

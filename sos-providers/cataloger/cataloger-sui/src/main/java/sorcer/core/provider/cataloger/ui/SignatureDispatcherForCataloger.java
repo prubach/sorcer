@@ -31,6 +31,7 @@ import sorcer.core.provider.Cataloger;
 import sorcer.core.provider.Provider;
 import sorcer.core.context.ServiceContext;
 import sorcer.service.Context;
+import sorcer.ui.provider.SignatureView;
 
 /**
  * Implementation of the SignatureDispatcherInterface to provide support for

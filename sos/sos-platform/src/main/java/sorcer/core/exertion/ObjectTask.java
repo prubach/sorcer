@@ -94,6 +94,12 @@ public class ObjectTask extends Task {
 		this.dataContext = (ServiceContext) context;
 	}
 
+    public ObjectTask(Signature signature, Context context)
+            throws SignatureException {
+        addSignature(signature);
+        this.dataContext = (ServiceContext) context;
+    }
+
     public Task doTask(Transaction txn) throws ExertionException, SignatureException, RemoteException {
         ObjectSignature os = (ObjectSignature) getProcessSignature();
         dataContext.setCurrentSelector(os.getSelector());

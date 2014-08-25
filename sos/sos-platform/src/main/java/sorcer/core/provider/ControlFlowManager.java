@@ -43,7 +43,7 @@ import sorcer.util.AccessorException;
  * The ControlFlowManager class is responsible for handling control flow
  * exertions ({@link Conditional}, {@link NetJob}, {@link NetTask}).
  *
- * This class is used by the {@link sorcer.util.ServiceExerter} class for executing
+ * This class is used by the {@link sorcer.core.provider.exerter.ExertionDispatcher} class for executing
  * {@link Exertion}s.
  *
  * @author Mike Sobolewski

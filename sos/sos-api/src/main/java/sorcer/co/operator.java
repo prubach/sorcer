@@ -35,6 +35,7 @@ import sorcer.co.tuple.Tuple4;
 import sorcer.co.tuple.Tuple5;
 import sorcer.co.tuple.Tuple6;
 import sorcer.core.context.ListContext;
+import sorcer.service.Arg;
 import sorcer.service.ContextException;
 import sorcer.service.Strategy;
 import sorcer.util.Loop;
@@ -98,8 +99,12 @@ public class operator {
 	public static <T> T[] array(T... elems) {
 		return elems;
 	}
-	
-	public static <T> Set<T> bag(T... elems) {
+
+    public static Arg[] args(Arg... elems) {
+        return elems;
+    }
+
+    public static <T> Set<T> bag(T... elems) {
 		return new HashSet<T>(list(elems));
 	}
 
@@ -138,6 +143,14 @@ public class operator {
 		}
 		return out;
 	}
+
+    public static List<String> names(List<String>... nameLists) {
+        List<String> out = new ArrayList<String>();
+        for (List<String> each : nameLists) {
+            out.addAll(each);
+        }
+        return out;
+    }
 
 	public static <T1, T2> Tuple2<T1, T2> duo(T1 x1, T2 x2) {
 		return new Tuple2<T1, T2>(x1, x2);

@@ -73,10 +73,20 @@ public class Task extends ServiceExertion {
 		super(name);
 	}
 
-	public Task(String name, Signature signature) {
-		this(name);
-		addSignature(signature);
-	}
+    public Task(Signature signature) {
+        addSignature(signature);
+    }
+
+    public Task(String name, Signature signature) {
+        this(name);
+        addSignature(signature);
+    }
+
+    public Task(Signature signature, Context context) {
+        addSignature(signature);
+        dataContext = (ServiceContext)context;
+    }
+
 	
 	public Task(String name, Signature signature, Context context) {
 		this(name);

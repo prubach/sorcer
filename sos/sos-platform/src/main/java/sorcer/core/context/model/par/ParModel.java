@@ -119,23 +119,24 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 	public T putValue(String path, Object value) throws ContextException {
 		contextChanged = true;
 		Object obj = get(path);
-		if (obj instanceof Par) {
-			((Par)obj).setValue(value);
-			return (T)value;
-		} else {
-			if (value instanceof Scopable) {
-				try {
-					Object scope = ((Scopable)value).getScope();
-					if (scope != null &&  ((Context)scope).size() > 0) {
-						((Context)scope).append(this);
+		try {
+			if (obj instanceof Par) {
+				((Par) obj).setValue(value);
+				return (T) value;
+			} else {
+				if (value instanceof Scopable) {
+
+					Object scope = ((Scopable) value).getScope();
+					if (scope != null && ((Context) scope).size() > 0) {
+						((Context) scope).append(this);
 					} else {
-						((Scopable)value).setScope(this);
+						((Scopable) value).setScope(this);
 					}
-				} catch (RemoteException e) {
-					throw new ContextException(e);
 				}
 			}
 			return super.putValue(path, value);
+		} catch (RemoteException e) {
+			throw new ContextException(e);
 		}
 	}
 
@@ -212,65 +213,85 @@ public class ParModel<T> extends ServiceContext<T> implements Evaluation<T>, Inv
 		return this;
 	}
 	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invocation#invoke(sorcer.service.Parameter[])
-	 */
-	@Override
-	public T invoke(Arg... entries) throws RemoteException,
-			InvocationException {
-		try {
-			return getValue(entries);
-		} catch (EvaluationException e) {
-			throw new InvocationException(e);
-		}
-	}
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Invocation#invoke()
+//	 */
+//	@Override
+//	public T invoke() throws RemoteException,
+//			InvocationException {
+//		try {
+//			return getValue();
+//		} catch (EvaluationException e) {
+//			throw new InvocationException(e);
+//		}
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Invocation#invoke(sorcer.service.Args[])
+//	 */
+//	@Override
+//	public T invoke(Arg[] entries) throws RemoteException,
+//			InvocationException {
+//		try {
+//			return getValue(entries);
+//		} catch (EvaluationException e) {
+//			throw new InvocationException(e);
+//		}
+//	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see sorcer.service.Invocation#invoke(sorcer.service.Context,
-	 * sorcer.service.Parameter[])
+	 * sorcer.service.Args[])
 	 */
 	@Override
-	public T invoke(Context context, Arg... entries)
-			throws RemoteException, InvocationException {
+	public T invoke(Context context, Arg... entries) throws RemoteException,
+			InvocationException {
 		Object result = null;
 		try {
 			if (context != null) {
 				this.append(context);
-				if (context.getValue("par")!=null && context.getValue("par") != Context.none) {
-//					logger.info("ZZZZZZZZZZZZZZZZZZZZ value key: " + getValue("par"));
-//					logger.info("ZZZZZZZZZZZZZZZZZZZZ value at: " + getValue((String)context.getValue("par"), entries));
-					return (T)getValue((String)context.getValue("par"));
+				if (context.getValue("par") != null
+						&& context.getValue("par") != Context.none) {
+					// logger.info("ZZZZZZZZZZZZZZZZZZZZ value key: " +
+					// getValue("par"));
+					// logger.info("ZZZZZZZZZZZZZZZZZZZZ value at: " +
+					// getValue((String)context.getValue("par"), entries));
+					return (T) getValue((String) context.getValue("par"));
 				}
-			}
-			if (((ServiceContext)context).getExecPath() != null) {
-				Object o = get(((ServiceContext)context).getExecPath().path());
-				if (o instanceof Par) {
-					if (o instanceof Agent) {
-						if (((Agent)o).getScope() == null)
-							((Agent)o).setScope(this);
-						else 
-							((Agent)o).getScope().append(this);
-						result = ((Agent)o).getValue(entries);
-					} else {
-						Object i = ((Par) get(((ServiceContext)context).getExecPath().path())).asis();
-						if (i instanceof ServiceInvoker) {
-							result = ((ServiceInvoker) i).invoke(entries);
-					} else
-						throw new InvocationException("No such invoker at: "
-							+ ((ServiceContext)context).getReturnPath().path);
+				if (((ServiceContext) context).getExecPath() != null) {
+					Object o = get(((ServiceContext) context).getExecPath()
+							.path());
+					if (o instanceof Par) {
+						if (o instanceof Agent) {
+							if (((Agent) o).getScope() == null)
+								((Agent) o).setScope(this);
+							else
+								((Agent) o).getScope().append(this);
+							result = ((Agent) o).getValue(entries);
+						} else {
+							Object i = ((Par) get(((ServiceContext) context)
+									.getExecPath().path())).asis();
+							if (i instanceof ServiceInvoker) {
+								result = ((ServiceInvoker) i).invoke(entries);
+							} else
+								throw new InvocationException(
+										"No such invoker at: "
+												+ ((ServiceContext) context)
+														.getReturnPath().path);
+						}
 					}
 				} else {
-					result = o;
-				}
+						result = getValue(entries);
+				} 
 			} else {
-				result = invoke(entries);
+				result = getValue(entries);
 			}
-		} catch (Exception e) {
+			return (T) result;
+		} catch (ContextException e) {
 			throw new InvocationException(e);
 		}
-		return (T) result;
 	}
 	
 	public boolean isContextChanged() {

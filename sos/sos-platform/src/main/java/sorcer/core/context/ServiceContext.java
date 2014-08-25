@@ -728,7 +728,11 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		else {
 			obj = get(path);
 			if (obj instanceof Par) {
-				((Par)obj).setValue(value);
+                try {
+                    ((Par)obj).setValue(value);
+                } catch (RemoteException ex) {
+                    throw new ContextException(ex);
+                }
 			} else {
 				obj = put(path, (T)value);
 			}
@@ -2695,7 +2699,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			return null;
 	}
 
-	public ServiceContext substitute(Arg... entries) throws EvaluationException {
+	public ServiceContext substitute(Arg... entries) throws SetterException {
 		if (entries == null)
 			return this;
 		try {
@@ -2720,7 +2724,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new EvaluationException(ex);
+			throw new SetterException(ex);
 		}
 		return this;
 	}
@@ -3055,16 +3059,6 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	 */
 	public void setRevaluable(boolean isRevaluable) {
 		this.isRevaluable = isRevaluable;
-	}
-
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invocation#invoke(sorcer.service.Arg[])
-	 */
-	//@Override
-	public T invoke(Arg... entries) throws RemoteException,
-			InvocationException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/* (non-Javadoc)

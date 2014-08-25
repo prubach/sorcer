@@ -17,6 +17,8 @@
  */
 package sorcer.core.provider.cataloger.ui;
 
+import sorcer.ui.provider.SignatureView;
+
 import java.awt.Dimension;
 
 import javax.swing.JSplitPane;

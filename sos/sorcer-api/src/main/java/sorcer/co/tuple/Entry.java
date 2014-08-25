@@ -20,14 +20,18 @@ package sorcer.co.tuple;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import sorcer.service.FidelityInfo;
 import sorcer.service.Arg;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
+import sorcer.service.FidelityInfo;
+import sorcer.service.SetterException;
 
+/**
+ * @author Mike Sobolewski
+ */
 @SuppressWarnings("unchecked")
-public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T>, Comparable {
+public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T> {
 	private static final long serialVersionUID = 5168783170981015779L;
 	
 	public int index;
@@ -87,7 +91,7 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T>, C
 	 */
 	@Override
 	public Evaluation<T> substitute(Arg... entries)
-			throws EvaluationException, RemoteException {
+			throws SetterException, RemoteException {
 		for (Arg a : entries) {
 			if (a.getName().equals(getName()) && a instanceof Entry) {
 				_2 = ((Entry<T>)a).value();
@@ -114,18 +118,4 @@ public class Entry<T> extends Tuple2<String, T> implements Arg, Evaluation<T>, C
 	public String toString() {
 		return "[" + _1 + ":" + _2 + ":" + index + "]";
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Object o) {
-		if (o == null)
-			throw new NullPointerException();
-		if (o instanceof Entry<?>)
-			return _1.compareTo(((Entry<?>) o).getName());
-		else
-			return -1;
-	}
-
 }

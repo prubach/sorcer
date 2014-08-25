@@ -23,7 +23,7 @@ import java.rmi.RemoteException;
 
 public interface Setter extends Serializable {
 
-	public void setValue(Object value) throws EvaluationException;
+    public void setValue(Object value) throws SetterException, RemoteException;
 	
 	public boolean isPersistent();
 }

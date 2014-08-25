@@ -20,11 +20,12 @@ package sorcer.co.tuple;
 import java.net.URL;
 import java.rmi.RemoteException;
 
-import sorcer.service.FidelityInfo;
 import sorcer.service.Arg;
 import sorcer.service.Context;
 import sorcer.service.Evaluation;
 import sorcer.service.EvaluationException;
+import sorcer.service.FidelityInfo;
+import sorcer.service.SetterException;
 
 @SuppressWarnings("unchecked")
 public class AnnotatedEntry<T> extends Tuple3<String, T, String> implements Arg, Evaluation<T> {
@@ -97,7 +98,7 @@ public class AnnotatedEntry<T> extends Tuple3<String, T, String> implements Arg,
 	 */
 	@Override
 	public Evaluation<T> substitute(Arg... entries)
-			throws EvaluationException, RemoteException {
+			throws SetterException, RemoteException {
 		for (Arg a : entries) {
 			if (a.getName().equals(getName()) && a instanceof Entry) {
 				_2 = ((Entry<T>)a).value();

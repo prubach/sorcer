@@ -65,7 +65,11 @@ public class ArgList extends ArrayList<Arg> {
 			if (p.getName().equals(parName)) {
 				par = p;
 				if (par instanceof Setter)
-					((Setter) par).setValue(value);
+                    try {
+                        ((Setter) par).setValue(value);
+                    } catch (Exception e) {
+                        throw new EvaluationException(e);
+                    }
 				break;
 			}
 		}

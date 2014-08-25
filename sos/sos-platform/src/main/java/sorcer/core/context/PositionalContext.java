@@ -100,9 +100,9 @@ public class PositionalContext<T> extends ServiceContext<T> implements
 	@Override
 	public Object putInValueAt(String path, Object value,
 			int index) throws ContextException {
-		if (index >= tally) tally++;
 		super.putValue(path, value);
-		mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_IN + APS + APS);
+        if (index >= tally) tally++;
+        mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_IN + APS + APS);
 		mark(path, Context.OPP + APS + Context.DA_IN + APS + index);
 		return value;
 			}
@@ -113,9 +113,9 @@ public class PositionalContext<T> extends ServiceContext<T> implements
 	@Override
 	public Object putInoutValueAt(String path, Object value,
 			int index) throws ContextException {
-		if (index >= tally) tally++;
 		super.putValue(path, value);
-		mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_INOUT + APS + APS);
+        if (index >= tally) tally++;
+        mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_INOUT + APS + APS);
 		mark(path, Context.OPP + APS + Context.DA_INOUT + APS + index + APS);
 		return value;
 	}
@@ -126,9 +126,9 @@ public class PositionalContext<T> extends ServiceContext<T> implements
 	@Override
 	public Object putOutValueAt(String path, Object value, int index)
 			throws ContextException {
-		if (index >= tally) tally++;
 		super.putValue(path, value);
-		mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_OUT + APS + APS);
+        if (index >= tally) tally++;
+        mark(path, Context.CONTEXT_PARAMETER + APS + Context.DA_OUT + APS + APS);
 		mark(path, Context.OPP + APS + Context.DA_OUT + APS + index);
 		return value;
 	}

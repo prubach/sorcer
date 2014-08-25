@@ -54,7 +54,7 @@ import sorcer.service.Strategy.Provision;
 import sorcer.service.Strategy.Wait;
 import sorcer.service.modeling.Variability;
 import sorcer.util.ObjectClonerAdv;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 import sorcer.util.Sorcer;
 import sorcer.util.url.sos.SdbUtil;
 import sorcer.service.Signature.ReturnPath;
@@ -485,7 +485,7 @@ public class operator {
         if (entries != null && entries.length > 0) {
             try {
                 ((Evaluation) evaluation).substitute(entries);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 throw new EvaluationException(e);
             }
         }
@@ -508,7 +508,7 @@ public class operator {
      * @throws RemoteException
      */
     public static Evaluation substitute(Evaluation evaluation, Arg... entries)
-            throws EvaluationException, RemoteException {
+            throws SetterException, RemoteException {
         return evaluation.substitute(entries);
     }
 
@@ -1219,7 +1219,7 @@ public class operator {
 	public static <T extends Exertion> T exert(T input,
 			Transaction transaction, Arg... entries) throws ExertionException {
 		try {
-			ServiceExerter se = new ServiceExerter(input);
+			ExertionDispatcher se = new ExertionDispatcher(input);
 			Exertion result = null;
 			try {
 				result = se.exert(transaction, null, entries);
@@ -1703,8 +1703,6 @@ public class operator {
 			this._2 = v;
 		}
 	}
-
-
 
 	public static class Complement<T2> extends Entry<T2> {
 		private static final long serialVersionUID = 1L;

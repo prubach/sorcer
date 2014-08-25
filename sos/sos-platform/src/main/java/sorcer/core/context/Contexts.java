@@ -417,6 +417,7 @@ public class Contexts {
 	public static boolean hasMarkedValue(Context sc, String association)
 			throws ContextException {
 		String[] paths = getMarkedPaths(sc, association);
+        if (paths == null) return false;
         return paths.length > 0;
 	}
 

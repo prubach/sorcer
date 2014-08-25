@@ -191,7 +191,7 @@ import java.util.logging.Logger;
 	 */
 	@Override
 	public Evaluation<Object> substitute(Arg... entries)
-			throws EvaluationException, RemoteException {
+			throws SetterException, RemoteException {
 		conditionalContext.substitute(entries);
 		return this;
 	}

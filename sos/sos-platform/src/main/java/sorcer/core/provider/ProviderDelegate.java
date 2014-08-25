@@ -77,6 +77,7 @@ import sorcer.core.exertion.NetTask;
 import sorcer.core.loki.member.LokiMemberUtil;
 import sorcer.core.misc.MsgRef;
 import sorcer.core.provider.ServiceProvider.ProxyVerifier;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 import sorcer.core.proxy.Partnership;
 import sorcer.core.proxy.ProviderProxy;
 import sorcer.core.provider.container.IProviderServiceBuilder;
@@ -100,13 +101,13 @@ import static sorcer.util.StringUtils.*;
 
 /**
  * There are two types of SORCER service servers: generic service servers -
- * subclasses of {@link sorcer.util.ServiceExerter}. Service beans use the Rio
+ * subclasses of {@link sorcer.core.provider.exerter.ExertionDispatcher}. Service beans use the Rio
  * provisioning framework to be deployed in Rio cybernodes. This class does the
  * actual work for both generic SORCER servers and SORCER service beans. Also it
  * provides the basic functionality for {@link Provider}s. Multiple SORECER
  * exerters can be deployed within a single (@link ServiceProvider}.
  * 
- * @see sorcer.util.ServiceExerter
+ * @see sorcer.core.provider.exerter.ExertionDispatcher
  * @see sorcer.core.provider.ServiceProvider
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -927,7 +928,7 @@ public class ProviderDelegate {
                     	m = impl.getClass().getMethod(selector,
 							new Class[] { Context.class, Arg[].class });
 					isContextual = true;
-				} else if (selector.equals("exert") && impl instanceof ServiceExerter) {
+				} else if (selector.equals("exert") && impl instanceof ExertionDispatcher) {
 					m = impl.getClass().getMethod(selector,
 							new Class[] { Exertion.class, Arg[].class });
 					isContextual = false;
@@ -1019,7 +1020,7 @@ public class ProviderDelegate {
 		String selector = task.getProcessSignature().getSelector();
 		Class[] argTypes = ((ServiceContext)result).getParameterTypes();
 		Object[] args = (Object[]) ((ServiceContext)result).getArgs();
-		if (selector.equals("exert") && impl instanceof ServiceExerter) {
+		if (selector.equals("exert") && impl instanceof ExertionDispatcher) {
 			Exertion xrt = null;
 			if (args.length == 1) {
 				xrt = (Exertion) m.invoke(impl, new Object[] { args[0],

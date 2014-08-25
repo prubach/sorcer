@@ -291,7 +291,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 	
 	@Override
 	public ServiceExertion substitute(Arg... entries)
-			throws EvaluationException {
+			throws SetterException {
 		try {
 			for (Arg e : entries) {
 				if (e instanceof Entry) {
@@ -305,7 +305,7 @@ public abstract class Block extends ServiceExertion implements CompoundExertion 
 			updateConditions();
 		} catch (ContextException ex) {
 			ex.printStackTrace();
-			throw new EvaluationException(ex);
+			throw new SetterException(ex);
 		}
 		return this;
 	}

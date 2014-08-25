@@ -54,6 +54,6 @@ public interface  Evaluation <T> {
      * @throws EvaluationException
      * @throws RemoteException
      */
-    public Evaluation<T> substitute(Arg... entries) throws EvaluationException, RemoteException;
+    public Evaluation<T> substitute(Arg... entries) throws SetterException, RemoteException;
 
 }

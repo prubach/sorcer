@@ -343,7 +343,7 @@ public interface Exertion extends Service, Mappable, Evaluation<Object>, Invocat
 	
 	public void setProvisionable(boolean state);
 		
-	public Exertion substitute(Arg... entries) throws EvaluationException;
+	public Exertion substitute(Arg... entries) throws SetterException;
 	
 	/**
 	 * Returns true if this exertion is atop an acyclic graph in which no node

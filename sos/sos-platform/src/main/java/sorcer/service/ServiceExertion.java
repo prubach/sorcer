@@ -37,6 +37,7 @@ import sorcer.co.tuple.Entry;
 import sorcer.core.ComponentFidelityInfo;
 import sorcer.core.context.*;
 import sorcer.core.context.model.par.Par;
+import sorcer.core.context.model.par.ParModel;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.core.invoker.ExertInvoker;
 import sorcer.core.provider.Jobber;
@@ -45,7 +46,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.service.Signature.Type;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.service.Strategy.Access;
@@ -145,6 +146,12 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	// after exerting it is preserved
 	protected boolean isProxy = false;
 	
+	// the exertions's dependency scope
+	protected ParModel scope;
+
+	// dependency management for this evaluator 
+	protected List<Invocation> dependers = new ArrayList<Invocation>();
+
 	public ServiceExertion() {
 		this(defaultName + count++);
 	}
@@ -208,10 +215,19 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see sorcer.service.Invoker#invoke()
+	 */
+	public Object invoke() throws RemoteException,
+			InvocationException {
+		return invoke(new Arg[] {});
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see sorcer.service.Invoker#invoke(sorcer.service.Arg[])
 	 */
-	@Override
-	public Object invoke(Arg... entries) throws RemoteException,
+	public Object invoke(Arg[] entries) throws RemoteException,
 			InvocationException {
 		ReturnPath rp = null;
 		for (Arg a : entries) {
@@ -221,7 +237,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			}
 		}
 		try {
-			Object obj;
+			Object obj = null;
 			Exertion xrt = exert(entries);
 			if (rp == null) {
 				obj =  xrt.getReturnValue();
@@ -282,7 +298,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	@Override
 	public <T extends Exertion> T exert(Transaction txn, Arg... entries)
 			throws TransactionException, ExertionException, RemoteException {
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		Exertion result = null;
 		try {
 			result = se.exert(txn, null, entries);
@@ -311,11 +327,11 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			ExertionException, RemoteException {
 		try {
 			substitute(entries);
-		} catch (EvaluationException e) {
+		} catch (SetterException e) {
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		return se.exert(entries);
 	}
 
@@ -323,11 +339,11 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			throws TransactionException, ExertionException, RemoteException {
 		try {
 			substitute(entries);
-		} catch (EvaluationException e) {
+		} catch (SetterException e) {
 			e.printStackTrace();
 			throw new ExertionException(e);
 		}
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		return se.exert(txn, providerName);
 	}
 
@@ -538,11 +554,11 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public int getScopeCode() {
-		return (scopeCode == null) ? -1 : scopeCode;
+		return (scopeCode == null) ? -1 : scopeCode.intValue();
 	}
 
 	public void setScopeCode(int value) {
-		scopeCode = value;
+		scopeCode = new Integer(value);
 	}
 
 	public SorcerPrincipal getPrincipal() {
@@ -796,7 +812,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	public List<Signature> getApdProcessSignatures() {
 		List<Signature> sl = new ArrayList<Signature>();
 		for (Signature s : fidelity) {
-			if (s.getType() == Signature.Type.APD)
+			if (s.getType() == Type.APD_DATA)
 				sl.add(s);
 		}
 		return sl;
@@ -989,16 +1005,16 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 
 	@Override
 	public ServiceExertion substitute(Arg... entries)
-			throws EvaluationException {
+			throws SetterException {
 		if (entries != null && entries.length > 0) {
 			for (Arg e : entries) {
 				if (e instanceof Entry) {
 					try {
-						putValue(((Entry) e).path(),
+						putValue((String) ((Entry) e).path(),
 								((Entry) e).value());
 					} catch (ContextException ex) {
 						ex.printStackTrace();
-						throw new EvaluationException(ex);
+						throw new SetterException(ex);
 					}
 				}
 			}
@@ -1291,6 +1307,68 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 			throw new InvocationException(e);
 		}
 		return cxt;
+	}
+
+	/**
+	 * <p>
+	 *  Returns the dependency scope for this exertion.
+	 * </p>
+	 * 
+	 * @return the scope
+	 */
+	public ParModel getScope() {
+		return scope;
+	}
+
+	/**
+	 * <p>
+	 * 
+	 * Assigns the dependency scope for this exertion.
+	 * </p>
+	 * 
+	 * @param scope
+	 *            the scope to set
+	 */
+	public void setScope(ParModel scope) {
+		this.scope = scope;
+	}
+
+	/**
+	 * <p>
+	 * Return a list of dependent agents.
+	 * </p>
+	 * 
+	 * @return the dependers
+	 */
+	public List<Invocation> getDependers() {
+		return dependers;
+	}
+
+	/**
+	 * <p>
+	 * Assigns a list of dependent agents.
+	 * </p>
+	 * 
+	 * @param dependers
+	 *            the dependers to set
+	 */
+	public void setDependers(List<Invocation> dependers) {
+		this.dependers = dependers;
+	}
+	
+	public Exertion addDepender(Invocation depender) {
+		if (this.dependers == null) 
+			this.dependers = new ArrayList<Invocation>();
+		dependers.add(depender);
+		return this;
+	}
+	
+	public Exertion addDependers(Invocation... dependers) {
+		if (this.dependers == null) 
+			this.dependers = new ArrayList<Invocation>();
+		for (Invocation depender : dependers)
+			this.dependers.add(depender);
+		return this;
 	}
 
 	/*

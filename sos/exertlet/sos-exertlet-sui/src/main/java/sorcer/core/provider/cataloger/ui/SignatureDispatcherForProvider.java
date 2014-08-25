@@ -39,6 +39,7 @@ import sorcer.core.signature.NetSignature;
 import sorcer.service.Context;
 import sorcer.service.Service;
 import sorcer.service.Task;
+import sorcer.ui.provider.SignatureView;
 
 /**
  * Implementation of the SignatureDispatcherInterface to provide support for

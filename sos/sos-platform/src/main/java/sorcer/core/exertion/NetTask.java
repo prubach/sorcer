@@ -25,7 +25,7 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import sorcer.core.signature.NetSignature;
 import sorcer.service.*;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 /**
  * The SORCER service task extending the abstract task {@link Task}.
@@ -114,7 +114,7 @@ public class NetTask extends ObjectTask implements Evaluation<Object>, Invocatio
 
 	public Task doTask(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException {
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		try {
 			return (Task) se.exert();
 		} catch (TransactionException e) {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.provider.ui;
+package sorcer.ui.provider;
 
 import sorcer.core.provider.Provider;
 import sorcer.util.StringUtils;

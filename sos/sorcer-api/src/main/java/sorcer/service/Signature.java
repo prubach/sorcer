@@ -248,21 +248,30 @@ public interface Signature extends Serializable,Comparable, Arg {
     }
 
     public void setDeployment(ServiceDeployment deployment);
-	/**
-	 * There are four types of {@link Signature} operations that can be
-	 * associated with signatures: <code>PRE</code> (preprocess),
-	 * <code>SRV</code> (process/service) , <code>POST</code> (postprocess), and
-	 * <code>APD</code> (append) signature. Only one <code>SRV</code> signature
-	 * can be associated with any exertion. The <code>SRV</code> signature
-	 * defines an executing provider dynamically bounded at runtime. The
-	 * <code>APD</code> signatures are invoked invoked first to get specified
-	 * contexts from {@link sorcer.servoce.Contexter}s that are appended to the
-	 * task's current context.
-	 */
-	public enum Type {
-		SRV, PRE, POST, APD
-	}
-	
+    /**
+     * There are four types of {@link Signature} operations that can be
+     * associated with signatures: <code>PRE</code> (preprocess),
+     * <code>SRV</code> (process/service) , <code>POST</code> (postprocess), and
+     * <code>APD_DATA</code> (append data) and code>APD_CONTROL</code> (append
+     * control strategy). Only one <code>SRV</code> signature can be associated
+     * with any exertion. The <code>SRV</code> signature defines an executing
+     * provider dynamically bounded at runtime. The <code>APD_DATA</code>
+     * signatures are invoked invoked first to get specified contexts from
+     * {@link sorcer.service.Contexter}s that are appended to the task's current
+     * context.
+     */
+    public enum Type implements Arg {
+        SRV, PRE, POST, APD_DATA, APD_CONTROL;
+
+        /* (non-Javadoc)
+         * @see sorcer.service.Arg#getName()
+         */
+        @Override
+        public String getName() {
+            return toString();
+        }
+    }
+
 	public enum Kind {
 		TASKER, JOBBER, SPACER, DISPATCHER, OPTIMIZER, EXPLORER, MODEL, MODEL_MANAGER
 	}
@@ -273,5 +282,5 @@ public interface Signature extends Serializable,Comparable, Arg {
 	static final Type SRV = Type.SRV; 
 	static final Type PRE = Type.PRE;
 	static final Type POST = Type.POST;
-	static final Type APD = Type.APD;
+	static final Type APD = Type.APD_DATA;
 }

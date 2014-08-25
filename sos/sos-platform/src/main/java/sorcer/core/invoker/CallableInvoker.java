@@ -83,7 +83,7 @@ public class CallableInvoker<T> extends ServiceInvoker<T> {
 	@Override
 	public T invoke(Arg... entries) throws RemoteException,
 			InvocationException {
-		return invoke((Context) null, (Arg) null);
+        return invoke((Context) null, entries);
 	}
 
 }

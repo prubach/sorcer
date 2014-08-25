@@ -40,33 +40,35 @@ import static sorcer.util.UnknownName.getUnknown;
  * @author Rafał Krupiński
  */
 public class TaskFactory {
+
     public static Task task(String name, Signature signature, Context context)
             throws SignatureException {
-        if (signature instanceof NetSignature) {
-            return new NetTask(name, signature, context);
-        } else if (signature instanceof ObjectSignature) {
-            return new ObjectTask(name, signature, context);
-        } else if (signature instanceof EvaluationSignature) {
-            return new EvaluationTask(name, (EvaluationSignature) signature, context);
-        } else if (signature instanceof AntSignature) {
-            return new AntTask((AntSignature) signature, context);
-        } else
-            return new Task(name, signature, context);
+        Task task = task(signature, context);
+        task.setName(name);
+        return task;
     }
 
     public static Task task(Signature signature, Context context)
             throws SignatureException {
+        Task task = null;
         if (signature instanceof NetSignature) {
-            return new NetTask(null, signature, context);
+            task = new NetTask((NetSignature) signature, context);
         } else if (signature instanceof ObjectSignature) {
-            return new ObjectTask(null, signature, context);
+            task = new ObjectTask((ObjectSignature) signature, context);
         } else if (signature instanceof EvaluationSignature) {
-            return new EvaluationTask((EvaluationSignature) signature, context);
+            task = new EvaluationTask((EvaluationSignature) signature,
+                    context);
         } else if (signature instanceof AntSignature) {
-            return new AntTask((AntSignature) signature, context);
+            task = new AntTask((AntSignature) signature, context);
         } else
-            return new Task(null, signature, context);
+            task = new Task(signature, context);
+
+        return task;
     }
+
+
+
+
 
     public static <T> Task task(String name, T... elems)
             throws ExertionException {

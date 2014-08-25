@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package sorcer.core.provider.ui;
+package sorcer.ui.provider;
 
 import java.awt.GridLayout;
 

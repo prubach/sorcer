@@ -75,7 +75,11 @@ public class ParSet extends TreeSet<Par> {
 		for (Par<?> p : this) {
 			if (((Identity) p).getName().equals(parName)) {
 				par = p;
-				par.setValue(value);
+                try {
+                    par.setValue(value);
+                } catch (Exception e) {
+                    throw new EvaluationException(e);
+                }
 				break;
 			}
 		}
@@ -179,7 +183,11 @@ public class ParSet extends TreeSet<Par> {
 
 	 public void clearPars() throws EvaluationException {
 			for (Par p : this) {
-				p.setValue(null);
-			}
+                try {
+                    p.setValue(null);
+                } catch (Exception e) {
+                    throw new EvaluationException(e);
+                }
+            }
 		}
 }

@@ -257,6 +257,9 @@ public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvokin
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
 			// ((ServiceContext)context).setCurrentSelector(selector);
+
+            if (context != null)
+                ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
 			logger.fine("val: " + val);
 

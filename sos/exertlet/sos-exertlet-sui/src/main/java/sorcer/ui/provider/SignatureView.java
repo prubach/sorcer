@@ -15,7 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core.provider.cataloger.ui;
+package sorcer.ui.provider;
+
+import sorcer.core.provider.cataloger.ui.BrowserModel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

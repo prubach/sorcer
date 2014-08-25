@@ -54,7 +54,7 @@ public class InvokeIncrementor extends ServiceInvoker<Integer> implements Increm
 	public Integer getValue(Arg... entries) throws EvaluationException {
 		try {
 			if (value == null)
-				value = target.invoke(entries);
+				value = target.invoke(null, entries);
 			value = value + increment;
 
 		} catch (RemoteException e) {

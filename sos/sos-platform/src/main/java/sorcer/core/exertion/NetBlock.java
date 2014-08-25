@@ -34,7 +34,7 @@ import sorcer.service.Invocation;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature.Type;
 import sorcer.service.SignatureException;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 public class NetBlock extends Block implements Evaluation<Object>, Invocation<Object> {
 
@@ -79,7 +79,7 @@ public class NetBlock extends Block implements Evaluation<Object>, Invocation<Ob
 
 	public Block doBlock(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		return (Block)se.exert(txn, null);
 	}
 

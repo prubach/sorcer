@@ -98,7 +98,7 @@ public class ExertInvoker extends ServiceInvoker implements ExertionInvoking {
 		return evaluatedExertion;
 	}
 
-	public void substitute(Entry... entries) throws EvaluationException,
+	public void substitute(Entry... entries) throws SetterException,
 			RemoteException {
 		((ServiceExertion)exertion).substitute(entries);
 	}

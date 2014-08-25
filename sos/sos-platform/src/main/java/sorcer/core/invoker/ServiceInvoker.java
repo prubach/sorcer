@@ -28,18 +28,7 @@ import sorcer.co.tuple.Entry;
 import sorcer.core.context.model.par.Par;
 
 import sorcer.core.context.model.par.ParModel;
-import sorcer.service.Arg;
-import sorcer.service.ArgList;
-import sorcer.service.ArgSet;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Evaluator;
-import sorcer.service.Identifiable;
-import sorcer.service.Invocation;
-import sorcer.service.InvocationException;
-import sorcer.service.Scopable;
+import sorcer.service.*;
 
 /**
  * @author Mike Sobolewski
@@ -377,14 +366,14 @@ public class ServiceInvoker<T> extends Observable implements Identifiable, Scopa
 	 */
 	@Override
 	public Evaluation substitute(Arg... entries)
-			throws InvocationException, RemoteException {
+			throws SetterException, RemoteException {
 		for (Arg e : entries) {
 			if (e instanceof Entry<?>) {
 				try {
 					invokeContext.putValue(((Entry<T>) e)._1,
 							((Entry<T>) e)._2);
 				} catch (ContextException ex) {
-					throw new InvocationException(ex);
+					throw new SetterException(ex);
 				}
 			}
 
@@ -433,8 +422,11 @@ public class ServiceInvoker<T> extends Observable implements Identifiable, Scopa
 
 	public void clearPars() throws EvaluationException {
 		for (Arg p : pars) {
-			((Par) p).setValue(null);
-
+            try {
+                ((Par) p).setValue(null);
+            } catch (Exception e) {
+                throw new EvaluationException(e);
+            }
 		}
 	}
 	

@@ -341,9 +341,9 @@ public class ServiceSignature implements Signature {
 		return execType == Type.POST;
 	}
 
-	public boolean isAppendType() {
-		return execType == Type.APD;
-	}
+    public boolean isAppendType() {
+        return execType == Type.APD_DATA;
+    }
 
 	public String toString() {
 		return this.getClass() + ":" + providerName + ";" + execType + ";"

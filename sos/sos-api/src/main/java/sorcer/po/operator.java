@@ -190,28 +190,36 @@ public class operator {
 		parModel.setContextChanged(true);
 		return parModel;
 	}
-	
-	public static Par set(Par par, Object value)
-			throws ContextException {
-		par.setValue(value);
-		if (par.getScope() != null && par.getContextable() == null) {
-			par.getScope().putValue(par.getName(), value);
-		}
-		return par;
-	}
-	
-	public static Par set(ParModel context, String parname, Object value)
-			throws ContextException {
-		Par par = context.getPar(parname);
-		if (par == null)
-			par = context.addPar(parname, value);
-		else 
-			par.setValue(value);
-		if (par.getScope() != null && par.getContextable() == null) {
-			par.getScope().putValue(par.getName(), value);
-		}
-		return par;
-	}
+
+    public static Par set(Par par, Object value)
+            throws ContextException {
+        try {
+            par.setValue(value);
+        } catch (RemoteException e) {
+            throw new ContextException(e);
+        }
+        if (par.getScope() != null && par.getContextable() == null) {
+            par.getScope().putValue(par.getName(), value);
+        }
+        return par;
+    }
+
+    public static Par set(ParModel context, String parname, Object value)
+            throws ContextException {
+        Par par = context.getPar(parname);
+        if (par == null)
+            par = context.addPar(parname, value);
+        else
+            try {
+                par.setValue(value);
+            } catch (RemoteException e) {
+                throw new ContextException(e);
+            }
+        if (par.getScope() != null && par.getContextable() == null) {
+            par.getScope().putValue(par.getName(), value);
+        }
+        return par;
+    }
 	
 	public static Par add(Par par, Object to)
 			throws ContextException {
@@ -237,7 +245,7 @@ public class operator {
 	
 	public static Object invoke(Invocation invoker, Arg... parameters)
 			throws InvocationException, RemoteException {
-		return invoker.invoke(parameters);
+		return invoker.invoke(null, parameters);
 	}
 	
 	public static Object invoke(Invocation invoker, Context context, Arg... parameters)
@@ -254,7 +262,7 @@ public class operator {
 				Invocation i = (Invocation) ((Par) obj).asis();
 				return i.invoke(parModel, parameters);
 			} else if (obj instanceof Invocation) {
-				return ((Invocation) obj).invoke(parameters);
+				return ((Invocation) obj).invoke(null, parameters);
 			} else if (obj instanceof Agent) {
 				return ((Agent)obj).getValue(parameters);
 			} 

@@ -85,8 +85,12 @@ public class ParList extends ArrayList<Par> {
 		for (Par p : this) {
 			if (((Identity) p).getName().equals(parName)) {
 				par = p;
-				par.setValue(value);
-				break;
+                try {
+                    par.setValue(value);
+                } catch (Exception e) {
+                    throw new EvaluationException(e);
+                }
+                break;
 			}
 		}
 		if (par == null)

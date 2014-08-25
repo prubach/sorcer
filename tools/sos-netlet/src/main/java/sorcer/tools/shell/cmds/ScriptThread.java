@@ -25,7 +25,7 @@ import net.jini.core.transaction.TransactionException;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.service.Exertion;
 import sorcer.service.ExertionException;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class ScriptThread extends Thread {
 		public void run() {
             if (target==null) parseScript();
             if (target instanceof Exertion) {
-                ServiceExerter esh = new ServiceExerter((Exertion) target);
+                ExertionDispatcher esh = new ExertionDispatcher((Exertion) target);
                 try {
 
                     if (((Exertion) target).isProvisionable() && config!=null) {

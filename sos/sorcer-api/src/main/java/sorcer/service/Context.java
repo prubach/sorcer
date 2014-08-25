@@ -84,7 +84,7 @@ import sorcer.security.util.SorcerPrincipal;
  */
 @SuppressWarnings("rawtypes")
 public interface Context<T> extends Mappable<T>, Serializable, Evaluation<T>,
-		Invocation<T>, Contexter<T>, Revaluation {
+		Invocation<T>, Contexter<T>, Revaluation, Arg {
 
 	/** parameter (par) */
 	final static String PATH_PAR = "par";

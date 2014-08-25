@@ -52,18 +52,6 @@ import java.rmi.RemoteException;
 @SuppressWarnings("rawtypes")
 public interface Invocation<T> {
 
-    public T invoke(Arg... entries) throws RemoteException,
+    public T invoke(Context<T> context, Arg... entries) throws RemoteException,
             InvocationException;
-
-    public T invoke(Context context, Arg... entries)
-            throws RemoteException, InvocationException;
-
-//	/**
-//	 * @param path
-//	 * @param defaultValue
-//	 * @return
-//	 * @throws ContextException
-//	 */
-//	T getValue(String path, T defaultValue) throws ContextException;
-
 }

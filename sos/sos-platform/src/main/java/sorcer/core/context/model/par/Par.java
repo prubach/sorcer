@@ -29,22 +29,7 @@ import java.util.logging.Logger;
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ApplicationDescription;
 import sorcer.core.context.ServiceContext;
-import sorcer.service.Arg;
-import sorcer.service.ArgException;
-import sorcer.service.ArgSet;
-import sorcer.service.Condition;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
-import sorcer.service.Evaluation;
-import sorcer.service.EvaluationException;
-import sorcer.service.Exertion;
-import sorcer.service.Identifiable;
-import sorcer.service.Identity;
-import sorcer.service.Invocation;
-import sorcer.service.InvocationException;
-import sorcer.service.Mappable;
-import sorcer.service.Scopable;
-import sorcer.service.Setter;
+import sorcer.service.*;
 import sorcer.service.modeling.Variability;
 import sorcer.util.url.sos.SdbUtil;
 import sorcer.util.url.sos.SosDbUtil;
@@ -121,7 +106,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 		return name;
 	}
 	
-	public void setValue(Object value) throws EvaluationException {		
+	public void setValue(Object value) throws SetterException, RemoteException {
 		if (persistent) {
 			try {
 				if (SosDbUtil.isSosURL(value)) {
@@ -133,7 +118,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 					return;
 				}	
 			} catch (Exception e) {
-				throw new EvaluationException(e);
+				throw new SetterException(e);
 			} 
 		}
 		if (mappable != null) {
@@ -157,7 +142,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 					mappable.putValue((String)this.value, value);
 				}
 			} catch (Exception e) {
-				throw new EvaluationException(e);
+				throw new SetterException(e);
 			}
 		} 
 		else
@@ -177,10 +162,10 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 	 */
 	@Override
 	public T getValue(Arg... entries) throws EvaluationException,
-			RemoteException {
-		substitute(entries);
+	RemoteException {
 		T val = null;
 		try {
+			substitute(entries);
 			if (mappable != null) {
 				val = (T) mappable.getValue((String) value);
 			} else if (value == null && scope != null) {
@@ -193,11 +178,11 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 					logger.warning("undefined par: " + val);
 					return null;
 				}
-				
+
 				if (val instanceof Scopable && ((Scopable)val).getScope() != null) {
 					((Context)((Scopable)val).getScope()).append(scope);
 				}
-				
+
 				if (val instanceof Exertion) {
 					// TODO context binding for all exertions, works for tasks only
 					Context cxt = ((Exertion)val).getDataContext();
@@ -244,7 +229,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 	 */
 	@Override
 	public Evaluation<T> substitute(Arg... parameters)
-			throws EvaluationException, RemoteException {
+			throws SetterException, RemoteException {
 		if (parameters == null)
 			return this;
 		for (Arg p : parameters) {
@@ -255,7 +240,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 					try {
 						scope.append(((Par<T>)p).getScope());
 					} catch (ContextException e) {
-						throw new EvaluationException(e);
+						throw new SetterException(e);
 					}
 				}
 			}
@@ -400,23 +385,6 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 		return principal;
 	}
 
-	
-//	/* (non-Javadoc)
-//	 * @see sorcer.vfe.Variability#getArgVar(java.lang.String)
-//	 */
-//	@Override
-//	public Variability<T> getVariability(String name) throws ArgException {
-//		Object obj = scope.get(name);
-//		if (obj instanceof Par)
-//			return (Par)obj;
-//		else
-//			try {
-//				return new Par(name, obj, scope);
-//			} catch (RemoteException e) {
-//				throw new ArgException(e);
-//			}
-//	}
-
 	public URL getDbURL() throws MalformedURLException {
 		URL url = null;
 		if (dbURL != null)
@@ -465,20 +433,29 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 		return (mappable != null);
 	}
 
-	/* (non-Javadoc)
-	 * @see sorcer.service.Invocation#invoke(sorcer.service.Arg[])
-	 */
-	@Override
-	public T invoke(Arg... entries) throws RemoteException, InvocationException {
-		try {
-			if (value instanceof Invocation)
-				return ((Invocation<T>) value).invoke(entries);
-			else
-				return getValue(entries);
-		} catch (EvaluationException e) {
-			throw new InvocationException(e);
-		}
-	}
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Invocation#invoke()
+//	 */
+//	@Override
+//	public T invoke() throws RemoteException, InvocationException {
+//		return invoke(new Arg[] {});
+//	}
+//
+//	
+//	/* (non-Javadoc)
+//	 * @see sorcer.service.Invocation#invoke(sorcer.service.Arg[])
+//	 */
+//	@Override
+//	public T invoke(Arg[] entries) throws RemoteException, InvocationException {
+//		try {
+//			if (value instanceof Invocation)
+//				return ((Invocation<T>) value).invoke(entries);
+//			else
+//				return getValue(entries);
+//		} catch (EvaluationException e) {
+//			throw new InvocationException(e);
+//		}
+//	}
 
 	/* (non-Javadoc)
 	 * @see sorcer.service.Invocation#invoke(sorcer.service.Context, sorcer.service.Arg[])
@@ -487,8 +464,9 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 	public T invoke(Context context, Arg... entries) throws RemoteException,
 			InvocationException {
 		try {
-			scope.append(context);
-			return invoke(entries);
+			if (context != null)
+				scope.append(context);
+			return getValue(entries);
 		} catch (Exception e) {
 			throw new InvocationException(e);
 		}
@@ -582,5 +560,4 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 		this.scope = (Context)scope;
 		
 	}
-
 }

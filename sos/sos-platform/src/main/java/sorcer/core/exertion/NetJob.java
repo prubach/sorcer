@@ -32,7 +32,7 @@ import sorcer.service.Job;
 import sorcer.service.ServiceExertion;
 import sorcer.service.Signature.Type;
 import sorcer.service.SignatureException;
-import sorcer.util.ServiceExerter;
+import sorcer.core.provider.exerter.ExertionDispatcher;
 
 public class NetJob extends Job implements Evaluation<Object>, Invocation<Object> {
 
@@ -74,7 +74,7 @@ public class NetJob extends Job implements Evaluation<Object>, Invocation<Object
 	@Override
 	public Job doJob(Transaction txn) throws ExertionException,
 			SignatureException, RemoteException, TransactionException {
-		ServiceExerter se = new ServiceExerter(this);
+		ExertionDispatcher se = new ExertionDispatcher(this);
 		return (Job)se.exert(txn, null);
 	}
 
