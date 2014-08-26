@@ -1510,7 +1510,7 @@ public class SorcerEnv {
 
                 paths.add(line);
             }
-            properties.setProperty("sorcer.share.config", String.join(File.pathSeparator, paths));
+            properties.setProperty("sorcer.share.config", StringUtils.join(paths, File.pathSeparator));
         } catch (IOException e) {
             logger.warning("Could not read share config file");
         }
