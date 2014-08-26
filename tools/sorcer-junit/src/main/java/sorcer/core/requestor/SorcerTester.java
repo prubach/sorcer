@@ -495,4 +495,11 @@ import static org.junit.Assert.assertTrue;
 	public void setProps(Properties props) {
 		this.props = props;
 	}
+
+    public String[] getSorcerCodebaseJars(String... provided) {
+        List<String> codebase = new ArrayList<String>();
+        Collections.addAll(codebase, provided);
+        return codebase.toArray(new String[codebase.size()]);
+    }
+
 }

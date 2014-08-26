@@ -252,46 +252,39 @@ public class operator {
 			throws InvocationException, RemoteException {
 		return invoker.invoke(context, parameters);
 	}
-	
-	public static Object invoke(ParModel parModel, String parname, Arg... parameters)
-			throws RemoteException, InvocationException {
-		try {
-			Object obj = parModel.asis(parname);
-			if (obj instanceof Par
-					&& ((Par) obj).asis() instanceof Invocation) {
-				Invocation i = (Invocation) ((Par) obj).asis();
-				return i.invoke(parModel, parameters);
-			} else if (obj instanceof Invocation) {
-				return ((Invocation) obj).invoke(null, parameters);
-			} else if (obj instanceof Agent) {
-				return ((Agent)obj).getValue(parameters);
-			} 
-			
-		else {
-				throw new InvocationException("No invoker for: " + parname);
-			}
-		} catch (ContextException e) {
-			throw new InvocationException(e);
-		}
-	}
 
-	public static Object invoke(ParModel parContext, String parname, Context context, Arg... parameters)
-			throws RemoteException, InvocationException {
-		Object obj;
-		try {
-			obj = parContext.asis(parname);
+    public static Object invoke(ParModel parModel, String parname, Arg... parameters)
+            throws RemoteException, InvocationException {
+        try {
+            Object obj = parModel.asis(parname);
+            Context scope = null;
+            // assume that the first argument is always context if provided
+            if (parameters.length > 0 && parameters[0] instanceof Context)
+                scope = (Context)parameters[0];
+            if (obj instanceof Par
+                    && ((Par) obj).asis() instanceof Invocation) {
+                Invocation invoker = (Invocation) ((Par) obj).asis();
+                //return invoker.invoke(parModel, parameters);
+                if (scope != null)
+                    return invoker.invoke(scope, parameters);
+                else
+                    return invoker.invoke(parModel, parameters);
+            } else if (obj instanceof Invocation) {
+                if (scope != null)
+                    return ((Invocation) obj).invoke(scope, parameters);
+                else
+                    return ((Invocation) obj).invoke(null, parameters);
+            } else if (obj instanceof Agent) {
+                return ((Agent)obj).getValue(parameters);
+            }
 
-			if (obj instanceof Invocation) {
-				return ((Invocation) obj).invoke(context, parameters);
-			} else if (obj instanceof Par
-					&& ((Par) obj).asis() instanceof Invocation) {
-				return ((Invocation)((Par) obj).asis()).invoke(context, parameters);
-			} else
-				throw new InvocationException("No invoker for: " + parname + " in: " + parContext.getName());
-		} catch (ContextException e) {
-			throw new InvocationException(e);
-		}
-	}
+            else {
+                throw new InvocationException("No invoker for: " + parname);
+            }
+        } catch (ContextException e) {
+            throw new InvocationException(e);
+        }
+    }
 
 	public static Arg[] args(Arg... parameters)
 			throws EvaluationException {
