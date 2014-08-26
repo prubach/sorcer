@@ -77,6 +77,20 @@ public class Configurer extends AbstractBeanListener {
         }
     }
 
+    public static <T> T getConfig(Class<T> type, Configuration config) {
+        try {
+            T result = type.newInstance();
+            new Configurer().process(result, config);
+            return result;
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        } catch (ConfigurationException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     private void updateProperty(Object object, Method method, Configuration config, String defComponent, ConfigEntry configEntry) {
         Class<?>[] ptypes = method.getParameterTypes();
         if (ptypes.length != 1) return;
@@ -158,7 +172,7 @@ public class Configurer extends AbstractBeanListener {
             Object value = config.getEntry(component, entryKey, entryType, defaultValue);
             value = convert(value, targetType, configEntry);
             if (configEntry.required() && value == null)
-                throw new IllegalArgumentException("Null required value for " + field);
+                throw new IllegalArgumentException("Null value for required " + field);
             log.debug("Configure {} to {}", field.getName(), value);
             field.set(target, value);
         } catch (IllegalAccessException e) {

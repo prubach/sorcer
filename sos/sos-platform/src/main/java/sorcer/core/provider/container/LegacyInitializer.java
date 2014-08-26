@@ -20,10 +20,12 @@ import sorcer.config.AbstractBeanListener;
 import sorcer.core.provider.Provider;
 import sorcer.core.service.IServiceBuilder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
  * Extracted from ProviderDelegate#initBean
+ *
  * @author Rafał Krupiński
  */
 public class LegacyInitializer extends AbstractBeanListener {
@@ -36,8 +38,17 @@ public class LegacyInitializer extends AbstractBeanListener {
             Method m = serviceBean.getClass().getMethod("init", new Class[]{Provider.class});
             log.info("Initializing service bean {}", serviceBean.getClass().getName());
             m.invoke(serviceBean, ((IProviderServiceBuilder) serviceBuilder).getProvider());
-        } catch (Exception e) {
+        } catch (NoSuchMethodException e) {
             log.debug("No 'init' method for this service bean: {}", serviceBean.getClass().getName());
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof Error)
+                throw (Error) cause;
+            if (cause instanceof RuntimeException)
+                throw (RuntimeException) cause;
+            throw new IllegalStateException(cause);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
         }
     }
 }
