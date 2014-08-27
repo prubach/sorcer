@@ -17,6 +17,8 @@
 
 package sorcer.service;
 
+import sorcer.core.context.FidelityContext;
+
 import java.util.List;
 
 
@@ -36,10 +38,16 @@ public interface CompoundExertion extends Exertion {
      * specified element.
 	 */
 	public void setExertionAt(Exertion ex, int i);
+
+    public void setExertions(List<Exertion> exertions);
+
+    public List<Exertion> getExertions();
 	
 	public void remove(int index) throws ContextException;
 	
 	public List<Exertion> getAllExertions();
 	
 	public Exertion getChild(String childName);
+
+    public void applyFidelityContext(FidelityContext fiContext) throws ExertionException;
 }

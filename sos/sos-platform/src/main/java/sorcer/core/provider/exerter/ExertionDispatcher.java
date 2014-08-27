@@ -119,15 +119,39 @@ public class ExertionDispatcher implements Exerter, Callable {
         return exert(txn, providerName);
     }
 
-
     public Exertion exert(Transaction txn, String providerName, Arg... entries)
+            throws TransactionException, ExertionException, RemoteException {
+        try {
+            exertion.selectFidelity(entries);
+            Exertion xrt = postProcessExertion(exert0(txn, providerName,
+                    entries));
+            if (exertion.isProxy()) {
+                exertion.setContext(xrt.getDataContext());
+                exertion.setControlContext((ControlContext)xrt.getControlContext());
+                if (exertion.isCompound()) {
+                    ((CompoundExertion) exertion).setExertions(((CompoundExertion) xrt)
+                                    .getExertions());
+                }
+
+                return exertion;
+            } else {
+                return xrt;
+            }
+        } catch (ContextException e) {
+            throw new ExertionException(e);
+        }
+    }
+
+
+
+    /*public Exertion exert(Transaction txn, String providerName, Arg... entries)
             throws TransactionException, ExertionException, RemoteException {
         try {
             return postProcessExertion(exert0(txn, providerName, entries));
         } catch (ContextException e) {
             throw new ExertionException(e);
         }
-    }
+    } */
 
 	private void initExecState() {
 		Exec.State state = exertion.getControlContext().getExecState();

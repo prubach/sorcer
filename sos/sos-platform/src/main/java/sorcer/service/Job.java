@@ -630,7 +630,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	}
 	
 	public void applyFidelityContext(FidelityContext fiContext) throws ExertionException {
-		Collection<FidelityInfo> fidelities = fiContext.values();
+		Collection<FidelityInfo> fidelities = ((FidelityContext)fiContext).values();
 		ServiceExertion se = null;
 		for (FidelityInfo fi : fidelities) {
 			if (fi instanceof ComponentFidelityInfo) {

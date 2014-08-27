@@ -103,37 +103,44 @@ public class LoopExertion extends Task implements ConditionalExertion {
 		target = invoker;
 	}
 
-	@Override
-	public Task doTask(Transaction txn) throws ExertionException,
-			SignatureException, RemoteException {
-		try {
-			if (condition == null) {
-				for (int i = 0; i < max - min; i++) {
-					target = target.exert(txn);
-				}
-				return this;
-			} else if (condition != null && max - min == 0) {
-				while (condition.isTrue()) {
-					target = target.exert(txn);
-				}
-			} else if (condition != null && max - min > 0) {
-				// execute min times
-				for (int i = 0; i < min; i++) {
-					target = target.exert(txn);
-				}
-				for (int i = 0; i < max - min; i++) {
-					target = target.exert(txn);
-					if (condition.isTrue())
-						target = target.exert(txn);
-					else
-						return this;
-				}
-			}
-		} catch (Exception e) {
-			throw new ExertionException(e);
-		}
-		return this;
-	}
+    @Override
+    public Task doTask(Transaction txn) throws ExertionException,
+            SignatureException, RemoteException {
+        try {
+            if (condition == null) {
+                for (int i = 0; i < max - min; i++) {
+                    target = target.exert(txn);
+                }
+                return this;
+            } else if (condition != null && max - min == 0) {
+                while (condition.isTrue()) {
+                    Signature sig = target.getProcessSignature();
+                    if (sig != null && sig.getVariability() != null) {
+                        ((Task)target).getContext().append(condition.getConditionalContext());
+                    }
+                    target = target.exert(txn);
+                    if (sig != null && sig.getVariability() != null) {
+                        ((Task)target).updateConditionalContext(condition);
+                    }
+                }
+            } else if (condition != null && max - min > 0) {
+                // execute min times
+                for (int i = 0; i < min; i++) {
+                    target = target.exert(txn);
+                }
+                for (int i = 0; i < max - min; i++) {
+                    target = target.exert(txn);
+                    if (condition.isTrue())
+                        target = target.exert(txn);
+                    else
+                        return this;
+                }
+            }
+        } catch (Exception e) {
+            throw new ExertionException(e);
+        }
+        return this;
+    }
 	
 	public Exertion getTarget() {
 		return target;

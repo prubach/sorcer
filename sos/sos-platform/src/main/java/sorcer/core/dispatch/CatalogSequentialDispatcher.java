@@ -22,6 +22,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Set;
 
+import sorcer.core.context.ServiceContext;
 import sorcer.core.provider.Provider;
 import sorcer.core.exertion.Jobs;
 import sorcer.service.*;
@@ -64,6 +65,16 @@ public class CatalogSequentialDispatcher extends CatalogExertDispatcher {
             xrt.startExecTime();
             Context previous = null;
             for (Exertion exertion: inputXrts) {
+
+                // Added for Blocks
+                if (xrt.isBlock()) {
+                    try {
+                        ((ServiceContext) exertion.getContext()).setBlockScope(xrt.getContext());
+                    } catch (ContextException ce) {
+                        throw new ExertionException(ce);
+                    }
+                }
+
                 ServiceExertion se = (ServiceExertion) exertion;
                 // support for continuous pre and post execution of task
                 // signatures

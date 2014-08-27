@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import net.jini.core.lookup.ServiceID;
 import sorcer.core.deploy.ServiceDeployment;
 import sorcer.service.*;
+import sorcer.service.modeling.Variability;
 
 import static sorcer.core.SorcerConstants.*;
 
@@ -127,6 +128,15 @@ public class ServiceSignature implements Signature {
 	public Class<?> getServiceType() {
 		return serviceType;
 	}
+
+    /**
+     * Returns a provider of <code>Variability</code> type.
+     *
+     * @return Variability of this service provider
+     */
+    public Variability<?> getVariability() {
+        return null;
+    }
 
 	public Signature addRank(Kind... kinds) {
 		rank.addAll(Arrays.asList(kinds));

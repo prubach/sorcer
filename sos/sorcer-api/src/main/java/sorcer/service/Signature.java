@@ -18,6 +18,7 @@
 package sorcer.service;
 
 import sorcer.core.deploy.ServiceDeployment;
+import sorcer.service.modeling.Variability;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -100,6 +101,13 @@ public interface Signature extends Serializable,Comparable, Arg {
 	 * @return name of service provider
 	 */
 	public String getProviderName();
+
+    /**
+     * Returns a provider of <code>Variability</code> type.
+     *
+     * @return Variability of this service provider
+     */
+    public Variability<?> getVariability();
 	
 	public void setProviderName(String providerName);
 	
