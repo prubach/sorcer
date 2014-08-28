@@ -144,7 +144,7 @@ public class SorcerResolver implements Resolver {
             }
             FileUtils.toFile(cache, Channels.newOutputStream(ch));
         } catch (Exception e) {
-            log.warn("Error", e);
+            log.debug("Error", e);
         } finally {
             if (lock != null)
                 try {

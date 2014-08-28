@@ -903,9 +903,9 @@ public class operator {
 		if (rp != null) {
 			((ServiceContext) job.getDataContext()).setReturnPath(rp);
 		}
-
+        if (control!=null)
+            job.setControlContext(control);
 		if (job instanceof NetJob && control != null) {
-			job.setControlContext(control);
 			if (control.getAccessType().equals(Access.PULL)) {
 				Signature procSig = job.getProcessSignature();
 				procSig.setServiceType(Spacer.class);
@@ -1484,9 +1484,8 @@ public class operator {
 				cc.setOpti((Strategy.Opti)o);
 			}  else if (o instanceof Exec.State) {
                 cc.setExecState((Exec.State) o);
+            }
         }
-
-    }
 		cc.setSignatures(sl);
 		return cc;
 	}

@@ -170,6 +170,7 @@ public class Task extends ServiceExertion {
                     innerTask.setFidelity(getFidelity());
                     innerTask.setSelectedFidelitySelector(selectedFidelitySelector);
                     innerTask.setContext(dataContext);
+                    innerTask.setIndex(index);
                     innerTask.setControlContext(controlContext);
 				}
 			}
