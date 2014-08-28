@@ -32,7 +32,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sorcer.core.provider.Provider;
-import sorcer.core.RemoteContextManagement;
+import sorcer.core.provider.RemoteContextManagement;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.NetSignature;
@@ -94,7 +94,7 @@ public class SignatureDispatcherForProvider implements SignatureDispatchment {
 
 		interfaceIgnoreList = new String[6];
 		interfaceIgnoreList[0] = "sorcer.core.provider.Provider";
-		interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
+		interfaceIgnoreList[1] = "sorcer.core.provider.AdministratableProvider";
 		interfaceIgnoreList[2] = "java.rmi.Remote";
 		interfaceIgnoreList[3] = "net.jini.core.constraint.RemoteMethodControl";
 		interfaceIgnoreList[4] = "net.jini.security.proxytrust.TrustEquivalence";

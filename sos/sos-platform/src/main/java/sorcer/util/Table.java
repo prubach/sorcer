@@ -41,7 +41,7 @@ import net.jini.id.UuidFactory;
 import sorcer.core.provider.DatabaseStorer;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.StorageManagement;
-import sorcer.core.provider.dbp.DatabaseProvider;
+import sorcer.core.provider.dbp.IDatabaseProvider;
 import sorcer.service.Context;
 import sorcer.service.EvaluationException;
 import sorcer.service.Signature;
@@ -1065,9 +1065,9 @@ public class Table implements ModelTable {
 					outputTableURL = (URL)objectStore.contextStore(cxt).getValue("object/url");;
 				}
 			} else if (url.getHost().equals("self")) {
-				Uuid uuid = ((DatabaseProvider) provider).store(this);
+				Uuid uuid = ((IDatabaseProvider) provider).store(this);
 				try {
-					outputTableURL = ((DatabaseProvider) provider).getDatabaseURL(
+					outputTableURL = ((IDatabaseProvider) provider).getDatabaseURL(
 							DatabaseStorer.Store.table, uuid);
 				} catch (Exception e) {
 					throw new EvaluationException(e);

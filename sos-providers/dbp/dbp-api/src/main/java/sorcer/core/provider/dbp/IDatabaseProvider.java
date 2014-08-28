@@ -18,7 +18,11 @@ package sorcer.core.provider.dbp;
  */
 
 
+import net.jini.id.Uuid;
+import sorcer.core.provider.DatabaseStorer;
+
 import java.io.InvalidObjectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -34,4 +38,8 @@ public interface IDatabaseProvider extends Remote {
     void deleteObject(URL url) throws RemoteException;
 
     Object retrieve(URL url) throws RemoteException;
+
+    Uuid store(Object object);
+
+    URL getDatabaseURL(DatabaseStorer.Store storeType, Uuid uuid) throws MalformedURLException;
 }

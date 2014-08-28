@@ -28,7 +28,7 @@ deployment(name: 'ju-arithmetic-context') {
 
     codebase getCodebase()
 
-    artifact id: 'api', 'org.sorcersoft.sorcer:ju-arithmetic-api:'+getSorcerVersion()
+    artifact id: 'api', 'org.sorcersoft.sorcer:ju-arithmetic-dl:pom:'+getSorcerVersion()
     artifact id: 'cfg', 'org.sorcersoft.sorcer:ju-arithmetic-cfg-ctx:'+getSorcerVersion()
 
     service(name:'Arithmetic') {

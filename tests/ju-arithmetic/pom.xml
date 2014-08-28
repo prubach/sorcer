@@ -14,6 +14,7 @@
 
 	<modules>
 		<module>ju-arithmetic-api</module>
+        <module>ju-arithmetic-dl</module>
 		<module>ju-arithmetic-prv</module>
         <module>ju-arithmetic-cfg-all</module>
         <module>ju-arithmetic-cfg-ctx</module>

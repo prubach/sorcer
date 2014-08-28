@@ -61,7 +61,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
-import sorcer.core.RemoteContextManagement;
+import sorcer.core.provider.RemoteContextManagement;
 import sorcer.core.provider.cataloger.ui.BrowserModel;
 import sorcer.netlet.ScriptExerter;
 import sorcer.service.*;

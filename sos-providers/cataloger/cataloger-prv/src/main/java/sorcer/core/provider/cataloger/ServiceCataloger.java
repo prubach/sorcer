@@ -43,7 +43,7 @@ import org.rioproject.admin.ServiceActivityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import sorcer.core.AdministratableProvider;
+import sorcer.core.provider.AdministratableProvider;
 import sorcer.core.provider.Cataloger;
 import sorcer.core.provider.Provider;
 import sorcer.core.SorcerEnv;
@@ -466,7 +466,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 			super();
 			interfaceIgnoreList = new String[6];
 			interfaceIgnoreList[0] = "sorcer.core.provider.Provider";
-			interfaceIgnoreList[1] = "sorcer.core.AdministratableProvider";
+			interfaceIgnoreList[1] = "sorcer.core.provider.AdministratableProvider";
 			interfaceIgnoreList[2] = "java.rmi.Remote";
 			interfaceIgnoreList[3] = "net.jini.core.constraint.RemoteMethodControl";
 			interfaceIgnoreList[4] = "net.jini.security.proxytrust.TrustEquivalence";

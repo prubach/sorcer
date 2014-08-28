@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package sorcer.core;
+package sorcer.core.provider;
 
 import java.rmi.Remote;
 

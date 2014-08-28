@@ -15,7 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sorcer.core;
+package sorcer.core.provider;
+
+import sorcer.core.ContextManagement;
 
 import java.rmi.Remote;
 

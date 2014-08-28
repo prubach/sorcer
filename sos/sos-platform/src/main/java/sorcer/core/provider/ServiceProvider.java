@@ -141,14 +141,14 @@ import static sorcer.util.StringUtils.tName;
  * @see Provider
  * @see net.jini.lookup.ServiceIDListener
  * @see ReferentUuid
- * @see sorcer.core.AdministratableProvider
+ * @see AdministratableProvider
  * @see net.jini.export.ProxyAccessor
  * @see net.jini.security.proxytrust.ServerProxyTrust
  * @see net.jini.core.constraint.RemoteMethodControl
  * @see com.sun.jini.start.LifeCycle
  * @see Partner
  * @see sorcer.core.proxy.Partnership
- * @see sorcer.core.RemoteContextManagement
+ * @see RemoteContextManagement
  * @see sorcer.core.SorcerConstants
  */
 public class ServiceProvider implements Identifiable, Provider, ServiceIDListener,

@@ -23,12 +23,12 @@ def String getCodebase() {
 }
 
 
-deployment(name: 'ex5-provider') {
+deployment(name: 'ju-arithmetic-provider') {
     groups getInitialMemberGroups();
 
     codebase getCodebase()
 
-    artifact id: 'api', 'org.sorcersoft.sorcer:ju-arithmetic-api:'+getSorcerVersion()
+    artifact id: 'api', 'org.sorcersoft.sorcer:ju-arithmetic-dl:pom:'+getSorcerVersion()
     artifact id: 'cfg', 'org.sorcersoft.sorcer:ju-arithmetic-cfg-all:'+getSorcerVersion()
 
     service(name:'Arithmetic') {

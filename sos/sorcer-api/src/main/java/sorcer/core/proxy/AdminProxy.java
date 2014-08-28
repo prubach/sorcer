@@ -28,7 +28,7 @@ import net.jini.id.ReferentUuid;
 import net.jini.id.Uuid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sorcer.core.AdministratableProvider;
+import sorcer.core.provider.AdministratableProvider;
 
 /**
  * A proxy for Service Provider admin

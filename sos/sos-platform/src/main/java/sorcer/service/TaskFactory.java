@@ -69,7 +69,6 @@ public class TaskFactory {
 
 
 
-
     public static <T> Task task(String name, T... elems)
             throws ExertionException {
         Context context = null;
@@ -80,8 +79,9 @@ public class TaskFactory {
         else
             tname = name;
         Task task = null;
-		Access access = null;
-		Flow flow = null;
+        Access access = null;
+        Flow flow = null;
+        List<ServiceFidelity> fidelities = null;
         ControlContext cc = null;
         for (Object o : elems) {
             if (o instanceof ControlContext) {
@@ -92,10 +92,14 @@ public class TaskFactory {
                 ops.add((Signature) o);
             } else if (o instanceof String) {
                 tname = (String) o;
-			} else if (o instanceof Access) {
-				access = (Access) o;
-			} else if (o instanceof Flow) {
-				flow = (Flow) o;
+            } else if (o instanceof Access) {
+                access = (Access) o;
+            } else if (o instanceof Flow) {
+                flow = (Flow) o;
+            } else if (o instanceof ServiceFidelity) {
+                if (fidelities == null)
+                    fidelities = new ArrayList<ServiceFidelity>();
+                fidelities.add((ServiceFidelity) o);
             }
         }
         Signature ss = null;
@@ -112,46 +116,41 @@ public class TaskFactory {
         if (ss != null) {
             if (ss instanceof NetSignature) {
                 try {
-					task = new NetTask(tname, ss);
+                    task = new NetTask(tname, (NetSignature) ss);
                 } catch (SignatureException e) {
                     throw new ExertionException(e);
                 }
             } else if (ss instanceof ObjectSignature) {
-                try {
-                    task = task((ObjectSignature) ss);
-                } catch (SignatureException e) {
-                    throw new ExertionException(e);
-                }
+                task = new ObjectTask(ss.getSelector(), (ObjectSignature) ss);
                 task.setName(tname);
             } else if (ss instanceof EvaluationSignature) {
                 task = new EvaluationTask(tname, (EvaluationSignature) ss);
+//			} else if (ss instanceof VarSignature) {
+//				task = new VarTask(tname, (VarSignature) ss);
+//			} else if (ss instanceof FilterSignature) {
+//				task = new FilterTask(tname, (FilterSignature) ss);
             } else if (ss instanceof ServiceSignature) {
                 task = new Task(tname, ss);
             }
             ops.remove(ss);
+        }
+        if (fidelities != null && fidelities.size() > 0) {
+            task = new Task(tname);
+            for (int i = 0; i < fidelities.size(); i++) {
+                task.addFidelity(fidelities.get(i));
+            }
+            task.setFidelity(fidelities.get(0));
+            task.setSelectedFidelitySelector(fidelities.get(0).getName());
+        } else {
+            for (Signature signature : ops) {
+                task.addSignature(signature);
+            }
         }
 
         if (context == null) {
             context = new ServiceContext();
         }
         task.setContext(context);
-
-        // set scope for evaluation task
-        for (Signature signature : ops) {
-            task.addSignature(signature);
-            if (signature instanceof EvaluationSignature) {
-                if (((EvaluationSignature) signature).getEvaluator() instanceof Par) {
-                    ((Par) ((EvaluationSignature) signature).getEvaluator())
-                            .setScope(context);
-                }
-            }
-        }
-        if (ss instanceof EvaluationSignature) {
-            if (((EvaluationSignature) ss).getEvaluator() instanceof Par) {
-                ((Par) ((EvaluationSignature) ss).getEvaluator())
-                        .setScope(context);
-            }
-        }
 
         if (access != null) {
             task.setAccess(access);

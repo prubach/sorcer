@@ -41,8 +41,8 @@ import org.rioproject.admin.ServiceActivityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import sorcer.core.AdministratableProvider;
-import sorcer.core.RemoteContextManagement;
+import sorcer.core.provider.AdministratableProvider;
+import sorcer.core.provider.RemoteContextManagement;
 import sorcer.core.provider.Provider;
 
 import com.sun.jini.admin.DestroyAdmin;
