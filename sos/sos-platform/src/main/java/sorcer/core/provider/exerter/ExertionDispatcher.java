@@ -236,7 +236,7 @@ public class ExertionDispatcher implements Exerter, Callable {
                         }
                     }
                 }
-				else if (exertion instanceof ObjectJob) {
+				else if (exertion instanceof Job) {
 					return ((Job) exertion).doJob(txn);
 				} else if (exertion instanceof Block) {
 					return ((Block) exertion).doBlock(txn);

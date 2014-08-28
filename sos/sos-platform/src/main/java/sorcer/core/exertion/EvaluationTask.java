@@ -55,6 +55,7 @@ public class EvaluationTask extends Task {
 		super(((Identifiable) evaluator).getName());
 		EvaluationSignature es = new EvaluationSignature(evaluator);
 		addSignature(es);
+        es.setEvaluator(evaluator);
 		dataContext.setExertion(this);
 		if (es.getEvaluator() instanceof Par) {
 			((Par) es.getEvaluator()).setScope(dataContext);
@@ -128,7 +129,11 @@ public class EvaluationTask extends Task {
 						}
 					}
 				}
-			}
+            } else {
+                if (evaluator instanceof Par && ((Par)evaluator).getScope()==null)
+                    ((Par)evaluator).setScope(dataContext);
+            }
+
 			Object result = evaluator.getValue();
 			if (getProcessSignature().getReturnPath() != null)
 				dataContext.setReturnPath(getProcessSignature().getReturnPath());

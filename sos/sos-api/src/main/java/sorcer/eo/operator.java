@@ -890,7 +890,7 @@ public class operator {
 			}
 		} else {
             // TODO - merge AFRL
-			job = new NetJob(name);
+			job = new Job(name);
 			for (int i = 0; i < fidelities.size(); i++) {
 				job.addFidelity(fidelities.get(i));
 			}

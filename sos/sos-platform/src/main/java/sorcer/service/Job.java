@@ -36,8 +36,12 @@ import sorcer.core.context.ControlContext;
 import sorcer.core.context.FidelityContext;
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.ThrowableTrace;
+import sorcer.core.exertion.NetJob;
+import sorcer.core.exertion.ObjectJob;
 import sorcer.core.provider.Jobber;
+import sorcer.core.provider.Spacer;
 import sorcer.core.signature.NetSignature;
+import sorcer.core.signature.ObjectSignature;
 import sorcer.security.util.Auth;
 import sorcer.security.util.SorcerPrincipal;
 import sorcer.util.StringUtils;
@@ -58,7 +62,7 @@ import static sorcer.core.SorcerConstants.CPS;
  * @author Mike Sobolewski
  */
 @SuppressWarnings("rawtypes")
-public abstract class Job extends ServiceExertion implements CompoundExertion {
+public class Job extends ServiceExertion implements CompoundExertion {
 
 	private static final long serialVersionUID = -6161435179772214884L;
 
@@ -72,6 +76,7 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 
 	public Integer state = INITIAL;
 
+    protected Job delegate;
 	/**
 	 * Constructs a job and sets all default values to it.
 	 */
@@ -136,10 +141,10 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 	public boolean isJob() {
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see sorcer.service.Exertion#isCompound()
-	 */
+
+    /* (non-Javadoc)
+     * @see sorcer.service.Exertion#isCompound()
+     */
 	@Override
 	public boolean isCompound() {
 		return true;
@@ -289,10 +294,62 @@ public abstract class Job extends ServiceExertion implements CompoundExertion {
 		return exertions.get(index);
 	}
 
-	public abstract Job doJob(Transaction txn) throws ExertionException,
-			SignatureException, RemoteException, TransactionException;
+//	public abstract Job doJob(Transaction txn) throws ExertionException,
+//			SignatureException, RemoteException, TransactionException;
 
-	public void undoJob() throws ExertionException, SignatureException,
+    public Job doJob(Transaction txn) throws ExertionException,
+            SignatureException, RemoteException, TransactionException {
+        if (delegate == null) {
+            if (fidelity != null) {
+                Signature ss = null;
+                if (fidelity.size() == 1) {
+                    ss = fidelity.get(0);
+                } else if (fidelity.size() > 1) {
+                    for (Signature s : fidelity) {
+                        if (s.getType() == Signature.SRV) {
+                            ss = s;
+                            break;
+                        }
+                    }
+                }
+                if (ss != null) {
+                    if (ss instanceof NetSignature) {
+                        delegate = new NetJob(name);
+                    } else if (ss instanceof ObjectSignature) {
+                        delegate = new ObjectJob(ss.getSelector());
+                        delegate.setName(name);
+                    }
+
+                    delegate.setFidelities(getFidelities());
+                    delegate.setFidelity(getFidelity());
+                    delegate.setSelectedFidelitySelector(selectedFidelitySelector);
+                    delegate.setContext(dataContext);
+                    delegate.setControlContext(controlContext);
+                    delegate.setFidelityContexts(fidelityContexts);
+                }
+            }
+            if (delegate instanceof NetJob) {
+                delegate.setControlContext(controlContext);
+                if (controlContext.getAccessType().equals(Strategy.Access.PULL)) {
+                    Signature procSig = delegate.getProcessSignature();
+                    procSig.setServiceType(Spacer.class);
+                    delegate.getFidelity().clear();
+                    delegate.addSignature(procSig);
+                }
+            }
+            if (exertions.size() > 0) {
+                for (Exertion ex : exertions) {
+                    delegate.addExertion(ex);
+                }
+            }
+        }
+        return delegate.doJob(txn);
+    }
+
+
+
+
+    public void undoJob() throws ExertionException, SignatureException,
 			RemoteException {
 		throw new ExertionException("Not implemneted by this Job: " + this);
 	}

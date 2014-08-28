@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import sorcer.core.exertion.NetJob;
+import sorcer.core.exertion.NetTask;
 import sorcer.core.signature.ServiceSignature;
 import sorcer.service.*;
 import sorcer.util.Stopwatch;
@@ -200,7 +202,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 			if (exertion != null) {
 				putValue(EXERTION, exertion);
                 //
-                if (exertion.isNet())
+                if (exertion instanceof NetTask || exertion instanceof NetJob)
                     setProvisionable(true);
 
 			}
