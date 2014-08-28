@@ -146,8 +146,8 @@ public class Configurer extends AbstractBeanListener {
 
     private String getPropertyName(Method m) {
         String name = m.getName();
-        if (name.length() > 3 && name.startsWith("set") && Character.isUpperCase(name.charAt(4))) {
-            return "" + Character.toLowerCase(name.charAt(4)) + name.substring(5);
+        if (name.length() > 3 && name.startsWith("set") && Character.isUpperCase(name.charAt(3))) {
+            return "" + Character.toLowerCase(name.charAt(3)) + name.substring(4);
         }
         return name;
     }

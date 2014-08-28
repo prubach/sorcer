@@ -2771,8 +2771,12 @@ public class ProviderDelegate {
             allBeans.add(InjectionHelper.create(beanClass));
         }
         if (beanListener != null)
-            for (Object bean : allBeans)
+            for (int i = 0; i < allBeans.size(); i++) {
+                Object bean = allBeans.get(i);
                 beanListener.preProcess(serviceBuilder, bean);
+                if (bean instanceof javax.inject.Provider)
+                    allBeans.set(i, ((javax.inject.Provider) bean).get());
+            }
         for (Object bean : allBeans) {
             initBean(bean);
         }
