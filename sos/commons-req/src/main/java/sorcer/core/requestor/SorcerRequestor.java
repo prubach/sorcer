@@ -142,7 +142,6 @@ abstract public class SorcerRequestor implements SorcerConstants {
 	 */
 	public void loadProperties(String... filenames) throws ConfigurationException {
 		logger.info("loading requestor properties:" + Arrays.toString(filenames));
-        Properties props = new Properties();
         for (String fName : filenames)
             props.putAll(Sorcer.loadProperties(fName));
 	}

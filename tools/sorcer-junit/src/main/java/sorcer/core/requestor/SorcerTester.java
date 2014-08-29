@@ -60,6 +60,15 @@ import static org.junit.Assert.assertTrue;
 	protected Properties props;
 	protected int port;
 
+
+    public SorcerTester() throws Exception {
+        init();
+    }
+
+    public SorcerTester(String... args) throws Exception {
+        init(args);
+    }
+
 	/**
 	 * init method for the SorcerTester class
 	 * @param args String array containing arguments for the init method

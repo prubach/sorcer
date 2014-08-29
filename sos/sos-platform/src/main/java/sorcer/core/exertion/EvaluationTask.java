@@ -124,7 +124,7 @@ public class EvaluationTask extends Task {
 					if (vs != null)
 						for (Arg v : vs) {
 							val = dataContext.getValueEndsWith(v.getName());
-							if (val != null && val instanceof Setter) {
+							if (val != null && v instanceof Setter) {
 								((Setter)v).setValue(val);
 						}
 					}
