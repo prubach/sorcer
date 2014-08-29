@@ -50,7 +50,7 @@
             <sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.protocol.handler.pkgs" value="net.jini.url" />
 			<sysproperty key="java.security.policy" value="${sorcer.policy}" />
-			<sysproperty key="webster.root" value="${mvn.repo};${lib.dir};${sorcer.home}/lib/river/lib;${sorcer.home}/lib/river/lib-dl" />
+			<sysproperty key="webster.root" value="${mvn.repo};${lib.dir};${sorcer.home}/lib/river/lib;${sorcer.home}/lib/river/lib-dl;${sorcer.home}/data" />
 			<sysproperty key="webster.port" value="${provider.webster.port}" />
             <sysproperty key="java.util.logging.config.file"
                          value="${sorcer.home}/configs/sorcer.logging"/>

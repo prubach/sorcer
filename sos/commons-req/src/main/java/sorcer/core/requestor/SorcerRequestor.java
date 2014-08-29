@@ -56,7 +56,7 @@ abstract public class SorcerRequestor implements SorcerConstants {
 
 	public static String R_PROPERTIES_FILENAME = "requestor.properties";
 	protected static SorcerRequestor requestor = null;
-	protected Properties props;
+	protected Properties props = new Properties();
 	protected int port;
 
 	/**
@@ -112,7 +112,10 @@ abstract public class SorcerRequestor implements SorcerConstants {
 			if (roots != null)
 				tokens = toArray(roots);
 			try {
-				InternalWebster.startWebster(tokens);
+                if (tokens!=null || System.getProperty(CODEBASE_JARS)!=null)
+				    InternalWebster.startWebster(tokens);
+                else
+                    logger.warning("Not starting internal webster because no \"codebase.jars\" are specified");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

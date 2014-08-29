@@ -1541,7 +1541,7 @@ public class SorcerEnv {
         Properties props = new Properties();
         try {
             // Try in user home directory first
-            properties.load((new FileInputStream(new File(filename))));
+            props.load((new FileInputStream(new File(filename))));
             logger.fine("loaded properties from: " + filename);
 
         } catch (Exception e) {
@@ -1634,7 +1634,7 @@ public class SorcerEnv {
         String pattern = "${" + "localhost" + "}";
 //		String userDirPattern = "${user.home}";
         // first substitute for this localhost
-        while (e.hasMoreElements()) {
+/*        while (e.hasMoreElements()) {
             key = (String) e.nextElement();
             value = props.getProperty(key);
             if (value.equals(pattern)) {
@@ -1645,30 +1645,32 @@ public class SorcerEnv {
                 }
                 props.put(key, value);
             }
-	/*		if (value.equals(userDirPattern)) {
+	*//*		if (value.equals(userDirPattern)) {
 				value = System.getProperty("user.home");
 				properties.put(key, value);
-			}*/
-        }
+			}*//*
+        }*/
         // now substitute other entries accordingly
         e = props.propertyNames();
         while (e.hasMoreElements()) {
             key = (String) e.nextElement();
             value = props.getProperty(key);
+
             evalue = expandStringProperties(value, true, props);
             // try SORCER env properties
             if (evalue == null)
+                evalue = expandStringProperties(value, false, sorcerEnv.properties);
+            if (evalue == null || evalue.startsWith("${"))
                 evalue = expandStringProperties(value, false, props);
-            if (evalue != null)
-                props.put(key, evalue);
-            if (value.equals(pattern)) {
+            if (value.equals(pattern) || (evalue!=null && evalue.equals(pattern))) {
                 try {
                     evalue = getHostAddress();
                 } catch (UnknownHostException e1) {
                     logger.log(Level.WARNING, "Error", e1);
                 }
-                props.put(key, evalue);
             }
+            if (evalue!=null)
+                props.put(key, evalue);
         }
     }
 
