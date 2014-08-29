@@ -393,7 +393,7 @@ public class Webster implements Runnable {
         start(addr);
     }
 
-    private void start(InetAddress addr) {
+    private void start(InetAddress addr) throws BindException {
         if (port == 0) {
             try {
                 port = getPortAvailable();
@@ -412,18 +412,13 @@ public class Webster implements Runnable {
         }
 
         for (int i = startPort; i <= endPort; i++) {
-            try {
-                start(i, addr);
-                return;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                System.err.println(ex.getMessage());
-            }
+            start(i, addr);
+            return;
         }
     }
 
     // start with the first available port in the range STARTPORT-ENDPORT
-    private void start(int websterPort, InetAddress address) throws IOException {
+    private void start(int websterPort, InetAddress address) throws BindException {
         try {
             port = websterPort;
             // check if the port is not required by the JVM system property
@@ -434,11 +429,12 @@ public class Webster implements Runnable {
             ss = new ServerSocket(port, 0, address);
         } catch (IOException ioe) {
             if (startPort == endPort) {
-                logger.log(Level.SEVERE, "Port bind server socket failure: " + endPort, ioe);
-                System.exit(1);
+                //logger.log(Level.SEVERE, "Port bind server socket failure: " + endPort, ioe);
+                throw new BindException(ioe.getMessage());
+                //System.exit(1);
             } else {
-                System.err.println("Port bind server socket failure: " + port);
-                throw ioe;
+                //System.err.println("Port bind server socket failure: " + port);
+                throw new BindException(ioe.getMessage());
             }
         }
         port = ss.getLocalPort();

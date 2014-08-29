@@ -131,7 +131,7 @@ public class WebsterStarter implements DestroyAdmin {
 
         String server = conn.getHeaderField("Server");
         log.debug("ping server = {}", server);
-        if (!Webster.class.getName().equals(server) && !sorcer.tools.webster.Webster.class.getName().equals(server)) {
+        if (!Webster.class.getName().equals(server) && !org.rioproject.tools.webster.Webster.class.getName().equals(server)) {
             throw new IllegalStateException("Remote server on " + url + " not a Webster, " + server);
         }
     }
