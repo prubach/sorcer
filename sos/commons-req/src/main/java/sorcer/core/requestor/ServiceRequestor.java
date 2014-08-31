@@ -289,7 +289,7 @@ abstract public class
 
     private static String resolve(ArtifactCoordinates coords) {
         if (coords.getVersion() == null)
-            coords.setVersion(VersionResolver.instance.resolveVersion(coords.getGroupId(), coords.getArtifactId()));
+            coords.setVersion(VersionResolver.instance.resolveVersion(coords));
         return GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), coords.toString()).toExternalForm();
     }
     // Utility for setting the basic environment properties

@@ -71,9 +71,9 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         log = LoggerFactory.getLogger(SorcerRunner.class);
     }
 
-    public SorcerRunner(Class<?> klass) throws InitializationError {
-        this(klass, klass.getAnnotation(SorcerServiceConfiguration.class));
-    }
+        public SorcerRunner(Class<?> klass) throws InitializationError {
+            this(klass, klass.getAnnotation(SorcerServiceConfiguration.class));
+        }
 
     /**
      * @throws org.junit.runners.model.InitializationError if the test class is malformed.
@@ -115,7 +115,7 @@ public class SorcerRunner extends BlockJUnit4ClassRunner {
         for (String cbentry : codebase) {
             ArtifactCoordinates artifact = ArtifactCoordinates.coords(cbentry);
             if (artifact.getVersion() == null)
-                artifact.setVersion(VersionResolver.instance.resolveVersion(artifact.getGroupId(), artifact.getArtifactId()));
+                artifact.setVersion(VersionResolver.instance.resolveVersion(artifact));
             codebaseUrls.add(GenericUtil.toArtifactUrl(SorcerEnv.getCodebaseRoot(), artifact.toString()));
         }
         System.setProperty(JavaSystemProperties.RMI_SERVER_CODEBASE, StringUtils.join(codebaseUrls, CODEBASE_SEPARATOR));

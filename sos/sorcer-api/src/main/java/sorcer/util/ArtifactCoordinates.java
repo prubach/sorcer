@@ -54,7 +54,7 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
         PACKAGINGS.put("zip", "zip");
 
         PACKAGINGS.put("maven-archetype", PCKG_JAR);
-        PACKAGINGS.put("eclispse-plugin", PCKG_JAR);
+        PACKAGINGS.put("eclipse-plugin", PCKG_JAR);
         PACKAGINGS.put("bundle", PCKG_JAR);
     }
 
@@ -78,7 +78,10 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 		String version = null;
 
 		if (length == 3) {
-			version = coordSplit[2];
+            if (PACKAGINGS.values().contains(coordSplit[2]))
+                packaging = coordSplit[2];
+            else
+			    version = coordSplit[2];
 		} else if (length == 4) {
 			packaging = coordSplit[2];
 			version = coordSplit[3];
@@ -106,6 +109,10 @@ public class ArtifactCoordinates implements Comparable<ArtifactCoordinates>{
 	public static ArtifactCoordinates coords(String groupId, String artifactId, String version) {
 		return new ArtifactCoordinates(groupId, artifactId, DEFAULT_PACKAGING, version, null);
 	}
+
+    public static ArtifactCoordinates coords(String groupId, String artifactId, String version, String packaging) {
+        return new ArtifactCoordinates(groupId, artifactId, packaging, version, null);
+    }
 
 	public ArtifactCoordinates(String groupId, String artifactId, String version) {
 		this(groupId, artifactId, DEFAULT_PACKAGING, version, null);

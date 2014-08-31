@@ -37,28 +37,42 @@ public class VersionResolver {
      * from individual artifact jar the jar must be already in the classpath of
      * current thread context class loader in order to load its pom.version
      *
+     * @param coords maven coordinates groupId and artifactId, optionally type
+     * @return artifacts version
+     * @throws IllegalArgumentException if version could not be found
+     */
+    public String resolveVersion(ArtifactCoordinates coords) {
+        String version = resolveCachedVersion(coords.getGroupId(), coords.getArtifactId());
+        if (version != null)
+            if (checkFileExists(coords.getGroupId(), coords.getArtifactId(), version, coords.getPackaging())) {
+                return version;
+            } else
+                log.warn("Version of {}:{} resolved to {} but file not found", coords.getGroupId(), coords.getArtifactId(), version);
+
+        version = loadVersionFromPomProperties(coords.getGroupId(), coords.getArtifactId());
+        if (version == null) {
+            throw new IllegalArgumentException("Could not load version of " + coords.getGroupId() + ':' + coords.getArtifactId());
+        }
+        versions.put(key(coords.getGroupId(), coords.getArtifactId()), version);
+        return version;
+    }
+
+    /**
+     * Resolve version of artifact using groupversions.properties or pom.properties
+     * from individual artifact jar the jar must be already in the classpath of
+     * current thread context class loader in order to load its pom.version
+     *
      * @param groupId    maven artifacts groupId
      * @param artifactId maven artifacts artifactId
      * @return artifacts version
      * @throws IllegalArgumentException if version could not be found
      */
     public String resolveVersion(String groupId, String artifactId) {
-        String version = resolveCachedVersion(groupId, artifactId);
-        if (version != null)
-            if (checkFileExists(groupId, artifactId, version)) {
-                return version;
-            } else
-                log.warn("Version of {}:{} resolved to {} but file not found", groupId, artifactId, version);
-
-        version = loadVersionFromPomProperties(groupId, artifactId);
-        if (version == null) {
-            throw new IllegalArgumentException("Could not load version of " + groupId + ':' + artifactId);
-        }
-        versions.put(key(groupId, artifactId), version);
-        return version;
+        return resolveVersion(new ArtifactCoordinates(groupId, artifactId, null));
     }
 
-    String loadVersionFromPomProperties(String groupId, String artifactId) {
+
+    private String loadVersionFromPomProperties(String groupId, String artifactId) {
         String resourceName = String.format("META-INF/maven/%1$s/%2$s/pom.properties", groupId, artifactId);
         Properties properties;
         try {
@@ -93,8 +107,8 @@ public class VersionResolver {
         return groupId + "_" + artifactId;
     }
 
-    private boolean checkFileExists(String groupId, String artifactId, String version) {
-        String path = Resolver.resolveAbsolute(ArtifactCoordinates.coords(groupId, artifactId, version));
+    private boolean checkFileExists(String groupId, String artifactId, String version, String packaging) {
+        String path = Resolver.resolveAbsolute(ArtifactCoordinates.coords(groupId, artifactId, version, packaging));
         return new File(path).exists();
     }
 }

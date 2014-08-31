@@ -38,7 +38,7 @@ import sorcer.service.*;
  */
 @RunWith(SorcerRunner.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api",
-        "org.sorcersoft.sorcer:ju-arithmetic-api"
+        "org.sorcersoft.sorcer:ju-arithmetic-dl:pom"
 })
 public class ArithmeticNoNetTest {
 
