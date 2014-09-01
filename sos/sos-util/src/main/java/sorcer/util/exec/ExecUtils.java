@@ -133,7 +133,7 @@ public class ExecUtils {
         }
         process.waitFor();
         int exitValue = process.exitValue();
-
+        Thread.sleep(50);
         if (stdout != null) {
             stdout.throwIfHadException();
             out = new String(stdout.getResult());
