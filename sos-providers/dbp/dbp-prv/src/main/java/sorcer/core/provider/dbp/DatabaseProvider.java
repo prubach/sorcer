@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.javafx.sg.prism.NGShape;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import org.slf4j.Logger;
@@ -35,11 +36,9 @@ import sorcer.config.Component;
 import sorcer.config.ConfigEntry;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.StorageManagement;
-import sorcer.service.Context;
-import sorcer.service.ContextException;
+import sorcer.service.*;
 import sorcer.core.provider.DatabaseStorer;
-import sorcer.service.Exertion;
-import sorcer.service.Identifiable;
+import sorcer.util.ModelTable;
 import sorcer.util.bdb.objects.SorcerDatabase;
 import sorcer.util.bdb.objects.SorcerDatabaseViews;
 import sorcer.util.bdb.objects.UuidKey;
@@ -114,6 +113,11 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		return xrtMap.get(new UuidKey(uuid));
 	}
 
+    public ModelTable getTable(Uuid uuid) {
+        StoredMap<UuidKey, ModelTable> xrtMap = views.getTableMap();
+        return xrtMap.get(new UuidKey(uuid));
+    }
+
 	protected class PersistThread extends Thread {
 
 		Object object;
@@ -134,6 +138,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			} else if (object instanceof Exertion) {
 				storedSet = views.getExertionSet();
 				storedSet.add(object);
+            } else if (object instanceof ModelTable) {
+                storedSet = views.getTableSet();
+                storedSet.add(object);
 			} else if (object instanceof UuidObject) {
 				storedSet = views.getUuidObjectSet();
 				storedSet.add(object);
@@ -169,6 +176,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			} else if (object instanceof Exertion) {
 				storedMap = views.getExertionMap();
 				storedMap.replace(new UuidKey(uuid), object);
+            } else if (object instanceof ModelTable) {
+                storedMap = views.getTableMap();
+                storedMap.replace(new UuidKey(uuid), object);
 			} else if (object instanceof Object) {
 				storedMap = views.getUuidObjectMap();
 				storedMap.replace(new UuidKey(uuid), object);
@@ -261,7 +271,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			obj = getContext(uuid);
 		else if (storeType == Store.exertion)
 			obj = getExertion(uuid);
-		else if (storeType == Store.object)
+        else if (storeType == Store.table)
+            obj = getTable(uuid);
+        else if (storeType == Store.object)
 			obj = getObject(uuid);
 		
 		return obj;
@@ -436,7 +448,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			storedMap = views.getContextMap();
 		} else if (storeType == Store.exertion) {
 			storedMap = views.getExertionMap();
-		} else if (storeType == Store.object) {
+		} else if (storeType == Store.table) {
+            storedMap = views.getTableMap();
+        } else if (storeType == Store.object) {
 			storedMap = views.getUuidObjectMap();
 		}
 		return storedMap;
@@ -448,7 +462,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			storedSet = views.getContextSet();
 		} else if (storeType == Store.exertion) {
 			storedSet = views.getExertionSet();
-		} else if (storeType == Store.object) {
+		} else if (storeType == Store.table) {
+            storedSet = views.getTableSet();
+        } else if (storeType == Store.object) {
 			storedSet = views.getUuidObjectSet();
 		}
 		return storedSet;
@@ -469,7 +485,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			dt = new DeleteThread(id, Store.context);
 		} else if (object instanceof Exertion) {
 			dt = new DeleteThread(id, Store.exertion);
-		} else {
+		} else if (object instanceof ModelTable) {
+            dt = new DeleteThread(id, Store.table);
+        } else {
 			dt = new DeleteThread(id, Store.object);			
 		}
 		dt.start();
@@ -482,7 +500,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			return views.getContextSet().size();
 		} else if (type == Store.exertion) {
 			return views.getExertionSet().size();
-		} else {
+		} else if (type == Store.table) {
+            return views.getTableSet().size();
+        } else {
 			return views.getUuidObjectSet().size();
 		}
 	}
@@ -493,8 +513,10 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			type = Store.context;
 		} else if (object instanceof Exertion) {
 			type = Store.exertion;
-		} 
-		return type;
+		} else if (object instanceof ModelTable) {
+            type = Store.table;
+        }
+        return type;
 	}
 
 	/* (non-Javadoc)

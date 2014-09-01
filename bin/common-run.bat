@@ -152,7 +152,7 @@ set JAVA_OPTS=%JAVA_OPTS% -Djava.security.policy="%SORCER_HOME%\configs\sorcer.p
 set JAVA_OPTS=%JAVA_OPTS% "-Djava.protocol.handler.pkgs=net.jini.url|sorcer.util.url|org.rioproject.url"
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader
 set JAVA_OPTS=%JAVA_OPTS% -Djava.rmi.server.useCodebaseOnly=false
-set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir="%SORCER_HOME%\databases"
+set JAVA_OPTS=%JAVA_OPTS% -Dwebster.tmp.dir="%SORCER_HOME%\data"
 set JAVA_OPTS=%JAVA_OPTS% -Dsorcer.home="%SORCER_HOME%"
 set JAVA_OPTS=%JAVA_OPTS% -DRIO_HOME="%RIO_HOME%"
 set JAVA_OPTS=%JAVA_OPTS% -Dorg.rioproject.resolver.jar="%MVN_REPO%"\org\rioproject\resolver\resolver-aether\%v.rio%\resolver-aether-%v.rio%.jar

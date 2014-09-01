@@ -411,7 +411,7 @@ $MVN_REPO/org/sorcersoft/sigar/sigar/$V_SIGAR/sigar-$V_SIGAR.jar"
     else
         exec "$JAVACMD" $JAVA_OPTS \
         	-Djava.security.policy=$SORCER_HOME/configs/sorcer.policy \
-            -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+            -Dwebster.tmp.dir="$SORCER_HOME"/data \
             -classpath "$BOOT_CLASSPATH" \
             -Dprogram.name="$PROGNAME" \
             $STARTER_MAIN_CLASS \
@@ -514,7 +514,7 @@ else
 	    -Djava.rmi.server.RMIClassLoaderSpi=sorcer.rio.rmi.SorcerResolvingLoader \
         -Djava.rmi.server.useCodebaseOnly=false \
         -Dwebster.internal="true" \
-        -Dwebster.tmp.dir="$SORCER_HOME"/databases \
+        -Dwebster.tmp.dir="$SORCER_HOME"/data \
         -Dprogram.name="$PROGNAME" \
         -Dsorcer.home="$SORCER_HOME" \
         -Dtools.jar="$TOOLS_JAR" \

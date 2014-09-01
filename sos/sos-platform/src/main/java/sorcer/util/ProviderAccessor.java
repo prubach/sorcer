@@ -30,6 +30,7 @@ import sorcer.core.SorcerEnv;
 import sorcer.river.Filters;
 import sorcer.service.Accessor;
 import sorcer.service.DynamicAccessor;
+import sorcer.service.Signature;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -70,6 +71,21 @@ public class ProviderAccessor extends ServiceAccessor implements
 	public ProviderAccessor() {
 		// Nothing to do, uses the singleton design pattern
 	}
+
+    /**
+     * Returns a SORCER service provider with the specified signature,
+     * Added for compatibility with AFRL SORCER
+     *
+     * @param signature
+     *            the signature of service provider
+     * @return a SORCER provider service
+     */
+    public static Provider getProvider(Signature signature) {
+        return (Provider)Accessor.getService(signature);
+    }
+
+
+
 
     /**
 	 * Returns a SORCER service provider registered with the most significant
