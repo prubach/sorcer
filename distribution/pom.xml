@@ -244,6 +244,16 @@
         </dependency>
         <dependency>
             <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ju-arithmetic-cfg-ter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>ju-arithmetic-cfg-ctx</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
             <artifactId>ju-arithmetic-api</artifactId>
             <version>${project.version}</version>
         </dependency>
