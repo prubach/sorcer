@@ -67,7 +67,7 @@ public class ArithmeticExertleterTest {
 	private final static Logger logger = LoggerFactory
 			.getLogger(NetArithmeticReqTest.class);
 
-    //@Ignore("The same as the one below")
+    @Ignore("The same as the one below")
     @Test
     public void exertExertleter() throws Exception {
 
