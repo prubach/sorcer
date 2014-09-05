@@ -19,6 +19,7 @@ package sorcer.tools.shell.cmds;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import net.jini.admin.Administrable;
@@ -51,8 +52,7 @@ public class ChgrpCmd extends ShellCmd {
 		WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		// pass in a clone of list - command may modify it
 		@SuppressWarnings("unchecked")
-		ArrayList<ServiceRegistrar> registrars = (ArrayList<ServiceRegistrar>) NetworkShell
-				.getRegistrars().clone();
+        List<ServiceRegistrar> registrars = NetworkShell.getRegistrars();
 		int numTokens = myTk.countTokens();
 		String[] groups = null; // matches all
 		String next = myTk.nextToken();

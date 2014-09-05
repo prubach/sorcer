@@ -110,7 +110,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
     public static int selectedRegistrar = 0;
 
-    private static ArrayList<ServiceRegistrar> registrars = new ArrayList<ServiceRegistrar>();
+    private static List<ServiceRegistrar> registrars = java.util.Collections.synchronizedList(new ArrayList<ServiceRegistrar>());
 
     static private boolean debug = false;
 
@@ -749,8 +749,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		return disco;
 	}
 
-	public static ArrayList<ServiceRegistrar> getRegistrars() {
-        // Remove non-existent registrars
+	public static List<ServiceRegistrar> getRegistrars() {
+        // Remove non-existent registrars                                                                                       T
         List<ServiceRegistrar> regsToRemove = new ArrayList<ServiceRegistrar>();
         for (ServiceRegistrar sr : registrars) {
             try {

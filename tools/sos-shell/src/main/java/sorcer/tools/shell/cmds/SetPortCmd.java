@@ -19,6 +19,7 @@ package sorcer.tools.shell.cmds;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import net.jini.admin.Administrable;
@@ -48,7 +49,7 @@ public class SetPortCmd extends ShellCmd {
 		out = NetworkShell.getShellOutputStream();
         WhitespaceTokenizer myTk = NetworkShell.getShellTokenizer();
 		// pass in a clone of list - command may modify it
-		ArrayList registrars = (ArrayList) NetworkShell.getRegistrars().clone();
+		List<ServiceRegistrar> registrars = NetworkShell.getRegistrars();
 		int numTokens = myTk.countTokens();
 		if (numTokens < 2) {
 			out.println(COMMAND_USAGE);

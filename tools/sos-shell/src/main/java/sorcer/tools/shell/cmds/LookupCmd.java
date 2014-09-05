@@ -22,9 +22,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import net.jini.admin.Administrable;
 import net.jini.core.entry.Entry;
@@ -189,7 +187,7 @@ public class LookupCmd extends ShellCmd {
 	@SuppressWarnings("unchecked")
 	private void lookup(int index, String option, String attributeValue, String serviceType) {
 		// pass in a clone of list - command may modify it
-		ArrayList<ServiceRegistrar> registrars = (ArrayList<ServiceRegistrar>) NetworkShell.getRegistrars().clone();
+		List<ServiceRegistrar> registrars = (NetworkShell.getRegistrars());
 		if (index < registrars.size()) {
 			ServiceRegistrar myReg = registrars.get(index);
 			if (myReg != null) {
