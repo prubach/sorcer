@@ -19,9 +19,11 @@ package sorcer.tools.shell;
 
 
 import net.jini.core.lookup.ServiceRegistrar;
+import sorcer.util.WhitespaceTokenizer;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.StringTokenizer;
 
 /**
  * @author Rafał Krupiński
@@ -37,11 +39,15 @@ public interface INetworkShell {
 
     String getHomeDir();
 
+    String getNshWebsterUrl();
+
     void setCurrentDir(File file);
 
     ServiceRegistrar getSelectedRegistrar();
 
     PrintStream getOutputStream();
+
+    WhitespaceTokenizer getTokenizer();
 
     boolean isDebug();
 

@@ -729,6 +729,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 		return shellTokenizer;
 	}
 
+    public WhitespaceTokenizer getTokenizer() {
+        return shellTokenizer;
+    }
+
 	public static BufferedReader getShellInputStream() {
 		return shellInput;
 	}
@@ -1240,6 +1244,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
         else
             return null;
 	}
+
+    public String getNshWebsterUrl() {
+        return nshUrl;
+    }
 	
 	private void listCommands() {
 		shellOutput
