@@ -20,7 +20,6 @@ package sorcer.core.provider.exertmonitor.db;
 import java.io.IOException;
 
 import sorcer.core.provider.MonitorManagementSession;
-import sorcer.core.provider.exertmonitor.IMonitorSession;
 import sorcer.core.provider.exertmonitor.MonitorSession;
 import sorcer.util.bdb.objects.MarshalledData;
 import sorcer.util.bdb.objects.UuidKey;

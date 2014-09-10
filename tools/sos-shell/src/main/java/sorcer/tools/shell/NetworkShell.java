@@ -301,7 +301,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
         }
 		//nshUrl = getWebsterUrl();
 		//System.out.println("main request: " + request);
-		if (request==null) {
+		if (request==null || request.equals("q")) {
 			// Exit when CTRL+D is pressed
 			System.exit(0);
 		}
@@ -355,7 +355,10 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             shellOutput.flush();
             String in = shellInput.readLine();
             // Exit if CTRL+D pressed
-            if (in==null) System.exit(0);
+            if (in==null || in.equals("q")) System.exit(0);
+            for (String q : BUILTIN_QUIT_COMMAND.split(",")) {
+                if (in != null && in.equals(q)) System.exit(0);
+            }
 
             // fore !! run the previous command
             if (!in.equals("!!")) {

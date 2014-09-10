@@ -29,7 +29,6 @@ import org.apache.commons.io.FileUtils;
 import org.rioproject.event.EventDescriptor;
 import org.rioproject.event.EventHandler;
 import org.rioproject.event.NoEventConsumerException;
-import org.rioproject.impl.event.DispatchEventHandler;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
@@ -37,6 +36,7 @@ import sorcer.core.RemoteLogger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.Provider;
 import sorcer.core.provider.ServiceProvider;
+import sorcer.util.SenderEventHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,8 +60,6 @@ public class RemoteLoggerManager implements RemoteLogger {
     private Map<Long, EventHandler> remoteLogHandlers = new ConcurrentHashMap<Long, EventHandler>();
 
     private Provider provider;
-
-    //private Map<ServiceID, SlaChangeListenerClient> slaChangeListeners = new HashMap<ServiceID, SlaChangeListenerClient>();
 
     public RemoteLoggerManager() {
         ILoggerFactory loggerFactory;
@@ -110,7 +108,7 @@ public class RemoteLoggerManager implements RemoteLogger {
                         try {
                             LoggerRemoteEvent rse = new LoggerRemoteEvent(provider.getProxy(), loggingEvent);
                             entry.getValue().fire(rse);
-                            //log.info("Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0,Math.min(loggingEvent.getMessage().length(),50)));
+                            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!! Sending log to remote listener exID: " + exertionId + ": " + loggingEvent.getMessage().substring(0, Math.min(loggingEvent.getMessage().length(), 50)));
                         } catch (NoEventConsumerException e) {
                             log.error("Problem sending remote log event, no event consumer available");
                         } catch (RemoteException e) {
@@ -181,8 +179,10 @@ public class RemoteLoggerManager implements RemoteLogger {
         EventDescriptor eventDescriptor = new EventDescriptor(ILoggingEvent.class, LoggerRemoteEvent.ID);
         EventHandler eventHandler;
         try {
-            eventHandler = new DispatchEventHandler(eventDescriptor);
+            //eventHandler = new DispatchEventHandler(eventDescriptor);
+            eventHandler = new SenderEventHandler(eventDescriptor);
             EventRegistration evReg = eventHandler.register(provider.getProxy(), listener, handback, duration);
+            log.info("Got evRegID: " + evReg.getID() + " filters: " + filterMap);
             remoteLogHandlers.put(evReg.getID(), eventHandler);
             for (Map<String, String>  fMap : filterMap)
                 remoteLogListeners.put(fMap, eventHandler);
@@ -208,6 +208,8 @@ public class RemoteLoggerManager implements RemoteLogger {
                 for (Map<String, String> key : toRemove)
                     remoteLogListeners.remove(key);
                 remoteLogHandlers.remove(evReg.getID());
+            } else {
+                log.error("Problem unregistering, listener for: " + evReg.getID() + " doesn't exist");
             }
         } catch (Exception e1) {
             log.error("Problem unregistering Log listener: " + e1.getMessage());
