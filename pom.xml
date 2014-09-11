@@ -530,7 +530,7 @@
 	<repositories>
 		<repository>
 			<id>sorcersoft</id>
-			<url>http://mvn.sorcersoft.com:8081/nexus/content/groups/public/</url>
+			<url>http://mvn.sorcersoft.com/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -543,7 +543,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>sorcersoft</id>
-			<url>http://mvn.sorcersoft.com:8081/nexus/content/groups/public/</url>
+			<url>http://mvn.sorcersoft.com/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>

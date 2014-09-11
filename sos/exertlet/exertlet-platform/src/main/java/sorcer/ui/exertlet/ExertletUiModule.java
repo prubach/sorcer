@@ -78,7 +78,7 @@ public class ExertletUiModule extends AbstractModule {
             }
             try {
                 UIDescriptor descriptor = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
-                        new UIComponentFactory(urls, "sorcer.core.provider.ui.ProviderUI")
+                        new UIComponentFactory(urls, "sorcer.ui.provider.ProviderUI")
                 );
                 provider.addAttribute(descriptor);
             } catch (IOException ex) {
