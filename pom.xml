@@ -529,8 +529,8 @@
 
 	<repositories>
 		<repository>
-			<id>hashnot</id>
-			<url>http://mvn.hashnot.com/content/groups/public</url>
+			<id>sorcersoft</id>
+			<url>http://mvn.sorcersoft.com:8081/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -542,8 +542,8 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>hashnot</id>
-			<url>http://mvn.hashnot.com/content/groups/public</url>
+			<id>sorcersoft</id>
+			<url>http://mvn.sorcersoft.com:8081/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
