@@ -31,10 +31,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Rafał Krupiński
@@ -47,6 +44,8 @@ public class SorcerResolver implements Resolver {
     final Resolver resolver;
 
     private final Map<String, String[]> cache = new HashMap<String, String[]>();
+    private final Map<String, Set<String>> sortedCache = new HashMap<String, Set<String>>();
+
     private long storeLastMod;
     private File store = SorcerEnv.getEnvironment().getResolverCache();
 
@@ -84,9 +83,15 @@ public class SorcerResolver implements Resolver {
 
     private String[] updateCache(String artifact, String[] classPath) {
         if (!Arrays.deepEquals(classPath, cache.get(artifact))) {
-            cache.put(artifact, classPath);
-            synchronized (cache) {
-                cache.notify();
+            Set<String> cpSet = new TreeSet<String>(Arrays.asList(classPath));
+            if (!cpSet.equals(sortedCache.get(artifact))) {
+                sortedCache.put(artifact, cpSet);
+                cache.put(artifact, classPath);
+                synchronized (cache) {
+                    cache.notify();
+                }
+            } else {
+                log.warn("Sets are equal but arrays are not");
             }
         }
         return classPath;
