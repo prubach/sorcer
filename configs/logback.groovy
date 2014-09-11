@@ -155,6 +155,15 @@ def prepareAppenders() {
     }
     appenders << "CONSOLE"
 
+    appender("ALL", FileAppender) {
+        file = getLogDir() + "/all.log"
+        encoder(PatternLayoutEncoder) {
+            pattern = "%-5level %d{HH:mm:ss.SSS} [%t] %logger{36} - %msg%n%rEx"
+        }
+    }
+    appenders << "ALL"
+
+
     /*
      * Only add the rolling file appender if we are logging for a service
      */
