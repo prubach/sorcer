@@ -84,7 +84,7 @@ SUPPORT for LEGACY service providers built using Ant scripts - not recommended f
 	<property name="sorcer-version" value="1.0-SNAPSHOT" />
 
 	<!-- Declare versions as properties -->
-	<property name="rio.version" value="5.0-M4-S6"/>
+	<property name="rio.version" value="5.0-M4-S7"/>
 	<property name="groovy.version" value="2.2.1"/>
 	<property name="river.version" value="2.2.2"/>
 	<property name="slf4j.version" value="1.7.5"/>
