@@ -104,7 +104,7 @@ public class MasterSlaveSeqPushTest {
         Task task1 = new NetTask("work1", signature1, context1);
         Task task2 = new NetTask("work2", signature2, context2);
         Task task3 = new NetTask("work3", signature3, context3);
-        Task task4 = new NetTask("work4", signature3, context4);
+        Task task4 = new NetTask("work4", signature4, context4);
 
         // define a job
         Job job = new NetJob();

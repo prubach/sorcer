@@ -162,7 +162,7 @@
     <repositories>
         <repository>
             <id>hashnot</id>
-            <url>http://mvn.hashnot.com/content/groups/public</url>
+            <url>http://mvn.sorcersoft.com/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
