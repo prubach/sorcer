@@ -117,7 +117,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
 
     protected Task execServiceTask(Task task) throws ExertionException {
         Task result = null;
-        int maxTries = 3;
+        int maxTries = 5;
         int tried=0;
         try {
             if (((NetSignature) task.getProcessSignature()).getService()!=null) {
@@ -202,14 +202,18 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                         result = (Task) service.service(task, null);
 
                     } catch (Exception re) {
-                        if (tried >= maxTries) throw re;
+                        if (tried >= maxTries) {
+                            System.out.println("+++++++++++++++Problem exerting task, already tried " + tried + " times for: " + xrt.getName() + " " + re.getMessage());
+                            logger.error("+++++++++++++++Problem exerting task, already tried " + tried + " times for: " + xrt.getName() + " " + re.getMessage());
+                            throw re;
+                        }
                         else {
                             System.out.println("+++++++++++++++Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
-                            logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
+                            logger.info("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             service = (Service) Accessor.getService(sig);
-                            //logger.warn("Got service: {}", service);
                             try {
                                 System.out.println("+++++++++++++++Got service: " + ((Provider)service).getProviderID());
+                                logger.info("+++++++++++++++Got service: " + ((Provider)service).getProviderID());
                             } catch (Exception e) {
                                 System.out.println("+++++++++++++++The service we got is not valid");
                             }
@@ -228,6 +232,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         //    throw ee;
         } catch (Exception re) {
             System.out.println("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
+                    + xrt.getName());
+            logger.error("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName());
             task.reportException(re);
             throw new ExertionException("Dispatcher failed for task, tried: " + tried + " : "

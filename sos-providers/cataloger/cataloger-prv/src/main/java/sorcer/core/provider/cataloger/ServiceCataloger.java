@@ -261,7 +261,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
         String mdcRemoteCall = MDC.get(MDC_SORCER_REMOTE_CALL);
         MDC.remove(MDC_SORCER_REMOTE_CALL);
         // another workaround: disable warning on ConnectionException in ProviderProxy
-        MDC.put("java.net.ConnectException.ignore", "TRUE");
+        //MDC.put("java.net.ConnectException.ignore", "TRUE");
         String pn = providerName;
 		if (ANY.equals(providerName))
 			pn = null;
@@ -274,7 +274,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
         } finally {
             if (mdcRemoteCall != null)
                 MDC.put(MDC_SORCER_REMOTE_CALL, mdcRemoteCall);
-            MDC.remove("java.net.ConnectException.ignore");
+            //MDC.remove("java.net.ConnectException.ignore");
         }
 
 		return null;
@@ -523,8 +523,17 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				sItems.add(0, sItem);
 				super.put(keyList, sItems);
 			}
-			logger.info("adding new service, calling notifiy");
-			observable.tellOfAction("UPDATEDPLEASE");
+
+            if (sItem.service instanceof Provider) {
+                try {
+                    logger.info("adding new provider: " + ((Provider)sItem.service).getProviderName() + "(" + sItem.serviceID + ")");
+                } catch (RemoteException reee) {
+                    logger.error("THIS SHOULD NEVER HAPPEN, trying to add new service but it doesn't respond: " + sItem.serviceID, reee);
+                }
+            }
+            else
+                logger.info("adding new service ID: " + sItem.serviceID);
+            observable.tellOfAction("UPDATEDPLEASE");
 		}
 
 		public void removeServiceItem(ServiceItem sItem) {
@@ -1406,6 +1415,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
                         }
                     }
                     if (isAlive(serviceItem)) {
+                        logger.info("Service " + serviceItem.serviceID + " is adding to results for: " + tmpl.toString());
                         result.add(serviceItem);
                     } else {
                         // not Alive anymore removing from cataloger
@@ -1416,7 +1426,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
             }
             synchronized (cinfo){
                 for(ServiceItem serviceItem: down)
-                    cinfo.removeServiceItem(serviceItem);
+                        cinfo.removeServiceItem(serviceItem);
             }
 
         }
