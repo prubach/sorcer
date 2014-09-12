@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
         setupDatabase();
     }
 
+    private List<Uuid> objectsBeingModified = Collections.synchronizedList(new ArrayList<Uuid>());
+
 	public Uuid store(Object object) {
 		Object obj = object;
 		if (!(object instanceof Identifiable)) {
@@ -73,7 +76,9 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 		PersistThread pt = new PersistThread(obj);
 		pt.start();
-		return pt.getUuid();	
+        Uuid id = pt.getUuid();
+        objectsBeingModified.add(id);
+		return id;
 	}
 	
 	public Uuid update(Uuid uuid, Object object) throws InvalidObjectException {
@@ -96,23 +101,37 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		return ut.getUuid();
 	}
 
+    public void waitWhileObjectIsModified(Uuid uuid) {
+        while (objectsBeingModified.contains(uuid)) {
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException ie) {
+                logger.error("Interrupted in getObject while waiting for object to be modified: " + uuid);
+            }
+        }
+    }
+
 	public Object getObject(Uuid uuid) {
-		StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
+        waitWhileObjectIsModified(uuid);
+        StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
 		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
 		return uuidObj.getObject();
 	}
 	
 	public Context getContext(Uuid uuid) {
-		StoredMap<UuidKey, Context> cxtMap = views.getContextMap();
+        waitWhileObjectIsModified(uuid);
+        StoredMap<UuidKey, Context> cxtMap = views.getContextMap();
 		return cxtMap.get(new UuidKey(uuid));
 	}
 	
 	public Exertion getExertion(Uuid uuid) {
-		StoredMap<UuidKey, Exertion> xrtMap = views.getExertionMap();
+        waitWhileObjectIsModified(uuid);
+        StoredMap<UuidKey, Exertion> xrtMap = views.getExertionMap();
 		return xrtMap.get(new UuidKey(uuid));
 	}
 
     public ModelTable getTable(Uuid uuid) {
+        waitWhileObjectIsModified(uuid);
         StoredMap<UuidKey, ModelTable> xrtMap = views.getTableMap();
         return xrtMap.get(new UuidKey(uuid));
     }
@@ -144,6 +163,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 				storedSet = views.getUuidObjectSet();
 				storedSet.add(object);
 			}
+            objectsBeingModified.remove(this.uuid);
 		}
 		
 		public Uuid getUuid() {
@@ -182,6 +202,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 				storedMap = views.getUuidObjectMap();
 				storedMap.replace(new UuidKey(uuid), object);
 			}
+            objectsBeingModified.remove(this.uuid);
 		}
 		
 		public Uuid getUuid() {
@@ -203,6 +224,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		public void run() {
 			StoredMap storedMap = getStoredMap(storeType);
 			storedMap.remove(new UuidKey(uuid));
+            objectsBeingModified.remove(this.uuid);
 		}
 		
 		public Uuid getUuid() {
@@ -413,6 +435,14 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	 */
 	public void destroy() throws RemoteException {
 		try {
+            int tries=0;
+            try {
+                while (objectsBeingModified.size()>0 && tries<80) {
+                    Thread.sleep(50);
+                    tries++;
+                }
+                if (tries==80) logger.error("Interrupted while {} objects where still being modified", objectsBeingModified.size());
+            } catch (InterruptedException ie) {}
 			if (db != null) {
 				db.close();
 			}

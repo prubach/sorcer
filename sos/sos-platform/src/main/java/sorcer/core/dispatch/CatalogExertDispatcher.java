@@ -116,6 +116,7 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
     }
 
     protected Task execServiceTask(Task task) throws ExertionException {
+        logger.info("Starting execServiceTask for: " + task.getName());
         Task result = null;
         int maxTries = 5;
         int tried=0;
