@@ -204,9 +204,15 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
                     } catch (Exception re) {
                         if (tried >= maxTries) throw re;
                         else {
+                            System.out.println("+++++++++++++++Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             logger.warn("Problem exerting task, retrying " + tried + " time: " + xrt.getName() + " " + re.getMessage());
                             service = (Service) Accessor.getService(sig);
-                            logger.warn("Got service: {}", service);
+                            //logger.warn("Got service: {}", service);
+                            try {
+                                System.out.println("+++++++++++++++Got service: " + ((Provider)service).getProviderID());
+                            } catch (Exception e) {
+                                System.out.println("+++++++++++++++The service we got is not valid");
+                            }
                         }
                     }
                 }
@@ -221,6 +227,8 @@ abstract public class CatalogExertDispatcher extends ExertDispatcher {
         //    task.reportException(ee);
         //    throw ee;
         } catch (Exception re) {
+            System.out.println("+++++++++++++++Dispatcher failed for task, tried: " + tried + " : "
+                    + xrt.getName());
             task.reportException(re);
             throw new ExertionException("Dispatcher failed for task, tried: " + tried + " : "
                     + xrt.getName(), re);
