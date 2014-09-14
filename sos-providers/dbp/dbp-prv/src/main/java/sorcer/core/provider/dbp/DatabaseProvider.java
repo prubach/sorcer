@@ -111,17 +111,23 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
         }
     }
 
+    public synchronized List<Uuid> getAllObjectsBeingModified(){
+        return new ArrayList<Uuid>(objectsBeingModified);
+    }
+
     public void waitWhileObjectsAreModified() {
-        while (objectsBeingModified.size()>0) {
+        List<Uuid> tmpObjectList = getAllObjectsBeingModified();
+        logger.info("Init tmpObjList size: " + tmpObjectList.size());
+        while (!tmpObjectList.isEmpty()) {
             try {
-                Thread.sleep(25);
+                tmpObjectList.retainAll(objectsBeingModified);
+                logger.info("tmpObjList size: " + tmpObjectList.size());
+                Thread.sleep(30);
             } catch (InterruptedException ie) {
                 logger.error("Interrupted in getObject while waiting for objects to be modified");
             }
         }
     }
-
-
 
     public Object getObject(Uuid uuid) {
         waitWhileObjectIsModified(uuid);
