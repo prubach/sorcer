@@ -229,6 +229,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		
 		public DeleteThread(Uuid uuid, Store storeType) {
             super(tName("DeleteThread-" + uuid));
+            objectsBeingModified.add(uuid);
             this.uuid = uuid;
 			this.storeType = storeType;
 		}
