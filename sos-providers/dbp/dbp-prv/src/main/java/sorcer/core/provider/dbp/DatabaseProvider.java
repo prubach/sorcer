@@ -111,7 +111,19 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
         }
     }
 
-	public Object getObject(Uuid uuid) {
+    public void waitWhileObjectsAreModified() {
+        while (objectsBeingModified.size()>0) {
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException ie) {
+                logger.error("Interrupted in getObject while waiting for objects to be modified");
+            }
+        }
+    }
+
+
+
+    public Object getObject(Uuid uuid) {
         waitWhileObjectIsModified(uuid);
         StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
 		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
@@ -472,6 +484,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public StoredMap getStoredMap(Store storeType) {
+        waitWhileObjectsAreModified();
 		StoredMap storedMap = null;
 		if (storeType == Store.context) {
 			storedMap = views.getContextMap();
@@ -486,6 +499,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public StoredValueSet getStoredSet(Store storeType) {
+        waitWhileObjectsAreModified();
 		StoredValueSet storedSet = null;
 		if (storeType == Store.context) {
 			storedSet = views.getContextSet();
@@ -525,6 +539,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	private int getStoreSize(Store type) {
+        waitWhileObjectsAreModified();
 		if (type == Store.context) {
 			return views.getContextSet().size();
 		} else if (type == Store.exertion) {
