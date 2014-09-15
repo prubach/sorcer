@@ -1359,7 +1359,7 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
                 String name = ((Provider) si.service).getProviderName();
             }
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.warn("Service ID: " + si.serviceID
                     + " is not Alive anymore");
             // throw e;
