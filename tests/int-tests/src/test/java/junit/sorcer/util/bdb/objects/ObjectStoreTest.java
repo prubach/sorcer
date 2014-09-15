@@ -64,7 +64,6 @@ public class ObjectStoreTest {
 		//logger.info("objectStoreTask: " + objectStoreTask);
 		//logger.info("objectStoreTask context: " + context(objectStoreTask));
 		URL objURL = (URL)value(objectStoreTask);
-        //Thread.sleep(800);
 		logger.info("stored object URL: " + objURL);
 		logger.info("retrieved object: " + objURL.getContent());
 		
@@ -85,7 +84,6 @@ public class ObjectStoreTest {
 		//logger.info("objectStoreTask: " + objectStoreTask);
 		//logger.info("objectStoreTask context: " + context(objectStoreTask));
 		URL objURL = (URL)value(objectStoreTask);
-        //Thread.sleep(800);
 		logger.info("stored object URL: " + objURL);
 //		logger.info("retrieved object: " + objURL.getContent());
 		
@@ -98,7 +96,6 @@ public class ObjectStoreTest {
 		Context data = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
 		
 		URL objURL = store(data);
-        //Thread.sleep(500);
 		logger.info("stored object URL: " + objURL);
 //		logger.info("retrieved object: " + objURL.getContent());
 		
@@ -111,14 +108,12 @@ public class ObjectStoreTest {
 		
 		Uuid uuid = data.getId();
 		store(data);
-		//Thread.sleep(700);
 		Task objectRetrieveTask = task(
 				"retrieve",
 				sig("contextRetrieve", DatabaseStorer.class, null, Sorcer.getActualDatabaseStorerName()),
 					SdbUtil.getRetrieveContext(uuid, DatabaseStorer.Store.context));
 				
 		objectRetrieveTask = exert(objectRetrieveTask);
-        //Thread.sleep(700);
 		logger.info("objectRetrieveTask: " + objectRetrieveTask);
 		Object retrived = value(context(objectRetrieveTask));
 //		logger.info("objectRetrieveTask context: " + retrived);
@@ -157,7 +152,6 @@ public class ObjectStoreTest {
                 SdbUtil.getRetrieveContext(objUuid, DatabaseStorer.Store.context));
 		
 		objectRetrieveTask = exert(objectRetrieveTask);
-        //Thread.sleep(500);
         logger.info("updated data: " + updatedData);
 		logger.info("retrieved updated data: " + value(context(objectRetrieveTask), DatabaseStorer.object_retrieved));
 		Assert.assertEquals(value(context(objectRetrieveTask),DatabaseStorer.object_retrieved), updatedData);
@@ -176,11 +170,9 @@ public class ObjectStoreTest {
 		Context data2 = cxt("stored", in("arg/x5", par("x5")));
 		//logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
-        //Thread.sleep(500);
         content = list(objURL2);
 		//logger.info("content size: " + content.size());
 		//logger.info("content 2: " + content);
-
 		Assert.assertEquals(content.size(), initSize + 1);
 	}
 
@@ -188,50 +180,42 @@ public class ObjectStoreTest {
 	@Test
 	public void deleteStoredEntriesTest() throws SignatureException, ExertionException, ContextException, IOException, InterruptedException {
 		Context data1 = cxt("stored", in("arg/x3", par("x3")), in("arg/x4", par("x4")), result("result/y"));
-		//logger.info("id1: " + data1.getId());
 		URL objURL1 = store(data1);
-        //Thread.sleep(500);
-		List<String> content = list(objURL1);
+        List<String> content = list(objURL1);
 		int initSize = content.size();
-		//logger.info("initial store size: " + initSize);
-		//logger.info("content 1: " + content);
+		logger.info("initial store size: " + initSize);
+		logger.info("content 1: " + content);
 
 		Context data2 = cxt("stored", in("arg/x5", par("x5")));
-		//logger.info("id2: " + data2.getId());
+		logger.info("id2: " + data2.getId());
 		URL objURL2 = store(data2);
-        //Thread.sleep(500);
-		content = list(objURL2);
-		//logger.info("content size: " + content.size());
-		//logger.info("content 2: " + content);
+        content = list(objURL2);
+		logger.info("content size: " + content.size());
+		logger.info("content 2: " + content);
 		Assert.assertEquals(content.size(), initSize + 1);
 
 		delete(objURL1);
-        //Thread.sleep(500);
-		content = list(objURL2);
+        content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize);
 		
 		objURL2 = store(data1);
-        //Thread.sleep(500);
-		content = list(objURL2);
+        content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize + 1);
 
 		delete(data1);
-        //Thread.sleep(500);
-		content = list(objURL2);
+        content = list(objURL2);
 		Assert.assertEquals(content.size(), initSize);
 		
-		//TODO, verify - was OK
 		int storeSize = size(DatabaseStorer.Store.context);
 		logger.info("storeSize before clear: " + storeSize);
 		
 		int size = (int)clear(DatabaseStorer.Store.context);
-        //Thread.sleep(500);
-		logger.info("cleared tally: " + size);
-//		Assert.assertEquals(storeSize, size);
+        logger.info("cleared tally: " + size);
+		Assert.assertEquals(storeSize, size);
 		
 		storeSize = size(DatabaseStorer.Store.context);
 		logger.info("storeSize after clear: " + storeSize);
-//		Assert.assertEquals(storeSize, 0);
+		Assert.assertEquals(storeSize, 0);
 
 	}
 }

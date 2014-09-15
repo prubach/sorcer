@@ -23,10 +23,7 @@ import java.io.InvalidObjectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
@@ -67,18 +64,17 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
         setupDatabase();
     }
 
-    private List<Uuid> objectsBeingModified = Collections.synchronizedList(new ArrayList<Uuid>());
+    private Set<Uuid> objectsBeingModified = Collections.synchronizedSet(new HashSet<Uuid>());
 
 	public Uuid store(Object object) {
 		Object obj = object;
 		if (!(object instanceof Identifiable)) {
 			obj = new UuidObject(object);
 		}
-		PersistThread pt = new PersistThread(obj);
-		pt.start();
-        Uuid id = pt.getUuid();
-        objectsBeingModified.add(id);
-		return id;
+        PersistThread pt = new PersistThread(obj);
+		Uuid id = pt.getUuid();
+        pt.start();
+        return id;
 	}
 	
 	public Uuid update(Uuid uuid, Object object) throws InvalidObjectException {
@@ -86,9 +82,10 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		if (!(object instanceof Identifiable)) {
 			uuidObject = new UuidObject(uuid, object);
 		}
-			UpdateThread ut = new UpdateThread(uuid, uuidObject);
-			ut.start();
-			return ut.getUuid();
+		UpdateThread ut = new UpdateThread(uuid, uuidObject);
+        Uuid id = ut.getUuid();
+        ut.start();
+        return id;
 	}
 	
 	public Uuid update(URL url, Object object) throws InvalidObjectException {
@@ -97,31 +94,39 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 			uuidObject = new UuidObject(SosDbUtil.getUuid(url), object);
 		}
 		UpdateThread ut = new UpdateThread(url, uuidObject);
-		ut.start();
-		return ut.getUuid();
+        Uuid id = ut.getUuid();
+        ut.start();
+		return id;
 	}
 
-    public void waitWhileObjectIsModified(Uuid uuid) {
+    private void addToWaitingList(Uuid id) {
+        waitWhileObjectIsModified(id);
+        objectsBeingModified.add(id);
+    }
+
+    private void waitWhileObjectIsModified(Uuid uuid) {
+        logger.debug("Init wait for uuid: " + uuid);
         while (objectsBeingModified.contains(uuid)) {
             try {
                 Thread.sleep(25);
+                logger.debug("waiting for uuid: " + uuid);
             } catch (InterruptedException ie) {
                 logger.error("Interrupted in getObject while waiting for object to be modified: " + uuid);
             }
         }
     }
 
-    public synchronized List<Uuid> getAllObjectsBeingModified(){
-        return new ArrayList<Uuid>(objectsBeingModified);
+    private synchronized Set<Uuid> getAllObjectsBeingModified(){
+        return new HashSet<Uuid>(objectsBeingModified);
     }
 
     public void waitWhileObjectsAreModified() {
-        List<Uuid> tmpObjectList = getAllObjectsBeingModified();
-        logger.info("Init tmpObjList size: " + tmpObjectList.size());
+        Set<Uuid> tmpObjectList = getAllObjectsBeingModified();
+        logger.debug("Init tmpObjList size: " + tmpObjectList.size());
         while (!tmpObjectList.isEmpty()) {
             try {
                 tmpObjectList.retainAll(objectsBeingModified);
-                logger.info("tmpObjList size: " + tmpObjectList.size());
+                logger.debug("tmpObjList size: " + tmpObjectList.size());
                 Thread.sleep(30);
             } catch (InterruptedException ie) {
                 logger.error("Interrupted in getObject while waiting for objects to be modified");
@@ -167,21 +172,25 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 
 		@SuppressWarnings("unchecked")
 		public void run() {
-			StoredValueSet storedSet = null;
-			if (object instanceof Context) {
-				storedSet = views.getContextSet();
-				storedSet.add(object);
-			} else if (object instanceof Exertion) {
-				storedSet = views.getExertionSet();
-				storedSet.add(object);
-            } else if (object instanceof ModelTable) {
-                storedSet = views.getTableSet();
-                storedSet.add(object);
-			} else if (object instanceof UuidObject) {
-				storedSet = views.getUuidObjectSet();
-				storedSet.add(object);
-			}
-            objectsBeingModified.remove(this.uuid);
+			try {
+                addToWaitingList(uuid);
+                StoredValueSet storedSet = null;
+                if (object instanceof Context) {
+                    storedSet = views.getContextSet();
+                    storedSet.add(object);
+                } else if (object instanceof Exertion) {
+                    storedSet = views.getExertionSet();
+                    storedSet.add(object);
+                } else if (object instanceof ModelTable) {
+                    storedSet = views.getTableSet();
+                    storedSet.add(object);
+                } else if (object instanceof UuidObject) {
+                    storedSet = views.getUuidObjectSet();
+                    storedSet.add(object);
+                }
+            } finally {
+                objectsBeingModified.remove(this.uuid);
+            }
 		}
 		
 		public Uuid getUuid() {
@@ -206,21 +215,25 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 		
 		public void run() {
-			StoredMap storedMap = null;
-			if (object instanceof Context) {
-				storedMap = views.getContextMap();
-				storedMap.replace(new UuidKey(uuid), object);
-			} else if (object instanceof Exertion) {
-				storedMap = views.getExertionMap();
-				storedMap.replace(new UuidKey(uuid), object);
-            } else if (object instanceof ModelTable) {
-                storedMap = views.getTableMap();
-                storedMap.replace(new UuidKey(uuid), object);
-			} else if (object instanceof Object) {
-				storedMap = views.getUuidObjectMap();
-				storedMap.replace(new UuidKey(uuid), object);
-			}
-            objectsBeingModified.remove(this.uuid);
+			try {
+                addToWaitingList(uuid);
+                StoredMap storedMap = null;
+                if (object instanceof Context) {
+                    storedMap = views.getContextMap();
+                    storedMap.replace(new UuidKey(uuid), object);
+                } else if (object instanceof Exertion) {
+                    storedMap = views.getExertionMap();
+                    storedMap.replace(new UuidKey(uuid), object);
+                } else if (object instanceof ModelTable) {
+                    storedMap = views.getTableMap();
+                    storedMap.replace(new UuidKey(uuid), object);
+                } else if (object instanceof Object) {
+                    storedMap = views.getUuidObjectMap();
+                    storedMap.replace(new UuidKey(uuid), object);
+                }
+            } finally {
+                objectsBeingModified.remove(this.uuid);
+            }
 		}
 		
 		public Uuid getUuid() {
@@ -235,15 +248,18 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		
 		public DeleteThread(Uuid uuid, Store storeType) {
             super(tName("DeleteThread-" + uuid));
-            objectsBeingModified.add(uuid);
             this.uuid = uuid;
 			this.storeType = storeType;
 		}
 
 		public void run() {
-			StoredMap storedMap = getStoredMap(storeType);
-			storedMap.remove(new UuidKey(uuid));
-            objectsBeingModified.remove(this.uuid);
+            try {
+                StoredMap storedMap = getStoredMap(storeType);
+                addToWaitingList(uuid);
+                storedMap.remove(new UuidKey(uuid));
+            } finally {
+                objectsBeingModified.remove(this.uuid);
+            }
 		}
 		
 		public Uuid getUuid() {
