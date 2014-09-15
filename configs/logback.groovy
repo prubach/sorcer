@@ -83,7 +83,7 @@ logger("sorcer.core.provider.rendezvous.ServiceJobber", info, [jobber])
 logger("sorcer.core.provider.rendezvous.ServiceSpacer", info, [spacer])
 logger("sorcer.core.provider.ServiceTasker", info, [tasker])
 logger("sorcer.core.provider.logger", info, [remoteLogger])
-logger("sorcer.core.provider.dbp", info, [databaseProvider])
+logger("sorcer.core.provider.dbp", debug, [databaseProvider])
 
 // do not log to the main logger ( additive=false)
 logger("sorcer.core.provider.cataloger", info, [cataloger], false)

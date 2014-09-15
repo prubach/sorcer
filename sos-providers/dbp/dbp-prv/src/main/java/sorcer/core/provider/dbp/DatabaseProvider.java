@@ -322,6 +322,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public Object retrieve(Uuid uuid, Store storeType) {
+        waitWhileObjectIsModified(uuid);
 		Object obj = null;
 		if (storeType == Store.context)
 			obj = getContext(uuid);
