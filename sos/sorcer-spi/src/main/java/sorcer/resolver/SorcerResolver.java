@@ -149,7 +149,7 @@ public class SorcerResolver implements Resolver {
             }
             FileUtils.toFile(cache, Channels.newOutputStream(ch));
         } catch (Exception e) {
-            log.debug("Ignoring problem with resolver cache:", e);
+            //log.debug("Ignoring problem with resolver cache:", e);
         } finally {
             if (lock != null)
                 try {
