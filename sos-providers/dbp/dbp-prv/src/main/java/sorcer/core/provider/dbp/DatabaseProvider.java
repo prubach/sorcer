@@ -190,12 +190,12 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
             super(tName("PersistThread-" + ((Identifiable)object).getId()));
 			this.object = object;
 			this.uuid = (Uuid)((Identifiable)object).getId();
+            addToWaitingList(uuid);
 		}
 
 		@SuppressWarnings("unchecked")
 		public void run() {
 			try {
-                addToWaitingList(uuid);
                 StoredValueSet storedSet = null;
                 if (object instanceof Context) {
                     storedSet = views.getContextSet();
@@ -234,11 +234,11 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
             super(tName("UpdateThread-" + url));
 			this.object = object;
 			this.uuid = SosDbUtil.getUuid(url);
+            addToWaitingList(uuid);
 		}
 		
 		public void run() {
 			try {
-                addToWaitingList(uuid);
                 StoredMap storedMap = null;
                 if (object instanceof Context) {
                     storedMap = views.getContextMap();
@@ -267,17 +267,18 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 
 		Uuid uuid;
 		Store storeType;
-		
-		public DeleteThread(Uuid uuid, Store storeType) {
+        StoredMap storedMap;
+
+        public DeleteThread(Uuid uuid, Store storeType) {
             super(tName("DeleteThread-" + uuid));
             this.uuid = uuid;
 			this.storeType = storeType;
+            storedMap = getStoredMap(storeType);
+            addToWaitingList(uuid);
 		}
 
 		public void run() {
             try {
-                StoredMap storedMap = getStoredMap(storeType);
-                addToWaitingList(uuid);
                 storedMap.remove(new UuidKey(uuid));
             } finally {
                 objectsBeingModified.remove(this.uuid);
