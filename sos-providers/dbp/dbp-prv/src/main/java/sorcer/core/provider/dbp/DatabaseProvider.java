@@ -136,27 +136,49 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 
     public Object getObject(Uuid uuid) {
         waitWhileObjectIsModified(uuid);
+        logger.info("Getting object: " + uuid);
         StoredMap<UuidKey, UuidObject> uuidObjectMap = views.getUuidObjectMap();
 		UuidObject uuidObj = uuidObjectMap.get(new UuidKey(uuid));
-		return uuidObj.getObject();
+        int tries = 0;
+        while (uuidObj==null && tries<20) {
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException ie) {
+            }
+            uuidObj = uuidObjectMap.get(new UuidKey(uuid));
+            tries++;
+        }
+		return (uuidObj!=null ? uuidObj.getObject() : null);
 	}
 	
 	public Context getContext(Uuid uuid) {
-        waitWhileObjectIsModified(uuid);
-        StoredMap<UuidKey, Context> cxtMap = views.getContextMap();
-		return cxtMap.get(new UuidKey(uuid));
+        try {
+            addToWaitingList(uuid);
+            StoredMap<UuidKey, Context> cxtMap = views.getContextMap();
+            return cxtMap.get(new UuidKey(uuid));
+        } finally {
+            objectsBeingModified.remove(uuid);
+        }
 	}
 	
 	public Exertion getExertion(Uuid uuid) {
-        waitWhileObjectIsModified(uuid);
-        StoredMap<UuidKey, Exertion> xrtMap = views.getExertionMap();
-		return xrtMap.get(new UuidKey(uuid));
+        try {
+            addToWaitingList(uuid);
+            StoredMap<UuidKey, Exertion> xrtMap = views.getExertionMap();
+		    return xrtMap.get(new UuidKey(uuid));
+        } finally {
+            objectsBeingModified.remove(uuid);
+        }
 	}
 
     public ModelTable getTable(Uuid uuid) {
-        waitWhileObjectIsModified(uuid);
-        StoredMap<UuidKey, ModelTable> xrtMap = views.getTableMap();
-        return xrtMap.get(new UuidKey(uuid));
+        try {
+            addToWaitingList(uuid);
+            StoredMap<UuidKey, ModelTable> xrtMap = views.getTableMap();
+            return xrtMap.get(new UuidKey(uuid));
+        } finally {
+            objectsBeingModified.remove(uuid);
+        }
     }
 
 	protected class PersistThread extends Thread {
@@ -322,7 +344,6 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	}
 	
 	public Object retrieve(Uuid uuid, Store storeType) {
-        waitWhileObjectIsModified(uuid);
 		Object obj = null;
 		if (storeType == Store.context)
 			obj = getContext(uuid);
