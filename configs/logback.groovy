@@ -103,13 +103,15 @@ logger("sorcer.core.dispatch", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
 
+
+logger("mil.afrl.mstc.engineering.optimization.conmin.provider", DEBUG)
 /*
 logger("sorcer.resolver.ProjectArtifactResolver", DEBUG)
 logger("sorcer.launcher.SorcerLauncher", DEBUG)
 */
 
+//logger("sorcer.provider.boot", DEBUG)
 /*
-logger("sorcer.boot", DEBUG)
 logger("sorcer.core.service", debug)
 logger("sorcer.tools.webster.start.WebsterStarter", debug)
 logger("sorcer.container.core", debug)

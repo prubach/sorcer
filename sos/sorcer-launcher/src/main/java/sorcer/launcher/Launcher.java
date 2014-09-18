@@ -20,16 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
-import sorcer.util.FileUtils;
-import sorcer.util.IOUtils;
-import sorcer.util.JavaSystemProperties;
-import sorcer.util.Process2;
+import sorcer.util.*;
 import sorcer.util.eval.PropertyEvaluator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.Collections;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.Collections.i;
@@ -112,6 +110,25 @@ public abstract class Launcher implements ILauncher {
         //needed by Resolver to read repoRoot from sorcer.env
         JavaSystemProperties.ensure(SORCER_HOME, home.getPath());
         JavaSystemProperties.ensure(S_KEY_SORCER_ENV, new File(configDir, "sorcer.env").getPath());
+
+
+        // Default JNA library path
+
+        String nativeLibPath = "";
+        if (GenericUtil.isWindows64())
+            nativeLibPath = "/native/lib/amd64-winnt";
+        else if (GenericUtil.isWindows32())
+            nativeLibPath = "/native/lib/x86-winnt";
+        else if (GenericUtil.isMac())
+            nativeLibPath = "/native/lib/universal64-macosx";
+        else if (GenericUtil.isLinux64())
+            nativeLibPath = "/native/lib/amd64-linux";
+        else if (GenericUtil.isLinux32())
+            nativeLibPath = "/native/lib/x86-linux";
+        else
+            System.out.println("OS Architecture not detected, jna.library.path not set!");
+
+        JavaSystemProperties.ensure(S_JNA_LIB_PATH, home.getPath() + nativeLibPath);
 
         environment = getEnvironment();
         properties = getProperties();

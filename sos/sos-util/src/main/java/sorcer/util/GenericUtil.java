@@ -988,6 +988,18 @@ public class GenericUtil implements Serializable {
         return false;
     }
 
+    public static boolean isLinux64() {
+        if (!isLinux()) return false;
+        if (System.getProperty("os.arch").contains("64")) return true;
+        return false;
+    }
+
+    public static boolean isLinux32() {
+        if (!isLinux()) return false;
+        if (System.getProperty("os.arch").contains("32")) return true;
+        return false;
+    }
+
     /**
      * Main method for the GenericUtil class
      *
