@@ -22,7 +22,8 @@ import static org.junit.Assert.assertTrue;
 import static sorcer.core.SorcerConstants.ANY;
 
 import java.rmi.RMISecurityManager;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.lookup.ServiceItem;
 import org.junit.Ignore;
@@ -52,7 +53,7 @@ import sorcer.util.Stopwatch;
 public class ProviderAccessorTest {
 
     public static final net.jini.core.lookup.ServiceTemplate jobberTemplate = Accessor.getServiceTemplate(null, ANY, new Class[]{Jobber.class}, null);
-    private final static Logger logger = Logger
+    private final static Logger logger = LoggerFactory
 			.getLogger(ProviderAccessorTest.class.getName());
 
     @Test

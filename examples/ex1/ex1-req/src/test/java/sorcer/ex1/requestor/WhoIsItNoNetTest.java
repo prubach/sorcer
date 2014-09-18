@@ -29,7 +29,8 @@ import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 
 import java.net.InetAddress;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -40,7 +41,7 @@ import static org.junit.Assert.*;
 @RunWith(SorcerRunner.class)
 public class WhoIsItNoNetTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(WhoIsItNoNetTest.class.getName());
 
     @Test

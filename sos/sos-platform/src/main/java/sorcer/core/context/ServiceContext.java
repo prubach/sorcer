@@ -23,8 +23,10 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Pattern;
 
 import net.jini.id.Uuid;
@@ -169,7 +171,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 	public final static String EMPTY_LEAF = ":Empty";
 
 	// this class logger
-	protected static Logger logger = Logger.getLogger(ServiceContext.class
+	protected static Logger logger = LoggerFactory.getLogger(ServiceContext.class
 			.getName());
 
 	/**
@@ -2392,7 +2394,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 		// necessary
 		Context sc = link.getContext(principal);
 		if (sc.getClass() != this.getClass()) {
-			// logger.fine("converting linked context to " + this.getClass());
+			// logger.debug("converting linked context to " + this.getClass());
 			sc = new ServiceContext(sc);
 			link.setContext(sc);
 		}
@@ -2664,14 +2666,14 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
         if (exertion != null)
             exertion.getControlContext().addException(t);
         else
-            logger.log(Level.WARNING, "Error (could not report)", t);
+            logger.warn("Error (could not report)", t);
 	}
 
 	public void reportException(String message, Throwable t) {
         if (exertion != null)
             exertion.getControlContext().addException(message, t);
         else
-            logger.log(Level.WARNING, message, t);
+            logger.warn(message, t);
 	}
 
 	/*
@@ -2839,7 +2841,7 @@ public class ServiceContext<T> extends Hashtable<String, T> implements
 			else
 				return obj;
 		} catch (Throwable e) {
-			logger.warning(e.getMessage());
+			logger.warn(e.getMessage());
 			e.printStackTrace();
 			return (T) Context.none;
 //			throw new EvaluationException(e);

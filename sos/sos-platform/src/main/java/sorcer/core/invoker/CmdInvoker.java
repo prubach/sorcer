@@ -82,7 +82,7 @@ public class CmdInvoker extends ServiceInvoker implements CmdInvoking {
 		this.pars = new ArgSet(pars);
 		if (!scriptFile.canExecute()) {
 			scriptFile.setExecutable(true);
-			logger.warning("script exec permission corrected for: " + scriptFile);
+			logger.warn("script exec permission corrected for: " + scriptFile);
 		}
 	}
 		
@@ -108,7 +108,7 @@ public class CmdInvoker extends ServiceInvoker implements CmdInvoking {
 		this.pars = new ArgSet(pars);
 		if (!scriptFile.canExecute()) {
 			scriptFile.setExecutable(true);
-			logger.warning("script exec permission corrected for: " + scriptFile);
+			logger.warn("script exec permission corrected for: " + scriptFile);
 		}
 
 		System.arraycopy(argarray, 0, cmdarray, 0, argarray.length);

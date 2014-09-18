@@ -22,7 +22,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.lookup.ServiceID;
 import sorcer.core.deploy.ServiceDeployment;
@@ -36,7 +37,7 @@ public class ServiceSignature implements Signature {
 	static final long serialVersionUID = -8527094638557595398L;
 
 	/** our logger. */
-	protected final static Logger logger = Logger.getLogger("sorcer.core");
+	protected final static Logger logger = LoggerFactory.getLogger("sorcer.core");
 
 	protected String name;
 

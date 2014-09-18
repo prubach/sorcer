@@ -20,8 +20,8 @@ package sorcer.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -50,7 +50,7 @@ import static sorcer.core.SorcerConstants.ANY;
  */
 public class Accessor {
 
-    protected final static Logger logger = Logger.getLogger(Accessor.class.getName());
+    protected final static Logger logger = LoggerFactory.getLogger(Accessor.class.getName());
 
     /**
      * A factory returning instances of {@link Service}s.
@@ -71,7 +71,7 @@ public class Accessor {
 
     public static void initialize(String providerType) {
         try {
-            logger.fine("SORCER DynamicAccessor provider: " + providerType);
+            logger.debug("SORCER DynamicAccessor provider: " + providerType);
             Class type = Class.forName(providerType, true, Thread.currentThread().getContextClassLoader());
             if(!DynamicAccessor.class.isAssignableFrom(type)){
                 throw new IllegalArgumentException("Configured class must implement DynamicAccessor: "+providerType);
@@ -227,13 +227,13 @@ public class Accessor {
                 Name name = (Name) attr;
                 if (ANY.equals(name.name)) {
                     name.name = null;
-                    logger.log(Level.WARNING, "Requested service with name '*'", new IllegalArgumentException());
+                    logger.warn("Requested service with name '*'", new IllegalArgumentException());
                 }
             } else if (attr instanceof SorcerServiceInfo) {
                 SorcerServiceInfo info = (SorcerServiceInfo) attr;
                 if (ANY.equals(info.providerName)) {
                     info.providerName = null;
-                    logger.log(Level.WARNING, "Requested service with name '*'", new IllegalArgumentException());
+                    logger.warn("Requested service with name '*'", new IllegalArgumentException());
                 }
             }
         }
@@ -252,7 +252,7 @@ public class Accessor {
             provider.getProviderName();
             return true;
         } catch (Exception e) {
-            logger.finest("Provider is dead " + e.getMessage());
+            logger.debug("Provider is dead " + e.getMessage());
             return false;
         }
     }

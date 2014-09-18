@@ -18,7 +18,8 @@ import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 import static sorcer.po.operator.pars;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.sorcer.core.provider.Multiply;
 import junit.sorcer.core.provider.SubtractorImpl;
@@ -43,7 +44,7 @@ import sorcer.service.Task;
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
 public class HybridJobTest {
-	private final static Logger logger = Logger.getLogger(HybridJobTest.class
+	private final static Logger logger = LoggerFactory.getLogger(HybridJobTest.class
 			.getName());
 
 	@SuppressWarnings("unchecked")

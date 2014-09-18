@@ -40,7 +40,8 @@ import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 
@@ -53,7 +54,7 @@ import static org.junit.Assert.assertTrue;
  */
  public class SorcerTester implements SorcerConstants {
 	/** Logger for logging information about this instance */
-	protected static final Logger logger = Logger.getLogger(SorcerTester.class.getName());
+	protected static final Logger logger = LoggerFactory.getLogger(SorcerTester.class.getName());
 
 	public static String R_PROPERTIES_FILENAME = "requestor.properties";
 	protected static SorcerTester tester = null;
@@ -125,7 +126,7 @@ import static org.junit.Assert.assertTrue;
                 Sorcer.updateFromProperties(props);
             }
         } catch (Exception ex) {
-            logger.warning("Not able to load requestor's file properties "
+            logger.warn("Not able to load requestor's file properties "
                     + filename);
         }
     }
@@ -188,32 +189,30 @@ import static org.junit.Assert.assertTrue;
 		String hn = System.getenv("IGRID_WEBSTER_INTERFACE");
 
 		if (hn != null && hn.length() > 0) {
-			logger.finer("webster hostname as the system environment value: "
+			logger.debug("webster hostname as the system environment value: "
 					+ hn);
 			return hn;
 		}
 
 		hn = System.getProperty(R_WEBSTER_INTERFACE);
 		if (hn != null && hn.length() > 0) {
-			logger
-					.finer("webster hostname as '" + R_WEBSTER_INTERFACE + "' system property value: "
+			logger.debug("webster hostname as '" + R_WEBSTER_INTERFACE + "' system property value: "
 							+ hn);
 			return hn;
 		}
 
 		hn = tester.getProps().getProperty(R_WEBSTER_INTERFACE);
 		if (hn != null && hn.length() > 0) {
-			logger
-					.finer("webster hostname as '" + R_WEBSTER_INTERFACE + "' provider property value: "
+            logger.debug("webster hostname as '" + R_WEBSTER_INTERFACE + "' provider property value: "
 							+ hn);
 			return hn;
 		}
 
 		try {
 			hn = Sorcer.getHostName();
-			logger.finer("webster hostname as the local host value: " + hn);
+			logger.debug("webster hostname as the local host value: " + hn);
 		} catch (UnknownHostException e) {
-			logger.severe("Cannot determine the webster hostname.");
+			logger.error("Cannot determine the webster hostname.");
 		}
 
 		return hn;
@@ -230,27 +229,27 @@ import static org.junit.Assert.assertTrue;
 
 		String wp = System.getenv("IGRID_WEBSTER_PORT");
 		if (wp != null && wp.length() > 0) {
-			logger.finer("requestor webster port as 'IGRID_WEBSTER_PORT': " + wp);
+			logger.debug("requestor webster port as 'IGRID_WEBSTER_PORT': " + wp);
 			return new Integer(wp);
 		}
 
 		wp = System.getProperty(R_WEBSTER_PORT);
 		if (wp != null && wp.length() > 0) {
-			logger.finer("requestor webster port as System '" + R_WEBSTER_PORT + "': "
+			logger.debug("requestor webster port as System '" + R_WEBSTER_PORT + "': "
 					+ wp);
 			return new Integer(wp);
 		}
 
 		wp = tester.getProps().getProperty(R_WEBSTER_PORT);
 		if (wp != null && wp.length() > 0) {
-			logger.finer("requestor webster port as Sorcer '" + R_WEBSTER_PORT + "': "
+			logger.debug("requestor webster port as Sorcer '" + R_WEBSTER_PORT + "': "
 					+ wp);
 			return new Integer(wp);
 		}
 
 		try {
 			port = Sorcer.getAnonymousPort();
-			logger.finer("anonymous requestor webster port: " + wp);
+			logger.debug("anonymous requestor webster port: " + wp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

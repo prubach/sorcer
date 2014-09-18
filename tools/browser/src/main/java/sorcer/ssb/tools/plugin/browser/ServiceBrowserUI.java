@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.accessibility.AccessibleContext;
 import javax.swing.AbstractAction;
@@ -134,7 +135,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
 	public final static String ALL_GROUPS = "ALL_GROUPS";
 		
-	public final static Logger _logger = Logger.getLogger("sorcer.ui.tools");
+	public final static Logger _logger = LoggerFactory.getLogger("sorcer.ui.tools");
 
 	private PluginRegistry _pluginReg;
 
@@ -687,7 +688,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 			while (_inDiscoveredImpl) {
 				try {
 					_logger
-							.severe("#### updateFilters: discovery in process: waiting...");
+							.error("#### updateFilters: discovery in process: waiting...");
 					_discoveryLock.wait();
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -727,7 +728,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 							dicoveredImpl(new ServiceRegistrar[] { reggie });
 
 						} catch (Exception ex) {
-							_logger.severe("Failed discovery for: "
+							_logger.error("Failed discovery for: "
 									+ locs[index] + " " + ex.getMessage());
 							return;
 						}
@@ -805,7 +806,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 					try {
 						locList.add(new LookupLocator(locs[i]));
 					} catch (MalformedURLException ex) {
-						_logger.severe("Malformed URL for: " + locs[i] + " "
+						_logger.error("Malformed URL for: " + locs[i] + " "
 								+ ex.getMessage());
 					}
 				}
@@ -965,7 +966,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 								String msg = "Failed to connect to: " + input
 										+ "\n";
 								// JOptionPane.showMessageDialog(view,msg+ex);
-								_logger.severe(msg);
+								_logger.error(msg);
 							}
 						}
 					};
@@ -1293,7 +1294,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 						}
 
 					} catch (Exception ex) {
-						_logger.severe(ex.getMessage());
+						_logger.error(ex.getMessage());
 					}
 
 				}
@@ -1432,8 +1433,8 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 
             // _logger.info("getGraphics - end");
         } catch (Exception e) {
-            _logger.severe("SN: " + sn);
-            _logger.severe(e.getMessage());
+            _logger.error("SN: " + sn);
+            _logger.error(e.getMessage());
         }
 
 		return p;
@@ -1909,7 +1910,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 		}
 		if (!added) {
 
-			_logger.fine("View NOT added ");
+			_logger.debug("View NOT added ");
 			DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode
 					.getParent();
 			while (parent != null) {
@@ -1928,7 +1929,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 			}
 			if (!added) {
 				showProps(new Entry[] {});
-				_logger.fine("Help view being added ");
+				_logger.debug("Help view being added ");
 				_serviceUIPanel.add(_helpView, BorderLayout.CENTER);
 				// _serviceUIPanel.add(new JPanel(),BorderLayout.CENTER);
 			}
@@ -2229,7 +2230,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 				_tree.expandPath(nsp);
 			}
 		} else {
-			_logger.severe("Bug: can't locate attributes node for service "
+			_logger.error("Bug: can't locate attributes node for service "
 					+ kid);
 		}
 	}
@@ -2337,7 +2338,7 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 									.getChildAt(i);
 							ServiceNode sn = (ServiceNode) tn.getUserObject();
 							if (sn.sameServiceID(item.serviceID)) {
-								_logger.fine("Service exists in tree " + sNode);
+								_logger.debug("Service exists in tree " + sNode);
 								return;
 							}
 						}
@@ -2694,8 +2695,8 @@ public class ServiceBrowserUI extends Thread implements RemoteEventListener,
 			}
             } catch (Exception e) {
 
-                _logger.severe("PROBLEM WITH ARRAY - updateServicesTree");
-                _logger.severe("ROOT: " + _root.toString() + "\ni: " + i);
+                _logger.error("PROBLEM WITH ARRAY - updateServicesTree");
+                _logger.error("ROOT: " + _root.toString() + "\ni: " + i);
             }
 
 		}

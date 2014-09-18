@@ -40,7 +40,8 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 
 import java.net.InetAddress;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -62,7 +63,7 @@ import static org.junit.Assert.assertTrue;
 )
 public class WhoIsItTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(WhoIsItTest.class.getName());
 
     @Test

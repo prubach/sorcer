@@ -58,7 +58,8 @@ import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.util.StringUtils.tName;
 
@@ -125,8 +126,7 @@ public class GenericUtil implements Serializable {
     /**
      * Logger
      */
-    private static Logger logger = Logger
-            .getLogger(GenericUtil.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(GenericUtil.class.getName());
 
     /**
      * This is a function that appends a File object to open jar archive
@@ -1871,7 +1871,7 @@ public class GenericUtil implements Serializable {
                     String msg = "***warn: CYGWIN_HOME location is not readable: "
                             + cygwinHomeTest;
                     System.out.println(msg);
-                    logger.warning(msg);
+                    logger.warn(msg);
                 }
             }
 
@@ -1883,7 +1883,7 @@ public class GenericUtil implements Serializable {
                 } else {
                     String msg = "***error: the environment variable CYGWIN_HOME is not set correctly."
                             + "(Check env and make sure to use DOS file path format.)";
-                    logger.severe(msg);
+                    logger.error(msg);
                     System.out.println(msg);
                     throw new Exception(msg);
                 }
@@ -1895,7 +1895,7 @@ public class GenericUtil implements Serializable {
                 IOUtils.checkFileExistsAndIsReadable(new File(shExec));
             } catch (Exception e) {
                 String msg = "***error: the cygwin \"sh.exe\" must be installed in: " + shExec;
-                logger.severe(msg);
+                logger.error(msg);
                 System.out.println(msg + "\n" + e);
                 e.printStackTrace();
                 throw e;
@@ -2442,7 +2442,7 @@ public class GenericUtil implements Serializable {
                 }
                 er.close();
             } catch (SocketTimeoutException e) {
-                logger.warning("Socket Timeout " + con.getReadTimeout()
+                logger.warn("Socket Timeout " + con.getReadTimeout()
                         + " (ms) Exceeded");
                 e.printStackTrace();
             }
@@ -2463,7 +2463,7 @@ public class GenericUtil implements Serializable {
             // close the inputstream
             is.close();
         } catch (SocketTimeoutException e) {
-            logger.warning("Socket Timeout " + con.getReadTimeout()
+            logger.warn("Socket Timeout " + con.getReadTimeout()
                     + " (ms) Exceeded");
             e.printStackTrace();
         }
@@ -2988,7 +2988,7 @@ public class GenericUtil implements Serializable {
                         + tries + "\n\tslurmScriptFile = "
                         + slurmScriptFile.getAbsolutePath();
                 logger.info(msg);
-                logger.warning(msg);
+                logger.warn(msg);
                 throw new Exception(msg);
             }
 
@@ -3019,7 +3019,7 @@ public class GenericUtil implements Serializable {
             // + "\n\tcanRead() = " + middleScriptDoneFile.canRead()
             // + "\n\texists() = " + middleScriptDoneFile.exists();
             // logger.info(msg);
-            // logger.warning(msg);
+            // logger.warn(msg);
             // throw new Exception(msg);
             // }
         } catch (Exception ioe) {
@@ -3367,7 +3367,7 @@ public class GenericUtil implements Serializable {
                         + tries + "\n\tslurmScriptFile = "
                         + slurmScriptFile.getAbsolutePath();
                 logger.info(msg);
-                logger.warning(msg);
+                logger.warn(msg);
                 throw new Exception(msg);
             }
 
@@ -3398,7 +3398,7 @@ public class GenericUtil implements Serializable {
             // + "\n\tcanRead() = " + middleScriptDoneFile.canRead()
             // + "\n\texists() = " + middleScriptDoneFile.exists();
             // logger.info(msg);
-            // logger.warning(msg);
+            // logger.warn(msg);
             // throw new Exception(msg);
             // }
         } catch (Exception ioe) {
@@ -3487,12 +3487,12 @@ public class GenericUtil implements Serializable {
                     + tries;
 
             logger.info(msg);
-            logger.warning(msg);
+            logger.warn(msg);
             throw new Exception(msg);
         }
         // } catch (Exception ioe) {
         // logger.info(ioe.toString());
-        // logger.warning(ioe.toString());
+        // logger.warn(ioe.toString());
         // ioe.printStackTrace();
         // }
         logger.info("GenericUtil.runShellScriptViaSlurm(): exitValue = "

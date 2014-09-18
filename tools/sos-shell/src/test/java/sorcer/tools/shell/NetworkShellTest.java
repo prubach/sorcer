@@ -1,6 +1,7 @@
 package sorcer.tools.shell;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import sorcer.core.requestor.ServiceRequestor;
 
@@ -12,6 +13,7 @@ public class NetworkShellTest {
     /**
      * Test for calling NSH from API
      */
+    //@Ignore
     @Test
     public void requestTest() throws Throwable {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

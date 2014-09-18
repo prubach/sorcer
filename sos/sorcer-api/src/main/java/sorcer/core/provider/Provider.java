@@ -23,7 +23,7 @@ import java.rmi.RemoteException;
 import java.security.Policy;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import net.jini.admin.Administrable;
 import sorcer.service.Context;

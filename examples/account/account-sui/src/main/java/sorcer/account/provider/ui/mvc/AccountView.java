@@ -20,7 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -45,7 +46,7 @@ public class AccountView extends JPanel implements Observer {
 
 	private AccountDispatcher dispatcher;
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger("sorcer.provider.account.ui.mvc");
 
 	public AccountView(Object provider) {

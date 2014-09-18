@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.exertion.NetJob;
 import sorcer.core.exertion.NetTask;
@@ -163,7 +165,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	private Stopwatch stopwatch;
 
 	// this class logger
-	private static Logger logger = Logger.getLogger("sorcer.core");
+	private static Logger logger = LoggerFactory.getLogger("sorcer.core");
 
 	public ControlContext() {
 		super(CONTROL_CONTEXT, CONTROL_CONTEXT);
@@ -460,7 +462,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 
 	public void stopExecTime() {
 		if (stopwatch == null) {
-			logger.fine("No stopwatch available for stopExecTime");
+			logger.debug("No stopwatch available for stopExecTime");
 			return;
 		}
 		stopwatch.stop();
@@ -492,7 +494,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 			String i = getAttributeValue(exertion, PRIORITY);
 			result = (NULL.equals(i)) ? NORMAL_PRIORITY : Integer.parseInt(i);
 		} catch (ClassCastException ex) {
-			logger.throwing(ControlContext.class.getName(), "getPriority", ex);
+			logger.error(ControlContext.class.getName(), "getPriority", ex);
 			return -1;
 		}
 		return result;
@@ -711,7 +713,7 @@ public class ControlContext extends ServiceContext<Object> implements Strategy, 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
-		if (logger.isLoggable(Level.FINEST)) {
+		if (logger.isDebugEnabled()) {
 			sb.append("\nControl Context Exceptions: \n");
 			sb.append(describeExceptions());
 		}

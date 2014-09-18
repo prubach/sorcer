@@ -37,7 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Scanner;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -77,7 +78,7 @@ import static sorcer.util.StringUtils.tName;
 public class EditorView extends JPanel implements HyperlinkListener {
 	static final long serialVersionUID = 4473215204301624571L;
 
-	private final static Logger logger = Logger.getLogger(EditorView.class
+	private final static Logger logger = LoggerFactory.getLogger(EditorView.class
 			.getName());
 	private static boolean debug = false;
 	private final JFileChooser fileChooser = new JFileChooser(
@@ -375,7 +376,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 						}
 						sb.append("\n");
 					}
-					logger.finer(">>> executing script: " + sb.toString());
+					logger.debug(">>> executing script: " + sb.toString());
                     try {
                         scriptExerter.readScriptWithHeaders(sb.toString());
                         scriptExerter.parse();
@@ -386,11 +387,11 @@ public class EditorView extends JPanel implements HyperlinkListener {
                             openOutPanel(result.toString());
                         }
                     } catch (IOException io) {
-                        logger.severe("Caught exception while executing script: " + io.getMessage());
+                        logger.error("Caught exception while executing script: " + io.getMessage());
                         openOutPanel(StringUtils.stackTraceToString(io));
                     } catch (Throwable th) {
                         openOutPanel(StringUtils.stackTraceToString(th));
-                        logger.severe("Caught exception while executing script: " + th.getMessage());
+                        logger.error("Caught exception while executing script: " + th.getMessage());
                     }
 				}
 				return;
@@ -510,10 +511,10 @@ public class EditorView extends JPanel implements HyperlinkListener {
 
 	private void processExerion(Exertion exertion) throws ContextException {
 		String codebase = System.getProperty("java.rmi.server.codebase");
-		logger.finer("Using exertlet codebase: " + codebase);
+		logger.debug("Using exertlet codebase: " + codebase);
 		
 		if (((ServiceExertion) exertion).getStatus() == Exec.DONE) {
-			// logger.finer(">>> done by Groovy Shell");
+			// logger.debug(">>> done by Groovy Shell");
 			showResults(exertion);
 			return;
 		}
@@ -530,7 +531,7 @@ public class EditorView extends JPanel implements HyperlinkListener {
 				}
 			}
 			if (!done) {
-				logger.finer(">> executing by exert: " + exertion.getName());
+				logger.debug(">> executing by exert: " + exertion.getName());
 				// inspect class loader tree
 //				com.sun.jini.start.ClassLoaderUtil
 //						.displayContextClassLoaderTree();

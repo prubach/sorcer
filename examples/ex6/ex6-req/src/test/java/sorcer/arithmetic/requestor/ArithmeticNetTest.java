@@ -35,7 +35,8 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.eo.operator.*;
@@ -51,7 +52,7 @@ import static sorcer.eo.operator.*;
 @SorcerServiceConfiguration(":ex6-cfg-all")
 public class ArithmeticNetTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticNetTest.class.getName());
 
 	@Test

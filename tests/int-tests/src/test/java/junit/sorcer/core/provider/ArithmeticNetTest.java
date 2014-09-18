@@ -26,7 +26,8 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Strategy.Wait;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.eo.operator.*;
@@ -43,7 +44,7 @@ import static sorcer.eo.operator.*;
         { ":ju-arithmetic-cfg-all", ":ju-arithmetic-cfg-ctx" })
 public class ArithmeticNetTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticNetTest.class.getName());
 
 	@Test

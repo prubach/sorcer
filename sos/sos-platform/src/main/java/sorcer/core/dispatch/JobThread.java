@@ -18,8 +18,10 @@
 package sorcer.core.dispatch;
 
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.DispatchResult;
 import sorcer.core.Dispatcher;
@@ -28,7 +30,7 @@ import sorcer.service.ContextException;
 import sorcer.service.Job;
 
 public class JobThread implements Runnable {
-	private final static Logger logger = Logger.getLogger(JobThread.class
+	private final static Logger logger = LoggerFactory.getLogger(JobThread.class
 			.getName());
 
 	private static final int SLEEP_TIME = 250;
@@ -48,7 +50,7 @@ public class JobThread implements Runnable {
 	}
 
 	public void run() {
-		logger.finer("*** Exertion dispatcher started with control context ***\n"
+		logger.debug("*** Exertion dispatcher started with control context ***\n"
 				+ job.getControlContext());
 		try {
             Dispatcher dispatcher = dispatcherFactory.createDispatcher(job, provider);
@@ -56,16 +58,16 @@ public class JobThread implements Runnable {
 				job.getControlContext().appendTrace(provider.getProviderName() +
 						" dispatcher: " + dispatcher.getClass().getName());
 			} catch (RemoteException e) {
-                logger.severe("exception in dispatcher: " + e);
+                logger.error("exception in dispatcher: " + e);
 				// ignore it, locall call
 			}
  			dispatcher.exec();
             DispatchResult dispatchResult = dispatcher.getResult();
-			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatchResult.state
+			logger.debug("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + dispatchResult.state
 					+ " for job***\n" + job.getControlContext());
             result = (Job) dispatchResult.exertion;
 		} catch (DispatcherException de) {
-			logger.log(Level.SEVERE, "Error", de);
+			logger.error( "Error", de);
 		}
 	}
 

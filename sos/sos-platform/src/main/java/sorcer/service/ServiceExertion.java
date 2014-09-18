@@ -24,8 +24,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.Subject;
 
@@ -61,7 +63,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
     //
     static final long serialVersionUID = -3907402419486719293L;
 
-	protected final static Logger logger = Logger
+	protected final static Logger logger = LoggerFactory
 			.getLogger(ServiceExertion.class.getName());
 
 	protected Uuid exertionId;
@@ -303,7 +305,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 		try {
 			result = se.exert(txn, null, entries);
 		} catch (Exception e) {
-			logger.log(Level.WARNING,"Error while exerting", e);
+			logger.warn("Error while exerting", e);
 			if (result != null)
 				((ServiceExertion) result).reportException(e);
 		}
@@ -1080,7 +1082,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
 	}
 
 	public String toString() {
-		if (logger.isLoggable(Level.FINEST))
+		if (logger.isDebugEnabled())
 			return describe();
 		
 		StringBuilder info = new StringBuilder().append(
@@ -1506,7 +1508,7 @@ public abstract class ServiceExertion implements Exertion, Revaluation, Exec, Se
     }
 
     public String describe() {
-		if (!logger.isLoggable(Level.FINEST))
+		if (!logger.isDebugEnabled())
 			return info();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");

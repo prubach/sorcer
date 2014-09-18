@@ -23,7 +23,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -69,7 +70,7 @@ public class CalculatorUI extends JPanel implements ActionListener {
 	private int flag, // Record the state after calculating
 			errLevel; // State the error level
 
-	private final static Logger logger = Logger.getLogger(CalculatorUI.class
+	private final static Logger logger = LoggerFactory.getLogger(CalculatorUI.class
 			.getName());
 
 	private ServiceItem item;
@@ -678,8 +679,7 @@ public class CalculatorUI extends JPanel implements ActionListener {
 							+ "/calculator-ui.jar") }, CalculatorUI.class
 							.getName()));
 		} catch (Exception ex) {
-			logger
-					.throwing(CalculatorUI.class.getName(), "getCalculatorDescriptor",
+			logger.error(CalculatorUI.class.getName(), "getCalculatorDescriptor",
 							ex);
 		}
 		return uiDesc;

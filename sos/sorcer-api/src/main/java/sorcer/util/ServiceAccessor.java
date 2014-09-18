@@ -44,8 +44,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A service discovery and management utility allowing to access services by
@@ -72,7 +74,7 @@ import java.util.logging.Logger;
  */
 public class ServiceAccessor implements DynamicAccessor {
 
-	static Logger logger = Logger.getLogger(ServiceAccessor.class.getName());
+	static Logger logger = LoggerFactory.getLogger(ServiceAccessor.class.getName());
 
 	static private boolean cacheEnabled = SorcerEnv.isLookupCacheEnabled();
 
@@ -116,10 +118,10 @@ public class ServiceAccessor implements DynamicAccessor {
 					attrSets);
 			si = sdManager.lookup(st, null, WAIT_FOR);
 		} catch (IOException ioe) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ioe);
 		} catch (InterruptedException ie) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ie);
 		}
 		return si;
@@ -140,10 +142,10 @@ public class ServiceAccessor implements DynamicAccessor {
 					null);
 			si = sdManager.lookup(st, null, WAIT_FOR);
 		} catch (IOException ioe) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ioe);
 		} catch (InterruptedException ie) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ie);
 		}
 		return si;
@@ -177,10 +179,10 @@ public class ServiceAccessor implements DynamicAccessor {
 		openDiscoveryManagement(groups);
 			si = sdManager.lookup(template, filter, WAIT_FOR);
 		} catch (IOException ioe) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ioe);
 		} catch (InterruptedException ie) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ie);
 		}
 		return si;
@@ -220,7 +222,7 @@ public class ServiceAccessor implements DynamicAccessor {
 				}
 			}
 		} catch (IOException ioe) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItem",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItem",
 					ioe);
 			closeLookupCache();
 		}
@@ -254,10 +256,10 @@ public class ServiceAccessor implements DynamicAccessor {
 			sis = sdManager.lookup(template, MIN_MATCHES, MAX_MATCHES, filter,
 					WAIT_FOR);
 		} catch (IOException ioe) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItems",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItems",
 					ioe);
 		} catch (InterruptedException ie) {
-			logger.throwing(ServiceAccessor.class.getName(), "getServiceItems",
+			logger.error(ServiceAccessor.class.getName(), "getServiceItems",
 					ie);
 		}
 		closeDiscoveryManagement();
@@ -298,7 +300,7 @@ public class ServiceAccessor implements DynamicAccessor {
 		if (sdManager == null) {
 			LookupLocator[] locators = getLookupLocators();
 			try {
-				logger.finer("[openDiscoveryManagement]\n"
+				logger.debug("[openDiscoveryManagement]\n"
 						+ "\tSORCER Group(s): "
 						+ StringUtils.arrayToString(groups) + "\n"
 						+ "\tLocators:        "
@@ -308,7 +310,7 @@ public class ServiceAccessor implements DynamicAccessor {
 				sdManager = new ServiceDiscoveryManager(ldManager,
 						new LeaseRenewalManager());
 			} catch (Throwable t) {
-				logger.throwing(ServiceAccessor.class.getName(),
+				logger.error(ServiceAccessor.class.getName(),
 						"openDiscoveryManagement", t);
 			}
 		}
@@ -407,7 +409,7 @@ public class ServiceAccessor implements DynamicAccessor {
 
 				Thread.sleep(WAIT_FOR);
 			} catch (Exception e) {
-				logger.throwing("" + ServiceAccessor.class, "getService", e);
+				logger.error("" + ServiceAccessor.class, "getService", e);
 			}
 		}
 		logger.info("got LUS service [type=" + serviceType + " name=" + serviceName + "]: " + proxy);
@@ -458,13 +460,13 @@ public class ServiceAccessor implements DynamicAccessor {
             return null;
         }
         List<LookupLocator> locators = new ArrayList<LookupLocator>(locURLs.length);
-        logger.finer("ProviderAccessor Locators: " + Arrays.toString(locURLs));
+        logger.debug("ProviderAccessor Locators: " + Arrays.toString(locURLs));
 
 		for (String locURL : locURLs)
 			try {
 				locators.add(new LookupLocator(locURL));
 			} catch (Throwable t) {
-				logger.warning(
+				logger.warn(
 						"Invalid Lookup URL: " + locURL);
 			}
 
@@ -557,7 +559,7 @@ public class ServiceAccessor implements DynamicAccessor {
             try {
                 Thread.sleep(ServiceAccessor.WAIT_FOR);
             } catch (InterruptedException ignored) {
-                //ignore
+                //IGNORE
             }
         }
         return new ServiceItem[0];
@@ -569,7 +571,7 @@ public class ServiceAccessor implements DynamicAccessor {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error while getting service", e);
+            logger.error("Error while getting service", e);
             return null;
         }
     }

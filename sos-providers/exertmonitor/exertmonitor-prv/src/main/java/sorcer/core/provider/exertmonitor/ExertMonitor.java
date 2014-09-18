@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
@@ -50,7 +51,7 @@ import com.sun.jini.start.LifeCycle;
 public class ExertMonitor extends ServiceProvider implements
         MonitoringManagement {
 
-	static transient final Logger logger = Logger.getLogger(ExertMonitor.class.getName());
+	static transient final Logger logger = LoggerFactory.getLogger(ExertMonitor.class.getName());
 
 	private MonitorLandlord landlord;
 
@@ -70,20 +71,20 @@ public class ExertMonitor extends ServiceProvider implements
 		String dbHome = getProperty("monitor.database.home");
 		File dbHomeFile = null;
 		if (dbHome == null || dbHome.length() == 0) {
-			logger.severe("Session database home missing: " + dbHome);
+			logger.error("Session database home missing: " + dbHome);
 			destroy();
 		} else {
 			dbHomeFile = new File(dbHome);
 			if (!dbHomeFile.isDirectory() && !dbHomeFile.exists()) {			
 				boolean done = dbHomeFile.mkdirs();
 				if (!done) {
-					logger.severe("Not able to create session database home: " 
+					logger.error("Not able to create session database home: " 
 							+ dbHomeFile.getAbsolutePath());
 					destroy();
 				}
 			}
 		}
-        logger.fine("Opening BDBJE environment in: " + dbHomeFile);
+        logger.debug("Opening BDBJE environment in: " + dbHomeFile);
 		db = new SessionDatabase(dbHome);
 		SessionDatabaseViews views = new SessionDatabaseViews(db);
 		resources = views.getSessionMap();
@@ -455,7 +456,7 @@ public class ExertMonitor extends ServiceProvider implements
 		} else if (aspect== Exec.FAILED) {
 			failed(cookie, ctx, controlContext);
 		} else
-            logger.warning("Got wrong aspect to update: " + aspect);
+            logger.warn("Got wrong aspect to update: " + aspect);
 
 	}
 

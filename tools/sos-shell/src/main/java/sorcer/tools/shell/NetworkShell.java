@@ -39,8 +39,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -134,7 +134,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 
 	static final String CONFIG_COMPONENT = NetworkShell.class.getName();
 
-	public static Logger logger = Logger.getLogger(COMPONENT);
+	public static Logger logger = LoggerFactory.getLogger(COMPONENT);
 
 	protected static NetworkShell instance;
 
@@ -293,7 +293,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             if (e instanceof ScriptExertException) {
                 String msg = "Problem parsing script @ line: " +
                         ((ScriptExertException)e).getLineNum() + ":\n" + e.getLocalizedMessage();
-                logger.severe(msg);
+                logger.error(msg);
                 shellOutput.println(msg);
             } else
                 e.printStackTrace(shellOutput);
@@ -376,7 +376,7 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
             if (ex instanceof ScriptExertException) {
                 String msg = "Problem parsing script @ line: " +
                         ((ScriptExertException)ex).getLineNum() + ":\n" + ex.getLocalizedMessage();
-                logger.severe(msg);
+                logger.error(msg);
                 shellOutput.println(msg);
             } else
                 ex.printStackTrace(shellOutput);
@@ -1225,8 +1225,8 @@ public class NetworkShell implements DiscoveryListener, INetworkShell {
 					.append(port).append("/").append(jars[jars.length - 1]);
 			codebase = sb.toString();
 			System.setProperty("java.rmi.server.codebase", codebase);
-			if (logger.isLoggable(Level.FINE))
-				logger.fine("Setting nsh 'java.rmi.server.codebase': "
+			if (logger.isDebugEnabled())
+				logger.debug("Setting nsh 'java.rmi.server.codebase': "
 						+ codebase);
 		}
 

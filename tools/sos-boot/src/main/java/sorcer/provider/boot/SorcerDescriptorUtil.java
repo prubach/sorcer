@@ -17,7 +17,8 @@
 package sorcer.provider.boot;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jini.start.ServiceDescriptor;
 import sorcer.core.SorcerEnv;
@@ -33,7 +34,7 @@ import static sorcer.util.ArtifactCoordinates.coords;
  * for SORCER services
  */
 public class SorcerDescriptorUtil {
-    final static Logger logger = Logger.getLogger("sorcer.provider.boot");
+    final static Logger logger = LoggerFactory.getLogger("sorcer.provider.boot");
     public static final ArtifactCoordinates SOS_PLATFORM = sorcer("sos-platform");
     public static final ArtifactCoordinates EXERTMONITOR_SERVICE = sorcer("exertmonitor-prv");
     public static final ArtifactCoordinates EXERTLET_UI = sorcer("sos-exertlet-sui");

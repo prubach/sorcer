@@ -14,12 +14,14 @@ import sorcer.ui.serviceui.UIDescriptorFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HelloWorldImplUI extends JPanel {
 
-	private final static Logger logger = Logger.getLogger(HelloWorldImplUI.class
+	private final static Logger logger = LoggerFactory.getLogger(HelloWorldImplUI.class
 			.getName());
 
 	private ServiceItem item;
@@ -44,7 +46,7 @@ public class HelloWorldImplUI extends JPanel {
 				}
 			});
 		} catch (Exception ex) {
-            logger.log(Level.WARNING, "Error", ex);
+            logger.warn("Error", ex);
         }
 	}
 	
@@ -72,7 +74,7 @@ public class HelloWorldImplUI extends JPanel {
             uiDesc = UIDescriptorFactory.getUIDescriptor(MainUI.ROLE,
                     new UIComponentFactory(new URL[] {uiUrl}, HelloWorldImplUI.class.getName()));
         } catch (Exception ex) {
-            logger.severe("HelloWorldImplUI, Problem loading SUI: " +  ex.getMessage());
+            logger.error("HelloWorldImplUI, Problem loading SUI: " +  ex.getMessage());
         }
         return uiDesc;
     }

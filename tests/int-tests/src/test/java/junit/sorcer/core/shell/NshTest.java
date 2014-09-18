@@ -11,7 +11,8 @@ import sorcer.util.StringUtils;
 import sorcer.util.exec.ExecUtils;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 @Category(SorcerClient.class)
 public class NshTest {
 
-    private final static Logger logger = Logger
+    private final static Logger logger = LoggerFactory
             .getLogger(NshTest.class.getName());
     private static final String EXCEPTION = "Exception";
 

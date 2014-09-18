@@ -27,7 +27,8 @@ import sorcer.service.ExertionException;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +47,7 @@ import static sorcer.po.operator.*;
  */
 
 public class ContextTest {
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ContextTest.class.getName());
 
 	

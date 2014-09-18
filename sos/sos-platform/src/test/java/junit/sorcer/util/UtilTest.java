@@ -33,7 +33,8 @@ import sorcer.service.ExertionException;
 import sorcer.service.SignatureException;
 import sorcer.service.space.SpaceAccessor;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,7 +44,7 @@ import static org.junit.Assert.assertNotNull;
  */
 
 public class UtilTest {
-	private final static Logger logger = Logger.getLogger(UtilTest.class
+	private final static Logger logger = LoggerFactory.getLogger(UtilTest.class
 			.getName());
 
 	@BeforeClass
@@ -53,7 +54,7 @@ public class UtilTest {
 			assertNotNull(System.getenv("SORCER_HOME"));
 			logger.info("SORCER_HOME: " + SorcerEnv.getHomeDir());
 		} catch (AssertionError ae) {
-			logger.severe("SORCER_HOME must be set and point to the Sorcer root directory!!!");
+			logger.error("SORCER_HOME must be set and point to the Sorcer root directory!!!");
 		}		
 	}
 	

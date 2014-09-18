@@ -1483,7 +1483,7 @@ public class ProviderDelegate {
 			// add the service context of this provider to provider attributes
 			// AccessControlContext context = AccessController.getContext();
 			// Subject subject = Subject.getSubject(context);
-			// logger.finer("The subject in Provider Delegate is: " + subject);
+			// logger.debug("The subject in Provider Delegate is: " + subject);
 		} catch (Exception ex) {
             logger.warn("Error", ex);
 		}
@@ -2827,12 +2827,12 @@ public class ProviderDelegate {
 				// clazz = Class.forName(partnerType, false,
 				// loader);
 				// } catch (MalformedURLException e1) {
-				// logger.throwing(
+				// logger.error(
 				// ServiceAccessor.class.getName(),
 				// "getService", e1);
 				// clazz = null;
 				// } catch (ClassNotFoundException e2) {
-				// logger.throwing(
+				// logger.error(
 				// ServiceAccessor.class.getName(),
 				// "getService", e2);
 				// clazz = null;

@@ -38,7 +38,8 @@ import static sorcer.po.operator.pars;
 
 import java.rmi.RemoteException;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.Test;
 
@@ -61,7 +62,7 @@ import sorcer.service.ExertionException;
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
 public class ContextTest {
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ContextTest.class.getName());
 
 	@SuppressWarnings("unchecked")

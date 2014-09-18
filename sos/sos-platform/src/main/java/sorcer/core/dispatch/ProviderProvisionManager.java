@@ -30,7 +30,8 @@ import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.util.StringUtils.tName;
 
@@ -38,7 +39,7 @@ import static sorcer.util.StringUtils.tName;
  * @author Pawel Rubach
  */
 public class ProviderProvisionManager {
-	private static final Logger logger = Logger.getLogger(ProviderProvisionManager.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ProviderProvisionManager.class.getName());
 	protected final Set<SignatureElement> servicesToProvision = new LinkedHashSet<SignatureElement>();
     private static ProviderProvisionManager instance = null;
     private static final int MAX_ATTEMPTS = 2;
@@ -92,7 +93,7 @@ public class ProviderProvisionManager {
                     }
                     Iterator<SignatureElement> it = copy.iterator();
                     Set<SignatureElement> sigsToRemove = new LinkedHashSet<SignatureElement>();
-                    logger.fine("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
+                    logger.debug("Services to provision from Spacer/Jobber: "+ servicesToProvision.size());
 
                     while (it.hasNext()) {
                         SignatureElement sigEl = it.next();
@@ -108,13 +109,13 @@ public class ProviderProvisionManager {
                                     service = provisioner.provision(sigEl.getServiceType(), sigEl.getProviderName(), sigEl.getVersion());
                                     if (service!=null) sigsToRemove.add(sigEl);
                                 } catch (ProvisioningException pe) {
-                                    logger.severe("Problem provisioning: " +pe.getMessage());
+                                    logger.error("Problem provisioning: " +pe.getMessage());
                                 } catch (RemoteException re) {
                                     provisioner = Accessor.getService(Provisioner.class);
                                     String msg = "Problem provisioning "+sigEl.getSignature().getServiceType()
                                             + " (" + sigEl.getSignature().getProviderName() + ")"
                                             + " " +re.getMessage();
-                                    logger.severe(msg);
+                                    logger.error(msg);
                                 }
                             } else
                                 provisioner = Accessor.getService(Provisioner.class);
@@ -122,12 +123,12 @@ public class ProviderProvisionManager {
                             if (service == null && sigEl.getProvisionAttempts() > MAX_ATTEMPTS) {
                                 String logMsg = "Provisioning for " + sigEl.getServiceType() + "(" + sigEl.getProviderName()
                                         + ") tried: " + sigEl.getProvisionAttempts() +" times, provisioning will not be reattempted";
-                                logger.severe(logMsg);
+                                logger.error(logMsg);
                                 try {
                                     failExertionInSpace(sigEl, new ProvisioningException(logMsg));
                                     sigsToRemove.add(sigEl);
                                 } catch (ExertionException ile) {
-                                    logger.severe("Problem trying to remove exception after reattempting to provision");
+                                    logger.error("Problem trying to remove exception after reattempting to provision");
                                 }
                             }
                         } else
@@ -166,11 +167,11 @@ public class ProviderProvisionManager {
                     throw new ExertionException("NO exertion space available!");
                 }
                 space.write(result, null, Lease.FOREVER);
-                logger.finer("===========================> written failure envelop: "
+                logger.debug("===========================> written failure envelop: "
                         + ee.describe() + "\n to: " + space);
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.throwing(this.getClass().getName(), "faileExertionInSpace", e);
+                logger.error(this.getClass().getName(), "faileExertionInSpace", e);
                 throw new ExertionException("Problem writing exertion back to space");
             }
         }

@@ -32,7 +32,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create a {@link ServiceElement} from a {@link ServiceSignature}.
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
  * @author Dennis Reedy
  */
 public final class ServiceElementFactory {
-    static final Logger logger = Logger.getLogger(ServiceElementFactory.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(ServiceElementFactory.class.getName());
     static final List<String> commonDLJars = Arrays.asList(
             "artifact:org.sorcersoft.sorcer/sorcer-api/" + SorcerEnv.getSorcerVersion());
     /* The default provider codebase jars */
@@ -135,12 +136,12 @@ public final class ServiceElementFactory {
         String websterUrl;
         if(deployment.getWebsterUrl()==null) {
             websterUrl = Sorcer.getWebsterUrl();
-            if(logger.isLoggable(java.util.logging.Level.FINE))
-                logger.fine("Set code base derived from Sorcer.getWebsterUrl: "+websterUrl);
+            if(logger.isDebugEnabled())
+                logger.debug("Set code base derived from Sorcer.getWebsterUrl: "+websterUrl);
         } else {
             websterUrl = deployment.getWebsterUrl();
-            if(logger.isLoggable(java.util.logging.Level.FINE))
-                logger.fine("Set code base derived from Deployment: "+websterUrl);
+            if(logger.isDebugEnabled())
+                logger.debug("Set code   base derived from Deployment: "+websterUrl);
         }
         /* Create client (export) ClassBundle */
         List<ClassBundle> exports = new ArrayList<ClassBundle>();

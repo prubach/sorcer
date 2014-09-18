@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +49,7 @@ public class LoaderConfigurationHelper {
     private static final String MATCH_ALL = "\\\\E.+?\\\\Q";
     public static final String LOAD_PREFIX = "load";
     public static final String CODEBASE_PREFIX = "codebase";
-    static final Logger logger = Logger.getLogger(LoaderConfigurationHelper.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(LoaderConfigurationHelper.class.getName());
     private static org.rioproject.resolver.Resolver resolver;
 
 
@@ -58,7 +60,7 @@ public class LoaderConfigurationHelper {
         try {
             uri = new URI(str);
         } catch (URISyntaxException e) {
-            logger.log(Level.SEVERE, "Error while parsing URL " + str, e);
+            logger.error( "Error while parsing URL " + str, e);
             return urlsList;
         }
         String scheme = uri.getScheme();
@@ -81,16 +83,16 @@ public class LoaderConfigurationHelper {
                     if (finalUrl!=null && new File(finalUrl).exists())
                         urlsList.add(new File(finalUrl).toURI().toURL());
                     else
-                        logger.severe("Problem adding library to codebase, file not found for: " + urlEntries[0]);
+                        logger.error("Problem adding library to codebase, file not found for: " + urlEntries[0]);
                 }
             } catch (MalformedURLException e) {
-                    logger.severe("Problem creating URL: " + finalUrl);
+                    logger.error("Problem creating URL: " + finalUrl);
             }
         } else if ("http".equals(scheme)) {
             try {
                 urlsList.add(new URL(str));
             } catch (MalformedURLException e) {
-                logger.severe("Problem creating URL: " + str);
+                logger.error("Problem creating URL: " + str);
             }
         } else {
             if ("artifact".equals(scheme)) {
@@ -102,7 +104,7 @@ public class LoaderConfigurationHelper {
                     URL[] classpath = SorcerResolverHelper.toURLs(resolver.getClassPathFor(artifactConf.getArtifact(), repos));
                     Collections.addAll(urlsList, classpath);
                 } catch (ResolverException e) {
-                    logger.log(Level.SEVERE, "Could not resolve " + str, e);
+                    logger.error( "Could not resolve " + str, e);
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
@@ -119,7 +121,7 @@ public class LoaderConfigurationHelper {
 
     public static String parseCodebase(URL websterUrl, String str) {
         if ((!str.startsWith("mvn://")) &&  (!str.startsWith("http://")) && (!str.startsWith("artifact:"))) {
-            logger.severe("Codebase can only be specified using mvn://, http:// or artifact:");
+            logger.error("Codebase can only be specified using mvn://, http:// or artifact:");
             return null;
         }
         if (str.startsWith("mvn://")) {
@@ -140,7 +142,7 @@ public class LoaderConfigurationHelper {
                         return new URL(finalUrl).toString();
                 }
             } catch (MalformedURLException e) {
-                logger.severe("Problem creating URL: " + finalUrl);
+                logger.error("Problem creating URL: " + finalUrl);
             }
         }
         return str;
@@ -156,14 +158,14 @@ public class LoaderConfigurationHelper {
             try {
                 websterUrl = new URL(websterStrUrl);
             } catch (MalformedURLException me) {
-                logger.log(Level.WARNING, "Malformed url " + websterStrUrl, me);
+                logger.warn("Malformed url " + websterStrUrl, me);
             }
         for (String codebaseStr : codebaseLines) {
             if (codebaseStr.startsWith(LoaderConfigurationHelper.CODEBASE_PREFIX))
                 codebaseStr = codebaseStr.substring(LoaderConfigurationHelper.CODEBASE_PREFIX.length()).trim();
             if ((!codebaseStr.startsWith("mvn://")) &&  (!codebaseStr.startsWith("http://")) && (!codebaseStr.startsWith("artifact:"))) {
                 if (out!=null) out.println("Codebase can only be specified using mvn://, http:// or artifact:");
-                else logger.severe("Codebase can only be specified using mvn://, http:// or artifact:");
+                else logger.error("Codebase can only be specified using mvn://, http:// or artifact:");
                 return null;
             }
 
@@ -172,7 +174,7 @@ public class LoaderConfigurationHelper {
                 codebaseUrls.add(new URL(parsedCodebase));
             } catch (MalformedURLException me) {
                 if (out!=null) out.println("Codebase url is malformed: " + me.getMessage());
-                else logger.severe("Codebase url is malformed: " + me.getMessage());
+                else logger.error("Codebase url is malformed: " + me.getMessage());
             }
 
             if (parsedCodebase!=null)
@@ -248,9 +250,9 @@ public class LoaderConfigurationHelper {
             if (huc.getResponseCode() == HttpURLConnection.HTTP_OK)
                 return true;
         } catch (ProtocolException e) {
-            logger.severe("Problem with protocol while loading URL to classpath: " + url.toString() + "\n" + e.getMessage());
+            logger.error("Problem with protocol while loading URL to classpath: " + url.toString() + "\n" + e.getMessage());
         } catch (IOException e) {
-            logger.severe("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
+            logger.error("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
         }
         return false;
     }
@@ -268,7 +270,7 @@ public class LoaderConfigurationHelper {
             try {
                 filesToLoad.add(new File(filter).toURI().toURL());
             } catch (MalformedURLException e) {
-                logger.severe("Problem converting file to URL: " + e.getMessage());
+                logger.error("Problem converting file to URL: " + e.getMessage());
             }
             //addFile(new File(filter));
             return filesToLoad;

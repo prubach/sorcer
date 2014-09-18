@@ -24,7 +24,8 @@ import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.security.Permission;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -58,7 +59,7 @@ import static sorcer.core.SorcerConstants.*;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SorcerILFactory extends BasicILFactory {
-	protected final Logger logger = Logger.getLogger(BasicILFactory.class
+	protected final Logger logger = LoggerFactory.getLogger(BasicILFactory.class
 			.getName());
 	/**
 	 * Exposed service type map. A key is an interface and a value its

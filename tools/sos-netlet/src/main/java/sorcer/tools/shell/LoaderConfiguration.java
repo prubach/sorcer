@@ -22,7 +22,8 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class used to configure a RootLoader from a stream or by using
@@ -76,7 +77,7 @@ public class LoaderConfiguration {
     private List classPath = new ArrayList();
     private String main;
     private boolean requireMain;
-    static final Logger logger = Logger.getLogger(LoaderConfiguration.class.getName());
+    static final Logger logger = LoggerFactory.getLogger(LoaderConfiguration.class.getName());
 
     /**
      * creates a new loader configuration
@@ -189,9 +190,9 @@ public class LoaderConfiguration {
                     if (huc.getResponseCode() == HttpURLConnection.HTTP_OK)
                     classPath.add(url);
                 } catch (ProtocolException e) {
-                    logger.severe("Problem with protocol while loading URL to classpath: " + url.toString() + "\n" + e.getMessage());
+                    logger.error("Problem with protocol while loading URL to classpath: " + url.toString() + "\n" + e.getMessage());
                 } catch (IOException e) {
-                    logger.severe("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
+                    logger.error("Problem adding remote file to classpath, file does not exist: " + url.toString() + "\n" + e.getMessage());
                 }
             } else if (url.getProtocol().equalsIgnoreCase("file")) {
                 File jarFile = null;
@@ -203,7 +204,7 @@ public class LoaderConfiguration {
                 if (jarFile!=null && jarFile.exists())
                     classPath.add(url);
             } else {
-                logger.severe("Unsupported protocol to be added to classpath: " + url.toString());
+                logger.error("Unsupported protocol to be added to classpath: " + url.toString());
             }
         }
     }

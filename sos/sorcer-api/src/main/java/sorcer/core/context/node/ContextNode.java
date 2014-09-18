@@ -29,7 +29,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class <code>ContextNode</code> is a wrapper for externally persisted
@@ -40,7 +41,7 @@ import java.util.logging.Logger;
 public class ContextNode implements Serializable {
 
 	// this class logger
-	private static Logger logger = Logger.getLogger("sorcer.core");
+	private static Logger logger = LoggerFactory.getLogger("sorcer.core");
 
     private static final long serialVersionUID = 3597662074450280684L;
 

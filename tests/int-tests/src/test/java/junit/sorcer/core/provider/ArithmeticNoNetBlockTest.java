@@ -19,7 +19,8 @@ import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 import static sorcer.po.operator.pars;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ import sorcer.service.Task;
 })
 public class ArithmeticNoNetBlockTest implements SorcerConstants {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticNoNetTest.class.getName());
 
 	@Test

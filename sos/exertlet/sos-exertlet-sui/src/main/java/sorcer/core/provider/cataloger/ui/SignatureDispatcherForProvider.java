@@ -24,7 +24,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JList;
 import javax.swing.JTextField;
@@ -52,7 +53,7 @@ import sorcer.ui.provider.SignatureView;
  */
 public class SignatureDispatcherForProvider implements SignatureDispatchment {
 
-	protected static final Logger logger = Logger
+	protected static final Logger logger = LoggerFactory
 			.getLogger(SignatureDispatcherForProvider.class.getName());
 	/**
 	 * The Cataloger service object. Passed in by constructor from CatalogerUI

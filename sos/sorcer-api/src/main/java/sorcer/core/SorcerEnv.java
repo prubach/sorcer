@@ -27,8 +27,10 @@ import java.net.UnknownHostException;
 import java.security.AccessControlException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.core.SorcerConstants.*;
 import static sorcer.util.StringUtils.firstInteger;
@@ -37,7 +39,7 @@ public class SorcerEnv {
 
     // This is copied from Context
     final static String DATA_NODE_TYPE = "dnt";
-    final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
+    final static Logger logger = LoggerFactory.getLogger(SorcerEnv.class.getName());
     private static final String WEBSTER_URL = "webster.url";
     /**
      * Default name 'provider.properties' for a file defining provider
@@ -209,22 +211,22 @@ public class SorcerEnv {
         String intf = System.getenv("WEBSTER_INTERFACE");
 
         if (intf != null && intf.length() > 0) {
-            logger.finer("webster interface as the system environment value: " + intf);
+            logger.debug("webster interface as the system environment value: " + intf);
             return intf;
         }
 
         intf = System.getProperty(P_WEBSTER_INTERFACE);
         if (intf != null && intf.length() > 0) {
-            logger.finer("webster interface as 'provider.webster.interface' system property value: " + intf);
+            logger.debug("webster interface as 'provider.webster.interface' system property value: " + intf);
             return intf;
         }
 
         intf = SorcerEnv.getProperty(P_WEBSTER_INTERFACE);
         if (intf != null && intf.length() > 0) {
-            logger.finer("webster interface as 'provider.webster.interface' property value: " + intf);
+            logger.debug("webster interface as 'provider.webster.interface' property value: " + intf);
             return intf;
         }
-        logger.finer("webster interface  as the local host value: " + intf);
+        logger.debug("webster interface  as the local host value: " + intf);
         try {
             return getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -250,7 +252,7 @@ public class SorcerEnv {
         assert !host.trim().isEmpty() : "empty webster address";
         assert port > 0 : "Illegal port";
         URL url = new URL("http", host, port, "");
-        logger.finer("New Webster URL: " + url);
+        logger.debug("New Webster URL: " + url);
         String urlString = url.toExternalForm();
         sorcerEnv.properties.setProperty(WEBSTER_URL, urlString);
         System.setProperty("org.rioproject.codeserver", urlString);
@@ -284,31 +286,31 @@ public class SorcerEnv {
         String hn = System.getenv("DATA_SERVER_INTERFACE");
 
         if (hn != null && hn.length() > 0) {
-            logger.finer("data server hostname as the system environment value: "
+            logger.debug("data server hostname as the system environment value: "
                     + hn);
             return hn;
         }
 
         hn = System.getProperty(DATA_SERVER_INTERFACE);
         if (hn != null && hn.length() > 0) {
-            logger.finer("data server hostname as 'data.server.interface' system property value: "
+            logger.debug("data server hostname as 'data.server.interface' system property value: "
                     + hn);
             return hn;
         }
 
         hn = getProperty(DATA_SERVER_INTERFACE);
         if (hn != null && hn.length() > 0) {
-            logger.finer("data server hostname as 'data.server.interface' provider property value: "
+            logger.debug("data server hostname as 'data.server.interface' provider property value: "
                     + hn);
             return hn;
         }
 
         try {
             hn = getHostName();
-            logger.finer("data.server.interface hostname as the local host value: "
+            logger.debug("data.server.interface hostname as the local host value: "
                     + hn);
         } catch (UnknownHostException e) {
-            logger.severe("Cannot determine the data.server.interface hostname.");
+            logger.error("Cannot determine the data.server.interface hostname.");
         }
 
         return hn;
@@ -322,13 +324,13 @@ public class SorcerEnv {
     public static int getDataServerPort() {
         String wp = System.getenv("DATA_SERVER_PORT");
         if (wp != null && wp.length() > 0) {
-            // logger.finer("data server port as 'DATA_SERVER_PORT': " + wp);
+            // logger.debug("data server port as 'DATA_SERVER_PORT': " + wp);
             return new Integer(wp);
         }
 
         wp = System.getProperty(DATA_SERVER_PORT);
         if (wp != null && wp.length() > 0) {
-            // logger.finer("data server port as System 'data.server.port': "
+            // logger.debug("data server port as System 'data.server.port': "
             // + wp);
             return new Integer(wp);
         }
@@ -340,7 +342,7 @@ public class SorcerEnv {
             return new Integer(wp);
         }
 
-        // logger.severe("Cannot determine the 'data.server.port'.");
+        // logger.error("Cannot determine the 'data.server.port'.");
         throw new RuntimeException("Cannot determine the 'data.server.port'.");
     }
 
@@ -772,7 +774,7 @@ public class SorcerEnv {
                 getEnvProperties().put(P_SPACE_NAME, val);
 
         } catch (AccessControlException ae) {
-            logger.log(Level.WARNING, "Access Error", ae);
+            logger.warn("Access Error", ae);
         }
     }
 
@@ -957,7 +959,7 @@ public class SorcerEnv {
         try {
             getEnvProperties().setProperty(P_WEBSTER_INTERFACE, getHostName());
         } catch (UnknownHostException e) {
-            logger.log(Level.WARNING, "Error", e);
+            logger.warn("Error", e);
             return;
         }
         try {
@@ -968,9 +970,9 @@ public class SorcerEnv {
                 getEnvProperties().store(new FileOutputStream(getEnvironment().loadedEnvFile),
                         "SORCER auto-generated environment properties");
         } catch (FileNotFoundException e) {
-            logger.log(Level.WARNING, "Error", e);
+            logger.warn("Error", e);
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Error", e);
+            logger.warn("Error", e);
         }
     }
 
@@ -998,7 +1000,7 @@ public class SorcerEnv {
                 String val = codebase.replace(pattern, getHostAddress());
                 System.setProperty("java.rmi.server.codebase", val);
             } catch (UnknownHostException e1) {
-                logger.log(Level.WARNING, "Error", e1);
+                logger.warn("Error", e1);
             }
         }
     }
@@ -1019,8 +1021,8 @@ public class SorcerEnv {
             sb.append(url).append("/").append(jars[jars.length - 1]);
         codebase = sb.toString();
         System.setProperty("java.rmi.server.codebase", codebase);
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Setting codebase 'java.rmi.server.codebase': "
+        if (logger.isDebugEnabled())
+            logger.debug("Setting codebase 'java.rmi.server.codebase': "
                     + codebase);
     }
 
@@ -1149,7 +1151,7 @@ public class SorcerEnv {
                 if (repoDir.exists() && repoDir.isDirectory())
                     props.put(S_SORCER_REPO, repo);
             } catch (Throwable t) {
-                logger.throwing(
+                logger.error(
                         SorcerEnv.class.getName(),
                         "The given Sorcer Jar Repo Location: " + repo + " does not exist or is not a directory!",
                         t);
@@ -1164,12 +1166,12 @@ public class SorcerEnv {
                 else {
                     logger.info("Creaing missing Repo Dir default location: " + repoDir.getAbsolutePath());
                     if (!repoDir.mkdirs())
-                        logger.severe("Problem creating Repo Dir default location: " + repoDir.getAbsolutePath());
+                        logger.error("Problem creating Repo Dir default location: " + repoDir.getAbsolutePath());
                     props.put(S_SORCER_REPO, repoDir.getAbsolutePath());
                 }
-                logger.fine("Setting Repo Dir default location: " + repoDir.getAbsolutePath());
+                logger.debug("Setting Repo Dir default location: " + repoDir.getAbsolutePath());
             } catch (Throwable t) {
-                logger.throwing(
+                logger.error(
                         SorcerEnv.class.getName(),
                         "The given Sorcer Jar Repo Location: " + repo + " does not exist or is not a directory!",
                         t);
@@ -1410,7 +1412,7 @@ public class SorcerEnv {
                 System.setProperty(SORCER_HOME, hd);
                 return;
             } catch (IOException io) {
-                logger.log(Level.WARNING, "Error whils setting home dir", io);
+                logger.warn("Error whils setting home dir", io);
             }
         }
         hd = System.getProperty(SORCER_HOME);
@@ -1420,7 +1422,7 @@ public class SorcerEnv {
                 this.setSorcerHome(hd);
                 return;
             } catch (IOException io) {
-                logger.log(Level.WARNING, "Error whils setting home dir", io);
+                logger.warn("Error whils setting home dir", io);
             }
         }
         throw new IllegalArgumentException(hd
@@ -1456,13 +1458,13 @@ public class SorcerEnv {
                 properties.putAll(sorcerEnvProps);
                 envFrom = "(Sorcer resource)";
             }
-            logger.fine("SORCER env properties:\n"
+            logger.debug("SORCER env properties:\n"
                     + GenericUtil.getPropertiesString(properties));
 
             cntFile = System.getProperty("sorcer.formats.file");
 
             updateCodebase();
-            logger.finer("Sorcer codebase: "
+            logger.debug("Sorcer codebase: "
                     + System.getProperty("java.rmi.server.codebase"));
 
             if (cntFile != null) {
@@ -1473,19 +1475,19 @@ public class SorcerEnv {
                 loadDataNodeTypes(cntFile);
                 envFrom = "(Sorcer resource)";
             }
-            logger.finer("Sorcer loaded " + envFrom + " properties " + envFile);
+            logger.debug("Sorcer loaded " + envFrom + " properties " + envFile);
 
-            logger.finer("Data formats loaded " + cdtFrom + " from: "
+            logger.debug("Data formats loaded " + cdtFrom + " from: "
                     + CONTEXT_DATA_FORMATS);
 
-            logger.finer("* Sorcer provider accessor:"
+            logger.debug("* Sorcer provider accessor:"
                     + properties.getProperty(S_SERVICE_ACCESSOR_PROVIDER_NAME));
             // Repo directory - setting
             properties = setRepoDir(properties);
             prepareWebsterInterface(properties);
             readShareConfiguration(properties);
         } catch (Throwable t) {
-            logger.throwing(
+            logger.error(
                     SorcerEnv.class.getName(),
                     "Unable to find/load SORCER environment configuration files",
                     t);
@@ -1512,7 +1514,7 @@ public class SorcerEnv {
             }
             properties.setProperty("sorcer.share.config", StringUtils.join(paths, File.pathSeparator));
         } catch (IOException e) {
-            logger.warning("Could not read share config file");
+            logger.warn("Could not read share config file");
         }
     }
 
@@ -1542,7 +1544,7 @@ public class SorcerEnv {
         try {
             // Try in user home directory first
             props.load((new FileInputStream(new File(filename))));
-            logger.fine("loaded properties from: " + filename);
+            logger.debug("loaded properties from: " + filename);
 
         } catch (Exception e) {
             try {
@@ -1550,7 +1552,7 @@ public class SorcerEnv {
                 String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
                 File file = new File(home + "/configs/" + filename);
                 props.load((new FileInputStream(file)));
-                logger.fine("loaded properties from: " + file);
+                logger.debug("loaded properties from: " + file);
             } catch (Exception ee) {
                 try {
                     // No file give, try as resource sorcer/util/sorcer.env
@@ -1558,7 +1560,7 @@ public class SorcerEnv {
                     if (stream != null)
                         props.load(stream);
                     else
-                        logger.severe("could not load properties as Sorcer resource file>"
+                        logger.error("could not load properties as Sorcer resource file>"
                                 + filename + "<");
                 } catch (Throwable t2) {
                     throw new ConfigurationException(e);
@@ -1641,7 +1643,7 @@ public class SorcerEnv {
                 try {
                     value = getHostAddress();
                 } catch (UnknownHostException ex) {
-                    logger.log(Level.WARNING, "Error", ex);
+                    logger.warn("Error", ex);
                 }
                 props.put(key, value);
             }
@@ -1666,7 +1668,7 @@ public class SorcerEnv {
                 try {
                     evalue = getHostAddress();
                 } catch (UnknownHostException e1) {
-                    logger.log(Level.WARNING, "Error", e1);
+                    logger.warn("Error", e1);
                 }
             }
             if (evalue!=null)
@@ -1699,7 +1701,7 @@ public class SorcerEnv {
         try {
             hn = getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            logger.severe("Cannot determine the webster hostname.");
+            logger.error("Cannot determine the webster hostname.");
         }
 
         return hn;
@@ -1725,7 +1727,7 @@ public class SorcerEnv {
                 String home = System.getProperty(SORCER_HOME, System.getenv(E_SORCER_HOME));
                 File file = new File(home + "/configs/" + filename);
                 properties.load((new FileInputStream(file)));
-                logger.fine("loaded data nodes from: " + file);
+                logger.debug("loaded data nodes from: " + file);
             } catch (Exception e) {
                 try {
                     // Can not access "filename" give try as resource
@@ -1734,12 +1736,12 @@ public class SorcerEnv {
                     if (stream != null)
                         properties.load(stream);
                     else
-                        logger.severe("could not load data node types from: "
+                        logger.error("could not load data node types from: "
                                 + filename);
                 } catch (Throwable t2) {
-                    logger.severe("could not load data node types: \n"
+                    logger.error("could not load data node types: \n"
                             + t2.getMessage());
-                    logger.throwing(SorcerEnv.class.getName(), "loadDataNodeTypes", t2);
+                    logger.error(SorcerEnv.class.getName(), "loadDataNodeTypes", t2);
                 }
             }
 

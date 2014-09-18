@@ -20,7 +20,8 @@ import static sorcer.po.operator.put;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.MultiplierImpl;
@@ -53,7 +54,7 @@ import sorcer.service.Task;
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
 public class ConditionalTaskTest {
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ConditionalTaskTest.class.getName());
 
 	@Test

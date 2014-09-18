@@ -29,7 +29,8 @@ import sorcer.service.Signature.Direction;
 import sorcer.service.Task;
 
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
@@ -54,7 +55,7 @@ import static sorcer.eo.operator.*;
 })
 public class NetBatchTasksTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(NetBatchTasksTest.class.getName());
 
     //@Ignore("hangs")

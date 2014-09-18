@@ -15,7 +15,8 @@ import sorcer.junit.SorcerServiceConfiguration;
 import sorcer.service.Block;
 import sorcer.service.Task;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.entry;
@@ -39,7 +40,7 @@ import static sorcer.po.operator.*;
 @SorcerServiceConfiguration(":ex5-cfg-all")
 public class ArithmeticNetBlockTest implements SorcerConstants {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticNetBlockTest.class.getName());
 	
 	@Test

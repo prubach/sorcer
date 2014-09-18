@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class ScriptExerter {
 
-    private final static Logger logger = Logger.getLogger(ScriptExerter.class
+    private final static Logger logger = LoggerFactory.getLogger(ScriptExerter.class
             .getName());
 
     private final static String LINE_SEP = "\n";
@@ -173,7 +175,7 @@ public class ScriptExerter {
             }
             throw new ScriptExertException(e.getLocalizedMessage(), e, lineNum - getLineOffsetForGroovyErrors());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "error while parsing", e);
+            logger.error( "error while parsing", e);
             throw new ScriptExertException(e.getLocalizedMessage(), e, -getLineOffsetForGroovyErrors());
         }
     }
@@ -231,7 +233,7 @@ public class ScriptExerter {
 
         try {
             is = getClass().getClassLoader().getResourceAsStream(filename);
-            logger.finest("Loading " + filename + " from is: " + is);
+            logger.debug("Loading " + filename + " from is: " + is);
             if (is != null) {
                 br = new BufferedReader(new InputStreamReader(is));
                 while (null != (line = br.readLine())) {

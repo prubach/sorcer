@@ -32,7 +32,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.util.StringUtils.tName;
 
@@ -45,7 +46,7 @@ public class ScriptThread extends Thread {
         private Configuration config;
         private boolean debug = false;
 
-        private final static Logger logger = Logger.getLogger(ScriptThread.class
+        private final static Logger logger = LoggerFactory.getLogger(ScriptThread.class
                 .getName());
 
         public ScriptThread(String script, ClassLoader classLoader, PrintStream out, Configuration config, boolean debug) {
@@ -96,7 +97,7 @@ public class ScriptThread extends Thread {
                     try {
                         target = gShell.evaluate(scriptFile);
                     } catch (IOException e) {
-                        logger.severe("Problem evaluating Script file: " + scriptFile + ": " + e.getMessage());
+                        logger.error("Problem evaluating Script file: " + scriptFile + ": " + e.getMessage());
                    }
                 }
             }

@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.export.Exporter;
 
@@ -51,7 +53,7 @@ import static sorcer.container.jeri.ExporterFactories.EXPORTER;
  * @author Mike Sobolewski
  */
 public class ProvisionManager {
-	private static final Logger logger = Logger.getLogger(ProvisionManager.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ProvisionManager.class.getName());
 	private final Exertion exertion;
 	private OperationalStringManager opStringManager;
 	private DeployAdmin deployAdmin;
@@ -102,7 +104,7 @@ public class ProvisionManager {
                         try {
                             serviceProvisionListener = deployListener.export();
                         } catch (ExportException e) {
-                            logger.log(Level.WARNING, "Unable to export the ServiceProvisionListener", e);
+                            logger.warn("Unable to export the ServiceProvisionListener", e);
                         }
                         deployAdmin.deploy(deployment, serviceProvisionListener);
                         opStringName = deployment.getName();
@@ -114,10 +116,10 @@ public class ProvisionManager {
                     }
                 }
             } else {
-                logger.warning(String.format("Unable to obtain a ProvisionMonitor for %s", exertion.getName()));
+                logger.warn(String.format("Unable to obtain a ProvisionMonitor for %s", exertion.getName()));
             }
         } catch (Exception e) {
-            logger.log(Level.WARNING,
+            logger.warn(
                        String.format("Unable to process deployment for %s", exertion.getName()),
                        e);
             throw new DispatcherException(String.format("While trying to provision exertion %s", exertion.getName()), e);
@@ -130,7 +132,7 @@ public class ProvisionManager {
 			try {
 				deployAdmin.undeploy(opStringName);
 			} catch (Exception e) {
-				logger.log(Level.WARNING, "Unable to undeploy "+opStringName, e);
+				logger.warn("Unable to undeploy "+opStringName, e);
 			}
 		} 
 	}
@@ -179,7 +181,7 @@ public class ProvisionManager {
         }
 
         public void failed(ServiceElement serviceElement, boolean resubmitted) throws RemoteException {
-            logger.warning(String.format("Service [%s/%s] failed, undeploy",
+            logger.warn(String.format("Service [%s/%s] failed, undeploy",
                                          serviceElement.getServiceBeanConfig().getOperationalStringName(),
                                          serviceElement.getServiceBeanConfig().getName()));
             success.set(false);

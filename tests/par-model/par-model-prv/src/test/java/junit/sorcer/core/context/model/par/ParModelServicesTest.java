@@ -16,7 +16,8 @@ import static sorcer.po.operator.invoker;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.transaction.TransactionException;
 
@@ -50,7 +51,7 @@ import sorcer.util.Sorcer;
         "org.sorcersoft.sorcer:model-beans"})
 @SorcerServiceConfiguration(":par-model-cfg")
 public class ParModelServicesTest {
-	private final static Logger logger = Logger.getLogger(ParModelServicesTest.class
+	private final static Logger logger = LoggerFactory.getLogger(ParModelServicesTest.class
 			.getName());
 
 	

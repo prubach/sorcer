@@ -21,8 +21,10 @@ import static sorcer.service.TaskFactory.task;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.transaction.TransactionException;
 import sorcer.core.context.ServiceContext;
@@ -54,7 +56,7 @@ public class ControlFlowManager {
     /**
      * Logger for this ExerterController logging.
      */
-    protected static final Logger logger = Logger
+    protected static final Logger logger = LoggerFactory
             .getLogger(ControlFlowManager.class.getName());
 
     /**
@@ -286,7 +288,7 @@ public class ControlFlowManager {
                 return job;
             }
         } catch (TransactionException e) {
-            logger.log(Level.SEVERE, "Error", e);
+            logger.error( "Error", e);
         }
         return null;
     }
@@ -539,7 +541,7 @@ public class ControlFlowManager {
                     return shared;
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error", e);
+                logger.error( "Error", e);
                 task.setStatus(Exec.FAILED);
                 task.reportException(e);
                 task.setContext(shared);

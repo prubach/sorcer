@@ -12,14 +12,15 @@ import static sorcer.eo.operator.revalue;
 
 import java.io.Serializable;
 import java.util.Scanner;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.service.Context;
 import sorcer.service.ContextException;
 
 @SuppressWarnings("rawtypes")
 public class Volume implements Sphere, Cylinder, Serializable {
-	private final static Logger logger = Logger.getLogger(Volume.class
+	private final static Logger logger = LoggerFactory.getLogger(Volume.class
 			.getName());
 	private static double radius = 0.0, height = 0.0;
 	 

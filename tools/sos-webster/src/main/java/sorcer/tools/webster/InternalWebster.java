@@ -30,8 +30,8 @@ import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.core.SorcerConstants.CODEBASE_JARS;
 import static sorcer.core.SorcerConstants.CODEBASE_SEPARATOR;
@@ -43,7 +43,7 @@ import static sorcer.core.SorcerConstants.S_WEBSTER_INTERFACE;
  * @author Dennis Reedy and Mike Sobolewski
  */
 public class InternalWebster {
-    private static Logger logger = Logger.getLogger(InternalWebster.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(InternalWebster.class.getName());
     private static boolean debug = false;
     public static final String WEBSTER_ROOTS = "sorcer.webster.roots";
 
@@ -80,7 +80,7 @@ public class InternalWebster {
     public static Webster startWebster(String[] exportJars, String[] websterRoots) throws IOException {
         String codebase = System.getProperty("java.rmi.server.codebase");
 		if (codebase != null)
-			logger.fine("Codebase is alredy specified: "
+			logger.debug("Codebase is alredy specified: "
                     + codebase);
 
         String d = System.getProperty("webster.debug");
@@ -110,7 +110,7 @@ public class InternalWebster {
         try {
             minThreads = Integer.parseInt(sMinThreads);
         } catch (NumberFormatException e) {
-            logger.log(Level.WARNING, "Bad Min Threads Number [" + sMinThreads
+            logger.warn("Bad Min Threads Number [" + sMinThreads
                     + "], " + "default to " + minThreads, e);
         }
         String sMaxThreads = System.getProperty("webster.maxThreads",
@@ -119,7 +119,7 @@ public class InternalWebster {
         try {
             maxThreads = Integer.parseInt(sMaxThreads);
         } catch (NumberFormatException e) {
-            logger.log(Level.WARNING, "Bad Max Threads Number [" + sMaxThreads
+            logger.warn("Bad Max Threads Number [" + sMaxThreads
                     + "], " + "default to " + maxThreads, e);
         }
         String sPort = System.getProperty("webster.port", "0");
@@ -127,19 +127,19 @@ public class InternalWebster {
         try {
             port = Integer.parseInt(sPort);
         } catch (NumberFormatException e) {
-            logger.log(Level.WARNING, "Bad port Number [" + sPort + "], "
+            logger.warn("Bad port Number [" + sPort + "], "
                     + "default to " + port, e);
         }
 
         String address = System.getProperty(S_WEBSTER_INTERFACE);
         Webster webster = new Webster(port, roots, address, minThreads, maxThreads, true);
         port = webster.getPort();
-        if (logger.isLoggable(Level.FINEST))
-            logger.finest("Webster MinThreads=" + minThreads + ", "
+        if (logger.isDebugEnabled())
+            logger.debug("Webster MinThreads=" + minThreads + ", "
                     + "MaxThreads=" + maxThreads);
 
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Webster serving on port=" + port);
+        if (logger.isDebugEnabled())
+            logger.debug("Webster serving on port=" + port);
 
         String[] jars = null;
         String jarsList = null;
@@ -157,15 +157,15 @@ public class InternalWebster {
         Set<String> codebaseSet = new HashSet<String>();
         for (String export : jars)
             if (export.startsWith("artifact:")) {
-                logger.fine("adding artifact as is: " + export);
+                logger.debug("adding artifact as is: " + export);
                 codebaseSet.add(export);
             } else if (ArtifactCoordinates.isArtifact(export)) {
                 String url = resolve(export);
-                logger.fine("Adding " + export + " as " + url);
+                logger.debug("Adding " + export + " as " + url);
                 codebaseSet.add(url);
             } else {
                 String url = pathToHttpUrl(export, localIPAddress, port);
-                logger.fine("Adding " + export + " as " + url);
+                logger.debug("Adding " + export + " as " + url);
                 codebaseSet.add(url);
             }
         codebase = StringUtils.join(codebaseSet, CODEBASE_SEPARATOR);
@@ -173,8 +173,8 @@ public class InternalWebster {
         System.setProperty(SorcerConstants.P_WEBSTER_PORT, Integer.toString(webster.getPort()));
         System.setProperty(SorcerConstants.P_WEBSTER_INTERFACE, webster.getAddress());
         SorcerEnv.updateWebster();
-        logger.fine("Setting 'webster URL': " + SorcerEnv.getWebsterUrl());
-        logger.fine("Setting 'java.rmi.server.codebase': " + codebase);
+        logger.debug("Setting 'webster URL': " + SorcerEnv.getWebsterUrl());
+        logger.debug("Setting 'java.rmi.server.codebase': " + codebase);
 
         return webster;
     }

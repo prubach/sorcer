@@ -37,7 +37,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.sorcer.core.invoker.service.Volume;
 import junit.sorcer.core.provider.AdderImpl;
@@ -80,7 +81,7 @@ import sorcer.util.exec.ExecUtils.CmdResult;
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
 public class InvokerTest {
-	private final static Logger logger = Logger.getLogger(InvokerTest.class
+	private final static Logger logger = LoggerFactory.getLogger(InvokerTest.class
 			.getName());
 
 	// member subclass of Invocable with Context parameter used below with

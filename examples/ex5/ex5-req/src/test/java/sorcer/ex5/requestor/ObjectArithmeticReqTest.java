@@ -33,7 +33,8 @@ import sorcer.service.*;
 import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +48,7 @@ import static org.junit.Assert.assertEquals;
 })
 public class ObjectArithmeticReqTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ObjectArithmeticReqTest.class.getName());
 	@Test
 	public void exertTaskJob() throws Exception {

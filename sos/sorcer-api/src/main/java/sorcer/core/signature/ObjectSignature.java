@@ -179,7 +179,7 @@ public class ObjectSignature extends ServiceSignature {
 			e.printStackTrace();
 			throw new SignatureException(e);
 		}
-		logger.fine(">>>>>>>>>>> instantiated: \n" + obj + "\n by signature: "
+		logger.debug(">>>>>>>>>>> instantiated: \n" + obj + "\n by signature: "
 				+ this);
 		return obj;
 	}
@@ -238,7 +238,7 @@ public class ObjectSignature extends ServiceSignature {
 				throw new SignatureException(e);
 			} 
 		}
-		// logger.fine(">>>>>>>>>>> instantiated: \n" + obj +
+		// logger.debug(">>>>>>>>>>> instantiated: \n" + obj +
 		// "\n by signature: " + this);
 		return obj;
 	}

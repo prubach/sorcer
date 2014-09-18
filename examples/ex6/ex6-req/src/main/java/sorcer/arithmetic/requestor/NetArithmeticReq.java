@@ -28,7 +28,8 @@ import sorcer.service.Context;
 import sorcer.service.Job;
 import sorcer.service.Task;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
 @SuppressWarnings({ "rawtypes" })
 public class NetArithmeticReq {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(NetArithmeticReq.class.getName());
 
 	public static Job createArithmeticJob() throws Exception {

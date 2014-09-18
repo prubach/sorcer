@@ -427,6 +427,7 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 	
 	public List<String> list(Store storeType) {
 		StoredValueSet storedSet = getStoredSet(storeType);
+        logger.debug("list got storedSet size: " + storedSet.size());
 		List<String> contents = new ArrayList<String>(storedSet.size());
 		Iterator it = storedSet.iterator();
 		while(it.hasNext()) {

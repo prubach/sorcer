@@ -24,7 +24,8 @@ import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.SorcerConstants;
 import sorcer.core.context.ApplicationDescription;
@@ -48,7 +49,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 
 	private static final long serialVersionUID = 7495489980319169695L;
 	 
-	private static Logger logger = Logger.getLogger(Par.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(Par.class.getName());
 
 	protected String name;
 	
@@ -175,7 +176,7 @@ public class Par<T> extends Identity implements Variability<T>, Arg, Mappable<T>
 			}
 			if (val instanceof Evaluation) {
 				if (val instanceof Par && ((Par)val).asis() == null && value == null) {
-					logger.warning("undefined par: " + val);
+					logger.warn("undefined par: " + val);
 					return null;
 				}
 

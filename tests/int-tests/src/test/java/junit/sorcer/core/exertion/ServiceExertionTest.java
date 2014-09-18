@@ -25,7 +25,8 @@ import static sorcer.po.operator.invoker;
 import static sorcer.po.operator.par;
 
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.sorcer.core.provider.AdderImpl;
 import junit.sorcer.core.provider.MultiplierImpl;
@@ -56,7 +57,7 @@ import sorcer.service.Task;
         "org.sorcersoft.sorcer:ju-arithmetic-api"
 })
 public class ServiceExertionTest {
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ServiceExertionTest.class.getName());
 
 	private Exertion eTask, eJob;

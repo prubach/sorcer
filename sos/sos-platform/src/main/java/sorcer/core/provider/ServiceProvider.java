@@ -864,21 +864,21 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return context;
 	}
 
-	public java.util.logging.Logger getContextLogger() {
-		return java.util.logging.Logger.getLogger("private.context." + delegate.getProviderName());
+	public Logger getContextLogger() {
+		return LoggerFactory.getLogger("private.context." + delegate.getProviderName());
 	}
 
-	public java.util.logging.Logger getProviderLogger() {
-		return java.util.logging.Logger.getLogger("private.provider." + delegate.getProviderName());
+	public Logger getProviderLogger() {
+		return LoggerFactory.getLogger("private.provider." + delegate.getProviderName());
 	}
 
-	public java.util.logging.Logger getRemoteLogger() {
+	public Logger getRemoteLogger() {
         try {
             String loggerName = (String) getProviderConfiguration().getEntry(
                     ServiceProvider.COMPONENT, ProviderDelegate.REMOTE_LOGGER_NAME,
                     String.class,
                     "remote.sorcer.provider-" + delegate.getProviderName());
-            return java.util.logging.Logger.getLogger(loggerName);
+            return LoggerFactory.getLogger(loggerName);
         } catch (ConfigurationException e) {
             throw new IllegalArgumentException(e);
         }
@@ -1097,7 +1097,7 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 			fis.close();
 			contextLoaded = true;
 		} catch (IOException ioe) {
-			// logger.throwing(this.getClass().getName(), "getMethodContext",
+			// logger.error(this.getClass().getName(), "getMethodContext",
 			// ioe);
 			// logger.info("no context file availabe for the provider: " +
 			// getProviderName());
@@ -1735,8 +1735,8 @@ public class ServiceProvider implements Identifiable, Provider, ServiceIDListene
 		return true;
 	}
 
-	public java.util.logging.Logger getLogger() {
-		return java.util.logging.Logger.getLogger(ServiceProvider.class.getName());
+	public Logger getLogger() {
+		return LoggerFactory.getLogger(ServiceProvider.class.getName());
 	}
 
 	private final int SLEEP_TIME = 250;

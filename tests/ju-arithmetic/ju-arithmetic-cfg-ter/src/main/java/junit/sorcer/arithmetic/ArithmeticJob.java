@@ -25,12 +25,13 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static sorcer.eo.operator.*;
 
 public class ArithmeticJob {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticJob.class.getName());
 
 	// two level job composition with PULL and PAR execution

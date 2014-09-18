@@ -21,7 +21,8 @@ package sorcer.core.dispatch;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.lease.Lease;
 import net.jini.lease.LeaseRenewalManager;
@@ -43,7 +44,7 @@ import static sorcer.service.monitor.MonitorUtil.getMonitoringSession;
  */
 public class ExertionDispatcherFactory implements DispatcherFactory {
     public static Cataloger catalog; // The service catalog object
-    private final static Logger logger = Logger.getLogger(ExertionDispatcherFactory.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(ExertionDispatcherFactory.class.getName());
     private ProviderProvisionManager providerProvisionManager = ProviderProvisionManager.getInstance();
 
     private LokiMemberUtil loki;
@@ -126,7 +127,7 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
             assert dispatcher != null;
             MonitoringSession monSession = MonitorUtil.getMonitoringSession(exertion);
             if (exertion.isMonitorable() && monSession!=null) {
-                logger.fine("Initializing monitor session for : " + exertion.getName());
+                logger.debug("Initializing monitor session for : " + exertion.getName());
                 if (!(monSession.getState()==Exec.INSPACE)) {
                     monSession.init((Monitorable) provider.getProxy(), LEASE_RENEWAL_PERIOD,
                             DEFAULT_TIMEOUT_PERIOD);
@@ -137,9 +138,9 @@ public class ExertionDispatcherFactory implements DispatcherFactory {
                 lrm.renewUntil(monSession.getLease(), Lease.FOREVER, LEASE_RENEWAL_PERIOD, null);
                 dispatcher.setLrm(lrm);
 
-                logger.fine("Exertion state: " + Exec.State.name(exertion.getStatus()));
-                logger.fine("Session for the exertion = " + monSession);
-                logger.fine("Lease to be renewed for duration = " +
+                logger.debug("Exertion state: " + Exec.State.name(exertion.getStatus()));
+                logger.debug("Session for the exertion = " + monSession);
+                logger.debug("Lease to be renewed for duration = " +
                         (monSession.getLease().getExpiration() - System
                                 .currentTimeMillis()));
             }

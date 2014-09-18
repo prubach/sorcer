@@ -74,7 +74,7 @@ public class MonitoringControlFlowManager extends ControlFlowManager {
     public Exertion process() throws ExertionException {
         MonitoringSession monSession = getMonitoringSession(exertion);
         if (sessionMonitor==null)
-            logger.severe("Monitoring enabled but ExertMonitor service could not be found!");
+            logger.error("Monitoring enabled but ExertMonitor service could not be found!");
         try {
             if (monSession==null && sessionMonitor!=null) {
                 logger.info("No Monitor Session, registering for: " + exertion.getName());

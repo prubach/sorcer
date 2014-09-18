@@ -35,8 +35,10 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides static convenience methods for use in configuration files. This class cannot
@@ -46,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
-	private static Logger logger = Logger.getLogger(COMPONENT);
+	private static Logger logger = LoggerFactory.getLogger(COMPONENT);
 	private static org.slf4j.Logger log = LoggerFactory.getLogger(Booter.class);
 
 	/**
@@ -77,7 +79,7 @@ public class Booter {
 		try {
 			loadEnvironment();
 		} catch (IOException e) {
-			logger.severe("Cannot load the SORCER environment");
+			logger.error("Cannot load the SORCER environment");
 		}
         try {
             localRepo = new File(getLocalRepoRootUrl().toURI()).getPath();
@@ -522,7 +524,7 @@ public class Booter {
 				if (stream != null)
 					props.load(stream);
 				else
-					logger.severe("could not load the SORCER Env properties");
+					logger.error("could not load the SORCER Env properties");
 			} catch (Throwable t2) {
 				throw new IOException();
 			}
@@ -536,7 +538,7 @@ public class Booter {
 				String val = value.replace(pattern, getHostAddress());
 				props.put("provider.webster.interface", val);
 			} catch (UnknownHostException e1) {
-                logger.log(Level.WARNING, "Could not resolve hostname", e1);
+                logger.warn("Could not resolve hostname", e1);
             }
 		}
 	}
@@ -550,7 +552,7 @@ public class Booter {
 	public static String getProperty(String property) {
 		String p = props.getProperty(property);
 		if (p == null) {
-			logger.finer("SORCER Env property not set: " + property);
+			logger.debug("SORCER Env property not set: " + property);
 		}
 		return p;
 	}

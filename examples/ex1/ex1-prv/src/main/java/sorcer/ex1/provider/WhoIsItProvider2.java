@@ -19,7 +19,8 @@ package sorcer.ex1.provider;
 
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.ServiceTasker;

@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.UnknownEventException;
@@ -57,7 +58,7 @@ public class ExertCmd extends ShellCmd {
 				+ "\n  --m   marshal the the command output in a file";
 	}
 
-	private final static Logger logger = Logger.getLogger(ExertCmd.class
+	private final static Logger logger = LoggerFactory.getLogger(ExertCmd.class
 			.getName());
 
     private ScriptExerter scriptExerter;

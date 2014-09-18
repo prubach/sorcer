@@ -25,7 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
@@ -61,7 +62,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 
 	static final int MAX_TRIES = 5;
 
-	static final private Logger logger = Logger.getLogger(ProviderLookup.class.getName());
+	static final private Logger logger = LoggerFactory.getLogger(ProviderLookup.class.getName());
 
 	private int tries = 0;
 
@@ -145,7 +146,7 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 		try {
 			type = Class.forName(serviceType);
 		} catch (ClassNotFoundException cnfe) {
-			//logger.throwing("ProviderLookup", "getService", cnfe);
+			//logger.error("ProviderLookup", "getService", cnfe);
 			return null;
 		}
 		ProviderLookup lookup = new ProviderLookup(providerName, type);
@@ -202,12 +203,12 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 					discoverer = new LookupDiscovery(SorcerEnv.getLookupGroups());
 					// discoverer = new
 					// LookupDiscovery(LookupDiscovery.ALL_GROUPS);
-					//logger.finer("service lookup for groups: " + Arrays.toString(getGroups()));
-					//.logger.finer("WAIT_FOR: " + WAIT_FOR);
+					//logger.debug("service lookup for groups: " + Arrays.toString(getGroups()));
+					//.logger.debug("WAIT_FOR: " + WAIT_FOR);
 					discoverer.addDiscoveryListener(this);
 				} catch (IOException ioe) {
-					logger.finer("Failed to lookup proxy: " + template);
-					logger.throwing(getClass().getName(), "getService", ioe);
+					logger.debug("Failed to lookup proxy: " + template);
+					logger.error(getClass().getName(), "getService", ioe);
 				}
 			}
 		}
@@ -237,10 +238,10 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 				try {
 					wait(WAIT_FOR);
 					tries++;
-					logger.fine("has tried times: " + tries + " for "
+					logger.debug("has tried times: " + tries + " for "
 							+ template);
 				} catch (InterruptedException ie) {
-					logger.throwing(getClass().getName(), "waitForProxy", ie);
+					logger.error(getClass().getName(), "waitForProxy", ie);
 					proxy = null;
 					return proxy;
 				}
@@ -287,8 +288,8 @@ public class ProviderLookup implements DiscoveryListener, DynamicAccessor {
 					break;
 				}
 			} catch (RemoteException re) {
-				logger.finer("ServiceRegistrar barfed");
-				logger.throwing(getClass().getName(), "discovered", re);
+				logger.debug("ServiceRegistrar barfed");
+				logger.error(getClass().getName(), "discovered", re);
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class HelloWorldImpl implements HelloWorld {
 			context.putOutValue("out/value", output);
 			logger.info("HelloWorld Provider sent a message" + context);
 		} catch (Exception e) {
-			logger.severe("HelloWorld Provider - problem interpreting message: " + context);
+			logger.error("HelloWorld Provider - problem interpreting message: " + context);
 		}
 		return context;		
 	}

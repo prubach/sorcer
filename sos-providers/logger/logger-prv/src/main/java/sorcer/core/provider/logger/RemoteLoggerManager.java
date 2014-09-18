@@ -134,7 +134,7 @@ public class RemoteLoggerManager implements RemoteLogger {
         logger.callAppenders(loggingEvent);
         LoggingConfig lc = new LoggingConfig(loggerName, null);
         if (!knownLoggers.contains(lc)) {
-            lc.setLevel(java.util.logging.Level.ALL);
+            lc.setLevel(Level.ALL);
             knownLoggers.add(lc);
         }
     }

@@ -27,7 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RMISecurityManager;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -58,7 +59,7 @@ import com.sleepycat.je.DatabaseException;
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api"})
 public class SorcerDatabaseTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(SorcerDatabaseTest.class.getName());
 	
 	private static SorcerDatabaseRunner runner;

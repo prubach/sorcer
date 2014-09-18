@@ -4,7 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -29,7 +30,7 @@ public class AccountUI extends JPanel {
 
 	private ServiceItem item;
 
-	private final static Logger logger = Logger.getLogger(AccountUI.class
+	private final static Logger logger = LoggerFactory.getLogger(AccountUI.class
 			.getName());
 
 	public AccountUI(Object provider) {
@@ -56,7 +57,7 @@ public class AccountUI extends JPanel {
 			balanceTextField.setText(balance.value());
 		} catch (Exception e) {
 			logger.info("Error occurred while getting account balance");
-			logger.throwing(getClass().getName(), "resetBalanceField", e);
+			logger.error(getClass().getName(), "resetBalanceField", e);
 		}
 	}
 
@@ -110,7 +111,7 @@ public class AccountUI extends JPanel {
 				resetBalanceField();
 			} catch (Exception exception) {
 				logger.info("Couldn't talk to account. Error was" + exception);
-				logger.throwing(getClass().getName(), "actionPerformed",
+				logger.error(getClass().getName(), "actionPerformed",
 						exception);
 			}
 		}
@@ -126,7 +127,7 @@ public class AccountUI extends JPanel {
 			} catch (Exception exception) {
 				logger.info("Couldn't talk to account. Error was \n"
 						+ exception);
-				logger.throwing(getClass().getName(), "actionPerformed",
+				logger.error(getClass().getName(), "actionPerformed",
 						exception);
 			}
 		}

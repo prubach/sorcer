@@ -41,7 +41,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /*
@@ -49,7 +50,7 @@ This class was migrated to Sorcersoft.com SORCER for compatibility with AFRL Sor
  */
 @Deprecated
 public class SorcerUtil {
-	final static Logger logger = Logger.getLogger("sorcer");
+	final static Logger logger = LoggerFactory.getLogger("sorcer");
 	private static Calendar calendar = null;
     final static String CPS = "/";
 

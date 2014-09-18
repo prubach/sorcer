@@ -113,7 +113,7 @@ import static sorcer.util.StringUtils.tName;
 public class ServiceCataloger extends ServiceProvider implements Cataloger, AdministratableProvider {
 
 	/** Logger for logging information about this instance */
-	//private static Logger logger = Logger.getLogger(ServiceCataloger.class.getName());
+	//private static Logger logger = LoggerFactory.getLogger(ServiceCataloger.class.getName());
 	private static final Logger logger = LoggerFactory.getLogger(ServiceCataloger.class);
 
 	public ServiceDiscoveryManager lookupMgr;
@@ -688,9 +688,9 @@ public class ServiceCataloger extends ServiceProvider implements Cataloger, Admi
 				maxItems = Integer.MAX_VALUE;
 			if (providerName != null && providerName.equals(ANY))
 				providerName = null;
-			// logger.fine("Looking for interfaces: " + interfaces);
+			// logger.debug("Looking for interfaces: " + interfaces);
 			List<ServiceItem> list = get(new InterfaceList(interfaces));
-			// logger.fine("Got list: " + list.toString());
+			// logger.debug("Got list: " + list.toString());
 			if (list == null)
 				return null;
 

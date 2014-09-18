@@ -23,7 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceTemplate;
@@ -64,7 +65,7 @@ public class operator {
 
     protected static int count = 0;
 
-    protected static final Logger logger = Logger.getLogger(operator.class
+    protected static final Logger logger = LoggerFactory.getLogger(operator.class
             .getName());
 
     public static String path(List<String> attributes) {
@@ -929,10 +930,10 @@ public class operator {
 				job.addExertion(ex);
 			}
 			for (Pipe p : pipes) {
-				logger.finer("from context: "
+				logger.debug("from context: "
 						+ ((Exertion) p.in).getDataContext().getName()
 						+ " path: " + p.inPath);
-				logger.finer("to context: "
+				logger.debug("to context: "
 						+ ((Exertion) p.out).getDataContext().getName()
 						+ " path: " + p.outPath);
 				((Exertion) p.out).getDataContext().connect(p.outPath,
@@ -2199,11 +2200,11 @@ public class operator {
                     try {
                         InetAddress inetAddress = InetAddress.getByName(ipAddress);
                         if(inetAddress.isReachable(1000)) {
-                            logger.warning(getWarningBanner("The signature declares an ip address or hostname.\n" +
+                            logger.warn(getWarningBanner("The signature declares an ip address or hostname.\n" +
                                                             ipAddress+" is not reachable on the current network"));
                         }
                     } catch (Exception e) {
-                        logger.warning(getWarningBanner(ipAddress+" is not found on the current network.\n"
+                        logger.warn(getWarningBanner(ipAddress+" is not found on the current network.\n"
                                                         +e.getClass().getName()+": "+e.getMessage()));
                     }
                 }

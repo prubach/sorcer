@@ -40,8 +40,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.service.monitor.MonitorUtil.setMonitorSession;
 
@@ -55,9 +57,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		try {
 			eventPool = Executors.newFixedThreadPool(EVENT_TASK_POOL_MAX);
 		} catch (Exception e) {
-			logger.log(
-					Level.SEVERE,
-					"Error while instantiating eventPool... "
+			logger.error("Error while instantiating eventPool... "
 							+ e.getMessage());
 		}
 	}
@@ -70,7 +70,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.SessionResource";
 
-	static transient final Logger logger = Logger.getLogger(LOGGER);
+	static transient final Logger logger = LoggerFactory.getLogger(LOGGER);
 
 	static transient final int EVENT_TASK_POOL_MIN = 1;
 
@@ -202,7 +202,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: executor cannot be NULL");
 
 		if (isRunning() || isInSpace()) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Trying to initialize a exertion already in space or is running"
 							+ this);
 			throw new MonitorException(
@@ -222,7 +222,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 	public void init(long duration, long timeout) throws MonitorException {
 
 		if (isRunning() || isInSpace()) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Trying to initialize a exertion already in space or is running"
 							+ this);
 			throw new MonitorException("Session already active state="
@@ -243,7 +243,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: executor cannot be NULL");
 
 		if (!isInSpace()) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Trying to initialize a exertion not in space" + this);
 			throw new MonitorException(
 					"This session can be only activated without being picked from space current state="
@@ -276,13 +276,13 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			throw new NullPointerException("Assertion Failed: ctx cannot be null");
 
 		if (!isRunning()) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Trying to call done on a non running resource" + this);
 			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running, state="
 					+ getState());
 		}
 
-		logger.log(Level.INFO,
+		logger.info(
 				" This exertion is completed " + runtimeExertion.getName());
 
 		runtimeExertion.setStatus(Exec.DONE);
@@ -303,7 +303,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					"Assertion Failed: ctx cannot be NULL");
 
 		if (!isRunning()) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Trying to call failed on a non running resource" + this);
 			throw new MonitorException("Exertion " + runtimeExertion.getName() + " not running . state="
 					+ getState());
@@ -333,10 +333,10 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 
 	private void stateChanged() {
 		int oldState = getState();
-		logger.fine("stateChanged called " + runtimeExertion.getName() + " oldState =" + Exec.State.name(getState())
+		logger.debug("stateChanged called " + runtimeExertion.getName() + " oldState =" + Exec.State.name(getState())
 				+ " resetting state.....");
 		resetState();
-        logger.fine("stateChanged called newState =" + Exec.State.name(getState()));
+        logger.debug("stateChanged called newState =" + Exec.State.name(getState()));
 		if (oldState != getState()) {
 			fireRemoteEvent();
 			notifyParent();
@@ -355,9 +355,9 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 		try {
             sessionManager.persist(tempSession);
 		} catch (Exception e) {
-			logger.severe("Problem persisting monitorSession: " + e.getMessage());
+			logger.error("Problem persisting monitorSession: " + e.getMessage());
 			try {
-				logger.log(Level.SEVERE, "Could not persist the session resource:\n"
+				logger.error( "Could not persist the session resource:\n"
 						+ initialExertion + " at: " + ((Provider)sessionManager).getProviderName());
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
@@ -382,15 +382,15 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			else if (get(i).isDone())
 				doneCount++;
 			else if (get(i).isInitial())
-                logger.fine("Ignoring state INITIAL for: " + get(i).runtimeExertion.getName());
+                logger.debug("Ignoring state INITIAL for: " + get(i).runtimeExertion.getName());
             else
-				logger.severe("State not accounted for while resetting state"
+				logger.error("State not accounted for while resetting state"
 								+ get(i).runtimeExertion.getName()
 								+ " state="
 								+ get(i).getState());
 
 		}
-		logger.fine("failed count=" + failedCount + " suspended count="
+		logger.debug("failed count=" + failedCount + " suspended count="
                 + suspendedCount + " doneCount=" + doneCount);
 
 		if (doneCount == size() || (runtimeExertion instanceof AltExertion && doneCount>0)) {
@@ -504,7 +504,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			persist();
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,
+			logger.error(
 					"Exception occured which calling leaseCancelled");
 		}
 
@@ -521,7 +521,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			persist();
 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Exception occured which calling timedOut");
+			logger.error( "Exception occured which calling timedOut");
 		}
 	}
 
@@ -553,7 +553,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 					runtimeExertion, runtimeExertion.getStatus());
 			eventPool.submit(new MonitorEventTask(event, listener));
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Dispatching Monitoring Event", e);
+			logger.error( "Dispatching Monitoring Event", e);
 		}
 	}
 
@@ -571,8 +571,7 @@ public class MonitorSession extends ArrayList<MonitorSession> implements
 			try {
 				listener.notify(event);
 			} catch (Exception e) {
-				logger.log(Level.WARNING,
-						"Exception notifying event consumers", e);
+				logger.warn("Exception notifying event consumers", e);
 			}
 		}
 	}

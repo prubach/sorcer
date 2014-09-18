@@ -19,7 +19,8 @@ package sorcer.po;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.co.tuple.ExecPath;
 import sorcer.co.tuple.InEntry;
@@ -49,7 +50,7 @@ import sorcer.service.ServiceExertion;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class operator {
 
-	private static final Logger logger = Logger.getLogger(operator.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(operator.class.getName());
 
 
 	public static <T> Par<T> par(String path, T argument) {

@@ -26,7 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.tools.shell.INetworkShell;
 import sorcer.tools.shell.NetworkShell;
@@ -45,7 +46,7 @@ public class GroovyCmd extends ShellCmd {
 			+ "\n  -s   save the excution reult in file <output filename>";
 	}
 
-	private final static Logger logger = Logger.getLogger(ExertCmd.class
+	private final static Logger logger = LoggerFactory.getLogger(ExertCmd.class
 			.getName());
 
 	private String input;

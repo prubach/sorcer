@@ -17,7 +17,8 @@ import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static sorcer.co.operator.from;
 import static sorcer.eo.operator.*;
@@ -31,7 +32,7 @@ import static sorcer.eo.operator.*;
 })
 public class ArithmeticNoNetTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(ArithmeticNoNetTest.class.getName());
 
 	@Test

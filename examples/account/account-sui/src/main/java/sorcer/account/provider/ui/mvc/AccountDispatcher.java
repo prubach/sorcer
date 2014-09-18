@@ -3,13 +3,14 @@ package sorcer.account.provider.ui.mvc;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.account.provider.Account;
 
 public class AccountDispatcher implements ActionListener {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger("sorcer.provider.account.ui.mvc");
 
 	private AccountModel model;
@@ -30,7 +31,7 @@ public class AccountDispatcher implements ActionListener {
 			model.setBalance(account.getBalance());
 		} catch (RemoteException e) {
 			logger.info("Error occurred while getting account balance");
-			logger.throwing(getClass().getName(), "getBalance", e);
+			logger.error(getClass().getName(), "getBalance", e);
 		}
 	}
 

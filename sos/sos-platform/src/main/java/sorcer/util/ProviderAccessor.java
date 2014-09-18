@@ -34,8 +34,8 @@ import sorcer.service.Signature;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class that provides access to SORCER services and some
@@ -58,7 +58,7 @@ import java.util.logging.Logger;
 public class ProviderAccessor extends ServiceAccessor implements
 		DynamicAccessor {
 
-	static Logger logger = Logger.getLogger(ProviderAccessor.class.getName());
+	static Logger logger = LoggerFactory.getLogger(ProviderAccessor.class.getName());
 
     /**
 	 * Used for local caching to speed up getting frequently needed service
@@ -143,7 +143,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 				servicer = (Provider) super.getService(providerName, serviceType);
 			}
 		} catch (Throwable ex) {
-			logger.throwing(ProviderAccessor.class.getName(), "getService", ex);
+			logger.error(ProviderAccessor.class.getName(), "getService", ex);
 			ex.printStackTrace();
 		}
 		return (T) servicer;
@@ -166,7 +166,7 @@ public class ProviderAccessor extends ServiceAccessor implements
 			else
 				return super.getService(serviceID);
 		} catch (Exception ex) {
-			logger.throwing(ProviderAccessor.class.getName(), "getService", ex);
+			logger.error(ProviderAccessor.class.getName(), "getService", ex);
 			return null;
 		}
 	}
@@ -230,7 +230,7 @@ public class ProviderAccessor extends ServiceAccessor implements
                     return null;
             }
 		} catch (Exception e) {
-			logger.throwing(ProviderAccessor.class.getName(), "getService", e);
+			logger.error(ProviderAccessor.class.getName(), "getService", e);
 			return null;
 		}
 	}
@@ -264,12 +264,12 @@ public class ProviderAccessor extends ServiceAccessor implements
 				} else {
 					// just get a provider without a Cataloger, use directly
 					// LUSs
-					logger.severe("No SORCER cataloger available");
+					logger.error("No SORCER cataloger available");
 					return getService(providerName, primaryInterface);
 				}
 			}
 		} catch (RemoteException ex) {
-			logger.throwing(ProviderAccessor.class.getName(), "lookup", ex);
+			logger.error(ProviderAccessor.class.getName(), "lookup", ex);
 			return null;
 		}
 	}
@@ -291,7 +291,7 @@ public class ProviderAccessor extends ServiceAccessor implements
                     ServiceItem[] matching = Filters.matching(matches.items, filter);
                     if (matching.length > 0) return matching;
                 } catch (RemoteException e) {
-                    logger.log(Level.SEVERE, "Problem with Cataloger, falling back", e);
+                    logger.error( "Problem with Cataloger, falling back", e);
                 }
             }
         }

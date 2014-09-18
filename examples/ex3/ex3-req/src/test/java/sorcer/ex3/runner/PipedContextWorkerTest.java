@@ -35,7 +35,8 @@ import sorcer.service.Strategy.Access;
 import sorcer.service.Strategy.Flow;
 import sorcer.service.Task;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
 @RunWith(SorcerRunner.class)
@@ -51,7 +52,7 @@ import java.util.logging.Logger;
 })
 public class PipedContextWorkerTest {
 
-    private final static Logger logger = Logger
+    private final static Logger logger = LoggerFactory
             .getLogger(PipedContextWorkerTest.class.getName());
     @Test
 	public void testPipedContextWorker() throws Exception {

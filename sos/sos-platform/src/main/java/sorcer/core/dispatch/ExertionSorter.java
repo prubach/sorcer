@@ -6,7 +6,8 @@ import org.codehaus.plexus.util.dag.TopologicalSorter;
 import sorcer.service.*;
 
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SORCER class
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class ExertionSorter {
 
-    private static Logger logger = Logger.getLogger(ExertionSorter.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(ExertionSorter.class.getName());
     private final DAG dag;
     private final Map projectMap;
     private final Map<String, String> contextIdsMap;
@@ -100,18 +101,18 @@ public class ExertionSorter {
             for (String depId : dag.getParentLabels(xrt.getId().toString())) {
                 if (sortedSubsetIds.contains(depId)) {
                     edges++;
-                    logger.finest("Edge: " + xrt.getName() + " parent: " + depId);
+                    logger.debug("Edge: " + xrt.getName() + " parent: " + depId);
                 }
             }
             for (String depId : dag.getChildLabels(xrt.getId().toString())) {
                 if (sortedSubsetIds.contains(depId)) {
                     edges++;
-                    logger.finest("Edge: " + xrt.getName() + " child: " + depId);
+                    logger.debug("Edge: " + xrt.getName() + " child: " + depId);
                 }
             }
         }
         if (topXrt.getExertions().size() > 0)
-            logger.finest("XRT " + topXrt.getName() + " has edges: " + edges);
+            logger.debug("XRT " + topXrt.getName() + " has edges: " + edges);
         if (edges == 0) return Strategy.Flow.PAR;
         else return Strategy.Flow.SEQ;
     }
@@ -211,7 +212,7 @@ public class ExertionSorter {
                 for (Map.Entry<String, String> mapping : ctxMapping.entrySet()) {
                     if (mapping.getValue() != null && mapping.getValue().length() > 0) {
                         String dependencyId = revContextIdsMap.get(mapping.getValue());
-                        logger.finest("Map: " + mapping.getKey() + " to " + dependencyId);
+                        logger.debug("Map: " + mapping.getKey() + " to " + dependencyId);
                         if (dag.getVertex(dependencyId) != null) {
                             dag.addEdge(id, dependencyId);
                         }

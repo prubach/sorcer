@@ -25,7 +25,8 @@ import sorcer.junit.*;
 import sorcer.service.Signature;
 import sorcer.service.SignatureException;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 import static sorcer.eo.operator.*;
@@ -53,7 +54,7 @@ import static sorcer.eo.operator.*;
         })
 })
 public class SignatureTest {
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(SignatureTest.class.getName());
 
 	@Test

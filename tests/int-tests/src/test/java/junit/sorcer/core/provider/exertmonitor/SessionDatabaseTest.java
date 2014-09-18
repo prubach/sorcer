@@ -27,7 +27,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,7 +56,7 @@ import com.sleepycat.collections.StoredMap;
 })
 public class SessionDatabaseTest {
 
-	private final static Logger logger = Logger
+	private final static Logger logger = LoggerFactory
 			.getLogger(SessionDatabaseTest.class.getName());
 
 	private static SessionDatabaseRunner runner;

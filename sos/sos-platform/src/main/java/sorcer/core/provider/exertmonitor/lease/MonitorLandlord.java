@@ -27,8 +27,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
@@ -68,7 +70,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	private volatile boolean run = true;
 
 	static transient final String LOGGER = "sorcer.core.provider.monitor.lease.MonitorLandlord";
-	static transient final Logger logger = Logger.getLogger(LOGGER);
+	static transient final Logger logger = LoggerFactory.getLogger(LOGGER);
 
 	// A simple leasing policy...10 minute leases.
 	protected static final int DEFAULT_MAX_LEASE = 1000 * 60 * 1;
@@ -92,7 +94,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
             exporter = new BasicJeriExporter(
                     TcpServerEndpoint.getInstance(SorcerEnv.getHostAddress(), 0), new BasicILFactory());
         } catch (UnknownHostException e) {
-            logger.warning("Could not resolve hostAddress - starting on default interface");
+            logger.warn("Could not resolve hostAddress - starting on default interface");
             exporter = new BasicJeriExporter(
                     TcpServerEndpoint.getInstance(0), new BasicILFactory());
         }
@@ -166,7 +168,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 		if (resource != null) {
 			long expiration = getExpiration(extension);
 			resource.setExpiration(expiration);
-			// logger.log(Level.INFO,"Lease renewd for resource ="+resource+
+			// logger.info("Lease renewd for resource ="+resource+
 			// " next lease duration="+ (expiration -
 			// System.currentTimeMillis()));
 
@@ -194,7 +196,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 
 		Landlord.RenewResults results = new Landlord.RenewResults(granted,
 				denied);
-		logger.log(Level.INFO, "leases renewed Landlord.RenewResults="
+		logger.info( "leases renewed Landlord.RenewResults="
 				+ results);
 		return results;
 	}
@@ -220,7 +222,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	}
 
 	public void checkLeasesAndTimeouts() {
-		// logger.log(Level.INFO,"Checking for leases and time outs");
+		// logger.info("Checking for leases and time outs");
 		MonitorLeasedResource resource;
 		Uuid cookie;
 		long now = System.currentTimeMillis();
@@ -233,12 +235,12 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
             logger.info("Checking lease: " + name + " " + sdf.format(resource.getExpiration()));
 
 			if (resource.getExpiration() < now) {
-				logger.log(Level.INFO, "Lease cancelled for resource ="
+				logger.info( "Lease cancelled for resource ="
 						+ resource);
 				resource.leaseCancelled();
 				resources.remove(resource.getCookie());
 			} else if (resource.getTimeout() < now) {
-				logger.log(Level.INFO, "Timeout for resource =" + resource
+				logger.info( "Timeout for resource =" + resource
 						+ " resource.getTimeout()=" + resource.getTimeout()
 						+ " now=" + now + " resource.getTimeout()-now="
 						+ (resource.getTimeout() - now));
@@ -250,7 +252,7 @@ public class MonitorLandlord implements Landlord, Runnable, ReferentUuid, Remote
 	}
 
 	public void remove(LeasedResource lr) {
-		logger.log(Level.INFO, "Removing landlord resource =" + lr);
+		logger.info( "Removing landlord resource =" + lr);
 		resources.remove(lr.getCookie());
 	}
 

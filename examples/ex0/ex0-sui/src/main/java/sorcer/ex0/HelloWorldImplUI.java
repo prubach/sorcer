@@ -6,11 +6,12 @@ import sorcer.service.Service;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HelloWorldImplUI extends JPanel {
 
-	private final static Logger logger = Logger.getLogger(HelloWorldImplUI.class
+	private final static Logger logger = LoggerFactory.getLogger(HelloWorldImplUI.class
 			.getName());
 
 	private ServiceItem item;

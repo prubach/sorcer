@@ -27,7 +27,8 @@ import sorcer.junit.SorcerClient;
 import sorcer.junit.SorcerRunner;
 import sorcer.service.*;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 import static sorcer.eo.operator.*;
@@ -44,7 +45,7 @@ import static sorcer.eo.operator.*;
 //@SorcerServiceConfiguration(":ex6-cfg-all")
 public class DeployExertionTest extends DeploySetup {
 
-    private final static Logger logger = Logger.getLogger(DeployExertionTest.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(DeployExertionTest.class.getName());
 
     @Test
     public void deployAndExec() throws Exception {

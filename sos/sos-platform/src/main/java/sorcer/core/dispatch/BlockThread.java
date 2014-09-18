@@ -23,13 +23,13 @@ import sorcer.core.provider.Provider;
 import sorcer.service.Block;
 
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static sorcer.util.StringUtils.tName;
 
 public class BlockThread extends Thread {
-	private final static Logger logger = Logger.getLogger(BlockThread.class
+	private final static Logger logger = LoggerFactory.getLogger(BlockThread.class
 			.getName());
 
 	private static final int SLEEP_TIME = 250;
@@ -47,7 +47,7 @@ public class BlockThread extends Thread {
 	}
 
 	public void run() {
-		logger.finer("*** Exertion dispatcher started with control context ***\n"
+		logger.debug("*** Exertion dispatcher started with control context ***\n"
 				+ block.getControlContext());
 		try {
             String exertionDeploymentConfig = null;
@@ -59,7 +59,7 @@ public class BlockThread extends Thread {
 									String.class, 
 									null);
 				} catch (ConfigurationException e1) {
-					logger.log(Level.WARNING, "Unable to read property from configuration", e1);
+					logger.warn("Unable to read property from configuration", e1);
                 } catch (RemoteException e) {
              				// ignore it, locall call
 				}
@@ -75,11 +75,11 @@ public class BlockThread extends Thread {
             dispatcher.exec();
             DispatchResult result = dispatcher.getResult();
 
-			logger.finer("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + result.state
+			logger.debug("*** Dispatcher exit state = " + dispatcher.getClass().getName()  + " state: " + result.state
 					+ " for block***\n" + block.getControlContext());
             this.result = (Block) result.exertion;
 		} catch (DispatcherException de) {
-            logger.log(Level.WARNING, "Error while exerting " + block.getId(), de);
+            logger.warn("Error while exerting " + block.getId(), de);
         }
 	}
 

@@ -25,7 +25,8 @@ import java.net.URLClassLoader;
 import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.context.ServiceContext;
 import sorcer.core.context.model.par.Par;
@@ -41,7 +42,7 @@ public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvokin
 
 	private static final long serialVersionUID = -1158778636907725414L;
 
-	final protected static Logger logger = Logger.getLogger(MethodInvoker.class
+	final protected static Logger logger = LoggerFactory.getLogger(MethodInvoker.class
 			.getName());
 
 	protected String className;
@@ -245,15 +246,15 @@ public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvokin
 				}
 			}
 
-			logger.fine("**inovking; target = " + target);
-			logger.fine("class: " + evalClass);
-			logger.fine("context: " + context);
-			logger.fine("method: " + m);
-			logger.fine("selector: " + selector);
-			logger.fine("paramTypes: "
+			logger.debug("**inovking; target = " + target);
+			logger.debug("class: " + evalClass);
+			logger.debug("context: " + context);
+			logger.debug("method: " + m);
+			logger.debug("selector: " + selector);
+			logger.debug("paramTypes: "
                     + (paramTypes == null ? "null" : StringUtils.
 							arrayToString(paramTypes)));
-			logger.fine("parameters: "
+			logger.debug("parameters: "
 					+ (parameters == null ? "null" : StringUtils
 							.arrayToString(parameters)));
 			// ((ServiceContext)context).setCurrentSelector(selector);
@@ -261,7 +262,7 @@ public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvokin
             if (context != null)
                 ((ServiceContext)context).setCurrentSelector(selector);
 			val = m.invoke(target, parameters);
-			logger.fine("val: " + val);
+			logger.debug("val: " + val);
 
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
@@ -271,14 +272,14 @@ public class MethodInvoker<T> extends ServiceInvoker<T> implements MethodInvokin
             }
             throw new EvaluationException(e);
 		} catch (Exception e) {
-			logger.severe("**error in object invoker; target = " + target);
-            logger.severe("class: " + evalClass);
-            logger.severe("method: " + m);
-            logger.severe("selector: " + selector);
-            logger.severe("paramTypes: "
+			logger.error("**error in object invoker; target = " + target);
+            logger.error("class: " + evalClass);
+            logger.error("method: " + m);
+            logger.error("selector: " + selector);
+            logger.error("paramTypes: "
                     + (paramTypes == null ? "null" : StringUtils
                     .arrayToString(paramTypes)));
-            logger.severe("parameters: "
+            logger.error("parameters: "
                     + (parameters == null ? "null" : StringUtils
                     .arrayToString(parameters)));
 			e.printStackTrace();

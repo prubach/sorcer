@@ -24,7 +24,8 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.context.Contexts;
 import sorcer.core.context.ServiceContext;
@@ -39,7 +40,7 @@ import sorcer.util.GenericUtil;
 import sorcer.util.Sorcer;
 
 public class Providers {
-    private final static Logger logger = Logger.getLogger(Providers.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(Providers.class.getName());
 
     private Providers() {
         // utility class only

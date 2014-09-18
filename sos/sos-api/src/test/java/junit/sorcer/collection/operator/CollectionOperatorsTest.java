@@ -31,7 +31,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 import static sorcer.co.operator.*;
@@ -41,7 +42,7 @@ import static sorcer.eo.operator.strategy;
  * @author Mike Sobolewski
  */
 public class CollectionOperatorsTest {
-	private final static Logger logger = Logger.getLogger(CollectionOperatorsTest.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(CollectionOperatorsTest.class.getName());
 	
 	@Test
 	public void arrayOperatorTest() throws EvaluationException {

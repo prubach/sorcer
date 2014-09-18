@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import groovy.lang.GroovyShell;
 import net.jini.core.transaction.Transaction;
@@ -34,7 +34,7 @@ import static sorcer.util.ArtifactCoordinates.coords;
 abstract public class
         ServiceRequestor implements Requestor {
     /** Logger for logging information about this instance */
-    protected static final Logger logger = Logger
+    protected static final Logger logger = LoggerFactory
             .getLogger(ServiceRequestor.class.getName());
     private Webster webster;
 
@@ -108,17 +108,17 @@ abstract public class
         Exertion in = null;
         try {
             in = requestor.getExertion(args);
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("Runner java.rmi.server.codebase: "
+            if (logger.isDebugEnabled())
+                logger.debug("Runner java.rmi.server.codebase: "
                         + System.getProperty("java.rmi.server.codebase"));
         } catch (ExertionException e) {
-			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+			logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
             System.exit(1);
         } catch (ContextException e) {
-			logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+			logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
             System.exit(1);
         } catch (SignatureException e) {
-            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
             System.exit(1);
         }
         if (in != null)
@@ -132,11 +132,11 @@ abstract public class
             exertion = ((ServiceExertion) exertion).exert(
                     requestor.getTransaction(), requestor.getJobberName());
 		} catch (RemoteException e) {
-            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 		} catch (TransactionException e) {
-            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
 		} catch (ExertionException e) {
-            logger.severe("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
+            logger.error("ServiceRequestor: " + e.getMessage() + "\nat:\n" + Arrays.toString(e.getStackTrace()).replace(", ", "\n") + "\n");
         }
     }
 
@@ -263,7 +263,7 @@ abstract public class
                     codebase.add(resolve(artCord));
                 }
 
-            logger.fine("ServiceRequestor generated codebase: " + codebase.toString());
+            logger.debug("ServiceRequestor generated codebase: " + codebase.toString());
             if (isWebsterInt)
                 System.setProperty(SorcerConstants.CODEBASE_JARS, codebase.toString());
             else

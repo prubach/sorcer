@@ -18,7 +18,8 @@ import static sorcer.po.operator.par;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.jini.id.Uuid;
 
@@ -47,7 +48,7 @@ import sorcer.util.url.sos.SdbUtil;
 @Category(SorcerClient.class)
 @ExportCodebase({"org.sorcersoft.sorcer:sorcer-api", "org.sorcersoft.sorcer:dbp-api"})
 public class ObjectStoreTest {
-	private final static Logger logger = Logger.getLogger(ObjectStoreTest.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(ObjectStoreTest.class.getName());
 
 	
 	@Test

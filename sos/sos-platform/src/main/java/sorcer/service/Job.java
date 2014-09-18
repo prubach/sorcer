@@ -21,7 +21,8 @@ package sorcer.service;
 import java.rmi.RemoteException;
 import java.security.Principal;
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.Subject;
 
@@ -67,7 +68,7 @@ public class Job extends ServiceExertion implements CompoundExertion {
 	private static final long serialVersionUID = -6161435179772214884L;
 
 	/* our logger */
-	protected final static Logger logger = Logger.getLogger(Job.class.getName());
+	protected final static Logger logger = LoggerFactory.getLogger(Job.class.getName());
 	
 	/**
 	 * Component exertions of this job (the Composite Design pattern)

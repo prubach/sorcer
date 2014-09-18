@@ -20,7 +20,8 @@ package sorcer.core.context;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.core.ComprehensiveContextException;
 import sorcer.core.ContextMetaData;
@@ -286,9 +287,9 @@ public class ComprehensiveContext extends ServiceContext implements
 			contextMap.remove(path);
 			super.removePath(path);
 		} catch (ContextException ce) {
-            logger.log(Level.WARNING, "Error", ce);
+            logger.warn("Error", ce);
 		} catch (ComprehensiveContextException cce) {
-            logger.log(Level.WARNING, "Error", cce);
+            logger.warn("Error", cce);
 		}
 		return;
 	}
@@ -461,7 +462,7 @@ public class ComprehensiveContext extends ServiceContext implements
 			System.out.println("=========Printing ServiceContext=============");
 			System.out.println(toString());
 		} catch (Exception e) {
-            logger.log(Level.WARNING, "Error", e);
+            logger.warn("Error", e);
 		}
 	}
 

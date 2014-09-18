@@ -18,7 +18,8 @@
 package sorcer.arithmetic.provider;
 
 import java.rmi.RemoteException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sorcer.service.Context;
 import sorcer.service.ContextException;
@@ -27,7 +28,7 @@ import static sorcer.service.monitor.MonitorUtil.checkpoint;
 
 public class AdderImpl implements Adder {
 	private Arithmometer arithmometer = new Arithmometer();
-	private Logger logger = Logger.getLogger(AdderImpl.class.getName());
+	private Logger logger = LoggerFactory.getLogger(AdderImpl.class.getName());
 	
 	public Context add(Context context) throws RemoteException, ContextException {
 		Context out = arithmometer.add(context);
