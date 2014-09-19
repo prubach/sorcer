@@ -102,7 +102,7 @@ logger("sorcer.platform.logger", DEBUG)
 logger("sorcer.core.dispatch", DEBUG)
 
 logger("sorcer.core.invoker.MethodInvoker", INFO)
-
+logger("sorcer.modeling.vfe", DEBUG)
 
 logger("mil.afrl.mstc.engineering.optimization.conmin.provider", DEBUG)
 /*

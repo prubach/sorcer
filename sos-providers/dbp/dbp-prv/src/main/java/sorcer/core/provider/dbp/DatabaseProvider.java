@@ -84,7 +84,8 @@ public class DatabaseProvider implements DatabaseStorer, IDatabaseProvider {
 		}
 		UpdateThread ut = new UpdateThread(uuid, uuidObject);
         Uuid id = ut.getUuid();
-        ut.start();
+        //ut.start();
+        ut.run();
         return id;
 	}
 	
