@@ -39,6 +39,7 @@ public class SorcerEnv {
     final static String DATA_NODE_TYPE = "dnt";
     final static Logger logger = Logger.getLogger(SorcerEnv.class.getName());
     private static final String WEBSTER_URL = "webster.url";
+    public static final String S_SHARED_DIRS = "sorcer.sharedDirs";
     /**
      * Default name 'provider.properties' for a file defining provider
      * properties.
@@ -804,7 +805,7 @@ public class SorcerEnv {
      * @return a scratch directory
      */
     static public File getUserHomeDir() {
-        return new File(System.getProperty("user.home"));
+        return new File(System.getProperty(JavaSystemProperties.USER_HOME));
     }
 
     /**
@@ -814,6 +815,35 @@ public class SorcerEnv {
      */
     static public File getScratchDir() {
         return getNewScratchDir();
+    }
+
+    public File[] getSharedDirs() {
+        String filePath = properties.getProperty(S_SHARED_DIRS_FILE);
+        String[] paths;
+
+        if (filePath != null) {
+            try {
+                List<String> pathList = IOUtils.readLines(new File(filePath));
+                paths = pathList.toArray(new String[pathList.size()]);
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "Error while reading " + filePath, e);
+                paths = new String[]{};
+            }
+            properties.put(S_SHARED_DIRS, StringUtils.join(paths, File.pathSeparator));
+        } else {
+            String sharedDirs = properties.getProperty(S_SHARED_DIRS);
+            if (sharedDirs != null) {
+                paths = sharedDirs.split(File.pathSeparator);
+            } else {
+                paths = new String[0];
+            }
+        }
+
+        File[] result = new File[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            result[i] = new File(paths[i]);
+        }
+        return result;
     }
 
     public static synchronized String getUniqueId() {
