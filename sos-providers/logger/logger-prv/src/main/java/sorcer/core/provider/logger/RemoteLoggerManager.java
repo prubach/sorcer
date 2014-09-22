@@ -35,7 +35,6 @@ import org.slf4j.helpers.MessageFormatter;
 import sorcer.core.RemoteLogger;
 import sorcer.core.SorcerEnv;
 import sorcer.core.provider.Provider;
-import sorcer.core.provider.ServiceProvider;
 import sorcer.util.SenderEventHandler;
 
 import java.io.File;

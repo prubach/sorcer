@@ -235,8 +235,8 @@ public class SorcerLauncher extends Launcher {
 
     public static void installLogging() {
         //redirect java.util.logging to slf4j/logback
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+        //SLF4JBridgeHandler.removeHandlersForRootLogger();
+        //SLF4JBridgeHandler.install();
         ServiceLogEventHandlerHelper.addServiceLogEventHandler();
     }
 

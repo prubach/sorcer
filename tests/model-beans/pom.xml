@@ -17,5 +17,15 @@
             <artifactId>sos-api</artifactId>
         	<version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.sorcersoft.sorcer</groupId>
+            <artifactId>sorcer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${v.slf4j}</version>
+        </dependency>
     </dependencies>
 </project>

@@ -282,8 +282,7 @@ public class InvokerTest {
 	public void cmdInvokerTest() throws SignatureException, ExertionException,
             ContextException, IOException, ResolverException {
         String[] cps = ResolverHelper.getResolver().getClassPathFor("org.sorcersoft.sorcer:model-beans:" + SorcerEnv.getSorcerVersion());
-        //String cp = SorcerEnv.getHomeDir() + "/tests/int-tests/target/test-classes" + File.pathSeparator
-        String cp = //Resolver.resolveAbsolute("org.sorcersoft.sorcer:model-beans") + File.pathSeparator
+        String cp = Resolver.resolveAbsolute("org.slf4j:slf4j-api") + File.pathSeparator +
                 Resolver.resolveAbsolute("net.jini:jsk-platform") + File.pathSeparator + StringUtils.join(cps, File.pathSeparator);
 
         String cmdToInvoke = "java -cp  " + cp + " " + Volume.class.getName() + " cylinder";

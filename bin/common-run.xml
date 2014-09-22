@@ -486,8 +486,6 @@
                                             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.url|org.rioproject.url" />
                                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
-                                            <sysproperty key="java.util.logging.config.file"
-                                                         value="${sorcer.home}/configs/sorcer.logging"/>
                                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -507,8 +505,6 @@
                                             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.url|org.rioproject.url" />
                                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
-                                            <sysproperty key="java.util.logging.config.file"
-                                                         value="${sorcer.home}/configs/sorcer.logging"/>
                                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -531,8 +527,6 @@
                                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
-                                            <sysproperty key="java.util.logging.config.file"
-                                                         value="${sorcer.home}/configs/sorcer.logging"/>
                                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -550,8 +544,6 @@
                                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="org.rioproject.rmi.ResolvingLoader" />
                                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
-                                            <sysproperty key="java.util.logging.config.file"
-                                                         value="${sorcer.home}/configs/sorcer.logging"/>
                                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -583,8 +575,6 @@
                                     <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                                     <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="sorcer.home" value="${sorcer.home}"/>
-                                    <sysproperty key="java.util.logging.config.file"
-                                                 value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                     <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -601,8 +591,6 @@
                                     <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                                     <sysproperty key="RIO_HOME" value="${rio.home}"/>
                                     <sysproperty key="sorcer.home" value="${sorcer.home}"/>
-                                    <sysproperty key="java.util.logging.config.file"
-                                                 value="${sorcer.home}/configs/sorcer.logging"/>
                                     <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                                     <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                                     <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -626,8 +614,6 @@
                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
                             <sysproperty key="RIO_HOME" value="${rio.home}"/>
                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
-                            <sysproperty key="java.util.logging.config.file"
-                                         value="${sorcer.home}/configs/sorcer.logging"/>
                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>
@@ -642,8 +628,6 @@
                             <sysproperty key="sorcer.home" value="${sorcer.home}"/>
                             <sysproperty key="java.protocol.handler.pkgs" value="net.jini.url|sorcer.util.url|org.rioproject.url" />
                             <sysproperty key="java.rmi.server.RMIClassLoaderSpi" value="sorcer.rio.rmi.SorcerResolvingLoader" />
-                            <sysproperty key="java.util.logging.config.file"
-                                         value="${sorcer.home}/configs/sorcer.logging"/>
                             <sysproperty key="logback.configurationFile" value="${sorcer.home}/configs/logback.groovy" />
                             <sysproperty key="java.security.policy" value="${requestor.policy}"/>
                             <sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env"/>

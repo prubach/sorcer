@@ -203,6 +203,8 @@ public class LoaderConfiguration {
                 }
                 if (jarFile!=null && jarFile.exists())
                     classPath.add(url);
+            } else if (url.getProtocol().equalsIgnoreCase("artifact")) {
+                logger.debug("Ignoring artifact protocol - should already be resolved to http/file for: " + url.toString());
             } else {
                 logger.error("Unsupported protocol to be added to classpath: " + url.toString());
             }

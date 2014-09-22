@@ -13,10 +13,10 @@ public class NetworkShellTest {
     /**
      * Test for calling NSH from API
      */
-    //@Ignore
+    @Ignore
     @Test
     public void requestTest() throws Throwable {
-//        ServiceRequestor.prepareEnvironment();
+        ServiceRequestor.prepareEnvironment();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(byteArrayOutputStream);
         NetworkShell.buildInstance(true, new String[]{});

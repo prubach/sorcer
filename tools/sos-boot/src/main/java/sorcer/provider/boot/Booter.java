@@ -17,7 +17,6 @@
  */
 package sorcer.provider.boot;
 
-import org.slf4j.LoggerFactory;
 import sorcer.core.SorcerConstants;
 import sorcer.core.SorcerEnv;
 import sorcer.resolver.Resolver;
@@ -37,8 +36,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides static convenience methods for use in configuration files. This class cannot
@@ -49,7 +46,7 @@ import org.slf4j.LoggerFactory;
 public class Booter {
 	private static final String COMPONENT = "sorcer.provider.boot";
 	private static Logger logger = LoggerFactory.getLogger(COMPONENT);
-	private static org.slf4j.Logger log = LoggerFactory.getLogger(Booter.class);
+	//private static org.slf4j.Logger log = LoggerFactory.getLogger(Booter.class);
 
 	/**
 	 * Code server (wester) port

@@ -826,7 +826,7 @@ public class SorcerEnv {
                 List<String> pathList = IOUtils.readLines(new File(filePath));
                 paths = pathList.toArray(new String[pathList.size()]);
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Error while reading " + filePath, e);
+                logger.warn("Error while reading " + filePath, e);
                 paths = new String[]{};
             }
             properties.put(S_SHARED_DIRS, StringUtils.join(paths, File.pathSeparator));

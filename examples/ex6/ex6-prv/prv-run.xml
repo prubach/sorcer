@@ -68,7 +68,6 @@ Also you might need to adjust the classpath (provider.classpath) for your provid
 	    <java classname="sorcer.launcher.Sorcer" fork="yes">
             <classpath refid="boot.classpath"/>
             <sysproperty key="java.security.manager" value="" />
-			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/prv.policy" />
 			<sysproperty key="sorcer.provider.codebase" value="${j1} ${j2} ${j3}" />
 			<sysproperty key="sorcer.provider.classpath" value="${toString:project.classpath}" />

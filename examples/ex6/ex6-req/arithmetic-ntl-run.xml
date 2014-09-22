@@ -51,7 +51,6 @@
 		<java classname="${requestor.class}" fork="yes">
 			<arg value="sorcer.arithmetic.requestor.ArithmeticNetletReq" />
 			<classpath refid="run.classpath"/>
-			<sysproperty key="java.util.logging.config.file" value="${sorcer.home}/configs/sorcer.logging" />
 			<sysproperty key="requestor.webster.codebase" value="${j1} ${j2}" />
 			<sysproperty key="sorcer.env.file" value="${sorcer.home}/configs/sorcer.env" />
 			<sysproperty key="java.security.policy" value="${basedir}/src/main/resources/policy/req.policy" />

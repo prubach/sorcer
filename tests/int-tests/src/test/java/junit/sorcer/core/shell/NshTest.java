@@ -113,7 +113,7 @@ public class NshTest {
         assertFalse(result.getErr().contains(EXCEPTION));
     }
 
-    @Test(timeout = 150000)
+    @Test(timeout = 60000)
     public void batchExertCmdTest() throws Exception {
         cmds = new String[] { baseCmd, "-b", "${sys.sorcer.home}/configs/int-tests/nsh/batchExert.nsh"};
 

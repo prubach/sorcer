@@ -113,7 +113,7 @@ public class BootCmd extends ShellCmd {
             startedLaunchers.put(input+" ["+((ForkingLauncher)sorcerLauncher).getPid() + "]", sorcerLauncher);
         } else {
             List<String> idsToStop = cmdLine.getArgList();
-            if (cmdLine.hasOption(ALL)) {
+            if (cmdLine.hasOption(ALL) || cmdLine.getArgList().contains(ALL)) {
                 for (ILauncher launcher : startedLaunchers.values())
                     launcher.stop();
             } else if (!idsToStop.isEmpty()) {

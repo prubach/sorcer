@@ -307,7 +307,7 @@ abstract public class
         System.setProperty("java.rmi.server.RMIClassLoaderSpi", "sorcer.rio.rmi.SorcerResolvingLoader");
         System.setProperty("org.rioproject.resolver.jar", SorcerEnv.getProperty("sorcer.local.repo.location") +
                 "/org/rioproject/resolver/resolver-aether/" + SorcerEnv.getRioVersion() + "/resolver-aether-" + SorcerEnv.getRioVersion() + ".jar");
-        System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
+        //System.setProperty("java.util.logging.config.file", System.getenv("SORCER_HOME") + "/configs/sorcer.logging");
         System.setSecurityManager(new SecurityManager());
     }
 }
