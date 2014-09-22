@@ -16,9 +16,9 @@ public class NetworkShellTest {
     //@Ignore
     @Test
     public void requestTest() throws Throwable {
+//        ServiceRequestor.prepareEnvironment();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(byteArrayOutputStream);
-        ServiceRequestor.prepareEnvironment();
         NetworkShell.buildInstance(true, new String[]{});
         NetworkShell.setShellOutput(printStream);
         NetworkShell.setRequest("help");
