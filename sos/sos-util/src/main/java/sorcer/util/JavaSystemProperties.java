@@ -23,6 +23,7 @@ public class JavaSystemProperties {
 
     public static final String USER_DIR = "user.dir";
     public static final String USER_NAME = "user.name";
+    public static final String USER_HOME = "user.home";
 
     public static final String MAX_DATAGRAM_SOCKETS = "sun.net.maxDatagramSockets";
 

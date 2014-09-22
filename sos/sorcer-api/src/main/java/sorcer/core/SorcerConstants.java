@@ -1229,6 +1229,7 @@ public interface SorcerConstants {
     String MDC_PROVIDER_ID = "prvId";
     String START_PACKAGE = "com.sun.jini.start";
     String REMOTE_LOGGER_INTERFACE = "RemoteLogger";
+    String S_SHARED_DIRS_FILE = "sorcer.sharedDirs.file";
 }
 
 

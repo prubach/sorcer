@@ -36,7 +36,7 @@ public class RemoteFileFactory {
 
     static {
         try {
-            INST = new RemoteFileFactory(SorcerEnv.getDataDir(), new File[]{});
+            INST = new RemoteFileFactory(SorcerEnv.getDataDir(), SorcerEnv.getEnvironment().getSharedDirs());
         } catch (IOException e) {
             throw new IllegalStateException("Invalid configuration", e);
         }
