@@ -67,7 +67,7 @@ public class SorcerDatabaseTest {
 	@BeforeClass 
 	public static void setUpOnce() throws Exception {
         String tempDir = System.getProperty("java.io.tmpdir");
-        String homeDir = tempDir + File.pathSeparator + "ju-sorcer-db";
+        String homeDir = tempDir + "/ju-sorcer-db";
 		dbDir = new File(homeDir);
         IOUtils.deleteDir(dbDir);
         //System.out.println("Sorcer DB dir: " + dbDir.getCanonicalPath());
